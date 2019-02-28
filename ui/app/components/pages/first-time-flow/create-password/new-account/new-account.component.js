@@ -103,9 +103,9 @@ export default class NewAccount extends PureComponent {
 
       this.context.metricsEvent({
         eventOpts: {
-          category: 'Acquisition',
-          action: 'userClickContinue',
-          name: 'onboardingStarted',
+          category: 'Onboarding',
+          action: 'Create Password',
+          name: 'Submit Password',
         },
       })
 
@@ -123,6 +123,14 @@ export default class NewAccount extends PureComponent {
   }
 
   toggleTermsCheck = () => {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Create Password',
+        name: 'Check ToS',
+      },
+    })
+
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))

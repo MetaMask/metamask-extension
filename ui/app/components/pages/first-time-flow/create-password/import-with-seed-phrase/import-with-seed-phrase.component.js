@@ -104,6 +104,13 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     try {
       await onSubmit(password, seedPhrase)
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Import Seed Phrase',
+          name: 'Import Complete',
+        },
+      })
       history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     } catch (error) {
       this.setState({ seedPhraseError: error.message })
@@ -132,6 +139,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   toggleTermsCheck = () => {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Import Seed Phrase',
+        name: 'Check ToS',
+      },
+    })
+
     this.setState((prevState) => ({
         termsChecked: !prevState.termsChecked,
     }))

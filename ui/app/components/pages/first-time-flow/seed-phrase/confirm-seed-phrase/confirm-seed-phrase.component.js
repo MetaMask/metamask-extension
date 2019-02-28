@@ -51,9 +51,9 @@ export default class ConfirmSeedPhrase extends PureComponent {
       history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       this.context.metricsEvent({
         eventOpts: {
-          category: 'Acquisition',
-          action: 'userClickContinue',
-          name: 'onboardingComplete',
+          category: 'Onboarding',
+          action: 'Seed Phrase Setup',
+          name: 'Verify Complete',
         },
       })
       history.push(INITIALIZE_END_OF_FLOW_ROUTE)

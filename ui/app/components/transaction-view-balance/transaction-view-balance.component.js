@@ -89,7 +89,16 @@ export default class TransactionViewBalance extends PureComponent {
             <Button
               type="primary"
               className="transaction-view-balance__button"
-              onClick={() => showDepositModal()}
+              onClick={() => {
+                metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Home',
+                    name: 'Clicked Deposit',
+                  },
+                })
+                showDepositModal()
+              }}
             >
               { t('deposit') }
             </Button>
@@ -101,13 +110,9 @@ export default class TransactionViewBalance extends PureComponent {
           onClick={() => {
             metricsEvent({
               eventOpts: {
-                category: 'Activation',
-                action: 'userClick',
-                name: 'sendStarted',
-              },
-              pageOpts: {
-                section: 'Header',
-                component: 'homeScreenSendButton',
+                category: 'Navigation',
+                action: 'Home',
+                name: 'Clicked Send',
               },
             })
             history.push(SEND_ROUTE)

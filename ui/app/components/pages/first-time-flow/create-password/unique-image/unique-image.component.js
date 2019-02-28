@@ -40,9 +40,9 @@ export default class UniqueImageScreen extends PureComponent {
           onClick={() => {
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Acquisition',
-                action: 'userClickContinue',
-                name: 'confirmedAvatar',
+                category: 'Onboarding',
+                action: 'Agree to Phishing Warning',
+                name: 'Agree to Phishing Warning',
               },
             })
             if (isImportedKeyring) {

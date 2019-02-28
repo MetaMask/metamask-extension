@@ -267,12 +267,9 @@ SignatureRequest.prototype.renderFooter = function () {
         cancel(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {
-              category: 'Activation',
-              action: 'userClicksCancel',
-              name: 'signCancelled',
-            },
-            customVariables: {
-              functionType: type,
+              category: 'Transactions',
+              action: 'Sign Request',
+              name: 'Cancel',
             },
           })
           this.props.clearConfirmTransaction()
@@ -288,12 +285,9 @@ SignatureRequest.prototype.renderFooter = function () {
         sign(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {
-              category: 'Activation',
-              action: 'userClicksSign',
-              name: 'signConfirmed',
-            },
-            customVariables: {
-              functionType: type,
+              category: 'Transactions',
+              action: 'Sign Request',
+              name: 'Confirm',
             },
           })
           this.props.clearConfirmTransaction()

@@ -157,7 +157,19 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEditGas () {
-    const { onEditGas, showCustomizeGasModal } = this.props
+    const { onEditGas, showCustomizeGasModal, methodData = {} } = this.props
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'User clicks "Edit" on gas',
+      },
+      customVariables: {
+        recipientKnown: null,
+        functionType: methodData.name || 'notFound',
+      },
+    })
 
     if (onEditGas) {
       onEditGas()
@@ -277,7 +289,20 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEdit () {
-    const { txData, tokenData, tokenProps, onEdit } = this.props
+    const { txData, tokenData, tokenProps, onEdit, methodData = {} } = this.props
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'Edit Transaction',
+      },
+      customVariables: {
+        recipientKnown: null,
+        functionType: methodData.name || 'notFound',
+      },
+    })
+
     onEdit({ txData, tokenData, tokenProps })
   }
 
@@ -307,13 +332,9 @@ export default class ConfirmTransactionBase extends Component {
     if (onCancel) {
       metricsEvent({
         eventOpts: {
-          category: 'Activation',
-          action: 'userSees',
-          name: 'confirmCancelled',
-        },
-        pageOpts: {
-          section: 'footer',
-          component: 'confirmScreenCancelButton',
+          category: 'Transactions',
+          action: 'Confirm Screen',
+          name: 'Cancel',
         },
         customVariables: {
           recipientKnown: null,
@@ -345,13 +366,9 @@ export default class ConfirmTransactionBase extends Component {
     }, () => {
       metricsEvent({
         eventOpts: {
-          category: 'Activation',
-          action: 'userSees',
-          name: 'confirmCompleted',
-        },
-        pageOpts: {
-          section: 'footer',
-          component: 'confirmScreenSubmitButton',
+          category: 'Transactions',
+          action: 'Confirm Screen',
+          name: 'Transaction Completed',
         },
         customVariables: {
           recipientKnown: null,
@@ -475,13 +492,9 @@ export default class ConfirmTransactionBase extends Component {
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
-        category: 'Activation',
-        action: 'userSees',
-        name: 'confirmStarted',
-      },
-      pageOpts: {
-        section: 'all',
-        component: 'all',
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'User sees Confirm screen',
       },
     })
   }

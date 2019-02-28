@@ -14,10 +14,16 @@ export default class Sidebar extends Component {
     transitionName: PropTypes.string,
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
+    onOverlayClose: PropTypes.func,
   };
 
   renderOverlay () {
-    return <div className="sidebar-overlay" onClick={() => this.props.hideSidebar()} />
+    const { onOverlayClose } = this.props
+
+    return <div className="sidebar-overlay" onClick={() => {
+      onOverlayClose && onOverlayClose()
+      this.props.hideSidebar()
+    }} />
   }
 
   renderSidebarContent () {

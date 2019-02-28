@@ -36,13 +36,9 @@ export default class SendGasRow extends Component {
     return <div className="advanced-gas-options-btn" onClick={() => {
       metricsEvent({
         eventOpts: {
-          category: 'Activation',
-          action: 'userOpens',
-          name: 'sendOpenCustomizeGas',
-        },
-        pageOpts: {
-          section: 'formConent',
-          component: 'sendScreenGasRow',
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Clicked "Advanced Options"',
         },
       })
       showCustomizeGasModal()
@@ -68,12 +64,23 @@ export default class SendGasRow extends Component {
       gasLimit,
       insufficientBalance,
     } = this.props
+    const { metricsEvent } = this.context
 
     const gasPriceButtonGroup = <div>
         <GasPriceButtonGroup
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
+          handleGasPriceSelection={(...args) => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Changed Gas Button',
+              },
+            })
+            gasPriceButtonGroupProps(...args)
+          }}
         />
         { this.renderAdvancedOptionsButton() }
       </div>

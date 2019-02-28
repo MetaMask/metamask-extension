@@ -26,10 +26,7 @@ export default class SendFooter extends Component {
     tokenBalance: PropTypes.string,
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
-  }
-
-  state = {
-    hadError: false,
+    sendErrors: PropTypes.object,
   }
 
   static contextTypes = {
@@ -86,24 +83,17 @@ export default class SendFooter extends Component {
       })
       : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
 
-    metricsEvent({
-      eventOpts: {
-        category: 'Activation',
-        action: 'userClick',
-        name: 'sendCompletedEditScreen',
-      },
-      pageOpts: {
-        section: 'Footer',
-        component: 'sendScreenNextButton',
-      },
-      customVariables: {
-        hadError: this.state.hadError,
-        hexData: Boolean(data),
-      },
-    })
-
     Promise.resolve(promise)
-      .then(() => history.push(CONFIRM_TRANSACTION_ROUTE))
+      .then(() => {
+        metricsEvent({
+          eventOpts: {
+            category: 'Transactions',
+            action: 'Edit Screen',
+            name: 'Complete',
+          },
+        })
+        history.push(CONFIRM_TRANSACTION_ROUTE)
+      })
   }
 
   formShouldBeDisabled () {
@@ -114,8 +104,23 @@ export default class SendFooter extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (!prevProps.inError && this.props.inError) {
-      this.setState({ hadError: true })
+    const { inError, sendErrors } = this.props
+    const { metricsEvent } = this.context
+    if (!prevProps.inError && inError) {
+      const errorField = Object.keys(sendErrors).find(key => sendErrors[key])
+      const errorMessage = sendErrors[errorField]
+
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Error',
+        },
+        customVariables: {
+          errorField,
+          errorMessage,
+        },
+      })
     }
   }
 

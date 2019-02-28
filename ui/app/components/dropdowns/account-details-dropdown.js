@@ -75,9 +75,9 @@ AccountDetailsDropdown.prototype.render = function () {
         e.stopPropagation()
         this.context.metricsEvent({
           eventOpts: {
-            category: 'Activation',
-            action: 'userClicks',
-            name: 'navExpandView',
+            category: 'Navigation',
+            action: 'Account Options',
+            name: 'Clicked Expand View',
           },
         })
         global.platform.openExtensionInBrowser()
@@ -90,6 +90,13 @@ AccountDetailsDropdown.prototype.render = function () {
       onClick: (e) => {
         e.stopPropagation()
         showAccountDetailModal()
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Account Options',
+            name: 'Viewed Account Details',
+          },
+        })
         this.props.onClose()
       },
       text: this.context.t('accountDetails'),
@@ -100,9 +107,9 @@ AccountDetailsDropdown.prototype.render = function () {
         e.stopPropagation()
         this.context.metricsEvent({
           eventOpts: {
-            category: 'Activation',
-            action: 'userClicks',
-            name: 'navViewOnEtherScan',
+            category: 'Navigation',
+            action: 'Account Options',
+            name: 'Clicked View on Etherscan',
           },
         })
         viewOnEtherscan(address, network)

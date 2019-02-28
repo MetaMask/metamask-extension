@@ -99,9 +99,9 @@ export default class MetaMetricsOptIn extends Component {
                   .then(() => {
                     metricsEvent({
                       eventOpts: {
-                        category: 'MetaMetricsOptIn',
-                        action: 'userSelectsOption',
-                        name: 'userOptedOut',
+                        category: 'Onboarding',
+                        action: 'Metrics Option',
+                        name: 'Metrics Opt In',
                       },
                       isOptIn: true,
                     }, {
@@ -117,9 +117,9 @@ export default class MetaMetricsOptIn extends Component {
                   .then(([participateStatus, metaMetricsId]) => {
                     return metricsEvent({
                       eventOpts: {
-                        category: 'MetaMetricsOptIn',
-                        action: 'userSelectsOption',
-                        name: 'userOptedIn',
+                        category: 'Onboarding',
+                        action: 'Metrics Option',
+                        name: 'Metrics Opt Out',
                       },
                       isOptIn: true,
                     })
@@ -127,7 +127,7 @@ export default class MetaMetricsOptIn extends Component {
                       return metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
-                          action: 'importOrCreate',
+                          action: 'Import or Create',
                           name: firstTimeSelectionMetaMetricsName,
                         },
                         isOptIn: true,

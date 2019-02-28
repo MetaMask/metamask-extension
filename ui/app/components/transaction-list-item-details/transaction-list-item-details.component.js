@@ -12,6 +12,7 @@ import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -32,6 +33,14 @@ export default class TransactionListItemDetails extends PureComponent {
 
     const prefix = prefixForNetwork(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Navigation',
+        action: 'Activity Log',
+        name: 'Clicked "View on Etherscan"',
+      },
+    })
 
     global.platform.openWindow({ url: etherscanUrl })
   }
@@ -54,6 +63,14 @@ export default class TransactionListItemDetails extends PureComponent {
     const { transactionGroup} = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Navigation',
+        action: 'Activity Log',
+        name: 'Copied Transaction ID',
+      },
+    })
 
     this.setState({ justCopied: true }, () => {
       copyToClipboard(hash)
@@ -125,6 +142,24 @@ export default class TransactionListItemDetails extends PureComponent {
               addressOnly
               recipientAddress={to}
               senderAddress={from}
+              onRecipientClick={() => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Activity Log',
+                    name: 'Copied "To" Address',
+                  },
+                })
+              }}
+              onSenderClick={() => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Activity Log',
+                    name: 'Copied "From" Address',
+                  },
+                })
+              }}
             />
           </div>
           <div className="transaction-list-item-details__cards-container">

@@ -6,16 +6,18 @@ import { DEFAULT_ROUTE } from '../../../../routes'
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
     history: PropTypes.object,
     completeOnboarding: PropTypes.func,
+    completionMetaMetricsName: PropTypes.string,
   }
 
   render () {
     const { t } = this.context
-    const { history, completeOnboarding } = this.props
+    const { history, completeOnboarding, completionMetaMetricsName } = this.props
 
     return (
       <div className="end-of-flow">
@@ -59,6 +61,13 @@ export default class EndOfFlowScreen extends PureComponent {
           className="first-time-flow__button"
           onClick={async () => {
             await completeOnboarding()
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Onboarding',
+                action: 'Onboarding Complete',
+                name: completionMetaMetricsName,
+              },
+            })
             history.push(DEFAULT_ROUTE)
           }}
         >

@@ -59,13 +59,16 @@ export default class TransactionListItem extends PureComponent {
       return
     }
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Activation/Retention',
-        action: 'userClicks',
-        name: 'navExpandTransaction',
-      },
-    })
+    if (!showTransactionDetails) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Home',
+          name: 'Expand Transaction',
+        },
+      })
+    }
+
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 

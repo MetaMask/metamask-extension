@@ -21,9 +21,9 @@ export default class ProviderPageContainer extends PureComponent {
   componentDidMount () {
     this.context.metricsEvent({
       eventOpts: {
-        category: 'Activation/Retention',
-        action: 'dappRequestsAccess',
-        name: 'connectPopupOpened',
+        category: 'Auth',
+        action: 'Connect',
+        name: 'Popup Opened',
       },
     })
   }
@@ -32,9 +32,9 @@ export default class ProviderPageContainer extends PureComponent {
     const { tabID, rejectProviderRequest } = this.props
     this.context.metricsEvent({
       eventOpts: {
-        category: 'Activation/Retention',
-        action: 'userClicksCancel',
-        name: 'connectCanceled',
+        category: 'Auth',
+        action: 'Connect',
+        name: 'Canceled',
       },
     })
     rejectProviderRequest(tabID)
@@ -44,9 +44,9 @@ export default class ProviderPageContainer extends PureComponent {
     const { approveProviderRequest, tabID } = this.props
     this.context.metricsEvent({
       eventOpts: {
-        category: 'Activation/Retention',
-        action: 'userClicksConfirm',
-        name: 'connectConfirmed',
+        category: 'Auth',
+        action: 'Connect',
+        name: 'Confirmed',
       },
     })
     approveProviderRequest(tabID)

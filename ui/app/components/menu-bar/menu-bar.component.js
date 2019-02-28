@@ -35,9 +35,9 @@ export default class MenuBar extends PureComponent {
             onClick={() => {
               this.context.metricsEvent({
                 eventOpts: {
-                  category: 'Activation',
-                  action: 'userClicksHamburger',
-                  name: 'navOpenedHamburger',
+                  category: 'Navigation',
+                  action: 'Home',
+                  name: 'Copied Address',
                 },
               })
               sidebarOpen ? hideSidebar() : showSidebar()

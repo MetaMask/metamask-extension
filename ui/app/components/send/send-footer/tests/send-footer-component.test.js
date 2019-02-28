@@ -45,6 +45,7 @@ describe('SendFooter Component', function () {
       tokenBalance={'mockTokenBalance'}
       unapprovedTxs={['mockTx']}
       update={propsMethodSpies.update}
+      sendErrors={{}}
     />, { context: { t: str => str, metricsEvent: () => ({}) } })
   })
 

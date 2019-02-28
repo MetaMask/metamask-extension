@@ -56,18 +56,21 @@ class NewAccountCreateForm extends Component {
                 this.context.metricsEvent({
                   eventOpts: {
                     category: 'Accounts',
-                    action: 'backendCall',
-                    name: 'successAdding',
+                    action: 'Add New Account',
+                    name: 'Added New Account',
                   },
                 })
                 history.push(DEFAULT_ROUTE)
               })
-              .catch(() => {
+              .catch((e) => {
                 this.context.metricsEvent({
                   eventOpts: {
                     category: 'Accounts',
-                    action: 'backendCall',
-                    name: 'errorAdding',
+                    action: 'Add New Account',
+                    name: 'Error',
+                  },
+                  customVariables: {
+                    error: e.message,
                   },
                 })
               })

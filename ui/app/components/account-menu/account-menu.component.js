@@ -77,9 +77,9 @@ export default class AccountMenu extends PureComponent {
           onClick={() => {
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Activation/Retention',
-                action: 'userSwitchedAccounts',
-                name: 'navSwitchAccounts',
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Switched Account',
               },
             })
             showAccountDetail(identity.address)
@@ -243,9 +243,9 @@ export default class AccountMenu extends PureComponent {
             toggleAccountMenu()
             metricsEvent({
               eventOpts: {
-                category: 'Accounts',
-                action: 'userClick',
-                name: 'accountsNewAccount',
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Clicked Create Accoount',
               },
             })
             history.push(NEW_ACCOUNT_ROUTE)
@@ -261,6 +261,13 @@ export default class AccountMenu extends PureComponent {
         <Item
           onClick={() => {
             toggleAccountMenu()
+            metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Clicked Import Account',
+              },
+            })
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
           icon={
@@ -274,7 +281,13 @@ export default class AccountMenu extends PureComponent {
         <Item
           onClick={() => {
             toggleAccountMenu()
-
+            metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Clicked Connect Hardware',
+              },
+            })
             if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
               global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
             } else {
@@ -306,9 +319,9 @@ export default class AccountMenu extends PureComponent {
             history.push(SETTINGS_ROUTE)
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Activation/Retention',
-                action: 'userClickSettings',
-                name: 'settingsOpen',
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Opened Settings',
               },
             })
           }}

@@ -238,39 +238,28 @@ export default class SettingsTab extends PureComponent {
   validateRpc (newRpc, chainId, ticker = 'ETH', nickname) {
     const { setRpcTarget, displayWarning } = this.props
     if (validUrl.isWebUri(newRpc)) {
-      if (!!chainId && Number.isNaN(parseInt(chainId))) {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Activation/Retention',
-            action: 'userEnteredCustomRpc',
-            name: 'settingsCustomRPCError',
-          },
-          customVariables: {
-            networkId: newRpc,
-            chainId,
-          },
-        })
-        return displayWarning(`${this.context.t('invalidInput')} chainId`)
-      }
-
       this.context.metricsEvent({
         eventOpts: {
-          category: 'Activation/Retention',
-          action: 'userEnteredCustomRpc',
-          name: 'settingsCustomRPCSuccess',
+          category: 'Settings',
+          action: 'Custom RPC',
+          name: 'Success',
         },
         customVariables: {
           networkId: newRpc,
           chainId,
         },
       })
+      if (!!chainId && Number.isNaN(parseInt(chainId))) {
+        return displayWarning(`${this.context.t('invalidInput')} chainId`)
+      }
+
       setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       this.context.metricsEvent({
         eventOpts: {
-          category: 'Activation/Retention',
-          action: 'userEnteredCustomRpc',
-          name: 'settingsCustomRPCError',
+          category: 'Settings',
+          action: 'Custom RPC',
+          name: 'Error',
         },
         customVariables: {
           networkId: newRpc,
@@ -368,6 +357,13 @@ export default class SettingsTab extends PureComponent {
               large
               onClick={event => {
                 event.preventDefault()
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Reveal Seed Phrase',
+                    name: 'Reveal Seed Phrase',
+                  },
+                })
                 history.push(REVEAL_SEED_ROUTE)
               }}
             >
@@ -431,9 +427,9 @@ export default class SettingsTab extends PureComponent {
                 event.preventDefault()
                 this.context.metricsEvent({
                   eventOpts: {
-                    category: 'Activation/Retention',
-                    action: 'userClickResetAccount',
-                    name: 'settingsUserResetAccount',
+                    category: 'Settings',
+                    action: 'Reset Account',
+                    name: 'Reset Account',
                   },
                 })
                 showResetAccountConfirmationModal()

@@ -60,10 +60,10 @@ export default class UnlockPage extends Component {
       const newState = await forceUpdateMetamaskState()
       this.context.metricsEvent({
         eventOpts: {
-          category: 'Retention',
-          action: 'userEnteredPassword',
-          name: 'unlockSuccess',
-        },
+            category: 'Navigation',
+            action: 'Unlock',
+            name: 'Success',
+          },
         customVariables: {
           numberOfTokens: newState.tokens.length,
           numberOfAccounts: Object.keys(newState.accounts).length,
@@ -79,9 +79,9 @@ export default class UnlockPage extends Component {
         const newState = await forceUpdateMetamaskState()
         this.context.metricsEvent({
           eventOpts: {
-            category: 'Retention',
-            action: 'userEnteredPassword',
-            name: 'incorrectPassword',
+            category: 'Navigation',
+            action: 'Unlock',
+            name: 'Incorrect Passowrd',
           },
           customVariables: {
             numberOfTokens: newState.tokens.length,
