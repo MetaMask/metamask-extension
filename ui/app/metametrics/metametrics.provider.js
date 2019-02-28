@@ -79,12 +79,14 @@ MetaMetricsProvider.childContextTypes = {
 }
 
 const mapStateToProps = state => {
+  const txData = txDataSelector(state) || {}
+
   return {
     network: getCurrentNetworkId(state),
     environmentType: getEnvironmentType(),
     activeCurrency: getSelectedAsset(state),
     accountType: getAccountType(state),
-    confirmTransactionOrigin: txDataSelector(state).origin,
+    confirmTransactionOrigin: txData.origin,
     metaMetricsId: state.metamask.metaMetricsId,
     participateInMetaMetrics: state.metamask.participateInMetaMetrics,
     metaMetricsSendCount: state.metamask.metaMetricsSendCount,
