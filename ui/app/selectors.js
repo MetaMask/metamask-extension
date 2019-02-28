@@ -44,6 +44,8 @@ const selectors = {
   getSelectedAsset,
   getCurrentKeyring,
   getAccountType,
+  getNumberOfAccounts,
+  getNumberOfTokens,
 }
 
 module.exports = selectors
@@ -105,6 +107,15 @@ function getSelectedIdentity (state) {
   const identities = state.metamask.identities
 
   return identities[selectedAddress]
+}
+
+function getNumberOfAccounts (state) {
+  return Object.keys(state.metamask.accounts).length
+}
+
+function getNumberOfTokens (state) {
+  const tokens = state.metamask.tokens
+  return tokens ? tokens.length : 0
 }
 
 function getMetaMaskAccounts (state) {

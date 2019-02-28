@@ -7,6 +7,8 @@ import {
   getCurrentNetworkId,
   getSelectedAsset,
   getAccountType,
+  getNumberOfAccounts,
+  getNumberOfTokens,
 } from '../selectors'
 import {
   txDataSelector,
@@ -90,6 +92,8 @@ const mapStateToProps = state => {
     metaMetricsId: state.metamask.metaMetricsId,
     participateInMetaMetrics: state.metamask.participateInMetaMetrics,
     metaMetricsSendCount: state.metamask.metaMetricsSendCount,
+    numberOfTokens: getNumberOfTokens(state),
+    numberOfAccounts: getNumberOfAccounts(state),
   }
 }
 

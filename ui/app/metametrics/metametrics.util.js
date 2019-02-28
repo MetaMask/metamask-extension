@@ -12,13 +12,13 @@ const METAMETRICS_CUSTOM_FUNCTION_TYPE = 'functionType'
 const METAMETRICS_CUSTOM_GAS_LIMIT_CHANGE = 'gasLimitChange'
 const METAMETRICS_CUSTOM_GAS_PRICE_CHANGE = 'gasPriceChange'
 const METAMETRICS_CUSTOM_RECIPIENT_KNOWN = 'recipientKnown'
-const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
-const METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS = 'numberOfAccounts'
 
 const METAMETRICS_CUSTOM_NETWORK = 'network'
 const METAMETRICS_CUSTOM_ENVIRONMENT_TYPE = 'environmentType'
 const METAMETRICS_CUSTOM_ACTIVE_CURRENCY = 'activeCurrency'
 const METAMETRICS_CUSTOM_ACCOUNT_TYPE = 'accountType'
+const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
+const METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS = 'numberOfAccounts'
 
 const customVariableNameIdMap = {
   [METAMETRICS_CUSTOM_HAD_ERROR]: 1,
@@ -27,8 +27,6 @@ const customVariableNameIdMap = {
   [METAMETRICS_CUSTOM_GAS_LIMIT_CHANGE]: 4,
   [METAMETRICS_CUSTOM_GAS_PRICE_CHANGE]: 5,
   [METAMETRICS_CUSTOM_RECIPIENT_KNOWN]: 6,
-  [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 7,
-  [METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS]: 8,
 }
 
 const customDimensionsNameIdMap = {
@@ -36,6 +34,8 @@ const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_ENVIRONMENT_TYPE]: 6,
   [METAMETRICS_CUSTOM_ACTIVE_CURRENCY]: 7,
   [METAMETRICS_CUSTOM_ACCOUNT_TYPE]: 8,
+  [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 9,
+  [METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS]: 10,
 }
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
@@ -80,6 +80,8 @@ function composeUrl (config, permissionPreferences = {}) {
     environmentType,
     activeCurrency,
     accountType,
+    numberOfTokens,
+    numberOfAccounts,
     previousPath = '',
     currentPath,
     metaMetricsId,
@@ -106,6 +108,8 @@ function composeUrl (config, permissionPreferences = {}) {
     environmentType,
     activeCurrency,
     accountType,
+    numberOfTokens: customVariables && customVariables.numberOfTokens || numberOfTokens,
+    numberOfAccounts: customVariables && customVariables.numberOfAccounts || numberOfAccounts,
   }) : ''
   const url = configUrl || `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, 'http://www.metamask.io/metametrics'))}`
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
