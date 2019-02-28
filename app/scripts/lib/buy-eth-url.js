@@ -11,28 +11,29 @@ module.exports = getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, amount, address }) {
-  let url
-  switch (network) {
-    case '1':
-      url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-      break
-
-    case '3':
-      url = 'https://faucet.metamask.io/'
-      break
-
-    case '4':
-      url = 'https://www.rinkeby.io/'
-      break
-
-    case '42':
-      url = 'https://github.com/kovan-testnet/faucet'
-      break
-
-    case '5':
-      url = `https://metamask.coinswitch.co/?address=${address}&to=eth`
-      break
+function getBuyEthUrl({ network, amount, address, service }) {
+	let url
+	if (typeof network !== 'undefined') {
+  	switch (network) {
+  		case '1':
+  			url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+  			break
+  		case '3':
+  			url = 'https://faucet.metamask.io/'
+  			break
+  		case '4':
+  			url = 'https://www.rinkeby.io/'
+  			break
+  		case '42':
+  			url = 'https://github.com/kovan-testnet/faucet'
+  			break
+  	}
+  } else {
+  	switch (service) {
+  		case 'coinswitch':
+  			url = `https://metamask.coinswitch.co/?address=${address}&to=eth`
+  			break
+  	}
   }
-  return url
+	return url
 }
