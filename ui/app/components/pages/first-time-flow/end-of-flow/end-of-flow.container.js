@@ -3,8 +3,8 @@ import EndOfFlow from './end-of-flow.component'
 import { setCompletedOnboarding } from '../../../../actions'
 
 const firstTimeFlowTypeNameMap = {
-  create: 'Selected Create New Wallet',
-  'import': 'Selected Import Wallet',
+  create: 'New Wallet Created',
+  'import': 'New Wallet Imported',
 }
 
 const mapStateToProps = ({ metamask }) => {
