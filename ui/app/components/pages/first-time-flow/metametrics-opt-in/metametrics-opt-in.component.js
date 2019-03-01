@@ -100,7 +100,7 @@ export default class MetaMetricsOptIn extends Component {
                       eventOpts: {
                         category: 'Onboarding',
                         action: 'Metrics Option',
-                        name: 'Metrics Opt In',
+                        name: 'Metrics Opt Out',
                       },
                       isOptIn: true,
                     }, {
@@ -118,7 +118,7 @@ export default class MetaMetricsOptIn extends Component {
                       eventOpts: {
                         category: 'Onboarding',
                         action: 'Metrics Option',
-                        name: 'Metrics Opt Out',
+                        name: 'Metrics Opt In',
                       },
                       isOptIn: true,
                     })
