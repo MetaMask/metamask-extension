@@ -2,6 +2,10 @@
   position: relative;
   width: 100%;
 
+  a {
+    color: #2f9ae0bf;
+  }
+
   &__main {
     display: flex;
     flex-direction: column;
@@ -97,6 +101,7 @@
 
   &__bottom-text {
     margin-top: 10px;
+    color: #9a9a9a;
   }
 
   &__content {

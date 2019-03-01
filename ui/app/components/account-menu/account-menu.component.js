@@ -245,7 +245,7 @@ export default class AccountMenu extends PureComponent {
               eventOpts: {
                 category: 'Navigation',
                 action: 'Main Menu',
-                name: 'Clicked Create Accoount',
+                name: 'Clicked Create Account',
               },
             })
             history.push(NEW_ACCOUNT_ROUTE)
