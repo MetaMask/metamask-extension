@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import NewAccount from './new-account'
 import ImportWithSeedPhrase from './import-with-seed-phrase'
-import UniqueImage from './unique-image'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
@@ -14,7 +13,6 @@ export default class CreatePassword extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
-    isImportedKeyring: PropTypes.bool,
     onCreateNewAccount: PropTypes.func,
     onCreateNewAccountFromSeed: PropTypes.func,
   }
@@ -28,7 +26,7 @@ export default class CreatePassword extends PureComponent {
   }
 
   render () {
-    const { onCreateNewAccount, onCreateNewAccountFromSeed, isImportedKeyring } = this.props
+    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props
 
     return (
       <div className="first-time-flow__wrapper">
