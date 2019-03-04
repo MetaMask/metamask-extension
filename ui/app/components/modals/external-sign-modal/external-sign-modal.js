@@ -154,25 +154,6 @@ class ExternalSignModal extends PureComponent {
 
     return h(ExternalSignModalContainer, {hideModal: this.onCancel }, [
       h('div', {}, [
-        h(SendRowWrapper, {
-          label: this.context.t('signWith'),
-        }, [
-          h(Select, {
-            className: 'new-account-import-form__select',
-            name: 'import-type-select',
-            clearable: false,
-            value: signer || signers[0],
-            options: signers.map((signer) => {
-              return {
-                value: signer,
-                label: this.context.t(signer),
-              }
-            }),
-            onChange: (opt) => {
-              this.setState({ signer: opt.value })
-            },
-          }),
-        ]),
         h(QrView, {
           Qr: {
             data: qrTxData,
@@ -193,6 +174,26 @@ class ExternalSignModal extends PureComponent {
             qrScanner: qrScanner,
             scanSignatureQrCode: this.scanSignatureQrCode,
             scannerProps: {showNext: 'EXTERNAL_SIGN', nextProps: {signable: signable} },
+          }),
+        ]),
+        h(SendRowWrapper, {
+          label: this.context.t('signWith'),
+        }, [
+          h(Select, {
+            className: 'new-account-import-form__select',
+            name: 'import-type-select',
+            styles: { menuPortal: base => ({ ...base, zIndex: 19999 }) },
+            clearable: false,
+            value: signer || signers[0],
+            options: signers.map((signer) => {
+              return {
+                value: signer,
+                label: this.context.t(signer),
+              }
+            }),
+            onChange: (opt) => {
+              this.setState({ signer: opt.value })
+            },
           }),
         ]),
       ]),
