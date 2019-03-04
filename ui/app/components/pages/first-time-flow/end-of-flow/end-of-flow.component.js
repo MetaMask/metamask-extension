@@ -44,16 +44,16 @@ export default class EndOfFlowScreen extends PureComponent {
         <div className="first-time-flow__text-block end-of-flow__text-2">
           { t('endOfFlowMessage2') }
         </div>
-        <div className="first-time-flow__text-block end-of-flow__text-3">
+        <div className="end-of-flow__text-3">
           { '• ' + t('endOfFlowMessage3') }
         </div>
-        <div className="first-time-flow__text-block end-of-flow__text-4">
+        <div className="end-of-flow__text-3">
           { '• ' + t('endOfFlowMessage4') }
         </div>
-        <div className="first-time-flow__text-block end-of-flow__text-3">
-          { t('endOfFlowMessage5') }
+        <div className="end-of-flow__text-3">
+          { '• ' + t('endOfFlowMessage5') }
         </div>
-        <div className="first-time-flow__text-block end-of-flow__text-3">
+        <div className="first-time-flow__text-block end-of-flow__text-4">
           { '*' + t('endOfFlowMessage6') }
         </div>
         <Button
