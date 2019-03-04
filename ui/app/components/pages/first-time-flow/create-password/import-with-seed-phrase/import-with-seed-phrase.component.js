@@ -5,7 +5,7 @@ import TextField from '../../../../text-field'
 import Button from '../../../../button'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../../routes'
 
 export default class ImportWithSeedPhrase extends PureComponent {
@@ -112,7 +112,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           name: 'Import Complete',
         },
       })
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     } catch (error) {
       this.setState({ seedPhraseError: error.message })
     }

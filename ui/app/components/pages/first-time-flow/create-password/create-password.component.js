@@ -7,7 +7,7 @@ import UniqueImage from './unique-image'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../routes'
 
 export default class CreatePassword extends PureComponent {
@@ -23,7 +23,7 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     }
   }
 
@@ -46,15 +46,6 @@ export default class CreatePassword extends PureComponent {
           />
         </div>
         <Switch>
-          <Route exact
-            path={INITIALIZE_UNIQUE_IMAGE_ROUTE}
-            render={props => (
-              <UniqueImage
-                { ...props }
-                isImportedKeyring={isImportedKeyring}
-              />
-            )}
-          />
           <Route
             exact
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}

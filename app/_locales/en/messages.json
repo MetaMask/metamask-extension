@@ -473,12 +473,18 @@
     "message": "Save a backup in multiple places"
   },
   "endOfFlowMessage4": {
-    "message": "Never tell anyone"
+    "message": "Never share the phrase with anyone"
   },
   "endOfFlowMessage5": {
-    "message": "If you need to back your seed phrase again, you can find it in Settings -> Security."
+    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
+    "message": "If you need to back your up seed phrase again, you can find it in Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "If you ever have questions or see something fishing, email support@metamask.io"
+  },
+  "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your seedphrase. Learn more."
   },
   "ensNameNotFound": {

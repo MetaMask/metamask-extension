@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import Button from '../../../../button'
-import { INITIALIZE_UNIQUE_IMAGE_ROUTE, INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
+import {
+  INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
+} from '../../../../../routes'
 import { exportAsFile } from '../../../../../../app/util'
 import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
 
@@ -55,7 +58,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           name: 'Verify Complete',
         },
       })
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     } catch (error) {
       console.error(error.message)
     }
