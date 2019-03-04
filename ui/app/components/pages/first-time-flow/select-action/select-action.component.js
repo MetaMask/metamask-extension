@@ -70,6 +70,9 @@ export default class SelectAction extends PureComponent {
                   <div className="select-action__button-text-big">
                     { t('noAlreadyHaveSeed') }
                   </div>
+                  <div className="select-action__button-text-small">
+                    { t('importYourExisting') }
+                  </div>
                 </div>
                 <Button
                   type="primary"
@@ -86,6 +89,9 @@ export default class SelectAction extends PureComponent {
                   </div>
                   <div className="select-action__button-text-big">
                     { t('letsGoSetUp') }
+                  </div>
+                  <div className="select-action__button-text-small">
+                    { t('thisWillCreate') }
                   </div>
                 </div>
                 <Button

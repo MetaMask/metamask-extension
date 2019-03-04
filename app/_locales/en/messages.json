@@ -689,6 +689,9 @@
   "importWallet": {
     "message": "Import Wallet"
   },
+  "importYourExisting": {
+    "message": "Import your existing wallet using a 12 word seed phrase"
+  },
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1440,6 +1443,9 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "thisWillCreate": {
+    "message": "This will create a new wallet and seed phrase"
   },
   "tips": {
     "message": "Tips"
