@@ -13,6 +13,9 @@ export default class MetaMetricsOptInModal extends Component {
   }
 
   render () {
+    const { metricsEvent } = this.context
+    const { setParticipateInMetaMetrics, hideModal } = this.props
+
     return (
       <div className="metametrics-opt-in metametrics-opt-in-modal">
         <div className="metametrics-opt-in__main">
@@ -89,27 +92,35 @@ export default class MetaMetricsOptInModal extends Component {
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
               onCancel={() => {
-                this.props.setParticipateInMetaMetrics(false)
+                setParticipateInMetaMetrics(false)
                   .then(() => {
-                    this.context.metricsEvent({
+                    metricsEvent({
                       eventOpts: {
-                        category: 'MetaMetricsOptIn',
-                        action: 'userSelectsOptIn',
-                        name: 'userOptedOut',
+                        category: 'Onboarding',
+                        action: 'Metrics Option',
+                        name: 'Metrics Opt Out',
                       },
                       isOptIn: true,
                     }, {
                       excludeMetaMetricsId: true,
                     })
-                    this.props.hideModal()
+                    hideModal()
                   })
               }}
               cancelText={'No Thanks'}
               hideCancel={false}
               onSubmit={() => {
-                this.props.setParticipateInMetaMetrics(true)
+                setParticipateInMetaMetrics(true)
                   .then(() => {
-                    this.props.hideModal()
+                    metricsEvent({
+                      eventOpts: {
+                        category: 'Onboarding',
+                        action: 'Metrics Option',
+                        name: 'Metrics Opt In',
+                      },
+                      isOptIn: true,
+                    })
+                    hideModal()
                   })
               }}
               submitText={'I agree'}
