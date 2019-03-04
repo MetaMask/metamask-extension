@@ -3,8 +3,13 @@
     justify-content: center;
     margin-left: 3%;
     margin-right: 0%;
-    max-height: 600px;
+    max-height: 75vh;
+
+    @media screen and (max-width: 575px) {
+      max-height: 100vh;
+    }
   }
+
 
   .metametrics-opt-in__title {
     font-size: 38px;

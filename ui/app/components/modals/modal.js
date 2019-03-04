@@ -225,6 +225,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       ...modalContainerLaptopStyle,
+      top: '10%',
     },
     contentStyle: {
       borderRadius: '8px',
