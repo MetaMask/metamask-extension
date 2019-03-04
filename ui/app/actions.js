@@ -2647,11 +2647,12 @@ function setMetaMetricsSendCount (val) {
           return reject(err)
         }
 
+        dispatch({
+          type: actions.SET_METAMETRICS_SEND_COUNT,
+          value: val,
+        })
+
         resolve(val)
-      })
-      dispatch({
-        type: actions.SET_METAMETRICS_SEND_COUNT,
-        value: val,
       })
     })
   }

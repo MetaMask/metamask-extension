@@ -379,54 +379,35 @@ export default class ConfirmTransactionBase extends Component {
           origin,
         },
       })
-      if (onSubmit) {
-        Promise.resolve(onSubmit(txData))
-          .then(() => {
-            this.setState({
-              submitting: false,
-            })
-          })
-      } else {
-        sendTransaction(txData)
-          .then(() => {
-            clearConfirmTransaction()
-            this.setState({
-              submitting: false,
-            }, () => {
-              history.push(DEFAULT_ROUTE)
-            })
-          })
-          .catch(error => {
-            this.setState({
-              submitting: false,
-              submitError: error.message,
-            })
-          })
-      }
+
+      setMetaMetricsSendCount(metaMetricsSendCount + 1)
+        .then(() => {
+          if (onSubmit) {
+            Promise.resolve(onSubmit(txData))
+              .then(() => {
+                this.setState({
+                  submitting: false,
+                })
+              })
+          } else {
+            sendTransaction(txData)
+              .then(() => {
+                clearConfirmTransaction()
+                this.setState({
+                  submitting: false,
+                }, () => {
+                  history.push(DEFAULT_ROUTE)
+                })
+              })
+              .catch(error => {
+                this.setState({
+                  submitting: false,
+                  submitError: error.message,
+                })
+              })
+          }
+        })
     })
-
-    setMetaMetricsSendCount(metaMetricsSendCount + 1)
-
-    if (onSubmit) {
-      Promise.resolve(onSubmit(txData))
-        .then(() => {
-          this.setState({ submitting: false })
-        })
-        .catch(() => {
-          setMetaMetricsSendCount(metaMetricsSendCount - 1)
-        })
-    } else {
-      sendTransaction(txData)
-        .then(() => {
-          clearConfirmTransaction()
-          this.setState({ submitting: false })
-          history.push(DEFAULT_ROUTE)
-        })
-        .catch(error => {
-          setMetaMetricsSendCount(metaMetricsSendCount - 1)
-          this.setState({ submitting: false, submitError: error.message })
-        })
-    }
   }
 
   renderTitleComponent () {
