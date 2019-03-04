@@ -18,7 +18,7 @@ const typeHash = {
   raised: CLASSNAME_RAISED,
   'first-time': CLASSNAME_FIRST_TIME,
 }
-//
+
 export default class Button extends Component {
   static propTypes = {
     type: PropTypes.string,

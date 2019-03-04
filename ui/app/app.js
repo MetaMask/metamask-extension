@@ -88,8 +88,6 @@ class App extends Component {
       if (action === 'PUSH') {
         const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
         this.context.metricsEvent({}, {
-          // ...props,
-          // ...config,
           currentPath: '',
           pathname: locationObj.pathname,
           url,

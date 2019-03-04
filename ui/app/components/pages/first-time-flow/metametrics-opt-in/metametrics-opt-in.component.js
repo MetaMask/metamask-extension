@@ -96,7 +96,7 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={() => {
                 setParticipateInMetaMetrics(false)
                   .then(() => {
-                    metricsEvent({
+                    return metricsEvent({
                       eventOpts: {
                         category: 'Onboarding',
                         action: 'Metrics Option',
@@ -106,6 +106,8 @@ export default class MetaMetricsOptIn extends Component {
                     }, {
                       excludeMetaMetricsId: true,
                     })
+                  })
+                  .then(() => {
                     history.push(nextRoute)
                   })
               }}

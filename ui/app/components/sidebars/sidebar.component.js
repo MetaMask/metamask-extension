@@ -20,10 +20,13 @@ export default class Sidebar extends Component {
   renderOverlay () {
     const { onOverlayClose } = this.props
 
-    return <div className="sidebar-overlay" onClick={() => {
-      onOverlayClose && onOverlayClose()
-      this.props.hideSidebar()
-    }} />
+    return <div
+      className="sidebar-overlay"
+      onClick={() => {
+        onOverlayClose && onOverlayClose()
+        this.props.hideSidebar()
+      }
+    } />
   }
 
   renderSidebarContent () {

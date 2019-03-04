@@ -99,14 +99,14 @@ class PreferencesController {
   /**
    * Setter for the `participateInMetaMetrics` property
    *
-   * @param {boolean} val Whether or not the user wants to participate in MetaMetrics
+   * @param {boolean} bool Whether or not the user wants to participate in MetaMetrics
    * @returns {string|null} the string of the new metametrics id, or null if not set
    *
    */
   setParticipateInMetaMetrics (bool) {
     this.store.updateState({ participateInMetaMetrics: bool })
     let metaMetricsId = null
-    if (bool === true && !this.store.getState().metaMetricsId) {
+    if (bool && !this.store.getState().metaMetricsId) {
       metaMetricsId = bufferToHex(sha3(String(Date.now()) + String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER))))
       this.store.updateState({ metaMetricsId })
     } else if (bool === false) {

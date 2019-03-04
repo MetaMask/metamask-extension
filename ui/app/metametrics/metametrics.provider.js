@@ -20,6 +20,20 @@ import {
 } from './metametrics.util'
 
 class MetaMetricsProvider extends Component {
+  propTypes = {
+    network: PropTypes.string.isRequired,
+    environmentType: PropTypes.string.isRequired,
+    activeCurrency: PropTypes.string.isRequired,
+    accountType: PropTypes.string.isRequired,
+    metaMetricsSendCount: PropTypes.number.isRequired,
+    children: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+  }
+
+  childContextTypes = {
+    metricsEvent: PropTypes.func,
+  }
+
   constructor (props) {
     super(props)
 
@@ -42,10 +56,12 @@ class MetaMetricsProvider extends Component {
     const { previousPath, currentPath } = this.state
 
     return {
-      metricsEvent: (config, overrides = {}) => {
-        const isSendFlow = Boolean(config.eventOpts && config.eventOpts.name && config.eventOpts.name.match(/^send|^confirm/) || overrides.pathname && overrides.pathname.match(/send|confirm/))
+      metricsEvent: (config = {}, overrides = {}) => {
+        const { eventOpts = {} } = config
+        const { name = '' } = eventOpts
+        const { pathname: overRidePathName = '' } = overrides
+        const isSendFlow = Boolean(name.match(/^send|^confirm/) || overRidePathName.match(/send|confirm/))
 
-        // if (userPermission) {
         if (props.participateInMetaMetrics || config.isOptIn) {
           return sendMetaMetricsEvent({
             ...props,
@@ -64,20 +80,6 @@ class MetaMetricsProvider extends Component {
   render () {
     return this.props.children
   }
-}
-
-MetaMetricsProvider.propTypes = {
-  network: PropTypes.string,
-  environmentType: PropTypes.string,
-  activeCurrency: PropTypes.string,
-  accountType: PropTypes.string,
-  metaMetricsSendCount: PropTypes.number,
-  children: PropTypes.object,
-  history: PropTypes.object,
-}
-
-MetaMetricsProvider.childContextTypes = {
-  metricsEvent: PropTypes.func,
 }
 
 const mapStateToProps = state => {

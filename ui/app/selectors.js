@@ -1,4 +1,5 @@
 import {NETWORK_TYPES} from './constants/common'
+import { stripHexPrefix } from 'ethereumjs-util'
 
 const abi = require('human-standard-token-abi')
 import {
@@ -63,7 +64,7 @@ function getCurrentKeyring (state) {
     return null
   }
 
-  const simpleAddress = identity.address.substring(2).toLowerCase()
+  const simpleAddress = stripHexPrefix(identity.address).toLowerCase()
 
   const keyring = state.metamask.keyrings.find((kr) => {
     return kr.accounts.includes(simpleAddress) ||

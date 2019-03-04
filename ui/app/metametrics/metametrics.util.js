@@ -12,6 +12,7 @@ const METAMETRICS_CUSTOM_FUNCTION_TYPE = 'functionType'
 const METAMETRICS_CUSTOM_GAS_LIMIT_CHANGE = 'gasLimitChange'
 const METAMETRICS_CUSTOM_GAS_PRICE_CHANGE = 'gasPriceChange'
 const METAMETRICS_CUSTOM_RECIPIENT_KNOWN = 'recipientKnown'
+const METAMETRICS_CUSTOM_CONFIRM_SCREEN_ORIGIN = 'origin'
 
 const METAMETRICS_CUSTOM_NETWORK = 'network'
 const METAMETRICS_CUSTOM_ENVIRONMENT_TYPE = 'environmentType'
@@ -19,7 +20,6 @@ const METAMETRICS_CUSTOM_ACTIVE_CURRENCY = 'activeCurrency'
 const METAMETRICS_CUSTOM_ACCOUNT_TYPE = 'accountType'
 const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
 const METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS = 'numberOfAccounts'
-const METAMETRICS_CUSTOM_CONFIRM_SCREEN_ORIGIN = 'origin'
 
 const customVariableNameIdMap = {
   [METAMETRICS_CUSTOM_HAD_ERROR]: 1,
@@ -44,11 +44,6 @@ function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
   const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'MetaMask'
   return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(previousPath.replace(/chrome-extension:\/\/\w+/, 'http://www.metamask.io/metametrics'))}`
 }
-
-// function composeActionNameParamAddition (pathname, pageOpts) {
-//   const { section, component } = pageOpts
-//   return `&action_name=${pathname.match(/[a-z-]+/)[0]}${section ? '%2F' + section : ''}${component ? '%2F' + component : ''}`
-// }
 
 function composeCustomDimensionParamAddition (customDimensions) {
   const customDimensionParamStrings = Object.keys(customDimensions).reduce((acc, name) => {
@@ -101,7 +96,7 @@ function composeUrl (config, permissionPreferences = {}) {
 
   const cvar = customVariables && composeCustomVarParamAddition(customVariables) || ''
 
-  const action_name = '' // pageOpts && pathname && composeActionNameParamAddition(pathname, pageOpts) || ''
+  const action_name = ''
 
   const urlref = previousPath && composeUrlRefParamAddition(previousPath, confirmTransactionOrigin)
 

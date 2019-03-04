@@ -2620,17 +2620,18 @@ function setParticipateInMetaMetrics (val) {
     log.debug(`background.setParticipateInMetaMetrics`)
     return new Promise((resolve, reject) => {
       background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
-        console.log('!@# err, metaMetricsId', err, metaMetricsId)
+        log.debug(err)
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
+        dispatch({
+          type: actions.SET_PARTICIPATE_IN_METAMETRICS,
+          value: val,
+        })
+
         resolve([val, metaMetricsId])
-      })
-      dispatch({
-        type: actions.SET_PARTICIPATE_IN_METAMETRICS,
-        value: val,
       })
     })
   }
