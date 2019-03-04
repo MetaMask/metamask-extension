@@ -29,6 +29,7 @@ export default class FirstTimeFlow extends PureComponent {
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
     unlockAccount: PropTypes.func,
+    nextRoute: PropTypes.func,
   }
 
   state = {
@@ -73,12 +74,12 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   handleUnlock = async password => {
-    const { unlockAccount, history } = this.props
+    const { unlockAccount, history, nextRoute } = this.props
 
     try {
       const seedPhrase = await unlockAccount(password)
       this.setState({ seedPhrase }, () => {
-        history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+        history.push(nextRoute)
       })
     } catch (error) {
       throw new Error(error.message)
