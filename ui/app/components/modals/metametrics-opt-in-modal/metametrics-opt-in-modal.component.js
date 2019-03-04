@@ -36,8 +36,8 @@ export default class MetaMetricsOptInModal extends Component {
             <div className="metametrics-opt-in__title">Help Us Improve MetaMask</div>
             <div className="metametrics-opt-in__body">
               <div className="metametrics-opt-in__description">
-               MetaMask would like to gather some usage data to better understand how our users interact with the extension and inform futue development.
-               This data will be used to continually improve the usability and user experience of our product.
+               MetaMask would like to gather usage data to better understand how our users interact with the extension. This data
+               will be used to continually improve the usability and user experience of our product and the etheruem ecosystem.
               </div>
               <div className="metametrics-opt-in__description">
                MetaMask will..
