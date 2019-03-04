@@ -70,7 +70,7 @@ class NewAccountCreateForm extends Component {
                     name: 'Error',
                   },
                   customVariables: {
-                    error: e.message,
+                    errorMessage: e.message,
                   },
                 })
               })

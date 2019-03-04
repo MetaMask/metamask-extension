@@ -60,13 +60,9 @@ export default class UnlockPage extends Component {
       const newState = await forceUpdateMetamaskState()
       this.context.metricsEvent({
         eventOpts: {
-            category: 'Navigation',
-            action: 'Unlock',
-            name: 'Success',
-          },
-        customVariables: {
-          numberOfTokens: newState.tokens.length,
-          numberOfAccounts: Object.keys(newState.accounts).length,
+          category: 'Navigation',
+          action: 'Unlock',
+          name: 'Success',
         },
         isNewVisit: true,
       })
