@@ -166,6 +166,13 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <a
             onClick={e => {
               e.preventDefault()
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Import Seed Phrase',
+                  name: 'Go Back from Onboarding Import',
+                },
+              })
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"

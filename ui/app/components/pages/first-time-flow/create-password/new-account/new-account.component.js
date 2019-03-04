@@ -146,6 +146,13 @@ export default class NewAccount extends PureComponent {
           <a
             onClick={e => {
               e.preventDefault()
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Create Password',
+                  name: 'Go Back from Onboarding Create',
+                },
+              })
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"
