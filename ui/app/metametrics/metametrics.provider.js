@@ -20,7 +20,7 @@ import {
 } from './metametrics.util'
 
 class MetaMetricsProvider extends Component {
-  propTypes = {
+  static propTypes = {
     network: PropTypes.string.isRequired,
     environmentType: PropTypes.string.isRequired,
     activeCurrency: PropTypes.string.isRequired,
@@ -30,7 +30,7 @@ class MetaMetricsProvider extends Component {
     history: PropTypes.object.isRequired,
   }
 
-  childContextTypes = {
+  static childContextTypes = {
     metricsEvent: PropTypes.func,
   }
 
