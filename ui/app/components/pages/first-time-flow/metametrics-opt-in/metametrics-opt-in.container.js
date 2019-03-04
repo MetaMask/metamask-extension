@@ -13,7 +13,7 @@ const firstTimeFlowTypeNameMap = {
 }
 
 const mapStateToProps = ({ metamask }) => {
-  const { firstTimeFlowType } = metamask
+  const { firstTimeFlowType, participateInMetaMetrics } = metamask
 
   let nextRoute
   if (firstTimeFlowType === 'create') {
@@ -27,6 +27,7 @@ const mapStateToProps = ({ metamask }) => {
   return {
     nextRoute,
     firstTimeSelectionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],
+    participateInMetaMetrics,
   }
 }
 

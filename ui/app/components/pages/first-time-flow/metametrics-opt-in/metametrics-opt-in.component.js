@@ -8,6 +8,7 @@ export default class MetaMetricsOptIn extends Component {
     setParticipateInMetaMetrics: PropTypes.func,
     nextRoute: PropTypes.string,
     firstTimeSelectionMetaMetricsName: PropTypes.string,
+    participateInMetaMetrics: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -21,6 +22,7 @@ export default class MetaMetricsOptIn extends Component {
       history,
       setParticipateInMetaMetrics,
       firstTimeSelectionMetaMetricsName,
+      participateInMetaMetrics,
     } = this.props
 
     return (
@@ -96,49 +98,55 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={() => {
                 setParticipateInMetaMetrics(false)
                   .then(() => {
-                    return metricsEvent({
-                      eventOpts: {
-                        category: 'Onboarding',
-                        action: 'Metrics Option',
-                        name: 'Metrics Opt Out',
-                      },
-                      isOptIn: true,
-                    }, {
-                      excludeMetaMetricsId: true,
+                    if (participateInMetaMetrics === null) {
+                      return metricsEvent({
+                        eventOpts: {
+                          category: 'Onboarding',
+                          action: 'Metrics Option',
+                          name: 'Metrics Opt Out',
+                        },
+                        isOptIn: true,
+                      }, {
+                        excludeMetaMetricsId: true,
+                      })
+                    .then(() => {
+                      history.push(nextRoute)
                     })
-                  })
-                  .then(() => {
-                    history.push(nextRoute)
-                  })
+                  }
+                })
               }}
               cancelText={'No Thanks'}
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
                   .then(([participateStatus, metaMetricsId]) => {
-                    return metricsEvent({
-                      eventOpts: {
-                        category: 'Onboarding',
-                        action: 'Metrics Option',
-                        name: 'Metrics Opt In',
-                      },
-                      isOptIn: true,
-                    })
-                    .then(() => {
-                      return metricsEvent({
+                    const promise = participateInMetaMetrics === null
+                      ? metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
-                          action: 'Import or Create',
-                          name: firstTimeSelectionMetaMetricsName,
+                          action: 'Metrics Option',
+                          name: 'Metrics Opt In',
                         },
                         isOptIn: true,
-                        metaMetricsId,
                       })
-                    })
-                    .then(() => {
-                      history.push(nextRoute)
-                    })
-                  })
+                      : Promise.resolve()
+
+                    promise
+                      .then(() => {
+                        return metricsEvent({
+                          eventOpts: {
+                            category: 'Onboarding',
+                            action: 'Import or Create',
+                            name: firstTimeSelectionMetaMetricsName,
+                          },
+                          isOptIn: true,
+                          metaMetricsId,
+                        })
+                      })
+                      .then(() => {
+                        history.push(nextRoute)
+                      })
+                })
               }}
               submitText={'I agree'}
               submitButtonType={'confirm'}
