@@ -1,31 +1,18 @@
 import { connect } from 'react-redux'
 import MetaMetricsOptIn from './metametrics-opt-in.component'
 import { setParticipateInMetaMetrics } from '../../../../actions'
-import {
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../routes'
+import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
   'import': 'Selected Import Wallet',
 }
 
-const mapStateToProps = ({ metamask }) => {
-  const { firstTimeFlowType, participateInMetaMetrics } = metamask
-
-  let nextRoute
-  if (firstTimeFlowType === 'create') {
-    nextRoute = INITIALIZE_CREATE_PASSWORD_ROUTE
-  } else if (firstTimeFlowType === 'import') {
-    nextRoute = INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE
-  } else {
-    nextRoute = DEFAULT_ROUTE
-  }
+const mapStateToProps = (state) => {
+  const { firstTimeFlowType, participateInMetaMetrics } = state.metamask
 
   return {
-    nextRoute,
+    nextRoute: getFirstTimeFlowTypeRoute(state),
     firstTimeSelectionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],
     participateInMetaMetrics,
   }

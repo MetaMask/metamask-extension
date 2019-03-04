@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../../button'
 import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../../routes'
 
 export default class SelectAction extends PureComponent {
@@ -11,6 +10,7 @@ export default class SelectAction extends PureComponent {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
     setFirstTimeFlowType: PropTypes.func,
+    nextRoute: PropTypes.string,
   }
 
   static contextTypes = {
@@ -18,10 +18,10 @@ export default class SelectAction extends PureComponent {
   }
 
   componentDidMount () {
-    const { history, isInitialized } = this.props
+    const { history, isInitialized, nextRoute } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(nextRoute)
     }
   }
 

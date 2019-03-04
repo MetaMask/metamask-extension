@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../../button'
 import {
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../../routes'
@@ -109,7 +109,7 @@ export default class NewAccount extends PureComponent {
         },
       })
 
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(INITIALIZE_SEED_PHRASE_ROUTE)
     } catch (error) {
       this.setState({ passwordError: error.message })
     }
