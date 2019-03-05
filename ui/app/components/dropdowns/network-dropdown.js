@@ -254,14 +254,14 @@ NetworkDropdown.prototype.render = function () {
 }
 
 NetworkDropdown.prototype.handleClick = function (newProviderType) {
-  const { providerType, setProviderType } = this.props
+  const { provider: { type: providerType }, setProviderType } = this.props
   const { metricsEvent } = this.context
 
   metricsEvent({
     eventOpts: {
       category: 'Navigation',
       action: 'Home',
-      name: 'Opened Network Menu',
+      name: 'Switched Networks',
     },
     customVariables: {
       fromNetwork: providerType,
