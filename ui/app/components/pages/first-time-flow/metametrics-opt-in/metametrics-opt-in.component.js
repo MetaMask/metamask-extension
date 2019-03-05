@@ -98,21 +98,21 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={() => {
                 setParticipateInMetaMetrics(false)
                   .then(() => {
-                    if (participateInMetaMetrics === null) {
-                      return metricsEvent({
+                    const promise = participateInMetaMetrics !== false
+                      ? metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
                           action: 'Metrics Option',
                           name: 'Metrics Opt Out',
                         },
                         isOptIn: true,
-                      }, {
-                        excludeMetaMetricsId: true,
                       })
-                    .then(() => {
-                      history.push(nextRoute)
-                    })
-                  }
+                      : Promise.resolve()
+
+                    promise
+                      .then(() => {
+                        history.push(nextRoute)
+                      })
                 })
               }}
               cancelText={'No Thanks'}
@@ -120,7 +120,7 @@ export default class MetaMetricsOptIn extends Component {
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
                   .then(([participateStatus, metaMetricsId]) => {
-                    const promise = participateInMetaMetrics === null
+                    const promise = participateInMetaMetrics !== true
                       ? metricsEvent({
                         eventOpts: {
                           category: 'Onboarding',
