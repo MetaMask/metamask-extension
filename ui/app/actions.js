@@ -95,6 +95,9 @@ var actions = {
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
+  importNewContract: importNewContract,
+  disableContractAccount: disableContractAccount,
+  enableContractAccount: enableContractAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -128,6 +131,7 @@ var actions = {
   setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
+  SHOW_CONTRACT_ACCOUNT_DETAIL: 'SHOW_CONTRACT_ACCOUNT_DETAIL',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
@@ -727,6 +731,45 @@ function importNewAccount (strategy, args) {
       })
     }
     return newState
+  }
+}
+
+function importNewContract (strategy, args) {  
+  log.debug(`background.addNewAccount`, strategy, args)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.importContractWithType(strategy, args[0], (err, contractAddress) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        console.log('[actions.js] result', contractAddress)  
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(contractAddress)
+      })
+    })
+  }
+}
+
+// to do: as the address is typed in, detect ownership from existing accounts
+function lookupOwners (args) {
+  console.log('[actions.js] in lookupOwners', args)
+}
+
+// gnosis
+function disableContractAccount () {
+  return async (dispatch) => {
+    await pify(background.disableContractAccount).call(background)
+  }
+}
+
+// gnosis
+function enableContractAccount () {
+  return async (dispatch) => {
+    await pify(background.enableContractAccount).call(background)
   }
 }
 

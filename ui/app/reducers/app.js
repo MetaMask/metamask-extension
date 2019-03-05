@@ -8,6 +8,10 @@ module.exports = reduceApp
 
 function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
+
+  // gnosis
+  log.debug('[app.js]----------- state', state)
+
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
   const hasUnconfActions = checkUnconfActions(state)
@@ -394,6 +398,22 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_ACCOUNT_DETAIL:
+      return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        currentView: {
+          name: 'accountDetail',
+          context: action.value,
+        },
+        accountDetail: {
+          subview: 'transactions',
+          accountExport: 'none',
+          privateKey: '',
+        },
+        transForward: false,
+      })
+
+      // gnosis 
+      case actions.SHOW_CONTRACT_ACCOUNT_DETAIL:
       return extend(appState, {
         forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         currentView: {

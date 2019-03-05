@@ -13,6 +13,8 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token'
 const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
+const CONTRACT_ACCOUNT_ROUTE ='/new-account/contract'
+const MANAGE_CONTRACTS_ROUTE ='/manage-contracts'
 const SEND_ROUTE = '/send'
 const NOTICE_ROUTE = '/notice'
 const WELCOME_ROUTE = '/welcome'
@@ -55,6 +57,8 @@ module.exports = {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONTRACT_ACCOUNT_ROUTE,
+  MANAGE_CONTRACTS_ROUTE,
   SEND_ROUTE,
   NOTICE_ROUTE,
   WELCOME_ROUTE,
