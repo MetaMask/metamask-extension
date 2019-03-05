@@ -869,9 +869,9 @@ describe('MetaMask', function () {
       const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        await driver.wait(until.elementTextMatches(balance, /^(75|76).*\s*ETH.*$/), 10000)
+        await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/), 10000)
         const tokenAmount = await balance.getText()
-        assert.ok(/^(75|76).*\s*ETH.*$/.test(tokenAmount))
+        assert.ok(/^87.*\s*ETH.*$/.test(tokenAmount))
         await delay(regularDelayMs)
       }
     })

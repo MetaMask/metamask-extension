@@ -111,8 +111,8 @@ describe('MetaMask', function () {
         await delay(largeDelayMs)
       })
 
-      it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-        const optOutButton = await findElement(driver, By.css('.btn-default'))
+      it('clicks the "I agree" option on the metametrics opt-in screen', async () => {
+        const optOutButton = await findElement(driver, By.css('.btn-confirm'))
         optOutButton.click()
         await delay(largeDelayMs)
       })
