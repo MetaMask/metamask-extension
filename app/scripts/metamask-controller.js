@@ -63,6 +63,7 @@ const {
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 const AccountsController = require('./controllers/accounts-controller')
+const ControlledKeyring = require('eth-controlled-keyring')
 
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -180,8 +181,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
-    // ControlledKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, ControlledKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,

@@ -365,7 +365,7 @@ class PreferencesController {
 
   /**
   * Sets the selectedContractAddress
-  * @param {*} _address 
+  * @param {*} _address
   */
   setSelectedContractAddress (_address) {
     const address = normalizeAddress(_address)
@@ -391,7 +391,7 @@ class PreferencesController {
 
   /**
    * updates the useContractAccount flag for use in the UI and transaction modification
-   * @param {*} bool 
+   * @param {*} bool
    */
   useContractAccount (bool) {
     this.store.updateState({ useContractAccount: bool})
