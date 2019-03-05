@@ -9,6 +9,8 @@ const classnames = require('classnames')
 const NewAccountCreateForm = require('./new-account')
 const NewAccountImportForm = require('./import-account')
 const ConnectHardwareForm = require('./connect-hardware')
+const ContractAccountImportForm = require('./contract-account')
+
 const {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
@@ -54,6 +56,19 @@ class CreateAccountPage extends Component {
         },
         this.context.t('connect')
       ),
+      h(
+        'div.new-account__tabs__tab',
+        {
+          className: classnames('new-account__tabs__tab', {
+            'new-account__tabs__selected': matchPath(location.pathname, {
+              path: CONTRACT_ACCOUNT_ROUTE,
+              exact: true,
+            }),
+          }),
+          onClick: () => history.push(CONTRACT_ACCOUNT_ROUTE),
+        },
+        this.context.t('contract')
+      ),
     ])
   }
 
@@ -79,6 +94,11 @@ class CreateAccountPage extends Component {
             exact: true,
             path: CONNECT_HARDWARE_ROUTE,
             component: ConnectHardwareForm,
+          }),
+          h(Route, {
+            exact: true,
+            path: CONTRACT_ACCOUNT_ROUTE,
+            component: ContractAccountImportForm,
           }),
         ]),
       ]),
