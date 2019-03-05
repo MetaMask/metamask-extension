@@ -157,7 +157,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEditGas () {
-    const { onEditGas, showCustomizeGasModal, methodData = {}, txData: { origin } } = this.props
+    const { onEditGas, showCustomizeGasModal, action, txData: { origin }, methodData = {} } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -167,7 +167,7 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: methodData.name || 'notFound',
+        functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
         origin,
       },
     })
@@ -290,7 +290,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEdit () {
-    const { txData, tokenData, tokenProps, onEdit, methodData = {}, txData: { origin } } = this.props
+    const { txData, tokenData, tokenProps, onEdit, action, txData: { origin }, methodData = {} } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -300,7 +300,7 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: methodData.name || 'notFound',
+        functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
         origin,
       },
     })
@@ -329,7 +329,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCancel () {
     const { metricsEvent } = this.context
-    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, methodData = {}, txData: { origin } } = this.props
+    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, action, txData: { origin }, methodData = {} } = this.props
 
     if (onCancel) {
       metricsEvent({
@@ -340,7 +340,7 @@ export default class ConfirmTransactionBase extends Component {
         },
         customVariables: {
           recipientKnown: null,
-          functionType: methodData.name || 'notFound',
+          functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
           origin,
         },
       })
@@ -356,7 +356,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleSubmit () {
     const { metricsEvent } = this.context
-    const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, methodData = {}, metaMetricsSendCount = 0, setMetaMetricsSendCount } = this.props
+    const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, action, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
     const { submitting } = this.state
 
     if (submitting) {
@@ -375,7 +375,7 @@ export default class ConfirmTransactionBase extends Component {
         },
         customVariables: {
           recipientKnown: null,
-          functionType: methodData.name || 'notFound',
+          functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
           origin,
         },
       })
