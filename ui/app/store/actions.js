@@ -682,7 +682,7 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function importNewContract (type, args) {  
+function importNewContract (type, args) {
   log.debug(`background.addNewAccount`, type, args)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
