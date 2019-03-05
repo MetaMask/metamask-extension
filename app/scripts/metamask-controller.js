@@ -55,6 +55,8 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const AccountsController = require('./controllers/accounts-controller')
+const ControlledKeyring = require('eth-controlled-keyring')
 
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -158,7 +160,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, ControlledKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -181,6 +183,15 @@ module.exports = class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
+    // accounts controller
+    this.accountsController = new AccountsController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      provider: this.provider,
+      keyring: this.keyringController,
+      initState: initState.AccountsController,
+    })
+
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
@@ -192,6 +203,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       getGasPrice: this.getGasPrice.bind(this),
+      accountsController: this.accountsController,
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
@@ -252,6 +264,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      AccountsController: this.accountsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -273,6 +286,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      AccountsController: this.accountsController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -404,6 +418,11 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
+
+      // contract management
+      importContractWithType: nodeify(this.importContractWithType, this),
+      disableContractAccount: nodeify(this.disableContractAccount, this),
+      enableContractAccount: nodeify(this.enableContractAccount, this),
 
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
@@ -939,6 +958,76 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
     await this.preferencesController.setSelectedAddress(accounts[0])
+  }
+
+   /**
+   * Imports a user supplied Contract Address
+   *
+   * @param  {string} strategy - A unique identifier for a contract type.
+   * @param  {any} args - The contract address.
+   * @param  {Function} cb - A callback function called with a state update on success.
+   */
+  async importContractWithType (strategy, args) {
+    let currentSelectedAccount = await this.preferencesController.getSelectedAddress()
+
+    // don't really need the strategy here (Contract), but do need the contract address and the type
+    // based on the currently selected address..
+    // adds an account with type contract to the accounts controller
+    let newContract = await this.accountsController.importContractAddress('gnosis-safe', args, currentSelectedAccount)
+    
+    // if import == "clear" or "remove" (for testing)
+    if (!newContract) {
+      await this.preferencesController.useContractAccount(false)
+      
+      return
+    }
+
+    await this.preferencesController.useContractAccount(true)
+    
+    // set the state
+    await this.accountsController.getContractData()
+    
+    await this.preferencesController.setSelectedContractAddress(newContract.address)
+
+
+    const oldAccounts = await this.keyringController.getAccounts()
+   
+    console.log('[import contract] old accounts', oldAccounts)
+
+    // make this accept the contract type as well 
+    // it will need to be versioned for supporting different 
+    // contract implementations
+    const controlledKeyring = await this.keyringController.addNewKeyring('Controlled', newContract.address)
+
+    const newAccounts = await controlledKeyring.getAccounts()
+    console.log('[import contract] new accounts after add keyring', newAccounts)
+    
+    const allAccounts = await this.keyringController.getAccounts()
+    console.log('[metamask controller] all accounts after adding keyring', allAccounts)
+
+    // to do: redo naming here based on contract type
+    this.preferencesController.setAccountLabel(newContract.address, 'test contract 1')
+    this.preferencesController.setSelectedAddress(newContract.address)
+
+    //return an identities object?
+    return newContract.address
+  }
+
+
+  /**
+   * 
+   */
+  async disableContractAccount () {
+    console.log('[metamask controller] dont use contract account')
+    await this.preferencesController.useContractAccount(false)
+  }
+
+  /**
+   * 
+   */
+  async enableContractAccount () {
+    console.log('[metamask controller] enable contract account')
+    await this.preferencesController.useContractAccount(true)
   }
 
   // ---------------------------------------------------------------------------
