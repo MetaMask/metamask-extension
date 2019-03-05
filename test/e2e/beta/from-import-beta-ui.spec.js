@@ -136,13 +136,6 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
 
-    it('clicks through the security warning screen', async () => {
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
     it('clicks through the success screen', async () => {
       await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
       const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))

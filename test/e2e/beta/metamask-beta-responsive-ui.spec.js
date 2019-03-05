@@ -132,13 +132,6 @@ describe('MetaMask', function () {
         await delay(regularDelayMs)
       })
 
-      it('clicks through the security warning screen', async () => {
-        await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
-        const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-        await nextScreen.click()
-        await delay(regularDelayMs)
-      })
-
       let seedPhrase
 
       it('reveals the seed phrase', async () => {
