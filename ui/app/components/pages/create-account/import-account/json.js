@@ -104,18 +104,27 @@ class JsonImportSubview extends Component {
     const passwordInput = document.getElementById('json-password-box')
     const password = passwordInput.value
 
-    if (!password) {
-      const message = this.context.t('needImportPassword')
-      return displayWarning(message)
-    }
-
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(DEFAULT_ROUTE)
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Accounts',
+              action: 'Import Account',
+              name: 'Imported Account with JSON',
+            },
+          })
           displayWarning(null)
         } else {
           displayWarning('Error importing account.')
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Accounts',
+              action: 'Import Account',
+              name: 'Error importing JSON',
+            },
+          })
           setSelectedAddress(firstAddress)
         }
       })
@@ -152,6 +161,7 @@ const mapDispatchToProps = dispatch => {
 
 JsonImportSubview.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(

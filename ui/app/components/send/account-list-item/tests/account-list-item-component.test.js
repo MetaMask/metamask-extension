@@ -126,9 +126,23 @@ describe('AccountListItem Component', function () {
       )
     })
 
+    it('should only render one CurrencyDisplay if showFiat is false', () => {
+      wrapper.setProps({ showFiat: false, displayBalance: true })
+      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 1)
+      assert.deepEqual(
+        wrapper.find(UserPreferencedCurrencyDisplay).at(0).props(),
+        {
+          type: 'PRIMARY',
+          value: 'mockBalance',
+          hideTitle: true,
+        }
+      )
+    })
+
     it('should not render a CurrencyDisplay if displayBalance is false', () => {
       wrapper.setProps({ displayBalance: false })
       assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 0)
     })
+
   })
 })

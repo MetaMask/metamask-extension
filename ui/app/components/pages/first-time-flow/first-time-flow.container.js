@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import FirstTimeFlow from './first-time-flow.component'
+import { getFirstTimeFlowTypeRoute } from './first-time-flow.selectors'
 import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
@@ -7,13 +8,13 @@ import {
 } from '../../../actions'
 
 const mapStateToProps = state => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked, noActiveNotices } } = state
+  const { metamask: { completedOnboarding, isInitialized, isUnlocked } } = state
 
   return {
     completedOnboarding,
     isInitialized,
     isUnlocked,
-    noActiveNotices,
+    nextRoute: getFirstTimeFlowTypeRoute(state),
   }
 }
 

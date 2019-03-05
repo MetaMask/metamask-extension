@@ -60,6 +60,7 @@ function NetworkDropdown () {
 
 NetworkDropdown.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(
@@ -120,7 +121,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'main',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('mainnet'),
+        onClick: () => this.handleClick('mainnet'),
         style: { ...dropdownMenuItemStyle, borderColor: '#038789' },
       },
       [
@@ -142,7 +143,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'ropsten',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('ropsten'),
+        onClick: () => this.handleClick('ropsten'),
         style: dropdownMenuItemStyle,
       },
       [
@@ -164,7 +165,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'kovan',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('kovan'),
+        onClick: () => this.handleClick('kovan'),
         style: dropdownMenuItemStyle,
       },
       [
@@ -186,7 +187,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'rinkeby',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('rinkeby'),
+        onClick: () => this.handleClick('rinkeby'),
         style: dropdownMenuItemStyle,
       },
       [
@@ -208,7 +209,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('localhost'),
+        onClick: () => this.handleClick('localhost'),
         style: dropdownMenuItemStyle,
       },
       [
@@ -252,6 +253,23 @@ NetworkDropdown.prototype.render = function () {
   ])
 }
 
+NetworkDropdown.prototype.handleClick = function (newProviderType) {
+  const { provider: { type: providerType }, setProviderType } = this.props
+  const { metricsEvent } = this.context
+
+  metricsEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Home',
+      name: 'Switched Networks',
+    },
+    customVariables: {
+      fromNetwork: providerType,
+      toNetwork: newProviderType,
+    },
+  })
+  setProviderType(newProviderType)
+}
 
 NetworkDropdown.prototype.getNetworkName = function () {
   const { provider } = this.props

@@ -5,6 +5,7 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
+const createStandardProvider = require('./createStandardProvider').default
 
 let isEnabled = false
 let warned = false
@@ -15,12 +16,6 @@ let isUnlockedHandle
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
-
-console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
-'stopped exposing user accounts to dapps if "privacy mode" is enabled on ' +
-'November 2nd, 2018. Dapps should now call provider.enable() in order to view and use ' +
-'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
-'example code.')
 
 /**
  * Adds a postMessage listener for a specific message type
@@ -70,7 +65,10 @@ inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
     providerHandle = ({ data: { error, selectedAddress } }) => {
       if (typeof error !== 'undefined') {
-        reject(error)
+        reject({
+          message: error,
+          code: 4001,
+        })
       } else {
         window.removeEventListener('message', providerHandle)
         setTimeout(() => {
@@ -155,7 +153,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = proxiedInpageProvider
+window.ethereum = createStandardProvider(proxiedInpageProvider)
 
 // detect eth_requestAccounts and pipe to enable for now
 function detectAccountRequest (method) {

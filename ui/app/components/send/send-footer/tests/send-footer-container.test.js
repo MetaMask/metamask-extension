@@ -14,7 +14,9 @@ const actionSpies = {
 }
 const utilsStubs = {
   addressIsNew: sinon.stub().returns(true),
-  constructTxParams: sinon.stub().returns('mockConstructedTxParams'),
+  constructTxParams: sinon.stub().returns({
+    value: 'mockAmount',
+  }),
   constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
 }
 
@@ -40,6 +42,7 @@ proxyquire('../send-footer.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendHexData: (s) => `mockHexData:${s}`,
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
+    getSendErrors: (s) => `mockSendErrors:${s}`,
   },
   './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
@@ -64,6 +67,7 @@ describe('send-footer container', () => {
         toAccounts: 'mockToAccounts:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
         unapprovedTxs: 'mockUnapprovedTxs:mockState',
+        sendErrors: 'mockSendErrors:mockState',
       })
     })
 
@@ -115,7 +119,7 @@ describe('send-footer container', () => {
         )
         assert.deepEqual(
           actionSpies.signTokenTx.getCall(0).args,
-          [ '0xabc', 'mockTo', 'mockAmount', 'mockConstructedTxParams' ]
+          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ]
         )
       })
 
@@ -143,7 +147,7 @@ describe('send-footer container', () => {
         )
         assert.deepEqual(
           actionSpies.signTx.getCall(0).args,
-          [ 'mockConstructedTxParams' ]
+          [ { value: 'mockAmount' } ]
         )
       })
     })

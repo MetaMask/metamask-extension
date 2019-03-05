@@ -12,6 +12,7 @@ import Button from '../../../button'
 
 PrivateKeyImportView.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(
@@ -102,10 +103,24 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   importNewAccount('Private Key', [ privateKey ])
     .then(({ selectedAddress }) => {
       if (selectedAddress) {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Import Account',
+            name: 'Imported Account with Private Key',
+          },
+        })
         history.push(DEFAULT_ROUTE)
         displayWarning(null)
       } else {
         displayWarning('Error importing account.')
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Import Account',
+            name: 'Error importing with Private Key',
+          },
+        })
         setSelectedAddress(firstAddress)
       }
     })

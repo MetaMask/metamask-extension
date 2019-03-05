@@ -10,15 +10,12 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  NOTICE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
 } from '../../../routes'
 
 export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    noActiveNotices: PropTypes.bool,
-    lostAccounts: PropTypes.array,
     forgottenPassword: PropTypes.bool,
     seedWords: PropTypes.string,
     suggestedTokens: PropTypes.object,
@@ -45,17 +42,10 @@ export default class Home extends PureComponent {
 
   render () {
     const {
-      noActiveNotices,
-      lostAccounts,
       forgottenPassword,
       seedWords,
       providerRequests,
     } = this.props
-
-    // notices
-    if (!noActiveNotices || (lostAccounts && lostAccounts.length > 0)) {
-      return <Redirect to={{ pathname: NOTICE_ROUTE }} />
-    }
 
     // seed words
     if (seedWords) {

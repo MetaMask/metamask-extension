@@ -78,22 +78,22 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             labelKey: 'slow',
-            feeInPrimaryCurrency: '$0.01',
-            feeInSecondaryCurrency: '0.0000525 ETH',
+            feeInSecondaryCurrency: '$0.01',
+            feeInPrimaryCurrency: '0.0000525 ETH',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x9502f900',
           },
           {
             labelKey: 'average',
-            feeInPrimaryCurrency: '$0.03',
-            feeInSecondaryCurrency: '0.000105 ETH',
+            feeInSecondaryCurrency: '$0.03',
+            feeInPrimaryCurrency: '0.000105 ETH',
             timeEstimate: '~3 min 18 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             labelKey: 'fast',
-            feeInPrimaryCurrency: '$0.05',
-            feeInSecondaryCurrency: '0.00021 ETH',
+            feeInSecondaryCurrency: '$0.05',
+            feeInPrimaryCurrency: '0.00021 ETH',
             timeEstimate: '~30 sec',
             priceInHexWei: '0x2540be400',
           },
@@ -102,6 +102,12 @@ describe('custom-gas selectors', () => {
           metamask: {
             conversionRate: 255.71,
             currentCurrency: 'usd',
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
+            },
           },
           gas: {
             basicEstimates: {
@@ -120,22 +126,22 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             labelKey: 'slow',
-            feeInPrimaryCurrency: '$0.27',
-            feeInSecondaryCurrency: '0.000105 ETH',
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.000105 ETH',
             timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             labelKey: 'average',
-            feeInPrimaryCurrency: '$0.54',
-            feeInSecondaryCurrency: '0.00021 ETH',
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.00021 ETH',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
           {
             labelKey: 'fast',
-            feeInPrimaryCurrency: '$1.07',
-            feeInSecondaryCurrency: '0.00042 ETH',
+            feeInSecondaryCurrency: '$1.07',
+            feeInPrimaryCurrency: '0.00042 ETH',
             timeEstimate: '~1 min',
             priceInHexWei: '0x4a817c800',
           },
@@ -146,6 +152,165 @@ describe('custom-gas selectors', () => {
             currentCurrency: 'usd',
             send: {
               gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 5,
+              safeLowWait: 13.2,
+              fast: 10,
+              fastWait: 6.6,
+              fastest: 20,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            labelKey: 'slow',
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.000105 ETH',
+            timeEstimate: '~13 min 12 sec',
+            priceInHexWei: '0x12a05f200',
+          },
+          {
+            labelKey: 'average',
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            timeEstimate: '~6 min 36 sec',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            labelKey: 'fast',
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.00042 ETH',
+            timeEstimate: '~1 min',
+            priceInHexWei: '0x4a817c800',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 5,
+              safeLowWait: 13.2,
+              fast: 10,
+              fastWait: 6.6,
+              fastest: 20,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            labelKey: 'slow',
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.000105 ETH',
+            timeEstimate: '~13 min 12 sec',
+            priceInHexWei: '0x12a05f200',
+          },
+          {
+            labelKey: 'average',
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            timeEstimate: '~6 min 36 sec',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            labelKey: 'fast',
+            feeInSecondaryCurrency: '$1.07',
+            feeInPrimaryCurrency: '0.00042 ETH',
+            timeEstimate: '~1 min',
+            priceInHexWei: '0x4a817c800',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 5,
+              safeLowWait: 13.2,
+              fast: 10,
+              fastWait: 6.6,
+              fastest: 20,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            labelKey: 'slow',
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.000105 ETH',
+            timeEstimate: '~13 min 12 sec',
+            priceInHexWei: '0x12a05f200',
+          },
+          {
+            labelKey: 'average',
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            timeEstimate: '~6 min 36 sec',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            labelKey: 'fast',
+            feeInSecondaryCurrency: '$1.07',
+            feeInPrimaryCurrency: '0.00042 ETH',
+            timeEstimate: '~1 min',
+            priceInHexWei: '0x4a817c800',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'mainnet',
             },
           },
           gas: {
@@ -203,6 +368,12 @@ describe('custom-gas selectors', () => {
             send: {
               gasLimit: '0x5208',
             },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
+            },
           },
           gas: {
             basicEstimates: {
@@ -244,6 +415,156 @@ describe('custom-gas selectors', () => {
             currentCurrency: 'usd',
             send: {
               gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$2.68',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$2.68',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'mainnet',
             },
           },
           gas: {

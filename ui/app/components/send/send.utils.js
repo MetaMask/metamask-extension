@@ -234,10 +234,14 @@ async function estimateGas ({
     if (to) {
       paramsForGasEstimate.to = to
     }
+
+    if (!value || value === '0') {
+      paramsForGasEstimate.value = '0xff'
+    }
   }
 
   // if not, fall back to block gasLimit
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit || '0x5208', 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',

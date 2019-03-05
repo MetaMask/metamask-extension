@@ -92,6 +92,15 @@
   "advanced": {
     "message": "Advanced"
   },
+  "agreeTermsOfService": {
+    "message": "I agree to the Terms of Service"
+  },
+  "allDone": {
+    "message": "All Done"
+  },
+  "alreadyHaveSeedPhrase": {
+    "message": "No, I already have a seed phrase"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -239,6 +248,9 @@
   "confirmTransaction": {
     "message": "Confirm Transaction"
   },
+  "congratulations": {
+    "message": "Congratulations"
+  },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
@@ -325,6 +337,9 @@
   },
   "createAccount": {
     "message": "Create Account"
+  },
+  "createAWallet": {
+    "message": "Create a Wallet"
   },
   "createDen": {
     "message": "Create"
@@ -447,6 +462,30 @@
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
+  },
+  "endOfFlowMessage1": {
+    "message": "You passed the test - keep your seedphrase safe, it's your responsibility!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips on storing it safely"
+  },
+  "endOfFlowMessage3": {
+    "message": "Save a backup in multiple places."
+  },
+  "endOfFlowMessage4": {
+    "message": "Never share the phrase with anyone."
+  },
+  "endOfFlowMessage5": {
+    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
+  },
+  "endOfFlowMessage6": {
+    "message": "If you need to back your up seed phrase again, you can find it in Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask cannot recover your seedphrase. Learn more."
   },
   "ensNameNotFound": {
     "message": "ENS name not found"
@@ -581,9 +620,15 @@
   "getHelp": {
     "message": "Get Help."
   },
+  "getStarted": {
+    "message": "Get Started"
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "We’re happy to see you."
   },
   "hardware": {
     "message": "hardware"
@@ -646,6 +691,12 @@
   },
   "importDen": {
     "message": "Import Existing DEN"
+  },
+  "importWallet": {
+    "message": "Import Wallet"
+  },
+  "importYourExisting": {
+    "message": "Import your existing wallet using a 12 word seed phrase"
   },
   "imported": {
     "message": "Imported",
@@ -731,6 +782,9 @@
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
   },
+  "letsGoSetUp": {
+    "message": "Yes, let’s get set up!"
+  },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
   },
@@ -777,7 +831,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Connecting you to Ethereum and the Decentralized Web."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
@@ -793,6 +847,12 @@
   },
   "minutesShorthand": {
     "message": "Min"
+  },
+  "mobileSyncTitle": {
+    "message": "Sync accounts with mobile"
+  },
+  "mobileSyncText": {
+    "message": "Please enter your password to confirm it's you!"
   },
   "myAccounts": {
     "message": "My Accounts"
@@ -841,6 +901,21 @@
   },
   "newNetwork": {
     "message": "New Network"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "No, I already have a seed phrase"
+  },
+  "protectYourKeys": {
+    "message": "Protect Your Keys!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "rpcURL": {
     "message": "New RPC URL"
@@ -933,6 +1008,12 @@
   },
   "originalTotal": {
     "message": "Original Total"
+  },
+  "participateInMetaMetrics": {
+    "message": "Participate in MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
   "password": {
     "message": "Password"
@@ -1231,6 +1312,12 @@
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
+  "showFiatConversionInTestnets": {
+    "message": "Show Conversion in Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Select this to show fiat conversion in when you are on Testnets"
+  },
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
@@ -1333,6 +1420,27 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be between 0 and 12 characters."
   },
+  "syncWithMobile": {
+    "message": "Sync with mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync with mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "If you just open the MetaMask Mobile app for the first time, just follow the steps in your phone."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan this code with your MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Make sure nobody else is looking at your screen when you scan this code"
+  },
+  "syncWithMobileComplete": {
+    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
+  },
   "takesTooLong": {
     "message": "Taking too long?"
   },
@@ -1341,6 +1449,9 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "thisWillCreate": {
+    "message": "This will create a new wallet and seed phrase"
   },
   "tips": {
     "message": "Tips"
@@ -1575,6 +1686,9 @@
   },
   "yourUniqueAccountImageDescription2": {
     "message": "You’ll see this image everytime you need to confirm a transaction."
+  },
+  "yourUniqueAccountImageDescription3": {
+    "message": "MetaMask will never ask for your seed phrase!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message":"Zero gas price on speed up"

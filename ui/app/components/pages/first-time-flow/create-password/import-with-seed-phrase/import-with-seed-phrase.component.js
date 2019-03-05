@@ -3,15 +3,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../text-field'
 import Button from '../../../../button'
-import Breadcrumbs from '../../../../breadcrumbs'
 import {
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../../routes'
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -26,6 +26,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     seedPhraseError: '',
     passwordError: '',
     confirmPasswordError: '',
+    termsChecked: false,
   }
 
   parseSeedPhrase = (seedPhrase) => {
@@ -104,7 +105,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     try {
       await onSubmit(password, seedPhrase)
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Import Seed Phrase',
+          name: 'Import Complete',
+        },
+      })
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     } catch (error) {
       this.setState({ seedPhraseError: error.message })
     }
@@ -131,20 +139,41 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
+  toggleTermsCheck = () => {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Import Seed Phrase',
+        name: 'Check ToS',
+      },
+    })
+
+    this.setState((prevState) => ({
+        termsChecked: !prevState.termsChecked,
+    }))
+  }
+
   render () {
     const { t } = this.context
-    const { seedPhraseError, passwordError, confirmPasswordError } = this.state
+    const { seedPhraseError, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <form
         className="first-time-flow__form"
         onSubmit={this.handleImport}
       >
-        <div>
+        <div className="first-time-flow__create-back">
           <a
             onClick={e => {
               e.preventDefault()
-              this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Import Seed Phrase',
+                  name: 'Go Back from Onboarding Import',
+                },
+              })
+              this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"
           >
@@ -197,19 +226,30 @@ export default class ImportWithSeedPhrase extends PureComponent {
           margin="normal"
           largeLabel
         />
+        <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+          <div className="first-time-flow__checkbox">
+            {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
+          </div>
+          <span className="first-time-flow__checkbox-label">
+            I have read and agree to the <a
+              href="https://metamask.io/terms.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="first-time-flow__link-text">
+                { 'Terms of Use' }
+              </span>
+            </a>
+          </span>
+        </div>
         <Button
-          type="first-time"
+          type="confirm"
           className="first-time-flow__button"
-          disabled={!this.isValid()}
+          disabled={!this.isValid() || !termsChecked}
           onClick={this.handleImport}
         >
           { t('import') }
         </Button>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={2}
-          currentIndex={0}
-        />
       </form>
     )
   }

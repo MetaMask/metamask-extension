@@ -13,6 +13,7 @@ const mapStateToProps = state => {
     provider,
     selectedAddress,
     isUnlocked,
+    isAccountMenuOpen,
   } = metamask
 
   return {
@@ -21,6 +22,7 @@ const mapStateToProps = state => {
     provider,
     selectedAddress,
     isUnlocked,
+    isAccountMenuOpen,
   }
 }
 

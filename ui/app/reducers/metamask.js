@@ -36,7 +36,7 @@ function reduceMetamask (state, action) {
       tokenBalance: '0x0',
       from: '',
       to: '',
-      amount: '0x0',
+      amount: '0',
       memo: '',
       errors: {},
       maxModeOn: false,
@@ -53,9 +53,13 @@ function reduceMetamask (state, action) {
     currentLocale: '',
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
+      showFiatInTestnets: false,
     },
+    firstTimeFlowType: null,
     completedOnboarding: false,
     knownMethodData: {},
+    participateInMetaMetrics: null,
+    metaMetricsSendCount: 0,
   }, state.metamask)
 
   switch (action.type) {
@@ -337,6 +341,16 @@ function reduceMetamask (state, action) {
         coinOptions,
       })
 
+    case actions.SET_PARTICIPATE_IN_METAMETRICS:
+      return extend(metamaskState, {
+        participateInMetaMetrics: action.value,
+      })
+
+    case actions.SET_METAMETRICS_SEND_COUNT:
+      return extend(metamaskState, {
+        metaMetricsSendCount: action.value,
+      })
+
     case actions.SET_USE_BLOCKIE:
       return extend(metamaskState, {
         useBlockie: action.value,
@@ -375,7 +389,10 @@ function reduceMetamask (state, action) {
 
     case actions.UPDATE_PREFERENCES: {
       return extend(metamaskState, {
-        preferences: { ...action.payload },
+        preferences: {
+          ...metamaskState.preferences,
+          ...action.payload,
+        },
       })
     }
 
@@ -388,6 +405,12 @@ function reduceMetamask (state, action) {
     case actions.COMPLETE_UI_MIGRATION: {
       return extend(metamaskState, {
         completedUiMigration: true,
+      })
+    }
+
+    case actions.SET_FIRST_TIME_FLOW_TYPE: {
+      return extend(metamaskState, {
+        firstTimeFlowType: action.value,
       })
     }
 

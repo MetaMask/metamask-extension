@@ -304,6 +304,7 @@ createTasksForBuildJsMascara({ taskPrefix: 'dev:mascara:js', devMode: true })
 function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
 
+
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
     sourceMapDir: '../sourcemaps',
@@ -512,6 +513,8 @@ function generateBundler (opts, performBundle) {
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
     NODE_ENV: opts.devMode ? 'development' : 'production',
+    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
+    PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
   }), {
     global: true,
   })

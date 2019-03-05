@@ -56,6 +56,7 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
+
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -86,7 +87,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // network store
-    this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController = new NetworkController(initState.NetworkController, this.platform)
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -133,6 +134,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
+      network: this.networkController,
     })
 
     // start and stop polling for balances based on activeControllerConnections
@@ -383,6 +385,9 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
+      setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
+      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -408,6 +413,9 @@ module.exports = class MetamaskController extends EventEmitter {
       forgetDevice: nodeify(this.forgetDevice, this),
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
+
+      // mobile
+      fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
 
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
@@ -583,6 +591,60 @@ module.exports = class MetamaskController extends EventEmitter {
         })
       }
     })
+  }
+
+  /**
+   * Collects all the information that we want to share
+   * with the mobile client for syncing purposes
+   * @returns Promise<Object> Parts of the state that we want to syncx
+   */
+   async fetchInfoToSync () {
+    // Preferences
+    const {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    } = this.preferencesController.store.getState()
+
+    const preferences = {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    }
+
+    // Accounts
+    const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const hdAccounts = await hdKeyring.getAccounts()
+    const accounts = {
+      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
+      simpleKeyPair: [],
+      ledger: [],
+      trezor: [],
+    }
+
+    // transactions
+
+    let transactions = this.txController.store.getState().transactions
+    // delete tx for other accounts that we're not importing
+    transactions = transactions.filter(tx => {
+      const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
+      return (
+        accounts.hd.includes(checksummedTxFrom)
+      )
+    })
+
+    return {
+      accounts,
+      preferences,
+      transactions,
+      network: this.networkController.store.getState(),
+    }
   }
 
   /*
@@ -1564,6 +1626,44 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(err)
     }
   }
+
+  /**
+   * Sets whether or not the user will have usage data tracked with MetaMetrics
+   * @param {boolean} bool - True for users that wish to opt-in, false for users that wish to remain out.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setParticipateInMetaMetrics (bool, cb) {
+    try {
+      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
+      cb(null, metaMetricsId)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  setMetaMetricsSendCount (val, cb) {
+    try {
+      this.preferencesController.setMetaMetricsSendCount(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets the type of first time flow the user wishes to follow: create or import
+   * @param {String} type - Indicates the type of first time flow the user wishes to follow
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setFirstTimeFlowType (type, cb) {
+    try {
+      this.preferencesController.setFirstTimeFlowType(type)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
 
   /**
    * A method for setting a user's current locale, affecting the language rendered.

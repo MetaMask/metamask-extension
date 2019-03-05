@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import GasModalCard from '../../customize-gas-modal/gas-modal-card'
 import { MIN_GAS_PRICE_GWEI } from '../../send/send.constants'
 import Button from '../../button'
@@ -14,6 +15,7 @@ import {
 export default class CustomizeGas extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -73,9 +75,9 @@ export default class CustomizeGas extends Component {
   }
 
   render () {
-    const { t } = this.context
+    const { t, metricsEvent } = this.context
     const { hideModal } = this.props
-    const { gasPrice, gasLimit } = this.state
+    const { gasPrice, gasLimit, originalGasPrice, originalGasLimit } = this.state
     const { valid, errorKey } = this.validate()
 
     return (
@@ -128,7 +130,24 @@ export default class CustomizeGas extends Component {
               <Button
                 type="primary"
                 className="customize-gas__save"
-                onClick={() => this.handleSave()}
+                onClick={() => {
+                  metricsEvent({
+                    eventOpts: {
+                      category: 'Activation',
+                      action: 'userCloses',
+                      name: 'closeCustomizeGas',
+                    },
+                    pageOpts: {
+                      section: 'customizeGasModal',
+                      component: 'customizeGasSaveButton',
+                    },
+                    customVariables: {
+                      gasPriceChange: (new BigNumber(gasPrice)).minus(new BigNumber(originalGasPrice)).toString(10),
+                      gasLimitChange: (new BigNumber(gasLimit)).minus(new BigNumber(originalGasLimit)).toString(10),
+                    },
+                  })
+                  this.handleSave()
+                }}
                 style={{ marginRight: '10px' }}
                 disabled={!valid}
               >

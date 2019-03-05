@@ -26,11 +26,15 @@
     min-width: 0;
 
     @media screen and (min-width: $break-large) {
-      margin-left: 48px;
+      margin-left: 81px;
     }
 
     @media screen and (max-width: $break-small) {
       margin-top: 24px;
+    }
+
+    .first-time-flow__text-block {
+      color: #5A5A5A;
     }
   }
 }

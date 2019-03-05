@@ -8,7 +8,7 @@ import {
   clearConfirmTransaction,
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
-import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal } from '../../../actions'
+import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount } from '../../../actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown } from '../../../selectors'
+import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -29,6 +29,8 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
+  const { showFiatInTestnets } = preferencesSelector(state)
+  const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask, gas } = state
   const {
     ethTransactionAmount,
@@ -64,6 +66,7 @@ const mapStateToProps = (state, props) => {
     assetImages,
     network,
     unapprovedTxs,
+    metaMetricsSendCount,
   } = metamask
   const assetImage = assetImages[txParamsToAddress]
 
@@ -135,6 +138,9 @@ const mapStateToProps = (state, props) => {
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
     insufficientBalance,
+    hideSubtitle: (!isMainnet && !showFiatInTestnets),
+    hideFiatConversion: (!isMainnet && !showFiatInTestnets),
+    metaMetricsSendCount,
   }
 }
 
@@ -157,6 +163,7 @@ const mapDispatchToProps = dispatch => {
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: txData => dispatch(updateAndApproveTx(txData)),
+    setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
   }
 }
 

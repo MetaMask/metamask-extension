@@ -372,6 +372,7 @@ export function setTransactionToConfirm (transactionId) {
         try {
           dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
+
           dispatch(updateMethodData(methodData))
         } catch (error) {
           dispatch(updateMethodData({}))

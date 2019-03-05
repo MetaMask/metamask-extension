@@ -15,6 +15,7 @@ const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
 const Sidebar = require('./components/sidebars').default
+const { WALLET_VIEW_SIDEBAR } = require('./components/sidebars/sidebar.constants')
 
 // other views
 import Home from './components/pages/home'
@@ -25,6 +26,7 @@ import Lock from './components/pages/lock'
 import UiMigrationAnnouncement from './components/ui-migration-annoucement'
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
+const MobileSyncPage = require('./components/pages/mobile-sync')
 const AddTokenPage = require('./components/pages/add-token')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
@@ -55,6 +57,7 @@ import {
   UNLOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
+  MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
@@ -80,6 +83,20 @@ class App extends Component {
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
+
+    this.props.history.listen((locationObj, action) => {
+      if (action === 'PUSH') {
+        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
+        this.context.metricsEvent({}, {
+          currentPath: '',
+          pathname: locationObj.pathname,
+          url,
+          pageOpts: {
+            hideDimensions: true,
+          },
+        })
+      }
+    })
   }
 
   renderRoutes () {
@@ -90,6 +107,7 @@ class App extends Component {
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
         <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
+        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         <Authenticated path={NOTICE_ROUTE} component={NoticeScreen} exact />
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
@@ -156,6 +174,18 @@ class App extends Component {
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
+    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
+      ? () => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Wallet Sidebar',
+            name: 'Closed Sidebare Via Overlay',
+          },
+        })
+      }
+      : null
+
     const {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
@@ -195,6 +225,7 @@ class App extends Component {
           transitionName={sidebarTransitionName}
           type={sidebarType}
           sidebarProps={sidebar.props}
+          onOverlayClose={sidebarOnOverlayClose}
         />
         <NetworkDropdown
           provider={provider}
@@ -403,6 +434,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 App.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(

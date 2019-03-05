@@ -1,1 +1,1 @@
-export { default } from './seed-phrase.container'
+export { default } from './seed-phrase.component'

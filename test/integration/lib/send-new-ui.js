@@ -32,6 +32,8 @@ async function runSendFlowTest (assert, done) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
     } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
+    } else if (args[0].match(/chromeextensionmm/)) {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
     return window.fetch(...args)
   }

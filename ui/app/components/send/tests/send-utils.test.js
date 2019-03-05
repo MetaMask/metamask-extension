@@ -316,6 +316,7 @@ describe('send utils', () => {
       from: 'mockAddress',
       gas: '0x64x0.95',
       to: '0xisContract',
+      value: '0xff',
     }
 
     beforeEach(() => {
@@ -373,7 +374,7 @@ describe('send utils', () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        { gasPrice: undefined, value: undefined, data, from: baseExpectedCall.from, gas: baseExpectedCall.gas},
+        { gasPrice: undefined, value: '0xff', data, from: baseExpectedCall.from, gas: baseExpectedCall.gas},
       )
       assert.equal(result, '0xabc16')
     })

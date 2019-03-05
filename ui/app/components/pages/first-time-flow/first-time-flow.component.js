@@ -3,17 +3,21 @@ import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import FirstTimeFlowSwitch from './first-time-flow-switch'
 import Welcome from './welcome'
+import SelectAction from './select-action'
+import EndOfFlow from './end-of-flow'
 import Unlock from '../unlock-page'
 import CreatePassword from './create-password'
-import Notices from './notices'
 import SeedPhrase from './seed-phrase'
+import MetaMetricsOptInScreen from './metametrics-opt-in'
 import {
   DEFAULT_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -24,8 +28,8 @@ export default class FirstTimeFlow extends PureComponent {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
-    noActiveNotices: PropTypes.bool,
     unlockAccount: PropTypes.func,
+    nextRoute: PropTypes.func,
   }
 
   state = {
@@ -70,14 +74,12 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   handleUnlock = async password => {
-    const { unlockAccount, history, noActiveNotices } = this.props
+    const { unlockAccount, history, nextRoute } = this.props
 
     try {
       const seedPhrase = await unlockAccount(password)
       this.setState({ seedPhrase }, () => {
-        noActiveNotices
-          ? history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-          : history.push(INITIALIZE_NOTICE_ROUTE)
+        history.push(nextRoute)
       })
     } catch (error) {
       throw new Error(error.message)
@@ -100,24 +102,19 @@ export default class FirstTimeFlow extends PureComponent {
             )}
           />
           <Route
-            exact
-            path={INITIALIZE_NOTICE_ROUTE}
-            render={props => (
-              <Notices
-                { ...props }
-                isImportedKeyring={isImportedKeyring}
-              />
-            )}
-          />
-          <Route
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
             render={props => (
               <CreatePassword
                 { ...props }
+                isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
               />
             )}
+          />
+          <Route
+            path={INITIALIZE_SELECT_ACTION_ROUTE}
+            component={SelectAction}
           />
           <Route
             path={INITIALIZE_UNLOCK_ROUTE}
@@ -130,8 +127,18 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             exact
+            path={INITIALIZE_END_OF_FLOW_ROUTE}
+            component={EndOfFlow}
+          />
+          <Route
+            exact
             path={INITIALIZE_WELCOME_ROUTE}
             component={Welcome}
+          />
+          <Route
+            exact
+            path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}
+            component={MetaMetricsOptInScreen}
           />
           <Route
             exact

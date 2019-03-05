@@ -3,12 +3,10 @@ import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import NewAccount from './new-account'
 import ImportWithSeedPhrase from './import-with-seed-phrase'
-import UniqueImage from './unique-image'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../routes'
 
 export default class CreatePassword extends PureComponent {
@@ -23,7 +21,7 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     }
   }
 
@@ -32,8 +30,20 @@ export default class CreatePassword extends PureComponent {
 
     return (
       <div className="first-time-flow__wrapper">
+        <div className="app-header__logo-container">
+          <img
+            className="app-header__metafox-logo app-header__metafox-logo--horizontal"
+            src="/images/logo/metamask-logo-horizontal.svg"
+            height={30}
+          />
+          <img
+            className="app-header__metafox-logo app-header__metafox-logo--icon"
+            src="/images/logo/metamask-fox.svg"
+            height={42}
+            width={42}
+          />
+        </div>
         <Switch>
-          <Route exact path={INITIALIZE_UNIQUE_IMAGE_ROUTE} component={UniqueImage} />
           <Route
             exact
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}

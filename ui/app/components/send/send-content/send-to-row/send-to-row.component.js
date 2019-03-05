@@ -27,6 +27,7 @@ export default class SendToRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   handleToChange (to, nickname = '', toError, toWarning, network) {
@@ -62,7 +63,16 @@ export default class SendToRow extends Component {
         warningType={'to'}
         >
         <EnsInput
-          scanQrCode={_ => this.props.scanQrCode()}
+          scanQrCode={_ => {
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Used QR scanner',
+              },
+            })
+            this.props.scanQrCode()
+          }}
           accounts={toAccounts}
           closeDropdown={() => closeToDropdown()}
           dropdownOpen={toDropdownOpen}

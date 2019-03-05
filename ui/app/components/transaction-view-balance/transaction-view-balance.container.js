@@ -9,10 +9,14 @@ import {
   getSelectedTokenAssetImage,
   getMetaMaskAccounts,
   isBalanceCached,
+  preferencesSelector,
+  getIsMainnet,
 } from '../../selectors'
 import { showModal } from '../../actions'
 
 const mapStateToProps = state => {
+  const { showFiatInTestnets } = preferencesSelector(state)
+  const isMainnet = getIsMainnet(state)
   const selectedAddress = getSelectedAddress(state)
   const { metamask: { network } } = state
   const accounts = getMetaMaskAccounts(state)
@@ -26,6 +30,7 @@ const mapStateToProps = state => {
     nativeCurrency: getNativeCurrency(state),
     assetImage: getSelectedTokenAssetImage(state),
     balanceIsCached: isBalanceCached(state),
+    showFiat: (isMainnet || !!showFiatInTestnets),
   }
 }
 

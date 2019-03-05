@@ -1,0 +1,88 @@
+.select-action {
+  .app-header__logo-container {
+    width: 742px;
+    margin-top: 3%;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__body-header {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 39px;
+    font-size: 28px;
+    text-align: center;
+    margin-top: 65px;
+    color: black;
+  }
+
+  &__select-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-top: 40px;
+  }
+
+  &__select-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 388px;
+    height: 278px;
+
+    border: 1px solid #D8D8D8;
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin-left: 22px;
+
+    .first-time-flow__button {
+      max-width: 221px;
+      height: 44px;
+    }
+  }
+
+  &__button-symbol {
+    color: #C4C4C4;
+    margin-top: 41px;
+  }
+
+  &__button-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+        align-items: center;
+    height: 144px;
+  }
+
+  &__button-text-big {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 28px;
+    font-size: 20px;
+    color: #000000;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  &__button-text-small {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    font-size: 14px;
+    color: #7A7A7B;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  button {
+    font-weight: 500;
+    width: 221px;
+  }
+}

@@ -12,6 +12,7 @@ import Tooltip from '../tooltip-v2'
 export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -22,10 +23,15 @@ export default class TransactionViewBalance extends PureComponent {
     balance: PropTypes.string,
     assetImage: PropTypes.string,
     balanceIsCached: PropTypes.bool,
+    showFiat: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    showFiat: true,
   }
 
   renderBalance () {
-    const { selectedToken, balance, balanceIsCached } = this.props
+    const { selectedToken, balance, balanceIsCached, showFiat } = this.props
 
     return selectedToken
       ? (
@@ -53,23 +59,27 @@ export default class TransactionViewBalance extends PureComponent {
                     balanceIsCached ? <span className="transaction-view-balance__cached-star">*</span> : null
                   }
                 </div>
-                <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    'transaction-view-balance__cached-secondary-balance': balanceIsCached,
-                    'transaction-view-balance__secondary-balance': !balanceIsCached,
-                  })}
-                  value={balance}
-                  type={SECONDARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle={true}
-                />
+                {
+                  showFiat && (
+                    <UserPreferencedCurrencyDisplay
+                      className={classnames({
+                        'transaction-view-balance__cached-secondary-balance': balanceIsCached,
+                        'transaction-view-balance__secondary-balance': !balanceIsCached,
+                      })}
+                      value={balance}
+                      type={SECONDARY}
+                      ethNumberOfDecimals={4}
+                      hideTitle={true}
+                    />
+                  )
+                }
             </div>
           </Tooltip>
       )
   }
 
   renderButtons () {
-    const { t } = this.context
+    const { t, metricsEvent } = this.context
     const { selectedToken, showDepositModal, history } = this.props
 
     return (
@@ -79,7 +89,16 @@ export default class TransactionViewBalance extends PureComponent {
             <Button
               type="primary"
               className="transaction-view-balance__button"
-              onClick={() => showDepositModal()}
+              onClick={() => {
+                metricsEvent({
+                  eventOpts: {
+                    category: 'Navigation',
+                    action: 'Home',
+                    name: 'Clicked Deposit',
+                  },
+                })
+                showDepositModal()
+              }}
             >
               { t('deposit') }
             </Button>
@@ -88,7 +107,16 @@ export default class TransactionViewBalance extends PureComponent {
         <Button
           type="primary"
           className="transaction-view-balance__button"
-          onClick={() => history.push(SEND_ROUTE)}
+          onClick={() => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Home',
+                name: 'Clicked Send',
+              },
+            })
+            history.push(SEND_ROUTE)
+          }}
         >
           { t('send') }
         </Button>

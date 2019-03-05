@@ -1,7 +1,7 @@
 # MetaMask Browser Extension
 [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master) [![Stories in Ready](https://badge.waffle.io/MetaMask/metamask-extension.png?label=in%20progress&title=waffle.io)](https://waffle.io/MetaMask/metamask-extension)
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/).  For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
+You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
 For up to the minute news, follow our [Twitter](https://twitter.com/metamask_io) or [Medium](https://medium.com/metamask) pages.
 
@@ -65,11 +65,9 @@ To write tests that will be run in the browser using QUnit, add your test files 
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
-- [How to develop a live-reloading UI](./docs/ui-dev-mode.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
 - [The MetaMask Team](./docs/team.md)
-- [How to develop an in-browser mocked UI](./docs/ui-mock-mode.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
 - [How to manage notices that appear when the app starts up](./docs/notices.md)

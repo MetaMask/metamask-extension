@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -38,6 +39,10 @@ function TokenCell () {
   this.state = {
     tokenMenuOpen: false,
   }
+}
+
+TokenCell.contextTypes = {
+  metricsEvent: PropTypes.func,
 }
 
 TokenCell.prototype.render = function () {
@@ -88,6 +93,13 @@ TokenCell.prototype.render = function () {
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
         setSelectedToken(address)
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Token Menu',
+            name: 'Clicked Token',
+          },
+        })
         selectedTokenAddress !== address && sidebarOpen && hideSidebar()
       },
     }, [

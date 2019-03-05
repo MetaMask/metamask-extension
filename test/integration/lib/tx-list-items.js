@@ -3,6 +3,7 @@ const {
   queryAsync,
   findAsync,
 } = require('../../lib/util')
+const fetchMockResponses = require('../../e2e/beta/fetch-mocks.js')
 
 QUnit.module('tx list items')
 
@@ -24,6 +25,13 @@ async function runTxListItemsTest (assert, done) {
   const selectState = await queryAsync($, 'select')
   selectState.val('tx list items')
   reactTriggerChange(selectState[0])
+
+  global.fetch = (...args) => {
+    if (args[0].match(/chromeextensionmm/)) {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
+    }
+    return window.fetch(...args)
+  }
 
   const metamaskLogo = await queryAsync($, '.app-header__logo-container')
   assert.ok(metamaskLogo[0], 'metamask logo present')

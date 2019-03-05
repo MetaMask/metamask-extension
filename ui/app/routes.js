@@ -4,6 +4,7 @@ const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
 const INFO_ROUTE = '/settings/info'
 const REVEAL_SEED_ROUTE = '/seed'
+const MOBILE_SYNC_ROUTE = '/mobile-sync'
 const CONFIRM_SEED_ROUTE = '/confirm-seed'
 const RESTORE_VAULT_ROUTE = '/restore-vault'
 const ADD_TOKEN_ROUTE = '/add-token'
@@ -24,8 +25,11 @@ const INITIALIZE_IMPORT_ACCOUNT_ROUTE = '/initialize/create-password/import-acco
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
 const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/create-password/unique-image'
 const INITIALIZE_NOTICE_ROUTE = '/initialize/notice'
+const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
+const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow'
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm'
+const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in'
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
 const CONFIRM_SEND_ETHER_PATH = '/send-ether'
@@ -43,6 +47,7 @@ module.exports = {
   SETTINGS_ROUTE,
   INFO_ROUTE,
   REVEAL_SEED_ROUTE,
+  MOBILE_SYNC_ROUTE,
   CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
@@ -62,8 +67,10 @@ module.exports = {
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_NOTICE_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,
@@ -72,4 +79,5 @@ module.exports = {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 }

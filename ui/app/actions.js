@@ -63,6 +63,7 @@ var actions = {
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
+  fetchInfoToSync,
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
   markPasswordForgotten,
@@ -299,6 +300,11 @@ var actions = {
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
 
+  SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
+  SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
+  setParticipateInMetaMetrics,
+  setMetaMetricsSendCount,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -316,6 +322,7 @@ var actions = {
   updatePreferences,
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
+  setShowFiatConversionOnTestnetsPreference,
 
   // Migration of users to new UI
   setCompletedUiMigration,
@@ -346,6 +353,9 @@ var actions = {
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
+
+  setFirstTimeFlowType,
+  SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
 }
 
 module.exports = actions
@@ -632,6 +642,21 @@ function requestRevealSeedWords (password) {
       dispatch(actions.displayWarning(error.message))
       throw new Error(error.message)
     }
+  }
+}
+
+function fetchInfoToSync () {
+  return dispatch => {
+    log.debug(`background.fetchInfoToSync`)
+    return new Promise((resolve, reject) => {
+      background.fetchInfoToSync((err, result) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve(result)
+      })
+    })
   }
 }
 
@@ -2454,6 +2479,10 @@ function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
 
+function setShowFiatConversionOnTestnetsPreference (value) {
+  return setPreference('showFiatInTestnets', value)
+}
+
 function setCompletedOnboarding () {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
@@ -2586,6 +2615,49 @@ function toggleAccountMenu () {
   }
 }
 
+function setParticipateInMetaMetrics (val) {
+  return (dispatch) => {
+    log.debug(`background.setParticipateInMetaMetrics`)
+    return new Promise((resolve, reject) => {
+      background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
+        log.debug(err)
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch({
+          type: actions.SET_PARTICIPATE_IN_METAMETRICS,
+          value: val,
+        })
+
+        resolve([val, metaMetricsId])
+      })
+    })
+  }
+}
+
+function setMetaMetricsSendCount (val) {
+  return (dispatch) => {
+    log.debug(`background.setMetaMetricsSendCount`)
+    return new Promise((resolve, reject) => {
+      background.setMetaMetricsSendCount(val, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch({
+          type: actions.SET_METAMETRICS_SEND_COUNT,
+          value: val,
+        })
+
+        resolve(val)
+      })
+    })
+  }
+}
+
 function setUseBlockie (val) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -2670,5 +2742,20 @@ function rejectProviderRequest (tabID) {
 function clearApprovedOrigins () {
   return (dispatch) => {
     background.clearApprovedOrigins()
+  }
+}
+
+function setFirstTimeFlowType (type) {
+  return (dispatch) => {
+    log.debug(`background.setFirstTimeFlowType`)
+    background.setFirstTimeFlowType(type, (err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_FIRST_TIME_FLOW_TYPE,
+      value: type,
+    })
   }
 }

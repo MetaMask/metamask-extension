@@ -1,0 +1,53 @@
+.end-of-flow {
+  color: black;
+  font-family: Roboto;
+  font-style: normal;
+
+  .app-header__logo-container {
+    width: 742px;
+    margin-top: 3%;
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+    }
+  }
+
+  &__text-1, &__text-3 {
+    font-weight: normal;
+    font-size: 16px;
+    margin-top: 18px;
+  }
+
+  &__text-2 {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 26px;
+  }
+
+  &__text-3  {
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 16px;
+      font-size: .875rem;
+    }
+  }
+
+  &__text-4 {
+    margin-top: 26px;
+  }
+
+  button {
+    width: 207px;
+  }
+
+  &__start-over-button {
+    width: 744px;
+  }
+
+  &__emoji {
+    font-size: 80px;
+    margin-top: 70px;
+  }
+}

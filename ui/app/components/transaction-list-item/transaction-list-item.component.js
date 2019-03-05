@@ -24,6 +24,7 @@ export default class TransactionListItem extends PureComponent {
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    showFiat: PropTypes.bool,
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
@@ -31,6 +32,14 @@ export default class TransactionListItem extends PureComponent {
     value: PropTypes.string,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
+  }
+
+  static defaultProps = {
+    showFiat: true,
+  }
+
+  static contextTypes = {
+    metricsEvent: PropTypes.func,
   }
 
   state = {
@@ -48,6 +57,16 @@ export default class TransactionListItem extends PureComponent {
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
       return
+    }
+
+    if (!showTransactionDetails) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Home',
+          name: 'Expand Transaction',
+        },
+      })
     }
 
     this.setState({ showTransactionDetails: !showTransactionDetails })
@@ -115,9 +134,9 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderSecondaryCurrency () {
-    const { token, value } = this.props
+    const { token, value, showFiat } = this.props
 
-    return token
+    return token || !showFiat
       ? null
       : (
         <UserPreferencedCurrencyDisplay

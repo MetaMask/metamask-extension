@@ -1,3 +1,6 @@
+import {NETWORK_TYPES} from './constants/common'
+import { stripHexPrefix } from 'ethereumjs-util'
+
 const abi = require('human-standard-token-abi')
 import {
   transactionsSelector,
@@ -37,6 +40,13 @@ const selectors = {
   getNetworkIdentifier,
   isBalanceCached,
   getAdvancedInlineGasShown,
+  getIsMainnet,
+  getCurrentNetworkId,
+  getSelectedAsset,
+  getCurrentKeyring,
+  getAccountType,
+  getNumberOfAccounts,
+  getNumberOfTokens,
 }
 
 module.exports = selectors
@@ -45,6 +55,46 @@ function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
 
   return nickname || rpcTarget || type
+}
+
+function getCurrentKeyring (state) {
+  const identity = getSelectedIdentity(state)
+
+  if (!identity) {
+    return null
+  }
+
+  const simpleAddress = stripHexPrefix(identity.address).toLowerCase()
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.includes(simpleAddress) ||
+      kr.accounts.includes(identity.address)
+  })
+
+  return keyring
+}
+
+function getAccountType (state) {
+  const currentKeyring = getCurrentKeyring(state)
+  const type = currentKeyring && currentKeyring.type
+
+  switch (type) {
+    case 'Trezor Hardware':
+    case 'Ledger Hardware':
+      return 'hardware'
+    case 'Simple Key Pair':
+      return 'imported'
+    default:
+      return 'default'
+  }
+}
+
+function getSelectedAsset (state) {
+  return getSelectedToken(state) || 'ETH'
+}
+
+function getCurrentNetworkId (state) {
+  return state.metamask.network
 }
 
 function getSelectedAddress (state) {
@@ -58,6 +108,15 @@ function getSelectedIdentity (state) {
   const identities = state.metamask.identities
 
   return identities[selectedAddress]
+}
+
+function getNumberOfAccounts (state) {
+  return Object.keys(state.metamask.accounts).length
+}
+
+function getNumberOfTokens (state) {
+  const tokens = state.metamask.tokens
+  return tokens ? tokens.length : 0
 }
 
 function getMetaMaskAccounts (state) {
@@ -226,6 +285,11 @@ function getTotalUnapprovedCount ({ metamask }) {
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
+}
+
+function getIsMainnet (state) {
+  const networkType = getNetworkIdentifier(state)
+  return networkType === NETWORK_TYPES.MAINNET
 }
 
 function preferencesSelector ({ metamask }) {
