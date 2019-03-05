@@ -58,6 +58,8 @@ const selectors = {
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
+  getSelectedContractAddress,
+  getUseContractAccount,
 }
 
 module.exports = selectors
@@ -169,6 +171,18 @@ function getSelectedAccount (state) {
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
+}
+
+// gnosis
+function getSelectedContractAddress (state) {
+  const selectedContractAddress = state.metamask.selectedContractAddress
+  return selectedContractAddress
+}
+
+// gnosis
+function getUseContractAccount (state) {
+  const useContractAccount = state.metamask.useContractAccount
+  return useContractAccount
 }
 
 function getSelectedToken (state) {
