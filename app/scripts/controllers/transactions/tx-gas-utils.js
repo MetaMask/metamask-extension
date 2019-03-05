@@ -87,6 +87,18 @@ class TxGasUtil {
           throw err
         }
 
+        // removing this for gnosis testing
+        // to do: figure out a way around the above block as well
+        // if (txParams.data) {
+        //   const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+        //   // set error key so ui can display localized error message
+        //   err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+
+        //   // set the response on the error so that we can see in logs what the actual response was
+        //   err.getCodeResponse = code
+        //   throw err
+        // }
+
         // This is a standard ether simple send, gas requirement is exactly 21k
         txParams.gas = SIMPLE_GAS_COST
         // prevents buffer addition

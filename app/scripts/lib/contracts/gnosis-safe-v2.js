@@ -88,7 +88,6 @@ class GnosisSafe {
         console.log('[gnosis safe v2] nonce [0] ', nonce[0])
 
         let to = originalTxParams.to
-
         let value = originalTxParams.value
 
         // why was the original tx params data stripped?
@@ -157,7 +156,9 @@ class GnosisSafe {
         let controllingKeyring = await this.keyring.getKeyringForAccount(this.controllingAccount)
         let signedMessage = await controllingKeyring.signMessage(this.controllingAccount, txHash[0])
 
+        // set the original tx values
         originalTxParams.to = this.instance.address
+        originalTxParams.from = this.controllingAccount
         originalTxParams.value = '0'
 
         try {
