@@ -13,6 +13,7 @@ import {
   showModal,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
+  setParticipateInMetaMetrics,
 } from '../../../../actions'
 import { preferencesSelector } from '../../../../selectors'
 
@@ -31,6 +32,7 @@ const mapStateToProps = state => {
     } = {},
     provider = {},
     currentLocale,
+    participateInMetaMetrics,
   } = metamask
   const { useNativeCurrencyAsPrimaryCurrency, showFiatInTestnets } = preferencesSelector(state)
 
@@ -48,6 +50,7 @@ const mapStateToProps = state => {
     useNativeCurrencyAsPrimaryCurrency,
     mobileSync,
     showFiatInTestnets,
+    participateInMetaMetrics,
   }
 }
 
@@ -70,6 +73,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
     },
     showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
+    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 

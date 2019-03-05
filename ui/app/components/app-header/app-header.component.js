@@ -18,10 +18,12 @@ export default class AppHeader extends PureComponent {
     isUnlocked: PropTypes.bool,
     hideNetworkIndicator: PropTypes.bool,
     disabled: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
   }
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   handleNetworkIndicatorClick (event) {
@@ -30,20 +32,40 @@ export default class AppHeader extends PureComponent {
 
     const { networkDropdownOpen, showNetworkDropdown, hideNetworkDropdown } = this.props
 
-    return networkDropdownOpen === false
-      ? showNetworkDropdown()
-      : hideNetworkDropdown()
+    if (networkDropdownOpen === false) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Home',
+          name: 'Opened Network Menu',
+        },
+      })
+      showNetworkDropdown()
+    } else {
+      hideNetworkDropdown()
+    }
   }
 
   renderAccountMenu () {
-    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled } = this.props
+    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled, isAccountMenuOpen } = this.props
 
     return isUnlocked && (
       <div
         className={classnames('account-menu__icon', {
           'account-menu__icon--disabled': disabled,
         })}
-        onClick={() => disabled || toggleAccountMenu()}
+        onClick={() => {
+          if (!disabled) {
+            !isAccountMenuOpen && this.context.metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Home',
+                name: 'Opened Main Menu',
+              },
+            })
+            toggleAccountMenu()
+          }
+        }}
       >
         <Identicon
           address={selectedAddress}

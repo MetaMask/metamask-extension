@@ -10,6 +10,7 @@ import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricEvent: PropTypes.func,
   }
 
   static propTypes = {

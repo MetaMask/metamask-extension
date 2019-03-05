@@ -38,6 +38,10 @@ export default class TransactionListItem extends PureComponent {
     showFiat: true,
   }
 
+  static contextTypes = {
+    metricsEvent: PropTypes.func,
+  }
+
   state = {
     showTransactionDetails: false,
   }
@@ -53,6 +57,16 @@ export default class TransactionListItem extends PureComponent {
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
       return
+    }
+
+    if (!showTransactionDetails) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Home',
+          name: 'Expand Transaction',
+        },
+      })
     }
 
     this.setState({ showTransactionDetails: !showTransactionDetails })

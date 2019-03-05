@@ -385,6 +385,9 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
+      setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
+      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -1623,6 +1626,44 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(err)
     }
   }
+
+  /**
+   * Sets whether or not the user will have usage data tracked with MetaMetrics
+   * @param {boolean} bool - True for users that wish to opt-in, false for users that wish to remain out.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setParticipateInMetaMetrics (bool, cb) {
+    try {
+      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
+      cb(null, metaMetricsId)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  setMetaMetricsSendCount (val, cb) {
+    try {
+      this.preferencesController.setMetaMetricsSendCount(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets the type of first time flow the user wishes to follow: create or import
+   * @param {String} type - Indicates the type of first time flow the user wishes to follow
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setFirstTimeFlowType (type, cb) {
+    try {
+      this.preferencesController.setFirstTimeFlowType(type)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
 
   /**
    * A method for setting a user's current locale, affecting the language rendered.

@@ -1,0 +1,136 @@
+.metametrics-opt-in {
+  position: relative;
+  width: 100%;
+
+  a {
+    color: #2f9ae0bf;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    margin-left: 26.26%;
+    margin-right: 28%;
+    color: black;
+
+    @media screen and (max-width: 575px) {
+      justify-content: center;
+      margin-left: 2%;
+      margin-right: 0%;
+    }
+
+    .app-header__logo-container {
+      margin-top: 3%;
+    }
+  }
+
+  &__title {
+    position: relative;
+    margin-top: 20px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: normal;
+    font-size: 42px;
+  }
+
+  &__body-graphic {
+    margin-top: 25px;
+
+    .fa-bar-chart {
+      color: #C4C4C4;
+    }
+  }
+
+  &__description {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 21px;
+    font-size: 16px;
+    margin-top: 12px; 
+  }
+
+  &__committments {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__content {
+    overflow-y: scroll;
+    flex: 1;
+  }
+
+  &__row {
+    display: flex;
+    margin-top: 8px;
+
+    .fa-check {
+      margin-right: 12px;
+      color: #1ACC56;
+    }
+
+    .fa-times {
+      margin-right: 12px;
+      color: #D0021B;
+    }
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__break-row {
+    margin-top: 30px;
+  }
+
+  &__body {
+    position: relative;
+    display: flex;
+    max-width: 730px;
+    flex-direction: column;
+  }
+
+  &__body-text {
+    max-width: 548px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  &__bottom-text {
+    margin-top: 10px;
+    color: #9a9a9a;
+  }
+
+  &__content {
+    overflow-y: auto;
+  }
+
+  &__footer {
+    margin-top: 26px;
+
+    @media screen and (max-width: 575px) {
+      margin-top: 10px;
+      justify-content: center;
+      margin-left: 2%;
+      max-height: 520px;
+    }
+
+    .page-container__footer {
+      border-top: none;
+      max-width: 535px;
+      margin-bottom: 15px;
+
+      button {
+        height: 44px;
+        min-height: 44px;
+        margin-right: 16px;
+      }
+
+      header {
+        padding: 0px;
+      }
+    }
+  }
+}

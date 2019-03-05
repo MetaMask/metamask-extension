@@ -24,12 +24,18 @@
     margin-top: 26px;
   }
 
-  &__text-3 {
-    margin-top: 26px;
+  &__text-3  {
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 16px;
+      font-size: .875rem;
+    }
   }
 
-  &__text-3 {
-    margin-top: 2px;
+  &__text-4 {
+    margin-top: 26px;
   }
 
   button {

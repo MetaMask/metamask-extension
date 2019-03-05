@@ -9,6 +9,7 @@ import { exportAsFile } from '../../../../../../app/util'
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -28,6 +29,14 @@ export default class RevealSeedPhrase extends PureComponent {
     event.preventDefault()
     const { isShowingSeedPhrase } = this.state
     const { history } = this.props
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Seed Phrase Setup',
+        name: 'Advance to Verify',
+      },
+    })
 
     if (!isShowingSeedPhrase) {
       return
@@ -53,7 +62,16 @@ export default class RevealSeedPhrase extends PureComponent {
           !isShowingSeedPhrase && (
             <div
               className="reveal-seed-phrase__secret-blocker"
-              onClick={() => this.setState({ isShowingSeedPhrase: true })}
+              onClick={() => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Onboarding',
+                    action: 'Seed Phrase Setup',
+                    name: 'Revealed Words',
+                  },
+                })
+                this.setState({ isShowingSeedPhrase: true })
+              }}
             >
               <LockIcon
                 width="28px"

@@ -33,6 +33,7 @@ const localeOptions = locales.map(locale => {
 export default class SettingsTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -65,6 +66,8 @@ export default class SettingsTab extends PureComponent {
     mobileSync: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    participateInMetaMetrics: PropTypes.bool,
+    setParticipateInMetaMetrics: PropTypes.func,
   }
 
   state = {
@@ -235,11 +238,34 @@ export default class SettingsTab extends PureComponent {
   validateRpc (newRpc, chainId, ticker = 'ETH', nickname) {
     const { setRpcTarget, displayWarning } = this.props
     if (validUrl.isWebUri(newRpc)) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Settings',
+          action: 'Custom RPC',
+          name: 'Success',
+        },
+        customVariables: {
+          networkId: newRpc,
+          chainId,
+        },
+      })
       if (!!chainId && Number.isNaN(parseInt(chainId))) {
         return displayWarning(`${this.context.t('invalidInput')} chainId`)
       }
+
       setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Settings',
+          action: 'Custom RPC',
+          name: 'Error',
+        },
+        customVariables: {
+          networkId: newRpc,
+          chainId,
+        },
+      })
       const appendedRpc = `http://${newRpc}`
 
       if (validUrl.isWebUri(appendedRpc)) {
@@ -331,6 +357,13 @@ export default class SettingsTab extends PureComponent {
               large
               onClick={event => {
                 event.preventDefault()
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Reveal Seed Phrase',
+                    name: 'Reveal Seed Phrase',
+                  },
+                })
                 history.push(REVEAL_SEED_ROUTE)
               }}
             >
@@ -392,6 +425,13 @@ export default class SettingsTab extends PureComponent {
               className="settings-tab__button--orange"
               onClick={event => {
                 event.preventDefault()
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Reset Account',
+                    name: 'Reset Account',
+                  },
+                })
                 showResetAccountConfirmationModal()
               }}
             >
@@ -586,6 +626,32 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderMetaMetricsOptIn () {
+    const { t } = this.context
+    const { participateInMetaMetrics, setParticipateInMetaMetrics } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('participateInMetaMetrics') }</span>
+          <div className="settings-page__content-description">
+            { t('participateInMetaMetricsDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={participateInMetaMetrics}
+              onToggle={value => setParticipateInMetaMetrics(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const { warning } = this.props
 
@@ -606,6 +672,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderAdvancedGasInputInline() }
         { this.renderBlockieOptIn() }
         { this.renderMobileSync() }
+        { this.renderMetaMetricsOptIn() }
       </div>
     )
   }

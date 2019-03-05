@@ -23,6 +23,8 @@ export default class SenderToRecipient extends PureComponent {
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
     assetImage: PropTypes.string,
+    onRecipientClick: PropTypes.func,
+    onSenderClick: PropTypes.func,
   }
 
   static defaultProps = {
@@ -86,7 +88,7 @@ export default class SenderToRecipient extends PureComponent {
 
   renderRecipientWithAddress () {
     const { t } = this.context
-    const { recipientName, recipientAddress, addressOnly } = this.props
+    const { recipientName, recipientAddress, addressOnly, onRecipientClick } = this.props
     const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
@@ -95,6 +97,7 @@ export default class SenderToRecipient extends PureComponent {
         onClick={() => {
           this.setState({ recipientAddressCopied: true })
           copyToClipboard(checksummedRecipientAddress)
+          onRecipientClick()
         }}
       >
         { this.renderRecipientIdenticon() }
@@ -151,7 +154,7 @@ export default class SenderToRecipient extends PureComponent {
   }
 
   render () {
-    const { senderAddress, recipientAddress, variant } = this.props
+    const { senderAddress, recipientAddress, variant, onSenderClick } = this.props
     const checksummedSenderAddress = checksumAddress(senderAddress)
 
     return (
@@ -161,6 +164,7 @@ export default class SenderToRecipient extends PureComponent {
           onClick={() => {
             this.setState({ senderAddressCopied: true })
             copyToClipboard(checksummedSenderAddress)
+            onSenderClick()
           }}
         >
           { this.renderSenderIdenticon() }

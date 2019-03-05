@@ -16,6 +16,7 @@ const historySpies = {
 }
 
 const t = (str1, str2) => str2 ? str1 + str2 : str1
+const metricsEvent = () => ({})
 
 describe('TransactionViewBalance Component', () => {
   afterEach(() => {
@@ -31,7 +32,7 @@ describe('TransactionViewBalance Component', () => {
       ethBalance={123}
       fiatBalance={456}
       currentCurrency="usd"
-    />, { context: { t } })
+    />, { context: { t, metricsEvent } })
 
     assert.equal(wrapper.find('.transaction-view-balance').length, 1)
     assert.equal(wrapper.find('.transaction-view-balance__button').length, 2)

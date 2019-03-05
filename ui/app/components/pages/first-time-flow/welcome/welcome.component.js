@@ -3,12 +3,14 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mascot from '../../../mascot'
 import Button from '../../../button'
-import { INITIALIZE_SELECT_ACTION_ROUTE, INITIALIZE_UNIQUE_IMAGE_ROUTE } from '../../../../routes'
+import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_SELECT_ACTION_ROUTE } from '../../../../routes'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
+    participateInMetaMetrics: PropTypes.bool,
+    welcomeScreenSeen: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -22,10 +24,12 @@ export default class Welcome extends PureComponent {
   }
 
   componentDidMount () {
-    const { history, isInitialized } = this.props
+    const { history, participateInMetaMetrics, welcomeScreenSeen } = this.props
 
-    if (isInitialized) {
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+    if (welcomeScreenSeen && participateInMetaMetrics !== null) {
+      history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+    } else if (welcomeScreenSeen) {
+      history.push(INITIALIZE_SELECT_ACTION_ROUTE)
     }
   }
 

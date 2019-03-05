@@ -5,12 +5,13 @@ import TextField from '../../../../text-field'
 import Button from '../../../../button'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../../routes'
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -104,7 +105,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     try {
       await onSubmit(password, seedPhrase)
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Import Seed Phrase',
+          name: 'Import Complete',
+        },
+      })
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     } catch (error) {
       this.setState({ seedPhraseError: error.message })
     }
@@ -132,6 +140,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   toggleTermsCheck = () => {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Import Seed Phrase',
+        name: 'Check ToS',
+      },
+    })
+
     this.setState((prevState) => ({
         termsChecked: !prevState.termsChecked,
     }))
@@ -150,6 +166,13 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <a
             onClick={e => {
               e.preventDefault()
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Import Seed Phrase',
+                  name: 'Go Back from Onboarding Import',
+                },
+              })
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"
@@ -208,7 +231,15 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span className="first-time-flow__checkbox-label">
-            { t('agreeTermsOfService') }
+            I have read and agree to the <a
+              href="https://metamask.io/terms.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="first-time-flow__link-text">
+                { 'Terms of Use' }
+              </span>
+            </a>
           </span>
         </div>
         <Button

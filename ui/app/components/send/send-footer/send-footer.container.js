@@ -21,6 +21,7 @@ import {
   getSendHexData,
   getTokenBalance,
   getUnapprovedTxs,
+  getSendErrors,
 } from '../send.selectors'
 import {
   isSendFormInError,
@@ -48,6 +49,7 @@ function mapStateToProps (state) {
     toAccounts: getSendToAccounts(state),
     tokenBalance: getTokenBalance(state),
     unapprovedTxs: getUnapprovedTxs(state),
+    sendErrors: getSendErrors(state),
   }
 }
 

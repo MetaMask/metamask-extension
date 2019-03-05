@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import FirstTimeFlow from './first-time-flow.component'
+import { getFirstTimeFlowTypeRoute } from './first-time-flow.selectors'
 import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
@@ -13,6 +14,7 @@ const mapStateToProps = state => {
     completedOnboarding,
     isInitialized,
     isUnlocked,
+    nextRoute: getFirstTimeFlowTypeRoute(state),
   }
 }
 

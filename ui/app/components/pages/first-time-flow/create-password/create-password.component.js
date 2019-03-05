@@ -3,18 +3,16 @@ import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import NewAccount from './new-account'
 import ImportWithSeedPhrase from './import-with-seed-phrase'
-import UniqueImage from './unique-image'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../routes'
 
 export default class CreatePassword extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
-    isImportedKeyring: PropTypes.bool,
     onCreateNewAccount: PropTypes.func,
     onCreateNewAccountFromSeed: PropTypes.func,
   }
@@ -23,12 +21,12 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     }
   }
 
   render () {
-    const { onCreateNewAccount, onCreateNewAccountFromSeed, isImportedKeyring } = this.props
+    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props
 
     return (
       <div className="first-time-flow__wrapper">
@@ -46,15 +44,6 @@ export default class CreatePassword extends PureComponent {
           />
         </div>
         <Switch>
-          <Route exact
-            path={INITIALIZE_UNIQUE_IMAGE_ROUTE}
-            render={props => (
-              <UniqueImage
-                { ...props }
-                isImportedKeyring={isImportedKeyring}
-              />
-            )}
-          />
           <Route
             exact
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}

@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const BigNumber = require('bignumber.js')
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 import Button from '../button'
@@ -112,6 +113,7 @@ function CustomizeGasModal (props) {
 
 CustomizeGasModal.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
@@ -148,6 +150,7 @@ CustomizeGasModal.prototype.componentWillReceiveProps = function (nextProps) {
 }
 
 CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
+  const { metricsEvent } = this.context
   const {
     setGasPrice,
     setGasLimit,
@@ -159,6 +162,9 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateSendAmount,
     updateSendErrors,
   } = this.props
+  const {
+    originalState,
+  } = this.state
 
   if (maxModeOn && !selectedToken) {
     const maxAmount = subtractCurrencies(
@@ -168,6 +174,22 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     )
     updateSendAmount(maxAmount)
   }
+
+  metricsEvent({
+    eventOpts: {
+      category: 'Activation',
+      action: 'userCloses',
+      name: 'closeCustomizeGas',
+    },
+    pageOpts: {
+      section: 'customizeGasModal',
+      component: 'customizeGasSaveButton',
+    },
+    customVariables: {
+      gasPriceChange: (new BigNumber(ethUtil.addHexPrefix(gasPrice))).minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasPrice))).toString(10),
+      gasLimitChange: (new BigNumber(ethUtil.addHexPrefix(gasLimit))).minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasLimit))).toString(10),
+    },
+  })
 
   setGasPrice(ethUtil.addHexPrefix(gasPrice))
   setGasLimit(ethUtil.addHexPrefix(gasLimit))

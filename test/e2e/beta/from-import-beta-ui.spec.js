@@ -72,6 +72,8 @@ describe('Using MetaMask with an existing account', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
       '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0].match(/chromeextensionmm/)) { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
       'return window.origFetch(...args); }'
@@ -110,6 +112,12 @@ describe('Using MetaMask with an existing account', function () {
       await delay(largeDelayMs)
     })
 
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      const optOutButton = await findElement(driver, By.css('.btn-default'))
+      optOutButton.click()
+      await delay(largeDelayMs)
+    })
+
     it('imports a seed phrase', async () => {
       const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
@@ -125,13 +133,6 @@ describe('Using MetaMask with an existing account', function () {
 
       const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
       await importButton.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the security warning screen', async () => {
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
       await delay(regularDelayMs)
     })
 
