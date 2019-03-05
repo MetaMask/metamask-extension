@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 6.2.0 Tue Mar 05 2019
+
 ## 6.1.0 Tue Feb 19 2019
 
 - [#6182](https://github.com/MetaMask/metamask-extension/pull/6182): Change "Token Address" to "Token Contract Address"
