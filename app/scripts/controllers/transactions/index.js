@@ -57,7 +57,7 @@ class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.getGasPrice = opts.getGasPrice
-
+    this.accountsController = opts.accountsController
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
     this.txGasUtil = new TxGasUtil(this.provider)
@@ -172,6 +172,19 @@ class TransactionController extends EventEmitter {
   */
 
   async addUnapprovedTransaction (txParams) {
+    let originalTxParams = Object.assign({}, txParams)
+    originalTxParams.originalData = originalTxParams.data
+
+    if (this.preferencesStore.getState().useContractAccount) {
+      let modifiedTx = await this.accountsController.currentContractInstance.modifyTransactionOpts(txParams)
+      console.log('[tx controller] modified tx', modifiedTx)
+
+      txParams = modifiedTx
+    }
+    else {
+      console.log('[tx controller] dont use contract account')
+    }
+
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
     // Assert the from address is the selected address
@@ -183,6 +196,7 @@ class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPE_STANDARD,
+      unmodifiedParams: originalTxParams,
     })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
