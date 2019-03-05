@@ -635,7 +635,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{ t('participateInMetaMetrics') }</span>
           <div className="settings-page__content-description">
-            { t('participateInMetaMetricsDescription') }
+            <span>{ t('participateInMetaMetricsDescription') }</span>
           </div>
         </div>
         <div className="settings-page__content-item">
