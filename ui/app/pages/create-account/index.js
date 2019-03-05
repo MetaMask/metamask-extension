@@ -15,6 +15,7 @@ const {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONTRACT_ACCOUNT_ROUTE,
 } = require('../../helpers/constants/routes')
 
 class CreateAccountPage extends Component {
