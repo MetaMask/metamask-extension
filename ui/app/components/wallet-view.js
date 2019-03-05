@@ -206,9 +206,9 @@ WalletView.prototype.render = function () {
           copyToClipboard(checksummedAddress)
           this.context.metricsEvent({
             eventOpts: {
-              category: 'Activation',
-              action: 'userClicks',
-              name: 'navCopyToClipboard',
+              category: 'Navigation',
+              action: 'Home',
+              name: 'Copied Address',
             },
           })
           this.setState({ hasCopied: true })

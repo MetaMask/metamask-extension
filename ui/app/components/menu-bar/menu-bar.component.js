@@ -37,7 +37,7 @@ export default class MenuBar extends PureComponent {
                 eventOpts: {
                   category: 'Navigation',
                   action: 'Home',
-                  name: 'Copied Address',
+                  name: 'Opened Hamburger',
                 },
               })
               sidebarOpen ? hideSidebar() : showSidebar()
@@ -53,7 +53,16 @@ export default class MenuBar extends PureComponent {
             >
               <div
                 className="fa fa-ellipsis-h fa-lg menu-bar__open-in-browser"
-                onClick={() => this.setState({ accountDetailsMenuOpen: true })}
+                onClick={() => {
+                  this.context.metricsEvent({
+                    eventOpts: {
+                      category: 'Navigation',
+                      action: 'Home',
+                      name: 'Opened Account Options',
+                    },
+                  })
+                  this.setState({ accountDetailsMenuOpen: true })
+                }}
               >
               </div>
             </Tooltip>
