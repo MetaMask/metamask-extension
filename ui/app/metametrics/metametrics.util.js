@@ -2,9 +2,15 @@
 
 const ethUtil = require('ethereumjs-util')
 
+const inDevelopment = process.env.METAMETRICS_URL === 'development'
+
 const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.php'
-const METAMETRICS_REQUIRED_PARAMS = '?idsite=1&rec=1&apiv=1'
+const METAMETRICS_REQUIRED_PARAMS = `?idsite=${inDevelopment ? 1 : 2}&rec=1&apiv=1`
 const METAMETRICS_BASE_FULL = METAMETRICS_BASE_URL + METAMETRICS_REQUIRED_PARAMS
+
+const METAMETRICS_TRACKING_URL = inDevelopment
+  ? 'http://www.metamask.io/metametrics'
+  : 'http://www.metamask.io/metametrics-prod'
 
 const METAMETRICS_CUSTOM_HAD_ERROR = 'hadError'
 const METAMETRICS_CUSTOM_HEX_DATA = 'hexData'
@@ -54,7 +60,7 @@ const customDimensionsNameIdMap = {
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
   const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'MetaMask'
-  return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(previousPath.replace(/chrome-extension:\/\/\w+/, 'http://www.metamask.io/metametrics'))}`
+  return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(previousPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}`
 }
 
 function composeCustomDimensionParamAddition (customDimensions) {
@@ -120,7 +126,7 @@ function composeUrl (config, permissionPreferences = {}) {
     numberOfTokens: customVariables && customVariables.numberOfTokens || numberOfTokens,
     numberOfAccounts: customVariables && customVariables.numberOfAccounts || numberOfAccounts,
   }) : ''
-  const url = configUrl || `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, 'http://www.metamask.io/metametrics'))}`
+  const url = configUrl || `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}`
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
   const pv_id = `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}`
