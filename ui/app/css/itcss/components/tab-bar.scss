@@ -1,21 +1,43 @@
 .tab-bar {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-end;
 }
 
 .tab-bar__tab {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
   min-width: 0;
   flex: 0 0 auto;
-  padding: 15px 25px;
-  border-bottom: 1px solid $alto;
+  padding: 24px;
   box-sizing: border-box;
   font-size: 18px;
-}
+  border-bottom: 1px solid $alto;
 
-.tab-bar__tab--active {
-  border-color: $black;
+  &__content {
+    flex: 1 1 auto;
+    width: 0;
+
+    &__description {
+      font-size: 14px;
+      font-weight: 300;
+      margin-top: 8px;
+      min-height: 14px;
+    }
+  }
+
+  &__caret {
+    flex: 0 0 auto;
+    display: block;
+    background-image: url('/images/caret-right.svg');
+    width: 36px;
+    height: 36px;
+    opacity: .5;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
 
 .tab-bar__grow-tab {

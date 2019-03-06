@@ -9,21 +9,26 @@
   flex-flow: column nowrap;
 
   &__header {
-    padding: 25px 25px 0;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 12px 24px;
+    align-items: center;
+    border-bottom: 1px solid $alto;
+
+    &__title {
+      flex: 1 0 auto;
+      font-size: 24px;
+    }
   }
 
   &__close-button::after {
     content: '\00D7';
     font-size: 40px;
     color: $dusty-gray;
-    position: absolute;
-    top: 25px;
-    right: 30px;
     cursor: pointer;
   }
 
   &__content {
-    padding: 25px;
     height: auto;
     overflow: auto;
   }
