@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 6.2.2 Wed Mar 06 2019
+
+- [#6250](https://github.com/MetaMask/metamask-extension/pull/6250): Add privacy policy link to modal metrics opt-in
+- [#6248](Prevent advanced gas input arrows from setting value to < 0)
+
 ## 6.2.0 Tue Mar 05 2019
 - [#6192](https://github.com/MetaMask/metamask-extension/pull/6192): Improves design and UX of onboarding flow
 - [#6195](https://github.com/MetaMask/metamask-extension/pull/6195): Fixes gas estimation when sending to contracts
