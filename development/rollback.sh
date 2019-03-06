@@ -8,7 +8,7 @@ git checkout -b version-increment-$1
 npm run version:bump patch
 
 # Store the new version name
-NEW_VERSION=$(cat app/manifest.json | jq ".version")
+NEW_VERSION=$(cat app/manifest.json | jq -r .version)
 
 # Make sure origin tags are loaded
 git fetch origin
