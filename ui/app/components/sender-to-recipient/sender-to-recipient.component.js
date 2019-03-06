@@ -97,7 +97,9 @@ export default class SenderToRecipient extends PureComponent {
         onClick={() => {
           this.setState({ recipientAddressCopied: true })
           copyToClipboard(checksummedRecipientAddress)
-          onRecipientClick()
+          if (onRecipientClick) {
+            onRecipientClick()
+          }
         }}
       >
         { this.renderRecipientIdenticon() }
@@ -164,7 +166,9 @@ export default class SenderToRecipient extends PureComponent {
           onClick={() => {
             this.setState({ senderAddressCopied: true })
             copyToClipboard(checksummedSenderAddress)
-            onSenderClick()
+            if (onSenderClick) {
+              onSenderClick()
+            }
           }}
         >
           { this.renderSenderIdenticon() }
