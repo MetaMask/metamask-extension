@@ -22,7 +22,7 @@ git checkout -b Version-$NEW_VERSION
 # Set the version files to the next one.
 git checkout master CHANGELOG.md
 git checkout master app/manifest.json
-git commit -m "Version $NEW_VERSION"
+git commit -m "Version $NEW_VERSION (Rollback to $1)"
 
 # Push the new branch to PR
 git push -u origin HEAD
