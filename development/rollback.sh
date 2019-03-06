@@ -17,7 +17,7 @@ git fetch origin
 git checkout origin/v$1
 
 # Create the rollback branch.
-git checkout -b Version-$NEW_VERSION
+git checkout -b Version-$NEW_VERSION-Rollback-to-$1
 
 # Set the version files to the next one.
 git checkout master CHANGELOG.md
