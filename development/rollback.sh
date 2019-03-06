@@ -31,3 +31,5 @@ git push -u origin HEAD
 git tag v${NEW_VERSION}
 git push origin v${NEW_VERSION}
 
+# Cleanup version branch
+git branch -D version-increment-$1
