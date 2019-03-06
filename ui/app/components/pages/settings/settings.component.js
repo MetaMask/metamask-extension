@@ -12,6 +12,7 @@ import {
   COMPANY_ROUTE,
   LEGAL_ROUTE,
   SECURITY_ROUTE,
+  GENERAL_ROUTE,
 } from '../../../routes'
 
 export default class SettingsPage extends PureComponent {
@@ -29,6 +30,10 @@ export default class SettingsPage extends PureComponent {
     const { t } = this.context
     const { history, location } = this.props
 
+    if (location && location.pathname !== '/settings') {
+      return this.renderContent()
+    }
+
     return (
       <div className="main-container settings-page">
         <div className="settings-page__header">
@@ -39,31 +44,45 @@ export default class SettingsPage extends PureComponent {
           />
         </div>
         <div className="settings-page__content">
-          <TabBar
-            tabs={[
-              { content: t('general'), description: t('generalSettingsDescription'), key: SETTINGS_ROUTE },
-              { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
-              { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
-              { content: t('company'), key: COMPANY_ROUTE },
-              { content: t('legal'), key: LEGAL_ROUTE },
-            ]}
-            isActive={key => matchPath(location.pathname, { path: key, exact: true })}
-            onSelect={key => history.push(key)}
-          />
+          { this.renderTabs() }
         </div>
-        {/*<Switch>*/}
-          {/*<Route*/}
-            {/*exact*/}
-            {/*path={INFO_ROUTE}*/}
-            {/*component={InfoTab}*/}
-          {/*/>*/}
-          {/*<Route*/}
-            {/*exact*/}
-            {/*path={SETTINGS_ROUTE}*/}
-            {/*component={SettingsTab}*/}
-          {/*/>*/}
-        {/*</Switch>*/}
       </div>
+    )
+  }
+
+  renderTabs () {
+    const { history, location } = this.props
+    const { t } = this.context
+
+    return (
+      <TabBar
+        tabs={[
+          { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
+          { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
+          { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
+          { content: t('company'), key: COMPANY_ROUTE },
+          { content: t('legal'), key: LEGAL_ROUTE },
+        ]}
+        isActive={key => matchPath(location.pathname, { path: key, exact: true })}
+        onSelect={key => history.push(key)}
+      />
+    )
+  }
+
+  renderContent () {
+    return (
+      <Switch>
+        <Route
+          exact
+          path={COMPANY_ROUTE}
+          component={InfoTab}
+        />
+        <Route
+          exact
+          path={GENERAL_ROUTE}
+          component={SettingsTab}
+        />
+      </Switch>
     )
   }
 }
