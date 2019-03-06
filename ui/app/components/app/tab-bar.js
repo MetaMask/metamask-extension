@@ -1,5 +1,4 @@
-const { Component } = require('react')
-const h = require('react-hyperscript')
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
 const classnames = require('classnames')
 
@@ -8,18 +7,23 @@ class TabBar extends Component {
     const { tabs = [], onSelect, isActive } = this.props
 
     return (
-      h('.tab-bar', {}, [
-        tabs.map(({ key, content }) => {
-          return h('div', {
-            className: classnames('tab-bar__tab pointer', {
+      <div className="tab-bar">
+        {tabs.map(({ key, content, description }) => (
+          <div
+            key={key}
+            className={classnames('tab-bar__tab pointer', {
               'tab-bar__tab--active': isActive(key, content),
-            }),
-            onClick: () => onSelect(key),
-            key,
-          }, content)
-        }),
-        h('div.tab-bar__tab.tab-bar__grow-tab'),
-      ])
+            })}
+            onClick={() => onSelect(key)}
+          >
+            <div className="tab-bar__tab__content">
+              <div className="tab-bar__tab__content__title">{content}</div>
+              <div className="tab-bar__tab__content__description">{description}</div>
+            </div>
+            <div className="tab-bar__tab__caret" />
+          </div>
+        ))}
+      </div>
     )
   }
 }
