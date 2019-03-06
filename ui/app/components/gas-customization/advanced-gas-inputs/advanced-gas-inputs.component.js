@@ -80,8 +80,18 @@ export default class AdvancedTabContent extends Component {
           'advanced-gas-inputs__gas-edit-row__input--error': isInError && errorType === 'error',
           'advanced-gas-inputs__gas-edit-row__input--warning': isInError && errorType === 'warning',
         })}>
-          <div className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value + 1)}><i className="fa fa-sm fa-angle-up" /></div>
-          <div className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value - 1)}><i className="fa fa-sm fa-angle-down" /></div>
+          <div
+            className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+            onClick={() => onChange(value + 1)}
+          >
+            <i className="fa fa-sm fa-angle-up" />
+          </div>
+          <div
+            className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+            onClick={() => onChange(Math.max(value - 1, 0))}
+          >
+            <i className="fa fa-sm fa-angle-down" />
+          </div>
         </div>
         { isInError
           ? <div className={`advanced-gas-inputs__gas-edit-row__${errorType}-text`}>
