@@ -33,7 +33,7 @@
   &__empty {
     flex: 1;
     display: grid;
-    grid-template-rows: 35% 1fr;
+    grid-template-rows: auto;
     padding-top: 8px;
   }
 
