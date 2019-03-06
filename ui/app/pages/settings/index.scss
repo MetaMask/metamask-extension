@@ -14,11 +14,25 @@
     padding: 12px 24px;
     align-items: center;
     border-bottom: 1px solid $alto;
+    flex: 0 0 auto;
 
     &__title {
       flex: 1 0 auto;
       font-size: 24px;
     }
+  }
+
+  &__back-button {
+    display: block;
+    background-image: url('/images/caret-left-black.svg');
+    width: 18px;
+    height: 18px;
+    opacity: .5;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 16px;
+    cursor: pointer;
   }
 
   &__close-button::after {
@@ -33,6 +47,10 @@
     overflow: auto;
   }
 
+  &__body {
+    padding: 12px 24px;
+  }
+
   &__content-row {
     display: flex;
     flex-direction: row;
@@ -40,7 +58,6 @@
 
     @media screen and (max-width: 575px) {
       flex-direction: column;
-      padding: 10px 0;
     }
   }
 

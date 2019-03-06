@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import {DEFAULT_ROUTE, SETTINGS_ROUTE} from '../../../../routes'
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -101,11 +102,11 @@ export default class InfoTab extends PureComponent {
     )
   }
 
-  render () {
+  renderContent () {
     const { t } = this.context
 
     return (
-      <div className="settings-page__content">
+      <div className="settings-page__body">
         <div className="settings-page__content-row">
           <div className="settings-page__content-item settings-page__content-item--without-height">
             <div className="info-tab__logo-wrapper">
@@ -129,6 +130,32 @@ export default class InfoTab extends PureComponent {
             </div>
           </div>
           { this.renderInfoLinks() }
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    const { t } = this.context
+    const { history } = this.props
+
+    return (
+      <div className="main-container settings-page">
+        <div className="settings-page__header">
+          <div
+            className="settings-page__back-button"
+            onClick={() => history.push(SETTINGS_ROUTE)}
+          />
+          <div className="settings-page__header__title">
+            {t('company')}
+          </div>
+          <div
+            className="settings-page__close-button"
+            onClick={() => history.push(DEFAULT_ROUTE)}
+          />
+        </div>
+        <div className="settings-page__content">
+          { this.renderContent() }
         </div>
       </div>
     )

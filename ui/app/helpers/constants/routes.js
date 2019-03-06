@@ -2,6 +2,7 @@ const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
 const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
+const GENERAL_ROUTE = '/settings/general'
 const INFO_ROUTE = '/settings/info'
 const ADVANCED_ROUTE = '/settings/advanced'
 const SECURITY_ROUTE = '/settings/security'
@@ -88,4 +89,5 @@ module.exports = {
   SECURITY_ROUTE,
   COMPANY_ROUTE,
   LEGAL_ROUTE,
+  GENERAL_ROUTE,
 }
