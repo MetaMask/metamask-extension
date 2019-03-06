@@ -106,11 +106,12 @@ WalletView.prototype.renderAddToken = function () {
     hideSidebar,
     history,
   } = this.props
+  const { metricsEvent } = this.context
 
   return h(AddTokenButton, {
     onClick () {
       history.push(ADD_TOKEN_ROUTE)
-      this.context.metricsEvent({
+      metricsEvent({
         eventOpts: {
           category: 'Navigation',
           action: 'Token Menu',
