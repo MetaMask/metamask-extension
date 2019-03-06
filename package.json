@@ -43,7 +43,8 @@
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
-    "update-changelog": "./auto-changelog.sh"
+    "update-changelog": "./development/auto-changelog.sh",
+    "rollback": "./development/rollback.sh"
   },
   "browserify": {
     "transform": [
