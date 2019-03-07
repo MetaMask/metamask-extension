@@ -1,14 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import infuraCurrencies from '../../../helpers/constants/infura-conversion.json'
-import validUrl from 'valid-url'
-import { exportAsFile } from '../../../helpers/utils/util'
 import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
-import {REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE, SETTINGS_ROUTE, DEFAULT_ROUTE} from '../../../helpers/constants/routes'
 import locales from '../../../../../app/_locales/index.json'
-import TextField from '../../../components/ui/text-field'
-import Button from '../../../components/ui/button'
 
 const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
   return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())

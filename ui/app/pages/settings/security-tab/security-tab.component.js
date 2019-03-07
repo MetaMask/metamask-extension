@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from 'react-toggle-button'
-import {REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE, SETTINGS_ROUTE, DEFAULT_ROUTE} from '../../../helpers/constants/routes'
+import {REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
 import Button from '../../../components/ui/button'
 
 export default class SecurityTab extends PureComponent {
