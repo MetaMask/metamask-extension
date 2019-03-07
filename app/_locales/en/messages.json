@@ -41,6 +41,9 @@
   "providerRequestInfo": {
     "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
+  "aboutUs": {
+    "message": "About Us"
+  },
   "accept": {
     "message": "Accept"
   },

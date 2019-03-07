@@ -10,9 +10,9 @@ import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
   COMPANY_ROUTE,
-  LEGAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  ABOUT_US_ROUTE,
 } from '../../../routes'
 
 export default class SettingsPage extends PureComponent {
@@ -53,15 +53,19 @@ export default class SettingsPage extends PureComponent {
   renderTabs () {
     const { history, location } = this.props
     const { t } = this.context
-
+    console.log({
+      GENERAL_ROUTE,
+      ADVANCED_ROUTE,
+      SECURITY_ROUTE,
+      ABOUT_US_ROUTE,
+    })
     return (
       <TabBar
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
-          { content: t('company'), key: COMPANY_ROUTE },
-          { content: t('legal'), key: LEGAL_ROUTE },
+          { content: t('aboutUs'), key: ABOUT_US_ROUTE },
         ]}
         isActive={key => matchPath(location.pathname, { path: key, exact: true })}
         onSelect={key => history.push(key)}
@@ -79,7 +83,7 @@ export default class SettingsPage extends PureComponent {
         />
         <Route
           exact
-          path={COMPANY_ROUTE}
+          path={ABOUT_US_ROUTE}
           component={InfoTab}
         />
         <Route
