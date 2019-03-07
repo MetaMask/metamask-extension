@@ -3,11 +3,10 @@ import PropTypes from 'prop-types'
 import { Switch, Route, matchPath } from 'react-router-dom'
 import TabBar from '../../tab-bar'
 import SettingsTab from './settings-tab'
+import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import {
   DEFAULT_ROUTE,
-  SETTINGS_ROUTE,
-  INFO_ROUTE,
   ADVANCED_ROUTE,
   COMPANY_ROUTE,
   LEGAL_ROUTE,
@@ -74,13 +73,18 @@ export default class SettingsPage extends PureComponent {
       <Switch>
         <Route
           exact
+          path={GENERAL_ROUTE}
+          component={SettingsTab}
+        />
+        <Route
+          exact
           path={COMPANY_ROUTE}
           component={InfoTab}
         />
         <Route
           exact
-          path={GENERAL_ROUTE}
-          component={SettingsTab}
+          path={ADVANCED_ROUTE}
+          component={AdvancedTab}
         />
       </Switch>
     )

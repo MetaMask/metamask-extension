@@ -5,7 +5,7 @@ import validUrl from 'valid-url'
 import { exportAsFile } from '../../../../util'
 import SimpleDropdown from '../../../dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
-import { REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../../routes'
+import {REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE, SETTINGS_ROUTE, DEFAULT_ROUTE} from '../../../../routes'
 import locales from '../../../../../../app/_locales/index.json'
 import TextField from '../../../text-field'
 import Button from '../../../button'
@@ -647,11 +647,11 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  render () {
+  renderContent () {
     const { warning } = this.props
 
     return (
-      <div className="settings-page__content">
+      <div className="settings-page__body">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderCurrentConversion() }
         { this.renderUsePrimaryCurrencyOptions() }
@@ -668,6 +668,32 @@ export default class SettingsTab extends PureComponent {
         { this.renderBlockieOptIn() }
         { this.renderMobileSync() }
         { this.renderMetaMetricsOptIn() }
+      </div>
+    )
+  }
+
+  render() {
+    const { t } = this.context
+    const { history } = this.props
+
+    return (
+      <div className="main-container settings-page">
+        <div className="settings-page__header">
+          <div
+            className="settings-page__back-button"
+            onClick={() => history.push(SETTINGS_ROUTE)}
+          />
+          <div className="settings-page__header__title">
+            {t('general')}
+          </div>
+          <div
+            className="settings-page__close-button"
+            onClick={() => history.push(DEFAULT_ROUTE)}
+          />
+        </div>
+        <div className="settings-page__content">
+          { this.renderContent() }
+        </div>
       </div>
     )
   }
