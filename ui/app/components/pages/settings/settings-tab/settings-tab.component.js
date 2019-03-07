@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import infuraCurrencies from '../../../../infura-conversion.json'
 import SimpleDropdown from '../../../dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
-import {SETTINGS_ROUTE, DEFAULT_ROUTE} from '../../../../routes'
 import locales from '../../../../../../app/_locales/index.json'
 
 const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {

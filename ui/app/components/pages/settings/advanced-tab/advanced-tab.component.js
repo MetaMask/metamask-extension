@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
 import { exportAsFile } from '../../../../util'
 import ToggleButton from 'react-toggle-button'
-import {SETTINGS_ROUTE, DEFAULT_ROUTE} from '../../../../routes'
 import TextField from '../../../text-field'
 import Button from '../../../button'
 

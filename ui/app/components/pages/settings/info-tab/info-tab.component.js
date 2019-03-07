@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import {DEFAULT_ROUTE, SETTINGS_ROUTE} from '../../../../routes'
 
 export default class InfoTab extends PureComponent {
   state = {
