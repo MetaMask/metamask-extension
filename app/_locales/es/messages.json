@@ -686,7 +686,7 @@
     "message": "Restaurar desde semilla"
   },
   "restoreVault": {
-    "message": "Restaurar Bóveda"
+    "message": "Restaurar bóveda"
   },
   "retryWithMoreGas": {
     "message": "Vuelva a intentar con un precio de gas más alto aquí"
@@ -1168,10 +1168,10 @@
     "message": "Nuevo URL de RPC"
   },
   "showAdvancedOptions": {
-    "message": "Mostrar Opciones Avanzadas"
+    "message": "Mostrar opciones avanzadas"
   },
   "hideAdvancedOptions": {
-    "message": "Ocultar Opciones Avanzadas"
+    "message": "Ocultar opciones avanzadas"
   },
   "optionalChainId": {
     "message": "ChainID (opcional)"
@@ -1183,13 +1183,13 @@
     "message": "Apodo (opcional)"
   },
   "newTotal": {
-    "message": "Nuevo Total"
+    "message": "Nuevo total"
   },
   "newTransactionFee": {
-    "message": "Nueva Comisión por Transacción"
+    "message": "Nueva Comisión por transacción"
   },
   "noConversionRateAvailable": {
-    "message": "No Hay Tasa de Conversión"
+    "message": "No hay tasa de conversión"
   },
   "notFound": {
     "message": "No se encontró"
@@ -1238,7 +1238,7 @@
     "message": "Prev"
   },
   "primaryCurrencySetting": {
-    "message": "Moneda Principal"
+    "message": "Moneda principal"
   },
   "primaryCurrencySettingDescription": {
     "message": "Seleccionar nativa para prioritizar el que se muestren los valores en la moneda nativa de la cadena (p.ej. ETH). Seleccionar Fíat para prioritzar el que se muestren los valores en la moneda fíat seleccionada."
@@ -1247,10 +1247,10 @@
     "message": "Cola"
   },
   "rejectAll": {
-    "message": "Rechazar a Todos"
+    "message": "Rechazar todas"
   },
   "rejectTxsN": {
-    "message": "Rechazar a transacciones de $1"
+    "message": "Rechazar transacciones de $1"
   },
   "rejectTxsDescription": {
     "message": "Está al punto de rechazar transacciones de $1 en lote."
@@ -1271,7 +1271,7 @@
     "message": "Restaurar"
   },
   "revealSeedWordsTitle": {
-    "message": "Frase Semilla"
+    "message": "Frase semilla"
   },
   "revealSeedWordsDescription": {
     "message": "Si en algún momento cambias de navegador o de ordenador, necesitarás esta frase semilla para acceder a tus cuentas. Guárdatela en un lugar seguro y secreto."
@@ -1298,7 +1298,7 @@
     "message": "Lento"
   },
   "slower": {
-    "message": "Más Lento"
+    "message": "Más lento"
   },
   "saveAsCsvFile": {
     "message": "Guardar como archivo CSV"
@@ -1316,10 +1316,10 @@
     "message": "Seg"
   },
   "selectLocale": {
-    "message": "Seleccionar Local"
+    "message": "Seleccionar local"
   },
   "sendAmount": {
-    "message": "Mandar Cantidad"
+    "message": "Mandar cantidad"
   },
   "sentEther": {
     "message": "se mandó ether"
@@ -1361,7 +1361,7 @@
     "message": "Petición de Firma"
   },
   "somethingWentWrong": {
-    "message": "¡Ups! Algo se estropeó."
+    "message": "¡Ups! Algo funcionó mal."
   },
   "speedUp": {
     "message": "Agilizar"
@@ -1382,13 +1382,13 @@
     "message": "Cambiar de Red"
   },
   "step1HardwareWallet": {
-    "message": "1. Conectar Monedero Físico."
+    "message": "1. Conectar monedero físico."
   },
   "step1HardwareWalletMsg": {
     "message": "Conéctate el monedero físico directamente al ordenador."
   },
   "step2HardwareWallet": {
-    "message": "2. Seleccionar una Cuenta"
+    "message": "2. Seleccionar una cuenta"
   },
   "step2HardwareWalletMsg": {
     "message": "Seleccione la cuenta que quieres ver. Sólo se puede eligir una a la vez."
@@ -1454,10 +1454,10 @@
     "message": "Traspasar"
   },
   "transferFrom": {
-    "message": "Traspasar De"
+    "message": "Traspasar de"
   },
   "trezorHardwareWallet": {
-    "message": "Monedero Físico TREZOR"
+    "message": "Monedero físico TREZOR"
   },
   "tryAgain": {
     "message": "Vuelve a intentar"
