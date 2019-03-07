@@ -147,7 +147,7 @@ export default class InfoTab extends PureComponent {
             onClick={() => history.push(SETTINGS_ROUTE)}
           />
           <div className="settings-page__header__title">
-            {t('company')}
+            {t('aboutUs')}
           </div>
           <div
             className="settings-page__close-button"

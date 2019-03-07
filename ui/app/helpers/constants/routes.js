@@ -7,7 +7,7 @@ const INFO_ROUTE = '/settings/info'
 const ADVANCED_ROUTE = '/settings/advanced'
 const SECURITY_ROUTE = '/settings/security'
 const COMPANY_ROUTE = '/settings/company'
-const LEGAL_ROUTE = '/settings/legal'
+const ABOUT_US_ROUTE = '/settings/about-us'
 const REVEAL_SEED_ROUTE = '/seed'
 const MOBILE_SYNC_ROUTE = '/mobile-sync'
 const CONFIRM_SEED_ROUTE = '/confirm-seed'
@@ -88,6 +88,6 @@ module.exports = {
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   COMPANY_ROUTE,
-  LEGAL_ROUTE,
   GENERAL_ROUTE,
+  ABOUT_US_ROUTE,
 }
