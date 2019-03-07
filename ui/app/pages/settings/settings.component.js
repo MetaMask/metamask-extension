@@ -5,6 +5,7 @@ import TabBar from '../../components/app/tab-bar'
 import SettingsTab from './settings-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
+import SecurityTab from './security-tab'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -85,6 +86,11 @@ export default class SettingsPage extends PureComponent {
           exact
           path={ADVANCED_ROUTE}
           component={AdvancedTab}
+        />
+        <Route
+          exact
+          path={SECURITY_ROUTE}
+          component={SecurityTab}
         />
       </Switch>
     )
