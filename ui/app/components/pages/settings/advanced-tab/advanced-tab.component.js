@@ -345,28 +345,6 @@ export default class AdvancedTab extends PureComponent {
   }
 
   render () {
-    const { t } = this.context
-    const { history } = this.props
-
-    return (
-      <div className="main-container settings-page">
-        <div className="settings-page__header">
-          <div
-            className="settings-page__back-button"
-            onClick={() => history.push(SETTINGS_ROUTE)}
-          />
-          <div className="settings-page__header__title">
-            {t('advanced')}
-          </div>
-          <div
-            className="settings-page__close-button"
-            onClick={() => history.push(DEFAULT_ROUTE)}
-          />
-        </div>
-        <div className="settings-page__content">
-          { this.renderContent() }
-        </div>
-      </div>
-    )
+    return this.renderContent()
   }
 }

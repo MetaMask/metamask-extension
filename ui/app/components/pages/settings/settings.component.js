@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, matchPath } from 'react-router-dom'
+import c from 'classnames'
 import TabBar from '../../tab-bar'
 import SettingsTab from './settings-tab'
 import AdvancedTab from './advanced-tab'
@@ -9,11 +10,18 @@ import SecurityTab from './security-tab'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
-  COMPANY_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
+  SETTINGS_ROUTE,
 } from '../../../routes'
+
+const ROUTES_TO_I18N_KEYS = {
+  [GENERAL_ROUTE]: 'general',
+  [ADVANCED_ROUTE]: 'advanced',
+  [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [ABOUT_US_ROUTE]: 'aboutUs',
+}
 
 export default class SettingsPage extends PureComponent {
   static propTypes = {
@@ -26,25 +34,44 @@ export default class SettingsPage extends PureComponent {
     t: PropTypes.func,
   }
 
+  isCurrentPath (pathname) {
+    return this.props.location.pathname === pathname
+  }
+
   render () {
     const { t } = this.context
     const { history, location } = this.props
 
-    if (location && location.pathname !== '/settings') {
-      return this.renderContent()
-    }
-
     return (
-      <div className="main-container settings-page">
+      <div
+        className={c('main-container settings-page', {
+          'settings-page--selected': !this.isCurrentPath(SETTINGS_ROUTE),
+        })}
+      >
         <div className="settings-page__header">
-          <div className="settings-page__header__title">{t('settings')}</div>
+          {
+            !this.isCurrentPath(SETTINGS_ROUTE) && (
+              <div
+                className="settings-page__back-button"
+                onClick={() => history.push(SETTINGS_ROUTE)}
+              />
+            )
+          }
+          <div className="settings-page__header__title">
+            {t(ROUTES_TO_I18N_KEYS[location.pathname] || 'settings')}
+          </div>
           <div
             className="settings-page__close-button"
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
         </div>
         <div className="settings-page__content">
-          { this.renderTabs() }
+          <div className="settings-page__content__tabs">
+            { this.renderTabs() }
+          </div>
+          <div className="settings-page__content__modules">
+            { this.renderContent() }
+          </div>
         </div>
       </div>
     )
@@ -53,12 +80,7 @@ export default class SettingsPage extends PureComponent {
   renderTabs () {
     const { history, location } = this.props
     const { t } = this.context
-    console.log({
-      GENERAL_ROUTE,
-      ADVANCED_ROUTE,
-      SECURITY_ROUTE,
-      ABOUT_US_ROUTE,
-    })
+
     return (
       <TabBar
         tabs={[
@@ -67,7 +89,12 @@ export default class SettingsPage extends PureComponent {
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
           { content: t('aboutUs'), key: ABOUT_US_ROUTE },
         ]}
-        isActive={key => matchPath(location.pathname, { path: key, exact: true })}
+        isActive={key => {
+          if (key === GENERAL_ROUTE && this.isCurrentPath(SETTINGS_ROUTE)) {
+            return true
+          }
+          return matchPath(location.pathname, { path: key, exact: true })
+        }}
         onSelect={key => history.push(key)}
       />
     )
@@ -95,6 +122,9 @@ export default class SettingsPage extends PureComponent {
           exact
           path={SECURITY_ROUTE}
           component={SecurityTab}
+        />
+        <Route
+          component={SettingsTab}
         />
       </Switch>
     )
