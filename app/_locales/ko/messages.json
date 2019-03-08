@@ -30,7 +30,7 @@
     "message": "승인 데이터 삭제"
   },
   "reject": {
-    "message": "받지 않다"
+    "message": "거부"
   },
   "providerAPIRequest": {
     "message": "Web3 API 요청"
@@ -38,11 +38,17 @@
   "reviewProviderRequest": {
     "message": "이 Ethereum API 요청을 검토하십시오."
   },
+  "providerRequest": {
+    "message": "$1이 당신의 계정에 연결하길 원합니다."
+  },
   "providerRequestInfo": {
     "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
   },
   "accept": {
     "message": "수락"
+  },
+  "acceleratingATransaction": {
+    "message": "* 더 높은 가스 요금을 사용하여 트랜잭션을 가속화하면 네트워크에 의해 더 빨리 처리될 가능성이 증가하지만 항상 빠른 처리가 보장되는 것은 아닙니다."
   },
   "accessingYourCamera": {
     "message": "카메라에 접근 중..."
@@ -68,6 +74,9 @@
   "address": {
     "message": "주소"
   },
+  "advancedOptions": {
+    "message": "고급 옵션"
+  },
   "addCustomToken": {
     "message": "사용자 정의 토큰 추가"
   },
@@ -83,11 +92,20 @@
   "addAcquiredTokens": {
     "message": "메타마스크를 통해 획득한 토큰 추가"
   },
+  "advanced": {
+    "message": "고급"
+  },
+  "allDone": {
+    "message": "모두 완료"
+  },
   "amount": {
     "message": "수량"
   },
   "amountPlusGas": {
     "message": "수량 + 가스"
+  },
+  "amountPlusTxFee": {
+    "message": "Amount + TX Fee"
   },
   "appDescription": {
     "message": "이더리움 브라우저 확장 프로그램",
@@ -109,11 +127,17 @@
   "attemptToCancel": {
     "message": "취소 하시겠습니까?"
   },
+  "attemptToCancelDescription": {
+    "message": "이 취소 시도가 기존 트랜잭션의 취소를 보장하지 않습니다. 취소 시도가 성공하면 위 거래 수수료가 부과됩니다."
+  },
   "attributions": {
     "message": "속성"
   },
   "available": {
     "message": "사용 가능"
+  },
+  "average": {
+    "message": "평균"
   },
   "back": {
     "message": "돌아가기"
@@ -126,6 +150,9 @@
   },
   "balanceIsInsufficientGas": {
     "message": "현재 가스 총합에 대해 잔액이 부족합니다"
+  },
+  "basic": {
+    "message": "Basic"
   },
   "beta": {
     "message": "BETA"
@@ -170,6 +197,9 @@
   "cancellationGasFee": {
     "message": "취소 가스 수수료"
   },
+  "cancelled": {
+    "message": "Cancelled"
+  },
   "cancelN": {
     "message": "모든 $1 트랜잭션 취소"
   },
@@ -178,6 +208,12 @@
   },
   "clickCopy": {
     "message": "클릭하여 복사"
+  },
+  "clickToAdd": {
+    "message": "계정에 토큰을 추가하기 위해 $1를 클릭하세요."
+  },
+  "clickToRevealSeed": {
+    "message": "비밀 단어를 보기 위해 여기를 클릭하세요."
   },
   "close": {
     "message": "닫기"
@@ -188,6 +224,9 @@
   "confirm": {
     "message": "승인"
   },
+  "confirmationTime": {
+    "message": "처리 시간 (초)"
+  },
   "confirmed": {
     "message": "승인됨"
   },
@@ -197,8 +236,14 @@
   "confirmPassword": {
     "message": "비밀번호 확인"
   },
+  "confirmSecretBackupPhrase": {
+    "message": "비밀 백업 구문 확인"
+  },
   "confirmTransaction": {
     "message": "트랜잭션 승인"
+  },
+  "congratulations": {
+    "message": "축하합니다."
   },
   "connectHardwareWallet": {
     "message": "하드웨어 지갑 연결"
@@ -206,17 +251,23 @@
   "connect": {
     "message": "연결"
   },
+  "connectRequest": {
+    "message": "연결 요청"
+  },
   "connecting": {
     "message": "연결 중..."
+  },
+  "connectingTo": {
+    "message": "$1에 연결"
+  },
+  "connectingToKovan": {
+    "message": "Kovan 테스트넷 접속 중"
   },
   "connectingToMainnet": {
     "message": "이더리움 메인넷 접속 중"
   },
   "connectingToRopsten": {
     "message": "Ropsten 테스트넷 접속 중"
-  },
-  "connectingToKovan": {
-    "message": "Kovan 테스트넷 접속 중"
   },
   "connectingToRinkeby": {
     "message": "Rinkeby 테스트넷 접속 중"
@@ -275,8 +326,14 @@
   "createAccount": {
     "message": "계정 생성"
   },
+  "createAWallet": {
+    "message": "지갑 생성하기"
+  },
   "createDen": {
     "message": "생성"
+  },
+  "createPassword": {
+    "message": "비밀번호 생성"
   },
   "crypto": {
     "message": "암호화폐",
@@ -297,6 +354,9 @@
   "customGas": {
     "message": "가스 설정"
   },
+  "customGasSubTitle": {
+    "message": "수수료를 높히면 처리 시간이 단축될 수 있지만, 그것이 보장되진 않습니다."
+  },
   "customToken": {
     "message": "사용자 정의 토큰"
   },
@@ -310,7 +370,7 @@
     "message": "소수점은 0 이상이고 36 이하여야 합니다."
   },
   "decimal": {
-    "message": "소수점 정확도"
+    "message": "소수 자릿수"
   },
   "defaultNetwork": {
     "message": "이더리움 트랜잭션의 기본 네트워크는 메인넷입니다."
@@ -364,6 +424,9 @@
   "downloadGoogleChrome": {
     "message": "구글 크롬 다운로드"
   },
+  "downloadSecretBackup": {
+    "message": "이 비밀 백업 구문을 다운로드하여 암호화된 외장 하드 드라이브나 저장 매체에 안전하게 보관하세요."
+  },
   "downloadStateLogs": {
     "message": "상태 로그 다운로드"
   },
@@ -388,6 +451,30 @@
   "encryptNewDen": {
     "message": "새로운 DEN을 암호화"
   },
+  "endOfFlowMessage1": {
+    "message": "인증을 통과했습니다 - 시드 구문을 안전하게 보관하세요. 그것은 당신의 의무입니다."
+  },
+  "endOfFlowMessage2": {
+    "message": "안전하게 시드 구문을 보관하는 팁"
+  },
+  "endOfFlowMessage3": {
+    "message": "여러 군데에 시드 구문을 백업하세요."
+  },
+  "endOfFlowMessage4": {
+    "message": "누구와도 시드 구문을 공유하지마세요."
+  },
+  "endOfFlowMessage5": {
+    "message": "피싱에 주의하세요! 메타마스크는 절대 갑작스럽게 당신의 시드 구문을 묻지 않습니다."
+  },
+  "endOfFlowMessage6": {
+    "message": "만약 시드 구문을 다시 백업해야한다면, 설정 -> 보안에서 확인할 수 있습니다. "
+  },
+  "endOfFlowMessage7": {
+    "message": "만약 질문이 있거나 피싱을 목격했다면 support@metamask.io으로 메일을 보내주세요."
+  },
+  "endOfFlowMessage8": {
+    "message": "메타마스크는 당신의 시드 구문을 복원해줄 수 없습니다. 더 알아보기."
+  },
   "ensNameNotFound": {
     "message": "ENS 이름을 찾을 수 없습니다"
   },
@@ -400,8 +487,14 @@
   "enterPasswordContinue": {
     "message": "계속하기 위해 비밀번호 입력"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "이더스캔에서 계정보기"
+  },
+  "estimatedProcessingTimes": {
+    "message": "예상 처리 시간"
   },
   "exchangeRate": {
     "message": "환율"
@@ -417,6 +510,12 @@
   },
   "failed": {
     "message": "실패"
+  },
+  "fast": {
+    "message": "빠름"
+  },
+  "faster": {
+    "message": "빨라짐"
   },
   "fiat": {
     "message": "FIAT",
@@ -457,17 +556,32 @@
   "gasLimitCalculation": {
     "message": "네트워크 성공률을 기반으로 적합한 가스 한도를 계산합니다."
   },
+  "gasLimitInfoModalContent": {
+    "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 단위입니다."
+  },
   "gasLimitRequired": {
     "message": "가스 한도가 필요합니다."
   },
   "gasLimitTooLow": {
     "message": "가스 한도는 최소 21000 이상이어야 합니다."
   },
+  "gasUsed": {
+    "message": "사용된 가스"
+  },
   "generatingSeed": {
     "message": "시드 생성 중..."
   },
   "gasPrice": {
     "message": "가스 가격 (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "가스 가격 매우 낮음"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Price"
   },
   "gasPriceCalculation": {
     "message": "네트워크 성공률을 기반으로 적합한 가스 가격을 계산합니다."
@@ -488,9 +602,15 @@
   "getHelp": {
     "message": "도움말"
   },
+  "getStarted": {
+    "message": "시작하기"
+  },
   "greaterThanMin": {
     "message": "$1 이상이어야 합니다.",
     "description": "10진수 입력으로 hex값 입력을 도와줍니다"
+  },
+  "happyToSeeYou": {
+    "message": "We’re happy to see you."
   },
   "hardware": {
     "message": "하드웨어"
@@ -545,11 +665,20 @@
   "importAccountMsg": {
     "message": " 가져온 계정은 메타마스크에서 원래 생성된 계정의 시드구문과 연관성이 없습니다. 가져온 계정에 대해 더 배우기 "
   },
+  "importAccountSeedPhrase": {
+    "message": "시드 구문으로 계정 가져오기"
+  },
   "importAnAccount": {
     "message": "계정 가져오기"
   },
   "importDen": {
     "message": "기존의 DEN 가져오기"
+  },
+  "importWallet": {
+    "message": "지갑 가져오기"
+  },
+  "importYourExisting": {
+    "message": "12개 단어로 구성된 시드 구문으로 이미 만들어진 지갑을 가져오기"
   },
   "imported": {
     "message": "가져온 계정",
@@ -557,6 +686,9 @@
   },
   "importUsingSeed": {
     "message": "계정 시드 구문으로 가져오기"
+  },
+  "importWithSeedPhrase": {
+    "message": "시드 구문 가져오기"
   },
   "info": {
     "message": "정보"
@@ -566,6 +698,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "초기 트랜잭션이 네트워크를 통해 확정되었습니다. 확인을 누르면 이전으로 돌아갑니다."
+  },
+  "insufficientBalance": {
+    "message": "잔액 부족."
   },
   "insufficientFunds": {
     "message": "충분하지 않은 자금."
@@ -623,6 +758,9 @@
     "message": "$1 이하여야합니다.",
     "description": "10진수 입력으로 hex값 입력을 도와줍니다"
   },
+  "letsGoSetUp": {
+    "message": "네, 설정해볼게요!"
+  },
   "likeToAddTokens": {
     "message": "토큰을 추가하시겠습니까?"
   },
@@ -631,6 +769,9 @@
   },
   "limit": {
     "message": "한도"
+  },
+  "liveGasPricePredictions": {
+    "message": "실시간 가스 가격 예측"
   },
   "loading": {
     "message": "로딩 중..."
@@ -656,6 +797,9 @@
   "mainnet": {
     "message": "이더리움 메인넷"
   },
+  "memorizePhrase": {
+    "message": "이 구문을 암기하세요."
+  },
   "menu": {
     "message": "메뉴"
   },
@@ -665,14 +809,17 @@
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 신분 저장소입니다."
   },
-  "metamaskVersion": {
-    "message": "메타마스크 버전"
-  },
   "metamaskSeedWords": {
     "message": "메타마스크 시드 단어"
   },
+  "metamaskVersion": {
+    "message": "메타마스크 버전"
+  },
   "min": {
     "message": "최소"
+  },
+  "missingYourTokens": {
+    "message": "당신의 토큰이 보이지 않나요?"
   },
   "myAccounts": {
     "message": "내 계정"
@@ -713,11 +860,44 @@
   "newPassword": {
     "message": "새 비밀번호 (최소 8자 이상)"
   },
+  "newPassword8Chars": {
+    "message": "새 비밀번호 (최소 8문자)"
+  },
   "newRecipient": {
     "message": "받는 사람"
   },
-  "newRPC": {
-    "message": "새로운 RPC URL"
+  "newNetwork": {
+    "message": "새 네트워크"
+  },
+  "newToMetaMask": {
+    "message": "메타마스크를 처음 사용하시나요?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "아니요, 이미 시드 구문을 가지고 있습니다."
+  },
+  "rpcURL": {
+    "message": "새 RPC 주소"
+  },
+  "showAdvancedOptions": {
+    "message": "고급 옵션 보기"
+  },
+  "hideAdvancedOptions": {
+    "message": "고급 옵션 숨기기"
+  },
+  "optionalChainId": {
+    "message": "ChainID (선택)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (선택)"
+  },
+  "optionalNickname": {
+    "message": "Nickname (선택)"
+  },
+  "newTotal": {
+    "message": "새 합계"
+  },
+  "newTransactionFee": {
+    "message": "새 트랜잭션 수수료"
   },
   "next": {
     "message": "다음"
@@ -743,11 +923,11 @@
   "notStarted": {
     "message": "시작 안 됨"
   },
-  "noWebcamFound": {
-    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
-  },
   "noWebcamFoundTitle": {
     "message": "웹캠이 없습니다"
+  },
+  "noWebcamFound": {
+    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
   },
   "oldUI": {
     "message": "구버전 UI"
@@ -777,6 +957,12 @@
   },
   "parameters": {
     "message": "매개변수"
+  },
+  "participateInMetaMetrics": {
+    "message": "MetaMetrics 참여"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "메타마스크를 더 좋게 만들기 위해 MetaMetrics에 참여하세요."
   },
   "password": {
     "message": "비밀번호"
@@ -819,6 +1005,12 @@
   },
   "prev": {
     "message": "이전"
+  },
+  "primaryCurrencySetting": {
+    "message": "주 화폐"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "체인의 고유 통화 값으로 우선 표기하시려면 네이티브를 선택하세요. (예: ETH) 설정하신 Fiat 통화 값으로 우선 표기하시려면 Fiat을 선택하세요."
   },
   "privacyMsg": {
     "message": "개인정보 보호 정책"
@@ -887,6 +1079,9 @@
   "restoreAccountWithSeed": {
     "message": "시드 구문으로 계정 복구하기"
   },
+  "requestsAwaitingAcknowledgement": {
+    "message": "requests waiting to be acknowledged"
+  },
   "required": {
     "message": "필요함"
   },
@@ -942,11 +1137,11 @@
   "save": {
     "message": "저장"
   },
-  "speedUpTitle": {
-    "message": "트랜잭션 속도 향상하기"
+  "slow": {
+    "message": "느림"
   },
-  "speedUpSubtitle": {
-    "message": "트랜잭션 가스 가격을 올려서 해당 트랜잭션에 덮어쓰고 속도를 빠르게 합니다"
+  "slower": {
+    "message": "느려짐"
   },
   "saveAsCsvFile": {
     "message": "CSV 파일로 저장"
@@ -970,11 +1165,23 @@
   "searchResults": {
     "message": "검색 결과"
   },
+  "secretBackupPhrase": {
+    "message": "비밀 백업 구문"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "비밀 백업 구문을 사용하면 계정을 쉽게 백업하고 복원할 수 있습니다."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "경고: 백업 구문을 절대 공개하지 마세요. 이 구문을 가진 누군가 당신의 이더를 영원히 가지고 갈 수 있습니다."
+  },
   "secretPhrase": {
     "message": "12개 단어로 구성된 비밀 구문을 입력하여 저장소를 복구하세요."
   },
-  "newPassword8Chars": {
-    "message": "새 비밀번호 (최소 8문자)"
+  "secondsShorthand": {
+    "message": "Sec"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "각 단어를 스페이스로 구분해주세요"
   },
   "seedPhraseReq": {
     "message": "시드 구문은 12개의 단어입니다"
@@ -984,6 +1191,9 @@
   },
   "selectCurrency": {
     "message": "통화 선택"
+  },
+  "selectEachPhrase": {
+    "message": "백업 구문이 올바른지 확인하기 위해 각 단어를 순서에 맞게 선택해주세요."
   },
   "selectLocale": {
     "message": "언어 선택"
@@ -996,6 +1206,9 @@
   },
   "send": {
     "message": "전송"
+  },
+  "sendAmount": {
+    "message": "전송 수량"
   },
   "sendETH": {
     "message": "ETH 보내기"
@@ -1024,6 +1237,9 @@
   "selectAnAccountHelp": {
     "message": "메타마스크에서 보기 위한 계정 선택"
   },
+  "selectAHigherGasFee": {
+    "message": "트랜잭션 처리를 가속하기 위해 더 높은 가스 요금을 선택하세요.*"
+  },
   "selectHdPath": {
     "message": "HD 경로 지정"
   },
@@ -1038,6 +1254,18 @@
   },
   "shapeshiftBuy": {
     "message": "Shapeshift를 통해서 구매하기"
+  },
+  "showAdvancedGasInline": {
+    "message": "고급 가스 제어"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "전송 및 확인 화면에서 직접 가스 가격과 한도 제어를 표시하려면 이 옵션을 선택해주세요."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "테스트 넷에서 변환 보여주기"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "테스트 넷에서 fiat 변환을 보기 위해 활성화하세요"
   },
   "showPrivateKeys": {
     "message": "개인키 보기"
@@ -1054,11 +1282,11 @@
   "sign": {
     "message": "서명"
   },
-  "signed": {
-    "message": "서명됨"
-  },
   "signatureRequest": {
     "message": "서명 요청"
+  },
+  "signed": {
+    "message": "서명됨"
   },
   "signMessage": {
     "message": "메시지 서명"
@@ -1072,8 +1300,29 @@
   "sigRequested": {
     "message": "서명이 요청됨"
   },
+  "somethingWentWrong": {
+    "message": "Oops! Something went wrong."
+  },
   "spaceBetween": {
     "message": "단어 사이에는 공백만 올 수 있습니다"
+  },
+  "speedUp": {
+    "message": "speed up"
+  },
+  "speedUpTitle": {
+    "message": "트랜잭션 속도 향상하기"
+  },
+  "speedUpSubtitle": {
+    "message": "트랜잭션 가스 가격을 올려서 해당 트랜잭션에 덮어쓰고 속도를 빠르게 합니다"
+  },
+  "speedUpCancellation": {
+    "message": "취소 속도 향상"
+  },
+  "speedUpTransaction": {
+    "message": "트랜잭션 속소 향상"
+  },
+  "switchNetworks": {
+    "message": "네트워크 전환"
   },
   "status": {
     "message": "상태"
@@ -1105,6 +1354,9 @@
   "step3HardwareWalletMsg": {
     "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20 토큰 혹은 대체 가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
   },
+  "storePhrase": {
+    "message": "이 구문을 1Password같은 암호 관리자 저장하세요."
+  },
   "submit": {
     "message": "제출"
   },
@@ -1126,8 +1378,14 @@
   "testFaucet": {
     "message": "파우셋 테스트"
   },
+  "thisWillCreate": {
+    "message": "새로운 지갑과 시드 구문을 생성"
+  },
+  "tips": {
+    "message": "팁"
+  },
   "to": {
-    "message": "받는이: "
+    "message": "받는이"
   },
   "toETHviaShapeShift": {
     "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
@@ -1145,6 +1403,9 @@
   "tokenBalance": {
     "message": "현재 토큰 잔액:"
   },
+  "tokenContractAddress": {
+    "message": "Token Contract 주소"
+  },
   "tokenSelection": {
     "message": "토큰을 검색하거나 유명한 토큰 리스트에서 선택하시기 바랍니다."
   },
@@ -1160,11 +1421,47 @@
   "transaction": {
     "message": "트랜잭션"
   },
+  "transactionConfirmed": {
+    "message": "트랜잭션이 승인됨 $2."
+  },
+  "transactionCreated": {
+    "message": "$1에 대한 트랜잭션이 생성됨 $2."
+  },
+  "transactionWithNonce": {
+    "message": "트랜잭션 $1"
+  },
+  "transactionDropped": {
+    "message": "트랜잭션이 드롭됨 $2."
+  },
+  "transactionSubmitted": {
+    "message": "$1의 가스 요금으로 트랜잭션이 제출됨 $2."
+  },
+  "transactionResubmitted": {
+    "message": "$1으로 가스 요금을 올려 트랜잭션이 다시 제출됨 $2."
+  },
+  "transactionUpdated": {
+    "message": "트랜잭션이 수정됨 $2."
+  },
+  "transactionUpdatedGas": {
+    "message": "$1의 가스 요금으로 트랜잭션이 수정됨 $2."
+  },
+  "transactionErrored": {
+    "message": "트랜잭션 오류 발생."
+  },
+  "transactionCancelAttempted": {
+    "message": "$1의 가스 요금으로 트랜잭션 취소가 시도됨 $2."
+  },
+  "transactionCancelSuccess": {
+    "message": "트랜잭션이 성공적으로 취소됨 $2."
+  },
   "transactions": {
     "message": "트랜잭션"
   },
   "transactionError": {
     "message": "트랜잭션 오류. 컨트랙트 코드에서 예외 발생(Exception thrown)."
+  },
+  "transactionFee": {
+    "message": "수수료"
   },
   "transactionMemo": {
     "message": "트랜잭션 메모 (선택사항)"
@@ -1172,8 +1469,14 @@
   "transactionNumber": {
     "message": "트랜잭션 번호"
   },
+  "transactionTime": {
+    "message": "트랜잭션 시간"
+  },
   "transfer": {
     "message": "전송"
+  },
+  "transferFrom": {
+    "message": "Transfer From"
   },
   "transfers": {
     "message": "전송"
@@ -1193,6 +1496,9 @@
   },
   "typePassword": {
     "message": "비밀번호를 입력하세요"
+  },
+  "uiMigrationAnnouncement": {
+    "message": "새로운 메타마스크 UI에 오신 것을 환영합니다. UI에 대한 피드백 또는 기능 요청이 있는 경우, 당사의 지원팀 또는 GitHub에 연락해주세요."
   },
   "uiWelcome": {
     "message": "새로운 UI에 오신 것을 환영합니다. (Beta)"
@@ -1234,7 +1540,10 @@
     "message": "잠금 해제"
   },
   "unlockMessage": {
-    "message": "우리가 기다리던 분권형 웹입니다"
+    "message": "우리가 기다리던 탈 중앙화 웹입니다"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
   },
   "uriErrorMsg": {
     "message": "URI는 HTTP/HTTPS로 시작해야 합니다."
@@ -1279,8 +1588,14 @@
   "whatsThis": {
     "message": "이것은 무엇인가요?"
   },
+  "writePhrase": {
+    "message": "이 구문을 종이에 써서 안전한 장소에 보관하세요. 만약 당신이 더 높은 수준의 보안을 원한다면, 그것을 여러 장의 종이에 적어서 각각 2-3개의 다른 위치에 보관하세요."
+  },
   "yesLetsTry": {
     "message": "네, 시도해보겠습니다."
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "이 기능을 사용하려면 카메라 접근을 허용해야 합니다."
   },
   "yourSigRequested": {
     "message": "서명을 요청 중입니다."
@@ -1290,8 +1605,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"
-  },
-  "youNeedToAllowCameraAccess": {
-    "message": "이 기능을 사용하려면 카메라 접근을 허용해야 합니다."
   }
 }
