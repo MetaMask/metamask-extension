@@ -32,8 +32,11 @@
   "reject": {
     "message": "거부"
   },
-  "providerRequest": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
+  "providerAPIRequest": {
+    "message": "Web3 API 요청"
+  },
+  "reviewProviderRequest": {
+    "message": "이 Ethereum API 요청을 검토하세요."
   },
   "providerRequest": {
     "message": "$1이 당신의 계정에 연결하길 원합니다."
@@ -336,8 +339,11 @@
     "message": "암호화폐",
     "description": "거래 유형 (암호화폐)"
   },
+  "currentConversion": {
+    "message": "현재 통화"
+  },
   "currencyConversion": {
-    "message": "화폐 변환"
+    "message": "통화 변환"
   },
   "currentLanguage": {
     "message": "현재 언어"
@@ -649,6 +655,9 @@
   "howToDeposit": {
     "message": "어떤 방법으로 이더를 입금하시겠습니까?"
   },
+  "holdEther": {
+    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+  },
   "import": {
     "message": "가져오기",
     "description": "선택된 파일로부터 계정 가져오기 버튼"
@@ -945,6 +954,9 @@
   },
   "orderOneHere": {
     "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
+  },
+  "origin": {
+    "message": "Origin"
   },
   "parameters": {
     "message": "매개변수"
@@ -1508,6 +1520,9 @@
   },
   "unknown": {
     "message": "알 수 없음"
+  },
+  "unknownFunction": {
+    "message": "알 수 없는 함수"
   },
   "unknownNetwork": {
     "message": "알 수 없는 프라이빗 네트워크"
