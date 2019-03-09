@@ -198,7 +198,7 @@
     "message": "취소 가스 수수료"
   },
   "cancelled": {
-    "message": "Cancelled"
+    "message": "취소됨"
   },
   "cancelN": {
     "message": "모든 $1 트랜잭션 취소"
@@ -313,6 +313,12 @@
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
+  },
+  "copyTransactionId": {
+    "message": "트랜잭션 아이디 복사"
+  },
+  "copiedTransactionId": {
+    "message": "트랜잭션 아이디 복사됨"
   },
   "copyButton": {
     "message": " 복사 "
@@ -560,7 +566,7 @@
     "message": "네트워크 성공률을 기반으로 적합한 가스 한도를 계산합니다."
   },
   "gasLimitInfoModalContent": {
-    "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 단위입니다."
+    "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 수량입니다."
   },
   "gasLimitRequired": {
     "message": "가스 한도가 필요합니다."
@@ -581,10 +587,10 @@
     "message": "가스 가격 매우 낮음"
   },
   "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+    "message": "가스 가격은 가스 1당 지불할 gwei 단위의 이더 수량을 명시합니다."
   },
   "gasPriceNoDenom": {
-    "message": "Gas Price"
+    "message": "가스 가격"
   },
   "gasPriceCalculation": {
     "message": "네트워크 성공률을 기반으로 적합한 가스 가격을 계산합니다."
@@ -801,7 +807,7 @@
     "message": "이더리움 메인넷"
   },
   "memorizePhrase": {
-    "message": "이 구문을 암기하세요."
+    "message": "이 구문을 기억하세요."
   },
   "menu": {
     "message": "메뉴"
@@ -810,7 +816,7 @@
     "message": "메시지"
   },
   "metamaskDescription": {
-    "message": "메타마스크는 이더리움을 위한 안전한 신분 저장소입니다."
+    "message": "메타마스크는 이더리움을 위한 안전한 저장소입니다."
   },
   "metamaskSeedWords": {
     "message": "메타마스크 시드 단어"
@@ -1083,7 +1089,7 @@
     "message": "시드 구문으로 계정 복구하기"
   },
   "requestsAwaitingAcknowledgement": {
-    "message": "requests waiting to be acknowledged"
+    "message": "요청이 인정되기까지 대기중"
   },
   "required": {
     "message": "필요함"
@@ -1181,7 +1187,7 @@
     "message": "12개 단어로 구성된 비밀 구문을 입력하여 저장소를 복구하세요."
   },
   "secondsShorthand": {
-    "message": "Sec"
+    "message": "초"
   },
   "seedPhrasePlaceholder": {
     "message": "각 단어를 스페이스로 구분해주세요"
@@ -1265,7 +1271,7 @@
     "message": "전송 및 확인 화면에서 직접 가스 가격과 한도 제어를 표시하려면 이 옵션을 선택해주세요."
   },
   "showFiatConversionInTestnets": {
-    "message": "테스트 넷에서 변환 보여주기"
+    "message": "테스트 넷에서 fiat 변환 보여주기"
   },
   "showFiatConversionInTestnetsDescription": {
     "message": "테스트 넷에서 fiat 변환을 보기 위해 활성화하세요"
@@ -1304,13 +1310,13 @@
     "message": "서명이 요청됨"
   },
   "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
+    "message": "헉! 뭔가 잘못됐어요."
   },
   "spaceBetween": {
     "message": "단어 사이에는 공백만 올 수 있습니다"
   },
   "speedUp": {
-    "message": "speed up"
+    "message": "속도 향상"
   },
   "speedUpTitle": {
     "message": "트랜잭션 속도 향상하기"
@@ -1322,10 +1328,10 @@
     "message": "취소 속도 향상"
   },
   "speedUpTransaction": {
-    "message": "트랜잭션 속소 향상"
+    "message": "트랜잭션 속도 향상"
   },
   "switchNetworks": {
-    "message": "네트워크 전환"
+    "message": "네트워크 변경"
   },
   "status": {
     "message": "상태"
@@ -1358,7 +1364,7 @@
     "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20 토큰 혹은 대체 가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
   },
   "storePhrase": {
-    "message": "이 구문을 1Password같은 암호 관리자 저장하세요."
+    "message": "이 구문을 1Password같은 암호 관리자에 저장하세요."
   },
   "submit": {
     "message": "제출"
@@ -1407,7 +1413,7 @@
     "message": "현재 토큰 잔액:"
   },
   "tokenContractAddress": {
-    "message": "Token Contract 주소"
+    "message": "토큰 컨트랙트 주소"
   },
   "tokenSelection": {
     "message": "토큰을 검색하거나 유명한 토큰 리스트에서 선택하시기 바랍니다."
@@ -1479,7 +1485,7 @@
     "message": "전송"
   },
   "transferFrom": {
-    "message": "Transfer From"
+    "message": "보내는 이"
   },
   "transfers": {
     "message": "전송"
@@ -1546,7 +1552,7 @@
     "message": "우리가 기다리던 탈 중앙화 웹입니다"
   },
   "updatedWithDate": {
-    "message": "Updated $1"
+    "message": "$1에 업데이트 됨"
   },
   "uriErrorMsg": {
     "message": "URI는 HTTP/HTTPS로 시작해야 합니다."
