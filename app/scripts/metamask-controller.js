@@ -7,6 +7,7 @@
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
+const capnode = require('capnode')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const asStream = require('obs-store/lib/asStream')
@@ -1247,6 +1248,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupCapnodeConnection(mux.createStream('capnode'), originDomain)
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
@@ -1266,6 +1268,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupCapnodeConnection(mux.createStream('capnode'), originDomain)
   }
 
   /**
@@ -1474,6 +1477,22 @@ module.exports = class MetamaskController extends EventEmitter {
     Object.keys(this.connections).forEach((domain) => {
       this.sendMessage(domain, message)
     })
+  }
+
+  setupCapnodeConnection(outStream, origin) {
+    const capServer = capnode.createServer({
+      ping: () => 'pong',
+    })
+
+    pump(
+      outStream,
+      capServer.stream,
+      outStream,
+      (err) => {
+        // TODO: Any capServer deallocation steps.
+        if (err) log.error(err)
+      }
+    )
   }
 
   /**
