@@ -161,7 +161,8 @@ setupMetamaskMeshMetrics()
  */
 async function initialize () {
   const initState = await loadStateFromPersistence()
-  const initLangCode = await getFirstPreferredLangCode()
+  // const initLangCode = await getFirstPreferredLangCode()
+  const initLangCode = 'ko'
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
 }
