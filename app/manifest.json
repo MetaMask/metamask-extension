@@ -71,9 +71,9 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "notifications",
-    "tabs"
+    "notifications"
   ],
+  "optional_permissions": [ "tabs" ],
   "web_accessible_resources": [
     "inpage.js",
     "phishing.html"

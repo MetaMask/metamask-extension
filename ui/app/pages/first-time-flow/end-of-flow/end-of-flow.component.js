@@ -83,18 +83,27 @@ export default class EndOfFlowScreen extends PureComponent {
               },
             })
             history.push(DEFAULT_ROUTE)
-            chrome.tabs.query({}, function(tabs) { 
-            for(var i = 0 ;i<tabs.length;i++){
-              var string = tabs[i].title 
-              
-              if( string.includes('fwd.metamask.io/')){
-                 var res = string.substring(17);
-                chrome.tabs.update(tabs[i].id, {url: res});
-                chrome.tabs.create({ url: res });
-              
+            chrome.permissions.request({
+              permissions: ['tabs']
+            }, function(granted) {
+              if (granted) {
+                chrome.tabs.query({}, function(tabs) { 
+                  for(var i = 0 ;i<tabs.length;i++){
+                    var string = tabs[i].title 
+                    
+                    if( string.includes('fwd.metamask.io/')){
+                      var res = string.substring(17);
+                      chrome.tabs.update(tabs[i].id, {url: res});
+                      chrome.tabs.create({ url: res });
+                    
+                    }
+                  }
+                } );
+              } else {
+               
               }
-            }
-          } );
+            });
+           
           }}
         >
           { 'All Done' }
