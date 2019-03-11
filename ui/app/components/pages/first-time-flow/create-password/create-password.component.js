@@ -6,7 +6,7 @@ import ImportWithSeedPhrase from './import-with-seed-phrase'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../routes'
 
 export default class CreatePassword extends PureComponent {
@@ -21,7 +21,7 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
+      history.push(INITIALIZE_SEED_PHRASE_ROUTE)
     }
   }
 
