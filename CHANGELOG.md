@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 6.2.1 Wed Mar 06 2019
+
 ## 6.2.0 Tue Mar 05 2019
 - [#6192](https://github.com/MetaMask/metamask-extension/pull/6192): Improves design and UX of onboarding flow
 - [#6195](https://github.com/MetaMask/metamask-extension/pull/6195): Fixes gas estimation when sending to contracts
