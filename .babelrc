@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "targets": {
           "browsers": [
@@ -10,14 +10,14 @@
             "not op_mini all"
           ]
         },
+        "debug": true,
       }
     ],
-    "react",
-    "stage-0"
+    "@babel/preset-react"
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-async-to-generator",
-    "transform-class-properties"
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-transform-async-to-generator",
+    "@babel/plugin-proposal-class-properties"
   ]
 }
