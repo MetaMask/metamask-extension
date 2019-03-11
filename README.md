@@ -57,10 +57,6 @@ npm start
 npm run dist
 ```
 
-#### Writing Browser Tests
-
-To write tests that will be run in the browser using QUnit, add your test files to `test/integration/lib`.
-
 ## Other Docs
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)

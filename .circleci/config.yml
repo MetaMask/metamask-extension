@@ -11,9 +11,6 @@ workflows:
       - prep-docs:
           requires:
             - prep-deps-npm
-      - prep-scss:
-          requires:
-            - prep-deps-npm
       - test-lint:
           requires:
             - prep-deps-npm
@@ -39,14 +36,6 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-scss
       - all-tests-pass:
           requires:
             - test-lint
@@ -55,8 +44,6 @@ workflows:
             - test-e2e-chrome
             - test-e2e-firefox
             # - test-e2e-beta-drizzle
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
       - job-screens:
           requires:
             - prep-deps-npm
@@ -134,25 +121,6 @@ jobs:
           root: .
           paths:
             - docs/jsdocs
-
-  prep-scss:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - run:
-          name: Build for integration tests
-          command: npm run test:integration:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ui/app/css/output
 
   test-lint:
     docker:
@@ -292,33 +260,6 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: npm run mozilla-lint
-
-  test-integration-flat-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
-
-  test-integration-flat-chrome:
-    environment:
-      browsers: '["Chrome"]'
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
 
   all-tests-pass:
     docker:
