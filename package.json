@@ -30,35 +30,6 @@
     "storybook": "start-storybook -p 6006 -c .storybook",
     "update-changelog": "./auto-changelog.sh"
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            [
-              "env",
-              {
-                "browsers": [
-                  ">0.25%",
-                  "not ie 11",
-                  "not op_mini all"
-                ]
-              }
-            ],
-            "stage-0"
-          ]
-        },
-        {
-          "plugins": [
-            "transform-class-properties"
-          ]
-        }
-      ],
-      "reactify",
-      "brfs"
-    ]
-  },
   "dependencies": {
     "@material-ui/core": "1.0.0",
     "@sentry/browser": "^4.1.1",

@@ -25,6 +25,8 @@ const uglify = require('gulp-uglify-es').default
 const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
+const babelify = require('babelify')
+const brfs = require('brfs')
 
 const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
@@ -455,6 +457,9 @@ function generateBundler (opts, performBundle) {
   if (opts.externalDependencies) {
     bundler = bundler.external(opts.externalDependencies)
   }
+
+  bundler.transform(babelify)
+  bundler.transform(brfs)
 
   // inject variables into bundle
   bundler.transform(envify({
