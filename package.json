@@ -152,6 +152,7 @@
     "safe-event-emitter": "^1.0.1",
     "semver": "^5.4.1",
     "single-call-balance-checker-abi": "^1.0.0",
+    "static-server": "^2.2.1",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
     "valid-url": "^1.0.9",
