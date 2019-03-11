@@ -496,7 +496,7 @@ function generateBundler (opts, performBundle) {
     fullPaths: opts.buildWithFullPaths,
   })
 
-  const activateSesify = ['background.js', 'ui.js'].includes(opts.filename)
+  const activateSesify = ['background.js'].includes(opts.filename)
   const sesifyConfigFile = activateSesify && `./sesify/${opts.filename}`
 
   if (activateSesify) {
@@ -534,7 +534,6 @@ function generateBundler (opts, performBundle) {
         return `./${filename}`
       },
     }]]
-    browserifyOpts.insertGlobalVars = { global: undefined }
   }
 
   function writeAutoConfig (config) {
