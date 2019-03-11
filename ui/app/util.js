@@ -95,8 +95,6 @@ function miniAddressSummary (address) {
 function isValidAddress (address, network) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
-  // Checksums on non-ETH Blockchains #6001
-  // if (!isEthNetwork(network)) return (ethUtil.isValidAddress(prefixed) && address === address.toLowerCase())
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
@@ -317,8 +315,6 @@ function getTokenAddressFromTokenObject (token) {
 function checksumAddress (address, network) {
   const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
   return checksummed
-  // Checksums on non-ETH Blockchains #6001
-  // return checksummed && network && !isEthNetwork(network) ? checksummed.toLowerCase() : checksummed
 }
 
 function addressSlicer (address = '') {
