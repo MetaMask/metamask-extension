@@ -320,33 +320,6 @@ jobs:
           name: test:integration:flat
           command: npm run test:flat
 
-  test-integration-mascara-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
-
-  test-integration-mascara-chrome:
-    environment:
-      browsers: '["Chrome"]'
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
-
   all-tests-pass:
     docker:
       - image: circleci/node:8.11.3-browsers
