@@ -85,9 +85,9 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v{{ .Environment.CACHE_VERSION }}-dependency-cache-{{ checksum "package-lock.json" }}
+      # - restore_cache:
+      #     keys:
+      #       - v{{ .Environment.CACHE_VERSION }}-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install npm 6 + deps via npm
           command: |
@@ -96,10 +96,10 @@ jobs:
           root: .
           paths:
           - node_modules
-      - save_cache:
-          key: v{{ .Environment.CACHE_VERSION }}-dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
+      # - save_cache:
+      #     key: v{{ .Environment.CACHE_VERSION }}-dependency-cache-{{ checksum "package-lock.json" }}
+      #     paths:
+      #       - node_modules
 
   prep-build:
     docker:
