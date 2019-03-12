@@ -220,6 +220,7 @@ var actions = {
   updateSendWarnings,
   clearSend,
   setSelectedAddress,
+  setSelectedContractAddress,
   gasLoadingStarted,
   gasLoadingFinished,
   // app messages
@@ -681,12 +682,12 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function importNewContract (strategy, args) {  
-  log.debug(`background.addNewAccount`, strategy, args)
+function importNewContract (type, args) {  
+  log.debug(`background.addNewAccount`, type, args)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.importContractWithType(strategy, args[0], (err, contractAddress) => {
+      background.importContractWithType(type, args[0], (err, contractAddress) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -1619,6 +1620,19 @@ function setSelectedAddress (address) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
     background.setSelectedAddress(address, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+  }
+}
+
+function setSelectedContractAddress (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setSelectedContractAddress`)
+    background.setSelectedContractAddress(address, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))

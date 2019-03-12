@@ -31,20 +31,9 @@ function mapDispatchToProps (dispatch) {
       return dispatch(actions.importNewContract(strategy, [ contractAddress ]))
     },
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
-    // want to add this so the contract gets added into the account dropdown
-    // createAccount: newAccountName => {
-    //   return dispatch(actions.addNewAccount())
-    //     .then(newAccountAddress => {
-    //       if (newAccountName) {
-    //         dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
-    //       }
-    //     })
-    // },
-
-    // do i need this? doesn't it happen in the backend?
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
-    //setSelectedContractAddress: (address) => dispatch(actions.setSelectedContractAddress(address)),
-   // lookupOwners: (address) => dispatch(actions.lookupOwners(address)),
+    setSelectedContractAddress: (address) => dispatch(actions.setSelectedContractAddress(address)),
+    // lookupOwners: (address) => dispatch(actions.lookupOwners(address)),
   }
 }
 
@@ -114,13 +103,16 @@ ContractImportView.prototype.addNewContractAccount = function () {
   const contractAddress = input.value
   const { importNewContract, history, displayWarning, setSelectedAddress, firstAddress } = this.props
 
-  importNewContract('Contract', [ contractAddress ])
+  importNewContract('gnosis-safe', [ contractAddress ])
     .then((contractAddress ) => {
       if (contractAddress) {
         console.log('[contract-address.js] here', contractAddress)
         history.push(DEFAULT_ROUTE)
         displayWarning(null)
       } else {
+        // to do: test inputting:
+        // - [ ] garbage 
+        // - [ ] an address that isn't a gnosis safe
         displayWarning('Error importing account.')
         setSelectedAddress(firstAddress)
       }

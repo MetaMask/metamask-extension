@@ -119,6 +119,9 @@
   "advancedOptions": {
     "message": "Advanced Options"
   },
+  "addContract": {
+    "message":  "Add Contract"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -419,6 +422,15 @@
   },
   "continueToCoinSwitch": {
     "message": "Continue to CoinSwitch"
+  },
+  "contract": {
+    "message": "Contract"
+  },
+  "contractAddress": {
+    "message": "Contract Address"
+  },
+  "contractDetected": {
+    "message": "Detected $1 as owner"
   },
   "contractDeployment": {
     "message": "Contract Deployment"
@@ -851,6 +863,12 @@
   "importAnAccount": {
     "message": "Import an account"
   },
+  "importContractMsg": {
+    "message": "Importing a contract account that is controlled by your current selected account."
+  },
+  "importContractMsg2": {
+    "message": "To import a contract account, first create a new contract account here with your metamask account as an owner."
+  },
   "importDen": {
     "message": "Import Existing DEN"
   },
@@ -1191,6 +1209,9 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originalParams": {
+    "message": "Original Tx Params"
   },
   "outgoing": {
     "message": "Outgoing"
