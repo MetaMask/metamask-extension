@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 6.2.2 Tue Mar 12 2019
+
+- [#6271](https://github.com/MetaMask/metamask-extension/pull/6271): Centre all notification popups
+- [#6268](https://github.com/MetaMask/metamask-extension/pull/6268): Improve Korean translations
+- [#6279](https://github.com/MetaMask/metamask-extension/pull/6279): Nonmultiple notifications for batch txs
+- [#6280](https://github.com/MetaMask/metamask-extension/pull/6280): No longer check network when validating checksum addresses
+
 ## 6.2.1 Wed Mar 06 2019
 
 ## 6.2.0 Tue Mar 05 2019
