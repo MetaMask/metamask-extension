@@ -75,7 +75,7 @@
     ]
   },
   "dependencies": {
-    "@material-ui/core": "^3.9.2",
+    "@material-ui/core": "^1.5.1",
     "@sentry/browser": "^4.1.1",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.0.9",
