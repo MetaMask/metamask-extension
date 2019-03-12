@@ -5,6 +5,7 @@ const h = require('react-hyperscript')
 const { HashRouter } = require('react-router-dom')
 const App = require('./app')
 const I18nProvider = require('./i18n-provider')
+const MetaMetricsProvider = require('./metametrics/metametrics.provider')
 
 class Root extends Component {
   render () {
@@ -15,8 +16,10 @@ class Root extends Component {
         h(HashRouter, {
           hashType: 'noslash',
         }, [
-          h(I18nProvider, [
-            h(App),
+           h(MetaMetricsProvider, [
+            h(I18nProvider, [
+              h(App),
+            ]),
           ]),
         ]),
       ])

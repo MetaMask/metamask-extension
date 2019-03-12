@@ -470,15 +470,21 @@
     "message": "Tips on storing it safely"
   },
   "endOfFlowMessage3": {
-    "message": "Save a backup in multiple places"
+    "message": "Save a backup in multiple places."
   },
   "endOfFlowMessage4": {
-    "message": "Never tell anyone"
+    "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
-    "message": "If you need to back your seed phrase again, you can find it in Settings -> Security."
+    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
+    "message": "If you need to back your up seed phrase again, you can find it in Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+  },
+  "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your seedphrase. Learn more."
   },
   "ensNameNotFound": {
@@ -688,6 +694,9 @@
   },
   "importWallet": {
     "message": "Import Wallet"
+  },
+  "importYourExisting": {
+    "message": "Import your existing wallet using a 12 word seed phrase"
   },
   "imported": {
     "message": "Imported",
@@ -999,6 +1008,12 @@
   },
   "originalTotal": {
     "message": "Original Total"
+  },
+  "participateInMetaMetrics": {
+    "message": "Participate in MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
   "password": {
     "message": "Password"
@@ -1434,6 +1449,9 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "thisWillCreate": {
+    "message": "This will create a new wallet and seed phrase"
   },
   "tips": {
     "message": "Tips"

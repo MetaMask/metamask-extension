@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../../button'
 import {
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../../routes'
@@ -10,6 +10,7 @@ import TextField from '../../../../text-field'
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
+    metricsEvent: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -99,7 +100,16 @@ export default class NewAccount extends PureComponent {
 
     try {
       await onSubmit(password)
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Create Password',
+          name: 'Submit Password',
+        },
+      })
+
+      history.push(INITIALIZE_SEED_PHRASE_ROUTE)
     } catch (error) {
       this.setState({ passwordError: error.message })
     }
@@ -113,6 +123,14 @@ export default class NewAccount extends PureComponent {
   }
 
   toggleTermsCheck = () => {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Create Password',
+        name: 'Check ToS',
+      },
+    })
+
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))
@@ -128,6 +146,13 @@ export default class NewAccount extends PureComponent {
           <a
             onClick={e => {
               e.preventDefault()
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Create Password',
+                  name: 'Go Back from Onboarding Create',
+                },
+              })
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"
@@ -174,7 +199,15 @@ export default class NewAccount extends PureComponent {
               {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
             </div>
             <span className="first-time-flow__checkbox-label">
-              I agree to the Terms Of Service
+              I have read and agree to the <a
+                href="https://metamask.io/terms.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="first-time-flow__link-text">
+                  { 'Terms of Use' }
+                </span>
+              </a>
             </span>
           </div>
           <Button

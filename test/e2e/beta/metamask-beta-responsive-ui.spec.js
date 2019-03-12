@@ -18,6 +18,7 @@ const {
   loadExtension,
   verboseReportOnFailure,
 } = require('./helpers')
+const fetchMockResponses = require('./fetch-mocks.js')
 
 describe('MetaMask', function () {
   let extensionId
@@ -61,6 +62,23 @@ describe('MetaMask', function () {
     await driver.get(extensionUrl)
   })
 
+  beforeEach(async function () {
+    await driver.executeScript(
+      'window.origFetch = window.fetch.bind(window);' +
+      'window.fetch = ' +
+      '(...args) => { ' +
+      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
+      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0].match(/chromeextensionmm/)) { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
+      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
+      'return window.origFetch(...args); }'
+    )
+  })
+
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await checkBrowserForConsoleErrors(driver)
@@ -93,6 +111,12 @@ describe('MetaMask', function () {
         await delay(largeDelayMs)
       })
 
+      it('clicks the "I agree" option on the metametrics opt-in screen', async () => {
+        const optOutButton = await findElement(driver, By.css('.btn-confirm'))
+        optOutButton.click()
+        await delay(largeDelayMs)
+      })
+
       it('accepts a secure password', async () => {
         const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
         const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
@@ -105,13 +129,6 @@ describe('MetaMask', function () {
         await tosCheckBox.click()
 
         await button.click()
-        await delay(regularDelayMs)
-      })
-
-      it('clicks through the security warning screen', async () => {
-        await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
-        const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-        await nextScreen.click()
         await delay(regularDelayMs)
       })
 

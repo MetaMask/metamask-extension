@@ -12,6 +12,7 @@ import Button from '../../button'
 class RestoreVaultPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -84,7 +85,16 @@ class RestoreVaultPage extends Component {
 
     leaveImportSeedScreenState()
     createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
-      .then(() => history.push(DEFAULT_ROUTE))
+      .then(() => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Retention',
+            action: 'userEntersSeedPhrase',
+            name: 'onboardingRestoredVault',
+          },
+        })
+        history.push(DEFAULT_ROUTE)
+      })
   }
 
   hasError () {
@@ -174,10 +184,6 @@ class RestoreVaultPage extends Component {
       </div>
     )
   }
-}
-
-RestoreVaultPage.contextTypes = {
-  t: PropTypes.func,
 }
 
 export default connect(

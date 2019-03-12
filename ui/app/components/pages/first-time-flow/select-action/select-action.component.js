@@ -2,15 +2,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../button'
 import {
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../../routes'
 
 export default class SelectAction extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
+    setFirstTimeFlowType: PropTypes.func,
+    nextRoute: PropTypes.string,
   }
 
   static contextTypes = {
@@ -18,19 +18,21 @@ export default class SelectAction extends PureComponent {
   }
 
   componentDidMount () {
-    const { history, isInitialized } = this.props
+    const { history, isInitialized, nextRoute } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+      history.push(nextRoute)
     }
   }
 
   handleCreate = () => {
-    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+    this.props.setFirstTimeFlowType('create')
+    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE)
   }
 
   handleImport = () => {
-    this.props.history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
+    this.props.setFirstTimeFlowType('import')
+    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE)
   }
 
   render () {
@@ -68,6 +70,9 @@ export default class SelectAction extends PureComponent {
                   <div className="select-action__button-text-big">
                     { t('noAlreadyHaveSeed') }
                   </div>
+                  <div className="select-action__button-text-small">
+                    { t('importYourExisting') }
+                  </div>
                 </div>
                 <Button
                   type="primary"
@@ -84,6 +89,9 @@ export default class SelectAction extends PureComponent {
                   </div>
                   <div className="select-action__button-text-big">
                     { t('letsGoSetUp') }
+                  </div>
+                  <div className="select-action__button-text-small">
+                    { t('thisWillCreate') }
                   </div>
                 </div>
                 <Button

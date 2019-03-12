@@ -7,6 +7,7 @@ import {
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../../routes'
 
 export default class FirstTimeFlowSwitch extends PureComponent {
@@ -15,6 +16,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
     seedPhrase: PropTypes.string,
+    optInMetaMetrics: PropTypes.bool,
   }
 
   render () {
@@ -23,6 +25,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       isInitialized,
       isUnlocked,
       seedPhrase,
+      optInMetaMetrics,
     } = this.props
 
     if (completedOnboarding) {
@@ -45,6 +48,10 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       return <Redirect to={{ pathname: INITIALIZE_SEED_PHRASE_ROUTE }} />
     }
 
-    return <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />
+    if (optInMetaMetrics === null) {
+      return <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />
+    }
+
+    return <Redirect to={{ pathname: INITIALIZE_METAMETRICS_OPT_IN_ROUTE }} />
   }
 }

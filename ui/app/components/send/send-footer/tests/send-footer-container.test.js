@@ -42,6 +42,7 @@ proxyquire('../send-footer.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendHexData: (s) => `mockHexData:${s}`,
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
+    getSendErrors: (s) => `mockSendErrors:${s}`,
   },
   './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
@@ -66,6 +67,7 @@ describe('send-footer container', () => {
         toAccounts: 'mockToAccounts:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
         unapprovedTxs: 'mockUnapprovedTxs:mockState',
+        sendErrors: 'mockSendErrors:mockState',
       })
     })
 

@@ -26,11 +26,13 @@ export default class SendFooter extends Component {
     tokenBalance: PropTypes.string,
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
+    sendErrors: PropTypes.object,
   }
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+    metricsEvent: PropTypes.func,
+  };
 
   onCancel () {
     this.props.clearSend()
@@ -56,6 +58,7 @@ export default class SendFooter extends Component {
       toAccounts,
       history,
     } = this.props
+    const { metricsEvent } = this.context
 
     // Should not be needed because submit should be disabled if there are errors.
     // const noErrors = !amountError && toError === null
@@ -66,7 +69,6 @@ export default class SendFooter extends Component {
 
     // TODO: add nickname functionality
     addToAddressBookIfNew(to, toAccounts)
-
     const promise = editingTransactionId
       ? update({
         amount,
@@ -82,13 +84,44 @@ export default class SendFooter extends Component {
       : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
 
     Promise.resolve(promise)
-      .then(() => history.push(CONFIRM_TRANSACTION_ROUTE))
+      .then(() => {
+        metricsEvent({
+          eventOpts: {
+            category: 'Transactions',
+            action: 'Edit Screen',
+            name: 'Complete',
+          },
+        })
+        history.push(CONFIRM_TRANSACTION_ROUTE)
+      })
   }
 
   formShouldBeDisabled () {
     const { data, inError, selectedToken, tokenBalance, gasTotal, to } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
-    return inError || !gasTotal || missingTokenBalance || !(data || to)
+    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to)
+    return shouldBeDisabled
+  }
+
+  componentDidUpdate (prevProps) {
+    const { inError, sendErrors } = this.props
+    const { metricsEvent } = this.context
+    if (!prevProps.inError && inError) {
+      const errorField = Object.keys(sendErrors).find(key => sendErrors[key])
+      const errorMessage = sendErrors[errorField]
+
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Error',
+        },
+        customVariables: {
+          errorField,
+          errorMessage,
+        },
+      })
+    }
   }
 
   render () {

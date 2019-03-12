@@ -26,6 +26,7 @@ module.exports = compose(
 
 WalletView.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 WalletView.defaultProps = {
@@ -39,7 +40,6 @@ function mapStateToProps (state) {
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     accounts: selectors.getMetaMaskAccounts(state),
-    tokens: state.metamask.tokens,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),
     selectedAccount: selectors.getSelectedAccount(state),
@@ -106,10 +106,18 @@ WalletView.prototype.renderAddToken = function () {
     hideSidebar,
     history,
   } = this.props
+  const { metricsEvent } = this.context
 
   return h(AddTokenButton, {
     onClick () {
       history.push(ADD_TOKEN_ROUTE)
+      metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Token Menu',
+          name: 'Clicked "Add Token"',
+        },
+      })
       if (sidebarOpen) {
         hideSidebar()
       }
@@ -197,6 +205,13 @@ WalletView.prototype.render = function () {
         }),
         onClick: () => {
           copyToClipboard(checksummedAddress)
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Home',
+              name: 'Copied Address',
+            },
+          })
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
         },

@@ -27,11 +27,22 @@ export default class SendGasRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+    metricsEvent: PropTypes.func,
+  };
 
   renderAdvancedOptionsButton () {
+    const { metricsEvent } = this.context
     const { showCustomizeGasModal } = this.props
-    return <div className="advanced-gas-options-btn" onClick={() => showCustomizeGasModal()}>
+    return <div className="advanced-gas-options-btn" onClick={() => {
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Clicked "Advanced Options"',
+        },
+      })
+      showCustomizeGasModal()
+    }}>
       { this.context.t('advancedOptions') }
     </div>
   }
@@ -53,12 +64,23 @@ export default class SendGasRow extends Component {
       gasLimit,
       insufficientBalance,
     } = this.props
+    const { metricsEvent } = this.context
 
     const gasPriceButtonGroup = <div>
         <GasPriceButtonGroup
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
+          handleGasPriceSelection={(...args) => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Changed Gas Button',
+              },
+            })
+            gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+          }}
         />
         { this.renderAdvancedOptionsButton() }
       </div>

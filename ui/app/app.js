@@ -15,6 +15,7 @@ const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
 const Sidebar = require('./components/sidebars').default
+const { WALLET_VIEW_SIDEBAR } = require('./components/sidebars/sidebar.constants')
 
 // other views
 import Home from './components/pages/home'
@@ -82,6 +83,20 @@ class App extends Component {
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
+
+    this.props.history.listen((locationObj, action) => {
+      if (action === 'PUSH') {
+        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
+        this.context.metricsEvent({}, {
+          currentPath: '',
+          pathname: locationObj.pathname,
+          url,
+          pageOpts: {
+            hideDimensions: true,
+          },
+        })
+      }
+    })
   }
 
   renderRoutes () {
@@ -159,6 +174,18 @@ class App extends Component {
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
+    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
+      ? () => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Wallet Sidebar',
+            name: 'Closed Sidebare Via Overlay',
+          },
+        })
+      }
+      : null
+
     const {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
@@ -198,6 +225,7 @@ class App extends Component {
           transitionName={sidebarTransitionName}
           type={sidebarType}
           sidebarProps={sidebar.props}
+          onOverlayClose={sidebarOnOverlayClose}
         />
         <NetworkDropdown
           provider={provider}
@@ -406,6 +434,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 App.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(

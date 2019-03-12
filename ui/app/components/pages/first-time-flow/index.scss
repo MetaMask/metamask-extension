@@ -6,6 +6,9 @@
 
 @import './end-of-flow/index';
 
+@import './metametrics-opt-in/index';
+
+
 .first-time-flow {
   width: 100%;
   background-color: $white;
@@ -148,5 +151,9 @@
     font-size: 18px;
     color: #939090;
     margin-left: 18px;
+  }
+
+  &__link-text {
+    color: $curious-blue;
   }
 }
