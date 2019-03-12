@@ -19,6 +19,8 @@ export default class UnlockPage extends Component {
     onImport: PropTypes.func,
     onRestore: PropTypes.func,
     onSubmit: PropTypes.func,
+    forceUpdateMetamaskState: PropTypes.func,
+    showOptInModal: PropTypes.func,
   }
 
   constructor (props) {
