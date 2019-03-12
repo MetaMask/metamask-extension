@@ -31,9 +31,6 @@ global.fetch = require('isomorphic-fetch')
 // dom
 require('jsdom-global')()
 
-// localStorage
-window.localStorage = {}
-
 // crypto.getRandomValues
 if (!window.crypto) window.crypto = {}
 if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
