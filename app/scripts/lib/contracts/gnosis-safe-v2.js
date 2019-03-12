@@ -9,7 +9,7 @@ const Operation = require('./gnosis-safe-operations')
 const { hexToBn, bnToHex } = require('../../lib/util')
 
 class GnosisSafe {
-    constructor ({ address, preferences, network, provider, keyring, controllingAccount }) {
+    constructor ({ address, preferences, network, provider, keyring, controllingAccount, type }) {
 
         this.preferences = preferences
         // add some network checks
@@ -23,8 +23,7 @@ class GnosisSafe {
         // or store it like the preferences that have the tokens and networks..
 
         this.controllingAccount = controllingAccount
-
-        this.type = 'gnosis-safe'
+        this.type = type
 
         // right now using the version of the contract..
         // '0x2727d69c0bd14b1ddd28371b8d97e808adc1c2f7'
@@ -351,6 +350,7 @@ class GnosisSafe {
     /**
      * 
      */
+    // can remove balance? balance is kept/updated in account-tracker
     async getContractData () {
         let owners = await this.getOwners()
         let threshold = await this.getThreshold()

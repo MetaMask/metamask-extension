@@ -104,6 +104,9 @@ ContractImportView.prototype.addNewContractAccount = function () {
         history.push(DEFAULT_ROUTE)
         displayWarning(null)
       } else {
+        // to do: test inputting:
+        // - [ ] garbage
+        // - [ ] an address that isn't a gnosis safe
         displayWarning('Error importing account.')
         setSelectedAddress(firstAddress)
       }

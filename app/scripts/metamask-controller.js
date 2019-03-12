@@ -181,7 +181,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, ControlledKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    // ControlledKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,

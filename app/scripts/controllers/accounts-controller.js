@@ -30,7 +30,7 @@ class AccountsController {
         this.store = new ObservableStore(initState)
     }
 
-    async importContractAddress (strategy, inputAddress, account) {
+    async importContractAddress (type, inputAddress, account) {
         let address
         if (inputAddress === 'remove' || inputAddress === 'clear') {
             this.clearAccounts()
