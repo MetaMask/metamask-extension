@@ -14,6 +14,7 @@ import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONTRACT_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../routes'
 
@@ -270,6 +271,19 @@ export default class AccountMenu extends PureComponent {
             />
           }
           text={t('connectHardwareWallet')}
+        />
+        <Item
+          onClick={() => {
+            toggleAccountMenu()
+            history.push(CONTRACT_ACCOUNT_ROUTE)
+          }}
+          icon={
+            <img
+              className="account-menu__item-icon"
+              src="images/gnosis-safe-logo.svg"
+            />
+          }
+          text={t('addContract')}
         />
         <Divider />
         <Item

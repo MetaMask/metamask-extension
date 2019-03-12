@@ -160,7 +160,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, ControlledKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    // ControlledKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -444,6 +445,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
+      setSelectedContractAddress: nodeify(preferencesController.setSelectedContractAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
@@ -963,17 +965,15 @@ module.exports = class MetamaskController extends EventEmitter {
    /**
    * Imports a user supplied Contract Address
    *
-   * @param  {string} strategy - A unique identifier for a contract type.
+   * @param  {string} type - A unique identifier for a contract type (currently supports gnosis-safe)                     
    * @param  {any} args - The contract address.
    * @param  {Function} cb - A callback function called with a state update on success.
    */
-  async importContractWithType (strategy, args) {
+  async importContractWithType (type, args) {
     let currentSelectedAccount = await this.preferencesController.getSelectedAddress()
-
-    // don't really need the strategy here (Contract), but do need the contract address and the type
-    // based on the currently selected address..
-    // adds an account with type contract to the accounts controller
-    let newContract = await this.accountsController.importContractAddress('gnosis-safe', args, currentSelectedAccount)
+    
+    // adds a contract account to the accounts controller with the current selected account as owner
+    let newContract = await this.accountsController.importContractAddress(type, args, currentSelectedAccount)
     
     // if import == "clear" or "remove" (for testing)
     if (!newContract) {
@@ -981,35 +981,28 @@ module.exports = class MetamaskController extends EventEmitter {
       
       return
     }
-
     await this.preferencesController.useContractAccount(true)
+    await this.preferencesController.setSelectedContractAddress(newContract.address)
+
     
     // set the state
     await this.accountsController.getContractData()
     
-    await this.preferencesController.setSelectedContractAddress(newContract.address)
-
 
     const oldAccounts = await this.keyringController.getAccounts()
-   
-    console.log('[import contract] old accounts', oldAccounts)
 
-    // make this accept the contract type as well 
-    // it will need to be versioned for supporting different 
-    // contract implementations
     const controlledKeyring = await this.keyringController.addNewKeyring('Controlled', newContract.address)
-
     const newAccounts = await controlledKeyring.getAccounts()
     console.log('[import contract] new accounts after add keyring', newAccounts)
     
     const allAccounts = await this.keyringController.getAccounts()
     console.log('[metamask controller] all accounts after adding keyring', allAccounts)
 
-    // to do: redo naming here based on contract type
-    this.preferencesController.setAccountLabel(newContract.address, 'test contract 1')
+    // to do: redo number naming
+    this.preferencesController.setAccountLabel(newContract.address, type + ' 1')
     this.preferencesController.setSelectedAddress(newContract.address)
 
-    //return an identities object?
+    //return an identities object..
     return newContract.address
   }
 

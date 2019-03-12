@@ -13,12 +13,17 @@ class AccountsController {
         this.keyring = opts.keyring
 
         // supports one contract account for restore
+
+        // probably this restore code is why the tx works on real import but not on loading from store
+        // after refresh
         if (initState.contracts && Object.keys(initState.contracts).length != 0) {            
             let contractAddress = Object.keys(initState.contracts)[0]
             let controllingAccount = initState.contracts[contractAddress].controllingAccount
-            
+            let type = initState.contracts[contractAddress].type
+
+            console.log('[accounts controller] setting contract address')
             // set current contract address and instance
-            this.importContractAddress('Contract', [contractAddress], controllingAccount)
+            this.importContractAddress(type, [contractAddress], controllingAccount)
         }
         else {
             // on fresh install of state
@@ -28,7 +33,7 @@ class AccountsController {
         this.store = new ObservableStore(initState)
     }
 
-    async importContractAddress (strategy, inputAddress, account) {
+    async importContractAddress (type, inputAddress, account) {
         let address
         if (inputAddress === 'remove' || inputAddress === 'clear') {
             this.clearAccounts()
@@ -57,7 +62,8 @@ class AccountsController {
             network: this.network,
             provider: this.provider,
             keyring: this.keyring,
-            controllingAccount: account
+            controllingAccount: account,
+            type: type,
         })
 
         // could set the state here instead of getContractData
