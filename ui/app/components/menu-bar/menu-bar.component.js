@@ -12,7 +12,6 @@ export default class MenuBar extends PureComponent {
 
   static propTypes = {
     hideSidebar: PropTypes.func,
-    isMascara: PropTypes.bool,
     sidebarOpen: PropTypes.bool,
     showSidebar: PropTypes.func,
   }
@@ -21,7 +20,7 @@ export default class MenuBar extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { isMascara, sidebarOpen, hideSidebar, showSidebar } = this.props
+    const { sidebarOpen, hideSidebar, showSidebar } = this.props
     const { accountDetailsMenuOpen } = this.state
 
     return (
@@ -45,29 +44,27 @@ export default class MenuBar extends PureComponent {
           />
         </Tooltip>
         <SelectedAccount />
-        {
-          !isMascara && (
-            <Tooltip
-              title={t('accountOptions')}
-              position="bottom"
-            >
-              <div
-                className="fa fa-ellipsis-h fa-lg menu-bar__open-in-browser"
-                onClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
-                      action: 'Home',
-                      name: 'Opened Account Options',
-                    },
-                  })
-                  this.setState({ accountDetailsMenuOpen: true })
-                }}
-              >
-              </div>
-            </Tooltip>
-          )
-        }
+
+        <Tooltip
+          title={t('accountOptions')}
+          position="bottom"
+        >
+          <div
+            className="fa fa-ellipsis-h fa-lg menu-bar__open-in-browser"
+            onClick={() => {
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Navigation',
+                  action: 'Home',
+                  name: 'Opened Account Options',
+                },
+              })
+              this.setState({ accountDetailsMenuOpen: true })
+            }}
+          >
+          </div>
+        </Tooltip>
+
         {
           accountDetailsMenuOpen && (
             <AccountDetailsDropdown
