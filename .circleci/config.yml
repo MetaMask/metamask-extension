@@ -86,9 +86,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install npm 6 + deps via npm
+          name: Install deps via npm
           command: |
-           sudo npm install -g npm@6 && npm ci
+           npm ci
       - persist_to_workspace:
           root: .
           paths:
