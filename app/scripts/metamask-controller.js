@@ -1480,13 +1480,14 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupCapnodeConnection(outStream, origin) {
-    const capServer = capnode.createServer({
+    const apiObj = {
       ping: () => 'pong',
-    })
+    }
+    const server = capnode.createStreamingServer(apiObj)
 
     pump(
       outStream,
-      capServer.stream,
+      server.stream,
       outStream,
       (err) => {
         // TODO: Any capServer deallocation steps.

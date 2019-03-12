@@ -97,7 +97,7 @@
     "browserify-derequire": "^0.9.4",
     "browserify-unibabel": "^3.0.0",
     "c3": "^0.6.7",
-    "capnode": "^2.1.0",
+    "capnode": "^2.2.0",
     "classnames": "^2.2.5",
     "clone": "^2.1.2",
     "copy-to-clipboard": "^3.0.8",
