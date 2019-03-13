@@ -1,4 +1,4 @@
-import * as utils from '../utils/common.util'
+import * as utils from './common.util'
 import assert from 'assert'
 
 describe('Common utils', () => {

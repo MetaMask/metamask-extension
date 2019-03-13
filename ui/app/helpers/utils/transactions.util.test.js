@@ -1,4 +1,4 @@
-import * as utils from '../utils/transactions.util'
+import * as utils from './transactions.util'
 import assert from 'assert'
 
 describe('Transactions utils', () => {
