@@ -9,7 +9,7 @@ import {
 const {
   addCurrencies,
   subtractCurrencies,
-} = require('../../../conversion-util')
+} = require('../../../helpers/utils/conversion-util')
 
 const {
   INSUFFICIENT_FUNDS_ERROR,

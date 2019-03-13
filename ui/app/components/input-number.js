@@ -6,7 +6,7 @@ const {
   conversionGTE,
   conversionLTE,
   subtractCurrencies,
-} = require('../conversion-util')
+} = require('../helpers/utils/conversion-util')
 
 module.exports = InputNumber
 

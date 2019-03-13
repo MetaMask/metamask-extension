@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction.duck'
 import { setSelectedToken, updateSend, showSendTokenPage } from '../../../actions'
-import { conversionUtil } from '../../../conversion-util'
+import { conversionUtil } from '../../../helpers/utils/conversion-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../../selectors/confirm-transaction'
 
 const mapStateToProps = state => {

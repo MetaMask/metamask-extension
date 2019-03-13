@@ -8,7 +8,7 @@ import {
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
-} from '../../conversion-util'
+} from '../utils/conversion-util'
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 

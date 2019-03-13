@@ -3,7 +3,7 @@ import {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
-} from '../conversion-util'
+} from '../helpers/utils/conversion-util'
 import {
   getCurrentCurrency, getIsMainnet, preferencesSelector,
 } from '../selectors'

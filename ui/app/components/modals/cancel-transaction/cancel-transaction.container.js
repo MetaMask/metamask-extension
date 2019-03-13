@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import ethUtil from 'ethereumjs-util'
-import { multiplyCurrencies } from '../../../conversion-util'
+import { multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import withModalProps from '../../../higher-order-components/with-modal-props'
 import CancelTransaction from './cancel-transaction.component'
 import { showModal, createCancelTransaction } from '../../../actions'

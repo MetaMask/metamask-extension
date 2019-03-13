@@ -2,7 +2,7 @@ const { valuesFor } = require('../../util')
 const abi = require('human-standard-token-abi')
 const {
   multiplyCurrencies,
-} = require('../../conversion-util')
+} = require('../../helpers/utils/conversion-util')
 const {
   getMetaMaskAccounts,
 } = require('../../selectors')

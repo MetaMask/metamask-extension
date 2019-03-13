@@ -4,7 +4,7 @@ import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
 import { getWeiHexFromDecimalValue } from '../../helpers/conversions.util'
 import ethUtil from 'ethereumjs-util'
-import { conversionUtil, multiplyCurrencies } from '../../conversion-util'
+import { conversionUtil, multiplyCurrencies } from '../../helpers/utils/conversion-util'
 import { ETH } from '../../constants/common'
 
 /**

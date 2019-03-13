@@ -1,5 +1,5 @@
 import ethUtil from 'ethereumjs-util'
-import { conversionUtil } from '../../../conversion-util'
+import { conversionUtil } from '../../../helpers/utils/conversion-util'
 
 export function getDecimalGasLimit (hexGasLimit) {
   return conversionUtil(hexGasLimit, {

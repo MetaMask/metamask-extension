@@ -1,7 +1,7 @@
 const {
   multiplyCurrencies,
   subtractCurrencies,
-} = require('../../../../../conversion-util')
+} = require('../../../../../helpers/utils/conversion-util')
 const ethUtil = require('ethereumjs-util')
 
 function calcMaxAmount ({ balance, gasTotal, selectedToken, tokenBalance }) {

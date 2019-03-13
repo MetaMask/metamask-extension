@@ -15,7 +15,7 @@ import {
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
 import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
-import { conversionGreaterThan } from '../../../conversion-util'
+import { conversionGreaterThan } from '../../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
 import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../../selectors'

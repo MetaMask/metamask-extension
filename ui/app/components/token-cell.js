@@ -7,7 +7,7 @@ import Identicon from './identicon'
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const actions = require('../actions')
-const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
+const { conversionUtil, multiplyCurrencies } = require('../helpers/utils/conversion-util')
 
 const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
 

@@ -7,7 +7,7 @@ import {
 } from './selectors/transactions'
 const {
   multiplyCurrencies,
-} = require('./conversion-util')
+} = require('./helpers/utils/conversion-util')
 
 const selectors = {
   getSelectedAddress,

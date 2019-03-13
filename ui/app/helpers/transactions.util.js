@@ -21,7 +21,7 @@ import {
   CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
-import { addCurrencies } from '../conversion-util'
+import { addCurrencies } from './utils/conversion-util'
 
 abiDecoder.addABI(abi)
 

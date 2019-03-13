@@ -13,7 +13,7 @@ const { ObjectInspector } = require('react-inspector')
 import AccountDropdownMini from './account-dropdown-mini'
 
 const actions = require('../actions')
-const { conversionUtil } = require('../conversion-util')
+const { conversionUtil } = require('../helpers/utils/conversion-util')
 
 const {
   getSelectedAccount,

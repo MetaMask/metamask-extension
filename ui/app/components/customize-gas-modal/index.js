@@ -30,7 +30,7 @@ const {
   conversionGreaterThan,
   conversionMax,
   subtractCurrencies,
-} = require('../../conversion-util')
+} = require('../../helpers/utils/conversion-util')
 
 const {
   getGasIsLoading,
