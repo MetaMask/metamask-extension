@@ -18,6 +18,16 @@ class SelectedAccount extends Component {
     selectedAddress: PropTypes.string,
     selectedIdentity: PropTypes.object,
     network: PropTypes.string,
+    isContractAccount: PropTypes.bool,
+    controllingAccount: PropTypes.string,
+  }
+
+  useContract (checksummedAddress) {
+    const { isContractAccount, controllingAccount } = this.props
+    if (isContractAccount) {
+      return <div className="selected-account__address"> { addressSlicer(checksummedAddress) } via { addressSlicer(controllingAccount) }</div>
+    }
+    else return <div className="selected-account__address"> { addressSlicer(checksummedAddress) } </div>
   }
 
   render () {
@@ -42,9 +52,7 @@ class SelectedAccount extends Component {
             <div className="selected-account__name">
               { selectedIdentity.name }
             </div>
-            <div className="selected-account__address">
-              { addressSlicer(checksummedAddress) }
-            </div>
+              { this.useContract(checksummedAddress) }
           </div>
         </Tooltip>
       </div>
