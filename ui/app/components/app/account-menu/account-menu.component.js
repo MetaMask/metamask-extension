@@ -157,6 +157,9 @@ export default class AccountMenu extends PureComponent {
       case 'Simple Key Pair':
         label = t('imported')
         break
+      case 'Controlled':
+        label = t('contract')
+        break
     }
 
     return label && (
