@@ -13,7 +13,7 @@ import {
   addEth,
   increaseLastGasPrice,
   hexGreaterThan,
-} from '../helpers/confirm-transaction/util'
+} from '../helpers/utils/confirm-tx.util'
 
 import {
   getTokenData,

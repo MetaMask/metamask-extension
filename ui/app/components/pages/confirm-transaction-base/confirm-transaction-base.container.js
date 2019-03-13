@@ -13,7 +13,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
-import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
+import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'

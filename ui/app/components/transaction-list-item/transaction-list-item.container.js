@@ -6,7 +6,7 @@ import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../actions'
 import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import { getTokenData } from '../../helpers/utils/transactions.util'
-import { increaseLastGasPrice } from '../../helpers/confirm-transaction/util'
+import { increaseLastGasPrice } from '../../helpers/utils/confirm-tx.util'
 import { formatDate } from '../../util'
 import {
   fetchBasicGasAndTimeEstimates,

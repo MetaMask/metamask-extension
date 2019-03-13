@@ -9,7 +9,7 @@ import {
 } from '../selectors'
 import {
   formatCurrency,
-} from '../helpers/confirm-transaction/util'
+} from '../helpers/utils/confirm-tx.util'
 import {
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
 } from '../helpers/utils/conversions.util'

@@ -1,4 +1,4 @@
-import { getHexGasTotal } from '../../helpers/confirm-transaction/util'
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
 
 // path constants
 const STATUS_PATH = '/status'

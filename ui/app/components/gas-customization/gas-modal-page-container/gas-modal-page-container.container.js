@@ -47,7 +47,7 @@ import {
 } from '../../../selectors/transactions'
 import {
   formatCurrency,
-} from '../../../helpers/confirm-transaction/util'
+} from '../../../helpers/utils/confirm-tx.util'
 import {
   addHexWEIsToDec,
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,

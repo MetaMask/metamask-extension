@@ -5,7 +5,7 @@ import { multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import withModalProps from '../../../higher-order-components/with-modal-props'
 import CancelTransaction from './cancel-transaction.component'
 import { showModal, createCancelTransaction } from '../../../actions'
-import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
+import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state

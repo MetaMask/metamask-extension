@@ -7,7 +7,7 @@ import {
   convertTokenToFiat,
   addFiat,
   roundExponential,
-} from '../../../helpers/confirm-transaction/util'
+} from '../../../helpers/utils/confirm-tx.util'
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../../constants/common'
 
