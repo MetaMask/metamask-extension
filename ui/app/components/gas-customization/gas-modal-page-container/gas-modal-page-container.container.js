@@ -53,10 +53,10 @@ import {
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
-} from '../../../helpers/conversions.util'
+} from '../../../helpers/utils/conversions.util'
 import {
   formatETHFee,
-} from '../../../helpers/formatters'
+} from '../../../helpers/utils/formatters'
 import {
   calcGasTotal,
   isBalanceSufficient,

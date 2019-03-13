@@ -5,7 +5,7 @@ import abiDecoder from 'abi-decoder'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
-} from '../../../app/scripts/controllers/transactions/enums'
+} from '../../../../app/scripts/controllers/transactions/enums'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -19,9 +19,9 @@ import {
   SIGNATURE_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
-} from '../constants/transactions'
+} from '../../constants/transactions'
 
-import { addCurrencies } from './utils/conversion-util'
+import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
 

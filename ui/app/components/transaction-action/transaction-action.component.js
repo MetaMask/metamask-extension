@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { getTransactionActionKey } from '../../helpers/transactions.util'
-import { camelCaseToCapitalize } from '../../helpers/common.util'
+import { getTransactionActionKey } from '../../helpers/utils/transactions.util'
+import { camelCaseToCapitalize } from '../../helpers/utils/common.util'
 
 export default class TransactionAction extends PureComponent {
   static contextTypes = {

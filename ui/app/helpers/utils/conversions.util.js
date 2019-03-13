@@ -1,6 +1,6 @@
 import ethUtil from 'ethereumjs-util'
-import { ETH, GWEI, WEI } from '../constants/common'
-import { conversionUtil, addCurrencies } from './utils/conversion-util'
+import { ETH, GWEI, WEI } from '../../constants/common'
+import { conversionUtil, addCurrencies } from './conversion-util'
 
 export function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))

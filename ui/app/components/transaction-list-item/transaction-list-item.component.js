@@ -10,7 +10,7 @@ import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { PRIMARY, SECONDARY } from '../../constants/common'
-import { getStatusKey } from '../../helpers/transactions.util'
+import { getStatusKey } from '../../helpers/utils/transactions.util'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {

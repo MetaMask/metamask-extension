@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { getMethodData, getFourBytePrefix } from '../../helpers/transactions.util'
+import { getMethodData, getFourBytePrefix } from '../../helpers/utils/transactions.util'
 
 export default function withMethodData (WrappedComponent) {
   return class MethodDataWrappedComponent extends PureComponent {

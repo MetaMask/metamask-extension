@@ -8,7 +8,7 @@ import {
   addFiat,
   roundExponential,
 } from '../../../helpers/confirm-transaction/util'
-import { getWeiHexFromDecimalValue } from '../../../helpers/conversions.util'
+import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../../constants/common'
 
 export default class ConfirmTokenTransactionBase extends Component {

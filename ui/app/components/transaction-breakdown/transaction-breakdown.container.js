@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import TransactionBreakdown from './transaction-breakdown.component'
 import {getIsMainnet, getNativeCurrency, preferencesSelector} from '../../selectors'
 import { getHexGasTotal } from '../../helpers/confirm-transaction/util'
-import { sumHexes } from '../../helpers/transactions.util'
+import { sumHexes } from '../../helpers/utils/transactions.util'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction } = ownProps

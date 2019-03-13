@@ -20,7 +20,7 @@ import {
   getMethodData,
   isSmartContractAddress,
   sumHexes,
-} from '../helpers/transactions.util'
+} from '../helpers/utils/transactions.util'
 
 import { getSymbolAndDecimals } from '../helpers/utils/token-util'
 import { conversionUtil } from '../helpers/utils/conversion-util'

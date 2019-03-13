@@ -4,7 +4,7 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
-} from '../../../helpers/conversions.util'
+} from '../../../helpers/utils/conversions.util'
 import AdvancedGasInputs from './advanced-gas-inputs.component'
 
 function convertGasPriceForInputs (gasPriceInHexWEI) {

@@ -12,7 +12,7 @@ import {
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../routes'
-import { isConfirmDeployContract } from '../../../helpers/transactions.util'
+import { isConfirmDeployContract } from '../../../helpers/utils/transactions.util'
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,

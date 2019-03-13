@@ -6,7 +6,7 @@ import {
 } from '../../lib/local-storage-helpers'
 import {
   decGWEIToHexWEI,
-} from '../helpers/conversions.util'
+} from '../helpers/utils/conversions.util'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'

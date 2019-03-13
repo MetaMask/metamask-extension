@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
-import { getValueFromWeiHex, getWeiHexFromDecimalValue } from '../../helpers/conversions.util'
+import { getValueFromWeiHex, getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH } from '../../constants/common'
 
 /**

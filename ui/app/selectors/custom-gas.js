@@ -12,10 +12,10 @@ import {
 } from '../helpers/confirm-transaction/util'
 import {
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
-} from '../helpers/conversions.util'
+} from '../helpers/utils/conversions.util'
 import {
   formatETHFee,
-} from '../helpers/formatters'
+} from '../helpers/utils/formatters'
 import {
   calcGasTotal,
 } from '../components/send/send.utils'
