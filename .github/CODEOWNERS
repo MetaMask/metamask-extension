@@ -3,6 +3,7 @@
 
 package.json                         @whymarrh
 yarn.lock                            @whymarrh
+e2e/                                 @whymarrh
 ui/                                  @danjm @whymarrh @Gudahtt
 app/scripts/controllers/transactions @frankiebee
 
