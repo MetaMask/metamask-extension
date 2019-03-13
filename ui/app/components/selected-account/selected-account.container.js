@@ -8,6 +8,8 @@ const mapStateToProps = state => {
     selectedAddress: selectors.getSelectedAddress(state),
     selectedIdentity: selectors.getSelectedIdentity(state),
     network: state.metamask.network,
+    isContractAccount: selectors.getUseContractAccount(state),
+    controllingAccount: selectors.getContractAccountOwner(state),
   }
 }
 

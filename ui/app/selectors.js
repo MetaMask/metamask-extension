@@ -42,6 +42,7 @@ const selectors = {
   getIsMainnet,
   getSelectedContractAddress,
   getUseContractAccount,
+  getContractAccountOwner,
 }
 
 module.exports = selectors
@@ -115,6 +116,13 @@ function getSelectedContractAddress (state) {
 function getUseContractAccount (state) {
   const useContractAccount = state.metamask.useContractAccount
   return useContractAccount
+}
+
+function getContractAccountOwner (state) {
+  const controllingAccountAddress = Object.keys(state.metamask.contracts)[0]
+  
+  const controllingAccount = state.metamask.contracts[controllingAccountAddress].controllingAccount
+  return controllingAccount
 }
 
 function getSelectedToken (state) {
