@@ -8,7 +8,7 @@ const {
 } = require('../../helpers/utils/conversion-util')
 const {
   calcTokenAmount,
-} = require('../../token-util')
+} = require('../../helpers/utils/token-util')
 const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,

@@ -22,7 +22,7 @@ import {
   sumHexes,
 } from '../helpers/transactions.util'
 
-import { getSymbolAndDecimals } from '../token-util'
+import { getSymbolAndDecimals } from '../helpers/utils/token-util'
 import { conversionUtil } from '../helpers/utils/conversion-util'
 import { addHexPrefix } from 'ethereumjs-util'
 

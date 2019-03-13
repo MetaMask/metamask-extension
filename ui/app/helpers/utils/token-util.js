@@ -1,5 +1,5 @@
 const log = require('loglevel')
-const util = require('./util')
+const util = require('../../util')
 const BigNumber = require('bignumber.js')
 import contractMap from 'eth-contract-metadata'
 
