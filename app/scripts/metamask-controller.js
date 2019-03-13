@@ -1482,6 +1482,9 @@ module.exports = class MetamaskController extends EventEmitter {
   setupCapnodeConnection(outStream, origin) {
     const apiObj = {
       ping: () => 'pong',
+      subscribe: ({ listener }) => {
+        setTimeout(()=>listener('Hello!'), 1000)
+      },
     }
     const server = capnode.createStreamingServer(apiObj)
 
