@@ -25,10 +25,9 @@ class NotificationManager {
         // bring focus to existing chrome popup
         extension.windows.update(popup.id, { focused: true })
       } else {
-        const screenWidth = window.screen.width
-        const screenHeight = window.screen.height
-        const notificationTop = (screenHeight / 2) - (NOTIFICATION_HEIGHT / 2)
-        const notificationLeft = (screenWidth / 2) - (NOTIFICATION_WIDTH / 2)
+        const {screenX, screenY, outerWidth, outerHeight} = window
+        const notificationTop = screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2)
+        const notificationLeft = screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2)
         const cb = (currentPopup) => { this._popupId = currentPopup.id }
         // create new notification popup
         const creation = extension.windows.create({
