@@ -224,6 +224,7 @@
     "ganache-cli": "^6.1.0",
     "ganache-core": "^2.5.3",
     "geckodriver": "^1.14.1",
+    "get-port": "^4.2.0",
     "gh-pages": "^1.2.0",
     "gifencoder": "^1.1.0",
     "gulp": "^4.0.0",
