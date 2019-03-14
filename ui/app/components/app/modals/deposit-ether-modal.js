@@ -11,8 +11,8 @@ import Button from '../../ui/button'
 
 let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT
-let COINBASE_ROW_TITLE
-let COINBASE_ROW_TEXT
+let WYRE_ROW_TITLE
+let WYRE_ROW_TEXT
 let SHAPESHIFT_ROW_TITLE
 let SHAPESHIFT_ROW_TEXT
 let FAUCET_ROW_TITLE
@@ -49,8 +49,8 @@ function DepositEtherModal (props, context) {
   // need to set after i18n locale has loaded
   DIRECT_DEPOSIT_ROW_TITLE = context.t('directDepositEther')
   DIRECT_DEPOSIT_ROW_TEXT = context.t('directDepositEtherExplainer')
-  COINBASE_ROW_TITLE = context.t('buyCoinbase')
-  COINBASE_ROW_TEXT = context.t('buyCoinbaseExplainer')
+  WYRE_ROW_TITLE = context.t('buyWithWyre')
+  WYRE_ROW_TEXT = context.t('buyWithWyreDescription')
   SHAPESHIFT_ROW_TITLE = context.t('depositShapeShift')
   SHAPESHIFT_ROW_TEXT = context.t('depositShapeShiftExplainer')
   FAUCET_ROW_TITLE = context.t('testFaucet')
@@ -176,13 +176,13 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
-              backgroundImage: 'url(\'./images/coinbase logo.png\')',
+              backgroundImage: 'url(\'./images/wyre.svg\')',
               height: '40px',
             },
           }),
-          title: COINBASE_ROW_TITLE,
-          text: COINBASE_ROW_TEXT,
-          buttonLabel: this.context.t('continueToCoinbase'),
+          title: WYRE_ROW_TITLE,
+          text: WYRE_ROW_TEXT,
+          buttonLabel: this.context.t('continueToWyre'),
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),

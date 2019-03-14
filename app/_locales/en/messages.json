@@ -188,6 +188,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell Bitcoin, Ethereum, and Litecoin."
   },
+  "buyWithWyre": {
+    "message": "Buy ETH with Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre lets you use aa credit card to deposit ETH right in to your MetaMask account. From the Airswap website, click \"Use Fiat\" in the top-right corner. You can also use Airswap to get started with ERC 20 tokens!"
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -292,6 +298,9 @@
   },
   "continueToCoinbase": {
     "message": "Continue to Coinbase"
+  },
+  "continueToWyre": {
+    "message": "Continue to Wyre"
   },
   "contractDeployment": {
     "message": "Contract Deployment"
