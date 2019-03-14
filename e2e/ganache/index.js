@@ -21,7 +21,7 @@ class Ganache {
 
   async quit () {
     if (!this._server) {
-      return Promise.resolve()
+      return Promise.reject(new Error('Server not running yet'))
     }
 
     return new Promise((resolve, reject) => {
