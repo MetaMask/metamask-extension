@@ -4,7 +4,7 @@ const Root = require('./app/pages/root')
 const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
-const { fetchLocale } = require('./i18n-helper')
+const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
 const log = require('loglevel')
 
 module.exports = launchMetamaskUi

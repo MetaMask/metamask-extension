@@ -3,7 +3,7 @@ const connect = require('react-redux').connect
 const PropTypes = require('prop-types')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const t = require('../../../i18n-helper').getMessage
+const t = require('../utils/i18n-helper').getMessage
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {

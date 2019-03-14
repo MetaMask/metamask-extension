@@ -7,7 +7,7 @@ const {
   estimateGas,
 } = require('../components/app/send/send.utils')
 const ethUtil = require('ethereumjs-util')
-const { fetchLocale } = require('../../i18n-helper')
+const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
