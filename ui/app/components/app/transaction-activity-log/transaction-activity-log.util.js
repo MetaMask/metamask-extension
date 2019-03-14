@@ -51,7 +51,14 @@ const statusHash = {
  * @returns {Array}
  */
 export function getActivities (transaction, isFirstTransaction = false) {
-  const { id, hash, history = [], txReceipt: { status } = {}, type } = transaction
+  const {
+    id,
+    hash,
+    history = [],
+    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice},
+    xReceipt: { status } = {},
+    type,
+  } = transaction
 
   let cachedGasLimit = '0x0'
   let cachedGasPrice = '0x0'
@@ -88,7 +95,9 @@ export function getActivities (transaction, isFirstTransaction = false) {
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {
             case STATUS_PATH: {
-              const gasFee = getHexGasTotal({ gasLimit: cachedGasLimit, gasPrice: cachedGasPrice })
+              const gasFee = cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                ? getHexGasTotal({ gasLimit: paramsGasLimit, gasPrice: paramsGasPrice })
+                : getHexGasTotal({ gasLimit: cachedGasLimit, gasPrice: cachedGasPrice })
 
               if (value in statusHash) {
                 let eventKey = statusHash[value]
