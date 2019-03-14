@@ -47,8 +47,8 @@ proxyquire('../send.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
   },
-  '../../actions': actionSpies,
-  '../../ducks/send.duck': duckActionSpies,
+  '../../../store/actions': actionSpies,
+  '../../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },

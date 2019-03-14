@@ -3,8 +3,8 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
 
-const GasDuck = proxyquire('../gas.duck.js', {
-  '../../lib/local-storage-helpers': {
+const GasDuck = proxyquire('./gas.duck.js', {
+  '../../../lib/local-storage-helpers': {
     loadLocalStorageData: sinon.spy(),
     saveLocalStorageData: sinon.spy(),
   },
