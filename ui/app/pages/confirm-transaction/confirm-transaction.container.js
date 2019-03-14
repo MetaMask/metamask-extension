@@ -4,10 +4,10 @@ import { withRouter } from 'react-router-dom'
 import {
   setTransactionToConfirm,
   clearConfirmTransaction,
-} from '../../ducks/confirm-transaction.duck'
+} from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
   fetchBasicGasAndTimeEstimates,
-} from '../../ducks/gas.duck'
+} from '../../ducks/gas/gas.duck'
 import ConfirmTransaction from './confirm-transaction.component'
 import { getTotalUnapprovedCount } from '../../selectors'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'

@@ -35,10 +35,10 @@ import {
 import {
   resetSendState,
   updateSendErrors,
-} from '../../ducks/send.duck'
+} from '../../ducks/send/send.duck'
 import {
   fetchBasicGasEstimates,
-} from '../../ducks/gas.duck'
+} from '../../ducks/gas/gas.duck'
 import {
   calcGasTotal,
 } from './send.utils.js'

@@ -11,7 +11,7 @@ const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/utils/confirm-tx.util')
-const gasDuck = require('./ducks/gas.duck')
+const gasDuck = require('./ducks/gas/gas.duck')
 const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {

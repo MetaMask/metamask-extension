@@ -3,7 +3,7 @@ import {
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
   getNativeCurrency,
-} from '../selectors/confirm-transaction'
+} from '../../selectors/confirm-transaction'
 
 import {
   getValueFromWeiHex,
@@ -13,17 +13,17 @@ import {
   addEth,
   increaseLastGasPrice,
   hexGreaterThan,
-} from '../helpers/utils/confirm-tx.util'
+} from '../../helpers/utils/confirm-tx.util'
 
 import {
   getTokenData,
   getMethodData,
   isSmartContractAddress,
   sumHexes,
-} from '../helpers/utils/transactions.util'
+} from '../../helpers/utils/transactions.util'
 
-import { getSymbolAndDecimals } from '../helpers/utils/token-util'
-import { conversionUtil } from '../helpers/utils/conversion-util'
+import { getSymbolAndDecimals } from '../../helpers/utils/token-util'
+import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions

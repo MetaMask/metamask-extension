@@ -18,12 +18,12 @@ import {
 } from '../../../../selectors/custom-gas'
 import {
   showGasButtonGroup,
-} from '../../../../ducks/send.duck'
+} from '../../../../ducks/send/send.duck'
 import {
   resetCustomData,
   setCustomGasPrice,
   setCustomGasLimit,
-} from '../../../../ducks/gas.duck'
+} from '../../../../ducks/gas/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../actions'
 import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors'

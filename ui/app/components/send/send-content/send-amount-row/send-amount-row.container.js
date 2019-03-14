@@ -20,7 +20,7 @@ import {
 } from '../../../../actions'
 import {
   updateSendErrors,
-} from '../../../../ducks/send.duck'
+} from '../../../../ducks/send/send.duck'
 import SendAmountRow from './send-amount-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)

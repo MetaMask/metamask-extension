@@ -15,13 +15,13 @@ import {
   setCustomTimeEstimate,
   fetchGasEstimates,
   fetchBasicGasAndTimeEstimates,
-} from '../../../ducks/gas.duck'
+} from '../../../ducks/gas/gas.duck'
 import {
   hideGasButtonGroup,
-} from '../../../ducks/send.duck'
+} from '../../../ducks/send/send.duck'
 import {
   updateGasAndCalculate,
-} from '../../../ducks/confirm-transaction.duck'
+} from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
   getCurrentCurrency,
   conversionRateSelector as getConversionRate,

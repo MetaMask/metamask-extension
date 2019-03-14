@@ -20,7 +20,7 @@ import {
   updateSendWarnings,
   openToDropdown,
   closeToDropdown,
-} from '../../../../ducks/send.duck'
+} from '../../../../ducks/send/send.duck'
 import SendToRow from './send-to-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)

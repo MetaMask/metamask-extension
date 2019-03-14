@@ -14,7 +14,7 @@ import {
 import AmountMaxButton from './amount-max-button.component'
 import {
   updateSendErrors,
-} from '../../../../../ducks/send.duck'
+} from '../../../../../ducks/send/send.duck'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmountMaxButton)
 

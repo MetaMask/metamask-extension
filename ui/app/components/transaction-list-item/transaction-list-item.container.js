@@ -13,7 +13,7 @@ import {
   fetchGasEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
-} from '../../ducks/gas.duck'
+} from '../../ducks/gas/gas.duck'
 import {getIsMainnet, preferencesSelector} from '../../selectors'
 
 const mapStateToProps = state => {

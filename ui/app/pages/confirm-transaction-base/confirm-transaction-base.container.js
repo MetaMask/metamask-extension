@@ -7,7 +7,7 @@ import ConfirmTransactionBase from './confirm-transaction-base.component'
 import {
   clearConfirmTransaction,
   updateGasAndCalculate,
-} from '../../ducks/confirm-transaction.duck'
+} from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount } from '../../actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,

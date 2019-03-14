@@ -8,9 +8,9 @@ const copyToClipboard = require('copy-to-clipboard')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
 const reduceLocale = require('./reducers/locale')
-const reduceSend = require('./ducks/send.duck').default
-import reduceConfirmTransaction from './ducks/confirm-transaction.duck'
-import reduceGas from './ducks/gas.duck'
+const reduceSend = require('./ducks/send/send.duck').default
+import reduceConfirmTransaction from './ducks/confirm-transaction/confirm-transaction.duck'
+import reduceGas from './ducks/gas/gas.duck'
 
 window.METAMASK_CACHED_LOG_STATE = null
 

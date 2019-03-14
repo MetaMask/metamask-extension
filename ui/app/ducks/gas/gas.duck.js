@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js'
 import {
   loadLocalStorageData,
   saveLocalStorageData,
-} from '../../lib/local-storage-helpers'
+} from '../../../lib/local-storage-helpers'
 import {
   decGWEIToHexWEI,
-} from '../helpers/utils/conversions.util'
+} from '../../helpers/utils/conversions.util'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'

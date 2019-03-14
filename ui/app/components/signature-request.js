@@ -23,7 +23,7 @@ const {
   conversionRateSelector,
 } = require('../selectors.js')
 
-import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
+import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck'
 import Button from './button'
 
 const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
