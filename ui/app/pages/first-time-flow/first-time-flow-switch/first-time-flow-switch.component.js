@@ -8,7 +8,7 @@ import {
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
-} from '../../../routes'
+} from '../../../helpers/constants/routes'
 
 export default class FirstTimeFlowSwitch extends PureComponent {
   static propTypes = {

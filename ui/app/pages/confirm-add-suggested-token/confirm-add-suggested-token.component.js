@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE } from '../../routes'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/button'
 import Identicon from '../../components/identicon'
 import TokenBalance from '../../components/token-balance'

@@ -18,7 +18,7 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 
 export default class FirstTimeFlow extends PureComponent {
   static propTypes = {

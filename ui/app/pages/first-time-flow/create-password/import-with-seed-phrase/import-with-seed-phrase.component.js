@@ -6,7 +6,7 @@ import Button from '../../../../components/button'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
-} from '../../../../routes'
+} from '../../../../helpers/constants/routes'
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {

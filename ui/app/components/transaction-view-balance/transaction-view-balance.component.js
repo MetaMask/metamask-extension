@@ -5,7 +5,7 @@ import Button from '../button'
 import Identicon from '../identicon'
 import TokenBalance from '../token-balance'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
-import { SEND_ROUTE } from '../../routes'
+import { SEND_ROUTE } from '../../helpers/constants/routes'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import Tooltip from '../tooltip-v2'
 

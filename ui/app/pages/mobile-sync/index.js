@@ -6,7 +6,7 @@ const classnames = require('classnames')
 const PubNub = require('pubnub')
 
 const { requestRevealSeedWords, fetchInfoToSync } = require('../../actions')
-const { DEFAULT_ROUTE } = require('../../routes')
+const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 const actions = require('../../actions')
 
 const qrCode = require('qrcode-generator')

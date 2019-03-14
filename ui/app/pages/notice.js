@@ -7,7 +7,7 @@ const linker = require('extension-link-enabler')
 const generateLostAccountsNotice = require('../../lib/lost-accounts-notice')
 const findDOMNode = require('react-dom').findDOMNode
 const actions = require('../actions')
-const { DEFAULT_ROUTE } = require('../routes')
+const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
 
 class Notice extends Component {
   constructor (props) {

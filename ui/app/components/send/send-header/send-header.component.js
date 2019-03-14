@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerHeader from '../../page-container/page-container-header'
-import { DEFAULT_ROUTE } from '../../../routes'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendHeader extends Component {
 

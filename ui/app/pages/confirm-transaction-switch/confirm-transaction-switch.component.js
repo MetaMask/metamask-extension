@@ -11,7 +11,7 @@ import {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 import { isConfirmDeployContract } from '../../helpers/utils/transactions.util'
 import {
   TOKEN_METHOD_TRANSFER,

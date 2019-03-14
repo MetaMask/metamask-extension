@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import LockIcon from '../../../../components/lock-icon'
 import Button from '../../../../components/button'
-import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../../routes'
+import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 
 export default class RevealSeedPhrase extends PureComponent {

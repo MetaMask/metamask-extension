@@ -4,7 +4,7 @@ import { Switch, Route, matchPath } from 'react-router-dom'
 import TabBar from '../../components/tab-bar'
 import SettingsTab from './settings-tab'
 import InfoTab from './info-tab'
-import { DEFAULT_ROUTE, SETTINGS_ROUTE, INFO_ROUTE } from '../../routes'
+import { DEFAULT_ROUTE, SETTINGS_ROUTE, INFO_ROUTE } from '../../helpers/constants/routes'
 
 export default class SettingsPage extends PureComponent {
   static propTypes = {

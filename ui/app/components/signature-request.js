@@ -26,7 +26,7 @@ const {
 import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
 import Button from './button'
 
-const { DEFAULT_ROUTE } = require('../routes')
+const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
 
 function mapStateToProps (state) {
   return {

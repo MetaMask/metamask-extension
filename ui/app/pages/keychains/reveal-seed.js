@@ -5,7 +5,7 @@ const h = require('react-hyperscript')
 const classnames = require('classnames')
 
 const { requestRevealSeedWords } = require('../../actions')
-const { DEFAULT_ROUTE } = require('../../routes')
+const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 const ExportTextContainer = require('../../components/export-text-container')
 
 import Button from '../../components/button'

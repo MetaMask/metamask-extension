@@ -7,7 +7,7 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../routes'
+} from '../../../helpers/constants/routes'
 
 export default class SeedPhrase extends PureComponent {
   static propTypes = {

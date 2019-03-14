@@ -45,7 +45,7 @@ import {
 
 import {
   SEND_ROUTE,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 
 module.exports = compose(
   withRouter,

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Loading from '../../components/loading-screen'
-import { DEFAULT_ROUTE } from '../../routes'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class Lock extends PureComponent {
   static propTypes = {

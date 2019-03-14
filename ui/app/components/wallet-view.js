@@ -15,7 +15,7 @@ const actions = require('../actions')
 import BalanceComponent from './balance'
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
-const { ADD_TOKEN_ROUTE } = require('../routes')
+const { ADD_TOKEN_ROUTE } = require('../helpers/constants/routes')
 
 import AddTokenButton from './add-token-button'
 

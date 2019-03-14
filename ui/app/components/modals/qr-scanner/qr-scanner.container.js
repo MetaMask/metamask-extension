@@ -4,7 +4,7 @@ import QrScanner from './qr-scanner.component'
 const { hideModal, qrCodeDetected, showQrScanner } = require('../../../actions')
 import {
   SEND_ROUTE,
-} from '../../../routes'
+} from '../../../helpers/constants/routes'
 
 const mapStateToProps = state => {
   return {

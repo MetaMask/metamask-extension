@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../../../components/button'
 import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
-} from '../../../routes'
+} from '../../../helpers/constants/routes'
 
 export default class SelectAction extends PureComponent {
   static propTypes = {

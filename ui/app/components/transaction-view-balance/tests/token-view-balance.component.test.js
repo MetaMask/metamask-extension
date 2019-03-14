@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TokenBalance from '../../token-balance'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
-import { SEND_ROUTE } from '../../../routes'
+import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import TransactionViewBalance from '../transaction-view-balance.component'
 
 const propsMethodSpies = {

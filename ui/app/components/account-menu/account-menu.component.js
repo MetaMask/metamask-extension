@@ -15,7 +15,7 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 
 export default class AccountMenu extends PureComponent {
   static contextTypes = {

@@ -11,7 +11,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
   static propTypes = {

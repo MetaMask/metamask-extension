@@ -6,7 +6,7 @@ import Button from '../../../../components/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
-} from '../../../../routes'
+} from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
 

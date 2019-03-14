@@ -5,7 +5,7 @@ import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
 } from '../../actions'
-import { DEFAULT_ROUTE } from '../../routes'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/text-field'
 import Button from '../../components/button'
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
-import { UNLOCK_ROUTE, INITIALIZE_ROUTE } from '../../../routes'
+import { UNLOCK_ROUTE, INITIALIZE_ROUTE } from '../../constants/routes'
 
 export default function Authenticated (props) {
   const { isUnlocked, completedOnboarding } = props

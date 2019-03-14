@@ -68,7 +68,7 @@ import {
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   NOTICE_ROUTE,
-} from '../routes'
+} from '../helpers/constants/routes'
 
 // enums
 import {

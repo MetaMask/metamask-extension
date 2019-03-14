@@ -20,7 +20,7 @@ import {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
-} from '../../routes'
+} from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
   static propTypes = {

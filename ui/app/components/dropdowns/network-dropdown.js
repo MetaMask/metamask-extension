@@ -10,7 +10,7 @@ const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 const R = require('ramda')
-const { SETTINGS_ROUTE } = require('../../routes')
+const { SETTINGS_ROUTE } = require('../../helpers/constants/routes')
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [

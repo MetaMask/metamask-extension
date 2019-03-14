@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { DEFAULT_ROUTE } from '../../../../routes'
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendHeader from '../send-header.component.js'
 
 import PageContainerHeader from '../../../page-container/page-container-header'
