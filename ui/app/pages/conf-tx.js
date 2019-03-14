@@ -4,15 +4,15 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const actions = require('./actions')
-const txHelper = require('../lib/tx-helper')
+const actions = require('../actions')
+const txHelper = require('../../lib/tx-helper')
 const log = require('loglevel')
 const R = require('ramda')
 
-const SignatureRequest = require('./components/signature-request')
-const Loading = require('./components/loading-screen')
-const { DEFAULT_ROUTE } = require('./routes')
-const { getMetaMaskAccounts } = require('./selectors')
+const SignatureRequest = require('../components/signature-request')
+const Loading = require('../components/loading-screen')
+const { DEFAULT_ROUTE } = require('../routes')
+const { getMetaMaskAccounts } = require('../selectors')
 
 module.exports = compose(
   withRouter,

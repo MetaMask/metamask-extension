@@ -9,7 +9,7 @@ import ConfirmSendToken from '../confirm-send-token'
 import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base'
-import ConfTx from '../../conf-tx'
+import ConfTx from '../conf-tx'
 import {
   DEFAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,

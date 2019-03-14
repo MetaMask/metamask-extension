@@ -14,7 +14,7 @@
 
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('../ui/app/root')
+const Root = require('../ui/app/pages/root')
 const configureStore = require('../ui/app/store')
 const actions = require('../ui/app/actions')
 const states = require('./states')

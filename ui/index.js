@@ -1,6 +1,6 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('./app/root')
+const Root = require('./app/pages/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
