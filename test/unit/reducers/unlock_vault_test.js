@@ -4,8 +4,8 @@ var assert = require('assert')
 var path = require('path')
 var sinon = require('sinon')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
+var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
+var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'reducers.js'))
 
 describe('#unlockMetamask(selectedAccount)', function () {
   beforeEach(function () {

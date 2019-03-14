@@ -35,16 +35,16 @@ proxyquire('../gas-modal-page-container.container.js', {
       return () => ({})
     },
   },
-  '../../../selectors/custom-gas': {
+  '../../../../selectors/custom-gas': {
     getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
     getRenderableBasicEstimateData: (s) => `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
     getDefaultActiveButtonIndex: (a, b) => a + b,
   },
-  '../../../actions': actionSpies,
-  '../../../ducks/gas.duck': gasActionSpies,
-  '../../../ducks/confirm-transaction.duck': confirmTransactionActionSpies,
-  '../../../ducks/send.duck': sendActionSpies,
-  '../../../selectors.js': {
+  '../../../../store/actions': actionSpies,
+  '../../../../ducks/gas/gas.duck': gasActionSpies,
+  '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
+  '../../../../ducks/send/send.duck': sendActionSpies,
+  '../../../../selectors/selectors.js': {
     getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
   },
 })

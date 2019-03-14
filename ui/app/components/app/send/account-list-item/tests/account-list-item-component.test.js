@@ -11,7 +11,7 @@ const utilsMethodStubs = {
 }
 
 const AccountListItem = proxyquire('../account-list-item.component.js', {
-  '../../../util': utilsMethodStubs,
+  '../../../../helpers/utils/util': utilsMethodStubs,
 }).default
 
 

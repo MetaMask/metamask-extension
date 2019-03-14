@@ -32,7 +32,7 @@ proxyquire('../send-gas-row.container.js', {
       return () => ({})
     },
   },
-  '../../../../selectors': {
+  '../../../../../selectors/selectors': {
     getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
     getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
     getSelectedToken: () => false,
@@ -59,14 +59,14 @@ proxyquire('../send-gas-row.container.js', {
     gasFeeIsInError: (s) => `mockGasFeeError:${s}`,
     getGasButtonGroupShown: (s) => `mockGetGasButtonGroupShown:${s}`,
   },
-  '../../../../actions': actionSpies,
-  '../../../../selectors/custom-gas': {
+  '../../../../../store/actions': actionSpies,
+  '../../../../../selectors/custom-gas': {
     getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
     getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => `mockGasButtonInfo:${s}`,
     getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
   },
-  '../../../../ducks/send.duck': sendDuckSpies,
-  '../../../../ducks/gas.duck': gasDuckSpies,
+  '../../../../../ducks/send/send.duck': sendDuckSpies,
+  '../../../../../ducks/gas/gas.duck': gasDuckSpies,
 })
 
 describe('send-gas-row container', () => {
