@@ -17,7 +17,7 @@ import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
-import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
+import { checksumAddress, addressSlicer, valuesFor } from '../../../helpers/utils/util'
 import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {

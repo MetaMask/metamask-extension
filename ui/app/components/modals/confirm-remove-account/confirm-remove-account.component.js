@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Modal from '../../modal'
-import { addressSummary } from '../../../util'
+import { addressSummary } from '../../../helpers/utils/util'
 import Identicon from '../../identicon'
 import genAccountLink from '../../../../lib/account-link'
 

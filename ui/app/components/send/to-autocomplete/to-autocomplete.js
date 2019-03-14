@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const AccountListItem = require('../account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
 const Tooltip = require('../../tooltip')
-const checksumAddress = require('../../../util').checksumAddress
+const checksumAddress = require('../../../helpers/utils/util').checksumAddress
 
 ToAutoComplete.contextTypes = {
   t: PropTypes.func,

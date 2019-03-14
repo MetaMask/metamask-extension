@@ -2,8 +2,8 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 import Identicon from './identicon'
-const formatBalance = require('../util').formatBalance
-const addressSummary = require('../util').addressSummary
+const formatBalance = require('../helpers/utils/util').formatBalance
+const addressSummary = require('../helpers/utils/util').addressSummary
 
 module.exports = AccountPanel
 

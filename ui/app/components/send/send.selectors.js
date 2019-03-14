@@ -1,4 +1,4 @@
-const { valuesFor } = require('../../util')
+const { valuesFor } = require('../../helpers/utils/util')
 const abi = require('human-standard-token-abi')
 const {
   multiplyCurrencies,

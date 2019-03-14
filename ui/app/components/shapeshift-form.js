@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const classnames = require('classnames')
 const qrcode = require('qrcode-generator')
 const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
-const { isValidAddress } = require('../util')
+const { isValidAddress } = require('../helpers/utils/util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
 
 import Button from './button'

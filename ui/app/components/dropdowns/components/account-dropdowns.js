@@ -7,9 +7,9 @@ const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 import Identicon from '../../identicon'
-const { checksumAddress } = require('../../../util')
+const { checksumAddress } = require('../../../helpers/utils/util')
 const copyToClipboard = require('copy-to-clipboard')
-const { formatBalance } = require('../../../util')
+const { formatBalance } = require('../../../helpers/utils/util')
 
 
 class AccountDropdowns extends Component {

@@ -6,7 +6,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const inherits = require('util').inherits
 const classnames = require('classnames')
-const { checksumAddress } = require('../util')
+const { checksumAddress } = require('../helpers/utils/util')
 import Identicon from './identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const Tooltip = require('./tooltip-v2.js').default

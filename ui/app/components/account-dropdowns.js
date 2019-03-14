@@ -7,7 +7,7 @@ const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const copyToClipboard = require('copy-to-clipboard')
-const { checksumAddress } = require('../util')
+const { checksumAddress } = require('../helpers/utils/util')
 
 import Identicon from './identicon'
 

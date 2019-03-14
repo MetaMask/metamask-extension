@@ -4,7 +4,7 @@ const {
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
 } = require('../../send.constants')
-const { isValidAddress, isEthNetwork } = require('../../../../util')
+const { isValidAddress, isEthNetwork } = require('../../../../helpers/utils/util')
 import { checkExistingAddresses } from '../../../pages/add-token/util'
 
 const ethUtil = require('ethereumjs-util')

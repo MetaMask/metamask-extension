@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const { isHexPrefixed } = require('ethereumjs-util')
 const ReadOnlyInput = require('./readonly-input')
-const { checksumAddress } = require('../util')
+const { checksumAddress } = require('../helpers/utils/util')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
 

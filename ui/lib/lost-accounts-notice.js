@@ -1,4 +1,4 @@
-const summary = require('../app/util').addressSummary
+const summary = require('../app/helpers/utils/util').addressSummary
 
 module.exports = function (lostAccounts) {
   return {

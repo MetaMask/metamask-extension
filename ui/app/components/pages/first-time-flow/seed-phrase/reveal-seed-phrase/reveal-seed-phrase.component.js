@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import LockIcon from '../../../../lock-icon'
 import Button from '../../../../button'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../../../routes'
-import { exportAsFile } from '../../../../../../app/util'
+import { exportAsFile } from '../../../../../helpers/utils/util'
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {

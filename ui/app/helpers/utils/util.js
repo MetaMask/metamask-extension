@@ -1,6 +1,6 @@
 const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
-const hexToBn = require('../../app/scripts/lib/hex-to-bn')
+const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 import { DateTime } from 'luxon'
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)

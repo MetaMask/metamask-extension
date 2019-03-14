@@ -7,7 +7,7 @@ const { getMetaMaskAccounts } = require('../../../../selectors')
 const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../../routes')
-const { formatBalance } = require('../../../../util')
+const { formatBalance } = require('../../../../helpers/utils/util')
 const { getPlatform } = require('../../../../../../app/scripts/lib/util')
 const { PLATFORM_FIREFOX } = require('../../../../../../app/scripts/lib/enums')
 

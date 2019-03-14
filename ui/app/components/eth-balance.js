@@ -5,7 +5,7 @@ const { inherits } = require('util')
 const {
   formatBalance,
   generateBalanceObject,
-} = require('../util')
+} = require('../helpers/utils/util')
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 

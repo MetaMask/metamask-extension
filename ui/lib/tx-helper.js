@@ -1,4 +1,4 @@
-const valuesFor = require('../app/util').valuesFor
+const valuesFor = require('../app/helpers/utils/util').valuesFor
 const log = require('loglevel')
 
 module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, typedMessages, network) {

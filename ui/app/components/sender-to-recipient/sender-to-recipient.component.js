@@ -5,7 +5,7 @@ import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
-import { checksumAddress } from '../../util'
+import { checksumAddress } from '../../helpers/utils/util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',

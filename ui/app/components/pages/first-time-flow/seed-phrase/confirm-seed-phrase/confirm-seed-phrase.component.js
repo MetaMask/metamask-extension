@@ -7,7 +7,7 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../../routes'
-import { exportAsFile } from '../../../../../../app/util'
+import { exportAsFile } from '../../../../../helpers/utils/util'
 import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
 
 export default class ConfirmSeedPhrase extends PureComponent {

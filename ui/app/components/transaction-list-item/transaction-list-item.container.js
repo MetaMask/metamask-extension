@@ -7,7 +7,7 @@ import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '..
 import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import { getTokenData } from '../../helpers/utils/transactions.util'
 import { increaseLastGasPrice } from '../../helpers/utils/confirm-tx.util'
-import { formatDate } from '../../util'
+import { formatDate } from '../../helpers/utils/util'
 import {
   fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,

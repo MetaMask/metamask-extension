@@ -12,7 +12,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('react-redux').connect
 const ToAutoComplete = require('./send/to-autocomplete').default
 const log = require('loglevel')
-const { isValidENSAddress } = require('../util')
+const { isValidENSAddress } = require('../helpers/utils/util')
 
 EnsInput.contextTypes = {
   t: PropTypes.func,

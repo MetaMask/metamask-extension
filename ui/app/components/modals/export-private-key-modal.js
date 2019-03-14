@@ -10,7 +10,7 @@ const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
-const { checksumAddress } = require('../../util')
+const { checksumAddress } = require('../../helpers/utils/util')
 import Button from '../button'
 
 function mapStateToPropsFactory () {
