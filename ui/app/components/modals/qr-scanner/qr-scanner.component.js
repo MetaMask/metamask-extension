@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { BrowserQRCodeReader } from '@zxing/library'
 import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
-import Spinner from '../../spinner'
+import Spinner from '../../ui/spinner'
 import WebcamUtils from '../../../../lib/webcam-utils'
-import PageContainerFooter from '../../page-container/page-container-footer/page-container-footer.component'
+import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component'
 
 export default class QrScanner extends Component {
   static propTypes = {

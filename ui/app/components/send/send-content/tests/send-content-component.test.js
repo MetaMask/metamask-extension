@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import SendContent from '../send-content.component.js'
 
-import PageContainerContent from '../../../page-container/page-container-content.component'
+import PageContainerContent from '../../../ui/page-container/page-container-content.component'
 import SendAmountRow from '../send-amount-row/send-amount-row.container'
 import SendFromRow from '../send-from-row/send-from-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'

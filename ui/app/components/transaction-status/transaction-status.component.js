@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Tooltip from '../tooltip-v2'
+import Tooltip from '../ui/tooltip-v2'
 import {
   UNAPPROVED_STATUS,
   REJECTED_STATUS,

@@ -6,7 +6,7 @@ const {
   formatBalance,
   generateBalanceObject,
 } = require('../../helpers/utils/util')
-const Tooltip = require('../tooltip.js')
+const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 
 module.exports = connect(mapStateToProps)(EthBalanceComponent)

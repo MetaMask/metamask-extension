@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PageContainerContent from '../../page-container/page-container-content.component'
+import PageContainerContent from '../../ui/page-container/page-container-content.component'
 import SendAmountRow from './send-amount-row/'
 import SendFromRow from './send-from-row/'
 import SendGasRow from './send-gas-row/'

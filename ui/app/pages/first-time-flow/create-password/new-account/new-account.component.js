@@ -6,7 +6,7 @@ import {
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes'
-import TextField from '../../../../components/text-field'
+import TextField from '../../../../components/ui/text-field'
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {

@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import TransactionListItemDetails from '../transaction-list-item-details.component'
 import Button from '../../ui/button'
-import SenderToRecipient from '../../sender-to-recipient'
+import SenderToRecipient from '../../ui/sender-to-recipient'
 import TransactionBreakdown from '../../transaction-breakdown'
 import TransactionActivityLog from '../../transaction-activity-log'
 

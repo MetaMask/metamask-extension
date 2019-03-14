@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendHeader from '../send-header.component.js'
 
-import PageContainerHeader from '../../../page-container/page-container-header'
+import PageContainerHeader from '../../../ui/page-container/page-container-header'
 
 const propsMethodSpies = {
   clearSend: sinon.spy(),

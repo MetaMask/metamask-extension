@@ -33,7 +33,7 @@ const ConfirmAddSuggestedTokenPage = require('./confirm-add-suggested-token')
 const CreateAccountPage = require('./create-account')
 const NoticeScreen = require('./notice')
 
-const Loading = require('../components/loading-screen')
+const Loading = require('../components/ui/loading-screen')
 const LoadingNetwork = require('../components/loading-network-screen').default
 const NetworkDropdown = require('../components/dropdowns/network-dropdown')
 import AccountMenu from '../components/account-menu'

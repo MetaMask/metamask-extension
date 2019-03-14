@@ -12,15 +12,15 @@
 
 @import './confirm-page-container/index';
 
-@import 'ui/currency-input/index';
+@import './ui/currency-input/index';
 
-@import 'ui/currency-display/index';
+@import './ui/currency-display/index';
 
-@import 'ui/error-message/index';
+@import './ui/error-message/index';
 
-@import 'ui/export-text-container/index';
+@import './ui/export-text-container/index';
 
-@import 'ui/identicon/index';
+@import './ui/identicon/index';
 
 @import './info-box/index';
 
@@ -32,7 +32,7 @@
 
 @import './network-display/index';
 
-@import './page-container/index';
+@import 'ui/page-container/index';
 
 @import '../pages/index';
 
@@ -40,11 +40,11 @@
 
 @import './selected-account/index';
 
-@import './sender-to-recipient/index';
+@import 'ui/sender-to-recipient/index';
 
-@import './tabs/index';
+@import 'ui/tabs/index';
 
-@import './token-balance/index';
+@import 'ui/token-balance/index';
 
 @import './transaction-activity-log/index';
 
@@ -66,7 +66,7 @@
 
 @import './sidebars/index';
 
-@import './unit-input/index';
+@import './ui/unit-input/index';
 
 @import './gas-customization/gas-modal-page-container/index';
 

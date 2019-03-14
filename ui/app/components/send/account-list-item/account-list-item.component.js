@@ -5,7 +5,7 @@ import { checksumAddress } from '../../../helpers/utils/util'
 import Identicon from '../../ui/identicon'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
-import Tooltip from '../../tooltip-v2'
+import Tooltip from '../../ui/tooltip-v2'
 
 export default class AccountListItem extends Component {
 

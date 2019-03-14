@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
-import Loading from '../../components/loading-screen'
+import Loading from '../../components/ui/loading-screen'
 import ConfirmTransactionSwitch from '../confirm-transaction-switch'
 import ConfirmTransactionBase from '../confirm-transaction-base'
 import ConfirmSendEther from '../confirm-send-ether'

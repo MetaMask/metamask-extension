@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
-import TokenBalance from '../../components/token-balance'
+import TokenBalance from '../../components/ui/token-balance'
 
 export default class ConfirmAddToken extends Component {
   static contextTypes = {

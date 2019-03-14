@@ -7,7 +7,7 @@ import SimpleDropdown from '../../../components/dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
 import { REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
 import locales from '../../../../../app/_locales/index.json'
-import TextField from '../../../components/text-field'
+import TextField from '../../../components/ui/text-field'
 import Button from '../../../components/ui/button'
 
 const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {

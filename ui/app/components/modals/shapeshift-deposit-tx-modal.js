@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../store/actions')
-const QrView = require('../qr-code')
+const QrView = require('../ui/qr-code')
 const AccountModalContainer = require('./account-modal-container')
 
 function mapStateToProps (state) {

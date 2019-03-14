@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Loading from '../../../loading-screen'
+import Loading from '../../../ui/loading-screen'
 import GasPriceButtonGroup from '../../gas-price-button-group'
 
 export default class BasicTabContent extends Component {

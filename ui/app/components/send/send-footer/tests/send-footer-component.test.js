@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendFooter from '../send-footer.component.js'
 
-import PageContainerFooter from '../../../page-container/page-container-footer'
+import PageContainerFooter from '../../../ui/page-container/page-container-footer'
 
 const propsMethodSpies = {
   addToAddressBookIfNew: sinon.spy(),

@@ -9,7 +9,7 @@ const { formatDate, addressSummary } = require('../helpers/utils/util')
 
 const CopyButton = require('./ui/copyButton')
 const EthBalance = require('./ui/eth-balance')
-const Tooltip = require('./tooltip')
+const Tooltip = require('./ui/tooltip')
 
 
 ShiftListItem.contextTypes = {

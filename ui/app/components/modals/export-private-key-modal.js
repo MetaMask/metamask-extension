@@ -8,7 +8,7 @@ const { stripHexPrefix } = require('ethereumjs-util')
 const actions = require('../../store/actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors/selectors')
-const ReadOnlyInput = require('../readonly-input')
+const ReadOnlyInput = require('../ui/readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../helpers/utils/util')
 import Button from '../ui/button'

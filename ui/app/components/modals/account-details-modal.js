@@ -7,7 +7,7 @@ const actions = require('../../store/actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors/selectors')
 const genAccountLink = require('../../../lib/account-link.js')
-const QrView = require('../qr-code')
+const QrView = require('../ui/qr-code')
 const EditableLabel = require('../ui/editable-label')
 
 import Button from '../ui/button'

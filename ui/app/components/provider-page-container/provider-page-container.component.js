@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {PureComponent} from 'react'
 import { ProviderPageContainerContent, ProviderPageContainerHeader } from './'
-import { PageContainerFooter } from '../page-container'
+import { PageContainerFooter } from '../ui/page-container'
 
 export default class ProviderPageContainer extends PureComponent {
   static propTypes = {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PageContainerFooter from '../../page-container/page-container-footer'
+import PageContainerFooter from '../../ui/page-container/page-container-footer'
 import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendFooter extends Component {

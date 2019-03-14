@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import UserPreferencedTokenInput from '../user-preferenced-token-input.component'
-import TokenInput from '../../token-input'
+import TokenInput from '../../ui/token-input'
 
 describe('UserPreferencedCurrencyInput Component', () => {
   describe('rendering', () => {

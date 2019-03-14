@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
 const connect = require('react-redux').connect
 
-const Tooltip = require('../tooltip')
+const Tooltip = require('./tooltip')
 
 CopyButton.contextTypes = {
   t: PropTypes.func,

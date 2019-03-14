@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import SenderToRecipient from '../sender-to-recipient'
-import { FLAT_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
+import SenderToRecipient from '../ui/sender-to-recipient'
+import { FLAT_VARIANT } from '../ui/sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../ui/button'
-import Tooltip from '../tooltip'
+import Tooltip from '../ui/tooltip'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionListItemDetails extends PureComponent {

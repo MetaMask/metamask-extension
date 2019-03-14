@@ -4,7 +4,7 @@ import shallow from '../../../../../../lib/shallow-with-context'
 import BasicTabContent from '../basic-tab-content.component'
 
 import GasPriceButtonGroup from '../../../gas-price-button-group/'
-import Loading from '../../../../loading-screen'
+import Loading from '../../../../ui/loading-screen'
 
 const mockGasPriceButtonGroupProps = {
   buttonDataLoading: false,

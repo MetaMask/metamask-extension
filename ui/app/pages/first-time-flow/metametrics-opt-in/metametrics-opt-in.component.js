@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PageContainerFooter from '../../../components/page-container/page-container-footer'
+import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {

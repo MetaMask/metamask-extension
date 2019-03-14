@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const Tooltip = require('./tooltip')
+const Tooltip = require('./ui/tooltip')
 const copyToClipboard = require('copy-to-clipboard')
 const connect = require('react-redux').connect
 

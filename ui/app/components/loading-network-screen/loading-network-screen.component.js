@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Spinner from '../spinner'
+import Spinner from '../ui/spinner'
 import Button from '../ui/button'
 
 export default class LoadingNetworkScreen extends PureComponent {

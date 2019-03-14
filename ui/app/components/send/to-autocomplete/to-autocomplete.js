@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountListItem = require('../account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
-const Tooltip = require('../../tooltip')
+const Tooltip = require('../../ui/tooltip')
 const checksumAddress = require('../../../helpers/utils/util').checksumAddress
 
 ToAutoComplete.contextTypes = {

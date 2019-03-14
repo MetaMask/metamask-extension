@@ -6,7 +6,7 @@ import {
   unMarkPasswordForgotten,
 } from '../../store/actions'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
-import TextField from '../../components/text-field'
+import TextField from '../../components/ui/text-field'
 import Button from '../../components/ui/button'
 
 class RestoreVaultPage extends Component {

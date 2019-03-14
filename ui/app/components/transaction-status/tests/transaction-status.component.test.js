@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { mount } from 'enzyme'
 import TransactionStatus from '../transaction-status.component'
-import Tooltip from '../../tooltip-v2'
+import Tooltip from '../../ui/tooltip-v2'
 
 describe('TransactionStatus Component', () => {
   it('should render APPROVED properly', () => {

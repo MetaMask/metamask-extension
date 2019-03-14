@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Button from '../ui/button'
 import Identicon from '../ui/identicon'
-import TokenBalance from '../token-balance'
+import TokenBalance from '../ui/token-balance'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { SEND_ROUTE } from '../../helpers/constants/routes'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
-import Tooltip from '../tooltip-v2'
+import Tooltip from '../ui/tooltip-v2'
 
 export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {

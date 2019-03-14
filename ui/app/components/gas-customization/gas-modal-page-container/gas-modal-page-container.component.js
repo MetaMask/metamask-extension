@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PageContainer from '../../page-container'
-import { Tabs, Tab } from '../../tabs'
+import PageContainer from '../../ui/page-container'
+import { Tabs, Tab } from '../../ui/tabs'
 import AdvancedTabContent from './advanced-tab-content'
 import BasicTabContent from './basic-tab-content'
 

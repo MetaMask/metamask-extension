@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SenderToRecipient from '../sender-to-recipient'
-import { PageContainerFooter } from '../page-container'
+import SenderToRecipient from '../ui/sender-to-recipient'
+import { PageContainerFooter } from '../ui/page-container'
 import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from './'
 
 export default class ConfirmPageContainer extends Component {

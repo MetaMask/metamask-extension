@@ -5,9 +5,9 @@ import sinon from 'sinon'
 import GasModalPageContainer from '../gas-modal-page-container.component.js'
 import timeout from '../../../../../lib/test-timeout'
 
-import PageContainer from '../../../page-container'
+import PageContainer from '../../../ui/page-container'
 
-import { Tab } from '../../../tabs'
+import { Tab } from '../../../ui/tabs'
 
 const mockBasicGasEstimates = {
   blockTime: 'mockBlockTime',

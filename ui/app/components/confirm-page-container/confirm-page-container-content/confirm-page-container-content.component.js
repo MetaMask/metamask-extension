@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { Tabs, Tab } from '../../tabs'
+import { Tabs, Tab } from '../../ui/tabs'
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from './'
 import ErrorMessage from '../../ui/error-message'
 

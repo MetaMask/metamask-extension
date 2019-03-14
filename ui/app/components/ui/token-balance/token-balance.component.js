@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import CurrencyDisplay from '../ui/currency-display'
+import CurrencyDisplay from '../currency-display'
 
 export default class TokenBalance extends PureComponent {
   static propTypes = {

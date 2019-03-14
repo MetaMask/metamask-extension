@@ -1,7 +1,7 @@
 import {validateMnemonic} from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import TextField from '../../../../components/text-field'
+import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,

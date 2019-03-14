@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import AdvancedTabContent from '../advanced-tab-content.component.js'
 
 import GasPriceChart from '../../../gas-price-chart'
-import Loading from '../../../../loading-screen'
+import Loading from '../../../../ui/loading-screen'
 
 const propsMethodSpies = {
   updateCustomGasPrice: sinon.spy(),
