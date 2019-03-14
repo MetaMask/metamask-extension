@@ -364,7 +364,9 @@ describe('Gas Duck', () => {
         {},
         initState,
         { basicPriceAndTimeEstimatesLastRetrieved: 1000000 }
-      ) }))
+      ),
+        metamask: { provider: { type: 'ropsten' } },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
@@ -428,7 +430,9 @@ describe('Gas Duck', () => {
         {},
         initState,
         { priceAndTimeEstimatesLastRetrieved: 1000000 }
-      ) }))
+      ),
+        metamask: { provider: { type: 'ropsten' } },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: GAS_ESTIMATE_LOADING_STARTED} ]
@@ -479,7 +483,9 @@ describe('Gas Duck', () => {
             gasprice: 50,
           }],
         }
-      ) }))
+      ),
+        metamask: { provider: { type: 'ropsten' } },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: GAS_ESTIMATE_LOADING_STARTED} ]

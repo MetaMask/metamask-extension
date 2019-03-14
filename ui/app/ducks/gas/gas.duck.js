@@ -7,6 +7,9 @@ import {
 import {
   decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util'
+import {
+  isEthereumNetwork,
+} from '../../selectors/selectors'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
@@ -356,10 +359,16 @@ function inliersByIQR (data, prop) {
 
 export function fetchGasEstimates (blockTime) {
   return (dispatch, getState) => {
+    const state = getState()
+
+    if (isEthereumNetwork(state)) {
+      return Promise.resolve(null)
+    }
+
     const {
       priceAndTimeEstimatesLastRetrieved,
       priceAndTimeEstimates,
-    } = getState().gas
+    } = state.gas
     const timeLastRetrieved = priceAndTimeEstimatesLastRetrieved || loadLocalStorageData('GAS_API_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(gasEstimatesLoadingStarted())
