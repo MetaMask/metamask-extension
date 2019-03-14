@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import infuraCurrencies from '../../../../infura-conversion.json'
+import infuraCurrencies from '../../../../helpers/constants/infura-conversion.json'
 import validUrl from 'valid-url'
 import { exportAsFile } from '../../../../util'
 import SimpleDropdown from '../../../dropdowns/simple-dropdown'
