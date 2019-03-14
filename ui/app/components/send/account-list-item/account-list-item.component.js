@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { checksumAddress } from '../../../helpers/utils/util'
 import Identicon from '../../identicon'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../../constants/common'
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import Tooltip from '../../tooltip-v2'
 
 export default class AccountListItem extends Component {

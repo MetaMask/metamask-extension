@@ -4,7 +4,7 @@ import {
   APPROVED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
-} from '../constants/transactions'
+} from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,

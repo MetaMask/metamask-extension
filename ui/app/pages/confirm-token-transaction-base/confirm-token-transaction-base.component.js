@@ -9,7 +9,7 @@ import {
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util'
 import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
-import { ETH, PRIMARY } from '../../constants/common'
+import { ETH, PRIMARY } from '../../helpers/constants/common'
 
 export default class ConfirmTokenTransactionBase extends Component {
   static contextTypes = {

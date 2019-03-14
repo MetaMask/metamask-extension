@@ -5,7 +5,7 @@ import TransactionBreakdownRow from './transaction-breakdown-row'
 import CurrencyDisplay from '../currency-display'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import HexToDecimal from '../hex-to-decimal'
-import { GWEI, PRIMARY, SECONDARY } from '../../constants/common'
+import { GWEI, PRIMARY, SECONDARY } from '../../helpers/constants/common'
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {

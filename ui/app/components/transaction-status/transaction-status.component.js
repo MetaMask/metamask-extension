@@ -12,7 +12,7 @@ import {
   FAILED_STATUS,
   DROPPED_STATUS,
   CANCELLED_STATUS,
-} from '../../constants/transactions'
+} from '../../helpers/constants/transactions'
 
 const statusToClassNameHash = {
   [UNAPPROVED_STATUS]: 'transaction-status--unapproved',

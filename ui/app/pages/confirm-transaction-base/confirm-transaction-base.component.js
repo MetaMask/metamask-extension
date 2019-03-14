@@ -7,10 +7,10 @@ import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
-} from '../../constants/error-keys'
-import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../constants/transactions'
+} from '../../helpers/constants/error-keys'
+import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../constants/common'
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import AdvancedGasInputs from '../../components/gas-customization/advanced-gas-inputs'
 
 export default class ConfirmTransactionBase extends Component {

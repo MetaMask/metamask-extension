@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
 import { getValueFromWeiHex, getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
-import { ETH } from '../../constants/common'
+import { ETH } from '../../helpers/constants/common'
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted

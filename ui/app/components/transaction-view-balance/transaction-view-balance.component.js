@@ -6,7 +6,7 @@ import Identicon from '../identicon'
 import TokenBalance from '../token-balance'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { SEND_ROUTE } from '../../routes'
-import { PRIMARY, SECONDARY } from '../../constants/common'
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import Tooltip from '../tooltip-v2'
 
 export default class TransactionViewBalance extends PureComponent {

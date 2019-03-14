@@ -8,8 +8,8 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import TokenCurrencyDisplay from '../token-currency-display'
 import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
-import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
-import { PRIMARY, SECONDARY } from '../../constants/common'
+import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../helpers/constants/transactions'
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import { getStatusKey } from '../../helpers/utils/transactions.util'
 
 export default class TransactionListItem extends PureComponent {

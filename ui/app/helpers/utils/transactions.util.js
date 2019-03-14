@@ -19,7 +19,7 @@ import {
   SIGNATURE_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
-} from '../../constants/transactions'
+} from '../constants/transactions'
 
 import { addCurrencies } from './conversion-util'
 

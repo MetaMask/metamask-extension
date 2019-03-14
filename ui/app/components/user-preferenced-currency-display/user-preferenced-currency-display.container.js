@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component'
 import { preferencesSelector, getIsMainnet } from '../../selectors'
-import { ETH, PRIMARY, SECONDARY } from '../../constants/common'
+import { ETH, PRIMARY, SECONDARY } from '../../helpers/constants/common'
 
 const mapStateToProps = (state, ownProps) => {
   const {

@@ -7,7 +7,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import Tooltip from '../tooltip'
 import Identicon from '../identicon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
-import { PRIMARY } from '../../constants/common'
+import { PRIMARY } from '../../helpers/constants/common'
 import {
   SETTINGS_ROUTE,
   INFO_ROUTE,

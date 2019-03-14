@@ -12,7 +12,7 @@ import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaM
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
-} from '../../constants/error-keys'
+} from '../../helpers/constants/error-keys'
 import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../../components/send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'

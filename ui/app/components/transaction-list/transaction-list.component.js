@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TransactionListItem from '../transaction-list-item'
 import ShapeShiftTransactionListItem from '../shift-list-item'
-import { TRANSACTION_TYPE_SHAPESHIFT } from '../../constants/transactions'
+import { TRANSACTION_TYPE_SHAPESHIFT } from '../../helpers/constants/transactions'
 
 export default class TransactionList extends PureComponent {
   static contextTypes = {

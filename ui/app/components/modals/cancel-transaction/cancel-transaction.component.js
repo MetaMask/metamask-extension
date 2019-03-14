@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Modal from '../../modal'
 import CancelTransactionGasFee from './cancel-transaction-gas-fee'
-import { SUBMITTED_STATUS } from '../../../constants/transactions'
+import { SUBMITTED_STATUS } from '../../../helpers/constants/transactions'
 
 export default class CancelTransaction extends PureComponent {
   static contextTypes = {

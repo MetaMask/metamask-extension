@@ -17,7 +17,7 @@ import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER_FROM,
-} from '../../constants/transactions'
+} from '../../helpers/constants/transactions'
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {

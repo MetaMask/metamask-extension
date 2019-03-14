@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { PRIMARY, SECONDARY, ETH } from '../../constants/common'
+import { PRIMARY, SECONDARY, ETH } from '../../helpers/constants/common'
 import CurrencyDisplay from '../currency-display'
 
 export default class UserPreferencedCurrencyDisplay extends PureComponent {
