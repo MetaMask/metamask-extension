@@ -5,7 +5,7 @@ const h = require('react-hyperscript')
 const { HashRouter } = require('react-router-dom')
 const App = require('./app')
 const I18nProvider = require('./helpers/higher-order-components/i18n-provider')
-const MetaMetricsProvider = require('./metametrics/metametrics.provider')
+const MetaMetricsProvider = require('./helpers/higher-order-components/metametrics/metametrics.provider')
 
 class Root extends Component {
   render () {

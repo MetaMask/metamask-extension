@@ -9,15 +9,15 @@ import {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
-} from '../selectors'
+} from '../../../selectors'
 import {
   txDataSelector,
-} from '../selectors/confirm-transaction'
-import { getEnvironmentType } from '../../../app/scripts/lib/util'
+} from '../../../selectors/confirm-transaction'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import {
   sendMetaMetricsEvent,
   sendCountIsTrackable,
-} from './metametrics.util'
+} from '../../utils/metametrics.util'
 
 class MetaMetricsProvider extends Component {
   static propTypes = {
