@@ -64,7 +64,9 @@ class FixtureServer {
       this._stateMap.set(CURRENT_STATE_KEY, state)
     }
 
-    return callback()
+    return callback({
+      ganacheOptions: directory ? require(path.resolve(__dirname, directory, 'db.js')) : undefined,
+    })
   }
 
   _isStateRequest (ctx) {

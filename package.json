@@ -207,6 +207,7 @@
     "ganache-cli": "^6.4.4",
     "ganache-core": "^2.5.7",
     "geckodriver": "^1.16.2",
+    "get-port": "^4.2.0",
     "gh-pages": "^1.2.0",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
