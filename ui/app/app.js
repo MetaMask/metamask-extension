@@ -8,30 +8,30 @@ import log from 'loglevel'
 import { getMetaMaskAccounts, getNetworkIdentifier } from './selectors'
 
 // init
-import FirstTimeFlow from './components/pages/first-time-flow'
+import FirstTimeFlow from './pages/first-time-flow'
 // accounts
 const SendTransactionScreen = require('./components/send/send.container')
-const ConfirmTransaction = require('./components/pages/confirm-transaction')
+const ConfirmTransaction = require('./pages/confirm-transaction')
 
 // slideout menu
 const Sidebar = require('./components/sidebars').default
 const { WALLET_VIEW_SIDEBAR } = require('./components/sidebars/sidebar.constants')
 
 // other views
-import Home from './components/pages/home'
-import Settings from './components/pages/settings'
+import Home from './pages/home'
+import Settings from './pages/settings'
 import Authenticated from './helpers/higher-order-components/authenticated'
 import Initialized from './helpers/higher-order-components/initialized'
-import Lock from './components/pages/lock'
+import Lock from './pages/lock'
 import UiMigrationAnnouncement from './components/ui-migration-annoucement'
-const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
-const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
-const MobileSyncPage = require('./components/pages/mobile-sync')
-const AddTokenPage = require('./components/pages/add-token')
-const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
-const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
-const CreateAccountPage = require('./components/pages/create-account')
-const NoticeScreen = require('./components/pages/notice')
+const RestoreVaultPage = require('./pages/keychains/restore-vault').default
+const RevealSeedConfirmation = require('./pages/keychains/reveal-seed')
+const MobileSyncPage = require('./pages/mobile-sync')
+const AddTokenPage = require('./pages/add-token')
+const ConfirmAddTokenPage = require('./pages/confirm-add-token')
+const ConfirmAddSuggestedTokenPage = require('./pages/confirm-add-suggested-token')
+const CreateAccountPage = require('./pages/create-account')
+const NoticeScreen = require('./pages/notice')
 
 const Loading = require('./components/loading-screen')
 const LoadingNetwork = require('./components/loading-network-screen').default
@@ -44,7 +44,7 @@ const Modal = require('./components/modals/index').Modal
 const Alert = require('./components/alert')
 
 import AppHeader from './components/app-header'
-import UnlockPage from './components/pages/unlock-page'
+import UnlockPage from './pages/unlock-page'
 
 import {
   submittedPendingTransactionsSelector,

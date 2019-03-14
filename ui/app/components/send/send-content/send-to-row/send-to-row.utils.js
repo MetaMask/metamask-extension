@@ -5,7 +5,7 @@ const {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
 } = require('../../send.constants')
 const { isValidAddress, isEthNetwork } = require('../../../../helpers/utils/util')
-import { checkExistingAddresses } from '../../../pages/add-token/util'
+import { checkExistingAddresses } from '../../../../pages/add-token/util'
 
 const ethUtil = require('ethereumjs-util')
 const contractMap = require('eth-contract-metadata')
