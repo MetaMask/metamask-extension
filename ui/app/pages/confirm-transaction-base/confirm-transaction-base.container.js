@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../../components/send/send.ut
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../components/send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../selectors'
+import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../selectors/selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {

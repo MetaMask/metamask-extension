@@ -11,7 +11,7 @@ import {
   isBalanceCached,
   preferencesSelector,
   getIsMainnet,
-} from '../../selectors'
+} from '../../selectors/selectors'
 import { showModal } from '../../actions'
 
 const mapStateToProps = state => {

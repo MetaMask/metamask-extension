@@ -5,7 +5,7 @@ import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
 import actions from '../actions'
 import log from 'loglevel'
-import { getMetaMaskAccounts, getNetworkIdentifier } from '../selectors'
+import { getMetaMaskAccounts, getNetworkIdentifier } from '../selectors/selectors'
 
 // init
 import FirstTimeFlow from './first-time-flow'

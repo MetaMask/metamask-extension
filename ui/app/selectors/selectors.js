@@ -1,13 +1,13 @@
-import {NETWORK_TYPES} from './helpers/constants/common'
+import {NETWORK_TYPES} from '../helpers/constants/common'
 import { stripHexPrefix } from 'ethereumjs-util'
 
 const abi = require('human-standard-token-abi')
 import {
   transactionsSelector,
-} from './selectors/transactions'
+} from './transactions'
 const {
   multiplyCurrencies,
-} = require('./helpers/utils/conversion-util')
+} = require('../helpers/utils/conversion-util')
 
 const selectors = {
   getSelectedAddress,

@@ -14,7 +14,7 @@ import {
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../ducks/gas/gas.duck'
-import {getIsMainnet, preferencesSelector} from '../../selectors'
+import {getIsMainnet, preferencesSelector} from '../../selectors/selectors'
 
 const mapStateToProps = state => {
   const { metamask: { knownMethodData } } = state

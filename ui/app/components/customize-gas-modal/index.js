@@ -42,7 +42,7 @@ const {
   getCurrentAccountWithSendEtherInfo,
   getSelectedTokenToFiatRate,
   getSendMaxModeState,
-} = require('../../selectors')
+} = require('../../selectors/selectors')
 
 const {
   getGasPrice,

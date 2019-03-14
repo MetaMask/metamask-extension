@@ -8,7 +8,7 @@ import {
   getIsMainnet,
   isBalanceCached,
   preferencesSelector,
-} from '../../../selectors'
+} from '../../../selectors/selectors'
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)

@@ -9,7 +9,7 @@ import {
   fetchBasicGasAndTimeEstimates,
 } from '../../ducks/gas/gas.duck'
 import ConfirmTransaction from './confirm-transaction.component'
-import { getTotalUnapprovedCount } from '../../selectors'
+import { getTotalUnapprovedCount } from '../../selectors/selectors'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
 const mapStateToProps = state => {

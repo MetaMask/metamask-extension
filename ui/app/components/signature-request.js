@@ -21,7 +21,7 @@ const {
   getSelectedAddress,
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-} = require('../selectors.js')
+} = require('../selectors/selectors.js')
 
 import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck'
 import Button from './button'

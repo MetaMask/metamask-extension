@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import LoadingNetworkScreen from './loading-network-screen.component'
 import actions from '../../actions'
-import { getNetworkIdentifier } from '../../selectors'
+import { getNetworkIdentifier } from '../../selectors/selectors'
 
 const mapStateToProps = state => {
   const {

@@ -15,7 +15,7 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setParticipateInMetaMetrics,
 } from '../../../actions'
-import { preferencesSelector } from '../../../selectors'
+import { preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
   const { appState: { warning }, metamask } = state

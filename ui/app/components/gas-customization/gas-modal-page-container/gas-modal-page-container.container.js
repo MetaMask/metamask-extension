@@ -27,7 +27,7 @@ import {
   conversionRateSelector as getConversionRate,
   getSelectedToken,
   getCurrentEthBalance,
-} from '../../../selectors.js'
+} from '../../../selectors/selectors.js'
 import {
   formatTimeEstimate,
   getFastPriceEstimateInHexWEI,
@@ -63,7 +63,7 @@ import {
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
-import {getIsMainnet, preferencesSelector} from '../../../selectors'
+import {getIsMainnet, preferencesSelector} from '../../../selectors/selectors'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps

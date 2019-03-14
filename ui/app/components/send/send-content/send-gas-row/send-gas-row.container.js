@@ -26,7 +26,7 @@ import {
 } from '../../../../ducks/gas/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors'
+import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)

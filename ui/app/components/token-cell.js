@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 import Identicon from './identicon'
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
-const selectors = require('../selectors')
+const selectors = require('../selectors/selectors')
 const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../helpers/utils/conversion-util')
 

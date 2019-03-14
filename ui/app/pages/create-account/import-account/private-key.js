@@ -7,7 +7,7 @@ const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const actions = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../../../selectors')
+const { getMetaMaskAccounts } = require('../../../selectors/selectors')
 import Button from '../../../components/button'
 
 PrivateKeyImportView.contextTypes = {

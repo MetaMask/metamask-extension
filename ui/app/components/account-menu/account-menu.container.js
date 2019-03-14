@@ -11,7 +11,7 @@ import {
   showInfoPage,
   showModal,
 } from '../../actions'
-import { getMetaMaskAccounts } from '../../selectors'
+import { getMetaMaskAccounts } from '../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {

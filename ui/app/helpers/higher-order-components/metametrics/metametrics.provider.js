@@ -9,7 +9,7 @@ import {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
-} from '../../../selectors'
+} from '../../../selectors/selectors'
 import {
   txDataSelector,
 } from '../../../selectors/confirm-transaction'

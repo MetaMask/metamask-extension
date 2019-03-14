@@ -6,7 +6,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../selectors/transactions'
-import { getSelectedAddress, getAssetImages } from '../../selectors'
+import { getSelectedAddress, getAssetImages } from '../../selectors/selectors'
 import { selectedTokenSelector } from '../../selectors/tokens'
 import { updateNetworkNonce } from '../../actions'
 

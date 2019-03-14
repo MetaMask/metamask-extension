@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const { getSelectedIdentity } = require('../../selectors')
+const { getSelectedIdentity } = require('../../selectors/selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
 

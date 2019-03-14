@@ -12,7 +12,7 @@ const R = require('ramda')
 const SignatureRequest = require('../components/signature-request')
 const Loading = require('../components/loading-screen')
 const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../selectors')
+const { getMetaMaskAccounts } = require('../selectors/selectors')
 
 module.exports = compose(
   withRouter,
