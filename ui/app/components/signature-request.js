@@ -12,7 +12,7 @@ const { ObjectInspector } = require('react-inspector')
 
 import AccountDropdownMini from './account-dropdown-mini'
 
-const actions = require('../actions')
+const actions = require('../store/actions')
 const { conversionUtil } = require('../helpers/utils/conversion-util')
 
 const {

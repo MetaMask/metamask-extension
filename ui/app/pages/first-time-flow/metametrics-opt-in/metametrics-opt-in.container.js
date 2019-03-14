@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import MetaMetricsOptIn from './metametrics-opt-in.component'
-import { setParticipateInMetaMetrics } from '../../../actions'
+import { setParticipateInMetaMetrics } from '../../../store/actions'
 import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
 
 const firstTimeFlowTypeNameMap = {

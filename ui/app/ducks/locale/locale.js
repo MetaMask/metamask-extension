@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const actions = require('../../actions')
+const actions = require('../../store/actions')
 
 module.exports = reduceMetamask
 

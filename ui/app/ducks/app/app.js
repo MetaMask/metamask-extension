@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const actions = require('../../actions')
+const actions = require('../../store/actions')
 const txHelper = require('../../../lib/tx-helper')
 const log = require('loglevel')
 

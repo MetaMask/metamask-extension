@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
-import actions from '../actions'
+import actions from '../store/actions'
 import log from 'loglevel'
 import { getMetaMaskAccounts, getNetworkIdentifier } from '../selectors/selectors'
 

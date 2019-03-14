@@ -14,7 +14,7 @@ import {
 } from './send-to-row.selectors.js'
 import {
     updateSendTo,
-} from '../../../../actions'
+} from '../../../../store/actions'
 import {
   updateSendErrors,
   updateSendWarnings,

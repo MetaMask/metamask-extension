@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 
 import AppHeader from './app-header.component'
-const actions = require('../../actions')
+const actions = require('../../store/actions')
 
 const mapStateToProps = state => {
   const { appState, metamask } = state

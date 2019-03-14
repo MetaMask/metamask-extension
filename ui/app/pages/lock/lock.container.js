@@ -2,7 +2,7 @@ import Lock from './lock.component'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { lockMetamask } from '../../actions'
+import { lockMetamask } from '../../store/actions'
 
 const mapStateToProps = state => {
   const { metamask: { isUnlocked } } = state

@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 
 const extend = require('xtend')
 
-const { addToken, removeSuggestedTokens } = require('../../actions')
+const { addToken, removeSuggestedTokens } = require('../../store/actions')
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens, suggestedTokens } = metamask

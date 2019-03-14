@@ -7,7 +7,7 @@ import {
   setGasPrice,
   createSpeedUpTransaction,
   hideSidebar,
-} from '../../../actions'
+} from '../../../store/actions'
 import {
   setCustomGasPrice,
   setCustomGasLimit,

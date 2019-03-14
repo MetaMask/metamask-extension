@@ -1,6 +1,6 @@
 import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/ducks/metamask/metamask'
-import * as actions from '../../../../../ui/app/actions'
+import * as actions from '../../../../../ui/app/store/actions'
 
 describe('MetaMask Reducers', () => {
 

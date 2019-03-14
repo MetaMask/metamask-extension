@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const actions = require('../../actions')
+const actions = require('../../store/actions')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/controllers/network/enums')

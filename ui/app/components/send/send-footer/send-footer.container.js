@@ -6,7 +6,7 @@ import {
   signTokenTx,
   signTx,
   updateTransaction,
-} from '../../../actions'
+} from '../../../store/actions'
 import SendFooter from './send-footer.component'
 import {
   getGasLimit,

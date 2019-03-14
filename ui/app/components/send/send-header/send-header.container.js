@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { clearSend } from '../../../actions'
+import { clearSend } from '../../../store/actions'
 import SendHeader from './send-header.component'
 import { getSubtitleParams, getTitleKey } from './send-header.selectors'
 

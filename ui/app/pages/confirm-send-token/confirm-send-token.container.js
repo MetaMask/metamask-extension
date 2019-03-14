@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import { setSelectedToken, updateSend, showSendTokenPage } from '../../actions'
+import { setSelectedToken, updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors/confirm-transaction'
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import qrcode from 'qrcode-generator'
 import {connect} from 'react-redux'
-import {shapeShiftSubview, pairUpdate, buyWithShapeShift} from '../../../../ui/app/actions'
+import {shapeShiftSubview, pairUpdate, buyWithShapeShift} from '../../../../ui/app/store/actions'
 import {isValidAddress} from '../../../../ui/app/helpers/utils/util'
 
 export class ShapeShiftForm extends Component {

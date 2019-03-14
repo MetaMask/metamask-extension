@@ -1,18 +1,18 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
-const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('./helpers/utils/util')
+const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
+const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
-} = require('./components/send/send.utils')
+} = require('../components/send/send.utils')
 const ethUtil = require('ethereumjs-util')
-const { fetchLocale } = require('../i18n-helper')
+const { fetchLocale } = require('../../i18n-helper')
 const log = require('loglevel')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
-const { hasUnconfirmedTransactions } = require('./helpers/utils/confirm-tx.util')
-const gasDuck = require('./ducks/gas/gas.duck')
-const WebcamUtils = require('../lib/webcam-utils')
+const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
+const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
+const gasDuck = require('../ducks/gas/gas.duck')
+const WebcamUtils = require('../../lib/webcam-utils')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,

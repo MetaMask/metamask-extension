@@ -12,7 +12,7 @@ import {
   preferencesSelector,
   getIsMainnet,
 } from '../../selectors/selectors'
-import { showModal } from '../../actions'
+import { showModal } from '../../store/actions'
 
 const mapStateToProps = state => {
   const { showFiatInTestnets } = preferencesSelector(state)

@@ -16,7 +16,7 @@ const { createTestProviderTools } = require('../../../stub/provider')
 const provider = createTestProviderTools({ scaffold: {}}).provider
 
 const enLocale = require('../../../../app/_locales/en/messages.json')
-const actions = require('../../../../ui/app/actions')
+const actions = require('../../../../ui/app/store/actions')
 const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 
 const firstTimeState = require('../../../unit/localhostState')

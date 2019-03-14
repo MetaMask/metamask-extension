@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const actions = require('../../actions')
+const actions = require('../../store/actions')
 const { getSelectedAccount } = require('../../selectors/selectors')
 
 function mapStateToProps (state) {

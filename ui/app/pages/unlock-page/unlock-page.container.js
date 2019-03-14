@@ -10,7 +10,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   showModal,
-} from '../../actions'
+} from '../../store/actions'
 import UnlockPage from './unlock-page.component'
 
 const mapStateToProps = state => {

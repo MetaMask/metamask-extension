@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import CustomizeGas from './customize-gas.component'
-import { hideModal } from '../../../actions'
+import { hideModal } from '../../../store/actions'
 
 const mapStateToProps = state => {
   const { appState: { modal: { modalState: { props } } } } = state

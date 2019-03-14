@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {qrcode} from 'qrcode-generator'
 import copyToClipboard from 'copy-to-clipboard'
 import ShapeShiftForm from '../shapeshift-form'
-import {buyEth, showAccountDetail} from '../../../../ui/app/actions'
+import {buyEth, showAccountDetail} from '../../../../ui/app/store/actions'
 
 const OPTION_VALUES = {
   COINBASE: 'coinbase',

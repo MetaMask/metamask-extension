@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 import Identicon from './identicon'
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors/selectors')
-const actions = require('../actions')
+const actions = require('../store/actions')
 const { conversionUtil, multiplyCurrencies } = require('../helpers/utils/conversion-util')
 
 const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')

@@ -14,7 +14,7 @@ import {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setParticipateInMetaMetrics,
-} from '../../../actions'
+} from '../../../store/actions'
 import { preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {

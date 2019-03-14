@@ -10,7 +10,7 @@ import {
   showConfigPage,
   showInfoPage,
   showModal,
-} from '../../actions'
+} from '../../store/actions'
 import { getMetaMaskAccounts } from '../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 

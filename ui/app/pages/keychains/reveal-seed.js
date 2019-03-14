@@ -4,7 +4,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const classnames = require('classnames')
 
-const { requestRevealSeedWords } = require('../../actions')
+const { requestRevealSeedWords } = require('../../store/actions')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 const ExportTextContainer = require('../../components/export-text-container')
 

@@ -5,7 +5,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const actions = require('../../../actions')
+const actions = require('../../../store/actions')
 const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { getMetaMaskAccounts } = require('../../../selectors/selectors')
 import Button from '../../../components/button'

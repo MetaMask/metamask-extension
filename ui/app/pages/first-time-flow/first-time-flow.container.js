@@ -5,7 +5,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
   unlockAndGetSeedPhrase,
-} from '../../actions'
+} from '../../store/actions'
 
 const mapStateToProps = state => {
   const { metamask: { completedOnboarding, isInitialized, isUnlocked } } = state

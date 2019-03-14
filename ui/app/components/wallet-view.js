@@ -11,7 +11,7 @@ import Identicon from './identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
-const actions = require('../actions')
+const actions = require('../store/actions')
 import BalanceComponent from './balance'
 const TokenList = require('./token-list')
 const selectors = require('../selectors/selectors')

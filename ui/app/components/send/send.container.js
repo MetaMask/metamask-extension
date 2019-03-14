@@ -31,7 +31,7 @@ import {
   setGasTotal,
   showQrScanner,
   qrCodeDetected,
-} from '../../actions'
+} from '../../store/actions'
 import {
   resetSendState,
   updateSendErrors,

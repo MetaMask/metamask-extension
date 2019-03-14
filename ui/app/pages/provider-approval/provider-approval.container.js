@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import ProviderApproval from './provider-approval.component'
-import { approveProviderRequest, rejectProviderRequest } from '../../actions'
+import { approveProviderRequest, rejectProviderRequest } from '../../store/actions'
 
 function mapDispatchToProps (dispatch) {
   return {

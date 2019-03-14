@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { WALLET_VIEW_SIDEBAR } from '../sidebars/sidebar.constants'
 import MenuBar from './menu-bar.component'
-import { showSidebar, hideSidebar } from '../../actions'
+import { showSidebar, hideSidebar } from '../../store/actions'
 
 const mapStateToProps = state => {
   const { appState: { sidebar: { isOpen } } } = state

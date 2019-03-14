@@ -1,8 +1,8 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./app/pages/root')
-const actions = require('./app/actions')
-const configureStore = require('./app/store')
+const actions = require('./app/store/actions')
+const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
 const { fetchLocale } = require('./i18n-helper')
 const log = require('loglevel')

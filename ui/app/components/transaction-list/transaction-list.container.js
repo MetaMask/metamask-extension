@@ -8,7 +8,7 @@ import {
 } from '../../selectors/transactions'
 import { getSelectedAddress, getAssetImages } from '../../selectors/selectors'
 import { selectedTokenSelector } from '../../selectors/tokens'
-import { updateNetworkNonce } from '../../actions'
+import { updateNetworkNonce } from '../../store/actions'
 
 const mapStateToProps = state => {
   return {

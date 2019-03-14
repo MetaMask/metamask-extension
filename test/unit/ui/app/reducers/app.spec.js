@@ -1,6 +1,6 @@
 import assert from 'assert'
 import reduceApp from '../../../../../ui/app/ducks/app/app'
-import * as actions from '../../../../../ui/app/actions'
+import * as actions from '../../../../../ui/app/store/actions'
 
 describe('App State', () => {
 

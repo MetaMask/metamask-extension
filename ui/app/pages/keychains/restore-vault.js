@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
-} from '../../actions'
+} from '../../store/actions'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/text-field'
 import Button from '../../components/button'

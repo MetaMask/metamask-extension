@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal.component'
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props'
-import { setParticipateInMetaMetrics } from '../../../actions'
+import { setParticipateInMetaMetrics } from '../../../store/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const { unapprovedTxCount } = ownProps

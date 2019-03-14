@@ -10,7 +10,7 @@ import { calcMaxAmount } from './amount-max-button.utils.js'
 import {
   updateSendAmount,
   setMaxModeTo,
-} from '../../../../../actions'
+} from '../../../../../store/actions'
 import AmountMaxButton from './amount-max-button.component'
 import {
   updateSendErrors,

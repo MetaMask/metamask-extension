@@ -5,7 +5,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const classnames = require('classnames')
 const qrcode = require('qrcode-generator')
-const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
+const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../store/actions')
 const { isValidAddress } = require('../helpers/utils/util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
 

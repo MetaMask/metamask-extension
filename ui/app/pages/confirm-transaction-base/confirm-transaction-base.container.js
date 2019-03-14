@@ -8,7 +8,7 @@ import {
   clearConfirmTransaction,
   updateGasAndCalculate,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount } from '../../actions'
+import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount } from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
