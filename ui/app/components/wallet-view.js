@@ -7,12 +7,12 @@ const { compose } = require('recompose')
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const { checksumAddress } = require('../helpers/utils/util')
-import Identicon from './identicon'
+import Identicon from './ui/identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../store/actions')
-import BalanceComponent from './balance'
+import BalanceComponent from './ui/balance'
 const TokenList = require('./token-list')
 const selectors = require('../selectors/selectors')
 const { ADD_TOKEN_ROUTE } = require('../helpers/constants/routes')

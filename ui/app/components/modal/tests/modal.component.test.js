@@ -3,7 +3,7 @@ import assert from 'assert'
 import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import Modal from '../modal.component'
-import Button from '../../button'
+import Button from '../../ui/button'
 
 describe('Modal Component', () => {
   it('should render a modal with a submit button', () => {

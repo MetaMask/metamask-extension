@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import Button from '../../../button'
+import Button from '../../../ui/button'
 import PageFooter from '../page-container-footer.component'
 
 describe('Page Footer', () => {

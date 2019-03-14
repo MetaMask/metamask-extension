@@ -6,7 +6,7 @@ const genAccountLink = require('../../../../lib/account-link.js')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-import Identicon from '../../identicon'
+import Identicon from '../../ui/identicon'
 const { checksumAddress } = require('../../../helpers/utils/util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../helpers/utils/util')

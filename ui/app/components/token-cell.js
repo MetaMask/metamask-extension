@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-import Identicon from './identicon'
+import Identicon from './ui/identicon'
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors/selectors')
 const actions = require('../store/actions')

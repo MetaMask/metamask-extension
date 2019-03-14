@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import TransactionBreakdownRow from '../transaction-breakdown-row.component'
-import Button from '../../../button'
+import Button from '../../../ui/button'
 
 describe('TransactionBreakdownRow Component', () => {
   it('should render text properly', () => {

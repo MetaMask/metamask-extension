@@ -5,7 +5,7 @@ import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import Tooltip from '../tooltip'
-import Identicon from '../identicon'
+import Identicon from '../ui/identicon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../helpers/constants/common'
 import {

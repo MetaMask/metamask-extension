@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import GasModalCard from '../../customize-gas-modal/gas-modal-card'
 import { MIN_GAS_PRICE_GWEI } from '../../send/send.constants'
-import Button from '../../button'
+import Button from '../../ui/button'
 
 import {
   getDecimalGasLimit,

@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import TokenInput from '../token-input.component'
 import UnitInput from '../../unit-input'
-import CurrencyDisplay from '../../currency-display'
+import CurrencyDisplay from '../../ui/currency-display'
 
 describe('TokenInput Component', () => {
   const t = key => `translate ${key}`

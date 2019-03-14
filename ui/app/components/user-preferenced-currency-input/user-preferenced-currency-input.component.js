@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import CurrencyInput from '../currency-input'
+import CurrencyInput from '../ui/currency-input'
 
 export default class UserPreferencedCurrencyInput extends PureComponent {
   static propTypes = {

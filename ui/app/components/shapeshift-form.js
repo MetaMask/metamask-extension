@@ -9,7 +9,7 @@ const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../store/a
 const { isValidAddress } = require('../helpers/utils/util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
 
-import Button from './button'
+import Button from './ui/button'
 
 function mapStateToProps (state) {
   const {

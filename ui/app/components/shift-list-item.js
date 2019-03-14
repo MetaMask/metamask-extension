@@ -7,8 +7,8 @@ const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../store/actions')
 const { formatDate, addressSummary } = require('../helpers/utils/util')
 
-const CopyButton = require('./copyButton')
-const EthBalance = require('./eth-balance')
+const CopyButton = require('./ui/copyButton')
+const EthBalance = require('./ui/eth-balance')
 const Tooltip = require('./tooltip')
 
 

@@ -7,7 +7,7 @@ import {
 } from '../../store/actions'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/text-field'
-import Button from '../../components/button'
+import Button from '../../components/ui/button'
 
 class RestoreVaultPage extends Component {
   static contextTypes = {

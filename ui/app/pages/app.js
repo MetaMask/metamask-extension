@@ -41,7 +41,7 @@ import AccountMenu from '../components/account-menu'
 // Global Modals
 const Modal = require('../components/modals').Modal
 // Global Alert
-const Alert = require('../components/alert')
+const Alert = require('../components/ui/alert')
 
 import AppHeader from '../components/app-header'
 import UnlockPage from './unlock-page'

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Identicon from '../identicon'
+import Identicon from '../ui/identicon'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 const NetworkIndicator = require('../network')
 

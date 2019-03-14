@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ButtonGroup from '../../button-group'
-import Button from '../../button'
+import ButtonGroup from '../../ui/button-group'
+import Button from '../../ui/button'
 
 const GAS_OBJECT_PROPTYPES_SHAPE = {
   label: PropTypes.string,

@@ -5,7 +5,7 @@ import SenderToRecipient from '../sender-to-recipient'
 import { FLAT_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
-import Button from '../button'
+import Button from '../ui/button'
 import Tooltip from '../tooltip'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 

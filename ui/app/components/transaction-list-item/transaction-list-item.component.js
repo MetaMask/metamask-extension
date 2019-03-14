@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Identicon from '../identicon'
+import Identicon from '../ui/identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'

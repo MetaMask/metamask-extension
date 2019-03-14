@@ -7,7 +7,7 @@ const actions = require('../../store/actions')
 const { getNetworkDisplayName } = require('../../../../app/scripts/controllers/network/util')
 const ShapeshiftForm = require('../shapeshift-form')
 
-import Button from '../button'
+import Button from '../ui/button'
 
 let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT

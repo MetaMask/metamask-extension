@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import ButtonGroup from './'
+import ButtonGroup from '.'
 import Button from '../button'
 import { text, boolean } from '@storybook/addon-knobs/react'
 

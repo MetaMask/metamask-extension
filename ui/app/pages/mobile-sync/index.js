@@ -11,7 +11,7 @@ const actions = require('../../store/actions')
 
 const qrCode = require('qrcode-generator')
 
-import Button from '../../components/button'
+import Button from '../../components/ui/button'
 import LoadingScreen from '../../components/loading-screen'
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'

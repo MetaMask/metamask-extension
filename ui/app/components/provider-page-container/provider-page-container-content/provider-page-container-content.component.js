@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {PureComponent} from 'react'
-import Identicon from '../../identicon'
+import Identicon from '../../ui/identicon'
 
 export default class ProviderPageContainerContent extends PureComponent {
   static propTypes = {

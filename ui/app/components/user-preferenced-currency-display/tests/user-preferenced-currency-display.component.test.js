@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display.component'
-import CurrencyDisplay from '../../currency-display'
+import CurrencyDisplay from '../../ui/currency-display'
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {

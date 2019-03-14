@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const genAccountLink = require('../../../../lib/account-link.js')
 const Select = require('react-select').default
-import Button from '../../../components/button'
+import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
     constructor (props, context) {

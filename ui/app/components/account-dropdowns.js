@@ -9,7 +9,7 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../helpers/utils/util')
 
-import Identicon from './identicon'
+import Identicon from './ui/identicon'
 
 class AccountDropdowns extends Component {
   constructor (props) {

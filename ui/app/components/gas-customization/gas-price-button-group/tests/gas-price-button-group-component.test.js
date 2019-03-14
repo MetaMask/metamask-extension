@@ -4,7 +4,7 @@ import shallow from '../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
 import GasPriceButtonGroup from '../gas-price-button-group.component'
 
-import ButtonGroup from '../../../button-group/'
+import ButtonGroup from '../../../ui/button-group/'
 
 const mockGasPriceButtonGroupProps = {
   buttonDataLoading: false,

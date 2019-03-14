@@ -11,7 +11,7 @@ const { getSelectedIdentity } = require('../../selectors/selectors')
 const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../helpers/utils/util')
-import Button from '../button'
+import Button from '../ui/button'
 
 function mapStateToPropsFactory () {
   let selectedIdentity = null

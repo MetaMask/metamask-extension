@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { GWEI } from '../../helpers/constants/common'
+import { GWEI } from '../../../helpers/constants/common'
 
 export default class CurrencyDisplay extends PureComponent {
   static propTypes = {

@@ -6,9 +6,9 @@ const classnames = require('classnames')
 
 const { requestRevealSeedWords } = require('../../store/actions')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
-const ExportTextContainer = require('../../components/export-text-container')
+const ExportTextContainer = require('../../components/ui/export-text-container')
 
-import Button from '../../components/button'
+import Button from '../../components/ui/button'
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'

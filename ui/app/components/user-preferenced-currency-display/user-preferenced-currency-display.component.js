@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { PRIMARY, SECONDARY, ETH } from '../../helpers/constants/common'
-import CurrencyDisplay from '../currency-display'
+import CurrencyDisplay from '../ui/currency-display'
 
 export default class UserPreferencedCurrencyDisplay extends PureComponent {
   static propTypes = {

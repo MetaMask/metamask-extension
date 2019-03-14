@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-import Identicon from './identicon'
+import Identicon from './ui/identicon'
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
@@ -10,7 +10,7 @@ const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
 const { ObjectInspector } = require('react-inspector')
 
-import AccountDropdownMini from './account-dropdown-mini'
+import AccountDropdownMini from './ui/account-dropdown-mini'
 
 const actions = require('../store/actions')
 const { conversionUtil } = require('../helpers/utils/conversion-util')
@@ -24,7 +24,7 @@ const {
 } = require('../selectors/selectors.js')
 
 import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck'
-import Button from './button'
+import Button from './ui/button'
 
 const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
 

@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import CurrencyInput from '../currency-input.component'
-import UnitInput from '../../unit-input'
+import UnitInput from '../../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
 describe('CurrencyInput Component', () => {

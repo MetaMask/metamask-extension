@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import TransactionBreakdownRow from './transaction-breakdown-row'
-import CurrencyDisplay from '../currency-display'
+import CurrencyDisplay from '../ui/currency-display'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
-import HexToDecimal from '../hex-to-decimal'
+import HexToDecimal from '../ui/hex-to-decimal'
 import { GWEI, PRIMARY, SECONDARY } from '../../helpers/constants/common'
 
 export default class TransactionBreakdown extends PureComponent {

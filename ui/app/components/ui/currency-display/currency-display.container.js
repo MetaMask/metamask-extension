@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import CurrencyDisplay from './currency-display.component'
-import { getValueFromWeiHex, formatCurrency } from '../../helpers/utils/confirm-tx.util'
+import { getValueFromWeiHex, formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 const mapStateToProps = state => {
   const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state

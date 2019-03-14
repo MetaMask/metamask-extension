@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
-import Button from '../../components/button'
-import Identicon from '../../components/identicon'
+import Button from '../../components/ui/button'
+import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/token-balance'
 
 export default class ConfirmAddSuggestedToken extends Component {

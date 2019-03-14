@@ -4,23 +4,23 @@
 
 @import './app-header/index';
 
-@import './breadcrumbs/index';
+@import './ui/breadcrumbs/index';
 
-@import './button-group/index';
+@import './ui/button-group/index';
 
-@import './card/index';
+@import './ui/card/index';
 
 @import './confirm-page-container/index';
 
-@import './currency-input/index';
+@import 'ui/currency-input/index';
 
-@import './currency-display/index';
+@import 'ui/currency-display/index';
 
-@import './error-message/index';
+@import 'ui/error-message/index';
 
-@import './export-text-container/index';
+@import 'ui/export-text-container/index';
 
-@import './identicon/index';
+@import 'ui/identicon/index';
 
 @import './info-box/index';
 

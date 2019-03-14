@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const formatBalance = require('../helpers/utils/util').formatBalance
+const formatBalance = require('../../helpers/utils/util').formatBalance
 
 module.exports = FiatValue
 

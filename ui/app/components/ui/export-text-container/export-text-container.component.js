@@ -2,7 +2,7 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const copyToClipboard = require('copy-to-clipboard')
-const { exportAsFile } = require('../../helpers/utils/util')
+const { exportAsFile } = require('../../../helpers/utils/util')
 
 class ExportTextContainer extends Component {
   render () {

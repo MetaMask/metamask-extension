@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import isNode from 'detect-node'
 import { findDOMNode } from 'react-dom'
 import jazzicon from 'jazzicon'
-import iconFactoryGenerator from '../../../lib/icon-factory'
+import iconFactoryGenerator from '../../../../lib/icon-factory'
 const iconFactory = iconFactoryGenerator(jazzicon)
 
 /**

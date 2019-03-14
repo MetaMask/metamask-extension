@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../button'
+import Button from '../ui/button'
 
 export default class Modal extends PureComponent {
   static propTypes = {

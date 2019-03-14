@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const BigNumber = require('bignumber.js')
 const actions = require('../../store/actions')
 const GasModalCard = require('./gas-modal-card')
-import Button from '../button'
+import Button from '../ui/button'
 
 const ethUtil = require('ethereumjs-util')
 

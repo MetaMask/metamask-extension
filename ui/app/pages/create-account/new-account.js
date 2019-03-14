@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../store/actions')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
-import Button from '../../components/button'
+import Button from '../../components/ui/button'
 
 class NewAccountCreateForm extends Component {
   constructor (props, context) {

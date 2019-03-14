@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import AccountListItem from '../send/account-list-item/account-list-item.component'
+import AccountListItem from '../../send/account-list-item/account-list-item.component'
 
 export default class AccountDropdownMini extends PureComponent {
   static propTypes = {

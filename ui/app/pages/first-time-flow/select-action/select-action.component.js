@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../../../components/button'
+import Button from '../../../components/ui/button'
 import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../helpers/constants/routes'

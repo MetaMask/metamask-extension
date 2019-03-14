@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../store/actions')
 const { getSelectedIdentity } = require('../../selectors/selectors')
-import Identicon from '../identicon'
+import Identicon from '../ui/identicon'
 
 function mapStateToProps (state, ownProps) {
   return {

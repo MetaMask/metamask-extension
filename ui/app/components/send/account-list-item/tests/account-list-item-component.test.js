@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
-import Identicon from '../../../identicon'
+import Identicon from '../../../ui/identicon'
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display'
 
 const utilsMethodStubs = {

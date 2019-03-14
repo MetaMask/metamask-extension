@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-import Button from '../../../components/button'
+import Button from '../../../components/ui/button'
 
 class ConnectScreen extends Component {
     constructor (props, context) {

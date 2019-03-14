@@ -2,7 +2,7 @@ import {validateMnemonic} from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/text-field'
-import Button from '../../../../components/button'
+import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,

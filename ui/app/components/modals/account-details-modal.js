@@ -8,9 +8,9 @@ const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors/selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
-const EditableLabel = require('../editable-label')
+const EditableLabel = require('../ui/editable-label')
 
-import Button from '../button'
+import Button from '../ui/button'
 
 function mapStateToProps (state) {
   return {

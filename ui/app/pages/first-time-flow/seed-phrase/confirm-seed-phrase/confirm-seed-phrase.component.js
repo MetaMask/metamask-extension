@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
-import Button from '../../../../components/button'
+import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
