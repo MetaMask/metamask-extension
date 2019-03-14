@@ -1,17 +1,17 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/confirm-page-container'
-import { isBalanceSufficient } from '../../components/send/send.utils'
+import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
+import { isBalanceSufficient } from '../../components/app/send/send.utils'
 import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
-import UserPreferencedCurrencyDisplay from '../../components/user-preferenced-currency-display'
+import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
-import AdvancedGasInputs from '../../components/gas-customization/advanced-gas-inputs'
+import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {

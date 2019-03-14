@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import ProviderPageContainer from '../../components/provider-page-container'
+import ProviderPageContainer from '../../components/app/provider-page-container'
 
 export default class ProviderApproval extends Component {
   static propTypes = {

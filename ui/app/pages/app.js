@@ -10,12 +10,12 @@ import { getMetaMaskAccounts, getNetworkIdentifier } from '../selectors/selector
 // init
 import FirstTimeFlow from './first-time-flow'
 // accounts
-const SendTransactionScreen = require('../components/send/send.container')
+const SendTransactionScreen = require('../components/app/send/send.container')
 const ConfirmTransaction = require('./confirm-transaction')
 
 // slideout menu
-const Sidebar = require('../components/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../components/sidebars/sidebar.constants')
+const Sidebar = require('../components/app/sidebars').default
+const { WALLET_VIEW_SIDEBAR } = require('../components/app/sidebars/sidebar.constants')
 
 // other views
 import Home from './home'
@@ -23,7 +23,7 @@ import Settings from './settings'
 import Authenticated from '../helpers/higher-order-components/authenticated'
 import Initialized from '../helpers/higher-order-components/initialized'
 import Lock from './lock'
-import UiMigrationAnnouncement from '../components/ui-migration-annoucement'
+import UiMigrationAnnouncement from '../components/app/ui-migration-annoucement'
 const RestoreVaultPage = require('./keychains/restore-vault').default
 const RevealSeedConfirmation = require('./keychains/reveal-seed')
 const MobileSyncPage = require('./mobile-sync')
@@ -34,16 +34,16 @@ const CreateAccountPage = require('./create-account')
 const NoticeScreen = require('./notice')
 
 const Loading = require('../components/ui/loading-screen')
-const LoadingNetwork = require('../components/loading-network-screen').default
-const NetworkDropdown = require('../components/dropdowns/network-dropdown')
-import AccountMenu from '../components/account-menu'
+const LoadingNetwork = require('../components/app/loading-network-screen').default
+const NetworkDropdown = require('../components/app/dropdowns/network-dropdown')
+import AccountMenu from '../components/app/account-menu'
 
 // Global Modals
-const Modal = require('../components/modals').Modal
+const Modal = require('../components/app/modals').Modal
 // Global Alert
 const Alert = require('../components/ui/alert')
 
-import AppHeader from '../components/app-header'
+import AppHeader from '../components/app/app-header'
 import UnlockPage from './unlock-page'
 
 import {

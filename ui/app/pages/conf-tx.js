@@ -9,7 +9,7 @@ const txHelper = require('../../lib/tx-helper')
 const log = require('loglevel')
 const R = require('ramda')
 
-const SignatureRequest = require('../components/signature-request')
+const SignatureRequest = require('../components/app/signature-request')
 const Loading = require('../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../helpers/constants/routes')
 const { getMetaMaskAccounts } = require('../selectors/selectors')

@@ -1,0 +1,68 @@
+@import 'confirm-page-container-warning/index';
+
+@import 'confirm-page-container-summary/index';
+
+.confirm-page-container-content {
+  overflow-y: auto;
+  flex: 1;
+
+  &__error-container {
+    padding: 0 16px 16px 16px;
+  }
+
+  &__details {
+    box-sizing: border-box;
+    padding: 0 24px;
+  }
+
+  &__data {
+   padding: 16px;
+   color: $oslo-gray;
+  }
+
+  &__data-box {
+    background-color: #f9fafa;
+    padding: 12px;
+    font-size: .75rem;
+    margin-bottom: 16px;
+    word-wrap: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+
+    &-label {
+      text-transform: uppercase;
+      padding: 8px 0 12px;
+      font-size: 12px;
+    }
+  }
+
+  &__data-field {
+    display: flex;
+    flex-direction: row;
+
+    &-label {
+      font-weight: 500;
+      padding-right: 16px;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+  }
+
+  &__gas-fee {
+    border-bottom: 1px solid $geyser;
+
+    .advanced-gas-inputs__gas-edit-rows {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__function-type {
+    font-size: .875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: $black;
+    padding-left: 5px;
+  }
+}

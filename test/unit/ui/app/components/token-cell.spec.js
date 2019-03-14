@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
 
-import TokenCell from '../../../../../ui/app/components/token-cell'
+import TokenCell from '../../../../../ui/app/components/app/token-cell'
 import Identicon from '../../../../../ui/app/components/ui/identicon'
 
 describe('Token Cell', () => {

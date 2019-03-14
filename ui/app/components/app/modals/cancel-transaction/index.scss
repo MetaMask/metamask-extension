@@ -1,0 +1,18 @@
+@import 'cancel-transaction-gas-fee/index';
+
+.cancel-transaction {
+  &__title {
+    font-weight: 500;
+    padding-bottom: 16px;
+    text-align: center;
+  }
+
+  &__description {
+    text-align: center;
+    font-size: .875rem;
+  }
+
+  &__cancel-transaction-gas-fee-container {
+    margin-bottom: 16px;
+  }
+}

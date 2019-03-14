@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
-import WalletView from '../../components/wallet-view'
-import TransactionView from '../../components/transaction-view'
+import WalletView from '../../components/app/wallet-view'
+import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
 
 import {

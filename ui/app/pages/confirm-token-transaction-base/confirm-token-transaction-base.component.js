@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmTransactionBase from '../confirm-transaction-base'
-import UserPreferencedCurrencyDisplay from '../../components/user-preferenced-currency-display'
+import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import {
   formatCurrency,
   convertTokenToFiat,

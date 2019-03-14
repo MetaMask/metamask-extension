@@ -18,7 +18,7 @@ import {
 } from '../helpers/utils/formatters'
 import {
   calcGasTotal,
-} from '../components/send/send.utils'
+} from '../components/app/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 
 const selectors = {
