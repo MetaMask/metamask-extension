@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import withMethodData from '../../higher-order-components/with-method-data'
+import withMethodData from '../../helpers/higher-order-components/with-method-data'
 import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../actions'
 import { hexToDecimal } from '../../helpers/utils/conversions.util'

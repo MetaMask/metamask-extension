@@ -20,8 +20,8 @@ const { WALLET_VIEW_SIDEBAR } = require('./components/sidebars/sidebar.constants
 // other views
 import Home from './components/pages/home'
 import Settings from './components/pages/settings'
-import Authenticated from './higher-order-components/authenticated'
-import Initialized from './higher-order-components/initialized'
+import Authenticated from './helpers/higher-order-components/authenticated'
+import Initialized from './helpers/higher-order-components/initialized'
 import Lock from './components/pages/lock'
 import UiMigrationAnnouncement from './components/ui-migration-annoucement'
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default

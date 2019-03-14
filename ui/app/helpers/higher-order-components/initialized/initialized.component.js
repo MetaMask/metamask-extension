@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
-import { INITIALIZE_ROUTE } from '../../routes'
+import { INITIALIZE_ROUTE } from '../../../routes'
 
 export default function Initialized (props) {
   return props.completedOnboarding
