@@ -26,8 +26,8 @@ class NotificationManager {
         extension.windows.update(popup.id, { focused: true })
       } else {
         const {screenX, screenY, outerWidth, outerHeight} = window
-        const notificationTop = screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2)
-        const notificationLeft = screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2)
+        const notificationTop = Math.round(screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2))
+        const notificationLeft = Math.round(screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2))
         const cb = (currentPopup) => { this._popupId = currentPopup.id }
         // create new notification popup
         const creation = extension.windows.create({
