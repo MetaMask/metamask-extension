@@ -100,7 +100,7 @@ jobs:
     - run:
         name: Install npm 6 + deps via npm
         command: |
-          sudo npm install -g npm@6.4.1 && npm install --no-save
+          sudo npm install -g npm@6.9.0 && npm install --no-save
     - save_cache:
         key: dependency-cache-{{ .Revision }}
         paths:
