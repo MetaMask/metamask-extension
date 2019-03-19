@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 const PropTypes = require('prop-types')
 const { Provider } = require('react-redux')
 const { HashRouter } = require('react-router-dom')
-const App = require('./app')
+const App = require('./routes')
 const I18nProvider = require('../helpers/higher-order-components/i18n-provider')
 const MetaMetricsProvider = require('../helpers/higher-order-components/metametrics/metametrics.provider')
 
-class Root extends Component {
+class Index extends Component {
   render () {
     const { store } = this.props
 
@@ -24,8 +24,8 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
+Index.propTypes = {
   store: PropTypes.object,
 }
 
-module.exports = Root
+module.exports = Index
