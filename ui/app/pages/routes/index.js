@@ -76,7 +76,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
 
-class Index extends Component {
+class Routes extends Component {
   componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
@@ -299,7 +299,7 @@ class Index extends Component {
   }
 }
 
-Index.propTypes = {
+Routes.propTypes = {
   currentCurrency: PropTypes.string,
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -430,7 +430,7 @@ function mapDispatchToProps (dispatch, ownProps) {
   }
 }
 
-Index.contextTypes = {
+Routes.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
@@ -438,4 +438,4 @@ Index.contextTypes = {
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
-)(Index)
+)(Routes)
