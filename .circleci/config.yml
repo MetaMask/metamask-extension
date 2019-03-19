@@ -17,9 +17,9 @@ workflows:
     - test-lint:
         requires:
         - prep-deps-npm
-    - test-deps:
-        requires:
-        - prep-deps-npm
+    # - test-deps:
+    #     requires:
+    #     - prep-deps-npm
     - test-e2e-chrome:
         requires:
         - prep-deps-npm
@@ -100,7 +100,7 @@ jobs:
     - run:
         name: Install npm 6 + deps via npm
         command: |
-          sudo npm install -g npm@6.4.1 && npm install --no-save
+          sudo npm install -g npm@6.9.0 && npm install --no-save
     - save_cache:
         key: dependency-cache-{{ .Revision }}
         paths:
@@ -170,16 +170,16 @@ jobs:
         name: Test
         command: npm run lint
 
-  test-deps:
-    docker:
-    - image: circleci/node:8.12.0-browsers
-    steps:
-    - checkout
-    - restore_cache:
-        key: dependency-cache-{{ .Revision }}
-    - run:
-        name: Test
-        command: sudo npm install -g npm@6.4.1 && npm audit
+  # test-deps:
+  #   docker:
+  #   - image: circleci/node:8.12.0-browsers
+  #   steps:
+  #   - checkout
+  #   - restore_cache:
+  #       key: dependency-cache-{{ .Revision }}
+  #   - run:
+  #       name: Test
+  #       command: sudo npm install -g npm@6.4.1 && npm audit
 
   test-e2e-chrome:
     docker:

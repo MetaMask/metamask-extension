@@ -1,0 +1,32 @@
+.app-bar-left-menu-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.app-bar-right-menus-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.app-bar-networks-dropdown-custom-rpc {
+	padding-left: 20px !important;
+    color: #60db97 !important;
+}
+
+.app-bar-networks-dropdown-common-rpc {
+	padding-left: 20px !important;
+}
+
+.app-bar-burger {
+	width: 16px;
+	height: 16px;
+	padding: 0;
+}
+
+.app-bar-header-container {
+	display: flex;
+  	flex-direction: column;
+  	height: 38px;
+}
