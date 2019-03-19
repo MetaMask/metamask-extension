@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.11.1 Wed Mar 20 2019
+
+- [#266](https://github.com/poanetwork/nifty-wallet/pull/266): Support of the latest trezor-connect version 7
+
 ## 4.11.0 Fri Feb 08 2019
 
 ### Features
