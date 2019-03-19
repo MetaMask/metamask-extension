@@ -5,12 +5,12 @@ const copyToClipboard = require('copy-to-clipboard')
 //
 // Sub-Reducers take in the complete state and return their sub-state
 //
-const reduceMetamask = require('../ducks/metamask/metamask')
-const reduceApp = require('../ducks/app/app')
-const reduceLocale = require('../ducks/locale/locale')
-const reduceSend = require('../ducks/send/send.duck').default
-import reduceConfirmTransaction from '../ducks/confirm-transaction/confirm-transaction.duck'
-import reduceGas from '../ducks/gas/gas.duck'
+const reduceMetamask = require('./metamask/metamask')
+const reduceApp = require('./app/app')
+const reduceLocale = require('./locale/locale')
+const reduceSend = require('./send/send.duck').default
+import reduceConfirmTransaction from './confirm-transaction/confirm-transaction.duck'
+import reduceGas from './gas/gas.duck'
 
 window.METAMASK_CACHED_LOG_STATE = null
 

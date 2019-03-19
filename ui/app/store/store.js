@@ -1,7 +1,7 @@
 const createStore = require('redux').createStore
 const applyMiddleware = require('redux').applyMiddleware
 const thunkMiddleware = require('redux-thunk').default
-const rootReducer = require('./reducers')
+const rootReducer = require('../ducks')
 const createLogger = require('redux-logger').createLogger
 
 global.METAMASK_DEBUG = process.env.METAMASK_DEBUG
