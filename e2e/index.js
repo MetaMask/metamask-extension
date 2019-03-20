@@ -7,7 +7,7 @@ const {buildWebDriver, Driver} = require('./webdriver')
 const fixtureServer = new fixtures.FixtureServer()
 const rc = new ReferenceCounter(async () => fixtureServer.start(), async () => fixtureServer.stop())
 
-const load = async function load (fixturesDirectory, callback) {
+const withFixtures = async function load (fixturesDirectory, callback) {
   await rc.tick(async () => {
     const browser = String(process.env.BROWSER || 'firefox')
     const extensionPath = path.resolve(__dirname, `../dist/${browser}`)
@@ -36,5 +36,5 @@ const load = async function load (fixturesDirectory, callback) {
 }
 
 module.exports = {
-  load,
+  withFixtures,
 }
