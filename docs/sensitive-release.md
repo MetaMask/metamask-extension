@@ -18,10 +18,10 @@ Simply follow the steps in [the publishing guide](./publishing.md).
 
 ### Prepare Rollback Release
 
-1. Check out the tagged commit for the release before this new release.
-2. Increment the version over the new release by one patch.
-3. Merge the changelog of the new release into this branch, and make its own changelog refer to rolling back those changes.
-4. Push to the main repository and pull request against `master` prominently noting this is a `DO NOT MERGE` rollback pull request.
+1. Be on the new risky version branch.
+2. Run `npm run rollback $ROLLBACK_TARGET_VERSION`.
+
+The rollback version will now be a branch and tag on the origin.
 
 ### Roll the normal release out
 
