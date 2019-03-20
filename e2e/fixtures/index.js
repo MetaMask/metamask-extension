@@ -5,6 +5,9 @@ const path = require('path')
 const CURRENT_STATE_KEY = '__CURRENT__'
 const DEFAULT_STATE_KEY = '__DEFAULT__'
 
+const FIXTURE_SERVER_HOST = 'localhost'
+const FIXTURE_SERVER_PORT = 12345
+
 class FixtureServer {
   constructor () {
     this._app = new Koa()
@@ -24,8 +27,8 @@ class FixtureServer {
   async start () {
     return new Promise((resolve) => {
       const options = {
-        host: 'localhost',
-        port: 12345,
+        host: FIXTURE_SERVER_HOST,
+        port: FIXTURE_SERVER_PORT,
         exclusive: true,
       }
       this._server = this._app.listen(options, resolve)

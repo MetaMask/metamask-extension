@@ -1,3 +1,7 @@
+const FIXTURE_SERVER_HOST = 'localhost'
+const FIXTURE_SERVER_PORT = 12345
+const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`
+
 /**
  * A read-only network-based storage wrapper
  */
@@ -8,7 +12,7 @@ module.exports = class ReadOnlyNetworkStore {
    */
   async get () {
     try {
-      const response = await fetch('http://localhost:12345/state.json')
+      const response = await fetch(FIXTURE_SERVER_URL)
       const result = await response.json()
       return isEmpty(result)
         ? undefined
