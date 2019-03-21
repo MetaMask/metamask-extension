@@ -2487,16 +2487,29 @@ function setCompletedOnboarding () {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.completeOnboarding(err => {
-        dispatch(actions.hideLoadingIndication())
+      background.markAllNoticesRead(err => {
 
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.completeOnboarding())
-        resolve()
+        dispatch(actions.clearNotices())
+        resolve(false)
+      })
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        background.completeOnboarding(err => {
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+
+          dispatch(actions.completeOnboarding())
+          dispatch(actions.hideLoadingIndication())
+          resolve()
+        })
       })
     })
   }

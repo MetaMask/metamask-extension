@@ -1308,6 +1308,30 @@ describe('Actions', () => {
     })
   })
 
+  describe.only('#setCompletedOnboarding', () => {
+    let markAllNoticesReadSpy, completeOnboardingSpy
+
+    beforeEach(() => {
+      markAllNoticesReadSpy = sinon.stub(background, 'markAllNoticesRead')
+      completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
+    })
+
+    after(() => {
+      markAllNoticesReadSpy.restore()
+      completeOnboardingSpy.restore()
+    })
+
+    it('', (done) => {
+      const store = mockStore()
+      store.dispatch(actions.setCompletedOnboarding())
+        .then(() => {
+          assert.equal(markAllNoticesReadSpy.callCount, 1)
+          assert.equal(completeOnboardingSpy.callCount, 1)
+        })
+        done()
+    })
+  })
+
   describe('#updateNetworkNonce', () => {
     let getTransactionCountSpy
 

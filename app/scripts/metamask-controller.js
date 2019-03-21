@@ -473,6 +473,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
+      markAllNoticesRead: noticeController.markAllNoticesRead.bind(noticeController),
 
       approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),

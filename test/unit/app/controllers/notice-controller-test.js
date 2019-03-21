@@ -39,6 +39,32 @@ describe('notice-controller', function () {
       })
     })
 
+    describe('#markAllNoticesRead', () => {
+      it('marks all notices read', (done) => {
+        const testList = [{
+          id: 0,
+          read: false,
+          title: 'Notice 1',
+        }, {
+          id: 1,
+          read: false,
+          title: 'Notice 2',
+        }, {
+          id: 2,
+          read: false,
+          title: 'Notice 3',
+        }]
+
+        noticeController.setNoticesList(testList)
+
+        noticeController.markAllNoticesRead()
+
+        const unreadNotices = noticeController.getUnreadNotices()
+        assert.equal(unreadNotices.length, 0)
+        done()
+      })
+    })
+
     describe('#getNextUnreadNotice', function () {
       it('should retrieve the latest unread notice', function (done) {
         var testList = [
