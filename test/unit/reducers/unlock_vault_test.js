@@ -5,7 +5,7 @@ var path = require('path')
 var sinon = require('sinon')
 
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'reducers.js'))
+var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
 
 describe('#unlockMetamask(selectedAccount)', function () {
   beforeEach(function () {
