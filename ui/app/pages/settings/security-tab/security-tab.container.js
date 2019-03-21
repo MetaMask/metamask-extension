@@ -15,7 +15,6 @@ const mapStateToProps = state => {
   const {
     featureFlags: {
       privacyMode,
-      mobileSync,
     } = {},
     participateInMetaMetrics,
   } = metamask
@@ -23,7 +22,6 @@ const mapStateToProps = state => {
   return {
     warning,
     privacyMode,
-    mobileSync,
     participateInMetaMetrics,
   }
 }
