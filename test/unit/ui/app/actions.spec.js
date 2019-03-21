@@ -1308,7 +1308,7 @@ describe('Actions', () => {
     })
   })
 
-  describe.only('#setCompletedOnboarding', () => {
+  describe('#setCompletedOnboarding', () => {
     let markAllNoticesReadSpy, completeOnboardingSpy
 
     beforeEach(() => {
