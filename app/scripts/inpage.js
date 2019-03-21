@@ -91,6 +91,10 @@ inpageProvider.enable = function ({ force } = {}) {
   })
 }
 
+// give the dapps control of a refresh they can toggle this off on the window.ethereum
+// this will be default true so it does not break any old apps.
+inpageProvider.autoRefreshOnNetworkChange = true;
+
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
   /**
