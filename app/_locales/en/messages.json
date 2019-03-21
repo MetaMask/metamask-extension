@@ -98,9 +98,6 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
-  "advanced": {
-    "message": "Advanced"
-  },
   "agreeTermsOfService": {
     "message": "I agree to the Terms of Service"
   },
