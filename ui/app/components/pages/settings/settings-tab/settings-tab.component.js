@@ -378,11 +378,7 @@ export default class SettingsTab extends PureComponent {
 
   renderMobileSync () {
     const { t } = this.context
-    const { history, mobileSync } = this.props
-
-    if (!mobileSync) {
-      return
-    }
+    const { history } = this.props
 
     return (
       <div className="settings-page__content-row">
