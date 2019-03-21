@@ -4,12 +4,12 @@ import {
   APPROVED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
-} from '../constants/transactions'
+} from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
-import { hexToDecimal } from '../helpers/conversions.util'
+import { hexToDecimal } from '../helpers/utils/conversions.util'
 
 import { selectedTokenAddressSelector } from './tokens'
 import txHelper from '../../lib/tx-helper'

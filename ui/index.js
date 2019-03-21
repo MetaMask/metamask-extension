@@ -1,10 +1,10 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('./app/root')
-const actions = require('./app/actions')
-const configureStore = require('./app/store')
+const Root = require('./app/pages')
+const actions = require('./app/store/actions')
+const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
-const { fetchLocale } = require('./i18n-helper')
+const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
 const log = require('loglevel')
 
 module.exports = launchMetamaskUi
