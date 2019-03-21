@@ -63,7 +63,6 @@ export default class SettingsTab extends PureComponent {
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
-    mobileSync: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool,
@@ -378,11 +377,7 @@ export default class SettingsTab extends PureComponent {
 
   renderMobileSync () {
     const { t } = this.context
-    const { history, mobileSync } = this.props
-
-    if (!mobileSync) {
-      return
-    }
+    const { history } = this.props
 
     return (
       <div className="settings-page__content-row">
