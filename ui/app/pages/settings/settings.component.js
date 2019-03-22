@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, matchPath } from 'react-router-dom'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
@@ -42,6 +44,9 @@ export default class SettingsPage extends PureComponent {
     const { t } = this.context
     const { history, location } = this.props
 
+    const pathnameI18nKey = ROUTES_TO_I18N_KEYS[location.pathname]
+    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+
     return (
       <div
         className={c('main-container settings-page', {
@@ -58,7 +63,7 @@ export default class SettingsPage extends PureComponent {
             )
           }
           <div className="settings-page__header__title">
-            {t(ROUTES_TO_I18N_KEYS[location.pathname] || 'settings')}
+            {t(pathnameI18nKey && isPopupView ? pathnameI18nKey : 'settings')}
           </div>
           <div
             className="settings-page__close-button"
