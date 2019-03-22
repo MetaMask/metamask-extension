@@ -5,6 +5,10 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getNetworkDisplayName } = require('../../../../../app/scripts/controllers/network/util')
+const openWyre = require('../../../../lib/wyre')
+const { DEPOSIT_ROUTE } = require('../../../helpers/constants/routes')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
+const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
 
 import Button from '../../ui/button'
 
@@ -41,6 +45,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
     toFaucet: network => dispatch(actions.buyEth({ network })),
+    waitForWyreSigRequest: () => dispatch(actions.waitForWyreSigRequest()),
+    stopWaitingForWyreSigRequest: () => dispatch(actions.stopWaitingForWyreSigRequest()),
   }
 }
 
@@ -121,7 +127,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
+  const { network, address, toFaucet, toCoinSwitch, waitForWyreSigRequest, stopWaitingForWyreSigRequest } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -182,7 +188,13 @@ DepositEtherModal.prototype.render = function () {
           title: WYRE_ROW_TITLE,
           text: WYRE_ROW_TEXT,
           buttonLabel: this.context.t('continueToWyre'),
-          onButtonClick: () => toWyre(address),
+          onButtonClick: () => {
+            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+              global.platform.openExtensionInBrowser(DEPOSIT_ROUTE)
+            } else {
+              openWyre(address, waitForWyreSigRequest, stopWaitingForWyreSigRequest, stopWaitingForWyreSigRequest)
+            }
+          },
           hide: isTestNetwork,
         }),
 

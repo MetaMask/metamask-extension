@@ -436,10 +436,10 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
+function triggerUi ({ isProviderApproval } = {}) {
   extension.tabs.query({ active: true }, tabs => {
     const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
+    if (!popupIsOpen && !notificationIsOpen && (!currentlyActiveMetamaskTab || isProviderApproval)) {
       notificationManager.showPopup()
       notificationIsOpen = true
     }
@@ -450,8 +450,8 @@ function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function openPopup () {
-  triggerUi()
+function openPopup ({ isProviderApproval } = {}) {
+  triggerUi({ isProviderApproval })
   return new Promise(
     (resolve) => {
       const interval = setInterval(() => {

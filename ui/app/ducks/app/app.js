@@ -75,6 +75,7 @@ export default function reduceApp (state, action) {
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
+    waitingForWyreSigRequest: false,
   }, state.appState)
 
   switch (action.type) {
@@ -758,9 +759,20 @@ export default function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
+
     case SET_THREEBOX_LAST_UPDATED:
       return extend(appState, {
         threeBoxLastUpdated: action.value,
+      })
+
+    case actions.WAIT_FOR_WYRE_SIG_REQUEST:
+      return extend(appState, {
+        waitingForWyreSigRequest: true,
+      })
+
+    case actions.STOP_WAITING_FOR_WYRE_SIG_REQUEST:
+      return extend(appState, {
+        waitingForWyreSigRequest: false,
       })
 
     default:
