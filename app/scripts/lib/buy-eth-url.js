@@ -15,7 +15,7 @@ function getBuyEthUrl ({ network, amount, address }) {
   let url
   switch (network) {
     case '1':
-      url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+      url = `https://dash.sendwyre.com/sign-up`
       break
 
     case '3':
