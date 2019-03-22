@@ -5,6 +5,7 @@ import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from 'react-toggle-button'
 import TextField from '../../../components/ui/text-field'
 import Button from '../../../components/ui/button'
+import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -176,6 +177,33 @@ export default class AdvancedTab extends PureComponent {
     }
   }
 
+  renderMobileSync () {
+    const { t } = this.context
+    const { history } = this.props
+//
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithMobile') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="primary"
+              large
+              onClick={event => {
+                event.preventDefault()
+                history.push(MOBILE_SYNC_ROUTE)
+              }}
+            >
+              { t('syncWithMobile') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderStateLogs () {
     const { t } = this.context
     const { displayWarning } = this.props
@@ -334,8 +362,9 @@ export default class AdvancedTab extends PureComponent {
       <div className="settings-page__body">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderStateLogs() }
-        { this.renderResetAccount() }
+        { this.renderMobileSync() }
         { this.renderNewRpcUrl() }
+        { this.renderResetAccount() }
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }

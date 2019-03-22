@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from 'react-toggle-button'
-import {REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
+import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
 import Button from '../../../components/ui/button'
 
 export default class SecurityTab extends PureComponent {
@@ -123,34 +123,6 @@ export default class SecurityTab extends PureComponent {
     )
   }
 
-
-  renderMobileSync () {
-    const { t } = this.context
-    const { history } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('syncWithMobile') }</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="primary"
-              large
-              onClick={event => {
-                event.preventDefault()
-                history.push(MOBILE_SYNC_ROUTE)
-              }}
-            >
-              { t('syncWithMobile') }
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   renderPrivacyOptIn () {
     const { t } = this.context
     const { privacyMode, setPrivacyMode } = this.props
@@ -212,7 +184,6 @@ export default class SecurityTab extends PureComponent {
         { this.renderPrivacyOptIn() }
         { this.renderClearApproval() }
         { this.renderSeedWords() }
-        { this.renderMobileSync() }
         { this.renderMetaMetricsOptIn() }
       </div>
     )
