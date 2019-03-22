@@ -1,4 +1,4 @@
-import {NETWORK_TYPES} from '../helpers/constants/common'
+import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix } from 'ethereumjs-util'
 
 const abi = require('human-standard-token-abi')
@@ -47,6 +47,7 @@ const selectors = {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
+  isEthereumNetwork,
 }
 
 module.exports = selectors
@@ -290,6 +291,17 @@ function getTotalUnapprovedCount ({ metamask }) {
 function getIsMainnet (state) {
   const networkType = getNetworkIdentifier(state)
   return networkType === NETWORK_TYPES.MAINNET
+}
+
+function isEthereumNetwork (state) {
+  const networkType = getNetworkIdentifier(state)
+  const {
+    KOVAN,
+    MAINNET,
+    RINKEBY,
+    ROPSTEN,
+  } = NETWORK_TYPES
+  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN].includes(type => type === networkType)
 }
 
 function preferencesSelector ({ metamask }) {

@@ -32,6 +32,7 @@ describe('AdvancedTabContent Component', function () {
       insufficientBalance={false}
       customPriceIsSafe={true}
       isSpeedUp={false}
+      isEthereumNetwork={true}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
@@ -59,9 +60,9 @@ describe('AdvancedTabContent Component', function () {
       const feeChartDiv = advancedTabChildren.at(1)
 
       assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
-      assert(feeChartDiv.childAt(1).hasClass('advanced-tab__fee-chart__title'))
-      assert(feeChartDiv.childAt(2).is(GasPriceChart))
-      assert(feeChartDiv.childAt(3).hasClass('advanced-tab__fee-chart__speed-buttons'))
+      assert(feeChartDiv.childAt(1).childAt(0).hasClass('advanced-tab__fee-chart__title'))
+      assert(feeChartDiv.childAt(1).childAt(1).is(GasPriceChart))
+      assert(feeChartDiv.childAt(1).childAt(2).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 
     it('should render a loading component instead of the chart if gasEstimatesLoading is true', () => {
@@ -75,9 +76,9 @@ describe('AdvancedTabContent Component', function () {
       const feeChartDiv = advancedTabChildren.at(1)
 
       assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
-      assert(feeChartDiv.childAt(1).hasClass('advanced-tab__fee-chart__title'))
-      assert(feeChartDiv.childAt(2).is(Loading))
-      assert(feeChartDiv.childAt(3).hasClass('advanced-tab__fee-chart__speed-buttons'))
+      assert(feeChartDiv.childAt(1).childAt(0).hasClass('advanced-tab__fee-chart__title'))
+      assert(feeChartDiv.childAt(1).childAt(1).is(Loading))
+      assert(feeChartDiv.childAt(1).childAt(2).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 
     it('should call renderDataSummary with the expected params', () => {

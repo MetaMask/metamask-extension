@@ -118,7 +118,7 @@ describe('gas-modal-page-container container', () => {
         gasChartProps: {
           'currentPrice': 4.294967295,
           estimatedTimes: [31, 62, 93, 124],
-          estimatedTimesMax: '31',
+          estimatedTimesMax: 31,
           gasPrices: [3, 4, 5, 6],
           gasPricesMax: 6,
         },
@@ -140,6 +140,8 @@ describe('gas-modal-page-container container', () => {
         insufficientBalance: true,
         isSpeedUp: false,
         txId: 34,
+        isEthereumNetwork: false,
+        isMainnet: true,
       }
       const baseMockOwnProps = { transaction: { id: 34 } }
       const tests = [
@@ -179,6 +181,7 @@ describe('gas-modal-page-container container', () => {
               ...baseExpectedResult.infoRowProps,
               newTotalFiat: '',
             },
+            isMainnet: false,
           },
         },
         {
@@ -196,7 +199,10 @@ describe('gas-modal-page-container container', () => {
             },
           }),
           mockOwnProps: baseMockOwnProps,
-          expectedResult: baseExpectedResult,
+          expectedResult: {
+            ...baseExpectedResult,
+            isMainnet: false,
+          },
         },
         {
           mockState: Object.assign({}, baseMockState, {

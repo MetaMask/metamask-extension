@@ -23,6 +23,7 @@ export default class AdvancedTabContent extends Component {
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
+    isEthereumNetwork: PropTypes.bool,
   }
 
   constructor (props) {
@@ -188,6 +189,7 @@ export default class AdvancedTabContent extends Component {
       customPriceIsSafe,
       isSpeedUp,
       transactionFee,
+      isEthereumNetwork,
     } = this.props
 
     return (
@@ -203,15 +205,20 @@ export default class AdvancedTabContent extends Component {
             customPriceIsSafe,
             isSpeedUp,
           }) }
-          <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
-          {!gasEstimatesLoading
-            ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
-            : <Loading />
+          { isEthereumNetwork
+            ? <div>
+              <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
+              {!gasEstimatesLoading
+                ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
+                : <Loading />
+              }
+              <div className="advanced-tab__fee-chart__speed-buttons">
+                <span>{ t('slower') }</span>
+                <span>{ t('faster') }</span>
+              </div>
+            </div>
+            : <div className="advanced-tab__fee-chart__title">{ t('chartOnlyAvailableEth') }</div>
           }
-          <div className="advanced-tab__fee-chart__speed-buttons">
-            <span>{ t('slower') }</span>
-            <span>{ t('faster') }</span>
-          </div>
         </div>
       </div>
     )
