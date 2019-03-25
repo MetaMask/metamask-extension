@@ -80,7 +80,7 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
-  renderCancel() {
+  renderCancel () {
     const { t } = this.context
     const {
       showCancel,
