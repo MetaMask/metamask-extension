@@ -2,6 +2,8 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import Identicon from '../ui/identicon'
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
@@ -47,6 +49,42 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+function mergeProps (stateProps, dispatchProps, ownProps) {
+  const {
+    signPersonalMessage,
+    signTypedMessage,
+    cancelPersonalMessage,
+    cancelTypedMessage,
+    signMessage,
+    cancelMessage,
+    txData,
+  } = ownProps
+
+  const { type } = txData
+
+  let cancel
+  let sign
+  if (type === 'personal_sign') {
+    cancel = cancelPersonalMessage
+    sign = signPersonalMessage
+  } else if (type === 'eth_signTypedData') {
+    cancel = cancelTypedMessage
+    sign = signTypedMessage
+  } else if (type === 'eth_sign') {
+    cancel = cancelMessage
+    sign = signMessage
+  }
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    txData,
+    cancel,
+    sign,
+  }
+}
+
 SignatureRequest.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
@@ -54,7 +92,7 @@ SignatureRequest.contextTypes = {
 
 module.exports = compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(SignatureRequest)
 
 
@@ -64,6 +102,24 @@ function SignatureRequest (props) {
 
   this.state = {
     selectedAccount: props.selectedAccount,
+  }
+}
+
+SignatureRequest.prototype.componentDidMount = function () {
+  const { clearConfirmTransaction, cancel } = this.props
+  const { metricsEvent } = this.context
+  if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    window.onbeforeunload = event => {
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Cancel Sig Request Via Notification Close',
+        },
+      })
+      clearConfirmTransaction()
+      cancel(event)
+    }
   }
 }
 
@@ -233,30 +289,7 @@ SignatureRequest.prototype.renderBody = function () {
 }
 
 SignatureRequest.prototype.renderFooter = function () {
-  const {
-    signPersonalMessage,
-    signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    signMessage,
-    cancelMessage,
-  } = this.props
-
-  const { txData } = this.props
-  const { type } = txData
-
-  let cancel
-  let sign
-  if (type === 'personal_sign') {
-    cancel = cancelPersonalMessage
-    sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
-    cancel = cancelTypedMessage
-    sign = signTypedMessage
-  } else if (type === 'eth_sign') {
-    cancel = cancelMessage
-    sign = signMessage
-  }
+  const { cancel, sign } = this.props
 
   return h('div.request-signature__footer', [
     h(Button, {

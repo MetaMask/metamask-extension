@@ -1,6 +1,8 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
 import { isBalanceSufficient } from '../../components/app/send/send.utils'
 import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
@@ -474,7 +476,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentDidMount () {
-    const { txData: { origin } = {} } = this.props
+    const { txData: { origin, id } = {}, cancelTransaction } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -486,6 +488,22 @@ export default class ConfirmTransactionBase extends Component {
         origin,
       },
     })
+
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      window.onbeforeunload = () => {
+        metricsEvent({
+          eventOpts: {
+            category: 'Transactions',
+            action: 'Confirm Screen',
+            name: 'Cancel Tx Via Notification Close',
+          },
+          customVariables: {
+            origin,
+          },
+        })
+        cancelTransaction({ id })
+      }
+    }
   }
 
   render () {
