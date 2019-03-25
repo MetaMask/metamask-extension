@@ -20,11 +20,13 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
   }
 
   state = {
     justCopied: false,
+    cancelDisabled: false,
   }
 
   handleEtherscanClick = () => {
@@ -78,10 +80,52 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
+  renderCancel () {
+    const { t } = this.context
+    const {
+      showCancel,
+      cancelDisabled,
+    } = this.props
+
+    if (!showCancel) {
+      return null
+    }
+
+    return cancelDisabled
+      ? (
+        <Tooltip title={t('notEnoughGas')}>
+          <div>
+            <Button
+              type="raised"
+              onClick={this.handleCancel}
+              className="transaction-list-item-details__header-button"
+              disabled
+            >
+              { t('cancel') }
+            </Button>
+          </div>
+        </Tooltip>
+      )
+      : (
+        <Button
+          type="raised"
+          onClick={this.handleCancel}
+          className="transaction-list-item-details__header-button"
+        >
+          { t('cancel') }
+        </Button>
+      )
+  }
+
   render () {
     const { t } = this.context
     const { justCopied } = this.state
-    const { transactionGroup, showCancel, showRetry, onCancel, onRetry } = this.props
+    const {
+      transactionGroup,
+      showRetry,
+      onCancel,
+      onRetry,
+    } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { txParams: { to, from } = {} } = transaction
 
@@ -101,17 +145,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 </Button>
               )
             }
-            {
-              showCancel && (
-                <Button
-                  type="raised"
-                  onClick={this.handleCancel}
-                  className="transaction-list-item-details__header-button"
-                >
-                  { t('cancel') }
-                </Button>
-              )
-            }
+            { this.renderCancel() }
             <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
               <Button
                 type="raised"

@@ -6,7 +6,7 @@ import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../../store/actions'
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
-import { increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
+import { getHexGasTotal, increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
 import { formatDate } from '../../../helpers/utils/util'
 import {
   fetchBasicGasAndTimeEstimates,
@@ -14,16 +14,32 @@ import {
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
-import {getIsMainnet, preferencesSelector} from '../../../selectors/selectors'
+import { getIsMainnet, preferencesSelector, getSelectedAddress, conversionRateSelector } from '../../../selectors/selectors'
+import { isBalanceSufficient } from '../send/send.utils'
 
-const mapStateToProps = state => {
-  const { metamask: { knownMethodData } } = state
+const mapStateToProps = (state, ownProps) => {
+  const { metamask: { knownMethodData, accounts } } = state
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
+  const { transactionGroup: { primaryTransaction } = {} } = ownProps
+  const { txParams: { gas: gasLimit, gasPrice, value } = {} } = primaryTransaction
+  const selectedAccountBalance = accounts[getSelectedAddress(state)].balance
+
+  const hasEnoughCancelGas = primaryTransaction.txParams && isBalanceSufficient({
+    amount: value,
+    gasTotal: getHexGasTotal({
+      gasPrice: increaseLastGasPrice(gasPrice),
+      gasLimit,
+    }),
+    balance: selectedAccountBalance,
+    conversionRate: conversionRateSelector(state),
+  })
 
   return {
     knownMethodData,
     showFiat: (isMainnet || !!showFiatInTestnets),
+    selectedAccountBalance,
+    hasEnoughCancelGas,
   }
 }
 

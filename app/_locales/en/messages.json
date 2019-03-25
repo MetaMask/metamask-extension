@@ -989,6 +989,9 @@
   "noTransactions": {
     "message": "You have no transactions"
   },
+  "notEnoughGas": {
+    "message": "Not Enough Gas"
+  },
   "notFound": {
     "message": "Not Found"
   },
