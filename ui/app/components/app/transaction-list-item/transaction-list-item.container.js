@@ -22,11 +22,11 @@ const mapStateToProps = (state, ownProps) => {
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
-  const { txParams: { gas: gasLimit, gasPrice } = {} } = primaryTransaction
+  const { txParams: { gas: gasLimit, gasPrice, value } = {} } = primaryTransaction
   const selectedAccountBalance = accounts[getSelectedAddress(state)].balance
 
   const hasEnoughCancelGas = primaryTransaction.txParams && isBalanceSufficient({
-    amount: '0x0',
+    amount: value,
     gasTotal: getHexGasTotal({
       gasPrice: increaseLastGasPrice(gasPrice),
       gasLimit,
