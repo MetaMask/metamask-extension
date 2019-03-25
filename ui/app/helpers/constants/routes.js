@@ -2,7 +2,12 @@ const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
 const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
+const GENERAL_ROUTE = '/settings/general'
 const INFO_ROUTE = '/settings/info'
+const ADVANCED_ROUTE = '/settings/advanced'
+const SECURITY_ROUTE = '/settings/security'
+const COMPANY_ROUTE = '/settings/company'
+const ABOUT_US_ROUTE = '/settings/about-us'
 const REVEAL_SEED_ROUTE = '/seed'
 const MOBILE_SYNC_ROUTE = '/mobile-sync'
 const CONFIRM_SEED_ROUTE = '/confirm-seed'
@@ -80,4 +85,9 @@ module.exports = {
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
+  ADVANCED_ROUTE,
+  SECURITY_ROUTE,
+  COMPANY_ROUTE,
+  GENERAL_ROUTE,
+  ABOUT_US_ROUTE,
 }

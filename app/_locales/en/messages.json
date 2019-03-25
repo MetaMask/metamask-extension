@@ -44,6 +44,9 @@
   "providerRequestInfo": {
     "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
+  "aboutUs": {
+    "message": "About Us"
+  },
   "accept": {
     "message": "Accept"
   },
@@ -74,6 +77,12 @@
   "address": {
     "message": "Address"
   },
+  "advanced": {
+    "message": "Advanced"
+  },
+  "advancedSettingsDescription": {
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
+  },
   "advancedOptions": {
     "message": "Advanced Options"
   },
@@ -91,9 +100,6 @@
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
-  },
-  "advanced": {
-    "message": "Advanced"
   },
   "agreeTermsOfService": {
     "message": "I agree to the Terms of Service"
@@ -235,6 +241,9 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "company": {
+    "message": "Company"
   },
   "confirm": {
     "message": "Confirm"
@@ -619,6 +628,12 @@
   "gasPriceRequired": {
     "message": "Gas Price Required"
   },
+  "general": {
+    "message": "General"
+  },
+  "generalSettingsDescription": {
+    "message": "Currency conversion, primary currency, language, blockies identicon"
+  },
   "generatingTransaction": {
     "message": "Generating transaction"
   },
@@ -789,6 +804,9 @@
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
+  },
+  "legal": {
+    "message": "Legal"
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -1239,6 +1257,12 @@
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Security & Privacy"
+  },
+  "securitySettingsDescription": {
+    "message": "Privacy settings and wallet seed phrase"
   },
   "secondsShorthand": {
     "message": "Sec"

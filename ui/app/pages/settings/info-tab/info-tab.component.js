@@ -101,11 +101,11 @@ export default class InfoTab extends PureComponent {
     )
   }
 
-  render () {
+  renderContent () {
     const { t } = this.context
 
     return (
-      <div className="settings-page__content">
+      <div className="settings-page__body">
         <div className="settings-page__content-row">
           <div className="settings-page__content-item settings-page__content-item--without-height">
             <div className="info-tab__logo-wrapper">
@@ -132,5 +132,9 @@ export default class InfoTab extends PureComponent {
         </div>
       </div>
     )
+  }
+
+  render () {
+    return this.renderContent()
   }
 }
