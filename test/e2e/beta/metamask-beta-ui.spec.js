@@ -1061,7 +1061,6 @@ describe('MetaMask', function () {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
       const dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await delay(regularDelayMs)
 
       await driver.switchTo().window(dapp)
@@ -1070,7 +1069,6 @@ describe('MetaMask', function () {
       const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Transfer Tokens')]`))
       await transferTokens.click()
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
 
