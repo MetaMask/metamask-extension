@@ -5,10 +5,12 @@ module.exports = {
 }
 const ethNetProps = require('eth-net-props')
 
-const { POA_CODE,
+const {
+  POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
   MAINNET_CODE,
+  CLASSIC_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
@@ -28,7 +30,12 @@ const { POA_CODE,
  */
 function getBuyEthUrl ({ network, amount, address, ind }) {
   let url
-  switch (Number(network)) {
+  switch (Number(network) || isNaN(network)) {
+    case true:
+      if (network === CLASSIC_CODE) {
+        url = getExchanges({network, amount, address})[ind].link
+      }
+      break
     case MAINNET_CODE:
     case POA_CODE:
     case DAI_CODE:
@@ -65,12 +72,20 @@ function getFaucets (network) {
  * @returns {array} The array of exchanges for given network ID
  */
 function getExchanges ({network, amount, address}) {
-  const networkID = Number(network)
+  const isClassic = network === '1\''
+  const networkID = isClassic ? network : Number(network)
   switch (networkID) {
     case 1:
       return [
         {
           link: `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`,
+        },
+      ]
+    case '1\'':
+      return [
+        {
+          name: 'Binance',
+          link: 'https://www.binance.com/en/trade/ETC_ETH',
         },
       ]
     case 99:

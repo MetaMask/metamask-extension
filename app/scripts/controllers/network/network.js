@@ -12,6 +12,7 @@ const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
 const ethNetProps = require('eth-net-props')
+const parse = require('url-parse')
 
 const {
   ROPSTEN,
@@ -23,10 +24,12 @@ const {
   POA,
   DAI,
   GOERLI_TESTNET,
+  CLASSIC,
   POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
   GOERLI_TESTNET_CODE,
+  CLASSIC_CODE,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
@@ -90,6 +93,8 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   lookupNetwork () {
+    const { type, rpcTarget } = this.providerStore.getState()
+    console.log(type, rpcTarget)
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
@@ -97,6 +102,13 @@ module.exports = class NetworkController extends EventEmitter {
     const ethQuery = new EthQuery(this._provider)
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
+      console.log(type, rpcTarget)
+      const targetHost = parse(rpcTarget, true).host
+      const classicHost = parse(ethNetProps.RPCEndpoints(CLASSIC_CODE)[0], true).host
+      console.log(targetHost + '===' + classicHost)
+      if (type === CLASSIC || targetHost === classicHost) {
+        network = CLASSIC_CODE
+      } // workaround to avoid Mainnet and Classic are having the same network ID
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
     })
@@ -117,7 +129,8 @@ module.exports = class NetworkController extends EventEmitter {
       type === POA_SOKOL ||
       type === POA ||
       type === DAI ||
-      type === GOERLI_TESTNET
+      type === GOERLI_TESTNET ||
+      type === CLASSIC
       , `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type }
     this.providerConfig = providerConfig
@@ -150,6 +163,7 @@ module.exports = class NetworkController extends EventEmitter {
     const { type, rpcTarget } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    console.log('TYPE OF PROVIDER:', type)
     if (isInfura) {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
@@ -161,6 +175,8 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
     } else if (type === GOERLI_TESTNET) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
+    } else if (type === CLASSIC) {
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(CLASSIC_CODE)[0] })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints

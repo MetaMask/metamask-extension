@@ -5,7 +5,8 @@ const {
   POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
-  GOERLI_TESTNET_CODE } = require('../controllers/network/enums')
+  GOERLI_TESTNET_CODE,
+  CLASSIC_CODE } = require('../controllers/network/enums')
 
 class ExtensionPlatform {
 
@@ -133,7 +134,8 @@ class ExtensionPlatform {
     if (networkId === POA_CODE ||
         networkId === DAI_CODE ||
         networkId === POA_SOKOL_CODE ||
-        networkId === GOERLI_TESTNET_CODE
+        networkId === GOERLI_TESTNET_CODE ||
+        networkId === CLASSIC_CODE
     ) {
       explorerName = 'BlockScout'
     } else {

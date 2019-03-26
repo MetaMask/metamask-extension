@@ -276,7 +276,7 @@ class AccountDropdowns extends Component {
       this.checkIfProxy()
     }
 
-    if (!isNaN(this.props.network)) {
+    if (!isNaN(this.props.network) || this.props.network === '1\'') {
       const { network } = this.props
       if (network !== prevProps.network) {
         const { keyrings, identities } = this.props

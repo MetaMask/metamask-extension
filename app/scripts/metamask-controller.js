@@ -1518,7 +1518,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const networkId = parseInt(networkIdStr)
     const isPOA = networkId === POA_SOKOL_CODE || networkId === POA_CODE || networkId === DAI_CODE
 
-    // Return 1 gwei if using a POA network of if there are no blocks have been observed:
+    // Return 1 gwei if using a POA network or if there are no blocks have been observed:
     if (isPOA || recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
     }
