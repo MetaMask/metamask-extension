@@ -449,7 +449,7 @@
     "message": "Directly Deposit Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet is by direct deposit."
   },
   "done": {
     "message": "Done"
@@ -641,7 +641,7 @@
     "message": "Get Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
+    "message": "Get Ether from a faucet for the $1 Test Network.",
     "description": "Displays network name for Ether faucet"
   },
   "getHelp": {

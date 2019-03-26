@@ -31,7 +31,7 @@ describe('', function () {
 
   it('returns rinkeby dapp for network 4', function () {
     const rinkebyUrl = getBuyEthUrl(rinkeby)
-    assert.equal(rinkebyUrl, 'https://www.rinkeby.io/')
+    assert.equal(rinkebyUrl, 'https://www.rinkeby.io/#faucet')
   })
 
   it('returns kovan github test faucet for network 42', function () {

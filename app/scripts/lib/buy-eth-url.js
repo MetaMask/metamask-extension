@@ -23,7 +23,7 @@ function getBuyEthUrl ({ network, amount, address }) {
       break
 
     case '4':
-      url = 'https://www.rinkeby.io/'
+      url = 'https://www.rinkeby.io/#faucet'
       break
 
     case '42':

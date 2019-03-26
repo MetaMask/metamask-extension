@@ -25,6 +25,7 @@ export default class AdvancedTab extends PureComponent {
     advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    showTestFaucet: PropTypes.func,
   }
 
   state = {
@@ -180,7 +181,6 @@ export default class AdvancedTab extends PureComponent {
   renderMobileSync () {
     const { t } = this.context
     const { history } = this.props
-//
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
@@ -232,6 +232,40 @@ export default class AdvancedTab extends PureComponent {
               }}
             >
               { t('downloadStateLogs') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderGetFaucetEth () {
+    const { t } = this.context
+    const { showTestFaucet } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('testFaucet') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="primary"
+              large
+              onClick={event => {
+                event.preventDefault()
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Test Faucet',
+                    name: 'Test Faucet',
+                  },
+                })
+                showTestFaucet()
+              }}
+            >
+              { t('testFaucet') }
             </Button>
           </div>
         </div>
@@ -364,6 +398,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderStateLogs() }
         { this.renderMobileSync() }
         { this.renderNewRpcUrl() }
+        { this.renderGetFaucetEth() }
         { this.renderResetAccount() }
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }

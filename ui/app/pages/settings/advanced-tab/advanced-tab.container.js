@@ -39,6 +39,7 @@ const mapDispatchToProps = dispatch => {
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
     },
+    showTestFaucet: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
   }
 }
 
