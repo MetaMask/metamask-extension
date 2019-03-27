@@ -35,10 +35,10 @@ workflows:
         requires:
         - prep-deps-npm
         - prep-scss
-    - test-integration-mascara-firefox:
-        requires:
-        - prep-deps-npm
-        - prep-scss
+    # - test-integration-mascara-firefox:
+    #     requires:
+    #     - prep-deps-npm
+    #     - prep-scss
     - test-integration-flat-chrome:
         requires:
         - prep-deps-npm
@@ -54,7 +54,7 @@ workflows:
         - test-e2e-chrome
         # - test-e2e-firefox
         - test-integration-mascara-chrome
-        - test-integration-mascara-firefox
+        # - test-integration-mascara-firefox
         - test-integration-flat-chrome
         - test-integration-flat-firefox
     - job-screens:
@@ -193,8 +193,8 @@ jobs:
     - run: #STABLE
         name: Install Chromedriver latest version
         command: |
-          sudo apt-get update
-          sudo apt-get install lsb-release libappindicator3-1
+          # sudo apt-get update
+          # sudo apt-get install lsb-release libappindicator3-1
           curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome.deb
           sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome

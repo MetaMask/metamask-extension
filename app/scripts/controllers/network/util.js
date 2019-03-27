@@ -7,6 +7,7 @@ const {
   RINKEBY,
   KOVAN,
   GOERLI_TESTNET,
+  CLASSIC,
   POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
@@ -15,6 +16,7 @@ const {
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_TESTNET_CODE,
+  CLASSIC_CODE,
   POA_DISPLAY_NAME,
   DAI_DISPLAY_NAME,
   POA_SOKOL_DISPLAY_NAME,
@@ -23,6 +25,7 @@ const {
   RINKEBY_DISPLAY_NAME,
   KOVAN_DISPLAY_NAME,
   GOERLI_TESTNET_DISPLAY_NAME,
+  CLASSIC_DISPLAY_NAME,
   DROPDOWN_POA_DISPLAY_NAME,
   DROPDOWN_DAI_DISPLAY_NAME,
   DROPDOWN_POA_SOKOL_DISPLAY_NAME,
@@ -31,6 +34,7 @@ const {
   DROPDOWN_RINKEBY_DISPLAY_NAME,
   DROPDOWN_KOVAN_DISPLAY_NAME,
   DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME,
+  DROPDOWN_CLASSIC_DISPLAY_NAME,
   chainTypes,
 } = require('./enums')
 
@@ -81,8 +85,19 @@ const MAINNET_OBJ = {
 networks[MAINNET_CODE] = MAINNET_OBJ
 networks[MAINNET] = MAINNET_OBJ
 
-const ROPSTEN_OBJ = {
+const CLASSIC_OBJ = {
   order: 5,
+  chainType: PROD,
+  providerName: CLASSIC,
+  networkID: CLASSIC_CODE,
+  displayName: CLASSIC_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_CLASSIC_DISPLAY_NAME,
+}
+networks[CLASSIC_CODE] = CLASSIC_OBJ
+networks[CLASSIC] = CLASSIC_OBJ
+
+const ROPSTEN_OBJ = {
+  order: 6,
   chainType: TEST,
   providerName: ROPSTEN,
   networkID: ROPSTEN_CODE,
@@ -93,7 +108,7 @@ networks[ROPSTEN_CODE] = ROPSTEN_OBJ
 networks[ROPSTEN] = ROPSTEN_OBJ
 
 const KOVAN_OBJ = {
-  order: 6,
+  order: 7,
   chainType: TEST,
   providerName: KOVAN,
   networkID: KOVAN_CODE,
@@ -104,7 +119,7 @@ networks[KOVAN_CODE] = KOVAN_OBJ
 networks[KOVAN] = KOVAN_OBJ
 
 const RINKEBY_OBJ = {
-  order: 7,
+  order: 8,
   chainType: TEST,
   providerName: RINKEBY,
   networkID: RINKEBY_CODE,
@@ -115,7 +130,7 @@ networks[RINKEBY_CODE] = RINKEBY_OBJ
 networks[RINKEBY] = RINKEBY_OBJ
 
 const GOERLI_TESTNET_OBJ = {
-  order: 7,
+  order: 9,
   providerName: GOERLI_TESTNET,
   networkID: GOERLI_TESTNET_CODE,
   displayName: GOERLI_TESTNET_DISPLAY_NAME,

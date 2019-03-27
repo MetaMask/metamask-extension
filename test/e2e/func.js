@@ -123,26 +123,29 @@ class Functions {
       case NETWORKS.MAINNET:
         counter = 3
         break
-      case NETWORKS.ROPSTEN:
+      case NETWORKS.CLASSIC:
         counter = 4
         break
-      case NETWORKS.KOVAN:
+      case NETWORKS.ROPSTEN:
         counter = 5
         break
-      case NETWORKS.RINKEBY:
+      case NETWORKS.KOVAN:
         counter = 6
         break
-      case NETWORKS.GOERLI:
+      case NETWORKS.RINKEBY:
         counter = 7
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.GOERLI:
         counter = 8
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 9
         break
+      case NETWORKS.CUSTOM:
+        counter = 10
+        break
       default:
-        counter = 8
+        counter = 9
     }
     await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }

@@ -23,6 +23,7 @@ const { POA_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_TESTNET_CODE,
+  CLASSIC_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
@@ -74,7 +75,7 @@ TransactionListItem.prototype.render = function () {
   var date = formatDate(transaction.time)
 
   let isLinkable = false
-  const numericNet = parseInt(network)
+  const numericNet = isNaN(network) ? network : parseInt(network)
   isLinkable = numericNet === MAINNET_CODE ||
     numericNet === ROPSTEN_CODE ||
     numericNet === RINKEBY_CODE ||
@@ -82,7 +83,8 @@ TransactionListItem.prototype.render = function () {
     numericNet === POA_SOKOL_CODE ||
     numericNet === POA_CODE ||
     numericNet === DAI_CODE ||
-    numericNet === GOERLI_TESTNET_CODE
+    numericNet === GOERLI_TESTNET_CODE ||
+    numericNet === CLASSIC_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
