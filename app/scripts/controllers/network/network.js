@@ -94,7 +94,6 @@ module.exports = class NetworkController extends EventEmitter {
 
   lookupNetwork () {
     const { type, rpcTarget } = this.providerStore.getState()
-    console.log(type, rpcTarget)
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
@@ -102,10 +101,8 @@ module.exports = class NetworkController extends EventEmitter {
     const ethQuery = new EthQuery(this._provider)
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
-      console.log(type, rpcTarget)
       const targetHost = parse(rpcTarget, true).host
       const classicHost = parse(ethNetProps.RPCEndpoints(CLASSIC_CODE)[0], true).host
-      console.log(targetHost + '===' + classicHost)
       if (type === CLASSIC || targetHost === classicHost) {
         network = CLASSIC_CODE
       } // workaround to avoid Mainnet and Classic are having the same network ID
@@ -163,7 +160,6 @@ module.exports = class NetworkController extends EventEmitter {
     const { type, rpcTarget } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    console.log('TYPE OF PROVIDER:', type)
     if (isInfura) {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints

@@ -88,7 +88,6 @@ class BuyButtonSubview extends Component {
   }
 
   _getBuyOptionsView (network) {
-    console.log('1:', network)
     const isTestnet = ethNetProps.props.isTestnet(network)
     if (isTestnet) {
       return this._getFaucetsView(network)
