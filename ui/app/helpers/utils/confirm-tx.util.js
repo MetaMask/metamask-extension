@@ -12,8 +12,8 @@ import {
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 
-export function increaseLastGasPrice (lastGasPrice) {
-  return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
+export function increaseLastGasPrice (lastGasPrice = '0x0') {
+  return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
     multiplicandBase: 16,
     multiplierBase: 10,
     toNumericBase: 'hex',
@@ -27,8 +27,8 @@ export function hexGreaterThan (a, b) {
   )
 }
 
-export function getHexGasTotal ({ gasLimit, gasPrice }) {
-  return ethUtil.addHexPrefix(multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+export function getHexGasTotal ({ gasLimit = '0x0', gasPrice = '0x0' }) {
+  return ethUtil.addHexPrefix(multiplyCurrencies(gasLimit, gasPrice, {
     toNumericBase: 'hex',
     multiplicandBase: 16,
     multiplierBase: 16,
