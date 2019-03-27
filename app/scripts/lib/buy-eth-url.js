@@ -30,15 +30,11 @@ const {
  */
 function getBuyEthUrl ({ network, amount, address, ind }) {
   let url
-  switch (Number(network) || isNaN(network)) {
-    case true:
-      if (network === CLASSIC_CODE) {
-        url = getExchanges({network, amount, address})[ind].link
-      }
-      break
+  switch (Number(network)) {
     case MAINNET_CODE:
     case POA_CODE:
     case DAI_CODE:
+    case CLASSIC_CODE:
       url = getExchanges({network, amount, address})[ind].link
       break
     case ROPSTEN_CODE:

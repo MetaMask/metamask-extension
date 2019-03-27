@@ -35,10 +35,10 @@ workflows:
         requires:
         - prep-deps-npm
         - prep-scss
-    - test-integration-mascara-firefox:
-        requires:
-        - prep-deps-npm
-        - prep-scss
+    # - test-integration-mascara-firefox:
+    #     requires:
+    #     - prep-deps-npm
+    #     - prep-scss
     - test-integration-flat-chrome:
         requires:
         - prep-deps-npm
