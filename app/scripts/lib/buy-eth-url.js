@@ -14,7 +14,7 @@ const {
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
-  GOERLI_TESTNET_CODE } = require('../controllers/network/enums')
+  GOERLI_TESTNET_CODE} = require('../controllers/network/enums')
 
 /**
  * Gives the caller a url at which the user can acquire coin, depending on the network they are in
@@ -72,8 +72,7 @@ function getFaucets (network) {
  * @returns {array} The array of exchanges for given network ID
  */
 function getExchanges ({network, amount, address}) {
-  const isClassic = network === '1\''
-  const networkID = isClassic ? network : Number(network)
+  const networkID = Number(network)
   switch (networkID) {
     case 1:
       return [
@@ -81,14 +80,14 @@ function getExchanges ({network, amount, address}) {
           link: `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`,
         },
       ]
-    case '1\'':
+    case CLASSIC_CODE:
       return [
         {
           name: 'Binance',
           link: 'https://www.binance.com/en/trade/ETC_ETH',
         },
       ]
-    case 99:
+    case POA_CODE:
       return [
         {
           name: 'Binance',
@@ -107,7 +106,7 @@ function getExchanges ({network, amount, address}) {
           link: 'https://hitbtc.com/POA-to-ETH',
         },
       ]
-    case 100:
+    case DAI_CODE:
       return [
         {
           name: 'xDai TokenBridge',

@@ -17,7 +17,7 @@ const ROPSTEN_CODE = 3
 const RINKEBY_CODE = 4
 const KOVAN_CODE = 42
 const GOERLI_TESTNET_CODE = 5
-const CLASSIC_CODE = "1'"
+const CLASSIC_CODE = 61
 
 const POA_DISPLAY_NAME = 'POA Network'
 const DAI_DISPLAY_NAME = 'xDai Chain'

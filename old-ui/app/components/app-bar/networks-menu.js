@@ -27,7 +27,7 @@ class NetworksMenu extends Component {
 
     const knownNetworks = Object.keys(networks)
     .filter((networkID) => {
-      return !isNaN(networkID) || networkID === '1\''
+      return !isNaN(networkID)
     })
 
     const sortedNetworks = knownNetworks

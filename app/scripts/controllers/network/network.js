@@ -104,7 +104,7 @@ module.exports = class NetworkController extends EventEmitter {
       const targetHost = parse(rpcTarget, true).host
       const classicHost = parse(ethNetProps.RPCEndpoints(CLASSIC_CODE)[0], true).host
       if (type === CLASSIC || targetHost === classicHost) {
-        network = CLASSIC_CODE
+        network = CLASSIC_CODE.toString()
       } // workaround to avoid Mainnet and Classic are having the same network ID
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
