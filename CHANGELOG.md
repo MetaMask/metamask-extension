@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.11.2 Wed Mar 27 2019
+
+- [#268](https://github.com/poanetwork/nifty-wallet/pull/268): (Feature) Support of Ethereum Classic chain
+
 ## 4.11.1 Wed Mar 20 2019
 
 - [#266](https://github.com/poanetwork/nifty-wallet/pull/266): (Fix) Support of the latest trezor-connect version 7
