@@ -190,15 +190,15 @@ jobs:
         key: dependency-cache-{{ .Revision }}
     - restore_cache:
         key: build-cache-{{ .Revision }}
-    - run: #STABLE
-        name: Install Chromedriver latest version
-        command: |
-          sudo apt-get update
-          sudo apt-get install lsb-release libappindicator3-1
-          curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome.deb
-          sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
-          rm google-chrome.deb
+    # - run: #STABLE
+    #     name: Install Chromedriver latest version
+    #     command: |
+    #       sudo apt-get update
+    #       sudo apt-get install lsb-release libappindicator3-1
+    #       curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    #       sudo dpkg -i google-chrome.deb
+    #       sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
+    #       rm google-chrome.deb
     - run:
         name: test:e2e:chrome
         command: npm run test:e2e:chrome
