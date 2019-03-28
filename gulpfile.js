@@ -311,6 +311,7 @@ const buildJsFiles = [
 // bundle tasks
 createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, filename: 'libs' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 
 function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
@@ -334,7 +335,7 @@ function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
 }
 
 
-function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
+function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, testing, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
   const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
@@ -348,6 +349,7 @@ function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bu
     buildWithFullPaths: devMode,
     watch: devMode,
     devMode,
+    testing,
   }, bundleTaskOpts)
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
 }
@@ -412,7 +414,7 @@ gulp.task('dev:test',
     'clean',
     'dev:scss',
     gulp.parallel(
-      'dev:extension:js',
+      'dev:test-extension:js',
       'test:copy',
       'dev:reload'
     )
@@ -496,6 +498,7 @@ function generateBundler (opts, performBundle) {
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
     NODE_ENV: opts.devMode ? 'development' : 'production',
+    IN_TEST: opts.testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
   }), {

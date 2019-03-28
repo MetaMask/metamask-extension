@@ -329,16 +329,6 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('switches to localhost', async () => {
-      const networkDropdown = await findElement(driver, By.css('.network-name'))
-      await networkDropdown.click()
-      await delay(regularDelayMs)
-
-      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
-      await localhost.click()
-      await delay(largeDelayMs * 2)
-    })
-
     it('balance renders', async () => {
       const balance = await findElement(driver, By.css('.balance-display .token-amount'))
       await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
