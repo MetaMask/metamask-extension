@@ -21,6 +21,7 @@ import {
   CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
+import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
@@ -37,21 +38,31 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
  * @param {string} data - The hex data (@code txParams.data) of a transaction
  * @returns {Object}
  */
-export async function getMethodData (data = '') {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
+  export async function getMethodData (data = '') {
+    const prefixedData = ethUtil.addHexPrefix(data)
+    const fourBytePrefix = prefixedData.slice(0, 10)
 
-  if (!sig) {
-    return {}
-  }
+    try {
+      const sig = await registry.lookup(fourBytePrefix)
 
-  const parsedResult = registry.parse(sig)
+      if (!sig) {
+        return {}
+      }
 
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
-  }
+      const parsedResult = registry.parse(sig)
+
+      return {
+        name: parsedResult.name,
+        params: parsedResult.args,
+      }
+    } catch (error) {
+      log.error(error)
+      const contractData = getTokenData(data)
+      const { name } = contractData || {}
+      return { name }
+    }
+
+
 }
 
 export function isConfirmDeployContract (txData = {}) {

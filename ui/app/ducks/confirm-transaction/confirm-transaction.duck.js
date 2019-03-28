@@ -1,3 +1,4 @@
+import log from 'loglevel'
 import {
   conversionRateSelector,
   currentCurrencySelector,
@@ -369,23 +370,17 @@ export function setTransactionToConfirm (transactionId) {
         const { tokens: existingTokens } = state
         const { data, to: tokenAddress } = txParams
 
-        try {
-          dispatch(setFetchingData(true))
-          const methodData = await getMethodData(data)
-
-          dispatch(updateMethodData(methodData))
-        } catch (error) {
-          dispatch(updateMethodData({}))
-          dispatch(setFetchingData(false))
-        }
+        dispatch(setFetchingData(true))
+        const methodData = await getMethodData(data)
+        dispatch(updateMethodData(methodData))
 
         try {
           const toSmartContract = await isSmartContractAddress(to)
           dispatch(updateToSmartContract(toSmartContract))
-          dispatch(setFetchingData(false))
         } catch (error) {
-          dispatch(setFetchingData(false))
+          log.error(error)
         }
+        dispatch(setFetchingData(false))
 
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
