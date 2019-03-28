@@ -79,17 +79,23 @@ function createAppKeyMiddleware (appKey_eth_getPublicKey,
   })
 
   function prepareHdPath(personaPath, origin, hdSubPath){
+    // beginning of Path using BIP 43 and arachnid eth subpurpose space
+    // Would prefer to use m/BIPNUMBER' once the app key eip is submitted as a bip
     const beginningPath = "m/43'/60'/1775'"
     const uid = namehash.hash(origin)
     const uidSubPath = splitUid(uid)
     const hdPath = beginningPath + "/" + personaPath + "/" + uidSubPath +"/"  + hdSubPath
-    console.log(hdPath)
     return hdPath
   }
 
   // e4a10c258c7b68c38df1cf0caf03ce2e34b5ec02e5abdd3ef18f0703f317c62a
   // e4a1/0c25/8c7b/68c3/8df1/cf0c/af03/ce2e/34b5/ec02/e5ab/dd3e/f18f/0703/f317/c62a
   // m/14249/25189/12235/29994/58227/65200/8925/10370/43316/35705
+
+  // should be reworked to split in 8 times 31bits (can not be done with hex slicing)
+  // + 1 times 8 bits
+  // to reduce HD tree depth
+  
   function splitUid(uid) {
     let numberOfSlices = 16
     let subPath = ""
@@ -108,7 +114,6 @@ function createAppKeyMiddleware (appKey_eth_getPublicKey,
 
   
   async function appKeyEthGetPublicKey(req, res) {
-    console.log(req.origin)
     const hdSubPath = req.params
     const personaPath = "0'"
     const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)
