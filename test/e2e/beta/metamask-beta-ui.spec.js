@@ -80,7 +80,18 @@ describe('MetaMask', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); }'
+      'return window.origFetch(...args); };' +
+      'function cancelInfuraRequest(requestDetails) {' +
+        'console.log("Canceling: " + requestDetails.url);' +
+        'return {' +
+          'cancel: true' +
+        '};' +
+     ' }' +
+      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
+        'cancelInfuraRequest,' +
+        '{urls: ["https://*.infura.io/*"]},' +
+        '["blocking"]' +
+      ');'
     )
   })
 
@@ -1015,11 +1026,13 @@ describe('MetaMask', function () {
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
-      assert.equal(functionTypeText, 'Transfer')
+      assert.equal(functionTypeText, 'Not Found')
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert.equal(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+
+      await delay(regularDelayMs)
+      assert(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
@@ -1191,7 +1204,7 @@ describe('MetaMask', function () {
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
-      assert.equal(functionTypeText, 'Approve')
+      assert.equal(functionTypeText, 'Not Found')
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()

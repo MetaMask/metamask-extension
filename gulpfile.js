@@ -195,6 +195,21 @@ gulp.task('manifest:production', function () {
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
+gulp.task('manifest:testing', function () {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+  ], {base: './dist/'})
+
+  // Exclude chromereload script in production:
+  .pipe(jsoneditor(function (json) {
+    json.permissions = [...json.permissions, 'webRequestBlocking']
+    return json
+  }))
+
+  .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
 gulp.task('copy',
   gulp.series(
     gulp.parallel(...copyTaskNames),
@@ -209,6 +224,15 @@ gulp.task('dev:copy',
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
     'manifest:opera'
+  )
+)
+
+gulp.task('test:copy',
+  gulp.series(
+    gulp.parallel(...copyDevTaskNames),
+    'manifest:chrome',
+    'manifest:opera',
+    'manifest:testing'
   )
 )
 
@@ -378,6 +402,18 @@ gulp.task('dev',
     gulp.parallel(
       'dev:extension:js',
       'dev:copy',
+      'dev:reload'
+    )
+  )
+)
+
+gulp.task('dev:test',
+  gulp.series(
+    'clean',
+    'dev:scss',
+    gulp.parallel(
+      'dev:extension:js',
+      'test:copy',
       'dev:reload'
     )
   )
