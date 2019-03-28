@@ -474,7 +474,7 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       //pluginSystem
-      appKey_getXPubKey: nodeify(this.appKey_getXPubKey, this),
+      appKey_eth_getPublicKey: nodeify(this.appKey_eth_getPublicKey, this),
       appKey_eth_getAddress: nodeify(this.appKey_eth_getAddress, this),
       appKey_eth_signTransaction: nodeify(this.appKey_eth_signTransaction, this),
       appKey_eth_signTypedMessage: nodeify(this.appKey_eth_signTypedMessage, this),
@@ -948,7 +948,8 @@ module.exports = class MetamaskController extends EventEmitter {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
+      return rawSig
+      //      return this.getState()
     })
   }
 
@@ -1658,23 +1659,21 @@ module.exports = class MetamaskController extends EventEmitter {
    * App Keys
    */
 
-  async appKey_eth_getPublicKey (params, next, end) {
-    console.log("getPubXKey params", params)
+  async appKey_eth_getPublicKey (hdPath, next, end) {
+    console.log("getPubKey params", hdPath)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const hdPath = params[0]
-    const xPubKey = await this.keyringController.appKey_eth_getPublicKey(selectedKeyring, hdPath)
-    console.log("metamask controller", xPubKey)
-    return xPubKey
+    const pubKey = await this.keyringController.appKey_eth_getPublicKey(selectedKeyring, hdPath)
+    console.log("metamask controller", pubKey)
+    return pubKey
   }
 
-  async appKey_eth_getAddress (params, next, end) {
-    console.log("getAddress params", params)
+  async appKey_eth_getAddress (hdPath, next, end) {
+    console.log("getAddress params", hdPath)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const hdPath = params[0]
     const appKeys = await this.keyringController.appKey_eth_getAddress(selectedKeyring, hdPath)
     console.log(appKeys)
     return appKeys

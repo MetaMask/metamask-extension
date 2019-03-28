@@ -8,6 +8,8 @@ const { addPlugin } = require('../../../actions')
 const ethUtil = require('ethereumjs-util')
 
 const CUSTOM_PLUGIN_TAB = 'CUSTOM_PLUGIN'
+const nameHash = require('eth-ens-namehash')
+
 
 class AddPlugin extends Component {
 
@@ -19,6 +21,12 @@ class AddPlugin extends Component {
     }
   }
 
+
+  computeENSNameHash(pluginName) {
+    const nH = nameHash.hash(pluginName)
+    return nH
+  }
+
   handleNext () {
     const { history } = this.props
     const {
@@ -27,12 +35,10 @@ class AddPlugin extends Component {
     } = this.state
 
     // compute plugin's uid based on ens hash of name
-    console.log(ethUtil)
-    const uid = ethUtil.sha3(pluginName).toString('hex')
+    const uid = this.computeENSNameHash(pluginName)
     console.log(uid.toString())
-    //"0x1111111111111111111111111111111111111111"
     // fetch metadata of plugin from ens
-    const pluginAuthorAddress = "0x2"
+    const pluginAuthorAddress = "0x000"
     const scriptUrl = pluginName
     const customPlugin = {
       name: pluginName,
