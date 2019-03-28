@@ -313,6 +313,7 @@ createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, file
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
 function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
@@ -442,6 +443,19 @@ gulp.task('build',
       'build:extension:js',
       'copy'
     )
+  )
+)
+
+gulp.task('build:test',
+  gulp.series(
+    'clean',
+    'build:scss',
+    gulpParallel(
+      'build:extension:js:uideps',
+      'build:test:extension:js',
+      'copy'
+    ),
+    'manifest:testing'
   )
 )
 

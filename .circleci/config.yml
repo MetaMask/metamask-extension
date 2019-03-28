@@ -23,11 +23,9 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-deps-npm
-            - prep-build
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-            - prep-build
       # - test-e2e-beta-drizzle:
       #     requires:
       #       - prep-deps-npm
@@ -191,7 +189,8 @@ jobs:
           at: .
       - run:
           name: test:e2e:chrome
-          command: npm run test:e2e:chrome
+          command: npm run build:test && npm run test:e2e:chrome
+          no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -208,7 +207,8 @@ jobs:
           at: .
       - run:
           name: test:e2e:firefox
-          command: npm run test:e2e:firefox
+          command: npm run build:test && npm run test:e2e:chrome
+          no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
