@@ -234,26 +234,6 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Enable privacy mode', () => {
-    it('enables privacy mode', async () => {
-      const networkDropdown = await findElement(driver, By.css('.network-name'))
-      await networkDropdown.click()
-      await delay(regularDelayMs)
-
-      const customRpcButton = await findElement(driver, By.xpath(`//span[contains(text(), 'Custom RPC')]`))
-      await customRpcButton.click()
-      await delay(regularDelayMs)
-
-      const securityTab = await findElement(driver, By.xpath(`//div[contains(text(), 'Security & Privacy')]`))
-      await securityTab.click()
-      await delay(regularDelayMs)
-
-      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(1) .settings-page__content-item-col > div'))
-      await privacyToggle.click()
-      await delay(largeDelayMs * 2)
-    })
-  })
-
   describe('Log out an log back in', () => {
     it('logs out of the account', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
