@@ -1586,15 +1586,13 @@ module.exports = class MetamaskController extends EventEmitter {
     return new Promise(async (resolve, reject) => {
       const gasPriceOracleETC = 'https://gasprice-etc.poa.network'
       const gasPriceOracleETH = 'https://gasprice.poa.network'
-      const gasPriceOralce = networkId === CLASSIC_CODE ?
+      const gasPriceOracle = networkId === CLASSIC_CODE ?
         gasPriceOracleETC : networkId === MAINNET_CODE ? gasPriceOracleETH : null
 
       try {
-        if (gasPriceOralce) {
-          const response = await fetch(gasPriceOralce)
+        if (gasPriceOracle) {
+          const response = await fetch(gasPriceOracle)
           const parsedResponse = await response.json()
-          console.log('GAS PRICE FROM ORACLE')
-          console.log(parsedResponse)
           if (parsedResponse && (parsedResponse.standard || parsedResponse.fast)) {
             resolve(parsedResponse.standard || parsedResponse.fast)
           } else {
