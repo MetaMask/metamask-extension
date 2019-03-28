@@ -612,8 +612,15 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      let transactions = await findElements(driver, By.css('.transaction-list-item'))
       await transactions[3].click()
+      await delay(regularDelayMs)
+      try {
+        transactions = await findElements(driver, By.css('.transaction-list-item'), 1000)
+        await transactions[3].click()
+      } catch (e) {
+        console.log(e)
+      }
       await delay(regularDelayMs)
     })
 
