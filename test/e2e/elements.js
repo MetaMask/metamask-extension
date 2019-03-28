@@ -395,6 +395,7 @@ module.exports = {
     DAI: 'dai',
     SOKOL: 'sokol',
     MAINNET: 'mainnet',
+    CLASSIC: 'classic',
     ROPSTEN: 'ropsten',
     KOVAN: 'kovan',
     RINKEBY: 'rinkeby',

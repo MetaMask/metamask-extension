@@ -58,7 +58,9 @@ const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware
 const {
   POA_CODE,
   DAI_CODE,
-  POA_SOKOL_CODE } = require('./controllers/network/enums')
+  POA_SOKOL_CODE,
+  CLASSIC_CODE,
+  MAINNET_CODE } = require('./controllers/network/enums')
 const accountsPerPage = 5
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -1504,21 +1506,55 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * A method for estimating a good gas price
+   * For ETH, ETC: from gas price oracles
+   * For other networks: from recent blocks
+   *
+   * @returns {string} A hex representation of the suggested wei gas price.
+   */
+  async getGasPrice () {
+    return new Promise(async (resolve, reject) => {
+      const { networkController } = this
+
+
+      const networkIdStr = networkController.store.getState().network
+      const networkId = parseInt(networkIdStr)
+      const isETHC = networkId === CLASSIC_CODE || networkId === MAINNET_CODE
+      let gasPrice
+
+      if (isETHC) {
+        try {
+          gasPrice = await this.getGasPriceFromOracles(networkId)
+          if (gasPrice) {
+            const gasPriceBN = new BN(gasPrice)
+            gasPrice = gasPriceBN.mul(GWEI_BN)
+            resolve('0x' + gasPrice.toString(16))
+          }
+        } catch (error) {
+          log.error(error)
+          gasPrice = this.getGasPriceFromBlocks(networkId)
+          resolve(gasPrice)
+        }
+      } else {
+        gasPrice = this.getGasPriceFromBlocks(networkId)
+        resolve(gasPrice)
+      }
+    })
+  }
+
+  /**
    * A method for estimating a good gas price at recent prices.
    * Returns the lowest price that would have been included in
    * 50% of recent blocks.
    *
    * @returns {string} A hex representation of the suggested wei gas price.
    */
-  getGasPrice () {
-    const { networkController, recentBlocksController } = this
+  getGasPriceFromBlocks (networkId) {
+    const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
-
-    const networkIdStr = networkController.store.getState().network
-    const networkId = parseInt(networkIdStr)
     const isPOA = networkId === POA_SOKOL_CODE || networkId === POA_CODE || networkId === DAI_CODE
 
-    // Return 1 gwei if using a POA network of if there are no blocks have been observed:
+    // Return 1 gwei if using a POA network or if there are no blocks have been observed:
     if (isPOA || recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
     }
@@ -1540,6 +1576,34 @@ module.exports = class MetamaskController extends EventEmitter {
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
+
+  /**
+   * A method for retrieving of gas price from POA gas price oracles
+   *
+   * @returns {string} A hex representation of the suggested wei gas price.
+   */
+  getGasPriceFromOracles (networkId) {
+    return new Promise(async (resolve, reject) => {
+      const gasPriceOracleETC = 'https://gasprice-etc.poa.network'
+      const gasPriceOracleETH = 'https://gasprice.poa.network'
+      const gasPriceOracle = networkId === CLASSIC_CODE ?
+        gasPriceOracleETC : networkId === MAINNET_CODE ? gasPriceOracleETH : null
+
+      try {
+        if (gasPriceOracle) {
+          const response = await fetch(gasPriceOracle)
+          const parsedResponse = await response.json()
+          if (parsedResponse && (parsedResponse.standard || parsedResponse.fast)) {
+            resolve(parsedResponse.standard || parsedResponse.fast)
+          } else {
+            reject()
+          }
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+   }
 
   /**
    * Returns the nonce that will be associated with a transaction once approved

@@ -16,6 +16,24 @@ const jsonObjToArray = (jsonObj) => {
 	}, [])
 }
 
+const getBlockscoutApiNetworkPrefix = (network) => {
+	switch (Number(network)) {
+		case 1:
+		case 42:
+		case 3:
+		case 4:
+		return 'mainnet'
+		case 99:
+		case 77:
+		case 100:
+		return 'poa'
+		case NaN:
+		return 'etc'
+		default:
+		return ''
+	}
+}
+
 const getBlockscoutApiNetworkSuffix = (network) => {
 	switch (Number(network)) {
 		case 1:
@@ -32,6 +50,8 @@ const getBlockscoutApiNetworkSuffix = (network) => {
 		return 'ropsten'
 		case 4:
 		return 'rinkeby'
+		case NaN:
+		return 'mainnet'
 		default:
 		return ''
 	}
@@ -39,8 +59,9 @@ const getBlockscoutApiNetworkSuffix = (network) => {
 
 const fetchABI = (addr, network) => {
 	return new Promise((resolve, reject) => {
+		const networkParent = getBlockscoutApiNetworkPrefix(network)
 		const networkName = getBlockscoutApiNetworkSuffix(network)
-		const bloscoutApiLink = `https://blockscout.com/poa/${networkName}/api`
+		const bloscoutApiLink = `https://blockscout.com/${networkParent}/${networkName}/api`
 		const bloscoutApiContractPath = '?module=contract'
 		const blockscoutApiGetAbiPath = `&action=getabi&address=${addr}`
 		const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
