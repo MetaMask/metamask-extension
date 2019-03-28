@@ -18,8 +18,6 @@ function reduceMetamask (state, action) {
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
-    noActiveNotices: true,
-    nextUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
@@ -68,18 +66,6 @@ function reduceMetamask (state, action) {
       })
       delete newState.seedWords
       return newState
-
-    case actions.SHOW_NOTICE:
-      return extend(metamaskState, {
-        noActiveNotices: false,
-        nextUnreadNotice: action.value,
-      })
-
-    case actions.CLEAR_NOTICES:
-      return extend(metamaskState, {
-        noActiveNotices: true,
-        nextUnreadNotice: undefined,
-      })
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)

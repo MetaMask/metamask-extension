@@ -445,15 +445,6 @@ describe('App State', () => {
     assert.equal(state.forgottenPassword, false)
   })
 
-  it('shows notice', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_NOTICE,
-    })
-
-    assert.equal(state.transForward, true)
-    assert.equal(state.isLoading, false)
-  })
-
   it('reveals account', () => {
     const state = reduceApp(metamaskState, {
       type: actions.REVEAL_ACCOUNT,
