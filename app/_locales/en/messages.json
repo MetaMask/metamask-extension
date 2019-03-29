@@ -44,6 +44,12 @@
   "providerRequestInfo": {
     "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
+  "about": {
+    "message": "About"
+  },
+  "aboutSettingsDescription": {
+    "message": "Version, support center, and contact info."
+  },
   "aboutUs": {
     "message": "About Us"
   },
