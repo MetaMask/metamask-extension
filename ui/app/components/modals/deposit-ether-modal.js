@@ -29,10 +29,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     toCoinbase: (address) => {
-      dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
+      dispatch(actions.buyEth({ service: 'coinbase', address, amount: 0 }))
     },
     toCoinSwitch: (address) => {
-      dispatch(actions.buyEth({ service: 'coinswitch', address, amount: 0 }))
+      dispatch(actions.buyEth({ service: 'coinswitch', address }))
     },
     hideModal: () => {
       dispatch(actions.hideModal())
