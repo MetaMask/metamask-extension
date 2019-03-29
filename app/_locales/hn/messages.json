@@ -128,6 +128,12 @@
   "buyCoinbaseExplainer": {
     "message": "बिल्टकोइन, इथीरियम और लाइटकोइन खरीदने और बेचने के लिए दुनिया का सबसे लोकप्रिय तरीका कॉइनबेस है।"
   },
+  "buyCoinSwitch": {
+    "message": "कॉइनस्विच पर खरीदें"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "कॉइनस्विच 300 से अधिक क्रिप्टोक्रांसियों को सर्वोत्तम दर पर विनिमय करने का एक-स्टॉप गंतव्य है।"
+  },
   "cancel": {
     "message": "रद्द करें"
   },
@@ -154,6 +160,9 @@
   },
   "continueToCoinbase": {
     "message": "कॉइनबेस को ब्हेजना जारी रखें"
+  },
+  "continueToCoinSwitch": {
+    "message": "कॉइनस्विच को ब्हेजना जारी रखें"
   },
   "contractDeployment": {
     "message": "अनुबंध परिनियोजन व तैनाती"

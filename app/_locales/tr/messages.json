@@ -131,6 +131,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase Bitcoin, Ethereum, and Litecoin alıp satmanın dünyadaki en popüler yolu"
   },
+  "buyCoinSwitch": {
+    "message": "CoinSwitch'de satın al"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "Cairnswich, 300'den fazla kriptona en iyi oranda eşlik eden tek durak noktasıdır."
+  },
   "ok": {
     "message": "Tamam"
   },
@@ -163,6 +169,9 @@
   },
   "continueToCoinbase": {
     "message": "Coinbase'e devam et"
+  },
+  "continueToCoinSwitch": {
+    "message": "CoinSwitch'e devam et"
   },
   "contractDeployment": {
     "message": "Sözleşme kurulumu"

@@ -131,6 +131,12 @@
   "buyCoinbaseExplainer": {
     "message": "Биржа Coinbase – это наиболее популярный способ купить или продать Bitcoin, Ethereum и Litecoin."
   },
+  "buyCoinSwitch": {
+    "message": "Купить на CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch - это однонаправленное место для обмена более 300 криптоконверсий по наилучшей цене."
+  },
   "ok": {
     "message": "ОК"
   },
@@ -163,6 +169,9 @@
   },
   "continueToCoinbase": {
     "message": "Продолжить в Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Продолжить в CoinSwitch"
   },
   "contractDeployment": {
     "message": "Развертывание контракта"

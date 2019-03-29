@@ -134,6 +134,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase 是世界上最流行的买卖比特币，以太币和莱特币的交易所。"
   },
+  "buyCoinSwitch": {
+    "message": "在CoinSwitch上购买"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
+  },
   "ok": {
     "message": "确认"
   },
@@ -172,6 +178,9 @@
   },
   "continueToCoinbase": {
     "message": "继续访问 Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "继续访问 CoinSwitch"
   },
   "contractDeployment": {
     "message": "合约部署"
