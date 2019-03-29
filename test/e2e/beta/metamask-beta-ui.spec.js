@@ -1307,10 +1307,10 @@ describe('MetaMask', function () {
 
   describe('Stores custom RPC history', () => {
     const customRpcUrls = [
-      'https://mainnet.infura.io/1',
-      'https://mainnet.infura.io/2',
-      'https://mainnet.infura.io/3',
-      'https://mainnet.infura.io/4',
+      'http://127.0.0.1:8545/1',
+      'http://127.0.0.1:8545/2',
+      'http://127.0.0.1:8545/3',
+      'http://127.0.0.1:8545/4',
     ]
 
     customRpcUrls.forEach(customRpcUrl => {
@@ -1349,7 +1349,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // only recent 3 are found and in correct order (most recent at the top)
-      const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'https://mainnet.infura.io/')]`))
+      const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`))
 
       assert.equal(customRpcs.length, customRpcUrls.length)
     })
