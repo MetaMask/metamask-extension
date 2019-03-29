@@ -306,6 +306,12 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+
+      // app keys
+      appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
+      appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
+      appKey_eth_signTransaction: this.appKey_eth_signTransaction.bind(this),
+      appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),      
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -1734,4 +1740,39 @@ module.exports = class MetamaskController extends EventEmitter {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
+
+
+  /**
+   * App Keys
+   */
+
+  // For now they only work with the HD keyring
+
+  async appKey_eth_getPublicKey (hdPath, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const pubKey = await this.keyringController.appKey_eth_getPublicKey(selectedKeyring, hdPath)
+    return pubKey
+  }
+
+  async appKey_eth_getAddress (hdPath, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const appKey = await this.keyringController.appKey_eth_getAddress(selectedKeyring, hdPath)
+    return appKey
+  }
+
+  async appKey_eth_signTransaction (fromAddress, txParams, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const sig = await this.keyringController.appKey_eth_signTransaction(selectedKeyring, fromAddress, txParams)
+    return sig
+  }
+  
+  async appKey_eth_signTypedMessage (fromAddress, txParams, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const sig = await this.keyringController.appKey_eth_signTypedMessage(selectedKeyring, fromAddress, txParams)
+    return sig
+  }
+
+  
 }
+
+
