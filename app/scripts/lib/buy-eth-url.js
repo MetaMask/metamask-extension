@@ -12,28 +12,34 @@ module.exports = getBuyEthUrl
  *
  */
 function getBuyEthUrl({ network, amount, address, service }) {
-	let url
-	if (typeof network !== 'undefined') {
-  	switch (network) {
-  		case '1':
-  			url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-  			break
-  		case '3':
-  			url = 'https://faucet.metamask.io/'
-  			break
-  		case '4':
-  			url = 'https://www.rinkeby.io/'
-  			break
-  		case '42':
-  			url = 'https://github.com/kovan-testnet/faucet'
-  			break
-  	}
-  } else {
-  	switch (service) {
-  		case 'coinswitch':
-  			url = `https://metamask.coinswitch.co/?address=${address}&to=eth`
-  			break
-  	}
+  // default service by network if not specified
+  if (!service) service = getDefaultServiceForNetwork(network)
+
+  switch (service) {
+    case 'coinswitch':
+      return `https://metamask.coinswitch.co/?address=${address}&to=eth`
+    case 'coinbase':
+      return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+    case 'metamask-faucet':
+      return 'https://faucet.metamask.io/'
+    case 'rinkeby-faucet':
+      return 'https://www.rinkeby.io/'
+    case 'kovan-faucet':
+      return 'https://github.com/kovan-testnet/faucet'
   }
-	return url
+  throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
+}
+
+function getDefaultServiceForNetwork (networkId) {
+  switch (network) {
+    case '1':
+      return 'coinbase'
+    case '3':
+      return 'metamask-faucet'
+    case '4':
+      return 'rinkeby-faucet'
+    case '42':
+      return 'kovan-faucet'
+  }
+  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${networkId}"`)
 }
