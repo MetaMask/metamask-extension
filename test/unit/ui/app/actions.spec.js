@@ -1321,14 +1321,11 @@ describe('Actions', () => {
       completeOnboardingSpy.restore()
     })
 
-    it('', (done) => {
+    it('completing onboarding marks all notices as read', async () => {
       const store = mockStore()
-      store.dispatch(actions.setCompletedOnboarding())
-        .then(() => {
-          assert.equal(markAllNoticesReadSpy.callCount, 1)
-          assert.equal(completeOnboardingSpy.callCount, 1)
-        })
-        done()
+      await store.dispatch(actions.setCompletedOnboarding())
+      assert.equal(markAllNoticesReadSpy.callCount, 1)
+      assert.equal(completeOnboardingSpy.callCount, 1)
     })
   })
 

@@ -58,20 +58,15 @@ module.exports = class NoticeController extends EventEmitter {
     }
   }
 
-  markAllNoticesRead (cb) {
-    cb = cb || function (err) { if (err) throw err }
-    try {
-      const noticeList = this.getNoticesList()
-      noticeList.forEach(notice => {
-        notice.read = true
-        notice.body = ''
-      })
-      this.setNoticesList(noticeList)
-      const latestNotice = this.getNextUnreadNotice()
-      cb(null, latestNotice)
-    } catch (err) {
-      cb(err)
-    }
+  async markAllNoticesRead () {
+    const noticeList = this.getNoticesList()
+    noticeList.forEach(notice => {
+      notice.read = true
+      notice.body = ''
+    })
+    this.setNoticesList(noticeList)
+    const latestNotice = this.getNextUnreadNotice()
+    return latestNotice
   }
 
 

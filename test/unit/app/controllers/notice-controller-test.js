@@ -40,7 +40,7 @@ describe('notice-controller', function () {
     })
 
     describe('#markAllNoticesRead', () => {
-      it('marks all notices read', (done) => {
+      it('marks all notices read', async () => {
         const testList = [{
           id: 0,
           read: false,
@@ -57,11 +57,10 @@ describe('notice-controller', function () {
 
         noticeController.setNoticesList(testList)
 
-        noticeController.markAllNoticesRead()
+        await noticeController.markAllNoticesRead()
 
         const unreadNotices = noticeController.getUnreadNotices()
         assert.equal(unreadNotices.length, 0)
-        done()
       })
     })
 
