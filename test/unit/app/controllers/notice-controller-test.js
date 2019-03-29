@@ -57,7 +57,7 @@ describe('notice-controller', function () {
 
         noticeController.setNoticesList(testList)
 
-        await noticeController.markAllNoticesRead()
+        noticeController.markAllNoticesRead()
 
         const unreadNotices = noticeController.getUnreadNotices()
         assert.equal(unreadNotices.length, 0)

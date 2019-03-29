@@ -58,7 +58,7 @@ module.exports = class NoticeController extends EventEmitter {
     }
   }
 
-  async markAllNoticesRead () {
+  markAllNoticesRead () {
     const noticeList = this.getNoticesList()
     noticeList.forEach(notice => {
       notice.read = true
