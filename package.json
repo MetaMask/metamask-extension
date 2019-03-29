@@ -7,6 +7,8 @@
     "dist": "gulp dist",
     "doc": "jsdoc -c development/tools/.jsdoc.json",
     "publish-docs": "gh-pages -d docs/jsdocs",
+    "start:test": "gulp dev:test",
+    "build:test": "gulp build:test",
     "test": "npm run test:unit && npm run test:integration && npm run lint",
     "watch:test:unit": "nodemon --exec \"npm run test:unit\" ./test ./app ./ui",
     "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
