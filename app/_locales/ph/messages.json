@@ -110,6 +110,12 @@
   "buyCoinbaseExplainer": {
     "message": "Ang Coinbase ang pinakasikat na paraan upang bumili at magbenta ng Bitcoin, Ethereum, at Litecoin sa buong mundo."
   },
+  "buyCoinSwitch": {
+    "message": "Bumili sa CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "Ang CoinSwitch ay isang one-stop destination upang makipagpalitan ng higit sa 300 mga cryptocurrency sa pinakamahusay na rate."
+  },
   "cancel": {
     "message": "Kanselahin"
   },
@@ -130,6 +136,9 @@
   },
   "continueToCoinbase": {
     "message": "Magpatuloy sa Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Magpatuloy sa CoinSwitch"
   },
   "contractDeployment": {
     "message": "Pag-deploy ng Contract"

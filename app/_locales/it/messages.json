@@ -179,6 +179,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere Bitcoin, Ethereum e Litecoin."
   },
+  "buyCoinSwitch": {
+    "message": "Compra su CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch è la destinazione one-stop per lo scambio di oltre 300 criptovalute alla migliore tariffa."
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -280,6 +286,9 @@
   },
   "continueToCoinbase": {
     "message": "Continua su Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continua su CoinSwitch"
   },
   "contractDeployment": {
     "message": "Distribuzione Contratto"
