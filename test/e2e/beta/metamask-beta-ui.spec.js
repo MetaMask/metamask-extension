@@ -1143,7 +1143,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Approves a custom token from dapp', () => {
+  describe.skip('Approves a custom token from dapp', () => {
     let gasModal
     it('approves an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
