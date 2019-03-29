@@ -24,8 +24,8 @@ describe('Using MetaMask with an existing account', function () {
   let extensionId
   let driver
 
-  const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-  const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
+  const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
+  const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3'
   const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
@@ -312,7 +312,7 @@ describe('Using MetaMask with an existing account', function () {
 
     it('should show the correct account name', async () => {
       const [accountName] = await findElements(driver, By.css('.account-name'))
-      assert.equal(await accountName.getText(), 'Account 3')
+      assert.equal(await accountName.getText(), 'Account 4')
       await delay(regularDelayMs)
     })
 
