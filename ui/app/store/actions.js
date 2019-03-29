@@ -2488,21 +2488,27 @@ function setShowFiatConversionOnTestnetsPreference (value) {
 }
 
 function setCompletedOnboarding () {
-  return dispatch => {
+  return async dispatch => {
     dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeOnboarding(err => {
-        dispatch(actions.hideLoadingIndication())
 
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
+    try {
+      await pify(background.markAllNoticesRead).call(background)
+    } catch (err) {
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
 
-        dispatch(actions.completeOnboarding())
-        resolve()
-      })
-    })
+    dispatch(actions.clearNotices())
+
+    try {
+      await pify(background.completeOnboarding).call(background)
+    } catch (err) {
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+
+    dispatch(actions.completeOnboarding())
+    dispatch(actions.hideLoadingIndication())
   }
 }
 
