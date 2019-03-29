@@ -11,7 +11,7 @@ module.exports = getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl({ network, amount, address, service }) {
+function getBuyEthUrl ({ network, amount, address, service }) {
   // default service by network if not specified
   if (!service) service = getDefaultServiceForNetwork(network)
 
