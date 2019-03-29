@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+## 6.3.1 Fri Mar 26 2019
+
+- [#6353](https://github.com/MetaMask/metamask-extension/pull/6353): Open restore vault in full screen when clicked from popup
+- [#6372](https://github.com/MetaMask/metamask-extension/pull/6372): Prevents duplicates of account addresses from showing in send screen "To" dropdown
+- [#6374](https://github.com/MetaMask/metamask-extension/pull/6374): Ensures users are placed on correct confirm screens even when registry service fails
+
 ## 6.3.0 Mon Mar 25 2019
 
 - [#6300](https://github.com/MetaMask/metamask-extension/pull/6300): Gas chart hidden on custom networks
