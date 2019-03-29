@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.11.3 Fri Mar 29 2019
+
+- [#272](https://github.com/poanetwork/nifty-wallet/pull/272): Update Classic RPC endpoint
+
 ## 4.11.2 Wed Mar 27 2019
 
 - [#270](https://github.com/poanetwork/nifty-wallet/pull/270): (Feature) Support of gas price oracles for ETH, ETC
