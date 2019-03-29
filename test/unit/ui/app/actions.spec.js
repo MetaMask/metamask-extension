@@ -1313,7 +1313,9 @@ describe('Actions', () => {
 
     beforeEach(() => {
       markAllNoticesReadSpy = sinon.stub(background, 'markAllNoticesRead')
+      markAllNoticesReadSpy.callsFake(cb => cb())
       completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
+      completeOnboardingSpy.callsFake(cb => cb())
     })
 
     after(() => {
