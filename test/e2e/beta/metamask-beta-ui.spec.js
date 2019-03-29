@@ -512,14 +512,22 @@ describe('MetaMask', function () {
       await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.clear()
-      await delay(tinyDelayMs)
+      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
+
 
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys('10')
+      await delay(50)
       await delay(tinyDelayMs)
-      await gasLimitInput.sendKeys('5')
+      await delay(50)
+      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
+
+      await gasLimitInput.sendKeys('25000')
       await delay(tinyDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
@@ -534,8 +542,10 @@ describe('MetaMask', function () {
     let txValues
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 4)
+      await driver.wait(async () => {
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 4
+      }, 10000)
 
       txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-3\s*ETH/), 10000)
@@ -1003,7 +1013,7 @@ describe('MetaMask', function () {
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
-      assert.equal(functionTypeText, 'Not Found')
+      assert.equal(functionTypeText, 'Transfer')
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
@@ -1040,7 +1050,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1
       }, 10000)
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Contract\sInteraction/i), 10000)
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken/i), 10000)
     })
   })
 
@@ -1081,23 +1091,31 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
-      await gasPriceInput.clear()
-      await delay(tinyDelayMs)
+      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
 
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys('10')
-      await delay(tinyDelayMs)
-      await gasLimitInput.clear()
-      await delay(tinyDelayMs)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys('60000')
+      await delay(50)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
+      await delay(50)
 
       const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
@@ -1124,7 +1142,7 @@ describe('MetaMask', function () {
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Contract\sInteraction/), 10000)
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken/), 10000)
 
       const walletBalance = await findElement(driver, By.css('.wallet-balance'))
       await walletBalance.click()
@@ -1142,7 +1160,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe.skip('Approves a custom token from dapp', () => {
+  describe('Approves a custom token from dapp', () => {
     let gasModal
     it('approves an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
@@ -1180,11 +1198,11 @@ describe('MetaMask', function () {
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
-      assert.equal(functionTypeText, 'Not Found')
+      assert.equal(functionTypeText, 'Approve')
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert.equal(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+      assert(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
