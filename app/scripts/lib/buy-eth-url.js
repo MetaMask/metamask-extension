@@ -32,7 +32,7 @@ function getBuyEthUrl({ network, amount, address, service }) {
   throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
 }
 
-function getDefaultServiceForNetwork (networkId) {
+function getDefaultServiceForNetwork (network) {
   switch (network) {
     case '1':
       return 'wyre'
@@ -43,5 +43,5 @@ function getDefaultServiceForNetwork (networkId) {
     case '42':
       return 'kovan-faucet'
   }
-  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${networkId}"`)
+  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }
