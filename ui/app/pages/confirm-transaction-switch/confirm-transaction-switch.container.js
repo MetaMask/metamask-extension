@@ -21,7 +21,7 @@ const mapStateToProps = state => {
     methodData,
     fetchingData,
     isEtherTransaction: !toSmartContract,
-    isTokenMethod: [TOKEN_METHOD_APPROVE, TOKEN_METHOD_TRANSFER, TOKEN_METHOD_TRANSFER_FROM].includes(methodData.name)
+    isTokenMethod: [TOKEN_METHOD_APPROVE, TOKEN_METHOD_TRANSFER, TOKEN_METHOD_TRANSFER_FROM].includes(methodData.name && methodData.name.toLowerCase()),
   }
 }
 
