@@ -188,6 +188,12 @@
   "bytes": {
     "message": "位元組"
   },
+  "buyCoinSwitch": {
+    "message": "在CoinSwitch上购买"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
+  },
   "ok": {
     "message": "Ok"
   },
@@ -271,6 +277,9 @@
   },
   "continueToCoinbase": {
     "message": "繼續前往 Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "繼續前往 CoinSwitch"
   },
   "contractDeployment": {
     "message": "部署合約"

@@ -131,6 +131,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase je světově nejoblíbenější místo k nákupu a prodeji bitcoinu, etherea nebo litecoinu."
   },
+  "buyCoinSwitch": {
+    "message": "Nákup na CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch je jediným místem, kde můžete vyměňovat více než 300 kryptocurrencí za nejlepší cenu."
+  },
   "ok": {
     "message": "Ok"
   },
@@ -163,6 +169,9 @@
   },
   "continueToCoinbase": {
     "message": "Přejít na Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Přejít na CoinSwitch"
   },
   "contractDeployment": {
     "message": "Nasazení kontraktu"

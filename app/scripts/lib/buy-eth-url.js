@@ -11,24 +11,37 @@ module.exports = getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, amount, address }) {
-  let url
+function getBuyEthUrl ({ network, amount, address, service }) {
+  // default service by network if not specified
+  if (!service) service = getDefaultServiceForNetwork(network)
+
+  switch (service) {
+    case 'wyre':
+      return `https://dash.sendwyre.com/sign-up`
+    case 'coinswitch':
+      return `https://metamask.coinswitch.co/?address=${address}&to=eth`
+    case 'coinbase':
+      return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+    case 'metamask-faucet':
+      return 'https://faucet.metamask.io/'
+    case 'rinkeby-faucet':
+      return 'https://www.rinkeby.io/#faucet'
+    case 'kovan-faucet':
+      return 'https://github.com/kovan-testnet/faucet'
+  }
+  throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
+}
+
+function getDefaultServiceForNetwork (network) {
   switch (network) {
     case '1':
-      url = `https://dash.sendwyre.com/sign-up`
-      break
-
+      return 'wyre'
     case '3':
-      url = 'https://faucet.metamask.io/'
-      break
-
+      return 'metamask-faucet'
     case '4':
-      url = 'https://www.rinkeby.io/#faucet'
-      break
-
+      return 'rinkeby-faucet'
     case '42':
-      url = 'https://github.com/kovan-testnet/faucet'
-      break
+      return 'kovan-faucet'
   }
-  return url
+  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }

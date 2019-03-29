@@ -131,6 +131,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase es la plataforma global más popular para comprar y vender Bitcoin, Ethereum y Litecoin"
   },
+  "buyCoinSwitch": {
+    "message": "Comprar en CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch es el destino de una sola parada para intercambiar más de 300 criptomonedas al mejor precio."
+  },
   "cancel": {
     "message": "Cancelar"
   },
@@ -175,6 +181,9 @@
   },
   "continueToCoinbase": {
     "message": "Continuar a Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continuar a CoinSwitch"
   },
   "contractDeployment": {
     "message": "Desplegar (Deploy) contrato"
