@@ -1,0 +1,11 @@
+@import 'tab/index';
+
+.tabs {
+  &__list {
+    display: flex;
+    justify-content: flex-start;
+    background-color: #f9fafa;
+    border-bottom: 1px solid $geyser;
+    padding: 0 16px;
+  }
+}

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import txHelper from '../../lib/tx-helper'
-import { calcTokenAmount } from '../token-util'
-import { roundExponential } from '../helpers/confirm-transaction/util'
+import { calcTokenAmount } from '../helpers/utils/token-util'
+import { roundExponential } from '../helpers/utils/confirm-tx.util'
 
 const unapprovedTxsSelector = state => state.metamask.unapprovedTxs
 const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs

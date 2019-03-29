@@ -4,7 +4,7 @@ var path = require('path')
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-const actions = require(path.join(__dirname, '../../../ui/app/actions.js'))
+const actions = require(path.join(__dirname, '../../../ui/app/store/actions.js'))
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

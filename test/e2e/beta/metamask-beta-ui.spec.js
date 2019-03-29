@@ -233,7 +233,11 @@ describe('MetaMask', function () {
       await customRpcButton.click()
       await delay(regularDelayMs)
 
-      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(10) .settings-page__content-item-col > div'))
+      const securityTab = await findElement(driver, By.xpath(`//div[contains(text(), 'Security & Privacy')]`))
+      await securityTab.click()
+      await delay(regularDelayMs)
+
+      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(1) .settings-page__content-item-col > div'))
       await privacyToggle.click()
       await delay(largeDelayMs * 2)
     })
@@ -472,15 +476,19 @@ describe('MetaMask', function () {
       const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
       settingsButton.click()
 
-      await findElement(driver, By.css('.tab-bar'))
+      // await findElement(driver, By.css('.tab-bar'))
 
-      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(3) .settings-page__content-item-col > div'))
+      const advancedTab = await findElement(driver, By.xpath(`//div[contains(text(), 'Advanced')]`))
+      await advancedTab.click()
+      await delay(regularDelayMs)
+
+      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(7) .settings-page__content-item-col > div'))
       await showConversionToggle.click()
 
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
-      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(12) .settings-page__content-item-col > div'))
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(5) .settings-page__content-item-col > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
@@ -1053,7 +1061,6 @@ describe('MetaMask', function () {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
       const dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await delay(regularDelayMs)
 
       await driver.switchTo().window(dapp)
@@ -1062,7 +1069,6 @@ describe('MetaMask', function () {
       const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Transfer Tokens')]`))
       await transferTokens.click()
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
 

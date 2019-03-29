@@ -2,6 +2,21 @@
 
 ## Current Develop Branch
 
+## 6.3.0 Mon Mar 25 2019
+
+- [#6300](https://github.com/MetaMask/metamask-extension/pull/6300): Gas chart hidden on custom networks
+- [#6301](https://github.com/MetaMask/metamask-extension/pull/6301): Fix gas fee in the submitted step of the transaction details activity log
+- [#6302](https://github.com/MetaMask/metamask-extension/pull/6302): Replaces the coinbase link in the deposit modal with one for wyre
+- [#6307](https://github.com/MetaMask/metamask-extension/pull/6307): Centre the notification in the current window
+- [#6312](https://github.com/MetaMask/metamask-extension/pull/6312): Fixes popups not showing when screen size is odd
+- [#6326](https://github.com/MetaMask/metamask-extension/pull/6326): Fix oversized loading overlay on gas customization modal. 
+- [#6330](https://github.com/MetaMask/metamask-extension/pull/6330): Stop reloading dapps on network change allowing dapps to decide if it should refresh or not
+- [#6332](https://github.com/MetaMask/metamask-extension/pull/6332): Enable mobile sync
+- [#6333](https://github.com/MetaMask/metamask-extension/pull/6333): Redesign of the settings screen
+- [#6340](https://github.com/MetaMask/metamask-extension/pull/6340): Cancel transactions and signature requests on the closing of notification windows
+- [#6341](https://github.com/MetaMask/metamask-extension/pull/6341): Disable transaction "Cancel" button when balance is insufficient
+- [#6347](https://github.com/MetaMask/metamask-extension/pull/6347): Enable privacy mode by default for first time users
+
 ## 6.2.2 Tue Mar 12 2019
 
 - [#6271](https://github.com/MetaMask/metamask-extension/pull/6271): Centre all notification popups
