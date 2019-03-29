@@ -2490,7 +2490,7 @@ function setShowFiatConversionOnTestnetsPreference (value) {
 function setCompletedOnboarding () {
   return async dispatch => {
     dispatch(actions.showLoadingIndication())
-    
+
     try {
       await pify(background.markAllNoticesRead).call(background)
     } catch (err) {

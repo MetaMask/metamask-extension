@@ -42,7 +42,7 @@ describe('nodeify', function () {
     try {
       nodified('baz')
     } catch (err) {
-      done(new Error('should not have thrown an error synchronously'))      
+      done(new Error('should not have thrown an error synchronously'))
     }
   })
 
