@@ -2444,15 +2444,6 @@ function setCompletedOnboarding () {
     dispatch(actions.showLoadingIndication())
 
     try {
-      await pify(background.markAllNoticesRead).call(background)
-    } catch (err) {
-      dispatch(actions.displayWarning(err.message))
-      throw err
-    }
-
-    dispatch(actions.clearNotices())
-
-    try {
       await pify(background.completeOnboarding).call(background)
     } catch (err) {
       dispatch(actions.displayWarning(err.message))

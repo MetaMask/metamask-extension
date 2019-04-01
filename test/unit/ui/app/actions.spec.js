@@ -1263,24 +1263,20 @@ describe('Actions', () => {
   })
 
   describe('#setCompletedOnboarding', () => {
-    let markAllNoticesReadSpy, completeOnboardingSpy
+    let completeOnboardingSpy
 
     beforeEach(() => {
-      markAllNoticesReadSpy = sinon.stub(background, 'markAllNoticesRead')
-      markAllNoticesReadSpy.callsFake(cb => cb())
       completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
       completeOnboardingSpy.callsFake(cb => cb())
     })
 
     after(() => {
-      markAllNoticesReadSpy.restore()
       completeOnboardingSpy.restore()
     })
 
-    it('completing onboarding marks all notices as read', async () => {
+    it('completes onboarding', async () => {
       const store = mockStore()
       await store.dispatch(actions.setCompletedOnboarding())
-      assert.equal(markAllNoticesReadSpy.callCount, 1)
       assert.equal(completeOnboardingSpy.callCount, 1)
     })
   })
