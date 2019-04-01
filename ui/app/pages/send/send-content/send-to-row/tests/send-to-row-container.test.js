@@ -36,8 +36,8 @@ proxyquire('../send-to-row.container.js', {
     sendToIsInWarning: (s) => `mockInWarning:${s}`,
     getTokens: (s) => `mockTokens:${s}`,
   },
-  '../../../../../store/actions': actionSpies,
-  '../../../../../ducks/send/send.duck': duckActionSpies,
+  '../../../../store/actions': actionSpies,
+  '../../../../ducks/send/send.duck': duckActionSpies,
 })
 
 describe('send-to-row container', () => {

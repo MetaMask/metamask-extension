@@ -32,7 +32,7 @@ const stubs = {
 }
 
 const sendUtils = proxyquire('../send.utils.js', {
-  '../../../helpers/utils/conversion-util': {
+  '../../helpers/utils/conversion-util': {
     addCurrencies: stubs.addCurrencies,
     conversionUtil: stubs.conversionUtil,
     conversionGTE: stubs.conversionGTE,
@@ -40,7 +40,7 @@ const sendUtils = proxyquire('../send.utils.js', {
     conversionGreaterThan: stubs.conversionGreaterThan,
     conversionLessThan: stubs.conversionLessThan,
   },
-  '../../../helpers/utils/token-util': { calcTokenAmount: stubs.calcTokenAmount },
+  '../../helpers/utils/token-util': { calcTokenAmount: stubs.calcTokenAmount },
   'ethereumjs-abi': {
     rawEncode: stubs.rawEncode,
   },

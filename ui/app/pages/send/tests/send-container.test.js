@@ -46,11 +46,11 @@ proxyquire('../send.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
   },
-  '../../../selectors/selectors': {
+  '../../selectors/selectors': {
     getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
   },
-  '../../../store/actions': actionSpies,
-  '../../../ducks/send/send.duck': duckActionSpies,
+  '../../store/actions': actionSpies,
+  '../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },

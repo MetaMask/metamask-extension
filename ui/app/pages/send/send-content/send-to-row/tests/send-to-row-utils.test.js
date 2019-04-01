@@ -13,7 +13,7 @@ const stubs = {
 }
 
 const toRowUtils = proxyquire('../send-to-row.utils.js', {
-  '../../../../../helpers/utils/util': {
+  '../../../../helpers/utils/util': {
     isValidAddress: stubs.isValidAddress,
   },
 })
