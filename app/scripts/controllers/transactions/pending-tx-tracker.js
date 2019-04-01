@@ -150,11 +150,13 @@ class PendingTransactionTracker extends EventEmitter {
       return this.emit('tx:failed', txId, nonceTakenErr)
     }
 
+    const dropped = await this._checkIftxWasDropped(txMeta)
+    if (dropped) return
+
     // get latest transaction status
     try {
-      const txParams = await this.query.getTransactionByHash(txHash)
-      if (!txParams) return
-      if (txParams.blockNumber) {
+      const { blockNumber } = await this.query.getTransactionByHash(txHash) || {}
+      if (blockNumber) {
         this.emit('tx:confirmed', txId)
       }
     } catch (err) {
@@ -164,6 +166,26 @@ class PendingTransactionTracker extends EventEmitter {
       }
       this.emit('tx:warning', txMeta, err)
     }
+  }
+    /**
+    checks to see if if the tx's nonce has been used by another transaction
+    @param txMeta {Object} - txMeta object
+    @emits tx:dropped
+    @returns {boolean}
+  */
+
+
+// TODO: buffer by some number of blocks before emitting dropped incase the node is behind
+
+  async _checkIftxWasDropped (txMeta) {
+    const { txParams: { nonce, from }, hash, id } = txMeta
+    const nextNonce = await this.query.getTransactionCount(from)
+    const { blockNumber } = await this.query.getTransactionByHash(hash) || {}
+    if (!blockNumber && parseInt(nextNonce) > nonce) {
+      this.emit('tx:dropped', id)
+      return true
+    }
+    return false
   }
 
   /**

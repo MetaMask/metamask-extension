@@ -283,6 +283,46 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
+  describe('#_checkIftxWasDropped', () => {
+    const txMeta = {
+      id: 1,
+      hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+      status: 'confirmed',
+      txParams: {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        nonce: '0x1',
+        value: '0xfffff',
+      },
+      rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+    }
+    it('should return false', (done) => {
+      providerResultStub['eth_getTransactionCount'] = '0x01'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+        assert(!dropped, 'should be false')
+        done()
+      }).catch(done)
+    })
+
+    it('should return true', function (done) {
+      providerResultStub['eth_getTransactionCount'] = '0x02'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+        assert(dropped, 'should be true')
+        done()
+      }).catch(done)
+    })
+    it('should emit tx:dropped with th txMetas id', function (done) {
+      providerResultStub['eth_getTransactionCount'] = '0x02'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker.once('tx:dropped', (id) => {
+        if (id === txMeta.id) return done()
+        else done(new Error('wrong tx Id'))
+      })
+      pendingTxTracker._checkIftxWasDropped(txMeta).catch(done)
+    })
+  })
+
   describe('#_checkIfNonceIsTaken', function () {
     beforeEach(function () {
       const confirmedTxList = [{
