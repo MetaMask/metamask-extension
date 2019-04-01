@@ -145,9 +145,7 @@ class PendingTransactionTracker extends EventEmitter {
     // If another tx with the same nonce is mined, set as failed.
     const taken = await this._checkIfNonceIsTaken(txMeta)
     if (taken) {
-      const nonceTakenErr = new Error('Another transaction with this nonce has been mined.')
-      nonceTakenErr.name = 'NonceTakenErr'
-      return this.emit('tx:failed', txId, nonceTakenErr)
+      return this.emit('tx:dropped', txId)
     }
 
     const dropped = await this._checkIftxWasDropped(txMeta)
@@ -173,9 +171,6 @@ class PendingTransactionTracker extends EventEmitter {
     @emits tx:dropped
     @returns {boolean}
   */
-
-
-// TODO: buffer by some number of blocks before emitting dropped incase the node is behind
 
   async _checkIftxWasDropped (txMeta) {
     const { txParams: { nonce, from }, hash, id } = txMeta
