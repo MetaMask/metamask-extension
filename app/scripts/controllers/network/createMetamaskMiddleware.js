@@ -4,7 +4,6 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
 const createWalletSubprovider = require('eth-json-rpc-middleware/wallet')
 
 const namehash = require('eth-ens-namehash')
-
 module.exports = createMetamaskMiddleware
 
 function createMetamaskMiddleware ({
@@ -75,37 +74,80 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     // beginning of Path using BIP 43 and arachnid eth subpurpose space
     // Would prefer to use m/BIPNUMBER' once the app key eip is submitted as a bip
     const beginningPath = "m/43'/60'/1775'"
+    
+    origin = "foo.bar.eth"
+    
     const uid = namehash.hash(origin)
-    const uidSubPath = splitUid(uid)
+    const binUid = bits256HexToBin(uid)
+    console.log(binUid)
+    const uidSubPath = splitBinUid(binUid)
+    console.log(uidSubPath)    
     const hdPath = beginningPath + "/" + personaPath + "/" + uidSubPath +"/"  + hdSubPath
+    
+    console.log(hdPath)
+    
     return hdPath
   }
 
-  // e4a10c258c7b68c38df1cf0caf03ce2e34b5ec02e5abdd3ef18f0703f317c62a
-  // e4a1/0c25/8c7b/68c3/8df1/cf0c/af03/ce2e/34b5/ec02/e5ab/dd3e/f18f/0703/f317/c62a
-  // m/14249/25189/12235/29994/58227/65200/8925/10370/43316/35705
+  function bits256HexToBin(hex){
 
-  // should be reworked to split in 8 times 31bits (can not be done with hex slicing)
-  // + 1 times 8 bits
-  // to reduce HD tree depth
-  
-  function splitUid(uid) {
-    let numberOfSlices = 16
+    // strip and slice hex prefixed string to be under parseInt limit
+    // (under 53 bits, so we can slice 6 bytes ie 48 bits, so 12 chars)
+
+    // to slice 32 bytes (256 bits), we need:
+    // 5 slices * 48 bits = 240
+    // 1 slice * 16 bits
+
+    console.log(hex)
+    console.log(hex.length)    
+    let bin = ""
+    for (let k = 0; k < 6; k++){
+      const subHex = hex.slice(2 + 12 * k, 12 * ( k + 1 ) + 2)
+      console.log(subHex)
+      console.log(subHex.length)          
+      let subBits = parseInt(subHex, 16).toString(2)
+      if (k < 5){
+	subBits = subBits.padStart(48,"0")
+      }
+      else {
+	subBits = subBits.padStart(16,"0")	
+      }
+      console.log(subBits)
+      console.log(subBits.length)      
+      bin += subBits
+    }
+    return (bin)
+  }
+
+  function splitBinUid(binUid) {
+
+    // 256 bits binUid
+    // sliced as:
+    // 8 * 31 bits = 248    ==> 31 bits represented by 4 bytes, 32 bits, so 8 chars hex
+    // 1 * 8 bits           ==> 1 byte, so 2 chars hex
+    
+    console.log(binUid.length)
+    let numberOfSlices = 9
     let subPath = ""
     for (let k = 0; k < numberOfSlices; k++) {
-
-      subPath  += parseInt(uid.slice(4*k+2, 4*(k+1)+2), 16)
       if (k != numberOfSlices - 1) {
+	const binSlice = binUid.slice(31*k, 31*(k+1))
+	console.log(binSlice)
+	subPath  += parseInt(binSlice, 2)
 	subPath += "'/"
       }
       if (k == numberOfSlices - 1) {
+	const binSlice = binUid.slice(31*k, 31 * k + 8)
+	console.log(binSlice)
+	subPath  += parseInt(binSlice, 2)
 	subPath += "'"	
       }
     }
     return subPath
   }
 
-  
+
+
   async function appKeyEthGetPublicKey(req, res) {
     const hdSubPath = req.params
     const personaPath = "0'"
@@ -115,6 +157,8 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
   async function appKeyEthGetAddress(req, res) {
     res.result = await appKey_eth_getAddress(req.params)
   }
+
+  // todo: rewrite sign functions such that they use subHdPath instead of address
   async function appKeyEthSignTransaction(req, res) {
     const fromAddress = req.params[0]
     const txParams = req.params[1]
