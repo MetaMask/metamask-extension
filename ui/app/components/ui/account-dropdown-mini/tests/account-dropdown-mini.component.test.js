@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import AccountDropdownMini from '../account-dropdown-mini.component'
-import AccountListItem from '../../../app/send/account-list-item/account-list-item.component'
+import AccountListItem from '../../../../pages/send/account-list-item/account-list-item.component'
 
 describe('AccountDropdownMini', () => {
   it('should render an account with an icon', () => {

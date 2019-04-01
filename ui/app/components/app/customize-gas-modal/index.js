@@ -18,11 +18,11 @@ const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_PRICE_GWEI,
-} = require('../send/send.constants')
+} = require('../../../pages/send/send.constants')
 
 const {
   isBalanceSufficient,
-} = require('../send/send.utils')
+} = require('../../../pages/send/send.utils')
 
 const {
   conversionUtil,
@@ -47,7 +47,7 @@ const {
 const {
   getGasPrice,
   getGasLimit,
-} = require('../send/send.selectors')
+} = require('../../../pages/send/send.selectors')
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)

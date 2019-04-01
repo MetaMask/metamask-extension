@@ -63,7 +63,7 @@ import {
 import {
   calcGasTotal,
   isBalanceSufficient,
-} from '../../send/send.utils'
+} from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 
