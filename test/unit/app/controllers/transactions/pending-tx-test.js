@@ -58,7 +58,7 @@ describe('PendingTransactionTracker', function () {
       }
     })
 
-    it('should become failed if another tx with the same nonce succeeds', async function () {
+    it('should emit dropped if another tx with the same nonce succeeds', async function () {
 
       // SETUP
       const txGen = new MockTxGen()
@@ -84,17 +84,16 @@ describe('PendingTransactionTracker', function () {
 
       // THE EXPECTATION
       const spy = sinon.spy()
-      pendingTxTracker.on('tx:failed', (txId, err) => {
+      pendingTxTracker.on('tx:dropped', (txId) => {
         assert.equal(txId, pending.id, 'should fail the pending tx')
-        assert.equal(err.name, 'NonceTakenErr', 'should emit a nonce taken error.')
-        spy(txId, err)
+        spy(txId)
       })
 
       // THE METHOD
       await pendingTxTracker._checkPendingTx(pending)
 
       // THE ASSERTION
-      assert.ok(spy.calledWith(pending.id), 'tx failed should be emitted')
+      assert.ok(spy.calledWith(pending.id), 'tx dropped should be emitted')
     })
   })
 
