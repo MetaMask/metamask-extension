@@ -86,16 +86,10 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     // need to handle the origin for ENS access and for plugins (MetaMask)
     // origin = "foo.bar.eth"
     
-
     const uid = namehash.hash(origin)
     const binUid = bits256HexToBin(uid)
-    console.log(binUid)
     const uidSubPath = splitBinUid(binUid)
-    console.log(uidSubPath)    
     const hdPath = beginningPath + "/" + personaPath + "/" + uidSubPath +"/"  + hdSubPath
-    
-    console.log(hdPath)
-    
     return hdPath
   }
 
@@ -108,13 +102,9 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     // 5 slices * 48 bits = 240
     // 1 slice * 16 bits
 
-    console.log(hex)
-    console.log(hex.length)    
     let bin = ""
     for (let k = 0; k < 6; k++){
       const subHex = hex.slice(2 + 12 * k, 12 * ( k + 1 ) + 2)
-      console.log(subHex)
-      console.log(subHex.length)          
       let subBits = parseInt(subHex, 16).toString(2)
       if (k < 5){
 	subBits = subBits.padStart(48,"0")
@@ -122,8 +112,6 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
       else {
 	subBits = subBits.padStart(16,"0")	
       }
-      console.log(subBits)
-      console.log(subBits.length)      
       bin += subBits
     }
     return (bin)
@@ -142,13 +130,11 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     for (let k = 0; k < numberOfSlices; k++) {
       if (k != numberOfSlices - 1) {
 	const binSlice = binUid.slice(31*k, 31*(k+1))
-	console.log(binSlice)
 	subPath  += parseInt(binSlice, 2)
 	subPath += "'/"
       }
       if (k == numberOfSlices - 1) {
 	const binSlice = binUid.slice(31*k, 31 * k + 8)
-	console.log(binSlice)
 	subPath  += parseInt(binSlice, 2)
 	subPath += "'"	
       }
