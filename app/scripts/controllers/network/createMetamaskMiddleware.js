@@ -170,7 +170,7 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     const hdSubPath = req.params    
     const personaPath = "0'"
     const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
-    res.result = await appKey_eth_getAddress(req.params)
+    res.result = await appKey_eth_getAddress(hdPath)
   }
 
   async function appKeyEthSignMessage(req, res) {
