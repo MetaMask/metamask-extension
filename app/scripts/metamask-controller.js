@@ -24,7 +24,6 @@ const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
-const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
@@ -211,13 +210,6 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.balancesController.updateAllBalances()
 
-    // notices
-    this.noticeController = new NoticeController({
-      initState: initState.NoticeController,
-      version,
-      firstVersion: initState.firstTimeInfo.version,
-    })
-
     this.shapeshiftController = new ShapeShiftController({
       initState: initState.ShapeShiftController,
     })
@@ -243,7 +235,6 @@ module.exports = class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      NoticeController: this.noticeController.store,
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
@@ -265,7 +256,6 @@ module.exports = class MetamaskController extends EventEmitter {
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
@@ -371,7 +361,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
     const txController = this.txController
-    const noticeController = this.noticeController
     const networkController = this.networkController
     const providerApprovalController = this.providerApprovalController
 
@@ -469,11 +458,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // personalMessageManager
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
-
-      // notices
-      checkNotices: noticeController.updateNoticesList.bind(noticeController),
-      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
-      markAllNoticesRead: nodeify(noticeController.markAllNoticesRead, noticeController),
 
       approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
