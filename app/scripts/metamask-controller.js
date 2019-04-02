@@ -311,7 +311,10 @@ module.exports = class MetamaskController extends EventEmitter {
       appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
       appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
       appKey_eth_signTransaction: this.appKey_eth_signTransaction.bind(this),
-      appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),      
+      appKey_eth_signMessage: this.appKey_eth_signMessage.bind(this),
+      appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),
+      appKey_stark_signMessage: this.appKey_stark_signMessage.bind(this),      
+
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -1760,18 +1763,29 @@ module.exports = class MetamaskController extends EventEmitter {
     return appKey
   }
 
-  async appKey_eth_signTransaction (fromAddress, txParams, next, end) {
+  async appKey_eth_signMessage (hdPath, message, next, end) {
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    const sig = await this.keyringController.appKey_eth_signTransaction(selectedKeyring, fromAddress, txParams)
-    return sig
-  }
-  
-  async appKey_eth_signTypedMessage (fromAddress, txParams, next, end) {
-    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    const sig = await this.keyringController.appKey_eth_signTypedMessage(selectedKeyring, fromAddress, txParams)
+    const sig = await this.keyringController.appKey_eth_signMessage(selectedKeyring, hdPath, message)
     return sig
   }
 
+  async appKey_eth_signTransaction (hdPath, txParams, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const sig = await this.keyringController.appKey_eth_signTransaction(selectedKeyring, hdPath, txParams)
+    return sig
+  }
+  
+  async appKey_eth_signTypedMessage (hdPath, txParams, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const sig = await this.keyringController.appKey_eth_signTypedMessage(selectedKeyring, hdPath, txParams)
+    return sig
+  }
+
+  async appKey_stark_signMessage (hdPath, message, next, end) {
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const sig = await this.keyringController.appKey_stark_signMessage(selectedKeyring, hdPath, message)
+    return sig
+  }
   
 }
 
