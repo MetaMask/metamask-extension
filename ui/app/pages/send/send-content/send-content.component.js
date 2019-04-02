@@ -6,6 +6,7 @@ import SendFromRow from './send-from-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendToRow from './send-to-row'
+import SendAssetRow from "./send-asset-row"
 
 export default class SendContent extends Component {
 
@@ -26,6 +27,7 @@ export default class SendContent extends Component {
             updateGas={this.updateGas}
             scanQrCode={ _ => this.props.scanQrCode()}
           />
+          <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
           {(this.props.showHexData && (
