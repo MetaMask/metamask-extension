@@ -78,10 +78,13 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
     'appKey_stark_signMessage': createAsyncMiddleware(appKeyStarkSignMessage),    
   })
 
-  function prepareHdPath(personaPath, origin, hdSubPath){
+  function prepareHdPath(origin, hdSubPath){
     // beginning of Path using BIP 43 and arachnid eth subpurpose space
     // Would prefer to use m/BIPNUMBER' once the app key eip is submitted as a bip
     const beginningPath = "m/43'/60'/1775'"
+
+    // personaPath should be some option selected in Metamask itself
+    const personaPath = "0'"
 
     // need to handle the origin for ENS access and for plugins (MetaMask)
     // origin = "foo.bar.eth"
@@ -143,50 +146,44 @@ function createAppKeySubProvider (appKey_eth_getPublicKey,
   }
 
 
-  // personaPath should be some option selected in Metamask itself
+
 
   async function appKeyEthGetPublicKey(req, res) {
     const hdSubPath = req.params
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)
+    const hdPath = prepareHdPath(req.origin, hdSubPath)
     res.result = await appKey_eth_getPublicKey(hdPath)
   }
 
   async function appKeyEthGetAddress(req, res) {
     const hdSubPath = req.params    
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
+    const hdPath = prepareHdPath(req.origin, hdSubPath)    
     res.result = await appKey_eth_getAddress(hdPath)
   }
 
   async function appKeyEthSignMessage(req, res) {
     const hdSubPath = req.params[0]
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
+    const hdPath = prepareHdPath(req.origin, hdSubPath)    
     const message = req.params[1]
     res.result = await appKey_eth_signMessage(hdPath, message)
   }
 
   async function appKeyEthSignTransaction(req, res) {
     const hdSubPath = req.params[0]
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
+    const hdPath = prepareHdPath(req.origin, hdSubPath)    
     const txParams = req.params[1]
     res.result = await appKey_eth_signTransaction(hdPath, txParams)
   }
   
   async function appKeyEthSignTypedMessage(req, res) {
     const hdSubPath = req.params[0]
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
+    const hdPath = prepareHdPath(req.origin, hdSubPath)    
     const txParams = req.params[1]
     res.result = await appKey_eth_signTypedMessage(hdPath, txParams)
   }
 
   async function appKeyStarkSignMessage(req, res) {
     const hdSubPath = req.params[0]
-    const personaPath = "0'"
-    const hdPath = prepareHdPath(personaPath, req.origin, hdSubPath)    
+    const hdPath = prepareHdPath(req.origin, hdSubPath)    
     const message = req.params[1]
     res.result = await appKey_stark_signMessage(hdPath, message)
   }
