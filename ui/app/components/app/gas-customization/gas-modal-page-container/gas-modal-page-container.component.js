@@ -38,6 +38,7 @@ export default class GasModalPageContainer extends Component {
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     disableSave: PropTypes.bool,
+    isEthereumNetwork: PropTypes.bool,
   }
 
   state = {}
@@ -75,6 +76,7 @@ export default class GasModalPageContainer extends Component {
     customPriceIsSafe,
     isSpeedUp,
     transactionFee,
+    isEthereumNetwork,
   }) {
     return (
       <AdvancedTabContent
@@ -90,6 +92,7 @@ export default class GasModalPageContainer extends Component {
         gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
+        isEthereumNetwork={isEthereumNetwork}
       />
     )
   }
