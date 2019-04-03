@@ -142,7 +142,7 @@ class PendingTransactionTracker extends EventEmitter {
       return
     }
 
-    // If another tx with the same nonce is mined, set as failed.
+    // If another tx with the same nonce is mined, set as dropped.
     const taken = await this._checkIfNonceIsTaken(txMeta)
     if (taken) {
       return this.emit('tx:dropped', txId)
