@@ -301,7 +301,8 @@ function isEthereumNetwork (state) {
     RINKEBY,
     ROPSTEN,
   } = NETWORK_TYPES
-  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN].includes(type => type === networkType)
+
+  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN].includes(networkType)
 }
 
 function preferencesSelector ({ metamask }) {
