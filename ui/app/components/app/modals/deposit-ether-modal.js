@@ -28,8 +28,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toCoinbase: (address) => {
-      dispatch(actions.buyEth({ service: 'coinbase', address, amount: 0 }))
+    toWyre: (address) => {
+      dispatch(actions.buyEth({ service: 'wyre', address, amount: 0 }))
     },
     toCoinSwitch: (address) => {
       dispatch(actions.buyEth({ service: 'coinswitch', address }))
@@ -130,7 +130,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toCoinbase, toCoinSwitch, address, toFaucet } = this.props
+  const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
   const { buyingWithShapeshift } = this.state
 
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
@@ -190,7 +190,7 @@ DepositEtherModal.prototype.render = function () {
           title: WYRE_ROW_TITLE,
           text: WYRE_ROW_TEXT,
           buttonLabel: this.context.t('continueToWyre'),
-          onButtonClick: () => toCoinbase(address),
+          onButtonClick: () => toWyre(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
 
