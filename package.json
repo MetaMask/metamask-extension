@@ -68,6 +68,7 @@
     "c3": "^0.6.7",
     "classnames": "^2.2.5",
     "clone": "^2.1.2",
+    "content-hash": "^2.4.0",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",
     "d3": "^5.7.0",
