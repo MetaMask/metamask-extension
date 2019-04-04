@@ -2,7 +2,7 @@ const namehash = require('eth-ens-namehash')
 const multihash = require('multihashes')
 const Eth = require('ethjs-query')
 const EthContract = require('ethjs-contract')
-const registrarAbi = require('./contracts/registrar')
+const registryAbi = require('./contracts/registry')
 const resolverAbi = require('./contracts/resolver')
 
 module.exports = resolveEnsToIpfsContentId
@@ -12,15 +12,15 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
-  // lookup registrar
+  // lookup registry
   const chainId = Number.parseInt(await eth.net_version(), 10)
-  const registrarAddress = getRegistrarForChainId(chainId)
-  if (!registrarAddress) {
-    throw new Error(`EnsIpfsResolver - no known ens-ipfs registrar for chainId "${chainId}"`)
+  const registryAddress = getRegistryForChainId(chainId)
+  if (!registryAddress) {
+    throw new Error(`EnsIpfsResolver - no known ens-ipfs registry for chainId "${chainId}"`)
   }
-  const Registrar = contract(registrarAbi).at(registrarAddress)
+  const Registry = contract(registryAbi).at(registryAddress)
   // lookup resolver
-  const resolverLookupResult = await Registrar.resolver(hash)
+  const resolverLookupResult = await Registry.resolver(hash)
   const resolverAddress = resolverLookupResult[0]
   if (hexValueIsEmpty(resolverAddress)) {
     throw new Error(`EnsIpfsResolver - no resolver found for name "${name}"`)
@@ -42,7 +42,7 @@ function hexValueIsEmpty (value) {
   return [undefined, null, '0x', '0x0', '0x0000000000000000000000000000000000000000000000000000000000000000'].includes(value)
 }
 
-function getRegistrarForChainId (chainId) {
+function getRegistryForChainId (chainId) {
   switch (chainId) {
     // mainnet
     case 1:
