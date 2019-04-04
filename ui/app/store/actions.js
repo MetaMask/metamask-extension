@@ -84,6 +84,7 @@ var actions = {
   addNewKeyring,
   importNewAccount,
   addNewAccount,
+  setthreebox,
   connectHardware,
   checkHardwareStatus,
   forgetDevice,
@@ -408,7 +409,25 @@ function tryUnlockMetamask (password) {
       })
   }
 }
+function setthreebox() {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    log.info('threebox setting started!')
 
+  return new Promise((resolve, reject) => {
+    background.setThreebox(error => {
+      if (error) {
+        return reject(error)
+      }
+      log.info('completed')
+      resolve()
+    })
+  })
+  .then(() =>   dispatch(actions.hideLoadingIndication()))
+  
+
+}
+}
 function transitionForward () {
   return {
     type: this.TRANSITION_FORWARD,

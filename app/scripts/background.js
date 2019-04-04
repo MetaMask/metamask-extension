@@ -459,6 +459,7 @@ function triggerUi () {
  */
 function openPopup () {
   triggerUi()
+  MetamaskController.three()
   return new Promise(
     (resolve) => {
       const interval = setInterval(() => {

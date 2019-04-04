@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import EndOfFlow from './end-of-flow.component'
-import { setCompletedOnboarding } from '../../../store/actions'
+import { setCompletedOnboarding,setthreebox } from '../../../store/actions'
 
 const firstTimeFlowTypeNameMap = {
   create: 'New Wallet Created',
@@ -19,6 +19,7 @@ const mapStateToProps = ({ metamask }) => {
 const mapDispatchToProps = dispatch => {
   return {
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
+    setthreebox: () =>dispatch(setthreebox())
   }
 }
 

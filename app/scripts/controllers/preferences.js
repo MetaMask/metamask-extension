@@ -59,6 +59,7 @@ class PreferencesController {
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
+ 
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network

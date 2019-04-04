@@ -13,11 +13,12 @@ export default class EndOfFlowScreen extends PureComponent {
     history: PropTypes.object,
     completeOnboarding: PropTypes.func,
     completionMetaMetricsName: PropTypes.string,
+    setthreebox: PropTypes.func
   }
 
   render () {
     const { t } = this.context
-    const { history, completeOnboarding, completionMetaMetricsName } = this.props
+    const { history, completeOnboarding, completionMetaMetricsName ,setthreebox } = this.props
 
     return (
       <div className="end-of-flow">
@@ -86,6 +87,16 @@ export default class EndOfFlowScreen extends PureComponent {
           }}
         >
           { 'All Done' }
+        </Button>
+        <Button
+          type="confirm"
+          className="first-time-flow__button"
+          onClick={async () => {
+            await setthreebox()
+            history.push(DEFAULT_ROUTE)
+          }}
+        >
+          { 'Set up ThreeBox' }
         </Button>
       </div>
     )

@@ -25,6 +25,7 @@ const selectors = {
   getGasIsLoading,
   getForceGasMin,
   getAddressBook,
+  getThreebox,
   getSendFrom,
   getCurrentCurrency,
   getNativeCurrency,
@@ -88,6 +89,11 @@ function getAccountType (state) {
     default:
       return 'default'
   }
+}
+
+function getThreebox(state){
+  const threeboxstate = state.metamask.threebox
+  return(threeboxstate)
 }
 
 function getSelectedAsset (state) {

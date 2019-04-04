@@ -26,6 +26,7 @@ const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
+const Threeboxcontroller = require('./controllers/3boxcontroller')
 const BlacklistController = require('./controllers/blacklist')
 const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
@@ -100,8 +101,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.currencyController = new CurrencyController({
       initState: initState.CurrencyController,
     })
+
+    this.threeboxController = new Threeboxcontroller({
+      initState: initState.Threeboxcontroller,
+    })
+    
     this.currencyController.updateConversionRate()
     this.currencyController.scheduleConversionInterval()
+    this.threeboxController.schedulethreebox()
+   
 
     // infura controller
     this.infuraController = new InfuraController({
@@ -155,6 +163,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
     })
+    
 
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
@@ -239,6 +248,8 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      Threeboxcontroller:this.threeboxController.store
+      
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -259,6 +270,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      Threeboxcontroller:this.threeboxController.store
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -385,6 +397,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
+      setThreebox: nodeify(this.setThreebox ,this),
       placeSeedWords: this.placeSeedWords.bind(this),
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
@@ -672,6 +685,10 @@ module.exports = class MetamaskController extends EventEmitter {
   // Hardware
   //
 
+  async setThreebox(){
+      await this.threeboxController.createbox()
+  }
+
   async getKeyringForDevice (deviceName, hdPath = null) {
     let keyringName = null
     switch (deviceName) {
@@ -747,6 +764,8 @@ module.exports = class MetamaskController extends EventEmitter {
     return true
   }
 
+
+
   /**
    * Imports an account from a trezor device.
    *
@@ -783,6 +802,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
+  
   async addNewAccount () {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
@@ -1719,4 +1739,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
+
+ 
 }
+
+
