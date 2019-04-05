@@ -18,7 +18,7 @@ const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
-const createProviderMiddleware = require('./lib/createProviderMiddleware')
+const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -1373,7 +1373,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider
-    engine.push(createProviderMiddleware({ provider }))
+    engine.push(providerAsMiddleware(provider))
 
     // setup connection
     const providerStream = createEngineStream({ engine })
