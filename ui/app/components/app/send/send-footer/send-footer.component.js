@@ -27,6 +27,7 @@ export default class SendFooter extends Component {
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
     sendErrors: PropTypes.object,
+    gasChangedLabel: PropTypes.string,
   }
 
   static contextTypes = {
@@ -57,6 +58,7 @@ export default class SendFooter extends Component {
       update,
       toAccounts,
       history,
+      gasChangedLabel,
     } = this.props
     const { metricsEvent } = this.context
 
@@ -90,6 +92,9 @@ export default class SendFooter extends Component {
             category: 'Transactions',
             action: 'Edit Screen',
             name: 'Complete',
+          },
+          customVariables: {
+            gasChanged: gasChangedLabel,
           },
         })
         history.push(CONFIRM_TRANSACTION_ROUTE)

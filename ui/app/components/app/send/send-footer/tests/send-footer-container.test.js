@@ -46,6 +46,10 @@ proxyquire('../send-footer.container.js', {
   },
   './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
+  '../../../../selectors/custom-gas': {
+    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ labelKey: `mockLabel:${s}` }]),
+    getDefaultActiveButtonIndex: () => 0,
+  },
 })
 
 describe('send-footer container', () => {
@@ -68,6 +72,7 @@ describe('send-footer container', () => {
         tokenBalance: 'mockTokenBalance:mockState',
         unapprovedTxs: 'mockUnapprovedTxs:mockState',
         sendErrors: 'mockSendErrors:mockState',
+        gasChangedLabel: 'mockLabel:mockState',
       })
     })
 
