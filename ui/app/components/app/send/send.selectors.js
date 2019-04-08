@@ -5,7 +5,7 @@ const {
 } = require('../../../helpers/utils/conversion-util')
 const {
   getMetaMaskAccounts,
-  getSelectedAddress
+  getSelectedAddress,
 } = require('../../../selectors/selectors')
 const {
   estimateGasPriceFromRecentBlocks,

@@ -54,7 +54,7 @@ proxyquire('../send.container.js', {
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
-  
+
 })
 
 describe('send container', () => {
