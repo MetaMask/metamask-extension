@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+## 6.3.2 Mon Apr 8 2019
+
+- [#6389](https://github.com/MetaMask/metamask-extension/pull/6389): Fix display of gas chart on ethereum networks
+- [#6395](https://github.com/MetaMask/metamask-extension/pull/6395): Fixes for signing methods for ledger and trezor devices
+- [#6397](https://github.com/MetaMask/metamask-extension/pull/6397): Fix Wyre link
+
 ## 6.3.1 Fri Mar 26 2019
 
 - [#6353](https://github.com/MetaMask/metamask-extension/pull/6353): Open restore vault in full screen when clicked from popup

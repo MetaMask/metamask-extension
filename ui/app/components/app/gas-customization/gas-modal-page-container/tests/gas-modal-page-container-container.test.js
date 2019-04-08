@@ -140,7 +140,7 @@ describe('gas-modal-page-container container', () => {
         insufficientBalance: true,
         isSpeedUp: false,
         txId: 34,
-        isEthereumNetwork: false,
+        isEthereumNetwork: true,
         isMainnet: true,
       }
       const baseMockOwnProps = { transaction: { id: 34 } }

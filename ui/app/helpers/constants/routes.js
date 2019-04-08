@@ -19,7 +19,6 @@ const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
-const NOTICE_ROUTE = '/notice'
 const WELCOME_ROUTE = '/welcome'
 
 const INITIALIZE_ROUTE = '/initialize'
@@ -29,7 +28,6 @@ const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
 const INITIALIZE_IMPORT_ACCOUNT_ROUTE = '/initialize/create-password/import-account'
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
 const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/create-password/unique-image'
-const INITIALIZE_NOTICE_ROUTE = '/initialize/notice'
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
 const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow'
@@ -62,7 +60,6 @@ module.exports = {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
-  NOTICE_ROUTE,
   WELCOME_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
@@ -71,7 +68,6 @@ module.exports = {
   INITIALIZE_IMPORT_ACCOUNT_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
