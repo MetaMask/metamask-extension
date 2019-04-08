@@ -542,15 +542,7 @@ class TransactionController extends EventEmitter {
     })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:confirmed', (txId) => this.confirmTransaction(txId))
-    this.pendingTxTracker.on('tx:dropped', (txId) => {
-      const txMeta = this.txStateManager.getTx(txId)
-      if (!txMeta.dropBlockBuffer) {
-        txMeta.dropBlockBuffer = 1
-        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:drop-update')
-        return
-      }
-      this.setTxStatusDropped(txId)
-    })
+    this.pendingTxTracker.on('tx:dropped', this.txStateManager.setTxStatusDropped.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
