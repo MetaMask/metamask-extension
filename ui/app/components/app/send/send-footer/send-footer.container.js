@@ -31,10 +31,21 @@ import {
   constructTxParams,
   constructUpdatedTx,
 } from './send-footer.utils'
+import {
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
+  getDefaultActiveButtonIndex,
+} from '../../../../selectors/custom-gas'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
 function mapStateToProps (state) {
+  const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
+  const gasPrice = getGasPrice(state)
+  const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
+  const gasChangedLabel = activeButtonIndex >= 0
+    ? gasButtonInfo[activeButtonIndex].labelKey
+    : 'custom'
+
   return {
     amount: getSendAmount(state),
     data: getSendHexData(state),
@@ -50,6 +61,7 @@ function mapStateToProps (state) {
     tokenBalance: getTokenBalance(state),
     unapprovedTxs: getUnapprovedTxs(state),
     sendErrors: getSendErrors(state),
+    gasChangedLabel,
   }
 }
 

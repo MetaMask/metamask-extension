@@ -112,7 +112,7 @@ export default class TransactionViewBalance extends PureComponent {
               eventOpts: {
                 category: 'Navigation',
                 action: 'Home',
-                name: 'Clicked Send',
+                name: selectedToken ? 'Clicked Send: Token' : 'Clicked Send: Eth',
               },
             })
             history.push(SEND_ROUTE)
