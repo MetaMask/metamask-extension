@@ -139,7 +139,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', providerNick || context.t('privateNetwork')),
+              h('.network-name', providerName === 'localhost' ? context.t('localhost') : providerNick || context.t('privateNetwork')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }

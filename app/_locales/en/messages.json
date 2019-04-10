@@ -308,6 +308,9 @@
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
   },
+  "connectingToLocalhost": {
+    "message": "Connecting to Localhost 8545"
+  },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"
   },

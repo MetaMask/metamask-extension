@@ -285,6 +285,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('kovan')
   } else if (providerName === 'rinkeby') {
     name = this.context.t('rinkeby')
+  } else if (providerName === 'localhost') {
+    name = this.context.t('localhost')
   } else {
     name = provider.nickname || this.context.t('unknownNetwork')
   }
