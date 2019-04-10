@@ -78,8 +78,8 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
       }
     } catch (error) {
       log.error(error)
-      const contractData = getTokenData(data)
-      const { name } = contractData || {}
+      const tokenData = getTokenData(data)
+      const { name } = tokenData || {}
       return { name }
     }
 
