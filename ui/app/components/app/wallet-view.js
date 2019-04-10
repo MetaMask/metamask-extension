@@ -36,7 +36,6 @@ WalletView.defaultProps = {
 }
 
 
-
 function mapStateToProps (state) {
 
   return {
@@ -59,7 +58,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    setPrivacyMode: ()=> dispatch(actions.setFeatureFlag('privacyMode', false)),
+    setPrivacyMode: () => dispatch(actions.setFeatureFlag('privacyMode', false)),
     showAddTokenPage: () => dispatch(actions.showAddTokenPage()),
     setThreebox: () => dispatch(actions.setthreebox()),
   }
@@ -124,7 +123,7 @@ WalletView.prototype.renderAddToken = function () {
           name: 'Clicked "Add Token"',
         },
       })
-      setPrivacyMode()
+
       if (sidebarOpen) {
         hideSidebar()
 
@@ -139,16 +138,15 @@ WalletView.prototype.renderThreebox = function () {
     setPrivacyMode,
     setThreebox,
   } = this.props
-  
+
   return h(AddThreebox, {
     onClick () {
       history.push(ADD_TOKEN_ROUTE)
+      setPrivacyMode()
      setThreebox()
     },
   })
 }
-
-
 
 
 WalletView.prototype.render = function () {

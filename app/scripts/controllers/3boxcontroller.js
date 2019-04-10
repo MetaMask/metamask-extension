@@ -1,60 +1,56 @@
-const ObservableStore = require("obs-store");
-const extend = require("xtend");
-const log = require("loglevel");
-const Web3 = require("web3");
-const Box = require("3box");
+const ObservableStore = require('obs-store')
+const extend = require('xtend')
+const Web3 = require('web3')
+const Box = require('3box')
 
-let ethprovider;
-let box;
-let dappStorage;
-
+let ethprovider
+let box
 
 
 class Threeboxcontroller {
-  constructor(opts = {}) {
+  constructor (opts = {}) {
     const initState = extend(
       {
-        threebox: false
+        threebox: false,
       },
       opts.initState
-    );
+    )
 
-    this.store = new ObservableStore(initState);
-    this._selectedAddress = opts.selectedAddress;
-    ethprovider = opts.provider;
+    this.store = new ObservableStore(initState)
+    this._selectedAddress = opts.selectedAddress
+    ethprovider = opts.provider
 
-    this.createbox = this.createbox.bind(this);
+    this.createbox = this.createbox.bind(this)
     this.createspace = this.createspace.bind(this)
 
-    this.web3 = new Web3(ethprovider);
+    this.web3 = new Web3(ethprovider)
   }
 
-  async createbox() {
-  
+  async createbox () {
+
 
     try {
-      box = await Box.openBox(this._selectedAddress, ethprovider);
-       box.onSyncDone( async () =>  {
+      box = await Box.openBox(this._selectedAddress, ethprovider)
+       box.onSyncDone(async () => {
          this.createspace()
         })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
-  
 
-  async createspace() {
+  async createspace () {
     try {
-      await box.private.set("Nickname: Sam", "Address:0x1234")
+      await box.private.set('Nickname: Sam', 'Address:0x1234')
 
-      const jey = await box.private.get("Nickname: Sam");
-     window.alert('the address stored with nickname : Sam in 3box is' + jey);
+      const jey = await box.private.get('Nickname: Sam')
+     window.alert('the address stored with nickname : Sam in 3box is' + jey)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 }
 
 
-module.exports = Threeboxcontroller;
+module.exports = Threeboxcontroller

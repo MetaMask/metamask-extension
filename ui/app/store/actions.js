@@ -409,7 +409,7 @@ function tryUnlockMetamask (password) {
       })
   }
 }
-function setthreebox() {
+function setthreebox () {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     log.info('threebox setting started!')
@@ -423,8 +423,8 @@ function setthreebox() {
       resolve()
     })
   })
-  .then(() =>   dispatch(actions.hideLoadingIndication()))
-  
+  .then(() => dispatch(actions.hideLoadingIndication()))
+
 
 }
 }

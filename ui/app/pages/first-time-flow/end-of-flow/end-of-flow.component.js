@@ -18,7 +18,7 @@ export default class EndOfFlowScreen extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { history, completeOnboarding, completionMetaMetricsName  } = this.props
+    const { history, completeOnboarding, completionMetaMetricsName } = this.props
 
     return (
       <div className="end-of-flow">
@@ -89,7 +89,7 @@ export default class EndOfFlowScreen extends PureComponent {
           { 'All Done' }
         </Button>
 
-        
+
       </div>
 
     )

@@ -91,9 +91,9 @@ function getAccountType (state) {
   }
 }
 
-function getThreebox(state){
+function getThreebox (state) {
   const threeboxstate = state.metamask.threebox
-  return(threeboxstate)
+  return (threeboxstate)
 }
 
 function getSelectedAsset (state) {
