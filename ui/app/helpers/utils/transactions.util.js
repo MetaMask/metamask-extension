@@ -30,21 +30,19 @@ export function getTokenData (data = '') {
   return abiDecoder.decodeMethod(data)
 }
 
-function getMethodFrom4Byte (fourBytePrefix) {
-  return fetch(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
+async function getMethodFrom4Byte (fourBytePrefix) {
+  const fourByteResponse = (await fetch(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
     referrerPolicy: 'no-referrer-when-downgrade',
     body: null,
     method: 'GET',
     mode: 'cors',
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.count === 1) {
-      return res.results[0].text_signature
-    } else {
-      return null
-    }
-  })
+  })).json()
+
+  if (fourByteResponse.count === 1) {
+    return fourByteResponse.results[0].text_signature
+  } else {
+    return null
+  }
 }
 
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
