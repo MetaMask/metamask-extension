@@ -1,7 +1,6 @@
 const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
-
 const { By, Key, until } = webdriver
 const {
   delay,
@@ -12,28 +11,26 @@ const {
   getExtensionIdFirefox,
 } = require('../func')
 const {
+  assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
-  verboseReportOnFailure,
   findElement,
   findElements,
-  assertElementNotPresent,
   loadExtension,
   openNewPage,
   switchToWindowWithTitle,
+  verboseReportOnFailure,
   waitUntilXWindowHandles,
 } = require('./helpers')
 const fetchMockResponses = require('./fetch-mocks.js')
-
-
 
 
 describe('Using MetaMask with an existing account', function () {
   let extensionId
   let driver
 
-  const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-  const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
+  const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
+  const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3'
   const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
@@ -80,12 +77,24 @@ describe('Using MetaMask with an existing account', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
       '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0].match(/chromeextensionmm/)) { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); }'
+      'return window.origFetch(...args); };' +
+      'function cancelInfuraRequest(requestDetails) {' +
+        'console.log("Canceling: " + requestDetails.url);' +
+        'return {' +
+          'cancel: true' +
+        '};' +
+     ' }' +
+      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
+        'cancelInfuraRequest,' +
+        '{urls: ["https://*.infura.io/*"]},' +
+        '["blocking"]' +
+      ');'
     )
   })
-
 
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -107,16 +116,25 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
+      await findElement(driver, By.css('.welcome-page__header'))
+      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async () => {
-      const [seedPhrase] = await findElements(driver, By.xpath(`//a[contains(text(), 'Import with seed phrase')]`))
-      await seedPhrase.click()
-      await delay(regularDelayMs)
+    it('clicks the "Import Wallet" option', async () => {
+      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      customRpcButton.click()
+      await delay(largeDelayMs)
+    })
 
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      const optOutButton = await findElement(driver, By.css('.btn-default'))
+      optOutButton.click()
+      await delay(largeDelayMs)
+    })
+
+    it('imports a seed phrase', async () => {
       const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
@@ -126,47 +144,22 @@ describe('Using MetaMask with an existing account', function () {
       const [confirmPassword] = await findElements(driver, By.id('confirm-password'))
       confirmPassword.sendKeys('correct horse battery staple')
 
+      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
+      await tosCheckBox.click()
+
       const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
       await importButton.click()
       await delay(regularDelayMs)
     })
-    
 
-    it('clicks through the ToS', async () => {
-      // terms of use
-      await findElement(driver, By.css('.first-time-flow__markdown'))
-      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
-      assert.equal(canClickThrough, false, 'disabled continue button')
-      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
-      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
-      await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
-      driver.wait(until.elementIsEnabled(acceptTos))
-      await acceptTos.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the privacy notice', async () => {
-      // privacy notice
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the phishing notice', async () => {
-      // phishing notice
-      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
-      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
-      await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
+    it('clicks through the success screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
+      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      await doneButton.click()
       await delay(regularDelayMs)
     })
   })
 
-
-
-  
 
     describe('opens dapp', () => {
 
@@ -174,7 +167,7 @@ describe('Using MetaMask with an existing account', function () {
         const networkDropdown = await findElement(driver, By.css('.network-name'))
         await networkDropdown.click()
         await delay(regularDelayMs)
-    
+
         const [mainnet] = await findElements(driver, By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`))
         await mainnet.click()
         await delay(largeDelayMs * 2)
@@ -196,180 +189,163 @@ describe('Using MetaMask with an existing account', function () {
         await approveButton.click()
 
         await driver.switchTo().window(dapp)
-        await delay(regularDelayMs )
-       
+        await delay(regularDelayMs)
+
 
       })
     })
 
-    describe('testing web3 methods', async () =>{
+    describe('testing web3 methods', async () => {
 
 
+      it('testing hexa methods', async () => {
 
-      it('testing hexa methods' , async () =>{
 
-       
-          var List= await driver.findElements(By.className("hexaNumberMethods"));
-          var button;
-         
-          for(i=0; i<List.length; i++){
+          var List = await driver.findElements(By.className('hexaNumberMethods'))
+          var button
+
+          for (i = 0; i < List.length; i++) {
             try {
              const button = List[i]
-             await button.click();
-            await delay(largeDelayMs )
+             await button.click()
+            await delay(largeDelayMs)
             const [results] = await findElements(driver, By.css('#results'))
             const resulttext = await results.getText()
-             var parsedData = JSON.parse(resulttext);
+             var parsedData = JSON.parse(resulttext)
             console.log(parsedData)
-            var result = parseInt(parsedData.result,16);
+            var result = parseInt(parsedData.result, 16)
 
-            assert.equal(!(isNaN(result)),true)
-            await delay(regularDelayMs )
-          }
-          catch (err){
+            assert.equal(!(isNaN(result)), true)
+            await delay(regularDelayMs)
+          } catch (err) {
 
-            var text = await button.getText();
-            console.log("The function which has the error is " + text)
+            var text = await button.getText()
+            console.log('The function which has the error is ' + text)
             console.log(err)
-  
+
           }
-        } 
+        }
       })
 
-      it('testing booleanMethods' , async () => {
-       
-          var List= await driver.findElements(By.className("booleanMethods"));
-          var button;
-          for(i=0; i<List.length; i++){
+      it('testing booleanMethods', async () => {
+
+          var List = await driver.findElements(By.className('booleanMethods'))
+          var button
+          for (i = 0; i < List.length; i++) {
             try {
              button = List[i]
-             await button.click();
-            await delay(largeDelayMs )
+             await button.click()
+            await delay(largeDelayMs)
             const [results] = await findElements(driver, By.css('#results'))
             const resulttext = await results.getText()
-             var parsedData = JSON.parse(resulttext);
+             var parsedData = JSON.parse(resulttext)
             console.log(parsedData)
             var result = parsedData.result
 
-            assert.equal(result,false)
-            await delay(regularDelayMs )
-          }
-          catch (err){
-            var text = await button.getText();
-            console.log("The function which has the error is " + text)
+            assert.equal(result, false)
+            await delay(regularDelayMs)
+          } catch (err) {
+            var text = await button.getText()
+            console.log('The function which has the error is ' + text)
             console.log(err)
-  
+
           }
         }
 
       })
 
-      it('testing  transactionMethods', async() =>{
-        
-          var List= await driver.findElements(By.className("transactionMethods"));
-          var button;
-          for(i=0; i<List.length; i++){
+      it('testing  transactionMethods', async () => {
+
+          var List = await driver.findElements(By.className('transactionMethods'))
+          var button
+          for (i = 0; i < List.length; i++) {
             try {
              button = List[i]
-             await button.click();
-            await delay(largeDelayMs )
-            const [results] = await findElements(driver, By.css('#results'))
-           const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext);
-            console.log(parsedData.result.blockHash)
-
-            var result = parseInt(parsedData.result.blockHash,16);
-
-            assert.equal(!(isNaN(result)),true)
-            await delay(regularDelayMs )
-          }
-          catch (err){
-
-            var text = await button.getText();
-              console.log("The function which has the error is " + text)
-              console.log(err)
-    
-  
-          }
-        } 
-
-      })
-
-      it('testing blockMethods' ,async () =>{
-        
-          var List= await driver.findElements(By.className("blockMethods"));
-          var button;
-          for(i=0; i<List.length; i++){
-            try {
-              button = List[i]
-             await button.click();
-            await delay(largeDelayMs )
-           const [results] = await findElements(driver, By.css('#results'))
-           const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext);
-            console.log(parsedData.result.parentHash)
-
-            var result = parseInt(parsedData.result.parentHash,16);
-
-            assert.equal(!(isNaN(result)),true)
-            await delay(regularDelayMs )
-          }
-          catch (err){
-
-            var text = await button.getText();
-            console.log("The function which has the error is " + text)
-            console.log(err)
-  
-  
-          }
-        } 
-      })
-
-      it('testing methods' ,async () =>{
-       
-          var List= await driver.findElements(By.className("methods"));
-          var  button
-          for(i=0; i<List.length; i++){
-            try {
-             button = List[i]
-             await button.click();
-            await delay(largeDelayMs )
+             await button.click()
             await delay(largeDelayMs)
             const [results] = await findElements(driver, By.css('#results'))
            const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext);
+            var parsedData = JSON.parse(resulttext)
+            console.log(parsedData.result.blockHash)
+
+            var result = parseInt(parsedData.result.blockHash, 16)
+
+            assert.equal(!(isNaN(result)), true)
+            await delay(regularDelayMs)
+          } catch (err) {
+
+            var text = await button.getText()
+              console.log('The function which has the error is ' + text)
+              console.log(err)
+
+
+          }
+        }
+
+      })
+
+      it('testing blockMethods', async () => {
+
+          var List = await driver.findElements(By.className('blockMethods'))
+          var button
+          for (i = 0; i < List.length; i++) {
+            try {
+              button = List[i]
+             await button.click()
+            await delay(largeDelayMs)
+           const [results] = await findElements(driver, By.css('#results'))
+           const resulttext = await results.getText()
+            var parsedData = JSON.parse(resulttext)
+            console.log(parsedData.result.parentHash)
+
+            var result = parseInt(parsedData.result.parentHash, 16)
+
+            assert.equal(!(isNaN(result)), true)
+            await delay(regularDelayMs)
+          } catch (err) {
+
+            var text = await button.getText()
+            console.log('The function which has the error is ' + text)
+            console.log(err)
+
+
+          }
+        }
+      })
+
+      it('testing methods', async () => {
+
+          var List = await driver.findElements(By.className('methods'))
+          var button
+          for (i = 0; i < List.length; i++) {
+            try {
+             button = List[i]
+             await button.click()
+            await delay(largeDelayMs)
+            await delay(largeDelayMs)
+            const [results] = await findElements(driver, By.css('#results'))
+           const resulttext = await results.getText()
+            var parsedData = JSON.parse(resulttext)
             console.log(parsedData.result)
 
-            var result = parseInt(parsedData.result,16);
-            
-            assert.equal((isNaN(result) || (result === 0)),true)
-            await delay(regularDelayMs )
-          }
-          catch (err){
+            var result = parseInt(parsedData.result, 16)
 
-            var text = await button.getText();
-            console.log("The function which has the error is " + text)
+            assert.equal((isNaN(result) || (result === 0)), true)
+            await delay(regularDelayMs)
+          } catch (err) {
+
+            var text = await button.getText()
+            console.log('The function which has the error is ' + text)
             console.log(err)
-  
+
           }
-        } 
+        }
       })
-      
-     
 
-       
-
-       
 
       })
-       
-        
+
+
       })
-   
-
-
-    
-
-
 
 
