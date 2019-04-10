@@ -58,10 +58,15 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
     const fourBytePrefix = prefixedData.slice(0, 10)
 
     try {
+      const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+          log.error(e)
+          return null
+      })
+
       let sig = await registry.lookup(fourBytePrefix)
 
       if (!sig) {
-        sig = await getMethodFrom4Byte(fourBytePrefix)
+        sig = await fourByteSig
       }
 
       if (!sig) {
