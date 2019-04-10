@@ -17,7 +17,9 @@ const TokenList = require('./token-list')
 const selectors = require('../../selectors/selectors')
 const { ADD_TOKEN_ROUTE } = require('../../helpers/constants/routes')
 
+
 import AddTokenButton from './add-token-button'
+import AddThreebox from './add-threebox-button'
 
 module.exports = compose(
   withRouter,
@@ -32,6 +34,8 @@ WalletView.contextTypes = {
 WalletView.defaultProps = {
   responsiveDisplayClassname: '',
 }
+
+
 
 function mapStateToProps (state) {
 
@@ -55,7 +59,9 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
+    setPrivacyMode: ()=> dispatch(actions.setFeatureFlag('privacyMode', false)),
     showAddTokenPage: () => dispatch(actions.showAddTokenPage()),
+    setThreebox: () => dispatch(actions.setthreebox()),
   }
 }
 
@@ -118,12 +124,32 @@ WalletView.prototype.renderAddToken = function () {
           name: 'Clicked "Add Token"',
         },
       })
+      setPrivacyMode()
       if (sidebarOpen) {
         hideSidebar()
+
       }
     },
   })
 }
+
+WalletView.prototype.renderThreebox = function () {
+  const {
+    history,
+    setPrivacyMode,
+    setThreebox,
+  } = this.props
+  
+  return h(AddThreebox, {
+    onClick () {
+      history.push(ADD_TOKEN_ROUTE)
+     setThreebox()
+    },
+  })
+}
+
+
+
 
 WalletView.prototype.render = function () {
   const {
@@ -232,6 +258,7 @@ WalletView.prototype.render = function () {
     h(TokenList),
 
     this.renderAddToken(),
+    this.renderThreebox(),
   ])
 }
 

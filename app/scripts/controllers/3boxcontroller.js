@@ -1,50 +1,60 @@
 const ObservableStore = require("obs-store");
 const extend = require("xtend");
 const log = require("loglevel");
-
+const Web3 = require("web3");
 const Box = require("3box");
-const POLLING_INTERVAL = 600000
+
+let ethprovider;
+let box;
+let dappStorage;
+
+
 
 class Threeboxcontroller {
-  constructor(opts ={}) {
-    const initState = extend({
+  constructor(opts = {}) {
+    const initState = extend(
+      {
         threebox: false
-      },opts.initState);
+      },
+      opts.initState
+    );
+
     this.store = new ObservableStore(initState);
+    this._selectedAddress = opts.selectedAddress;
+    ethprovider = opts.provider;
+
+    this.createbox = this.createbox.bind(this);
+    this.createspace = this.createspace.bind(this)
+
+    this.web3 = new Web3(ethprovider);
   }
 
   async createbox() {
-    try {
   
-      await Box.openBox(
-        '0x92F8786Ca4BC530baA35bea19bfAa8028A84693E',
-        window.ethereum,
-        {}
-      ).then(box => {
-        box.onSyncDone(() => {
-        log.warn("hello")
-        this.store.updateState({
-            threebox:true
+
+    try {
+      box = await Box.openBox(this._selectedAddress, ethprovider);
+       box.onSyncDone( async () =>  {
+         this.createspace()
         })
-        }
-        );
-        window.box = box;
-        log.warn(box);
-      });
- 
     } catch (error) {
-      log.error(error);
+      console.log(error);
     }
   }
 
-  schedulethreebox () {
-    if (this.store.getState().threebox) {
-      clearInterval(this.threebox)
-      log.warn('hurrya')
+  
+
+  async createspace() {
+    try {
+      await box.private.set("Nickname: Sam", "Address:0x1234")
+
+      const jey = await box.private.get("Nickname: Sam");
+     window.alert('the address stored with nickname : Sam in 3box is' + jey);
+    } catch (error) {
+      console.log(error);
     }
-    this.conversionInterval = setInterval(() => {
-    }, POLLING_INTERVAL)
   }
 }
+
 
 module.exports = Threeboxcontroller;

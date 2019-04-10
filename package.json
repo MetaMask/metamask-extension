@@ -49,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "3box": "^1.6.1",
+    "3box": "^1.2.2",
     "@material-ui/core": "1.0.0",
     "@sentry/browser": "^4.1.1",
     "@zxing/library": "^0.8.0",

@@ -102,13 +102,11 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.CurrencyController,
     })
 
-    this.threeboxController = new Threeboxcontroller({
-      initState: initState.Threeboxcontroller,
-    })
+   
     
     this.currencyController.updateConversionRate()
     this.currencyController.scheduleConversionInterval()
-    this.threeboxController.schedulethreebox()
+  
    
 
     // infura controller
@@ -184,6 +182,14 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+
+    this.threeboxController = new Threeboxcontroller({
+      initState: initState.Threeboxcontroller,
+      provider: this.provider,
+      selectedAddress:selectedAddress
+
+    })
 
     // tx mgmt
     this.txController = new TransactionController({
