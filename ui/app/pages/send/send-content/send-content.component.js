@@ -6,7 +6,7 @@ import SendFromRow from './send-from-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendToRow from './send-to-row'
-import SendAssetRow from "./send-asset-row"
+import SendAssetRow from './send-asset-row'
 
 export default class SendContent extends Component {
 
