@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { checksumAddress } from '../../../helpers/utils/util'
+import { checksumAddress, addressSlicer } from '../../../helpers/utils/util'
 import Identicon from '../../../components/ui/identicon'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'

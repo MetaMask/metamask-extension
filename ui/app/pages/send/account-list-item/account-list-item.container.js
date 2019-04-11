@@ -11,6 +11,7 @@ import {
   getContractAccountOwner,
   getUseContractAccount,
 } from '../../../selectors/selectors'
+
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)
