@@ -215,6 +215,7 @@ class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       type: transactionType,
       transactionCategory,
+      type: transactionType,
       unmodifiedParams: originalTxParams,
     })
     this.addTx(txMeta)

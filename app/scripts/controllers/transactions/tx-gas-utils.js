@@ -94,10 +94,10 @@ class TxGasUtil {
         //   // set error key so ui can display localized error message
         //   err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
 
-        //   // set the response on the error so that we can see in logs what the actual response was
-        //   err.getCodeResponse = code
-        //   throw err
-        // }
+          // set the response on the error so that we can see in logs what the actual response was
+          err.getCodeResponse = code
+          throw err
+        }
 
         // This is a standard ether simple send, gas requirement is exactly 21k
         txParams.gas = SIMPLE_GAS_COST

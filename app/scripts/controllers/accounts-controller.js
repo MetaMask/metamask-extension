@@ -37,6 +37,8 @@ class AccountsController {
             // reject with an error
             return
         }
+
+        // jp's personal testing
         else if (inputAddress === 'test') {
             // new rinkeby from gnosis react deployer
             address = '0xfd1144165c42089b6EB10aafF1988219Fd380186'
@@ -51,7 +53,7 @@ class AccountsController {
             address = inputAddress
         }
 
-        // currently gives rinkeby deployer instance
+        // currently gives rinkeby deployer instance from https://0100--safereact.review.gnosisdev.com/welcome/
         let contract = new GnosisSafe({
             address: address,
             preferences: this.preferences,
@@ -70,10 +72,10 @@ class AccountsController {
      * calls contract instance's data collection method and sets the persistent state
      */
     async getContractData () {
+
         const contractData = await this.currentContractInstance.getContractData()
         this.contracts[this.currentContractInstance.address] = contractData
         this.store.updateState({ contracts: this.contracts })
-        console.log('[accounts controller] this.store after getContractData', this.store)
 
         return this.contracts
     }
@@ -93,7 +95,6 @@ class AccountsController {
 
         // disable contract account in preferences
         this.preferences.clearSelectedContractAccount()
-
 
         // doesn't remove the accountscontroller from the metamask store
         // but does remove all contract data

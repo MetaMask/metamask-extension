@@ -63,7 +63,6 @@ const {
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 const AccountsController = require('./controllers/accounts-controller')
-const ControlledKeyring = require('eth-controlled-keyring')
 
 
 module.exports = class MetamaskController extends EventEmitter {
