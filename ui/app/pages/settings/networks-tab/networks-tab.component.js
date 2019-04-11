@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
+import classnames from 'classnames'
 import Button from '../../../components/ui/button'
 import NetworkDropdownIcon from '../../../components/app/dropdowns/components/network-dropdown-icon'
+import TextField from '../../../components/ui/text-field'
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {
@@ -20,9 +22,9 @@ export default class NetworksTab extends PureComponent {
       </div>
     )
   }
-        // style={{ color: iconColor || 'white', border }}
 
-  renderNetworkListItem (network) {
+  renderNetworkListItem (network, selectRpcUrl) {
+    const { setSelectedSettingsRpcUrl } = this.props
     const {
       border,
       iconColor,
@@ -33,12 +35,17 @@ export default class NetworksTab extends PureComponent {
     } = network
 
     return (
-      <div className="networks-tab__networks-list-item">
+      <div
+        className="networks-tab__networks-list-item"
+        onClick={ () => setSelectedSettingsRpcUrl(rpcUrl) }
+       >
         <NetworkDropdownIcon
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
         />
-        <div className="networks-tab_networks-list-name">
+        <div className={ classnames('networks-tab__networks-list-name', {
+          'networks-tab__networks-list-name--selected': selectRpcUrl === rpcUrl,
+        }) }>
           { label || this.context.t(labelKey) }
         </div>
       </div>
@@ -46,18 +53,69 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderNetworksList () {
-    const { networksToRender } = this.props
+    const { networksToRender, selectedNetwork } = this.props
 
     return (
       <div className="networks-tab__networks-list">
-        { networksToRender.map(network => this.renderNetworkListItem(network)) }
+        { networksToRender.map(network => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
       </div>
     )
   }
 
   renderNetworkForm () {
+    const {
+      selectedNetwork: {
+        labelKey,
+        label,
+        rpcUrl,
+        chainId,
+        ticker,
+      },
+    } = this.props
+
+
     return (
       <div className="networks-tab__network-form">
+        <div className="networks-tab__network-form-label">Network Name</div>
+        <TextField
+          type="text"
+          id="network-name"
+          placeholder={this.context.t('networkName')}
+          onChange={e => console.log(e.target.value)}
+          fullWidth
+          margin="dense"
+          value={label || this.context.t(labelKey)}
+        />
+        <div className="networks-tab__network-form-label">RPC Url</div>
+        <TextField
+          type="text"
+          id="rpc-url"
+          placeholder={this.context.t('rpcUrl')}
+          onChange={e => console.log(e.target.value)}
+          fullWidth
+          margin="dense"
+          value={rpcUrl}
+        />
+        <div className="networks-tab__network-form-label">Chain Id</div>
+        <TextField
+          type="text"
+          id="chainId"
+          placeholder={this.context.t('chainId')}
+          onChange={e => console.log(e.target.value)}
+          fullWidth
+          margin="dense"
+          value={chainId}
+        />
+        <div className="networks-tab__network-form-label">Symbol</div>
+        <TextField
+          type="text"
+          id="network-ticker"
+          placeholder={this.context.t('symbol')}
+          onChange={e => console.log(e.target.value)}
+          fullWidth
+          margin="dense"
+          value={ticker}
+        />
       </div>
     )
   }
