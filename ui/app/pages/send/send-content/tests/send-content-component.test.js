@@ -9,7 +9,7 @@ import SendFromRow from '../send-from-row/send-from-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendToRow from '../send-to-row/send-to-row.container'
 import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
-import SendAssetRow from '../send-asset-row/send-asset-row.container';
+import SendAssetRow from '../send-asset-row/send-asset-row.container'
 
 describe('SendContent Component', function () {
   let wrapper
