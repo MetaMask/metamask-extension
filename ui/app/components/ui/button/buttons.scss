@@ -1,24 +1,23 @@
 /*
   Buttons
  */
+$hover-secondary: #B0D7F2;
+$hover-default: #B3B3B3;
+$hover-confirm: #0372C3;
+
 
 .button {
-  min-height: 44px;
-  background: $white;
+  @include h6;
+  line-height: 1.25rem;
+  padding: .75rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 400;
-  transition: border-color .3s ease;
-  padding: 0 16px;
-  min-width: 140px;
+  border-radius: 6px;
   width: 100%;
-  text-transform: uppercase;
   outline: none;
-  font-family: Roboto;
+  transition: border-color .3s ease;
 
   &--disabled,
   &[disabled] {
@@ -28,21 +27,27 @@
   }
 }
 
-.btn-primary {
-  color: $curious-blue;
-  border: 2px solid $spindle;
+.btn-secondary {
+  color: $Blue-500;
+  border: 2px solid $hover-secondary;
 
   &:active {
-    background: $zumthor;
-    border-color: $curious-blue;
+    background: $Blue-000;
+    border-color: $Blue-500;
   }
 
   &:hover {
-    border-color: $curious-blue;
+    border-color: $Blue-500;
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    color: $hover-secondary;
   }
 }
 
-.btn-secondary {
+.btn-warning {
   color: $monzo;
   border: 2px solid lighten($monzo, 40%);
 
@@ -57,23 +62,45 @@
 }
 
 .btn-default {
-  color: $scorpion;
-  border: 2px solid $dusty-gray;
+  color: $Grey-500;
+  border: 2px solid $hover-default;
 
   &:active {
-    background: $gallery;
-    border-color: $dusty-gray;
+    background: #FBFBFC;
+    border-color: $Grey-500;
   }
 
   &:hover {
-    border-color: $scorpion;
+    border-color: $Grey-500;
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    color: $hover-default;
   }
 }
 
-.btn-confirm {
+.btn-primary {
   color: $white;
-  border: 2px solid $curious-blue;
-  background-color: $curious-blue;
+  border: 2px solid $Blue-500;
+  background-color: $Blue-500;
+
+  &:active {
+    background: $Blue-600;
+    border-color: $Blue-600;
+  }
+
+  &:hover {
+    border-color: $hover-confirm;
+    background-color: $hover-confirm;
+  }
+
+  &--disabled,
+  &[disabled] {
+    border-color: $hover-secondary;
+    background-color: $hover-secondary;
+  }
 }
 
 .btn-raised {
@@ -147,40 +174,11 @@
   }
 }
 
-// No longer used in flat design, remove when modal buttons done
-// div.wallet-btn {
-//   border: 1px solid rgb(91, 93, 103);
-//   border-radius: 2px;
-//   height: 30px;
-//   width: 75px;
-//   font-size: 0.8em;
-//   text-align: center;
-//   line-height: 25px;
-// }
-
-// .btn-red {
-//   background: rgba(254, 35, 17, 1);
-//   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
-// }
-
 button[disabled],
 input[type="submit"][disabled] {
   cursor: not-allowed;
   opacity: .5;
-  // background: rgba(197, 197, 197, 1);
-  // box-shadow: 0 3px 6px rgba(197, 197, 197, .36);
 }
-
-// button.spaced {
-//   margin: 2px;
-// }
-
-// button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
-//   transform: scale(1.1);
-// }
-// button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
-//   transform: scale(0.95);
-// }
 
 button.primary {
   padding: 8px 12px;
@@ -194,7 +192,6 @@ button.primary {
 
 .btn-light {
   padding: 8px 12px;
-  // background: #FFFFFF; // $bg-white
   box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
   color: #585d67; // TODO: make reusable light button color
   font-size: 1.1em;
