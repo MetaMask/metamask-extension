@@ -8,6 +8,8 @@ import {
   getIsMainnet,
   isBalanceCached,
   preferencesSelector,
+  getContractAccountOwner,
+  getUseContractAccount,
 } from '../../../selectors/selectors'
 import AccountListItem from './account-list-item.component'
 
@@ -23,5 +25,7 @@ function mapStateToProps (state) {
     nativeCurrency: getNativeCurrency(state),
     balanceIsCached: isBalanceCached(state),
     showFiat: (isMainnet || !!showFiatInTestnets),
+    useContractAccount: getUseContractAccount(state),
+    contractAccountOwner: getContractAccountOwner(state),
   }
 }

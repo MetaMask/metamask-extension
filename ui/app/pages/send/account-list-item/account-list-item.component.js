@@ -20,6 +20,8 @@ export default class AccountListItem extends Component {
     icon: PropTypes.node,
     balanceIsCached: PropTypes.bool,
     showFiat: PropTypes.bool,
+    useContractAccount: PropTypes.bool,
+    contractAccountOwner: PropTypes.string,
   };
 
   static defaultProps = {
@@ -40,6 +42,8 @@ export default class AccountListItem extends Component {
       icon = null,
       balanceIsCached,
       showFiat,
+      useContractAccount,
+      contractAccountOwner,
     } = this.props
 
     const { name, address, balance } = account || {}
@@ -60,8 +64,14 @@ export default class AccountListItem extends Component {
 
         {icon && <div className="account-list-item__icon">{ icon }</div>}
 
+
       </div>
 
+      { useContractAccount && <div className="account-list-item__account-address">
+        { addressSlicer(checksumAddress(address))  } via { addressSlicer(checksumAddress(contractAccountOwner)) }
+      </div>}
+
+      {/* why is display address here and always false? */}
       {displayAddress && name && <div className="account-list-item__account-address">
         { checksumAddress(address) }
       </div>}

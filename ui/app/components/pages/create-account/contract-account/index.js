@@ -42,10 +42,10 @@ AccountImportSubview.prototype.render = function () {
             cursor: 'pointer',
             textDecoration: 'underline',
           },
-          // to do: link to some gnosis specific docs
+          // gnosis to do: link to some more specific gnosis docs
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+              url: 'https://safe.gnosis.io/',
             })
           },
         }, this.context.t('here')),

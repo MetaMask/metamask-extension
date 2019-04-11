@@ -864,7 +864,7 @@
     "message": "Import an account"
   },
   "importContractMsg": {
-    "message": "Importing a contract account that is controlled by your current selected account."
+    "message": "Import a contract account that is controlled by your current selected account. Learn more "
   },
   "importContractMsg2": {
     "message": "To import a contract account, first create a new contract account here with your metamask account as an owner."
