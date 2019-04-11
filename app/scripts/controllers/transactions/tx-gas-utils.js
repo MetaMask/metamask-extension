@@ -56,12 +56,11 @@ class TxGasUtil {
   */
   async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
-
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
 
-    // if it is, use that value
-    if (txMeta.gasLimitSpecified) {
+    // if it is, use that value, unless it's a modified tx
+    if (txMeta.gasLimitSpecified && !txMeta.type === "gnosis") {
       return txParams.gas
     }
 
@@ -77,16 +76,15 @@ class TxGasUtil {
       if (codeIsEmpty) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
 
-        // removing this for gnosis testing
-        // if (txParams.data) {
-        //   const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
-        //   // set error key so ui can display localized error message
-        //   err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+        if (txParams.data) {
+          const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+          // set error key so ui can display localized error message
+          err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
 
-        //   // set the response on the error so that we can see in logs what the actual response was
-        //   err.getCodeResponse = code
-        //   throw err
-        // }
+          // set the response on the error so that we can see in logs what the actual response was
+          err.getCodeResponse = code
+          throw err
+        }
 
         // This is a standard ether simple send, gas requirement is exactly 21k
         txParams.gas = SIMPLE_GAS_COST

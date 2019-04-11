@@ -56,7 +56,6 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const AccountsController = require('./controllers/accounts-controller')
-const ControlledKeyring = require('eth-controlled-keyring')
 
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -936,6 +935,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address])
 
+    // if use contract account, remove from accounts controller
+    if(this.preferencesController.useContractAccount) {
+      this.accountsController.clearAccounts()
+    }
+
     // Remove account from the keyring
     await this.keyringController.removeAccount(address)
     return address
@@ -983,26 +987,17 @@ module.exports = class MetamaskController extends EventEmitter {
     }
     await this.preferencesController.useContractAccount(true)
     await this.preferencesController.setSelectedContractAddress(newContract.address)
-
-    
-    // set the state
     await this.accountsController.getContractData()
     
-
-    const oldAccounts = await this.keyringController.getAccounts()
-
     const controlledKeyring = await this.keyringController.addNewKeyring('Controlled', newContract.address)
     const newAccounts = await controlledKeyring.getAccounts()
-    console.log('[import contract] new accounts after add keyring', newAccounts)
     
     const allAccounts = await this.keyringController.getAccounts()
-    console.log('[metamask controller] all accounts after adding keyring', allAccounts)
 
-    // to do: redo number naming
+    // gnosis to do: redo number naming
     this.preferencesController.setAccountLabel(newContract.address, type + ' 1')
     this.preferencesController.setSelectedAddress(newContract.address)
 
-    //return an identities object..
     return newContract.address
   }
 
@@ -1011,7 +1006,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * 
    */
   async disableContractAccount () {
-    console.log('[metamask controller] dont use contract account')
     await this.preferencesController.useContractAccount(false)
   }
 
@@ -1019,7 +1013,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * 
    */
   async enableContractAccount () {
-    console.log('[metamask controller] enable contract account')
     await this.preferencesController.useContractAccount(true)
   }
 
