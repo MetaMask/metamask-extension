@@ -745,7 +745,6 @@ function importNewContract (type, args) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
-        console.log('[actions.js] result', contractAddress)  
         dispatch(actions.hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
@@ -753,11 +752,6 @@ function importNewContract (type, args) {
       })
     })
   }
-}
-
-// to do: as the address is typed in, detect ownership from existing accounts
-function lookupOwners (args) {
-  console.log('[actions.js] in lookupOwners', args)
 }
 
 // gnosis

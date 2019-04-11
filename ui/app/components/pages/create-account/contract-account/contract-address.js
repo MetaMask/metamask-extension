@@ -33,7 +33,6 @@ function mapDispatchToProps (dispatch) {
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
     setSelectedContractAddress: (address) => dispatch(actions.setSelectedContractAddress(address)),
-    // lookupOwners: (address) => dispatch(actions.lookupOwners(address)),
   }
 }
 
@@ -57,13 +56,8 @@ ContractImportView.prototype.render = function () {
         h('input.new-account-import-form__input-password', {
           type: 'text',
           id: 'contract-address-box',
-          //onInput: e => this.lookupOwners(e),
           onKeyPress: e => this.importContractOnEnter(e),
         }),
-
-      ]),
-
-      h('div', [ this.context.t('contractDetected', ["test"]),
 
       ]),
 
@@ -110,9 +104,6 @@ ContractImportView.prototype.addNewContractAccount = function () {
         history.push(DEFAULT_ROUTE)
         displayWarning(null)
       } else {
-        // to do: test inputting:
-        // - [ ] garbage 
-        // - [ ] an address that isn't a gnosis safe
         displayWarning('Error importing account.')
         setSelectedAddress(firstAddress)
       }

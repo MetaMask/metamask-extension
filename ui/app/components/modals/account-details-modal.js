@@ -5,10 +5,12 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
-const { getSelectedIdentity } = require('../../selectors')
+const { getSelectedIdentity, getUseContractAccount, getContractAccountOwner } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
+const ReadOnlyInput = require('../readonly-input')
+
 
 import Button from '../button'
 
@@ -17,6 +19,8 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
+    useContractAccount: getUseContractAccount(state),
+    contractAccountOwner: getContractAccountOwner(state),
   }
 }
 
@@ -54,6 +58,8 @@ AccountDetailsModal.prototype.render = function () {
     showExportPrivateKeyModal,
     setAccountLabel,
     keyrings,
+    useContractAccount,
+    contractAccountOwner,
   } = this.props
   const { name, address } = selectedIdentity
 
@@ -62,8 +68,8 @@ AccountDetailsModal.prototype.render = function () {
   })
 
   let exportPrivateKeyFeatureEnabled = true
-  // This feature is disabled for hardware wallets
-  if (keyring && keyring.type.search('Hardware') !== -1) {
+  // This feature is disabled for hardware wallets and contract accounts
+  if (keyring && keyring.type.search('Hardware') !== -1 || useContractAccount) {
     exportPrivateKeyFeatureEnabled = false
   }
 
@@ -80,6 +86,13 @@ AccountDetailsModal.prototype.render = function () {
           network: network,
         },
       }),
+
+      // gnosis to do : add the copy for key/owner and contract address
+      useContractAccount ? h(ReadOnlyInput, {
+        wrapperClass: 'ellip-address-wrapper',
+        inputClass: 'qr-ellip-address',
+        value: contractAccountOwner,
+      }): null,
 
       h('div.account-modal-divider'),
 
