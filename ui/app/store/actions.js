@@ -350,6 +350,9 @@ var actions = {
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
+
+  SET_SELECTED_SETTINGS_RPC_URL: 'SET_SELECTED_SETTINGS_RPC_URL',
+  setSelectedSettingsRpcUrl,
 }
 
 module.exports = actions
@@ -2714,5 +2717,12 @@ function setFirstTimeFlowType (type) {
       type: actions.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
     })
+  }
+}
+
+function setSelectedSettingsRpcUrl (newRpcUrl) {
+  return {
+    type: actions.SET_SELECTED_SETTINGS_RPC_URL,
+    value: newRpcUrl,
   }
 }

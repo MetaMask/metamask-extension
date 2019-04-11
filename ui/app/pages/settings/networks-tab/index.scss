@@ -4,9 +4,34 @@
     display: flex;
   }
 
+  &__network-form {
+    flex: 0.5 0 auto;
+    max-width: 343px;
+  }
+
+  &__network-form-label {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #000000;
+  }
+
+  &__networks-list {
+    flex: 0.5 0 auto;
+    max-width: 343px;
+  }
+
   &__networks-list-item {
     display: flex;
     padding: 13px 0px 13px 17px;
+
+    .menu-icon-circle {
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   &__networks-list-name {
@@ -17,9 +42,13 @@
     font-size: 16px;
     line-height: 23px;
     color: #6A737D;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
-  &_networks-list-name--selected {
+  &__networks-list-name--selected {
     font-weight: bold;
     color: #000000;
   }
