@@ -27,6 +27,7 @@ const {
   TRANSACTION_TYPE_RETRY,
   TRANSACTION_TYPE_STANDARD,
   TRANSACTION_STATUS_APPROVED,
+  TRANSACTION_TYPE_GNOSIS,
 } = require('./enums')
 
 const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
@@ -185,31 +186,34 @@ class TransactionController extends EventEmitter {
   */
 
   async addUnapprovedTransaction (txParams) {
+    let transactionType
+    let isContractAccountFlow = this.preferencesStore.getState().useContractAccount
     let originalTxParams = Object.assign({}, txParams)
     originalTxParams.originalData = originalTxParams.data
 
-    if (this.preferencesStore.getState().useContractAccount) {
+    if (isContractAccountFlow) {
       let modifiedTx = await this.accountsController.currentContractInstance.modifyTransactionOpts(txParams)
-      console.log('[tx controller] modified tx', modifiedTx)
-
+      transactionType = TRANSACTION_TYPE_GNOSIS
       txParams = modifiedTx
     }
     else {
-      console.log('[tx controller] dont use contract account')
+      transactionType = TRANSACTION_TYPE_STANDARD
     }
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+
     // Assert the from address is the selected address
-    if (normalizedTxParams.from !== this.getSelectedAddress()) {
+    if (normalizedTxParams.from !== this.getSelectedAddress() && !isContractAccountFlow) {
       throw new Error(`Transaction from address isn't valid for this account`)
     }
+
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
-      type: TRANSACTION_TYPE_STANDARD,
+      type: transactionType,
       transactionCategory,
       unmodifiedParams: originalTxParams,
     })
@@ -246,7 +250,7 @@ class TransactionController extends EventEmitter {
     txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
-    if (!gasPrice) {
+    if (!gasPrice || this.preferencesStore.useContractAccount) {
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))

@@ -348,6 +348,8 @@ class PreferencesController {
     this._updateTokens(address)
     this.store.updateState({ selectedAddress: address })
     const tokens = this.store.getState().tokens
+    // set useContractAccount based on current selected address
+    this.useContractAccount(this.getSelectedContractAddress() === address)
     return Promise.resolve(tokens)
   }
 
@@ -362,29 +364,36 @@ class PreferencesController {
   }
 
   /**
-  * 
+  * Sets the selectedContractAddress
   * @param {*} _address 
   */
   setSelectedContractAddress (_address) {
     const address = normalizeAddress(_address)
-    // to do: detect tokens in contract-account
-
     this.store.updateState({ selectedContractAddress: address })
   }
 
+   /**
+   * Getter for the `selectedContractAddress` property
+   *
+   * @returns {string} The hex address for the current in use or selected contract account
+   *
+   */
   getSelectedContractAddress () {
     return this.store.getState().selectedContractAddress
   }
 
-  // is setting it to null the correct way?
-  // or should i just set it to an empty string?
-  // or remove the key from the object entirely?
+  /**
+   * removes selected contract address
+   */
   clearSelectedContractAccount () {
     this.store.updateState({ selectedContractAddress: null })
   }
 
+  /**
+   * updates the useContractAccount flag for use in the UI and transaction modification
+   * @param {*} bool 
+   */
   useContractAccount (bool) {
-    console.log('[preferences controller] use contract account', bool)
     this.store.updateState({ useContractAccount: bool})
   }
 

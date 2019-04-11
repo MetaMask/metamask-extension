@@ -59,12 +59,11 @@ class TxGasUtil {
   */
   async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
     const txParams = txMeta.txParams
-
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
 
-    // if it is, use that value
-    if (txMeta.gasLimitSpecified) {
+    // if it is, use that value, unless it's a modified tx
+    if (txMeta.gasLimitSpecified && !txMeta.type === "gnosis") {
       return txParams.gas
     }
 

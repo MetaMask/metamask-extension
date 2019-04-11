@@ -1,4 +1,4 @@
-const GnosisSafe = require('../lib/contracts/gnosis-safe-v2')
+const GnosisSafe = require('../lib/contracts/rinkeby_safe')
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 
@@ -7,23 +7,20 @@ class AccountsController {
         const initState = extend({
         }, opts.initState)
 
+        // to do: workaround for network state 'loading'
         this.network = opts.network
         this.provider = opts.provider
         this.preferences = opts.preferences
         this.keyring = opts.keyring
 
         // supports one contract account for restore
-
-        // probably this restore code is why the tx works on real import but not on loading from store
-        // after refresh
         if (initState.contracts && Object.keys(initState.contracts).length != 0) {            
             let contractAddress = Object.keys(initState.contracts)[0]
             let controllingAccount = initState.contracts[contractAddress].controllingAccount
             let type = initState.contracts[contractAddress].type
 
-            console.log('[accounts controller] setting contract address')
             // set current contract address and instance
-            this.importContractAddress(type, [contractAddress], controllingAccount)
+            this.importContractAddress(type, contractAddress, controllingAccount)
         }
         else {
             // on fresh install of state
@@ -37,9 +34,10 @@ class AccountsController {
         let address
         if (inputAddress === 'remove' || inputAddress === 'clear') {
             this.clearAccounts()
-            // reject with an error
             return 
         }
+
+        // jp's personal testing
         else if (inputAddress === 'test') {
             // new rinkeby from gnosis react deployer
             address = '0xfd1144165c42089b6EB10aafF1988219Fd380186'
@@ -48,14 +46,13 @@ class AccountsController {
             address = '0x1dbbcfd8f07252bc4a468473191a5773848f4da7'
         }
         else if (inputAddress === 'mainnet') {
-            // need to checksum this
-            address = '0x203FEF062aa5050a4EB50C93fcFA9809d8785dd3'
+            address = '0x203fef062aa5050a4eb50c93fcfa9809d8785dd3'
         }
         else {
             address = inputAddress
         }
 
-        // currently gives rinkeby deployer instance
+        // currently gives rinkeby deployer instance from https://0100--safereact.review.gnosisdev.com/welcome/
         let contract = new GnosisSafe({
             address: address,
             preferences: this.preferences,
@@ -66,7 +63,6 @@ class AccountsController {
             type: type,
         })
 
-        // could set the state here instead of getContractData
         this.currentContractInstance = contract
         return contract
     }
@@ -75,10 +71,10 @@ class AccountsController {
      * calls contract instance's data collection method and sets the persistent state
      */
     async getContractData () {
+
         const contractData = await this.currentContractInstance.getContractData()
         this.contracts[this.currentContractInstance.address] = contractData
         this.store.updateState({ contracts: this.contracts })
-        console.log('[accounts controller] this.store after getContractData', this.store)
 
         return this.contracts
     }
@@ -92,22 +88,17 @@ class AccountsController {
     }
 
 
-    // expose this to the UI
-    // need to update the state here as well..
-    // marry this with the removal from keyring
     clearAccounts () {
-        console.log('[accounts controller] clear accounts')
         this.contracts = {}
         this.currentContractInstance = null
+
+        // disable contract account in preferences
         this.preferences.clearSelectedContractAccount()
         
-        // disable contract account in preferences
 
         // doesn't remove the accountscontroller from the metamask store
-        // but does remove all contract data..
+        // but does remove all contract data
         this.store.updateState ({ contracts: this.contracts })
-        console.log('[accounts controller] preferences store ', this.preferences.store)
-        console.log('[accounts controller] observable store', this.store)
     }
 }
 
