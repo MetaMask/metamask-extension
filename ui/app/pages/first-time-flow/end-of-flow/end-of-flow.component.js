@@ -71,7 +71,7 @@ export default class EndOfFlowScreen extends PureComponent {
           </a>.
         </div>
         <Button
-          type="confirm"
+          type="primary"
           className="first-time-flow__button"
           onClick={async () => {
             await completeOnboarding()

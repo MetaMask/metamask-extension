@@ -119,7 +119,7 @@ DepositEtherModal.prototype.renderRow = function ({
 
       !hideButton && h('div.deposit-ether-modal__buy-row__button', [
         h(Button, {
-          type: 'primary',
+          type: 'secondary',
           className: 'deposit-ether-modal__deposit-button',
           large: true,
           onClick: onButtonClick,

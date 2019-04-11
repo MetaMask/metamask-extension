@@ -203,25 +203,3 @@ button.primary {
   border: 1px solid #979797; // #TODO: make reusable light border color
   opacity: .5;
 }
-
-// TODO: cleanup: not used anywhere
-button.btn-thin {
-  border: 1px solid;
-  border-color: #4d4d4d;
-  color: #4d4d4d;
-  background: rgb(255, 174, 41);
-  border-radius: 4px;
-  min-width: 200px;
-  margin: 12px 0;
-  padding: 6px;
-  font-size: 13px;
-}
-
-.btn-tertiary {
-  border: 1px solid transparent;
-  border-radius: 2px;
-  background-color: transparent;
-  font-size: 16px;
-  line-height: 24px;
-  padding: 16px 42px;
-}

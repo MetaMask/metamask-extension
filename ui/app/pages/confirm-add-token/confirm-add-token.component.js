@@ -96,7 +96,7 @@ export default class ConfirmAddToken extends Component {
               { this.context.t('back') }
             </Button>
             <Button
-              type="primary"
+              type="secondary"
               large
               className="page-container__footer-button"
               onClick={() => {

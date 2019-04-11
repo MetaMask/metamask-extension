@@ -110,14 +110,14 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
     (privateKey
       ? (
           h(Button, {
-          type: 'primary',
+          type: 'secondary',
           large: true,
           className: 'export-private-key__button',
           onClick: () => hideModal(),
         }, this.context.t('done'))
       ) : (
           h(Button, {
-          type: 'primary',
+          type: 'secondary',
           large: true,
           className: 'export-private-key__button',
           onClick: () => this.exportAccountAndGetPrivateKey(this.state.password, address),

@@ -75,7 +75,7 @@ PrivateKeyImportView.prototype.render = function () {
         }, [this.context.t('cancel')]),
 
         h(Button, {
-          type: 'primary',
+          type: 'secondary',
           large: true,
           className: 'new-account-create-form__button',
           onClick: () => this.createNewKeychain(),

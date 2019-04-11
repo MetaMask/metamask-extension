@@ -87,7 +87,7 @@ export default class TransactionViewBalance extends PureComponent {
         {
           !selectedToken && (
             <Button
-              type="primary"
+              type="secondary"
               className="transaction-view-balance__button"
               onClick={() => {
                 metricsEvent({
@@ -105,7 +105,7 @@ export default class TransactionViewBalance extends PureComponent {
           )
         }
         <Button
-          type="primary"
+          type="secondary"
           className="transaction-view-balance__button"
           onClick={() => {
             metricsEvent({
