@@ -20,7 +20,6 @@ const {
   getPrimaryCurrency,
   getRecentBlocks,
   getSelectedAccount,
-  getSelectedAddress,
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
@@ -274,14 +273,6 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedAddress()', () => {
-    it('should', () => {
-      assert.equal(
-        getSelectedAddress(mockState),
-        '0xd85a4b6a394794842887b8284293d69163007bbb'
-      )
-    })
-  })
 
   describe('getSelectedIdentity()', () => {
     it('should return the identity object of the currently selected address', () => {

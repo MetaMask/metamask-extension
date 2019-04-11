@@ -5,6 +5,7 @@ const {
 } = require('../../../helpers/utils/conversion-util')
 const {
   getMetaMaskAccounts,
+  getSelectedAddress,
 } = require('../../../selectors/selectors')
 const {
   estimateGasPriceFromRecentBlocks,
@@ -33,7 +34,6 @@ const selectors = {
   getPrimaryCurrency,
   getRecentBlocks,
   getSelectedAccount,
-  getSelectedAddress,
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
@@ -147,12 +147,6 @@ function getSelectedAccount (state) {
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
-}
-
-function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
-
-  return selectedAddress
 }
 
 function getSelectedIdentity (state) {
