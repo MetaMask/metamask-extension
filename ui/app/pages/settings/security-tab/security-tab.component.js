@@ -101,7 +101,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              type="warning"
+              type="danger"
               large
               onClick={event => {
                 event.preventDefault()

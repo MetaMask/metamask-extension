@@ -17,6 +17,8 @@ const typeHash = {
   confirm: CLASSNAME_CONFIRM,
   raised: CLASSNAME_RAISED,
   'first-time': CLASSNAME_FIRST_TIME,
+  warning: 'btn-warning',
+  danger: 'btn-danger',
 }
 
 export default class Button extends Component {

@@ -6,19 +6,15 @@
   }
 
   &__advanced-link {
-    color: $curious-blue;
+    @extend %small-link;
     padding-left: 5px;
   }
 
   &__rpc-save-button {
     align-self: flex-end;
     padding: 5px;
-    text-transform: uppercase;
-    color: $dusty-gray;
     cursor: pointer;
     width: 25%;
-    min-width: 80px;
-    height: 33px;
   }
 
   &__button--red {
@@ -32,20 +28,6 @@
 
     &:hover {
       border-color: $monzo;
-    }
-  }
-
-  &__button--orange {
-    border-color: lighten($ecstasy, 20%);
-    color: $ecstasy;
-
-    &:active {
-      background: lighten($ecstasy, 40%);
-      border-color: $ecstasy;
-    }
-
-    &:hover {
-      border-color: $ecstasy;
     }
   }
 

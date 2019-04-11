@@ -1,12 +1,14 @@
 /*
   Buttons
  */
+
 $hover-secondary: #B0D7F2;
 $hover-default: #B3B3B3;
 $hover-confirm: #0372C3;
+$hover-red: #FEB6BF;
+$hover-orange: #FFD3B5;
 
-
-.button {
+%button {
   @include h6;
   line-height: 1.25rem;
   padding: .75rem 1rem;
@@ -17,7 +19,7 @@ $hover-confirm: #0372C3;
   border-radius: 6px;
   width: 100%;
   outline: none;
-  transition: border-color .3s ease;
+  transition: border-color .3s ease, background-color .3s ease;
 
   &--disabled,
   &[disabled] {
@@ -25,6 +27,38 @@ $hover-confirm: #0372C3;
     opacity: .5;
     pointer-events: none;
   }
+}
+
+%link {
+  @include h4;
+  color: $Blue-500;
+  line-height: 1.25rem;
+  cursor: pointer;
+
+  &:hover {
+    color: $Blue-400;
+  }
+
+  &:active {
+    color: $Blue-600;
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: 1;
+    pointer-events: none;
+    color: $hover-secondary;
+  }
+}
+
+%small-link {
+  @extend %link;
+  @include h6;
+}
+
+.button {
+  @extend %button;
 }
 
 .btn-secondary {
@@ -48,16 +82,42 @@ $hover-confirm: #0372C3;
 }
 
 .btn-warning {
-  color: $monzo;
-  border: 2px solid lighten($monzo, 40%);
+  color: $Orange-500;
+  border: 2px solid $hover-orange;
 
   &:active {
-    background: lighten($monzo, 55%);
-    border-color: $monzo;
+    background: $Orange-000;
+    border-color: $Orange-500;
   }
 
   &:hover {
-    border-color: $monzo;
+    border-color: $Orange-500;
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    color: $hover-orange;
+  }
+}
+
+.btn-danger {
+  color: $Red-500;
+  border: 2px solid $hover-red;
+
+  &:active {
+    background: $Red-000;
+    border-color: $Red-500;
+  }
+
+  &:hover {
+    border-color: $Red-500;
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    color: $hover-red;
   }
 }
 
@@ -103,6 +163,14 @@ $hover-confirm: #0372C3;
   }
 }
 
+.btn--large {
+  min-height: 54px;
+}
+
+/**
+  All Buttons styles are deviations from design guide
+ */
+
 .btn-raised {
   color: $curious-blue;
   background-color: $white;
@@ -126,54 +194,6 @@ $hover-confirm: #0372C3;
   border-radius: 0;
 }
 
-.btn--large {
-  min-height: 54px;
-}
-
-.btn-green {
-  background-color: #02c9b1; // TODO: reusable color in colors.css
-}
-
-.btn-clear {
-  background: $white;
-  text-align: center;
-  padding: .8rem 1rem;
-  color: $curious-blue;
-  border: 2px solid $spindle;
-  border-radius: 4px;
-  font-size: .85rem;
-  font-weight: 400;
-  transition: border-color .3s ease;
-
-  &:hover {
-    border-color: $curious-blue;
-  }
-
-  &--disabled,
-  &[disabled] {
-    cursor: auto;
-    opacity: .5;
-    pointer-events: none;
-  }
-}
-
-.btn-cancel {
-  background: $white;
-  text-align: center;
-  padding: .9rem 1rem;
-  color: $scorpion;
-  border: 2px solid $dusty-gray;
-  border-radius: 4px;
-  font-size: .85rem;
-  font-weight: 400;
-  transition: border-color .3s ease;
-  width: 100%;
-
-  &:hover {
-    border-color: $scorpion;
-  }
-}
-
 button[disabled],
 input[type="submit"][disabled] {
   cursor: not-allowed;
@@ -188,18 +208,4 @@ button.primary {
   font-size: 1.1em;
   font-family: Roboto;
   text-transform: uppercase;
-}
-
-.btn-light {
-  padding: 8px 12px;
-  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
-  color: #585d67; // TODO: make reusable light button color
-  font-size: 1.1em;
-  font-family: Roboto;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 20px;
-  border-radius: 2px;
-  border: 1px solid #979797; // #TODO: make reusable light border color
-  opacity: .5;
 }

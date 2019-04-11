@@ -121,7 +121,7 @@ export default class AdvancedTab extends PureComponent {
                 { t(this.state.showOptions ? 'hideAdvancedOptions' : 'showAdvancedOptions') }
               </span>
               <button
-                className="button btn-primary settings-tab__rpc-save-button"
+                className="button btn-secondary settings-tab__rpc-save-button"
                 onClick={e => {
                   e.preventDefault()
                   this.validateRpc(newRpc, chainId, ticker, nickname)
@@ -251,7 +251,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              type="secondary"
+              type="warning"
               large
               className="settings-tab__button--orange"
               onClick={event => {
