@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
-import c from 'classnames';
 import SendRowWrapper from '../send-row-wrapper'
 import Identicon from '../../../../components/ui/identicon/identicon.component'
 import contractMap from 'eth-contract-metadata'
 import TokenBalance from '../../../../components/ui/token-balance'
+import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
+import {PRIMARY} from '../../../../helpers/constants/common'
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -16,6 +17,10 @@ export default class SendAssetRow extends Component {
         symbol: PropTypes.string,
       })
     ).isRequired,
+    accounts: PropTypes.object.isRequired,
+    selectedAddress: PropTypes.string.isRequired,
+    selectedTokenAddress: PropTypes.string.isRequired,
+    setSelectedToken: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -24,63 +29,40 @@ export default class SendAssetRow extends Component {
 
   state = {
     isShowingDropdown: false,
-    selectedTokenAddress: '',
-    tokenInput: '',
   }
 
   openDropdown = () => this.setState({ isShowingDropdown: true })
 
   closeDropdown = () => this.setState({ isShowingDropdown: false })
 
-  handleTokenInputChange = e => {
+  selectToken = address => {
     this.setState({
-      tokenInput: e.target.value,
-    })
+      isShowingDropdown: false,
+    }, () => this.props.setSelectedToken(address))
   }
 
   render () {
     const { t } = this.context
-    const { isShowingDropdown, selectedTokenAddress } = this.state
 
     return (
       <SendRowWrapper label={`${t('asset')}:`}>
         <div className="send-v2__asset-dropdown">
-          { selectedTokenAddress && !isShowingDropdown ? this.renderSelectedToken() : this.renderInput() }
+          { this.renderSelectedToken() }
           { this.renderAssetDropdown() }
         </div>
       </SendRowWrapper>
     )
   }
 
-  renderInput () {
-    const { t } = this.context
-
-    return (
-      <div
-        className={c('send-v2__asset-dropdown__input-wrapper', {
-          'send-v2__asset-dropdown__input-wrapper--opened': this.state.isShowingDropdown,
-        })}
-      >
-        <input
-          type="text"
-          placeholder={t('selectAnAsset')}
-          className="send-v2__asset-dropdown__input"
-          onFocus={this.openDropdown}
-          onChange={this.handleTokenInputChange}
-          value={this.state.tokenInput}
-        />
-      </div>
-    )
-  }
-
   renderSelectedToken () {
-    const { selectedTokenAddress: address } = this.state;
+    const { selectedTokenAddress } = this.props
+    const token = this.props.tokens.find(({ address }) => address === selectedTokenAddress)
     return (
       <div
         className="send-v2__asset-dropdown__input-wrapper"
-        onClick={() => this.setState({ isShowingDropdown: true })}
+        onClick={this.openDropdown}
       >
-        { this.renderAsset({ address }) }
+        { token ? this.renderAsset(token) : this.renderEth() }
       </div>
     )
   }
@@ -93,37 +75,65 @@ export default class SendAssetRow extends Component {
           onClick={this.closeDropdown}
         />
         <div className="send-v2__asset-dropdown__list">
+          { this.renderEth() }
           { this.props.tokens.map(token => this.renderAsset(token)) }
         </div>
       </div>
     )
   }
 
-  renderAsset ({ address }) {
+  renderEth () {
+    const { t } = this.context
+    const { accounts, selectedAddress } = this.props
+
+    const balanceValue = accounts[selectedAddress] ? accounts[selectedAddress].balance : ''
+
+    return (
+      <div
+        className="send-v2__asset-dropdown__asset"
+        onClick={() => this.selectToken('')}
+      >
+        <div className="send-v2__asset-dropdown__asset-icon">
+          <Identicon diameter={36} />
+        </div>
+        <div className="send-v2__asset-dropdown__asset-data">
+          <div className="send-v2__asset-dropdown__symbol">ETH</div>
+          <div className="send-v2__asset-dropdown__name">
+            <span className="send-v2__asset-dropdown__name__label">{`${t('balance')}:`}</span>
+            <UserPreferencedCurrencyDisplay
+              value={balanceValue}
+              type={PRIMARY}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
+  renderAsset ({ address, symbol }) {
+    const { t } = this.context
 
     const token = contractMap[ethUtil.toChecksumAddress(address)] || {}
-    const { name } = token
 
     return (
       <div
         key={address} className="send-v2__asset-dropdown__asset"
-        onClick={() => this.setState({
-          selectedTokenAddress: address,
-          isShowingDropdown: false,
-        })}
+        onClick={() => this.selectToken(address)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          <Identicon address={address} diameter={18} />
+          <Identicon address={address} diameter={36} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">
+            { symbol }
+          </div>
+          <div className="send-v2__asset-dropdown__name">
+            <span className="send-v2__asset-dropdown__name__label">{`${t('balance')}:`}</span>
             <TokenBalance
               token={token}
               withSymbol
             />
-          </div>
-          <div className="send-v2__asset-dropdown__name">
-            {name}
           </div>
         </div>
       </div>

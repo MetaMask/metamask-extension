@@ -639,6 +639,7 @@
     &__asset {
       display: flex;
       flex-flow: row nowrap;
+      align-items: center;
       padding: 10px 8px;
       cursor: pointer;
 
@@ -665,7 +666,13 @@
     }
 
     &__name {
+      display: flex;
+      flex-flow: row nowrap;
       font-size: 12px;
+
+      &__label {
+        margin-right: .25rem;
+      }
     }
 
     &__close-area {
