@@ -1,42 +1,49 @@
-import SecurityTab from './networks-tab.component'
+import NetworksTab from './networks-tab.component'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  displayWarning,
-  revealSeedConfirmation,
-  setFeatureFlag,
-  showModal,
-  setParticipateInMetaMetrics,
+  // displayWarning,
+  // revealSeedConfirmation,
+  // setFeatureFlag,
+  // showModal,
+  // setParticipateInMetaMetrics,
 } from '../../../store/actions'
 
+const defaultNetworks = [
+  { labelKey: 'mainnet', iconColor: '#29B6AF', providerType: 'mainnet' },
+  { labelKey: 'ropsten', iconColor: '#FF4A8D', providerType: 'ropsten' },
+  { labelKey: 'kovan', iconColor: '#9064FF', providerType: 'kovan' },
+  { labelKey: 'rinkeby', iconColor: '#F6C343', providerType: 'rinkeby' },
+  { labelKey: 'localhost', iconColor: 'white', border: '1px solid #6A737D', providerType: 'localhost' },
+]
+
 const mapStateToProps = state => {
-  const { appState: { warning }, metamask } = state
   const {
-    featureFlags: {
-      privacyMode,
-    } = {},
-    participateInMetaMetrics,
-  } = metamask
+    frequentRpcListDetail,
+  } = state.metamask
+
+  const frequentRpcNetworkListDetails = frequentRpcListDetail.map(rpc => {
+    return {
+      label: rpc.nickname,
+      iconColor: '#6A737D',
+      providerType: 'rpc',
+      rpcUrl: rpc.rpcUrl
+    }
+  })
 
   return {
-    warning,
-    privacyMode,
-    participateInMetaMetrics,
+    networksToRender: [ ...defaultNetworks, ...frequentRpcNetworkListDetails ],
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    displayWarning: warning => dispatch(displayWarning(warning)),
-    revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
-    setPrivacyMode: enabled => dispatch(setFeatureFlag('privacyMode', enabled)),
-    showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    selectNetwork: () => {},
   }
 }
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
-)(SecurityTab)
+)(NetworksTab)
