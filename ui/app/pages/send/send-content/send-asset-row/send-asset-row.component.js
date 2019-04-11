@@ -111,10 +111,9 @@ export default class SendAssetRow extends Component {
   }
 
 
-  renderAsset ({ address, symbol }) {
+  renderAsset (token) {
+    const { address, symbol } = token
     const { t } = this.context
-
-    const token = contractMap[ethUtil.toChecksumAddress(address)] || {}
 
     return (
       <div

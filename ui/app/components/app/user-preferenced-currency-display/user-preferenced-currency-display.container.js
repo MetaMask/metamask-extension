@@ -52,7 +52,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     numberOfDecimals = propsNumberOfDecimals || ethNumberOfDecimals || 6
     prefix = propsPrefix || ethPrefix
   }
-  console.log(ownProps)
+
   return {
     ...restStateProps,
     ...dispatchProps,
