@@ -33,6 +33,23 @@
     }
   }
 
+  &__sub-header {
+    height: 72px;
+    border-bottom: 1px solid #D8D8D8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__sub-header-text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 24px;
+    color: black;
+  }
+
   &__back-button {
     display: none;
 

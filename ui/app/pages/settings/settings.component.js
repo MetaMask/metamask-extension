@@ -6,6 +6,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
+import NetworksTab from './networks-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
@@ -16,6 +17,7 @@ import {
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../helpers/constants/routes'
 
 const ROUTES_TO_I18N_KEYS = {
@@ -104,6 +106,7 @@ class SettingsPage extends PureComponent {
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
+          { content: t('networks'), description: t('securitySettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
         isActive={key => {
@@ -134,6 +137,11 @@ class SettingsPage extends PureComponent {
           exact
           path={ADVANCED_ROUTE}
           component={AdvancedTab}
+        />
+        <Route
+          exact
+          path={NETWORKS_ROUTE}
+          component={NetworksTab}
         />
         <Route
           exact
