@@ -9,6 +9,7 @@ import SendFromRow from '../send-from-row/send-from-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendToRow from '../send-to-row/send-to-row.container'
 import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
+import SendAssetRow from '../send-asset-row/send-asset-row.container';
 
 describe('SendContent Component', function () {
   let wrapper
@@ -32,9 +33,10 @@ describe('SendContent Component', function () {
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
       assert(PageContainerContentChild.childAt(0).is(SendFromRow))
       assert(PageContainerContentChild.childAt(1).is(SendToRow))
-      assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
-      assert(PageContainerContentChild.childAt(3).is(SendGasRow))
-      assert(PageContainerContentChild.childAt(4).is(SendHexDataRow))
+      assert(PageContainerContentChild.childAt(2).is(SendAssetRow))
+      assert(PageContainerContentChild.childAt(3).is(SendAmountRow))
+      assert(PageContainerContentChild.childAt(4).is(SendGasRow))
+      assert(PageContainerContentChild.childAt(5).is(SendHexDataRow))
     })
 
     it('should not render the SendHexDataRow if props.showHexData is false', () => {
@@ -42,9 +44,10 @@ describe('SendContent Component', function () {
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
       assert(PageContainerContentChild.childAt(0).is(SendFromRow))
       assert(PageContainerContentChild.childAt(1).is(SendToRow))
-      assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
-      assert(PageContainerContentChild.childAt(3).is(SendGasRow))
-      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
+      assert(PageContainerContentChild.childAt(2).is(SendAssetRow))
+      assert(PageContainerContentChild.childAt(3).is(SendAmountRow))
+      assert(PageContainerContentChild.childAt(4).is(SendGasRow))
+      assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
   })
 })

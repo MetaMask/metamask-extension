@@ -38,6 +38,7 @@ function constructUpdatedTx ({
 }) {
   const unapprovedTx = unapprovedTxs[editingTransactionId]
   const txParamsData = unapprovedTx.txParams.data ? unapprovedTx.txParams.data : data
+
   const editingTx = {
     ...unapprovedTx,
     txParams: Object.assign(
@@ -64,8 +65,6 @@ function constructUpdatedTx ({
       to: selectedToken.address,
       data,
     }))
-  } else {
-    delete editingTx.txParams.data
   }
 
   if (typeof editingTx.txParams.data === 'undefined') {

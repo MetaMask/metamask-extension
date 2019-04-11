@@ -154,19 +154,19 @@ function reduceMetamask (state, action) {
       return newState
 
     case actions.SET_SELECTED_TOKEN:
+      newState = extend(metamaskState, {
+        selectedTokenAddress: action.value,
+      })
       const newSend = extend(metamaskState.send)
 
-      if (!action.value) {
+      if (metamaskState.send.editingTransactionId && !action.value) {
         delete newSend.token
         newSend.tokenBalance = null
         newSend.balance = '0'
       }
 
-      return {
-        ...metamaskState,
-        selectedTokenAddress: action.value,
-        send: newSend,
-      }
+      newState.send = newSend
+      return newState
 
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account

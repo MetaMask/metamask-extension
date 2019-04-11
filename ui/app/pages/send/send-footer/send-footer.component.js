@@ -71,7 +71,6 @@ export default class SendFooter extends Component {
 
     // TODO: add nickname functionality
     addToAddressBookIfNew(to, toAccounts)
-
     const promise = editingTransactionId
       ? update({
         amount,

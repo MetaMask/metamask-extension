@@ -149,7 +149,6 @@ describe('send-footer utils', () => {
           },
         },
       })
-
       assert.deepEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
