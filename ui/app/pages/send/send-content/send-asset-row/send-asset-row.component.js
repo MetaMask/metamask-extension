@@ -38,7 +38,9 @@ export default class SendAssetRow extends Component {
   selectToken = address => {
     this.setState({
       isShowingDropdown: false,
-    }, () => this.props.setSelectedToken(address))
+    }, () => {
+      this.props.setSelectedToken(address)
+    })
   }
 
   render () {

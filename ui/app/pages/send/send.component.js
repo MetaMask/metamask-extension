@@ -163,8 +163,15 @@ export default class SendTransactionScreen extends PersistentForm {
       }
     }
 
-    if (!prevSelectedToken && selectedToken) {
-      this.updateSendToken()
+    const prevTokenAddress = prevSelectedToken && prevSelectedToken.address
+    const selectedTokenAddress = selectedToken && selectedToken.address
+
+    if (selectedTokenAddress && prevTokenAddress !== selectedTokenAddress) {
+      updateSendTokenBalance({
+        selectedToken,
+        tokenContract,
+        address,
+      })
     }
   }
 

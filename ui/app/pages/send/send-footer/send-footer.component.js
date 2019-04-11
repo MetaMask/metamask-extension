@@ -71,6 +71,7 @@ export default class SendFooter extends Component {
 
     // TODO: add nickname functionality
     addToAddressBookIfNew(to, toAccounts)
+
     const promise = editingTransactionId
       ? update({
         amount,
@@ -130,6 +131,7 @@ export default class SendFooter extends Component {
   }
 
   render () {
+    console.log(this.props.selectedToken)
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}

@@ -64,6 +64,8 @@ function constructUpdatedTx ({
       to: selectedToken.address,
       data,
     }))
+  } else {
+    delete editingTx.txParams.data
   }
 
   if (typeof editingTx.txParams.data === 'undefined') {

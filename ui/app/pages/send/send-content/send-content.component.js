@@ -19,8 +19,6 @@ export default class SendContent extends Component {
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
-  isEditing = () => !!this.props.editingTransactionId
-
   render () {
     return (
       <PageContainerContent>
@@ -30,7 +28,7 @@ export default class SendContent extends Component {
             updateGas={this.updateGas}
             scanQrCode={ _ => this.props.scanQrCode()}
           />
-          { !this.isEditing() && <SendAssetRow /> }
+          <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
           {(this.props.showHexData && (
