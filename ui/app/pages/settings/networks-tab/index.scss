@@ -1,0 +1,26 @@
+.networks-tab {
+  &__content {
+    margin-top: 24px;
+    display: flex;
+  }
+
+  &__networks-list-item {
+    display: flex;
+    padding: 13px 0px 13px 17px;
+  }
+
+  &__networks-list-name {
+    margin-left: 11px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    color: #6A737D;
+  }
+
+  &_networks-list-name--selected {
+    font-weight: bold;
+    color: #000000;
+  }
+}
