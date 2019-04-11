@@ -14,9 +14,12 @@ export default class SendContent extends Component {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
     showHexData: PropTypes.bool,
+    editingTransactionId: PropTypes.string,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
+
+  isEditing = () => !!this.props.editingTransactionId
 
   render () {
     return (
@@ -27,7 +30,7 @@ export default class SendContent extends Component {
             updateGas={this.updateGas}
             scanQrCode={ _ => this.props.scanQrCode()}
           />
-          <SendAssetRow />
+          { !this.isEditing() && <SendAssetRow /> }
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
           {(this.props.showHexData && (
