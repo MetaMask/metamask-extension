@@ -112,6 +112,7 @@ export default class SendTransactionScreen extends PersistentForm {
       gasTotal: prevGasTotal,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
+      selectedToken: prevSelectedToken,
     } = prevProps
 
     const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
@@ -161,6 +162,10 @@ export default class SendTransactionScreen extends PersistentForm {
         this.updateGas()
       }
     }
+
+    if (!prevSelectedToken && selectedToken) {
+      this.updateSendToken()
+    }
   }
 
   componentDidMount () {
@@ -171,18 +176,7 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   componentWillMount () {
-    const {
-      from: { address },
-      selectedToken,
-      tokenContract,
-      updateSendTokenBalance,
-    } = this.props
-
-    updateSendTokenBalance({
-      selectedToken,
-      tokenContract,
-      address,
-    })
+    this.updateSendToken()
 
     // Show QR Scanner modal  if ?scan=true
     if (window.location.search === '?scan=true') {
@@ -197,6 +191,21 @@ export default class SendTransactionScreen extends PersistentForm {
 
   componentWillUnmount () {
     this.props.resetSendState()
+  }
+
+  updateSendToken () {
+    const {
+      from: { address },
+      selectedToken,
+      tokenContract,
+      updateSendTokenBalance,
+    } = this.props
+
+    updateSendTokenBalance({
+      selectedToken,
+      tokenContract,
+      address,
+    })
   }
 
   render () {
