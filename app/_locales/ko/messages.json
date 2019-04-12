@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "계약 상호 작용"
   },
-  "clearApprovalData": {
-    "message": "승인 데이터 삭제"
-  },
   "reject": {
     "message": "거부"
   },
@@ -244,9 +241,6 @@
   },
   "connect": {
     "message": "연결"
-  },
-  "connectRequest": {
-    "message": "연결 요청"
   },
   "connectingTo": {
     "message": "$1에 연결"

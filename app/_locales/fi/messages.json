@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
-  "clearApprovalData": {
-    "message": "Tyhjennä yksityisyystiedot"
-  },
   "reject": {
     "message": "Hylkää"
   },
@@ -244,9 +241,6 @@
   },
   "connect": {
     "message": "Muodosta yhteys"
-  },
-  "connectRequest": {
-    "message": "Yhdistämispyyntö"
   },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "

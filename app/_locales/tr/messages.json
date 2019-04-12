@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
   },
-  "clearApprovalData": {
-    "message": "Onay verilerini temizle"
-  },
   "reject": {
     "message": "Reddetmek"
   },

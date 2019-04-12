@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearApprovalData": {
-    "message": "Εκκαθάριση Δεδομένων Απορρήτου"
-  },
   "reject": {
     "message": "Απόρριψη"
   },
@@ -244,9 +241,6 @@
   },
   "connect": {
     "message": "Σύνδεση"
-  },
-  "connectRequest": {
-    "message": "Αίτημα Σύνδεσης"
   },
   "connectingTo": {
     "message": "Σύνδεση με $1"

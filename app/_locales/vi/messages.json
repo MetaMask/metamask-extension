@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
   },
-  "clearApprovalData": {
-    "message": "Xóa dữ liệu phê duyệt"
-  },
   "reject": {
     "message": "Từ chối"
   },

@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
   },
-  "clearApprovalData": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
   },
@@ -709,9 +706,6 @@
   },
   "connect": {
     "message": "Подключиться"
-  },
-  "connectRequest": {
-    "message": "Запрос на подключение"
   },
   "connectingTo": {
     "message": "Подключение к $1"

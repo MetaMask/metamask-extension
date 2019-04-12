@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
   },
-  "clearApprovalData": {
-    "message": "Futa Data za Faragha"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -241,9 +238,6 @@
   },
   "connect": {
     "message": "Unganisha"
-  },
-  "connectRequest": {
-    "message": "Unganisha Ombi"
   },
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"

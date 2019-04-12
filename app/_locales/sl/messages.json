@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interakcija s pogodbo"
   },
-  "clearApprovalData": {
-    "message": "Počisti podatke o odobritvi"
-  },
   "reject": {
     "message": "Zavrni"
   },
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "Poveži"
-  },
-  "connectRequest": {
-    "message": "Zahteva za povezavo"
   },
   "connectingTo": {
     "message": "Povezovanje na $1"
