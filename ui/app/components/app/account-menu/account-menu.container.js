@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import {
   toggleAccountMenu,
   showAccountDetail,
+  selectApprovedAccount,
   hideSidebar,
   lockMetamask,
   hideWarning,
@@ -11,18 +12,22 @@ import {
   showInfoPage,
   showModal,
 } from '../../../store/actions'
-import { getMetaMaskAccounts } from '../../../selectors/selectors'
+import { getMetaMaskAccounts, getActiveTab } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
-  const { metamask: { selectedAddress, isAccountMenuOpen, keyrings, identities } } = state
+  const { metamask: {
+    selectedAddress, isAccountMenuOpen, keyrings, identities, isUnlocked,
+  } } = state
 
   return {
-    selectedAddress,
-    isAccountMenuOpen,
-    keyrings,
-    identities,
     accounts: getMetaMaskAccounts(state),
+    activeTab: getActiveTab(state),
+    identities,
+    isAccountMenuOpen,
+    isUnlocked,
+    keyrings,
+    selectedAddress,
   }
 }
 
@@ -52,6 +57,9 @@ function mapDispatchToProps (dispatch) {
     },
     showRemoveAccountConfirmationModal: identity => {
       return dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
+    },
+    selectApprovedAccount: origin => {
+      dispatch(selectApprovedAccount(origin))
     },
   }
 }

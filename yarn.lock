@@ -13872,6 +13872,11 @@ interpret@^1.2.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
   integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
+intersect-objects@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/intersect-objects/-/intersect-objects-1.0.0.tgz#b7630d28994b89b0f04d44728106136549ce816e"
+  integrity sha512-MS1xypHKJhWopnJgn4IbitVvt2vFy2KjINQJAPhAtDejZ+ZbMDfyPc6JsS/mWFRt9Eoku4A4usE4f2loEOoeKQ==
+
 into-stream@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/into-stream/-/into-stream-3.1.0.tgz#96fb0a936c12babd6ff1752a17d05616abd094c6"
@@ -17216,7 +17221,7 @@ lodash@4.17.14, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lo
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.14.tgz#9ce487ae66c96254fe20b599f21b6816028078ba"
   integrity sha512-mmKYbW3GLuJeX+iGP+Y7Gp1AiGHGbXHCOh/jZmrawMmsE7MS4znI3RL2FsjbqOyMayHInjOeykW7PEajUk1/xw==
 
-lodash@=3.10.1, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
+lodash@=3.10.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -17828,18 +17833,18 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-3.0.0.tgz#3b9d4bae6f67962b6a7b1a9ee1efaf424f67b6f4"
-  integrity sha512-44bBCbQwcFF/XGaXSweCWHJaslKhJEFgvcHdxZf9Fm1QfK7VN4U3iAI0BVOLAIkRg0xV3w7xYGLpx2cM1BU7Qw==
+metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
+  version "2.0.1"
+  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/2a3ee943f64a3a573d3025be37ed8e1a62ba97ef"
   dependencies:
-    json-rpc-engine "^5.1.3"
+    json-rpc-engine "^5.0.0"
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
+    obs-store "^4.0.1"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
+    through2 "^2.0.3"
 
 metamask-logo@^2.1.4:
   version "2.1.4"
@@ -18492,6 +18497,11 @@ nanoid@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.0.3.tgz#dde999e173bc9d7bd2ee2746b89909ade98e075e"
   integrity sha512-NbaoqdhIYmY6FXDRB4eYtDVC9Z9eCbn8TyaiC16LNKtpPv/aqa0tOPD8y6gNE4yUNnaZ7LLhYtXOev/6+cBtfw==
+
+nanoid@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.6.tgz#0665418f692e54cf44f34d4010761f3240a03314"
+  integrity sha512-2NDzpiuEy3+H0AVtdt8LoFi7PnqkOnIzYmJQp7xsEU6VexLluHQwKREuiz57XaQC5006seIadPrIZJhyS2n7aw==
 
 nanomatch@^1.2.9:
   version "1.2.9"
@@ -19294,7 +19304,7 @@ oboe@2.1.4:
   dependencies:
     http-https "^1.0.0"
 
-obs-store@^4.0.3:
+obs-store@^4.0.1, obs-store@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/obs-store/-/obs-store-4.0.3.tgz#b632ec7814baa604fae084a4c97e87c0b7a6d14c"
   integrity sha512-+mm13kCRDv6IcvUDKTw0LIy5+dQhIktYaR/RwwZUFzOTi/fjMaNBnk42Adb94qZqJ00qWkjhQSZH7MXlKnTi8A==
@@ -23217,6 +23227,21 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
+rpc-cap@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-0.18.0.tgz#a3852900506b286c93ba8ae811b54925bfb3d7f0"
+  integrity sha512-GIoDJOdVZRi/EFSPlccZxveE+SVszZhZzuNmlzlXX7YPNwTY656/wVXQCo4LUdrpIFojHhQVmQp5kBw7QrSbmA==
+  dependencies:
+    clone "^2.1.2"
+    eth-json-rpc-errors "^2.0.0"
+    fast-deep-equal "^2.0.1"
+    gaba "^1.6.0"
+    intersect-objects "^1.0.0"
+    is-subset "^0.1.1"
+    json-rpc-engine "^5.1.3"
+    obs-store "^4.0.3"
+    uuid "^3.3.2"
+
 rsa-pem-to-jwk@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/rsa-pem-to-jwk/-/rsa-pem-to-jwk-1.1.3.tgz#245e76bdb7e7234cfee7ca032d31b54c38fab98e"
@@ -23351,6 +23376,11 @@ safe-json-parse@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/safe-json-parse/-/safe-json-parse-1.0.1.tgz#3e76723e38dfdda13c9b1d29a1e07ffee4b30b57"
   integrity sha1-PnZyPjjf3aE8mx0poeB//uSzC1c=
+
+safe-json-stringify@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/safe-json-stringify/-/safe-json-stringify-1.2.0.tgz#356e44bc98f1f93ce45df14bcd7c01cda86e0afd"
+  integrity sha512-gH8eh2nZudPQO6TytOvbxnuhYBOvDBBLW52tz5q6X58lJcd/tkmqFR+5Z9adS8aJtURSXWThWy/xJtJwixErvg==
 
 safe-regex@^1.1.0:
   version "1.1.0"
@@ -26765,7 +26795,12 @@ uuid@^2.0.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
 
-uuid@^3.3.3:
+uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.2.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
+
+uuid@^3.3.2, uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==

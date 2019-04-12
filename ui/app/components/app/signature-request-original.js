@@ -12,14 +12,13 @@ const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
 const { ObjectInspector } = require('react-inspector')
 
-import AccountListItem from '../../pages/send/account-list-item/account-list-item.component'
+import AccountDropdownMini from '../ui/account-dropdown-mini'
 
 const actions = require('../../store/actions')
 const { conversionUtil } = require('../../helpers/utils/conversion-util')
 
 const {
   getSelectedAccount,
-  getCurrentAccountWithSendEtherInfo,
   getSelectedAddress,
   conversionRateSelector,
 } = require('../../selectors/selectors.js')
@@ -29,10 +28,14 @@ import Button from '../ui/button'
 
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
+/**
+ * TODO:lps
+ * This call fails. The account must be grabbed from elsewhere.
+ * In an old TODO getting it from "the sig request" was suggested?
+ */
 function mapStateToProps (state) {
   return {
     balance: getSelectedAccount(state).balance,
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
     selectedAddress: getSelectedAddress(state),
     requester: null,
     requesterAddress: null,
@@ -74,9 +77,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
-    ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    ...ownProps,
     txData,
     cancel,
     sign,
@@ -93,14 +96,10 @@ module.exports = compose(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(SignatureRequest)
 
-
 inherits(SignatureRequest, Component)
-function SignatureRequest (props) {
-  Component.call(this)
 
-  this.state = {
-    selectedAccount: props.selectedAccount,
-  }
+function SignatureRequest (_) {
+  Component.call(this)
 }
 
 SignatureRequest.prototype._beforeUnload = (event) => {
@@ -147,19 +146,16 @@ SignatureRequest.prototype.renderHeader = function () {
   ])
 }
 
-SignatureRequest.prototype.renderAccount = function () {
-  const { selectedAccount } = this.state
+SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
     h('div.request-signature__account-text', [this.context.t('account') + ':']),
 
-    h('div.request-signature__account-item', [
-      h(AccountListItem, {
-        account: selectedAccount,
-        displayBalance: false,
-      }),
-    ]),
+    h(AccountDropdownMini, {
+      disabled: true,
+    }),
+
   ])
 }
 
@@ -186,7 +182,7 @@ SignatureRequest.prototype.renderBalance = function () {
 SignatureRequest.prototype.renderAccountInfo = function () {
   return h('div.request-signature__account-info', [
 
-    this.renderAccount(),
+    this.renderAccountDropdown(),
 
     this.renderRequestIcon(),
 

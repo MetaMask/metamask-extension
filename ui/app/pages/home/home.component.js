@@ -7,7 +7,7 @@ import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
-import ProviderApproval from '../provider-approval'
+import PermissionApproval from '../permission-approval'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -22,17 +22,20 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    unsetMigratedPrivacyMode: null,
+    activeTab: {},
   }
 
   static propTypes = {
+    activeTab: PropTypes.shape({
+      origin: PropTypes.string,
+      protocol: PropTypes.string,
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    providerRequests: PropTypes.array,
-    showPrivacyModeNotification: PropTypes.bool.isRequired,
-    unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
     threeBoxSynced: PropTypes.bool,
@@ -43,6 +46,7 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
+    permissionsRequests: PropTypes.array,
   }
 
   componentWillMount () {
@@ -84,10 +88,7 @@ export default class Home extends PureComponent {
     const { t } = this.context
     const {
       forgottenPassword,
-      providerRequests,
       history,
-      showPrivacyModeNotification,
-      unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
@@ -96,17 +97,19 @@ export default class Home extends PureComponent {
       setShowRestorePromptToFalse,
       showRestorePrompt,
       threeBoxLastUpdated,
+      permissionsRequests,
     } = this.props
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }
 
-    if (providerRequests && providerRequests.length > 0) {
+    if (permissionsRequests && permissionsRequests.length > 0) {
       return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
+        <PermissionApproval permissionsRequests = {permissionsRequests}/>
       )
     }
+
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
@@ -120,23 +123,6 @@ export default class Home extends PureComponent {
                 <MultipleNotifications
                   className
                 >
-                  {
-                    showPrivacyModeNotification
-                      ? <HomeNotification
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          unsetMigratedPrivacyMode()
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                        }}
-                        ignoreText={t('dismiss')}
-                        onIgnore={() => {
-                          unsetMigratedPrivacyMode()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
                   {
                     shouldShowSeedPhraseReminder
                       ? <HomeNotification

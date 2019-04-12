@@ -3,7 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
@@ -54,6 +54,7 @@ const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
   @param {Object}  opts.blockTracker - An instance of eth-blocktracker
   @param {Object}  opts.provider - A network provider.
   @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
+  @param {object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
   @param {Function}  [opts.getGasPrice] - optional gas price calculator
   @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
   @param {Number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
@@ -66,6 +67,7 @@ class TransactionController extends EventEmitter {
     this.networkStore = opts.networkStore || new ObservableStore({})
     this.preferencesStore = opts.preferencesStore || new ObservableStore({})
     this.provider = opts.provider
+    this.getPermittedAccounts = opts.getPermittedAccounts
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.getGasPrice = opts.getGasPrice
@@ -157,7 +159,7 @@ class TransactionController extends EventEmitter {
 
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    const initialTxMeta = await this.addUnapprovedTransaction(txParams, opts.origin)
     initialTxMeta.origin = opts.origin
     this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
@@ -167,11 +169,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(cleanErrorStack(rpcErrors.eth.userRejectedRequest('MetaMask Tx Signature: User denied transaction signature.')))
+            return reject(cleanErrorStack(ethErrors.provider.userRejectedRequest('MetaMask Tx Signature: User denied transaction signature.')))
           case 'failed':
-            return reject(cleanErrorStack(rpcErrors.internal(finishedTxMeta.err.message)))
+            return reject(cleanErrorStack(ethErrors.rpc.internal(finishedTxMeta.err.message)))
           default:
-            return reject(cleanErrorStack(rpcErrors.internal(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
+            return reject(cleanErrorStack(ethErrors.rpc.internal(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })
@@ -184,13 +186,29 @@ class TransactionController extends EventEmitter {
   @returns {txMeta}
   */
 
-  async addUnapprovedTransaction (txParams) {
+  async addUnapprovedTransaction (txParams, origin) {
+
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
-    // Assert the from address is the selected address
-    if (normalizedTxParams.from !== this.getSelectedAddress()) {
-      throw new Error(`Transaction from address isn't valid for this account`)
+
+    // TODO:lps once, I saw origin with a value of 'chrome-extension://...' for a
+    // transaction initiated from the UI.
+    // When would this happen? It's a problem if it does. I don't think we want to
+    // hard-code 'chrome-extension://' here
+    if (origin === 'MetaMask') {
+      // Assert the from address is the selected address
+      if (normalizedTxParams.from !== this.getSelectedAddress()) {
+        throw ethErrors.rpc.internal(`Internally initiated transaction is using invalid account.`)
+      }
+    } else {
+      // Assert that the origin has permissions to initiate transactions from
+      // the specified address
+      const permittedAddresses = await this.getPermittedAccounts(origin)
+      if (!permittedAddresses.includes(normalizedTxParams.from)) {
+        throw ethErrors.provider.unauthorized()
+      }
     }
+
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
@@ -409,6 +427,7 @@ class TransactionController extends EventEmitter {
       this.inProcessOfSigning.delete(txId)
     }
   }
+
   /**
     adds the chain id and signs the transaction and set the status to signed
     @param txId {number} - the tx's Id

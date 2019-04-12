@@ -11,7 +11,16 @@
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },
-  "clearApprovalData": {
+  "clearPermissionsSuccess": {
+    "message": "承認されたウェブサイトデータが正常に消去されました。"
+  },
+  "permissionsSettings": {
+    "message": "承認データ"
+  },
+  "permissionsDescription": {
+    "message": "承認されたウェブサイトのデータをクリアすると、すべてのサイトで承認を再度要求する必要があります"
+  },
+  "clearPermissions": {
     "message": "承認データのクリア"
   },
   "reject": {
