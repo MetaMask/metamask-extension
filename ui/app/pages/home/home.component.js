@@ -7,7 +7,7 @@ import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
-import ProviderApproval from '../provider-approval'
+import PermissionApproval from '../permission-approval'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -44,6 +44,7 @@ export default class Home extends PureComponent {
     setRestoredFromThreeBoxToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.string,
     threeBoxFeatureFlagIsTrue: PropTypes.bool,
+    permissionsRequests: PropTypes.array,
   }
 
   componentWillMount () {
@@ -85,7 +86,6 @@ export default class Home extends PureComponent {
     const { t } = this.context
     const {
       forgottenPassword,
-      providerRequests,
       history,
       showPrivacyModeNotification,
       unsetMigratedPrivacyMode,
@@ -98,17 +98,19 @@ export default class Home extends PureComponent {
       restoredFromThreeBox,
       threeBoxLastUpdated,
       threeBoxFeatureFlagIsTrue,
+      permissionsRequests,
     } = this.props
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }
 
-    if (providerRequests && providerRequests.length > 0) {
+    if (permissionsRequests && permissionsRequests.length > 0) {
       return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
+        <PermissionApproval permissionsRequests = {permissionsRequests}/>
       )
     }
+
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">

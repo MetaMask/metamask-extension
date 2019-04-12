@@ -6,6 +6,7 @@ import {
   displayWarning,
   revealSeedConfirmation,
   setFeatureFlag,
+  showModal,
   setParticipateInMetaMetrics,
 } from '../../../store/actions'
 
@@ -29,6 +30,7 @@ const mapDispatchToProps = dispatch => {
   return {
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
+    showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_PERMISSIONS' })),
     setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
     setShowIncomingTransactionsFeatureFlag: shouldShow => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
   }

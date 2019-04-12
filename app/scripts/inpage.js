@@ -1,5 +1,7 @@
 /*global Web3*/
 
+// TODO:permissions:launch remove this
+console.warn('MetaMask: You are using the ocap permissions beta. All synchronous methods are disabled.') // add details link
 
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
@@ -37,7 +39,6 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
-const createStandardProvider = require('./createStandardProvider').default
 
 let warned = false
 
@@ -61,42 +62,18 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-let warnedOfAutoRefreshDeprecation = false
-// augment the provider with its enable method
-inpageProvider.enable = function ({ force } = {}) {
-  if (
-    !warnedOfAutoRefreshDeprecation &&
-    inpageProvider.autoRefreshOnNetworkChange
-  ) {
-    console.warn(`MetaMask: MetaMask will soon stop reloading pages on network change.
-If you rely upon this behavior, add a 'networkChanged' event handler to trigger the reload manually: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback)
-Set 'ethereum.autoRefreshOnNetworkChange' to 'false' to silence this warning: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.autorefreshonnetworkchange'
-`)
-    warnedOfAutoRefreshDeprecation = true
-  }
-  return new Promise((resolve, reject) => {
-    inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
-      if (error || response.error) {
-        reject(error || response.error)
-      } else {
-        resolve(response.result)
-      }
-    })
-  })
-}
-
 // give the dapps control of a refresh they can toggle this off on the window.ethereum
 // this will be default true so it does not break any old apps.
 inpageProvider.autoRefreshOnNetworkChange = true
 
-
+// TODO:synchronous re-implement: { networkVersion, selectedAddress } = window.ethereum
 // publicConfig isn't populated until we get a message from background.
 // Using this getter will ensure the state is available
 const getPublicConfigWhenReady = async () => {
   const store = inpageProvider.publicConfigStore
   let state = store.getState()
   // if state is missing, wait for first update
-  if (!state.networkVersion) {
+  if (!state.hasOwnProperty('isUnlocked')) {
     state = await new Promise(resolve => store.once('update', resolve))
     console.log('new state', state)
   }
@@ -105,26 +82,6 @@ const getPublicConfigWhenReady = async () => {
 
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
-  /**
-   * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
-   *
-   * @returns {boolean} - returns true if this domain is currently enabled
-   */
-  isEnabled: function () {
-    const { isEnabled } = inpageProvider.publicConfigStore.getState()
-    return Boolean(isEnabled)
-  },
-
-  /**
-   * Asynchronously determines if this domain is currently enabled
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
-   */
-  isApproved: async function () {
-    const { isEnabled } = await getPublicConfigWhenReady()
-    return Boolean(isEnabled)
-  },
-
   /**
    * Determines if MetaMask is unlocked by the user
    *
@@ -152,7 +109,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = createStandardProvider(proxiedInpageProvider)
+window.ethereum = proxiedInpageProvider
 
 //
 // setup web3
@@ -174,34 +131,14 @@ log.debug('MetaMask - injected web3')
 
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
-// export global web3, with usage-detection and deprecation warning
-
-/* TODO: Uncomment this area once auto-reload.js has been deprecated:
-let hasBeenWarned = false
-global.web3 = new Proxy(web3, {
-  get: (_web3, key) => {
-    // show warning once on web3 access
-    if (!hasBeenWarned && key !== 'currentProvider') {
-      console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/MetaMask/faq/blob/master/detecting_metamask.md#web3-deprecation')
-      hasBeenWarned = true
-    }
-    // return value normally
-    return _web3[key]
-  },
-  set: (_web3, key, value) => {
-    // set value normally
-    _web3[key] = value
-  },
-})
-*/
-
-// set web3 defaultAccount
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
-})
-
 inpageProvider.publicConfigStore.subscribe(function (state) {
   if (state.onboardingcomplete) {
     window.postMessage('onboardingcomplete', '*')
   }
 })
+
+// TODO:synchronous re-implement web3.eth.defaultAccount
+// set web3 defaultAccount
+// inpageProvider.publicConfigStore.subscribe(function (state) {
+//   web3.eth.defaultAccount = state.selectedAddress
+// })

@@ -402,6 +402,7 @@ class TransactionController extends EventEmitter {
       this.inProcessOfSigning.delete(txId)
     }
   }
+
   /**
     adds the chain id and signs the transaction and set the status to signed
     @param txId {number} - the tx's Id

@@ -25,8 +25,8 @@ const mapStateToProps = state => {
     tokens,
     threeBoxSynced,
     restoredFromThreeBox,
-    selectedAddress,
     featureFlags,
+    permissionsRequests,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
@@ -43,9 +43,9 @@ const mapStateToProps = state => {
     isPopup,
     threeBoxSynced,
     restoredFromThreeBox,
-    selectedAddress,
     threeBoxLastUpdated,
     threeBoxFeatureFlagIsTrue: featureFlags.threeBox,
+    permissionsRequests,
   }
 }
 

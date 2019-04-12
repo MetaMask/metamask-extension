@@ -9,7 +9,7 @@
     "message": "Chart only available on Ethereum networks."
   },
   "confirmClear": {
-    "message": "Are you sure you want to clear approved websites?"
+    "message": "Are you sure you want to remove all dapp/website permissions?"
   },
   "connections": {
     "message": "Connections"
@@ -35,8 +35,17 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
+  "clearApprovalDataSuccess": {
+    "message": "Dapp/website permissions cleared successfully."
+  },
+  "approvalData": {
+    "message": "Dapp/Website Permissions"
+  },
+  "approvalDataDescription": {
+    "message": "Clear permissions so all dapps/websites must request access again."
+  },
   "clearApprovalData": {
-    "message": "Remove all sites"
+    "message": "Clear Permissions"
   },
   "reject": {
     "message": "Reject"

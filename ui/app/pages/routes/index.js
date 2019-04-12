@@ -141,9 +141,9 @@ class Routes extends Component {
     return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
   }
 
-  hasProviderRequests () {
-    const { providerRequests } = this.props
-    return Array.isArray(providerRequests) && providerRequests.length > 0
+  hasPermissionsRequests () {
+    const { permissionsRequests } = this.props
+    return Array.isArray(permissionsRequests) && permissionsRequests.length > 0
   }
 
   hideAppHeader () {
@@ -162,7 +162,7 @@ class Routes extends Component {
     }
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasProviderRequests()
+      return this.onConfirmPage() || this.hasPermissionsRequests()
     }
   }
 
@@ -342,7 +342,7 @@ Routes.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
-  providerRequests: PropTypes.array,
+  permissionsRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
 }
 
@@ -357,6 +357,14 @@ function mapStateToProps (state) {
   } = appState
 
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
+
+  const {
+    identities,
+    address,
+    keyrings,
+    permissionsRequests,
+  } = metamask
+  const selected = address || Object.keys(accounts)[0]
 
   return {
     // state from plugin
@@ -376,7 +384,12 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-    providerRequests: metamask.providerRequests,
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
+    keyrings,
+    permissionsRequests,
   }
 }
 

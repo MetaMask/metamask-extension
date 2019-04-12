@@ -74,7 +74,6 @@ initialize().catch(log.error)
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
 
-
 /**
  * An object representing a transaction, in whatever state it is in.
  * @typedef TransactionMeta
@@ -395,7 +394,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.providerApprovalController.memStore.on('update', updateBadge)
+  controller.permissionsController.permissions.subscribe(updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -407,8 +406,8 @@ function setupController (initState, initLangCode) {
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingProviderRequests = controller.providerApprovalController.memStore.getState().providerRequests.length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests
+    const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
+    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingPermissionRequests
     if (count) {
       label = String(count)
     }

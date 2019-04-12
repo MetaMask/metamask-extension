@@ -1,7 +1,6 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 
-
 const abi = require('human-standard-token-abi')
 import {
   transactionsSelector,
@@ -53,12 +52,15 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
+  getPermissionsDescriptions,
+  getPermissionsRequests,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
   getFeatureFlags,
+  getPermissionsDescriptions,
 }
 
 module.exports = selectors
@@ -339,6 +341,14 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getPermissionsDescriptions (state) {
+  return state.metamask.permissionsDescriptions
+}
+
+function getPermissionsRequests (state) {
+  return state.metamask.permissionsRequests
 }
 
 function getMetaMetricState (state) {

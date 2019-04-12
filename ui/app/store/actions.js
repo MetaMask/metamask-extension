@@ -345,9 +345,15 @@ var actions = {
   createCancelTransaction,
   createSpeedUpTransaction,
 
+  // Provider
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
   clearApprovedOrigins,
+
+  // Permissions
+  approvePermissionsRequest,
+  rejectPermissionsRequest,
+  clearPermissions,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -2640,11 +2646,7 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequestByOrigin (origin) {
-  return () => {
-    background.approveProviderRequestByOrigin(origin)
-  }
-}
+// Provider
 
 function rejectProviderRequestByOrigin (origin) {
   return () => {
@@ -2652,11 +2654,38 @@ function rejectProviderRequestByOrigin (origin) {
   }
 }
 
-function clearApprovedOrigins () {
+// Permissions
+
+/**
+ * Approves the permission requests with the given IDs.
+ * @param {Array} requestId
+ */
+function approvePermissionsRequest (requestId) {
   return () => {
-    background.clearApprovedOrigins()
+    background.approvePermissionsRequest(requestId)
   }
 }
+
+/**
+ * Rejects the permission requests with the given IDs.
+ * @param {Array} requestId
+ */
+function rejectPermissionsRequest (requestId) {
+  return () => {
+    background.rejectPermissionsRequest(requestId)
+  }
+}
+
+/**
+ * Clears all permissions for all domains.
+ */
+function clearPermissions () {
+  return () => {
+    background.clearPermissions()
+  }
+}
+
+// ////
 
 function setFirstTimeFlowType (type) {
   return (dispatch) => {

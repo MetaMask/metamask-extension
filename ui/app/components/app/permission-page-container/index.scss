@@ -1,4 +1,4 @@
-.provider-approval-container {
+.permission-approval-container {
   display: flex;
 
   &__header {
@@ -47,7 +47,19 @@
       color: $dodger-blue;
     }
 
-    .provider-approval-visual {
+    section {
+      text-align: center;
+
+      h1 {
+        padding: 30px 0px 0px 0px;
+      }
+
+      h2 {
+        padding: 0px 0px 20px 0px;
+      }
+    }
+
+    .permission-approval-visual {
       display: flex;
       flex-direction: row;
       justify-content: space-evenly;
@@ -77,7 +89,7 @@
       &__check {
         width: 40px;
         height: 40px;
-        background: white url("/images/provider-approval-check.svg") no-repeat;
+        background: white url("/images/permissions-check.svg") no-repeat;
         margin-top: 14px;
       }
 
