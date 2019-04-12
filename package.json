@@ -82,7 +82,7 @@
     "ensnare": "^1.0.0",
     "eth-bin-to-ops": "^1.0.1",
     "eth-block-tracker": "^4.1.0",
-    "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#92e7d1442c7585bfd24e50a0fda78df11dedadfe",
+    "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#41a14e8004bdd37eaba5af5f2bb1fc4f4ff7063f",
     "eth-ens-namehash": "^2.0.8",
     "eth-hd-keyring": "^1.2.2",
     "eth-json-rpc-filters": "^3.0.1",
