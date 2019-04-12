@@ -12,7 +12,7 @@ describe('Modal Component', () => {
     assert.equal(wrapper.find('.modal-container').length, 1)
     const buttons = wrapper.find(Button)
     assert.equal(buttons.length, 1)
-    assert.equal(buttons.at(0).props().type, 'primary')
+    assert.equal(buttons.at(0).props().type, 'secondary')
   })
 
   it('should render a modal with a cancel and a submit button', () => {
@@ -38,7 +38,7 @@ describe('Modal Component', () => {
     cancelButton.simulate('click')
     assert.equal(handleCancel.callCount, 1)
 
-    assert.equal(submitButton.props().type, 'primary')
+    assert.equal(submitButton.props().type, 'secondary')
     assert.equal(submitButton.props().children, 'Submit')
     assert.equal(handleSubmit.callCount, 0)
     submitButton.simulate('click')
