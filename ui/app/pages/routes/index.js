@@ -9,7 +9,7 @@ import IdleTimer from 'react-idle-timer'
 import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 import classnames from 'classnames'
 import { matches } from '../../helpers/utils/util'
-import openWyre from '../../../lib/wyre'
+import openWyre from '../../../vendor/wyre'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
