@@ -230,7 +230,9 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore: this.publicConfigStore,
     })
 
-    this.permissionsController = new PermissionsController()
+    this.permissionsController = new PermissionsController({
+      openPopup: opts.openPopup,
+    })
 
     this.store.updateStructure({
       TransactionController: this.txController.store,

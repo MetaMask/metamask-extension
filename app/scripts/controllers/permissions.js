@@ -6,11 +6,14 @@ const ComposableObservableStore = require('../lib/ComposableObservableStore')
 
 class PermissionsController {
 
-  constructor () {
+  constructor ({ openPopup } = {}) {
+    this._openPopup = openPopup
+    const initState = { permissions: {}, requests: {} }
+
     this._initializePermissions()
     // setup stores
     this.store = this.permissions.store
-    this.memStore = new ComposableObservableStore(null, {
+    this.memStore = new ComposableObservableStore(initState, {
       permissions: this.permissions.store,
       requests: this.permissions.memStore,
     })
@@ -122,17 +125,11 @@ class PermissionsController {
       requestUserApproval: async (metadata, opts) => {
         const { id } = metadata
 
-        const isUnlocked = this.getState().isUnlocked
-
         // const restricted = this.permissions.restrictedMethods
         // const descriptions = Object.keys(opts).map(method => restricted[method].description)
 
         // const message = `The site ${siteTitle} at ${origin} would like permission to:\n - ${descriptions.join('\n- ')}`
-        if (!isUnlocked) {
-          await this.requestUnlock()
-        } else {
-          this.opts.openPopup && this.opts.openPopup()
-        }
+        this._openPopup && this._openPopup()
 
         return new Promise((res, rej) => {
           this.pendingApprovals[id] = { res, rej }

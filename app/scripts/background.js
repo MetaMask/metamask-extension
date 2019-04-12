@@ -426,7 +426,7 @@ function setupController (initState, initLangCode) {
     const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingProviderRequests = controller.providerApprovalController.store.getState().providerRequests.length
-    const pendingPermissionRequests = Object.keys(controller.permissionsController.memStore.getState().permissionsRequests).length
+    const pendingPermissionRequests = Object.keys(controller.permissionsController.memStore.getState().requests).length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests + pendingPermissionRequests
     if (count) {
       label = String(count)
