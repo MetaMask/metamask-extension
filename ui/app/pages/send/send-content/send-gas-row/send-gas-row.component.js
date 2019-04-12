@@ -20,8 +20,8 @@ export default class SendGasRow extends Component {
     gasButtonGroupShown: PropTypes.bool,
     advancedInlineGasShown: PropTypes.bool,
     resetGasButtons: PropTypes.func,
-    gasPrice: PropTypes.number,
-    gasLimit: PropTypes.number,
+    gasPrice: PropTypes.string,
+    gasLimit: PropTypes.string,
     insufficientBalance: PropTypes.bool,
   }
 

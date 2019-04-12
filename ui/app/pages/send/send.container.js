@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 const {
   getSelectedAddress,
-} = require('../../../selectors/selectors')
+} = require('../../selectors/selectors')
 
 import {
   getAmountConversionRate,

@@ -11,13 +11,13 @@ export default class SendAssetRow extends Component {
     tokens: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string,
-        decimals: PropTypes.number,
+        decimals: PropTypes.string,
         symbol: PropTypes.string,
       })
     ).isRequired,
     accounts: PropTypes.object.isRequired,
     selectedAddress: PropTypes.string.isRequired,
-    selectedTokenAddress: PropTypes.string.isRequired,
+    selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
   }
 

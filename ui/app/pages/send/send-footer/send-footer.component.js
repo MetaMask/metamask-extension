@@ -130,7 +130,6 @@ export default class SendFooter extends Component {
   }
 
   render () {
-    console.log(this.props.selectedToken)
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
