@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
+import PermissionApproval from '../permission-approval'
 
 import {
   INITIALIZE_SEED_PHRASE_ROUTE,
@@ -21,6 +22,7 @@ export default class Home extends PureComponent {
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
     providerRequests: PropTypes.array,
+    permissionRequests: PropTypes.array,
   }
 
   componentDidMount () {
@@ -45,6 +47,7 @@ export default class Home extends PureComponent {
       forgottenPassword,
       seedWords,
       providerRequests,
+      permissionRequests,
     } = this.props
 
     // seed words
@@ -59,6 +62,12 @@ export default class Home extends PureComponent {
     if (providerRequests && providerRequests.length > 0) {
       return (
         <ProviderApproval providerRequest={providerRequests[0]} />
+      )
+    }
+
+    if (permissionRequests && permissionRequests.length > 0) {
+      return (
+        <PermissionApproval permissionRequest={permissionRequests[0]} />
       )
     }
 

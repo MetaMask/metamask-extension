@@ -48,6 +48,7 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
+  getPermissionsDescriptions,
 }
 
 module.exports = selectors
@@ -311,4 +312,8 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getPermissionsDescriptions (state) {
+  return state.metamask.permissionsDescriptions
 }
