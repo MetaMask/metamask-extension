@@ -9,7 +9,7 @@ class PermissionsController {
   constructor ({ openPopup, closePopup } = {}) {
     this._openPopup = openPopup
     this._closePopup = closePopup
-    
+
     const initState = { permissions: {}, requests: {} }
 
     this._initializePermissions()
