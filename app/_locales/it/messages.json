@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
-  "clearApprovalData": {
-    "message": "Cancella i dati di approvazione"
-  },
   "reject": {
     "message": "Annulla"
   },
@@ -226,9 +223,6 @@
   },
   "connect": {
     "message": "Connetti"
-  },
-  "connectRequest": {
-    "message": "Richiesta Connessione"
   },
   "connectingTo": {
     "message": "Connessione in corso a $1"

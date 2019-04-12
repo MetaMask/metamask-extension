@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
-  "clearApprovalData": {
-    "message": "Очистити приватні дані"
-  },
   "reject": {
     "message": "Відхилити"
   },
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "Під’єднатися"
-  },
-  "connectRequest": {
-    "message": "Запит на з'єднання"
   },
   "connectingTo": {
     "message": "Під'єднуємось до $1"

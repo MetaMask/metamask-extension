@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },
-  "clearApprovalData": {
-    "message": "গোপনীয়তার ডেটা মুছে পরিস্কার করুন"
-  },
   "reject": {
     "message": "প্রত্যাখ্যান"
   },
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "সংযুক্ত করুন"
-  },
-  "connectRequest": {
-    "message": "সংযোগের অনুরোধ"
   },
   "connectingTo": {
     "message": " $1 এর সাথে সংযোগ করছে"

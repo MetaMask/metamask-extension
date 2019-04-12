@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "Tem certeza de que deseja limpar sites aprovados?"
   },
-  "clearApprovalData": {
-    "message": "Limpar dados de aprovação"
-  },
   "reject": {
     "message": "Rejeitar"
   },

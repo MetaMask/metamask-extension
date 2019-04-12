@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },
-  "clearApprovalData": {
-    "message": "承認データのクリア"
-  },
   "reject": {
     "message": "拒否"
   },

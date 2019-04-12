@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Kontraktssamhandling"
   },
-  "clearApprovalData": {
-    "message": "Tøm personvernsdata"
-  },
   "reject": {
     "message": "Avslå"
   },
@@ -244,9 +241,6 @@
   },
   "connect": {
     "message": "Koble til"
-  },
-  "connectRequest": {
-    "message": "Kontaktforespørsel "
   },
   "connectingTo": {
     "message": "Forbinder til $1 "

@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interacción contractual"
   },
-  "clearApprovalData": {
-    "message": "Borrar datos de privacidad"
-  },
   "reject": {
     "message": "Rechazar"
   },
@@ -244,9 +241,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectRequest": {
-    "message": "Solicitud de conexión"
   },
   "connectingTo": {
     "message": "Conexión con $1"

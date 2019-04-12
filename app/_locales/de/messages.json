@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "clearApprovalData": {
-    "message": "Genehmigungsdaten löschen"
-  },
   "reject": {
     "message": "Ablehnen"
   },
@@ -235,9 +232,6 @@
   },
   "connect": {
     "message": "Verbinden"
-  },
-  "connectRequest": {
-    "message": "Verbindungsanfrage"
   },
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"

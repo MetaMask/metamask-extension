@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "Naozaj chcete vymazať schválené webové stránky?"
   },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
   },

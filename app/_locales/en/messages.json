@@ -18,7 +18,7 @@
     "message": "Chart only available on Ethereum networks."
   },
   "confirmClear": {
-    "message": "Are you sure you want to clear approved websites?"
+    "message": "Are you sure you want to remove all dapp/website permissions?"
   },
   "connections": {
     "message": "Connections"
@@ -43,9 +43,6 @@
   },
   "contractInteraction": {
     "message": "Contract Interaction"
-  },
-  "clearApprovalData": {
-    "message": "Remove all sites"
   },
   "reject": {
     "message": "Reject"
@@ -304,9 +301,6 @@
   },
   "connect": {
     "message": "Connect"
-  },
-  "connectRequest": {
-    "message": "Connect Request"
   },
   "connectingTo": {
     "message": "Connecting to $1"

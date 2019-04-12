@@ -1,4 +1,5 @@
 const ObservableStore = require('obs-store')
+const { addInternalMethodPrefix } = require('./permissions')
 const normalizeAddress = require('eth-sig-util').normalize
 const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
 const extend = require('xtend')
@@ -57,7 +58,6 @@ class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
-      migratedPrivacyMode: false,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
@@ -187,7 +187,10 @@ class PreferencesController {
    * @param {Function} - end
    */
   async requestWatchAsset (req, res, next, end) {
-    if (req.method === 'metamask_watchAsset' || req.method === 'wallet_watchAsset') {
+    if (
+      req.method === 'metamask_watchAsset' ||
+      req.method === addInternalMethodPrefix('watchAsset')
+    ) {
       const { type, options } = req.params
       switch (type) {
         case 'ERC20':
@@ -642,13 +645,6 @@ class PreferencesController {
   completeOnboarding () {
     this.store.updateState({ completedOnboarding: true })
     return Promise.resolve(true)
-  }
-
-  unsetMigratedPrivacyMode () {
-    this.store.updateState({
-      migratedPrivacyMode: false,
-    })
-    return Promise.resolve()
   }
 
   //

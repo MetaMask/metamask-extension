@@ -2,9 +2,6 @@
   "confirmClear": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
   },
-  "clearApprovalData": {
-    "message": "ล้างข้อมูลการอนุมัติ"
-  },
   "reject": {
     "message": "ปฏิเสธ"
   },

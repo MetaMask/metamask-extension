@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "clearApprovalData": {
-    "message": "清除批准数据"
-  },
   "reject": {
     "message": "拒绝"
   },
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "连接"
-  },
-  "connectRequest": {
-    "message": "关联请求"
   },
   "connectingTo": {
     "message": "正在连接 $1"

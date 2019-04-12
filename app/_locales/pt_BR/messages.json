@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interação do Contrato"
   },
-  "clearApprovalData": {
-    "message": "Limpar Dados de Privacidade"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -241,9 +238,6 @@
   },
   "connect": {
     "message": "Conectar-se"
-  },
-  "connectRequest": {
-    "message": "Solicitação de Conexão"
   },
   "connectingTo": {
     "message": "Conectando a $1"

@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
-    "message": "Rensa personlig data"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -241,9 +238,6 @@
   },
   "connect": {
     "message": "Ansluta"
-  },
-  "connectRequest": {
-    "message": "Anslutningsförfrågan"
   },
   "connectingTo": {
     "message": "Ansluter till $1"
