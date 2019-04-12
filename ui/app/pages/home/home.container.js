@@ -18,6 +18,7 @@ const mapStateToProps = state => {
     migratedPrivacyMode,
     seedPhraseBackedUp,
     tokens,
+    permissionsRequests,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword } = appState
@@ -32,6 +33,7 @@ const mapStateToProps = state => {
     showPrivacyModeNotification: migratedPrivacyMode,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    permissionsRequests,
   }
 }
 

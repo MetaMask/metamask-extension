@@ -7,10 +7,8 @@
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
-const pify = require('pify')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
-const createDnodeRemoteGetter = require('./lib/createDnodeRemoteGetter')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const RpcEngine = require('json-rpc-engine')
@@ -18,8 +16,8 @@ const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
-const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
+const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
@@ -37,7 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
-const ProviderApprovalController = require('./controllers/provider-approval')
+const PermissionsController = require('./controllers/permissions')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -250,13 +248,13 @@ module.exports = class MetamaskController extends EventEmitter {
       this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
     })
 
-    this.providerApprovalController = new ProviderApprovalController({
-      closePopup: opts.closePopup,
-      initState: initState.ProviderApprovalController,
+    this.permissionsController = new PermissionsController({
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
-      preferencesController: this.preferencesController,
-    })
+      closePopup: opts.closePopup,
+    },
+    // TOOD: Persist/restore state here:
+    {})
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -272,6 +270,8 @@ module.exports = class MetamaskController extends EventEmitter {
       OnboardingController: this.onboardingController.store,
       ProviderApprovalController: this.providerApprovalController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
+      PermissionsController: this.permissionsController.store,
+      PermissionsController: this.permissionsController.permissions,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -296,6 +296,8 @@ module.exports = class MetamaskController extends EventEmitter {
       ProviderApprovalController: this.providerApprovalController.store,
       ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
       IncomingTransactionsController: this.incomingTransactionsController.store,
+      PermissionsController: this.permissionsController.memStore,
+      PermissionsController: this.permissionsController.permissions,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -312,18 +314,16 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        // Expose no accounts if this origin has not been approved, preventing
-        // account-requring RPC methods from completing successfully
-        const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'MetaMask' && !exposeAccounts) { return [] }
-        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        const selectedAddress = this.preferencesController.getSelectedAddress()
-        // only show address if account is unlocked
-        if (isUnlocked && selectedAddress) {
-          return [selectedAddress]
-        } else {
-          return []
-        }
+        // log.debug('__TEST__\ngetAccounts from: ' + origin)
+        // const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+        // const selectedAddress = this.preferencesController.getSelectedAddress()
+        // if (isUnlocked) {
+        //   if (origin === 'MetaMask' && selectedAddress) {
+        //     return [selectedAddress]
+        //   } else return await this.permissionsController.getAccounts(origin)
+        // }
+        // return []
+        throw new Error('KAPLAAAAAH')
       },
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
@@ -343,7 +343,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Constructor helper: initialize a public config store.
    * This store is used to make some config info available to Dapps synchronously.
    */
-  createPublicConfigStore ({ checkIsEnabled }) {
+  createPublicConfigStore () {
     // subset of state for metamask inpage provider
     const publicConfigStore = new ObservableStore()
 
@@ -356,23 +356,24 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     function updatePublicConfigStore (memState) {
-      const publicState = selectPublicState(memState)
-      publicConfigStore.putState(publicState)
+      selectPublicState(memState).then(publicState => {
+        publicConfigStore.putState(publicState)
+      })
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding }) {
-      const isEnabled = checkIsEnabled()
-      const isReady = isUnlocked && isEnabled
+    async function selectPublicState ({
+      isUnlocked, completedOnboarding,
+      // selectedAddress, network
+    }) {
       const result = {
         isUnlocked,
-        isEnabled,
-        selectedAddress: isReady ? selectedAddress : undefined,
-        networkVersion: network,
         onboardingcomplete: completedOnboarding,
+        // TODO:synchronous re-implement
+        // selectedAddress: isUnlocked && isEnabled ? selectedAddress : undefined,
+        // networkVersion: network,
       }
       return result
     }
-
     return publicConfigStore
   }
 
@@ -407,7 +408,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const preferencesController = this.preferencesController
     const txController = this.txController
     const networkController = this.networkController
-    const providerApprovalController = this.providerApprovalController
     const onboardingController = this.onboardingController
 
     return {
@@ -507,13 +507,13 @@ module.exports = class MetamaskController extends EventEmitter {
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
-      // provider approval
-      approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
-      rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
-      clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
-
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+
+      // permissions
+      approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
+      rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
+      clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
     }
   }
 
@@ -1293,10 +1293,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
-    // connect features
-    const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
-    this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
-    this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
+
+    // messages between inpage and background
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   /**
@@ -1369,9 +1369,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide over.
    * @param {string} origin - The URI of the requesting resource.
    */
-  setupProviderConnection (outStream, origin, publicApi) {
-    const getSiteMetadata = publicApi && publicApi.getSiteMetadata
-    const engine = this.setupProviderEngine(origin, getSiteMetadata)
+  setupProviderConnection (outStream, origin) {
+    const engine = this.setupProviderEngine(origin)
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1395,7 +1394,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, getSiteMetadata) {
+  setupProviderEngine (origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1408,19 +1407,18 @@ module.exports = class MetamaskController extends EventEmitter {
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
     subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
 
-    // metadata
+    // append origin to each request
     engine.push(createOriginMiddleware({ origin }))
+    // logging
     engine.push(createLoggerMiddleware({ origin }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
+    // permissions
+    engine.push(this.permissionsController.createMiddleware({ origin }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
-    // requestAccounts
-    engine.push(this.providerApprovalController.createMiddleware({
-      origin,
-      getSiteMetadata,
-    }))
+
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
@@ -1436,11 +1434,8 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide public config over.
    */
-  setupPublicConfig (outStream, originDomain) {
-    const configStore = this.createPublicConfigStore({
-      // check the providerApprovalController's approvedOrigins
-      checkIsEnabled: () => this.providerApprovalController.shouldExposeAccounts(originDomain),
-    })
+  setupPublicConfig (outStream) {
+    const configStore = this.createPublicConfigStore({})
     const configStream = asStream(configStore)
 
     pump(
@@ -1452,38 +1447,6 @@ module.exports = class MetamaskController extends EventEmitter {
         if (err) log.error(err)
       }
     )
-  }
-
-  /**
-   * A method for providing our public api over a stream.
-   * This includes a method for setting site metadata like title and image
-   *
-   * @param {*} outStream - The stream to provide the api over.
-   */
-  setupPublicApi (outStream) {
-    const dnode = Dnode()
-    // connect dnode api to remote connection
-    pump(
-      outStream,
-      dnode,
-      outStream,
-      (err) => {
-        // report any error
-        if (err) log.error(err)
-      }
-    )
-
-    const getRemote = createDnodeRemoteGetter(dnode)
-
-    const publicApi = {
-      // wrap with an await remote
-      getSiteMetadata: async () => {
-        const remote = await getRemote()
-        return await pify(remote.getSiteMetadata)()
-      },
-    }
-
-    return publicApi
   }
 
   /**

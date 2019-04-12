@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Modal, { ModalContent } from '../../modal'
 
-export default class ClearApprovedOrigins extends PureComponent {
+export default class ClearPermissions extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    clearApprovedOrigins: PropTypes.func.isRequired,
+    clearPermissions: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -13,8 +13,8 @@ export default class ClearApprovedOrigins extends PureComponent {
   }
 
   handleClear = () => {
-    const { clearApprovedOrigins, hideModal } = this.props
-    clearApprovedOrigins()
+    const { clearPermissions, hideModal } = this.props
+    clearPermissions()
     hideModal()
   }
 
