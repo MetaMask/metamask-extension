@@ -35,6 +35,18 @@ describe('Using MetaMask with an existing account', function () {
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
 
+  const button = async (x) => {
+    const buttoncheck = x
+    await buttoncheck.click()
+   await delay(largeDelayMs)
+   const [results] = await findElements(driver, By.css('#results'))
+   const resulttext = await results.getText()
+    var parsedData = JSON.parse(resulttext)
+
+    return (parsedData)
+
+  }
+
   this.timeout(0)
   this.bail(true)
 
@@ -202,26 +214,19 @@ describe('Using MetaMask with an existing account', function () {
 
 
           var List = await driver.findElements(By.className('hexaNumberMethods'))
-          var button
 
-          for (i = 0; i < List.length; i++) {
+          for (let i = 0; i < List.length; i++) {
             try {
-             const button = List[i]
-             await button.click()
-            await delay(largeDelayMs)
-            const [results] = await findElements(driver, By.css('#results'))
-            const resulttext = await results.getText()
-             var parsedData = JSON.parse(resulttext)
+
+             var parsedData = await button(List[i])
             console.log(parsedData)
             var result = parseInt(parsedData.result, 16)
 
-            assert.equal(!(isNaN(result)), true)
+            assert.equal((typeof result === 'number'), true)
             await delay(regularDelayMs)
           } catch (err) {
-
-            var text = await button.getText()
-            console.log('The function which has the error is ' + text)
             console.log(err)
+            assert(false)
 
           }
         }
@@ -230,24 +235,20 @@ describe('Using MetaMask with an existing account', function () {
       it('testing booleanMethods', async () => {
 
           var List = await driver.findElements(By.className('booleanMethods'))
-          var button
-          for (i = 0; i < List.length; i++) {
+
+          for (let i = 0; i < List.length; i++) {
             try {
-             button = List[i]
-             await button.click()
-            await delay(largeDelayMs)
-            const [results] = await findElements(driver, By.css('#results'))
-            const resulttext = await results.getText()
-             var parsedData = JSON.parse(resulttext)
-            console.log(parsedData)
+
+              var parsedData = await button(List[i])
+              console.log(parsedData)
             var result = parsedData.result
 
             assert.equal(result, false)
             await delay(regularDelayMs)
           } catch (err) {
-            var text = await button.getText()
-            console.log('The function which has the error is ' + text)
             console.log(err)
+            assert(false)
+
 
           }
         }
@@ -257,26 +258,38 @@ describe('Using MetaMask with an existing account', function () {
       it('testing  transactionMethods', async () => {
 
           var List = await driver.findElements(By.className('transactionMethods'))
-          var button
-          for (i = 0; i < List.length; i++) {
+
+          for (let i = 0; i < List.length; i++) {
             try {
-             button = List[i]
-             await button.click()
-            await delay(largeDelayMs)
-            const [results] = await findElements(driver, By.css('#results'))
-           const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext)
+
+              var parsedData = await button(List[i])
+
             console.log(parsedData.result.blockHash)
 
-            var result = parseInt(parsedData.result.blockHash, 16)
+            var result = []
+             result.push(parseInt(parsedData.result.blockHash, 16))
+             result.push(parseInt(parsedData.result.blockNumber, 16))
+             result.push(parseInt(parsedData.result.gas, 16))
+             result.push(parseInt(parsedData.result.gasPrice, 16))
+             result.push(parseInt(parsedData.result.hash, 16))
+             result.push(parseInt(parsedData.result.input, 16))
+             result.push(parseInt(parsedData.result.nonce, 16))
+             result.push(parseInt(parsedData.result.r, 16))
+             result.push(parseInt(parsedData.result.s, 16))
+             result.push(parseInt(parsedData.result.v, 16))
+             result.push(parseInt(parsedData.result.to, 16))
+             result.push(parseInt(parsedData.result.value, 16))
 
-            assert.equal(!(isNaN(result)), true)
-            await delay(regularDelayMs)
+
+              result.forEach((value) => {
+                assert.equal((typeof value === 'number'), true)
+              })
+
+
           } catch (err) {
 
-            var text = await button.getText()
-              console.log('The function which has the error is ' + text)
-              console.log(err)
+            console.log(err)
+            assert(false)
 
 
           }
@@ -287,26 +300,23 @@ describe('Using MetaMask with an existing account', function () {
       it('testing blockMethods', async () => {
 
           var List = await driver.findElements(By.className('blockMethods'))
-          var button
-          for (i = 0; i < List.length; i++) {
+
+          for (let i = 0; i < List.length; i++) {
             try {
-              button = List[i]
-             await button.click()
-            await delay(largeDelayMs)
-           const [results] = await findElements(driver, By.css('#results'))
-           const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext)
+
+              var parsedData = await button(List[i])
+              console.log(JSON.stringify(parsedData) + i)
+
             console.log(parsedData.result.parentHash)
 
             var result = parseInt(parsedData.result.parentHash, 16)
 
-            assert.equal(!(isNaN(result)), true)
+            assert.equal((typeof result === 'number'), true)
             await delay(regularDelayMs)
           } catch (err) {
 
-            var text = await button.getText()
-            console.log('The function which has the error is ' + text)
             console.log(err)
+            assert(false)
 
 
           }
@@ -316,27 +326,35 @@ describe('Using MetaMask with an existing account', function () {
       it('testing methods', async () => {
 
           var List = await driver.findElements(By.className('methods'))
-          var button
-          for (i = 0; i < List.length; i++) {
+
+          for (let i = 0; i < List.length; i++) {
             try {
-             button = List[i]
-             await button.click()
-            await delay(largeDelayMs)
-            await delay(largeDelayMs)
-            const [results] = await findElements(driver, By.css('#results'))
-           const resulttext = await results.getText()
-            var parsedData = JSON.parse(resulttext)
-            console.log(parsedData.result)
 
-            var result = parseInt(parsedData.result, 16)
+              if (i === 2) {
 
-            assert.equal((isNaN(result) || (result === 0)), true)
-            await delay(regularDelayMs)
+              var parsedData = await button(List[i])
+              console.log(parsedData.result.blockHash)
+
+              var result = parseInt(parsedData.result.blockHash, 16)
+
+              assert.equal((typeof result === 'number' || (result === 0)), true)
+              await delay(regularDelayMs)
+              } else {
+                var parsedData = await button(List[i])
+                console.log(parsedData.result)
+
+                var result = parseInt(parsedData.result, 16)
+
+                assert.equal((typeof result === 'number' || (result === 0)), true)
+                await delay(regularDelayMs)
+              }
+
+
           } catch (err) {
 
-            var text = await button.getText()
-            console.log('The function which has the error is ' + text)
             console.log(err)
+            assert(false)
+
 
           }
         }
@@ -347,5 +365,3 @@ describe('Using MetaMask with an existing account', function () {
 
 
       })
-
-
