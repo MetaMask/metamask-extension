@@ -6,10 +6,12 @@ $hover-secondary: #B0D7F2;
 $hover-default: #B3B3B3;
 $hover-confirm: #0372C3;
 $hover-red: #FEB6BF;
+$hover-red-primary: #C72837;
 $hover-orange: #FFD3B5;
 
 %button {
   @include h6;
+  font-family: Roboto, Arial;
   line-height: 1.25rem;
   padding: .75rem 1rem;
   display: flex;
@@ -31,9 +33,11 @@ $hover-orange: #FFD3B5;
 
 %link {
   @include h4;
+
   color: $Blue-500;
   line-height: 1.25rem;
   cursor: pointer;
+  background-color: transparent;
 
   &:hover {
     color: $Blue-400;
@@ -65,12 +69,12 @@ $hover-orange: #FFD3B5;
   color: $Blue-500;
   border: 2px solid $hover-secondary;
 
-  &:active {
-    background: $Blue-000;
+  &:hover {
     border-color: $Blue-500;
   }
 
-  &:hover {
+  &:active {
+    background: $Blue-000;
     border-color: $Blue-500;
   }
 
@@ -85,12 +89,12 @@ $hover-orange: #FFD3B5;
   color: $Orange-500;
   border: 2px solid $hover-orange;
 
-  &:active {
-    background: $Orange-000;
+  &:hover {
     border-color: $Orange-500;
   }
 
-  &:hover {
+  &:active {
+    background: $Orange-000;
     border-color: $Orange-500;
   }
 
@@ -105,12 +109,12 @@ $hover-orange: #FFD3B5;
   color: $Red-500;
   border: 2px solid $hover-red;
 
-  &:active {
-    background: $Red-000;
+  &:hover {
     border-color: $Red-500;
   }
 
-  &:hover {
+  &:active {
+    background: $Red-000;
     border-color: $Red-500;
   }
 
@@ -121,16 +125,39 @@ $hover-orange: #FFD3B5;
   }
 }
 
+.btn-danger-primary {
+  color: $white;
+  border: 2px solid $Red-500;
+  background-color: $Red-500;
+
+  &:hover {
+    border-color: $hover-red-primary;
+    background-color: $hover-red-primary;
+  }
+
+  &:active {
+    background: $Red-600;
+    border-color: $Red-600;
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    border-color: $hover-red;
+    background-color: $hover-red;
+  }
+}
+
 .btn-default {
   color: $Grey-500;
   border: 2px solid $hover-default;
 
-  &:active {
-    background: #FBFBFC;
+  &:hover {
     border-color: $Grey-500;
   }
 
-  &:hover {
+  &:active {
+    background: #FBFBFC;
     border-color: $Grey-500;
   }
 
@@ -146,14 +173,14 @@ $hover-orange: #FFD3B5;
   border: 2px solid $Blue-500;
   background-color: $Blue-500;
 
-  &:active {
-    background: $Blue-600;
-    border-color: $Blue-600;
-  }
-
   &:hover {
     border-color: $hover-confirm;
     background-color: $hover-confirm;
+  }
+
+  &:active {
+    background: $Blue-600;
+    border-color: $Blue-600;
   }
 
   &--disabled,
@@ -161,6 +188,10 @@ $hover-orange: #FFD3B5;
     border-color: $hover-secondary;
     background-color: $hover-secondary;
   }
+}
+
+.btn-link {
+  @extend %link;
 }
 
 .btn--large {

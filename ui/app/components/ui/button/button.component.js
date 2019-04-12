@@ -19,6 +19,8 @@ const typeHash = {
   'first-time': CLASSNAME_FIRST_TIME,
   warning: 'btn-warning',
   danger: 'btn-danger',
+  'danger-primary': 'btn-danger-primary',
+  link: 'btn-link',
 }
 
 export default class Button extends Component {
