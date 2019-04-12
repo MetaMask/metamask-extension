@@ -115,6 +115,7 @@
     "identicon.js": "^2.3.1",
     "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
+    "json-rpc-capabilities-middleware": "^0.7.1",
     "json-rpc-engine": "^4.0.0",
     "json-rpc-middleware-stream": "^2.1.0",
     "jsonschema": "^1.2.4",

@@ -37,6 +37,7 @@ const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const ProviderApprovalController = require('./controllers/provider-approval')
+const PermissionsController = require('./controllers/permissions')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -229,6 +230,8 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore: this.publicConfigStore,
     })
 
+    this.permissionsController = new PermissionsController()
+
     this.store.updateStructure({
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
@@ -239,6 +242,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      PermissionsController: this.permissionsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -259,6 +263,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      PermissionsController: this.permissionsController.memStore,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -462,6 +467,9 @@ module.exports = class MetamaskController extends EventEmitter {
       approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
       rejectProviderRequest: providerApprovalController.rejectProviderRequest.bind(providerApprovalController),
+
+      // permissions
+      approvePermissions: this.permissionsController.approvePermissions.bind(this.permissionsController),
     }
   }
 
@@ -1370,6 +1378,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
+    // permissions
+    engine.push(this.permissions.createMiddleware({ origin }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider
