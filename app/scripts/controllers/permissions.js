@@ -124,7 +124,7 @@ class PermissionsController {
 
         const isUnlocked = this.getState().isUnlocked
 
-        const restricted = this.permissions.restrictedMethods
+        // const restricted = this.permissions.restrictedMethods
         // const descriptions = Object.keys(opts).map(method => restricted[method].description)
 
         // const message = `The site ${siteTitle} at ${origin} would like permission to:\n - ${descriptions.join('\n- ')}`

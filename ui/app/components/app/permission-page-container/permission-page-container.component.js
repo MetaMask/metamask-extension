@@ -28,13 +28,13 @@ export default class PermissionPageContainer extends PureComponent {
   onCancel = () => {
     const { request, rejectPermissionRequest } = this.props
     const { id } = request.metadata
-    rejectPermissionRequest(tabID)
+    rejectPermissionRequest(id)
   }
 
   onSubmit = () => {
     const { request, approvePermissionRequest } = this.props
     const { id } = request.metadata
-    approvePermissionRequest(tabID)
+    approvePermissionRequest(id)
   }
 
   render () {

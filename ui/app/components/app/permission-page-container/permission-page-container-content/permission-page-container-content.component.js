@@ -6,6 +6,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     request: PropTypes.object.isRequired,
     selectedIdentity: PropTypes.string.isRequired,
+    permissionsDescriptions: PropTypes.array.isRequired,
   }
 
   static contextTypes = {
@@ -77,7 +78,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   render () {
     const { request } = this.props
-    const { siteTile } = request.metadata
+    const { siteTitle } = request.metadata
     const { t } = this.context
 
     return (
