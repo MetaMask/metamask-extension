@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
   },
@@ -238,9 +235,6 @@
   },
   "connect": {
     "message": "Pripojenie"
-  },
-  "connectRequest": {
-    "message": "Požiadavka na pripojenie"
   },
   "connectingTo": {
     "message": "Pripája sa k $1"

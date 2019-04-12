@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },
-  "clearApprovalData": {
-    "message": "مسح بيانات الخصوصية"
-  },
   "reject": {
     "message": "رفض"
   },
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "اتصال"
-  },
-  "connectRequest": {
-    "message": "طلب اتصال"
   },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"

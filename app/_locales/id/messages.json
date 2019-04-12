@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
-  "clearApprovalData": {
-    "message": "Bersihkan Data Privasi"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -247,9 +244,6 @@
   },
   "connect": {
     "message": "Sambungkan"
-  },
-  "connectRequest": {
-    "message": "Permintaan Sambungan"
   },
   "connectingTo": {
     "message": "Menghubungkan ke $1"
