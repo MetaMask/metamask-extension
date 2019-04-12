@@ -6,8 +6,10 @@ const ComposableObservableStore = require('../lib/ComposableObservableStore')
 
 class PermissionsController {
 
-  constructor ({ openPopup } = {}) {
+  constructor ({ openPopup, closePopup } = {}) {
     this._openPopup = openPopup
+    this._closePopup = closePopup
+    
     const initState = { permissions: {}, requests: {} }
 
     this._initializePermissions()
@@ -27,7 +29,7 @@ class PermissionsController {
     const approval = this.pendingApprovals[id]
     const res = approval.res
     res(true)
-    this.opts.closePopup && this.opts.closePopup()
+    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 
@@ -35,7 +37,7 @@ class PermissionsController {
     const approval = this.pendingApprovals[id]
     const rej = approval.rej
     rej(false)
-    this.opts.closePopup && this.opts.closePopup()
+    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 

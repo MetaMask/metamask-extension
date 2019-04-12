@@ -315,5 +315,5 @@ function getAdvancedInlineGasShown (state) {
 }
 
 function getPermissionsDescriptions (state) {
-  return state.metamask.permissionsDescriptions
+  return state.metamask.requests.permissionsDescriptions
 }

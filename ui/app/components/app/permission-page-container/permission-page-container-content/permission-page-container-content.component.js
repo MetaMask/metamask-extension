@@ -5,7 +5,7 @@ import Identicon from '../../../ui/identicon'
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     request: PropTypes.object.isRequired,
-    selectedIdentity: PropTypes.string.isRequired,
+    selectedIdentity: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.array.isRequired,
   }
 
