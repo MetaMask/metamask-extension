@@ -240,9 +240,7 @@ function getSendTo (state) {
 function getSendToAccounts (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const addressBookAccounts = getAddressBook(state)
-  const allAccounts = [...fromAccounts, ...addressBookAccounts]
-  // TODO: figure out exactly what the below returns and put a descriptive variable name on it
-  return Object.entries(allAccounts).map(([key, account]) => account)
+  return [...fromAccounts, ...addressBookAccounts]
 }
 
 function getSendWarnings (state) {
