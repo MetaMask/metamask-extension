@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 4.11.4 Mon Apr 15 2019
+
+- [#277](https://github.com/poanetwork/nifty-wallet/pull/277): (Fix) USD price for ETC coin
+- [#276](https://github.com/poanetwork/nifty-wallet/pull/276): (Fix) Remove js obfuscation
+
 ## 4.11.3 Fri Mar 29 2019
 
 - [#272](https://github.com/poanetwork/nifty-wallet/pull/272): Update Classic RPC endpoint
