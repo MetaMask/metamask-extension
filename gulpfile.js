@@ -302,7 +302,7 @@ function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bu
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
     sourceMapDir: devMode ? './' : '../sourcemaps',
-    minifyBuild: !devMode,
+    minifyBuild: false,
     buildWithFullPaths: devMode,
     watch: devMode,
     devMode,
@@ -318,7 +318,7 @@ function createTasksForBuildJsMascara ({ taskPrefix, devMode, bundleTaskOpts = {
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
     sourceMapDir: './',
-    minifyBuild: !devMode,
+    minifyBuild: false,
     buildWithFullPaths: devMode,
     watch: devMode,
     devMode,
