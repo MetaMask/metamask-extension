@@ -8,8 +8,9 @@ const {
   RINKEBY,
   KOVAN,
   MAINNET,
+  GOERLI,
 } = require('./network/enums')
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 
 class RecentBlocksController {

@@ -207,6 +207,28 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'goerli',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('goerli'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'goerli' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#3099f2', // $dodger-blue
+          isSelected: providerType === 'goerli',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'goerli' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('goerli')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => this.handleClick('localhost'),
@@ -287,6 +309,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('rinkeby')
   } else if (providerName === 'localhost') {
     name = this.context.t('localhost')
+  } else if (providerName === 'goerli') {
+    name = this.context.t('goerli')
   } else {
     name = provider.nickname || this.context.t('unknownNetwork')
   }

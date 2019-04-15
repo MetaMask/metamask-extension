@@ -62,7 +62,7 @@ describe('Network Dropdown', () => {
     })
 
     it('renders 7 DropDownMenuItems ', () => {
-      assert.equal(wrapper.find(DropdownMenuItem).length, 7)
+      assert.equal(wrapper.find(DropdownMenuItem).length, 8)
     })
 
     it('checks background color for first NetworkDropdownIcon', () => {
@@ -82,15 +82,19 @@ describe('Network Dropdown', () => {
     })
 
     it('checks background color for fifth NetworkDropdownIcon', () => {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(4).prop('innerBorder'), '1px solid #9b9b9b')
-    })
-
-    it('checks dropdown for frequestRPCList from  state ', () => {
-      assert.equal(wrapper.find(DropdownMenuItem).at(5).text(), '✓http://localhost:7545')
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(4).prop('backgroundColor'), '#3099f2') // Goerli Blue
     })
 
     it('checks background color for sixth NetworkDropdownIcon', () => {
       assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('innerBorder'), '1px solid #9b9b9b')
+    })
+
+    it('checks dropdown for frequestRPCList from  state ', () => {
+      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
+    })
+
+    it('checks background color for seventh NetworkDropdownIcon', () => {
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('innerBorder'), '1px solid #9b9b9b')
     })
 
   })
