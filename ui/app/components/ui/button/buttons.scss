@@ -11,6 +11,8 @@ $hover-orange: #FFD3B5;
 
 %button {
   @include h6;
+
+  font-weight: 500;
   font-family: Roboto, Arial;
   line-height: 1.25rem;
   padding: .75rem 1rem;
