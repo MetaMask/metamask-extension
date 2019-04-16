@@ -17,6 +17,8 @@
     "test:integration:build": "gulp build:scss",
     "test:e2e:drizzle:beta": "SELENIUM_BROWSER=chrome test/e2e/beta/run-drizzle.sh",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/beta/run-all.sh",
+    "test:web3:chrome": "SELENIUM_BROWSER=chrome test/e2e/beta/run-web3.sh",
+    "test:web3:firefox": "SELENIUM_BROWSER=firefox test/e2e/beta/run-web3.sh",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox test/e2e/beta/run-all.sh",
     "test:screens": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:screens:run'",
     "test:screens:run": "node test/screens/new-ui.js",
