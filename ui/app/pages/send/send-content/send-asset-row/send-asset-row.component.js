@@ -102,7 +102,7 @@ export default class SendAssetRow extends Component {
     return (
       <div
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken('')}
+        onClick={() => this.selectToken()}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon diameter={36} />

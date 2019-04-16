@@ -34,7 +34,7 @@ import {
 import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
-} from '../../../../selectors/custom-gas'
+} from '../../../selectors/custom-gas'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 

@@ -14,7 +14,6 @@ export default class SendContent extends Component {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
     showHexData: PropTypes.bool,
-    editingTransactionId: PropTypes.string,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)

@@ -167,11 +167,7 @@ export default class SendTransactionScreen extends PersistentForm {
     const selectedTokenAddress = selectedToken && selectedToken.address
 
     if (selectedTokenAddress && prevTokenAddress !== selectedTokenAddress) {
-      updateSendTokenBalance({
-        selectedToken,
-        tokenContract,
-        address,
-      })
+      this.updateSendToken()
     }
   }
 
@@ -216,7 +212,7 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   render () {
-    const { history, showHexData, editingTransactionId } = this.props
+    const { history, showHexData } = this.props
 
     return (
       <div className="page-container">
@@ -225,7 +221,6 @@ export default class SendTransactionScreen extends PersistentForm {
           updateGas={(updateData) => this.updateGas(updateData)}
           scanQrCode={_ => this.props.scanQrCode()}
           showHexData={showHexData}
-          editingTransactionId={editingTransactionId}
         />
         <SendFooter history={history}/>
       </div>
