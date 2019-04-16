@@ -1,7 +1,7 @@
 const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
-const { By, Key, until } = webdriver
+const { By } = webdriver
 const {
   delay,
   buildChromeWebDriver,
@@ -11,12 +11,10 @@ const {
   getExtensionIdFirefox,
 } = require('../func')
 const {
-  assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   switchToWindowWithTitle,
   verboseReportOnFailure,
@@ -30,8 +28,6 @@ describe('Using MetaMask with an existing account', function () {
   let driver
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
-  const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3'
-  const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
 
@@ -190,11 +186,11 @@ describe('Using MetaMask with an existing account', function () {
         await delay(regularDelayMs)
 
         await waitUntilXWindowHandles(driver, 3)
-        windowHandles = await driver.getAllWindowHandles()
+        const windowHandles = await driver.getAllWindowHandles()
 
-        extension = windowHandles[0]
-        popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-        dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+        const extension = windowHandles[0]
+        const popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
+        const dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
 
         await delay(regularDelayMs)
         const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
@@ -326,24 +322,26 @@ describe('Using MetaMask with an existing account', function () {
       it('testing methods', async () => {
 
           var List = await driver.findElements(By.className('methods'))
+          var parsedData
+          var result
 
           for (let i = 0; i < List.length; i++) {
             try {
 
               if (i === 2) {
 
-              var parsedData = await button(List[i])
-              console.log(parsedData.result.blockHash)
+                parsedData = await button(List[i])
+                console.log(parsedData.result.blockHash)
 
-              var result = parseInt(parsedData.result.blockHash, 16)
+                result = parseInt(parsedData.result.blockHash, 16)
 
-              assert.equal((typeof result === 'number' || (result === 0)), true)
-              await delay(regularDelayMs)
+                assert.equal((typeof result === 'number' || (result === 0)), true)
+                await delay(regularDelayMs)
               } else {
-                var parsedData = await button(List[i])
+                parsedData = await button(List[i])
                 console.log(parsedData.result)
 
-                var result = parseInt(parsedData.result, 16)
+                result = parseInt(parsedData.result, 16)
 
                 assert.equal((typeof result === 'number' || (result === 0)), true)
                 await delay(regularDelayMs)

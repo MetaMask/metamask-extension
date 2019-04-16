@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+
 var params = {
   // diffrent params used in the methods
   param: [],

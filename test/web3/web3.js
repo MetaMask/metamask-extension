@@ -1,3 +1,4 @@
+/* eslint no-undef: 0 */
 
 var json = methods
 
