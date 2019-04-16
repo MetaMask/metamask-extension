@@ -43,7 +43,7 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.transaction-view-balance__button')
+  const sendScreenButton = await queryAsync($, 'button.btn-secondary.transaction-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
@@ -88,7 +88,7 @@ async function runSendFlowTest (assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
+  const sendButton = await queryAsync($, 'button.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
   sendButton[0].click()
   await timeout()
@@ -122,7 +122,7 @@ async function runSendFlowTest (assert, done) {
   sendAmountFieldInputInEdit.val('1.0')
   reactTriggerChange(sendAmountFieldInputInEdit[0])
 
-  const sendButtonInEdit = await queryAsync($, '.btn-primary.btn--large.page-container__footer-button')
+  const sendButtonInEdit = await queryAsync($, '.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButtonInEdit[0].textContent, 'Next', 'next button in edit rendered')
 
   selectState.val('send new ui')

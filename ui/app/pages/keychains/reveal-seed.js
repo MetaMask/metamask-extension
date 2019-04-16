@@ -116,7 +116,7 @@ class RevealSeedPage extends Component {
             onClick: () => this.props.history.push(DEFAULT_ROUTE),
           }, this.context.t('cancel')),
           h(Button, {
-            type: 'primary',
+            type: 'secondary',
             large: true,
             className: 'page-container__footer-button',
             onClick: event => this.handleSubmit(event),

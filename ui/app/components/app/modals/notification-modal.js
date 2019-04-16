@@ -37,11 +37,11 @@ class NotificationModal extends Component {
 
         showButtons && h('div.notification-modal__buttons', [
 
-          showCancelButton && h('div.btn-cancel.notification-modal__buttons__btn', {
+          showCancelButton && h('div.btn-default.notification-modal__buttons__btn', {
             onClick: hideModal,
           }, 'Cancel'),
 
-          showConfirmButton && h('div.btn-clear.notification-modal__buttons__btn', {
+          showConfirmButton && h('div.button.btn-secondary.notification-modal__buttons__btn', {
             onClick: () => {
               onConfirm()
               hideModal()

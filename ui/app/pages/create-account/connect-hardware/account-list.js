@@ -152,7 +152,7 @@ class AccountList extends Component {
       }, [this.context.t('cancel')]),
 
       h(Button, {
-        type: 'confirm',
+        type: 'primary',
         large: true,
         className: 'new-account-connect-form__button unlock',
         disabled,

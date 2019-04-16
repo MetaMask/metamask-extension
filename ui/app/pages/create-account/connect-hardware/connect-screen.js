@@ -46,7 +46,7 @@ class ConnectScreen extends Component {
             this.renderConnectToTrezorButton(),
           ]),
           h(Button, {
-            type: 'confirm',
+            type: 'primary',
             large: true,
             className: 'hw-connect__connect-btn',
             onClick: this.connect,

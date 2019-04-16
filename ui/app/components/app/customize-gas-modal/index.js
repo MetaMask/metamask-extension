@@ -382,7 +382,7 @@ CustomizeGasModal.prototype.render = function () {
             onClick: this.props.hideModal,
           }, [this.context.t('cancel')]),
           h(Button, {
-            type: 'primary',
+            type: 'secondary',
             className: 'send-v2__customize-gas__save',
             onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
             disabled: error,

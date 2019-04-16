@@ -128,7 +128,7 @@ export default class CustomizeGas extends Component {
                 { t('cancel') }
               </Button>
               <Button
-                type="primary"
+                type="secondary"
                 className="customize-gas__save"
                 onClick={() => {
                   metricsEvent({

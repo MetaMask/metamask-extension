@@ -45,7 +45,7 @@ export default class PageContainerFooter extends Component {
           </Button>}
 
           <Button
-            type={submitButtonType || 'primary'}
+            type={submitButtonType || 'secondary'}
             large
             className="page-container__footer-button"
             disabled={disabled}

@@ -84,7 +84,7 @@ AccountDetailsModal.prototype.render = function () {
       h('div.account-modal-divider'),
 
       h(Button, {
-        type: 'primary',
+        type: 'secondary',
         className: 'account-modal__button',
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
       }, this.context.t('etherscanView')),
@@ -92,7 +92,7 @@ AccountDetailsModal.prototype.render = function () {
       // Holding on redesign for Export Private Key functionality
 
       exportPrivateKeyFeatureEnabled ? h(Button, {
-        type: 'primary',
+        type: 'secondary',
         className: 'account-modal__button',
         onClick: () => showExportPrivateKeyModal(),
       }, this.context.t('exportPrivateKey')) : null,

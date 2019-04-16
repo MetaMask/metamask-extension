@@ -95,7 +95,7 @@ export default class SelectAction extends PureComponent {
                   </div>
                 </div>
                 <Button
-                  type="confirm"
+                  type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
                 >
