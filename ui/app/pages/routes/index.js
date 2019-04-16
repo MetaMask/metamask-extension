@@ -267,6 +267,8 @@ class Routes extends Component {
       name = this.context.t('connectingToKovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('connectingToLocalhost')
     } else {
       name = this.context.t('connectingTo', [providerId])
     }
@@ -288,6 +290,8 @@ class Routes extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost')
     } else {
       name = this.context.t('unknownNetwork')
     }
