@@ -23,7 +23,10 @@ class MetaMetricsProvider extends Component {
   static propTypes = {
     network: PropTypes.string.isRequired,
     environmentType: PropTypes.string.isRequired,
-    activeCurrency: PropTypes.string.isRequired,
+    activeCurrency: PropTypes.oneOfType([
+      PropTypes.string.isRequired,
+      PropTypes.object.isRequired,
+    ]),
     accountType: PropTypes.string.isRequired,
     metaMetricsSendCount: PropTypes.number.isRequired,
     children: PropTypes.object.isRequired,
