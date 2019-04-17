@@ -34,6 +34,7 @@ const mapStateToProps = state => {
   return {
     selectedNetwork,
     networksToRender,
+    networkIsSelected: Boolean(selectedNetwork.rpcUrl),
   }
 }
 

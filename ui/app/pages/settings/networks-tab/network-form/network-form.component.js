@@ -40,7 +40,7 @@ export default class NetworksTab extends PureComponent {
     const { viewOnly } = this.props
 
     return (
-      <div>
+      <div className="networks-tab__network-form-row">
         <div className="networks-tab__network-form-label">{this.context.t(textFieldLabelKey)}</div>
         <TextField
           type="text"

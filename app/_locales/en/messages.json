@@ -499,6 +499,9 @@
   "edit": {
     "message": "Edit"
   },
+  "editNetwork": {
+    "message": "Edit Network"
+  },
   "editAccountName": {
     "message": "Edit Account Name"
   },
