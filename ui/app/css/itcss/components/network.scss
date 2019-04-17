@@ -48,6 +48,11 @@
     font-size: 12px;
     padding: 0 4px;
   }
+
+  .fa-question-circle {
+    margin: 0 4px 0 6px;
+    font-size: 1rem;
+  }
 }
 
 .network-name {
@@ -165,5 +170,22 @@
 }
 
 .network-caret {
-  margin: 0 8px 2px;
+  margin: 0 8px;
+}
+
+.network-loading-spinner {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  position: relative;
+  height: 16px;
+  width: 16px;
+  margin-left: 5px;
+
+  img {
+    height: 26px;
+    position: absolute;
+    top: -5px;
+    left: -6px;
+  }
 }
