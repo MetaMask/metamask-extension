@@ -239,6 +239,9 @@
   "cancelN": {
     "message": "Cancel all $1 transactions"
   },
+  "chainId": {
+    "message": "Chain Id"
+  },
   "classicInterface": {
     "message": "Use classic interface"
   },
@@ -928,6 +931,9 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "networkName": {
+    "message": "Network Name"
+  },
   "networks": {
     "message": "Networks"
   },
@@ -971,7 +977,7 @@
   "protectYourKeysMessage2": {
     "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
-  "rpcURL": {
+  "rpcUrl": {
     "message": "New RPC URL"
   },
   "showAdvancedOptions": {
@@ -1485,6 +1491,9 @@
   },
   "supportCenter": {
     "message": "Visit our Support Center"
+  },
+  "symbol": {
+    "message": "Symbol"
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be between 0 and 12 characters."
