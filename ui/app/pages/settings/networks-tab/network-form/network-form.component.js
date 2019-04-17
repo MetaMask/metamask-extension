@@ -91,7 +91,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   render () {
-    const { onClear } = this.props 
+    const { onClear, setRpcTarget, viewOnly } = this.props 
     const {
       networkName,
       rpcUrl,
@@ -143,7 +143,7 @@ export default class NetworksTab extends PureComponent {
           onSubmit={() => setRpcTarget(rpcUrl, chainId, ticker, networkName)}
           submitText={'Save'}
           submitButtonType={'confirm'}
-          disabled={Object.values(errors).some(x => x) || !rpcUrl}
+          disabled={viewOnly || Object.values(errors).some(x => x) || !rpcUrl}
         />
       </div>
     )
