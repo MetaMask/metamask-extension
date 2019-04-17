@@ -133,7 +133,7 @@ DepositEtherModal.prototype.render = function () {
   const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
   const { buyingWithShapeshift } = this.state
 
-  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
 
   return h('div.page-container.page-container--full-width.page-container--full-height', {}, [

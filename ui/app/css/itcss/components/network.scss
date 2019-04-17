@@ -29,6 +29,10 @@
   &.rinkeby-test-network .menu-icon-circle div {
     background-color: rgba(235, 179, 63, .7) !important;
   }
+
+  &.goerli-test-network .menu-icon-circle div {
+    background-color: rgba(48, 153, 242, .7) !important;
+  }
 }
 
 .dropdown-menu-item {

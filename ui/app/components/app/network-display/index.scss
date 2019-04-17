@@ -26,6 +26,10 @@
     &--rinkeby {
       background-color: lighten($tulip-tree, 35%);
     }
+
+    &--goerli {
+      background-color: lighten($dodger-blue, 35%);
+    }
   }
 
   &__name {
@@ -52,6 +56,10 @@
 
     &--rinkeby {
       background-color: $tulip-tree;
+    }
+
+    &--goerli {
+      background-color: $dodger-blue;
     }
   }
 }
