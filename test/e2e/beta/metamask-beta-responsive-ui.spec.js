@@ -123,7 +123,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "I agree" option on the metametrics opt-in screen', async () => {
-        const optOutButton = await findElement(driver, By.css('.btn-confirm'))
+        const optOutButton = await findElement(driver, By.css('.btn-primary'))
         optOutButton.click()
         await delay(largeDelayMs)
       })
