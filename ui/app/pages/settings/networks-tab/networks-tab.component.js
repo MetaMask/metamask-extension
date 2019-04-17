@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
+import { REVEAL_SEED_ROUTE, SETTINGS_ROUTE } from '../../../helpers/constants/routes'
 import classnames from 'classnames'
 import Button from '../../../components/ui/button'
 import NetworkForm from './network-form'
@@ -15,10 +15,27 @@ export default class NetworksTab extends PureComponent {
   static propTypes = {
   }
 
+  isCurrentPath (pathname) {
+    return this.props.location.pathname === pathname
+  }
+
   renderSubHeader () {
+    const { networkIsSelected, setSelectedSettingsRpcUrl } = this.props
+
     return (
       <div className="settings-page__sub-header">
-        <span className="settings-page__sub-header-text">Networks</span>
+        {
+          !this.isCurrentPath(SETTINGS_ROUTE) && (
+            <div
+              className="settings-page__back-button"
+              onClick={networkIsSelected
+                ? () => setSelectedSettingsRpcUrl(null)
+                : () => this.props.history.push(SETTINGS_ROUTE)
+              }
+            />
+          )
+        }
+        <span className="settings-page__sub-header-text">{ this.context.t(networkIsSelected ? 'editNetwork' : 'networks') }</span>
       </div>
     )
   }
@@ -48,15 +65,18 @@ export default class NetworksTab extends PureComponent {
         }) }>
           { label || this.context.t(labelKey) }
         </div>
+        <div className="networks-tab__networks-list-arrow" />
       </div>
     )
   }
 
   renderNetworksList () {
-    const { networksToRender, selectedNetwork } = this.props
+    const { networksToRender, selectedNetwork, networkIsSelected } = this.props
 
     return (
-      <div className="networks-tab__networks-list">
+      <div className={classnames('networks-tab__networks-list', {
+        'networks-tab__networks-list--selection': networkIsSelected,
+      })}>
         { networksToRender.map(network => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
       </div>
     )

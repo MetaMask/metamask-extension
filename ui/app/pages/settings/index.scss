@@ -41,6 +41,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media screen and (max-width: 575px) {
+      height: 55px;
+      position: relative;
+      text-align: center;
+    }
   }
 
   &__sub-header-text {
@@ -50,6 +56,11 @@
     font-size: 24px;
     line-height: 24px;
     color: black;
+
+    @media screen and (max-width: 575px) {
+      font-size: 16px;
+      width: 100%;
+    }
   }
 
   &__back-button {
@@ -66,6 +77,8 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+      position: absolute;
+      margin-left: 10px;
     }
   }
 

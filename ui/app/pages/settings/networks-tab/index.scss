@@ -5,6 +5,10 @@
     height: 100%;
     max-width: 739px;
     justify-content: space-between;
+
+    @media screen and (max-width: 575px) {
+      margin-top: 0px;
+    }
   }
 
   &__network-form {
@@ -22,6 +26,22 @@
         padding: 0;
       }
     }
+
+    @media screen and (max-width: 575px) {
+      flex: auto;
+      max-width: 100%;
+      max-height: 100%;
+      align-items: center;
+      width: 100%;
+    }
+  }
+
+  &__network-form-row {
+    @media screen and (max-width: 575px) {
+      display: flex;
+      flex-direction: column;
+      width: 93%;
+    }
   }
 
   &__network-form-label {
@@ -36,6 +56,17 @@
   &__networks-list {
     flex: 0.5 0 auto;
     max-width: 343px;
+
+    @media screen and (max-width: 575px) {
+      max-width: 100vw;
+      width: 100vw;
+    }
+  }
+
+  &__networks-list--selection {
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
   }
 
   &__networks-list-item {
@@ -46,6 +77,11 @@
       &:hover {
         cursor: pointer;
       }
+    }
+
+    @media screen and (max-width: 575px) {
+      padding: 20px 23px 21px 17px;
+      border-bottom: 1px solid #D8D8D8;
     }
   }
 
@@ -60,6 +96,25 @@
 
     &:hover {
       cursor: pointer;
+    }
+  }
+
+  &__networks-list-arrow {
+    display: none;
+
+    @media screen and (max-width: 575px) {
+      display: block;
+      background-image: url('/images/caret-right.svg');
+      width: 24px;
+      height: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      right: 10px;
+      cursor: pointer;
+      position: absolute;
+      width: 24px;
+      height: 24px;
     }
   }
 
