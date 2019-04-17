@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
 import classnames from 'classnames'
 import Button from '../../../components/ui/button'
+import NetworkForm from './network-form'
 import NetworkDropdownIcon from '../../../components/app/dropdowns/components/network-dropdown-icon'
-import TextField from '../../../components/ui/text-field'
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {
@@ -62,69 +62,53 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  renderNetworkForm () {
+  validateAndSetRpc (newRpc, chainId, ticker = 'ETH', nickname) {
+    const { setRpcTarget, displayWarning } = this.props
+    if (validUrl.isWebUri(newRpc)) {
+      if (!!chainId && Number.isNaN(parseInt(chainId))) {
+        return displayWarning(`${this.context.t('invalidInput')} chainId`)
+      }
+
+      setRpcTarget(newRpc, chainId, ticker, nickname)
+    } else {
+      const appendedRpc = `http://${newRpc}`
+
+      if (validUrl.isWebUri(appendedRpc)) {
+        displayWarning(this.context.t('uriErrorMsg'))
+      } else {
+        displayWarning(this.context.t('invalidRPC'))
+      }
+    }
+  }
+
+  renderNetworksTabContent () {
     const {
+      setRpcTarget,
+      displayWarning,
+      setSelectedSettingsRpcUrl,
       selectedNetwork: {
         labelKey,
         label,
         rpcUrl,
         chainId,
         ticker,
+        viewOnly,
       },
     } = this.props
 
-
-    return (
-      <div className="networks-tab__network-form">
-        <div className="networks-tab__network-form-label">Network Name</div>
-        <TextField
-          type="text"
-          id="network-name"
-          placeholder={this.context.t('networkName')}
-          onChange={e => console.log(e.target.value)}
-          fullWidth
-          margin="dense"
-          value={label || this.context.t(labelKey)}
-        />
-        <div className="networks-tab__network-form-label">RPC Url</div>
-        <TextField
-          type="text"
-          id="rpc-url"
-          placeholder={this.context.t('rpcUrl')}
-          onChange={e => console.log(e.target.value)}
-          fullWidth
-          margin="dense"
-          value={rpcUrl}
-        />
-        <div className="networks-tab__network-form-label">Chain Id</div>
-        <TextField
-          type="text"
-          id="chainId"
-          placeholder={this.context.t('chainId')}
-          onChange={e => console.log(e.target.value)}
-          fullWidth
-          margin="dense"
-          value={chainId}
-        />
-        <div className="networks-tab__network-form-label">Symbol</div>
-        <TextField
-          type="text"
-          id="network-ticker"
-          placeholder={this.context.t('symbol')}
-          onChange={e => console.log(e.target.value)}
-          fullWidth
-          margin="dense"
-          value={ticker}
-        />
-      </div>
-    )
-  }
-
-  renderNetworksTabContent () {
     return (
       <div className="networks-tab__content">
         {this.renderNetworksList()}
-        {this.renderNetworkForm()}
+        <NetworkForm
+          setRpcTarget={setRpcTarget}
+          displayWarning={displayWarning}
+          networkName={label || labelKey && this.context.t(labelKey) || ''}
+          rpcUrl={rpcUrl}
+          chainId={chainId}
+          ticker={ticker}
+          onClear={() => setSelectedSettingsRpcUrl(null)}
+          viewOnly={viewOnly}
+        />
       </div>
     )
   }
