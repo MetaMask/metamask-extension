@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.11.5 Thu Apr 18 2019
+
+- [#279](https://github.com/poanetwork/nifty-wallet/pull/279): (Fix) utf8 encoding in contentscript.js
+
 ## 4.11.4 Mon Apr 15 2019
 
 - [#277](https://github.com/poanetwork/nifty-wallet/pull/277): (Fix) USD price for ETC coin
