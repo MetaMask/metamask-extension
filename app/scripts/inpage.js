@@ -219,8 +219,8 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 })
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  if(state.onboardingcomplete){
-    window.postMessage('onboardingcomplete','*')
+  if (state.onboardingcomplete) {
+    window.postMessage('onboardingcomplete', '*')
   }
 })
 
