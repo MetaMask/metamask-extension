@@ -79,7 +79,7 @@
   &__content {
     display: flex;
     flex-flow: row nowrap;
-    height: auto;
+    height: 100%;
     overflow: auto;
 
     &__tabs {
@@ -112,7 +112,10 @@
 
   &__body {
     padding: 12px 24px;
-
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
     @media screen and (min-width: 576px) {
       padding: 12px;
     }
