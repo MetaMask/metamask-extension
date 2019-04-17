@@ -30,7 +30,7 @@ export default class PageContainerFooter extends Component {
       submitButtonType,
       hideCancel,
     } = this.props
-    console.log({ submitButtonType })
+
     return (
       <div className="page-container__footer">
 
