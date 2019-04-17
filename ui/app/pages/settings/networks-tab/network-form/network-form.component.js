@@ -18,6 +18,7 @@ export default class NetworksTab extends PureComponent {
     chainId: this.props.chainId,
     ticker: this.props.ticker,
     networkName: this.props.networkName,
+    errors: {},
   }
 
   componentDidUpdate (prevProps) {
@@ -35,6 +36,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderFormTextField (textFieldLabelKey, textFieldId, onChange, value) {
+    const { errors } = this.state
     const { viewOnly } = this.props
 
     return (
@@ -48,39 +50,43 @@ export default class NetworksTab extends PureComponent {
           margin="dense"
           value={value}
           disabled={viewOnly}
+          error={errors[textFieldLabelKey]}
         />
       </div>
     )
   }
 
-  setStateWithValue (stateKey) {
-    return (e) => this.setState({ [stateKey]: e.target.value })
+  setStateWithValue = (stateKey, validator) => {
+    return (e) => {
+      validator && validator(e.target.value)
+      this.setState({ [stateKey]: e.target.value })
+    }
   }
 
-  validateAndSetRpc () {
-    const {
-      rpcUrl,
-      chainId,
-      ticker,
-      networkName,
-    } = this.state
-    const { setRpcTarget, displayWarning } = this.props
+  setErrorTo = (errorKey, errorVal) => {
+    this.setState({
+      errors: {
+        ...this.state.errors,
+        [errorKey]: errorVal,
+      },
+    })
+  }
 
+  validateChainId = (chainId) => {
+    this.setErrorTo('chainId', !!chainId && Number.isNaN(parseInt(chainId))
+      ? `${this.context.t('invalidInput')} chainId`
+      : ''
+    )
+  }
+
+  validateRpcUrl = (rpcUrl) => {
     if (validUrl.isWebUri(rpcUrl)) {
-      if (!!chainId && Number.isNaN(parseInt(chainId))) {
-        return displayWarning(`${this.context.t('invalidInput')} chainId`)
-      }
-
-      return true
-      setRpcTarget(rpcUrl, chainId, ticker, networkName)
+      this.setErrorTo('rpcUrl', '')
     } else {
       const appendedRpc = `http://${rpcUrl}`
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !rpcUrl.match(/^https*\:\/\/$/)
 
-      if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning(this.context.t('uriErrorMsg'))
-      } else {
-        displayWarning(this.context.t('invalidRPC'))
-      }
+      this.setErrorTo('rpcUrl', this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
     }
   }
 
@@ -91,6 +97,7 @@ export default class NetworksTab extends PureComponent {
       rpcUrl,
       chainId,
       ticker,
+      errors,
     } = this.state
 
 
@@ -105,13 +112,13 @@ export default class NetworksTab extends PureComponent {
         {this.renderFormTextField(
           'rpcUrl',
           'rpc-url',
-          this.setStateWithValue('rpcUrl'),
+          this.setStateWithValue('rpcUrl', this.validateRpcUrl),
           rpcUrl,
         )}
         {this.renderFormTextField(
           'chainId',
           'chainId',
-          this.setStateWithValue('chainId'),
+          this.setStateWithValue('chainId', this.validateChainId),
           chainId,
         )}
         {this.renderFormTextField(
@@ -128,19 +135,15 @@ export default class NetworksTab extends PureComponent {
               chainId: '',
               ticker: '',
               networkName: '',
+              errors: {},
             })
           }}
           cancelText={'Clear'}
           hideCancel={false}
-          onSubmit={() => this.validateAndSetRpc({
-            networkName,
-            rpcUrl,
-            chainId,
-            ticker,
-          })}
+          onSubmit={() => setRpcTarget(rpcUrl, chainId, ticker, networkName)}
           submitText={'Save'}
           submitButtonType={'confirm'}
-          disabled={false}
+          disabled={Object.values(errors).some(x => x) || !rpcUrl}
         />
       </div>
     )
