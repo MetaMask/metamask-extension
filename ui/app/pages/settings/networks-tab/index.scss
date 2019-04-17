@@ -2,11 +2,26 @@
   &__content {
     margin-top: 24px;
     display: flex;
+    height: 100%;
+    max-width: 739px;
+    justify-content: space-between;
   }
 
   &__network-form {
     flex: 0.5 0 auto;
     max-width: 343px;
+    max-height: 465px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .page-container__footer {
+      border-top: none;
+
+      header {
+        padding: 0;
+      }
+    }
   }
 
   &__network-form-label {

@@ -41,11 +41,11 @@ const styles = {
   inputFocused: {},
   inputRoot: {
     'label + &': {
-      marginTop: '8px',
+      marginTop: '9px',
     },
     border: '2px solid #BBC0C5',
     height: '48px',
-    borderRadius: '4px',
+    borderRadius: '6px',
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
