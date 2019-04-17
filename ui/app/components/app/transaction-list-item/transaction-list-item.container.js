@@ -15,7 +15,7 @@ import {
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
 import { getIsMainnet, preferencesSelector, getSelectedAddress, conversionRateSelector } from '../../../selectors/selectors'
-import { isBalanceSufficient } from '../send/send.utils'
+import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask: { knownMethodData, accounts } } = state

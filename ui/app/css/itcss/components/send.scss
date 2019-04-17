@@ -549,7 +549,7 @@
   }
 
   &__form-row {
-    margin: 14.5px 18px 0px;
+    margin: 8px 18px 0px;
     position: relative;
     display: flex;
     flex-flow: row;
@@ -592,8 +592,8 @@
     flex: 0 0 auto;
   }
 
-  &__from-dropdown {
-    height: 73px;
+  &__from-dropdown,
+  &__asset-dropdown {
     width: 100%;
     border: 1px solid $alto;
     border-radius: 4px;
@@ -625,6 +625,104 @@
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
+    }
+  }
+
+  &__from-dropdown {
+    height: 73px;
+  }
+
+  &__asset-dropdown {
+    height: 62px;
+    border: none;
+
+    &__asset {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding: 10px 8px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
+    }
+
+    &__asset-icon {
+      .identicon {
+        border: 1px solid $alto;
+      }
+    }
+
+    &__asset-data {
+      display: flex;
+      flex-flow: column nowrap;
+      margin-left: 8px;
+    }
+
+    &__symbol {
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    &__name {
+      display: flex;
+      flex-flow: row nowrap;
+      font-size: 12px;
+
+      &__label {
+        margin-right: .25rem;
+      }
+    }
+
+    &__close-area {
+      z-index: 2000;
+    }
+
+    &__list {
+      z-index: 2050;
+      position: absolute;
+      height: 220px;
+      width: 100%;
+      border: 1px solid $geyser;
+      border-radius: 4px;
+      background-color: $white;
+      box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+      top: 55px;
+      left: 0;
+      box-sizing: content-box;
+      overflow-y: scroll;
+    }
+
+    &__input-wrapper {
+      border: 1px solid $alto;
+      border-radius: 4px;
+
+      &--opened {
+        position: relative;
+        z-index: 2050;
+      }
+
+      .send-v2__asset-dropdown__asset {
+        &:hover {
+          background-color: $white;
+        }
+      }
+    }
+
+    &__input {
+      z-index: 1025;
+      position: relative;
+      height: 54px;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      background-color: $white;
+      color: $tundora;
+      padding: 10px;
+      font-family: Roboto;
+      font-size: 16px;
+      line-height: 21px;
     }
   }
 

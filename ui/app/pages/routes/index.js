@@ -10,7 +10,7 @@ import { getMetaMaskAccounts, getNetworkIdentifier } from '../../selectors/selec
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../../components/app/send/send.container')
+const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu

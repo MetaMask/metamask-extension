@@ -139,6 +139,9 @@
   "approved": {
     "message": "Approved"
   },
+  "asset": {
+    "message": "Asset"
+  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -1350,6 +1353,9 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
+  },
+  "selectAnAsset": {
+    "message": "Select an Asset"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"

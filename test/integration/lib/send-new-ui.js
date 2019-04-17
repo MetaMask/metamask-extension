@@ -72,7 +72,7 @@ async function runSendFlowTest (assert, done) {
   const sendToAccountAddress = sendToFieldInput.val()
   assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
-  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
+  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(3)')
   sendAmountField.find('.unit-input')[0].click()
 
   const sendAmountFieldInput = await findAsync(sendAmountField, '.unit-input__input')
@@ -115,7 +115,7 @@ async function runSendFlowTest (assert, done) {
   sendToFieldInputInEdit[0].focus()
   sendToFieldInputInEdit.val('0xd85a4b6a394794842887b8284293d69163007bbb')
 
-  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(2)')
+  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(3)')
   sendAmountFieldInEdit.find('.unit-input')[0].click()
 
   const sendAmountFieldInputInEdit = sendAmountFieldInEdit.find('.unit-input__input')
