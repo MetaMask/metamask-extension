@@ -130,25 +130,16 @@ Network.prototype.render = function () {
           default:
             return h('.network-indicator', [
               networkNumber === 'loading'
-              ? h('span.pointer.network-indicator', {
-                style: {
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                },
+              ? h('span.pointer.network-loading-spinner', {
                 onClick: (event) => this.props.onClick(event),
               }, [
                 h('img', {
                   title: context.t('attemptingConnect'),
-                  style: {
-                    width: '27px',
-                  },
                   src: 'images/loading.svg',
                 }),
               ])
               : h('i.fa.fa-question-circle.fa-lg', {
                 style: {
-                  margin: '10px',
                   color: 'rgb(125, 128, 130)',
                 },
               }),
