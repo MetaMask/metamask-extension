@@ -103,11 +103,9 @@
   }
 
   .button-group__button, .button-group__button--active {
-    height: 54px;
     background: white;
     color: $scorpion;
-    padding-top: 9px;
-    padding-left: 8.5px;
+    padding: 2px 8.5px 4px 8.5px;
 
     @media screen and (max-width: $break-small) {
       padding-left: 4px;
