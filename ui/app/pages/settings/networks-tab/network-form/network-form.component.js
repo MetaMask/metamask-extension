@@ -18,6 +18,7 @@ export default class NetworksTab extends PureComponent {
     networkName: PropTypes.string,
     onClear: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    networksTabIsInAddMode: PropTypes.bool,
   }
 
   state = {
@@ -29,15 +30,24 @@ export default class NetworksTab extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const { rpcUrl: prevRpcUrl } = prevProps
+    const { rpcUrl: prevRpcUrl, networksTabIsInAddMode: prevAddMode } = prevProps
     const {
       rpcUrl,
       chainId,
       ticker,
       networkName,
+      networksTabIsInAddMode,
     } = this.props
 
-    if (prevRpcUrl !== rpcUrl) {
+    if (!prevAddMode && networksTabIsInAddMode) {
+      this.setState({
+        rpcUrl: '',
+        chainId: '',
+        ticker: '',
+        networkName: '',
+        errors: {},
+      })
+    } else if (prevRpcUrl !== rpcUrl) {
       this.setState({ rpcUrl, chainId, ticker, networkName })
     }
   }
