@@ -30,7 +30,13 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderSubHeader () {
-    const { networkIsSelected, setSelectedSettingsRpcUrl, subHeaderKey, setNetworksTabAddMode } = this.props
+    const {
+      networkIsSelected,
+      setSelectedSettingsRpcUrl,
+      subHeaderKey,
+      setNetworksTabAddMode,
+      networksTabIsInAddMode,
+    } = this.props
 
     return (
       <div className="settings-page__sub-header">
@@ -38,8 +44,11 @@ export default class NetworksTab extends PureComponent {
           !this.isCurrentPath(SETTINGS_ROUTE) && (
             <div
               className="settings-page__back-button"
-              onClick={networkIsSelected
-                ? () => setSelectedSettingsRpcUrl(null)
+              onClick={networkIsSelected || networksTabIsInAddMode
+                ? () => {
+                    setNetworksTabAddMode(false)
+                    setSelectedSettingsRpcUrl(null)
+                  }
                 : () => this.props.history.push(SETTINGS_ROUTE)
               }
             />
@@ -74,6 +83,7 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div
+        key={'settings-network-list-item:' + rpcUrl}
         className="networks-tab__networks-list-item"
         onClick={ () => {
           setNetworksTabAddMode(false)
@@ -95,11 +105,11 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderNetworksList () {
-    const { networksToRender, selectedNetwork, networkIsSelected } = this.props
+    const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode } = this.props
 
     return (
       <div className={classnames('networks-tab__networks-list', {
-        'networks-tab__networks-list--selection': networkIsSelected,
+        'networks-tab__networks-list--selection': networkIsSelected || networksTabIsInAddMode,
       })}>
         { networksToRender.map(network => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
       </div>
@@ -138,6 +148,7 @@ export default class NetworksTab extends PureComponent {
               setSelectedSettingsRpcUrl(null)
             }}
             viewOnly={viewOnly}
+            networksTabIsInAddMode={networksTabIsInAddMode}
           />
           : null
         }
