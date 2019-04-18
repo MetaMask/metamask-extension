@@ -25,7 +25,6 @@ export default class SendHeader extends Component {
     return (
       <PageContainerHeader
         onClose={() => this.onClose()}
-        subtitle={this.context.t(...this.props.subtitleParams)}
         title={this.context.t(this.props.titleKey)}
       />
     )

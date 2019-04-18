@@ -7,7 +7,7 @@
   border-radius: 4px;
   background-color: #fff;
   color: #4d4d4d;
-  font-size: 1rem;
+  font-size: 16px;
   padding: 8px 10px;
   position: relative;
 
@@ -29,6 +29,8 @@
 
   &__inputs {
     flex: 1 0 auto;
+    display: flex;
+    flex-flow: column nowrap;
   }
 
   &__input {
@@ -38,15 +40,20 @@
     border: none;
     outline: 0 !important;
     max-width: 22ch;
+    height: 16px;
+    line-height: 18px;
   }
 
   &__input-container {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    padding-bottom: 4px;
   }
 
   &__suffix {
     margin-left: 3px;
+    font-size: 1rem;
+    line-height: 1rem;
   }
 
   &--error {
