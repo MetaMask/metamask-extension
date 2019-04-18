@@ -78,6 +78,7 @@ function reduceApp (state, action) {
     },
     lastSelectedProvider: null,
     networksTabSelectedRpcUrl: '',
+    networksTabIsInAddMode: false,
   }, state.appState)
 
   switch (action.type) {
@@ -755,6 +756,11 @@ function reduceApp (state, action) {
     case actions.SET_SELECTED_SETTINGS_RPC_URL:
       return extend(appState, {
         networksTabSelectedRpcUrl: action.value,
+      })
+
+    case actions.SET_NETWORKS_TAB_ADD_MODE:
+      return extend(appState, {
+        networksTabIsInAddMode: action.value,
       })
 
     default:

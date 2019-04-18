@@ -20,7 +20,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderSubHeader () {
-    const { networkIsSelected, setSelectedSettingsRpcUrl } = this.props
+    const { networkIsSelected, setSelectedSettingsRpcUrl, subHeaderKey, setNetworksTabAddMode } = this.props
 
     return (
       <div className="settings-page__sub-header">
@@ -35,13 +35,25 @@ export default class NetworksTab extends PureComponent {
             />
           )
         }
-        <span className="settings-page__sub-header-text">{ this.context.t(networkIsSelected ? 'editNetwork' : 'networks') }</span>
+        <span className="settings-page__sub-header-text">{ this.context.t(subHeaderKey) }</span>
+        <div className="networks-tab__add-network-header-button-wrapper">
+          <Button
+            type="primary"
+            onClick={event => {
+              event.preventDefault()
+              setSelectedSettingsRpcUrl(null)
+              setNetworksTabAddMode(true)
+            }}
+          >
+            { this.context.t('addNetwork') }
+          </Button>
+        </div>
       </div>
     )
   }
 
   renderNetworkListItem (network, selectRpcUrl) {
-    const { setSelectedSettingsRpcUrl } = this.props
+    const { setSelectedSettingsRpcUrl, setNetworksTabAddMode } = this.props
     const {
       border,
       iconColor,
@@ -54,7 +66,10 @@ export default class NetworksTab extends PureComponent {
     return (
       <div
         className="networks-tab__networks-list-item"
-        onClick={ () => setSelectedSettingsRpcUrl(rpcUrl) }
+        onClick={ () => {
+          setNetworksTabAddMode(false)
+          setSelectedSettingsRpcUrl(rpcUrl) 
+        }}
        >
         <NetworkDropdownIcon
           backgroundColor={iconColor || 'white'}
@@ -82,30 +97,11 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  validateAndSetRpc (newRpc, chainId, ticker = 'ETH', nickname) {
-    const { setRpcTarget, displayWarning } = this.props
-    if (validUrl.isWebUri(newRpc)) {
-      if (!!chainId && Number.isNaN(parseInt(chainId))) {
-        return displayWarning(`${this.context.t('invalidInput')} chainId`)
-      }
-
-      setRpcTarget(newRpc, chainId, ticker, nickname)
-    } else {
-      const appendedRpc = `http://${newRpc}`
-
-      if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning(this.context.t('uriErrorMsg'))
-      } else {
-        displayWarning(this.context.t('invalidRPC'))
-      }
-    }
-  }
-
   renderNetworksTabContent () {
     const {
       setRpcTarget,
-      displayWarning,
       setSelectedSettingsRpcUrl,
+      setNetworksTabAddMode,
       selectedNetwork: {
         labelKey,
         label,
@@ -114,32 +110,54 @@ export default class NetworksTab extends PureComponent {
         ticker,
         viewOnly,
       },
+      networksTabIsInAddMode,
+      networkIsSelected,
     } = this.props
 
     return (
       <div className="networks-tab__content">
         {this.renderNetworksList()}
-        <NetworkForm
-          setRpcTarget={setRpcTarget}
-          displayWarning={displayWarning}
-          networkName={label || labelKey && this.context.t(labelKey) || ''}
-          rpcUrl={rpcUrl}
-          chainId={chainId}
-          ticker={ticker}
-          onClear={() => setSelectedSettingsRpcUrl(null)}
-          viewOnly={viewOnly}
-        />
+        {networksTabIsInAddMode || networkIsSelected
+          ? <NetworkForm
+            setRpcTarget={setRpcTarget}
+            networkName={label || labelKey && this.context.t(labelKey) || ''}
+            rpcUrl={rpcUrl}
+            chainId={chainId}
+            ticker={ticker}
+            onClear={() => {
+              setNetworksTabAddMode(false)
+              setSelectedSettingsRpcUrl(null)
+            }}
+            viewOnly={viewOnly}
+          />
+          : null
+        }
       </div>
     )
   }
 
   renderContent () {
-    const { warning } = this.props
+    const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, addMode } = this.props
 
     return (
       <div className="settings-page__body">
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
+        {!networkIsSelected && !addMode
+          ? <div className="networks-tab__add-network-button-wrapper">
+            <Button
+              type="primary"
+              onClick={event => {
+                event.preventDefault()
+                setSelectedSettingsRpcUrl(null)
+                setNetworksTabAddMode(true)
+              }}
+            >
+              { this.context.t('addNetwork') }
+            </Button>
+          </div>
+          : null
+        }
       </div>
     )
   }

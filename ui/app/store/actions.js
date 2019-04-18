@@ -352,6 +352,8 @@ var actions = {
 
   SET_SELECTED_SETTINGS_RPC_URL: 'SET_SELECTED_SETTINGS_RPC_URL',
   setSelectedSettingsRpcUrl,
+  SET_NETWORKS_TAB_ADD_MODE: 'SET_NETWORKS_TAB_ADD_MODE',
+  setNetworksTabAddMode,
 }
 
 module.exports = actions
@@ -2720,5 +2722,12 @@ function setSelectedSettingsRpcUrl (newRpcUrl) {
   return {
     type: actions.SET_SELECTED_SETTINGS_RPC_URL,
     value: newRpcUrl,
+  }
+}
+
+function setNetworksTabAddMode (isInAddMode) {
+  return {
+    type: actions.SET_NETWORKS_TAB_ADD_MODE,
+    value: isInAddMode,
   }
 }
