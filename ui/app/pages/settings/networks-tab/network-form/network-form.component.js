@@ -138,10 +138,10 @@ export default class NetworksTab extends PureComponent {
               errors: {},
             })
           }}
-          cancelText={'Clear'}
+          cancelText={this.context.t('cancel')}
           hideCancel={false}
           onSubmit={() => setRpcTarget(rpcUrl, chainId, ticker, networkName)}
-          submitText={'Save'}
+          submitText={this.context.t('save')}
           submitButtonType={'confirm'}
           disabled={viewOnly || Object.values(errors).some(x => x) || !rpcUrl}
         />

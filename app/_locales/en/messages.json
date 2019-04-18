@@ -83,6 +83,9 @@
   "address": {
     "message": "Address"
   },
+  "addNetwork": {
+    "message": "Add Network"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -1728,6 +1731,9 @@
   },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
+  },
+  "viewNetworkInfo": {
+    "message": "View Network Info"
   },
   "visitWebSite": {
     "message": "Visit our web site"
