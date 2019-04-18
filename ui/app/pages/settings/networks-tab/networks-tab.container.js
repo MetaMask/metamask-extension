@@ -38,7 +38,7 @@ const mapStateToProps = state => {
   let subHeaderKey
   if (networksTabIsInAddMode) {
     subHeaderKey = 'addNetwork'
-  else if (selectedNetwork.viewOnly) {
+  } else if (selectedNetwork.viewOnly) {
     subHeaderKey = 'viewNetworkInfo'
   } else if (networkIsSelected) {
     subHeaderKey = 'editNetwork'
@@ -60,7 +60,7 @@ const mapDispatchToProps = dispatch => {
     setSelectedSettingsRpcUrl: newRpcUrl => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
-    setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode))
+    setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),
   }
 }
 

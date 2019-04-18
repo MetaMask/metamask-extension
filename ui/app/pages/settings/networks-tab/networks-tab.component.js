@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { REVEAL_SEED_ROUTE, SETTINGS_ROUTE } from '../../../helpers/constants/routes'
+import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
 import classnames from 'classnames'
 import Button from '../../../components/ui/button'
 import NetworkForm from './network-form'
@@ -13,6 +13,16 @@ export default class NetworksTab extends PureComponent {
   }
 
   static propTypes = {
+    history: PropTypes.object,
+    location: PropTypes.object,
+    networkIsSelected: PropTypes.bool,
+    networksTabIsInAddMode: PropTypes.bool,
+    networksToRender: PropTypes.array,
+    selectedNetwork: PropTypes.object,
+    setNetworksTabAddMode: PropTypes.func,
+    setRpcTarget: PropTypes.func,
+    setSelectedSettingsRpcUrl: PropTypes.func,
+    subHeaderKey: PropTypes.string,
   }
 
   isCurrentPath (pathname) {
@@ -59,7 +69,6 @@ export default class NetworksTab extends PureComponent {
       iconColor,
       label,
       labelKey,
-      providerType,
       rpcUrl,
     } = network
 
@@ -68,7 +77,7 @@ export default class NetworksTab extends PureComponent {
         className="networks-tab__networks-list-item"
         onClick={ () => {
           setNetworksTabAddMode(false)
-          setSelectedSettingsRpcUrl(rpcUrl) 
+          setSelectedSettingsRpcUrl(rpcUrl)
         }}
        >
         <NetworkDropdownIcon
@@ -137,13 +146,13 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderContent () {
-    const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, addMode } = this.props
+    const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, networksTabIsInAddMode } = this.props
 
     return (
       <div className="settings-page__body">
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
-        {!networkIsSelected && !addMode
+        {!networkIsSelected && !networksTabIsInAddMode
           ? <div className="networks-tab__add-network-button-wrapper">
             <Button
               type="primary"

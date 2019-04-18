@@ -11,6 +11,13 @@ export default class NetworksTab extends PureComponent {
   }
 
   static propTypes = {
+    rpcUrl: PropTypes.string,
+    chainId: PropTypes.string,
+    ticker: PropTypes.string,
+    viewOnly: PropTypes.bool,
+    networkName: PropTypes.string,
+    onClear: PropTypes.func,
+    setRpcTarget: PropTypes.func,
   }
 
   state = {
@@ -84,14 +91,14 @@ export default class NetworksTab extends PureComponent {
       this.setErrorTo('rpcUrl', '')
     } else {
       const appendedRpc = `http://${rpcUrl}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !rpcUrl.match(/^https*\:\/\/$/)
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !rpcUrl.match(/^https*:\/\/$/)
 
       this.setErrorTo('rpcUrl', this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
     }
   }
 
   render () {
-    const { onClear, setRpcTarget, viewOnly } = this.props 
+    const { onClear, setRpcTarget, viewOnly } = this.props
     const {
       networkName,
       rpcUrl,
