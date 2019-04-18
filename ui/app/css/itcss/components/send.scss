@@ -633,14 +633,14 @@
   }
 
   &__asset-dropdown {
-    height: 62px;
+    height: 54px;
     border: none;
 
     &__asset {
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
-      padding: 10px 8px;
+      padding: 0 8px;
       cursor: pointer;
 
       &:hover {
@@ -688,15 +688,22 @@
       border-radius: 4px;
       background-color: $white;
       box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
-      top: 55px;
+      top: 65px;
       left: 0;
       box-sizing: content-box;
       overflow-y: scroll;
+      margin-top: 0;
+      padding: 4px 0;
+
+      .send-v2__asset-dropdown__asset {
+        padding: 8px;
+      }
     }
 
     &__input-wrapper {
       border: 1px solid $alto;
       border-radius: 4px;
+      height: 100%;
 
       &--opened {
         position: relative;
@@ -704,6 +711,7 @@
       }
 
       .send-v2__asset-dropdown__asset {
+        height: 100%;
         &:hover {
           background-color: $white;
         }

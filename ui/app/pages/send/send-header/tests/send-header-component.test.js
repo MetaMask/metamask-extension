@@ -57,10 +57,8 @@ describe('SendHeader Component', function () {
     it('should pass the correct props to PageContainerHeader', () => {
       const {
         onClose,
-        subtitle,
         title,
       } = wrapper.find(PageContainerHeader).props()
-      assert.equal(subtitle, 'mockSubtitleKeymockVal')
       assert.equal(title, 'mockTitleKey')
       assert.equal(SendHeader.prototype.onClose.callCount, 0)
       onClose()

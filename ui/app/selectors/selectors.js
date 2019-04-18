@@ -91,7 +91,8 @@ function getAccountType (state) {
 }
 
 function getSelectedAsset (state) {
-  return getSelectedToken(state) || 'ETH'
+  const selectedToken = getSelectedToken(state)
+  return selectedToken && selectedToken.symbol || 'ETH'
 }
 
 function getCurrentNetworkId (state) {

@@ -11,7 +11,7 @@ export default class SendAssetRow extends Component {
     tokens: PropTypes.arrayOf(
       PropTypes.shape({
         address: PropTypes.string,
-        decimals: PropTypes.string,
+        decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         symbol: PropTypes.string,
       })
     ).isRequired,
