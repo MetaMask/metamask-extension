@@ -163,7 +163,7 @@ export default class NetworksTab extends PureComponent {
     const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, networksTabIsInAddMode } = this.props
 
     return (
-      <div className="settings-page__body">
+      <div className="networks-tab__body">
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
