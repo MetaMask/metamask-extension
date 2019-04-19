@@ -943,6 +943,9 @@
   "networks": {
     "message": "Networks"
   },
+  "networkSettingsDescription": {
+    "message": "Add and edit custom RPC networks"
+  },
   "nevermind": {
     "message": "Nevermind"
   },
