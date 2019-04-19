@@ -7,6 +7,7 @@ import {
   updateAndSetCustomRpc,
   displayWarning,
   setNetworksTabAddMode,
+  editRpc,
 } from '../../../store/actions'
 import { defaultNetworksData } from './networks-tab.constants'
 const defaultNetworks = defaultNetworksData.map(network => ({ ...network, viewOnly: true }))
@@ -61,6 +62,7 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),
+    editRpc: (oldRpc, newRpc, chainId, ticker, nickname) => dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname)),
   }
 }
 

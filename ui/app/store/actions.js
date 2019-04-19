@@ -239,6 +239,7 @@ var actions = {
   updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
+  editRpc: editRpc,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -1979,6 +1980,29 @@ function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
   }
 }
 
+function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
+      }
+      dispatch(actions.setSelectedToken())
+      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
+        if (err) {
+          log.error(err)
+          return dispatch(actions.displayWarning('Had a problem changing networks!'))
+        }
+        dispatch({
+          type: actions.SET_RPC_TARGET,
+          value: newRpc,
+        })
+      })
+    })
+  }
+}
+
 function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
@@ -2004,6 +2028,7 @@ function delRpcTarget (oldRpc) {
     })
   }
 }
+
 
 // Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname = '') {
