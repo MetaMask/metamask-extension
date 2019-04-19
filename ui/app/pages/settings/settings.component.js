@@ -57,7 +57,7 @@ class SettingsPage extends PureComponent {
       >
         <div className="settings-page__header">
           {
-            !this.isCurrentPath(SETTINGS_ROUTE) && (
+            !this.isCurrentPath(SETTINGS_ROUTE) && !this.isCurrentPath(NETWORKS_ROUTE) && (
               <div
                 className="settings-page__back-button"
                 onClick={() => history.push(SETTINGS_ROUTE)}

@@ -53,13 +53,13 @@ export default class NetworksTab extends PureComponent {
     }
   }
 
-  renderFormTextField (textFieldLabelKey, textFieldId, onChange, value) {
+  renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey) {
     const { errors } = this.state
     const { viewOnly } = this.props
 
     return (
       <div className="networks-tab__network-form-row">
-        <div className="networks-tab__network-form-label">{this.context.t(textFieldLabelKey)}</div>
+        <div className="networks-tab__network-form-label">{this.context.t(optionalTextFieldKey || fieldKey)}</div>
         <TextField
           type="text"
           id={textFieldId}
@@ -68,7 +68,7 @@ export default class NetworksTab extends PureComponent {
           margin="dense"
           value={value}
           disabled={viewOnly}
-          error={errors[textFieldLabelKey]}
+          error={errors[fieldKey]}
         />
       </div>
     )
@@ -138,12 +138,14 @@ export default class NetworksTab extends PureComponent {
           'chainId',
           this.setStateWithValue('chainId', this.validateChainId),
           chainId,
+          'optionalChainId',
         )}
         {this.renderFormTextField(
           'symbol',
           'network-ticker',
           this.setStateWithValue('ticker'),
           ticker,
+          'optionalSymbol',
         )}
         <PageContainerFooter
           onCancel={() => {
