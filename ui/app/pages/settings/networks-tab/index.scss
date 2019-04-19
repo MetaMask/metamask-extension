@@ -33,6 +33,10 @@
     .page-container__footer {
       border-top: none;
 
+      @media screen and (max-width: 575px) {
+        width: 93%;
+      }
+
       header {
         padding: 0;
       }
