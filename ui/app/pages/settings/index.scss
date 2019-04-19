@@ -109,8 +109,6 @@
   &__body {
     padding: 12px 24px;
     height: 100%;
-    display: flex;
-    flex-direction: column;
 
     @media screen and (max-width: 575px) {
       padding: 0;
