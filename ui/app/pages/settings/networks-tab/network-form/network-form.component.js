@@ -11,6 +11,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   static propTypes = {
+    editRpc: PropTypes.func,
     rpcUrl: PropTypes.string,
     chainId: PropTypes.string,
     ticker: PropTypes.string,
@@ -108,7 +109,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   render () {
-    const { onClear, setRpcTarget, viewOnly } = this.props
+    const { onClear, setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc } = this.props
     const {
       networkName,
       rpcUrl,
@@ -157,7 +158,13 @@ export default class NetworksTab extends PureComponent {
           }}
           cancelText={this.context.t('cancel')}
           hideCancel={false}
-          onSubmit={() => setRpcTarget(rpcUrl, chainId, ticker, networkName)}
+          onSubmit={() => {
+            if (rpcUrl !== propsRpcUrl) {
+              editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName)
+            } else {
+              setRpcTarget(rpcUrl, chainId, ticker, networkName)
+            }
+          }}
           submitText={this.context.t('save')}
           submitButtonType={'confirm'}
           disabled={viewOnly || Object.values(errors).some(x => x) || !rpcUrl}

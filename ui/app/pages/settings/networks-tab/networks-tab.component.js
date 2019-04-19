@@ -13,6 +13,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   static propTypes = {
+    editRpc: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
     networkIsSelected: PropTypes.bool,
@@ -131,6 +132,7 @@ export default class NetworksTab extends PureComponent {
       },
       networksTabIsInAddMode,
       networkIsSelected,
+      editRpc,
     } = this.props
 
     return (
@@ -139,6 +141,7 @@ export default class NetworksTab extends PureComponent {
         {networksTabIsInAddMode || networkIsSelected
           ? <NetworkForm
             setRpcTarget={setRpcTarget}
+            editRpc={editRpc}
             networkName={label || labelKey && this.context.t(labelKey) || ''}
             rpcUrl={rpcUrl}
             chainId={chainId}
