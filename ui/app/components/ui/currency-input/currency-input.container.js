@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import CurrencyInput from './currency-input.component'
 import { ETH } from '../../../helpers/constants/common'
+import { getMaxModeOn } from '../../../components/app/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import {getIsMainnet, preferencesSelector} from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
@@ -13,6 +14,7 @@ const mapStateToProps = state => {
     currentCurrency,
     conversionRate,
     hideFiat: (!isMainnet && !showFiatInTestnets),
+    maxModeOn: getMaxModeOn(state)
   }
 }
 

@@ -38,6 +38,10 @@
     border: none;
     outline: 0 !important;
     max-width: 22ch;
+
+    &__disabled {
+      background-color: #dedede;
+    }
   }
 
   &__input-container {
@@ -52,4 +56,9 @@
   &--error {
     border-color: $red;
   }
+
+  &__disabled {
+    background-color: #dedede;
+  }
+
 }

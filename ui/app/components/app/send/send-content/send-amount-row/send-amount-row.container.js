@@ -10,6 +10,7 @@ import {
   getSendFromBalance,
   getTokenBalance,
 } from '../../send.selectors'
+import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors' 
 import {
   sendAmountIsInError,
 } from './send-amount-row.selectors'
@@ -34,6 +35,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     gasTotal: getGasTotal(state),
     inError: sendAmountIsInError(state),
+    maxModeOn: getMaxModeOn(state),
     primaryCurrency: getPrimaryCurrency(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),

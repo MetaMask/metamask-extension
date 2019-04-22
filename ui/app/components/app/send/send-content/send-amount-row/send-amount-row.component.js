@@ -18,6 +18,7 @@ export default class SendAmountRow extends Component {
     convertedCurrency: PropTypes.string,
     gasTotal: PropTypes.string,
     inError: PropTypes.bool,
+    maxModeOn: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
@@ -102,13 +103,14 @@ export default class SendAmountRow extends Component {
   }
 
   render () {
-    const { gasTotal, inError } = this.props
+    const { gasTotal, inError, maxModeOn } = this.props
 
     return (
       <SendRowWrapper
         label={`${this.context.t('amount')}:`}
         showError={inError}
         errorType={'amount'}
+        maxModeOn={maxModeOn}
       >
         {!inError && gasTotal && <AmountMaxButton />}
         { this.renderInput() }

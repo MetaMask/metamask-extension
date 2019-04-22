@@ -8,14 +8,19 @@ import AdvancedGasInputs from '../../../gas-customization/advanced-gas-inputs'
 export default class SendGasRow extends Component {
 
   static propTypes = {
+    balance: PropTypes.string,
     conversionRate: PropTypes.number,
     convertedCurrency: PropTypes.string,
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
+    maxModeOn: PropTypes.bool,
     showCustomizeGasModal: PropTypes.func,
+    selectedToken: PropTypes.object,
+    setAmountToMax: PropTypes.func,
     setGasPrice: PropTypes.func,
     setGasLimit: PropTypes.func,
+    tokenBalance: PropTypes.string,
     gasPriceButtonGroupProps: PropTypes.object,
     gasButtonGroupShown: PropTypes.bool,
     advancedInlineGasShown: PropTypes.bool,
@@ -47,6 +52,23 @@ export default class SendGasRow extends Component {
     </div>
   }
 
+  setMaxAmount() {
+    const {
+      balance,
+      gasTotal,
+      selectedToken,
+      setAmountToMax,
+      tokenBalance,
+    } = this.props
+
+    setAmountToMax({
+      balance,
+      gasTotal,
+      selectedToken,
+      tokenBalance,
+    })
+  }
+
   renderContent () {
     const {
       conversionRate,
@@ -57,6 +79,7 @@ export default class SendGasRow extends Component {
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
       advancedInlineGasShown,
+      maxModeOn,
       resetGasButtons,
       setGasPrice,
       setGasLimit,
@@ -79,7 +102,16 @@ export default class SendGasRow extends Component {
                 name: 'Changed Gas Button',
               },
             })
-            gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            return new Promise((resolve, reject) => {
+                resolve(gasPriceButtonGroupProps.handleGasPriceSelection(...args))
+            })
+            .then(()=> {
+              maxModeOn
+              ?
+              this.setMaxAmount()
+              :
+              null
+            })
           }}
         />
         { this.renderAdvancedOptionsButton() }
