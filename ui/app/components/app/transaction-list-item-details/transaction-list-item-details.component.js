@@ -22,6 +22,7 @@ export default class TransactionListItemDetails extends PureComponent {
     showRetry: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
+    blockExplorerUrl: PropTypes.string,
   }
 
   state = {
@@ -30,11 +31,17 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleEtherscanClick = () => {
-    const { transactionGroup: { primaryTransaction } } = this.props
+    const { transactionGroup: { primaryTransaction }, blockExplorerUrl } = this.props
     const { hash, metamaskNetworkId } = primaryTransaction
 
     const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    let etherscanUrl
+
+    if (blockExplorerUrl) {
+      etherscanUrl = `${blockExplorerUrl}/tx/${hash}`
+    } else {
+      etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    }
 
     this.context.metricsEvent({
       eventOpts: {
@@ -125,6 +132,7 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       onCancel,
       onRetry,
+      blockExplorerUrl,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { txParams: { to, from } = {} } = transaction
@@ -158,7 +166,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 />
               </Button>
             </Tooltip>
-            <Tooltip title={t('viewOnEtherscan')}>
+            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
               <Button
                 type="raised"
                 onClick={this.handleEtherscanClick}

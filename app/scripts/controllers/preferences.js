@@ -488,8 +488,8 @@ class PreferencesController {
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
-      const { rpcUrl, chainId, ticker, nickname } = newRpcDetails
-      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname)
+      const { rpcUrl, chainId, ticker, nickname, rpcPrefs } = newRpcDetails
+      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     }
     return Promise.resolve(rpcList)
   }
@@ -503,7 +503,7 @@ class PreferencesController {
    * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '') {
+  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
     if (index !== -1) {
@@ -514,7 +514,7 @@ class PreferencesController {
       if (!!chainId && !Number.isNaN(parseInt(chainId))) {
         checkedChainId = chainId
       }
-      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname })
+      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
     }
     this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)

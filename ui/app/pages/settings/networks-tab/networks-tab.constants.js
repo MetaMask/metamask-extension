@@ -6,6 +6,7 @@ const defaultNetworksData = [
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/mainnet',
     chainId: '1',
     ticker: 'ETH',
+    blockExplorerUrl: 'https://etherscan.io',
   },
   {
     labelKey: 'ropsten',
@@ -14,6 +15,7 @@ const defaultNetworksData = [
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/ropsten',
     chainId: '3',
     ticker: 'ETH',
+    blockExplorerUrl: 'https://ropsten.etherscan.io',
   },
   {
     labelKey: 'kovan',
@@ -22,6 +24,7 @@ const defaultNetworksData = [
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/kovan',
     chainId: '4',
     ticker: 'ETH',
+    blockExplorerUrl: 'https://etherscan.io',
   },
   {
     labelKey: 'rinkeby',
@@ -30,6 +33,7 @@ const defaultNetworksData = [
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/rinkeby',
     chainId: '42',
     ticker: 'ETH',
+    blockExplorerUrl: 'https://rinkeby.etherscan.io',
   },
   {
     labelKey: 'localhost',
@@ -37,6 +41,7 @@ const defaultNetworksData = [
     border: '1px solid #6A737D',
     providerType: 'localhost',
     rpcUrl: 'http://localhost:8545/',
+    blockExplorerUrl: 'https://etherscan.io',
   },
 ]
 

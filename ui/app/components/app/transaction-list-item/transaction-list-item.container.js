@@ -18,12 +18,13 @@ import { getIsMainnet, preferencesSelector, getSelectedAddress, conversionRateSe
 import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask: { knownMethodData, accounts } } = state
+  const { metamask: { knownMethodData, accounts, provider } } = state
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
   const { txParams: { gas: gasLimit, gasPrice } = {} } = primaryTransaction
   const selectedAccountBalance = accounts[getSelectedAddress(state)].balance
+  const { rpcPrefs: { blockExplorerUrl } = {} } = provider
 
   const hasEnoughCancelGas = primaryTransaction.txParams && isBalanceSufficient({
     amount: '0x0',
@@ -40,6 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     showFiat: (isMainnet || !!showFiatInTestnets),
     selectedAccountBalance,
     hasEnoughCancelGas,
+    blockExplorerUrl,
   }
 }
 

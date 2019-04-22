@@ -33,6 +33,7 @@ export default class TransactionListItem extends PureComponent {
     value: PropTypes.string,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
+    blockExplorerUrl: PropTypes.string,
   }
 
   static defaultProps = {
@@ -161,6 +162,7 @@ export default class TransactionListItem extends PureComponent {
       showRetry,
       tokenData,
       transactionGroup,
+      blockExplorerUrl,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -216,6 +218,7 @@ export default class TransactionListItem extends PureComponent {
                   onCancel={this.handleCancel}
                   showCancel={showCancel}
                   cancelDisabled={!hasEnoughCancelGas}
+                  blockExplorerUrl={blockExplorerUrl}
                 />
               </div>
             )

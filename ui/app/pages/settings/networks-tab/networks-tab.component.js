@@ -26,6 +26,10 @@ export default class NetworksTab extends PureComponent {
     subHeaderKey: PropTypes.string,
   }
 
+  componentWillMount () {
+    this.props.setSelectedSettingsRpcUrl(null)
+  }
+
   isCurrentPath (pathname) {
     return this.props.location.pathname === pathname
   }
@@ -129,6 +133,8 @@ export default class NetworksTab extends PureComponent {
         chainId,
         ticker,
         viewOnly,
+        rpcPrefs,
+        blockExplorerUrl,
       },
       networksTabIsInAddMode,
       networkIsSelected,
@@ -152,6 +158,8 @@ export default class NetworksTab extends PureComponent {
             }}
             viewOnly={viewOnly}
             networksTabIsInAddMode={networksTabIsInAddMode}
+            rpcPrefs={rpcPrefs}
+            blockExplorerUrl={blockExplorerUrl}
           />
           : null
         }

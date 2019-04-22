@@ -13,10 +13,13 @@ const EditableLabel = require('../../ui/editable-label')
 import Button from '../../ui/button'
 
 function mapStateToProps (state) {
+  const { rpcPrefs: { blockExplorerUrl } = {} } = state.metamask.provider
+
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
+    blockExplorerUrl,
   }
 }
 
@@ -54,6 +57,7 @@ AccountDetailsModal.prototype.render = function () {
     showExportPrivateKeyModal,
     setAccountLabel,
     keyrings,
+    blockExplorerUrl,
   } = this.props
   const { name, address } = selectedIdentity
 
@@ -86,7 +90,16 @@ AccountDetailsModal.prototype.render = function () {
       h(Button, {
         type: 'secondary',
         className: 'account-modal__button',
-        onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
+        onClick: () => {
+          let accountLink
+          if (blockExplorerUrl) {
+            accountLink = `${blockExplorerUrl}/address/${address}`
+          } else {
+            accountLink = genAccountLink(address, network)
+          }
+
+          global.platform.openWindow({ url: accountLink })
+        },
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality

@@ -20,6 +20,8 @@ export default class NetworksTab extends PureComponent {
     onClear: PropTypes.func,
     setRpcTarget: PropTypes.func,
     networksTabIsInAddMode: PropTypes.bool,
+    blockExplorerUrl: PropTypes.string,
+    rpcPrefs: PropTypes.object,
   }
 
   state = {
@@ -27,6 +29,7 @@ export default class NetworksTab extends PureComponent {
     chainId: this.props.chainId,
     ticker: this.props.ticker,
     networkName: this.props.networkName,
+    blockExplorerUrl: this.props.blockExplorerUrl,
     errors: {},
   }
 
@@ -38,6 +41,7 @@ export default class NetworksTab extends PureComponent {
       ticker,
       networkName,
       networksTabIsInAddMode,
+      blockExplorerUrl,
     } = this.props
 
     if (!prevAddMode && networksTabIsInAddMode) {
@@ -46,11 +50,24 @@ export default class NetworksTab extends PureComponent {
         chainId: '',
         ticker: '',
         networkName: '',
+        blockExplorerUrl: '',
         errors: {},
       })
     } else if (prevRpcUrl !== rpcUrl) {
-      this.setState({ rpcUrl, chainId, ticker, networkName })
+      this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
     }
+  }
+
+  componentWillUnmount () {
+    this.props.onClear()
+    this.setState({
+      rpcUrl: '',
+      chainId: '',
+      ticker: '',
+      networkName: '',
+      blockExplorerUrl: '',
+      errors: {},
+    })
   }
 
   renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey) {
@@ -76,7 +93,7 @@ export default class NetworksTab extends PureComponent {
 
   setStateWithValue = (stateKey, validator) => {
     return (e) => {
-      validator && validator(e.target.value)
+      validator && validator(e.target.value, stateKey)
       this.setState({ [stateKey]: e.target.value })
     }
   }
@@ -97,24 +114,25 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  validateRpcUrl = (rpcUrl) => {
-    if (validUrl.isWebUri(rpcUrl)) {
-      this.setErrorTo('rpcUrl', '')
+  validateUrl = (url, stateKey) => {
+    if (validUrl.isWebUri(url)) {
+      this.setErrorTo(stateKey, '')
     } else {
-      const appendedRpc = `http://${rpcUrl}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !rpcUrl.match(/^https*:\/\/$/)
+      const appendedRpc = `http://${url}`
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https*:\/\/$/)
 
-      this.setErrorTo('rpcUrl', this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
     }
   }
 
   render () {
-    const { onClear, setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc } = this.props
+    const { onClear, setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc, rpcPrefs = {} } = this.props
     const {
       networkName,
       rpcUrl,
       chainId,
       ticker,
+      blockExplorerUrl,
       errors,
     } = this.state
 
@@ -130,7 +148,7 @@ export default class NetworksTab extends PureComponent {
         {this.renderFormTextField(
           'rpcUrl',
           'rpc-url',
-          this.setStateWithValue('rpcUrl', this.validateRpcUrl),
+          this.setStateWithValue('rpcUrl', this.validateUrl),
           rpcUrl,
         )}
         {this.renderFormTextField(
@@ -147,6 +165,13 @@ export default class NetworksTab extends PureComponent {
           ticker,
           'optionalSymbol',
         )}
+        {this.renderFormTextField(
+          'blockExplorerUrl',
+          'block-explorer-url',
+          this.setStateWithValue('blockExplorerUrl', this.validateUrl),
+          blockExplorerUrl,
+          'optionalBlockExplorerUrl',
+        )}
         <PageContainerFooter
           onCancel={() => {
             onClear()
@@ -155,6 +180,7 @@ export default class NetworksTab extends PureComponent {
               chainId: '',
               ticker: '',
               networkName: '',
+              blockExplorerUrl: '',
               errors: {},
             })
           }}
@@ -162,9 +188,12 @@ export default class NetworksTab extends PureComponent {
           hideCancel={false}
           onSubmit={() => {
             if (rpcUrl !== propsRpcUrl) {
-              editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName)
+              editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, blockExplorerUrl || rpcPrefs.blockExplorerUrl)
             } else {
-              setRpcTarget(rpcUrl, chainId, ticker, networkName)
+              setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+                blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+                ...rpcPrefs,
+              })
             }
           }}
           submitText={this.context.t('save')}

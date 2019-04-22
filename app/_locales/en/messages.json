@@ -194,6 +194,9 @@
     "message": "must be greater than or equal to $1 and less than or equal to $2.",
     "description": "helper for inputting hex as decimal input"
   },
+  "blockExplorerUrl": {
+    "message": "Block Explorer"
+  },
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
   },
@@ -232,6 +235,9 @@
   },
   "ok": {
     "message": "Ok"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
   },
   "cancel": {
     "message": "Cancel"
@@ -1731,6 +1737,9 @@
   },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
   },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
