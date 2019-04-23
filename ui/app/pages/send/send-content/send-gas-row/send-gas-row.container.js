@@ -16,7 +16,7 @@ import {
   isBalanceSufficient,
   calcGasTotal,
 } from '../../send.utils.js'
-import { calcMaxAmount } from '../../../../app/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
+import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
   getBasicGasEstimateLoadingStatus,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
@@ -34,8 +34,8 @@ import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './s
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../store/actions'
 import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
-import { updateSendAmount } from '../../../../../store/actions'
-import { updateSendErrors } from '../../../../../ducks/send/send.duck'
+import { updateSendAmount } from '../../../../store/actions'
+import { updateSendErrors } from '../../../../ducks/send/send.duck'
 
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import classNames from 'classnames'
 import { removeLeadingZeroes } from '../../../pages/send/send.utils'
 
 /**
