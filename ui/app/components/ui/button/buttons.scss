@@ -70,6 +70,7 @@ $hover-orange: #FFD3B5;
 .btn-secondary {
   color: $Blue-500;
   border: 2px solid $hover-secondary;
+  background-color: $white;
 
   &:hover {
     border-color: $Blue-500;
@@ -90,6 +91,7 @@ $hover-orange: #FFD3B5;
 .btn-warning {
   color: $Orange-500;
   border: 2px solid $hover-orange;
+  background-color: $white;
 
   &:hover {
     border-color: $Orange-500;
@@ -110,6 +112,7 @@ $hover-orange: #FFD3B5;
 .btn-danger {
   color: $Red-500;
   border: 2px solid $hover-red;
+  background-color: $white;
 
   &:hover {
     border-color: $Red-500;
