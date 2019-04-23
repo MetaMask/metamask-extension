@@ -275,6 +275,7 @@ function blacklistedDomainCheck () {
     'harbourair.com',
     'ani.gamer.com.tw',
     'blueskybooking.com',
+    'sharefile.com',
   ]
   const currentUrl = window.location.href
   let currentRegex

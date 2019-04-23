@@ -44,6 +44,12 @@
   "providerRequestInfo": {
     "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
+  "about": {
+    "message": "About"
+  },
+  "aboutSettingsDescription": {
+    "message": "Version, support center, and contact info."
+  },
   "aboutUs": {
     "message": "About Us"
   },
@@ -132,6 +138,9 @@
   },
   "approved": {
     "message": "Approved"
+  },
+  "asset": {
+    "message": "Asset"
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
@@ -301,6 +310,12 @@
   },
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToLocalhost": {
+    "message": "Connecting to Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Connecting to Goerli Test Network"
   },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"
@@ -1220,6 +1235,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "goerli": {
+    "message": "Goerli Test Network"
+  },
   "rpc": {
     "message": "Custom RPC"
   },
@@ -1335,6 +1353,9 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
+  },
+  "selectAnAsset": {
+    "message": "Select an Asset"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"

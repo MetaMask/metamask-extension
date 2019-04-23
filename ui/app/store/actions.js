@@ -5,7 +5,7 @@ const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
-} = require('../components/app/send/send.utils')
+} = require('../pages/send/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const log = require('loglevel')
@@ -51,13 +51,6 @@ var actions = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
-  // notices
-  MARK_NOTICE_READ: 'MARK_NOTICE_READ',
-  markNoticeRead: markNoticeRead,
-  SHOW_NOTICE: 'SHOW_NOTICE',
-  showNotice: showNotice,
-  CLEAR_NOTICES: 'CLEAR_NOTICES',
-  clearNotices: clearNotices,
   markAccountsFound,
   // intialize screen
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
@@ -1857,47 +1850,6 @@ function goBackToInitView () {
   }
 }
 
-//
-// notice
-//
-
-function markNoticeRead (notice) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.markNoticeRead`)
-    return new Promise((resolve, reject) => {
-      background.markNoticeRead(notice, (err, notice) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        if (notice) {
-          dispatch(actions.showNotice(notice))
-          resolve(true)
-        } else {
-          dispatch(actions.clearNotices())
-          resolve(false)
-        }
-      })
-    })
-  }
-}
-
-function showNotice (notice) {
-  return {
-    type: actions.SHOW_NOTICE,
-    value: notice,
-  }
-}
-
-function clearNotices () {
-  return {
-    type: actions.CLEAR_NOTICES,
-  }
-}
-
 function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
@@ -2488,21 +2440,18 @@ function setShowFiatConversionOnTestnetsPreference (value) {
 }
 
 function setCompletedOnboarding () {
-  return dispatch => {
+  return async dispatch => {
     dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeOnboarding(err => {
-        dispatch(actions.hideLoadingIndication())
 
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
+    try {
+      await pify(background.completeOnboarding).call(background)
+    } catch (err) {
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
 
-        dispatch(actions.completeOnboarding())
-        resolve()
-      })
-    })
+    dispatch(actions.completeOnboarding())
+    dispatch(actions.hideLoadingIndication())
   }
 }
 

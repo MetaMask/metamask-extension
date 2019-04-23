@@ -245,7 +245,7 @@ ShapeshiftForm.prototype.render = function () {
       ]),
 
       !depositAddress && h(Button, {
-        type: 'primary',
+        type: 'secondary',
         large: true,
         className: `${btnClass} shapeshift-form__shapeshift-buy-btn`,
         disabled: !token,

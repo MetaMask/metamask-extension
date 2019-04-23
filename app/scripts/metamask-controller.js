@@ -18,13 +18,12 @@ const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
-const createProviderMiddleware = require('./lib/createProviderMiddleware')
+const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
-const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
@@ -211,13 +210,6 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.balancesController.updateAllBalances()
 
-    // notices
-    this.noticeController = new NoticeController({
-      initState: initState.NoticeController,
-      version,
-      firstVersion: initState.firstTimeInfo.version,
-    })
-
     this.shapeshiftController = new ShapeShiftController({
       initState: initState.ShapeShiftController,
     })
@@ -243,7 +235,6 @@ module.exports = class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      NoticeController: this.noticeController.store,
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
@@ -265,7 +256,6 @@ module.exports = class MetamaskController extends EventEmitter {
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
@@ -371,7 +361,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
     const txController = this.txController
-    const noticeController = this.noticeController
     const networkController = this.networkController
     const providerApprovalController = this.providerApprovalController
 
@@ -469,10 +458,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // personalMessageManager
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
-
-      // notices
-      checkNotices: noticeController.updateNoticesList.bind(noticeController),
-      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
 
       approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
@@ -1388,7 +1373,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider
-    engine.push(createProviderMiddleware({ provider }))
+    engine.push(providerAsMiddleware(provider))
 
     // setup connection
     const providerStream = createEngineStream({ engine })

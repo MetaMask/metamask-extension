@@ -21,12 +21,28 @@ import {
   CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
+import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
 
 export function getTokenData (data = '') {
   return abiDecoder.decodeMethod(data)
+}
+
+async function getMethodFrom4Byte (fourBytePrefix) {
+  const fourByteResponse = (await fetch(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
+    referrerPolicy: 'no-referrer-when-downgrade',
+    body: null,
+    method: 'GET',
+    mode: 'cors',
+  })).json()
+
+  if (fourByteResponse.count === 1) {
+    return fourByteResponse.results[0].text_signature
+  } else {
+    return null
+  }
 }
 
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
@@ -37,21 +53,40 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
  * @param {string} data - The hex data (@code txParams.data) of a transaction
  * @returns {Object}
  */
-export async function getMethodData (data = '') {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
+  export async function getMethodData (data = '') {
+    const prefixedData = ethUtil.addHexPrefix(data)
+    const fourBytePrefix = prefixedData.slice(0, 10)
 
-  if (!sig) {
-    return {}
-  }
+    try {
+      const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+          log.error(e)
+          return null
+      })
 
-  const parsedResult = registry.parse(sig)
+      let sig = await registry.lookup(fourBytePrefix)
 
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
-  }
+      if (!sig) {
+        sig = await fourByteSig
+      }
+
+      if (!sig) {
+        return {}
+      }
+
+      const parsedResult = registry.parse(sig)
+
+      return {
+        name: parsedResult.name,
+        params: parsedResult.args,
+      }
+    } catch (error) {
+      log.error(error)
+      const tokenData = getTokenData(data)
+      const { name } = tokenData || {}
+      return { name }
+    }
+
+
 }
 
 export function isConfirmDeployContract (txData = {}) {

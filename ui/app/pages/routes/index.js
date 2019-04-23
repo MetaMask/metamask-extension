@@ -10,7 +10,7 @@ import { getMetaMaskAccounts, getNetworkIdentifier } from '../../selectors/selec
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../../components/app/send/send.container')
+const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
@@ -31,7 +31,6 @@ const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
 const CreateAccountPage = require('../create-account')
-const NoticeScreen = require('../notice/notice')
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
@@ -67,7 +66,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
-  NOTICE_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -109,7 +107,6 @@ class Routes extends Component {
         <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
         <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        <Authenticated path={NOTICE_ROUTE} component={NoticeScreen} exact />
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
         <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
@@ -270,6 +267,10 @@ class Routes extends Component {
       name = this.context.t('connectingToKovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('connectingToLocalhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('connectingToGoerli')
     } else {
       name = this.context.t('connectingTo', [providerId])
     }
@@ -291,6 +292,10 @@ class Routes extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('goerli')
     } else {
       name = this.context.t('unknownNetwork')
     }
@@ -322,7 +327,6 @@ Routes.propTypes = {
   dispatch: PropTypes.func,
   toggleAccountMenu: PropTypes.func,
   selectedAddress: PropTypes.string,
-  noActiveNotices: PropTypes.bool,
   lostAccounts: PropTypes.array,
   isInitialized: PropTypes.bool,
   forgottenPassword: PropTypes.bool,
@@ -360,10 +364,8 @@ function mapStateToProps (state) {
     address,
     keyrings,
     isInitialized,
-    noActiveNotices,
     seedWords,
     unapprovedTxs,
-    nextUnreadNotice,
     lostAccounts,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
@@ -380,14 +382,13 @@ function mapStateToProps (state) {
     alertMessage,
     isLoading,
     loadingMessage,
-    noActiveNotices,
     isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     selectedAddress: state.metamask.selectedAddress,
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
-    isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
+    isOnboarding: Boolean(seedWords || !isInitialized),
     isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
@@ -400,7 +401,6 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
-    nextUnreadNotice,
     lostAccounts,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,

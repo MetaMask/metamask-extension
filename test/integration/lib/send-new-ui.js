@@ -43,15 +43,12 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.transaction-view-balance__button')
+  const sendScreenButton = await queryAsync($, 'button.btn-secondary.transaction-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
   const sendTitle = await queryAsync($, '.page-container__title')
   assert.equal(sendTitle[0].textContent, 'Send ETH', 'Send screen title is correct')
-
-  const sendCopy = await queryAsync($, '.page-container__subtitle')
-  assert.equal(sendCopy[0].textContent, 'Only send ETH to an Ethereum address.', 'Send screen has copy')
 
   const sendFromField = await queryAsync($, '.send-v2__form-field')
   assert.ok(sendFromField[0], 'send screen has a from field')
@@ -72,7 +69,7 @@ async function runSendFlowTest (assert, done) {
   const sendToAccountAddress = sendToFieldInput.val()
   assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
-  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
+  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(3)')
   sendAmountField.find('.unit-input')[0].click()
 
   const sendAmountFieldInput = await findAsync(sendAmountField, '.unit-input__input')
@@ -88,7 +85,7 @@ async function runSendFlowTest (assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
+  const sendButton = await queryAsync($, 'button.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
   sendButton[0].click()
   await timeout()
@@ -115,14 +112,14 @@ async function runSendFlowTest (assert, done) {
   sendToFieldInputInEdit[0].focus()
   sendToFieldInputInEdit.val('0xd85a4b6a394794842887b8284293d69163007bbb')
 
-  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(2)')
+  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(3)')
   sendAmountFieldInEdit.find('.unit-input')[0].click()
 
   const sendAmountFieldInputInEdit = sendAmountFieldInEdit.find('.unit-input__input')
   sendAmountFieldInputInEdit.val('1.0')
   reactTriggerChange(sendAmountFieldInputInEdit[0])
 
-  const sendButtonInEdit = await queryAsync($, '.btn-primary.btn--large.page-container__footer-button')
+  const sendButtonInEdit = await queryAsync($, '.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButtonInEdit[0].textContent, 'Next', 'next button in edit rendered')
 
   selectState.val('send new ui')

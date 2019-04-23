@@ -149,7 +149,7 @@ export default class MetaMetricsOptIn extends Component {
                 })
               }}
               submitText={'I agree'}
-              submitButtonType={'confirm'}
+              submitButtonType={'primary'}
               disabled={false}
             />
             <div className="metametrics-opt-in__bottom-text">

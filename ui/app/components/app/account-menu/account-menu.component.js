@@ -10,7 +10,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY } from '../../../helpers/constants/common'
 import {
   SETTINGS_ROUTE,
-  INFO_ROUTE,
+  ABOUT_US_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -307,7 +307,7 @@ export default class AccountMenu extends PureComponent {
         <Item
           onClick={() => {
             toggleAccountMenu()
-            history.push(INFO_ROUTE)
+            history.push(ABOUT_US_ROUTE)
           }}
           icon={
             <img src="images/mm-info-icon.svg" />

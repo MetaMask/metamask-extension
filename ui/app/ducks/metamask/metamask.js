@@ -18,8 +18,6 @@ function reduceMetamask (state, action) {
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
-    noActiveNotices: true,
-    nextUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
@@ -68,18 +66,6 @@ function reduceMetamask (state, action) {
       })
       delete newState.seedWords
       return newState
-
-    case actions.SHOW_NOTICE:
-      return extend(metamaskState, {
-        noActiveNotices: false,
-        nextUnreadNotice: action.value,
-      })
-
-    case actions.CLEAR_NOTICES:
-      return extend(metamaskState, {
-        noActiveNotices: true,
-        nextUnreadNotice: undefined,
-      })
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
@@ -168,9 +154,26 @@ function reduceMetamask (state, action) {
       return newState
 
     case actions.SET_SELECTED_TOKEN:
-      return extend(metamaskState, {
+      newState = extend(metamaskState, {
         selectedTokenAddress: action.value,
       })
+      const newSend = extend(metamaskState.send)
+
+      if (metamaskState.send.editingTransactionId && !action.value) {
+        delete newSend.token
+        const unapprovedTx = newState.unapprovedTxs[newSend.editingTransactionId] || {}
+        const txParams = unapprovedTx.txParams || {}
+        newState.unapprovedTxs = extend(newState.unapprovedTxs, {
+          [newSend.editingTransactionId]: extend(unapprovedTx, {
+            txParams: extend(txParams, { data: '' }),
+          }),
+        })
+        newSend.tokenBalance = null
+        newSend.balance = '0'
+      }
+
+      newState.send = newSend
+      return newState
 
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account

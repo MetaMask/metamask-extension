@@ -55,11 +55,6 @@
     border-top: 1px solid $geyser;
     flex: 0 0 auto;
 
-    .btn-default,
-    .btn-confirm {
-      font-size: 1rem;
-    }
-
     header {
       display: flex;
       flex-flow: row;
@@ -86,9 +81,6 @@
   }
 
   &__footer-button {
-    height: 55px;
-    font-size: 1rem;
-    text-transform: uppercase;
     margin-right: 16px;
 
     &:last-of-type {

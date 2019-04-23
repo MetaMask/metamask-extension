@@ -25,6 +25,7 @@ export default class ConfirmTransactionSwitch extends Component {
     methodData: PropTypes.object,
     fetchingData: PropTypes.bool,
     isEtherTransaction: PropTypes.bool,
+    isTokenMethod: PropTypes.bool,
   }
 
   redirectToTransaction () {
@@ -33,6 +34,7 @@ export default class ConfirmTransactionSwitch extends Component {
       methodData: { name },
       fetchingData,
       isEtherTransaction,
+      isTokenMethod,
     } = this.props
     const { id, txParams: { data } = {} } = txData
 
@@ -45,7 +47,7 @@ export default class ConfirmTransactionSwitch extends Component {
       return <Redirect to={{ pathname }} />
     }
 
-    if (isEtherTransaction) {
+    if (isEtherTransaction && !isTokenMethod) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`
       return <Redirect to={{ pathname }} />
     }

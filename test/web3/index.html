@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <title>Web3  Test Dapp</title>
+  </head>
+  <body>
+    <div style="display: flex; flex-flow: column;">
+      <div style="display: flex; font-size: 1.25rem;">hexaNumberMethods</div>
+      <div style="display: flex;">
+        <button id="eth_blockNumber" class="hexaNumberMethods">eth_blockNumber</button>
+       
+        <button id="eth_gasPrice" class="hexaNumberMethods">eth_gasPrice</button>
+        <button id="eth_newBlockFilter" class="hexaNumberMethods">eth_newBlockFilter</button>
+        <button id="eth_newPendingTransactionFilter" class="hexaNumberMethods">
+          eth_newPendingTransactionFilter
+        </button>
+        <button id="eth_getUncleCountByBlockHash" class="hexaNumberMethods">
+          eth_getUncleCountByBlockHash
+        </button>
+        <button id="eth_getBlockTransactionCountByHash" class="hexaNumberMethods">
+          getBlockTransactionCountByHash
+        </button>
+      </div>
+      <div style="display: flex ;">
+        <button id="eth_getTransactionCount" class="hexaNumberMethods">eth_getTransactionCount</button>
+        <button id="eth_getBalance" class="hexaNumberMethods">eth_getBalance</button>
+        <button id="eth_estimateGas" class="hexaNumberMethods">eth_estimateGas</button>
+      </div>
+      <div style="display: flex ;">
+    
+        <button id="eth_getUncleCountByBlockNumber" class="hexaNumberMethods">
+          eth_getUncleCountByBlockNumber
+        </button>
+        <button id='eth_getBlockTransactionCountByNumber' class="hexaNumberMethods">
+          eth_getBlockTransactionCountByNumber
+        </button>
+        <button id="eth_protocolVersion" class="hexaNumberMethods">eth_protocolVersion</button>
+      
+        <button id="eth_getCode" class="hexaNumberMethods">eth_getCode</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-flow: column;">
+      <div style="display: flex; font-size: 1.25rem;">booleanMethods</div>
+      <div style="display: flex ;">
+        <button id="eth_uninstallFilter" class = 'booleanMethods'>eth_uninstallFilter</button>
+        <button id="eth_mining" class = 'booleanMethods'>eth_mining</button>
+        <button id="eth_syncing" class = 'booleanMethods'>eth_syncing</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-flow: column;">
+      <div style="display: flex; font-size: 1.25rem;" >transactionMethods</div>
+      <div style="display: flex ;">
+        <button id="eth_getTransactionByHash" class='transactionMethods'>eth_getTransactionByHash</button>
+        <button id="eth_getTransactionByBlockHashAndIndex" class = 'transactionMethods'>
+          eth_getTransactionByBlockHashAndIndex
+        </button>
+        <button id="eth_getTransactionByBlockNumberAndIndex"  class="transactionMethods">
+          eth_getTransactionByBlockNumberAndIndex
+        </button>
+        
+     
+      </div>
+    </div>
+
+    <div style="display: flex; flex-flow: column;">
+      <div style="display: flex; font-size: 1.25rem;">blockMethods</div>
+     
+      <div style="display: flex ;">
+      
+
+        <button id="eth_getUncleByBlockHashAndIndex"  class="blockMethods">
+          eth_getUncleByBlockHashAndIndex
+        </button>
+        <button id="eth_getBlockByHash"  class="blockMethods">eth_getBlockByHash</button>
+      </div>
+      <div style="display: flex ;">
+        <button id="eth_getBlockByNumber"  class="blockMethods">eth_getBlockByNumber</button>
+        
+       
+      </div>
+    </div>
+
+    <div style="display: flex; flex-flow: column;">
+      <div style="display: flex; font-size: 1.25rem;">Methods</div>
+      <div style="display: flex ;">
+        <button id="eth_call" class = 'methods'>eth_call</button>
+        <button id="eth_getStorageAt"  class="methods">eth_getStorageAt</button>
+        <button id="eth_getTransactionReceipt" class="methods">
+          eth_getTransactionReceipt
+        </button>
+     
+      </div>
+    </div>
+    <div style="display: flex; flex-flow: column;">
+      <div id='results'></div>
+    </div>
+    
+       
+       
+       
+    </div>
+    <script src="schema.js"></script>
+    <script src="web3.js"></script>
+   
+  </body>
+</html>

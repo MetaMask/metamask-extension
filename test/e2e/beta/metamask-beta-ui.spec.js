@@ -80,7 +80,18 @@ describe('MetaMask', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); }'
+      'return window.origFetch(...args); };' +
+      'function cancelInfuraRequest(requestDetails) {' +
+        'console.log("Canceling: " + requestDetails.url);' +
+        'return {' +
+          'cancel: true' +
+        '};' +
+     ' }' +
+      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
+        'cancelInfuraRequest,' +
+        '{urls: ["https://*.infura.io/*"]},' +
+        '["blocking"]' +
+      ');'
     )
   })
 
@@ -223,26 +234,6 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Enable privacy mode', () => {
-    it('enables privacy mode', async () => {
-      const networkDropdown = await findElement(driver, By.css('.network-name'))
-      await networkDropdown.click()
-      await delay(regularDelayMs)
-
-      const customRpcButton = await findElement(driver, By.xpath(`//span[contains(text(), 'Custom RPC')]`))
-      await customRpcButton.click()
-      await delay(regularDelayMs)
-
-      const securityTab = await findElement(driver, By.xpath(`//div[contains(text(), 'Security & Privacy')]`))
-      await securityTab.click()
-      await delay(regularDelayMs)
-
-      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(1) .settings-page__content-item-col > div'))
-      await privacyToggle.click()
-      await delay(largeDelayMs * 2)
-    })
-  })
-
   describe('Log out an log back in', () => {
     it('logs out of the account', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
@@ -316,16 +307,6 @@ describe('MetaMask', function () {
       await passwordInputs[1].sendKeys('correct horse battery staple')
       await driver.findElement(By.css('.first-time-flow__button')).click()
       await delay(regularDelayMs)
-    })
-
-    it('switches to localhost', async () => {
-      const networkDropdown = await findElement(driver, By.css('.network-name'))
-      await networkDropdown.click()
-      await delay(regularDelayMs)
-
-      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
-      await localhost.click()
-      await delay(largeDelayMs * 2)
     })
 
     it('balance renders', async () => {
@@ -531,14 +512,22 @@ describe('MetaMask', function () {
       await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.clear()
-      await delay(tinyDelayMs)
+      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
+
 
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys('10')
+      await delay(50)
       await delay(tinyDelayMs)
-      await gasLimitInput.sendKeys('5')
+      await delay(50)
+      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
+
+      await gasLimitInput.sendKeys('25000')
       await delay(tinyDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
@@ -553,8 +542,10 @@ describe('MetaMask', function () {
     let txValues
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 4)
+      await driver.wait(async () => {
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 4
+      }, 10000)
 
       txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-3\s*ETH/), 10000)
@@ -611,8 +602,15 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      let transactions = await findElements(driver, By.css('.transaction-list-item'))
       await transactions[3].click()
+      await delay(regularDelayMs)
+      try {
+        transactions = await findElements(driver, By.css('.transaction-list-item'), 1000)
+        await transactions[3].click()
+      } catch (e) {
+        console.log(e)
+      }
       await delay(regularDelayMs)
     })
 
@@ -1019,7 +1017,9 @@ describe('MetaMask', function () {
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert.equal(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+
+      await delay(regularDelayMs)
+      assert(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
@@ -1050,8 +1050,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1
       }, 10000)
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
-      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken|Failed/), 10000)
-      assert.equal(await tx.getText(), 'Sent Tokens')
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken/i), 10000)
     })
   })
 
@@ -1092,23 +1091,31 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
-      await gasPriceInput.clear()
-      await delay(tinyDelayMs)
+      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
 
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasPriceInput.sendKeys('10')
-      await delay(tinyDelayMs)
-      await gasLimitInput.clear()
-      await delay(tinyDelayMs)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
       await gasLimitInput.sendKeys('60000')
+      await delay(50)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
+      await delay(50)
 
       const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
@@ -1195,7 +1202,7 @@ describe('MetaMask', function () {
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert.equal(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+      assert(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
@@ -1318,10 +1325,10 @@ describe('MetaMask', function () {
 
   describe('Stores custom RPC history', () => {
     const customRpcUrls = [
-      'https://mainnet.infura.io/1',
-      'https://mainnet.infura.io/2',
-      'https://mainnet.infura.io/3',
-      'https://mainnet.infura.io/4',
+      'http://127.0.0.1:8545/1',
+      'http://127.0.0.1:8545/2',
+      'http://127.0.0.1:8545/3',
+      'http://127.0.0.1:8545/4',
     ]
 
     customRpcUrls.forEach(customRpcUrl => {
@@ -1360,7 +1367,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // only recent 3 are found and in correct order (most recent at the top)
-      const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'https://mainnet.infura.io/')]`))
+      const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`))
 
       assert.equal(customRpcs.length, customRpcUrls.length)
     })

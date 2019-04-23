@@ -1031,52 +1031,6 @@ describe('Actions', () => {
     })
   })
 
-  describe('#markNoticeRead', () => {
-    let markNoticeReadSpy
-    const notice = {
-      id: 0,
-      read: false,
-      date: 'test date',
-      title: 'test title',
-      body: 'test body',
-    }
-
-    beforeEach(() => {
-      markNoticeReadSpy = sinon.stub(background, 'markNoticeRead')
-    })
-
-    afterEach(() => {
-      markNoticeReadSpy.restore()
-    })
-
-    it('calls markNoticeRead in background', () => {
-      const store = mockStore()
-
-      store.dispatch(actions.markNoticeRead(notice))
-      .then(() => {
-        assert(markNoticeReadSpy.calledOnce)
-      })
-
-    })
-
-    it('errors when markNoticeRead in background throws', () => {
-      const store = mockStore()
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-      markNoticeReadSpy.callsFake((notice, callback) => {
-        callback(new Error('error'))
-      })
-
-      store.dispatch(actions.markNoticeRead())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-  })
-
   describe('#setProviderType', () => {
     let setProviderTypeSpy
     let store
@@ -1305,6 +1259,25 @@ describe('Actions', () => {
         .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
+    })
+  })
+
+  describe('#setCompletedOnboarding', () => {
+    let completeOnboardingSpy
+
+    beforeEach(() => {
+      completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
+      completeOnboardingSpy.callsFake(cb => cb())
+    })
+
+    after(() => {
+      completeOnboardingSpy.restore()
+    })
+
+    it('completes onboarding', async () => {
+      const store = mockStore()
+      await store.dispatch(actions.setCompletedOnboarding())
+      assert.equal(completeOnboardingSpy.callCount, 1)
     })
   })
 

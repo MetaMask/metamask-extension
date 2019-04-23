@@ -30,7 +30,7 @@
   }
 
   &__link-text {
-    color: $curious-blue;
+    @extend %link;
   }
 
   &__version-number {
