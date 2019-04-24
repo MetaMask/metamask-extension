@@ -126,7 +126,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   render () {
-    const { onClear, setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc, rpcPrefs = {} } = this.props
+    const { setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc, rpcPrefs = {} } = this.props
     const {
       networkName,
       rpcUrl,
@@ -173,19 +173,8 @@ export default class NetworksTab extends PureComponent {
           'optionalBlockExplorerUrl',
         )}
         <PageContainerFooter
-          onCancel={() => {
-            onClear()
-            this.setState({
-              rpcUrl: '',
-              chainId: '',
-              ticker: '',
-              networkName: '',
-              blockExplorerUrl: '',
-              errors: {},
-            })
-          }}
           cancelText={this.context.t('cancel')}
-          hideCancel={false}
+          hideCancel={true}
           onSubmit={() => {
             if (rpcUrl !== propsRpcUrl) {
               editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, blockExplorerUrl || rpcPrefs.blockExplorerUrl)
