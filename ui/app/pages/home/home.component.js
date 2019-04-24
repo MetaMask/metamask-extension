@@ -34,10 +34,6 @@ export default class Home extends PureComponent {
     if (Object.keys(suggestedTokens).length > 0) {
         history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
     }
-
-    if (unconfirmedTransactionsCount > 0) {
-      history.push(CONFIRM_TRANSACTION_ROUTE)
-    }
   }
 
   render () {
@@ -45,6 +41,7 @@ export default class Home extends PureComponent {
       forgottenPassword,
       seedWords,
       providerRequests,
+      unconfirmedTransactionsCount,
     } = this.props
 
     // seed words
@@ -62,6 +59,9 @@ export default class Home extends PureComponent {
       )
     }
 
+    if (unconfirmedTransactionsCount > 0) {
+      return <Redirect to={{ pathname: CONFIRM_TRANSACTION_ROUTE }} />
+    }
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
