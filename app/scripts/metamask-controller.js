@@ -54,6 +54,7 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const { AddressBookController } = require('gaba')
+const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -194,6 +195,21 @@ module.exports = class MetamaskController extends EventEmitter {
       if (status === 'confirmed' || status === 'failed') {
         const txMeta = this.txController.txStateManager.getTx(txId)
         this.platform.showTransactionNotification(txMeta)
+
+        const { txReceipt } = txMeta
+        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
+        if (txReceipt && txReceipt.status === '0x0' && participateInMetaMetrics) {
+          backEndMetaMetricsEvent(this.getState.bind(this), {
+            customVariables: {
+              errorMessage: txMeta.simulationFails.reason,
+            },
+            eventOpts: {
+              category: 'backend',
+              action: 'Transactions',
+              name: 'On Chain Failure',
+            },
+          })
+        }
       }
     })
 

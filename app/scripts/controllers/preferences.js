@@ -117,6 +117,14 @@ class PreferencesController {
     return metaMetricsId
   }
 
+  getMetaMetricsId () {
+    return this.store.getState().metaMetricsId
+  }
+
+  getParticipateInMetaMetrics () {
+    return this.store.getState().participateInMetaMetrics
+  }
+
   setMetaMetricsSendCount (val) {
     this.store.updateState({ metaMetricsSendCount: val })
   }

@@ -165,7 +165,7 @@ function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask.send.token
+  const sendToken = state.metamask.send && state.metamask.send.token
 
   return selectedToken || sendToken || null
 }
