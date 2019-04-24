@@ -15,6 +15,7 @@ const defaultNetworks = defaultNetworksData.map(network => ({ ...network, viewOn
 const mapStateToProps = state => {
   const {
     frequentRpcListDetail,
+    provider,
   } = state.metamask
   const {
     networksTabSelectedRpcUrl,
@@ -34,8 +35,17 @@ const mapStateToProps = state => {
   })
 
   const networksToRender = [ ...defaultNetworks, ...frequentRpcNetworkListDetails ]
-  const selectedNetwork = networksToRender.find(network => network.rpcUrl === networksTabSelectedRpcUrl) || {}
-  const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
+  let selectedNetwork = networksToRender.find(network => network.rpcUrl === networksTabSelectedRpcUrl) || {}
+  let networkIsSelected = Boolean(selectedNetwork.rpcUrl)
+
+  let networkDefaultedToProvider = false
+  if (!networkIsSelected && !networksTabIsInAddMode) {
+    selectedNetwork = networksToRender.find(network => {
+      return network.rpcUrl === provider.rpcTarget || network.providerType !== 'rpc' && network.providerType === provider.type
+    }) || {}
+    networkIsSelected = Boolean(selectedNetwork.rpcUrl)
+    networkDefaultedToProvider = true
+  }
 
   let subHeaderKey
   if (networksTabIsInAddMode) {
@@ -54,6 +64,9 @@ const mapStateToProps = state => {
     networkIsSelected,
     subHeaderKey,
     networksTabIsInAddMode,
+    providerType: provider.type,
+    providerUrl: provider.rpcTarget,
+    networkDefaultedToProvider,
   }
 }
 

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import classnames from 'classnames'
 import Button from '../../../components/ui/button'
 import NetworkForm from './network-form'
@@ -24,6 +26,9 @@ export default class NetworksTab extends PureComponent {
     setRpcTarget: PropTypes.func,
     setSelectedSettingsRpcUrl: PropTypes.func,
     subHeaderKey: PropTypes.string,
+    providerUrl: PropTypes.string,
+    providerType: PropTypes.string,
+    networkDefaultedToProvider: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -41,6 +46,7 @@ export default class NetworksTab extends PureComponent {
       subHeaderKey,
       setNetworksTabAddMode,
       networksTabIsInAddMode,
+      networkDefaultedToProvider,
     } = this.props
 
     return (
@@ -49,7 +55,7 @@ export default class NetworksTab extends PureComponent {
           !this.isCurrentPath(SETTINGS_ROUTE) && (
             <div
               className="settings-page__back-button"
-              onClick={networkIsSelected || networksTabIsInAddMode
+              onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
                 ? () => {
                     setNetworksTabAddMode(false)
                     setSelectedSettingsRpcUrl(null)
@@ -77,14 +83,28 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderNetworkListItem (network, selectRpcUrl) {
-    const { setSelectedSettingsRpcUrl, setNetworksTabAddMode } = this.props
+    const {
+      setSelectedSettingsRpcUrl,
+      setNetworksTabAddMode,
+      networkIsSelected,
+      providerUrl,
+      providerType,
+      networksTabIsInAddMode,
+    } = this.props
     const {
       border,
       iconColor,
       label,
       labelKey,
       rpcUrl,
+      providerType: currentProviderType,
     } = network
+
+    const listItemNetworkIsSelected = selectRpcUrl && selectRpcUrl === rpcUrl
+    const listItemUrlIsProviderUrl = rpcUrl === providerUrl
+    const listItemTypeIsProviderNonRpcType = providerType !== 'rpc' && currentProviderType === providerType
+    const listItemNetworkIsCurrentProvider = !networkIsSelected && !networksTabIsInAddMode && (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType)
+    const displayNetworkListItemAsSelected = listItemNetworkIsSelected || listItemNetworkIsCurrentProvider
 
     return (
       <div
@@ -100,7 +120,7 @@ export default class NetworksTab extends PureComponent {
           innerBorder={border}
         />
         <div className={ classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': selectRpcUrl === rpcUrl,
+          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
         }) }>
           { label || this.context.t(labelKey) }
         </div>
@@ -110,11 +130,11 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderNetworksList () {
-    const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode } = this.props
+    const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode, networkDefaultedToProvider } = this.props
 
     return (
       <div className={classnames('networks-tab__networks-list', {
-        'networks-tab__networks-list--selection': networkIsSelected || networksTabIsInAddMode,
+        'networks-tab__networks-list--selection': (networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode,
       })}>
         { networksToRender.map(network => this.renderNetworkListItem(network, selectedNetwork.rpcUrl)) }
       </div>
@@ -137,14 +157,15 @@ export default class NetworksTab extends PureComponent {
         blockExplorerUrl,
       },
       networksTabIsInAddMode,
-      networkIsSelected,
       editRpc,
+      networkDefaultedToProvider,
     } = this.props
+    const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
 
     return (
       <div className="networks-tab__content">
         {this.renderNetworksList()}
-        {networksTabIsInAddMode || networkIsSelected
+        {networksTabIsInAddMode || !envIsPopup || (envIsPopup && !networkDefaultedToProvider)
           ? <NetworkForm
             setRpcTarget={setRpcTarget}
             editRpc={editRpc}
