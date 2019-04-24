@@ -121,7 +121,17 @@ export default class SendGasRow extends Component {
       convertedCurrency={convertedCurrency}
       gasLoadingError={gasLoadingError}
       gasTotal={gasTotal}
-      onReset={resetGasButtons}
+      onReset={() => {
+        return new Promise((resolve, reject) => {
+          resolve(resetGasButtons())
+        }).then(() => {
+          maxModeOn
+          ?
+          this.setMaxAmount()
+          :
+          null
+        })
+      }}
       onClick={() => showCustomizeGasModal()}
     />
     const advancedGasInputs = <div>
