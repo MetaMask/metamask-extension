@@ -311,7 +311,7 @@ SignatureRequest.prototype.renderFooter = function () {
       },
     }, this.context.t('cancel')),
     h(Button, {
-      type: 'primary',
+      type: 'secondary',
       large: true,
       className: 'request-signature__footer__sign-button',
       onClick: event => {

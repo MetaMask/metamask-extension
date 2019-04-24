@@ -18,6 +18,7 @@
   }
 
   &__link {
-    color: $curious-blue;
+    @extend %link;
+    margin-top: .5rem;
   }
 }

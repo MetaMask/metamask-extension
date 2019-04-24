@@ -17,6 +17,9 @@ module.exports = function (address, network) {
     case 42: // kovan test net
       link = `https://kovan.etherscan.io/address/${address}`
       break
+    case 5: // goerli test net
+      link = `https://goerli.etherscan.io/address/${address}`
+      break
     default:
       link = ''
       break

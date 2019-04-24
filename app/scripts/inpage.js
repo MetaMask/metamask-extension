@@ -218,6 +218,12 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
 
+inpageProvider.publicConfigStore.subscribe(function (state) {
+  if (state.onboardingcomplete) {
+    window.postMessage('onboardingcomplete', '*')
+  }
+})
+
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...

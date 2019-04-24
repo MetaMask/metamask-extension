@@ -10,7 +10,7 @@ import { getMetaMaskAccounts, getNetworkIdentifier } from '../../selectors/selec
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../../components/app/send/send.container')
+const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
@@ -267,6 +267,10 @@ class Routes extends Component {
       name = this.context.t('connectingToKovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('connectingToLocalhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('connectingToGoerli')
     } else {
       name = this.context.t('connectingTo', [providerId])
     }
@@ -288,6 +292,10 @@ class Routes extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('goerli')
     } else {
       name = this.context.t('unknownNetwork')
     }

@@ -142,7 +142,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           }
         </div>
         <Button
-          type="confirm"
+          type="primary"
           className="first-time-flow__button"
           onClick={this.handleSubmit}
           disabled={!this.isValid()}
