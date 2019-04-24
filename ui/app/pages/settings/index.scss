@@ -93,6 +93,7 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
+    border-top: 1px solid #D8D8D8;
 
     &__tabs {
       display: flex;

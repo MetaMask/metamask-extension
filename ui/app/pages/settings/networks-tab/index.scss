@@ -38,7 +38,7 @@
       }
 
       header {
-        padding: 0;
+        padding: 10px 0px;
       }
     }
 
@@ -49,6 +49,7 @@
       max-height: 100%;
       align-items: center;
       width: 100%;
+      margin-top: 10px;
     }
   }
 
@@ -86,7 +87,7 @@
     @media screen and (max-width: 575px) {
       display: flex;
       padding-top: 19px;
-      padding-bottom: 21px;
+      padding-bottom: 23px;
       justify-content: center;
       align-items: center;
       border-top: 1px solid #D8D8D8;
@@ -98,10 +99,9 @@
   }
 
   &__add-network-header-button-wrapper {
-    padding-top: 19px;
+    padding-top: 15px;
     padding-bottom: 21px;
     justify-content: center;
-    border-top: 1px solid #D8D8D8;
 
     .button {
       width: 178px;
