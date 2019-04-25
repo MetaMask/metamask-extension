@@ -47,22 +47,10 @@ const mapStateToProps = state => {
     networkDefaultedToProvider = true
   }
 
-  let subHeaderKey
-  if (networksTabIsInAddMode) {
-    subHeaderKey = 'addNetwork'
-  } else if (selectedNetwork.viewOnly) {
-    subHeaderKey = 'viewNetworkInfo'
-  } else if (networkIsSelected) {
-    subHeaderKey = 'editNetwork'
-  } else {
-    subHeaderKey = 'networks'
-  }
-
   return {
     selectedNetwork,
     networksToRender,
     networkIsSelected,
-    subHeaderKey,
     networksTabIsInAddMode,
     providerType: provider.type,
     providerUrl: provider.rpcTarget,

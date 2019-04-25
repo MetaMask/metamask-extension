@@ -25,7 +25,6 @@ export default class NetworksTab extends PureComponent {
     setNetworksTabAddMode: PropTypes.func,
     setRpcTarget: PropTypes.func,
     setSelectedSettingsRpcUrl: PropTypes.func,
-    subHeaderKey: PropTypes.string,
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,
@@ -43,7 +42,6 @@ export default class NetworksTab extends PureComponent {
     const {
       networkIsSelected,
       setSelectedSettingsRpcUrl,
-      subHeaderKey,
       setNetworksTabAddMode,
       networksTabIsInAddMode,
       networkDefaultedToProvider,
@@ -65,7 +63,7 @@ export default class NetworksTab extends PureComponent {
             />
           )
         }
-        <span className="settings-page__sub-header-text">{ this.context.t(subHeaderKey) }</span>
+        <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
             type="primary"
