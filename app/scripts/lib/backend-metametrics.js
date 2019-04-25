@@ -1,9 +1,5 @@
 const {
-  getCurrentNetworkId,
-  getSelectedAsset,
-  getAccountType,
-  getNumberOfAccounts,
-  getNumberOfTokens,
+  getMetaMetricState,
 } = require('../../../ui/app/selectors/selectors')
 const {
   sendMetaMetricsEvent,
@@ -15,19 +11,8 @@ const METAMETRICS_TRACKING_URL = inDevelopment
   ? 'http://www.metamask.io/metametrics'
   : 'http://www.metamask.io/metametrics-prod'
 
-async function backEndMetaMetricsEvent (getState, eventData) {
-  const metamask = await getState()
-  const state = { metamask }
-  console.log('!!!!!!!!!!!!!!!! state', state)
-  const stateEventData = {
-    network: getCurrentNetworkId(state),
-    activeCurrency: getSelectedAsset(state),
-    accountType: getAccountType(state),
-    metaMetricsId: state.metamask.metaMetricsId,
-    numberOfTokens: getNumberOfTokens(state),
-    numberOfAccounts: getNumberOfAccounts(state),
-    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  }
+function backEndMetaMetricsEvent (metaMaskState, eventData) {
+  const stateEventData = getMetaMetricState({ metamask: metaMaskState })
 
   if (stateEventData.participateInMetaMetrics) {
       sendMetaMetricsEvent({

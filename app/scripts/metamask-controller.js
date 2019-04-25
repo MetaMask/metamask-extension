@@ -191,7 +191,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
-    this.txController.on(`tx:status-update`, (txId, status) => {
+    this.txController.on(`tx:status-update`, async (txId, status) => {
       if (status === 'confirmed' || status === 'failed') {
         const txMeta = this.txController.txStateManager.getTx(txId)
         this.platform.showTransactionNotification(txMeta)
@@ -199,7 +199,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const { txReceipt } = txMeta
         const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
         if (txReceipt && txReceipt.status === '0x0' && participateInMetaMetrics) {
-          backEndMetaMetricsEvent(this.getState.bind(this), {
+          const metamaskState = await this.getState()
+          backEndMetaMetricsEvent(metamaskState, {
             customVariables: {
               errorMessage: txMeta.simulationFails.reason,
             },
