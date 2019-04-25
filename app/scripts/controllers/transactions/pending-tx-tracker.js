@@ -152,7 +152,7 @@ class PendingTransactionTracker extends EventEmitter {
       // and the tx has not been mined into a block
 
       dropped = await this._checkIftxWasDropped(txMeta)
-      // the dropped buffer is encase we ask a node for the tx
+      // the dropped buffer is in case we ask a node for the tx
       // that is behind the node we asked for tx count
       // IS A SECURITY FOR HITTING NODES IN INFURA THAT COULD GO OUT
       // OF SYNC.
