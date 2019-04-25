@@ -488,7 +488,7 @@ class PreferencesController {
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
-      const { rpcUrl, chainId, ticker, nickname, rpcPrefs } = newRpcDetails
+      const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
       return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     }
     return Promise.resolve(rpcList)
@@ -503,22 +503,22 @@ class PreferencesController {
    * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
-    const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
-    if (index !== -1) {
-      rpcList.splice(index, 1)
-    }
-    if (url !== 'http://localhost:8545') {
-      let checkedChainId
-      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
-        checkedChainId = chainId
+    addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+      const rpcList = this.getFrequentRpcListDetail()
+      const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
+      if (index !== -1) {
+        rpcList.splice(index, 1)
       }
-      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
+      if (url !== 'http://localhost:8545') {
+        let checkedChainId
+        if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+          checkedChainId = chainId
+        }
+        rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
+      }
+      this.store.updateState({ frequentRpcListDetail: rpcList })
+      return Promise.resolve(rpcList)
     }
-    this.store.updateState({ frequentRpcListDetail: rpcList })
-    return Promise.resolve(rpcList)
-  }
 
   /**
    * Removes custom RPC url from state.

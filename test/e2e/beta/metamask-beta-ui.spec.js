@@ -1344,7 +1344,7 @@ describe('MetaMask', function () {
         await findElement(driver, By.css('.settings-page__sub-header-text'))
 
         const customRpcInputs = await findElements(driver, By.css('input[type="text"]'))
-        customRpcInput = customRpcInputs[1]
+        const customRpcInput = customRpcInputs[1]
         await customRpcInput.clear()
         await customRpcInput.sendKeys(customRpcUrl)
 
