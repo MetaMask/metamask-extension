@@ -23,11 +23,21 @@ export default class Home extends PureComponent {
     providerRequests: PropTypes.array,
   }
 
+  componentWillMount () {
+    const {
+      history,
+      unconfirmedTransactionsCount = 0,
+    } = this.props
+
+    if (unconfirmedTransactionsCount > 0) {
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
+  }
+
   componentDidMount () {
     const {
       history,
       suggestedTokens = {},
-      unconfirmedTransactionsCount = 0,
     } = this.props
 
     // suggested new tokens
@@ -41,7 +51,7 @@ export default class Home extends PureComponent {
       forgottenPassword,
       seedWords,
       providerRequests,
-      unconfirmedTransactionsCount,
+      history,
     } = this.props
 
     // seed words
@@ -59,9 +69,6 @@ export default class Home extends PureComponent {
       )
     }
 
-    if (unconfirmedTransactionsCount > 0) {
-      return <Redirect to={{ pathname: CONFIRM_TRANSACTION_ROUTE }} />
-    }
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
@@ -69,7 +76,7 @@ export default class Home extends PureComponent {
             query="(min-width: 576px)"
             render={() => <WalletView />}
           />
-          <TransactionView />
+          { !history.location.pathname.match(/^\/confirm-transaction/) ? <TransactionView /> : null }
         </div>
       </div>
     )

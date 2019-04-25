@@ -99,15 +99,18 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
     } = this.props
+    const { transactionStatus: prevTxStatus } = prevProps
+    const statusUpdated = transactionStatus !== prevTxStatus
+    const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
 
-    if (transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS) {
+    if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction()
