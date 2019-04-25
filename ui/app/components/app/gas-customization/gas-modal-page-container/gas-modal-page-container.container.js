@@ -149,10 +149,10 @@ const mapStateToProps = (state, ownProps) => {
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth: getMaxModeOn(state)
       ?
-      addHexWEIsToRenderableEth(getSendFromBalance(state),'0x0')
+      addHexWEIsToRenderableEth(getSendFromBalance(state), '0x0')
       :
       addHexWEIsToRenderableEth(value, customGasTotal),
-      transactionFee: addHexWEIsToRenderableEth('0x0',customGasTotal),
+      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount: getMaxModeOn(state)
       ?
       subtractHexWEIsFromRenderableEth(getSendFromBalance(state), customGasTotal)
