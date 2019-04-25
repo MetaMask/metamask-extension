@@ -42,7 +42,6 @@ export default class AmountMaxButton extends Component {
       'headers': {},
       'method': 'GET',
     })
-    
     if (event.target.checked) {
       setMaxModeTo(true)
       this.setMaxAmount()
@@ -56,13 +55,10 @@ export default class AmountMaxButton extends Component {
     return (
         <div>
         <input type="checkbox" onChange={this.onMaxClick} checked={this.props.maxModeOn}/>
-          
           <span>
             {this.context.t('max')}
           </span>
-    
         </div>
       )
   }
-
 }

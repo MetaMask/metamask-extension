@@ -14,7 +14,7 @@ const mapStateToProps = state => {
     currentCurrency,
     conversionRate,
     hideFiat: (!isMainnet && !showFiatInTestnets),
-    maxModeOn: getMaxModeOn(state)
+    maxModeOn: getMaxModeOn(state),
   }
 }
 

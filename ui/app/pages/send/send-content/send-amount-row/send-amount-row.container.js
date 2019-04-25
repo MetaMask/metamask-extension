@@ -10,7 +10,7 @@ import {
   getSendFromBalance,
   getTokenBalance,
 } from '../../send.selectors'
-import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors' 
+import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors'
 import {
   sendAmountIsInError,
 } from './send-amount-row.selectors'

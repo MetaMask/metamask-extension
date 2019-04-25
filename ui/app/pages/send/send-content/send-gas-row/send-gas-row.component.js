@@ -52,7 +52,7 @@ export default class SendGasRow extends Component {
     </div>
   }
 
-  setMaxAmount() {
+  setMaxAmount () {
     const {
       balance,
       gasTotal,
@@ -105,7 +105,7 @@ export default class SendGasRow extends Component {
             return new Promise((resolve, reject) => {
                 resolve(gasPriceButtonGroupProps.handleGasPriceSelection(...args))
             })
-            .then(()=> {
+            .then(() => {
               maxModeOn
               ?
               this.setMaxAmount()

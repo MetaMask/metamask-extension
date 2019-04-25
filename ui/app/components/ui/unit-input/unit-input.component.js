@@ -84,7 +84,7 @@ export default class UnitInput extends PureComponent {
           <div className="unit-input__input-container">
             <input
               type="number"
-              className={classNames("unit-input__input", { 'unit-input__disabled': maxModeOn })}
+              className={classNames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}

@@ -7,6 +7,8 @@ import {
   setGasPrice,
   createSpeedUpTransaction,
   hideSidebar,
+  updateSendAmount,
+  setGasTotal,
 } from '../../../../store/actions'
 import {
   setCustomGasPrice,
@@ -18,6 +20,7 @@ import {
 } from '../../../../ducks/gas/gas.duck'
 import {
   hideGasButtonGroup,
+  updateSendErrors,
 } from '../../../../ducks/send/send.duck'
 import {
   updateGasAndCalculate,
@@ -48,7 +51,7 @@ import {
 import {
   getSendFromBalance,
   getGasTotal,
-  getTokenBalance
+  getTokenBalance,
 } from '../../../../pages/send/send.selectors'
 import {
   submittedPendingTransactionsSelector,
@@ -74,8 +77,6 @@ import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
-import { updateSendAmount, setGasTotal } from '../../../../store/actions'
-import { updateSendErrors } from '../../../../ducks/send/send.duck'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps
@@ -146,12 +147,12 @@ const mapStateToProps = (state, ownProps) => {
       originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
       originalTotalEth: addHexWEIsToRenderableEth(value, gasTotal),
       newTotalFiat: showFiat ? newTotalFiat : '',
-      newTotalEth: getMaxModeOn(state) 
-      ? 
-      addHexWEIsToRenderableEth(getSendFromBalance(state), '0x0') 
-      : 
+      newTotalEth: getMaxModeOn(state)
+      ?
+      addHexWEIsToRenderableEth(getSendFromBalance(state),'0x0')
+      :
       addHexWEIsToRenderableEth(value, customGasTotal),
-      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
+      transactionFee: addHexWEIsToRenderableEth('0x0',customGasTotal),
       sendAmount: getMaxModeOn(state)
       ?
       subtractHexWEIsFromRenderableEth(getSendFromBalance(state), customGasTotal)
@@ -165,7 +166,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
     selectedToken: getSelectedToken(state),
-    tokenBalance: getTokenBalance(state)
+    tokenBalance: getTokenBalance(state),
   }
 }
 
@@ -198,9 +199,9 @@ const mapDispatchToProps = dispatch => {
     hideSidebar: () => dispatch(hideSidebar()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
-    setGasTotal: (total) => dispatch(setGasTotal(total)), 
+    setGasTotal: (total) => dispatch(setGasTotal(total)),
     updateSendAmount: (amount) => dispatch(updateSendAmount(amount)),
-    updateSendErrors: (amount) => dispatch(updateSendErrors(amount))
+    updateSendErrors: (amount) => dispatch(updateSendErrors(amount)),
   }
 }
 
@@ -215,7 +216,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
-    setGasTotal: dispatchSetGasTotal,
     updateSendAmount: dispatchUpdateSendAmount,
     updateSendErrors: dispatchUpdateSendErrors,
     ...otherDispatchProps
@@ -233,7 +233,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         } else if (isSpeedUp) {
           dispatchCreateSpeedUpTransaction(txId, gasPrice)
           dispatchHideSidebar()
-          resolve(dispatchCancelAndClose()) 
+          resolve(dispatchCancelAndClose())
         } else {
           dispatchSetGasData(gasLimit, gasPrice)
           dispatchHideGasButtonGroup()
@@ -246,12 +246,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             balance,
             gasTotal: customGasTotal,
             selectedToken,
-            tokenBalance
+            tokenBalance,
           }))
         }
-  
       })
-      
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
