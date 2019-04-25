@@ -127,7 +127,9 @@ describe('PendingTransactionTracker', function () {
           delete providerResultStub['eth_getTransactionCount']
           delete providerResultStub['eth_getTransactionByHash']
           return done()
-        } else done(new Error('wrong tx Id'))
+        } else {
+          done(new Error('wrong tx Id'))
+        }
       })
 
       pendingTxTracker._checkPendingTx(txMeta).then(() => {
