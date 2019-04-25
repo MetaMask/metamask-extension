@@ -41,9 +41,6 @@ Network.prototype.render = function () {
   } else if (providerName === 'ropsten') {
     hoverText = context.t('ropsten')
     iconName = 'ropsten-test-network'
-  } else if (parseInt(networkNumber) === 3) {
-    hoverText = context.t('ropsten')
-    iconName = 'ropsten-test-network'
   } else if (providerName === 'kovan') {
     hoverText = context.t('kovan')
     iconName = 'kovan-test-network'
@@ -63,7 +60,7 @@ Network.prototype.render = function () {
       className: classnames({
         'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
-        'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
+        'ropsten-test-network': providerName === 'ropsten',
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
         'goerli-test-network': providerName === 'goerli',
