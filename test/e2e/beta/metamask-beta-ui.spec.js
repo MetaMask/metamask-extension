@@ -1341,11 +1341,14 @@ describe('MetaMask', function () {
         await customRpcButton.click()
         await delay(regularDelayMs)
 
-        const customRpcInput = await findElement(driver, By.css('input[placeholder="New RPC URL"]'))
+        await findElement(driver, By.css('.settings-page__sub-header-text'))
+
+        const customRpcInputs = await findElements(driver, By.css('input[type="text"]'))
+        customRpcInput = customRpcInputs[1]
         await customRpcInput.clear()
         await customRpcInput.sendKeys(customRpcUrl)
 
-        const customRpcSave = await findElement(driver, By.css('.settings-tab__rpc-save-button'))
+        const customRpcSave = await findElement(driver, By.css('.page-container__footer-button'))
         await customRpcSave.click()
         await delay(largeDelayMs * 2)
       })
