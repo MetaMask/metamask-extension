@@ -51,11 +51,13 @@
     line-height: 15px;
     font-size: 12px;
     padding: 0 4px;
+    flex: 0 0 auto;
   }
 
   .fa-question-circle {
     margin: 0 4px 0 6px;
     font-size: 1rem;
+    flex: 0 0 auto;
   }
 }
 
@@ -63,9 +65,12 @@
   padding: 0 4px;
   font-family: Roboto;
   font-size: 12px;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   color: $tundora;
   font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .dropdown-menu-item .fa.delete {
