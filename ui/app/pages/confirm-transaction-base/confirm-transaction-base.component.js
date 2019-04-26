@@ -543,7 +543,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={actionKey && this.context.t(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
+        action={this.context.t(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
