@@ -136,7 +136,6 @@
     "obs-store": "^3.0.2",
     "percentile": "^1.2.0",
     "pify": "^3.0.0",
-    "ping-pong-stream": "^1.0.0",
     "pojo-migrator": "^2.1.0",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "post-message-stream": "^3.0.0",
