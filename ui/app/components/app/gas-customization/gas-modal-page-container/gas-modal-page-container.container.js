@@ -49,8 +49,6 @@ import {
   isCustomPriceSafe,
 } from '../../../../selectors/custom-gas'
 import {
-  getSendFromBalance,
-  getGasTotal,
   getTokenBalance,
 } from '../../../../pages/send/send.selectors'
 import {
@@ -86,8 +84,6 @@ const mapStateToProps = (state, ownProps) => {
   const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
-  const gasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
-
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
   const gasButtonInfo = getRenderableBasicEstimateData(state, customModalGasLimitInHex)
@@ -101,6 +97,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
+  const maxModeOn = getMaxModeOn(state)
+
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
@@ -111,26 +109,24 @@ const mapStateToProps = (state, ownProps) => {
 
   const insufficientBalance = getMaxModeOn(state) ? false : !isBalanceSufficient({
     amount: value,
-    gasTotal,
+    gasTotal: customGasTotal,
     balance,
     conversionRate,
   })
 
   return {
-    balance: getSendFromBalance(state),
     hideBasic,
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
-    customGasTotal: customGasTotal,
+    customGasTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
-    maxModeOn: getMaxModeOn(state),
-    gasTotal: getGasTotal(state),
+    maxModeOn,
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
@@ -144,18 +140,18 @@ const mapStateToProps = (state, ownProps) => {
       estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
-      originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
-      originalTotalEth: addHexWEIsToRenderableEth(value, gasTotal),
+      originalTotalFiat: addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate),
+      originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
       newTotalFiat: showFiat ? newTotalFiat : '',
-      newTotalEth: getMaxModeOn(state)
+      newTotalEth: maxModeOn
       ?
-      addHexWEIsToRenderableEth(getSendFromBalance(state), '0x0')
+      addHexWEIsToRenderableEth(balance, '0x0')
       :
-      addHexWEIsToRenderableEth(value, customGasTotal),
+        addHexWEIsToRenderableEth(value, customGasTotal),
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
-      sendAmount: getMaxModeOn(state)
+      sendAmount: maxModeOn
       ?
-      subtractHexWEIsFromRenderableEth(getSendFromBalance(state), customGasTotal)
+        subtractHexWEIsFromRenderableEth(balance, customGasTotal)
       :
       addHexWEIsToRenderableEth(value, '0x0'),
     },
@@ -166,6 +162,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
     selectedToken: getSelectedToken(state),
+    balance,
     tokenBalance: getTokenBalance(state),
   }
 }
@@ -206,7 +203,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { gasPriceButtonGroupProps, isConfirm, txId, isSpeedUp, insufficientBalance, maxModeOn, customGasPrice, balance, customGasTotal, selectedToken, tokenBalance} = stateProps
+  const { gasPriceButtonGroupProps, isConfirm, txId, isSpeedUp, insufficientBalance, maxModeOn, customGasPrice, customGasTotal, balance, selectedToken, tokenBalance} = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
     hideGasButtonGroup: dispatchHideGasButtonGroup,

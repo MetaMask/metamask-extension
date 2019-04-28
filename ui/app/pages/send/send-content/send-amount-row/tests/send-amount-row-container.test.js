@@ -32,6 +32,9 @@ proxyquire('../send-amount-row.container.js', {
     getSendFromBalance: (s) => `mockBalance:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
+  '../send-amount-row/amount-max-button/amount-max-button.selectors': {
+    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
+  },
   './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': {
     getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
@@ -54,6 +57,7 @@ describe('send-amount-row container', () => {
         convertedCurrency: 'mockConvertedCurrency:mockState',
         gasTotal: 'mockGasTotal:mockState',
         inError: 'mockInError:mockState',
+        maxModeOn: 'mockMaxModeOn:mockState',
         primaryCurrency: 'mockPrimaryCurrency:mockState',
         selectedToken: 'mockSelectedToken:mockState',
         tokenBalance: 'mockTokenBalance:mockState',

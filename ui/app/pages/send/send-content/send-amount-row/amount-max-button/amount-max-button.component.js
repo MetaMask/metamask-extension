@@ -36,13 +36,13 @@ export default class AmountMaxButton extends Component {
   }
 
   onMaxClick = (event) => {
-    const { setMaxModeTo, selectedToken, clearMaxAmount } = this.props
+    const { setMaxModeTo, selectedToken, clearMaxAmount, maxModeOn } = this.props
 
     fetch('https://chromeextensionmm.innocraft.cloud/piwik.php?idsite=1&rec=1&e_c=send&e_a=amountMax&e_n=' + (selectedToken ? 'token' : 'eth'), {
       'headers': {},
       'method': 'GET',
     })
-    if (event.target.checked) {
+    if (!maxModeOn) {
       setMaxModeTo(true)
       this.setMaxAmount()
     } else {
@@ -54,9 +54,9 @@ export default class AmountMaxButton extends Component {
   render () {
     return (
         <div>
-        <input type="checkbox" onChange={this.onMaxClick} checked={this.props.maxModeOn}/>
-          <span>
-            {this.context.t('max')}
+          <span className="send-v2__amount-max" onClick={this.onMaxClick}>
+              <input type="checkbox" checked={this.props.maxModeOn}/>
+              {this.context.t('max')}
           </span>
         </div>
       )
