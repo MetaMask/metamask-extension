@@ -22,6 +22,25 @@
     }
   }
 
+  &__back-button {
+    display: none;
+
+    @media screen and (max-width: 575px) {
+      display: block;
+      background-image: url('/images/caret-left-black.svg');
+      width: 18px;
+      height: 18px;
+      opacity: .5;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-right: 16px;
+      cursor: pointer;
+      position: absolute;
+      margin-left: 10px;
+    }
+  }
+
   &__network-form {
     flex: 0.5 0 auto;
     max-width: 343px;

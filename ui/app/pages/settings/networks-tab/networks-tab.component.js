@@ -49,20 +49,16 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div className="settings-page__sub-header">
-        {
-          !this.isCurrentPath(SETTINGS_ROUTE) && (
-            <div
-              className="settings-page__back-button"
-              onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
-                ? () => {
-                    setNetworksTabAddMode(false)
-                    setSelectedSettingsRpcUrl(null)
-                  }
-                : () => this.props.history.push(SETTINGS_ROUTE)
-              }
-            />
-          )
-        }
+          <div
+            className="networks-tab__back-button"
+            onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
+              ? () => {
+                  setNetworksTabAddMode(false)
+                  setSelectedSettingsRpcUrl(null)
+                }
+              : () => this.props.history.push(SETTINGS_ROUTE)
+            }
+          />
         <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
