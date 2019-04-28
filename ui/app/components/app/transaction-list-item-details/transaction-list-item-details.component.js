@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
+import {
+  getBlockExplorerUrlForTx,
+} from '../../../helpers/utils/transactions.util'
 import SenderToRecipient from '../../ui/sender-to-recipient'
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -22,7 +24,7 @@ export default class TransactionListItemDetails extends PureComponent {
     showRetry: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
-    blockExplorerUrl: PropTypes.string,
+    rpcPrefs: PropTypes.object,
   }
 
   state = {
@@ -31,17 +33,8 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleEtherscanClick = () => {
-    const { transactionGroup: { primaryTransaction }, blockExplorerUrl } = this.props
+    const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
     const { hash, metamaskNetworkId } = primaryTransaction
-
-    const prefix = prefixForNetwork(metamaskNetworkId)
-    let etherscanUrl
-
-    if (blockExplorerUrl) {
-      etherscanUrl = `${blockExplorerUrl}/tx/${hash}`
-    } else {
-      etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
-    }
 
     this.context.metricsEvent({
       eventOpts: {
@@ -51,7 +44,7 @@ export default class TransactionListItemDetails extends PureComponent {
       },
     })
 
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openWindow({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
   }
 
   handleCancel = event => {
@@ -132,7 +125,7 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       onCancel,
       onRetry,
-      blockExplorerUrl,
+      rpcPrefs: { blockExplorerUrl } = {},
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { txParams: { to, from } = {} } = transaction

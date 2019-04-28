@@ -13,13 +13,13 @@ const EditableLabel = require('../../ui/editable-label')
 import Button from '../../ui/button'
 
 function mapStateToProps (state) {
-  const { rpcPrefs: { blockExplorerUrl } = {} } = state.metamask.provider
+  const { rpcPrefs } = state.metamask.provider
 
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
-    blockExplorerUrl,
+    rpcPrefs,
   }
 }
 
@@ -57,7 +57,7 @@ AccountDetailsModal.prototype.render = function () {
     showExportPrivateKeyModal,
     setAccountLabel,
     keyrings,
-    blockExplorerUrl,
+    rpcPrefs,
   } = this.props
   const { name, address } = selectedIdentity
 
@@ -91,14 +91,7 @@ AccountDetailsModal.prototype.render = function () {
         type: 'secondary',
         className: 'account-modal__button',
         onClick: () => {
-          let accountLink
-          if (blockExplorerUrl) {
-            accountLink = `${blockExplorerUrl}/address/${address}`
-          } else {
-            accountLink = genAccountLink(address, network)
-          }
-
-          global.platform.openWindow({ url: accountLink })
+          global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
         },
       }, this.context.t('etherscanView')),
 
