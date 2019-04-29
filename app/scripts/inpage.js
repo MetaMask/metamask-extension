@@ -49,13 +49,23 @@ inpageProvider.autoRefreshOnNetworkChange = true
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
   /**
-   * Determines if this domain is currently enabled
+   * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
+   *
+   * @returns {boolean} - returns true if this domain is currently enabled
+   */
+  isEnabled: function () {
+    const { isEnabled } = inpageProvider.publicConfigStore.getState()
+    return Boolean(isEnabled)
+  },
+
+  /**
+   * Asynchronously determines if this domain is currently enabled
    *
    * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
    */
-  isEnabled: async function () {
+  isApproved: async function () {
     const { isEnabled } = await getPublicConfigWhenReady()
-    return isEnabled
+    return Boolean(isEnabled)
   },
 
   /**
@@ -65,7 +75,7 @@ inpageProvider._metamask = new Proxy({
    */
   isUnlocked: async function () {
     const { isUnlocked } = await getPublicConfigWhenReady()
-    return isUnlocked
+    return Boolean(isUnlocked)
   },
 }, {
   get: function (obj, prop) {
