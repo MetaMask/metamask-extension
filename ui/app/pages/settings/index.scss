@@ -22,6 +22,17 @@
     }
   }
 
+  &__subheader {
+    padding: 16px 4px;
+    font-size: 20px;
+    border-bottom: 1px solid $alto;
+    margin-right: 24px;
+
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
+  }
+
   &__back-button {
     display: none;
 
@@ -58,9 +69,15 @@
       flex: 1 1 auto;
 
       @media screen and (min-width: 576px) {
-        flex: 0 0 32%;
+        flex: 0 0 40%;
         max-width: 210px;
-        border-right: 1px solid $alto;
+        padding-top: 8px;
+      }
+
+      .tab-bar__tab {
+        @media screen and (min-width: 576px) {
+          padding: 16px 24px 0;
+        }
       }
     }
 
@@ -76,6 +93,10 @@
 
   &__body {
     padding: 12px 24px;
+
+    @media screen and (min-width: 576px) {
+      padding: 12px;
+    }
   }
 
   &__content-row {
@@ -89,7 +110,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 0 5px;
     min-height: 71px;
 
     @media screen and (max-width: 575px) {
