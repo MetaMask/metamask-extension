@@ -5,6 +5,7 @@ import {
   getSendFromBalance,
   getTokenBalance,
 } from '../../../send.selectors.js'
+import { getBasicGasEstimateLoadingStatus } from '../../../../../selectors/custom-gas'
 import { getMaxModeOn } from './amount-max-button.selectors.js'
 import { calcMaxAmount } from './amount-max-button.utils.js'
 import {
@@ -22,6 +23,7 @@ function mapStateToProps (state) {
 
   return {
     balance: getSendFromBalance(state),
+    buttonDataLoading: getBasicGasEstimateLoadingStatus(state),
     gasTotal: getGasTotal(state),
     maxModeOn: getMaxModeOn(state),
     selectedToken: getSelectedToken(state),

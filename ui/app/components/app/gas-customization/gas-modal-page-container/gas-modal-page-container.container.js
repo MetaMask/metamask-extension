@@ -107,12 +107,28 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const insufficientBalance = getMaxModeOn(state) ? false : !isBalanceSufficient({
+  const newTotalEth = maxModeOn
+    ?
+    addHexWEIsToRenderableEth(balance, '0x0')
+    :
+    addHexWEIsToRenderableEth(value, customGasTotal)
+
+  const sendAmount = maxModeOn
+    ?
+    subtractHexWEIsFromRenderableEth(balance, customGasTotal)
+    :
+    addHexWEIsToRenderableEth(value, '0x0')
+
+  const insufficientBalance = !maxModeOn
+  ?
+  !isBalanceSufficient({
     amount: value,
     gasTotal: customGasTotal,
     balance,
     conversionRate,
   })
+  :
+  false
 
   return {
     hideBasic,
@@ -143,17 +159,9 @@ const mapStateToProps = (state, ownProps) => {
       originalTotalFiat: addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate),
       originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
       newTotalFiat: showFiat ? newTotalFiat : '',
-      newTotalEth: maxModeOn
-      ?
-      addHexWEIsToRenderableEth(balance, '0x0')
-      :
-        addHexWEIsToRenderableEth(value, customGasTotal),
+      newTotalEth,
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
-      sendAmount: maxModeOn
-      ?
-        subtractHexWEIsFromRenderableEth(balance, customGasTotal)
-      :
-      addHexWEIsToRenderableEth(value, '0x0'),
+      sendAmount,
     },
     isSpeedUp: transaction.status === 'submitted',
     txId: transaction.id,
@@ -197,8 +205,10 @@ const mapDispatchToProps = dispatch => {
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     setGasTotal: (total) => dispatch(setGasTotal(total)),
-    updateSendAmount: (amount) => dispatch(updateSendAmount(amount)),
-    updateSendErrors: (amount) => dispatch(updateSendErrors(amount)),
+    setAmountToMax: (maxAmountDataObject) => {
+      dispatch(updateSendErrors({ amount: null }))
+      dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
+    },
   }
 }
 
@@ -213,8 +223,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
-    updateSendAmount: dispatchUpdateSendAmount,
-    updateSendErrors: dispatchUpdateSendErrors,
+    setAmountToMax: dispatchSetAmountToMax,
     ...otherDispatchProps
   } = dispatchProps
 
@@ -238,13 +247,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         }
       }).then(() => {
         if (maxModeOn) {
-          dispatchUpdateSendErrors({ amount: null })
-          dispatchUpdateSendAmount(calcMaxAmount({
+          dispatchSetAmountToMax({
             balance,
             gasTotal: customGasTotal,
             selectedToken,
             tokenBalance,
-          }))
+          })
         }
       })
     },

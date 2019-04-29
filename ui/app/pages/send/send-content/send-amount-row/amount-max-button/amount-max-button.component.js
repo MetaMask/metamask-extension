@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class AmountMaxButton extends Component {
 
   static propTypes = {
     balance: PropTypes.string,
+    buttonDataLoading: PropTypes.bool,
     clearMaxAmount: PropTypes.func,
     gasTotal: PropTypes.string,
     maxModeOn: PropTypes.bool,
@@ -52,10 +54,12 @@ export default class AmountMaxButton extends Component {
   }
 
   render () {
+    const { maxModeOn, buttonDataLoading } = this.props
+
     return (
         <div>
-          <span className="send-v2__amount-max" onClick={this.onMaxClick}>
-              <input type="checkbox" checked={this.props.maxModeOn}/>
+        <span className={classnames('send-v2__amount-max', {'send-v2__amount-max__disabled': buttonDataLoading})} onClick={this.onMaxClick}>
+              <input type="checkbox" checked={maxModeOn} disabled={buttonDataLoading}/>
               {this.context.t('max')}
           </span>
         </div>
