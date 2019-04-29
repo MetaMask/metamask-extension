@@ -48,6 +48,7 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
+  getMetaMetricState,
 }
 
 module.exports = selectors
@@ -165,7 +166,7 @@ function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask.send.token
+  const sendToken = state.metamask.send && state.metamask.send.token
 
   return selectedToken || sendToken || null
 }
@@ -313,4 +314,16 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getMetaMetricState (state) {
+  return {
+    network: getCurrentNetworkId(state),
+    activeCurrency: getSelectedAsset(state),
+    accountType: getAccountType(state),
+    metaMetricsId: state.metamask.metaMetricsId,
+    numberOfTokens: getNumberOfTokens(state),
+    numberOfAccounts: getNumberOfAccounts(state),
+    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
+  }
 }

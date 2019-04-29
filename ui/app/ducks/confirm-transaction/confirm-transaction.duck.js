@@ -375,7 +375,7 @@ export function setTransactionToConfirm (transactionId) {
         dispatch(updateMethodData(methodData))
 
         try {
-          const toSmartContract = await isSmartContractAddress(to)
+          const toSmartContract = await isSmartContractAddress(to || '')
           dispatch(updateToSmartContract(toSmartContract))
         } catch (error) {
           log.error(error)
