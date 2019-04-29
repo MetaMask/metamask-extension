@@ -7,7 +7,7 @@ import {
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
-
+import fetchWithCache from './fetch-with-cache'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -33,7 +33,7 @@ export function getTokenData (data = '') {
 }
 
 async function getMethodFrom4Byte (fourBytePrefix) {
-  const fourByteResponse = (await fetch(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
+  const fourByteResponse = (await fetchWithCache(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
     referrerPolicy: 'no-referrer-when-downgrade',
     body: null,
     method: 'GET',
