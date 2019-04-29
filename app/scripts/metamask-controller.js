@@ -423,6 +423,7 @@ module.exports = class MetamaskController extends EventEmitter {
       completeUiMigration: nodeify(preferencesController.completeUiMigration, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
+      setShortCutRoute: nodeify(preferencesController.setShortCutRoute, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),

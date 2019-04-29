@@ -22,11 +22,21 @@ class SimpleDropdown extends Component {
   }
 
   handleClose () {
+    const { onClose } = this.props
+    if (onClose) {
+      onClose()
+    }
     this.setState({ isOpen: false })
   }
 
   toggleOpen () {
     const { isOpen } = this.state
+    const { onOpen } = this.props
+
+    if (!isOpen && onOpen) {
+      onOpen()
+    }
+
     this.setState({ isOpen: !isOpen })
   }
 
@@ -86,6 +96,8 @@ SimpleDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   onSelect: PropTypes.func,
+  onOpen: PropTypes.func,
+  onClose: PropTypes.func,
   selectedOption: PropTypes.string,
 }
 

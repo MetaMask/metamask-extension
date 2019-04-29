@@ -43,11 +43,19 @@ async function start () {
 
   // start ui
   const container = document.getElementById('app-content')
-  startPopup({ container, connectionStream }, (err, store) => {
+  startPopup({ container, connectionStream }, (err, { store, history }) => {
     if (err) return displayCriticalError(err)
 
-    const state = store.getState()
+    let state = store.getState()
     const { metamask: { completedOnboarding } = {} } = state
+
+    extension.commands.onCommand.addListener(function (command) {
+      state = store.getState()
+      const { metamask: { shortCutRoutes } = {} } = state
+      if (shortCutRoutes[command]) {
+        history.push(shortCutRoutes[command])
+      }
+    })
 
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser()

@@ -74,6 +74,14 @@ class ExtensionPlatform {
     })
   }
 
+  getAllShortcuts () {
+    return new Promise(resolve => {
+      extension.commands.getAll((...shortcuts) => {
+        resolve(shortcuts)
+      })
+    })
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()

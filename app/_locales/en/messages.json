@@ -1375,6 +1375,25 @@
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
+  "shortcuts": {
+    "message": "Shortcuts"
+  },
+  "shortCutDescription": {
+    "message": "Select a route for the $1 shortcut keys",
+    "description": "$1 to be replaced by a keyboard combo, e.g. Alt + Shift + M"
+  },
+  "shortcut1": {
+    "message": "Shortcut 1"
+  },
+  "shortcut2": {
+    "message": "Shortcut 2"
+  },
+  "shortcut3": {
+    "message": "Shortcut 3"
+  },
+  "shortcut4": {
+    "message": "Shortcut 4"
+  },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"
   },

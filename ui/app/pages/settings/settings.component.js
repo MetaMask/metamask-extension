@@ -6,6 +6,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
+import ShortCutsTab from './shortcuts-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
@@ -16,6 +17,7 @@ import {
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
+  SHORTCUTS_ROUTE,
 } from '../../helpers/constants/routes'
 
 const ROUTES_TO_I18N_KEYS = {
@@ -92,6 +94,7 @@ export default class SettingsPage extends PureComponent {
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
+          { content: t('shortcuts'), description: t('shortcutsSettingsDescription'), key: SHORTCUTS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
         isActive={key => {
@@ -127,6 +130,11 @@ export default class SettingsPage extends PureComponent {
           exact
           path={SECURITY_ROUTE}
           component={SecurityTab}
+        />
+        <Route
+          exact
+          path={SHORTCUTS_ROUTE}
+          component={ShortCutsTab}
         />
         <Route
           component={SettingsTab}

@@ -2,6 +2,8 @@
 
 @import 'settings-tab/index';
 
+@import 'shortcuts-tab/index';
+
 .settings-page {
   position: relative;
   background: $white;
@@ -84,7 +86,8 @@
     padding: 10px 0 20px;
   }
 
-  &__content-item {
+  &__content-item,
+  &__content-item--tight {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -100,6 +103,10 @@
     &--without-height {
       height: initial;
     }
+  }
+
+  &__content-item--tight {
+    min-height: 0px;
   }
 
   &__content-label {

@@ -1,0 +1,9 @@
+.shortcuts-tab {
+  &__body {
+    min-height: 510px;
+
+    .simple-dropdown__options {
+      height: 320px;
+    }
+  }
+}

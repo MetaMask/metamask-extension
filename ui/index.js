@@ -1,6 +1,7 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./app/pages')
+import history from './history'
 const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
@@ -18,8 +19,8 @@ function launchMetamaskUi (opts, cb) {
   accountManager.getState(function (err, metamaskState) {
     if (err) return cb(err)
     startApp(metamaskState, accountManager, opts)
-      .then((store) => {
-        cb(null, store)
+      .then(({ store, history }) => {
+        cb(null, { store, history })
       })
   })
 }
@@ -78,8 +79,9 @@ async function startApp (metamaskState, accountManager, opts) {
     h(Root, {
       // inject initial state
       store: store,
+      history: history,
     }
   ), opts.container)
 
-  return store
+  return { store, history }
 }

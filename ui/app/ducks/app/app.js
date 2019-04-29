@@ -77,6 +77,7 @@ function reduceApp (state, action) {
       ledger: `m/44'/60'/0'/0/0`,
     },
     lastSelectedProvider: null,
+    extensionShortcuts: [],
   }, state.appState)
 
   switch (action.type) {
@@ -749,6 +750,12 @@ function reduceApp (state, action) {
       }
       return extend(appState, {
         lastSelectedProvider: action.value,
+      })
+
+    case actions.SET_EXTENSION_SHORTCUTS:
+      console.log('action', action)
+      return extend(appState, {
+        extensionShortcuts: action.value,
       })
 
     default:

@@ -84,5 +84,31 @@
     "ids": [
       "*"
     ]
+  },
+  "commands": {
+    "shortcut1": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Triggers `Shortcut 1` as set in MetaMask's settings page"
+    },
+    "shortcut2": {
+      "suggested_key": {
+        "default": "Alt+W"
+      },
+      "description": "Triggers `Shortcut 2` as set in MetaMask's settings page"
+    },
+    "shortcut3": {
+      "suggested_key": {
+        "default": "Alt+E"
+      },
+      "description": "Triggers `Shortcut 3` as set in MetaMask's settings page"
+    },
+    "shortcut4": {
+      "suggested_key": {
+        "default": "Alt+R"
+      },
+      "description": "Triggers `Shortcut 4` as set in MetaMask's settings page"
+    }
   }
 }

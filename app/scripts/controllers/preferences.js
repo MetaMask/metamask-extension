@@ -58,6 +58,7 @@ class PreferencesController {
       completedUiMigration: true,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
+      shortCutRoutes: {},
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -152,6 +153,18 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals, image }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * Sets the route of a specified shortcut
+   * @param {string} shortCutKey The key of the shortcut to set
+   * @param {string} route The route to which the shortcut will take the user
+   */
+  setShortCutRoute (shortCutKey, route) {
+    console.log('!!!!!!!!!!! shortCutKey, route', shortCutKey, route)
+    const shortCutRoutes = this.store.getState().shortCutRoutes
+    shortCutRoutes[shortCutKey] = route
+    this.store.updateState({ shortCutRoutes })
   }
 
   /**

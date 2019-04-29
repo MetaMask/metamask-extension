@@ -235,6 +235,7 @@ var actions = {
   updateTokens,
   removeSuggestedTokens,
   addKnownMethodData,
+  setShortCutRoute,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
@@ -349,6 +350,9 @@ var actions = {
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
+
+  setExtensionShortcuts,
+  SET_EXTENSION_SHORTCUTS: 'SET_EXTENSION_SHORTCUTS',
 }
 
 module.exports = actions
@@ -1831,6 +1835,10 @@ function addKnownMethodData (fourBytePrefix, methodData) {
   }
 }
 
+function setShortCutRoute (shortCutKey, route) {
+  return callBackgroundThenUpdate(background.setShortCutRoute, shortCutKey, route)
+}
+
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
@@ -2710,5 +2718,19 @@ function setFirstTimeFlowType (type) {
       type: actions.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
     })
+  }
+}
+
+function setExtensionShortcuts () {
+  return (dispatch) => {
+    log.debug(`getAllShortcuts`)
+    return global.platform.getAllShortcuts()
+      .then(extensionShortcuts => {
+        console.log('!!!! setExtensionShortcuts extensionShortcuts', extensionShortcuts)
+        dispatch({
+          type: actions.SET_EXTENSION_SHORTCUTS,
+          value: extensionShortcuts[0].slice(1),
+        })
+      })
   }
 }
