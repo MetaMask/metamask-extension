@@ -18,6 +18,7 @@ import AdvancedGasInputs from '../../components/app/gas-customization/advanced-g
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    tOrDefault: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func,
   }
 
@@ -546,7 +547,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={this.context.t(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
+        action={this.context.tOrDefault(actionKey, getMethodName(name) || this.context.t('contractInteraction'))}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
