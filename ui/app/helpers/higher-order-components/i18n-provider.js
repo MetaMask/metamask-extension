@@ -15,6 +15,12 @@ class I18nProvider extends Component {
     const { localeMessages } = this.props
     const { current, en } = localeMessages
     return {
+      /**
+       * Returns a localized message for the given key
+       * @param {string} key The message key
+       * @param {string[]} args A list of message substitution replacements
+       * @return {string|undefined|null} The localized message if available
+       */
       t (key, ...args) {
         if (key === undefined || key === null) {
           return key
