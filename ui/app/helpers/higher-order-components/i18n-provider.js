@@ -19,7 +19,7 @@ class I18nProvider extends Component {
         return t(current, key, ...args) || t(en, key, ...args) || `[${key}]`
       },
       tOrDefault: this.tOrDefault,
-      tOrKey (key, ...args) {
+      tOrKey: (key, ...args) => {
         return this.tOrDefault(key, key, ...args)
       },
     }
