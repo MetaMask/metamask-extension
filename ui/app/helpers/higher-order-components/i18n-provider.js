@@ -16,6 +16,10 @@ class I18nProvider extends Component {
     const { current, en } = localeMessages
     return {
       t (key, ...args) {
+        if (key === undefined || key === null) {
+          return key
+        }
+
         return t(current, key, ...args) || t(en, key, ...args) || `[${key}]`
       },
       tOrDefault: this.tOrDefault,
