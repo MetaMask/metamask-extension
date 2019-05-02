@@ -66,24 +66,26 @@ export default class ConfirmSeedPhrase extends PureComponent {
     this.setState({ draggingSeedIndex: -1 })
   }
 
-  insertToPending = (seedIndex, insertIndex) => {
-    const { pendingSeedIndices } = this.state
+  insertToPending = (insertIndex) => {
+    const { pendingSeedIndices, draggingSeedIndex: seedIndex } = this.state
 
     if (pendingSeedIndices[insertIndex] === seedIndex) {
       return
     }
 
-    const newPendingSeedIndices = pendingSeedIndices
-      .reduce((acc, pendingSeedIndex, i) => {
+    const newPendingSeedIndices = EMPTY_SEEDS
+      .reduce((acc, _, i) => {
+        const pendingSeedIndex = pendingSeedIndices[i]
+
         if (insertIndex === i) {
           acc.push(seedIndex)
         }
 
-        if (typeof pendingSeedIndex !== 'number') {
+        if (pendingSeedIndex === seedIndex) {
           return acc
         }
 
-        if (pendingSeedIndex === seedIndex) {
+        if (typeof pendingSeedIndex !== 'number' && insertIndex === i) {
           return acc
         }
 
@@ -113,23 +115,25 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   resetPending = () => this.setState({ pendingSeedIndices: [...this.state.selectedSeedIndices]})
 
-  onDrop = (seedIndex, targetIndex) => {
-    const { selectedSeedIndices } = this.state
+  onDrop = (targetIndex) => {
+    const { selectedSeedIndices, draggingSeedIndex: seedIndex } = this.state
 
-    const newSelectedSeedIndices = selectedSeedIndices.reduce((acc, pendingSeedIndex, i) => {
+    const newSelectedSeedIndices = EMPTY_SEEDS.reduce((acc, _, i) => {
+      const selectedSeedIndex = selectedSeedIndices[i]
+
       if (targetIndex === i) {
         acc.push(seedIndex)
       }
 
-      if (typeof pendingSeedIndex !== 'number') {
+      if (selectedSeedIndex === seedIndex) {
         return acc
       }
 
-      if (pendingSeedIndex === seedIndex) {
+      if (typeof selectedSeedIndex !== 'number' && targetIndex === i) {
         return acc
       }
 
-      acc.push(pendingSeedIndex)
+      acc.push(selectedSeedIndex)
 
       return acc
     }, [])
@@ -232,6 +236,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
                 return (
                   <DraggableSeed
                     key={index}
+                    seedIndex={index}
+                    index={index}
                     className={classnames(
                       'confirm-seed-phrase__seed-word--shuffled',
                     )}
@@ -248,7 +254,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
                     resetPending={this.resetPending}
                     onDrop={this.onDrop}
                     word={word}
-                    index={index}
                   />
                 )
               })
@@ -277,6 +282,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
         <DraggableSeed
           key={index}
           index={index}
+          seedIndex={seedIndex}
           word={word}
           hover={this.hover}
           beginDrag={this.beginDrag}
@@ -302,6 +308,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
         <DraggableSeed
           key={index}
           index={index}
+          seedIndex={seedIndex}
           word={word}
           hover={this.hover}
           beginDrag={this.beginDrag}

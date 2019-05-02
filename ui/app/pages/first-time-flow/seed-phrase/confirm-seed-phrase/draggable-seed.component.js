@@ -73,9 +73,10 @@ const SEEDWORD = 'SEEDWORD'
 
 const seedSource = {
   beginDrag (props) {
-    props.beginDrag(props.index)
+    props.beginDrag(props.seedIndex)
     return {
       index: props.index,
+      seedIndex: props.seedIndex,
       word: props.word,
     }
   },
@@ -89,15 +90,15 @@ const seedSource = {
       props.resetPending()
       return
     }
-
-    console.log(`drop ${props.index} to ${dropTarget.targetIndex}`)
-    props.onDrop(props.index, dropTarget.targetIndex)
+    console.log(props)
+    console.log(`drop ${props.seedIndex} to ${dropTarget.targetIndex}`)
+    props.onDrop(dropTarget.targetIndex)
     props.endDrag()
   },
 }
 
 const seedTarget = {
-  drop (props, monitor) {
+  drop (props) {
     return {
       targetIndex: props.index,
     }
@@ -105,10 +106,9 @@ const seedTarget = {
   canDrop (props) {
     return props.droppable
   },
-  hover (props, monitor) {
-    const item = monitor.getItem()
+  hover (props) {
     if (props.insertPending) {
-      props.insertPending(item.index, props.index)
+      props.insertPending(props.index)
     }
   },
 }
