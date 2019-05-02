@@ -65,6 +65,7 @@ const SEEDWORD = 'SEEDWORD'
 
 const seedSource = {
   beginDrag (props) {
+    props.beginDrag()
     return {
       index: props.index,
       word: props.word,
@@ -73,16 +74,25 @@ const seedSource = {
   canDrag (props) {
     return !props.selected
   },
+  endDrag (props) {
+    props.endDrag()
+  }
 }
 
 const seedTarget = {
   drop (props, monitor) {
-    console.log(props);
-    console.log(monitor.getItem())
+    // console.log(props);
+    // console.log(monitor.getItem())
   },
   canDrop (props) {
     return props.droppable
-  }
+  },
+  hover (props, monitor) {
+    const item = monitor.getItem()
+    if (props.hover) {
+      props.hover(item.word, props.index)
+    }
+  },
 }
 
 const collectDrag = (connect, monitor) => {

@@ -8,7 +8,6 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
-import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
 import { DragDropContextProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import DraggableSeed from './draggable-seed.component'
@@ -32,12 +31,16 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   state = {
-    selectedSeedWords: [],
+
+    selectedSeedIndices: [],
     shuffledSeedWords: [],
-    // Hash of shuffledSeedWords index {Number} to selectedSeedWords index {Number}
-    selectedSeedWordsHash: {},
+    pendingSeedIndices: [],
     isDragging: false,
   }
+
+  beginDrag = () => this.setState({ isDragging: true })
+
+  endDrag = () => this.setState({ isDragging: false })
 
   componentDidMount () {
     const { seedPhrase = '' } = this.props
@@ -71,23 +74,30 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleSelectSeedWord = (word, shuffledIndex) => {
-    this.setState(selectSeedWord(word, shuffledIndex))
+    this.setState({
+      selectedSeedIndices: [...this.state.selectedSeedIndices, shuffledIndex],
+      pendingSeedIndices: [...this.state.pendingSeedIndices, shuffledIndex],
+    })
   }
 
   handleDeselectSeedWord = shuffledIndex => {
-    this.setState(deselectSeedWord(shuffledIndex))
+    this.setState({
+      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => shuffledIndex !== i),
+      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => shuffledIndex !== i),
+    })
   }
 
   isValid () {
     const { seedPhrase } = this.props
-    const { selectedSeedWords } = this.state
+    const { selectedSeedIndices, shuffledSeedWords } = this.state
+    const selectedSeedWords = selectedSeedIndices.map(i => shuffledSeedWords[i])
     return seedPhrase === selectedSeedWords.join(' ')
   }
 
   render () {
     const { t } = this.context
     const { history } = this.props
-    const { selectedSeedWords, shuffledSeedWords, selectedSeedWordsHash } = this.state
+    const { selectedSeedIndices, shuffledSeedWords } = this.state
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
@@ -110,24 +120,12 @@ export default class ConfirmSeedPhrase extends PureComponent {
             { t('selectEachPhrase') }
           </div>
           <div className="confirm-seed-phrase__selected-seed-words">
-            {
-              EMPTY_SEEDS.map((_, index) => {
-                const word = selectedSeedWords[index]
-                return (
-                  <DraggableSeed
-                    key={index}
-                    index={index}
-                    word={word}
-                    droppable
-                  />
-                )
-              })
-            }
+            { this.state.isDragging ? this.renderPendingSeeds() : this.renderSelectedSeeds() }
           </div>
           <div className="confirm-seed-phrase__shuffled-seed-words">
             {
               shuffledSeedWords.map((word, index) => {
-                const isSelected = index in selectedSeedWordsHash
+                const isSelected = selectedSeedIndices.includes(index)
 
                 return (
                   <DraggableSeed
@@ -143,6 +141,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
                         this.handleDeselectSeedWord(index)
                       }
                     }}
+                    beginDrag={this.beginDrag}
+                    endDrag={this.endDrag}
                     word={word}
                     index={index}
                   />
@@ -161,5 +161,45 @@ export default class ConfirmSeedPhrase extends PureComponent {
         </div>
       </DragDropContextProvider>
     )
+  }
+
+  renderSelectedSeeds () {
+    const { shuffledSeedWords, selectedSeedIndices } = this.state
+    return EMPTY_SEEDS.map((_, index) => {
+      const seedIndex = selectedSeedIndices[index]
+      const word = shuffledSeedWords[seedIndex]
+
+      return (
+        <DraggableSeed
+          key={index}
+          index={index}
+          word={word}
+          hover={this.hover}
+          beginDrag={this.beginDrag}
+          endDrag={this.endDrag}
+          droppable
+        />
+      )
+    })
+  }
+
+  renderPendingSeeds () {
+    const { pendingSeedIndices, shuffledSeedWords } = this.state
+    return EMPTY_SEEDS.map((_, index) => {
+      const seedIndex = pendingSeedIndices[index]
+      const word = shuffledSeedWords[seedIndex]
+
+      return (
+        <DraggableSeed
+          key={index}
+          index={index}
+          word={word}
+          hover={this.hover}
+          beginDrag={this.beginDrag}
+          endDrag={this.endDrag}
+          droppable
+        />
+      )
+    })
   }
 }
