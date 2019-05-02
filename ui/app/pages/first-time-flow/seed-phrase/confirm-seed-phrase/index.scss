@@ -29,15 +29,17 @@
     margin: 4px;
     text-align: center;
     border: 1px solid transparent;
-
-    &--selected {
-      background-color: #85D1CC;
-      color: $white;
-    }
+    cursor: move;
 
     &--shuffled {
       cursor: pointer;
       margin: 6px;
+    }
+
+    &--selected {
+      background-color: #85D1CC;
+      color: $white;
+      cursor: default;
     }
 
     &--dragging {
@@ -49,15 +51,13 @@
     }
 
     &--active-drop{
-      background-color: transparent;
-      border: 2px dashed $Blue-400;
-      box-sizing: border-box;
+      //box-sizing: border-box;
     }
 
     &--drop-hover {
       background-color: $Blue-000;
-      border: 2px dashed $Blue-400;
-      box-sizing: border-box;
+      border: 1px dashed $Blue-400;
+      //box-sizing: border-box;
     }
 
     @media screen and (max-width: 575px) {

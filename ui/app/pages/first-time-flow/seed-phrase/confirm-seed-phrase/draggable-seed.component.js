@@ -3,20 +3,20 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { DragSource, DropTarget } from 'react-dnd'
 
-
-
 class DraggableSeed extends Component {
 
   static propTypes = {
     // React DnD Props
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
+    removePending: PropTypes.func.isRequired,
     isDragging: PropTypes.bool,
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
     onClick: PropTypes.func.isRequired,
     index: PropTypes.number,
+    draggingSeedIndex: PropTypes.number,
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
@@ -26,6 +26,14 @@ class DraggableSeed extends Component {
   static defaultProps = {
     className: '',
     onClick () {},
+    removePending () {},
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    const { isOver, draggingSeedIndex, removePending } = this.props
+    if (isOver && !nextProps.isOver) {
+      removePending(draggingSeedIndex)
+    }
   }
 
   render () {
@@ -65,32 +73,42 @@ const SEEDWORD = 'SEEDWORD'
 
 const seedSource = {
   beginDrag (props) {
-    props.beginDrag()
+    props.beginDrag(props.index)
     return {
       index: props.index,
       word: props.word,
     }
   },
   canDrag (props) {
-    return !props.selected
+    return !props.selected && props.index > -1
   },
-  endDrag (props) {
+  endDrag (props, monitor) {
+    const dropTarget = monitor.getDropResult()
+
+    if (!dropTarget) {
+      props.resetPending()
+      return
+    }
+
+    console.log(`drop ${props.index} to ${dropTarget.targetIndex}`)
+    props.onDrop(props.index, dropTarget.targetIndex)
     props.endDrag()
-  }
+  },
 }
 
 const seedTarget = {
   drop (props, monitor) {
-    // console.log(props);
-    // console.log(monitor.getItem())
+    return {
+      targetIndex: props.index,
+    }
   },
   canDrop (props) {
     return props.droppable
   },
   hover (props, monitor) {
     const item = monitor.getItem()
-    if (props.hover) {
-      props.hover(item.word, props.index)
+    if (props.insertPending) {
+      props.insertPending(item.index, props.index)
     }
   },
 }

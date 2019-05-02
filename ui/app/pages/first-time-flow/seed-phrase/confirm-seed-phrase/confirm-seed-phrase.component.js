@@ -31,16 +31,118 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   state = {
-
     selectedSeedIndices: [],
     shuffledSeedWords: [],
     pendingSeedIndices: [],
+    draggingSeedIndex: -1,
     isDragging: false,
   }
 
-  beginDrag = () => this.setState({ isDragging: true })
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    const { seedPhrase } = this.props
+    const {
+      selectedSeedIndices,
+      shuffledSeedWords,
+      pendingSeedIndices,
+      draggingSeedIndex,
+      isDragging,
+    } = this.state
 
-  endDrag = () => this.setState({ isDragging: false })
+    return seedPhrase !== nextProps.seedPhrase ||
+      draggingSeedIndex !== nextState.draggingSeedIndex ||
+      isDragging !== nextState.isDragging ||
+      selectedSeedIndices.join(' ') !== nextState.selectedSeedIndices.join(' ') ||
+      shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
+      pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
+  }
+
+  beginDrag = draggingSeedIndex => {
+    console.log('begin drag on ', draggingSeedIndex);
+    this.setState({ draggingSeedIndex })
+  }
+
+  endDrag = () => {
+    console.log('end drag');
+    this.setState({ draggingSeedIndex: -1 })
+  }
+
+  insertToPending = (seedIndex, insertIndex) => {
+    const { pendingSeedIndices } = this.state
+
+    if (pendingSeedIndices[insertIndex] === seedIndex) {
+      return
+    }
+
+    const newPendingSeedIndices = pendingSeedIndices
+      .reduce((acc, pendingSeedIndex, i) => {
+        if (insertIndex === i) {
+          acc.push(seedIndex)
+        }
+
+        if (typeof pendingSeedIndex !== 'number') {
+          return acc
+        }
+
+        if (pendingSeedIndex === seedIndex) {
+          return acc
+        }
+
+        acc.push(pendingSeedIndex)
+
+        return acc
+      }, [])
+
+    if (newPendingSeedIndices.length > 12) {
+      newPendingSeedIndices.length = 12
+    }
+
+    if (newPendingSeedIndices.join(' ') === pendingSeedIndices.join(' ')) {
+      return
+    }
+
+    this.setState({
+      pendingSeedIndices: newPendingSeedIndices,
+    })
+  }
+
+  removeFromPending = (seedIndex) => {
+    this.setState({
+      pendingSeedIndices: this.state.pendingSeedIndices.filter(s => s !== seedIndex),
+    })
+  }
+
+  resetPending = () => this.setState({ pendingSeedIndices: [...this.state.selectedSeedIndices]})
+
+  onDrop = (seedIndex, targetIndex) => {
+    const { selectedSeedIndices } = this.state
+
+    const newSelectedSeedIndices = selectedSeedIndices.reduce((acc, pendingSeedIndex, i) => {
+      if (targetIndex === i) {
+        acc.push(seedIndex)
+      }
+
+      if (typeof pendingSeedIndex !== 'number') {
+        return acc
+      }
+
+      if (pendingSeedIndex === seedIndex) {
+        return acc
+      }
+
+      acc.push(pendingSeedIndex)
+
+      return acc
+    }, [])
+
+    if (newSelectedSeedIndices.length > 12) {
+      newSelectedSeedIndices.length = 12
+    }
+
+    this.setState({
+      selectedSeedIndices: newSelectedSeedIndices,
+      pendingSeedIndices: [...newSelectedSeedIndices],
+    })
+  }
 
   componentDidMount () {
     const { seedPhrase = '' } = this.props
@@ -120,7 +222,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
             { t('selectEachPhrase') }
           </div>
           <div className="confirm-seed-phrase__selected-seed-words">
-            { this.state.isDragging ? this.renderPendingSeeds() : this.renderSelectedSeeds() }
+            { this.state.draggingSeedIndex > -1 ? this.renderPendingSeeds() : this.renderSelectedSeeds() }
           </div>
           <div className="confirm-seed-phrase__shuffled-seed-words">
             {
@@ -143,6 +245,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
                     }}
                     beginDrag={this.beginDrag}
                     endDrag={this.endDrag}
+                    resetPending={this.resetPending}
+                    onDrop={this.onDrop}
                     word={word}
                     index={index}
                   />
@@ -177,6 +281,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
           hover={this.hover}
           beginDrag={this.beginDrag}
           endDrag={this.endDrag}
+          removePending={this.removeFromPending}
+          resetPending={this.resetPending}
+          onDrop={this.onDrop}
+          draggingSeedIndex={this.state.draggingSeedIndex}
           droppable
         />
       )
@@ -185,6 +293,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   renderPendingSeeds () {
     const { pendingSeedIndices, shuffledSeedWords } = this.state
+
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = pendingSeedIndices[index]
       const word = shuffledSeedWords[seedIndex]
@@ -197,6 +306,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
           hover={this.hover}
           beginDrag={this.beginDrag}
           endDrag={this.endDrag}
+          insertPending={this.insertToPending}
+          removePending={this.removeFromPending}
+          resetPending={this.resetPending}
+          onDrop={this.onDrop}
+          draggingSeedIndex={this.state.draggingSeedIndex}
           droppable
         />
       )
