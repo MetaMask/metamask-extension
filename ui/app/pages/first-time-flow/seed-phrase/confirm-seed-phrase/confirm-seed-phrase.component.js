@@ -9,6 +9,11 @@ import {
 } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
+import { DragDropContextProvider } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+import DraggableSeed from './draggable-seed.component'
+
+const EMPTY_SEEDS = Array(12).fill(null);
 
 export default class ConfirmSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -31,6 +36,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
     shuffledSeedWords: [],
     // Hash of shuffledSeedWords index {Number} to selectedSeedWords index {Number}
     selectedSeedWordsHash: {},
+    isDragging: false,
   }
 
   componentDidMount () {
@@ -84,72 +90,76 @@ export default class ConfirmSeedPhrase extends PureComponent {
     const { selectedSeedWords, shuffledSeedWords, selectedSeedWordsHash } = this.state
 
     return (
-      <div className="confirm-seed-phrase">
-        <div className="confirm-seed-phrase__back-button">
-          <a
-            onClick={e => {
-              e.preventDefault()
-              history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-            }}
-            href="#"
-          >
-            {`< Back`}
-          </a>
-        </div>
-        <div className="first-time-flow__header">
-          { t('confirmSecretBackupPhrase') }
-        </div>
-        <div className="first-time-flow__text-block">
-          { t('selectEachPhrase') }
-        </div>
-        <div className="confirm-seed-phrase__selected-seed-words">
-          {
-            selectedSeedWords.map((word, index) => (
-              <div
-                key={index}
-                className="confirm-seed-phrase__seed-word"
-              >
-                { word }
-              </div>
-            ))
-          }
-        </div>
-        <div className="confirm-seed-phrase__shuffled-seed-words">
-          {
-            shuffledSeedWords.map((word, index) => {
-              const isSelected = index in selectedSeedWordsHash
+      <DragDropContextProvider backend={HTML5Backend}>
+        <div className="confirm-seed-phrase">
+          <div className="confirm-seed-phrase__back-button">
+            <a
+              onClick={e => {
+                e.preventDefault()
+                history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+              }}
+              href="#"
+            >
+              {`< Back`}
+            </a>
+          </div>
+          <div className="first-time-flow__header">
+            { t('confirmSecretBackupPhrase') }
+          </div>
+          <div className="first-time-flow__text-block">
+            { t('selectEachPhrase') }
+          </div>
+          <div className="confirm-seed-phrase__selected-seed-words">
+            {
+              EMPTY_SEEDS.map((_, index) => {
+                const word = selectedSeedWords[index]
+                return (
+                  <DraggableSeed
+                    key={index}
+                    index={index}
+                    word={word}
+                    droppable
+                  />
+                )
+              })
+            }
+          </div>
+          <div className="confirm-seed-phrase__shuffled-seed-words">
+            {
+              shuffledSeedWords.map((word, index) => {
+                const isSelected = index in selectedSeedWordsHash
 
-              return (
-                <div
-                  key={index}
-                  className={classnames(
-                    'confirm-seed-phrase__seed-word',
-                    'confirm-seed-phrase__seed-word--shuffled',
-                    { 'confirm-seed-phrase__seed-word--selected': isSelected }
-                  )}
-                  onClick={() => {
-                    if (!isSelected) {
-                      this.handleSelectSeedWord(word, index)
-                    } else {
-                      this.handleDeselectSeedWord(index)
-                    }
-                  }}
-                >
-                  { word }
-                </div>
-              )
-            })
-          }
+                return (
+                  <DraggableSeed
+                    key={index}
+                    className={classnames(
+                      'confirm-seed-phrase__seed-word--shuffled',
+                    )}
+                    selected={isSelected}
+                    onClick={() => {
+                      if (!isSelected) {
+                        this.handleSelectSeedWord(word, index)
+                      } else {
+                        this.handleDeselectSeedWord(index)
+                      }
+                    }}
+                    word={word}
+                    index={index}
+                  />
+                )
+              })
+            }
+          </div>
+          <Button
+            type="primary"
+            className="first-time-flow__button"
+            onClick={this.handleSubmit}
+            disabled={!this.isValid()}
+          >
+            { t('confirm') }
+          </Button>
         </div>
-        <Button
-          type="primary"
-          className="first-time-flow__button"
-          onClick={this.handleSubmit}
-          disabled={!this.isValid()}
-        >
-          { t('confirm') }
-        </Button>
-      </div>
+      </DragDropContextProvider>
     )
   }
 }

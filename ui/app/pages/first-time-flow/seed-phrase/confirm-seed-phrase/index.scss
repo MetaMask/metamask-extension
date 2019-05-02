@@ -4,8 +4,10 @@
   }
 
   &__selected-seed-words {
-    min-height: 190px;
-    max-width: 496px;
+    display: flex;
+    flex-flow: row wrap;
+    min-height: 161px;
+    max-width: 575px;
     border: 1px solid #CDCDCD;
     border-radius: 6px;
     background-color: $white;
@@ -14,7 +16,7 @@
   }
 
   &__shuffled-seed-words {
-    max-width: 496px;
+    max-width: 575px;
   }
 
   &__seed-word {
@@ -22,9 +24,11 @@
     color: #5B5D67;
     background-color: #E7E7E7;
     padding: 8px 18px;
-    min-width: 64px;
+    min-width: 128px;
+    min-height: 37px;
     margin: 4px;
     text-align: center;
+    border: 1px solid transparent;
 
     &--selected {
       background-color: #85D1CC;
@@ -34,6 +38,26 @@
     &--shuffled {
       cursor: pointer;
       margin: 6px;
+    }
+
+    &--dragging {
+      opacity: .5;
+    }
+
+    &--empty {
+      background-color: transparent;
+    }
+
+    &--active-drop{
+      background-color: transparent;
+      border: 2px dashed $Blue-400;
+      box-sizing: border-box;
+    }
+
+    &--drop-hover {
+      background-color: $Blue-000;
+      border: 2px dashed $Blue-400;
+      box-sizing: border-box;
     }
 
     @media screen and (max-width: 575px) {
