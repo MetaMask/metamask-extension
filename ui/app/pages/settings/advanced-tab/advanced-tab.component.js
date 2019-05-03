@@ -336,9 +336,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showFiatConversionInTestnets') }</span>
+          <span>{ t('autoLogoutTimeLimit') }</span>
           <div className="settings-page__content-description">
-            { t('showFiatConversionInTestnetsDescription') }
+            { t('autoLogoutTimeLimitDescription') }
           </div>
         </div>
         <div className="settings-page__content-item">
