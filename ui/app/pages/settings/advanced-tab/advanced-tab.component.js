@@ -355,6 +355,47 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderAutoLogoutTimeLimit () {
+    const { t } = this.context
+    const {
+      autoLogoutTimeLimit,
+      setAutoLogoutTimeLimit,
+    } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('autoLogoutTimeLimit') }</span>
+          <div className="settings-page__content-description">
+            { t('autoLogoutTimeLimitDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <TextField
+              type="number"
+              id="autoTimeout"
+              placeholder={t('autoTimeout')}
+              value={this.state.autoLogoutTimeLimit}
+              defaultValue={autoLogoutTimeLimit}
+              onChange={e => this.setState({ autoLogoutTimeLimit: Number(e.target.value) })}
+              fullWidth
+              margin="dense"
+            />
+            <button
+              className="button btn-primary settings-tab__rpc-save-button"
+              onClick={() => {
+                setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
+              }}
+            >
+              { t('save') }
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -368,6 +409,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
+        { this.renderAutoLogoutTimeLimit() }
       </div>
     )
   }
