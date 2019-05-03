@@ -8,8 +8,8 @@ import {
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
-import HTML5Backend from "react-dnd-html5-backend";
-import {DragDropContextProvider} from "react-dnd";
+import HTML5Backend from 'react-dnd-html5-backend'
+import {DragDropContextProvider} from 'react-dnd'
 
 export default class SeedPhrase extends PureComponent {
   static propTypes = {

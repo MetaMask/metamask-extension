@@ -28,7 +28,7 @@ class DraggableSeed extends Component {
     onClick () {},
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps (nextProps, nextContext) {
     const { isOver, setHoveringIndex } = this.props
     if (isOver && !nextProps.isOver) {
       setHoveringIndex(-1)

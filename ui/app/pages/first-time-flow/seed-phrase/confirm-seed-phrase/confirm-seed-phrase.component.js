@@ -10,7 +10,7 @@ import {
 import { exportAsFile } from '../../../../helpers/utils/util'
 import DraggableSeed from './draggable-seed.component'
 
-const EMPTY_SEEDS = Array(12).fill(null);
+const EMPTY_SEEDS = Array(12).fill(null)
 
 export default class ConfirmSeedPhrase extends PureComponent {
   static contextTypes = {
