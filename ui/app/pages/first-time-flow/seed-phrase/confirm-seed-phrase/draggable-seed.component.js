@@ -9,12 +9,12 @@ class DraggableSeed extends Component {
     // React DnD Props
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    removePending: PropTypes.func.isRequired,
     isDragging: PropTypes.bool,
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
     onClick: PropTypes.func.isRequired,
+    setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
     draggingSeedIndex: PropTypes.number,
     word: PropTypes.string,
@@ -26,13 +26,12 @@ class DraggableSeed extends Component {
   static defaultProps = {
     className: '',
     onClick () {},
-    removePending () {},
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    const { isOver, draggingSeedIndex, removePending } = this.props
+    const { isOver, setHoveringIndex } = this.props
     if (isOver && !nextProps.isOver) {
-      removePending(draggingSeedIndex)
+      setHoveringIndex(-1)
     }
   }
 
@@ -46,7 +45,6 @@ class DraggableSeed extends Component {
       selected,
       className,
       onClick,
-      droppable,
       isOver,
       canDrop,
     } = this.props
@@ -57,7 +55,7 @@ class DraggableSeed extends Component {
         className={classnames('confirm-seed-phrase__seed-word', className, {
           'confirm-seed-phrase__seed-word--selected': selected,
           'confirm-seed-phrase__seed-word--dragging': isDragging,
-          'confirm-seed-phrase__seed-word--empty': droppable && !word,
+          'confirm-seed-phrase__seed-word--empty': !word,
           'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
           'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
         })}
@@ -73,27 +71,24 @@ const SEEDWORD = 'SEEDWORD'
 
 const seedSource = {
   beginDrag (props) {
-    props.beginDrag(props.seedIndex)
+    setTimeout(() => props.setDraggingSeedIndex(props.seedIndex), 0)
     return {
-      index: props.index,
       seedIndex: props.seedIndex,
       word: props.word,
     }
   },
   canDrag (props) {
-    return !props.selected && props.index > -1
+    return props.draggable
   },
   endDrag (props, monitor) {
     const dropTarget = monitor.getDropResult()
 
     if (!dropTarget) {
-      props.resetPending()
+      setTimeout(() => props.setDraggingSeedIndex(-1), 0)
       return
     }
-    console.log(props)
-    console.log(`drop ${props.seedIndex} to ${dropTarget.targetIndex}`)
+
     props.onDrop(dropTarget.targetIndex)
-    props.endDrag()
   },
 }
 
@@ -107,9 +102,7 @@ const seedTarget = {
     return props.droppable
   },
   hover (props) {
-    if (props.insertPending) {
-      props.insertPending(props.index)
-    }
+    props.setHoveringIndex(props.index)
   },
 }
 

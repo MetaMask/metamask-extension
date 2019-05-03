@@ -8,8 +8,6 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
-import { DragDropContextProvider } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import DraggableSeed from './draggable-seed.component'
 
 const EMPTY_SEEDS = Array(12).fill(null);
@@ -35,123 +33,54 @@ export default class ConfirmSeedPhrase extends PureComponent {
     shuffledSeedWords: [],
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
+    hoveringIndex: -1,
     isDragging: false,
   }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
     const { seedPhrase } = this.props
     const {
       selectedSeedIndices,
       shuffledSeedWords,
       pendingSeedIndices,
       draggingSeedIndex,
+      hoveringIndex,
       isDragging,
     } = this.state
 
     return seedPhrase !== nextProps.seedPhrase ||
       draggingSeedIndex !== nextState.draggingSeedIndex ||
       isDragging !== nextState.isDragging ||
+      hoveringIndex !== nextState.hoveringIndex ||
       selectedSeedIndices.join(' ') !== nextState.selectedSeedIndices.join(' ') ||
       shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
       pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
-  }
-
-  beginDrag = draggingSeedIndex => {
-    console.log('begin drag on ', draggingSeedIndex);
-    this.setState({ draggingSeedIndex })
-  }
-
-  endDrag = () => {
-    console.log('end drag');
-    this.setState({ draggingSeedIndex: -1 })
-  }
-
-  insertToPending = (insertIndex) => {
-    const { pendingSeedIndices, draggingSeedIndex: seedIndex } = this.state
-
-    if (pendingSeedIndices[insertIndex] === seedIndex) {
-      return
-    }
-
-    const newPendingSeedIndices = EMPTY_SEEDS
-      .reduce((acc, _, i) => {
-        const pendingSeedIndex = pendingSeedIndices[i]
-
-        if (insertIndex === i) {
-          acc.push(seedIndex)
-        }
-
-        if (pendingSeedIndex === seedIndex) {
-          return acc
-        }
-
-        if (typeof pendingSeedIndex !== 'number' && insertIndex === i) {
-          return acc
-        }
-
-        acc.push(pendingSeedIndex)
-
-        return acc
-      }, [])
-
-    if (newPendingSeedIndices.length > 12) {
-      newPendingSeedIndices.length = 12
-    }
-
-    if (newPendingSeedIndices.join(' ') === pendingSeedIndices.join(' ')) {
-      return
-    }
-
-    this.setState({
-      pendingSeedIndices: newPendingSeedIndices,
-    })
-  }
-
-  removeFromPending = (seedIndex) => {
-    this.setState({
-      pendingSeedIndices: this.state.pendingSeedIndices.filter(s => s !== seedIndex),
-    })
-  }
-
-  resetPending = () => this.setState({ pendingSeedIndices: [...this.state.selectedSeedIndices]})
-
-  onDrop = (targetIndex) => {
-    const { selectedSeedIndices, draggingSeedIndex: seedIndex } = this.state
-
-    const newSelectedSeedIndices = EMPTY_SEEDS.reduce((acc, _, i) => {
-      const selectedSeedIndex = selectedSeedIndices[i]
-
-      if (targetIndex === i) {
-        acc.push(seedIndex)
-      }
-
-      if (selectedSeedIndex === seedIndex) {
-        return acc
-      }
-
-      if (typeof selectedSeedIndex !== 'number' && targetIndex === i) {
-        return acc
-      }
-
-      acc.push(selectedSeedIndex)
-
-      return acc
-    }, [])
-
-    if (newSelectedSeedIndices.length > 12) {
-      newSelectedSeedIndices.length = 12
-    }
-
-    this.setState({
-      selectedSeedIndices: newSelectedSeedIndices,
-      pendingSeedIndices: [...newSelectedSeedIndices],
-    })
   }
 
   componentDidMount () {
     const { seedPhrase = '' } = this.props
     const shuffledSeedWords = shuffle(seedPhrase.split(' ')) || []
     this.setState({ shuffledSeedWords })
+  }
+
+  setDraggingSeedIndex = draggingSeedIndex => this.setState({ draggingSeedIndex })
+
+  setHoveringIndex = hoveringIndex => this.setState({ hoveringIndex })
+
+  onDrop = targetIndex => {
+    const {
+      selectedSeedIndices,
+      draggingSeedIndex,
+    } = this.state
+
+    const indices = insert(selectedSeedIndices, draggingSeedIndex, targetIndex, true)
+
+    this.setState({
+      selectedSeedIndices: indices,
+      pendingSeedIndices: indices,
+      draggingSeedIndex: -1,
+      hoveringIndex: -1,
+    })
   }
 
   handleExport = () => {
@@ -203,124 +132,153 @@ export default class ConfirmSeedPhrase extends PureComponent {
   render () {
     const { t } = this.context
     const { history } = this.props
-    const { selectedSeedIndices, shuffledSeedWords } = this.state
+    const {
+      selectedSeedIndices,
+      shuffledSeedWords,
+      draggingSeedIndex,
+    } = this.state
 
     return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div className="confirm-seed-phrase">
-          <div className="confirm-seed-phrase__back-button">
-            <a
-              onClick={e => {
-                e.preventDefault()
-                history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-              }}
-              href="#"
-            >
-              {`< Back`}
-            </a>
-          </div>
-          <div className="first-time-flow__header">
-            { t('confirmSecretBackupPhrase') }
-          </div>
-          <div className="first-time-flow__text-block">
-            { t('selectEachPhrase') }
-          </div>
-          <div className="confirm-seed-phrase__selected-seed-words">
-            { this.state.draggingSeedIndex > -1 ? this.renderPendingSeeds() : this.renderSelectedSeeds() }
-          </div>
-          <div className="confirm-seed-phrase__shuffled-seed-words">
-            {
-              shuffledSeedWords.map((word, index) => {
-                const isSelected = selectedSeedIndices.includes(index)
-
-                return (
-                  <DraggableSeed
-                    key={index}
-                    seedIndex={index}
-                    index={index}
-                    className={classnames(
-                      'confirm-seed-phrase__seed-word--shuffled',
-                    )}
-                    selected={isSelected}
-                    onClick={() => {
-                      if (!isSelected) {
-                        this.handleSelectSeedWord(word, index)
-                      } else {
-                        this.handleDeselectSeedWord(index)
-                      }
-                    }}
-                    beginDrag={this.beginDrag}
-                    endDrag={this.endDrag}
-                    resetPending={this.resetPending}
-                    onDrop={this.onDrop}
-                    word={word}
-                  />
-                )
-              })
-            }
-          </div>
-          <Button
-            type="primary"
-            className="first-time-flow__button"
-            onClick={this.handleSubmit}
-            disabled={!this.isValid()}
+      <div className="confirm-seed-phrase">
+        <div className="confirm-seed-phrase__back-button">
+          <a
+            onClick={e => {
+              e.preventDefault()
+              history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+            }}
+            href="#"
           >
-            { t('confirm') }
-          </Button>
+            {`< Back`}
+          </a>
         </div>
-      </DragDropContextProvider>
+        <div className="first-time-flow__header">
+          { t('confirmSecretBackupPhrase') }
+        </div>
+        <div className="first-time-flow__text-block">
+          { t('selectEachPhrase') }
+        </div>
+        <div
+          className={classnames('confirm-seed-phrase__selected-seed-words', {
+            'confirm-seed-phrase__selected-seed-words--dragging': draggingSeedIndex > -1,
+          })}
+        >
+          { this.renderPendingSeeds() }
+          { this.renderSelectedSeeds() }
+        </div>
+        <div className="confirm-seed-phrase__shuffled-seed-words">
+          {
+            shuffledSeedWords.map((word, index) => {
+              const isSelected = selectedSeedIndices.includes(index)
+
+              return (
+                <DraggableSeed
+                  key={index}
+                  seedIndex={index}
+                  index={index}
+                  draggingSeedIndex={this.state.draggingSeedIndex}
+                  setDraggingSeedIndex={this.setDraggingSeedIndex}
+                  setHoveringIndex={this.setHoveringIndex}
+                  onDrop={this.onDrop}
+                  className="confirm-seed-phrase__seed-word--shuffled"
+                  selected={isSelected}
+                  onClick={() => {
+                    if (!isSelected) {
+                      this.handleSelectSeedWord(word, index)
+                    } else {
+                      this.handleDeselectSeedWord(index)
+                    }
+                  }}
+                  word={word}
+                />
+              )
+            })
+          }
+        </div>
+        <Button
+          type="primary"
+          className="first-time-flow__button"
+          onClick={this.handleSubmit}
+          disabled={!this.isValid()}
+        >
+          { t('confirm') }
+        </Button>
+      </div>
     )
   }
 
   renderSelectedSeeds () {
-    const { shuffledSeedWords, selectedSeedIndices } = this.state
+    const { shuffledSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index]
       const word = shuffledSeedWords[seedIndex]
 
       return (
         <DraggableSeed
-          key={index}
+          key={`selected-${seedIndex}-${index}`}
+          className="confirm-seed-phrase__selected-seed-words__selected-seed"
           index={index}
           seedIndex={seedIndex}
           word={word}
-          hover={this.hover}
-          beginDrag={this.beginDrag}
-          endDrag={this.endDrag}
-          removePending={this.removeFromPending}
-          resetPending={this.resetPending}
+          draggingSeedIndex={draggingSeedIndex}
+          setDraggingSeedIndex={this.setDraggingSeedIndex}
+          setHoveringIndex={this.setHoveringIndex}
           onDrop={this.onDrop}
-          draggingSeedIndex={this.state.draggingSeedIndex}
-          droppable
+          draggable
         />
       )
     })
   }
 
   renderPendingSeeds () {
-    const { pendingSeedIndices, shuffledSeedWords } = this.state
+    const {
+      pendingSeedIndices,
+      shuffledSeedWords,
+      draggingSeedIndex,
+      hoveringIndex,
+    } = this.state
+
+    const indices = insert(pendingSeedIndices, draggingSeedIndex, hoveringIndex)
 
     return EMPTY_SEEDS.map((_, index) => {
-      const seedIndex = pendingSeedIndices[index]
+      const seedIndex = indices[index]
       const word = shuffledSeedWords[seedIndex]
 
       return (
         <DraggableSeed
-          key={index}
+          key={`pending-${seedIndex}-${index}`}
           index={index}
+          className={classnames('confirm-seed-phrase__selected-seed-words__pending-seed', {
+            'confirm-seed-phrase__seed-word--hidden': draggingSeedIndex === seedIndex && index !== hoveringIndex,
+          })}
           seedIndex={seedIndex}
           word={word}
-          hover={this.hover}
-          beginDrag={this.beginDrag}
-          endDrag={this.endDrag}
-          insertPending={this.insertToPending}
-          removePending={this.removeFromPending}
-          resetPending={this.resetPending}
+          draggingSeedIndex={draggingSeedIndex}
+          setDraggingSeedIndex={this.setDraggingSeedIndex}
+          setHoveringIndex={this.setHoveringIndex}
           onDrop={this.onDrop}
-          draggingSeedIndex={this.state.draggingSeedIndex}
-          droppable
+          droppable={!!word}
         />
       )
     })
   }
+}
+
+function insert (list, value, target, removeOld) {
+  let nextList = [...list]
+
+  if (typeof list[target] === 'number') {
+    nextList = [...list.slice(0, target), value, ...list.slice(target)]
+  }
+
+  if (removeOld) {
+    nextList = nextList.filter((seed, i) => {
+      return seed !== value || i === target
+    })
+  }
+
+  if (nextList.length > 12) {
+    nextList.pop()
+  }
+
+  return nextList
 }
