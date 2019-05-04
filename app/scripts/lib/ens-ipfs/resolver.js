@@ -60,5 +60,11 @@ function getRegistryForChainId (chainId) {
     // ropsten
     case 3:
       return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
+    // rinkeby
+    case 4:
+      return '0xe7410170f87102df0055eb195163a03b7f2bff4a'
+    // goerli
+    case 5:
+      return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
   }
 }
