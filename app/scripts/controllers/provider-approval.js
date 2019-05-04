@@ -1,11 +1,9 @@
 const ObservableStore = require('obs-store')
-const SafeEventEmitter = require('safe-event-emitter')
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 
 /**
  * A controller that services user-approved requests for a full Ethereum provider API
  */
-class ProviderApprovalController extends SafeEventEmitter {
+class ProviderApprovalController {
   /**
    * Determines if caching is enabled
    */
@@ -16,43 +14,38 @@ class ProviderApprovalController extends SafeEventEmitter {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, keyringController, openPopup, preferencesController } = {}) {
-    super()
+  constructor ({ closePopup, keyringController, openPopup, platform, preferencesController, publicConfigStore } = {}) {
     this.approvedOrigins = {}
     this.closePopup = closePopup
     this.keyringController = keyringController
     this.openPopup = openPopup
+    this.platform = platform
     this.preferencesController = preferencesController
+    this.publicConfigStore = publicConfigStore
     this.store = new ObservableStore({
       providerRequests: [],
     })
-  }
 
-  /**
-   * Called when a user approves access to a full Ethereum provider API
-   *
-   * @param {object} opts - opts for the middleware contains the origin for the middleware
-   */
-  createMiddleware ({ origin, getSiteMetadata }) {
-    return createAsyncMiddleware(async (req, res, next) => {
-      // only handle requestAccounts
-      if (req.method !== 'eth_requestAccounts') return next()
-      // if already approved or privacy mode disabled, return early
-      if (this.shouldExposeAccounts(origin)) {
-        res.result = [this.preferencesController.getSelectedAddress()]
-        return
-      }
-      // register the provider request
-      const metadata = await getSiteMetadata(origin)
-      this._handleProviderRequest(origin, metadata.name, metadata.icon, false, null)
-      // wait for resolution of request
-      const approved = await new Promise(resolve => this.once(`resolvedRequest:${origin}`, ({ approved }) => resolve(approved)))
-      if (approved) {
-        res.result = [this.preferencesController.getSelectedAddress()]
-      } else {
-        throw new Error('User denied account authorization')
-      }
-    })
+    if (platform && platform.addMessageListener) {
+      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }, { tab }) => {
+        if (tab && tab.id) {
+          switch (action) {
+            case 'init-provider-request':
+              this._handleProviderRequest(origin, siteTitle, siteImage, force, tab.id)
+              break
+            case 'init-is-approved':
+              this._handleIsApproved(origin, tab.id)
+              break
+            case 'init-is-unlocked':
+              this._handleIsUnlocked(tab.id)
+              break
+            case 'init-privacy-request':
+              this._handlePrivacyRequest(tab.id)
+              break
+          }
+        }
+      })
+    }
   }
 
   /**
@@ -66,37 +59,79 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage, tabID }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
+      this.approveProviderRequest(tabID)
       return
     }
     this.openPopup && this.openPopup()
   }
 
   /**
+   * Called by a tab to determine if an origin has been approved in the past
+   *
+   * @param {string} origin - Origin of the window
+   */
+  _handleIsApproved (origin, tabID) {
+    this.platform && this.platform.sendMessage({
+      action: 'answer-is-approved',
+      isApproved: this.approvedOrigins[origin] && this.caching,
+      caching: this.caching,
+    }, { id: tabID })
+  }
+
+  /**
+   * Called by a tab to determine if MetaMask is currently locked or unlocked
+   */
+  _handleIsUnlocked (tabID) {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { id: tabID })
+  }
+
+  /**
+   * Called to check privacy mode; if privacy mode is off, this will automatically enable the provider (legacy behavior)
+   */
+  _handlePrivacyRequest (tabID) {
+    const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
+    if (!privacyMode) {
+      this.platform && this.platform.sendMessage({
+        action: 'approve-legacy-provider-request',
+        selectedAddress: this.publicConfigStore.getState().selectedAddress,
+      }, { id: tabID })
+      this.publicConfigStore.emit('update', this.publicConfigStore.getState())
+    }
+  }
+
+  /**
    * Called when a user approves access to a full Ethereum provider API
    *
-   * @param {string} origin - origin of the domain that had provider access approved
+   * @param {string} tabID - ID of the target window that approved provider access
    */
-  approveProviderRequestByOrigin (origin) {
+  approveProviderRequest (tabID) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
-    const providerRequests = requests.filter(request => request.origin !== origin)
+    const origin = requests.find(request => request.tabID === tabID).origin
+    this.platform && this.platform.sendMessage({
+      action: 'approve-provider-request',
+      selectedAddress: this.publicConfigStore.getState().selectedAddress,
+    }, { id: tabID })
+    this.publicConfigStore.emit('update', this.publicConfigStore.getState())
+    const providerRequests = requests.filter(request => request.tabID !== tabID)
     this.store.updateState({ providerRequests })
     this.approvedOrigins[origin] = true
-    this.emit(`resolvedRequest:${origin}`, { approved: true })
   }
 
   /**
    * Called when a tab rejects access to a full Ethereum provider API
    *
-   * @param {string} origin - origin of the domain that had provider access approved
+   * @param {string} tabID - ID of the target window that rejected provider access
    */
-  rejectProviderRequestByOrigin (origin) {
+  rejectProviderRequest (tabID) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
-    const providerRequests = requests.filter(request => request.origin !== origin)
+    const origin = requests.find(request => request.tabID === tabID).origin
+    this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { id: tabID })
+    const providerRequests = requests.filter(request => request.tabID !== tabID)
     this.store.updateState({ providerRequests })
     delete this.approvedOrigins[origin]
-    this.emit(`resolvedRequest:${origin}`, { approved: false })
   }
 
   /**
@@ -114,10 +149,16 @@ class ProviderApprovalController extends SafeEventEmitter {
    */
   shouldExposeAccounts (origin) {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
-    const result = !privacyMode || Boolean(this.approvedOrigins[origin])
-    return result
+    return !privacyMode || this.approvedOrigins[origin]
   }
 
+  /**
+   * Tells all tabs that MetaMask is now locked. This is primarily used to set
+   * internal flags in the contentscript and inpage script.
+   */
+  setLocked () {
+    this.platform.sendMessage({ action: 'metamask-set-locked' })
+  }
 }
 
 module.exports = ProviderApprovalController

@@ -7,11 +7,31 @@ const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
 const createStandardProvider = require('./createStandardProvider').default
 
+let isEnabled = false
 let warned = false
+let providerHandle
+let isApprovedHandle
+let isUnlockedHandle
 
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
+
+/**
+ * Adds a postMessage listener for a specific message type
+ *
+ * @param {string} messageType - postMessage type to listen for
+ * @param {Function} handler - event handler
+ * @param {boolean} remove - removes this handler after being triggered
+ */
+function onMessage (messageType, callback, remove) {
+  const handler = function ({ data }) {
+    if (!data || data.type !== messageType) { return }
+    remove && window.removeEventListener('message', handler)
+    callback.apply(window, arguments)
+  }
+  window.addEventListener('message', handler)
+}
 
 //
 // setup plugin communication
@@ -29,16 +49,45 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
+// set up a listener for when MetaMask is locked
+onMessage('metamasksetlocked', () => { isEnabled = false })
+
+// set up a listener for privacy mode responses
+onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
+  isEnabled = true
+  setTimeout(() => {
+    inpageProvider.publicConfigStore.updateState({ selectedAddress })
+  }, 0)
+}, true)
+
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
-    inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
-      if (error) {
-        reject(error)
+    providerHandle = ({ data: { error, selectedAddress } }) => {
+      if (typeof error !== 'undefined') {
+        reject({
+          message: error,
+          code: 4001,
+        })
       } else {
-        resolve(response.result)
+        window.removeEventListener('message', providerHandle)
+        setTimeout(() => {
+          inpageProvider.publicConfigStore.updateState({ selectedAddress })
+        }, 0)
+
+        // wait for the background to update with an account
+        inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+          if (error) {
+            reject(error)
+          } else {
+            isEnabled = true
+            resolve(response.result)
+          }
+        })
       }
-    })
+    }
+    onMessage('ethereumprovider', providerHandle, true)
+    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
   })
 }
 
@@ -49,23 +98,31 @@ inpageProvider.autoRefreshOnNetworkChange = true
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
   /**
-   * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
+   * Determines if this domain is currently enabled
    *
-   * @returns {boolean} - returns true if this domain is currently enabled
+   * @returns {boolean} - true if this domain is currently enabled
    */
   isEnabled: function () {
-    const { isEnabled } = inpageProvider.publicConfigStore.getState()
-    return Boolean(isEnabled)
+    return isEnabled
   },
 
   /**
-   * Asynchronously determines if this domain is currently enabled
+   * Determines if this domain has been previously approved
    *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
+   * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
    */
-  isApproved: async function () {
-    const { isEnabled } = await getPublicConfigWhenReady()
-    return Boolean(isEnabled)
+  isApproved: function () {
+    return new Promise((resolve) => {
+      isApprovedHandle = ({ data: { caching, isApproved } }) => {
+        if (caching) {
+          resolve(!!isApproved)
+        } else {
+          resolve(false)
+        }
+      }
+      onMessage('ethereumisapproved', isApprovedHandle, true)
+      window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
+    })
   },
 
   /**
@@ -73,9 +130,14 @@ inpageProvider._metamask = new Proxy({
    *
    * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
    */
-  isUnlocked: async function () {
-    const { isUnlocked } = await getPublicConfigWhenReady()
-    return Boolean(isUnlocked)
+  isUnlocked: function () {
+    return new Promise((resolve) => {
+      isUnlockedHandle = ({ data: { isUnlocked } }) => {
+        resolve(!!isUnlocked)
+      }
+      onMessage('metamaskisunlocked', isUnlockedHandle, true)
+      window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
+    })
   },
 }, {
   get: function (obj, prop) {
@@ -87,19 +149,6 @@ inpageProvider._metamask = new Proxy({
   },
 })
 
-// publicConfig isn't populated until we get a message from background.
-// Using this getter will ensure the state is available
-async function getPublicConfigWhenReady () {
-  const store = inpageProvider.publicConfigStore
-  let state = store.getState()
-  // if state is missing, wait for first update
-  if (!state.networkVersion) {
-    state = await new Promise(resolve => store.once('update', resolve))
-    console.log('new state', state)
-  }
-  return state
-}
-
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues with drizzle
 const proxiedInpageProvider = new Proxy(inpageProvider, {
@@ -109,6 +158,19 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 window.ethereum = createStandardProvider(proxiedInpageProvider)
+
+// detect eth_requestAccounts and pipe to enable for now
+function detectAccountRequest (method) {
+  const originalMethod = inpageProvider[method]
+  inpageProvider[method] = function ({ method }) {
+    if (method === 'eth_requestAccounts') {
+      return window.ethereum.enable()
+    }
+    return originalMethod.apply(this, arguments)
+  }
+}
+detectAccountRequest('send')
+detectAccountRequest('sendAsync')
 
 //
 // setup web3

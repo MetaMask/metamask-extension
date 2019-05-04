@@ -60,6 +60,20 @@ class ExtensionPlatform {
     }
   }
 
+  addMessageListener (cb) {
+    extension.runtime.onMessage.addListener(cb)
+  }
+
+  sendMessage (message, query = {}) {
+    const id = query.id
+    delete query.id
+    extension.tabs.query({ ...query }, tabs => {
+      tabs.forEach(tab => {
+        extension.tabs.sendMessage(id || tab.id, message)
+      })
+    })
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()

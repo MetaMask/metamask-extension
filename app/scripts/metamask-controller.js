@@ -7,10 +7,8 @@
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
-const pify = require('pify')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
-const createDnodeRemoteGetter = require('./lib/createDnodeRemoteGetter')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const RpcEngine = require('json-rpc-engine')
@@ -89,7 +87,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // network store
-    this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController = new NetworkController(initState.NetworkController, this.platform)
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -237,17 +235,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
-
-    // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
-      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
-    })
+    this.publicConfigStore = this.initPublicConfigStore()
 
     this.providerApprovalController = new ProviderApprovalController({
       closePopup: opts.closePopup,
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
+      platform: opts.platform,
       preferencesController: this.preferencesController,
+      publicConfigStore: this.publicConfigStore,
     })
 
     this.store.updateStructure({
@@ -326,32 +322,22 @@ module.exports = class MetamaskController extends EventEmitter {
    * Constructor helper: initialize a public config store.
    * This store is used to make some config info available to Dapps synchronously.
    */
-  createPublicConfigStore ({ checkIsEnabled }) {
-    // subset of state for metamask inpage provider
+  initPublicConfigStore () {
+    // get init state
     const publicConfigStore = new ObservableStore()
 
-    // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore)
-    updatePublicConfigStore(this.getState())
-
-    publicConfigStore.destroy = () => {
-      this.removeEventListener('update', updatePublicConfigStore)
-    }
-
-    function updatePublicConfigStore (memState) {
+    // memStore -> transform -> publicConfigStore
+    this.on('update', (memState) => {
+      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
-    }
+    })
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding }) {
-      const isEnabled = checkIsEnabled()
-      const isReady = isUnlocked && isEnabled
+    function selectPublicState (memState) {
       const result = {
-        isUnlocked,
-        isEnabled,
-        selectedAddress: isReady ? selectedAddress : undefined,
-        networkVersion: network,
-        onboardingcomplete: completedOnboarding,
+        selectedAddress: memState.isUnlocked ? memState.selectedAddress : undefined,
+        networkVersion: memState.network,
+        onboardingcomplete: memState.completedOnboarding,
       }
       return result
     }
@@ -491,10 +477,9 @@ module.exports = class MetamaskController extends EventEmitter {
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
-      // provider approval
-      approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
-      rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
+      approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
+      rejectProviderRequest: providerApprovalController.rejectProviderRequest.bind(providerApprovalController),
     }
   }
 
@@ -1311,9 +1296,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
-    const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
-    this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
-    this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   /**
@@ -1386,7 +1370,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide over.
    * @param {string} origin - The URI of the requesting resource.
    */
-  setupProviderConnection (outStream, origin, publicApi) {
+  setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1406,11 +1390,6 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(subscriptionManager.middleware)
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
-    // requestAccounts
-    engine.push(this.providerApprovalController.createMiddleware({
-      origin,
-      getSiteMetadata: publicApi && publicApi.getSiteMetadata,
-    }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
 
@@ -1439,54 +1418,16 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide public config over.
    */
-  setupPublicConfig (outStream, originDomain) {
-    const configStore = this.createPublicConfigStore({
-      // check the providerApprovalController's approvedOrigins
-      checkIsEnabled: () => this.providerApprovalController.shouldExposeAccounts(originDomain),
-    })
-    const configStream = asStream(configStore)
-
+  setupPublicConfig (outStream) {
+    const configStream = asStream(this.publicConfigStore)
     pump(
       configStream,
       outStream,
       (err) => {
-        configStore.destroy()
         configStream.destroy()
         if (err) log.error(err)
       }
     )
-  }
-
-  /**
-   * A method for providing our public api over a stream.
-   * This includes a method for setting site metadata like title and image
-   *
-   * @param {*} outStream - The stream to provide the api over.
-   */
-  setupPublicApi (outStream, originDomain) {
-    const dnode = Dnode()
-    // connect dnode api to remote connection
-    pump(
-      outStream,
-      dnode,
-      outStream,
-      (err) => {
-        // report any error
-        if (err) log.error(err)
-      }
-    )
-
-    const getRemote = createDnodeRemoteGetter(dnode)
-
-    const publicApi = {
-      // wrap with an await remote
-      getSiteMetadata: async () => {
-        const remote = await getRemote()
-        return await pify(remote.getSiteMetadata)()
-      },
-    }
-
-    return publicApi
   }
 
   /**
@@ -1793,6 +1734,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked () {
+    this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
 }

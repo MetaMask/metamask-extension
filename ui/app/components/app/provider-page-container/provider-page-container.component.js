@@ -5,11 +5,12 @@ import { PageContainerFooter } from '../../ui/page-container'
 
 export default class ProviderPageContainer extends PureComponent {
   static propTypes = {
-    approveProviderRequestByOrigin: PropTypes.func.isRequired,
-    rejectProviderRequestByOrigin: PropTypes.func.isRequired,
+    approveProviderRequest: PropTypes.func.isRequired,
     origin: PropTypes.string.isRequired,
+    rejectProviderRequest: PropTypes.func.isRequired,
     siteImage: PropTypes.string,
     siteTitle: PropTypes.string.isRequired,
+    tabID: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -28,7 +29,7 @@ export default class ProviderPageContainer extends PureComponent {
   }
 
   onCancel = () => {
-    const { origin, rejectProviderRequestByOrigin } = this.props
+    const { tabID, rejectProviderRequest } = this.props
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
@@ -36,11 +37,11 @@ export default class ProviderPageContainer extends PureComponent {
         name: 'Canceled',
       },
     })
-    rejectProviderRequestByOrigin(origin)
+    rejectProviderRequest(tabID)
   }
 
   onSubmit = () => {
-    const { approveProviderRequestByOrigin, origin } = this.props
+    const { approveProviderRequest, tabID } = this.props
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
@@ -48,7 +49,7 @@ export default class ProviderPageContainer extends PureComponent {
         name: 'Confirmed',
       },
     })
-    approveProviderRequestByOrigin(origin)
+    approveProviderRequest(tabID)
   }
 
   render () {

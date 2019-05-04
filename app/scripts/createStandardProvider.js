@@ -4,10 +4,18 @@ class StandardProvider {
 
   constructor (provider) {
     this._provider = provider
-    this._subscribe()
-    // indicate that we've connected, mostly just for standard compliance
-    setTimeout(() => {
-      this._onConnect()
+    this._onMessage('ethereumpingerror', this._onClose.bind(this))
+    this._onMessage('ethereumpingsuccess', this._onConnect.bind(this))
+    window.addEventListener('load', () => {
+      this._subscribe()
+      this._ping()
+    })
+  }
+
+  _onMessage (type, handler) {
+    window.addEventListener('message', function ({ data }) {
+      if (!data || data.type !== type) return
+      handler.apply(this, arguments)
     })
   }
 
@@ -26,6 +34,15 @@ class StandardProvider {
     this._isConnected = true
   }
 
+  async _ping () {
+    try {
+      await this.send('net_version')
+      window.postMessage({ type: 'ethereumpingsuccess' }, '*')
+    } catch (error) {
+      window.postMessage({ type: 'ethereumpingerror' }, '*')
+    }
+  }
+
   _subscribe () {
     this._provider.on('data', (error, { method, params }) => {
       if (!error && method === 'eth_subscription') {
@@ -42,9 +59,11 @@ class StandardProvider {
    * @returns {Promise<*>} Promise resolving to the result if successful
    */
   send (method, params = []) {
+    if (method === 'eth_requestAccounts') return this._provider.enable()
+
     return new Promise((resolve, reject) => {
       try {
-        this._provider.sendAsync({ id: 1, jsonrpc: '2.0', method, params }, (error, response) => {
+        this._provider.sendAsync({ method, params, beta: true }, (error, response) => {
           error = error || response.error
           error ? reject(error) : resolve(response)
         })

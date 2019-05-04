@@ -1,17 +1,18 @@
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
-const log = require('loglevel')
-const Dnode = require('dnode')
 const querystring = require('querystring')
 const LocalMessageDuplexStream = require('post-message-stream')
+const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
+const {Transform: TransformStream} = require('stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
+let isEnabled = false
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -22,7 +23,9 @@ const inpageBundle = inpageContent + inpageSuffix
 
 if (shouldInjectWeb3()) {
   injectScript(inpageBundle)
-  start()
+  setupStreams()
+  listenForProviderRequest()
+  checkPrivacyMode()
 }
 
 /**
@@ -44,107 +47,148 @@ function injectScript (content) {
 }
 
 /**
- * Sets up the stream communication and submits site metadata
- *
- */
-async function start () {
-  await setupStreams()
-  await domIsReady()
-}
-
-/**
  * Sets up two-way communication streams between the
- * browser extension and local per-page browser context.
- *
+ * browser extension and local per-page browser context
  */
-async function setupStreams () {
-  // the transport-specific streams for communication between inpage and background
+function setupStreams () {
+  // setup communication to page and plugin
   const pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
     target: 'inpage',
   })
-  const extensionPort = extension.runtime.connect({ name: 'contentscript' })
-  const extensionStream = new PortStream(extensionPort)
+  const pluginPort = extension.runtime.connect({ name: 'contentscript' })
+  const pluginStream = new PortStream(pluginPort)
 
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex()
-  pageMux.setMaxListeners(25)
-  const extensionMux = new ObjectMultiplex()
-  extensionMux.setMaxListeners(25)
+  // Filter out selectedAddress until this origin is enabled
+  const approvalTransform = new TransformStream({
+    objectMode: true,
+    transform: (data, _, done) => {
+      if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !isEnabled) {
+        data.data.selectedAddress = undefined
+      }
+      done(null, { ...data })
+    },
+  })
 
+  // forward communication plugin->inpage
   pump(
-    pageMux,
     pageStream,
-    pageMux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
+    pluginStream,
+    approvalTransform,
+    pageStream,
+    (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
+  )
+
+  // setup local multistream channels
+  const mux = new ObjectMultiplex()
+  mux.setMaxListeners(25)
+
+  pump(
+    mux,
+    pageStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask Inpage', err)
   )
   pump(
-    extensionMux,
-    extensionStream,
-    extensionMux,
-    (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+    mux,
+    pluginStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask Background', err)
   )
 
-  // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
-  forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
+  // connect ping stream
+  const pongStream = new PongStream({ objectMode: true })
+  pump(
+    mux,
+    pongStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask PingPongStream', err)
+  )
 
-  // connect "phishing" channel to warning system
-  const phishingStream = extensionMux.createStream('phishing')
+  // connect phishing warning stream
+  const phishingStream = mux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
 
-  // connect "publicApi" channel to submit page metadata
-  const publicApiStream = extensionMux.createStream('publicApi')
-  const background = await setupPublicApi(publicApiStream)
-
-  return { background }
-}
-
-function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
-  const channelA = muxA.createStream(channelName)
-  const channelB = muxB.createStream(channelName)
-  pump(
-    channelA,
-    channelB,
-    channelA,
-    (err) => logStreamDisconnectWarning(`MetaMask muxed traffic for channel "${channelName}" failed.`, err)
-  )
-}
-
-async function setupPublicApi (outStream) {
-  const api = {
-    getSiteMetadata: (cb) => cb(null, getSiteMetadata()),
-  }
-  const dnode = Dnode(api)
-  pump(
-    outStream,
-    dnode,
-    outStream,
-    (err) => {
-      // report any error
-      if (err) log.error(err)
-    }
-  )
-  const background = await new Promise(resolve => dnode.once('remote', resolve))
-  return background
+  // ignore unused channels (handled by background, inpage)
+  mux.ignoreStream('provider')
+  mux.ignoreStream('publicConfig')
 }
 
 /**
- * Gets site metadata and returns it
- *
+ * Establishes listeners for requests to fully-enable the provider from the dapp context
+ * and for full-provider approvals and rejections from the background script context. Dapps
+ * should not post messages directly and should instead call provider.enable(), which
+ * handles posting these messages internally.
  */
-function getSiteMetadata () {
-  // get metadata
-  const metadata = {
-    name: getSiteName(window),
-    icon: getSiteIcon(window),
-  }
-  return metadata
+function listenForProviderRequest () {
+  window.addEventListener('message', ({ source, data }) => {
+    if (source !== window || !data || !data.type) { return }
+    switch (data.type) {
+      case 'ETHEREUM_ENABLE_PROVIDER':
+        extension.runtime.sendMessage({
+          action: 'init-provider-request',
+          force: data.force,
+          origin: source.location.hostname,
+          siteImage: getSiteIcon(source),
+          siteTitle: getSiteName(source),
+        })
+        break
+      case 'ETHEREUM_IS_APPROVED':
+        extension.runtime.sendMessage({
+          action: 'init-is-approved',
+          origin: source.location.hostname,
+        })
+        break
+      case 'METAMASK_IS_UNLOCKED':
+        extension.runtime.sendMessage({
+          action: 'init-is-unlocked',
+        })
+        break
+    }
+  })
+
+  extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked, selectedAddress }) => {
+    switch (action) {
+      case 'approve-provider-request':
+        isEnabled = true
+        window.postMessage({ type: 'ethereumprovider', selectedAddress }, '*')
+        break
+      case 'approve-legacy-provider-request':
+        isEnabled = true
+        window.postMessage({ type: 'ethereumproviderlegacy', selectedAddress }, '*')
+        break
+      case 'reject-provider-request':
+        window.postMessage({ type: 'ethereumprovider', error: 'User denied account authorization' }, '*')
+        break
+      case 'answer-is-approved':
+        window.postMessage({ type: 'ethereumisapproved', isApproved, caching }, '*')
+        break
+      case 'answer-is-unlocked':
+        window.postMessage({ type: 'metamaskisunlocked', isUnlocked }, '*')
+        break
+      case 'metamask-set-locked':
+        isEnabled = false
+        window.postMessage({ type: 'metamasksetlocked' }, '*')
+        break
+      case 'ethereum-ping-success':
+        window.postMessage({ type: 'ethereumpingsuccess' }, '*')
+        break
+      case 'ethereum-ping-error':
+        window.postMessage({ type: 'ethereumpingerror' }, '*')
+    }
+  })
 }
 
 /**
- * Error handler for page to extension stream disconnections
+ * Checks if MetaMask is currently operating in "privacy mode", meaning
+ * dapps must call ethereum.enable in order to access user accounts
+ */
+function checkPrivacyMode () {
+  extension.runtime.sendMessage({ action: 'init-privacy-request' })
+}
+
+/**
+ * Error handler for page to plugin stream disconnections
  *
  * @param {string} remoteLabel Remote stream name
  * @param {Error} err Stream connection error
@@ -257,10 +301,6 @@ function redirectToPhishingWarning () {
   })}`
 }
 
-
-/**
- * Extracts a name for the site from the DOM
- */
 function getSiteName (window) {
   const document = window.document
   const siteName = document.querySelector('head > meta[property="og:site_name"]')
@@ -276,9 +316,6 @@ function getSiteName (window) {
   return document.title
 }
 
-/**
- * Extracts an icon for the site from the DOM
- */
 function getSiteIcon (window) {
   const document = window.document
 
@@ -295,14 +332,4 @@ function getSiteIcon (window) {
   }
 
   return null
-}
-
-/**
- * Returns a promise that resolves when the DOM is loaded (does not wait for images to load)
- */
-async function domIsReady () {
-  // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) return
-  // wait for load
-  await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }
