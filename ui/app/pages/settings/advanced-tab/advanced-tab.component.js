@@ -24,6 +24,8 @@ export default class AdvancedTab extends PureComponent {
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
+    autoLogoutTimeLimit: PropTypes.number,
+    setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
   }
 
@@ -336,9 +338,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('autoLogoutTimeLimit') }</span>
+          <span>{ t('showFiatConversionInTestnets') }</span>
           <div className="settings-page__content-description">
-            { t('autoLogoutTimeLimitDescription') }
+            { t('showFiatConversionInTestnetsDescription') }
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -375,7 +377,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="number"
               id="autoTimeout"
-              placeholder={t('autoTimeout')}
+              placeholder={autoLogoutTimeLimit}
               value={this.state.autoLogoutTimeLimit}
               defaultValue={autoLogoutTimeLimit}
               onChange={e => this.setState({ autoLogoutTimeLimit: Number(e.target.value) })}
