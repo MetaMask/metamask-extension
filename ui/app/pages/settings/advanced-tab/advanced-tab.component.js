@@ -377,7 +377,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="number"
               id="autoTimeout"
-              placeholder={autoLogoutTimeLimit}
+              placeholder="5"
               value={this.state.autoLogoutTimeLimit}
               defaultValue={autoLogoutTimeLimit}
               onChange={e => this.setState({ autoLogoutTimeLimit: Number(e.target.value) })}
