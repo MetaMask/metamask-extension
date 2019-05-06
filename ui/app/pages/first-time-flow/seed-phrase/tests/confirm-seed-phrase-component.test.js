@@ -16,10 +16,10 @@ function shallowRender (props = {}, context = {}) {
   )
 }
 
-describe.only('ConfirmSeedPhrase Component', () => {
+describe('ConfirmSeedPhrase Component', () => {
   it('should render correctly', () => {
     const root = shallowRender({
-      seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬'
+      seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
     })
 
     assert.equal(
@@ -69,7 +69,7 @@ describe.only('ConfirmSeedPhrase Component', () => {
 
   it('should render correctly on hover', () => {
     const metricsEventSpy = sinon.spy()
-    const pushSpy = sinon.spy();
+    const pushSpy = sinon.spy()
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
