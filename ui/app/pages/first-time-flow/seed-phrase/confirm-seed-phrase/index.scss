@@ -43,6 +43,7 @@
         background-color: transparent;
         border-color: transparent;
         cursor: default;
+        box-shadow: none !important;
       }
     }
 
@@ -79,6 +80,10 @@
 
     &__selected-seed {
       display: inline-flex;
+
+      &:hover {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+      }
     }
 
     &--dragging {
