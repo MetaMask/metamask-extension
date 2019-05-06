@@ -36,7 +36,7 @@ const mapStateToProps = state => {
 
   const networksToRender = [ ...defaultNetworks, ...frequentRpcNetworkListDetails ]
   let selectedNetwork = networksToRender.find(network => network.rpcUrl === networksTabSelectedRpcUrl) || {}
-  let networkIsSelected = Boolean(selectedNetwork.rpcUrl)
+  const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
 
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
