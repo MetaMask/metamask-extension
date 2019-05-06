@@ -8,15 +8,16 @@
   }
 
   &__seed-word {
-    display: inline-block;
-    color: #5B5D67;
-    background-color: #E7E7E7;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
     padding: 8px 18px;
     width: 128px;
-    height: 37px;
+    height: 41px;
     margin: 4px;
     text-align: center;
-    border: 1px solid transparent;
+    border-radius: 4px;
     cursor: move;
 
     &--shuffled {
@@ -25,18 +26,24 @@
     }
 
     &--selected {
-      background-color: #85D1CC;
       color: $white;
-      cursor: default;
     }
 
     &--dragging {
-      opacity: .5;
+      margin: 0;
     }
 
     &--empty {
       background-color: transparent;
+      border-color: transparent;
       cursor: default;
+
+      &:hover,
+      &:active {
+        background-color: transparent;
+        border-color: transparent;
+        cursor: default;
+      }
     }
 
     &--hidden {
@@ -44,9 +51,9 @@
     }
 
     &--drop-hover {
-      background-color: $Blue-000;
-      border: 1px dashed $Blue-400;
-      //box-sizing: border-box;
+      background-color: transparent;
+      border-color: transparent;
+      color: transparent;
     }
 
     @media screen and (max-width: 575px) {
@@ -71,12 +78,12 @@
     }
 
     &__selected-seed {
-      display: block;
+      display: inline-flex;
     }
 
     &--dragging {
       .confirm-seed-phrase__selected-seed-words__pending-seed {
-        display: block;
+        display: inline-flex;
       }
 
       .confirm-seed-phrase__selected-seed-words__selected-seed {
