@@ -197,6 +197,10 @@
   "blockExplorerUrl": {
     "message": "Block Explorer"
   },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by url for custom block explorer"
+  },
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
   },

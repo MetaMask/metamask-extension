@@ -13,7 +13,9 @@ const EditableLabel = require('../../ui/editable-label')
 import Button from '../../ui/button'
 
 function mapStateToProps (state) {
-  const { rpcPrefs } = state.metamask.provider
+  const { frequentRpcListDetail, provider } = state.metamask
+  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
+  const { rpcPrefs } = selectRpcInfo || {}
 
   return {
     network: state.metamask.network,
@@ -93,7 +95,7 @@ AccountDetailsModal.prototype.render = function () {
         onClick: () => {
           global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
         },
-      }, this.context.t('etherscanView')),
+      }, this.context.t('blockExplorerView', rpcPrefs.blockExplorerUrl && [rpcPrefs.blockExplorerUrl])),
 
       // Holding on redesign for Export Private Key functionality
 
