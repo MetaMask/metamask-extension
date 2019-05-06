@@ -70,6 +70,32 @@ export default class NetworksTab extends PureComponent {
     })
   }
 
+  stateIsUnchanged () {
+    const {
+      rpcUrl,
+      chainId,
+      ticker,
+      networkName,
+      blockExplorerUrl,
+    } = this.props
+
+    const {
+      rpcUrl: stateRpcUrl,
+      chainId: stateChainId,
+      ticker: stateTicker,
+      networkName: stateNetworkName,
+      blockExplorerUrl: stateBlockExplorerUrl,
+    } = this.state
+
+    return (
+      stateRpcUrl === rpcUrl &&
+      stateChainId === chainId &&
+      stateTicker === ticker &&
+      stateNetworkName === networkName &&
+      stateBlockExplorerUrl === blockExplorerUrl
+    )
+  }
+
   renderFormTextField (fieldKey, textFieldId, onChange, value, optionalTextFieldKey) {
     const { errors } = this.state
     const { viewOnly } = this.props
@@ -187,7 +213,7 @@ export default class NetworksTab extends PureComponent {
           }}
           submitText={this.context.t('save')}
           submitButtonType={'confirm'}
-          disabled={viewOnly || Object.values(errors).some(x => x) || !rpcUrl}
+          disabled={viewOnly || this.stateIsUnchanged() || Object.values(errors).some(x => x) || !rpcUrl}
         />
       </div>
     )
