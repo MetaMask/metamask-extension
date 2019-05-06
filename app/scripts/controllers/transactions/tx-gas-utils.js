@@ -4,6 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('../../lib/util')
+const log = require('loglevel')
 const { addHexPrefix } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
@@ -26,12 +27,13 @@ class TxGasUtil {
     @param txMeta {Object} - the txMeta object
     @returns {object} the txMeta object with the gas written to the txParams
   */
-  async analyzeGasUsage (txMeta) {
+  async analyzeGasUsage (txMeta, code) {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
+      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit, code)
     } catch (err) {
+      log.warn(err)
       txMeta.simulationFails = {
         reason: err.message,
         errorKey: err.errorKey,
@@ -54,7 +56,7 @@ class TxGasUtil {
     @param blockGasLimitHex {string} - hex string of the block's gas limit
     @returns {string} the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta, blockGasLimitHex) {
+  async estimateTxGas (txMeta, blockGasLimitHex, code) {
     const txParams = txMeta.txParams
 
     // check if gasLimit is already specified
@@ -70,7 +72,6 @@ class TxGasUtil {
 
     // see if we can set the gas based on the recipient
     if (hasRecipient) {
-      const code = await this.query.getCode(recipient)
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
