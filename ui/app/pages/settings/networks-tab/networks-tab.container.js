@@ -43,7 +43,6 @@ const mapStateToProps = state => {
     selectedNetwork = networksToRender.find(network => {
       return network.rpcUrl === provider.rpcTarget || network.providerType !== 'rpc' && network.providerType === provider.type
     }) || {}
-    networkIsSelected = Boolean(selectedNetwork.rpcUrl)
     networkDefaultedToProvider = true
   }
 
