@@ -156,7 +156,8 @@
     "currentLocale": "en",
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true
-    }
+    },
+    "completedUiMigration": true
   },
   "appState": {
     "menuOpen": false,

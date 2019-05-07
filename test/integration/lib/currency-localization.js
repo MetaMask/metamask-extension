@@ -21,11 +21,18 @@ async function runCurrencyLocalizationTest (assert, done) {
   const selectState = await queryAsync($, 'select')
   selectState.val('currency localization')
 
+  const realFetch = window.fetch.bind(window)
   global.fetch = (...args) => {
-    if (args[0].match(/chromeextensionmm/)) {
+    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
+    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
+    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
+    } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
-    return window.fetch(...args)
+    return realFetch.fetch(...args)
   }
 
   await timeout(1000)
