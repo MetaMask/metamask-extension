@@ -57,7 +57,7 @@ describe('send-to-row utils', () => {
 
     it('should return a known address recipient if to is truthy but part of state tokens', () => {
       assert.deepEqual(getToErrorObject('0xabc123', undefined, false, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
-        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+        to: null,
       })
     })
 
@@ -69,12 +69,12 @@ describe('send-to-row utils', () => {
 
     it('should return a known address recipient if to is truthy but part of contract metadata', () => {
       assert.deepEqual(getToErrorObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', undefined, false, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
-        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+        to: null,
       })
     })
     it('should null if to is truthy part of contract metadata but selectedToken falsy', () => {
       assert.deepEqual(getToErrorObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', undefined, false, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
-        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+        to: null,
       })
     })
   })
