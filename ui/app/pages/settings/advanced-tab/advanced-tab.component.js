@@ -380,9 +380,10 @@ export default class AdvancedTab extends PureComponent {
               placeholder="5"
               value={this.state.autoLogoutTimeLimit}
               defaultValue={autoLogoutTimeLimit}
-              onChange={e => this.setState({ autoLogoutTimeLimit: Number(e.target.value) })}
+              onChange={e => this.setState({ autoLogoutTimeLimit: Math.max(Number(e.target.value), 0) })}
               fullWidth
               margin="dense"
+              min={0}
             />
             <button
               className="button btn-primary settings-tab__rpc-save-button"
