@@ -2,6 +2,11 @@ import {
   loadLocalStorageData,
   saveLocalStorageData,
 } from '../../../lib/local-storage-helpers'
+import http from './fetch'
+
+const fetch = http({
+  timeout: 30000,
+})
 
 export default function fetchWithCache (url, opts, cacheRefreshTime = 360000) {
   const currentTime = Date.now()
