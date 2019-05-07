@@ -134,7 +134,8 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "showFiatInTestnets": true
     },
-    "completedUiMigration": true
+    "completedUiMigration": true,
+    "frequentRpcListDetail": []
   },
   "appState": {
     "menuOpen": false,

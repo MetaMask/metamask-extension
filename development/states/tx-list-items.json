@@ -1059,7 +1059,8 @@
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true
     },
-    "completedUiMigration": true
+    "completedUiMigration": true,
+    "frequentRpcListDetail": []
   },
   "appState": {
     "menuOpen": false,
