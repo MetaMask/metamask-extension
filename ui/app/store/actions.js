@@ -1980,7 +1980,7 @@ function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPr
   }
 }
 
-function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname) {
+function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
     background.delCustomRpc(oldRpc, (err, result) => {
@@ -1989,7 +1989,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname) {
         return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
-      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
+      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err, result) => {
         if (err) {
           log.error(err)
           return dispatch(actions.displayWarning('Had a problem changing networks!'))

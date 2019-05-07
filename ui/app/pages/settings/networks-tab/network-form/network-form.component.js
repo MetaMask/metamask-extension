@@ -202,8 +202,11 @@ export default class NetworksTab extends PureComponent {
           cancelText={this.context.t('cancel')}
           hideCancel={true}
           onSubmit={() => {
-            if (rpcUrl !== propsRpcUrl) {
-              editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, blockExplorerUrl || rpcPrefs.blockExplorerUrl)
+            if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
+              editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
+                blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+                ...rpcPrefs,
+              })
             } else {
               setRpcTarget(rpcUrl, chainId, ticker, networkName, {
                 blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,

@@ -60,10 +60,16 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setSelectedSettingsRpcUrl: newRpcUrl => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
-    setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs)),
+    setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
+      console.log('setRpcTarget newRpc, chainId, ticker, nickname, rpcPrefs', newRpc, chainId, ticker, nickname, rpcPrefs)
+      dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
+    },
     displayWarning: warning => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),
-    editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs)),
+    editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
+      console.log('editRpc oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs', oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs)
+      dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
+    },
   }
 }
 
