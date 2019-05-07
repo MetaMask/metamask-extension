@@ -8,6 +8,7 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
+  setAutoLogoutTimeLimit,
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
@@ -19,13 +20,14 @@ const mapStateToProps = state => {
       advancedInlineGas,
     } = {},
   } = metamask
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
+    autoLogoutTimeLimit,
   }
 }
 
@@ -38,6 +40,9 @@ const mapDispatchToProps = dispatch => {
     setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
+    },
+    setAutoLogoutTimeLimit: value => {
+      return dispatch(setAutoLogoutTimeLimit(value))
     },
   }
 }
