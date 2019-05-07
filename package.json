@@ -194,6 +194,7 @@
     "@storybook/addon-info": "^3.4.2",
     "@storybook/addon-knobs": "^3.4.2",
     "@storybook/react": "^3.4.2",
+    "abortcontroller-polyfill": "^1.3.0",
     "addons-linter": "^1.3.4",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.0.0",
