@@ -12,7 +12,7 @@ import {
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+export const mapStateToProps = state => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
@@ -31,7 +31,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = dispatch => {
   return {
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
     setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
