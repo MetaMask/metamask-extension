@@ -120,7 +120,7 @@ class Routes extends Component {
       </Switch>
     )
 
-    if (autoLogoutTimeLimit) {
+    if (autoLogoutTimeLimit > 0) {
       return (
         <IdleTimer
           onIdle={lockMetamask}

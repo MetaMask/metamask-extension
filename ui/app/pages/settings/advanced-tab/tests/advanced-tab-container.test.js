@@ -1,7 +1,4 @@
-import React from 'react'
 import assert from 'assert'
-import sinon from 'sinon'
-import { mount } from 'enzyme'
 import { mapStateToProps, mapDispatchToProps } from '../advanced-tab.container'
 
 const defaultState = {
