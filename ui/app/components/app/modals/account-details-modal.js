@@ -15,7 +15,7 @@ import Button from '../../ui/button'
 function mapStateToProps (state) {
   const { frequentRpcListDetail, provider } = state.metamask
   const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
-  const { rpcPrefs } = selectRpcInfo || {}
+  const { rpcPrefs = {} } = selectRpcInfo || {}
 
   return {
     network: state.metamask.network,
