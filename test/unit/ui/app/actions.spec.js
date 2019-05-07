@@ -1196,7 +1196,6 @@ describe('Actions', () => {
 
   describe('#pairUpdate', () => {
     beforeEach(() => {
-
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/marketinfo/btc_eth')
@@ -1206,10 +1205,6 @@ describe('Actions', () => {
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/coins')
         .reply(200)
-      })
-
-    afterEach(() => {
-      nock.restore()
     })
 
     it('', () => {

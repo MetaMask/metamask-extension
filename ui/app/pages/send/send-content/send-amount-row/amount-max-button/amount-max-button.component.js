@@ -15,6 +15,7 @@ export default class AmountMaxButton extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   setMaxAmount () {
@@ -35,11 +36,15 @@ export default class AmountMaxButton extends Component {
   }
 
   onMaxClick = (event) => {
-    const { setMaxModeTo, selectedToken } = this.props
+    const { setMaxModeTo } = this.props
+    const { metricsEvent } = this.context
 
-    fetch('https://chromeextensionmm.innocraft.cloud/piwik.php?idsite=1&rec=1&e_c=send&e_a=amountMax&e_n=' + (selectedToken ? 'token' : 'eth'), {
-      'headers': {},
-      'method': 'GET',
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Edit Screen',
+        name: 'Clicked "Amount Max"',
+      },
     })
 
     event.preventDefault()
