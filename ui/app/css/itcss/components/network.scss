@@ -47,11 +47,15 @@
   align-items: center;
   font-size: .6em;
 
-  .fa-caret-down {
-    line-height: 15px;
-    font-size: 12px;
-    padding: 0 4px;
-    flex: 0 0 auto;
+  &__down-arrow {
+    height: 8px;
+    width: 12px;
+    display: block;
+    background-image: url(/images/icons/caret-down.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    margin: 0 8px;
   }
 
   .fa-question-circle {
@@ -65,12 +69,14 @@
   padding: 0 4px;
   font-family: Roboto;
   font-size: 12px;
+  line-height: 14px;
   flex: 1 1 auto;
   color: $tundora;
   font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  height: 16px;
 }
 
 .dropdown-menu-item .fa.delete {
