@@ -17,9 +17,8 @@ function getToErrorObject (to, toError = null, hasHexData = false, tokens = [], 
     }
   } else if (!isValidAddress(to, network) && !toError) {
     toError = isEthNetwork(network) ? INVALID_RECIPIENT_ADDRESS_ERROR : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR
-  } else if (selectedToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
-    toError = KNOWN_RECIPIENT_ADDRESS_ERROR
   }
+
   return { to: toError }
 }
 
