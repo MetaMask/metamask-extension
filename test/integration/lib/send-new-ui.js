@@ -22,7 +22,7 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
-async function runSendFlowTest (assert, done) {
+async function runSendFlowTest (assert) {
   const tempFetch = global.fetch
 
   const realFetch = window.fetch.bind(window)

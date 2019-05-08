@@ -144,7 +144,7 @@ EnsInput.prototype.ensIcon = function (recipient) {
   }, this.ensIconContents(recipient))
 }
 
-EnsInput.prototype.ensIconContents = function (recipient) {
+EnsInput.prototype.ensIconContents = function () {
   const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
 
   if (toError) return

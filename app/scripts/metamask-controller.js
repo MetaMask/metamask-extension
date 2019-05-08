@@ -1222,9 +1222,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * with higher gas.
    *
    * @param {string} txId - The ID of the transaction to speed up.
-   * @param {Function} cb - The callback function called with a full state update.
    */
-  async retryTransaction (txId, gasPrice, cb) {
+  async retryTransaction (txId, gasPrice) {
     await this.txController.retryTransaction(txId, gasPrice)
     const state = await this.getState()
     return state
@@ -1237,7 +1236,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string=} customGasPrice - the hex value to use for the cancel transaction
    * @returns {object} MetaMask state
    */
-  async createCancelTransaction (originalTxId, customGasPrice, cb) {
+  async createCancelTransaction (originalTxId, customGasPrice) {
     try {
       await this.txController.createCancelTransaction(originalTxId, customGasPrice)
       const state = await this.getState()
@@ -1247,7 +1246,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  async createSpeedUpTransaction (originalTxId, customGasPrice, cb) {
+  async createSpeedUpTransaction (originalTxId, customGasPrice) {
     await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
@@ -1463,7 +1462,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide the api over.
    */
-  setupPublicApi (outStream, originDomain) {
+  setupPublicApi (outStream) {
     const dnode = Dnode()
     // connect dnode api to remote connection
     pump(

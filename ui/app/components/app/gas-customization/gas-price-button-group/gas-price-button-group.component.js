@@ -49,7 +49,7 @@ export default class GasPriceButtonGroup extends Component {
     priceInHexWei,
     ...renderableGasInfo
   }, {
-    buttonDataLoading,
+    buttonDataLoading: _,
     handleGasPriceSelection,
     ...buttonContentPropsAndFlags
   }, index) {

@@ -6,7 +6,7 @@ import shallow from '../../../../../../lib/shallow-with-context'
 import * as d3 from 'd3'
 
 function timeout (time) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, time)
   })
 }

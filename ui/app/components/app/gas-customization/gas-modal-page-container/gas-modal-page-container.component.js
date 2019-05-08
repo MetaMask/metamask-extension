@@ -122,8 +122,6 @@ export default class GasModalPageContainer extends Component {
   }
 
   renderTabs ({
-    originalTotalFiat,
-    originalTotalEth,
     newTotalFiat,
     newTotalEth,
     sendAmount,

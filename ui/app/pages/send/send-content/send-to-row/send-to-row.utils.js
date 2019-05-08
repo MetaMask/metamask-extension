@@ -10,7 +10,7 @@ import { checkExistingAddresses } from '../../../add-token/util'
 const ethUtil = require('ethereumjs-util')
 const contractMap = require('eth-contract-metadata')
 
-function getToErrorObject (to, toError = null, hasHexData = false, tokens = [], selectedToken = null, network) {
+function getToErrorObject (to, toError = null, hasHexData = false, _, __, network) {
   if (!to) {
     if (!hasHexData) {
       toError = REQUIRED_ERROR

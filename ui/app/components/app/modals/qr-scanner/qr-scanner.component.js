@@ -71,7 +71,7 @@ export default class QrScanner extends Component {
   initCamera () {
     this.codeReader = new BrowserQRCodeReader()
     this.codeReader.getVideoInputDevices()
-      .then(videoInputDevices => {
+      .then(() => {
         clearTimeout(this.permissionChecker)
         this.checkPermisisions()
         this.codeReader.decodeFromInputVideoDevice(undefined, 'video')

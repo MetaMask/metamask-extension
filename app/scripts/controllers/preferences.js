@@ -339,7 +339,7 @@ class PreferencesController {
   }
 
   removeSuggestedTokens () {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.store.updateState({ suggestedTokens: {} })
       resolve({})
     })
@@ -396,7 +396,7 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const previousEntry = tokens.find((token, index) => {
+    const previousEntry = tokens.find((token) => {
       return token.address === address
     })
     const previousIndex = tokens.indexOf(previousEntry)
@@ -461,7 +461,7 @@ class PreferencesController {
    *
    */
   setCurrentAccountTab (currentAccountTab) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.store.updateState({ currentAccountTab })
       resolve()
     })

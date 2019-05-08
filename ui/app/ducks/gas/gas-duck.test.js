@@ -461,8 +461,8 @@ describe('Gas Duck', () => {
       assert.equal(thirdDispatchCallType, SET_PRICE_AND_TIME_ESTIMATES)
       assert(priceAndTimeEstimateResult.length < mockPredictTableResponse.length * 3 - 2)
       assert(!priceAndTimeEstimateResult.find(d => d.expectedTime > 100))
-      assert(!priceAndTimeEstimateResult.find((d, i, a) => a[a + 1] && d.expectedTime > a[a + 1].expectedTime))
-      assert(!priceAndTimeEstimateResult.find((d, i, a) => a[a + 1] && d.gasprice > a[a + 1].gasprice))
+      assert(!priceAndTimeEstimateResult.find((d, _, a) => a[a + 1] && d.expectedTime > a[a + 1].expectedTime))
+      assert(!priceAndTimeEstimateResult.find((d, _, a) => a[a + 1] && d.gasprice > a[a + 1].gasprice))
 
       assert.deepEqual(
         mockDistpatch.getCall(3).args,

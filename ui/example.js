@@ -91,7 +91,7 @@ accountManager.setSelectedAccount = function (address, cb) {
   this._didUpdate()
 }
 
-accountManager.signTransaction = function (txParams, cb) {
+accountManager.signTransaction = function () {
   alert('signing tx....')
 }
 

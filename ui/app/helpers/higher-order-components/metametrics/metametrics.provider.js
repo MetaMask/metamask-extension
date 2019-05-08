@@ -42,7 +42,7 @@ class MetaMetricsProvider extends Component {
       currentPath: window.location.href,
     }
 
-    props.history.listen(locationObj => {
+    props.history.listen(() => {
       this.setState({
         previousPath: this.state.currentPath,
         currentPath: window.location.href,

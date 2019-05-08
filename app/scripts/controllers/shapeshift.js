@@ -136,7 +136,7 @@ class ShapeshiftController {
    * @param {ShapeShiftTx} tx The tx to remove
    *
    */
-  removeShapeShiftTx (tx) {
+  removeShapeShiftTx () {
     const { shapeShiftTxList } = this.store.getState()
     const index = shapeShiftTxList.indexOf(index)
     if (index !== -1) {

@@ -84,7 +84,7 @@ function composeParamAddition (paramValue, paramName) {
     : `&${paramName}=${paramValue}`
 }
 
-function composeUrl (config, permissionPreferences = {}) {
+function composeUrl (config) {
   const {
     eventOpts = {},
     customVariables = '',

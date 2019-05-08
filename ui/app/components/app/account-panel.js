@@ -69,18 +69,9 @@ AccountPanel.prototype.render = function () {
   )
 }
 
-function balanceOrFaucetingIndication (account, isFauceting) {
-  // Temporarily deactivating isFauceting indication
-  // because it shows fauceting for empty restored accounts.
-  if (/* isFauceting*/ false) {
-    return {
-      key: 'Account is auto-funding.',
-      value: 'Please wait.',
-    }
-  } else {
-    return {
-      key: 'BALANCE',
-      value: formatBalance(account.balance),
-    }
+function balanceOrFaucetingIndication (account) {
+  return {
+    key: 'BALANCE',
+    value: formatBalance(account.balance),
   }
 }
