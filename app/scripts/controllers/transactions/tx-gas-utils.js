@@ -25,6 +25,7 @@ class TxGasUtil {
 
   /**
     @param txMeta {Object} - the txMeta object
+    @param code {string} - the code at the txs address, as returned by this.query.getCode(to)
     @returns {object} the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta, code) {
@@ -54,6 +55,7 @@ class TxGasUtil {
     Estimates the tx's gas usage
     @param txMeta {Object} - the txMeta object
     @param blockGasLimitHex {string} - hex string of the block's gas limit
+    @param code {string} - the code at the txs address, as returned by this.query.getCode(to)
     @returns {string} the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta, blockGasLimitHex, code) {
