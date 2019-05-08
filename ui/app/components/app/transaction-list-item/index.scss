@@ -1,7 +1,7 @@
 .transaction-list-item {
   box-sizing: border-box;
   min-height: 74px;
-  border-bottom: 1px solid $geyser;
+  border-bottom: 1px solid $border-gray;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,7 +11,7 @@
   &__grid {
     cursor: pointer;
     width: 100%;
-    padding: 16px 20px;
+    padding: 8px 16px;
     display: grid;
     grid-template-columns: 45px 1fr 1fr 1fr;
     grid-template-areas:
@@ -50,6 +50,7 @@
     text-overflow: ellipsis;
     grid-area: action;
     align-self: end;
+    color: $Grey-800;
   }
 
   &__status {
@@ -91,16 +92,17 @@
 
       @media screen and (max-width: $break-small) {
         padding-bottom: 2px;
+        color: $Grey-800;
       }
     }
 
     &--secondary {
       text-align: end;
       font-size: .75rem;
-      color: #5e6064;
       grid-area: secondary-amount;
       align-self: start;
       justify-self: end;
+      color: $Grey-500;
     }
   }
 
