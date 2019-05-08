@@ -30,7 +30,7 @@ export default class MenuBar extends PureComponent {
           position="bottom"
         >
           <div
-            className="fa fa-bars menu-bar__sidebar-button"
+            className="menu-bar__sidebar-button"
             onClick={() => {
               this.context.metricsEvent({
                 eventOpts: {
@@ -50,7 +50,7 @@ export default class MenuBar extends PureComponent {
           position="bottom"
         >
           <div
-            className="fa fa-ellipsis-h fa-lg menu-bar__open-in-browser"
+            className="menu-bar__open-in-browser"
             onClick={() => {
               this.context.metricsEvent({
                 eventOpts: {
