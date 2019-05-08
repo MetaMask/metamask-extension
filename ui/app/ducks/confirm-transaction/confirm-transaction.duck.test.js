@@ -494,7 +494,7 @@ describe('Confirm Transaction Duck', () => {
     })
   })
 
-  describe('Thunk actions', done => {
+  describe('Thunk actions', () => {
     beforeEach(() => {
       global.eth = {
         getCode: sinon.stub().callsFake(

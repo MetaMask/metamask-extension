@@ -98,7 +98,7 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
     })
 }
 
-ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
+ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
     !privateKey && h(Button, {
       type: 'default',
@@ -171,7 +171,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
       h('div.private-key-password-warning', this.context.t('privateKeyWarning')),
 
-      this.renderButtons(privateKey, this.state.password, address, hideModal),
+      this.renderButtons(privateKey, address, hideModal),
 
   ])
 }

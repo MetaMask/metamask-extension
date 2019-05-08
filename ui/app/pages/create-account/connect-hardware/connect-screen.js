@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 import Button from '../../../components/ui/button'
 
 class ConnectScreen extends Component {
-    constructor (props, context) {
+    constructor (props) {
         super(props)
         this.state = {
           selectedDevice: null,
@@ -103,7 +103,7 @@ class ConnectScreen extends Component {
     }
 
 
-    scrollToTutorial = (e) => {
+    scrollToTutorial = () => {
       if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})
     }
 

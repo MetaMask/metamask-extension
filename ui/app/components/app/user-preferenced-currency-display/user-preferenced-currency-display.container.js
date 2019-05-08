@@ -3,7 +3,7 @@ import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.
 import { preferencesSelector, getIsMainnet } from '../../../selectors/selectors'
 import { ETH, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   const {
     useNativeCurrencyAsPrimaryCurrency,
     showFiatInTestnets,

@@ -37,7 +37,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
     isDragging: false,
   }
 
-  shouldComponentUpdate (nextProps, nextState, nextContext) {
+  shouldComponentUpdate (nextProps, nextState) {
     const { seedPhrase } = this.props
     const {
       selectedSeedIndices,
@@ -108,7 +108,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
     }
   }
 
-  handleSelectSeedWord = (word, shuffledIndex) => {
+  handleSelectSeedWord = (shuffledIndex) => {
     this.setState({
       selectedSeedIndices: [...this.state.selectedSeedIndices, shuffledIndex],
       pendingSeedIndices: [...this.state.pendingSeedIndices, shuffledIndex],
@@ -183,7 +183,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
                   selected={isSelected}
                   onClick={() => {
                     if (!isSelected) {
-                      this.handleSelectSeedWord(word, index)
+                      this.handleSelectSeedWord(index)
                     } else {
                       this.handleDeselectSeedWord(index)
                     }

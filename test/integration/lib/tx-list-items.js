@@ -20,7 +20,7 @@ global.ethQuery.getTransactionCount = (_, cb) => {
   cb(null, '0x4')
 }
 
-async function runTxListItemsTest (assert, done) {
+async function runTxListItemsTest (assert) {
   console.log('*** start runTxListItemsTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('tx list items')

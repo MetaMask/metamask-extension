@@ -1,20 +1,20 @@
 module.exports = {
   'confirm sig requests': {
-    signMessage: (msgData, cb) => {
+    signMessage: (_, cb) => {
       const stateUpdate = {
         unapprovedMsgs: {},
         unapprovedMsgCount: 0,
       }
       return cb(null, stateUpdate)
     },
-    signPersonalMessage: (msgData, cb) => {
+    signPersonalMessage: (_, cb) => {
       const stateUpdate = {
         unapprovedPersonalMsgs: {},
         unapprovedPersonalMsgCount: 0,
       }
       return cb(null, stateUpdate)
     },
-    signTypedMessage: (msgData, cb) => {
+    signTypedMessage: (_, cb) => {
       const stateUpdate = {
         unapprovedTypedMessages: {},
         unapprovedTypedMessagesCount: 0,

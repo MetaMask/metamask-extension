@@ -38,7 +38,7 @@ web3.currentProvider.enable().then(() => {
   const transferTokens = document.getElementById('transferTokens')
   const approveTokens = document.getElementById('approveTokens')
 
-  deployButton.addEventListener('click', async function (event) {
+  deployButton.addEventListener('click', async function () {
     document.getElementById('contractStatus').innerHTML = 'Deploying'
 
     var piggybank = await piggybankContract.new(
@@ -55,7 +55,7 @@ web3.currentProvider.enable().then(() => {
 
           document.getElementById('contractStatus').innerHTML = 'Deployed'
 
-          depositButton.addEventListener('click', function (event) {
+          depositButton.addEventListener('click', function () {
             document.getElementById('contractStatus').innerHTML = 'Deposit initiated'
             contract.deposit({ from: web3.eth.accounts[0], value: '0x3782dace9d900000' }, function (result) {
               console.log(result)
@@ -63,7 +63,7 @@ web3.currentProvider.enable().then(() => {
             })
           })
 
-          withdrawButton.addEventListener('click', function (event) {
+          withdrawButton.addEventListener('click', function () {
             contract.withdraw('0xde0b6b3a7640000', { from: web3.eth.accounts[0] }, function (result) {
               console.log(result)
               document.getElementById('contractStatus').innerHTML = 'Withdrawn'
@@ -75,7 +75,7 @@ web3.currentProvider.enable().then(() => {
     console.log(piggybank)
   })
 
-  sendButton.addEventListener('click', function (event) {
+  sendButton.addEventListener('click', function () {
     web3.eth.sendTransaction({
       from: web3.eth.accounts[0],
       to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -88,7 +88,7 @@ web3.currentProvider.enable().then(() => {
   })
 
 
-  createToken.addEventListener('click', async function (event) {
+  createToken.addEventListener('click', async function () {
     var _initialAmount = 100
     var _tokenName = 'TST'
     var _decimalUnits = 0
@@ -124,7 +124,7 @@ web3.currentProvider.enable().then(() => {
             })
           })
 
-          approveTokens.addEventListener('click', function (event) {
+          approveTokens.addEventListener('click', function () {
             contract.approve('0x2f318C334780961FB129D2a6c30D0763d9a5C970', '7', {
               from: web3.eth.accounts[0],
               to: contract.address,

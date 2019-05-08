@@ -100,7 +100,7 @@ describe('PendingTransactionTracker', function () {
 
   describe('#_checkPendingTx', function () {
     it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
-      pendingTxTracker.once('tx:failed', (txId, err) => {
+      pendingTxTracker.once('tx:failed', (txId) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
       })
@@ -128,7 +128,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._checkPendingTx = (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
-      .then((txCompletedList) => done())
+      .then(() => done())
       .catch(done)
 
       pendingTxTracker.updatePendingTxs()
@@ -152,7 +152,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._resubmitTx = async (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
-      .then((txCompletedList) => done())
+      .then(() => done())
       .catch(done)
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
     })
@@ -178,7 +178,7 @@ describe('PendingTransactionTracker', function () {
         throw new Error(knownErrors.pop())
       }
       Promise.all(txList.map((tx) => tx.processed))
-      .then((txCompletedList) => done())
+      .then(() => done())
       .catch(done)
 
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
@@ -194,9 +194,9 @@ describe('PendingTransactionTracker', function () {
       })
 
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async (tx) => { throw new TypeError('im some real error') }
+      pendingTxTracker._resubmitTx = async () => { throw new TypeError('im some real error') }
       Promise.all(txList.map((tx) => tx.processed))
-      .then((txCompletedList) => done())
+      .then(() => done())
       .catch(done)
 
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)

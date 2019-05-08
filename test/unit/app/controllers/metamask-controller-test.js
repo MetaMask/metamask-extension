@@ -49,7 +49,7 @@ describe('MetaMaskController', function () {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (password, object) {
+        encrypt: function (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
@@ -144,7 +144,7 @@ describe('MetaMaskController', function () {
       sandbox.stub(metamaskController, 'getBalance')
       metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
 
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch((e) => null)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch(() => null)
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
       assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
@@ -207,7 +207,7 @@ describe('MetaMaskController', function () {
       const accounts = {}
       const balance = '0x14ced5122ce0a000'
       const ethQuery = new EthQuery()
-      sinon.stub(ethQuery, 'getBalance').callsFake((account, callback) => {
+      sinon.stub(ethQuery, 'getBalance').callsFake((_, callback) => {
         callback(undefined, balance)
       })
 
@@ -295,7 +295,7 @@ describe('MetaMaskController', function () {
 
     it('should add the Trezor Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
-      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.connectHardware('trezor', 0).catch(() => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware'
       )
@@ -305,7 +305,7 @@ describe('MetaMaskController', function () {
 
     it('should add the Ledger Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
-      await metamaskController.connectHardware('ledger', 0).catch((e) => null)
+      await metamaskController.connectHardware('ledger', 0).catch(() => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Ledger Hardware'
       )
@@ -325,7 +325,7 @@ describe('MetaMaskController', function () {
     })
 
     it('should be locked by default', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.connectHardware('trezor', 0).catch(() => null)
       const status = await metamaskController.checkHardwareStatus('trezor')
       assert.equal(status, false)
     })
@@ -341,7 +341,7 @@ describe('MetaMaskController', function () {
     })
 
     it('should wipe all the keyring info', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.connectHardware('trezor', 0).catch(() => null)
       await metamaskController.forgetDevice('trezor')
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware'
@@ -376,7 +376,7 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setAddresses')
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress')
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel')
-      await metamaskController.connectHardware('trezor', 0, `m/44/0'/0'`).catch((e) => null)
+      await metamaskController.connectHardware('trezor', 0, `m/44/0'/0'`).catch(() => null)
       await metamaskController.unlockHardwareWalletAccount(accountToUnlock, 'trezor', `m/44/0'/0'`)
     })
 
@@ -757,7 +757,7 @@ describe('MetaMaskController', function () {
 
       const { promise, resolve } = deferredPromise()
 
-      streamTest = createThoughStream((chunk, enc, cb) => {
+      streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.name !== 'phishing') return cb()
         assert.equal(chunk.data.hostname, phishingUrl)
         resolve()
@@ -777,7 +777,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
-      streamTest = createThoughStream((chunk, enc, cb) => {
+      streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()

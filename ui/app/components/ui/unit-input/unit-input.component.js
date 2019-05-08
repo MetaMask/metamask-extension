@@ -58,7 +58,7 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value)
   }
 
-  handleBlur = event => {
+  handleBlur = () => {
     const { onBlur } = this.props
     typeof onBlur === 'function' && onBlur(this.state.value)
   }

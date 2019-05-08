@@ -84,7 +84,7 @@ ToAutoComplete.prototype.handleInputEvent = function (event = {}, cb) {
   cb && cb(event.target.value)
 }
 
-ToAutoComplete.prototype.componentDidUpdate = function (nextProps, nextState) {
+ToAutoComplete.prototype.componentDidUpdate = function (nextProps) {
   if (this.props.to !== nextProps.to) {
     this.handleInputEvent()
   }

@@ -12,7 +12,7 @@ const { getPlatform } = require('../../../../../app/scripts/lib/util')
 const { PLATFORM_FIREFOX } = require('../../../../../app/scripts/lib/enums')
 
 class ConnectHardwareForm extends Component {
-  constructor (props, context) {
+  constructor (props) {
     super(props)
     this.state = {
       error: null,
@@ -101,7 +101,7 @@ class ConnectHardwareForm extends Component {
           const newState = { unlocked: true, device, error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
-            accounts.forEach((a, i) => {
+            accounts.forEach((a) => {
               if (a.address.toLowerCase() === this.props.address) {
                 newState.selectedAccount = a.index.toString()
               }

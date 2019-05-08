@@ -12,7 +12,7 @@ web3.currentProvider.enable().then(() => {
     Object.keys(methodGroup).forEach(methodKey => {
 
       const methodButton = document.getElementById(methodKey)
-      methodButton.addEventListener('click', function (event) {
+      methodButton.addEventListener('click', function () {
 
         window.ethereum.sendAsync({
           method: methodKey,

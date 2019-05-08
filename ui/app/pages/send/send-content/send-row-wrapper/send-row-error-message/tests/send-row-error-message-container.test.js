@@ -5,7 +5,7 @@ let mapStateToProps
 
 proxyquire('../send-row-error-message.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },

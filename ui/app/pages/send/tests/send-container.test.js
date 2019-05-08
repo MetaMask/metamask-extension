@@ -24,7 +24,7 @@ proxyquire('../send.container.js', {
     },
   },
   'react-router-dom': { withRouter: () => {} },
-  'recompose': { compose: (arg1, arg2) => () => arg2() },
+  'recompose': { compose: (_, arg2) => () => arg2() },
   './send.selectors': {
     getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
     getBlockGasLimit: (s) => `mockBlockGasLimit:${s}`,
