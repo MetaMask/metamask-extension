@@ -26,7 +26,12 @@ describe('AmountMaxButton Component', function () {
       setAmountToMax={propsMethodSpies.setAmountToMax}
       setMaxModeTo={propsMethodSpies.setMaxModeTo}
       tokenBalance={'mockTokenBalance'}
-    />, { context: { t: str => str + '_t' } })
+    />, {
+      context: {
+        t: str => str + '_t',
+        metricsEvent: () => {},
+      },
+    })
     instance = wrapper.instance()
   })
 

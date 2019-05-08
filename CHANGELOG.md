@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 6.4.1 Fri Apr 26 2019
+
+- [#6521](https://github.com/MetaMask/metamask-extension/pull/6521): Revert "Adds 4byte registry fallback to getMethodData()" to fix stalling bug.
+
 ## 6.4.0 Wed Apr 17 2019
 
 - [#6445](https://github.com/MetaMask/metamask-extension/pull/6445): * Move send to pages/

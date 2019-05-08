@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, matchPath } from 'react-router-dom'
+import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
@@ -25,7 +25,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
 }
 
-export default class SettingsPage extends PureComponent {
+class SettingsPage extends PureComponent {
   static propTypes = {
     location: PropTypes.object,
     history: PropTypes.object,
@@ -75,9 +75,21 @@ export default class SettingsPage extends PureComponent {
             { this.renderTabs() }
           </div>
           <div className="settings-page__content__modules">
+            { this.renderSubHeader() }
             { this.renderContent() }
           </div>
         </div>
+      </div>
+    )
+  }
+
+  renderSubHeader () {
+    const { t } = this.context
+    const { location: { pathname } } = this.props
+
+    return (
+      <div className="settings-page__subheader">
+        {t(ROUTES_TO_I18N_KEYS[pathname] || 'general')}
       </div>
     )
   }
@@ -135,3 +147,5 @@ export default class SettingsPage extends PureComponent {
     )
   }
 }
+
+export default withRouter(SettingsPage)

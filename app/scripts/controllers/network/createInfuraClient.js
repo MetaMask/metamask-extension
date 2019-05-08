@@ -7,14 +7,14 @@ const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache
 const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const createInfuraMiddleware = require('eth-json-rpc-infura')
-const createBlockTracker = require('./createBlockTracker')
+const BlockTracker = require('eth-block-tracker')
 
 module.exports = createInfuraClient
 
-function createInfuraClient ({ network, platform }) {
+function createInfuraClient ({ network }) {
   const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
   const infuraProvider = providerFromMiddleware(infuraMiddleware)
-  const blockTracker = createBlockTracker({ provider: infuraProvider }, platform)
+  const blockTracker = new BlockTracker({ provider: infuraProvider })
 
   const networkMiddleware = mergeMiddleware([
     createNetworkAndChainIdMiddleware({ network }),
