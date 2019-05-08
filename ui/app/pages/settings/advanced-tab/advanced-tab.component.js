@@ -24,6 +24,8 @@ export default class AdvancedTab extends PureComponent {
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
+    autoLogoutTimeLimit: PropTypes.number,
+    setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
   }
 
@@ -355,6 +357,48 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderAutoLogoutTimeLimit () {
+    const { t } = this.context
+    const {
+      autoLogoutTimeLimit,
+      setAutoLogoutTimeLimit,
+    } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('autoLogoutTimeLimit') }</span>
+          <div className="settings-page__content-description">
+            { t('autoLogoutTimeLimitDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <TextField
+              type="number"
+              id="autoTimeout"
+              placeholder="5"
+              value={this.state.autoLogoutTimeLimit}
+              defaultValue={autoLogoutTimeLimit}
+              onChange={e => this.setState({ autoLogoutTimeLimit: Math.max(Number(e.target.value), 0) })}
+              fullWidth
+              margin="dense"
+              min={0}
+            />
+            <button
+              className="button btn-primary settings-tab__rpc-save-button"
+              onClick={() => {
+                setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
+              }}
+            >
+              { t('save') }
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -368,6 +412,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
+        { this.renderAutoLogoutTimeLimit() }
       </div>
     )
   }
