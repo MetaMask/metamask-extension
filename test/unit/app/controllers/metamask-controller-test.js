@@ -453,8 +453,8 @@ describe('MetaMaskController', function () {
       assert.equal(defaultMetaMaskCurrency, 'usd')
     })
 
-    it('sets currency to JPY', async function () {
-      await metamaskController.setCurrentCurrency('JPY', () => {})
+    it('sets currency to JPY', function () {
+      metamaskController.setCurrentCurrency('JPY', noop)
       assert.equal(metamaskController.currencyRateController.state.currentCurrency, 'JPY')
     })
   })

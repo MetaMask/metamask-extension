@@ -1588,15 +1588,16 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} currencyCode - The code of the preferred currency.
    * @param {Function} cb - A callback function returning currency info.
    */
-  async setCurrentCurrency (currencyCode, cb) {
+  setCurrentCurrency (currencyCode, cb) {
     const { ticker } = this.networkController.getNetworkConfig()
     try {
-      this.currencyRateController.configure({
+      const currencyState = {
         nativeCurrency: ticker,
         currentCurrency: currencyCode,
-      })
-      const data = await this.currencyRateController.updateExchangeRate()
-      cb(null, data)
+      }
+      this.currencyRateController.update(currencyState)
+      this.currencyRateController.configure(currencyState)
+      cb(null, this.currencyRateController.state)
     } catch (err) {
       cb(err)
     }
