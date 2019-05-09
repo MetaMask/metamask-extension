@@ -119,16 +119,16 @@ const mapStateToProps = (state, ownProps) => {
     :
     addHexWEIsToRenderableEth(value, '0x0')
 
-  const insufficientBalance = !maxModeOn
+  const insufficientBalance = maxModeOn
   ?
+  false
+  :
   !isBalanceSufficient({
     amount: value,
     gasTotal: customGasTotal,
     balance,
     conversionRate,
   })
-  :
-  false
 
   return {
     hideBasic,
@@ -232,20 +232,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps,
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
-      return new Promise((resolve, reject) => {
         if (isConfirm) {
           dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
-          resolve(dispatchHideModal())
+          dispatchHideModal()
         } else if (isSpeedUp) {
           dispatchCreateSpeedUpTransaction(txId, gasPrice)
           dispatchHideSidebar()
-          resolve(dispatchCancelAndClose())
+          dispatchCancelAndClose()
         } else {
           dispatchSetGasData(gasLimit, gasPrice)
           dispatchHideGasButtonGroup()
-          resolve(dispatchCancelAndClose())
+          dispatchCancelAndClose()
         }
-      }).then(() => {
         if (maxModeOn) {
           dispatchSetAmountToMax({
             balance,
@@ -254,7 +252,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             tokenBalance,
           })
         }
-      })
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
