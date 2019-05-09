@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class SendRowErrorMessage extends Component {
 
@@ -19,7 +20,7 @@ export default class SendRowErrorMessage extends Component {
 
     return (
       errorMessage
-        ? <div className="send-v2__error">{this.context.t(errorMessage)}</div>
+        ? <div className={classnames('send-v2__error', {'send-v2__error-amount': errorType === 'amount'})}>{this.context.t(errorMessage)}</div>
         : null
     )
   }

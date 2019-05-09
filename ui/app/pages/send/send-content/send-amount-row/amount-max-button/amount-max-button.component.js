@@ -8,12 +8,14 @@ export default class AmountMaxButton extends Component {
     balance: PropTypes.string,
     buttonDataLoading: PropTypes.bool,
     clearMaxAmount: PropTypes.func,
+    inError: PropTypes.bool,
     gasTotal: PropTypes.string,
     maxModeOn: PropTypes.bool,
     selectedToken: PropTypes.object,
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
+
   }
 
   static contextTypes = {
@@ -59,13 +61,15 @@ export default class AmountMaxButton extends Component {
   }
 
   render () {
-    const { maxModeOn, buttonDataLoading } = this.props
+    const { maxModeOn, buttonDataLoading, inError } = this.props
 
     return (
         <div>
-        <span className={classnames('send-v2__amount-max', {'send-v2__amount-max__disabled': buttonDataLoading})} onClick={this.onMaxClick}>
-              <input type="checkbox" checked={maxModeOn} disabled={buttonDataLoading}/>
-              {this.context.t('max')}
+        <span className={'send-v2__amount-max'} onClick={buttonDataLoading || inError ? null : this.onMaxClick}>
+              <input type="checkbox" checked={maxModeOn} />
+          <div className={classnames('send-v2__amount-max__button', { 'send-v2__amount-max__button__disabled': buttonDataLoading || inError })}>
+                {this.context.t('max')}
+              </div>
           </span>
         </div>
       )
