@@ -133,7 +133,8 @@
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true,
       "showFiatInTestnets": true
-    }
+    },
+    "completedUiMigration": true
   },
   "appState": {
     "menuOpen": false,

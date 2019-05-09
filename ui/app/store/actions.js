@@ -343,8 +343,8 @@ var actions = {
   createCancelTransaction,
   createSpeedUpTransaction,
 
-  approveProviderRequest,
-  rejectProviderRequest,
+  approveProviderRequestByOrigin,
+  rejectProviderRequestByOrigin,
   clearApprovedOrigins,
 
   setFirstTimeFlowType,
@@ -2680,15 +2680,15 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequest (tabID) {
+function approveProviderRequestByOrigin (origin) {
   return (dispatch) => {
-    background.approveProviderRequest(tabID)
+    background.approveProviderRequestByOrigin(origin)
   }
 }
 
-function rejectProviderRequest (tabID) {
+function rejectProviderRequestByOrigin (origin) {
   return (dispatch) => {
-    background.rejectProviderRequest(tabID)
+    background.rejectProviderRequestByOrigin(origin)
   }
 }
 

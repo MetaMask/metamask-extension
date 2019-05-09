@@ -4,9 +4,9 @@ import ProviderPageContainer from '../../components/app/provider-page-container'
 
 export default class ProviderApproval extends Component {
   static propTypes = {
-    approveProviderRequest: PropTypes.func.isRequired,
+    approveProviderRequestByOrigin: PropTypes.func.isRequired,
+    rejectProviderRequestByOrigin: PropTypes.func.isRequired,
     providerRequest: PropTypes.object.isRequired,
-    rejectProviderRequest: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -14,13 +14,13 @@ export default class ProviderApproval extends Component {
   };
 
   render () {
-    const { approveProviderRequest, providerRequest, rejectProviderRequest } = this.props
+    const { approveProviderRequestByOrigin, providerRequest, rejectProviderRequestByOrigin } = this.props
     return (
       <ProviderPageContainer
-        approveProviderRequest={approveProviderRequest}
+        approveProviderRequestByOrigin={approveProviderRequestByOrigin}
+        rejectProviderRequestByOrigin={rejectProviderRequestByOrigin}
         origin={providerRequest.origin}
         tabID={providerRequest.tabID}
-        rejectProviderRequest={rejectProviderRequest}
         siteImage={providerRequest.siteImage}
         siteTitle={providerRequest.siteTitle}
       />

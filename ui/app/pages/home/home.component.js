@@ -23,20 +23,26 @@ export default class Home extends PureComponent {
     providerRequests: PropTypes.array,
   }
 
+  componentWillMount () {
+    const {
+      history,
+      unconfirmedTransactionsCount = 0,
+    } = this.props
+
+    if (unconfirmedTransactionsCount > 0) {
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
+  }
+
   componentDidMount () {
     const {
       history,
       suggestedTokens = {},
-      unconfirmedTransactionsCount = 0,
     } = this.props
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
         history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
-    }
-
-    if (unconfirmedTransactionsCount > 0) {
-      history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }
 
@@ -45,6 +51,7 @@ export default class Home extends PureComponent {
       forgottenPassword,
       seedWords,
       providerRequests,
+      history,
     } = this.props
 
     // seed words
@@ -69,7 +76,7 @@ export default class Home extends PureComponent {
             query="(min-width: 576px)"
             render={() => <WalletView />}
           />
-          <TransactionView />
+          { !history.location.pathname.match(/^\/confirm-transaction/) ? <TransactionView /> : null }
         </div>
       </div>
     )
