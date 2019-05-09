@@ -504,7 +504,6 @@ class PreferencesController {
    *
    */
     addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
-      console.log('addToFrequentRpcList url, chainId, ticker, nickname, rpcPrefs', url, chainId, ticker, nickname, rpcPrefs)
       const rpcList = this.getFrequentRpcListDetail()
       const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
       if (index !== -1) {

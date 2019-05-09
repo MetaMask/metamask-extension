@@ -1634,7 +1634,6 @@ module.exports = class MetamaskController extends EventEmitter {
    */
 
   async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-    console.log('updateAndSetCustomRpc rpcUrl, chainId, ticker, nickname, rpcPrefs', rpcUrl, chainId, ticker, nickname, rpcPrefs)
     await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
     this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     return rpcUrl
