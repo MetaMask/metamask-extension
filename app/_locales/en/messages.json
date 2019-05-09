@@ -83,6 +83,9 @@
   "address": {
     "message": "Address"
   },
+  "addNetwork": {
+    "message": "Add Network"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -191,6 +194,13 @@
     "message": "must be greater than or equal to $1 and less than or equal to $2.",
     "description": "helper for inputting hex as decimal input"
   },
+  "blockExplorerUrl": {
+    "message": "Block Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
   },
@@ -230,6 +240,9 @@
   "ok": {
     "message": "Ok"
   },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
   "cancel": {
     "message": "Cancel"
   },
@@ -244,6 +257,9 @@
   },
   "cancelN": {
     "message": "Cancel all $1 transactions"
+  },
+  "chainId": {
+    "message": "Chain ID"
   },
   "classicInterface": {
     "message": "Use classic interface"
@@ -501,6 +517,9 @@
   },
   "edit": {
     "message": "Edit"
+  },
+  "editNetwork": {
+    "message": "Edit Network"
   },
   "editAccountName": {
     "message": "Edit Account Name"
@@ -934,8 +953,14 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "networkName": {
+    "message": "Network Name"
+  },
   "networks": {
     "message": "Networks"
+  },
+  "networkSettingsDescription": {
+    "message": "Add and edit custom RPC networks"
   },
   "nevermind": {
     "message": "Nevermind"
@@ -977,7 +1002,7 @@
   "protectYourKeysMessage2": {
     "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
-  "rpcURL": {
+  "rpcUrl": {
     "message": "New RPC URL"
   },
   "showAdvancedOptions": {
@@ -1492,6 +1517,9 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "symbol": {
+    "message": "Symbol"
+  },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be between 0 and 12 characters."
   },
@@ -1714,8 +1742,14 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
+  },
+  "viewNetworkInfo": {
+    "message": "View Network Info"
   },
   "visitWebSite": {
     "message": "Visit our web site"

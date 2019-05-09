@@ -1,4 +1,8 @@
-module.exports = function (address, network) {
+module.exports = function (address, network, rpcPrefs) {
+  if (rpcPrefs.blockExplorerUrl) {
+    return `${rpcPrefs.blockExplorerUrl}/address/${address}`
+  }
+
   const net = parseInt(network)
   let link
   switch (net) {
