@@ -92,7 +92,9 @@ AccountDetailsModal.prototype.render = function () {
           global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
         },
       }, (rpcPrefs.blockExplorerUrl
-        ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+        ? this.context.t('blockExplorerView', [
+          rpcPrefs.blockExplorerUrl.match(/[^https?://]\w+/)[0].charAt(0).toUpperCase() + rpcPrefs.blockExplorerUrl.match(/[^https?://]\w+/)[0].slice(1),
+        ])
         : this.context.t('viewOnEtherscan'))),
 
       // Holding on redesign for Export Private Key functionality
