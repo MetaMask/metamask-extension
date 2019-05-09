@@ -316,7 +316,6 @@ var actions = {
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
-  setAutoLogoutTimeLimit,
 
   // Migration of users to new UI
   setCompletedUiMigration,
@@ -2437,10 +2436,6 @@ function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
 
 function setShowFiatConversionOnTestnetsPreference (value) {
   return setPreference('showFiatInTestnets', value)
-}
-
-function setAutoLogoutTimeLimit (value) {
-  return setPreference('autoLogoutTimeLimit', value)
 }
 
 function setCompletedOnboarding () {

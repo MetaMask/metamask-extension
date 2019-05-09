@@ -8,11 +8,10 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
-  setAutoLogoutTimeLimit,
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
-export const mapStateToProps = state => {
+const mapStateToProps = state => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
@@ -20,18 +19,17 @@ export const mapStateToProps = state => {
       advancedInlineGas,
     } = {},
   } = metamask
-  const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
+  const { showFiatInTestnets } = preferencesSelector(state)
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
-    autoLogoutTimeLimit,
   }
 }
 
-export const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
   return {
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
     setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
@@ -40,9 +38,6 @@ export const mapDispatchToProps = dispatch => {
     setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
-    },
-    setAutoLogoutTimeLimit: value => {
-      return dispatch(setAutoLogoutTimeLimit(value))
     },
   }
 }

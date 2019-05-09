@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
-import actions, {hideSidebar, hideWarning, lockMetamask} from '../../store/actions'
+import actions from '../../store/actions'
 import log from 'loglevel'
-import IdleTimer from 'react-idle-timer'
-import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import { getMetaMaskAccounts, getNetworkIdentifier } from '../../selectors/selectors'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
@@ -99,9 +98,7 @@ class Routes extends Component {
   }
 
   renderRoutes () {
-    const { autoLogoutTimeLimit, lockMetamask } = this.props
-
-    const routes = (
+    return (
       <Switch>
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
@@ -119,19 +116,6 @@ class Routes extends Component {
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
-
-    if (autoLogoutTimeLimit > 0) {
-      return (
-        <IdleTimer
-          onIdle={lockMetamask}
-          timeout={autoLogoutTimeLimit * 1000 * 60}
-        >
-          {routes}
-        </IdleTimer>
-      )
-    }
-
-    return routes
   }
 
   onInitializationUnlockPage () {
@@ -338,7 +322,6 @@ Routes.propTypes = {
   networkDropdownOpen: PropTypes.bool,
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
-  lockMetamask: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -361,7 +344,6 @@ Routes.propTypes = {
   t: PropTypes.func,
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
-  autoLogoutTimeLimit: PropTypes.number,
 }
 
 function mapStateToProps (state) {
@@ -376,7 +358,6 @@ function mapStateToProps (state) {
   } = appState
 
   const accounts = getMetaMaskAccounts(state)
-  const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
 
   const {
     identities,
@@ -428,7 +409,6 @@ function mapStateToProps (state) {
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
     providerId: getNetworkIdentifier(state),
-    autoLogoutTimeLimit,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -447,11 +427,6 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    lockMetamask: () => {
-      dispatch(lockMetamask())
-      dispatch(hideWarning())
-      dispatch(hideSidebar())
-    },
   }
 }
 
