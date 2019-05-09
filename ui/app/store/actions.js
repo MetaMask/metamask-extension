@@ -356,6 +356,10 @@ var actions = {
   setSelectedSettingsRpcUrl,
   SET_NETWORKS_TAB_ADD_MODE: 'SET_NETWORKS_TAB_ADD_MODE',
   setNetworksTabAddMode,
+
+  // AppStateController-related actions
+  SET_LAST_ACTIVE_TIME: 'SET_LAST_ACTIVE_TIME',
+  setLastActiveTime,
 }
 
 module.exports = actions
@@ -2758,5 +2762,15 @@ function setNetworksTabAddMode (isInAddMode) {
   return {
     type: actions.SET_NETWORKS_TAB_ADD_MODE,
     value: isInAddMode,
+  }
+}
+
+function setLastActiveTime () {
+  return (dispatch) => {
+    background.setLastActiveTime((err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
   }
 }
