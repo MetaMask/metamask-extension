@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const AccountModalContainer = require('./account-modal-container')
-const { getSelectedIdentity } = require('../../../selectors/selectors')
+const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
 const genAccountLink = require('../../../../lib/account-link.js')
 const QrView = require('../../ui/qr-code')
 const EditableLabel = require('../../ui/editable-label')
@@ -13,15 +13,11 @@ const EditableLabel = require('../../ui/editable-label')
 import Button from '../../ui/button'
 
 function mapStateToProps (state) {
-  const { frequentRpcListDetail, provider } = state.metamask
-  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
-  const { rpcPrefs = {} } = selectRpcInfo || {}
-
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
-    rpcPrefs,
+    rpcPrefs: getRpcPrefsForCurrentProvider(state),
   }
 }
 
@@ -95,7 +91,9 @@ AccountDetailsModal.prototype.render = function () {
         onClick: () => {
           global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
         },
-      }, this.context.t('blockExplorerView', rpcPrefs.blockExplorerUrl && [rpcPrefs.blockExplorerUrl])),
+      }, (rpcPrefs.blockExplorerUrl
+        ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+        : this.context.t('viewOnEtherscan'))),
 
       // Holding on redesign for Export Private Key functionality
 
