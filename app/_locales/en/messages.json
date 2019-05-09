@@ -199,7 +199,7 @@
   },
   "blockExplorerView": {
     "message": "View account at $1",
-    "description": "$1 replaced by url for custom block explorer"
+    "description": "$1 replaced by URL for custom block explorer"
   },
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
@@ -259,7 +259,7 @@
     "message": "Cancel all $1 transactions"
   },
   "chainId": {
-    "message": "Chain Id"
+    "message": "Chain ID"
   },
   "classicInterface": {
     "message": "Use classic interface"
