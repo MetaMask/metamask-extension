@@ -1983,13 +1983,13 @@ function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPr
 function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
-    background.delCustomRpc(oldRpc, (err, result) => {
+    background.delCustomRpc(oldRpc, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
-      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err, result) => {
+      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
         if (err) {
           log.error(err)
           return dispatch(actions.displayWarning('Had a problem changing networks!'))

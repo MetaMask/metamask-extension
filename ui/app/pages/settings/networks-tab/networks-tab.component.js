@@ -10,21 +10,21 @@ import NetworkDropdownIcon from '../../../components/app/dropdowns/components/ne
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {
-    t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    t: PropTypes.func.isRequired,
+    metricsEvent: PropTypes.func.isRequired,
   }
 
   static propTypes = {
-    editRpc: PropTypes.func,
-    history: PropTypes.object,
-    location: PropTypes.object,
+    editRpc: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
     networkIsSelected: PropTypes.bool,
     networksTabIsInAddMode: PropTypes.bool,
-    networksToRender: PropTypes.array,
+    networksToRender: PropTypes.array.isRequired,
     selectedNetwork: PropTypes.object,
-    setNetworksTabAddMode: PropTypes.func,
-    setRpcTarget: PropTypes.func,
-    setSelectedSettingsRpcUrl: PropTypes.func,
+    setNetworksTabAddMode: PropTypes.func.isRequired,
+    setRpcTarget: PropTypes.func.isRequired,
+    setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,

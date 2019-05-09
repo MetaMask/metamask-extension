@@ -192,7 +192,7 @@ export function getStatusKey (transaction) {
 }
 
 /**
- * An external block explorer url at which a transaction can be viewed.
+ * Returns an external block explorer URL at which a transaction can be viewed.
  * @param {number} networkId
  * @param {string} hash
  * @param {Object} rpcPrefs

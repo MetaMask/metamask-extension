@@ -6,19 +6,19 @@ import TextField from '../../../../components/ui/text-field'
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {
-    t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    t: PropTypes.func.isRequired,
+    metricsEvent: PropTypes.func.isRequired,
   }
 
   static propTypes = {
-    editRpc: PropTypes.func,
+    editRpc: PropTypes.func.isRequired,
     rpcUrl: PropTypes.string,
     chainId: PropTypes.string,
     ticker: PropTypes.string,
     viewOnly: PropTypes.bool,
     networkName: PropTypes.string,
-    onClear: PropTypes.func,
-    setRpcTarget: PropTypes.func,
+    onClear: PropTypes.func.isRequired,
+    setRpcTarget: PropTypes.func.isRequired,
     networksTabIsInAddMode: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
@@ -145,7 +145,7 @@ export default class NetworksTab extends PureComponent {
       this.setErrorTo(stateKey, '')
     } else {
       const appendedRpc = `http://${url}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https*:\/\/$/)
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
 
       this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
     }
