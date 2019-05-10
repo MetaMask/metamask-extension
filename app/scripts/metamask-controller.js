@@ -28,7 +28,6 @@ const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
-const BlacklistController = require('./controllers/blacklist')
 const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
@@ -55,7 +54,10 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
-const { AddressBookController } = require('gaba')
+const {
+  AddressBookController,
+  PhishingController,
+} = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 
 
@@ -112,8 +114,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
-    this.blacklistController = new BlacklistController()
-    this.blacklistController.scheduleUpdates()
+    this.phishingController = new PhishingController()
 
     // rpc provider
     this.initializeProvider()
@@ -1301,7 +1302,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
-    if (this.blacklistController.checkForPhishing(originDomain)) {
+    if (this.phishingController.test(originDomain)) {
       log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
@@ -1781,11 +1782,11 @@ module.exports = class MetamaskController extends EventEmitter {
   */
 
   /**
-   * Adds a domain to the {@link BlacklistController} whitelist
+   * Adds a domain to the PhishingController whitelist
    * @param {string} hostname the domain to whitelist
    */
   whitelistPhishingDomain (hostname) {
-    return this.blacklistController.whitelistDomain(hostname)
+    return this.phishingController.bypass(hostname)
   }
 
   /**
