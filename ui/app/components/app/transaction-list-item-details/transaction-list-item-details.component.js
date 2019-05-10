@@ -159,7 +159,9 @@ export default class TransactionListItemDetails extends PureComponent {
                 />
               </Button>
             </Tooltip>
-            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
+            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [
+              blockExplorerUrl.match(/[^https?://]\w+/)[0].charAt(0).toUpperCase() + blockExplorerUrl.match(/[^https?://]\w+/)[0].slice(1),
+            ]) : t('viewOnEtherscan')}>
               <Button
                 type="raised"
                 onClick={this.handleEtherscanClick}
