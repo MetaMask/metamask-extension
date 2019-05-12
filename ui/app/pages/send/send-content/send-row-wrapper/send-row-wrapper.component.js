@@ -18,7 +18,7 @@ export default class SendRowWrapper extends Component {
     t: PropTypes.func,
   };
 
-  renderAmountFormRow() {
+  renderAmountFormRow () {
     const {
       children,
       errorType = '',
@@ -49,7 +49,7 @@ export default class SendRowWrapper extends Component {
     )
   }
 
-  renderFormRow() {
+  renderFormRow () {
     const {
       children,
       errorType = '',
