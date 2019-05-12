@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import classnames from 'classnames'
 import { removeLeadingZeroes } from '../../../pages/send/send.utils'
 
 /**
@@ -77,14 +77,14 @@ export default class UnitInput extends PureComponent {
 
     return (
       <div
-        className={classNames('unit-input', { 'unit-input--error': error }, { 'unit-input__disabled': maxModeOn })}
-        onClick={this.handleFocus}
+        className={classnames('unit-input', { 'unit-input--error': error }, { 'unit-input__disabled': maxModeOn })}
+        onClick={maxModeOn ? null : this.handleFocus}
       >
         <div className="unit-input__inputs">
           <div className="unit-input__input-container">
             <input
               type="number"
-              className={classNames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
+              className={classnames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}

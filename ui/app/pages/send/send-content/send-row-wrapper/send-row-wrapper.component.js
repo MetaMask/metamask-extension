@@ -18,7 +18,7 @@ export default class SendRowWrapper extends Component {
     t: PropTypes.func,
   };
 
-  render () {
+  renderAmountFormRow() {
     const {
       children,
       errorType = '',
@@ -31,8 +31,6 @@ export default class SendRowWrapper extends Component {
     const customLabelContent = children.length > 1 ? children[0] : null
 
     return (
-      errorType === 'amount'
-      ?
       <div className="send-v2__form-row">
         <div className="send-v2__form-label">
           {label}
@@ -42,13 +40,29 @@ export default class SendRowWrapper extends Component {
           <div className="send-v2__form-field">
             {formField}
           </div>
-          <div className="send-v2__error-message">
+          <div>
             {showError && <SendRowErrorMessage errorType={errorType} />}
             {!showError && showWarning && <SendRowWarningMessage warningType={warningType} />}
           </div>
         </div>
       </div>
-      :
+    )
+  }
+
+  renderFormRow() {
+    const {
+      children,
+      errorType = '',
+      label,
+      showError = false,
+      showWarning = false,
+      warningType = '',
+    } = this.props
+
+    const formField = Array.isArray(children) ? children[1] || children[0] : children
+    const customLabelContent = children.length > 1 ? children[0] : null
+
+    return (
       <div className="send-v2__form-row">
         <div className="send-v2__form-label">
           {label}
@@ -60,6 +74,20 @@ export default class SendRowWrapper extends Component {
           {formField}
         </div>
       </div>
+    )
+  }
+
+  render () {
+    const {
+      errorType = '',
+    } = this.props
+
+    return (
+      errorType === 'amount'
+      ?
+      this.renderAmountFormRow()
+      :
+      this.renderFormRow()
     )
   }
 
