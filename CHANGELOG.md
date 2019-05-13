@@ -5,24 +5,13 @@
 ## 6.5.0 Fri May 10 2019
 
 - [#6568](https://github.com/MetaMask/metamask-extension/pull/6568): feature: integrate gaba/PhishingController
-- [#6595](https://github.com/MetaMask/metamask-extension/pull/6595): Fix RPC URL message key casing
-- [#6490](https://github.com/MetaMask/metamask-extension/pull/6490): * Add networks tab to settings, with header.
-- [#6583](https://github.com/MetaMask/metamask-extension/pull/6583): * eslint: Check for unused function arguments
-- [#6567](https://github.com/MetaMask/metamask-extension/pull/6567): * Adds a transactionCategory to txMeta for use in UI
-- [#6558](https://github.com/MetaMask/metamask-extension/pull/6558): * Add i18n strings
-- [#6578](https://github.com/MetaMask/metamask-extension/pull/6578): * Remove KNOWN_ADDRESS_ERROR from error objects
-- [#6581](https://github.com/MetaMask/metamask-extension/pull/6581): Bump eth-json-rpc-filters and eth-contract-metadata
-- [#6577](https://github.com/MetaMask/metamask-extension/pull/6577): Fix integration tests: completedUiMigration state and fetch + ethquery mocking
-- [#6575](https://github.com/MetaMask/metamask-extension/pull/6575): Fix nock usages in unit tests
-- [#6557](https://github.com/MetaMask/metamask-extension/pull/6557): * Add basic drag and drop functionality to seed phrase entry.
-- [#6543](https://github.com/MetaMask/metamask-extension/pull/6543): * i18n: Don't translate null or undefined key
-- [#6565](https://github.com/MetaMask/metamask-extension/pull/6565): Adds NPM scripts for running a dapp, and dapp + chain, locally.
-- [#6546](https://github.com/MetaMask/metamask-extension/pull/6546): Add suffix to title text only when it exists
-- [#6410](https://github.com/MetaMask/metamask-extension/pull/6410): * Ensure home screen does not render if there are unapproved txs (#6501)
+- [#6490](https://github.com/MetaMask/metamask-extension/pull/6490): Redesign custom RPC form
+- [#6558](https://github.com/MetaMask/metamask-extension/pull/6558): Adds auto logout with customizable time frame
+- [#6578](https://github.com/MetaMask/metamask-extension/pull/6578): Fixes ability to send to token contract addresses
+- [#6557](https://github.com/MetaMask/metamask-extension/pull/6557): Adds drag and drop functionality to seed phrase entry.
 - [#6526](https://github.com/MetaMask/metamask-extension/pull/6526): Include token checksum address in prices lookup for token rates
-- [#6500](https://github.com/MetaMask/metamask-extension/pull/6500): * Send metrics event from backend for on chain transaction failures
-- [#6502](https://github.com/MetaMask/metamask-extension/pull/6502): * Add subheader to all settings subviews
-- [#6501](https://github.com/MetaMask/metamask-extension/pull/6501): * Ensure that the confirm screen renders before the home screen if there are unapproved txs.
+- [#6502](https://github.com/MetaMask/metamask-extension/pull/6502): Add subheader to all settings subviews
+- [#6501](https://github.com/MetaMask/metamask-extension/pull/6501): Improve confirm screen loading performance by fixing home screen rendering bug
 
 ## 6.4.1 Fri Apr 26 2019
 
