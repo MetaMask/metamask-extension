@@ -25,6 +25,7 @@ const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
+const AppStateController = require('./controllers/app-state')
 const CurrencyController = require('./controllers/currency')
 const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
@@ -99,6 +100,12 @@ module.exports = class MetamaskController extends EventEmitter {
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
       network: this.networkController,
+    })
+
+    // app-state controller
+    this.appStateController = new AppStateController({
+      preferencesStore: this.preferencesController.store,
+      onInactiveTimeout: () => this.setLocked(),
     })
 
     // currency controller
@@ -252,6 +259,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     this.store.updateStructure({
+      AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
@@ -264,6 +272,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     this.memStore = new ComposableObservableStore(null, {
+      AppStateController: this.appStateController.store,
       NetworkController: this.networkController.store,
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
@@ -461,6 +470,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // AddressController
       setAddressBook: this.addressBookController.set.bind(this.addressBookController),
+
+      // AppStateController
+      setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
 
       // KeyringController
       setLocked: nodeify(this.setLocked, this),

@@ -161,7 +161,7 @@
     "message": "Auto-Logout Timer (minutes)"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "Set the number of idle time in minutes before Metamask automatically log out"
+    "message": "Set the idle time in minutes before MetaMask will automatically log out"
   },
   "available": {
     "message": "Available"

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
-import actions, {hideSidebar, hideWarning, lockMetamask} from '../../store/actions'
+import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
@@ -99,7 +99,7 @@ class Routes extends Component {
   }
 
   renderRoutes () {
-    const { autoLogoutTimeLimit, lockMetamask } = this.props
+    const { autoLogoutTimeLimit, setLastActiveTime } = this.props
 
     const routes = (
       <Switch>
@@ -122,10 +122,7 @@ class Routes extends Component {
 
     if (autoLogoutTimeLimit > 0) {
       return (
-        <IdleTimer
-          onIdle={lockMetamask}
-          timeout={autoLogoutTimeLimit * 1000 * 60}
-        >
+        <IdleTimer onAction={setLastActiveTime} throttle={1000}>
           {routes}
         </IdleTimer>
       )
@@ -338,7 +335,7 @@ Routes.propTypes = {
   networkDropdownOpen: PropTypes.bool,
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
-  lockMetamask: PropTypes.func,
+  setLastActiveTime: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -447,11 +444,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    lockMetamask: () => {
-      dispatch(lockMetamask())
-      dispatch(hideWarning())
-      dispatch(hideSidebar())
-    },
+    setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }
 }
 
