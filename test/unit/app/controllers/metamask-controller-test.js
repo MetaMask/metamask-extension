@@ -752,8 +752,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up phishing stream for untrusted communication ', async () => {
-      await metamaskController.blacklistController.updatePhishingList()
-      console.log(blacklistJSON.blacklist.includes(phishingUrl))
+      await metamaskController.phishingController.updatePhishingLists()
 
       const { promise, resolve } = deferredPromise()
 

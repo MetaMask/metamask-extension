@@ -27,7 +27,6 @@ const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const InfuraController = require('./controllers/infura')
-const BlacklistController = require('./controllers/blacklist')
 const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
@@ -57,6 +56,7 @@ const sigUtil = require('eth-sig-util')
 const {
   AddressBookController,
   ShapeShiftController,
+  PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 
@@ -114,8 +114,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
-    this.blacklistController = new BlacklistController()
-    this.blacklistController.scheduleUpdates()
+    this.phishingController = new PhishingController()
 
     // rpc provider
     this.initializeProvider()
@@ -1301,7 +1300,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
-    if (this.blacklistController.checkForPhishing(originDomain)) {
+    if (this.phishingController.test(originDomain)) {
       log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
@@ -1633,9 +1632,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
 
-  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname) {
-    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname })
-    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname)
+  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
+    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     return rpcUrl
   }
 
@@ -1648,15 +1647,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
+  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
     const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail()
     const rpcSettings = frequentRpcListDetail.find((rpc) => rpcTarget === rpc.rpcUrl)
 
     if (rpcSettings) {
-      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname)
+      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname, rpcPrefs)
     } else {
-      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
-      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
+      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname, rpcPrefs)
+      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname, rpcPrefs)
     }
     return rpcTarget
   }
@@ -1781,11 +1780,11 @@ module.exports = class MetamaskController extends EventEmitter {
   */
 
   /**
-   * Adds a domain to the {@link BlacklistController} whitelist
+   * Adds a domain to the PhishingController whitelist
    * @param {string} hostname the domain to whitelist
    */
   whitelistPhishingDomain (hostname) {
-    return this.blacklistController.whitelistDomain(hostname)
+    return this.phishingController.bypass(hostname)
   }
 
   /**

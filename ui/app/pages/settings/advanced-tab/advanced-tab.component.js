@@ -51,7 +51,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="text"
               id="new-rpc"
-              placeholder={t('rpcURL')}
+              placeholder={t('rpcUrl')}
               value={newRpc}
               onChange={e => this.setState({ newRpc: e.target.value })}
               onKeyPress={e => {

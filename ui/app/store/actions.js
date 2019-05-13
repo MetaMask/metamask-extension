@@ -239,6 +239,7 @@ var actions = {
   updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
+  editRpc: editRpc,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -350,6 +351,11 @@ var actions = {
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
+
+  SET_SELECTED_SETTINGS_RPC_URL: 'SET_SELECTED_SETTINGS_RPC_URL',
+  setSelectedSettingsRpcUrl,
+  SET_NETWORKS_TAB_ADD_MODE: 'SET_NETWORKS_TAB_ADD_MODE',
+  setNetworksTabAddMode,
 }
 
 module.exports = actions
@@ -1958,10 +1964,10 @@ function setPreviousProvider (type) {
   }
 }
 
-function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
+function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
   return (dispatch) => {
     log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err) => {
+    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
@@ -1969,6 +1975,29 @@ function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
       dispatch({
         type: actions.SET_RPC_TARGET,
         value: newRpc,
+      })
+    })
+  }
+}
+
+function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
+      }
+      dispatch(actions.setSelectedToken())
+      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
+        if (err) {
+          log.error(err)
+          return dispatch(actions.displayWarning('Had a problem changing networks!'))
+        }
+        dispatch({
+          type: actions.SET_RPC_TARGET,
+          value: newRpc,
+        })
       })
     })
   }
@@ -1999,6 +2028,7 @@ function delRpcTarget (oldRpc) {
     })
   }
 }
+
 
 // Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname = '') {
@@ -2714,5 +2744,19 @@ function setFirstTimeFlowType (type) {
       type: actions.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
     })
+  }
+}
+
+function setSelectedSettingsRpcUrl (newRpcUrl) {
+  return {
+    type: actions.SET_SELECTED_SETTINGS_RPC_URL,
+    value: newRpcUrl,
+  }
+}
+
+function setNetworksTabAddMode (isInAddMode) {
+  return {
+    type: actions.SET_NETWORKS_TAB_ADD_MODE,
+    value: isInAddMode,
   }
 }
