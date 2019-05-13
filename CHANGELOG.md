@@ -2,6 +2,17 @@
 
 ## Current Develop Branch
 
+## 6.5.0 Fri May 10 2019
+
+- [#6568](https://github.com/MetaMask/metamask-extension/pull/6568): feature: integrate gaba/PhishingController
+- [#6490](https://github.com/MetaMask/metamask-extension/pull/6490): Redesign custom RPC form
+- [#6558](https://github.com/MetaMask/metamask-extension/pull/6558): Adds auto logout with customizable time frame
+- [#6578](https://github.com/MetaMask/metamask-extension/pull/6578): Fixes ability to send to token contract addresses
+- [#6557](https://github.com/MetaMask/metamask-extension/pull/6557): Adds drag and drop functionality to seed phrase entry.
+- [#6526](https://github.com/MetaMask/metamask-extension/pull/6526): Include token checksum address in prices lookup for token rates
+- [#6502](https://github.com/MetaMask/metamask-extension/pull/6502): Add subheader to all settings subviews
+- [#6501](https://github.com/MetaMask/metamask-extension/pull/6501): Improve confirm screen loading performance by fixing home screen rendering bug
+
 ## 6.4.1 Fri Apr 26 2019
 
 - [#6521](https://github.com/MetaMask/metamask-extension/pull/6521): Revert "Adds 4byte registry fallback to getMethodData()" to fix stalling bug.
