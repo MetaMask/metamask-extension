@@ -326,7 +326,7 @@ describe('PendingTransactionTracker', function () {
       },
       rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
     }
-    it('should return false', (done) => {
+    it('should return false when the nonce is the suggested network nonce', (done) => {
       providerResultStub['eth_getTransactionCount'] = '0x01'
       providerResultStub['eth_getTransactionByHash'] = {}
       pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
@@ -335,7 +335,7 @@ describe('PendingTransactionTracker', function () {
       }).catch(done)
     })
 
-    it('should return true', function (done) {
+    it('should return true when the network nonce is higher then the txMeta nonce', function (done) {
       providerResultStub['eth_getTransactionCount'] = '0x02'
       providerResultStub['eth_getTransactionByHash'] = {}
       pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
