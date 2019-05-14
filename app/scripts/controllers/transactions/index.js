@@ -594,6 +594,12 @@ class TransactionController extends EventEmitter {
       }
     } else if (!to) {
       result = DEPLOY_CONTRACT_ACTION_KEY
+    } else {
+      try {
+        code = await this.query.getCode(to)
+      } catch (e) {
+        log.warn(e)
+      }
     }
 
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
