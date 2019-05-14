@@ -8,6 +8,13 @@ const TransactionController = require('../../../../../app/scripts/controllers/tr
 const {
   TRANSACTION_TYPE_RETRY,
 } = require('../../../../../app/scripts/controllers/transactions/enums')
+const {
+  TOKEN_METHOD_APPROVE,
+  TOKEN_METHOD_TRANSFER,
+  SEND_ETHER_ACTION_KEY,
+  DEPLOY_CONTRACT_ACTION_KEY,
+  CONTRACT_INTERACTION_KEY,
+} = require('../../../../../ui/app/helpers/constants/transactions.js')
 const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
 
 const noop = () => true
@@ -534,6 +541,86 @@ describe('Transaction Controller', function () {
       assert.equal(confirmedTx.status, 'confirmed', 'the confirmedTx should remain confirmed')
       assert.equal(droppedTxs.length, 6, 'their should be 6 dropped txs')
 
+    })
+  })
+
+  describe('#_determineTransactionCategory', function () {
+    it('should return a simple send transactionCategory when to is truthy but data is falsey', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '0xabc',
+        data: '',
+      })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: undefined })
+    })
+
+    it('should return a token transfer transactionCategory when data is for the respective method call', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '0xabc',
+        data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+      })
+      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_TRANSFER, getCodeResponse: undefined })
+    })
+
+    it('should return a token approve transactionCategory when data is for the respective method call', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '0xabc',
+        data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
+      })
+      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_APPROVE, getCodeResponse: undefined })
+    })
+
+    it('should return a contract deployment transactionCategory when to is falsey and there is data', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '',
+        data: '0xabd',
+      })
+      assert.deepEqual(result, { transactionCategory: DEPLOY_CONTRACT_ACTION_KEY, getCodeResponse: undefined })
+    })
+
+    it('should return a simple send transactionCategory with a 0x getCodeResponse when there is data and but the to address is not a contract address', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+        data: '0xabd',
+      })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: '0x' })
+    })
+
+    it('should return a simple send transactionCategory with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function () {
+      const result = await txController._determineTransactionCategory({
+        to: '0xabc',
+        data: '0xabd',
+      })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: null })
+    })
+
+    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is truthy and there is data and it is not a token transaction', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0xa',
+      }
+      const _provider = createTestProviderTools({ scaffold: _providerResultStub }).provider
+      const _fromAccount = getTestAccounts()[0]
+      const _blockTrackerStub = new EventEmitter()
+      _blockTrackerStub.getCurrentBlock = noop
+      _blockTrackerStub.getLatestBlock = noop
+      const _txController = new TransactionController({
+        provider: _provider,
+        getGasPrice: function () { return '0xee6b2800' },
+        networkStore: new ObservableStore(currentNetworkId),
+        txHistoryLimit: 10,
+        blockTracker: _blockTrackerStub,
+        signTransaction: (ethTx) => new Promise((resolve) => {
+          ethTx.sign(_fromAccount.key)
+          resolve()
+        }),
+      })
+      const result = await _txController._determineTransactionCategory({
+        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+        data: 'abd',
+      })
+      assert.deepEqual(result, { transactionCategory: CONTRACT_INTERACTION_KEY, getCodeResponse: '0x0a' })
     })
   })
 
