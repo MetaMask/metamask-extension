@@ -27,7 +27,6 @@ const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const AppStateController = require('./controllers/app-state')
 const CurrencyController = require('./controllers/currency')
-const ShapeShiftController = require('./controllers/shapeshift')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
@@ -57,6 +56,7 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const {
   AddressBookController,
+  ShapeShiftController,
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
@@ -237,9 +237,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.balancesController.updateAllBalances()
 
-    this.shapeshiftController = new ShapeShiftController({
-      initState: initState.ShapeShiftController,
-    })
+    this.shapeshiftController = new ShapeShiftController(undefined, initState.ShapeShiftController)
 
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
@@ -265,7 +263,7 @@ module.exports = class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      ShapeShiftController: this.shapeshiftController.store,
+      ShapeShiftController: this.shapeshiftController,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
@@ -287,7 +285,7 @@ module.exports = class MetamaskController extends EventEmitter {
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
-      ShapeshiftController: this.shapeshiftController.store,
+      ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
     })
@@ -1633,7 +1631,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
    */
   createShapeShiftTx (depositAddress, depositType) {
-    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
+    this.shapeshiftController.createTransaction(depositAddress, depositType)
   }
 
   // network

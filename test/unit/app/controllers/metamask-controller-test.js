@@ -464,7 +464,7 @@ describe('MetaMaskController', function () {
 
       depositAddress = '3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc'
       depositType = 'ETH'
-      shapeShiftTxList = metamaskController.shapeshiftController.store.getState().shapeShiftTxList
+      shapeShiftTxList = metamaskController.shapeshiftController.state.shapeShiftTxList
     })
 
     it('creates a shapeshift tx', async function () {
