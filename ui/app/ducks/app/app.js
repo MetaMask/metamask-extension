@@ -77,6 +77,8 @@ function reduceApp (state, action) {
       ledger: `m/44'/60'/0'/0/0`,
     },
     lastSelectedProvider: null,
+    networksTabSelectedRpcUrl: '',
+    networksTabIsInAddMode: false,
   }, state.appState)
 
   switch (action.type) {
@@ -749,6 +751,16 @@ function reduceApp (state, action) {
       }
       return extend(appState, {
         lastSelectedProvider: action.value,
+      })
+
+    case actions.SET_SELECTED_SETTINGS_RPC_URL:
+      return extend(appState, {
+        networksTabSelectedRpcUrl: action.value,
+      })
+
+    case actions.SET_NETWORKS_TAB_ADD_MODE:
+      return extend(appState, {
+        networksTabIsInAddMode: action.value,
       })
 
     default:

@@ -18,6 +18,7 @@ import AdvancedGasInputs from '../../components/app/gas-customization/advanced-g
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    tOrKey: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func,
   }
 
@@ -99,15 +100,18 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
     } = this.props
+    const { transactionStatus: prevTxStatus } = prevProps
+    const statusUpdated = transactionStatus !== prevTxStatus
+    const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
 
-    if (transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS) {
+    if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction()
@@ -543,7 +547,8 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={this.context.t(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
+        // In the event that the key is falsy (and inherently invalid), use a fallback string
+        action={this.context.tOrKey(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}

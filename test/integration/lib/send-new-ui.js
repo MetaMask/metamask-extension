@@ -22,9 +22,10 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
-async function runSendFlowTest (assert, done) {
+async function runSendFlowTest (assert) {
   const tempFetch = global.fetch
 
+  const realFetch = window.fetch.bind(window)
   global.fetch = (...args) => {
     if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
@@ -35,7 +36,7 @@ async function runSendFlowTest (assert, done) {
     } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
-    return window.fetch(...args)
+    return realFetch.fetch(...args)
   }
 
   console.log('*** start runSendFlowTest')

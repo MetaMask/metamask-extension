@@ -10,7 +10,7 @@ const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 const R = require('ramda')
-const { ADVANCED_ROUTE } = require('../../../helpers/constants/routes')
+const { NETWORKS_ROUTE } = require('../../../helpers/constants/routes')
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -49,6 +49,7 @@ function mapDispatchToProps (dispatch) {
     },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    setNetworksTabAddMode: isInAddMode => dispatch(actions.setNetworksTabAddMode(isInAddMode)),
   }
 }
 
@@ -72,7 +73,7 @@ module.exports = compose(
 // TODO: specify default props and proptypes
 NetworkDropdown.prototype.render = function () {
   const props = this.props
-  const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
+  const { provider: { type: providerType, rpcTarget: activeNetwork }, setNetworksTabAddMode } = props
   const rpcListDetail = props.frequentRpcListDetail
   const isOpen = this.props.networkDropdownOpen
   const dropdownMenuItemStyle = {
@@ -255,7 +256,10 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.props.history.push(ADVANCED_ROUTE),
+        onClick: () => {
+          setNetworksTabAddMode(true)
+          this.props.history.push(NETWORKS_ROUTE)
+        },
         style: dropdownMenuItemStyle,
       },
       [

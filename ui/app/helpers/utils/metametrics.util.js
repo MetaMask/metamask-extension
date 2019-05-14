@@ -84,7 +84,7 @@ function composeParamAddition (paramValue, paramName) {
     : `&${paramName}=${paramValue}`
 }
 
-function composeUrl (config, permissionPreferences = {}) {
+function composeUrl (config) {
   const {
     eventOpts = {},
     customVariables = '',
@@ -124,10 +124,10 @@ function composeUrl (config, permissionPreferences = {}) {
     numberOfTokens: customVariables && customVariables.numberOfTokens || numberOfTokens,
     numberOfAccounts: customVariables && customVariables.numberOfAccounts || numberOfAccounts,
   }) : ''
-  const url = configUrl || `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}`
+  const url = configUrl || currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}`
+  const pv_id = (url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}` || ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId

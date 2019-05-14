@@ -6,10 +6,6 @@ const Select = require('react-select').default
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
-    constructor (props, context) {
-        super(props)
-    }
-
     getHdPaths () {
       return [
         {

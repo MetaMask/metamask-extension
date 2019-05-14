@@ -20,17 +20,24 @@ global.ethQuery.getTransactionCount = (_, cb) => {
   cb(null, '0x4')
 }
 
-async function runTxListItemsTest (assert, done) {
+async function runTxListItemsTest (assert) {
   console.log('*** start runTxListItemsTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('tx list items')
   reactTriggerChange(selectState[0])
 
+  const realFetch = window.fetch.bind(window)
   global.fetch = (...args) => {
-    if (args[0].match(/chromeextensionmm/)) {
+    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
+    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
+    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
+    } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
-    return window.fetch(...args)
+    return realFetch.fetch(...args)
   }
 
   const metamaskLogo = await queryAsync($, '.app-header__logo-container')

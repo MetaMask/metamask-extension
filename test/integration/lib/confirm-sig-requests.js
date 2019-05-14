@@ -15,16 +15,25 @@ QUnit.test('successful confirmation of sig requests', (assert) => {
   })
 })
 
-async function runConfirmSigRequestsTest (assert, done) {
+global.ethQuery = global.ethQuery || {}
+
+async function runConfirmSigRequestsTest (assert) {
   const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
 
+  const realFetch = window.fetch.bind(window)
   global.fetch = (...args) => {
-    if (args[0].match(/chromeextensionmm/)) {
+    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
+    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
+    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
+    } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
-    return window.fetch(...args)
+    return realFetch.fetch(...args)
   }
 
   const pendingRequestItem = $.find('.transaction-list-item .transaction-list-item__grid')

@@ -155,7 +155,7 @@ TokenCell.prototype.send = function (address, event) {
   }
 }
 
-TokenCell.prototype.view = function (address, userAddress, network, event) {
+TokenCell.prototype.view = function (address, userAddress, network) {
   const url = etherscanLinkFor(address, userAddress, network)
   if (url) {
     navigateTo(url)

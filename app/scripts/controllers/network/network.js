@@ -46,9 +46,8 @@ const defaultNetworkConfig = {
 
 module.exports = class NetworkController extends EventEmitter {
 
-  constructor (opts = {}, platform) {
+  constructor (opts = {}) {
     super()
-    this.platform = platform
 
     // parse options
     const providerConfig = opts.provider || defaultProviderConfig
@@ -130,13 +129,14 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
+  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
       chainId,
       ticker,
       nickname,
+      rpcPrefs,
     }
     this.providerConfig = providerConfig
   }
@@ -190,7 +190,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({ network: type, platform: this.platform })
+    const networkClient = createInfuraClient({ network: type })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {
@@ -201,13 +201,13 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureLocalhostProvider () {
     log.info('NetworkController - configureLocalhostProvider')
-    const networkClient = createLocalhostClient({ platform: this.platform })
+    const networkClient = createLocalhostClient()
     this._setNetworkClient(networkClient)
   }
 
   _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
-    const networkClient = createJsonRpcClient({ rpcUrl, platform: this.platform })
+    const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
       chainId: chainId,
