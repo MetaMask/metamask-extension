@@ -550,7 +550,7 @@ describe('Transaction Controller', function () {
         to: '0xabc',
         data: '',
       })
-      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, code: 'default' })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: undefined })
     })
 
     it('should return a token transfer transactionCategory when data is for the respective method call', async function () {
@@ -558,7 +558,7 @@ describe('Transaction Controller', function () {
         to: '0xabc',
         data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
       })
-      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_TRANSFER, code: 'default' })
+      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_TRANSFER, getCodeResponse: undefined })
     })
 
     it('should return a token approve transactionCategory when data is for the respective method call', async function () {
@@ -566,7 +566,7 @@ describe('Transaction Controller', function () {
         to: '0xabc',
         data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
       })
-      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_APPROVE, code: 'default' })
+      assert.deepEqual(result, { transactionCategory: TOKEN_METHOD_APPROVE, getCodeResponse: undefined })
     })
 
     it('should return a contract deployment transactionCategory when to is falsey and there is data', async function () {
@@ -574,26 +574,26 @@ describe('Transaction Controller', function () {
         to: '',
         data: '0xabd',
       })
-      assert.deepEqual(result, { transactionCategory: DEPLOY_CONTRACT_ACTION_KEY, code: 'default' })
+      assert.deepEqual(result, { transactionCategory: DEPLOY_CONTRACT_ACTION_KEY, getCodeResponse: undefined })
     })
 
-    it('should return a simple send transactionCategory with a 0x code when there is data and but the to address is not a contract address', async function () {
+    it('should return a simple send transactionCategory with a 0x getCodeResponse when there is data and but the to address is not a contract address', async function () {
       const result = await txController._determineTransactionCategory({
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
         data: '0xabd',
       })
-      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, code: '0x' })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: '0x' })
     })
 
-    it('should return a simple send transactionCategory with a null code when to is truthy and there is data and but getCode returns an error', async function () {
+    it('should return a simple send transactionCategory with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function () {
       const result = await txController._determineTransactionCategory({
         to: '0xabc',
         data: '0xabd',
       })
-      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, code: null })
+      assert.deepEqual(result, { transactionCategory: SEND_ETHER_ACTION_KEY, getCodeResponse: null })
     })
 
-    it('should return a contract interaction transactionCategory with the correct code when to is truthy and there is data and it is not a token transaction', async function () {
+    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is truthy and there is data and it is not a token transaction', async function () {
       const _providerResultStub = {
         // 1 gwei
         eth_gasPrice: '0x0de0b6b3a7640000',
@@ -620,7 +620,7 @@ describe('Transaction Controller', function () {
         to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
         data: 'abd',
       })
-      assert.deepEqual(result, { transactionCategory: CONTRACT_INTERACTION_KEY, code: '0x0a' })
+      assert.deepEqual(result, { transactionCategory: CONTRACT_INTERACTION_KEY, getCodeResponse: '0x0a' })
     })
   })
 

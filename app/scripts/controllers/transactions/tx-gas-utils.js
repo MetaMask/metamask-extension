@@ -6,6 +6,7 @@ const {
 } = require('../../lib/util')
 const log = require('loglevel')
 const { addHexPrefix } = require('ethereumjs-util')
+const { SEND_ETHER_ACTION_KEY } = require('../../../../ui/app/helpers/constants/transactions.js')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
@@ -25,14 +26,13 @@ class TxGasUtil {
 
   /**
     @param txMeta {Object} - the txMeta object
-    @param code {string} - the code at the txs address, as returned by this.query.getCode(to)
     @returns {object} the txMeta object with the gas written to the txParams
   */
-  async analyzeGasUsage (txMeta, code) {
+  async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit, code)
+      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit, getCodeResponse)
     } catch (err) {
       log.warn(err)
       txMeta.simulationFails = {
@@ -55,10 +55,9 @@ class TxGasUtil {
     Estimates the tx's gas usage
     @param txMeta {Object} - the txMeta object
     @param blockGasLimitHex {string} - hex string of the block's gas limit
-    @param code {string} - the code at the txs address, as returned by this.query.getCode(to)
     @returns {string} the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta, blockGasLimitHex, code) {
+  async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
     const txParams = txMeta.txParams
 
     // check if gasLimit is already specified
@@ -75,9 +74,9 @@ class TxGasUtil {
     // see if we can set the gas based on the recipient
     if (hasRecipient) {
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-      const codeIsEmpty = !code || code === '0x' || code === '0x0'
+      const categorizedAsSimple = txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
 
-      if (codeIsEmpty) {
+      if (categorizedAsSimple) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
         if (txParams.data) {
           const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
@@ -85,7 +84,7 @@ class TxGasUtil {
           err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
 
           // set the response on the error so that we can see in logs what the actual response was
-          err.getCodeResponse = code
+          err.getCodeResponse = getCodeResponse
           throw err
         }
 
