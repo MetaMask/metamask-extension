@@ -587,19 +587,19 @@ class TransactionController extends EventEmitter {
       result = SEND_ETHER_ACTION_KEY
     } else if (tokenMethodName) {
       result = tokenMethodName
-    } else if (!to) {
-      result = DEPLOY_CONTRACT_ACTION_KEY
-    } else {
       try {
         code = await this.query.getCode(to)
       } catch (e) {
         log.warn(e)
       }
+    } else if (!to) {
+      result = DEPLOY_CONTRACT_ACTION_KEY
+    }
+
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
       result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY
-    }
 
     return { transactionCategory: result, code }
   }
