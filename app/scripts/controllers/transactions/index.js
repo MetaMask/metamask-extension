@@ -582,7 +582,7 @@ class TransactionController extends EventEmitter {
     ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
 
     let result
-    let code
+    let code = 'default'
     if (!txParams.data) {
       result = SEND_ETHER_ACTION_KEY
     } else if (tokenMethodName) {
@@ -593,6 +593,7 @@ class TransactionController extends EventEmitter {
       try {
         code = await this.query.getCode(to)
       } catch (e) {
+        code = null
         log.warn(e)
       }
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
