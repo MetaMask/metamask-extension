@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 6.5.1 Tue May 14 2019
+
+- Fix bug where approve method would show a warning. #6602
+- [#6593](https://github.com/MetaMask/metamask-extension/pull/6593): Fix wording of autoLogoutTimeLimitDescription
+
 ## 6.5.0 Fri May 10 2019
 
 - [#6568](https://github.com/MetaMask/metamask-extension/pull/6568): feature: integrate gaba/PhishingController
