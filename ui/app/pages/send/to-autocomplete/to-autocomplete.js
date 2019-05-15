@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
+const copyToClipboard = require('copy-to-clipboard')
 const inherits = require('util').inherits
 const AccountListItem = require('../account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
@@ -93,24 +94,34 @@ ToAutoComplete.prototype.componentDidUpdate = function (nextProps) {
 ToAutoComplete.prototype.render = function () {
   const {
     to,
+    recipient,
     dropdownOpen,
     onChange,
     inError,
     qrScanner,
   } = this.props
 
-  return h('div.send-v2__to-autocomplete', {}, [
+  const isRecipientToDiff = recipient && recipient !== to
+
+  return h('div.send-v2__to-autocomplete', {style: {
+      borderColor: inError ? 'red' : null,
+    }}, [
 
     h(`input.send-v2__to-autocomplete__input${qrScanner ? '.with-qr' : ''}`, {
       placeholder: this.context.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
-      value: to,
+      value: recipient,
       onChange: event => onChange(event.target.value),
       onFocus: event => this.handleInputEvent(event),
-      style: {
-        borderColor: inError ? 'red' : null,
-      },
     }),
+    isRecipientToDiff && h(Tooltip, {title: this.context.t('copyToClipboard')},
+        h('div.send-v2__to-autocomplete__resolved', {
+          onClick: (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            copyToClipboard(to)
+          },
+    }, to)),
     qrScanner && h(Tooltip, {
       title: this.context.t('scanQrCode'),
       position: 'bottom',
