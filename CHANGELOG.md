@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 6.5.2 Wed May 15 2019
+
+- [#6613](https://github.com/MetaMask/metamask-extension/pull/6613): Hardware Wallet Fix
 ## 6.5.1 Tue May 14 2019
 
 - Fix bug where approve method would show a warning. #6602
