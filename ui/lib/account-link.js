@@ -1,5 +1,5 @@
 module.exports = function (address, network, rpcPrefs) {
-  if (rpcPrefs.blockExplorerUrl) {
+  if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/address/${address}`
   }
 
