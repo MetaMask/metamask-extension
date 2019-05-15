@@ -343,7 +343,7 @@ module.exports = class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState())
 
     publicConfigStore.destroy = () => {
-      this.removeEventListener('update', updatePublicConfigStore)
+      this.removeEventListener && this.removeEventListener('update', updatePublicConfigStore)
     }
 
     function updatePublicConfigStore (memState) {
