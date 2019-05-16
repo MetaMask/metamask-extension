@@ -58,7 +58,7 @@ describe('PendingTransactionTracker', function () {
       }
     })
 
-    it('should become failed if another tx with the same nonce succeeds', async function () {
+    it('should emit dropped if another tx with the same nonce succeeds', async function () {
 
       // SETUP
       const txGen = new MockTxGen()
@@ -84,17 +84,16 @@ describe('PendingTransactionTracker', function () {
 
       // THE EXPECTATION
       const spy = sinon.spy()
-      pendingTxTracker.on('tx:failed', (txId, err) => {
+      pendingTxTracker.on('tx:dropped', (txId) => {
         assert.equal(txId, pending.id, 'should fail the pending tx')
-        assert.equal(err.name, 'NonceTakenErr', 'should emit a nonce taken error.')
-        spy(txId, err)
+        spy(txId)
       })
 
       // THE METHOD
       await pendingTxTracker._checkPendingTx(pending)
 
       // THE ASSERTION
-      assert.ok(spy.calledWith(pending.id), 'tx failed should be emitted')
+      assert.ok(spy.calledWith(pending.id), 'tx dropped should be emitted')
     })
   })
 
@@ -106,6 +105,38 @@ describe('PendingTransactionTracker', function () {
       })
       pendingTxTracker._checkPendingTx(txMetaNoHash)
     })
+
+    it('should emit tx:dropped with the txMetas id only after the second call', function (done) {
+    txMeta = {
+      id: 1,
+      hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+      status: 'submitted',
+      txParams: {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        nonce: '0x1',
+        value: '0xfffff',
+      },
+      history: [{}],
+      rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+    }
+
+      providerResultStub['eth_getTransactionCount'] = '0x02'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker.once('tx:dropped', (id) => {
+        if (id === txMeta.id) {
+          delete providerResultStub['eth_getTransactionCount']
+          delete providerResultStub['eth_getTransactionByHash']
+          return done()
+        } else {
+          done(new Error('wrong tx Id'))
+        }
+      })
+
+      pendingTxTracker._checkPendingTx(txMeta).then(() => {
+        pendingTxTracker._checkPendingTx(txMeta).catch(done)
+      }).catch(done)
+    })
+
 
     it('should should return if query does not return txParams', function () {
       providerResultStub.eth_getTransactionByHash = null
@@ -280,6 +311,37 @@ describe('PendingTransactionTracker', function () {
 
       assert.ok(approveMock.called)
       approveMock.restore()
+    })
+  })
+
+  describe('#_checkIftxWasDropped', () => {
+    const txMeta = {
+      id: 1,
+      hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+      status: 'submitted',
+      txParams: {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        nonce: '0x1',
+        value: '0xfffff',
+      },
+      rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+    }
+    it('should return false when the nonce is the suggested network nonce', (done) => {
+      providerResultStub['eth_getTransactionCount'] = '0x01'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+        assert(!dropped, 'should be false')
+        done()
+      }).catch(done)
+    })
+
+    it('should return true when the network nonce is higher then the txMeta nonce', function (done) {
+      providerResultStub['eth_getTransactionCount'] = '0x02'
+      providerResultStub['eth_getTransactionByHash'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+        assert(dropped, 'should be true')
+        done()
+      }).catch(done)
     })
   })
 
