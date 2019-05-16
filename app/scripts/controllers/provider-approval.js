@@ -38,7 +38,8 @@ class ProviderApprovalController extends SafeEventEmitter {
       // only handle requestAccounts
       if (req.method !== 'eth_requestAccounts') return next()
       // if already approved or privacy mode disabled, return early
-      if (this.shouldExposeAccounts(origin)) {
+      const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+      if (this.shouldExposeAccounts(origin) && isUnlocked) {
         res.result = [this.preferencesController.getSelectedAddress()]
         return
       }
