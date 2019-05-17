@@ -50,45 +50,36 @@ async function getMethodFrom4Byte (fourBytePrefix) {
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
 /**
- * Attempts to return the method data from the MethodRegistry library, if the method exists in the
- * registry. Otherwise, returns an empty object.
- * @param {string} data - The hex data (@code txParams.data) of a transaction
+ * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
+ * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
-  export async function getMethodData (data = '') {
-    const prefixedData = ethUtil.addHexPrefix(data)
-    const fourBytePrefix = prefixedData.slice(0, 10)
+export async function getMethodDataAsync (fourBytePrefix) {
+  try {
+    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+      log.error(e)
+      return null
+    })
 
-    try {
-      const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-          log.error(e)
-          return null
-      })
-
-      let sig = await registry.lookup(fourBytePrefix)
-
-      if (!sig) {
-        sig = await fourByteSig
-      }
-
-      if (!sig) {
-        return {}
-      }
-
-      const parsedResult = registry.parse(sig)
-
-      return {
-        name: parsedResult.name,
-        params: parsedResult.args,
-      }
-    } catch (error) {
-      log.error(error)
-      const tokenData = getTokenData(data)
-      const { name } = tokenData || {}
-      return { name }
+    let sig = await registry.lookup(fourBytePrefix)
+    if (!sig) {
+      sig = await fourByteSig
     }
 
+    if (!sig) {
+      return {}
+    }
 
+    const parsedResult = registry.parse(sig)
+
+    return {
+      name: parsedResult.name,
+      params: parsedResult.args,
+    }
+  } catch (error) {
+    log.error(error)
+    return {}
+  }
 }
 
 export function isConfirmDeployContract (txData = {}) {
