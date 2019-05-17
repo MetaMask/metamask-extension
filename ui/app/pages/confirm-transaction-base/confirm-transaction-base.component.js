@@ -93,6 +93,7 @@ export default class ConfirmTransactionBase extends Component {
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
+    transactionCategory: PropTypes.string,
   }
 
   state = {
@@ -521,7 +522,6 @@ export default class ConfirmTransactionBase extends Component {
       valid: propsValid = true,
       errorMessage,
       errorKey: propsErrorKey,
-      actionKey,
       title,
       subtitle,
       hideSubtitle,
@@ -533,6 +533,7 @@ export default class ConfirmTransactionBase extends Component {
       assetImage,
       warning,
       unapprovedTxCount,
+      transactionCategory,
     } = this.props
     const { submitting, submitError } = this.state
 
@@ -548,7 +549,7 @@ export default class ConfirmTransactionBase extends Component {
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
-        action={this.context.tOrKey(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
+        action={getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}

@@ -8,26 +8,45 @@ import {
 import {
   fetchBasicGasAndTimeEstimates,
 } from '../../ducks/gas/gas.duck'
+
+import {
+  getContractMethodData,
+} from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
-import { getTotalUnapprovedCount } from '../../selectors/selectors'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
-const mapStateToProps = state => {
-  const { metamask: { send }, confirmTransaction } = state
+const mapStateToProps = (state, ownProps) => {
+  const { metamask: { send, unapprovedTxs }, confirmTransaction } = state
+  const { match: { params = {} } } = ownProps
+  const { id } = params
+
+  const unconfirmedTransactions = unconfirmedTransactionsListSelector(state)
+  const totalUnconfirmed = unconfirmedTransactions.length
+  const transaction = totalUnconfirmed
+    ? unapprovedTxs[id] || unconfirmedTransactions[totalUnconfirmed - 1]
+    : {}
 
   return {
-    totalUnapprovedCount: getTotalUnapprovedCount(state),
+    totalUnapprovedCount: totalUnconfirmed,
     send,
     confirmTransaction,
-    unconfirmedTransactions: unconfirmedTransactionsListSelector(state),
+    unapprovedTxs,
+    id,
+    paramsTransactionId: id && Number(id),
+    transactionId: transaction.id && Number(transaction.id),
+    unconfirmedTransactions,
+    transaction,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    setTransactionToConfirm: transactionId => dispatch(setTransactionToConfirm(transactionId)),
+    setTransactionToConfirm: transactionId => {
+      dispatch(setTransactionToConfirm(transactionId))
+    },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
+    getContractMethodData: (data) => dispatch(getContractMethodData(data)),
   }
 }
 

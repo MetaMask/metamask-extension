@@ -1,4 +1,3 @@
-import log from 'loglevel'
 import {
   conversionRateSelector,
   currentCurrencySelector,
@@ -18,12 +17,9 @@ import {
 
 import {
   getTokenData,
-  getMethodData,
-  isSmartContractAddress,
   sumHexes,
 } from '../../helpers/utils/transactions.util'
 
-import { getSymbolAndDecimals } from '../../helpers/utils/token-util'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { addHexPrefix } from 'ethereumjs-util'
 
@@ -364,34 +360,14 @@ export function setTransactionToConfirm (transactionId) {
       dispatch(updateTxDataAndCalculate(txData))
 
       const { txParams } = transaction
-      const { to } = txParams
 
       if (txParams.data) {
-        const { tokens: existingTokens } = state
-        const { data, to: tokenAddress } = txParams
+        const { data } = txParams
 
-        dispatch(setFetchingData(true))
-        const methodData = await getMethodData(data)
-        dispatch(updateMethodData(methodData))
-
-        try {
-          const toSmartContract = await isSmartContractAddress(to || '')
-          dispatch(updateToSmartContract(toSmartContract))
-        } catch (error) {
-          log.error(error)
-        }
-        dispatch(setFetchingData(false))
 
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
 
-        try {
-          const tokenSymbolData = await getSymbolAndDecimals(tokenAddress, existingTokens) || {}
-          const { symbol: tokenSymbol = '', decimals: tokenDecimals = '' } = tokenSymbolData
-          dispatch(updateTokenProps({ tokenSymbol, tokenDecimals }))
-        } catch (error) {
-          dispatch(updateTokenProps({ tokenSymbol: '', tokenDecimals: '' }))
-        }
       }
 
       if (txParams.nonce) {
