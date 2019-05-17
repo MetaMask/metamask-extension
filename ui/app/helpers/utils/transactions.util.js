@@ -111,11 +111,10 @@ export function getFourBytePrefix (data = '') {
 /**
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
- * @param {Object} methodData - Data returned from eth-method-registry
  * @returns {string|undefined}
  */
-export async function getTransactionActionKey (transaction, methodData) {
-  const { txParams: { data, to } = {}, msgParams, type } = transaction
+export function getTransactionActionKey (transaction) {
+  const { msgParams, type, transactionCategory } = transaction
 
   if (type === 'cancel') {
     return CANCEL_ATTEMPT_ACTION_KEY
@@ -129,27 +128,23 @@ export async function getTransactionActionKey (transaction, methodData) {
     return DEPLOY_CONTRACT_ACTION_KEY
   }
 
-  if (data) {
-    const toSmartContract = await isSmartContractAddress(to)
+  const isTokenAction = [
+    TOKEN_METHOD_TRANSFER,
+    TOKEN_METHOD_APPROVE,
+    TOKEN_METHOD_TRANSFER_FROM,
+  ].find(actionName => actionName === transactionCategory)
+  const isNonTokenSmartContract = transactionCategory === CONTRACT_INTERACTION_KEY
 
-    if (!toSmartContract) {
-      return SEND_ETHER_ACTION_KEY
-    }
-
-    const { name } = methodData
-    const methodName = name && name.toLowerCase()
-
-    if (!methodName) {
-      return CONTRACT_INTERACTION_KEY
-    }
-
-    switch (methodName) {
+  if (isTokenAction || isNonTokenSmartContract) {
+    switch (transactionCategory) {
       case TOKEN_METHOD_TRANSFER:
         return SEND_TOKEN_ACTION_KEY
       case TOKEN_METHOD_APPROVE:
         return APPROVE_ACTION_KEY
       case TOKEN_METHOD_TRANSFER_FROM:
         return TRANSFER_FROM_ACTION_KEY
+      case CONTRACT_INTERACTION_KEY:
+        return CONTRACT_INTERACTION_KEY
       default:
         return undefined
     }
