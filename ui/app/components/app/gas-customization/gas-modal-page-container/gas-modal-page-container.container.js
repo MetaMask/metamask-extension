@@ -107,23 +107,11 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const newTotalEth = maxModeOn
-    ?
-    addHexWEIsToRenderableEth(balance, '0x0')
-    :
-    addHexWEIsToRenderableEth(value, customGasTotal)
+  const newTotalEth = maxModeOn ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 
-  const sendAmount = maxModeOn
-    ?
-    subtractHexWEIsFromRenderableEth(balance, customGasTotal)
-    :
-    addHexWEIsToRenderableEth(value, '0x0')
+  const sendAmount = maxModeOn ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
-  const insufficientBalance = maxModeOn
-  ?
-  false
-  :
-  !isBalanceSufficient({
+  const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
     gasTotal: customGasTotal,
     balance,
@@ -232,26 +220,26 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps,
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
-        if (isConfirm) {
-          dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
-          dispatchHideModal()
-        } else if (isSpeedUp) {
-          dispatchCreateSpeedUpTransaction(txId, gasPrice)
-          dispatchHideSidebar()
-          dispatchCancelAndClose()
-        } else {
-          dispatchSetGasData(gasLimit, gasPrice)
-          dispatchHideGasButtonGroup()
-          dispatchCancelAndClose()
-        }
-        if (maxModeOn) {
-          dispatchSetAmountToMax({
-            balance,
-            gasTotal: customGasTotal,
-            selectedToken,
-            tokenBalance,
-          })
-        }
+      if (isConfirm) {
+        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
+        dispatchHideModal()
+      } else if (isSpeedUp) {
+        dispatchCreateSpeedUpTransaction(txId, gasPrice)
+        dispatchHideSidebar()
+        dispatchCancelAndClose()
+      } else {
+        dispatchSetGasData(gasLimit, gasPrice)
+        dispatchHideGasButtonGroup()
+        dispatchCancelAndClose()
+      }
+      if (maxModeOn) {
+        dispatchSetAmountToMax({
+          balance,
+          gasTotal: customGasTotal,
+          selectedToken,
+          tokenBalance,
+        })
+      }
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,

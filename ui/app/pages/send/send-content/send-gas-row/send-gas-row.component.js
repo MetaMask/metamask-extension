@@ -94,7 +94,7 @@ export default class SendGasRow extends Component {
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={(...args) => {
+          handleGasPriceSelection={async (...args) => {
             metricsEvent({
               eventOpts: {
                 category: 'Transactions',
@@ -102,16 +102,10 @@ export default class SendGasRow extends Component {
                 name: 'Changed Gas Button',
               },
             })
-            return new Promise((resolve, reject) => {
-                resolve(gasPriceButtonGroupProps.handleGasPriceSelection(...args))
-            })
-            .then(() => {
-              maxModeOn
-              ?
+            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            if (maxModeOn) {
               this.setMaxAmount()
-              :
-              null
-            })
+            }
           }}
         />
         { this.renderAdvancedOptionsButton() }
@@ -122,15 +116,10 @@ export default class SendGasRow extends Component {
       gasLoadingError={gasLoadingError}
       gasTotal={gasTotal}
       onReset={() => {
-        return new Promise((resolve, reject) => {
-          resolve(resetGasButtons())
-        }).then(() => {
-          maxModeOn
-          ?
+        resetGasButtons()
+        if (maxModeOn) {
           this.setMaxAmount()
-          :
-          null
-        })
+        }
       }}
       onClick={() => showCustomizeGasModal()}
     />

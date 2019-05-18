@@ -816,9 +816,9 @@
       color: #2f9ae0;
 
       &__disabled {
-      color: #B0D7F2;
-      cursor: auto;
-    }
+        color: #B0D7F2;
+        cursor: auto;
+      }
     }
 
     input:checked + &__button {
