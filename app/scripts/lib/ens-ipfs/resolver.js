@@ -8,7 +8,7 @@ const resolverAbi = require('./contracts/resolver')
 module.exports = resolveEnsToIpfsContentId
 
 
-async function resolveEnsToIpfsContentId ({ provider, name }) {
+async function resolveEnsToIpfsContentId({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
@@ -22,32 +22,64 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   // lookup resolver
   const resolverLookupResult = await Registrar.resolver(hash)
   const resolverAddress = resolverLookupResult[0]
+  console.log("resolver: ", resolverAddress)
   if (hexValueIsEmpty(resolverAddress)) {
     throw new Error(`EnsIpfsResolver - no resolver found for name "${name}"`)
   }
   const Resolver = contract(resolverAbi).at(resolverAddress)
-  // lookup content id
-  const contentLookupResult = await Resolver.content(hash)
-  const contentHash = contentLookupResult[0]
-  if (hexValueIsEmpty(contentHash)) {
-    throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
+
+  const contenthashInterfaceLookupResult = await Resolver.supportsInterface("0xbc1c58d1")
+  const contenthashInterface = contenthashInterfaceLookupResult[0]
+  console.log(contenthashInterface, "support")
+  if (contenthashInterface) {
+    const contenthashLookupResult = await Resolver.contenthash(hash)
+    const contenthash = contenthashLookupResult[0]
+    if (!hexValueIsEmpty(contenthash)) {
+      const nonPrefixedHex = contenthash.slice(2)
+      const buffer = multihash.fromHexString(nonPrefixedHex)
+      const contentId = multihash.toB58String(multihash.encode(buffer, 'sha2-256'))
+      return [contentId, "ipfs"]
+    }
   }
-  const nonPrefixedHex = contentHash.slice(2)
-  const buffer = multihash.fromHexString(nonPrefixedHex)
-  const contentId = multihash.toB58String(multihash.encode(buffer, 'sha2-256'))
-  return contentId
+
+  const contentInterfaceLookupResult = await Resolver.supportsInterface("0xd8389dc5")
+  const contentInterface = contentInterfaceLookupResult[0]
+  if (contentInterface) {
+    const contentLookupResult = await Resolver.content(hash)
+    const content = contentLookupResult[0]
+    if (!hexValueIsEmpty(content)) {
+      const nonPrefixedHex = content.slice(2)
+      const buffer = multihash.fromHexString(nonPrefixedHex)
+      const contentId = multihash.toB58String(multihash.encode(buffer, 'sha2-256'))
+      return [contentId, "ipfs"]
+    }
+  }
+
+
+  const textInterfaceLookupResult = await Resolver.supportsInterface("0x59d1d43c")
+  const textInterface = textInterfaceLookupResult[0]
+  if (textInterface) {
+    const contentLookupResultTns = await Resolver.text(hash, "onion")
+    console.log("onion addr: ", contentLookupResultTns[0])
+    if (contentLookupResultTns[0] === "") {
+      throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
+    }
+    return [contentLookupResultTns[0], "onion"]
+  }
+
+
 }
 
-function hexValueIsEmpty (value) {
+function hexValueIsEmpty(value) {
   return [undefined, null, '0x', '0x0', '0x0000000000000000000000000000000000000000000000000000000000000000'].includes(value)
 }
 
-function getRegistrarForChainId (chainId) {
+function getRegistrarForChainId(chainId) {
   switch (chainId) {
     // mainnet
     case 1:
       return '0x314159265dd8dbb310642f98f50c066173c1259b'
-    // ropsten
+      // ropsten
     case 3:
       return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
   }

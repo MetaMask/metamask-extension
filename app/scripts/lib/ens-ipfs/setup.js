@@ -6,7 +6,7 @@ const supportedTopLevelDomains = ['eth']
 
 module.exports = setupEnsIpfsResolver
 
-function setupEnsIpfsResolver ({ provider }) {
+function setupEnsIpfsResolver({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
@@ -15,12 +15,12 @@ function setupEnsIpfsResolver ({ provider }) {
   // return api object
   return {
     // uninstall listener
-    remove () {
+    remove() {
       extension.webRequest.onErrorOccurred.removeListener(webRequestDidFail)
     },
   }
 
-  async function webRequestDidFail (details) {
+  async function webRequestDidFail(details) {
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
     if (tabId === -1) return
@@ -35,11 +35,19 @@ function setupEnsIpfsResolver ({ provider }) {
     attemptResolve({ tabId, name, path, search })
   }
 
-  async function attemptResolve ({ tabId, name, path, search }) {
+  async function attemptResolve({ tabId, name, path, search }) {
     extension.tabs.update(tabId, { url: `loading.html` })
     try {
-      const ipfsContentId = await resolveEnsToIpfsContentId({ provider, name })
-      const url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
+      const result = await resolveEnsToIpfsContentId({ provider, name })
+      const ipfsContentId = result[0]
+      const connectionId = result[1]
+      var url;
+      if (connectionId === "ipfs") {
+        url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
+      } else if (connectionId === "onion") {
+        url = `http://${ipfsContentId}.onion`
+      }
+      console.log(url)
       try {
         // check if ipfs gateway has result
         const response = await fetch(url, { method: 'HEAD' })

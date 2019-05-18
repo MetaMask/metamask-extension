@@ -270,7 +270,7 @@
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^2.0.0",
     "nock": "^9.0.14",
-    "node-sass": "^4.9.2",
+    "node-sass": "^4.12.0",
     "nyc": "^13.0.0",
     "path": "^0.12.7",
     "png-file-stream": "^1.1.0",
