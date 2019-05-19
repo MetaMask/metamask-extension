@@ -8,7 +8,7 @@ const resolverAbi = require('./contracts/resolver')
 module.exports = resolveEnsToIpfsContentId
 
 
-async function resolveEnsToIpfsContentId({ provider, name }) {
+async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
@@ -70,11 +70,11 @@ async function resolveEnsToIpfsContentId({ provider, name }) {
 
 }
 
-function hexValueIsEmpty(value) {
+function hexValueIsEmpty (value) {
   return [undefined, null, '0x', '0x0', '0x0000000000000000000000000000000000000000000000000000000000000000'].includes(value)
 }
 
-function getRegistrarForChainId(chainId) {
+function getRegistrarForChainId (chainId) {
   switch (chainId) {
     // mainnet
     case 1:
