@@ -16,21 +16,21 @@ async function resolveEnsToIpfsContentId({ provider, name }) {
   const chainId = Number.parseInt(await eth.net_version(), 10)
   const registrarAddress = getRegistrarForChainId(chainId)
   if (!registrarAddress) {
-    throw new Error(`EnsIpfsResolver - no known ens-ipfs registrar for chainId "${chainId}"`)
+    throw new Error(`EnsIpfsResolver - no known ens-ipfs registrar for chainId '${chainId}'`)
   }
   const Registrar = contract(registrarAbi).at(registrarAddress)
   // lookup resolver
   const resolverLookupResult = await Registrar.resolver(hash)
   const resolverAddress = resolverLookupResult[0]
-  console.log("resolver: ", resolverAddress)
+  console.log('resolver: ', resolverAddress)
   if (hexValueIsEmpty(resolverAddress)) {
-    throw new Error(`EnsIpfsResolver - no resolver found for name "${name}"`)
+    throw new Error(`EnsIpfsResolver - no resolver found for name '${name}'`)
   }
   const Resolver = contract(resolverAbi).at(resolverAddress)
 
-  const contenthashInterfaceLookupResult = await Resolver.supportsInterface("0xbc1c58d1")
+  const contenthashInterfaceLookupResult = await Resolver.supportsInterface('0xbc1c58d1')
   const contenthashInterface = contenthashInterfaceLookupResult[0]
-  console.log(contenthashInterface, "support")
+  console.log(contenthashInterface, 'support')
   if (contenthashInterface) {
     const contenthashLookupResult = await Resolver.contenthash(hash)
     const contenthash = contenthashLookupResult[0]
@@ -38,11 +38,11 @@ async function resolveEnsToIpfsContentId({ provider, name }) {
       const nonPrefixedHex = contenthash.slice(2)
       const buffer = multihash.fromHexString(nonPrefixedHex)
       const contentId = multihash.toB58String(multihash.encode(buffer, 'sha2-256'))
-      return [contentId, "ipfs"]
+      return [contentId, 'ipfs']
     }
   }
 
-  const contentInterfaceLookupResult = await Resolver.supportsInterface("0xd8389dc5")
+  const contentInterfaceLookupResult = await Resolver.supportsInterface('0xd8389dc5')
   const contentInterface = contentInterfaceLookupResult[0]
   if (contentInterface) {
     const contentLookupResult = await Resolver.content(hash)
@@ -51,20 +51,20 @@ async function resolveEnsToIpfsContentId({ provider, name }) {
       const nonPrefixedHex = content.slice(2)
       const buffer = multihash.fromHexString(nonPrefixedHex)
       const contentId = multihash.toB58String(multihash.encode(buffer, 'sha2-256'))
-      return [contentId, "ipfs"]
+      return [contentId, 'ipfs']
     }
   }
 
 
-  const textInterfaceLookupResult = await Resolver.supportsInterface("0x59d1d43c")
+  const textInterfaceLookupResult = await Resolver.supportsInterface('0x59d1d43c')
   const textInterface = textInterfaceLookupResult[0]
   if (textInterface) {
-    const contentLookupResultTns = await Resolver.text(hash, "onion")
-    console.log("onion addr: ", contentLookupResultTns[0])
-    if (contentLookupResultTns[0] === "") {
-      throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
+    const contentLookupResultTns = await Resolver.text(hash, 'onion')
+    console.log('onion addr: ', contentLookupResultTns[0])
+    if (contentLookupResultTns[0] === '') {
+      throw new Error(`EnsIpfsResolver - no content ID found for name '${name}'`)
     }
-    return [contentLookupResultTns[0], "onion"]
+    return [contentLookupResultTns[0], 'onion']
   }
 
 
