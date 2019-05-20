@@ -40,7 +40,7 @@ export default class AmountMaxButton extends Component {
     })
   }
 
-  onMaxClick = (event) => {
+  onMaxClick = () => {
     const { setMaxModeTo, clearMaxAmount, maxModeOn } = this.props
     const { metricsEvent } = this.context
 
