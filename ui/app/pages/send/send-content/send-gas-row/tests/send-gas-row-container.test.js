@@ -44,6 +44,11 @@ proxyquire('../send-gas-row.container.js', {
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getSendAmount: (s) => `mockSendAmount:${s}`,
+    getSendFromBalance: (s) => `mockBalance:${s}`,
+    getTokenBalance: (s) => `mockTokenBalance:${s}`,
+  },
+  '../send-amount-row/amount-max-button/amount-max-button.selectors': {
+    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
     isBalanceSufficient: ({
@@ -75,6 +80,7 @@ describe('send-gas-row container', () => {
 
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
+        balance: 'mockBalance:mockState',
         conversionRate: 'mockConversionRate:mockState',
         convertedCurrency: 'mockConvertedCurrency:mockState',
         gasTotal: 'mockGasTotal:mockState',
@@ -91,6 +97,9 @@ describe('send-gas-row container', () => {
         gasLimit: 'mockGasLimit:mockState',
         gasPrice: 'mockGasPrice:mockState',
         insufficientBalance: false,
+        maxModeOn: 'mockMaxModeOn:mockState',
+        selectedToken: false,
+        tokenBalance: 'mockTokenBalance:mockState',
       })
     })
 

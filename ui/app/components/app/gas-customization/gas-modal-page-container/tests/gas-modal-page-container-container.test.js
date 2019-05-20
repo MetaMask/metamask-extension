@@ -46,6 +46,10 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../../ducks/send/send.duck': sendActionSpies,
   '../../../../selectors/selectors.js': {
     getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
+    getSelectedToken: () => null,
+  },
+  '../../../../pages/send/send.selectors': {
+    getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
   },
 })
 
@@ -68,6 +72,7 @@ describe('gas-modal-page-container container', () => {
             gasLimit: '16',
             gasPrice: '32',
             amount: '64',
+            maxModeOn: false,
           },
           currentCurrency: 'abc',
           conversionRate: 50,
@@ -106,6 +111,7 @@ describe('gas-modal-page-container container', () => {
         },
       }
       const baseExpectedResult = {
+        balance: '0x0',
         isConfirm: true,
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
@@ -114,6 +120,7 @@ describe('gas-modal-page-container container', () => {
         blockTime: 12,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
+        customGasTotal: 'aaaaaaa955555556',
         customPriceIsSafe: true,
         gasChartProps: {
           'currentPrice': 4.294967295,
@@ -142,6 +149,9 @@ describe('gas-modal-page-container container', () => {
         txId: 34,
         isEthereumNetwork: true,
         isMainnet: true,
+        maxModeOn: false,
+        selectedToken: null,
+        tokenBalance: '0x0',
       }
       const baseMockOwnProps = { transaction: { id: 34 } }
       const tests = [
@@ -150,7 +160,7 @@ describe('gas-modal-page-container container', () => {
           mockState: Object.assign({}, baseMockState, {
             metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' },
           }),
-          expectedResult: Object.assign({}, baseExpectedResult, { insufficientBalance: false }),
+          expectedResult: Object.assign({}, baseExpectedResult, { balance: '0xfffffffffffffffffffff', insufficientBalance: false }),
           mockOwnProps: baseMockOwnProps,
         },
         {
