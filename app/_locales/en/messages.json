@@ -549,7 +549,7 @@
     "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
-    "message": "If you need to back your up seed phrase again, you can find it in Settings -> Security."
+    "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
     "message": "If you ever have questions or see something fishy, email support@metamask.io."
