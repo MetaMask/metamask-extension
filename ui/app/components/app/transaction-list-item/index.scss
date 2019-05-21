@@ -1,7 +1,7 @@
 .transaction-list-item {
   box-sizing: border-box;
   min-height: 74px;
-  border-bottom: 1px solid $border-gray;
+  border-bottom: 1px solid $Grey-100;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,7 +19,7 @@
       "identicon nonce status secondary-amount";
 
     @media screen and (max-width: $break-small) {
-      padding: 8px 20px 12px;
+      padding: .5rem 1rem;
       grid-template-columns: 45px 5fr 3fr;
       grid-template-areas:
         "nonce nonce nonce"
@@ -44,12 +44,11 @@
 
   &__action {
     text-transform: capitalize;
-    padding: 0 8px 2px 0;
+    padding: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     grid-area: action;
-    align-self: end;
     color: $Grey-800;
   }
 
@@ -73,7 +72,7 @@
     align-self: start;
 
     @media screen and (max-width: $break-small) {
-      padding-bottom: 4px;
+      padding-bottom: 8px;
     }
   }
 
@@ -91,7 +90,8 @@
       justify-self: end;
 
       @media screen and (max-width: $break-small) {
-        padding-bottom: 2px;
+        padding-bottom: 4px;
+        height: 100%;
         color: $Grey-800;
       }
     }
