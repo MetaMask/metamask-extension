@@ -306,6 +306,7 @@ const buildJsFiles = [
   'background',
   'ui',
   'phishing-detect',
+  'notification',
 ]
 
 // bundle tasks
