@@ -1,4 +1,4 @@
-const txStateHistoryHelper = require('../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
+const txStateHistoryHelper = require('tx-state-manager/lib/tx-state-history-helper')
 
 module.exports = createTxMeta
 

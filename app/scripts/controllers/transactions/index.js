@@ -14,7 +14,7 @@ const {
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
 } = require('../../../../ui/app/helpers/constants/transactions.js')
-const TransactionStateManager = require('./tx-state-manager')
+const TransactionStateManager = require('tx-state-manager')
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
 const NonceTracker = require('./nonce-tracker')
