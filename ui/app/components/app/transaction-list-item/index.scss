@@ -50,6 +50,7 @@
     text-overflow: ellipsis;
     grid-area: action;
     color: $Grey-800;
+    line-height: 20px;
   }
 
   &__status {
@@ -73,6 +74,7 @@
 
     @media screen and (max-width: $break-small) {
       padding-bottom: 8px;
+      line-height: 12px;
     }
   }
 
@@ -88,6 +90,7 @@
       grid-area: primary-amount;
       align-self: end;
       justify-self: end;
+      line-height: 20px;
 
       @media screen and (max-width: $break-small) {
         padding-bottom: 4px;
