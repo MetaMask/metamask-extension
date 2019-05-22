@@ -20,11 +20,10 @@ export default class TransactionAction extends PureComponent {
     const { name } = methodData
 
     const actionKey = getTransactionActionKey(transaction)
-    const action = actionKey
-      ? this.context.t(actionKey)
-      : camelCaseToCapitalize(name)
+    const action = actionKey && this.context.t(actionKey)
+    const methodName = name && camelCaseToCapitalize(name)
 
-    return action || ''
+    return methodName || action || ''
   }
 
   render () {
