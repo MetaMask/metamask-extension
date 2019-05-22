@@ -344,7 +344,7 @@ export function updateTxDataAndCalculate (txData) {
 }
 
 export function setTransactionToConfirm (transactionId) {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const state = getState()
     const unconfirmedTransactionsHash = unconfirmedTransactionsHashSelector(state)
     const transaction = unconfirmedTransactionsHash[transactionId]

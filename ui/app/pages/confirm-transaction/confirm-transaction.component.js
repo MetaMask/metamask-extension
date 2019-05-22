@@ -35,8 +35,8 @@ export default class ConfirmTransaction extends Component {
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
     getContractMethodData: PropTypes.func,
-    transactionId: PropTypes.number,
-    paramsTransactionId: PropTypes.number,
+    transactionId: PropTypes.string,
+    paramsTransactionId: PropTypes.string,
   }
 
   getParamsTransactionId () {
@@ -74,6 +74,8 @@ export default class ConfirmTransaction extends Component {
       getContractMethodData,
       paramsTransactionId,
       transactionId,
+      history,
+      totalUnapprovedCount,
     } = this.props
 
     if (paramsTransactionId && transactionId && prevProps.paramsTransactionId !== paramsTransactionId) {
@@ -81,15 +83,22 @@ export default class ConfirmTransaction extends Component {
       getContractMethodData(data)
       setTransactionToConfirm(paramsTransactionId)
       return
+    } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
+      history.replace(DEFAULT_ROUTE)
+      return
+    } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
+      history.replace(DEFAULT_ROUTE)
+      return
     }
   }
 
   render () {
-    const { transaction: { id } = {}, paramsTransactionId } = this.props
+    const { transactionId, paramsTransactionId } = this.props
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    return id && (!paramsTransactionId || paramsTransactionId === id + '')
+
+    return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>
           <Route

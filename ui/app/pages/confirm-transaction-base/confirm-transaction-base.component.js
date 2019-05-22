@@ -260,6 +260,7 @@ export default class ConfirmTransactionBase extends Component {
       } = {},
       hideData,
       dataComponent,
+      transactionCategory,
     } = this.props
 
     if (hideData) {
@@ -271,7 +272,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__data-box-label">
           {`${t('functionType')}:`}
           <span className="confirm-page-container-content__function-type">
-            { name || t('notFound') }
+            { getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction') }
           </span>
         </div>
         {
@@ -456,6 +457,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleNextTx (txId) {
     const { history, clearConfirmTransaction } = this.props
+
     if (txId) {
       clearConfirmTransaction()
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`)

@@ -32,8 +32,8 @@ const mapStateToProps = (state, ownProps) => {
     confirmTransaction,
     unapprovedTxs,
     id,
-    paramsTransactionId: id && Number(id),
-    transactionId: transaction.id && Number(transaction.id),
+    paramsTransactionId: id && String(id),
+    transactionId: transaction.id && String(transaction.id),
     unconfirmedTransactions,
     transaction,
   }
