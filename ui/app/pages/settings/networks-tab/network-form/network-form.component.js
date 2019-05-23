@@ -12,6 +12,7 @@ export default class NetworksTab extends PureComponent {
 
   static propTypes = {
     editRpc: PropTypes.func.isRequired,
+    delRpcTarget: PropTypes.func.isRequired,
     rpcUrl: PropTypes.string,
     chainId: PropTypes.string,
     ticker: PropTypes.string,
@@ -20,6 +21,7 @@ export default class NetworksTab extends PureComponent {
     onClear: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     networksTabIsInAddMode: PropTypes.bool,
+    isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
   }
@@ -152,7 +154,16 @@ export default class NetworksTab extends PureComponent {
   }
 
   render () {
-    const { setRpcTarget, viewOnly, rpcUrl: propsRpcUrl, editRpc, rpcPrefs = {} } = this.props
+    const {
+      setRpcTarget,
+      delRpcTarget,
+      viewOnly,
+      isCurrentRpcTarget,
+      rpcUrl: propsRpcUrl,
+      editRpc,
+      rpcPrefs = {},
+      networksTabIsInAddMode,
+    } = this.props
     const {
       networkName,
       rpcUrl,
@@ -162,6 +173,7 @@ export default class NetworksTab extends PureComponent {
       errors,
     } = this.state
 
+    const hideCancel = viewOnly || isCurrentRpcTarget || networksTabIsInAddMode
 
     return (
       <div className="networks-tab__network-form">
@@ -199,8 +211,10 @@ export default class NetworksTab extends PureComponent {
           'optionalBlockExplorerUrl',
         )}
         <PageContainerFooter
-          cancelText={this.context.t('cancel')}
-          hideCancel={true}
+          cancelText={this.context.t('delete')}
+          cancelButtonType="danger"
+          hideCancel={hideCancel}
+          onCancel={() => !hideCancel && delRpcTarget(rpcUrl)}
           onSubmit={() => {
             if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
               editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {

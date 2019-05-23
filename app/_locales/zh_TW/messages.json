@@ -366,6 +366,9 @@
   "defaultNetwork": {
     "message": "預設乙太幣交易網路為主網路"
   },
+  "delete": {
+    "message": "刪除"
+  },
   "denExplainer": {
     "message": "您的 DEN 是 MetaMask 中您的的密碼加密儲存庫。"
   },

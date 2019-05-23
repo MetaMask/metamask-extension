@@ -25,6 +25,7 @@ export default class NetworksTab extends PureComponent {
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
+    delRpcTarget: PropTypes.func.isRequired,
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,
@@ -138,6 +139,7 @@ export default class NetworksTab extends PureComponent {
   renderNetworksTabContent () {
     const {
       setRpcTarget,
+      delRpcTarget,
       setSelectedSettingsRpcUrl,
       setNetworksTabAddMode,
       selectedNetwork: {
@@ -153,6 +155,7 @@ export default class NetworksTab extends PureComponent {
       networksTabIsInAddMode,
       editRpc,
       networkDefaultedToProvider,
+      providerUrl,
     } = this.props
     const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
 
@@ -171,7 +174,9 @@ export default class NetworksTab extends PureComponent {
               setNetworksTabAddMode(false)
               setSelectedSettingsRpcUrl(null)
             }}
+            delRpcTarget={delRpcTarget}
             viewOnly={viewOnly}
+            isCurrentRpcTarget={providerUrl === rpcUrl}
             networksTabIsInAddMode={networksTabIsInAddMode}
             rpcPrefs={rpcPrefs}
             blockExplorerUrl={blockExplorerUrl}
