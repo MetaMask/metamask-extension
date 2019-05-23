@@ -9,6 +9,7 @@ import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constant
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
+  GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
@@ -134,6 +135,7 @@ export default class ConfirmTransactionBase extends Component {
           value: amount,
         } = {},
       } = {},
+      customGas,
     } = this.props
 
     const insufficientBalance = balance && !isBalanceSufficient({
@@ -147,6 +149,13 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
+      }
+    }
+
+    if (customGas.gasLimit < 21000) {
+      return {
+        valid: false,
+        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
       }
     }
 
