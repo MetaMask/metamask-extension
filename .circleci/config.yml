@@ -2,7 +2,7 @@ version: 2
 
 workflows:
   version: 2
-  full_test:
+  test_and_release:
     jobs:
       - prep-deps-npm
       - prep-build:
