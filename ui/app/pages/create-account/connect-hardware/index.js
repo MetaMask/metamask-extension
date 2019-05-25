@@ -8,8 +8,6 @@ const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { formatBalance } = require('../../../helpers/utils/util')
-const { getPlatform } = require('../../../../../app/scripts/lib/util')
-const { PLATFORM_FIREFOX } = require('../../../../../app/scripts/lib/enums')
 
 class ConnectHardwareForm extends Component {
   constructor (props) {
