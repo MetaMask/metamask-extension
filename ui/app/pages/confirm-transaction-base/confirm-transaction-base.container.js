@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../selectors/selectors'
+import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -27,8 +27,9 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   }
 }, {})
 
-const mapStateToProps = (state, props) => {
-  const { toAddress: propsToAddress } = props
+const mapStateToProps = (state, ownProps) => {
+  const { toAddress: propsToAddress, match: { params = {} } } = ownProps
+  const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask, gas } = state
@@ -43,18 +44,18 @@ const mapStateToProps = (state, props) => {
     hexTransactionFee,
     hexTransactionTotal,
     tokenData,
-    methodData,
     txData,
     tokenProps,
     nonce,
   } = confirmTransaction
-  const { txParams = {}, lastGasPrice, id: transactionId } = txData
+  const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
   const {
     from: fromAddress,
     to: txParamsToAddress,
     gasPrice,
     gas: gasLimit,
     value: amount,
+    data,
   } = txParams
   const accounts = getMetaMaskAccounts(state)
   const {
@@ -87,8 +88,7 @@ const mapStateToProps = (state, props) => {
     )
 
   const isTxReprice = Boolean(lastGasPrice)
-
-  const transaction = R.find(({ id }) => id === transactionId)(selectedAddressTxList)
+  const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList)
   const transactionStatus = transaction ? transaction.status : ''
 
   const currentNetworkUnapprovedTxs = R.filter(
@@ -103,6 +103,8 @@ const mapStateToProps = (state, props) => {
     balance,
     conversionRate,
   })
+
+  const methodData = getKnownMethodData(state, data) || {}
 
   return {
     balance,
@@ -119,7 +121,7 @@ const mapStateToProps = (state, props) => {
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
-    txData,
+    txData: Object.keys(txData).length ? txData : transaction || {},
     tokenData,
     methodData,
     tokenProps,
@@ -141,6 +143,7 @@ const mapStateToProps = (state, props) => {
     hideSubtitle: (!isMainnet && !showFiatInTestnets),
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
     metaMetricsSendCount,
+    transactionCategory,
   }
 }
 

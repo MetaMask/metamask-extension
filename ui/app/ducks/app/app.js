@@ -79,6 +79,7 @@ function reduceApp (state, action) {
     lastSelectedProvider: null,
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
+    loadingMethodData: false,
   }, state.appState)
 
   switch (action.type) {
@@ -762,6 +763,17 @@ function reduceApp (state, action) {
       return extend(appState, {
         networksTabIsInAddMode: action.value,
       })
+
+    case actions.LOADING_METHOD_DATA_STARTED:
+      return extend(appState, {
+        loadingMethodData: true,
+      })
+
+    case actions.LOADING_METHOD_DATA_FINISHED:
+      return extend(appState, {
+        loadingMethodData: false,
+      })
+
 
     default:
       return appState

@@ -1,5 +1,6 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
-import { stripHexPrefix } from 'ethereumjs-util'
+import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+
 
 const abi = require('human-standard-token-abi')
 import {
@@ -50,6 +51,7 @@ const selectors = {
   isEthereumNetwork,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
+  getKnownMethodData,
 }
 
 module.exports = selectors
@@ -334,4 +336,15 @@ function getRpcPrefsForCurrentProvider (state) {
   const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
+}
+
+function getKnownMethodData (state, data) {
+  if (!data) {
+    return null
+  }
+  const prefixedData = addHexPrefix(data)
+  const fourBytePrefix = prefixedData.slice(0, 10)
+  const { knownMethodData } = state.metamask
+
+  return knownMethodData && knownMethodData[fourBytePrefix]
 }

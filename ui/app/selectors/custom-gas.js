@@ -119,6 +119,10 @@ function isCustomPriceSafe (state) {
     return true
   }
 
+  if (safeLow === null) {
+    return null
+  }
+
   const customPriceSafe = conversionGreaterThan(
     {
       value: customGasPrice,
