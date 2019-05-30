@@ -1409,8 +1409,11 @@ module.exports = class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // cleanup filter polyfill middleware
-        const filterMiddleware = engine._middleware.filter(mid => mid.name === 'filterMiddleware')[0]
-        filterMiddleware.destroy()
+        const filterMiddleware = engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy()
+          }
+        })
         if (err) log.error(err)
       }
     )
@@ -1426,13 +1429,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const blockTracker = this.blockTracker
 
     // create filter polyfill middleware
-    // Some weird things done here so we can identify the middleware by name later.
-    // https://github.com/MetaMask/eth-json-rpc-filters/issues/8<Paste>
-    const filter = createFilterMiddleware({ provider, blockTracker })
-    const filterMiddleware = function filterMiddleware (...args) {
-      return filter(...args)
-    }
-    filterMiddleware.destroy = filter.destroy.bind(filter)
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
