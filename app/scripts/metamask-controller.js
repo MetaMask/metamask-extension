@@ -1426,8 +1426,13 @@ module.exports = class MetamaskController extends EventEmitter {
     const blockTracker = this.blockTracker
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
-    filterMiddleware.name = 'filterMiddleware'
+    // Some weird things done here so we can identify the middleware by name later.
+    // https://github.com/MetaMask/eth-json-rpc-filters/issues/8<Paste>
+    const filter = createFilterMiddleware({ provider, blockTracker })
+    const filterMiddleware = function filterMiddleware (...args) {
+      return filter(...args)
+    }
+    filterMiddleware.destroy = filter.destroy.bind(filter)
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
