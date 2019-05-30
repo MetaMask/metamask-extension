@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  port: 8545,
   accounts: [{
     balance: 12345,
   }],
