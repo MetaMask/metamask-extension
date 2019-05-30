@@ -1409,7 +1409,7 @@ module.exports = class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // cleanup filter polyfill middleware
-        const filterMiddleware = engine._middleware.forEach((mid) => {
+        engine._middleware.forEach((mid) => {
           if (mid.destroy && typeof mid.destroy === 'function') {
             mid.destroy()
           }
