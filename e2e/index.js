@@ -5,7 +5,9 @@ const ReferenceCounter = require('./rc')
 const {buildWebDriver, Driver} = require('./webdriver')
 
 const fixtureServer = new fixtures.FixtureServer()
-const rc = new ReferenceCounter(async () => fixtureServer.start(), async () => fixtureServer.stop())
+const rc = new ReferenceCounter(() => fixtureServer.start(), () => fixtureServer.stop())
+
+// TODO Exit if either Ganache or the browser fail to start correctly
 
 const withFixtures = async function load (fixturesDirectory, callback) {
   await rc.tick(async () => {
