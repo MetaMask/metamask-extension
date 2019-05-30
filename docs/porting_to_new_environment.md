@@ -25,6 +25,13 @@ function incomingConnection (domain, getSiteMetadata) {
 }
 ```
 
+Please note if you take this approach, you are responsible for cleaning up the filters when the page is closed:
+
+```
+const filterMiddleware = engine._middleware.filter(mid => mid.name === 'filterMiddleware')[0]
+filterMiddleware.destroy()
+```
+
 ### getSiteMetadata()
 
 This method is used to enhance our confirmation screens with images and text representing the requesting domain.
