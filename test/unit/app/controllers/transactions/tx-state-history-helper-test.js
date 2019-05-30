@@ -29,7 +29,7 @@ describe('Transaction state history helper', function () {
 
   describe('#migrateFromSnapshotsToDiffs', function () {
     it('migrates history to diffs and can recover original values', function () {
-      testVault.data.TransactionController.transactions.forEach((tx, index) => {
+      testVault.data.TransactionController.transactions.forEach((tx) => {
         const newHistory = txStateHistoryHelper.migrateFromSnapshotsToDiffs(tx.history)
         newHistory.forEach((newEntry, index) => {
           if (index === 0) {

@@ -1,6 +1,6 @@
 import ethUtil from 'ethereumjs-util'
 import { ETH, GWEI, WEI } from '../constants/common'
-import { conversionUtil, addCurrencies } from './conversion-util'
+import { conversionUtil, addCurrencies, subtractCurrencies } from './conversion-util'
 
 export function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
@@ -85,6 +85,15 @@ export function getWeiHexFromDecimalValue ({
 
 export function addHexWEIsToDec (aHexWEI, bHexWEI) {
   return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    fromDenomination: 'WEI',
+    numberOfDecimals: 6,
+  })
+}
+
+export function subtractHexWEIsToDec (aHexWEI, bHexWEI) {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
     aBase: 16,
     bBase: 16,
     fromDenomination: 'WEI',

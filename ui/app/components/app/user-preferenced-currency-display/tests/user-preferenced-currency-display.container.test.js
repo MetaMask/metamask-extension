@@ -5,7 +5,7 @@ let mapStateToProps, mergeProps
 
 proxyquire('../user-preferenced-currency-display.container.js', {
   'react-redux': {
-    connect: (ms, md, mp) => {
+    connect: (ms, _, mp) => {
       mapStateToProps = ms
       mergeProps = mp
       return () => ({})

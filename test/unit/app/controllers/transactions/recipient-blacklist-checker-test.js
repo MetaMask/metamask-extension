@@ -4,6 +4,7 @@ const {
   ROPSTEN_CODE,
   RINKEYBY_CODE,
   KOVAN_CODE,
+  GOERLI_CODE,
 } = require('../../../../../app/scripts/controllers/network/enums')
 
 const KeyringController = require('eth-keyring-controller')
@@ -27,14 +28,14 @@ describe('Recipient Blacklist Checker', function () {
   describe('#checkAccount', function () {
     it('does not fail on test networks', function () {
       let callCount = 0
-      const networks = [ROPSTEN_CODE, RINKEYBY_CODE, KOVAN_CODE]
+      const networks = [ROPSTEN_CODE, RINKEYBY_CODE, KOVAN_CODE, GOERLI_CODE]
       for (const networkId in networks) {
         publicAccounts.forEach((account) => {
            recipientBlackListChecker.checkAccount(networkId, account)
             callCount++
         })
       }
-      assert.equal(callCount, 30)
+      assert.equal(callCount, 40)
     })
 
     it('fails on mainnet', function () {

@@ -48,7 +48,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(DepositEtherModal, Component)
-function DepositEtherModal (props, context) {
+function DepositEtherModal (_, context) {
   Component.call(this)
 
   // need to set after i18n locale has loaded
@@ -119,7 +119,7 @@ DepositEtherModal.prototype.renderRow = function ({
 
       !hideButton && h('div.deposit-ether-modal__buy-row__button', [
         h(Button, {
-          type: 'primary',
+          type: 'secondary',
           className: 'deposit-ether-modal__deposit-button',
           large: true,
           onClick: onButtonClick,
@@ -133,7 +133,7 @@ DepositEtherModal.prototype.render = function () {
   const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
   const { buyingWithShapeshift } = this.state
 
-  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
 
   return h('div.page-container.page-container--full-width.page-container--full-height', {}, [

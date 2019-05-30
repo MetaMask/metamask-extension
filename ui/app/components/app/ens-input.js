@@ -10,7 +10,7 @@ const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('react-redux').connect
-const ToAutoComplete = require('./send/to-autocomplete').default
+const ToAutoComplete = require('../../pages/send/to-autocomplete').default
 const log = require('loglevel')
 const { isValidENSAddress } = require('../../helpers/utils/util')
 
@@ -41,12 +41,15 @@ EnsInput.prototype.onChange = function (recipient) {
       ensResolution: null,
       ensFailure: null,
       toError: null,
+      recipient,
     })
   }
 
   this.setState({
     loadingEns: true,
+    recipient,
   })
+
   this.checkName(recipient)
 }
 
@@ -56,6 +59,7 @@ EnsInput.prototype.render = function () {
     list: 'addresses',
     onChange: this.onChange.bind(this),
     qrScanner: true,
+    recipient: (this.state || {}).recipient,
   })
   return h('div', {
     style: { width: '100%', position: 'relative' },
@@ -79,19 +83,21 @@ EnsInput.prototype.componentDidMount = function () {
 
 EnsInput.prototype.lookupEnsName = function (recipient) {
   const { ensResolution } = this.state
+  recipient = recipient.trim()
 
   log.info(`ENS attempting to resolve name: ${recipient}`)
-  this.ens.lookup(recipient.trim())
+  this.ens.lookup(recipient)
   .then((address) => {
     if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
-        nickname: recipient.trim(),
+        nickname: recipient,
         hoverText: address + '\n' + this.context.t('clickCopy'),
         ensFailure: false,
         toError: null,
+        recipient,
       })
     }
   })
@@ -101,11 +107,11 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
       ensResolution: recipient,
       ensFailure: true,
       toError: null,
+      recipient: null,
     }
     if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
       setStateObj.hoverText = this.context.t('ensNameNotFound')
       setStateObj.toError = 'ensNameNotFound'
-      setStateObj.ensFailure = false
     } else {
       log.error(reason)
       setStateObj.hoverText = reason.message
@@ -128,7 +134,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   }
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError, toWarning: state.toWarning })
+    this.props.onChange({ toAddress: ensResolution, recipient: state.recipient, nickname, toError: state.toError, toWarning: state.toWarning })
   }
 }
 
@@ -144,7 +150,7 @@ EnsInput.prototype.ensIcon = function (recipient) {
   }, this.ensIconContents(recipient))
 }
 
-EnsInput.prototype.ensIconContents = function (recipient) {
+EnsInput.prototype.ensIconContents = function () {
   const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
 
   if (toError) return

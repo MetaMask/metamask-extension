@@ -22,9 +22,10 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
-async function runSendFlowTest (assert, done) {
+async function runSendFlowTest (assert) {
   const tempFetch = global.fetch
 
+  const realFetch = window.fetch.bind(window)
   global.fetch = (...args) => {
     if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
@@ -35,7 +36,7 @@ async function runSendFlowTest (assert, done) {
     } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }
-    return window.fetch(...args)
+    return realFetch.fetch(...args)
   }
 
   console.log('*** start runSendFlowTest')
@@ -43,15 +44,12 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.transaction-view-balance__button')
+  const sendScreenButton = await queryAsync($, 'button.btn-secondary.transaction-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
   const sendTitle = await queryAsync($, '.page-container__title')
   assert.equal(sendTitle[0].textContent, 'Send ETH', 'Send screen title is correct')
-
-  const sendCopy = await queryAsync($, '.page-container__subtitle')
-  assert.equal(sendCopy[0].textContent, 'Only send ETH to an Ethereum address.', 'Send screen has copy')
 
   const sendFromField = await queryAsync($, '.send-v2__form-field')
   assert.ok(sendFromField[0], 'send screen has a from field')
@@ -72,12 +70,30 @@ async function runSendFlowTest (assert, done) {
   const sendToAccountAddress = sendToFieldInput.val()
   assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
-  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
-  sendAmountField.find('.unit-input')[0].click()
-
+  const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(3)')
   const sendAmountFieldInput = await findAsync(sendAmountField, '.unit-input__input')
+
+  const amountMaxButton = await queryAsync($, '.send-v2__amount-max')
+  amountMaxButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+  assert.equal(sendAmountFieldInput.is(':disabled'), true, 'disabled the send amount input when max mode is on')
+
+  const gasPriceButtonGroup = await queryAsync($, '.gas-price-button-group--small')
+  const gasPriceButton = await gasPriceButtonGroup.find('button')[0]
+  const valueBeforeGasPriceChange = sendAmountFieldInput.prop('value')
+  gasPriceButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+
+  await timeout(1000)
+
+  assert.notEqual(valueBeforeGasPriceChange, sendAmountFieldInput.prop('value'), 'send amount value changes when gas price changes')
+
+  amountMaxButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+
+  sendAmountField.find('.unit-input').click()
   sendAmountFieldInput.val('5.1')
-  reactTriggerChange(sendAmountField.find('input')[0])
+  reactTriggerChange(sendAmountField.find('input')[1])
 
   let errorMessage = await queryAsync($, '.send-v2__error')
   assert.equal(errorMessage[0].textContent, 'Insufficient funds.', 'send should render an insufficient fund error message')
@@ -88,7 +104,7 @@ async function runSendFlowTest (assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
+  const sendButton = await queryAsync($, 'button.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
   sendButton[0].click()
   await timeout()
@@ -115,14 +131,14 @@ async function runSendFlowTest (assert, done) {
   sendToFieldInputInEdit[0].focus()
   sendToFieldInputInEdit.val('0xd85a4b6a394794842887b8284293d69163007bbb')
 
-  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(2)')
+  const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(3)')
   sendAmountFieldInEdit.find('.unit-input')[0].click()
 
   const sendAmountFieldInputInEdit = sendAmountFieldInEdit.find('.unit-input__input')
   sendAmountFieldInputInEdit.val('1.0')
   reactTriggerChange(sendAmountFieldInputInEdit[0])
 
-  const sendButtonInEdit = await queryAsync($, '.btn-primary.btn--large.page-container__footer-button')
+  const sendButtonInEdit = await queryAsync($, '.btn-secondary.btn--large.page-container__footer-button')
   assert.equal(sendButtonInEdit[0].textContent, 'Next', 'next button in edit rendered')
 
   selectState.val('send new ui')

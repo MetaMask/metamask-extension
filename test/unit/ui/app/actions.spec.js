@@ -44,7 +44,7 @@ describe('Actions', () => {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (password, object) {
+        encrypt: function (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
@@ -103,7 +103,7 @@ describe('Actions', () => {
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
 
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((_, callback) => {
         callback(new Error('error in submitPassword'))
       })
 
@@ -235,7 +235,7 @@ describe('Actions', () => {
 
       createNewVaultAndRestoreSpy = sinon.stub(background, 'createNewVaultAndRestore')
 
-      createNewVaultAndRestoreSpy.callsFake((password, seed, callback) => {
+      createNewVaultAndRestoreSpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
 
@@ -279,7 +279,7 @@ describe('Actions', () => {
       ]
 
       createNewVaultAndKeychainSpy = sinon.stub(background, 'createNewVaultAndKeychain')
-      createNewVaultAndKeychainSpy.callsFake((password, callback) => {
+      createNewVaultAndKeychainSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -342,7 +342,7 @@ describe('Actions', () => {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -414,7 +414,7 @@ describe('Actions', () => {
 
     it('displays warning error message when submitPassword in background errors', () => {
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -483,7 +483,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
       removeAccountSpy = sinon.stub(background, 'removeAccount')
-      removeAccountSpy.callsFake((address, callback) => {
+      removeAccountSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -522,7 +522,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      addNewKeyringSpy.callsFake((type, opts, callback) => {
+      addNewKeyringSpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
 
@@ -611,7 +611,7 @@ describe('Actions', () => {
       ]
 
       importAccountWithStrategySpy = sinon.stub(background, 'importAccountWithStrategy')
-      importAccountWithStrategySpy.callsFake((strategy, args, callback) => {
+      importAccountWithStrategySpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
 
@@ -668,7 +668,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
-      setCurrentCurrencySpy.callsFake((currencyCode, callback) => {
+      setCurrentCurrencySpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -720,7 +720,7 @@ describe('Actions', () => {
       ]
 
       signMessageSpy = sinon.stub(background, 'signMessage')
-      signMessageSpy.callsFake((msgData, callback) => {
+      signMessageSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -775,7 +775,7 @@ describe('Actions', () => {
       ]
 
       signPersonalMessageSpy = sinon.stub(background, 'signPersonalMessage')
-      signPersonalMessageSpy.callsFake((msgData, callback) => {
+      signPersonalMessageSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -812,7 +812,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'SHOW_CONF_TX_PAGE', transForward: true, id: undefined },
       ]
-      sendTransactionSpy.callsFake((txData, callback) => {
+      sendTransactionSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -906,7 +906,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      setSelectedAddressSpy.callsFake((address, callback) => {
+      setSelectedAddressSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -941,7 +941,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
-      setSelectedAddressSpy.callsFake((address, callback) => {
+      setSelectedAddressSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -980,7 +980,7 @@ describe('Actions', () => {
         { type: 'UPDATE_TOKENS', newTokens: undefined },
       ]
 
-      addTokenSpy.callsFake((address, symbol, decimals, image, callback) => {
+      addTokenSpy.callsFake((_, __, ___, ____, callback) => {
         callback(new Error('error'))
       })
 
@@ -1020,7 +1020,7 @@ describe('Actions', () => {
         { type: 'UPDATE_TOKENS', newTokens: undefined },
       ]
 
-      removeTokenSpy.callsFake((address, callback) => {
+      removeTokenSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1054,7 +1054,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 
-      setProviderTypeSpy.callsFake((type, callback) => {
+      setProviderTypeSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1087,7 +1087,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 
-      setRpcTargetSpy.callsFake((newRpc, chainId, ticker, nickname, callback) => {
+      setRpcTargetSpy.callsFake((_, __, ___, ____, callback) => {
         callback(new Error('error'))
       })
 
@@ -1134,7 +1134,7 @@ describe('Actions', () => {
       exportAccountSpy = sinon.spy(background, 'exportAccount')
 
       return store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
-        .then((result) => {
+        .then(() => {
           assert(submitPasswordSpy.calledOnce)
           assert(exportAccountSpy.calledOnce)
           assert.deepEqual(store.getActions(), expectedActions)
@@ -1150,7 +1150,7 @@ describe('Actions', () => {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1169,7 +1169,7 @@ describe('Actions', () => {
       ]
 
       exportAccountSpy = sinon.stub(background, 'exportAccount')
-      exportAccountSpy.callsFake((address, callback) => {
+      exportAccountSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1196,7 +1196,6 @@ describe('Actions', () => {
 
   describe('#pairUpdate', () => {
     beforeEach(() => {
-
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/marketinfo/btc_eth')
@@ -1206,10 +1205,6 @@ describe('Actions', () => {
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/coins')
         .reply(200)
-      })
-
-    afterEach(() => {
-      nock.restore()
     })
 
     it('', () => {
@@ -1251,7 +1246,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      setFeatureFlagSpy.callsFake((feature, activated, callback) => {
+      setFeatureFlagSpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
 
@@ -1305,7 +1300,7 @@ describe('Actions', () => {
       ]
 
       getTransactionCountSpy = sinon.stub(global.ethQuery, 'getTransactionCount')
-      getTransactionCountSpy.callsFake((address, callback) => {
+      getTransactionCountSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1343,7 +1338,7 @@ describe('Actions', () => {
         { type: 'SET_USE_BLOCKIE', value: undefined },
       ]
 
-      setUseBlockieSpy.callsFake((val, callback) => {
+      setUseBlockieSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1390,7 +1385,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
       setCurrentLocaleSpy = sinon.stub(background, 'setCurrentLocale')
-      setCurrentLocaleSpy.callsFake((key, callback) => {
+      setCurrentLocaleSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 

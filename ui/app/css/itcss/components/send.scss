@@ -520,6 +520,10 @@
     color: $red;
   }
 
+  &__error-amount {
+    margin-top: 5px;
+  }
+
   &__warning {
     font-size: 12px;
     line-height: 12px;
@@ -549,12 +553,18 @@
   }
 
   &__form-row {
-    margin: 14.5px 18px 0px;
+    margin: 8px 18px 0px;
     position: relative;
     display: flex;
     flex-flow: row;
     flex: 1 0 auto;
     justify-content: space-between;
+  }
+
+  &__form-field-container {
+    display: flex;
+    flex-direction: column;
+    width: 277px;
   }
 
   &__form-field {
@@ -592,8 +602,8 @@
     flex: 0 0 auto;
   }
 
-  &__from-dropdown {
-    height: 73px;
+  &__from-dropdown,
+  &__asset-dropdown {
     width: 100%;
     border: 1px solid $alto;
     border-radius: 4px;
@@ -628,6 +638,112 @@
     }
   }
 
+  &__from-dropdown {
+    height: 73px;
+  }
+
+  &__asset-dropdown {
+    height: 54px;
+    border: none;
+
+    &__asset {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding: 0 8px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
+    }
+
+    &__asset-icon {
+      .identicon {
+        border: 1px solid $alto;
+      }
+    }
+
+    &__asset-data {
+      display: flex;
+      flex-flow: column nowrap;
+      margin-left: 8px;
+    }
+
+    &__symbol {
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    &__name {
+      display: flex;
+      flex-flow: row nowrap;
+      font-size: 12px;
+
+      &__label {
+        margin-right: .25rem;
+      }
+    }
+
+    &__close-area {
+      z-index: 2000;
+    }
+
+    &__list {
+      z-index: 2050;
+      position: absolute;
+      height: 220px;
+      width: 100%;
+      border: 1px solid $geyser;
+      border-radius: 4px;
+      background-color: $white;
+      box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+      top: 65px;
+      left: 0;
+      box-sizing: content-box;
+      overflow-y: scroll;
+      margin-top: 0;
+      padding: 4px 0;
+
+      .send-v2__asset-dropdown__asset {
+        padding: 8px;
+      }
+    }
+
+    &__input-wrapper {
+      border: 1px solid $alto;
+      border-radius: 4px;
+      height: 100%;
+
+      &--opened {
+        position: relative;
+        z-index: 2050;
+      }
+
+      .send-v2__asset-dropdown__asset {
+        height: 100%;
+        &:hover {
+          background-color: $white;
+        }
+      }
+    }
+
+    &__input {
+      z-index: 1025;
+      position: relative;
+      height: 54px;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      background-color: $white;
+      color: $tundora;
+      padding: 10px;
+      font-family: Roboto;
+      font-size: 16px;
+      line-height: 21px;
+    }
+  }
+
   &__to-autocomplete {
     position: relative;
 
@@ -657,7 +773,43 @@
     }
   }
 
-  &__to-autocomplete, &__memo-text-area, &__hex-data {
+  &__to-autocomplete {
+    display: flex;
+    flex-direction: column;
+    z-index: 1025;
+    position: relative;
+    height: 54px;
+    width: 100%;
+    border: 1px solid $alto;
+    border-radius: 4px;
+    background-color: $white;
+    color: $tundora;
+    padding: 0 10px;
+    font-family: Roboto;
+    line-height: 21px;
+
+    &__input {
+      font-size: 16px;
+      height: 100%;
+      border: none;
+    }
+
+    &__resolved {
+      font-size: 12px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      height: 30px;
+      cursor: pointer;
+
+      + .send-v2__to-autocomplete__qr-code {
+        top: 2px;
+        right: 0;
+      }
+    }
+  }
+
+  &__memo-text-area, &__hex-data {
     &__input {
       z-index: 1025;
       position: relative;
@@ -675,12 +827,47 @@
   }
 
   &__amount-max {
-    color: $curious-blue;
     font-family: Roboto;
     font-size: 12px;
-    left: 8px;
-    border: none;
-    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 20px;
+    margin-top: 5px;
+
+    &__button {
+      width: 56px;
+      height: 20px;
+      position: absolute;
+      border: 2px solid #B0D7F2;
+      border-radius: 6px;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2f9ae0;
+
+      &__disabled {
+        color: #B0D7F2;
+        cursor: auto;
+      }
+    }
+
+    input:checked + &__button {
+      background-color: #037DD6;
+      border: 2px solid #037DD6;
+      color: #fff;
+    }
+  }
+
+  &__amount-max input {
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
 
   &__gas-fee-display {
@@ -935,7 +1122,7 @@
   font-size: 14px;
   color: #2f9ae0;
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 5px;
 }
 
 .sliders-icon-container {

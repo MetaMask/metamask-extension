@@ -65,6 +65,7 @@
 .gas-price-button-group--small {
   display: flex;
   justify-content: stretch;
+  height: 54px;
 
   @media screen and (max-width: $break-small) {
     max-width: 260px;
@@ -80,10 +81,14 @@
 
   &__label {
     font-weight: 500;
+    line-height: 16px;
+    padding-bottom: 4px;
   }
 
   &__primary-currency {
     font-size: 12px;
+    line-height: 12px;
+    padding-bottom: 2px;
 
     @media screen and (max-width: 575px) {
       font-size: 10px;
@@ -92,6 +97,8 @@
 
   &__secondary-currency {
     font-size: 12px;
+    line-height: 12px;
+    padding-bottom: 2px;
 
     @media screen and (max-width: 575px) {
       font-size: 10px;
@@ -99,19 +106,13 @@
   }
 
   &__loading-container {
-    height: 78px;
+    height: 54px;
   }
 
   .button-group__button, .button-group__button--active {
-    height: 78px;
     background: white;
     color: $scorpion;
-    padding-top: 9px;
-    padding-left: 8.5px;
-
-    @media screen and (max-width: $break-small) {
-      padding-left: 4px;
-    }
+    padding: 0 4px;
 
     div {
       display: flex;

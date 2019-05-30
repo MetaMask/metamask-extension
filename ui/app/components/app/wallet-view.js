@@ -190,7 +190,7 @@ WalletView.prototype.render = function () {
           identities[selectedAddress].name,
         ]),
 
-        h('button.btn-clear.wallet-view__details-button.allcaps', this.context.t('details')),
+        h('button.btn-secondary.wallet-view__details-button', this.context.t('details')),
       ]),
     ]),
 

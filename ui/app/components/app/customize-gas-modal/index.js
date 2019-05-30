@@ -18,11 +18,11 @@ const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_PRICE_GWEI,
-} = require('../send/send.constants')
+} = require('../../../pages/send/send.constants')
 
 const {
   isBalanceSufficient,
-} = require('../send/send.utils')
+} = require('../../../pages/send/send.utils')
 
 const {
   conversionUtil,
@@ -47,7 +47,7 @@ const {
 const {
   getGasPrice,
   getGasLimit,
-} = require('../send/send.selectors')
+} = require('../../../pages/send/send.selectors')
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
@@ -382,7 +382,7 @@ CustomizeGasModal.prototype.render = function () {
             onClick: this.props.hideModal,
           }, [this.context.t('cancel')]),
           h(Button, {
-            type: 'primary',
+            type: 'secondary',
             className: 'send-v2__customize-gas__save',
             onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
             disabled: error,

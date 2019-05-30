@@ -20,8 +20,9 @@ const {
   KOVAN,
   MAINNET,
   LOCALHOST,
+  GOERLI,
 } = require('./enums')
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -45,9 +46,8 @@ const defaultNetworkConfig = {
 
 module.exports = class NetworkController extends EventEmitter {
 
-  constructor (opts = {}, platform) {
+  constructor (opts = {}) {
     super()
-    this.platform = platform
 
     // parse options
     const providerConfig = opts.provider || defaultProviderConfig
@@ -129,21 +129,22 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
+  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
       chainId,
       ticker,
       nickname,
+      rpcPrefs,
     }
     this.providerConfig = providerConfig
   }
 
-  async setProviderType (type) {
+  async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
     assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
-    const providerConfig = { type }
+    const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
 
@@ -189,7 +190,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({ network: type, platform: this.platform })
+    const networkClient = createInfuraClient({ network: type })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {
@@ -200,13 +201,13 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureLocalhostProvider () {
     log.info('NetworkController - configureLocalhostProvider')
-    const networkClient = createLocalhostClient({ platform: this.platform })
+    const networkClient = createLocalhostClient()
     this._setNetworkClient(networkClient)
   }
 
   _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
-    const networkClient = createJsonRpcClient({ rpcUrl, platform: this.platform })
+    const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
       chainId: chainId,

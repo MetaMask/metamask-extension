@@ -36,6 +36,20 @@ export default class ImportWithSeedPhrase extends PureComponent {
       .join(' ')
   }
 
+  componentWillMount () {
+    window.onbeforeunload = () => this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Import Seed Phrase',
+        name: 'Close window on import screen',
+      },
+      customVariables: {
+        errorLabel: 'Seed Phrase Error',
+        errorMessage: this.state.seedPhraseError,
+      },
+    })
+  }
+
   handleSeedPhraseChange (seedPhrase) {
     let seedPhraseError = ''
 
@@ -172,6 +186,10 @@ export default class ImportWithSeedPhrase extends PureComponent {
                   action: 'Import Seed Phrase',
                   name: 'Go Back from Onboarding Import',
                 },
+                customVariables: {
+                  errorLabel: 'Seed Phrase Error',
+                  errorMessage: seedPhraseError,
+                },
               })
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
@@ -243,7 +261,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           </span>
         </div>
         <Button
-          type="confirm"
+          type="primary"
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
           onClick={this.handleImport}

@@ -1,5 +1,7 @@
 @import 'info-tab/index';
 
+@import 'networks-tab/index';
+
 @import 'settings-tab/index';
 
 .settings-page {
@@ -13,12 +15,50 @@
     flex-flow: row nowrap;
     padding: 12px 24px;
     align-items: center;
-    border-bottom: 1px solid $alto;
     flex: 0 0 auto;
 
     &__title {
       flex: 1 0 auto;
       font-size: 24px;
+    }
+  }
+
+  &__subheader {
+    padding: 16px 4px;
+    font-size: 20px;
+    border-bottom: 1px solid $alto;
+    margin-right: 24px;
+
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
+  }
+
+  &__sub-header {
+    height: 72px;
+    border-bottom: 1px solid #D8D8D8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (max-width: 575px) {
+      height: 69px;
+      position: relative;
+      text-align: center;
+    }
+  }
+
+  &__sub-header-text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 24px;
+    color: black;
+
+    @media screen and (max-width: 575px) {
+      font-size: 16px;
+      width: 100%;
     }
   }
 
@@ -49,8 +89,9 @@
   &__content {
     display: flex;
     flex-flow: row nowrap;
-    height: auto;
+    height: 100%;
     overflow: auto;
+    border-top: 1px solid #D8D8D8;
 
     &__tabs {
       display: flex;
@@ -58,9 +99,15 @@
       flex: 1 1 auto;
 
       @media screen and (min-width: 576px) {
-        flex: 0 0 32%;
+        flex: 0 0 40%;
         max-width: 210px;
-        border-right: 1px solid $alto;
+        padding-top: 8px;
+      }
+
+      .tab-bar__tab {
+        @media screen and (min-width: 576px) {
+          padding: 16px 24px 0;
+        }
       }
     }
 
@@ -76,6 +123,10 @@
 
   &__body {
     padding: 12px 24px;
+    
+    @media screen and (min-width: 576px) {
+      padding: 12px;
+    }
   }
 
   &__content-row {
@@ -89,7 +140,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 0 5px;
     min-height: 71px;
 
     @media screen and (max-width: 575px) {

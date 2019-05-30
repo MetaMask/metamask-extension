@@ -17,10 +17,7 @@
   }
 
   &__button {
-    font-size: 0.75rem;
+    @extend %small-link;
     margin: 1rem;
-    text-transform: uppercase;
-    color: $curious-blue;
-    cursor: pointer;
   }
 }

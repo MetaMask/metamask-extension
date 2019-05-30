@@ -2,6 +2,13 @@
 
 When publishing a new version of MetaMask, we follow this procedure:
 
+## Overview
+
+The below diagram outlines our process for design, development, and release. Building MetaMask is a community affair, and many steps of the process invite participation from external contributors as indicated. All QA, code review, and release of new versions is done by members of the core MetaMask team.
+
+<img width="664" alt="mm-dev-process" src="https://user-images.githubusercontent.com/1016190/56308059-36906000-60fb-11e9-8e61-6655bca0c54f.png">
+
+
 ## Preparation
 
 We try to ensure certain criteria are met before deploying:
@@ -15,7 +22,7 @@ We try to ensure certain criteria are met before deploying:
 
 Version can be automatically incremented [using our bump script](./bumping-version.md).
 
-npm run version:bump $BUMP_TYPE` where `$BUMP_TYPE` is one of `major`, `minor`, or `patch`.
+npm run version:bump `$BUMP_TYPE` where `$BUMP_TYPE` is one of `major`, `minor`, or `patch`.
 
 ## Preparing for Sensitive Changes
 

@@ -5,12 +5,13 @@ import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
-import { getMetaMaskAccounts, getNetworkIdentifier } from '../../selectors/selectors'
+import IdleTimer from 'react-idle-timer'
+import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../../components/app/send/send.container')
+const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
@@ -98,7 +99,9 @@ class Routes extends Component {
   }
 
   renderRoutes () {
-    return (
+    const { autoLogoutTimeLimit, setLastActiveTime } = this.props
+
+    const routes = (
       <Switch>
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
@@ -116,6 +119,16 @@ class Routes extends Component {
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
+
+    if (autoLogoutTimeLimit > 0) {
+      return (
+        <IdleTimer onAction={setLastActiveTime} throttle={1000}>
+          {routes}
+        </IdleTimer>
+      )
+    }
+
+    return routes
   }
 
   onInitializationUnlockPage () {
@@ -267,6 +280,10 @@ class Routes extends Component {
       name = this.context.t('connectingToKovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('connectingToLocalhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('connectingToGoerli')
     } else {
       name = this.context.t('connectingTo', [providerId])
     }
@@ -288,6 +305,10 @@ class Routes extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost')
+    } else if (providerName === 'goerli') {
+      name = this.context.t('goerli')
     } else {
       name = this.context.t('unknownNetwork')
     }
@@ -314,6 +335,7 @@ Routes.propTypes = {
   networkDropdownOpen: PropTypes.bool,
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
+  setLastActiveTime: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -336,6 +358,7 @@ Routes.propTypes = {
   t: PropTypes.func,
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
+  autoLogoutTimeLimit: PropTypes.number,
 }
 
 function mapStateToProps (state) {
@@ -350,6 +373,7 @@ function mapStateToProps (state) {
   } = appState
 
   const accounts = getMetaMaskAccounts(state)
+  const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
 
   const {
     identities,
@@ -401,6 +425,7 @@ function mapStateToProps (state) {
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
     providerId: getNetworkIdentifier(state),
+    autoLogoutTimeLimit,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -410,7 +435,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     dispatch,
     hideSidebar: () => dispatch(actions.hideSidebar()),
@@ -419,6 +444,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
+    setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }
 }
 

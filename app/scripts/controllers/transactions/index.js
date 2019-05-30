@@ -3,10 +3,21 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
+const {
+  TOKEN_METHOD_APPROVE,
+  TOKEN_METHOD_TRANSFER,
+  TOKEN_METHOD_TRANSFER_FROM,
+  SEND_ETHER_ACTION_KEY,
+  DEPLOY_CONTRACT_ACTION_KEY,
+  CONTRACT_INTERACTION_KEY,
+} = require('../../../../ui/app/helpers/constants/transactions.js')
 const TransactionStateManager = require('./tx-state-manager')
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
-const NonceTracker = require('./nonce-tracker')
+const NonceTracker = require('nonce-tracker')
 const txUtils = require('./lib/util')
 const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
@@ -180,9 +191,11 @@ class TransactionController extends EventEmitter {
     }
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
+    const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPE_STANDARD,
+      transactionCategory,
     })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
@@ -191,7 +204,7 @@ class TransactionController extends EventEmitter {
       // check whether recipient account is blacklisted
       recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
       // add default tx params
-      txMeta = await this.addTxGasDefaults(txMeta)
+      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
       txMeta.loadingDefaults = false
@@ -211,7 +224,7 @@ class TransactionController extends EventEmitter {
   @param txMeta {Object} - the txMeta object
   @returns {Promise<object>} resolves with txMeta
 */
-  async addTxGasDefaults (txMeta) {
+  async addTxGasDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
     // ensure value
     txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
@@ -222,7 +235,7 @@ class TransactionController extends EventEmitter {
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     // set gasLimit
-    return await this.txGasUtil.analyzeGasUsage(txMeta)
+    return await this.txGasUtil.analyzeGasUsage(txMeta, getCodeResponse)
   }
 
   /**
@@ -542,6 +555,7 @@ class TransactionController extends EventEmitter {
     })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:confirmed', (txId) => this.confirmTransaction(txId))
+    this.pendingTxTracker.on('tx:dropped', this.txStateManager.setTxStatusDropped.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
@@ -553,6 +567,43 @@ class TransactionController extends EventEmitter {
       txMeta.retryCount++
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
+  }
+
+  /**
+    Returns a "type" for a transaction out of the following list: simpleSend, tokenTransfer, tokenApprove,
+    contractDeployment, contractMethodCall
+  */
+  async _determineTransactionCategory (txParams) {
+    const { data, to } = txParams
+    const { name } = data && abiDecoder.decodeMethod(data) || {}
+    const tokenMethodName = [
+      TOKEN_METHOD_APPROVE,
+      TOKEN_METHOD_TRANSFER,
+      TOKEN_METHOD_TRANSFER_FROM,
+    ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
+
+    let result
+    let code
+    if (!txParams.data) {
+      result = SEND_ETHER_ACTION_KEY
+    } else if (tokenMethodName) {
+      result = tokenMethodName
+    } else if (!to) {
+      result = DEPLOY_CONTRACT_ACTION_KEY
+    } else {
+      try {
+        code = await this.query.getCode(to)
+      } catch (e) {
+        code = null
+        log.warn(e)
+      }
+      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+      const codeIsEmpty = !code || code === '0x' || code === '0x0'
+
+      result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY
+    }
+
+    return { transactionCategory: result, getCodeResponse: code }
   }
 
   /**

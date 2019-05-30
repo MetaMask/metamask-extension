@@ -42,7 +42,7 @@ const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
 const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
 const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
-const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
+const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
 
 // Setter Maps
 const toBigNumber = {

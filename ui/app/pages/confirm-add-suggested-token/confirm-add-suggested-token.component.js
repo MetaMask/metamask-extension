@@ -103,7 +103,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               { this.context.t('cancel') }
             </Button>
             <Button
-              type="primary"
+              type="secondary"
               large
               className="page-container__footer-button"
               onClick={() => {

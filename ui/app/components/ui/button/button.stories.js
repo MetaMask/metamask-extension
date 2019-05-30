@@ -2,57 +2,70 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import Button from '.'
-import { text } from '@storybook/addon-knobs/react'
+import { text, boolean } from '@storybook/addon-knobs/react'
 
+// ', 'secondary', 'default', 'warning', 'danger', 'danger-primary', 'link'], 'primary')}
 storiesOf('Button', module)
-  .add('primary', () =>
+  .add('Button - Primary', () =>
     <Button
       onClick={action('clicked')}
       type="primary"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
   )
-  .add('secondary', () =>
+  .add('Button - Secondary', () =>
     <Button
       onClick={action('clicked')}
       type="secondary"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
   )
-  .add('default', () => (
+  .add('Button - Default', () =>
     <Button
       onClick={action('clicked')}
       type="default"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
-  ))
-  .add('large primary', () => (
+  )
+  .add('Button - Warning', () =>
     <Button
       onClick={action('clicked')}
-      type="primary"
-      large
+      type="warning"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
-  ))
-  .add('large secondary', () => (
+  )
+  .add('Button - Danger', () =>
     <Button
       onClick={action('clicked')}
-      type="secondary"
-      large
+      type="danger"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
-  ))
-  .add('large default', () => (
+  )
+  .add('Button - Danger Primary', () =>
     <Button
       onClick={action('clicked')}
-      type="default"
-      large
+      type="danger-primary"
+      disabled={boolean('disabled', false)}
     >
       {text('text', 'Click me')}
     </Button>
-  ))
+  )
+  .add('Button - Link', () =>
+    <Button
+      onClick={action('clicked')}
+      type="link"
+      disabled={boolean('disabled', false)}
+    >
+      {text('text', 'Click me')}
+    </Button>
+  )

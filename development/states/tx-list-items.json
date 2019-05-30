@@ -1058,7 +1058,9 @@
     "currentLocale": "en",
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true
-    }
+    },
+    "completedUiMigration": true,
+    "frequentRpcListDetail": []
   },
   "appState": {
     "menuOpen": false,

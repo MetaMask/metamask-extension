@@ -211,7 +211,7 @@ export default class NewAccount extends PureComponent {
             </span>
           </div>
           <Button
-            type="confirm"
+            type="primary"
             className="first-time-flow__button"
             disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}

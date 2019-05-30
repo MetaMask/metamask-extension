@@ -48,11 +48,11 @@ async function start (fileRegEx, testGenerator) {
 }
 */
 
-async function startContainer (fileRegEx, testGenerator) {
+async function startContainer (fileRegEx) {
   const fileNames = await getAllFileNames('./ui/app')
   const sFiles = fileNames.filter(name => name.match(fileRegEx))
 
-  async.each(sFiles, async (sFile, cb) => {
+  async.each(sFiles, async (sFile) => {
     console.log(`sFile`, sFile)
     const [, sRootPath, sPath] = sFile.match(/^(.+\/)([^/]+)$/)
 
@@ -91,7 +91,7 @@ async function startContainer (fileRegEx, testGenerator) {
           const proxyquireObject = ('{\n  ' + result
             .match(/import\s{[\s\S]+?}\sfrom\s.+/g)
             .map(s => s.replace(/\n/g, ''))
-            .map((s, i) => {
+            .map((s) => {
               const proxyKeys = s.match(/{.+}/)[0].match(/\w+/g)
               return '\'' + s.match(/'(.+)'/)[1] + '\': { ' + (proxyKeys.length > 1
                   ? '\n    ' + proxyKeys.join(': () => {},\n    ') + ': () => {},\n '
