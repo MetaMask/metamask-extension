@@ -1418,7 +1418,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, getSiteMetadata = () => {}) {
+  setupProviderEngine (origin, getSiteMetadata = async () => { name: 'Unknown' }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider

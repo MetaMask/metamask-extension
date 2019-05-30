@@ -29,7 +29,7 @@ function incomingConnection (domain, getSiteMetadata) {
 
 This method is used to enhance our confirmation screens with images and text representing the requesting domain.
 
-It should return an object with the following properties:
+It should return a promise that resolves with an object with the following properties:
 
 - `name`: The requesting site's name.
 - `icon`: A URI representing the site's logo.
