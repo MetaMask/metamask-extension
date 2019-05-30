@@ -1397,7 +1397,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} origin - The URI of the requesting resource.
    */
   setupProviderConnection (outStream, origin, publicApi) {
-    const engine = this.setupProviderEngine(origin, publicApi)
+    const getSiteMetadata = publicApi && publicApi.getSiteMetadata
+    const engine = this.setupProviderEngine(origin, getSiteMetadata)
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1417,7 +1418,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, publicApi) {
+  setupProviderEngine (origin, getSiteMetadata = noop) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1440,7 +1441,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // requestAccounts
     engine.push(this.providerApprovalController.createMiddleware({
       origin,
-      getSiteMetadata: publicApi && publicApi.getSiteMetadata,
+      getSiteMetadata,
     }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
@@ -1828,3 +1829,5 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.keyringController.setLocked()
   }
 }
+
+function noop () => {}
