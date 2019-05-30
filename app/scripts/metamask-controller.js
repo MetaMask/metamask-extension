@@ -1419,7 +1419,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, getSiteMetadata = async () => { name: 'Unknown' }) {
+  setupProviderEngine (origin, getSiteMetadata = async () => { return { name: 'Unknown' } }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1454,20 +1454,6 @@ module.exports = class MetamaskController extends EventEmitter {
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
-
-    // setup connection
-    const providerStream = createEngineStream({ engine })
-
-    pump(
-      outStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // cleanup filter polyfill middleware
-        filterMiddleware.destroy()
-        if (err) log.error(err)
-      }
-    )
   }
 
   /**
