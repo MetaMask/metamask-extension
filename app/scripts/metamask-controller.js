@@ -1409,6 +1409,7 @@ module.exports = class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // cleanup filter polyfill middleware
+        const filterMiddleware = engine._middleware.filter(mid => mid.name === 'filterMiddleware')[0]
         filterMiddleware.destroy()
         if (err) log.error(err)
       }
@@ -1426,6 +1427,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
+    filterMiddleware.name = 'filterMiddleware'
+
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
     subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
