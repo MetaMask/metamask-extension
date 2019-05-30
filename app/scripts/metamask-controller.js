@@ -1397,6 +1397,27 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} origin - The URI of the requesting resource.
    */
   setupProviderConnection (outStream, origin, publicApi) {
+    const engine = this.setupProviderEngine(origin, publicApi)
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // cleanup filter polyfill middleware
+        filterMiddleware.destroy()
+        if (err) log.error(err)
+      }
+    )
+  }
+
+  /**
+   * A method for creating a provider that is safely restricted for the requesting domain.
+   **/
+  setupProviderEngine (origin, publicApi) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1423,6 +1444,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
+    return engine
 
     // setup connection
     const providerStream = createEngineStream({ engine })
