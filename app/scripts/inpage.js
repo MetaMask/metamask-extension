@@ -33,8 +33,8 @@ inpageProvider.setMaxListeners(100)
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
     inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
-      if (error) {
-        reject(error)
+      if (error || response.error) {
+        reject(error || response.error)
       } else {
         resolve(response.result)
       }
