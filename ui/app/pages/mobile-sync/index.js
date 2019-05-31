@@ -16,6 +16,7 @@ import LoadingScreen from '../../components/ui/loading-screen'
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
+const KEYS_GENERATION_TIME = 30000
 
 class MobileSyncPage extends Component {
   static propTypes = {
@@ -36,6 +37,8 @@ class MobileSyncPage extends Component {
       error: null,
       syncing: false,
       completed: false,
+      channelName: undefined,
+      cipherKey: undefined,
     }
 
     this.syncing = false
@@ -53,28 +56,37 @@ class MobileSyncPage extends Component {
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
       .then(seedWords => {
-        this.generateCipherKeyAndChannelName()
+        this.startKeysGeneration()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
-        this.initWebsockets()
       })
       .catch(error => this.setState({ error: error.message }))
   }
 
+  startKeysGeneration () {
+    this.handle && clearTimeout(this.handle)
+    this.disconnectWebsockets()
+    this.generateCipherKeyAndChannelName()
+    this.initWebsockets()
+    this.handle = setTimeout(() => {
+      this.startKeysGenerator()
+    }, KEYS_GENERATION_TIME)
+  }
+
   generateCipherKeyAndChannelName () {
-    this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
-    this.channelName = `mm-${PubNub.generateUUID()}`
+    const cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    const channelName = `mm-${PubNub.generateUUID()}`
+    this.setState({cipherKey, channelName})
   }
 
   initWithCipherKeyAndChannelName (cipherKey, channelName) {
-    this.cipherKey = cipherKey
-    this.channelName = channelName
+    this.setState({cipherKey, channelName})
   }
 
   initWebsockets () {
     this.pubnub = new PubNub({
       subscribeKey: process.env.PUBNUB_SUB_KEY,
       publishKey: process.env.PUBNUB_PUB_KEY,
-      cipherKey: this.cipherKey,
+      cipherKey: this.state.cipherKey,
       ssl: true,
     })
 
@@ -82,13 +94,14 @@ class MobileSyncPage extends Component {
       message: (data) => {
         const {channel, message} = data
         // handle message
-        if (channel !== this.channelName || !message) {
+        if (channel !== this.state.channelName || !message) {
           return false
         }
 
         if (message.event === 'start-sync') {
             this.startSyncing()
         } else if (message.event === 'connection-info') {
+            this.handle && clearTimeout(this.handle)
             this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
             this.disconnectWebsockets()
             this.initWebsockets()
@@ -100,7 +113,7 @@ class MobileSyncPage extends Component {
     })
 
     this.pubnub.subscribe({
-      channels: [this.channelName],
+      channels: [this.state.channelName],
       withPresence: false,
     })
 
@@ -136,7 +149,7 @@ class MobileSyncPage extends Component {
             event: 'error-sync',
             data: errorMsg,
           },
-          channel: this.channelName,
+          channel: this.state.channelName,
           sendByPost: false, // true to send via post
           storeInHistory: false,
       },
@@ -192,7 +205,7 @@ class MobileSyncPage extends Component {
               totalPkg: count,
               currentPkg: pkg,
             },
-            channel: this.channelName,
+            channel: this.state.channelName,
             sendByPost: false, // true to send via post
             storeInHistory: false,
         },
@@ -281,7 +294,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`metamask-sync:${this.channelName}|@|${this.cipherKey}`)
+    qrImage.addData(`metamask-sync:${this.state.channelName}|@|${this.state.cipherKey}`)
     qrImage.make()
 
     const { t } = this.context
