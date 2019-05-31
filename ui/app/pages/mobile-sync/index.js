@@ -65,6 +65,11 @@ class MobileSyncPage extends Component {
     this.channelName = `mm-${PubNub.generateUUID()}`
   }
 
+  initWithCipherKeyAndChannelName (cipherKey, channelName) {
+    this.cipherKey = cipherKey
+    this.channelName = channelName
+  }
+
   initWebsockets () {
     this.pubnub = new PubNub({
       subscribeKey: process.env.PUBNUB_SUB_KEY,
@@ -83,6 +88,10 @@ class MobileSyncPage extends Component {
 
         if (message.event === 'start-sync') {
             this.startSyncing()
+        } else if (message.event === 'connection-info') {
+            this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
+            this.disconnectWebsockets()
+            this.initWebsockets()
         } else if (message.event === 'end-sync') {
             this.disconnectWebsockets()
             this.setState({syncing: false, completed: true})
