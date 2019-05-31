@@ -26,7 +26,6 @@ const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const AppStateController = require('./controllers/app-state')
-const CurrencyController = require('./controllers/currency')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
@@ -56,6 +55,7 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const {
   AddressBookController,
+  CurrencyRateController,
   ShapeShiftController,
   PhishingController,
 } = require('gaba')
@@ -109,11 +109,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // currency controller
-    this.currencyController = new CurrencyController({
-      initState: initState.CurrencyController,
-    })
-    this.currencyController.updateConversionRate()
-    this.currencyController.scheduleConversionInterval()
+    this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
 
     // infura controller
     this.infuraController = new InfuraController({
@@ -130,7 +126,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
-      currency: this.currencyController.store,
+      currency: this.currencyRateController,
       preferences: this.preferencesController.store,
     })
 
@@ -232,8 +228,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
-      const currentCurrency = this.currencyController.getCurrentCurrency()
-      this.setCurrentCurrency(currentCurrency, function () {})
+      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
     })
     this.balancesController.updateAllBalances()
 
@@ -262,7 +257,7 @@ module.exports = class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyController.store,
+      CurrencyController: this.currencyRateController,
       ShapeShiftController: this.shapeshiftController,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
@@ -284,7 +279,7 @@ module.exports = class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyController.store,
+      CurrencyController: this.currencyRateController,
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
@@ -1596,16 +1591,13 @@ module.exports = class MetamaskController extends EventEmitter {
   setCurrentCurrency (currencyCode, cb) {
     const { ticker } = this.networkController.getNetworkConfig()
     try {
-      this.currencyController.setNativeCurrency(ticker)
-      this.currencyController.setCurrentCurrency(currencyCode)
-      this.currencyController.updateConversionRate()
-      const data = {
-        nativeCurrency: ticker || 'ETH',
-        conversionRate: this.currencyController.getConversionRate(),
-        currentCurrency: this.currencyController.getCurrentCurrency(),
-        conversionDate: this.currencyController.getConversionDate(),
+      const currencyState = {
+        nativeCurrency: ticker,
+        currentCurrency: currencyCode,
       }
-      cb(null, data)
+      this.currencyRateController.update(currencyState)
+      this.currencyRateController.configure(currencyState)
+      cb(null, this.currencyRateController.state)
     } catch (err) {
       cb(err)
     }
