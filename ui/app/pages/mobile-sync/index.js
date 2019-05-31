@@ -68,7 +68,7 @@ class MobileSyncPage extends Component {
     this.generateCipherKeyAndChannelName()
     this.initWebsockets()
     this.handle = setTimeout(() => {
-      this.startKeysGenerator()
+      this.startKeysGeneration()
     }, KEYS_GENERATION_TIME)
   }
 
