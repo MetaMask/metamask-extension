@@ -308,6 +308,7 @@ const buildJsFiles = [
   'contentscript',
   'background',
   'ui',
+  'notification',
   'phishing-detect',
 ]
 
