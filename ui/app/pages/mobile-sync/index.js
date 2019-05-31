@@ -73,20 +73,21 @@ class MobileSyncPage extends Component {
   }
 
   generateCipherKeyAndChannelName () {
-    const cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
-    const channelName = `mm-${PubNub.generateUUID()}`
-    this.setState({cipherKey, channelName})
+    this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    this.channelName = `mm-${PubNub.generateUUID()}`
+    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
   }
 
   initWithCipherKeyAndChannelName (cipherKey, channelName) {
-    this.setState({cipherKey, channelName})
+    this.cipherKey = cipherKey
+    this.channelName = channelName
   }
 
   initWebsockets () {
     this.pubnub = new PubNub({
       subscribeKey: process.env.PUBNUB_SUB_KEY,
       publishKey: process.env.PUBNUB_PUB_KEY,
-      cipherKey: this.state.cipherKey,
+      cipherKey: this.cipherKey,
       ssl: true,
     })
 
@@ -94,7 +95,7 @@ class MobileSyncPage extends Component {
       message: (data) => {
         const {channel, message} = data
         // handle message
-        if (channel !== this.state.channelName || !message) {
+        if (channel !== this.channelName || !message) {
           return false
         }
 
@@ -102,8 +103,8 @@ class MobileSyncPage extends Component {
             this.startSyncing()
         } else if (message.event === 'connection-info') {
             this.handle && clearTimeout(this.handle)
-            this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
             this.disconnectWebsockets()
+            this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
             this.initWebsockets()
         } else if (message.event === 'end-sync') {
             this.disconnectWebsockets()
@@ -113,7 +114,7 @@ class MobileSyncPage extends Component {
     })
 
     this.pubnub.subscribe({
-      channels: [this.state.channelName],
+      channels: [this.channelName],
       withPresence: false,
     })
 
@@ -149,7 +150,7 @@ class MobileSyncPage extends Component {
             event: 'error-sync',
             data: errorMsg,
           },
-          channel: this.state.channelName,
+          channel: this.channelName,
           sendByPost: false, // true to send via post
           storeInHistory: false,
       },
@@ -205,7 +206,7 @@ class MobileSyncPage extends Component {
               totalPkg: count,
               currentPkg: pkg,
             },
-            channel: this.state.channelName,
+            channel: this.channelName,
             sendByPost: false, // true to send via post
             storeInHistory: false,
         },
