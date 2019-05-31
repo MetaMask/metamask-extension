@@ -230,7 +230,7 @@
     "file-loader": "^1.1.11",
     "fs-extra": "^6.0.1",
     "fs-promise": "^2.0.3",
-    "gaba": "^1.0.1",
+    "gaba": "^1.3.0",
     "ganache-cli": "^6.1.0",
     "ganache-core": "^2.5.3",
     "geckodriver": "^1.14.1",
