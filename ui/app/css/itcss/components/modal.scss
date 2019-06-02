@@ -370,6 +370,20 @@
       height: 0;
     }
 
+    .safello-form-wrapper {
+      width: 500px;
+
+      iframe {
+        width: 100%;
+        min-height: 650px;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: 100vw;
+        margin: 0 -30px;
+      }
+    }
+
     .shapeshift-form-wrapper {
       display: flex;
       flex-flow: column;
@@ -437,6 +451,21 @@
         padding-top: 20px;
         min-height: 240px;
         border: none;
+      }
+    }
+
+    &__safello-buy {
+      position: relative;
+      padding-top: 20px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .deposit-ether-modal__buy-row__description {
+        align-self: auto;
+        width: auto;
       }
     }
 

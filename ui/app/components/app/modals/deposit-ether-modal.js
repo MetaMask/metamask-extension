@@ -9,6 +9,7 @@ const openWyre = require('../../../../vendor/wyre')
 const { DEPOSIT_ROUTE } = require('../../../helpers/constants/routes')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
 const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
+const SafelloForm = require('../safello-form')
 
 import Button from '../../ui/button'
 
@@ -16,6 +17,8 @@ let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT
 let WYRE_ROW_TITLE
 let WYRE_ROW_TEXT
+let SAFELLO_ROW_TITLE
+let SAFELLO_ROW_TEXT
 let FAUCET_ROW_TITLE
 let COINSWITCH_ROW_TITLE
 let COINSWITCH_ROW_TEXT
@@ -57,6 +60,8 @@ function DepositEtherModal (_, context) {
   DIRECT_DEPOSIT_ROW_TEXT = context.t('directDepositEtherExplainer')
   WYRE_ROW_TITLE = context.t('buyWithWyre')
   WYRE_ROW_TEXT = context.t('buyWithWyreDescription')
+  SAFELLO_ROW_TITLE = context.t('buyWithSafello')
+  SAFELLO_ROW_TEXT = context.t('buyWithSafelloDescription')
   FAUCET_ROW_TITLE = context.t('testFaucet')
   COINSWITCH_ROW_TITLE = context.t('buyCoinSwitch')
   COINSWITCH_ROW_TEXT = context.t('buyCoinSwitchExplainer')
@@ -125,7 +130,8 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, address, toFaucet, toCoinSwitch } = this.props
+  const { network, toCoinSwitch, address, toFaucet } = this.props
+  const { buyingWithSafello } = this.state
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -165,6 +171,7 @@ DepositEtherModal.prototype.render = function () {
           text: DIRECT_DEPOSIT_ROW_TEXT,
           buttonLabel: this.context.t('viewAccount'),
           onButtonClick: () => this.goToAccountDetailsModal(),
+          hide: buyingWithSafello,
         }),
 
         this.renderRow({
@@ -173,7 +180,7 @@ DepositEtherModal.prototype.render = function () {
           text: this.facuetRowText(networkName),
           buttonLabel: this.context.t('getEther'),
           onButtonClick: () => toFaucet(network),
-          hide: !isTestNetwork,
+          hide: !isTestNetwork || buyingWithSafello,
         }),
 
         this.renderRow({
@@ -193,7 +200,26 @@ DepositEtherModal.prototype.render = function () {
               openWyre(address)
             }
           },
-          hide: isTestNetwork && !network === '42',
+          hide: isTestNetwork && !network === '42' || buyingWithSafello,
+        }),
+
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'./images/safello.svg\')',
+              height: '70px',
+            },
+          }),
+          title: SAFELLO_ROW_TITLE,
+          text: SAFELLO_ROW_TEXT,
+          buttonLabel: this.context.t('safelloBuy'),
+          onButtonClick: () => this.setState({ buyingWithSafello: true }),
+          hide: isTestNetwork,
+          hideButton: buyingWithSafello,
+          hideTitle: buyingWithSafello,
+          onBackClick: () => this.setState({ buyingWithSafello: false }),
+          showBackButton: this.state.buyingWithSafello,
+          className: buyingWithSafello && 'deposit-ether-modal__buy-row__safello-buy',
         }),
 
         this.renderRow({
@@ -207,9 +233,10 @@ DepositEtherModal.prototype.render = function () {
           text: COINSWITCH_ROW_TEXT,
           buttonLabel: this.context.t('continueToCoinSwitch'),
           onButtonClick: () => toCoinSwitch(address),
-          hide: isTestNetwork,
+          hide: isTestNetwork || buyingWithSafello,
         }),
 
+        buyingWithSafello && h(SafelloForm),
       ]),
 
     ]),

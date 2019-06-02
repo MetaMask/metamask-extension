@@ -231,6 +231,12 @@
   "buyWithWyreDescription": {
     "message": "Wyre lets you use a credit card to deposit ETH right in to your MetaMask account. Open Wyre's widget here to get started."
   },
+  "buyWithSafello": {
+    "message": "Buy ETH with Safello"
+  },
+  "buyWithSafelloDescription": {
+    "message": "Safello lets you use a European credit card to deposit ETH right in to your MetaMask account."
+  },
   "buyCoinSwitch": {
     "message": "Buy on CoinSwitch"
   },
@@ -1193,6 +1199,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "safelloBuy": {
+    "message": "Buy with Safello"
   },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"
