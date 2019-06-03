@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 const PropTypes = require('prop-types')
 const { Provider } = require('react-redux')
 const { HashRouter } = require('react-router-dom')
-const Routes = require('./routes')
+const NotificationRoutes = require('./routes/notification-routes')
 const I18nProvider = require('../helpers/higher-order-components/i18n-provider')
 const MetaMetricsProvider = require('../helpers/higher-order-components/metametrics/metametrics.provider')
 
@@ -15,7 +15,7 @@ class Index extends Component {
         <HashRouter hashType="noslash">
           <MetaMetricsProvider>
             <I18nProvider>
-              <Routes />
+              <NotificationRoutes />
             </I18nProvider>
           </MetaMetricsProvider>
         </HashRouter>
