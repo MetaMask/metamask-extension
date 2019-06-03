@@ -66,7 +66,7 @@ EditAccountNameModal.prototype.render = function () {
         value: this.state.inputText,
       }, []),
 
-      h('button.btn-clear.edit-account-name-modal-save-button.allcaps', {
+      h('button.button.btn-secondary.edit-account-name-modal-save-button.allcaps', {
         onClick: () => {
           if (this.state.inputText.length !== 0) {
             setAccountLabel(identity.address, this.state.inputText)

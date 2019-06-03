@@ -230,7 +230,8 @@
       "kovan": "ok",
       "mainnet": "ok",
       "rinkeby": "ok",
-      "ropsten": "ok"
+      "ropsten": "ok",
+      "goerli": "ok"
     },
     "lostAccounts": []
   },

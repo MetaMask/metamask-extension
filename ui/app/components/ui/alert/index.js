@@ -18,7 +18,7 @@ class Alert extends Component {
       if (!this.props.visible && nextProps.visible) {
         this.animateIn(nextProps)
       } else if (this.props.visible && !nextProps.visible) {
-        this.animateOut(nextProps)
+        this.animateOut()
       }
     }
 
@@ -30,7 +30,7 @@ class Alert extends Component {
       })
     }
 
-    animateOut (props) {
+    animateOut () {
       this.setState({
         msg: null,
         className: '.hidden',

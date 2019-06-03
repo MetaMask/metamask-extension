@@ -68,7 +68,7 @@ export function handleChartUpdate ({ chart, gasPrices, newPrice, cssId }) {
 
 export function getAdjacentGasPrices ({ gasPrices, priceToPosition }) {
   const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => e <= priceToPosition && a[i + 1] >= priceToPosition)
-  const closestHigherValueIndex = gasPrices.findIndex((e, i, a) => e > priceToPosition)
+  const closestHigherValueIndex = gasPrices.findIndex((e) => e > priceToPosition)
   return {
     closestLowerValueIndex,
     closestHigherValueIndex,
@@ -133,7 +133,7 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
   d3.select('#chart')
     .select(`.c3-axis-${axis}`)
     .selectAll('.tick')
-    .filter((d, i) => i === n)
+    .filter((_, i) => i === n)
     .select('text')
     .attr(positionToShift, 0)
     .select('tspan')
@@ -284,7 +284,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         })
         return text + '</table>' + "<div class='tooltip-arrow'></div>"
       },
-      position: function (data) {
+      position: function () {
         if (d3.select('#overlayed-circle').empty()) {
           return { top: -100, left: -100 }
         }

@@ -55,7 +55,7 @@ describe('TransactionStateManager', function () {
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
-      const noop = function (err, txId) {
+      const noop = function (err) {
           if (err) {
             console.log('Error: ', err)
           }

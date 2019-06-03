@@ -21,7 +21,7 @@ const mockState = {
 
 describe('withModalProps', () => {
   it('should return a component wrapped with modal state props', () => {
-    const TestComponent = props => (
+    const TestComponent = () => (
       <div className="test">Testing</div>
     )
     const WrappedComponent = withModalProps(TestComponent)

@@ -10,4 +10,5 @@ export const NETWORK_TYPES = {
   MAINNET: 'mainnet',
   RINKEBY: 'rinkeby',
   ROPSTEN: 'ropsten',
+  GOERLI: 'goerli',
 }

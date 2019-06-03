@@ -56,7 +56,7 @@ export default class Welcome extends PureComponent {
             <div>{ t('happyToSeeYou') }</div>
           </div>
           <Button
-            type="confirm"
+            type="primary"
             className="first-time-flow__button"
             onClick={this.handleContinue}
           >

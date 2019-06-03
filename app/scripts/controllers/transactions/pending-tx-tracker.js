@@ -22,6 +22,7 @@ const EthQuery = require('ethjs-query')
 class PendingTransactionTracker extends EventEmitter {
   constructor (config) {
     super()
+    this.droppedBuffer = {}
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
@@ -139,22 +140,42 @@ class PendingTransactionTracker extends EventEmitter {
       const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
       noTxHashErr.name = 'NoTxHashError'
       this.emit('tx:failed', txId, noTxHashErr)
+
       return
     }
 
-    // If another tx with the same nonce is mined, set as failed.
+    // If another tx with the same nonce is mined, set as dropped.
     const taken = await this._checkIfNonceIsTaken(txMeta)
-    if (taken) {
-      const nonceTakenErr = new Error('Another transaction with this nonce has been mined.')
-      nonceTakenErr.name = 'NonceTakenErr'
-      return this.emit('tx:failed', txId, nonceTakenErr)
+    let dropped
+    try {
+      // check the network if the nonce is ahead the tx
+      // and the tx has not been mined into a block
+
+      dropped = await this._checkIftxWasDropped(txMeta)
+      // the dropped buffer is in case we ask a node for the tx
+      // that is behind the node we asked for tx count
+      // IS A SECURITY FOR HITTING NODES IN INFURA THAT COULD GO OUT
+      // OF SYNC.
+      // on the next block event it will return fire as dropped
+      if (dropped && !this.droppedBuffer[txHash]) {
+        this.droppedBuffer[txHash] = true
+        dropped = false
+      } else if (dropped && this.droppedBuffer[txHash]) {
+        // clean up
+        delete this.droppedBuffer[txHash]
+      }
+
+    } catch (e) {
+      log.error(e)
+    }
+    if (taken || dropped) {
+      return this.emit('tx:dropped', txId)
     }
 
     // get latest transaction status
     try {
-      const txParams = await this.query.getTransactionByHash(txHash)
-      if (!txParams) return
-      if (txParams.blockNumber) {
+      const { blockNumber } = await this.query.getTransactionByHash(txHash) || {}
+      if (blockNumber) {
         this.emit('tx:confirmed', txId)
       }
     } catch (err) {
@@ -164,6 +185,22 @@ class PendingTransactionTracker extends EventEmitter {
       }
       this.emit('tx:warning', txMeta, err)
     }
+  }
+    /**
+    checks to see if if the tx's nonce has been used by another transaction
+    @param txMeta {Object} - txMeta object
+    @emits tx:dropped
+    @returns {boolean}
+  */
+
+  async _checkIftxWasDropped (txMeta) {
+    const { txParams: { nonce, from }, hash } = txMeta
+    const nextNonce = await this.query.getTransactionCount(from)
+    const { blockNumber } = await this.query.getTransactionByHash(hash) || {}
+    if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
+        return true
+    }
+    return false
   }
 
   /**

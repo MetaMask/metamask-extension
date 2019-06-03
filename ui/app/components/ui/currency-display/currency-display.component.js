@@ -23,7 +23,7 @@ export default class CurrencyDisplay extends PureComponent {
   render () {
     const { className, displayValue, prefix, prefixComponent, style, suffix, hideTitle } = this.props
     const text = `${prefix || ''}${displayValue}`
-    const title = `${text} ${suffix}`
+    const title = suffix ? `${text} ${suffix}` : text
 
     return (
       <div

@@ -67,7 +67,7 @@ export default class AdvancedTabContent extends Component {
     }
   }
 
-  gasInput ({ labelKey, value, onChange, insufficientBalance, showGWEI, customPriceIsSafe, isSpeedUp }) {
+  gasInput ({ labelKey, value, onChange, insufficientBalance, customPriceIsSafe, isSpeedUp }) {
     const {
       isInError,
       errorText,
@@ -148,7 +148,6 @@ export default class AdvancedTabContent extends Component {
     customGasPrice,
     updateCustomGasPrice,
     customGasLimit,
-    updateCustomGasLimit,
     insufficientBalance,
     customPriceIsSafe,
     isSpeedUp,

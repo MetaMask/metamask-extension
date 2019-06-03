@@ -315,7 +315,7 @@ createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:j
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
-function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
+function createTasksForBuildJsUIDeps ({ filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
 
 

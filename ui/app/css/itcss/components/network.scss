@@ -29,6 +29,10 @@
   &.rinkeby-test-network .menu-icon-circle div {
     background-color: rgba(235, 179, 63, .7) !important;
   }
+
+  &.goerli-test-network .menu-icon-circle div {
+    background-color: rgba(48, 153, 242, .7) !important;
+  }
 }
 
 .dropdown-menu-item {
@@ -47,6 +51,13 @@
     line-height: 15px;
     font-size: 12px;
     padding: 0 4px;
+    flex: 0 0 auto;
+  }
+
+  .fa-question-circle {
+    margin: 0 4px 0 6px;
+    font-size: 1rem;
+    flex: 0 0 auto;
   }
 }
 
@@ -54,9 +65,12 @@
   padding: 0 4px;
   font-family: Roboto;
   font-size: 12px;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   color: $tundora;
   font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .dropdown-menu-item .fa.delete {
@@ -165,5 +179,22 @@
 }
 
 .network-caret {
-  margin: 0 8px 2px;
+  margin: 0 8px;
+}
+
+.network-loading-spinner {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  position: relative;
+  height: 16px;
+  width: 16px;
+  margin-left: 5px;
+
+  img {
+    height: 26px;
+    position: absolute;
+    top: -5px;
+    left: -6px;
+  }
 }

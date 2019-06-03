@@ -130,7 +130,7 @@ export default class RevealSeedPhrase extends PureComponent {
           </div>
         </div>
         <Button
-          type="confirm"
+          type="primary"
           className="first-time-flow__button"
           onClick={this.handleNext}
           disabled={!isShowingSeedPhrase}

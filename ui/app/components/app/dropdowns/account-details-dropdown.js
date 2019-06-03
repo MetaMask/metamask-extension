@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
-const { getSelectedIdentity } = require('../../../selectors/selectors')
+const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
 const genAccountLink = require('../../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
@@ -20,6 +20,7 @@ function mapStateToProps (state) {
     selectedIdentity: getSelectedIdentity(state),
     network: state.metamask.network,
     keyrings: state.metamask.keyrings,
+    rpcPrefs: getRpcPrefsForCurrentProvider(state),
   }
 }
 
@@ -28,8 +29,8 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    viewOnEtherscan: (address, network) => {
-      global.platform.openWindow({ url: genAccountLink(address, network) })
+    viewOnEtherscan: (address, network, rpcPrefs) => {
+      global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
     },
     showRemoveAccountConfirmationModal: (identity) => {
       return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
@@ -56,7 +57,9 @@ AccountDetailsDropdown.prototype.render = function () {
     keyrings,
     showAccountDetailModal,
     viewOnEtherscan,
-    showRemoveAccountConfirmationModal } = this.props
+    showRemoveAccountConfirmationModal,
+    rpcPrefs,
+   } = this.props
 
   const address = selectedIdentity.address
 
@@ -112,10 +115,12 @@ AccountDetailsDropdown.prototype.render = function () {
             name: 'Clicked View on Etherscan',
           },
         })
-        viewOnEtherscan(address, network)
+        viewOnEtherscan(address, network, rpcPrefs)
         this.props.onClose()
       },
-      text: this.context.t('viewOnEtherscan'),
+      text: (rpcPrefs.blockExplorerUrl
+        ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+        : this.context.t('viewOnEtherscan')),
       icon: h(`img`, { src: 'images/open-etherscan.svg', style: { height: '15px' } }),
     }),
     isRemovable ? h(Item, {

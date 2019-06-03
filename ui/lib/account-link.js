@@ -1,4 +1,8 @@
-module.exports = function (address, network) {
+module.exports = function (address, network, rpcPrefs) {
+  if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
+    return `${rpcPrefs.blockExplorerUrl}/address/${address}`
+  }
+
   const net = parseInt(network)
   let link
   switch (net) {
@@ -16,6 +20,9 @@ module.exports = function (address, network) {
       break
     case 42: // kovan test net
       link = `https://kovan.etherscan.io/address/${address}`
+      break
+    case 5: // goerli test net
+      link = `https://goerli.etherscan.io/address/${address}`
       break
     default:
       link = ''

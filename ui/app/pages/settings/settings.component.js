@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, matchPath } from 'react-router-dom'
+import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
+import NetworksTab from './networks-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
@@ -20,6 +21,7 @@ import {
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../helpers/constants/routes'
 
 import AddContact from './contact-list-tab/add-contact'
@@ -33,7 +35,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_LIST_ROUTE]: 'contactList',
 }
 
-export default class SettingsPage extends PureComponent {
+class SettingsPage extends PureComponent {
   static propTypes = {
     location: PropTypes.object,
     history: PropTypes.object,
@@ -63,7 +65,7 @@ export default class SettingsPage extends PureComponent {
       >
         <div className="settings-page__header">
           {
-            !this.isCurrentPath(SETTINGS_ROUTE) && (
+            !this.isCurrentPath(SETTINGS_ROUTE) && !this.isCurrentPath(NETWORKS_ROUTE) && (
               <div
                 className="settings-page__back-button"
                 onClick={() => history.push(SETTINGS_ROUTE)}
@@ -83,9 +85,21 @@ export default class SettingsPage extends PureComponent {
             { this.renderTabs() }
           </div>
           <div className="settings-page__content__modules">
+            { this.renderSubHeader() }
             { this.renderContent() }
           </div>
         </div>
+      </div>
+    )
+  }
+
+  renderSubHeader () {
+    const { t } = this.context
+    const { location: { pathname } } = this.props
+
+    return (
+      <div className="settings-page__subheader">
+        {t(ROUTES_TO_I18N_KEYS[pathname] || 'general')}
       </div>
     )
   }
@@ -101,6 +115,7 @@ export default class SettingsPage extends PureComponent {
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('contactList'), description: t('contactListDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
+          { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
         isActive={key => {
@@ -134,6 +149,11 @@ export default class SettingsPage extends PureComponent {
         />
         <Route
           exact
+          path={NETWORKS_ROUTE}
+          component={NetworksTab}
+        />
+        <Route
+          exact
           path={SECURITY_ROUTE}
           component={SecurityTab}
         />
@@ -164,3 +184,5 @@ export default class SettingsPage extends PureComponent {
     )
   }
 }
+
+export default withRouter(SettingsPage)

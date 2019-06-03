@@ -92,7 +92,7 @@ function miniAddressSummary (address) {
   return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
-function isValidAddress (address, network) {
+function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
@@ -268,7 +268,7 @@ function bnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16)) {
   const gasBn = hexToBn(gas)
   const gasPriceBn = hexToBn(gasPrice)
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -297,7 +297,7 @@ function exportAsFile (filename, data, type = 'text/csv') {
 }
 
 function allNull (obj) {
-  return Object.entries(obj).every(([key, value]) => value === null)
+  return Object.entries(obj).every(([_, value]) => value === null)
 }
 
 function getTokenAddressFromTokenObject (token) {
@@ -308,11 +308,10 @@ function getTokenAddressFromTokenObject (token) {
  * Safely checksumms a potentially-null address
  *
  * @param {String} [address] - address to checksum
- * @param {String} [network] - network id
  * @returns {String} - checksummed address
  *
  */
-function checksumAddress (address, network) {
+function checksumAddress (address) {
   const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
   return checksummed
 }

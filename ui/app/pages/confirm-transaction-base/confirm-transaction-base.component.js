@@ -4,11 +4,12 @@ import PropTypes from 'prop-types'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
-import { isBalanceSufficient } from '../../components/app/send/send.utils'
+import { isBalanceSufficient } from '../send/send.utils'
 import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
+  GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
@@ -18,6 +19,7 @@ import AdvancedGasInputs from '../../components/app/gas-customization/advanced-g
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    tOrKey: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func,
   }
 
@@ -64,7 +66,7 @@ export default class ConfirmTransactionBase extends Component {
     updateGasAndCalculate: PropTypes.func,
     customGas: PropTypes.object,
     // Component props
-    action: PropTypes.string,
+    actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
@@ -99,15 +101,18 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
     } = this.props
+    const { transactionStatus: prevTxStatus } = prevProps
+    const statusUpdated = transactionStatus !== prevTxStatus
+    const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
 
-    if (transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS) {
+    if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction()
@@ -130,6 +135,7 @@ export default class ConfirmTransactionBase extends Component {
           value: amount,
         } = {},
       } = {},
+      customGas,
     } = this.props
 
     const insufficientBalance = balance && !isBalanceSufficient({
@@ -146,6 +152,13 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
+    if (customGas.gasLimit < 21000) {
+      return {
+        valid: false,
+        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
+      }
+    }
+
     if (simulationFails) {
       return {
         valid: true,
@@ -159,7 +172,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEditGas () {
-    const { onEditGas, showCustomizeGasModal, action, txData: { origin }, methodData = {} } = this.props
+    const { onEditGas, showCustomizeGasModal, actionKey, txData: { origin }, methodData = {} } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -169,7 +182,7 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
+        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
         origin,
       },
     })
@@ -292,7 +305,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEdit () {
-    const { txData, tokenData, tokenProps, onEdit, action, txData: { origin }, methodData = {} } = this.props
+    const { txData, tokenData, tokenProps, onEdit, actionKey, txData: { origin }, methodData = {} } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -302,7 +315,7 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
+        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
         origin,
       },
     })
@@ -331,7 +344,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCancel () {
     const { metricsEvent } = this.context
-    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, action, txData: { origin }, methodData = {} } = this.props
+    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, actionKey, txData: { origin }, methodData = {} } = this.props
 
     if (onCancel) {
       metricsEvent({
@@ -342,7 +355,7 @@ export default class ConfirmTransactionBase extends Component {
         },
         customVariables: {
           recipientKnown: null,
-          functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
+          functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
           origin,
         },
       })
@@ -358,7 +371,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleSubmit () {
     const { metricsEvent } = this.context
-    const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, action, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
+    const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, actionKey, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
     const { submitting } = this.state
 
     if (submitting) {
@@ -377,7 +390,7 @@ export default class ConfirmTransactionBase extends Component {
         },
         customVariables: {
           recipientKnown: null,
-          functionType: action || getMethodName(methodData.name) || this.context.t('contractInteraction'),
+          functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
           origin,
         },
       })
@@ -517,7 +530,7 @@ export default class ConfirmTransactionBase extends Component {
       valid: propsValid = true,
       errorMessage,
       errorKey: propsErrorKey,
-      action,
+      actionKey,
       title,
       subtitle,
       hideSubtitle,
@@ -543,7 +556,8 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={action || getMethodName(name) || this.context.t('contractInteraction')}
+        // In the event that the key is falsy (and inherently invalid), use a fallback string
+        action={this.context.tOrKey(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
