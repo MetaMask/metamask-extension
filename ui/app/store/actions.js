@@ -134,6 +134,8 @@ var actions = {
   showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
+  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
+  removeFromAddressBook: removeFromAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -2005,6 +2007,19 @@ function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
     background.setAddressBook(recipient, nickname, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Address book failed to update'))
+      }
+    })
+  }
+}
+
+// Calls the addressBookController to remove an existing address.
+function removeFromAddressBook (addressToRemove) {
+  log.debug(`background.removeFromAddressBook`)
+  return (dispatch) => {
+    background.removeFromAddressBook(addressToRemove, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Address book failed to update'))

@@ -80,8 +80,14 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "address": {
     "message": "Address"
+  },
+  "addressBook": {
+    "message": "Address Book"
   },
   "advanced": {
     "message": "Advanced"
@@ -94,6 +100,12 @@
   },
   "addCustomToken": {
     "message": "Add custom token"
+  },
+  "addAlias": {
+    "message": "Add alias"
+  },
+  "addEthAddress": {
+    "message": "Add an Ethereum address"
   },
   "addToken": {
     "message": "Add Token"
@@ -317,6 +329,12 @@
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
+  "contactList": {
+    "message": "Contact List"
+  },
+  "contactListDescription": {
+    "message": "Add, edit, remove, and manage your contacts"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -537,6 +555,9 @@
   },
   "eth": {
     "message": "ETH"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Public Address"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -869,6 +890,9 @@
   "memorizePhrase": {
     "message": "Memorize this phrase."
   },
+  "memo": {
+    "message": "memo"
+  },
   "menu": {
     "message": "Menu"
   },
@@ -931,6 +955,9 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "New Contact"
   },
   "newContract": {
     "message": "New Contract"
@@ -1683,6 +1710,9 @@
   },
   "useOldUI": {
     "message": "Use old UI"
+  },
+  "userName":{
+    "message": "Username"
   },
   "validFileImport": {
     "message": "You must select a valid file to import."

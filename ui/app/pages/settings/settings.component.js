@@ -9,6 +9,7 @@ import SettingsTab from './settings-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
+import ContactListTab from './contact-list-tab'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -16,13 +17,20 @@ import {
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
+  CONTACT_LIST_ROUTE,
+  CONTACT_ADD_ROUTE,
+  CONTACT_EDIT_ROUTE,
 } from '../../helpers/constants/routes'
+
+import AddContact from './contact-list-tab/add-contact'
+import EditContact from './contact-list-tab/edit-contact'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
+  [CONTACT_LIST_ROUTE]: 'contactList',
 }
 
 export default class SettingsPage extends PureComponent {
@@ -91,6 +99,7 @@ export default class SettingsPage extends PureComponent {
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
+          { content: t('contactList'), description: t('contactListDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
@@ -127,6 +136,26 @@ export default class SettingsPage extends PureComponent {
           exact
           path={SECURITY_ROUTE}
           component={SecurityTab}
+        />
+        <Route
+          exact
+          path={CONTACT_LIST_ROUTE}
+          component={ContactListTab}
+        />
+        <Route
+          exact
+          path={CONTACT_ADD_ROUTE}
+          component={AddContact}
+        />
+        <Route
+          exact
+          path={`${CONTACT_EDIT_ROUTE}/:id`}
+          component={EditContact}
+        />
+        <Route
+          exact
+          path={CONTACT_EDIT_ROUTE}
+          component={AddContact}
         />
         <Route
           component={SettingsTab}

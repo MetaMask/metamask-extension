@@ -72,7 +72,13 @@ function accountsWithSendEtherInfoSelector (state) {
 }
 
 function getAddressBook (state) {
-  return state.metamask.addressBook
+  console.log('why does it work here?')
+
+  const addressBookEntries = Object.entries(state.metamask.addressBook).map(([key, account]) => {
+    return Object.assign({}, account, state.metamask.addressBook[key])
+  })
+
+  return addressBookEntries
 }
 
 function getAmountConversionRate (state) {

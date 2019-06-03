@@ -428,6 +428,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // AddressController
       setAddressBook: this.addressBookController.set.bind(this.addressBookController),
+      removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
 
       // KeyringController
       setLocked: nodeify(this.setLocked, this),

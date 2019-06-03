@@ -1,0 +1,14 @@
+.address-book {
+
+  &__entry {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #dedede;
+  }
+
+  &__name {
+    padding: 3px;
+  }
+}

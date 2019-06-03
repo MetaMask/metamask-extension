@@ -2,6 +2,8 @@
 
 @import 'settings-tab/index';
 
+@import 'contact-list-tab/index';
+
 .settings-page {
   position: relative;
   background: $white;
@@ -121,6 +123,30 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+
+  &__copyable-address {
+    display: flex;
+  }
+
+  &__copy-icon {
+    padding-left: 4px;
+  }
+
+  &__button-group {
+    display:flex;
+    margin-left: auto;
+  }
+
+  &__address-book-button {
+      align-self: flex-end;
+      padding: 5px;
+      text-transform: uppercase;
+      color: $dusty-gray;
+      cursor: pointer;
+      width: 25%;
+      min-width: 80px;
+      height: 33px;
   }
 
   &--selected {
