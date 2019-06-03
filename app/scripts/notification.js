@@ -1,3 +1,4 @@
+const NotificationRoot = require('../../ui/app/pages/notification-root')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
@@ -41,7 +42,7 @@ async function start () {
 
   // start ui
   const container = document.getElementById('app-content')
-  startPopup({ container, connectionStream }, (err, store) => {
+  startPopup({ container, connectionStream, Root: NotificationRoot }, (err, store) => {
     if (err) return displayCriticalError(err)
 
     const state = store.getState()

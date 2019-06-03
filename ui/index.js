@@ -1,6 +1,5 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('./app/pages')
 const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
@@ -72,6 +71,8 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       store.dispatch(actions.setProviderType(type))
     },
   }
+
+  const { Root } = opts
 
   // start app
   render(

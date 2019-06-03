@@ -15,11 +15,11 @@ module.exports = initializePopup
  * @param {{ container: Element, connectionStream: * }} config Popup configuration object
  * @param {Function} cb Called when initialization is complete
  */
-function initializePopup ({ container, connectionStream }, cb) {
+function initializePopup ({ container, connectionStream, Root }, cb) {
   // setup app
   async.waterfall([
     (cb) => connectToAccountManager(connectionStream, cb),
-    (backgroundConnection, cb) => launchMetamaskUi({ container, backgroundConnection }, cb),
+    (backgroundConnection, cb) => launchMetamaskUi({ container, backgroundConnection, Root }, cb),
   ], cb)
 }
 
