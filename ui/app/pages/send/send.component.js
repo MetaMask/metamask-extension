@@ -219,7 +219,7 @@ export default class SendTransactionScreen extends PersistentForm {
         <SendHeader history={history}/>
         <SendContent
           updateGas={(updateData) => this.updateGas(updateData)}
-          scanQrCode={_ => this.props.scanQrCode()}
+          scanQrCode={this.props.scanQrCode}
           showHexData={showHexData}
         />
         <SendFooter history={history}/>
