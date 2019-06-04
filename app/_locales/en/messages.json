@@ -1193,6 +1193,9 @@
   "receive": {
     "message": "Receive"
   },
+  "recents": {
+    "message": "Recents"
+  },
   "recipientAddress": {
     "message": "Recipient Address"
   },

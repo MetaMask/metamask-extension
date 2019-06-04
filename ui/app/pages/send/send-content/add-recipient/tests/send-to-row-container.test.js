@@ -15,7 +15,7 @@ const duckActionSpies = {
   updateSendWarnings: sinon.spy(),
 }
 
-proxyquire('../send-to-row.container.js', {
+proxyquire('../add-recipient.container.js', {
   'react-redux': {
     connect: (ms, md) => {
       mapStateToProps = ms
@@ -40,7 +40,7 @@ proxyquire('../send-to-row.container.js', {
   '../../../../ducks/send/send.duck': duckActionSpies,
 })
 
-describe('send-to-row container', () => {
+describe('add-recipient container', () => {
 
   describe('mapStateToProps()', () => {
 

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import EnsInput from '../../../../components/app/ens-input'
-import { getToErrorObject, getToWarningObject } from './send-to-row.utils.js'
+import { getToErrorObject, getToWarningObject } from './add-recipient.js'
 import Identicon from '../../../../components/ui/identicon'
 
-export default class SendToRow extends Component {
+export default class AddRecipient extends Component {
 
   static propTypes = {
     closeToDropdown: PropTypes.func,

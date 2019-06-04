@@ -12,7 +12,7 @@ const stubs = {
   isValidAddress: sinon.stub().callsFake(to => Boolean(to.match(/^[0xabcdef123456798]+$/))),
 }
 
-const toRowUtils = proxyquire('../send-to-row.utils.js', {
+const toRowUtils = proxyquire('../add-recipient.utils.js', {
   '../../../../helpers/utils/util': {
     isValidAddress: stubs.isValidAddress,
   },
@@ -22,7 +22,7 @@ const {
   getToWarningObject,
 } = toRowUtils
 
-describe('send-to-row utils', () => {
+describe('add-recipient utils', () => {
 
   describe('getToErrorObject()', () => {
     it('should return a required error if to is falsy', () => {
