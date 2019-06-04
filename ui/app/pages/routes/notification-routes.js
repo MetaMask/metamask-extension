@@ -13,7 +13,7 @@ const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
 // other views
-import { NotificationHome } from '../notification-home'
+import NotificationHome from '../notification-home'
 // import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'

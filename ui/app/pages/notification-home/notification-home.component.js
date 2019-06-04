@@ -10,7 +10,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
 } from '../../helpers/constants/routes'
 
-export default class Home extends PureComponent {
+export default class NotificationHome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
@@ -65,6 +65,11 @@ export default class Home extends PureComponent {
       )
     }
 
-    return <noscript />
+    return (
+      <div className="main-container">
+        <div className="account-and-transaction-details">
+        </div>
+      </div>
+    )
   }
 }
