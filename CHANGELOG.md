@@ -2,6 +2,20 @@
 
 ## Current Develop Branch
 
+## 6.6.0 Mon Jun 03 2019
+
+- [#6659](https://github.com/MetaMask/metamask-extension/pull/6659): Enable Ledger hardware wallet support on Firefox
+- [#6671](https://github.com/MetaMask/metamask-extension/pull/6671): bugfix: reject enable promise on user rejection
+- [#6625](https://github.com/MetaMask/metamask-extension/pull/6625): Ensures that transactions cannot be confirmed if gas limit is below 21000.
+- [#6633](https://github.com/MetaMask/metamask-extension/pull/6633): Fix grammatical error in i18n endOfFlowMessage6
+
+## 6.5.3 Thu May 16 2019
+
+- [#6619](https://github.com/MetaMask/metamask-extension/pull/6619): bugfix: show extension window if locked regardless of approval
+- [#6388](https://github.com/MetaMask/metamask-extension/pull/6388): Transactions/pending - check nonce against the network and mark as dropped if not included in a block
+- [#6606](https://github.com/MetaMask/metamask-extension/pull/6606): Improve ENS Address Input
+- [#6615](https://github.com/MetaMask/metamask-extension/pull/6615): Adds e2e test for removing imported accounts.
+
 ## 6.5.2 Wed May 15 2019
 
 - [#6613](https://github.com/MetaMask/metamask-extension/pull/6613): Hardware Wallet Fix

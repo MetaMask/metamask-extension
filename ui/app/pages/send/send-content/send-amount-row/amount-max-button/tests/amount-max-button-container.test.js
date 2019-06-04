@@ -29,6 +29,7 @@ proxyquire('../amount-max-button.container.js', {
   },
   './amount-max-button.selectors.js': { getMaxModeOn: (s) => `mockMaxModeOn:${s}` },
   './amount-max-button.utils.js': { calcMaxAmount: (mockObj) => mockObj.val + 1 },
+  '../../../../../selectors/custom-gas': { getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}`},
   '../../../../../store/actions': actionSpies,
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })
@@ -40,6 +41,7 @@ describe('amount-max-button container', () => {
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',
+        buttonDataLoading: 'mockButtonDataLoading:mockState',
         gasTotal: 'mockGasTotal:mockState',
         maxModeOn: 'mockMaxModeOn:mockState',
         selectedToken: 'mockSelectedToken:mockState',

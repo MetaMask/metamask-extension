@@ -7,6 +7,8 @@ import {
   setGasPrice,
   createSpeedUpTransaction,
   hideSidebar,
+  updateSendAmount,
+  setGasTotal,
 } from '../../../../store/actions'
 import {
   setCustomGasPrice,
@@ -18,6 +20,7 @@ import {
 } from '../../../../ducks/gas/gas.duck'
 import {
   hideGasButtonGroup,
+  updateSendErrors,
 } from '../../../../ducks/send/send.duck'
 import {
   updateGasAndCalculate,
@@ -46,6 +49,9 @@ import {
   isCustomPriceSafe,
 } from '../../../../selectors/custom-gas'
 import {
+  getTokenBalance,
+} from '../../../../pages/send/send.selectors'
+import {
   submittedPendingTransactionsSelector,
 } from '../../../../selectors/transactions'
 import {
@@ -53,6 +59,7 @@ import {
 } from '../../../../helpers/utils/confirm-tx.util'
 import {
   addHexWEIsToDec,
+  subtractHexWEIsToDec,
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
@@ -66,6 +73,8 @@ import {
 } from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
+import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
+import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps
@@ -75,8 +84,6 @@ const mapStateToProps = (state, ownProps) => {
   const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
-  const gasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
-
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
   const gasButtonInfo = getRenderableBasicEstimateData(state, customModalGasLimitInHex)
@@ -90,6 +97,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
+  const maxModeOn = getMaxModeOn(state)
+
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
@@ -98,9 +107,13 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const insufficientBalance = !isBalanceSufficient({
+  const newTotalEth = maxModeOn ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+
+  const sendAmount = maxModeOn ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+
+  const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
-    gasTotal,
+    gasTotal: customGasTotal,
     balance,
     conversionRate,
   })
@@ -112,10 +125,12 @@ const mapStateToProps = (state, ownProps) => {
     customModalGasLimitInHex,
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
+    customGasTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
+    maxModeOn,
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
@@ -129,12 +144,12 @@ const mapStateToProps = (state, ownProps) => {
       estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
-      originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
-      originalTotalEth: addHexWEIsToRenderableEth(value, gasTotal),
+      originalTotalFiat: addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate),
+      originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
       newTotalFiat: showFiat ? newTotalFiat : '',
-      newTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
+      newTotalEth,
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
-      sendAmount: addHexWEIsToRenderableEth(value, '0x0'),
+      sendAmount,
     },
     isSpeedUp: transaction.status === 'submitted',
     txId: transaction.id,
@@ -142,6 +157,9 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimatesLoading,
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
+    selectedToken: getSelectedToken(state),
+    balance,
+    tokenBalance: getTokenBalance(state),
   }
 }
 
@@ -174,11 +192,29 @@ const mapDispatchToProps = dispatch => {
     hideSidebar: () => dispatch(hideSidebar()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
+    setGasTotal: (total) => dispatch(setGasTotal(total)),
+    setAmountToMax: (maxAmountDataObject) => {
+      dispatch(updateSendErrors({ amount: null }))
+      dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
+    },
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { gasPriceButtonGroupProps, isConfirm, txId, isSpeedUp, insufficientBalance, customGasPrice } = stateProps
+  const {
+    gasPriceButtonGroupProps,
+    isConfirm,
+    txId,
+    isSpeedUp,
+    insufficientBalance,
+    maxModeOn,
+    customGasPrice,
+    customGasTotal,
+    balance,
+    selectedToken,
+    tokenBalance,
+    customGasLimit,
+  } = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
     hideGasButtonGroup: dispatchHideGasButtonGroup,
@@ -188,6 +224,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
+    setAmountToMax: dispatchSetAmountToMax,
     ...otherDispatchProps
   } = dispatchProps
 
@@ -208,6 +245,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchHideGasButtonGroup()
         dispatchCancelAndClose()
       }
+      if (maxModeOn) {
+        dispatchSetAmountToMax({
+          balance,
+          gasTotal: customGasTotal,
+          selectedToken,
+          tokenBalance,
+        })
+      }
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
@@ -219,7 +264,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchHideSidebar()
       }
     },
-    disableSave: insufficientBalance || (isSpeedUp && customGasPrice === 0),
+    disableSave: insufficientBalance || (isSpeedUp && customGasPrice === 0) || customGasLimit < 21000,
   }
 }
 
@@ -256,6 +301,13 @@ function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {
     addHexWEIsToDec,
     formatETHFee
   )(aHexWEI, bHexWEI)
+}
+
+function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWei) {
+  return pipe(
+    subtractHexWEIsToDec,
+    formatETHFee
+  )(aHexWEI, bHexWei)
 }
 
 function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conversionRate) {

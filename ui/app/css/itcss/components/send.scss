@@ -520,6 +520,10 @@
     color: $red;
   }
 
+  &__error-amount {
+    margin-top: 5px;
+  }
+
   &__warning {
     font-size: 12px;
     line-height: 12px;
@@ -555,6 +559,12 @@
     flex-flow: row;
     flex: 1 0 auto;
     justify-content: space-between;
+  }
+
+  &__form-field-container {
+    display: flex;
+    flex-direction: column;
+    width: 277px;
   }
 
   &__form-field {
@@ -763,7 +773,43 @@
     }
   }
 
-  &__to-autocomplete, &__memo-text-area, &__hex-data {
+  &__to-autocomplete {
+    display: flex;
+    flex-direction: column;
+    z-index: 1025;
+    position: relative;
+    height: 54px;
+    width: 100%;
+    border: 1px solid $alto;
+    border-radius: 4px;
+    background-color: $white;
+    color: $tundora;
+    padding: 0 10px;
+    font-family: Roboto;
+    line-height: 21px;
+
+    &__input {
+      font-size: 16px;
+      height: 100%;
+      border: none;
+    }
+
+    &__resolved {
+      font-size: 12px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      height: 30px;
+      cursor: pointer;
+
+      + .send-v2__to-autocomplete__qr-code {
+        top: 2px;
+        right: 0;
+      }
+    }
+  }
+
+  &__memo-text-area, &__hex-data {
     &__input {
       z-index: 1025;
       position: relative;
@@ -781,12 +827,47 @@
   }
 
   &__amount-max {
-    color: $curious-blue;
     font-family: Roboto;
     font-size: 12px;
-    left: 8px;
-    border: none;
-    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 20px;
+    margin-top: 5px;
+
+    &__button {
+      width: 56px;
+      height: 20px;
+      position: absolute;
+      border: 2px solid #B0D7F2;
+      border-radius: 6px;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2f9ae0;
+
+      &__disabled {
+        color: #B0D7F2;
+        cursor: auto;
+      }
+    }
+
+    input:checked + &__button {
+      background-color: #037DD6;
+      border: 2px solid #037DD6;
+      color: #fff;
+    }
+  }
+
+  &__amount-max input {
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
 
   &__gas-fee-display {
@@ -1041,7 +1122,7 @@
   font-size: 14px;
   color: #2f9ae0;
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 5px;
 }
 
 .sliders-icon-container {

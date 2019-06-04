@@ -71,11 +71,29 @@ async function runSendFlowTest (assert) {
   assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
   const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(3)')
-  sendAmountField.find('.unit-input')[0].click()
-
   const sendAmountFieldInput = await findAsync(sendAmountField, '.unit-input__input')
+
+  const amountMaxButton = await queryAsync($, '.send-v2__amount-max')
+  amountMaxButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+  assert.equal(sendAmountFieldInput.is(':disabled'), true, 'disabled the send amount input when max mode is on')
+
+  const gasPriceButtonGroup = await queryAsync($, '.gas-price-button-group--small')
+  const gasPriceButton = await gasPriceButtonGroup.find('button')[0]
+  const valueBeforeGasPriceChange = sendAmountFieldInput.prop('value')
+  gasPriceButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+
+  await timeout(1000)
+
+  assert.notEqual(valueBeforeGasPriceChange, sendAmountFieldInput.prop('value'), 'send amount value changes when gas price changes')
+
+  amountMaxButton.click()
+  reactTriggerChange(sendAmountField.find('input')[1])
+
+  sendAmountField.find('.unit-input').click()
   sendAmountFieldInput.val('5.1')
-  reactTriggerChange(sendAmountField.find('input')[0])
+  reactTriggerChange(sendAmountField.find('input')[1])
 
   let errorMessage = await queryAsync($, '.send-v2__error')
   assert.equal(errorMessage[0].textContent, 'Insufficient funds.', 'send should render an insufficient fund error message')

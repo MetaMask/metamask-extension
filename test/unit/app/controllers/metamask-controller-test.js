@@ -45,6 +45,11 @@ describe('MetaMaskController', function () {
       .get(/.*/)
       .reply(200)
 
+    nock('https://min-api.cryptocompare.com')
+      .persist()
+      .get(/.*/)
+      .reply(200, '{"JPY":12415.9}')
+
     metamaskController = new MetaMaskController({
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
@@ -441,7 +446,7 @@ describe('MetaMaskController', function () {
     let defaultMetaMaskCurrency
 
     beforeEach(function () {
-      defaultMetaMaskCurrency = metamaskController.currencyController.getCurrentCurrency()
+      defaultMetaMaskCurrency = metamaskController.currencyRateController.state.currentCurrency
     })
 
     it('defaults to usd', function () {
@@ -450,7 +455,7 @@ describe('MetaMaskController', function () {
 
     it('sets currency to JPY', function () {
       metamaskController.setCurrentCurrency('JPY', noop)
-      assert.equal(metamaskController.currencyController.getCurrentCurrency(), 'JPY')
+      assert.equal(metamaskController.currencyRateController.state.currentCurrency, 'JPY')
     })
   })
 

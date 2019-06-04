@@ -17,7 +17,7 @@ const {
 const TransactionStateManager = require('./tx-state-manager')
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
-const NonceTracker = require('./nonce-tracker')
+const NonceTracker = require('nonce-tracker')
 const txUtils = require('./lib/util')
 const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
@@ -555,6 +555,7 @@ class TransactionController extends EventEmitter {
     })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:confirmed', (txId) => this.confirmTransaction(txId))
+    this.pendingTxTracker.on('tx:dropped', this.txStateManager.setTxStatusDropped.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber

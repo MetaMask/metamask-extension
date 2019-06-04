@@ -42,6 +42,10 @@
     max-width: 22ch;
     height: 16px;
     line-height: 18px;
+
+    &__disabled {
+      background-color: rgb(222, 222, 222);
+    }
   }
 
   &__input-container {
@@ -59,4 +63,9 @@
   &--error {
     border-color: $red;
   }
+
+  &__disabled {
+    background-color: #F2F3F4;
+  }
+
 }

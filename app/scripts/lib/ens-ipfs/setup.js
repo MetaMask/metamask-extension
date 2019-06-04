@@ -37,27 +37,25 @@ function setupEnsIpfsResolver ({ provider }) {
 
   async function attemptResolve ({ tabId, name, path, search }) {
     extension.tabs.update(tabId, { url: `loading.html` })
+    let url = `https://manager.ens.domains/name/${name}`
     try {
-      const ipfsContentId = await resolveEnsToIpfsContentId({ provider, name })
-      const url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
-      try {
-        // check if ipfs gateway has result
-        const response = await fetch(url, { method: 'HEAD' })
-        // if failure, redirect to 404 page
-        if (response.status !== 200) {
-          extension.tabs.update(tabId, { url: '404.html' })
-          return
+      const {type, hash} = await resolveEnsToIpfsContentId({ provider, name })
+      if (type === 'ipfs-ns') {
+        const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}`
+        try {
+          // check if ipfs gateway has result
+          const response = await fetch(resolvedUrl, { method: 'HEAD' })
+          if (response.status === 200) url = resolvedUrl
+        } catch (err) {
+          console.warn(err)
         }
-        // otherwise redirect to the correct page
-        extension.tabs.update(tabId, { url })
-      } catch (err) {
-        console.warn(err)
-        // if HEAD fetch failed, redirect so user can see relevant error page
-        extension.tabs.update(tabId, { url })
+      } else if (type === 'swarm-ns') {
+        url = `https://swarm-gateways.net/bzz:/${hash}${path}${search || ''}`
       }
     } catch (err) {
       console.warn(err)
-      extension.tabs.update(tabId, { url: `error.html?name=${name}` })
+    } finally {
+      extension.tabs.update(tabId, { url })
     }
   }
 }

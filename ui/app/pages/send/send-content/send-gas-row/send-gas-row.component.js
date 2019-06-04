@@ -8,14 +8,19 @@ import AdvancedGasInputs from '../../../../components/app/gas-customization/adva
 export default class SendGasRow extends Component {
 
   static propTypes = {
+    balance: PropTypes.string,
     conversionRate: PropTypes.number,
     convertedCurrency: PropTypes.string,
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
+    maxModeOn: PropTypes.bool,
     showCustomizeGasModal: PropTypes.func,
+    selectedToken: PropTypes.object,
+    setAmountToMax: PropTypes.func,
     setGasPrice: PropTypes.func,
     setGasLimit: PropTypes.func,
+    tokenBalance: PropTypes.string,
     gasPriceButtonGroupProps: PropTypes.object,
     gasButtonGroupShown: PropTypes.bool,
     advancedInlineGasShown: PropTypes.bool,
@@ -47,6 +52,23 @@ export default class SendGasRow extends Component {
     </div>
   }
 
+  setMaxAmount () {
+    const {
+      balance,
+      gasTotal,
+      selectedToken,
+      setAmountToMax,
+      tokenBalance,
+    } = this.props
+
+    setAmountToMax({
+      balance,
+      gasTotal,
+      selectedToken,
+      tokenBalance,
+    })
+  }
+
   renderContent () {
     const {
       conversionRate,
@@ -57,6 +79,7 @@ export default class SendGasRow extends Component {
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
       advancedInlineGasShown,
+      maxModeOn,
       resetGasButtons,
       setGasPrice,
       setGasLimit,
@@ -71,7 +94,7 @@ export default class SendGasRow extends Component {
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={(...args) => {
+          handleGasPriceSelection={async (...args) => {
             metricsEvent({
               eventOpts: {
                 category: 'Transactions',
@@ -79,7 +102,10 @@ export default class SendGasRow extends Component {
                 name: 'Changed Gas Button',
               },
             })
-            gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            if (maxModeOn) {
+              this.setMaxAmount()
+            }
           }}
         />
         { this.renderAdvancedOptionsButton() }
@@ -89,7 +115,12 @@ export default class SendGasRow extends Component {
       convertedCurrency={convertedCurrency}
       gasLoadingError={gasLoadingError}
       gasTotal={gasTotal}
-      onReset={resetGasButtons}
+      onReset={() => {
+        resetGasButtons()
+        if (maxModeOn) {
+          this.setMaxAmount()
+        }
+      }}
       onClick={() => showCustomizeGasModal()}
     />
     const advancedGasInputs = <div>
