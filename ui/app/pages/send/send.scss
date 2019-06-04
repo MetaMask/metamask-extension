@@ -1,0 +1,22 @@
+.send {
+  &__header {
+    position: relative;
+    background-color: $Grey-000;
+    border-bottom: none;
+
+    .page-container__title {
+      font-size: 1.125rem;
+      font-weight: 400;
+      line-height: 1.3125rem;
+      text-align: center;
+    }
+
+    .page-container__header-close-text {
+      @extend %link;
+      font-size: 1rem;
+      line-height: 1.1875rem;
+      position: absolute;
+      right: 1rem;
+    }
+  }
+}
