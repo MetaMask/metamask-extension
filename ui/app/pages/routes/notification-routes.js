@@ -8,30 +8,16 @@ import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 
-// init
-import FirstTimeFlow from '../first-time-flow'
 // accounts
 const SendTransactionScreen = require('../send/send.container')
 const ConfirmTransaction = require('../confirm-transaction')
 
-// slideout menu
-const Sidebar = require('../../components/app/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../../components/app/sidebars/sidebar.constants')
-
 // other views
-import Home from '../home'
-import Settings from '../settings'
+import { NotificationHome } from '../notification-home'
+// import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
-import UiMigrationAnnouncement from '../../components/app/ui-migration-annoucement'
-const RestoreVaultPage = require('../keychains/restore-vault').default
-const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync')
-const AddTokenPage = require('../add-token')
-const ConfirmAddTokenPage = require('../confirm-add-token')
-const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
-const CreateAccountPage = require('../create-account')
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
@@ -43,7 +29,6 @@ const Modal = require('../../components/app/modals').Modal
 // Global Alert
 const Alert = require('../../components/ui/alert')
 
-import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
 
 import {
@@ -55,32 +40,16 @@ import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   UNLOCK_ROUTE,
-  SETTINGS_ROUTE,
-  REVEAL_SEED_ROUTE,
-  MOBILE_SYNC_ROUTE,
-  RESTORE_VAULT_ROUTE,
-  ADD_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
 } from '../../helpers/constants/routes'
-
-// enums
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../app/scripts/lib/enums'
 
 class NotificationRoutes extends Component {
   componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
-
       setCurrentCurrencyToUSD()
     }
 
@@ -105,19 +74,10 @@ class NotificationRoutes extends Component {
     const routes = (
       <Switch>
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
-        <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
-        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
-        <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
         <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
-        <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
-        <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
+        <Authenticated path={DEFAULT_ROUTE} component={NotificationHome} exact />
       </Switch>
     )
 
@@ -147,26 +107,6 @@ class NotificationRoutes extends Component {
     return Array.isArray(providerRequests) && providerRequests.length > 0
   }
 
-  hideAppHeader () {
-    const { location } = this.props
-
-    const isInitializing = Boolean(matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    }))
-
-    if (isInitializing && !this.onInitializationUnlockPage()) {
-      return true
-    }
-
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return true
-    }
-
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasProviderRequests()
-    }
-  }
-
   render () {
     const {
       isLoading,
@@ -177,33 +117,13 @@ class NotificationRoutes extends Component {
       frequentRpcListDetail,
       currentView,
       setMouseUserState,
-      sidebar,
-      submittedPendingTransactions,
+      // sidebar,
+      // submittedPendingTransactions,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
-
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
-
-    const {
-      isOpen: sidebarIsOpen,
-      transitionName: sidebarTransitionName,
-      type: sidebarType,
-      props,
-    } = sidebar
-    const { transaction: sidebarTransaction } = props || {}
 
     return (
       <div
@@ -215,28 +135,10 @@ class NotificationRoutes extends Component {
           }
         }}
       >
-        <UiMigrationAnnouncement />
         <Modal />
         <Alert
           visible={this.props.alertOpen}
           msg={alertMessage}
-        />
-        {
-          !this.hideAppHeader() && (
-            <AppHeader
-              hideNetworkIndicator={this.onInitializationUnlockPage()}
-              disabled={this.onConfirmPage()}
-            />
-          )
-        }
-        <Sidebar
-          sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)}
-          hideSidebar={this.props.hideSidebar}
-          transitionName={sidebarTransitionName}
-          type={sidebarType}
-          sidebarProps={sidebar.props}
-          onOverlayClose={sidebarOnOverlayClose}
         />
         <NetworkDropdown
           provider={provider}
