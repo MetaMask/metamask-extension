@@ -37,11 +37,11 @@ ToAutoComplete.prototype.renderDropdown = function () {
   } = this.props
   const { accountsToRender } = this.state
 
-  return accountsToRender.length && h('div', {}, [
+  return !!accountsToRender.length && h('div', {}, [
 
-    h('div.send-v2__from-dropdown__close-area', {
-      onClick: closeDropdown,
-    }),
+    // h('div.send-v2__from-dropdown__close-area', {
+    //   onClick: closeDropdown,
+    // }),
 
     h('div.send-v2__from-dropdown__list', {}, [
 
@@ -127,7 +127,7 @@ ToAutoComplete.prototype.render = function () {
     //   onClick: () => this.handleInputEvent(),
     // }),
 
-    dropdownOpen && this.renderDropdown(),
+    this.renderDropdown(),
 
   ])
 }

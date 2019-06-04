@@ -5,6 +5,8 @@ import {
     getSendTo,
     getSendToAccounts,
     getSendHexData,
+    accountsWithSendEtherInfoSelector,
+    getAddressBook,
 } from '../../send.selectors.js'
 import {
     getToDropdownOpen,
@@ -36,6 +38,8 @@ function mapStateToProps (state) {
     toAccounts: getSendToAccounts(state),
     toDropdownOpen: getToDropdownOpen(state),
     tokens: getTokens(state),
+    ownedAccounts: accountsWithSendEtherInfoSelector(state),
+    addressBook: getAddressBook(state),
   }
 }
 
