@@ -22,11 +22,11 @@ export default class SendContent extends Component {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
-          <SendFromRow />
-          <SendToRow
-            updateGas={this.updateGas}
-            scanQrCode={ _ => this.props.scanQrCode()}
-          />
+          {/*<SendFromRow />*/}
+          {/*<SendToRow*/}
+          {/*  updateGas={this.updateGas}*/}
+          {/*  scanQrCode={ _ => this.props.scanQrCode()}*/}
+          {/*/>*/}
           <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />

@@ -11,6 +11,7 @@ export default class SendToRow extends Component {
     hasHexData: PropTypes.bool.isRequired,
     inError: PropTypes.bool,
     inWarning: PropTypes.bool,
+    className: PropTypes.string,
     network: PropTypes.string,
     openToDropdown: PropTypes.func,
     selectedToken: PropTypes.object,
@@ -55,36 +56,29 @@ export default class SendToRow extends Component {
     } = this.props
 
     return (
-      <SendRowWrapper
-        errorType={'to'}
-        label={`${this.context.t('to')}: `}
-        showError={inError}
-        showWarning={inWarning}
-        warningType={'to'}
-        >
-        <EnsInput
-          scanQrCode={_ => {
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
-                action: 'Edit Screen',
-                name: 'Used QR scanner',
-              },
-            })
-            this.props.scanQrCode()
-          }}
-          accounts={toAccounts}
-          closeDropdown={() => closeToDropdown()}
-          dropdownOpen={toDropdownOpen}
-          inError={inError}
-          name={'address'}
-          network={network}
-          onChange={({ toAddress, nickname, toError, toWarning }) => this.handleToChange(toAddress, nickname, toError, toWarning, this.props.network)}
-          openDropdown={() => openToDropdown()}
-          placeholder={this.context.t('recipientAddress')}
-          to={to}
-        />
-      </SendRowWrapper>
+      <EnsInput
+        className="send__to-row"
+        scanQrCode={_ => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Transactions',
+              action: 'Edit Screen',
+              name: 'Used QR scanner',
+            },
+          })
+          this.props.scanQrCode()
+        }}
+        accounts={toAccounts}
+        closeDropdown={() => closeToDropdown()}
+        dropdownOpen={toDropdownOpen}
+        inError={inError}
+        name={'address'}
+        network={network}
+        onChange={({ toAddress, nickname, toError, toWarning }) => this.handleToChange(toAddress, nickname, toError, toWarning, this.props.network)}
+        openDropdown={() => openToDropdown()}
+        placeholder={this.context.t('recipientAddress')}
+        to={to}
+      />
     )
   }
 

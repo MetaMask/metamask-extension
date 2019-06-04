@@ -9,6 +9,7 @@ import {
 } from './send.utils'
 
 import SendHeader from './send-header'
+import SendToRow from './send-content/send-to-row'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 
@@ -63,7 +64,7 @@ export default class SendTransactionScreen extends PersistentForm {
     }
   }
 
-  updateGas ({ to: updatedToAddress, amount: value, data } = {}) {
+  updateGas = ({ to: updatedToAddress, amount: value, data } = {}) => {
     const {
       amount,
       blockGasLimit,
@@ -212,14 +213,17 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   render () {
-    const { history, showHexData } = this.props
-
+    const { history, showHexData, scanQrCode } = this.props
     return (
       <div className="page-container">
         <SendHeader history={history}/>
+        <SendToRow
+          updateGas={this.updateGas}
+          scanQrCode={scanQrCode}
+        />
         <SendContent
-          updateGas={(updateData) => this.updateGas(updateData)}
-          scanQrCode={this.props.scanQrCode}
+          updateGas={this.updateGas}
+          scanQrCode={scanQrCode}
           showHexData={showHexData}
         />
         <SendFooter history={history}/>
