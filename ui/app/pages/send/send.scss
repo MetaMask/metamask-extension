@@ -28,4 +28,45 @@
     background-color: $Grey-000;
     border-bottom: 1px solid $alto;
   }
+
+  &__select-recipient-wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 1 auto;
+    height: 0;
+
+    &__group {
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    &__group-label {
+      background-color: $Grey-000;
+      color: $Grey-600;
+      font-size: .75rem;
+      line-height: .875rem;
+      padding: .5rem 1rem;
+    }
+
+    &__group-item {
+      display: flex;
+      flex-flow: row nowrap;
+      padding: 1rem;
+      align-items: center;
+      border-bottom: 1px solid $alto;
+
+
+      .identicon {
+        margin-right: 1rem;
+        flex: 0 0 auto;
+      }
+
+      &__content {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1 1 auto;
+        width: 0;
+      }
+    }
+  }
 }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendRowWrapper from '../send-row-wrapper'
 import EnsInput from '../../../../components/app/ens-input'
 import { getToErrorObject, getToWarningObject } from './send-to-row.utils.js'
+import Identicon from '../../../../components/ui/identicon'
 
 export default class SendToRow extends Component {
 
@@ -17,6 +17,8 @@ export default class SendToRow extends Component {
     selectedToken: PropTypes.object,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
+    ownedAccounts: PropTypes.array,
+    addressBook: PropTypes.array,
     toDropdownOpen: PropTypes.bool,
     tokens: PropTypes.array,
     updateGas: PropTypes.func,
@@ -56,30 +58,72 @@ export default class SendToRow extends Component {
     } = this.props
 
     return (
-      <EnsInput
-        className="send__to-row"
-        scanQrCode={_ => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Transactions',
-              action: 'Edit Screen',
-              name: 'Used QR scanner',
-            },
-          })
-          this.props.scanQrCode()
-        }}
-        accounts={toAccounts}
-        closeDropdown={() => closeToDropdown()}
-        dropdownOpen={toDropdownOpen}
-        inError={inError}
-        name={'address'}
-        network={network}
-        onChange={({ toAddress, nickname, toError, toWarning }) => this.handleToChange(toAddress, nickname, toError, toWarning, this.props.network)}
-        openDropdown={() => openToDropdown()}
-        placeholder={this.context.t('recipientAddress')}
-        to={to}
-      />
+      <div className="send__select-recipient-wrapper">
+        <EnsInput
+          className="send__to-row"
+          scanQrCode={_ => {
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Used QR scanner',
+              },
+            })
+            this.props.scanQrCode()
+          }}
+          accounts={toAccounts}
+          closeDropdown={() => closeToDropdown()}
+          dropdownOpen={toDropdownOpen}
+          inError={inError}
+          name={'address'}
+          network={network}
+          onChange={({ toAddress, nickname, toError, toWarning }) => this.handleToChange(toAddress, nickname, toError, toWarning, this.props.network)}
+          openDropdown={() => openToDropdown()}
+          placeholder={this.context.t('recipientAddress')}
+          to={to}
+        />
+        <div className="send__select-recipient-wrapper__list">
+          { this.renderRecents() }
+          { this.renderAddressBook() }
+        </div>
+      </div>
     )
   }
 
+  renderRecents() {
+    const { addressBook } = this.props
+    const { t } = this.context
+    const nonContacts = addressBook.filter(({ name }) => !name)
+
+    console.log(nonContacts)
+
+    return nonContacts.length > 0 && (
+      <div className="send__select-recipient-wrapper__group">
+        <div className="send__select-recipient-wrapper__group-label">
+          {t('Recents')}
+        </div>
+        {
+          nonContacts.map(({ address }) => (
+            <div key={address} className="send__select-recipient-wrapper__group-item">
+              <Identicon address={address} diameter={28} />
+              <div className="send__select-recipient-wrapper__group-item__content">
+                <div className="send__select-recipient-wrapper__group-item__title">
+                  {ellipsify(address)}
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    )
+  }
+
+  renderAddressBook() {
+
+  }
+
+}
+
+function ellipsify(text) {
+  return `${text.slice(0, 6)}...${text.slice(-4)}`
 }

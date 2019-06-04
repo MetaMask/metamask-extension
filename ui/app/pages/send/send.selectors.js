@@ -63,7 +63,6 @@ module.exports = selectors
 function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
-
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
   })
