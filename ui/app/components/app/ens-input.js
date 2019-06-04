@@ -58,6 +58,7 @@ EnsInput.prototype.render = function () {
     qrScanner: true,
   })
   return h('div', {
+    className: props.className,
     style: { width: '100%', position: 'relative' },
   }, [
     h(ToAutoComplete, { ...opts }),
