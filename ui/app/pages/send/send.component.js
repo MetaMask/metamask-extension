@@ -9,7 +9,7 @@ import {
 } from './send.utils'
 
 import SendHeader from './send-header'
-import SendToRow from './send-content/send-to-row'
+import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 
@@ -217,7 +217,7 @@ export default class SendTransactionScreen extends PersistentForm {
     return (
       <div className="page-container">
         <SendHeader history={history}/>
-        <SendToRow
+        <AddRecipient
           updateGas={this.updateGas}
           scanQrCode={scanQrCode}
         />

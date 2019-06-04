@@ -13,7 +13,7 @@ import {
     getTokens,
     sendToIsInError,
     sendToIsInWarning,
-} from './send-to-row.selectors.js'
+} from './add-recipient.selectors.js'
 import {
     updateSendTo,
 } from '../../../../store/actions'
@@ -23,9 +23,9 @@ import {
   openToDropdown,
   closeToDropdown,
 } from '../../../../ducks/send/send.duck'
-import SendToRow from './send-to-row.component'
+import AddRecipient from './add-recipient.component'
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)
+export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)
 
 function mapStateToProps (state) {
   return {

@@ -3,9 +3,9 @@ import {
   getToDropdownOpen,
   getTokens,
   sendToIsInError,
-} from '../send-to-row.selectors.js'
+} from '../add-recipient.selectors.js'
 
-describe('send-to-row selectors', () => {
+describe('add-recipient selectors', () => {
 
   describe('getToDropdownOpen()', () => {
     it('should return send.getToDropdownOpen', () => {

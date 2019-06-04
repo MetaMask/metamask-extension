@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-const SendToRow = proxyquire('../send-to-row.component.js', {
+const SendToRow = proxyquire('../add-recipient.component.js', {
   './send-to-row.utils.js': {
     getToErrorObject: (to, toError) => ({
       to: to === false ? null : `mockToErrorObject:${to}${toError}`,
@@ -29,7 +29,7 @@ const propsMethodSpies = {
 
 sinon.spy(SendToRow.prototype, 'handleToChange')
 
-describe('SendToRow Component', function () {
+describe('AddRecipient Component', function () {
   let wrapper
   let instance
 
