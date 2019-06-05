@@ -74,6 +74,24 @@ $send-card-z-index: 20;
 $sidebar-z-index: 26;
 $sidebar-overlay-z-index: 25;
 
+// Flex
+%row-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+%col-nowrap {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+// Background Image Sizing
+%bg-contain {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 /*
   Z Indicies - Current
   app - 11
@@ -112,6 +130,25 @@ $Red-600: #b92534;
 
 $Orange-000: #fef5ef;
 $Orange-500: #F66A0A;
+
+// Font Sizes
+%h4 {
+  font-size: 1.125rem;
+  line-height: 1.3125rem;
+  font-weight: 400;
+}
+
+%h6 {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+}
+
+%h8 {
+  font-size: .75rem;
+  line-height: 1.0625rem;
+  font-weight: 400;
+}
 
 
 /*
