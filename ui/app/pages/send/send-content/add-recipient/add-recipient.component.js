@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import EnsInput from '../../../../components/app/ens-input'
+import EnsInput from './ens-input'
 import { getToErrorObject, getToWarningObject } from './add-recipient.js'
 import Identicon from '../../../../components/ui/identicon'
 
