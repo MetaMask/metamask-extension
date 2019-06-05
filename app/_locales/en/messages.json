@@ -172,6 +172,9 @@
   "back": {
     "message": "Back"
   },
+  "backToAll": {
+    "message": "Back to All"
+  },
   "balance": {
     "message": "Balance"
   },
@@ -892,6 +895,9 @@
   },
   "loadingTokens": {
     "message": "Loading Tokens..."
+  },
+  "loadMore": {
+    "message": "Load More"
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -1672,6 +1678,9 @@
   },
   "transfer": {
     "message": "Transfer"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer From"

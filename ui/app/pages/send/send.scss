@@ -6,9 +6,7 @@
     padding: 14px 0 3px 0;
 
     .page-container__title {
-      font-size: 1.125rem;
-      font-weight: 400;
-      line-height: 1.3125rem;
+      @extend %h4;
       text-align: center;
     }
 
@@ -30,28 +28,59 @@
   }
 
   &__select-recipient-wrapper {
-    display: flex;
-    flex-flow: column nowrap;
+    @extend %col-nowrap;
     flex: 1 1 auto;
     height: 0;
 
+    &__list {
+      &__link {
+        @extend %link;
+        @extend %row-nowrap;
+        padding: 1rem;
+        font-size: 1rem;
+        border-bottom: 1px solid $alto;
+        align-items: center;
+      }
+
+      &__back-caret {
+        @extend %bg-contain;
+        display: block;
+        background-image: url('/images/caret-left.svg');
+        width: 18px;
+        height: 18px;
+        margin-right: .5rem;
+      }
+    }
+
+    &__recent-group-wrapper {
+      @extend %col-nowrap;
+
+      &__load-more {
+        @extend %link;
+        font-size: .75rem;
+        line-height: 1.0625rem;
+        padding: .5rem;
+        text-align: center;
+        border-bottom: 1px solid $alto;
+      }
+    }
+
     &__group {
-      display: flex;
-      flex-flow: column nowrap;
+      @extend %col-nowrap;
     }
 
     &__group-label {
+      @extend %h8;
       background-color: $Grey-000;
       color: $Grey-600;
-      font-size: .75rem;
       line-height: .875rem;
       padding: .5rem 1rem;
+      border-bottom: 1px solid $alto;
     }
 
     &__group-item {
-      display: flex;
-      flex-flow: row nowrap;
-      padding: 1rem;
+      @extend %row-nowrap;
+      padding: .75rem 1rem;
       align-items: center;
       border-bottom: 1px solid $alto;
 
@@ -62,10 +91,20 @@
       }
 
       &__content {
-        display: flex;
-        flex-flow: column nowrap;
+        @extend %col-nowrap;
         flex: 1 1 auto;
         width: 0;
+      }
+
+      &__title {
+        font-size: .875rem;
+        line-height: 1.25rem;
+        color: $black;
+      }
+
+      &__subtitle {
+        @extend %h8;
+        color: $Grey-500;
       }
     }
   }
