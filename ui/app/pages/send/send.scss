@@ -109,3 +109,64 @@
     }
   }
 }
+
+.ens-input {
+  @extend %row-nowrap;
+
+  &__wrapper {
+    @extend %row-nowrap;
+    flex: 1 1 auto;
+    width: 0;
+    align-items: center;
+    background: $white;
+    border-radius: .5rem;
+    padding: .75rem .5rem;
+    border: 1px solid $Grey-100;
+    transition: border-color 150ms ease-in-out;
+
+    &:focus-within {
+      border-color: $Grey-500;
+    }
+
+    &__status-icon {
+      @extend %bg-contain;
+      background-image: url("/images/search-black.svg");
+      width: 1.125rem;
+      height: 1.125rem;
+      margin: .25rem;
+
+      &--error {
+
+      }
+
+      &--valid {
+
+      }
+    }
+
+    &__input {
+      @extend %h6;
+      flex: 1 1 auto;
+      width: 0;
+
+      &::placeholder {
+        color: $Grey-200;
+      }
+    }
+
+    &__action-icon {
+      @extend %bg-contain;
+
+      &--erase {
+
+      }
+
+      &--qrcode {
+        background-image: url("/images/qr-blue.svg");
+        width: 1.5rem;
+        height: 1.5rem;
+        margin: 0 .25rem;
+      }
+    }
+  }
+}

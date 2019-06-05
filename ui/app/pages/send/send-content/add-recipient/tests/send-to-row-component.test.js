@@ -16,7 +16,7 @@ const SendToRow = proxyquire('../add-recipient.component.js', {
 }).default
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
-import EnsInput from '../../../../../components/app/ens-input'
+import EnsInput from '../ens-input'
 
 const propsMethodSpies = {
   closeToDropdown: sinon.spy(),
