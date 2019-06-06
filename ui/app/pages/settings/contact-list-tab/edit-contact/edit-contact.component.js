@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import { addressSlicer } from '../../../../helpers/utils/util'
-const copyToClipboard = require('copy-to-clipboard')
+import { addressSlicer, isValidAddress } from '../../../../helpers/utils/util'
+import TextField from '../../../../components/ui/text-field'
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class EditContact extends PureComponent {
 
@@ -19,8 +20,14 @@ export default class EditContact extends PureComponent {
     match: PropTypes.object,
   }
 
+  state = {
+    newName: '',
+    address: '',
+  }
+
    render () {
-    const { removeFromAddressBook, history, match, addressBook } = this.props
+    const { history, match, addressBook, addToAddressBook } = this.props
+    const { newName } = this.state
     const address = match.params.id
     const currentEntry = addressBook[address]
     const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
@@ -28,39 +35,53 @@ export default class EditContact extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-        <div className="settings-page__header">
-            { name }
-            <div className="settings-page__button-group">
-            <button className="button btn-primary settings-page__address-book-button"
-              onClick={() => {
-              }}> {this.context.t('edit')} </button>
-              <button className="button btn-primary settings-page__address-book-button"
-              onClick={() => {
-                removeFromAddressBook(address)
-                history.push(CONTACT_LIST_ROUTE)
-              }}> {this.context.t('remove')} </button>
-            </div>
-          </div>
+
           <div className="settings-page__content-item-col">
             <Identicon address={address} diameter={45}/>
             <div className="settings-page__content-description">
               { this.context.t('userName') }
             </div>
-            { name }
           </div>
-          <div className="settings-page__content-item-col">
+
+          <TextField
+              type="text"
+              id="name"
+              placeholder={name}
+              onChange={e => this.setState({ newName: e.target.value })}
+              fullWidth
+              margin="dense"
+            />
+
             <div className="settings-page__content-description">
-              {this.context.t('ethereumPublicAddress')}
+              { this.context.t('ethereumPublicAddress') }
             </div>
-            <div className="settings-page__copyable-address"
-              onClick={() => {
-                copyToClipboard(address)
-              }}>
-            { address }
-            <img className="settings-page__copy-icon" src="/images/copy-to-clipboard.svg"></img>
-            </div>
-          </div>
+            <TextField
+              type="text"
+              id="address"
+              value={address}
+              placeholder={address}
+              onChange={e => this.setState({ address: e.target.value })}
+              fullWidth
+              margin="dense"
+            />
+
         </div>
+        <PageContainerFooter
+          cancelText={this.context.t('cancel')}
+          onSubmit={() => {
+            if (isValidAddress(address)) {
+              addToAddressBook(address, newName)
+              history.push(CONTACT_LIST_ROUTE)
+            } else {
+              this.setState({ address: 'invalid address' })
+            }
+          }}
+          onCancel={() => {
+            history.push(CONTACT_LIST_ROUTE)
+          }}
+          submitText={this.context.t('save')}
+          submitButtonType={'confirm'}
+        />
       </div>
     )
   }

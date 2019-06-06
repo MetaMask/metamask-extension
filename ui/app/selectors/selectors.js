@@ -203,7 +203,6 @@ function conversionRateSelector (state) {
 }
 
 function getAddressBook (state) {
-  console.log('++++++state.metamask.addressBook++++++', state.metamask.addressBook)
   return state.metamask.addressBook
 }
 

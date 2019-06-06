@@ -1944,7 +1944,6 @@ function delRpcTarget (oldRpc) {
   }
 }
 
-
 // Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
@@ -1962,7 +1961,7 @@ function addToAddressBook (recipient, nickname = '') {
 function removeFromAddressBook (addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
   return (dispatch) => {
-    background.removeFromAddressBook(addressToRemove, (err, result) => {
+    background.removeFromAddressBook(addressToRemove, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Address book failed to update'))
