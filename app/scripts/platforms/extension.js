@@ -130,17 +130,7 @@ class ExtensionPlatform {
   }
 
   _getExplorer (hash, networkId) {
-    let explorerName
-    if (networkId === POA_CODE ||
-        networkId === DAI_CODE ||
-        networkId === POA_SOKOL_CODE ||
-        networkId === GOERLI_TESTNET_CODE ||
-        networkId === CLASSIC_CODE
-    ) {
-      explorerName = 'BlockScout'
-    } else {
-      explorerName = 'Etherscan'
-    }
+    let explorerName = 'BlockScout'
 
     return {
       explorerName: explorerName,
