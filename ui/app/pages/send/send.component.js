@@ -12,6 +12,7 @@ import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
+import EnsInput from './send-content/add-recipient/ens-input'
 
 export default class SendTransactionScreen extends PersistentForm {
 
@@ -28,6 +29,7 @@ export default class SendTransactionScreen extends PersistentForm {
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
+    to: PropTypes.string,
     history: PropTypes.object,
     network: PropTypes.string,
     primaryCurrency: PropTypes.string,
@@ -47,6 +49,10 @@ export default class SendTransactionScreen extends PersistentForm {
 
   static contextTypes = {
     t: PropTypes.func,
+  }
+
+  state = {
+    query: '',
   }
 
   componentWillReceiveProps (nextProps) {
@@ -197,6 +203,10 @@ export default class SendTransactionScreen extends PersistentForm {
     this.props.resetSendState()
   }
 
+  onRecipientInputChange = query => {
+    this.setState({ query })
+  }
+
   updateSendToken () {
     const {
       from: { address },
@@ -213,22 +223,69 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   render () {
-    const { history, showHexData, scanQrCode } = this.props
+    const { history, to } = this.props
+
     return (
       <div className="page-container">
         <SendHeader history={history}/>
-        <AddRecipient
-          updateGas={this.updateGas}
-          scanQrCode={scanQrCode}
-        />
-        {/*<SendContent*/}
-        {/*  updateGas={this.updateGas}*/}
-        {/*  scanQrCode={scanQrCode}*/}
-        {/*  showHexData={showHexData}*/}
-        {/*/>*/}
-        {/*<SendFooter history={history}/>*/}
+        { this.renderInput() }
+        {
+          to
+            ? this.renderSendContent()
+            : this.renderAddRecipient()
+        }
       </div>
     )
+  }
+
+  renderInput () {
+    const { to, toNickname } = this.props
+
+    return (
+      <EnsInput
+        className="send__to-row"
+        // scanQrCode={_ => {
+        //   this.context.metricsEvent({
+        //     eventOpts: {
+        //       category: 'Transactions',
+        //       action: 'Edit Screen',
+        //       name: 'Used QR scanner',
+        //     },
+        //   })
+        //   this.props.scanQrCode()
+        // }}
+        onChange={this.onRecipientInputChange}
+        // resetRecipient={this.resetRecipient}
+        // selectedAddress={to}
+        // selectedName={toNickname}
+      />
+    )
+  }
+
+  renderAddRecipient () {
+    const { scanQrCode } = this.props
+
+    return (
+      <AddRecipient
+        updateGas={this.updateGas}
+        scanQrCode={scanQrCode}
+        query={this.state.query}
+      />
+    )
+  }
+
+  renderSendContent () {
+    const { history, showHexData, scanQrCode } = this.props
+
+    return [
+      <SendContent
+        key="send-content"
+        updateGas={this.updateGas}
+        scanQrCode={scanQrCode}
+        showHexData={showHexData}
+      />,
+      <SendFooter key="send-footer" history={history} />,
+    ]
   }
 
 }

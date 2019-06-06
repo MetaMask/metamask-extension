@@ -50,6 +50,7 @@ const selectors = {
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
+  getSendToNickname,
   getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
@@ -234,6 +235,10 @@ function getSendMaxModeState (state) {
 
 function getSendTo (state) {
   return state.metamask.send.to
+}
+
+function getSendToNickname (state) {
+  return state.metamask.send.toNickname
 }
 
 function getSendToAccounts (state) {
