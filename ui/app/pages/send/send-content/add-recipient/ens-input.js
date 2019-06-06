@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
+import { getCurrentNetwork } from '../../send.selectors'
+import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
 
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard/index')
@@ -8,7 +10,7 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const connect = require('react-redux').connect
 const log = require('loglevel')
-const { isValidENSAddress } = require('../../../../helpers/utils/util')
+
 
 // Local Constants
 const ensRE = /.+\..+$/
@@ -27,12 +29,12 @@ class EnsInput extends Component {
 
   state = {
     recipient: null,
-    input: undefined,
+    input: '',
     hoverText: undefined,
     ensResolution: ZERO_ADDRESS,
     nickname: undefined,
     loadingEns: false,
-    ensFailure: true,
+    ensFailure: false,
     toError: null,
     toWarning: null,
   }
@@ -121,36 +123,58 @@ class EnsInput extends Component {
       })
   }
 
-  onChange = (recipient) => {
-    const network = this.props.network
+  onChange = e => {
+    const { network, onChange } = this.props
+    const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-    this.props.onChange({ toAddress: recipient })
+    this.setState({ input }, () => onChange(input))
 
-    if (!networkHasEnsSupport) return
 
-    if (recipient.match(ensRE) === null) {
-      return this.setState({
-        loadingEns: false,
-        ensResolution: null,
-        ensFailure: null,
-        toError: null,
-        recipient,
-      })
+    // console.log(isValidAddress(input))
+    // console.log(isValidENSAddress(input))
+
+    if (isValidAddress(input)) {
+      // set icon to valid
+      // advance to next step
+      return
     }
 
-    this.setState({
-      loadingEns: true,
-      recipient,
-    })
+    // maybe scan ENS
+    if (!networkHasEnsSupport) return
 
-    this.checkName(recipient)
+    if (isValidENSAddress(input)) {
+      // Show loading
+      // scan ENS
+      // If success
+      //    stop loading
+      //    show ENS name as clickable item
+      // If error
+      //    stop loading
+      //    show error message
+    } else {
+      // do nothing
+      // return this.setState({
+      //   loadingEns: false,
+      //   ensResolution: null,
+      //   ensFailure: null,
+      //   toError: null,
+      //   recipient,
+      // })
+    }
+
+    // this.setState({
+    //   loadingEns: true,
+    //   recipient,
+    // })
+    //
+    // this.checkName(recipient)
   }
 
   render () {
     const { t } = this.context
     const { className } = this.props
-    const { recipient, input } = this.state
+    const { input } = this.state
     return (
       <div className={c('ens-input', className)}>
         <div className="ens-input__wrapper">
@@ -164,7 +188,7 @@ class EnsInput extends Component {
             className="ens-input__wrapper__input"
             type="text"
             placeholder={t('recipientAddress')}
-            onChange={e => this.setState({ input: e.target.value })}
+            onChange={this.onChange}
             value={input}
           />
           <div
@@ -172,6 +196,13 @@ class EnsInput extends Component {
               'ens-input__wrapper__action-icon--erase': input,
               'ens-input__wrapper__action-icon--qrcode': !input,
             })}
+            onClick={() => {
+              if (input) {
+                this.setState({ input: '' })
+              } else {
+                console.log('Scan QR!')
+              }
+            }}
           />
         </div>
       </div>
@@ -234,7 +265,11 @@ class EnsInput extends Component {
   }
 }
 
-export default connect()(EnsInput)
+export default connect(
+  state => ({
+    network: getCurrentNetwork(state),
+  })
+)(EnsInput)
 
 function getNetworkEnsSupport (network) {
   return Boolean(networkMap[network])
