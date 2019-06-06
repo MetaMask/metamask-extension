@@ -22,7 +22,7 @@ const getBlockscoutApiNetworkPrefix = (network) => {
 		case 42:
 		case 3:
 		case 4:
-		return 'mainnet'
+		return 'eth'
 		case 99:
 		case 77:
 		case 100:
