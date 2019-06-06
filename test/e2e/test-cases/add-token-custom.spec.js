@@ -65,18 +65,18 @@ const addCustomToken = async (f, account1, account2) => {
         assert.equal(await tokenBalance.getText(), token.supply + ' ' + token.ticker, 'balance is incorrect or not displayed')
       })
 
-      it('click to token opens the etherscan', async () => {
+      it('click to token opens the Blockscout', async () => {
         const link = await f.waitUntilShowUp(screens.main.tokens.token)
         await link.click()
         await f.delay(2000)
         const allHandles = await f.driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 2, 'blockscout wasn\'t opened')
         await f.switchToLastPage()
         await f.delay(2000)
         const title = await f.waitUntilCurrentUrl()
         console.log(title)
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
+        assert.equal(title.includes('https://blockscout.com/eth/mainnet/tokens/'), true, 'blockscout wasn\'t opened')
         await f.switchToFirstPage()
       })
     })
@@ -88,7 +88,7 @@ const addCustomToken = async (f, account1, account2) => {
         await menu.click()
       })
 
-      it('link \'View on blockexplorer...\' leads to correct page ', async () => {
+      it('link \'View on Blockscout...\' leads to correct page ', async () => {
         const menu = await f.waitUntilShowUp(menus.token.view)
         assert.notEqual(menu, false, 'item isn\'t displayed')
         assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
@@ -96,12 +96,12 @@ const addCustomToken = async (f, account1, account2) => {
         await f.delay(2000)
         const allHandles = await f.driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 3, 'blockscout wasn\'t opened')
         await f.switchToLastPage()
         const title = await f.waitUntilCurrentUrl()
 
         console.log(title)
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
+        assert.equal(title.includes('https://blockscout.com/eth/mainnet/tokens/'), true, 'blockscout wasn\'t opened')
         await f.switchToFirstPage()
       })
 
