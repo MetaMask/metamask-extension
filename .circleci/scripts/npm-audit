@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+set -o pipefail
+
+if ! npm audit
+then
+    ! npm audit --json > audit.json
+    printf '%s\n' ''
+    node .circleci/scripts/npm-audit-check.js
+fi
