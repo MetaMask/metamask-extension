@@ -19,7 +19,7 @@ const KOVAN_CODE = 42
 const GOERLI_TESTNET_CODE = 5
 const CLASSIC_CODE = 61
 
-const POA_DISPLAY_NAME = 'POA Network'
+const POA_DISPLAY_NAME = 'POA Core'
 const DAI_DISPLAY_NAME = 'xDai Chain'
 const POA_SOKOL_DISPLAY_NAME = 'Sokol'
 const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
