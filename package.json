@@ -232,7 +232,7 @@
     "brfs": "^1.6.1",
     "browserify": "^16.2.3",
     "chai": "^4.1.0",
-    "chromedriver": "^2.41.0",
+    "chromedriver": "^74.0.0",
     "clipboardy": "^1.2.3",
     "compression": "^1.7.1",
     "coveralls": "^3.0.0",
