@@ -2,6 +2,13 @@
 
 ## Current Master
 
+## 4.11.6 Thu Jun 06 2019
+
+- [#285](https://github.com/poanetwork/nifty-wallet/pull/285): (Feature) Add RSK mainnet support
+- [#284](https://github.com/poanetwork/nifty-wallet/pull/284): (Feature) Blockscout links for all chains
+- [#286](https://github.com/poanetwork/nifty-wallet/pull/286): (Fix) Import of proxy contracts for eth chains
+- [#283](https://github.com/poanetwork/nifty-wallet/pull/283): (Fix) Display POA Core name
+
 ## 4.11.5 Thu Apr 18 2019
 
 - [#279](https://github.com/poanetwork/nifty-wallet/pull/279): (Fix) utf8 encoding in contentscript.js
