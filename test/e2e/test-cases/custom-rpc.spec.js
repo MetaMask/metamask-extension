@@ -132,7 +132,7 @@ const customRPC = async (f) => {
 
     it('deleted custom rpc isn\'t displayed in \'Settings\' screen', async function () {
       const currentNetwork = await f.waitUntilShowUp(screens.settings.currentNetwork)
-      assert.equal(await currentNetwork.getText(), 'POA Network', 'custom Rpc is displayed after deletion')
+      assert.equal(await currentNetwork.getText(), 'POA Core', 'custom Rpc is displayed after deletion')
     })
 
     it('deleted custom rpc isn\'t displayed in network dropdown menu', async function () {
