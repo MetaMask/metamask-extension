@@ -116,13 +116,13 @@ function getExchanges ({network, amount, address}) {
         {
           name: 'Huobi',
           link: 'https://www.huobi.com/',
-        },  
-        { 
-          name: 'Bitfinex', 
-          link: 'https://www.bitfinex.com/',  
-        },  
-        { 
-          name: 'Bitso',  
+        },
+        {
+          name: 'Bitfinex',
+          link: 'https://www.bitfinex.com/',
+        },
+        {
+          name: 'Bitso',
           link: 'https://bitso.com/',
         },
       ]

@@ -166,9 +166,9 @@ const addCustomToken = async (f, account1, account2) => {
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not be displayed in RSK network', async () => {  
-          await f.setProvider(NETWORKS.RSK) 
-          assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')  
+        it('token should not be displayed in RSK network', async () => {
+          await f.setProvider(NETWORKS.RSK)
+          assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
       })
 
@@ -205,9 +205,9 @@ const addCustomToken = async (f, account1, account2) => {
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in MAINNET')
         })
 
-        it('can not add inexistent token to RSK mainnet', async () => { 
-          await f.setProvider(NETWORKS.RSK) 
-          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in RSK mainnet') 
+        it('can not add inexistent token to RSK mainnet', async () => {
+          await f.setProvider(NETWORKS.RSK)
+          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in RSK mainnet')
         })
 
         it('can not add inexistent token to LOCALHOST network', async () => {

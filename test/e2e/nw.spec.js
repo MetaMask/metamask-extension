@@ -116,8 +116,8 @@ describe('Metamask popup page', async function () {
     await importGanacheSeedPhrase(f, account2, password)
   })
 
-  describe('RSK network tests', async () => { 
-    await RSKNetworkTests(f, account1)  
+  describe('RSK network tests', async () => {
+    await RSKNetworkTests(f, account1)
   })
 
   describe('Check the filter of emitted events', async () => {

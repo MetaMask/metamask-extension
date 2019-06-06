@@ -144,13 +144,13 @@ networks[GOERLI_TESTNET_CODE] = GOERLI_TESTNET_OBJ
 networks[GOERLI_TESTNET] = GOERLI_TESTNET_OBJ
 
 const RSK_OBJ = {
-  order: 10, 
-  providerName: RSK,  
-  networkID: RSK_CODE,  
-  displayName: RSK_DISPLAY_NAME,  
-  displayNameDropdown: DROPDOWN_RSK_DISPLAY_NAME, 
-} 
-networks[RSK_CODE] = RSK_OBJ  
+  order: 10,
+  providerName: RSK,
+  networkID: RSK_CODE,
+  displayName: RSK_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_RSK_DISPLAY_NAME,
+}
+networks[RSK_CODE] = RSK_OBJ
 networks[RSK] = RSK_OBJ
 
 const getNetworkDisplayName = key => networks[key].displayName

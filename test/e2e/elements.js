@@ -295,7 +295,7 @@ module.exports = {
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
-        sendRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(4)'), 
+        sendRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(4)'),
         buyRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(3)'),
         sendText: 'Send',
         save: By.className('editable-button'),
