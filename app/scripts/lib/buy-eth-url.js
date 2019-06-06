@@ -14,7 +14,8 @@ const {
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
-  GOERLI_TESTNET_CODE} = require('../controllers/network/enums')
+  GOERLI_TESTNET_CODE,
+  RSK_CODE} = require('../controllers/network/enums')
 
 /**
  * Gives the caller a url at which the user can acquire coin, depending on the network they are in
@@ -35,6 +36,7 @@ function getBuyEthUrl ({ network, amount, address, ind }) {
     case POA_CODE:
     case DAI_CODE:
     case CLASSIC_CODE:
+    case RSK_CODE:
       url = getExchanges({network, amount, address})[ind].link
       break
     case ROPSTEN_CODE:
@@ -107,6 +109,21 @@ function getExchanges ({network, amount, address}) {
         {
           name: 'xDai TokenBridge',
           link: 'https://dai-bridge.poa.network/',
+        },
+      ]
+    case RSK_CODE:
+      return [
+        {
+          name: 'Huobi',
+          link: 'https://www.huobi.com/',
+        },
+        {
+          name: 'Bitfinex',
+          link: 'https://www.bitfinex.com/',
+        },
+        {
+          name: 'Bitso',
+          link: 'https://bitso.com/',
         },
       ]
     default:
