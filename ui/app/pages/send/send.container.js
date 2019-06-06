@@ -24,6 +24,7 @@ import {
   getSendHexDataFeatureFlagState,
   getSendFromObject,
   getSendTo,
+  getSendToNickname,
   getTokenBalance,
   getQrCodeData,
 } from './send.selectors'
@@ -73,6 +74,7 @@ function mapStateToProps (state) {
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
     to: getSendTo(state),
+    toNickname: getSendToNickname(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),

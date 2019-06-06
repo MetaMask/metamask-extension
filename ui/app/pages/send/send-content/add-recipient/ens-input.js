@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
-import { getCurrentNetwork } from '../../send.selectors'
+import {getCurrentNetwork, getSendTo, getSendToNickname} from '../../send.selectors'
 import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
+import { updateSendTo } from '../../../../store/actions'
 
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard/index')
@@ -24,7 +25,11 @@ class EnsInput extends Component {
   static propTypes = {
     className: PropTypes.string,
     network: PropTypes.string,
+    selectedAddress: PropTypes.string,
+    selectedName: PropTypes.string,
+    resetRecipient: PropTypes.func,
     onChange: PropTypes.func,
+    updateSendTo: PropTypes.func,
   }
 
   state = {
@@ -173,23 +178,28 @@ class EnsInput extends Component {
 
   render () {
     const { t } = this.context
-    const { className } = this.props
+    const { className, onChange, selectedAddress, updateSendTo } = this.props
     const { input } = this.state
+
+    if (selectedAddress) {
+      return this.renderSelected()
+    }
+
     return (
       <div className={c('ens-input', className)}>
-        <div className="ens-input__wrapper">
-          <div
-            className={c('ens-input__wrapper__status-icon', {
-              'ens-input__wrapper__status-icon--error': false,
-              'ens-input_-_wrapper__status-icon--valid': false,
-            })}
-          />
+        <div
+          className={c('ens-input__wrapper', {
+            'ens-input__wrapper__status-icon--error': false,
+            'ens-input__wrapper__status-icon--valid': false,
+          })}
+        >
+          <div className="ens-input__wrapper__status-icon" />
           <input
             className="ens-input__wrapper__input"
             type="text"
             placeholder={t('recipientAddress')}
             onChange={this.onChange}
-            value={input}
+            value={selectedAddress || input}
           />
           <div
             className={c('ens-input__wrapper__action-icon', {
@@ -198,10 +208,55 @@ class EnsInput extends Component {
             })}
             onClick={() => {
               if (input) {
-                this.setState({ input: '' })
+                this.setState({ input: '' }, () => {
+                  onChange('')
+                  updateSendTo('', '')
+                })
               } else {
                 console.log('Scan QR!')
               }
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderSelected () {
+    const { t } = this.context
+    const { className, onChange, selectedAddress, selectedName, updateSendTo } = this.props
+
+    return (
+      <div className={c('ens-input', className)}>
+        <div
+          className="ens-input__wrapper ens-input__wrapper--valid"
+        >
+          <div className="ens-input__wrapper__status-icon" />
+          <div
+            className="ens-input__wrapper__input ens-input__wrapper__input--selected"
+            placeholder={t('recipientAddress')}
+            onChange={this.onChange}
+          >
+            <div className="ens-input__selected-input__title">
+              {selectedName || selectedAddress}
+            </div>
+            {
+              selectedName && (
+                <div
+                  className="ens-input__selected-input__subtitle"
+                >
+                  {selectedAddress}
+                </div>
+              )
+            }
+          </div>
+          <div
+            className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
+            onClick={() => {
+              this.setState({ input: '' }, () => {
+                onChange('')
+                updateSendTo('', '')
+              })
             }}
           />
         </div>
@@ -268,9 +323,18 @@ class EnsInput extends Component {
 export default connect(
   state => ({
     network: getCurrentNetwork(state),
+    selectedAddress: getSendTo(state),
+    selectedName: getSendToNickname(state),
+  }),
+  dispatch => ({
+    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   })
 )(EnsInput)
 
 function getNetworkEnsSupport (network) {
   return Boolean(networkMap[network])
+}
+
+function ellipsify (text, first = 6, last = 4) {
+  return `${text.slice(0, first)}...${text.slice(-last)}`
 }
