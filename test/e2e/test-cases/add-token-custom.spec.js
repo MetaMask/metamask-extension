@@ -101,7 +101,7 @@ const addCustomToken = async (f, account1, account2) => {
         const title = await f.waitUntilCurrentUrl()
 
         console.log(title)
-        assert.equal(title.includes('https://blockscout.com/eth/mainnet/tokens/'), true, 'blockscout wasn\'t opened')
+        assert.equal(title.includes('https://blockscout.com/poa/sokol/tokens/'), true, 'blockscout wasn\'t opened')
         await f.switchToFirstPage()
       })
 
