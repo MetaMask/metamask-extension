@@ -54,7 +54,7 @@ function setupEnsIpfsResolver ({ provider }) {
       } else if (type === 'onion' || type === 'onion3') {
         const [codec, content] = hash.split('/').slice(1)
         const [addr, port] = content.split(':')
-        url = `http://${addr}:${port}`
+        url = `http://${addr}.onion:${port}`
       }
     } catch (err) {
       console.warn(err)
