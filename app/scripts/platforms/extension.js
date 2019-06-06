@@ -1,12 +1,6 @@
 const extension = require('extensionizer')
 const explorerLinks = require('eth-net-props').explorerLinks
 const { capitalizeFirstLetter } = require('../lib/util')
-const {
-  POA_CODE,
-  DAI_CODE,
-  POA_SOKOL_CODE,
-  GOERLI_TESTNET_CODE,
-  CLASSIC_CODE } = require('../controllers/network/enums')
 
 class ExtensionPlatform {
 
@@ -130,7 +124,7 @@ class ExtensionPlatform {
   }
 
   _getExplorer (hash, networkId) {
-    let explorerName = 'BlockScout'
+    const explorerName = 'BlockScout'
 
     return {
       explorerName: explorerName,
