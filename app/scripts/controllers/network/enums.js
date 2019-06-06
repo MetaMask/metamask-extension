@@ -7,6 +7,7 @@ const RINKEBY = 'rinkeby'
 const KOVAN = 'kovan'
 const GOERLI_TESTNET = 'goerli_testnet'
 const CLASSIC = 'classic'
+const RSK = 'rsk'
 const LOCALHOST = 'localhost'
 
 const POA_CODE = 99
@@ -18,8 +19,9 @@ const RINKEBY_CODE = 4
 const KOVAN_CODE = 42
 const GOERLI_TESTNET_CODE = 5
 const CLASSIC_CODE = 61
+const RSK_CODE = 30
 
-const POA_DISPLAY_NAME = 'POA Network'
+const POA_DISPLAY_NAME = 'POA Core'
 const DAI_DISPLAY_NAME = 'xDai Chain'
 const POA_SOKOL_DISPLAY_NAME = 'Sokol'
 const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
@@ -28,6 +30,7 @@ const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 const KOVAN_DISPLAY_NAME = 'Kovan'
 const GOERLI_TESTNET_DISPLAY_NAME = 'Görli Testnet'
 const CLASSIC_DISPLAY_NAME = 'Ethereum Classic'
+const RSK_DISPLAY_NAME = 'RSK Mainnet'
 
 const DROPDOWN_POA_DISPLAY_NAME = POA_DISPLAY_NAME
 const DROPDOWN_DAI_DISPLAY_NAME = DAI_DISPLAY_NAME
@@ -38,6 +41,7 @@ const DROPDOWN_RINKEBY_DISPLAY_NAME = 'Rinkeby Test Net'
 const DROPDOWN_KOVAN_DISPLAY_NAME = 'Kovan Test Net'
 const DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME = 'Görli Test Net'
 const DROPDOWN_CLASSIC_DISPLAY_NAME = 'Ethereum Classic'
+const DROPDOWN_RSK_DISPLAY_NAME = 'RSK Main Net'
 
 const chainTypes = {
   TEST: 1,
@@ -54,6 +58,7 @@ module.exports = {
   KOVAN,
   GOERLI_TESTNET,
   CLASSIC,
+  RSK,
   LOCALHOST,
   POA_CODE,
   DAI_CODE,
@@ -64,6 +69,7 @@ module.exports = {
   KOVAN_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
+  RSK_CODE,
   POA_DISPLAY_NAME,
   DAI_DISPLAY_NAME,
   POA_SOKOL_DISPLAY_NAME,
@@ -73,6 +79,7 @@ module.exports = {
   KOVAN_DISPLAY_NAME,
   GOERLI_TESTNET_DISPLAY_NAME,
   CLASSIC_DISPLAY_NAME,
+  RSK_DISPLAY_NAME,
   DROPDOWN_POA_DISPLAY_NAME,
   DROPDOWN_DAI_DISPLAY_NAME,
   DROPDOWN_POA_SOKOL_DISPLAY_NAME,
@@ -82,5 +89,6 @@ module.exports = {
   DROPDOWN_KOVAN_DISPLAY_NAME,
   DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME,
   DROPDOWN_CLASSIC_DISPLAY_NAME,
+  DROPDOWN_RSK_DISPLAY_NAME,
   chainTypes,
 }

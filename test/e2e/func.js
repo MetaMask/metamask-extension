@@ -138,14 +138,17 @@ class Functions {
       case NETWORKS.GOERLI:
         counter = 8
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RSK:
         counter = 9
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 10
         break
+      case NETWORKS.CUSTOM:
+        counter = 11
+        break
       default:
-        counter = 9
+        counter = 10
     }
     await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
