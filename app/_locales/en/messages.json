@@ -542,6 +542,9 @@
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "editContact":{
+    "message": "Edit Contact"
+  },
   "editingTransaction": {
     "message": "Make changes to your transaction"
   },
@@ -1771,6 +1774,9 @@
   },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewContact": {
+    "message": "View Contact"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"

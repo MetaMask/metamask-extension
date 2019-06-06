@@ -125,7 +125,7 @@
 
   &__body {
     padding: 12px 24px;
-    
+
     @media screen and (min-width: 576px) {
       padding: 12px;
     }
@@ -192,7 +192,6 @@
       align-self: flex-end;
       padding: 5px;
       text-transform: uppercase;
-      color: $dusty-gray;
       cursor: pointer;
       width: 25%;
       min-width: 80px;

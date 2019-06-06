@@ -11,6 +11,9 @@ import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
 import ContactListTab from './contact-list-tab'
+import AddContact from './contact-list-tab/add-contact'
+import EditContact from './contact-list-tab/edit-contact'
+import ViewContact from './contact-list-tab/view-contact'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -21,11 +24,9 @@ import {
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
+  CONTACT_VIEW_ROUTE,
   NETWORKS_ROUTE,
 } from '../../helpers/constants/routes'
-
-import AddContact from './contact-list-tab/add-contact'
-import EditContact from './contact-list-tab/edit-contact'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
@@ -33,6 +34,9 @@ const ROUTES_TO_I18N_KEYS = {
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
   [CONTACT_LIST_ROUTE]: 'contactList',
+  [CONTACT_ADD_ROUTE]: 'newContact',
+  [CONTACT_EDIT_ROUTE]: 'editContact',
+  [CONTACT_VIEW_ROUTE]: 'viewContact',
 }
 
 class SettingsPage extends PureComponent {
@@ -95,8 +99,11 @@ class SettingsPage extends PureComponent {
 
   renderSubHeader () {
     const { t } = this.context
-    const { location: { pathname } } = this.props
+    let { location: { pathname } } = this.props
 
+    if (pathname.includes('0x')) {
+      pathname = pathname.slice(0, -43)
+    }
     return (
       <div className="settings-page__subheader">
         {t(ROUTES_TO_I18N_KEYS[pathname] || 'general')}
@@ -174,8 +181,8 @@ class SettingsPage extends PureComponent {
         />
         <Route
           exact
-          path={CONTACT_EDIT_ROUTE}
-          component={AddContact}
+          path={`${CONTACT_VIEW_ROUTE}/:id`}
+          component={ViewContact}
         />
         <Route
           component={SettingsTab}

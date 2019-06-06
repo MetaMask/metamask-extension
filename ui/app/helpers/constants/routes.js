@@ -11,6 +11,7 @@ const ABOUT_US_ROUTE = '/settings/about-us'
 const CONTACT_LIST_ROUTE = '/settings/contact-list'
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact'
+const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact'
 const NETWORKS_ROUTE = '/settings/networks'
 const REVEAL_SEED_ROUTE = '/seed'
 const MOBILE_SYNC_ROUTE = '/mobile-sync'
@@ -93,5 +94,6 @@ module.exports = {
   CONTACT_LIST_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_ADD_ROUTE,
+  CONTACT_VIEW_ROUTE,
   NETWORKS_ROUTE,
 }

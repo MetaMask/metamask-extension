@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../../../components/ui/button'
 import Identicon from '../../../components/ui/identicon'
 import { addressSlicer } from '../../../helpers/utils/util'
-import { CONTACT_EDIT_ROUTE, CONTACT_ADD_ROUTE } from '../../../helpers/constants/routes'
+import { CONTACT_ADD_ROUTE, CONTACT_VIEW_ROUTE } from '../../../helpers/constants/routes'
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -24,7 +24,7 @@ export default class ContactListTab extends Component {
           return (
             <div className="address-book__entry" key= { address }
               onClick={() => {
-                history.push(`${CONTACT_EDIT_ROUTE}/${address}`)
+                history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
               }}>
               <Identicon address= { address } diameter={ 25 }/>
               <div className="address-book__name"> { addressBook[address].name !== '' ? addressBook[address].name : addressSlicer(address) } </div>
@@ -39,9 +39,6 @@ export default class ContactListTab extends Component {
   render () {
     return (
       <div className="address-book-container">
-      <div className="settings-page__header">
-        { this.context.t('addressBook') }
-      </div>
         { this.renderAddresses() }
         { this.renderAddButton() }
       </div>
