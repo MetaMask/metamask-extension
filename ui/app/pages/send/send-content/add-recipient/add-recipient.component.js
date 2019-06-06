@@ -1,31 +1,32 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import EnsInput from './ens-input'
+import Fuse from 'fuse.js'
 import { getToErrorObject, getToWarningObject } from './add-recipient.js'
 import Identicon from '../../../../components/ui/identicon'
 
 export default class AddRecipient extends Component {
 
   static propTypes = {
-    closeToDropdown: PropTypes.func,
-    hasHexData: PropTypes.bool.isRequired,
-    inError: PropTypes.bool,
-    inWarning: PropTypes.bool,
+    // closeToDropdown: PropTypes.func,
+    // hasHexData: PropTypes.bool.isRequired,
+    // inError: PropTypes.bool,
+    // inWarning: PropTypes.bool,
     className: PropTypes.string,
-    network: PropTypes.string,
-    openToDropdown: PropTypes.func,
-    selectedToken: PropTypes.object,
-    to: PropTypes.string,
-    toAccounts: PropTypes.array,
+    // network: PropTypes.string,
+    // openToDropdown: PropTypes.func,
+    // selectedToken: PropTypes.object,
+    // to: PropTypes.string,
+    // toAccounts: PropTypes.array,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
-    toDropdownOpen: PropTypes.bool,
-    tokens: PropTypes.array,
-    updateGas: PropTypes.func,
-    updateSendTo: PropTypes.func,
-    updateSendToError: PropTypes.func,
-    updateSendToWarning: PropTypes.func,
-    scanQrCode: PropTypes.func,
+    // toDropdownOpen: PropTypes.bool,
+    // tokens: PropTypes.array,
+    // updateGas: PropTypes.func,
+    // updateSendTo: PropTypes.func,
+    // updateSendToError: PropTypes.func,
+    // updateSendToWarning: PropTypes.func,
+    // scanQrCode: PropTypes.func,
   }
 
   static contextTypes = {
@@ -36,19 +37,22 @@ export default class AddRecipient extends Component {
   state = {
     isShowingTransfer: false,
     isShowingAllRecent: false,
+    query: '',
   }
 
-  handleToChange (to, nickname = '', toError, toWarning, network) {
-    const { hasHexData, updateSendTo, updateSendToError, updateGas, tokens, selectedToken, updateSendToWarning } = this.props
-    const toErrorObject = getToErrorObject(to, toError, hasHexData, tokens, selectedToken, network)
-    const toWarningObject = getToWarningObject(to, toWarning, tokens, selectedToken)
-    updateSendTo(to, nickname)
-    updateSendToError(toErrorObject)
-    updateSendToWarning(toWarningObject)
-    if (toErrorObject.to === null) {
-      updateGas({ to })
-    }
-  }
+  onRecipientInputChange = query => this.setState({ query })
+
+  // handleToChange (to, nickname = '', toError, toWarning, network) {
+    // const { hasHexData, updateSendTo, updateSendToError, updateGas, tokens, selectedToken, updateSendToWarning } = this.props
+    // const toErrorObject = getToErrorObject(to, toError, hasHexData, tokens, selectedToken, network)
+    // const toWarningObject = getToWarningObject(to, toWarning, tokens, selectedToken)
+    // updateSendTo(to, nickname)
+    // updateSendToError(toErrorObject)
+    // updateSendToWarning(toWarningObject)
+    // if (toErrorObject.to === null) {
+    //   updateGas({ to })
+    // }
+  // }
 
   render () {
     const { t } = this.context
@@ -76,41 +80,30 @@ export default class AddRecipient extends Component {
   }
 
   renderInput () {
-    const { t } = this.context
-    const {
-      closeToDropdown,
-      inError,
-      inWarning,
-      network,
-      openToDropdown,
-      to,
-      toAccounts,
-      toDropdownOpen,
-    } = this.props
+    // const { t } = this.context
+    // const {
+    //   inError,
+    //   inWarning,
+    //   network,
+    //   to,
+    //   toAccounts,
+    //   toDropdownOpen,
+    // } = this.props
 
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Transactions',
-              action: 'Edit Screen',
-              name: 'Used QR scanner',
-            },
-          })
-          this.props.scanQrCode()
-        }}
-        accounts={toAccounts}
-        closeDropdown={() => closeToDropdown()}
-        dropdownOpen={toDropdownOpen}
-        inError={inError}
-        name={'address'}
-        network={network}
-        onChange={({ toAddress, nickname, toError, toWarning }) => this.handleToChange(toAddress, nickname, toError, toWarning, this.props.network)}
-        openDropdown={() => openToDropdown()}
-        placeholder={t('recipientAddress')}
-        to={to}
+        // scanQrCode={_ => {
+        //   this.context.metricsEvent({
+        //     eventOpts: {
+        //       category: 'Transactions',
+        //       action: 'Edit Screen',
+        //       name: 'Used QR scanner',
+        //     },
+        //   })
+        //   this.props.scanQrCode()
+        // }}
+        onChange={this.onRecipientInputChange}
       />
     )
   }
@@ -138,9 +131,27 @@ export default class AddRecipient extends Component {
 
   renderRecents () {
     const { addressBook } = this.props
-    const { isShowingAllRecent } = this.state
+    const { isShowingAllRecent, query } = this.state
     const { t } = this.context
-    const nonContacts = addressBook.filter(({ name }) => !name)
+
+    let nonContacts = addressBook.filter(({ name }) => !name)
+    if (query) {
+      if (!this.recentFuse) {
+        this.recentFuse = new Fuse(nonContacts, {
+          shouldSort: true,
+          threshold: 0.45,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          minMatchCharLength: 1,
+          keys: [
+            { name: 'address', weight: 0.5 },
+          ],
+        })
+      }
+      nonContacts = this.recentFuse.search(query)
+    }
+
     const showLoadMore = !isShowingAllRecent && nonContacts.length > 2
 
     return (
@@ -164,20 +175,39 @@ export default class AddRecipient extends Component {
   }
 
   renderAddressBook () {
-    const { addressBook } = this.props
-    const contacts = addressBook.filter(({ name }) => !!name)
-    // const contacts = [
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6720', name: 'Albert' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6721', name: 'Alan' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6722', name: 'Alex' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6723', name: 'Brian' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6724', name: 'Catherine' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6725', name: 'Benjamin' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6726', name: 'David' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6727', name: 'Jacky' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6728', name: 'Daniel' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6729', name: 'Whymarrh' },
-    // ]
+    // const { addressBook } = this.props
+    // const contacts = addressBook.filter(({ name }) => !!name)
+    const { query } = this.state
+    let contacts = [
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6720', name: 'Albert' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6721', name: 'Alan' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6722', name: 'Alex' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6723', name: 'Brian' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6724', name: 'Catherine' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6725', name: 'Benjamin' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6726', name: 'David' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6727', name: 'Jacky' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6728', name: 'Daniel' },
+      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6729', name: 'Whymarrh' },
+    ]
+
+    if (query) {
+      if (!this.contactFuse) {
+        this.contactFuse = new Fuse(contacts, {
+          shouldSort: true,
+          threshold: 0.45,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          minMatchCharLength: 1,
+          keys: [
+            { name: 'name', weight: 0.5 },
+            { name: 'address', weight: 0.5 },
+          ],
+        })
+      }
+      contacts = this.contactFuse.search(query)
+    }
 
     const contactGroups = contacts.reduce((acc, contact) => {
       const firstLetter = contact.name.slice(0, 1).toUpperCase()
@@ -185,15 +215,15 @@ export default class AddRecipient extends Component {
       const bucket = acc[firstLetter]
       bucket.push(contact)
       return acc
-    }, {})
+    }, {});
 
     return Object
       .entries(contactGroups)
-      .map(([letter, items]) => (
+      .map(([letter, groupItems]) => (
         <RecipientGroup
           key={`${letter}-contract-group`}
           label={letter}
-          items={items}
+          items={groupItems}
         />
       ))
   }

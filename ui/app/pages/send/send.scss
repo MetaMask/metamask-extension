@@ -33,6 +33,8 @@
     height: 0;
 
     &__list {
+      overflow-y: auto;
+
       &__link {
         @extend %link;
         @extend %row-nowrap;
@@ -148,6 +150,8 @@
       @extend %h6;
       flex: 1 1 auto;
       width: 0;
+      border: 0;
+      outline: none;
 
       &::placeholder {
         color: $Grey-200;
@@ -158,7 +162,10 @@
       @extend %bg-contain;
 
       &--erase {
-
+        background-image: url("/images/close-gray.svg");
+        width: .75rem;
+        height: .75rem;
+        margin: 0 .5rem;
       }
 
       &--qrcode {
