@@ -773,43 +773,7 @@
     }
   }
 
-  &__to-autocomplete {
-    display: flex;
-    flex-direction: column;
-    z-index: 1025;
-    position: relative;
-    height: 54px;
-    width: 100%;
-    border: 1px solid $alto;
-    border-radius: 4px;
-    background-color: $white;
-    color: $tundora;
-    padding: 0 10px;
-    font-family: Roboto;
-    line-height: 21px;
-
-    &__input {
-      font-size: 16px;
-      height: 100%;
-      border: none;
-    }
-
-    &__resolved {
-      font-size: 12px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      height: 30px;
-      cursor: pointer;
-
-      + .send-v2__to-autocomplete__qr-code {
-        top: 2px;
-        right: 0;
-      }
-    }
-  }
-
-  &__memo-text-area, &__hex-data {
+  &__to-autocomplete, &__memo-text-area, &__hex-data {
     &__input {
       z-index: 1025;
       position: relative;

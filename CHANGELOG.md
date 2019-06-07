@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 6.6.1 Thu Jun 06 2019
+
+- [#6691](https://github.com/MetaMask/metamask-extension/pull/6691): Revert "Improve ENS Address Input" to fix bugs on input field on non-main networks.
+
 ## 6.6.0 Mon Jun 03 2019
 
 - [#6659](https://github.com/MetaMask/metamask-extension/pull/6659): Enable Ledger hardware wallet support on Firefox
