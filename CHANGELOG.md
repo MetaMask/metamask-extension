@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 6.6.2 Fri Jun 07 2019
+
+- [#6690](https://github.com/MetaMask/metamask-extension/pull/6690): Update dependencies, re-enable npm audit CI job
+
 ## 6.6.1 Thu Jun 06 2019
 
 - [#6691](https://github.com/MetaMask/metamask-extension/pull/6691): Revert "Improve ENS Address Input" to fix bugs on input field on non-main networks.
