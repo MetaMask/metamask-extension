@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+
 ## 6.6.1 Thu Jun 06 2019
 
 - [#6691](https://github.com/MetaMask/metamask-extension/pull/6691): Revert "Improve ENS Address Input" to fix bugs on input field on non-main networks.
