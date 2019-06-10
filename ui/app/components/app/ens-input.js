@@ -112,10 +112,6 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
     if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
       setStateObj.hoverText = this.context.t('ensNameNotFound')
       setStateObj.toError = 'ensNameNotFound'
-    // }
-    // else if (isValidENSAddress(setStateObject.ensResolution) {
-
-    // }
     } else {
       log.error(reason)
       setStateObj.hoverText = reason.message
@@ -142,7 +138,17 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
         } else if (isValidENSAddress(this.props.to)) {
           this.checkName(this.props.to)
         }
-    }
+      }
+
+      this.setState({
+        loadingEns: false,
+        ensResolution: null,
+        ensFailure: null,
+        toError: null,
+        recipient: null,
+        hoverText: null,
+        nickname: null,
+      })
   }
 
   if (prevState && ensResolution && this.props.onChange &&
