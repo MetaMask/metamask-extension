@@ -41,12 +41,15 @@ EnsInput.prototype.onChange = function (recipient) {
       ensResolution: null,
       ensFailure: null,
       toError: null,
+      recipient,
     })
   }
 
   this.setState({
     loadingEns: true,
+    recipient,
   })
+
   this.checkName(recipient)
 }
 
@@ -56,6 +59,7 @@ EnsInput.prototype.render = function () {
     list: 'addresses',
     onChange: this.onChange.bind(this),
     qrScanner: true,
+    recipient: (this.state || {}).recipient,
   })
   return h('div', {
     style: { width: '100%', position: 'relative' },
@@ -79,19 +83,21 @@ EnsInput.prototype.componentDidMount = function () {
 
 EnsInput.prototype.lookupEnsName = function (recipient) {
   const { ensResolution } = this.state
+  recipient = recipient.trim()
 
   log.info(`ENS attempting to resolve name: ${recipient}`)
-  this.ens.lookup(recipient.trim())
+  this.ens.lookup(recipient)
   .then((address) => {
     if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
-        nickname: recipient.trim(),
+        nickname: recipient,
         hoverText: address + '\n' + this.context.t('clickCopy'),
         ensFailure: false,
         toError: null,
+        recipient,
       })
     }
   })
@@ -101,11 +107,15 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
       ensResolution: recipient,
       ensFailure: true,
       toError: null,
+      recipient: null,
     }
     if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
       setStateObj.hoverText = this.context.t('ensNameNotFound')
       setStateObj.toError = 'ensNameNotFound'
-      setStateObj.ensFailure = false
+    // }
+    // else if (isValidENSAddress(setStateObject.ensResolution) {
+
+    // }
     } else {
       log.error(reason)
       setStateObj.hoverText = reason.message
@@ -118,17 +128,26 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
 EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
   const ensResolution = state.ensResolution
+  const networkHasEnsSupport = getNetworkEnsSupport(this.props.network)
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
   const nickname = state.nickname || ' '
   if (prevProps.network !== this.props.network) {
-    const provider = global.ethereumProvider
-    this.ens = new ENS({ provider, network: this.props.network })
-    this.onChange(ensResolution)
+    if (networkHasEnsSupport) {
+        const provider = global.ethereumProvider
+        this.ens = new ENS({ provider, network: this.props.network })
+        this.checkName = debounce(this.lookupEnsName.bind(this), 200)
+        if (state.recipient) {
+          this.checkName(state.recipient)
+        } else if (isValidENSAddress(this.props.to)) {
+          this.checkName(this.props.to)
+        }
+    }
   }
+
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError, toWarning: state.toWarning })
+    this.props.onChange({ toAddress: ensResolution, recipient: state.recipient, nickname, toError: state.toError, toWarning: state.toWarning })
   }
 }
 

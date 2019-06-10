@@ -31,40 +31,40 @@ for (var currency in valueTable) {
 }
 
 module.exports = {
-  valuesFor: valuesFor,
-  addressSummary: addressSummary,
-  miniAddressSummary: miniAddressSummary,
-  isAllOneCase: isAllOneCase,
-  isValidAddress: isValidAddress,
-  isValidENSAddress,
-  numericBalance: numericBalance,
-  parseBalance: parseBalance,
-  formatBalance: formatBalance,
-  generateBalanceObject: generateBalanceObject,
-  dataSize: dataSize,
-  readableDate: readableDate,
-  normalizeToWei: normalizeToWei,
-  normalizeEthStringToWei: normalizeEthStringToWei,
-  normalizeNumberToWei: normalizeNumberToWei,
-  valueTable: valueTable,
-  bnTable: bnTable,
-  isHex: isHex,
-  formatDate,
-  bnMultiplyByFraction,
-  getTxFeeBn,
-  shortenBalance,
-  getContractAtAddress,
-  exportAsFile: exportAsFile,
-  isInvalidChecksumAddress,
-  allNull,
-  getTokenAddressFromTokenObject,
-  checksumAddress,
   addressSlicer,
+  addressSummary,
+  allNull,
+  bnMultiplyByFraction,
+  bnTable,
+  checksumAddress,
+  dataSize,
+  exportAsFile,
+  formatBalance,
+  formatDate,
+  generateBalanceObject,
+  getContractAtAddress,
+  getTokenAddressFromTokenObject,
+  getTxFeeBn,
+  isAllOneCase,
   isEthNetwork,
+  isHex,
+  isInvalidChecksumAddress,
+  isValidAddress,
+  isValidENSAddress,
+  miniAddressSummary,
+  normalizeEthStringToWei,
+  normalizeNumberToWei,
+  normalizeToWei,
+  numericBalance,
+  parseBalance,
+  readableDate,
+  shortenBalance,
+  valuesFor,
+  valueTable,
 }
 
 function isEthNetwork (netId) {
-  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
+  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '5' || netId === '42' || netId === '5777') {
     return true
   }
 
@@ -99,7 +99,7 @@ function isValidAddress (address) {
 }
 
 function isValidENSAddress (address) {
-  return address.match(/^.{7,}\.(eth|test)$/)
+  return (/^.{7,}\.(eth|test)$/).test(address)
 }
 
 function isInvalidChecksumAddress (address) {
