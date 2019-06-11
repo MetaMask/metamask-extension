@@ -1563,14 +1563,15 @@ module.exports = class MetamaskController extends EventEmitter {
       if (!block.gasPrices || block.gasPrices.length < 1) {
         return GWEI_BN
       }
-      return block.gasPrices
+      const filteredGasPrices = block.gasPrices.filter((block) => block != '0x00')
+      return filteredGasPrices
       .map(hexPrefix => hexPrefix.substr(2))
       .map(hex => new BN(hex, 16))
       .sort((a, b) => {
         return a.gt(b) ? 1 : -1
       })[0]
     })
-    .map(number => number.div(GWEI_BN).toNumber())
+    .map(number => number && number.div(GWEI_BN).toNumber()).filter(number =>  typeof number !== 'undefined' && number !== 0)
 
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
