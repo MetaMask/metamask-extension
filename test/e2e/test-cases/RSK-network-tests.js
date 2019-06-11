@@ -75,7 +75,7 @@ const { screens, elements, NETWORKS } = require('../elements')
 	it('confirms transaction', async function () {
 		const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
 		await f.clearField(inputGasLimit)
-		await inputGasLimit.sendKeys('31500')
+		await inputGasLimit.sendKeys('21000')
 		const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
 		assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
 		await f.click(button)
