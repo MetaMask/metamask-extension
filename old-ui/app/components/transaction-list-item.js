@@ -295,8 +295,6 @@ function renderErrorOrWarning (transaction) {
 
   // show warning
   if (warning) {
-    console.log('######')
-    console.log(warning)
     const message = warning.message
     return h(Tooltip, {
       title: message,

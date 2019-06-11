@@ -60,7 +60,9 @@ const {
   DAI_CODE,
   POA_SOKOL_CODE,
   CLASSIC_CODE,
-  MAINNET_CODE } = require('./controllers/network/enums')
+  MAINNET_CODE,
+  RSK_CODE,
+  RSK_TESTNET_CODE } = require('./controllers/network/enums')
 const accountsPerPage = 5
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -1572,6 +1574,12 @@ module.exports = class MetamaskController extends EventEmitter {
       })[0]
     })
     .map(number => number && number.div(GWEI_BN).toNumber()).filter(number => typeof number !== 'undefined' && number !== 0)
+
+    if (networkId == RSK_CODE || networkId == RSK_TESTNET_CODE) {
+      if (lowestPrices.length == 0) {
+        lowestPrices.push(1)
+      }
+    }
 
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
