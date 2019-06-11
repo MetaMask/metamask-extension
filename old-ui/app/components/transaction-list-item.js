@@ -25,7 +25,6 @@ const { POA_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
-  RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
