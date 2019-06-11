@@ -9,6 +9,7 @@ const {
   GOERLI_TESTNET,
   CLASSIC,
   RSK,
+  RSK_TESTNET,
   POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
@@ -19,6 +20,7 @@ const {
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
+  RSK_TESTNET_CODE,
   POA_DISPLAY_NAME,
   DAI_DISPLAY_NAME,
   POA_SOKOL_DISPLAY_NAME,
@@ -29,6 +31,7 @@ const {
   GOERLI_TESTNET_DISPLAY_NAME,
   CLASSIC_DISPLAY_NAME,
   RSK_DISPLAY_NAME,
+  RSK_TESTNET_DISPLAY_NAME,
   DROPDOWN_POA_DISPLAY_NAME,
   DROPDOWN_DAI_DISPLAY_NAME,
   DROPDOWN_POA_SOKOL_DISPLAY_NAME,
@@ -39,6 +42,7 @@ const {
   DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME,
   DROPDOWN_CLASSIC_DISPLAY_NAME,
   DROPDOWN_RSK_DISPLAY_NAME,
+  DROPDOWN_RSK_TESTNET_DISPLAY_NAME,
   chainTypes,
 } = require('./enums')
 
@@ -67,19 +71,8 @@ const DAI_OBJ = {
 networks[DAI_CODE] = DAI_OBJ
 networks[DAI] = DAI_OBJ
 
-const POA_SOKOL_OBJ = {
-  order: 3,
-  chainType: TEST,
-  providerName: POA_SOKOL,
-  networkID: POA_SOKOL_CODE,
-  displayName: POA_SOKOL_DISPLAY_NAME,
-  displayNameDropdown: DROPDOWN_POA_SOKOL_DISPLAY_NAME,
-}
-networks[POA_SOKOL_CODE] = POA_SOKOL_OBJ
-networks[POA_SOKOL] = POA_SOKOL_OBJ
-
 const MAINNET_OBJ = {
-  order: 4,
+  order: 3,
   chainType: PROD,
   providerName: MAINNET,
   networkID: MAINNET_CODE,
@@ -90,7 +83,7 @@ networks[MAINNET_CODE] = MAINNET_OBJ
 networks[MAINNET] = MAINNET_OBJ
 
 const CLASSIC_OBJ = {
-  order: 5,
+  order: 4,
   chainType: PROD,
   providerName: CLASSIC,
   networkID: CLASSIC_CODE,
@@ -100,16 +93,25 @@ const CLASSIC_OBJ = {
 networks[CLASSIC_CODE] = CLASSIC_OBJ
 networks[CLASSIC] = CLASSIC_OBJ
 
-const ROPSTEN_OBJ = {
-  order: 6,
-  chainType: TEST,
-  providerName: ROPSTEN,
-  networkID: ROPSTEN_CODE,
-  displayName: ROPSTEN_DISPLAY_NAME,
-  displayNameDropdown: DROPDOWN_ROPSTEN_DISPLAY_NAME,
+const RSK_OBJ = {
+  order: 5,
+  providerName: RSK,
+  networkID: RSK_CODE,
+  displayName: RSK_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_RSK_DISPLAY_NAME,
 }
-networks[ROPSTEN_CODE] = ROPSTEN_OBJ
-networks[ROPSTEN] = ROPSTEN_OBJ
+networks[RSK_CODE] = RSK_OBJ
+networks[RSK] = RSK_OBJ
+
+const GOERLI_TESTNET_OBJ = {
+  order: 6,
+  providerName: GOERLI_TESTNET,
+  networkID: GOERLI_TESTNET_CODE,
+  displayName: GOERLI_TESTNET_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME,
+}
+networks[GOERLI_TESTNET_CODE] = GOERLI_TESTNET_OBJ
+networks[GOERLI_TESTNET] = GOERLI_TESTNET_OBJ
 
 const KOVAN_OBJ = {
   order: 7,
@@ -122,8 +124,19 @@ const KOVAN_OBJ = {
 networks[KOVAN_CODE] = KOVAN_OBJ
 networks[KOVAN] = KOVAN_OBJ
 
-const RINKEBY_OBJ = {
+const POA_SOKOL_OBJ = {
   order: 8,
+  chainType: TEST,
+  providerName: POA_SOKOL,
+  networkID: POA_SOKOL_CODE,
+  displayName: POA_SOKOL_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_POA_SOKOL_DISPLAY_NAME,
+}
+networks[POA_SOKOL_CODE] = POA_SOKOL_OBJ
+networks[POA_SOKOL] = POA_SOKOL_OBJ
+
+const RINKEBY_OBJ = {
+  order: 9,
   chainType: TEST,
   providerName: RINKEBY,
   networkID: RINKEBY_CODE,
@@ -133,25 +146,26 @@ const RINKEBY_OBJ = {
 networks[RINKEBY_CODE] = RINKEBY_OBJ
 networks[RINKEBY] = RINKEBY_OBJ
 
-const GOERLI_TESTNET_OBJ = {
-  order: 9,
-  providerName: GOERLI_TESTNET,
-  networkID: GOERLI_TESTNET_CODE,
-  displayName: GOERLI_TESTNET_DISPLAY_NAME,
-  displayNameDropdown: DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME,
-}
-networks[GOERLI_TESTNET_CODE] = GOERLI_TESTNET_OBJ
-networks[GOERLI_TESTNET] = GOERLI_TESTNET_OBJ
-
-const RSK_OBJ = {
+const ROPSTEN_OBJ = {
   order: 10,
-  providerName: RSK,
-  networkID: RSK_CODE,
-  displayName: RSK_DISPLAY_NAME,
-  displayNameDropdown: DROPDOWN_RSK_DISPLAY_NAME,
+  chainType: TEST,
+  providerName: ROPSTEN,
+  networkID: ROPSTEN_CODE,
+  displayName: ROPSTEN_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_ROPSTEN_DISPLAY_NAME,
 }
-networks[RSK_CODE] = RSK_OBJ
-networks[RSK] = RSK_OBJ
+networks[ROPSTEN_CODE] = ROPSTEN_OBJ
+networks[ROPSTEN] = ROPSTEN_OBJ
+
+const RSK_TESTNET_OBJ = {
+  order: 11,
+  providerName: RSK_TESTNET,
+  networkID: RSK_TESTNET_CODE,
+  displayName: RSK_TESTNET_DISPLAY_NAME,
+  displayNameDropdown: DROPDOWN_RSK_TESTNET_DISPLAY_NAME,
+}
+networks[RSK_TESTNET_CODE] = RSK_TESTNET_OBJ
+networks[RSK_TESTNET] = RSK_TESTNET_OBJ
 
 const getNetworkDisplayName = key => networks[key].displayName
 

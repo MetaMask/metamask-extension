@@ -117,38 +117,41 @@ class Functions {
       case NETWORKS.DAI:
         counter = 1
         break
-      case NETWORKS.SOKOL:
+      case NETWORKS.MAINNET:
         counter = 2
         break
-      case NETWORKS.MAINNET:
+      case NETWORKS.CLASSIC:
         counter = 3
         break
-      case NETWORKS.CLASSIC:
+      case NETWORKS.RSK:
         counter = 4
         break
-      case NETWORKS.ROPSTEN:
+      case NETWORKS.GOERLI:
         counter = 5
         break
       case NETWORKS.KOVAN:
         counter = 6
         break
-      case NETWORKS.RINKEBY:
+      case NETWORKS.SOKOL:
         counter = 7
         break
-      case NETWORKS.GOERLI:
+      case NETWORKS.RINKEBY:
         counter = 8
         break
-      case NETWORKS.RSK:
+      case NETWORKS.ROPSTEN:
         counter = 9
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RSK_TESTNET:
         counter = 10
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 11
         break
+      case NETWORKS.CUSTOM:
+        counter = 12
+        break
       default:
-        counter = 10
+        counter = 11
     }
     await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
