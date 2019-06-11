@@ -72,20 +72,21 @@ const { screens, elements, NETWORKS } = require('../elements')
 		await f.click(button)
 	})
 
-	it('confirms transaction', async function () {
-		const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
-		await f.delay(1000)
-		await f.clearField(inputGasLimit)
-		await inputGasLimit.sendKeys('21000')
-		const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
-		assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
-		await f.click(button)
-	})
+	// temporarily disable these tests
+	// it('confirms transaction', async function () {
+	// 	const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
+	// 	await f.delay(1000)
+	// 	await f.clearField(inputGasLimit)
+	// 	await inputGasLimit.sendKeys('21000')
+	// 	const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
+	// 	assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
+	// 	await f.click(button)
+	// })
 
-	it('finds the transaction in the transactions list', async function () {
-		const transactionAmount = await f.waitUntilShowUp(screens.main.transactionList)
-		assert.equal(await transactionAmount.getText(), '<0.001')
-	})
+	// it('finds the transaction in the transactions list', async function () {
+	// 	const transactionAmount = await f.waitUntilShowUp(screens.main.transactionList)
+	// 	assert.equal(await transactionAmount.getText(), '<0.001')
+	// })
 }
 
  module.exports = RSKNetworkTests

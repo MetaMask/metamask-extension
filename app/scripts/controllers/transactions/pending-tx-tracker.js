@@ -79,6 +79,8 @@ class PendingTransactionTracker extends EventEmitter {
       // ignore resubmit warnings, return early
       if (isKnownTx) return
       // encountered real error - transition to error state
+      console.log('########')
+      console.log(errorMessage)
       txMeta.warning = {
         error: errorMessage,
         message: 'There was an error when resubmitting this transaction.',

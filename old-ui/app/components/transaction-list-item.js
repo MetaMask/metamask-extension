@@ -87,8 +87,7 @@ TransactionListItem.prototype.render = function () {
     numericNet === DAI_CODE ||
     numericNet === GOERLI_TESTNET_CODE ||
     numericNet === CLASSIC_CODE ||
-    numericNet === RSK_CODE ||
-    numericNet === RSK_TESTNET_CODE
+    numericNet === RSK_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -297,6 +296,8 @@ function renderErrorOrWarning (transaction) {
 
   // show warning
   if (warning) {
+    console.log('######')
+    console.log(warning)
     const message = warning.message
     return h(Tooltip, {
       title: message,
