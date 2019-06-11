@@ -74,6 +74,7 @@ const { screens, elements, NETWORKS } = require('../elements')
 
 	it('confirms transaction', async function () {
 		const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
+		await f.delay(1000)
 		await f.clearField(inputGasLimit)
 		await inputGasLimit.sendKeys('21000')
 		const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
