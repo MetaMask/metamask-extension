@@ -15,6 +15,7 @@ const { POA,
   DAI,
   POA_SOKOL,
   RSK,
+  RSK_TESTNET,
   CLASSIC } = require('../../app/scripts/controllers/network/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
@@ -2015,7 +2016,7 @@ function setProviderType (type) {
     const newCoin = type === POA || type === POA_SOKOL ?
                     'poa' : type === DAI ?
                     'dai' : type === CLASSIC ?
-                    'etc' : type === RSK ?
+                    'etc' : type === RSK || type === RSK_TESTNET ?
                     'rbtc' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {

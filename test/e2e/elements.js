@@ -404,6 +404,7 @@ module.exports = {
     RINKEBY: 'rinkeby',
     GOERLI: 'goerli',
     RSK: 'rsk',
+    RSK_TESTNET: 'rsk_testnet',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
   },
