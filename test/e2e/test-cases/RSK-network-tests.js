@@ -53,38 +53,38 @@ const { screens, elements, NETWORKS } = require('../elements')
 		await f.delay(2000)
 	})
 
-	it('opens send transaction screen', async function () {
-		const sendButton = await f.waitUntilShowUp(screens.main.buttons.sendRSK)
-		assert.equal(await sendButton.getText(), screens.main.buttons.sendText)
-		await f.click(sendButton)
-	})
+	// it('opens send transaction screen', async function () {
+	// 	const sendButton = await f.waitUntilShowUp(screens.main.buttons.sendRSK)
+	// 	assert.equal(await sendButton.getText(), screens.main.buttons.sendText)
+	// 	await f.click(sendButton)
+	// })
 
-	it('adds recipient address and amount', async function () {
-		const sendTranscationScreen = await f.waitUntilShowUp(screens.sendTransaction.title)
-		assert.equal(await sendTranscationScreen.getText(), screens.sendTransaction.titleText, 'Transaction screen has incorrect titlr')
-		const inputAddress = await f.waitUntilShowUp(screens.sendTransaction.field.address)
-		const inputAmmount = await f.waitUntilShowUp(screens.sendTransaction.field.amount)
-		await inputAddress.sendKeys(account1)
-		await f.clearField(inputAmmount)
-		await inputAmmount.sendKeys('0.000001')
-		const button = await f.waitUntilShowUp(screens.sendTransaction.buttonNext)
-		assert.equal(await button.getText(), 'Next', 'button has incorrect name')
-		await f.click(button)
-	})
+	// it('adds recipient address and amount', async function () {
+	// 	const sendTranscationScreen = await f.waitUntilShowUp(screens.sendTransaction.title)
+	// 	assert.equal(await sendTranscationScreen.getText(), screens.sendTransaction.titleText, 'Transaction screen has incorrect titlr')
+	// 	const inputAddress = await f.waitUntilShowUp(screens.sendTransaction.field.address)
+	// 	const inputAmmount = await f.waitUntilShowUp(screens.sendTransaction.field.amount)
+	// 	await inputAddress.sendKeys(account1)
+	// 	await f.clearField(inputAmmount)
+	// 	await inputAmmount.sendKeys('0.000001')
+	// 	const button = await f.waitUntilShowUp(screens.sendTransaction.buttonNext)
+	// 	assert.equal(await button.getText(), 'Next', 'button has incorrect name')
+	// 	await f.click(button)
+	// })
 
-	it('confirms transaction', async function () {
-		const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
-		await f.clearField(inputGasLimit)
-		await inputGasLimit.sendKeys('21000')
-		const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
-		assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
-		await f.click(button)
-	})
+	// it('confirms transaction', async function () {
+	// 	const inputGasLimit = await f.waitUntilShowUp(screens.confirmTransaction.fields.gasLimit)
+	// 	await f.clearField(inputGasLimit)
+	// 	await inputGasLimit.sendKeys('21000')
+	// 	const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
+	// 	assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
+	// 	await f.click(button)
+	// })
 
-	it('finds the transaction in the transactions list', async function () {
-		const transactionAmount = await f.waitUntilShowUp(screens.main.transactionList)
-		assert.equal(await transactionAmount.getText(), '<0.001')
-	})
+	// it('finds the transaction in the transactions list', async function () {
+	// 	const transactionAmount = await f.waitUntilShowUp(screens.main.transactionList)
+	// 	assert.equal(await transactionAmount.getText(), '<0.001')
+	// })
 }
 
  module.exports = RSKNetworkTests
