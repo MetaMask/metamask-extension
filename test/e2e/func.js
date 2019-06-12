@@ -662,7 +662,7 @@ class Functions {
     return contractInstance.address
   }
 
-  async executeTransferMethod (executor, address) {
+  async executeTransferMethod (f, executor, address) {
     try {
       const buttonExecute = await this.waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
       assert.notEqual(buttonExecute, false, "button doesn't displayed")
@@ -689,11 +689,15 @@ class Functions {
       // Select executor
       await this.waitUntilShowUp(screens.chooseContractExecutor.account)
       const accounts = await this.driver.findElements(screens.chooseContractExecutor.account)
-      const account = accounts[executor + 1]
-      await account.click()
-      // Open confirm transaction
-      const button = await this.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
-      await button.click()
+      if (accounts.length > executor + 1) {
+        const account = accounts[executor + 1]
+        await account.click()
+        await f.delay(1000)
+        // Open confirm transaction
+        const button = await this.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        await button.click()
+        await f.delay(1000)
+      }
       return true
     } catch (err) {
       return false

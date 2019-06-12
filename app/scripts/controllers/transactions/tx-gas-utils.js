@@ -62,7 +62,7 @@ class TxGasUtil {
     let code
     if (recipient) code = await this.query.getCode(recipient)
 
-    if (hasRecipient && (!code || code === '0x')) {
+    if (hasRecipient && (!code || code === '0x' || code === '0x0')) {
       txParams.gas = SIMPLE_GAS_COST
       txMeta.simpleSend = true // Prevents buffer addition
       return SIMPLE_GAS_COST

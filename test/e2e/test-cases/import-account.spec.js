@@ -16,6 +16,7 @@ const importAccount = async (f) => {
     await f.delay(2000)
     const menu = await f.waitUntilShowUp(account.menu)
     await menu.click()
+    await f.delay(2000)
     const item = await f.waitUntilShowUp(account.import)
     await item.click()
     const importAccountTitle = await f.waitUntilShowUp(importAccounts.title)
