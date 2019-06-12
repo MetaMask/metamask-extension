@@ -1575,8 +1575,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     .map(number => number && number.div(GWEI_BN).toNumber()).filter(number => typeof number !== 'undefined' && number !== 0)
 
-    if (networkId == RSK_CODE || networkId == RSK_TESTNET_CODE) {
-      if (lowestPrices.length == 0) {
+    if (networkId === RSK_CODE || networkId === RSK_TESTNET_CODE) {
+      if (lowestPrices.length === 0) {
         lowestPrices.push(1)
       }
     }
