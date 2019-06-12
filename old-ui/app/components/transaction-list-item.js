@@ -25,6 +25,7 @@ const { POA_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
+  RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
@@ -164,7 +165,7 @@ TransactionListItem.prototype.render = function () {
         }, [
           domainField(txParams),
           h('div.flex-row', [
-            recipientField(txParams, transaction, isTx, isMsg),
+            recipientField(txParams, transaction, isTx, isMsg, numericNet),
           ]),
           h('div', {
             style: {
@@ -239,7 +240,7 @@ function domainField (txParams) {
   ])
 }
 
-function recipientField (txParams, transaction, isTx, isMsg) {
+function recipientField (txParams, transaction, isTx, isMsg, numericNet) {
   let message
 
   if (isMsg) {
@@ -259,7 +260,7 @@ function recipientField (txParams, transaction, isTx, isMsg) {
     h('span', (!txParams.to ? {style: {whiteSpace: 'nowrap'}} : null), message),
     // Places a copy button if tx is successful, else places a placeholder empty div.
     transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-    renderErrorOrWarning(transaction),
+    renderErrorOrWarning(transaction, numericNet),
   ])
 }
 
@@ -267,7 +268,7 @@ function formatDate (date) {
   return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
-function renderErrorOrWarning (transaction) {
+function renderErrorOrWarning (transaction, numericNet) {
   const { status, err, warning } = transaction
 
   // show dropped
@@ -294,7 +295,8 @@ function renderErrorOrWarning (transaction) {
   }
 
   // show warning
-  if (warning) {
+  const isRSK = numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
+  if (warning && !isRSK || (isRSK && !warning.error.includes('[ethjs-rpc] rpc error with payload'))) {
     const message = warning.message
     return h(Tooltip, {
       title: message,
