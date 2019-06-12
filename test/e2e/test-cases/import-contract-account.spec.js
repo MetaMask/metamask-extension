@@ -816,7 +816,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         const arrow = await f.waitUntilShowUp(elements.buttonArrow)
         await arrow.click()
         await f.delay(2000)
-        const address = await f.waitUntilShowUp(screens.main.address)
+        // const address = await f.waitUntilShowUp(screens.main.address)
         // assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
       })
 
