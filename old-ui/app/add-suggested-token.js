@@ -6,7 +6,7 @@ const actions = require('../../ui/app/actions')
 const Tooltip = require('./components/tooltip.js')
 const ethUtil = require('ethereumjs-util')
 const Copyable = require('./components/copy/copyable')
-const addressSummary = require('./util').addressSummary
+const { addressSummary, toChecksumAddress } = require('./util')
 
 
 module.exports = connect(mapStateToProps)(AddSuggestedTokenScreen)
@@ -30,6 +30,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
   const state = this.state
   const props = this.props
   const { warning } = state
+  const { network } = props
   const key = Object.keys(props.suggestedTokens)[0]
   const { address, symbol, decimals } = props.suggestedTokens[key]
 
@@ -77,7 +78,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
             style: { display: 'flex' },
           }, [
             h(Copyable, {
-            value: ethUtil.toChecksumAddress(address),
+            value: toChecksumAddress(network, address),
             }, [
               h('span#token-address', {
                 style: {
@@ -87,7 +88,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
                   margin: '8px',
                   display: 'flex',
                 },
-              }, addressSummary(address, 24, 4, false)),
+              }, addressSummary(network, address, 24, 4, false)),
             ]),
           ]),
 

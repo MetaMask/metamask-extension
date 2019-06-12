@@ -90,13 +90,13 @@ describe('ifContractAcc(keyring) function', () => {
 describe('#addressSummary', function () {
   it('should add case-sensitive checksum', function () {
     const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
-    const result = addressSummary(address)
+    const result = addressSummary(1, address)
     assert.equal(result, '0xFDEa65C8...b825')
   })
 
   it('should accept arguments for firstseg, lastseg, and keepPrefix', function () {
     const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
-    const result = addressSummary(address, 4, 4, false)
+    const result = addressSummary(1, address, 4, 4, false)
     assert.equal(result, 'FDEa...b825')
   })
 })

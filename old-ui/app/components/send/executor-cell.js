@@ -16,12 +16,14 @@ class ExecutorCell extends Component {
 		address: PropTypes.string,
 		identity: PropTypes.object,
 		onClick: PropTypes.func,
+		network: PropTypes.string,
 	}
 
 	render () {
 		const {
 			address,
 			identity,
+			network,
 		} = this.props
 		const { isSelected } = this.state
 
@@ -70,7 +72,7 @@ class ExecutorCell extends Component {
 							style={{ color: 'rgba(255, 255, 255, 0.7)' }}
 						>
 							<div style={{ lineHeight: '16px', fontSize: '14px' }}>
-								{addressSummary(address)}
+								{addressSummary(network, address)}
 							</div>
 						</div>
 					</div>

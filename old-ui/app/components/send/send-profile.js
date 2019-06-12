@@ -59,7 +59,7 @@ class SendProfile extends Component {
 						}}
 					>
 						<div className="send-profile-address" style={{ lineHeight: '16px', fontSize: '14px' }}>
-							{addressSummary(address)}
+							{addressSummary(network, address)}
 						</div>
 					</div>
 					{/* balance */}

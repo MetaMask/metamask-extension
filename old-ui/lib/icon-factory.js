@@ -1,9 +1,9 @@
 var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
-const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
 const contractMapETH = require('eth-contract-metadata')
 const contractMapPOA = require('poa-contract-metadata')
 const colors = require('../../colors')
+const { toChecksumAddress } = require('../app/util')
 
 module.exports = function (rockicon) {
   if (!iconFactory) {
@@ -20,7 +20,7 @@ function IconFactory (rockicon) {
 
 IconFactory.prototype.iconForAddress = function (address, diameter, network) {
   const networkID = parseInt(network)
-  const addr = toChecksumAddress(address)
+  const addr = toChecksumAddress(network, address)
   if (iconExistsFor(addr, networkID)) {
     return imageElFor(addr, networkID)
   }

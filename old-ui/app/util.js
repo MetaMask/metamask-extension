@@ -1,5 +1,9 @@
 const ethUtil = require('ethereumjs-util')
 const ethNetProps = require('eth-net-props')
+const {
+  RSK_CODE,
+  RSK_TESTNET_CODE,
+} = require('../../app/scripts/controllers/network/enums')
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -23,7 +27,6 @@ module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
   accountSummary: accountSummary,
-  miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
   isValidENSAddress,
@@ -47,6 +50,8 @@ module.exports = {
   ifContractAcc,
   ifHardwareAcc,
   getAllKeyRingsAccounts,
+  ifRSK,
+  toChecksumAddress,
 }
 
 function valuesFor (obj) {
@@ -55,9 +60,9 @@ function valuesFor (obj) {
     .map(function (key) { return obj[key] })
 }
 
-function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+function addressSummary (network, address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
   if (!address) return ''
-  let checked = ethUtil.toChecksumAddress(address)
+  let checked = toChecksumAddress(network, address)
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
@@ -70,12 +75,6 @@ function accountSummary (acc, firstSegLength = 6, lastSegLength = 4) {
   let posOfLastPart = acc.length - lastSegLength
   if (posOfLastPart < (firstSegLength + 1)) posOfLastPart += (firstSegLength + 1) - posOfLastPart
   return acc.slice(0, firstSegLength) + '...' + acc.slice(posOfLastPart)
-}
-
-function miniAddressSummary (address) {
-  if (!address) return ''
-  var checked = ethUtil.toChecksumAddress(address)
-  return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
 function isValidAddress (address) {
@@ -374,4 +373,32 @@ function getAllKeyRingsAccounts (keyrings, network) {
     return list
   }, [])
   return accountOrder
+}
+
+function toChecksumAddressRSK (address, chainId = null) {
+    const stripAddress = ethUtil.stripHexPrefix(address).toLowerCase()
+    const prefix = chainId != null ? (chainId.toString() + '0x') : ''
+    const keccakHash = ethUtil.sha3(prefix + stripAddress).toString('hex')
+    let output = '0x'
+
+    for (let i = 0; i < stripAddress.length; i++) {
+ output += parseInt(keccakHash[i], 16) >= 8 ?
+            stripAddress[i].toUpperCase() :
+            stripAddress[i]
+}
+
+    return output
+}
+
+function toChecksumAddress (network, address, chainId = null) {
+  if (ifRSK(network)) {
+    return toChecksumAddressRSK(address, parseInt(network))
+  } else {
+    return ethUtil.toChecksumAddress(address, chainId)
+  }
+}
+
+function ifRSK (network) {
+  const numericNet = isNaN(network) ? network : parseInt(network)
+  return numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
 }

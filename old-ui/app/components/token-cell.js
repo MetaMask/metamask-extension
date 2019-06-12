@@ -5,12 +5,11 @@ const Identicon = require('./identicon')
 const ethNetProps = require('eth-net-props')
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../../../ui/app/actions')
 const connect = require('react-redux').connect
 const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
-import { countSignificantDecimals } from '../util'
+import { countSignificantDecimals, toChecksumAddress } from '../util'
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
 
@@ -132,7 +131,7 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
         {
           closeMenu: () => {},
           onClick: () => {
-            const checkSumAddress = address && ethUtil.toChecksumAddress(address)
+            const checkSumAddress = address && toChecksumAddress(network, address)
             copyToClipboard(checkSumAddress)
           },
         },

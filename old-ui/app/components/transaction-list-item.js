@@ -14,6 +14,7 @@ const ethNetProps = require('eth-net-props')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
+const { ifRSK } = require('../util')
 
 const { POA_CODE,
   DAI_CODE,
@@ -25,7 +26,6 @@ const { POA_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
-  RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
@@ -165,7 +165,7 @@ TransactionListItem.prototype.render = function () {
         }, [
           domainField(txParams),
           h('div.flex-row', [
-            recipientField(txParams, transaction, isTx, isMsg, numericNet),
+            recipientField(txParams, transaction, isTx, isMsg, network),
           ]),
           h('div', {
             style: {
@@ -240,13 +240,13 @@ function domainField (txParams) {
   ])
 }
 
-function recipientField (txParams, transaction, isTx, isMsg, numericNet) {
+function recipientField (txParams, transaction, isTx, isMsg, network) {
   let message
 
   if (isMsg) {
     message = 'Signature Requested'
   } else if (txParams.to) {
-    message = addressSummary(txParams.to)
+    message = addressSummary(network, txParams.to)
   } else {
     message = 'Contract Deployment'
   }
@@ -260,7 +260,7 @@ function recipientField (txParams, transaction, isTx, isMsg, numericNet) {
     h('span', (!txParams.to ? {style: {whiteSpace: 'nowrap'}} : null), message),
     // Places a copy button if tx is successful, else places a placeholder empty div.
     transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-    renderErrorOrWarning(transaction, numericNet),
+    renderErrorOrWarning(transaction, network),
   ])
 }
 
@@ -268,7 +268,7 @@ function formatDate (date) {
   return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
-function renderErrorOrWarning (transaction, numericNet) {
+function renderErrorOrWarning (transaction, network) {
   const { status, err, warning } = transaction
 
   // show dropped
@@ -295,7 +295,7 @@ function renderErrorOrWarning (transaction, numericNet) {
   }
 
   // show warning
-  const isRSK = numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
+  const isRSK = ifRSK(network)
   if (warning && !isRSK || (isRSK && !warning.error.includes('[ethjs-rpc] rpc error with payload'))) {
     const message = warning.message
     return h(Tooltip, {
