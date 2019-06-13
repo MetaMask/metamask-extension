@@ -12,7 +12,7 @@
   }
 
   &__body {
-    padding: 12px 24px;
+    padding-right: 24px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -118,12 +118,12 @@
   }
 
   &__add-network-header-button-wrapper {
-    padding-top: 15px;
-    padding-bottom: 21px;
     justify-content: center;
 
     .button {
-      width: 178px;
+      width: 138px;
+      padding: 10px;
+      line-height: 20px;
     }
 
     @media screen and (max-width: 575px) {
