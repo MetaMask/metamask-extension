@@ -80,7 +80,7 @@ export default class NetworkForm extends PureComponent {
       ticker,
       networkName,
       blockExplorerUrl,
-    } = this.props;
+    } = this.props
 
     this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
   }
@@ -91,6 +91,8 @@ export default class NetworkForm extends PureComponent {
       rpcUrl: propsRpcUrl,
       editRpc,
       rpcPrefs = {},
+      onClear,
+      networksTabIsInAddMode,
     } = this.props
     const {
       networkName,
@@ -110,6 +112,10 @@ export default class NetworkForm extends PureComponent {
         ...rpcPrefs,
       })
     }
+
+    if (networksTabIsInAddMode) {
+      onClear()
+    }
   }
 
   onCancel = () => {
@@ -126,8 +132,10 @@ export default class NetworkForm extends PureComponent {
   }
 
   onDelete = () => {
-    const { delRpcTarget, rpcUrl } = this.props
+    const { delRpcTarget, rpcUrl, onClear } = this.props
     delRpcTarget(rpcUrl)
+    this.resetForm()
+    onClear()
   }
 
   stateIsUnchanged () {
@@ -285,7 +293,7 @@ export default class NetworkForm extends PureComponent {
           <Button
             type="default"
             onClick={this.onCancel}
-            disabled={viewOnly}
+            disabled={viewOnly || this.stateIsUnchanged()}
           >
             { t('cancel') }
           </Button>
@@ -297,28 +305,6 @@ export default class NetworkForm extends PureComponent {
             { t('save') }
           </Button>
         </div>
-        {/*<PageContainerFooter*/}
-        {/*  cancelText={this.context.t('cancel')}*/}
-        {/*  cancelButtonType="default"*/}
-        {/*  hideCancel={hideCancel}*/}
-        {/*  onCancel={() => !hideCancel && delRpcTarget(rpcUrl)}*/}
-        {/*  onSubmit={() => {*/}
-        {/*    if (propsRpcUrl && rpcUrl !== propsRpcUrl) {*/}
-        {/*      editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {*/}
-        {/*        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,*/}
-        {/*        ...rpcPrefs,*/}
-        {/*      })*/}
-        {/*    } else {*/}
-        {/*      setRpcTarget(rpcUrl, chainId, ticker, networkName, {*/}
-        {/*        blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,*/}
-        {/*        ...rpcPrefs,*/}
-        {/*      })*/}
-        {/*    }*/}
-        {/*  }}*/}
-        {/*  submitText={this.context.t('save')}*/}
-        {/*  submitButtonType={'confirm'}*/}
-        {/*  disabled={viewOnly || this.stateIsUnchanged() || Object.values(errors).some(x => x) || !rpcUrl}*/}
-        {/*/>*/}
       </div>
     )
   }
