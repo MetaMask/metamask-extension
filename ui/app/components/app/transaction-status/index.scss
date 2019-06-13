@@ -12,8 +12,9 @@
 
   @media screen and (max-width: $break-small) {
     height: 16px;
-    width: 72px;
-    font-size: .5rem;
+    min-width: 72px;
+    font-size: 10px;
+    padding: 0 12px;
   }
 
   &--confirmed {
