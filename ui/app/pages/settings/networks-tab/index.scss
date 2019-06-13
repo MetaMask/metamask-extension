@@ -198,3 +198,23 @@
     color: #000000;
   }
 }
+
+.network-form {
+  &__footer {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: .75rem 0;
+
+    .btn-default {
+      margin-right: .375rem;
+    }
+
+    .btn-secondary {
+      margin-left: .375rem;
+    }
+
+    .btn-danger {
+      margin-right: 3.75rem;
+    }
+  }
+}
