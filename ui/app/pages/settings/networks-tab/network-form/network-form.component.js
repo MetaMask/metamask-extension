@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
-import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 import TextField from '../../../../components/ui/text-field'
-import Button from "../../../../components/ui/button";
+import Button from '../../../../components/ui/button'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -222,14 +221,8 @@ export default class NetworkForm extends PureComponent {
   render () {
     const { t } = this.context
     const {
-      setRpcTarget,
-      delRpcTarget,
       viewOnly,
       isCurrentRpcTarget,
-      rpcUrl: propsRpcUrl,
-      editRpc,
-      rpcPrefs = {},
-      onCancel,
       networksTabIsInAddMode,
     } = this.props
     const {
@@ -242,7 +235,7 @@ export default class NetworkForm extends PureComponent {
     } = this.state
 
     const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some(x => x) || !rpcUrl
-    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly;
+    const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     return (
       <div className="networks-tab__network-form">
