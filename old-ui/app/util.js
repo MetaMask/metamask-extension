@@ -81,11 +81,9 @@ function accountSummary (acc, firstSegLength = 6, lastSegLength = 4) {
 function isValidAddress (address, network) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (ifRSK(network)) {
-    // console.log('addHexPrefixRSK:', prefixed)
     if (address === '0x0000000000000000000000000000000000000000') return false
     return (ethUtil.isValidAddress(prefixed))
   } else {
-    // console.log('addHexPrefix:', prefixed)
     if (address === '0x0000000000000000000000000000000000000000') return false
     return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
   }
@@ -414,9 +412,5 @@ function toChecksumAddress (network, address, chainId = null) {
 }
 
 function isValidChecksumAddress (network, address) {
-  // console.log('isValidAddress(address):', isValidAddress(address, network))
-  // console.log('toChecksumAddress(network, address) === address', toChecksumAddress(network, address) === address)
-  // console.log('ethUtil.isValidAddress(address)', ethUtil.isValidAddress(address))
-  // console.log('isAllOneCase', isAllOneCase(address))
   return isValidAddress(address, network) && toChecksumAddress(network, address) === address
 }

@@ -5,6 +5,7 @@ const {qrcode: qrCode} = require('qrcode-npm')
 const {connect} = require('react-redux')
 const {isHexPrefixed} = require('ethereumjs-util')
 const CopyButton = require('./components/copy/copy-button')
+const { toChecksumAddress } = require('./util')
 
 class AccountQrScreen extends PureComponent {
   static defaultProps = {
@@ -14,11 +15,13 @@ class AccountQrScreen extends PureComponent {
   static propTypes = {
     Qr: PropTypes.object.isRequired,
     warning: PropTypes.node,
+    network: PropTypes.string,
   }
 
   render () {
-    const {Qr, warning} = this.props
+    const {Qr, warning, network} = this.props
     const address = `${isHexPrefixed(Qr.data) ? 'ethereum:' : ''}${Qr.data}`
+    const addressChecksum = toChecksumAddress(network, Qr.data)
     const qrImage = qrCode(4, 'M')
 
     qrImage.addData(address)
@@ -51,9 +54,9 @@ class AccountQrScreen extends PureComponent {
           style: {
             width: '247px',
           },
-        }, Qr.data),
+        }, addressChecksum),
         h(CopyButton, {
-          value: Qr.data,
+          value: addressChecksum,
         }),
       ]),
     ])
@@ -64,6 +67,7 @@ function mapStateToProps (state) {
   return {
     Qr: state.appState.Qr,
     warning: state.appState.warning,
+    network: state.metamask.network,
   }
 }
 
