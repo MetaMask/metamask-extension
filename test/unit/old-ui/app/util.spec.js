@@ -13,6 +13,9 @@ const {
   normalizeEthStringToWei,
   normalizeNumberToWei,
   isHex,
+  ifRSK,
+  toChecksumAddress,
+  isValidChecksumAddress,
 } = require('../../../../old-ui/app/util')
 const ethUtil = require('ethereumjs-util')
 let ethInWei = '1'
@@ -327,6 +330,45 @@ describe('normalizing values', function () {
     it('should return true when given a hex string with hex-prefix', function () {
       var result = isHex('0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
       assert(result)
+    })
+  })
+
+  describe('#ifRSK', function () {
+    it('checks if this is RSK chain', function () {
+      var result1 = ifRSK(30)
+      assert(result1)
+      var result2 = ifRSK(31)
+      assert(result2)
+      var result3 = ifRSK(1)
+      assert(!result3)
+      var result4 = ifRSK()
+      assert(!result4)
+    })
+  })
+
+  const addr = '0xB707b030A7887a21cc595Cd139746A8c2Ed91615'
+  const addrRSKMainnet = '0xB707b030A7887a21Cc595cD139746A8c2ED91615'
+  const addrRSKTestnet = '0xB707b030a7887a21Cc595CD139746a8C2ED91615'
+  const addrETHMainnet = '0xB707b030A7887a21cc595Cd139746A8c2Ed91615'
+  describe('#toChecksumAddress', function () {
+    it('calculates correct checksum', function () {
+      var resultMainnet = toChecksumAddress('30', addr)
+      assert.equal(resultMainnet, addrRSKMainnet)
+      var resultTestnet = toChecksumAddress('31', addr)
+      assert.equal(resultTestnet, addrRSKTestnet)
+      var resultNotRSK = toChecksumAddress('1', addr)
+      assert.equal(resultNotRSK, addrETHMainnet)
+    })
+  })
+
+  describe('#isValidChecksumAddress', function () {
+    it('checks if is valid checksum address', function () {
+      var resultMainnet = isValidChecksumAddress('30', addrRSKMainnet)
+      assert(resultMainnet)
+      var resultTestnet = isValidChecksumAddress('31', addrRSKTestnet)
+      assert(resultTestnet)
+      var resultNotRSK = isValidChecksumAddress('1', addrETHMainnet)
+      assert(resultNotRSK)
     })
   })
 })

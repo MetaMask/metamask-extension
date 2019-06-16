@@ -115,7 +115,7 @@ PendingTx.prototype.render = function () {
   const balance = account ? account.balance : '0x0'
 
   // recipient check
-  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
+  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to, network)
 
   // Gas
   const gas = txParams.gas

@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const Tooltip = require('../tooltip.js')
 const TabBar = require('../tab-bar')
 const { checkExistingAddresses } = require('./util')
-const { getCurrentKeyring, ifContractAcc } = require('../../util')
+const { getCurrentKeyring, ifContractAcc, isValidAddress } = require('../../util')
 const TokenList = require('./token-list')
 const TokenSearch = require('./token-search')
 const { tokenInfoGetter } = require('../../../../ui/app/token-util')
@@ -351,7 +351,7 @@ class AddTokenScreen extends Component {
     const { customAddress: address, customSymbol: symbol, customDecimals: decimals } = state
     const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
 
-    const validAddress = ethUtil.isValidAddress(address)
+    const validAddress = isValidAddress(address, network)
     if (!validAddress) {
       msg += 'Address is invalid.'
     }
@@ -472,7 +472,7 @@ class AddTokenScreen extends Component {
       autoFilled: false,
     })
 
-    const isValidAddress = ethUtil.isValidAddress(customAddress)
+    const isValidAddress = isValidAddress(customAddress, network)
     const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
     let warning

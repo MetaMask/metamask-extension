@@ -296,7 +296,7 @@ function renderErrorOrWarning (transaction, network) {
 
   // show warning
   const isRSK = ifRSK(network)
-  if (warning && !isRSK || (isRSK && !warning.error.includes('[ethjs-rpc] rpc error with payload'))) {
+  if (warning && !isRSK || (isRSK && warning && !warning.error.includes('[ethjs-rpc] rpc error with payload'))) {
     const message = warning.message
     return h(Tooltip, {
       title: message,
