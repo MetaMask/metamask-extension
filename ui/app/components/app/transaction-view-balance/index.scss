@@ -33,11 +33,14 @@
 
   &__primary-balance {
     font-size: 1.5rem;
+    color: $black;
 
     @media screen and (max-width: $break-small) {
-      font-size: 1.75rem;
+      font-size: 32px;
+      line-height: 45px;
       width: 100%;
       justify-content: center;
+
     }
   }
 
@@ -51,12 +54,15 @@
 
   &__cached-secondary-balance {
     color: rgba(220, 153, 18, 0.6901960784313725);
-    font-size: 1.15rem;
+    font-size: 16px;
+    line-height: 23px;
   }
 
   &__secondary-balance {
-    font-size: 1.15rem;
-    color: #a0a0a0;
+    font-size: 16px;
+    line-height: 23px;
+    font-weight: 400;
+    color: $Grey-400;
   }
 
   &__balance-container {

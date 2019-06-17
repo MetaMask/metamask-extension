@@ -16,6 +16,7 @@ import LoadingScreen from '../../components/ui/loading-screen'
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
+const KEYS_GENERATION_TIME = 30000
 
 class MobileSyncPage extends Component {
   static propTypes = {
@@ -36,6 +37,8 @@ class MobileSyncPage extends Component {
       error: null,
       syncing: false,
       completed: false,
+      channelName: undefined,
+      cipherKey: undefined,
     }
 
     this.syncing = false
@@ -53,16 +56,31 @@ class MobileSyncPage extends Component {
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
       .then(seedWords => {
-        this.generateCipherKeyAndChannelName()
+        this.startKeysGeneration()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
-        this.initWebsockets()
       })
       .catch(error => this.setState({ error: error.message }))
+  }
+
+  startKeysGeneration () {
+    this.handle && clearTimeout(this.handle)
+    this.disconnectWebsockets()
+    this.generateCipherKeyAndChannelName()
+    this.initWebsockets()
+    this.handle = setTimeout(() => {
+      this.startKeysGeneration()
+    }, KEYS_GENERATION_TIME)
   }
 
   generateCipherKeyAndChannelName () {
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
+    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
+  }
+
+  initWithCipherKeyAndChannelName (cipherKey, channelName) {
+    this.cipherKey = cipherKey
+    this.channelName = channelName
   }
 
   initWebsockets () {
@@ -83,6 +101,11 @@ class MobileSyncPage extends Component {
 
         if (message.event === 'start-sync') {
             this.startSyncing()
+        } else if (message.event === 'connection-info') {
+            this.handle && clearTimeout(this.handle)
+            this.disconnectWebsockets()
+            this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
+            this.initWebsockets()
         } else if (message.event === 'end-sync') {
             this.disconnectWebsockets()
             this.setState({syncing: false, completed: true})
@@ -272,7 +295,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`metamask-sync:${this.channelName}|@|${this.cipherKey}`)
+    qrImage.addData(`metamask-sync:${this.state.channelName}|@|${this.state.cipherKey}`)
     qrImage.make()
 
     const { t } = this.context
