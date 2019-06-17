@@ -38,10 +38,12 @@ async function getMethodFrom4Byte (fourBytePrefix) {
     body: null,
     method: 'GET',
     mode: 'cors',
-  })).json()
+  }))
 
-  if (fourByteResponse.count === 1) {
-    return fourByteResponse.results[0].text_signature
+  const fourByteJSON = await fourByteResponse.json()
+
+  if (fourByteJSON.count === 1) {
+    return fourByteJSON.results[0].text_signature
   } else {
     return null
   }
@@ -62,6 +64,7 @@ export async function getMethodDataAsync (fourBytePrefix) {
     })
 
     let sig = await registry.lookup(fourBytePrefix)
+
     if (!sig) {
       sig = await fourByteSig
     }

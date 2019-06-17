@@ -2798,14 +2798,14 @@ function getContractMethodData (data = '') {
   return (dispatch, getState) => {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
-    const { knownMethodData } = getState().metamask.knownMethodData
-
+    const { knownMethodData } = getState().metamask
     if (knownMethodData && knownMethodData[fourBytePrefix]) {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
     dispatch(actions.loadingMethoDataStarted())
     log.debug(`loadingMethodData`)
+
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
         dispatch(actions.loadingMethoDataFinished())
