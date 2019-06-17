@@ -82,7 +82,7 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('mainnet')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
@@ -92,7 +92,7 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('ropsten')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
@@ -102,7 +102,7 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('kovan')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
@@ -112,7 +112,7 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('rinkeby')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
           case 'goerli-test-network':
             return h('.network-indicator', [
@@ -122,7 +122,7 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('goerli')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
           default:
             return h('.network-indicator', [
@@ -142,7 +142,7 @@ Network.prototype.render = function () {
               }),
 
               h('.network-name', providerName === 'localhost' ? context.t('localhost') : providerNick || context.t('privateNetwork')),
-              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+              h('.network-indicator__down-arrow'),
             ])
         }
       })(),

@@ -89,7 +89,7 @@ class SettingsPage extends PureComponent {
     const { t } = this.context
     const { location: { pathname } } = this.props
 
-    return (
+    return pathname !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
         {t(ROUTES_TO_I18N_KEYS[pathname] || 'general')}
       </div>

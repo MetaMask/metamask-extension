@@ -1,6 +1,12 @@
 # Changelog
 
 ## Current Develop Branch
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+
+## 6.6.2 Fri Jun 07 2019
+
+- [#6690](https://github.com/MetaMask/metamask-extension/pull/6690): Update dependencies, re-enable npm audit CI job
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
 
 ## 6.6.1 Thu Jun 06 2019
 

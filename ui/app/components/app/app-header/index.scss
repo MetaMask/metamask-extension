@@ -1,6 +1,6 @@
 .app-header {
   align-items: center;
-  background: $gallery;
+  background: $Grey-000;
   position: relative;
   z-index: $header-z-index;
   display: flex;
@@ -9,7 +9,7 @@
   flex: 0 0 auto;
 
   @media screen and (max-width: 575px) {
-    padding: 12px;
+    padding: 1rem;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
     z-index: $mobile-header-z-index;
   }
@@ -34,6 +34,7 @@
     cursor: pointer;
 
     &--icon {
+      height: 32px;
       @media screen and (min-width: $break-large) {
         display: none;
       }

@@ -179,7 +179,7 @@ export default class TransactionListItem extends PureComponent {
           <Identicon
             className="transaction-list-item__identicon"
             address={toAddress}
-            diameter={34}
+            diameter={36}
             image={assetImages[toAddress]}
           />
           <TransactionAction

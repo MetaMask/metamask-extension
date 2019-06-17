@@ -8,6 +8,7 @@ export default class PageContainerFooter extends Component {
     children: PropTypes.node,
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
+    cancelButtonType: PropTypes.string,
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
@@ -29,6 +30,7 @@ export default class PageContainerFooter extends Component {
       disabled,
       submitButtonType,
       hideCancel,
+      cancelButtonType,
     } = this.props
 
     return (
@@ -36,7 +38,7 @@ export default class PageContainerFooter extends Component {
 
         <header>
           {!hideCancel && <Button
-            type="default"
+            type={cancelButtonType || 'default'}
             large
             className="page-container__footer-button"
             onClick={e => onCancel(e)}
