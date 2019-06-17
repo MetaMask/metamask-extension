@@ -1478,7 +1478,7 @@ describe('MetaMask', function () {
         await customRpcInput.clear()
         await customRpcInput.sendKeys(customRpcUrl)
 
-        const customRpcSave = await findElement(driver, By.css('.page-container__footer-button'))
+        const customRpcSave = await findElement(driver, By.css('.network-form__footer .btn-secondary'))
         await customRpcSave.click()
         await delay(largeDelayMs * 2)
       })
@@ -1503,6 +1503,20 @@ describe('MetaMask', function () {
       const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`))
 
       assert.equal(customRpcs.length, customRpcUrls.length)
+    })
+
+    it('deletes a custom RPC', async () => {
+      const networkListItems = await findElements(driver, By.css('.networks-tab__networks-list-name'))
+      const lastNetworkListItem = networkListItems[networkListItems.length - 1]
+      await lastNetworkListItem.click()
+      await delay(100)
+
+      const deleteButton = await findElement(driver, By.css('.btn-danger'))
+      await deleteButton.click()
+      await delay(regularDelayMs)
+      const newNetworkListItems = await findElements(driver, By.css('.networks-tab__networks-list-name'))
+
+      assert.equal(networkListItems.length - 1, newNetworkListItems.length)
     })
   })
 })

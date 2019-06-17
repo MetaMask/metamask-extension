@@ -36,6 +36,15 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://rinkeby.etherscan.io',
   },
   {
+    labelKey: 'goerli',
+    iconColor: '#3099f2',
+    providerType: 'goerli',
+    rpcUrl: 'https://api.infura.io/v1/jsonrpc/goerli',
+    chainId: '5',
+    ticker: 'ETH',
+    blockExplorerUrl: 'https://goerli.etherscan.io',
+  },
+  {
     labelKey: 'localhost',
     iconColor: 'white',
     border: '1px solid #6A737D',

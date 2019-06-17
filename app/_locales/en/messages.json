@@ -454,6 +454,9 @@
   "defaultNetwork": {
     "message": "The default network for Ether transactions is Main Net."
   },
+  "delete": {
+    "message": "Delete"
+  },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },

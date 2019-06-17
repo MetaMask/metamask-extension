@@ -12,7 +12,7 @@
   }
 
   &__body {
-    padding: 12px 24px;
+    padding-right: 24px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -118,12 +118,12 @@
   }
 
   &__add-network-header-button-wrapper {
-    padding-top: 15px;
-    padding-bottom: 21px;
     justify-content: center;
 
     .button {
-      width: 178px;
+      width: 138px;
+      padding: 10px;
+      line-height: 20px;
     }
 
     @media screen and (max-width: 575px) {
@@ -196,5 +196,25 @@
   &__networks-list-name--selected {
     font-weight: bold;
     color: #000000;
+  }
+}
+
+.network-form {
+  &__footer {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: .75rem 0;
+
+    .btn-default {
+      margin-right: .375rem;
+    }
+
+    .btn-secondary {
+      margin-left: .375rem;
+    }
+
+    .btn-danger {
+      margin-right: 3.75rem;
+    }
   }
 }
