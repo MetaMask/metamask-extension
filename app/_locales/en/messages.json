@@ -1742,6 +1742,9 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewinExplorer": {
+    "message": "View in Explorer"
+  },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"
   },
