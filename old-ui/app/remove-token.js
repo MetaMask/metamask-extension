@@ -1,9 +1,8 @@
 import ConfirmScreen from './components/confirm'
 import React from 'react'
-import { connect } from 'react-redux'
 import actions from '../../ui/app/actions'
 
-class RemoveTokenScreen extends ConfirmScreen {
+export default class RemoveTokenScreen extends ConfirmScreen {
   render () {
     return (
       <ConfirmScreen
@@ -21,5 +20,3 @@ class RemoveTokenScreen extends ConfirmScreen {
     )
   }
 }
-
-module.exports = connect()(RemoveTokenScreen)

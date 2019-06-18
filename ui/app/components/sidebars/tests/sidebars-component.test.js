@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group'
 import Sidebar from '../sidebar.component.js'
 
 import WalletView from '../../wallet-view'
@@ -72,8 +72,8 @@ describe('Sidebar Component', function () {
       assert.equal(wrapper.children().length, 1)
     })
 
-    it('should render the ReactCSSTransitionGroup without any children', () => {
-      assert(wrapper.children().at(0).is(ReactCSSTransitionGroup))
+    it('should render the CSSTransitionGroup without any children', () => {
+      assert(wrapper.children().at(0).is(CSSTransitionGroup))
       assert.equal(wrapper.children().at(0).children().length, 0)
     })
 

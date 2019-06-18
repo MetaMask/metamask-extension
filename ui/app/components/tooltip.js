@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const ReactTooltip = require('react-tooltip-component')
+const ReactTooltip = require('react-tooltip')
 
 module.exports = Tooltip
 
