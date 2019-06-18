@@ -67,4 +67,4 @@ class ConfirmScreen extends Component {
 	}
 }
 
-export default ConfirmScreen
+module.exports = ConfirmScreen
