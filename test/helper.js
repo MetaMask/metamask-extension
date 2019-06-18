@@ -32,7 +32,6 @@ global.fetch = require('isomorphic-fetch')
 require('jsdom-global')()
 
 // localStorage
-// window.localStorage = {}
 Object.defineProperty(window, 'localStorage', {value: {}})
 
 // crypto.getRandomValues

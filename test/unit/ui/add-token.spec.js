@@ -30,7 +30,7 @@ describe('Add Token Screen', function () {
       assert.equal(state.warning, 'Address is invalid.Symbol must be between 0 and 10 characters.')
     })
 
-    it('Address is a Metamask Identity', function () {
+    it('Address is a Nifty Wallet Identity', function () {
       addTokenComponent.setState({
         customAddress: '0x7d3517b0d011698406d6e0aed8453f0be2697926',
       })

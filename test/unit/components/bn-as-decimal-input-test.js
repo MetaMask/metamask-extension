@@ -1,16 +1,16 @@
-import React from 'react'
-import assert from 'assert'
+var assert = require('assert')
 
-import additions from 'react-testutils-additions'
+const additions = require('react-testutils-additions')
+const h = require('react-hyperscript')
 import TestRenderer from 'react-test-renderer'
 import ReactTestUtils from 'react-dom/test-utils'
-import { BN } from 'ethereumjs-util'
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 
-import BnInput from '../../../old-ui/app/components/bn-as-decimal-input'
+var BnInput = require('../../../old-ui/app/components/bn-as-decimal-input')
 
 describe('BnInput', function () {
   it('can tolerate a gas decimal number at a high precision', function (done) {
-
     let valueStr = '20'
     while (valueStr.length < 20) {
       valueStr += '0'
@@ -28,17 +28,17 @@ describe('BnInput', function () {
     const precision = 18 // ether precision
     const scale = 18
 
-    const onChange = (newBn) => {
-      assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
-      done()
-    }
-
-    const inputComponent = <BnInput {...{
+    const props = {
       value,
       scale,
       precision,
-      onChange,
-    }}/>
+      onChange: (newBn) => {
+        assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
+        done()
+      },
+    }
+
+    const inputComponent = h(BnInput, props)
     const component = additions.renderIntoDocument(inputComponent)
     TestRenderer.create(inputComponent)
     const input = additions.find(component, 'input.hex-input')[0]
@@ -49,7 +49,6 @@ describe('BnInput', function () {
   })
 
   it('can tolerate wei precision', function (done) {
-
     const valueStr = '1000000000'
 
     const value = new BN(valueStr, 10)
@@ -63,18 +62,19 @@ describe('BnInput', function () {
     const precision = 9 // gwei precision
     const scale = 9
 
-    const inputComponent = <BnInput {...{
+    const props = {
       value,
       scale,
       precision,
       onChange: (newBn) => {
         assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
-        const reInput = this.downsize(newBn.toString(), 9, 9)
+        const reInput = BnInput.prototype.downsize(newBn.toString(), 9, 9)
         assert.equal(reInput.toString(), inputStr, 'should tolerate increase')
         done()
       },
-    }}/>
+    }
 
+    const inputComponent = h(BnInput, props)
     const component = additions.renderIntoDocument(inputComponent)
     TestRenderer.create(inputComponent)
     const input = additions.find(component, 'input.hex-input')[0]
