@@ -175,11 +175,14 @@ class AddTokenScreen extends Component {
 
         h('div', [
           h(Tooltip, {
-            position: 'top',
             title: 'The contract of the actual token contract.',
+            position: 'top',
+            id: 'addToken',
           }, [
             h('span', {
               style: { fontWeight: 'bold'},
+              'data-tip': '',
+              'data-for': 'addToken',
             }, 'Token Address' /* this.context.t('tokenAddress')*/),
           ]),
         ]),

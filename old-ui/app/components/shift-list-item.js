@@ -88,6 +88,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
       return h('.flex-row', [
         h(Tooltip, {
           title: 'QR Code',
+          id: 'shiftListItem',
         }, [
           h('i.fa.fa-qrcode.pointer.pop-hover', {
             onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
@@ -98,6 +99,8 @@ ShiftListItem.prototype.renderUtilComponents = function () {
               fontSize: '20px',
               color: '#6729a8',
             },
+            'data-tip': '',
+            'data-for': 'shiftListItem',
           }),
         ]),
       ])

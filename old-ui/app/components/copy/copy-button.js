@@ -30,11 +30,13 @@ class CopyButton extends CopyComponent {
     )
 
     return (
-      <div className="copy-button"
-        style={fullStyle}
-      >
-        {this.renderTooltip(message, tooltipPosition, tooltipChild)}
-      </div>
+        <div className="copy-button"
+          style={fullStyle}
+          data-tip
+          data-for="copyButton"
+        >
+          {this.renderTooltip(message, tooltipPosition, tooltipChild, 'copyButton')}
+        </div>
     )
   }
 }
