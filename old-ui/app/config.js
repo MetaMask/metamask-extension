@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+import PropTypes from 'prop-types'
 const actions = require('../../ui/app/actions')
 const LoadingIndicator = require('./components/loading')
 const Web3 = require('web3')
@@ -20,6 +21,10 @@ class ConfigScreen extends Component {
     this.state = {
       loading: false,
     }
+  }
+
+  static propTypes = {
+    dispatch: PropTypes.func,
   }
 
   render () {

@@ -8,7 +8,7 @@ const isMobileView = require('../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 
-//Modal Components
+// Modal Components
 const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
 const AccountDetailsModal = require('./account-details-modal')
@@ -64,7 +64,7 @@ const accountModalStyle = {
   },
   laptopModalStyle: {
     width: '360px',
-    top: 'calc(33% + 45px)',
+    // top: 'calc(33% + 45px)',
     boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     borderRadius: '4px',
     top: '10%',
@@ -155,7 +155,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width: '375px',
-      top: 'calc(30% + 10px)',
+      // top: 'calc(30% + 10px)',
       top: '10%',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
@@ -271,7 +271,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width: '449px',
-      top: 'calc(33% + 45px)',
+      // top: 'calc(33% + 45px)',
       top: '10%',
       transform: 'none',
       left: '0',

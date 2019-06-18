@@ -2,6 +2,7 @@ import React from 'react'
 import assert from 'assert'
 
 import additions from 'react-testutils-additions'
+import TestRenderer from 'react-test-renderer'
 import ReactTestUtils from 'react-dom/test-utils'
 import { BN } from 'ethereumjs-util'
 
@@ -9,7 +10,6 @@ import BnInput from '../../../old-ui/app/components/bn-as-decimal-input'
 
 describe('BnInput', function () {
   it('can tolerate a gas decimal number at a high precision', function (done) {
-    // const renderer = ReactTestUtils.createRenderer()
 
     let valueStr = '20'
     while (valueStr.length < 20) {
@@ -40,7 +40,7 @@ describe('BnInput', function () {
       onChange,
     }}/>
     const component = additions.renderIntoDocument(inputComponent)
-    ReactTestUtils.mockComponent(inputComponent)
+    TestRenderer.create(inputComponent)
     const input = additions.find(component, 'input.hex-input')[0]
     ReactTestUtils.Simulate.change(input, { preventDefault () {}, target: {
       value: inputStr,
@@ -49,7 +49,6 @@ describe('BnInput', function () {
   })
 
   it('can tolerate wei precision', function (done) {
-    // const renderer = ReactTestUtils.createRenderer()
 
     const valueStr = '1000000000'
 
@@ -64,21 +63,20 @@ describe('BnInput', function () {
     const precision = 9 // gwei precision
     const scale = 9
 
-    const props = {
+    const inputComponent = <BnInput {...{
       value,
       scale,
       precision,
       onChange: (newBn) => {
         assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
-        const reInput = BnInput.downsize(newBn.toString(), 9, 9)
+        const reInput = this.downsize(newBn.toString(), 9, 9)
         assert.equal(reInput.toString(), inputStr, 'should tolerate increase')
         done()
       },
-    }
+    }}/>
 
-    const inputComponent = <BnInput {...{props}}/>
     const component = additions.renderIntoDocument(inputComponent)
-    ReactTestUtils.mockComponent(inputComponent)
+    TestRenderer.create(inputComponent)
     const input = additions.find(component, 'input.hex-input')[0]
     ReactTestUtils.Simulate.change(input, { preventDefault () {}, target: {
       value: inputStr,
