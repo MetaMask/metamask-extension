@@ -1,6 +1,15 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 6.7.0 Tue Jun 18 2019
+
+- [#6623](https://github.com/MetaMask/metamask-extension/pull/6623): Improve contract method data fetching (#6623)
+- [#6551](https://github.com/MetaMask/metamask-extension/pull/6551): Adds 4byte registry fallback to getMethodData() (#6435)
+- [#6718, #6650](https://github.com/MetaMask/metamask-extension/pull/6718, #6650): Add delete to custom RPC form
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+- [#6714](https://github.com/MetaMask/metamask-extension/pull/6714): Wrap smaller custom block explorer url text
+- [#6706](https://github.com/MetaMask/metamask-extension/pull/6706): Pin ethereumjs-tx
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
 
 ## 6.6.2 Fri Jun 07 2019
