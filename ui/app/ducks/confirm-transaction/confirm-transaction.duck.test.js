@@ -630,7 +630,7 @@ describe('Confirm Transaction Duck', () => {
       storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
     })
 
-    it('updates confirmTransaction transaction', done => {
+    it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
           conversionRate: 468.58,
@@ -673,13 +673,10 @@ describe('Confirm Transaction Duck', () => {
       ]
 
       store.dispatch(actions.setTransactionToConfirm(2603411941761054))
-        .then(() => {
-          const storeActions = store.getActions()
-          assert.equal(storeActions.length, expectedActions.length)
+      const storeActions = store.getActions()
+      assert.equal(storeActions.length, expectedActions.length)
 
-          storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
-          done()
-        })
+      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
     })
   })
 })
