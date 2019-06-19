@@ -30,6 +30,7 @@ import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
+import AddToAddressBookModal from './add-to-addressbook-modal'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -169,7 +170,7 @@ const MODALS = {
 
   ADD_TO_ADDRESSBOOK: {
     contents: [
-      h('div', {}, ['hi']),
+      h(AddToAddressBookModal, {}, []),
     ],
     mobileModalStyle: {
       width: '95%',
