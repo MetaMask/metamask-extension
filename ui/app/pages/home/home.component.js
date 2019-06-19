@@ -21,15 +21,17 @@ export default class Home extends PureComponent {
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
     providerRequests: PropTypes.array,
+    onlyUnconfIsThreeBox: PropTypes.bool,
   }
 
   componentWillMount () {
     const {
       history,
       unconfirmedTransactionsCount = 0,
+      onlyUnconfIsThreeBox,
     } = this.props
 
-    if (unconfirmedTransactionsCount > 0) {
+    if (unconfirmedTransactionsCount > 0 && !onlyUnconfIsThreeBox) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }

@@ -30,6 +30,7 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ThreeBoxApproval from './threebox-approval'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -330,6 +331,19 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
+    },
+  },
+
+  THREEBOX_APPROVAL: {
+    contents: h(ThreeBoxApproval),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 

@@ -6,7 +6,7 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector, getValidThreeBoxApprovalRequest } from '../../selectors/selectors'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
@@ -96,6 +96,17 @@ class Routes extends Component {
         })
       }
     })
+  }
+
+  componentDidUpdate (prevProps) {
+    const {
+      threeBoxApprovalRequest,
+      showApprovalForThreeBox,
+    } = this.props
+
+    if (!prevProps.threeBoxApprovalRequest && threeBoxApprovalRequest) {
+      showApprovalForThreeBox(threeBoxApprovalRequest.id)
+    }
   }
 
   renderRoutes () {
@@ -359,6 +370,8 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
+  threeBoxApprovalRequest: PropTypes.object,
+  showApprovalForThreeBox: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -426,6 +439,7 @@ function mapStateToProps (state) {
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
+    threeBoxApprovalRequest: getValidThreeBoxApprovalRequest(state),
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -445,6 +459,7 @@ function mapDispatchToProps (dispatch) {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
+    showApprovalForThreeBox: id => dispatch(actions.showModal({ name: 'THREEBOX_APPROVAL', id })),
   }
 }
 
