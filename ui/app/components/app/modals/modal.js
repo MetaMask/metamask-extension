@@ -167,6 +167,32 @@ const MODALS = {
     },
   },
 
+  ADD_TO_ADDRESSBOOK: {
+    contents: [
+      h('div', {}, ['hi']),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      // top: 'calc(30% + 10px)',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+  },
+
   ACCOUNT_DETAILS: {
     contents: [
       h(AccountDetailsModal, {}, []),
@@ -482,6 +508,7 @@ Modal.prototype.render = function () {
         this.onHide(modal.customOnHideOpts)
       },
       ref: (ref) => {
+        console.log({ ref })
         this.modalRef = ref
       },
       modalStyle,
