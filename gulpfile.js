@@ -47,6 +47,7 @@ function gulpParallel (...args) {
 const browserPlatforms = [
   'firefox',
   'chrome',
+  'brave',
   'edge',
   'opera',
 ]
@@ -180,6 +181,7 @@ gulp.task('manifest:production', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
+    './dist/brave/manifest.json',
     './dist/edge/manifest.json',
     './dist/opera/manifest.json',
   ], {base: './dist/'})
