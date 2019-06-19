@@ -152,7 +152,7 @@ ShiftListItem.prototype.renderInfo = function () {
         }, [
           `${props.depositType} to ETH via ShapeShift`,
             h(CopyButton, {
-            value: this.props.depositAddress,
+            value: props.depositAddress,
           })]),
         h('div', {
           style: {
@@ -219,7 +219,7 @@ ShiftListItem.prototype.renderInfo = function () {
             display: 'inline-flex',
           },
         }, [
-          addressSummary(props.response.transaction),
+          addressSummary(props.network, props.response.transaction),
           h(CopyButton, {
             value: this.props.response.transaction,
           }),

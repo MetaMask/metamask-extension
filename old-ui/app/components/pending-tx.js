@@ -13,8 +13,7 @@ const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copy/copyable')
 const EthBalance = require('./eth-balance')
 const TokenBalance = require('./token-balance')
-const addressSummary = util.addressSummary
-const accountSummary = util.accountSummary
+const { addressSummary, accountSummary, toChecksumAddress } = util
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 const { getEnvironmentType } = require('../../../app/scripts/lib/util')
@@ -116,7 +115,7 @@ PendingTx.prototype.render = function () {
   const balance = account ? account.balance : '0x0'
 
   // recipient check
-  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
+  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to, network)
 
   // Gas
   const gas = txParams.gas
@@ -240,14 +239,14 @@ PendingTx.prototype.render = function () {
                 }, accountSummary(identity.name, 6, 4)),
 
                 h(Copyable, {
-                  value: ethUtil.toChecksumAddress(address),
+                  value: toChecksumAddress(network, address),
                 }, [
                   h('span.font-small', {
                     style: {
                       fontFamily: 'Nunito Regular',
                       color: 'rgba(255, 255, 255, 0.7)',
                     },
-                  }, addressSummary(address, 6, 4, false)),
+                  }, addressSummary(network, address, 6, 4, false)),
                 ]),
 
                 h('span.font-small', {
@@ -565,17 +564,17 @@ PendingTx.prototype.miniAccountPanelForRecipient = function (isToken, tokensTran
               display: 'inline-block',
               whiteSpace: 'nowrap',
             },
-          }, accountSummary(nameForAddress(to, props.identities)), 6, 4),
+          }, accountSummary(nameForAddress(to, props.identities, props.network)), 6, 4),
 
           h(Copyable, {
-            value: ethUtil.toChecksumAddress(to),
+            value: toChecksumAddress(props.network, to),
           }, [
             h('span.font-small', {
               style: {
                 fontFamily: 'Nunito Regular',
                 color: 'rgba(255, 255, 255, 0.7)',
               },
-            }, addressSummary(to, 6, 4, false)),
+            }, addressSummary(props.network, to, 6, 4, false)),
           ]),
         ]),
       ])

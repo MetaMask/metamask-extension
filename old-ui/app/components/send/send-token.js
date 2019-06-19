@@ -124,8 +124,8 @@ class SendTransactionScreen extends PersistentForm {
 
   createFreshTokenTracker () {
     this.setState({isLoading: true})
-    const { address, tokenAddress } = this.props
-    if (!isValidAddress(tokenAddress)) return
+    const { address, tokenAddress, network } = this.props
+    if (!isValidAddress(tokenAddress, network)) return
     if (this.tracker) {
       // Clean up old trackers when refreshing:
       this.tracker.stop()
@@ -225,12 +225,12 @@ class SendTransactionScreen extends PersistentForm {
       return this.props.displayWarning(message)
     }
 
-    if ((isInvalidChecksumAddress(recipient))) {
+    if ((isInvalidChecksumAddress(recipient, this.props.network))) {
       message = 'Recipient address checksum is invalid.'
       return this.props.displayWarning(message)
     }
 
-    if (!isValidAddress(recipient) || (!recipient)) {
+    if (!isValidAddress(recipient, this.props.network) || (!recipient)) {
       message = 'Recipient address is invalid.'
       return this.props.displayWarning(message)
     }

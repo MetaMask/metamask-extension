@@ -205,12 +205,12 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if ((isInvalidChecksumAddress(recipient))) {
+  if ((isInvalidChecksumAddress(recipient, this.props.network))) {
     message = 'Recipient address checksum is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if ((!isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
+  if ((!isValidAddress(recipient, this.props.network) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
