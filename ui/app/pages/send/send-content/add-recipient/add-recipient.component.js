@@ -162,21 +162,21 @@ export default class AddRecipient extends Component {
   }
 
   renderAddressBook () {
-    // const { addressBook } = this.props
-    // const contacts = addressBook.filter(({ name }) => !!name)
+    const { addressBook } = this.props
+    let contacts = addressBook.filter(({ name }) => !!name)
     const { query } = this.props
-    let contacts = [
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6720', name: 'Albert' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6721', name: 'Alan' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6722', name: 'Alex' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6723', name: 'Brian' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6724', name: 'Catherine' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6725', name: 'Benjamin' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6726', name: 'David' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6727', name: 'Jacky' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6728', name: 'Daniel' },
-      { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6729', name: 'Whymarrh' },
-    ]
+    // let contacts = [
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6720', name: 'Albert' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6721', name: 'Alan' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6722', name: 'Alex' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6723', name: 'Brian' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6724', name: 'Catherine' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6725', name: 'Benjamin' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6726', name: 'David' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6727', name: 'Jacky' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6728', name: 'Daniel' },
+    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6729', name: 'Whymarrh' },
+    // ]
 
     if (query) {
       if (!this.contactFuse) {

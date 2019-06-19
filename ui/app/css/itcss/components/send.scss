@@ -536,8 +536,6 @@
   }
 
   &__form {
-    padding: 10px 0 25px;
-
     @media screen and (max-width: $break-small) {
       margin: 0;
       flex: 1 1 auto;

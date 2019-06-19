@@ -229,11 +229,7 @@ export default class SendTransactionScreen extends PersistentForm {
       <div className="page-container">
         <SendHeader history={history}/>
         { this.renderInput() }
-        {
-          to
-            ? this.renderSendContent()
-            : this.renderAddRecipient()
-        }
+        { to ? this.renderSendContent() : this.renderAddRecipient() }
       </div>
     )
   }
