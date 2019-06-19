@@ -19,6 +19,11 @@
     }
   }
 
+  &__dialog {
+    margin: 1rem;
+    cursor: pointer;
+  }
+
   &__to-row {
     margin: 0;
     padding: .5rem;
@@ -85,7 +90,11 @@
       padding: .75rem 1rem;
       align-items: center;
       border-bottom: 1px solid $alto;
+      cursor: pointer;
 
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
 
       .identicon {
         margin-right: 1rem;
@@ -122,7 +131,7 @@
     align-items: center;
     background: $white;
     border-radius: .5rem;
-    padding: .75rem .25rem;
+    padding: .75rem .5rem;
     border: 1px solid $Grey-100;
     transition: border-color 150ms ease-in-out;
 
@@ -135,7 +144,7 @@
       background-image: url("/images/search-black.svg");
       width: 1.125rem;
       height: 1.125rem;
-      margin: .25rem;
+      margin: .25rem .5rem .25rem .25rem;
 
       &--error {
 
@@ -160,6 +169,7 @@
 
     &__action-icon {
       @extend %bg-contain;
+      cursor: pointer;
 
       &--erase {
         background-image: url("/images/close-gray.svg");

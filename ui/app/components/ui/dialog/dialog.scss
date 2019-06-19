@@ -1,0 +1,18 @@
+.dialog {
+  font-size: .75rem;
+  line-height: 1rem;
+  padding: 1rem;
+  border: 1px solid $black;
+
+  &--message {
+    box-sizing: border-box;
+    border-radius: 8px;
+    border-color: $Blue-200;
+    color: $Blue-600;
+    background-color: $Blue-000;
+  }
+
+  &--error {
+
+  }
+}
