@@ -56,6 +56,7 @@
     "@material-ui/core": "1.0.0",
     "@sentry/browser": "^4.1.1",
     "@zxing/library": "^0.8.0",
+    "3box": "1.8.0",
     "abi-decoder": "^1.2.0",
     "asmcrypto.js": "0.22.0",
     "async": "^2.5.0",
