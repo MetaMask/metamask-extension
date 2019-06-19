@@ -16,6 +16,7 @@ export default class SendContent extends Component {
   static propTypes = {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
+    showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
     to: PropTypes.string,
     ownedAccounts: PropTypes.array,
@@ -46,7 +47,7 @@ export default class SendContent extends Component {
 
   maybeRenderAddContact () {
     const { t } = this.context
-    const { to, addressBook, ownedAccounts } = this.props
+    const { to, addressBook, ownedAccounts, showAddToAddressBookModal } = this.props
     const isOwnedAccount = !!ownedAccounts.find(({ address }) => address === to)
     const contact = addressBook.find(({ address }) => address === to) || {}
 
@@ -55,7 +56,11 @@ export default class SendContent extends Component {
     }
 
     return (
-      <Dialog type="message" className="send__dialog">
+      <Dialog
+        type="message"
+        className="send__dialog"
+        onClick={showAddToAddressBookModal}
+      >
         {t('newAccountDetectedDialogMessage')}
       </Dialog>
     )

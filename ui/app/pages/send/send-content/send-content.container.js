@@ -5,6 +5,7 @@ import {
   getAddressBook,
   getSendTo,
 } from '../send.selectors'
+import actions from '../../../store/actions'
 
 function mapStateToProps (state) {
   return {
@@ -14,4 +15,12 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps)(SendContent)
+function mapDispatchToProps (dispatch) {
+  return {
+    showAddToAddressBookModal: () => dispatch(actions.showModal({
+      name: 'ADD_TO_ADDRESSBOOK',
+    })),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SendContent)
