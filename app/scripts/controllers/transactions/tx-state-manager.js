@@ -1,11 +1,10 @@
 const extend = require('xtend')
 const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
 const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
-const { getFinalStates } = require('./lib/util')
+const { getFinalStates, normalizeTxParams } = require('./lib/util')
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -180,7 +179,7 @@ class TransactionStateManager extends EventEmitter {
       if (typeof txMeta.txParams.data === 'undefined') {
         delete txMeta.txParams.data
       }
-
+      txMeta.txParams = normalizeTxParams(txMeta.txParams, false)
       this.validateTxParams(txMeta.txParams)
     }
 
@@ -227,7 +226,6 @@ class TransactionStateManager extends EventEmitter {
           break
         default:
           if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
-          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
           break
       }
     })
