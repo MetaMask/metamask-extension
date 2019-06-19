@@ -51,9 +51,10 @@ export default class Home extends PureComponent {
     const {
       history,
       unconfirmedTransactionsCount = 0,
+      onlyUnconfIsThreeBox,
     } = this.props
 
-    if (unconfirmedTransactionsCount > 0) {
+    if (unconfirmedTransactionsCount > 0 && !onlyUnconfIsThreeBox) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }
