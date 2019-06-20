@@ -98,6 +98,12 @@ $sidebar-overlay-z-index: 25;
   overflow: hidden;
 }
 
+%modal {
+  background-color: $white;
+  border-radius: 10px;
+  box-shadow: 0px 5px 16px rgba($black, 0.25);;
+}
+
 /*
   Z Indicies - Current
   app - 11
@@ -126,6 +132,7 @@ $Blue-600: #0260a4;
 $Grey-000: #f2f3f4;
 $Grey-100: #D6D9DC;
 $Grey-200: #bbc0c5;
+$Grey-300: #9fa6ae;
 $Grey-400: #848c96;
 $Grey-500: #6A737D;
 $Grey-600: #535a61;
@@ -139,6 +146,12 @@ $Orange-000: #fef5ef;
 $Orange-500: #F66A0A;
 
 // Font Sizes
+%h3 {
+  font-size: 1.5rem;
+  line-height: 2.125rem;
+  font-weight: 400;
+}
+
 %h4 {
   font-size: 1.125rem;
   line-height: 1.3125rem;
@@ -178,3 +191,11 @@ $xlarge-spacing: 48px;
 $xxlarge-spacing: 64px;
 
 
+%input {
+  background: $white;
+  border: 1px solid $Grey-100;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: .625rem .75rem;
+  font-size: 1.25rem;
+}

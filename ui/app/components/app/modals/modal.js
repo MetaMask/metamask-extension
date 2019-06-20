@@ -181,6 +181,7 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
+      borderRadius: '10px',
     },
     laptopModalStyle: {
       width: '375px',
@@ -191,6 +192,10 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
     },
   },
 
