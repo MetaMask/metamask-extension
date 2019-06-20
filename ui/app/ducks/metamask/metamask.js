@@ -39,6 +39,8 @@ function reduceMetamask (state, action) {
       editingTransactionId: null,
       forceGasMin: null,
       toNickname: '',
+      ensResolution: null,
+      ensResolutionError: '',
     },
     coinOptions: {},
     useBlockie: false,
@@ -288,6 +290,24 @@ function reduceMetamask (state, action) {
           ...metamaskState.send,
           ...action.value,
         },
+      })
+
+    case actions.UPDATE_ENS_RESOLUTION:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ensResolution: action.payload,
+          ensResolutionError: '',
+        },
+      })
+
+    case actions.UPDATE_ENS_RESOLUTION_ERROR:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ensResolution: null,
+          ensResolutionError: action.payload,
+        }
       })
 
     case actions.CLEAR_SEND:

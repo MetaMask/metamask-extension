@@ -38,8 +38,6 @@ export default class AddRecipient extends Component {
   state = {
     isShowingTransfer: false,
     isShowingAllRecent: false,
-    recipientAddress: '',
-    recipientName: '',
   }
 
   selectRecipient = (to, nickname = '') => {
@@ -48,7 +46,7 @@ export default class AddRecipient extends Component {
     updateSendTo(to, nickname)
     updateGas({ to })
   }
-  
+
   //
   // resetRecipient = () => this.setState({
   //   recipientName: '',
