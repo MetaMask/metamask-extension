@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import c from 'classnames'
 import {getCurrentNetwork, getSendTo, getSendToNickname} from '../../send.selectors'
 import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
-import { updateSendTo } from '../../../../store/actions'
+import {
+  updateSendTo,
+  updateEnsResolution,
+  updateEnsResolutionError,
+} from '../../../../store/actions'
 
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard/index')
@@ -30,16 +34,17 @@ class EnsInput extends Component {
     resetRecipient: PropTypes.func,
     onChange: PropTypes.func,
     updateSendTo: PropTypes.func,
+    updateEnsResolution: PropTypes.func,
   }
 
   state = {
     recipient: null,
     input: '',
-    hoverText: undefined,
-    ensResolution: ZERO_ADDRESS,
-    nickname: undefined,
-    loadingEns: false,
-    ensFailure: false,
+    // hoverText: undefined,
+    // ensResolution: ZERO_ADDRESS,
+    // nickname: undefined,
+    // loadingEns: false,
+    // ensFailure: false,
     toError: null,
     toWarning: null,
   }
@@ -60,72 +65,52 @@ class EnsInput extends Component {
   // the user's own accounts, a default of a one-space string is used.
   componentDidUpdate (prevProps, prevState) {
     const {
-      ensResolution,
-      nickname,
-      recipient,
-      toError,
-      toWarning,
+      // ensResolution,
+      // nickname,
+      // recipient,
+      // toError,
+      // toWarning,
+      input,
     } = this.state
     const {
       network,
-      onChange,
+      // onChange,
     } = this.props
 
     if (prevProps.network !== network) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
-      this.onChange(ensResolution)
+      this.onChange({ target: { value: input } })
     }
 
-    if (prevState && ensResolution && onChange && ensResolution !== prevState.ensResolution) {
-      onChange({
-        recipient,
-        toError,
-        toWarning,
-        toAddress: ensResolution,
-        nickname: nickname || ' ',
-      })
-    }
+    // if (prevState && ensResolution && onChange && ensResolution !== prevState.ensResolution) {
+    //   onChange({
+    //     recipient,
+    //     toError,
+    //     toWarning,
+    //     toAddress: ensResolution,
+    //     nickname: nickname || ' ',
+    //   })
+    // }
   }
 
   lookupEnsName = (recipient) => {
-    const { ensResolution } = this.state
+    // const { ensResolution } = this.state
     recipient = recipient.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens.lookup(recipient)
       .then((address) => {
         if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
-        if (address !== ensResolution) {
-          this.setState({
-            // recipient: address,
-            // loadingEns: false,
-            // ensResolution: address,
-            // nickname: recipient,
-            // hoverText: address + '\n' + this.context.t('clickCopy'),
-            // ensFailure: false,
-            // toError: null,
-            // recipient,
-          })
-        }
+        this.props.updateEnsResolution(address)
       })
       .catch((reason) => {
-        const setStateObj = {
-          loadingEns: false,
-          ensResolution: recipient,
-          ensFailure: true,
-          toError: null,
-          recipient: null,
-        }
         if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-          setStateObj.hoverText = this.context.t('ensNameNotFound')
-          setStateObj.toError = 'ensNameNotFound'
+          updateEnsResolutionError(reason.message)
         } else {
           log.error(reason)
-          setStateObj.hoverText = reason.message
+          updateEnsResolutionError(reason.message)
         }
-
-        return this.setState(setStateObj)
       })
   }
 
@@ -135,10 +120,6 @@ class EnsInput extends Component {
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
     this.setState({ input }, () => onChange(input))
-
-
-    // console.log(isValidAddress(input))
-    // console.log(isValidENSAddress(input))
 
     if (isValidAddress(input)) {
       // set icon to valid
@@ -150,7 +131,6 @@ class EnsInput extends Component {
     if (!networkHasEnsSupport) return
 
     if (isValidENSAddress(input)) {
-      console.log('loading ens')
       this.lookupEnsName(input)
       // Show loading
       // scan ENS
@@ -331,6 +311,7 @@ export default connect(
   }),
   dispatch => ({
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
+    updateEnsResolution: (ensResolution) => dispatch(updateEnsResolution(ensResolution)),
   })
 )(EnsInput)
 

@@ -29,15 +29,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)
 
 function mapStateToProps (state) {
   return {
-    hasHexData: Boolean(getSendHexData(state)),
-    inError: sendToIsInError(state),
-    inWarning: sendToIsInWarning(state),
-    network: getCurrentNetwork(state),
-    to: getSendTo(state),
-    toAccounts: getSendToAccounts(state),
-    selectedToken: getSelectedToken(state),
-    toDropdownOpen: getToDropdownOpen(state),
-    tokens: getTokens(state),
+    // hasHexData: Boolean(getSendHexData(state)),
+    // inError: sendToIsInError(state),
+    // inWarning: sendToIsInWarning(state),
+    // network: getCurrentNetwork(state),
+    // to: getSendTo(state),
+    // toAccounts: getSendToAccounts(state),
+    // selectedToken: getSelectedToken(state),
+    // toDropdownOpen: getToDropdownOpen(state),
+    // tokens: getTokens(state),
     ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook: getAddressBook(state),
   }
@@ -45,14 +45,14 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    closeToDropdown: () => dispatch(closeToDropdown()),
-    openToDropdown: () => dispatch(openToDropdown()),
+    // closeToDropdown: () => dispatch(closeToDropdown()),
+    // openToDropdown: () => dispatch(openToDropdown()),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-    updateSendToError: (toErrorObject) => {
-        dispatch(updateSendErrors(toErrorObject))
-    },
-    updateSendToWarning: (toWarningObject) => {
-      dispatch(updateSendWarnings(toWarningObject))
-  },
+    // updateSendToError: (toErrorObject) => {
+    //     dispatch(updateSendErrors(toErrorObject))
+    // },
+    // updateSendToWarning: (toWarningObject) => {
+    //   dispatch(updateSendWarnings(toWarningObject))
+    // },
   }
 }

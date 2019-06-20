@@ -194,6 +194,10 @@ var actions = {
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
+  UPDATE_ENS_RESOLUTION: 'UPDATE_ENS_RESOLUTION',
+  UPDATE_ENS_RESOLUTION_ERROR: 'UPDATE_ENS_RESOLUTION_ERROR',
+  updateEnsResolution,
+  updateEnsResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -1076,6 +1080,20 @@ function updateSend (newSend) {
 function clearSend () {
   return {
     type: actions.CLEAR_SEND,
+  }
+}
+
+function updateEnsResolution (ensResolution) {
+  return {
+    type: actions.UPDATE_ENS_RESOLUTION,
+    payload: ensResolution,
+  }
+}
+
+function updateEnsResolutionError (errorMessage) {
+  return {
+    type: actions.UPDATE_ENS_RESOLUTION_ERROR,
+    payload: errorMessage,
   }
 }
 
