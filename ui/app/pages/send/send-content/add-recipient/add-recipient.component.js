@@ -48,6 +48,7 @@ export default class AddRecipient extends Component {
     updateSendTo(to, nickname)
     updateGas({ to })
   }
+  
   //
   // resetRecipient = () => this.setState({
   //   recipientName: '',
