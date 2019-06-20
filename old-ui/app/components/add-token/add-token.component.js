@@ -20,7 +20,7 @@ const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
 const { POA_CODE, MAINNET_CODE } = require('../../../../app/scripts/controllers/network/enums')
 
-class AddTokenScreen extends Component {
+export default class AddTokenScreen extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
@@ -559,5 +559,3 @@ class AddTokenScreen extends Component {
     return validDecimals
   }
 }
-
-module.exports = AddTokenScreen

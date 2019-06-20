@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AddToken from './add-token.component'
+import AddTokenScreen from './add-token.component'
 
 const { setPendingTokens, clearPendingTokens, displayWarning, goHome, addToken, showConfirmAddTokensPage } = require('../../../../ui/app/actions')
 
@@ -26,4 +26,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddToken)
+export default connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
