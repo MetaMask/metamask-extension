@@ -244,7 +244,6 @@
     "jsdoc": "^3.6.2",
     "jsdom": "^11.2.0",
     "jsdom-global": "^3.0.2",
-    "jshint-stylish": "~2.2.1",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
