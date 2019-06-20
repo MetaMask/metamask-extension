@@ -51,9 +51,9 @@ export default class SendContent extends Component {
     const isOwnedAccount = !!ownedAccounts.find(({ address }) => address === to)
     const contact = addressBook.find(({ address }) => address === to) || {}
 
-    if (isOwnedAccount || contact.name) {
-      return
-    }
+    // if (isOwnedAccount || contact.name) {
+    //   return
+    // }
 
     return (
       <Dialog

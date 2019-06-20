@@ -17,10 +17,19 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showAddToAddressBookModal: () => dispatch(actions.showModal({
+    showAddToAddressBookModal: (recipient) => dispatch(actions.showModal({
       name: 'ADD_TO_ADDRESSBOOK',
+      recipient,
     })),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendContent)
+function mergeProps (stateProps, dispatchProps) {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    showAddToAddressBookModal: () => dispatchProps.showAddToAddressBookModal(stateProps.to),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendContent)

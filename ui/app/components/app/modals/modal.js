@@ -496,7 +496,6 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
-
   const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}
@@ -512,7 +511,6 @@ Modal.prototype.render = function () {
         this.onHide(modal.customOnHideOpts)
       },
       ref: (ref) => {
-        console.log({ ref })
         this.modalRef = ref
       },
       modalStyle,
