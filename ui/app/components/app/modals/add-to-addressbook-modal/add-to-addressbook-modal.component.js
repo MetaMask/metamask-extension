@@ -3,25 +3,32 @@ import PropTypes from 'prop-types'
 import Button from '../../../ui/button/button.component'
 
 export default class AddToAddressBookModal extends Component {
+
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   render () {
+    const { t } = this.context
+
     return (
       <div className="add-to-address-book-modal">
         <div className="add-to-address-book-modal__content">
           <div className="add-to-address-book-modal__content__header">
-            Add to adress book
+            {t('addToAddressBook')}
           </div>
           <div className="add-to-address-book-modal__input-label">
-            Enter an alias
+            {t('enterAnAlias')}
           </div>
           <input
             type="text"
             className="add-to-address-book-modal__input"
-            placeholder="e.g. John D."
+            placeholder={t('addToAddressBookModalPlaceholder')}
           />
         </div>
         <div className="add-to-address-book-modal__footer">
-          <Button type="secondary">Cancel</Button>
-          <Button type="primary">Save</Button>
+          <Button type="secondary">{t('cancel')}</Button>
+          <Button type="primary">{t('save')}</Button>
         </div>
       </div>
     )

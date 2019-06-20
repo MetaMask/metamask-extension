@@ -174,7 +174,6 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
       top: '10%',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
@@ -185,7 +184,6 @@ const MODALS = {
     },
     laptopModalStyle: {
       width: '375px',
-      // top: 'calc(30% + 10px)',
       top: '10%',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',

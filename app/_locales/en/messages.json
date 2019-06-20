@@ -98,6 +98,12 @@
   "addCustomToken": {
     "message": "Add custom token"
   },
+  "addToAddressBook": {
+    "message": "Add to address book"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "e.g. John D."
+  },
   "addToken": {
     "message": "Add Token"
   },
@@ -573,6 +579,9 @@
   },
   "ensNameNotFound": {
     "message": "ENS name not found"
+  },
+  "enterAnAlias": {
+    "message": "Enter an alias"
   },
   "enterPassword": {
     "message": "Enter password"
