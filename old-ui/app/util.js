@@ -390,7 +390,7 @@ function ifRSK (network) {
 function toChecksumAddressRSK (address, chainId = null) {
   const zeroX = '0x'
   const stripAddress = ethUtil.stripHexPrefix(address).toLowerCase()
-  const prefix = chainId != null ? (chainId.toString() + zeroX) : ''
+  const prefix = chainId !== null ? (chainId.toString() + zeroX) : ''
   const keccakHash = ethUtil.sha3(prefix + stripAddress).toString('hex')
   let output = zeroX
 
