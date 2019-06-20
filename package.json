@@ -87,7 +87,6 @@
     "eth-block-tracker": "^4.1.0",
     "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#dc68506221859bc90792bc5e0279a6835f2484d8",
     "eth-ens-namehash": "^2.0.8",
-    "eth-hd-keyring": "^1.2.2",
     "eth-json-rpc-filters": "^3.0.4",
     "eth-json-rpc-infura": "^3.2.0",
     "eth-keyring-controller": "^3.3.1",
