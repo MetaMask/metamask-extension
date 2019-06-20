@@ -98,13 +98,14 @@ class EnsInput extends Component {
         if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
         if (address !== ensResolution) {
           this.setState({
-            loadingEns: false,
-            ensResolution: address,
-            nickname: recipient,
-            hoverText: address + '\n' + this.context.t('clickCopy'),
-            ensFailure: false,
-            toError: null,
-            recipient,
+            // recipient: address,
+            // loadingEns: false,
+            // ensResolution: address,
+            // nickname: recipient,
+            // hoverText: address + '\n' + this.context.t('clickCopy'),
+            // ensFailure: false,
+            // toError: null,
+            // recipient,
           })
         }
       })
@@ -149,6 +150,8 @@ class EnsInput extends Component {
     if (!networkHasEnsSupport) return
 
     if (isValidENSAddress(input)) {
+      console.log('loading ens')
+      this.lookupEnsName(input)
       // Show loading
       // scan ENS
       // If success
