@@ -12,7 +12,7 @@ export default class NetworkForm extends PureComponent {
 
   static propTypes = {
     editRpc: PropTypes.func.isRequired,
-    delRpcTarget: PropTypes.func.isRequired,
+    showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
     rpcUrl: PropTypes.string,
     chainId: PropTypes.string,
     ticker: PropTypes.string,
@@ -131,8 +131,8 @@ export default class NetworkForm extends PureComponent {
   }
 
   onDelete = () => {
-    const { delRpcTarget, rpcUrl, onClear } = this.props
-    delRpcTarget(rpcUrl)
+    const { showConfirmDeleteNetworkModal, rpcUrl, onClear } = this.props
+    showConfirmDeleteNetworkModal(rpcUrl)
     this.resetForm()
     onClear()
   }

@@ -2030,12 +2030,16 @@ function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
 function delRpcTarget (oldRpc) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
-    background.delCustomRpc(oldRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
-      }
-      dispatch(actions.setSelectedToken())
+    return new Promise((resolve, reject) => {
+      background.delCustomRpc(oldRpc, (err) => {
+        if (err) {
+          log.error(err)
+          dispatch(self.displayWarning('Had a problem removing network!'))
+          return reject(err)
+        }
+        dispatch(actions.setSelectedToken())
+        resolve()
+      })
     })
   }
 }
