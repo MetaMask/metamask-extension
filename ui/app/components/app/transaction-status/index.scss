@@ -43,4 +43,10 @@
       border: 1px solid $monzo;
     }
   }
+
+  &__pending-spinner {
+    height: 16px;
+    width: 16px;
+    margin-right: 6px;
+  }
 }
