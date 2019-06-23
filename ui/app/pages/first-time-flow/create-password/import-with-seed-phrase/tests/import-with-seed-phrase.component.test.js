@@ -43,5 +43,15 @@ describe('ImportWithSeedPhrase Component', () => {
 
       assert.deepEqual(parseSeedPhrase('  foo   bar   baz  '), 'foo bar baz')
     })
+
+    it('should return an empty string when given a whitespace-only string', () => {
+      const root = shallowRender({
+        onSubmit: sinon.spy(),
+      })
+
+      const {parseSeedPhrase} = root.instance()
+
+      assert.deepEqual(parseSeedPhrase('   '), '')
+    })
   })
 })
