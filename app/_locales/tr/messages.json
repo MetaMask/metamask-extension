@@ -252,10 +252,6 @@
   "depositBTC": {
     "message": "BTC'inizi aşağıdaki adrese yatırın:"
   },
-  "depositCoin": {
-    "message": "$1'nızı aşağıdaki adrese yatırın",
-    "description": "Kullanıcıya hangi jetonu seçtiyse onu yatırmasını shapeshift ile söyler."
-  },
   "depositEth": {
     "message": "Eth yatır"
   },

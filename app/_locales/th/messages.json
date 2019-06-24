@@ -240,10 +240,6 @@
   "depositBTC": {
     "message": "ฝากบิตคอยน์ของคุณไปที่แอดเดรสด้านล่างนี้:"
   },
-  "depositCoin": {
-    "message": "ฝาก $1 ของคุณไปที่แอดเดรสด้านล่างนี้:",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
-  },
   "depositEth": {
     "message": "การฝากอีเธอร์"
   },

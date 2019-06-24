@@ -2384,10 +2384,6 @@ function reshowQrCode (data, coin) {
 
       dispatch(actions.hideLoadingIndication())
       return dispatch(actions.showQrView(data, message))
-      // return dispatch(actions.showModal({
-      //   name: 'SHAPESHIFT_DEPOSIT_TX',
-      //   Qr: { data, message },
-      // }))
     })
   }
 }

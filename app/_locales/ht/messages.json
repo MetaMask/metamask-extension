@@ -336,10 +336,6 @@
   "depositBTC": {
     "message": "Depoze BTC ou nan adrès ki anba a:"
   },
-  "depositCoin": {
-    "message": "Depoze $1 ou nan adrès ki anba a",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
-  },
   "depositEth": {
     "message": "Depo Eth"
   },

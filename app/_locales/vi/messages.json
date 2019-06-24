@@ -201,10 +201,6 @@
   "depositBTC": {
     "message": "Ký gửi BTC đến địa chỉ sau:"
   },
-  "depositCoin": {
-    "description": "Báo cho người dùng biết đồng tiền nào họ đã chọn để ký gửi với ShapeShift",
-    "message": "Ký gửi $1 đến địa chỉ sau:"
-  },
   "depositEth": {
     "message": "Ký gửi Eth"
   },

@@ -408,10 +408,6 @@
   "depositBTC": {
     "message": "Vplačajte vaš BTC na spodnji naslov:"
   },
-  "depositCoin": {
-    "message": "Vplačajte vaš $1 na spodnji naslov",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
-  },
   "depositEth": {
     "message": "Vplačilo ETH"
   },

@@ -201,10 +201,6 @@
   "depositBTC": {
     "message": "I-deposito ang iyong BTC sa address na ito:"
   },
-  "depositCoin": {
-    "message": "I-deposito ang iyong $1 sa address na ito",
-    "description": "Sinasabihan ang user kung ano ang coin na kanilang pinili para I-deposito gamit ang shapeshift"
-  },
   "depositEth": {
     "message": "I-deposito ang Eth"
   },

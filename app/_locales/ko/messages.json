@@ -402,10 +402,6 @@
   "depositBTC": {
     "message": "다음 주소로 BTC를 입금해주세요."
   },
-  "depositCoin": {
-    "message": "다음 주소로 $1 만큼 입금해주세요.",
-    "description": "사용자에게 shapeshift에서 어떤 코인을 선택해 입금했는지 알려줍니다"
-  },
   "depositEth": {
     "message": "이더 입금하기"
   },
