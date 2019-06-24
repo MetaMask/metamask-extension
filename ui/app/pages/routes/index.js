@@ -102,9 +102,11 @@ class Routes extends Component {
     const {
       threeBoxApprovalRequest,
       showApprovalForThreeBox,
+      completedOnboarding,
     } = this.props
 
-    if (!prevProps.threeBoxApprovalRequest && threeBoxApprovalRequest) {
+    if (!(prevProps.threeBoxApprovalRequest && prevProps.completedOnboarding) &&
+      (threeBoxApprovalRequest && completedOnboarding)) {
       showApprovalForThreeBox(threeBoxApprovalRequest.id)
     }
   }
@@ -372,6 +374,7 @@ Routes.propTypes = {
   autoLogoutTimeLimit: PropTypes.number,
   threeBoxApprovalRequest: PropTypes.object,
   showApprovalForThreeBox: PropTypes.func,
+  completedOnboarding: PropTypes.bool,
 }
 
 function mapStateToProps (state) {
@@ -400,6 +403,7 @@ function mapStateToProps (state) {
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
     providerRequests,
+    completedOnboarding,
   } = metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -446,6 +450,8 @@ function mapStateToProps (state) {
     selected,
     keyrings,
     providerRequests,
+
+    completedOnboarding,
   }
 }
 

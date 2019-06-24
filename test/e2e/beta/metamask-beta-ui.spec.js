@@ -219,6 +219,16 @@ describe('MetaMask', function () {
     })
   })
 
+  describe('Threebox modal', () => {
+    it('asks for permission to sync with threebox', async () => {
+      await driver.findElement(By.css('.modal-container'))
+      const modalButtons = await driver.findElements(By.css('.modal-container__footer-button'))
+      const closeButton = modalButtons[0]
+      await closeButton.click()
+      await delay(regularDelayMs)
+    })
+  })
+
   describe('Show account information', () => {
     it('shows the QR code for the account', async () => {
       await driver.findElement(By.css('.wallet-view__details-button')).click()
@@ -307,6 +317,16 @@ describe('MetaMask', function () {
       await passwordInputs[1].sendKeys('correct horse battery staple')
       await driver.findElement(By.css('.first-time-flow__button')).click()
       await delay(regularDelayMs)
+    })
+
+    describe('Threebox modal', () => {
+      it('asks for permission to sync with threebox', async () => {
+        await driver.findElement(By.css('.modal-container'))
+        const modalButtons = await driver.findElements(By.css('.modal-container__footer-button'))
+        const closeButton = modalButtons[0]
+        await closeButton.click()
+        await delay(regularDelayMs)
+      })
     })
 
     it('balance renders', async () => {
