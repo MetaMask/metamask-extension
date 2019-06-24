@@ -3,7 +3,7 @@ const Box = require('3box')
 
 class ThreeBoxController {
   constructor (opts = {}) {
-    const { preferencesController, keyringController, restoreFrom3Box, provider } = opts
+    const { preferencesController, keyringController, provider } = opts
 
     this.preferencesController = preferencesController
     this.keyringController = keyringController
@@ -47,7 +47,7 @@ class ThreeBoxController {
     } catch (e) {
       console.error(e)
     }
-    this.box.onSyncDone(() => {
+    this.box && this.box.onSyncDone(() => {
       this._restoreFrom3Box()
       this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
     })
