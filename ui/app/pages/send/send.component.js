@@ -49,6 +49,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   state = {
@@ -235,21 +236,19 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   renderInput () {
-    const { to, toNickname } = this.props
-
     return (
       <EnsInput
         className="send__to-row"
-        // scanQrCode={_ => {
-        //   this.context.metricsEvent({
-        //     eventOpts: {
-        //       category: 'Transactions',
-        //       action: 'Edit Screen',
-        //       name: 'Used QR scanner',
-        //     },
-        //   })
-        //   this.props.scanQrCode()
-        // }}
+        scanQrCode={_ => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Transactions',
+              action: 'Edit Screen',
+              name: 'Used QR scanner',
+            },
+          })
+          this.props.scanQrCode()
+        }}
         onChange={this.onRecipientInputChange}
         // resetRecipient={this.resetRecipient}
         // selectedAddress={to}
