@@ -55,6 +55,11 @@ describe('Actions', () => {
       initState: clone(firstTimeState),
     })
 
+    metamaskController.threeBoxController = {
+      new3Box: sinon.spy(),
+      getThreeBoxAddress: sinon.spy(),
+    }
+
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
     await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
@@ -753,7 +758,7 @@ describe('Actions', () => {
       signPersonalMessageSpy.restore()
     })
 
-    it('', () => {
+    it('calls the background signPersonalMessage method once', () => {
       const store = mockStore()
 
       signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
@@ -765,7 +770,7 @@ describe('Actions', () => {
 
     })
 
-    it('', () => {
+    it('dispatches loading indication, state update and display warning messages', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
