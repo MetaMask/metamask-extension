@@ -4,6 +4,7 @@ import EnsInput from './ens-input'
 import Fuse from 'fuse.js'
 import { getToErrorObject, getToWarningObject } from './add-recipient.js'
 import Identicon from '../../../../components/ui/identicon'
+import {isValidAddress} from "../../../../helpers/utils/util";
 
 export default class AddRecipient extends Component {
 
@@ -68,16 +69,16 @@ export default class AddRecipient extends Component {
   // }
 
   render () {
-    const { ensResolution } = this.props
+    const { ensResolution, query } = this.props
     const { isShowingTransfer } = this.state
 
     let content
 
-    if (ensResolution) {
-      content = this.renderEnsResolution()
-    }
-
-    if (isShowingTransfer) {
+    if (isValidAddress(query)) {
+      content = this.renderExplicitAddress(query)
+    } else if (ensResolution) {
+      content = this.renderExplicitAddress(ensResolution, query)
+    } else if (isShowingTransfer) {
       content = this.renderTransfer()
     }
 
@@ -88,23 +89,25 @@ export default class AddRecipient extends Component {
     )
   }
 
-  renderEnsResolution () {
-    const { ensResolution, query } = this.props
-
+  renderExplicitAddress (address, name) {
     return (
       <div
-        key={ensResolution}
+        key={address}
         className="send__select-recipient-wrapper__group-item"
-        onClick={() => this.selectRecipient(ensResolution, query)}
+        onClick={() => this.selectRecipient(address, name)}
       >
-        <Identicon address={ensResolution} diameter={28} />
+        <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
-            {query}
+            {name || ellipsify(address)}
           </div>
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
-            {ellipsify(ensResolution)}
-          </div>
+          {
+            name && (
+              <div className="send__select-recipient-wrapper__group-item__subtitle">
+                {ellipsify(address)}
+              </div>
+            )
+          }
         </div>
       </div>
     )

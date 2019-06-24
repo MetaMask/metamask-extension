@@ -34,6 +34,7 @@ class EnsInput extends Component {
     onChange: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
+    scanQrCode: PropTypes.func,
   }
 
   state = {
@@ -154,7 +155,7 @@ class EnsInput extends Component {
               if (input) {
                 this.resetInput()
               } else {
-                console.log('Scan QR!')
+                this.props.scanQrCode()
               }
             }}
           />
@@ -165,7 +166,7 @@ class EnsInput extends Component {
 
   renderSelected () {
     const { t } = this.context
-    const { className, onChange, selectedAddress, selectedName, updateSendTo } = this.props
+    const { className, selectedAddress, selectedName } = this.props
 
     return (
       <div className={c('ens-input', className)}>
@@ -181,15 +182,7 @@ class EnsInput extends Component {
             <div className="ens-input__selected-input__title">
               {selectedName || selectedAddress}
             </div>
-            {
-              selectedName && (
-                <div
-                  className="ens-input__selected-input__subtitle"
-                >
-                  {selectedAddress}
-                </div>
-              )
-            }
+            { selectedName && <div className="ens-input__selected-input__subtitle">{selectedAddress}</div> }
           </div>
           <div
             className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
