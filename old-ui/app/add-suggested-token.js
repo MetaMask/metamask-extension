@@ -6,7 +6,7 @@ const actions = require('../../ui/app/actions')
 const Tooltip = require('./components/tooltip.js')
 const ethUtil = require('ethereumjs-util')
 const Copyable = require('./components/copy/copyable')
-const addressSummary = require('./util').addressSummary
+const { addressSummary, toChecksumAddress, isValidAddress } = require('./util')
 
 
 module.exports = connect(mapStateToProps)(AddSuggestedTokenScreen)
@@ -27,11 +27,10 @@ function AddSuggestedTokenScreen () {
 }
 
 AddSuggestedTokenScreen.prototype.render = function () {
-  const state = this.state
-  const props = this.props
-  const { warning } = state
-  const key = Object.keys(props.suggestedTokens)[0]
-  const { address, symbol, decimals } = props.suggestedTokens[key]
+  const { warning } = this.state
+  const { network, suggestedTokens, dispatch } = this.props
+  const key = Object.keys(suggestedTokens)[0]
+  const { address, symbol, decimals } = suggestedTokens[key]
 
   return (
     h('.flex-column.flex-grow', [
@@ -77,7 +76,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
             style: { display: 'flex' },
           }, [
             h(Copyable, {
-            value: ethUtil.toChecksumAddress(address),
+            value: toChecksumAddress(network, address),
             }, [
               h('span#token-address', {
                 style: {
@@ -87,7 +86,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
                   margin: '8px',
                   display: 'flex',
                 },
-              }, addressSummary(address, 24, 4, false)),
+              }, addressSummary(network, address, 24, 4, false)),
             ]),
           ]),
 
@@ -132,7 +131,7 @@ AddSuggestedTokenScreen.prototype.render = function () {
               margin: '8px',
             },
             onClick: (event) => {
-              this.props.dispatch(actions.removeSuggestedTokens())
+              dispatch(actions.removeSuggestedTokens())
             },
           }, 'Cancel'),
 
@@ -145,9 +144,9 @@ AddSuggestedTokenScreen.prototype.render = function () {
               const valid = this.validateInputs({ address, symbol, decimals })
               if (!valid) return
 
-              this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
+              dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
                 .then(() => {
-                  this.props.dispatch(actions.removeSuggestedTokens())
+                  dispatch(actions.removeSuggestedTokens())
                 })
             },
           }, 'Add'),
@@ -162,12 +161,13 @@ AddSuggestedTokenScreen.prototype.componentWillMount = function () {
 }
 
 AddSuggestedTokenScreen.prototype.validateInputs = function (opts) {
+  const { network, identities } = this.props
   let msg = ''
-  const identitiesList = Object.keys(this.props.identities)
+  const identitiesList = Object.keys(identities)
   const { address, symbol, decimals } = opts
   const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
 
-  const validAddress = ethUtil.isValidAddress(address)
+  const validAddress = isValidAddress(address, network)
   if (!validAddress) {
     msg += 'Address is invalid.'
   }

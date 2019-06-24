@@ -117,38 +117,41 @@ class Functions {
       case NETWORKS.DAI:
         counter = 1
         break
-      case NETWORKS.SOKOL:
+      case NETWORKS.MAINNET:
         counter = 2
         break
-      case NETWORKS.MAINNET:
+      case NETWORKS.CLASSIC:
         counter = 3
         break
-      case NETWORKS.CLASSIC:
+      case NETWORKS.RSK:
         counter = 4
         break
-      case NETWORKS.ROPSTEN:
+      case NETWORKS.GOERLI:
         counter = 5
         break
       case NETWORKS.KOVAN:
         counter = 6
         break
-      case NETWORKS.RINKEBY:
+      case NETWORKS.SOKOL:
         counter = 7
         break
-      case NETWORKS.GOERLI:
+      case NETWORKS.RINKEBY:
         counter = 8
         break
-      case NETWORKS.RSK:
+      case NETWORKS.ROPSTEN:
         counter = 9
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RSK_TESTNET:
         counter = 10
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 11
         break
+      case NETWORKS.CUSTOM:
+        counter = 12
+        break
       default:
-        counter = 10
+        counter = 11
     }
     await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
@@ -659,7 +662,7 @@ class Functions {
     return contractInstance.address
   }
 
-  async executeTransferMethod (executor, address) {
+  async executeTransferMethod (f, executor, address) {
     try {
       const buttonExecute = await this.waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
       assert.notEqual(buttonExecute, false, "button doesn't displayed")
@@ -686,11 +689,15 @@ class Functions {
       // Select executor
       await this.waitUntilShowUp(screens.chooseContractExecutor.account)
       const accounts = await this.driver.findElements(screens.chooseContractExecutor.account)
-      const account = accounts[executor + 1]
-      await account.click()
-      // Open confirm transaction
-      const button = await this.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
-      await button.click()
+      if (accounts.length > executor + 1) {
+        const account = accounts[executor + 1]
+        await account.click()
+        await f.delay(1000)
+        // Open confirm transaction
+        const button = await this.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        await button.click()
+        await f.delay(1000)
+      }
       return true
     } catch (err) {
       return false

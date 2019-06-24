@@ -26,7 +26,7 @@ AccountPanel.prototype.render = function () {
     attributes: [
       {
         key: 'Address',
-        value: addressSummary(identity.address),
+        value: addressSummary(state.network, identity.address),
       },
       balanceOrFaucetingIndication(account, isFauceting, state.network),
     ],

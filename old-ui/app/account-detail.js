@@ -4,12 +4,11 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const { getCurrentKeyring, ifContractAcc, valuesFor } = require('./util')
+const { getCurrentKeyring, ifContractAcc, valuesFor, toChecksumAddress } = require('./util')
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
-const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
@@ -50,11 +49,11 @@ function AccountDetailScreen () {
 
 AccountDetailScreen.prototype.render = function () {
   var props = this.props
+  const { network, conversionRate, currentCurrency } = props
   var selected = props.address || Object.keys(props.accounts)[0]
-  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
+  var checksumAddress = selected && toChecksumAddress(network, selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
-  const { network, conversionRate, currentCurrency } = props
 
   if (Object.keys(props.suggestedTokens).length > 0) {
     this.props.dispatch(actions.showAddSuggestedTokenPage())

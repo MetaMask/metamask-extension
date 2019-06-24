@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import actions from '../../../../ui/app/actions'
 import { connect } from 'react-redux'
 import { Dropdown, DropdownMenuItem } from '../dropdown'
-import ethUtil from 'ethereumjs-util'
 import copyToClipboard from 'copy-to-clipboard'
 import ethNetProps from 'eth-net-props'
-import { getCurrentKeyring, ifContractAcc, ifHardwareAcc, getAllKeyRingsAccounts } from '../../util'
+import { getCurrentKeyring, ifContractAcc, ifHardwareAcc, getAllKeyRingsAccounts, toChecksumAddress } from '../../util'
 import { importTypes } from '../../accounts/import/enums'
 import { getFullABI } from '../../accounts/import/helpers'
 import log from 'loglevel'
@@ -217,8 +216,8 @@ class AccountDropdowns extends Component {
   }
 
   copyAddress = () => {
-    const { selected } = this.props
-    const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
+    const { selected, network } = this.props
+    const checkSumAddress = selected && toChecksumAddress(network, selected)
     copyToClipboard(checkSumAddress)
   }
 

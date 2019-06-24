@@ -15,7 +15,8 @@ const {
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_TESTNET_CODE,
-  RSK_CODE} = require('../controllers/network/enums')
+  RSK_CODE,
+  RSK_TESTNET_CODE} = require('../controllers/network/enums')
 
 /**
  * Gives the caller a url at which the user can acquire coin, depending on the network they are in
@@ -43,6 +44,7 @@ function getBuyEthUrl ({ network, amount, address, ind }) {
     case RINKEBY_CODE:
     case KOVAN_CODE:
     case POA_SOKOL_CODE:
+    case RSK_TESTNET_CODE:
     case GOERLI_TESTNET_CODE:
       url = getFaucets(network)[ind]
       break

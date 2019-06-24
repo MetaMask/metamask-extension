@@ -26,12 +26,14 @@ const {
   GOERLI_TESTNET,
   CLASSIC,
   RSK,
+  RSK_TESTNET,
   POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
+  RSK_TESTNET_CODE,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
@@ -130,7 +132,8 @@ module.exports = class NetworkController extends EventEmitter {
       type === DAI ||
       type === GOERLI_TESTNET ||
       type === CLASSIC ||
-      type === RSK
+      type === RSK ||
+      type === RSK_TESTNET
       , `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type }
     this.providerConfig = providerConfig
@@ -178,6 +181,8 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(CLASSIC_CODE)[0] })
     } else if (type === RSK) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(RSK_CODE)[0] })
+    } else if (type === RSK_TESTNET) {
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(RSK_TESTNET_CODE)[0] })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints

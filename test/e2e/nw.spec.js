@@ -13,8 +13,9 @@ const deleteImportedAccount = require(`${testsFolder}/delete-imported-account.sp
 const signData = require(`${testsFolder}/sign-data.spec`)
 const exportPrivateKey = require(`${testsFolder}/export-private-key.spec`)
 const importGanacheSeedPhrase = require(`${testsFolder}/import-ganache-seed-phrase.spec`)
+const RSKNetworkTests = require(`${testsFolder}/RSK-network-tests.js`)
 const checkEmittedEvents = require(`${testsFolder}/check-emitted-events.spec`)
-const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
+// const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
 const changePassword = require(`${testsFolder}/change-password.spec`)
 const addTokeFromSearch = require(`${testsFolder}/add-token-search.spec`)
 const customRPC = require(`${testsFolder}/custom-rpc.spec`)
@@ -115,13 +116,17 @@ describe('Metamask popup page', async function () {
     await importGanacheSeedPhrase(f, account2, password)
   })
 
+  describe('RSK network tests', async () => {
+    await RSKNetworkTests(f, account1)
+  })
+
   describe('Check the filter of emitted events', async () => {
     await checkEmittedEvents(f, account1, account2)
   })
 
-  describe('Add Token: Custom', async () => {
-    await addCustomToken(f, account1, account2)
-  })
+  // describe('Add Token: Custom', async () => {
+  //   await addCustomToken(f, account1, account2)
+  // })
 
   describe('Change password', async () => {
     await changePassword(f, password, newPassword)
