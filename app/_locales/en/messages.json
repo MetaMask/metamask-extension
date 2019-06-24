@@ -237,8 +237,14 @@
   "bytes": {
     "message": "Bytes"
   },
+  "off": {
+    "message": "Off"
+  },
   "ok": {
     "message": "Ok"
+  },
+  "on": {
+    "message": "On"
   },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"

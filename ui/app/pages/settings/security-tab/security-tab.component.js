@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { exportAsFile } from '../../../helpers/utils/util'
-import ToggleButton from 'react-toggle-button'
+import ToggleButton from '../../../components/ui/toggle-button'
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
 import Button from '../../../components/ui/button'
 
@@ -140,8 +140,8 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={privacyMode}
               onToggle={value => setPrivacyMode(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
@@ -166,8 +166,8 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={participateInMetaMetrics}
               onToggle={value => setParticipateInMetaMetrics(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
 import { exportAsFile } from '../../../helpers/utils/util'
-import ToggleButton from 'react-toggle-button'
+import ToggleButton from '../../../components/ui/toggle-button'
 import TextField from '../../../components/ui/text-field'
 import Button from '../../../components/ui/button'
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
@@ -293,8 +293,8 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={sendHexData}
               onToggle={value => setHexDataFeatureFlag(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
@@ -319,8 +319,8 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={advancedInlineGas}
               onToggle={value => setAdvancedInlineGasFeatureFlag(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
@@ -348,8 +348,8 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={showFiatInTestnets}
               onToggle={value => setShowFiatConversionOnTestnetsPreference(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
