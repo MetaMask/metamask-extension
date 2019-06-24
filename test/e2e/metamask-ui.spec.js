@@ -463,13 +463,13 @@ describe('MetaMask', function () {
       await advancedTab.click()
       await delay(regularDelayMs)
 
-      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(7) .settings-page__content-item-col > div'))
+      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(6) .settings-page__content-item-col > div > div'))
       await showConversionToggle.click()
 
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
-      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(5) .settings-page__content-item-col > div'))
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(4) .settings-page__content-item-col > div > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
