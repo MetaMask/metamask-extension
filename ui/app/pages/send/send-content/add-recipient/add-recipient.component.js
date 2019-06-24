@@ -28,6 +28,8 @@ export default class AddRecipient extends Component {
     // updateSendToError: PropTypes.func,
     // updateSendToWarning: PropTypes.func,
     // scanQrCode: PropTypes.func,
+    ensResolution: PropTypes.string,
+    ensResolutionError: PropTypes.string,
   }
 
   static contextTypes = {
@@ -66,11 +68,44 @@ export default class AddRecipient extends Component {
   // }
 
   render () {
+    const { ensResolution } = this.props
     const { isShowingTransfer } = this.state
+
+    let content
+
+    if (ensResolution) {
+      content = this.renderEnsResolution()
+    }
+
+    if (isShowingTransfer) {
+      content = this.renderTransfer()
+    }
 
     return (
       <div className="send__select-recipient-wrapper">
-        { isShowingTransfer ? this.renderTransfer() : this.renderMain() }
+        { content || this.renderMain() }
+      </div>
+    )
+  }
+
+  renderEnsResolution () {
+    const { ensResolution, query } = this.props
+
+    return (
+      <div
+        key={ensResolution}
+        className="send__select-recipient-wrapper__group-item"
+        onClick={() => this.selectRecipient(ensResolution, query)}
+      >
+        <Identicon address={ensResolution} diameter={28} />
+        <div className="send__select-recipient-wrapper__group-item__content">
+          <div className="send__select-recipient-wrapper__group-item__title">
+            {query}
+          </div>
+          <div className="send__select-recipient-wrapper__group-item__subtitle">
+            {ellipsify(ensResolution)}
+          </div>
+        </div>
       </div>
     )
   }

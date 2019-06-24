@@ -15,6 +15,10 @@ import {
     sendToIsInWarning,
 } from './add-recipient.selectors.js'
 import {
+  getSendEnsResolution,
+  getSendEnsResolutionError,
+} from '../../../send/send.selectors';
+import {
     updateSendTo,
 } from '../../../../store/actions'
 import {
@@ -40,6 +44,8 @@ function mapStateToProps (state) {
     // tokens: getTokens(state),
     ownedAccounts: accountsWithSendEtherInfoSelector(state),
     addressBook: getAddressBook(state),
+    ensResolution: getSendEnsResolution(state),
+    ensResolutionError: getSendEnsResolutionError(state),
   }
 }
 

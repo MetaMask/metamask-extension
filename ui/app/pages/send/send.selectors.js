@@ -43,6 +43,8 @@ const selectors = {
   getSendHexData,
   getSendHexDataFeatureFlagState,
   getSendEditingTransactionId,
+  getSendEnsResolution,
+  getSendEnsResolutionError,
   getSendErrors,
   getSendFrom,
   getSendFromBalance,
@@ -253,6 +255,14 @@ function getSendWarnings (state) {
 
 function getTokenBalance (state) {
   return state.metamask.send.tokenBalance
+}
+
+function getSendEnsResolution (state) {
+  return state.metamask.send.ensResolution
+}
+
+function getSendEnsResolutionError (state) {
+  return state.metamask.send.ensResolutionError
 }
 
 function getTokenExchangeRate (state, tokenSymbol) {

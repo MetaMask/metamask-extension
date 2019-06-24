@@ -161,7 +161,7 @@ class EnsInput extends Component {
 
   render () {
     const { t } = this.context
-    const { className, onChange, selectedAddress, updateSendTo } = this.props
+    const { className, onChange, selectedAddress, updateSendTo, updateEnsResolution } = this.props
     const { input } = this.state
 
     if (selectedAddress) {
@@ -194,6 +194,7 @@ class EnsInput extends Component {
                 this.setState({ input: '' }, () => {
                   onChange('')
                   updateSendTo('', '')
+                  updateEnsResolution('')
                 })
               } else {
                 console.log('Scan QR!')
