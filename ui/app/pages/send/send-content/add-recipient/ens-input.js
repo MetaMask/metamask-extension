@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
-import {getCurrentNetwork, getSendTo, getSendToNickname} from '../../send.selectors'
+import {getAddressBook, getCurrentNetwork, getSendTo, getSendToNickname} from '../../send.selectors'
 import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
 import {
   updateSendTo,
@@ -30,11 +30,11 @@ class EnsInput extends Component {
     network: PropTypes.string,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
-    resetRecipient: PropTypes.func,
     onChange: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
+    addressBook: PropTypes.array,
   }
 
   state = {
@@ -64,7 +64,6 @@ class EnsInput extends Component {
     } = this.state
     const {
       network,
-      // onChange,
     } = this.props
 
     if (prevProps.network !== network) {
@@ -107,14 +106,8 @@ class EnsInput extends Component {
 
     this.setState({ input }, () => onChange(input))
 
-    if (isValidAddress(input)) {
-      // set icon to valid
-      // advance to next step
-      return
-    }
-
     // maybe scan ENS
-    if (!networkHasEnsSupport) return
+    if (isValidAddress(input) || !networkHasEnsSupport) return
 
     if (isValidENSAddress(input)) {
       this.lookupEnsName(input)
@@ -166,7 +159,10 @@ class EnsInput extends Component {
 
   renderSelected () {
     const { t } = this.context
-    const { className, selectedAddress, selectedName } = this.props
+    const { className, selectedAddress, selectedName, addressBook } = this.props
+    const contact = addressBook.filter(item => item.address === selectedAddress)[0] || {}
+    const name = contact.name || selectedName
+
 
     return (
       <div className={c('ens-input', className)}>
@@ -180,9 +176,9 @@ class EnsInput extends Component {
             onChange={this.onChange}
           >
             <div className="ens-input__selected-input__title">
-              {selectedName || selectedAddress}
+              {name || selectedAddress}
             </div>
-            { selectedName && <div className="ens-input__selected-input__subtitle">{selectedAddress}</div> }
+            { name && <div className="ens-input__selected-input__subtitle">{selectedAddress}</div> }
           </div>
           <div
             className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
@@ -254,6 +250,7 @@ export default connect(
     network: getCurrentNetwork(state),
     selectedAddress: getSendTo(state),
     selectedName: getSendToNickname(state),
+    addressBook: getAddressBook(state),
   }),
   dispatch => ({
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
