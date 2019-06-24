@@ -37,7 +37,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "mozilla-lint": "addons-linter dist/firefox",
-    "watch": "mocha watch --recursive \"test/unit/**/*.js\"",
+    "watch": "cross-env METAMASK_ENV=test mocha --watch --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "disc": "gulp disc --debug",
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
