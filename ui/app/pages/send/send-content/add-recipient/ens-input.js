@@ -18,7 +18,6 @@ const log = require('loglevel')
 
 
 // Local Constants
-const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 class EnsInput extends Component {
@@ -40,11 +39,6 @@ class EnsInput extends Component {
   state = {
     recipient: null,
     input: '',
-    // hoverText: undefined,
-    // ensResolution: ZERO_ADDRESS,
-    // nickname: undefined,
-    // loadingEns: false,
-    // ensFailure: false,
     toError: null,
     toWarning: null,
   }
@@ -63,13 +57,8 @@ class EnsInput extends Component {
 
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate (prevProps) {
     const {
-      // ensResolution,
-      // nickname,
-      // recipient,
-      // toError,
-      // toWarning,
       input,
     } = this.state
     const {
@@ -82,20 +71,16 @@ class EnsInput extends Component {
       this.ens = new ENS({ provider, network })
       this.onChange({ target: { value: input } })
     }
+  }
 
-    // if (prevState && ensResolution && onChange && ensResolution !== prevState.ensResolution) {
-    //   onChange({
-    //     recipient,
-    //     toError,
-    //     toWarning,
-    //     toAddress: ensResolution,
-    //     nickname: nickname || ' ',
-    //   })
-    // }
+  resetInput = () => {
+    const { updateSendTo, updateEnsResolution } = this.props
+    this.onChange({ target: { value: '' } })
+    updateSendTo('', '')
+    updateEnsResolution('')
   }
 
   lookupEnsName = (recipient) => {
-    // const { ensResolution } = this.state
     recipient = recipient.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
@@ -132,36 +117,12 @@ class EnsInput extends Component {
 
     if (isValidENSAddress(input)) {
       this.lookupEnsName(input)
-      // Show loading
-      // scan ENS
-      // If success
-      //    stop loading
-      //    show ENS name as clickable item
-      // If error
-      //    stop loading
-      //    show error message
-    } else {
-      // do nothing
-      // return this.setState({
-      //   loadingEns: false,
-      //   ensResolution: null,
-      //   ensFailure: null,
-      //   toError: null,
-      //   recipient,
-      // })
     }
-
-    // this.setState({
-    //   loadingEns: true,
-    //   recipient,
-    // })
-    //
-    // this.checkName(recipient)
   }
 
   render () {
     const { t } = this.context
-    const { className, onChange, selectedAddress, updateSendTo, updateEnsResolution } = this.props
+    const { className, selectedAddress } = this.props
     const { input } = this.state
 
     if (selectedAddress) {
@@ -191,11 +152,7 @@ class EnsInput extends Component {
             })}
             onClick={() => {
               if (input) {
-                this.setState({ input: '' }, () => {
-                  onChange('')
-                  updateSendTo('', '')
-                  updateEnsResolution('')
-                })
+                this.resetInput()
               } else {
                 console.log('Scan QR!')
               }
@@ -236,12 +193,7 @@ class EnsInput extends Component {
           </div>
           <div
             className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
-            onClick={() => {
-              this.setState({ input: '' }, () => {
-                onChange('')
-                updateSendTo('', '')
-              })
-            }}
+            onClick={this.resetInput}
           />
         </div>
       </div>
@@ -318,8 +270,4 @@ export default connect(
 
 function getNetworkEnsSupport (network) {
   return Boolean(networkMap[network])
-}
-
-function ellipsify (text, first = 6, last = 4) {
-  return `${text.slice(0, first)}...${text.slice(-last)}`
 }
