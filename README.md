@@ -18,7 +18,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Install dependencies: `npm ci`
     - If you have issues with node-sass compilation, try `npm rebuild node-sass`
 - Build the project to the `./dist/` folder with `npm run dist`.
-- Optionally, to rebuild on file changes, run `npm start`.
+- Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
