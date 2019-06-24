@@ -15,14 +15,12 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
     - If you install Node.js manually, ensure you're using npm@6
         - Install npm@6 using `npm install -g npm@6`
-- Install dependencies: `npm install`
+- Install dependencies: `npm ci`
     - If you have issues with node-sass compilation, try `npm rebuild node-sass`
-- Install gulp globally with `npm install -g gulp-cli`.
-- Build the project to the `./dist/` folder with `gulp build`.
-- Optionally, to rebuild on file changes, run `gulp dev`.
-- To package .zip files for distribution, run `gulp zip`, or run the full build & zip with `gulp dist`.
+- Build the project to the `./dist/` folder with `npm run dist`.
+- Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
 
- Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
 ## Contributing
 
