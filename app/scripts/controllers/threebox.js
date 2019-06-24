@@ -12,6 +12,7 @@ class ThreeBoxController {
     const initState = {
       syncDone3Box: false,
       threeBoxAddress: null,
+      preferNoSync: null,
       ...opts.initState,
     }
     this.store = new ObservableStore(initState)
@@ -31,7 +32,11 @@ class ThreeBoxController {
     await this.box.private.set(type, JSON.stringify(newState))
   }
 
-  async new3Box (address) {
+  async new3Box (address, forceNewThreeBoxApproval) {
+    if (!forceNewThreeBoxApproval && this.store.getState().preferNoSync) {
+      return
+    }
+
     this.store.updateState({ syncDone3Box: false })
     this.address = address
 
@@ -44,13 +49,17 @@ class ThreeBoxController {
           return this.provider.sendAsync(req, cb)
         },
       })
+      this.box && this.box.onSyncDone(() => {
+        this._restoreFrom3Box()
+        this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
+      })
     } catch (e) {
-      console.error(e)
+      if (e.message.match(/User denied message signature/)) {
+        this.store.updateState({ preferNoSync: true })
+      } else {
+        console.error(e)
+      }
     }
-    this.box && this.box.onSyncDone(() => {
-      this._restoreFrom3Box()
-      this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
-    })
   }
 
   async _restoreFrom3Box () {

@@ -157,6 +157,16 @@ describe('MetaMask', function () {
     })
   })
 
+  describe('Threebox modal', () => {
+    it('asks for permission to sync with threebox', async () => {
+      await driver.findElement(By.css('.modal-container'))
+      const modalButtons = await driver.findElements(By.css('.modal-container__footer-button'))
+      const closeButton = modalButtons[0]
+      await closeButton.click()
+      await delay(regularDelayMs)
+    })
+  })
+
   describe('Show account information', () => {
     it('show account details dropdown menu', async () => {
       await driver.findElement(By.css('div.menu-bar__open-in-browser')).click()

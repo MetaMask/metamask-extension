@@ -21,9 +21,9 @@ export default class ThreeBoxApprovalModal extends Component {
     hideModal()
   }
 
-  handleCancel = (event) => {
-    const { cancelPersonalMessage, hideModal } = this.props
-    cancelPersonalMessage(event)
+  handleCancel = () => {
+    const { cancelPersonalMessage, hideModal, txData } = this.props
+    cancelPersonalMessage(txData)
     hideModal()
   }
 
