@@ -55,6 +55,11 @@ describe('Actions', () => {
       initState: clone(firstTimeState),
     })
 
+    metamaskController.threeBoxController = {
+      new3Box: sinon.spy(),
+      getThreeBoxAddress: sinon.spy(),
+    }
+
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
     await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
