@@ -1,34 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import EnsInput from './ens-input'
 import Fuse from 'fuse.js'
-import { getToErrorObject, getToWarningObject } from './add-recipient.js'
 import Identicon from '../../../../components/ui/identicon'
-import {isValidAddress} from "../../../../helpers/utils/util";
+import {isValidAddress} from '../../../../helpers/utils/util'
 
 export default class AddRecipient extends Component {
 
   static propTypes = {
-    // closeToDropdown: PropTypes.func,
-    // hasHexData: PropTypes.bool.isRequired,
-    // inError: PropTypes.bool,
-    // inWarning: PropTypes.bool,
     className: PropTypes.string,
     query: PropTypes.string,
-    // network: PropTypes.string,
-    // openToDropdown: PropTypes.func,
-    // selectedToken: PropTypes.object,
-    // to: PropTypes.string,
-    // toAccounts: PropTypes.array,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
-    // toDropdownOpen: PropTypes.bool,
-    // tokens: PropTypes.array,
     updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
-    // updateSendToError: PropTypes.func,
-    // updateSendToWarning: PropTypes.func,
-    // scanQrCode: PropTypes.func,
     ensResolution: PropTypes.string,
     ensResolutionError: PropTypes.string,
   }
@@ -49,12 +33,6 @@ export default class AddRecipient extends Component {
     updateSendTo(to, nickname)
     updateGas({ to })
   }
-
-  //
-  // resetRecipient = () => this.setState({
-  //   recipientName: '',
-  //   recipientAddress: '',
-  // })
 
   // handleToChange (to, nickname = '', toError, toWarning, network) {
     // const { hasHexData, updateSendTo, updateSendToError, updateGas, tokens, selectedToken, updateSendToWarning } = this.props
@@ -202,18 +180,6 @@ export default class AddRecipient extends Component {
     const { addressBook } = this.props
     let contacts = addressBook.filter(({ name }) => !!name)
     const { query } = this.props
-    // let contacts = [
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6720', name: 'Albert' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6721', name: 'Alan' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6722', name: 'Alex' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6723', name: 'Brian' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6724', name: 'Catherine' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6725', name: 'Benjamin' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6726', name: 'David' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6727', name: 'Jacky' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6728', name: 'Daniel' },
-    //   { address: '0x7d2b3ff3Ca36F073de7fc56baC4a4E908DaD6729', name: 'Whymarrh' },
-    // ]
 
     if (query) {
       if (!this.contactFuse) {
