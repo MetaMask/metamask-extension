@@ -102,9 +102,11 @@ class Routes extends Component {
     const {
       threeBoxApprovalRequest,
       showApprovalForThreeBox,
+      completedOnboarding,
     } = this.props
 
-    if (!prevProps.threeBoxApprovalRequest && threeBoxApprovalRequest) {
+    if (!(prevProps.threeBoxApprovalRequest && prevProps.completedOnboarding) &&
+      (threeBoxApprovalRequest && completedOnboarding)) {
       showApprovalForThreeBox(threeBoxApprovalRequest.id)
     }
   }
@@ -354,6 +356,7 @@ Routes.propTypes = {
   autoLogoutTimeLimit: PropTypes.number,
   threeBoxApprovalRequest: PropTypes.object,
   showApprovalForThreeBox: PropTypes.func,
+  completedOnboarding: PropTypes.bool,
 }
 
 function mapStateToProps (state) {

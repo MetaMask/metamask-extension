@@ -550,7 +550,7 @@ module.exports = class MetamaskController extends EventEmitter {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
-        this.threeBoxController.new3Box(accounts[0])
+        this.threeBoxController.new3Box(accounts[0], true)
         this.selectFirstIdentity()
       }
       releaseLock()
@@ -597,7 +597,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      this.threeBoxController.new3Box(accounts[0])
+      this.threeBoxController.new3Box(accounts[0], true)
       releaseLock()
       return vault
     } catch (err) {
