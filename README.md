@@ -30,13 +30,11 @@ You can re-generate the docs locally by running `npm run doc`, and contributors 
 
 ### Running Tests
 
-Requires `mocha` installed. Run `npm install -g mocha`.
-
-Then just run `npm test`.
+Run tests with `npm test`.
 
 You can also test with a continuously watching process, via `npm run watch`.
 
-You can run the linter by itself with `gulp lint`.
+You can run the linter by itself with `npm run lint`.
 
 ## Architecture
 
