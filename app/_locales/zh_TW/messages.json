@@ -378,10 +378,6 @@
   "depositBTC": {
     "message": "將您的 BTC 存入到下面的位址："
   },
-  "depositCoin": {
-    "message": "將您的 $1 存入到下面的位址",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
-  },
   "depositEth": {
     "message": "存入乙太幣"
   },
