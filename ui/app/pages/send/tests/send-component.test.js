@@ -5,8 +5,9 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import timeout from '../../../../lib/test-timeout'
 
+import AddRecipient from '../send-content/add-recipient/add-recipient.container'
 import SendHeader from '../send-header/send-header.container'
-import SendContent from '../send-content/send-content.component'
+import SendContent from '../send-content/send-content.container'
 import SendFooter from '../send-footer/send-footer.container'
 
 const mockBasicGasEstimates = {
@@ -32,6 +33,7 @@ const SendTransactionScreen = proxyquire('../send.component.js', {
 }).default
 
 sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
+sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
 describe('Send Component', function () {
   let wrapper
@@ -331,13 +333,18 @@ describe('Send Component', function () {
       assert.equal(wrapper.find('.page-container').length, 1)
     })
 
-    it('should render SendHeader, SendContent and SendFooter', () => {
+    it('should render SendHeader and AddRecipient', () => {
       assert.equal(wrapper.find(SendHeader).length, 1)
-      assert.equal(wrapper.find(SendContent).length, 1)
-      assert.equal(wrapper.find(SendFooter).length, 1)
+      assert.equal(wrapper.find(AddRecipient).length, 1)
     })
 
     it('should pass the history prop to SendHeader and SendFooter', () => {
+      wrapper.setProps({
+        to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
+      })
+      assert.equal(wrapper.find(SendHeader).length, 1)
+      assert.equal(wrapper.find(SendContent).length, 1)
+      assert.equal(wrapper.find(SendFooter).length, 1)
       assert.deepEqual(
         wrapper.find(SendFooter).props(),
         {
@@ -347,6 +354,9 @@ describe('Send Component', function () {
     })
 
     it('should pass showHexData to SendContent', () => {
+      wrapper.setProps({
+        to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
+      })
       assert.equal(wrapper.find(SendContent).props().showHexData, true)
     })
   })
