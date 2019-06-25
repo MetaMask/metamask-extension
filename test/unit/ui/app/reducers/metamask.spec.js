@@ -345,6 +345,8 @@ describe('MetaMask Reducers', () => {
       errors: {},
       editingTransactionId: 22,
       forceGasMin: '0xGas',
+      ensResolution: null,
+      ensResolutionError: '',
     }
 
     const sendState = reduceMetamask({}, {
