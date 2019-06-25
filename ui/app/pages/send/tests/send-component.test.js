@@ -360,4 +360,87 @@ describe('Send Component', function () {
       assert.equal(wrapper.find(SendContent).props().showHexData, true)
     })
   })
+
+  describe('validate when input change', () => {
+    let clock
+
+    beforeEach(() => {
+      clock = sinon.useFakeTimers()
+    })
+
+    afterEach(() => {
+      clock.restore()
+    })
+
+    it('should validate when input changes', () => {
+      const instance = wrapper.instance()
+      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7A3BedD70cd4510');
+
+      assert.deepEqual(instance.state, {
+        query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
+        toError: null,
+        toWarning: null,
+      })
+    })
+
+    it('should validate when input changes and has error', () => {
+      const instance = wrapper.instance()
+      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7a3BedD70cd4510')
+
+      clock.tick(1001)
+      assert.deepEqual(instance.state, {
+        query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
+        toError: 'invalidAddressRecipient',
+        toWarning: null,
+      })
+    })
+
+    it('should validate when input changes and has error', () => {
+      wrapper.setProps({ network: 'bad' })
+      const instance = wrapper.instance()
+      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7a3BedD70cd4510')
+
+      clock.tick(1001)
+      assert.deepEqual(instance.state, {
+        query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
+        toError: 'invalidAddressRecipientNotEthNetwork',
+        toWarning: null,
+      })
+    })
+
+    it('should synchronously validate when input changes to ""', () => {
+      wrapper.setProps({ network: 'bad' })
+      const instance = wrapper.instance()
+      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7a3BedD70cd4510')
+
+      clock.tick(1001)
+      assert.deepEqual(instance.state, {
+        query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
+        toError: 'invalidAddressRecipientNotEthNetwork',
+        toWarning: null,
+      })
+
+      instance.onRecipientInputChange('')
+      assert.deepEqual(instance.state, {
+        query: '',
+        toError: '',
+        toWarning: '',
+      })
+    })
+
+    it('should warn when send to a known token contract address', () => {
+      wrapper.setProps({
+        selectedToken: '0x888',
+      })
+      const instance = wrapper.instance()
+      instance.onRecipientInputChange('0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64')
+
+      clock.tick(1001)
+      assert.deepEqual(instance.state, {
+        query: '0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64',
+        toError: null,
+        toWarning: 'knownAddressRecipient',
+      })
+    })
+  })
 })
