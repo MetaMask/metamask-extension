@@ -15,6 +15,9 @@ export default class AddRecipient extends Component {
     updateSendTo: PropTypes.func,
     ensResolution: PropTypes.string,
     ensResolutionError: PropTypes.string,
+    selectedToken: PropTypes.object,
+    hasHexData: PropTypes.bool,
+    tokens: PropTypes.array,
   }
 
   static contextTypes = {
@@ -33,18 +36,6 @@ export default class AddRecipient extends Component {
     updateSendTo(to, nickname)
     updateGas({ to })
   }
-
-  // handleToChange (to, nickname = '', toError, toWarning, network) {
-    // const { hasHexData, updateSendTo, updateSendToError, updateGas, tokens, selectedToken, updateSendToWarning } = this.props
-    // const toErrorObject = getToErrorObject(to, toError, hasHexData, tokens, selectedToken, network)
-    // const toWarningObject = getToWarningObject(to, toWarning, tokens, selectedToken)
-    // updateSendTo(to, nickname)
-    // updateSendToError(toErrorObject)
-    // updateSendToWarning(toWarningObject)
-    // if (toErrorObject.to === null) {
-    //   updateGas({ to })
-    // }
-  // }
 
   render () {
     const { ensResolution, query } = this.props

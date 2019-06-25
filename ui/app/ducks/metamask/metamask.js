@@ -307,7 +307,7 @@ function reduceMetamask (state, action) {
           ...metamaskState.send,
           ensResolution: null,
           ensResolutionError: action.payload,
-        }
+        },
       })
 
     case actions.CLEAR_SEND:

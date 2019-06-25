@@ -27,7 +27,10 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
+  getSendEnsResolution,
+  getSendEnsResolutionError,
 } from './send.selectors'
+import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
   updateSendTokenBalance,
@@ -73,8 +76,11 @@ function mapStateToProps (state) {
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
+    ensResolution: getSendEnsResolution(state),
+    ensResolutionError: getSendEnsResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
+    tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),

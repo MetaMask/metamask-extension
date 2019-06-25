@@ -7,12 +7,14 @@ import {
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
+import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
 
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
+import Dialog from "../../components/ui/dialog";
 
 export default class SendTransactionScreen extends PersistentForm {
 
@@ -36,6 +38,7 @@ export default class SendTransactionScreen extends PersistentForm {
     recentBlocks: PropTypes.array,
     selectedAddress: PropTypes.string,
     selectedToken: PropTypes.object,
+    tokens: PropTypes.array,
     tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
     fetchBasicGasEstimates: PropTypes.func,
@@ -45,6 +48,8 @@ export default class SendTransactionScreen extends PersistentForm {
     scanQrCode: PropTypes.func,
     qrCodeDetected: PropTypes.func,
     qrCodeData: PropTypes.object,
+    ensResolution: PropTypes.string,
+    ensResolutionError: PropTypes.string,
   }
 
   static contextTypes = {
@@ -54,6 +59,8 @@ export default class SendTransactionScreen extends PersistentForm {
 
   state = {
     query: '',
+    toError: null,
+    toWarning: null,
   }
 
   componentWillReceiveProps (nextProps) {
@@ -205,7 +212,14 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   onRecipientInputChange = query => {
-    this.setState({ query })
+    const { hasHexData, tokens, selectedToken, network, ensResolution } = this.props
+    const toErrorObject = getToErrorObject(query, null, hasHexData, tokens, selectedToken, network)
+    const toWarningObject = getToWarningObject(query, null, tokens, selectedToken)
+    this.setState({
+      query,
+      toError: toErrorObject.to,
+      toWarning: toWarningObject.to,
+    })
   }
 
   updateSendToken () {
@@ -224,13 +238,44 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   render () {
-    const { history, to } = this.props
+    const { t } = this.context
+    const { history, to, ensResolutionError, ensResolution } = this.props
+    const { toError } = this.state
+    let content
+
+    if (ensResolutionError) {
+      content = (
+        <div className="send__content">
+          <Dialog
+            type="error"
+            className="send__error-dialog"
+          >
+            {ensResolutionError}
+          </Dialog>
+        </div>
+      )
+    } else if (!ensResolution && toError && toError !== 'required') {
+      content = (
+        <div className="send__content">
+          <Dialog
+            type="error"
+            className="send__error-dialog"
+          >
+            {t(toError)}
+          </Dialog>
+        </div>
+      )
+    } else if (to) {
+      content = this.renderSendContent()
+    } else {
+      content = this.renderAddRecipient()
+    }
 
     return (
       <div className="page-container">
-        <SendHeader history={history}/>
+        <SendHeader history={history} />
         { this.renderInput() }
-        { to ? this.renderSendContent() : this.renderAddRecipient() }
+        { content }
       </div>
     )
   }
