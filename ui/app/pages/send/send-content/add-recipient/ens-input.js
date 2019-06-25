@@ -106,6 +106,10 @@ class EnsInput extends Component {
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
+    if (!input) {
+      return this.resetInput()
+    }
+
     this.setState({ input }, () => onChange(input))
 
     // maybe scan ENS
