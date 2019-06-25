@@ -200,7 +200,7 @@ export default class SendTransactionScreen extends PersistentForm {
     })
   }
 
-  validate = query => {
+  validate (query) {
     const {
       hasHexData,
       tokens,
