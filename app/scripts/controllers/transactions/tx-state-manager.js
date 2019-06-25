@@ -127,7 +127,7 @@ class TransactionStateManager extends EventEmitter {
   addTx (txMeta) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      this.normalizeAndValidateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
     this.once(`${txMeta.id}:signed`, function () {
@@ -181,7 +181,7 @@ class TransactionStateManager extends EventEmitter {
   updateTx (txMeta, note) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      this.normalizeAndValidateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -223,6 +223,7 @@ class TransactionStateManager extends EventEmitter {
     }
     txParams = normalizeTxParams(txParams, false)
     this.validateTxParams(txParams)
+    return txParams
   }
 
   /**
