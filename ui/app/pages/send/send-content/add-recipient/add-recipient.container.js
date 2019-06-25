@@ -6,7 +6,7 @@ import {
 import {
   getSendEnsResolution,
   getSendEnsResolutionError,
-} from '../../../send/send.selectors';
+} from '../../../send/send.selectors'
 import {
     updateSendTo,
 } from '../../../../store/actions'
