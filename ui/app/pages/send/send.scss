@@ -24,6 +24,10 @@
     cursor: pointer;
   }
 
+  &__error-dialog {
+    margin: 1rem;
+  }
+
   &__to-row {
     margin: 0;
     padding: .5rem;

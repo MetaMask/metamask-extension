@@ -3,16 +3,18 @@
   line-height: 1rem;
   padding: 1rem;
   border: 1px solid $black;
+  box-sizing: border-box;
+  border-radius: 8px;
 
   &--message {
-    box-sizing: border-box;
-    border-radius: 8px;
     border-color: $Blue-200;
     color: $Blue-600;
     background-color: $Blue-000;
   }
 
   &--error {
-
+    border-color: $Red-300;
+    color: $Red-600;
+    background-color: $Red-000;
   }
 }

@@ -34,6 +34,7 @@ class EnsInput extends Component {
     updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
+    updateEnsResolutionError: PropTypes.func,
     addressBook: PropTypes.array,
   }
 
@@ -74,10 +75,11 @@ class EnsInput extends Component {
   }
 
   resetInput = () => {
-    const { updateSendTo, updateEnsResolution } = this.props
+    const { updateSendTo, updateEnsResolution, updateEnsResolutionError } = this.props
     this.onChange({ target: { value: '' } })
     updateSendTo('', '')
     updateEnsResolution('')
+    updateEnsResolutionError('')
   }
 
   lookupEnsName = (recipient) => {
@@ -91,10 +93,10 @@ class EnsInput extends Component {
       })
       .catch((reason) => {
         if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-          updateEnsResolutionError(reason.message)
+          this.props.updateEnsResolutionError(reason.message)
         } else {
           log.error(reason)
-          updateEnsResolutionError(reason.message)
+          this.props.updateEnsResolutionError(reason.message)
         }
       })
   }
@@ -255,6 +257,7 @@ export default connect(
   dispatch => ({
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     updateEnsResolution: (ensResolution) => dispatch(updateEnsResolution(ensResolution)),
+    updateEnsResolutionError: (message) => dispatch(updateEnsResolutionError(message)),
   })
 )(EnsInput)
 
