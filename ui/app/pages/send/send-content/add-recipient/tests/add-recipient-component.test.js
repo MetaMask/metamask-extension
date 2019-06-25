@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import AddRecipient, { RecipientGroup } from '../add-recipient.component'
-import Dialog from "../../../../../components/ui/dialog";
+import Dialog from '../../../../../components/ui/dialog'
 
 const propsMethodSpies = {
   closeToDropdown: sinon.spy(),
@@ -191,7 +191,7 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog)
 
-      assert.equal(dialog.length, 0);
+      assert.equal(dialog.length, 0)
     })
   })
 })

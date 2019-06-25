@@ -1,7 +1,6 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-import {getSendEnsResolution, getSendToNickname} from "../send.selectors";
 
 let mapStateToProps
 let mapDispatchToProps
