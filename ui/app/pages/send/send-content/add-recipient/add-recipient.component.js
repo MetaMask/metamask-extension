@@ -70,6 +70,7 @@ export default class AddRecipient extends Component {
     const { addressBook, query } = this.props
 
     let nonContacts = addressBook.filter(({ name }) => !name)
+
     if (query) {
       if (!this.recentFuse) {
         this.recentFuse = new Fuse(nonContacts, {
@@ -160,12 +161,12 @@ export default class AddRecipient extends Component {
 
   renderMain () {
     const { t } = this.context
-    const { query } = this.props
+    const { query, ownedAccounts = [] } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">
         {
-          !query && (
+          (ownedAccounts && ownedAccounts.length > 1) && !query && (
             <div
               className="send__select-recipient-wrapper__list__link"
               onClick={() => this.setState({ isShowingTransfer: true })}
@@ -282,7 +283,7 @@ function ellipsify (text, first = 6, last = 4) {
   return `${text.slice(0, first)}...${text.slice(-last)}`
 }
 
-function RecipientGroup ({ label, items, onSelect }) {
+export function RecipientGroup ({ label, items, onSelect }) {
   if (!items || !items.length) {
     return null
   }
