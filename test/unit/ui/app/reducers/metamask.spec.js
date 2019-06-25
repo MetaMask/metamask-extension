@@ -494,4 +494,24 @@ describe('MetaMask Reducers', () => {
 
     assert.deepEqual(state.pendingTokens, {})
   })
+
+  it('update ensResolution', () => {
+    const state = reduceMetamask({}, {
+      type: actions.UPDATE_ENS_RESOLUTION,
+      payload: '0x1337',
+    })
+
+    assert.deepEqual(state.send.ensResolution, '0x1337')
+    assert.deepEqual(state.send.ensResolutionError, '')
+  })
+
+  it('update ensResolutionError', () => {
+    const state = reduceMetamask({}, {
+      type: actions.UPDATE_ENS_RESOLUTION_ERROR,
+      payload: 'ens name not found',
+    })
+
+    assert.deepEqual(state.send.ensResolutionError, 'ens name not found')
+    assert.deepEqual(state.send.ensResolution, null)
+  })
 })
