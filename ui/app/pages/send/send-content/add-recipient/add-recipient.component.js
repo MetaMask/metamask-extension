@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
 import {isValidAddress} from '../../../../helpers/utils/util'
-import Dialog from "../../../../components/ui/dialog";
+import Dialog from '../../../../components/ui/dialog'
 
 export default class AddRecipient extends Component {
 
