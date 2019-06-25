@@ -374,7 +374,7 @@ describe('Send Component', function () {
 
     it('should validate when input changes', () => {
       const instance = wrapper.instance()
-      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7A3BedD70cd4510');
+      instance.onRecipientInputChange('0x80F061544cC398520615B5d3e7A3BedD70cd4510')
 
       assert.deepEqual(instance.state, {
         query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
