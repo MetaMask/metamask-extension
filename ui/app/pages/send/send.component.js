@@ -63,6 +63,11 @@ export default class SendTransactionScreen extends PersistentForm {
     toWarning: null,
   }
 
+  constructor (props) {
+    super(props)
+    this.dValidate = debounce(this.validate, 1000)
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
@@ -76,34 +81,6 @@ export default class SendTransactionScreen extends PersistentForm {
         }
       }
     }
-  }
-
-  updateGas = ({ to: updatedToAddress, amount: value, data } = {}) => {
-    const {
-      amount,
-      blockGasLimit,
-      editingTransactionId,
-      gasLimit,
-      gasPrice,
-      recentBlocks,
-      selectedAddress,
-      selectedToken = {},
-      to: currentToAddress,
-      updateAndSetGasLimit,
-    } = this.props
-
-    updateAndSetGasLimit({
-      blockGasLimit,
-      editingTransactionId,
-      gasLimit,
-      gasPrice,
-      recentBlocks,
-      selectedAddress,
-      selectedToken,
-      to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
-      value: value || amount,
-      data,
-    })
   }
 
   componentDidUpdate (prevProps) {
@@ -191,8 +168,6 @@ export default class SendTransactionScreen extends PersistentForm {
       .then(() => {
         this.updateGas()
       })
-
-    this.dValidate = debounce(this.validate, 1000)
   }
 
   componentWillMount () {
@@ -261,6 +236,34 @@ export default class SendTransactionScreen extends PersistentForm {
     })
   }
 
+  updateGas ({ to: updatedToAddress, amount: value, data } = {}) {
+    const {
+      amount,
+      blockGasLimit,
+      editingTransactionId,
+      gasLimit,
+      gasPrice,
+      recentBlocks,
+      selectedAddress,
+      selectedToken = {},
+      to: currentToAddress,
+      updateAndSetGasLimit,
+    } = this.props
+
+    updateAndSetGasLimit({
+      blockGasLimit,
+      editingTransactionId,
+      gasLimit,
+      gasPrice,
+      recentBlocks,
+      selectedAddress,
+      selectedToken,
+      to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
+      value: value || amount,
+      data,
+    })
+  }
+
   render () {
     const { history, to } = this.props
     let content
@@ -305,7 +308,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
     return (
       <AddRecipient
-        updateGas={this.updateGas}
+        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         scanQrCode={scanQrCode}
         query={this.state.query}
         toError={toError}
@@ -320,7 +323,7 @@ export default class SendTransactionScreen extends PersistentForm {
     return [
       <SendContent
         key="send-content"
-        updateGas={this.updateGas}
+        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
         scanQrCode={scanQrCode}
         showHexData={showHexData}
       />,
