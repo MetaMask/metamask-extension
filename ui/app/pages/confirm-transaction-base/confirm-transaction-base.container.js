@@ -91,6 +91,10 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList)
   const transactionStatus = transaction ? transaction.status : ''
 
+  if (transaction && transaction.simulationFails) {
+    txData.simulationFails = transaction.simulationFails
+  }
+
   const currentNetworkUnapprovedTxs = R.filter(
     ({ metamaskNetworkId }) => metamaskNetworkId === network,
     unapprovedTxs,
