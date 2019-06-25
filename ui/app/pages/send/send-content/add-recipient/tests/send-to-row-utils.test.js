@@ -12,7 +12,7 @@ const stubs = {
   isValidAddress: sinon.stub().callsFake(to => Boolean(to.match(/^[0xabcdef123456798]+$/))),
 }
 
-const toRowUtils = proxyquire('../add-recipient.utils.js', {
+const toRowUtils = proxyquire('../add-recipient.js', {
   '../../../../helpers/utils/util': {
     isValidAddress: stubs.isValidAddress,
   },
