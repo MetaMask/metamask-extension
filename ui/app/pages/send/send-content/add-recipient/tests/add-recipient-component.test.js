@@ -3,6 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import AddRecipient, { RecipientGroup } from '../add-recipient.component'
+import Dialog from "../../../../../components/ui/dialog";
 
 const propsMethodSpies = {
   closeToDropdown: sinon.spy(),
@@ -123,6 +124,74 @@ describe('AddRecipient Component', function () {
       assert.equal(groups.at(0).shallow().find('.send__select-recipient-wrapper__group-item').length, 0)
       assert.equal(groups.at(1).shallow().find('.send__select-recipient-wrapper__group-item').length, 2)
       assert.equal(groups.at(2).shallow().find('.send__select-recipient-wrapper__group-item').length, 1)
+    })
+
+    it('should render error when query has no results', () => {
+      wrapper.setProps({
+        addressBook: [],
+        toError: 'bad',
+      })
+
+      const dialog = wrapper.find(Dialog)
+
+      assert.equal(dialog.props().type, 'error')
+      assert.equal(dialog.props().children, 'bad_t')
+      assert.equal(dialog.length, 1)
+    })
+
+    it('should render error when query has ens does not resolve', () => {
+      wrapper.setProps({
+        addressBook: [],
+        toError: 'bad',
+        ensResolutionError: 'very bad',
+      })
+
+      const dialog = wrapper.find(Dialog)
+
+      assert.equal(dialog.props().type, 'error')
+      assert.equal(dialog.props().children, 'very bad')
+      assert.equal(dialog.length, 1)
+    })
+
+    it('should render warning', () => {
+      wrapper.setProps({
+        addressBook: [],
+        query: 'yo',
+        toWarning: 'watchout',
+      })
+
+      const dialog = wrapper.find(Dialog)
+
+      assert.equal(dialog.props().type, 'warning')
+      assert.equal(dialog.props().children, 'watchout_t')
+      assert.equal(dialog.length, 1)
+    })
+
+    it('should not render error when ens resolved', () => {
+      wrapper.setProps({
+        addressBook: [],
+        toError: 'bad',
+        ensResolution: '0x128',
+      })
+
+      const dialog = wrapper.find(Dialog)
+
+      assert.equal(dialog.length, 0)
+    })
+
+    it('should not render error when query has results', () => {
+      wrapper.setProps({
+        addressBook: [
+          { address: '0x125', name: 'alice' },
+          { address: '0x126', name: 'alex' },
+          { address: '0x127', name: 'catherine' },
+        ],
+        toError: 'bad',
+      })
+
+      const dialog = wrapper.find(Dialog)
+
+      assert.equal(dialog.length, 0);
     })
   })
 })
