@@ -32,7 +32,6 @@ const SendTransactionScreen = proxyquire('../send.component.js', {
 }).default
 
 sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
-sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
 describe('Send Component', function () {
   let wrapper

@@ -30,7 +30,7 @@ proxyquire('../add-recipient.container.js', {
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
   },
-  './send-to-row.selectors.js': {
+  './add-recipient.selectors.js': {
     getToDropdownOpen: (s) => `mockToDropdownOpen:${s}`,
     sendToIsInError: (s) => `mockInError:${s}`,
     sendToIsInWarning: (s) => `mockInWarning:${s}`,
