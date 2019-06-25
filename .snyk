@@ -1,0 +1,18 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:extend:20180424':
+    - pubnub > superagent > extend:
+        patched: '2019-06-25T18:24:49.326Z'
+    - react-markdown > unified > extend:
+        patched: '2019-06-25T18:24:49.326Z'
+    - eth-json-rpc-infura > eth-json-rpc-middleware > eth-tx-summary > web3-provider-engine > request > extend:
+        patched: '2019-06-25T18:24:49.326Z'
+    - eth-json-rpc-filters > eth-json-rpc-middleware > eth-tx-summary > web3-provider-engine > request > extend:
+        patched: '2019-06-25T18:24:49.326Z'
+    - pubnub > superagent-proxy > proxy-agent > pac-proxy-agent > get-uri > extend:
+        patched: '2019-06-25T18:24:49.326Z'
+    - eth-block-tracker > eth-json-rpc-infura > eth-json-rpc-middleware > eth-tx-summary > web3-provider-engine > request > extend:
+        patched: '2019-06-25T18:24:49.326Z'

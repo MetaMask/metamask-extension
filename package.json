@@ -43,7 +43,9 @@
     "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "update-changelog": "./development/auto-changelog.sh",
-    "rollback": "./development/rollback.sh"
+    "rollback": "./development/rollback.sh",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "browserify": {
     "transform": [
@@ -190,7 +192,8 @@
     "web3": "^0.20.1",
     "web3-stream-provider": "^3.0.1",
     "webrtc-adapter": "^6.3.0",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "snyk": "^1.184.0"
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
@@ -307,5 +310,6 @@
   "engines": {
     "node": "8.11.3",
     "npm": "^6.1.0"
-  }
+  },
+  "snyk": true
 }
