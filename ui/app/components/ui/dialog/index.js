@@ -9,6 +9,7 @@ export default function Dialog (props) {
       className={c('dialog', className, {
         'dialog--message': type === 'message',
         'dialog--error': type === 'error',
+        'dialog--warning': type === 'warning',
       })}
       onClick={onClick}
     >
@@ -20,6 +21,6 @@ export default function Dialog (props) {
 Dialog.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
-  type: PropTypes.oneOf(['message', 'error']),
+  type: PropTypes.oneOf(['message', 'error', 'warning']),
   onClick: PropTypes.func,
 }
