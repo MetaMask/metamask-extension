@@ -102,21 +102,25 @@ class EnsInput extends Component {
   }
 
   onChange = e => {
-    const { network, onChange } = this.props
+    const { network, onChange, updateEnsResolution, updateEnsResolutionError } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-    if (!input) {
-      return this.resetInput()
-    }
-
     this.setState({ input }, () => onChange(input))
 
+    // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidAddress(input) || !networkHasEnsSupport) return
+    if (!input || isValidAddress(input) || !networkHasEnsSupport) {
+      updateEnsResolution('')
+      updateEnsResolutionError('')
+      return
+    }
 
     if (isValidENSAddress(input)) {
       this.lookupEnsName(input)
+    } else {
+      updateEnsResolution('')
+      updateEnsResolutionError('')
     }
   }
 

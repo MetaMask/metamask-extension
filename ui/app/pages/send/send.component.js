@@ -7,14 +7,14 @@ import {
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
+import debounce from 'lodash.debounce'
 import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
-
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
-import Dialog from "../../components/ui/dialog";
+
 
 export default class SendTransactionScreen extends PersistentForm {
 
@@ -188,9 +188,11 @@ export default class SendTransactionScreen extends PersistentForm {
 
   componentDidMount () {
     this.props.fetchBasicGasEstimates()
-    .then(() => {
-      this.updateGas()
-    })
+      .then(() => {
+        this.updateGas()
+      })
+
+    this.dValidate = debounce(this.validate, 1000)
   }
 
   componentWillMount () {
@@ -212,11 +214,33 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   onRecipientInputChange = query => {
-    const { hasHexData, tokens, selectedToken, network, ensResolution } = this.props
-    const toErrorObject = getToErrorObject(query, null, hasHexData, tokens, selectedToken, network)
-    const toWarningObject = getToWarningObject(query, null, tokens, selectedToken)
+    if (query) {
+      this.dValidate(query)
+    } else {
+      this.validate(query)
+    }
+
     this.setState({
       query,
+    })
+  }
+
+  validate = query => {
+    const {
+      hasHexData,
+      tokens,
+      selectedToken,
+      network,
+    } = this.props
+
+    if (!query) {
+      return this.setState({ toError: '', toWarning: '' })
+    }
+
+    const toErrorObject = getToErrorObject(query, null, hasHexData, tokens, selectedToken, network)
+    const toWarningObject = getToWarningObject(query, null, tokens, selectedToken)
+
+    this.setState({
       toError: toErrorObject.to,
       toWarning: toWarningObject.to,
     })
@@ -238,34 +262,10 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   render () {
-    const { t } = this.context
-    const { history, to, ensResolutionError, ensResolution } = this.props
-    const { toError } = this.state
+    const { history, to } = this.props
     let content
 
-    if (ensResolutionError) {
-      content = (
-        <div className="send__content">
-          <Dialog
-            type="error"
-            className="send__error-dialog"
-          >
-            {ensResolutionError}
-          </Dialog>
-        </div>
-      )
-    } else if (!ensResolution && toError && toError !== 'required') {
-      content = (
-        <div className="send__content">
-          <Dialog
-            type="error"
-            className="send__error-dialog"
-          >
-            {t(toError)}
-          </Dialog>
-        </div>
-      )
-    } else if (to) {
+    if (to) {
       content = this.renderSendContent()
     } else {
       content = this.renderAddRecipient()
@@ -295,21 +295,21 @@ export default class SendTransactionScreen extends PersistentForm {
           this.props.scanQrCode()
         }}
         onChange={this.onRecipientInputChange}
-        // resetRecipient={this.resetRecipient}
-        // selectedAddress={to}
-        // selectedName={toNickname}
       />
     )
   }
 
   renderAddRecipient () {
     const { scanQrCode } = this.props
+    const { toError, toWarning } = this.state
 
     return (
       <AddRecipient
         updateGas={this.updateGas}
         scanQrCode={scanQrCode}
         query={this.state.query}
+        toError={toError}
+        toWarning={toWarning}
       />
     )
   }

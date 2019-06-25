@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
 import {isValidAddress} from '../../../../helpers/utils/util'
+import Dialog from "../../../../components/ui/dialog";
 
 export default class AddRecipient extends Component {
 
@@ -14,6 +15,8 @@ export default class AddRecipient extends Component {
     updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
     ensResolution: PropTypes.string,
+    toError: PropTypes.string,
+    toWarning: PropTypes.string,
     ensResolutionError: PropTypes.string,
     selectedToken: PropTypes.object,
     hasHexData: PropTypes.bool,
@@ -37,6 +40,56 @@ export default class AddRecipient extends Component {
     updateGas({ to })
   }
 
+  searchForContacts = () => {
+    const { addressBook } = this.props
+    let contacts = addressBook.filter(({ name }) => !!name)
+    const { query } = this.props
+
+    if (query) {
+      if (!this.contactFuse) {
+        this.contactFuse = new Fuse(contacts, {
+          shouldSort: true,
+          threshold: 0.45,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          minMatchCharLength: 1,
+          keys: [
+            { name: 'name', weight: 0.5 },
+            { name: 'address', weight: 0.5 },
+          ],
+        })
+      }
+      contacts = this.contactFuse.search(query)
+    }
+
+    return contacts
+  }
+
+  searchForRecents = () => {
+    const { addressBook, query } = this.props
+
+    let nonContacts = addressBook.filter(({ name }) => !name)
+    if (query) {
+      if (!this.recentFuse) {
+        this.recentFuse = new Fuse(nonContacts, {
+          shouldSort: true,
+          threshold: 0.45,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          minMatchCharLength: 1,
+          keys: [
+            { name: 'address', weight: 0.5 },
+          ],
+        })
+      }
+      nonContacts = this.recentFuse.search(query)
+    }
+
+    return nonContacts
+  }
+
   render () {
     const { ensResolution, query } = this.props
     const { isShowingTransfer } = this.state
@@ -53,6 +106,7 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper">
+        { this.renderDialogs() }
         { content || this.renderMain() }
       </div>
     )
@@ -106,15 +160,20 @@ export default class AddRecipient extends Component {
 
   renderMain () {
     const { t } = this.context
+    const { query } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        <div
-          className="send__select-recipient-wrapper__list__link"
-          onClick={() => this.setState({ isShowingTransfer: true })}
-        >
-          { t('transferBetweenAccounts') }
-        </div>
+        {
+          !query && (
+            <div
+              className="send__select-recipient-wrapper__list__link"
+              onClick={() => this.setState({ isShowingTransfer: true })}
+            >
+              { t('transferBetweenAccounts') }
+            </div>
+          )
+        }
         { this.renderRecents() }
         { this.renderAddressBook() }
       </div>
@@ -122,27 +181,9 @@ export default class AddRecipient extends Component {
   }
 
   renderRecents () {
-    const { addressBook, query } = this.props
     const { isShowingAllRecent } = this.state
+    const nonContacts = this.searchForRecents()
     const { t } = this.context
-
-    let nonContacts = addressBook.filter(({ name }) => !name)
-    if (query) {
-      if (!this.recentFuse) {
-        this.recentFuse = new Fuse(nonContacts, {
-          shouldSort: true,
-          threshold: 0.45,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          minMatchCharLength: 1,
-          keys: [
-            { name: 'address', weight: 0.5 },
-          ],
-        })
-      }
-      nonContacts = this.recentFuse.search(query)
-    }
 
     const showLoadMore = !isShowingAllRecent && nonContacts.length > 2
 
@@ -168,27 +209,7 @@ export default class AddRecipient extends Component {
   }
 
   renderAddressBook () {
-    const { addressBook } = this.props
-    let contacts = addressBook.filter(({ name }) => !!name)
-    const { query } = this.props
-
-    if (query) {
-      if (!this.contactFuse) {
-        this.contactFuse = new Fuse(contacts, {
-          shouldSort: true,
-          threshold: 0.45,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          minMatchCharLength: 1,
-          keys: [
-            { name: 'name', weight: 0.5 },
-            { name: 'address', weight: 0.5 },
-          ],
-        })
-      }
-      contacts = this.contactFuse.search(query)
-    }
+    const contacts = this.searchForContacts()
 
     const contactGroups = contacts.reduce((acc, contact) => {
       const firstLetter = contact.name.slice(0, 1).toUpperCase()
@@ -196,7 +217,7 @@ export default class AddRecipient extends Component {
       const bucket = acc[firstLetter]
       bucket.push(contact)
       return acc
-    }, {});
+    }, {})
 
     return Object
       .entries(contactGroups)
@@ -208,6 +229,51 @@ export default class AddRecipient extends Component {
           onSelect={this.selectRecipient}
         />
       ))
+  }
+
+  renderDialogs () {
+    const { toError, toWarning, ensResolutionError, ensResolution } = this.props
+    const { t } = this.context
+    const contacts = this.searchForContacts()
+    const recents = this.searchForRecents()
+
+    if (contacts.length || recents.length) {
+      return null
+    }
+
+    if (ensResolutionError) {
+      return (
+        <Dialog
+          type="error"
+          className="send__error-dialog"
+        >
+          {ensResolutionError}
+        </Dialog>
+      )
+    }
+
+    if (toError && toError !== 'required' && !ensResolution) {
+      return (
+        <Dialog
+          type="error"
+          className="send__error-dialog"
+        >
+          {t(toError)}
+        </Dialog>
+      )
+    }
+
+
+    if (toWarning) {
+      return (
+        <Dialog
+          type="warning"
+          className="send__error-dialog"
+        >
+          {t(toWarning)}
+        </Dialog>
+      )
+    }
   }
 
 }

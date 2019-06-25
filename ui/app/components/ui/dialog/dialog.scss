@@ -17,4 +17,10 @@
     color: $Red-600;
     background-color: $Red-000;
   }
+
+  &--warning {
+    border-color: $Orange-300;
+    color: $Orange-600;
+    background-color: $Orange-000;
+  }
 }
