@@ -27,6 +27,7 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../helpers/constants/routes'
+import {addressSlicer} from '../../helpers/utils/util'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
@@ -55,11 +56,7 @@ class SettingsPage extends PureComponent {
   }
 
   render () {
-    const { t } = this.context
     const { history, location } = this.props
-
-    const pathnameI18nKey = ROUTES_TO_I18N_KEYS[location.pathname]
-    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
 
     return (
       <div
@@ -76,9 +73,7 @@ class SettingsPage extends PureComponent {
               />
             )
           }
-          <div className="settings-page__header__title">
-            {t(pathnameI18nKey && isPopupView ? pathnameI18nKey : 'settings')}
-          </div>
+          { this.renderTitle() }
           <div
             className="settings-page__close-button"
             onClick={() => history.push(DEFAULT_ROUTE)}
@@ -97,17 +92,44 @@ class SettingsPage extends PureComponent {
     )
   }
 
+  renderTitle () {
+    const { t } = this.context
+    const { location } = this.props
+
+    let titleText
+
+    const pathnameI18nKey = ROUTES_TO_I18N_KEYS[location.pathname]
+    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+
+    if (isPopupView && location.pathname.includes('0x')) {
+      titleText = addressSlicer(location.pathname.slice(-42))
+    } else if (pathnameI18nKey && isPopupView) {
+      titleText = t(pathnameI18nKey)
+    } else {
+      titleText = t('settings')
+    }
+
+    return (
+      <div className="settings-page__header__title">
+        {titleText}
+      </div>
+    )
+  }
+
   renderSubHeader () {
     const { t } = this.context
-    let { location: { pathname } } = this.props
+    const { location: { pathname } } = this.props
+    let subheaderText
 
     if (pathname.includes('0x')) {
-      pathname = pathname.slice(0, -43)
+      subheaderText = t('settings')
+    } else {
+      subheaderText = t(ROUTES_TO_I18N_KEYS[pathname] || 'general')
     }
 
     return pathname !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
-        {t(ROUTES_TO_I18N_KEYS[pathname] || 'general')}
+        {subheaderText}
       </div>
     )
   }

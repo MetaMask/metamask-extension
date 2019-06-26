@@ -20,14 +20,14 @@ export default class ContactListTab extends Component {
 
     return (
       <div>
-       { Object.keys(addressBook).map((address) => {
+       { addressBook.map(({address, name}) => {
           return (
             <div className="address-book__entry" key= { address }
               onClick={() => {
                 history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
               }}>
               <Identicon address= { address } diameter={ 25 }/>
-              <div className="address-book__name"> { addressBook[address].name !== '' ? addressBook[address].name : addressSlicer(address) } </div>
+              <div className="address-book__name"> { name !== '' ? name : addressSlicer(address) } </div>
             </div>
           )
         }
