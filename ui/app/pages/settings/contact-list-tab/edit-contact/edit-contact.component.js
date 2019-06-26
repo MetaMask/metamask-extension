@@ -21,40 +21,47 @@ export default class EditContact extends PureComponent {
 
   state = {
     newName: '',
+    newAddress: '',
   }
 
    render () {
+    const { t } = this.context
     const { history, match, addressBook, addToAddressBook } = this.props
     const { newName } = this.state
     const address = match.params.id
-     const currentEntry = addressBook.filter(contact => contact.address === address)[0] || {}
+    const currentEntry = addressBook.filter(contact => contact.address === address)[0] || {}
     const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
 
     return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-
-          <div className="settings-page__content-item-col">
-            <Identicon address={address} diameter={45}/>
-            <div className="settings-page__content-description">
-              { this.context.t('userName') }
+      <div className="settings-page__content-row address-book__edit-contact">
+        <div className="settings-page__header address-book__header">
+          <Identicon address={address} diameter={60}/>
+        </div>
+        <div className="address-book__edit-contact__content">
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+              { t('userName') }
             </div>
-          </div>
-
-          <TextField
+            <input
               type="text"
-              id="name"
+              className="address-book__input"
               placeholder={name}
+              value={this.state.newName || name}
               onChange={e => this.setState({ newName: e.target.value })}
-              fullWidth
-              margin="dense"
             />
-            <div className="settings-page__content-description">
-              { this.context.t('ethereumPublicAddress') }
+          </div>
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+              { t('ethereumPublicAddress') }
             </div>
-            <div className="settings-page__content-item-col">
-              {address}
-            </div>
+            <input
+              type="text"
+              className="address-book__input address-book__input--address"
+              placeholder={address}
+              value={this.state.newAddress || address}
+              onChange={e => this.setState({ newAddress: e.target.value })}
+            />
+          </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}

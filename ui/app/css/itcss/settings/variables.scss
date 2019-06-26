@@ -139,6 +139,7 @@ $Grey-100: #D6D9DC;
 $Grey-200: #bbc0c5;
 $Grey-300: #9fa6ae;
 $Grey-400: #848c96;
+$Grey-200: #bbc0c5;
 $Grey-500: #6A737D;
 $Grey-600: #535a61;
 $Grey-800: #24272a;
@@ -212,4 +213,17 @@ $xxlarge-spacing: 64px;
   border-radius: 8px;
   padding: .625rem .75rem;
   font-size: 1.25rem;
+}
+// Input mixin
+
+%input-2 {
+  border: 2px solid $Grey-200;
+  border-radius: 6px;
+  color: $Grey-800;
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+
+  &:focus-within {
+    border-color: $Blue-500;
+  }
 }

@@ -15,7 +15,16 @@
   &__header {
     align-items: flex-start !important;
   }
-  //address-book__view-contact__group__label
+
+  &__input {
+    @extend %input-2;
+    margin-top: .25rem;
+
+    &--address {
+      font-size: 0.875rem;
+    }
+  }
+
   &__view-contact {
     &__group {
       display: flex;
@@ -42,6 +51,23 @@
           padding-left: 4px;
         }
       }
+
+      .unit-input__input {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  &__edit-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+      height: 0;
     }
   }
 }
