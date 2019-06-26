@@ -15,7 +15,7 @@ const exportPrivateKey = require(`${testsFolder}/export-private-key.spec`)
 const importGanacheSeedPhrase = require(`${testsFolder}/import-ganache-seed-phrase.spec`)
 const RSKNetworkTests = require(`${testsFolder}/RSK-network-tests.js`)
 const checkEmittedEvents = require(`${testsFolder}/check-emitted-events.spec`)
-// const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
+const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
 const changePassword = require(`${testsFolder}/change-password.spec`)
 const addTokeFromSearch = require(`${testsFolder}/add-token-search.spec`)
 const customRPC = require(`${testsFolder}/custom-rpc.spec`)
@@ -124,9 +124,9 @@ describe('Metamask popup page', async function () {
     await checkEmittedEvents(f, account1, account2)
   })
 
-  // describe('Add Token: Custom', async () => {
-  //   await addCustomToken(f, account1, account2)
-  // })
+  describe('Add Token: Custom', async () => {
+    await addCustomToken(f, account1, account2)
+  })
 
   describe('Change password', async () => {
     await changePassword(f, password, newPassword)

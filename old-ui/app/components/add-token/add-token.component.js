@@ -472,12 +472,12 @@ class AddTokenScreen extends Component {
       autoFilled: false,
     })
 
-    const isValidAddress = isValidAddress(customAddress, network)
+    const validAddress = isValidAddress(customAddress, network)
     const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
     let warning
     switch (true) {
-      case !isValidAddress:
+      case !validAddress:
         warning = 'Invalid address'
         this.setState({
           warning,
