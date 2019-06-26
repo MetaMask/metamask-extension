@@ -658,7 +658,6 @@ class Functions {
         }
       },
     }
-    const accs = web3.eth.accounts
     const contractInstance = await tokenContract.new(supply, name, decimals, ticker, params)
     if (isDelayed) await this.delay(10000)
     return contractInstance.address
