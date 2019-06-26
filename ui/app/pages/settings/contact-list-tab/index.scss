@@ -11,4 +11,37 @@
   &__name {
     padding: 3px;
   }
+
+  &__header {
+    align-items: flex-start !important;
+  }
+  //address-book__view-contact__group__label
+  &__view-contact {
+    &__group {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 1.5rem 1.5rem 0 1.5rem;
+
+      &__label {
+        font-size: .75rem;
+        color: $Grey-500;
+        margin-bottom: .25rem;
+      }
+
+      &__value {
+        display: flex;
+        flex-flow: row nowrap;
+        font-size: 1.125rem;
+        color: $Grey-800;
+
+        &--address {
+          font-size: 0.875rem;
+        }
+
+        &--copy-icon {
+          padding-left: 4px;
+        }
+      }
+    }
+  }
 }

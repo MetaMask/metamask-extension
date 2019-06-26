@@ -189,13 +189,21 @@
   }
 
   &__address-book-button {
-      align-self: flex-end;
-      padding: 5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      width: 25%;
-      min-width: 80px;
-      height: 33px;
+      //align-self: flex-end;
+      //padding: 5px;
+      //text-transform: uppercase;
+      //cursor: pointer;
+      //width: 25%;
+      //min-width: 80px;
+      //height: 33px;
+    font-size: 1rem;
+    line-height: 1.1875rem;
+    padding: 0;
+
+  }
+
+  &__address-book-button + &__address-book-button {
+    margin-left: 1.875rem;
   }
 
   &--selected {

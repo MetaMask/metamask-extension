@@ -27,7 +27,7 @@ export default class EditContact extends PureComponent {
     const { history, match, addressBook, addToAddressBook } = this.props
     const { newName } = this.state
     const address = match.params.id
-    const currentEntry = addressBook[address]
+     const currentEntry = addressBook.filter(contact => contact.address === address)[0] || {}
     const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
 
     return (
