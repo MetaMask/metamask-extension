@@ -53,5 +53,26 @@ describe('ImportWithSeedPhrase Component', () => {
 
       assert.deepEqual(parseSeedPhrase('   '), '')
     })
+
+    it('should return an empty string when given a string with only symbols', () => {
+      const root = shallowRender({
+        onSubmit: sinon.spy(),
+      })
+
+      const {parseSeedPhrase} = root.instance()
+
+      assert.deepEqual(parseSeedPhrase('$'), '')
+    })
+
+    it('should return an empty string for both null and undefined', () => {
+      const root = shallowRender({
+        onSubmit: sinon.spy(),
+      })
+
+      const {parseSeedPhrase} = root.instance()
+
+      assert.deepEqual(parseSeedPhrase(undefined), '')
+      assert.deepEqual(parseSeedPhrase(null), '')
+    })
   })
 })
