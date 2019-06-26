@@ -24,8 +24,9 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mergeProps (stateProps, dispatchProps) {
+function mergeProps (stateProps, dispatchProps, ownProps) {
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
     showAddToAddressBookModal: () => dispatchProps.showAddToAddressBookModal(stateProps.to),
