@@ -30,10 +30,21 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   parseSeedPhrase = (seedPhrase) => {
-    return seedPhrase
-      .trim()
-      .match(/\w+/g)
-      .join(' ')
+    if (!seedPhrase) {
+      return ''
+    }
+
+    const trimmed = seedPhrase.trim()
+    if (!trimmed) {
+      return ''
+    }
+
+    const words = trimmed.match(/\w+/g)
+    if (!words) {
+      return ''
+    }
+
+    return words.join(' ')
   }
 
   componentWillMount () {
