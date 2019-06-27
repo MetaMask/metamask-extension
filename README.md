@@ -11,7 +11,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 ## Building locally
 
-- Install [Node.js](https://nodejs.org) version 8 and the latest available npm@6
+- Install [Node.js](https://nodejs.org) version 10 and the latest available npm@6
     - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
     - If you install Node.js manually, ensure you're using npm@6
         - Install npm@6 using `npm install -g npm@6`
