@@ -56,7 +56,7 @@
     "@sentry/browser": "^4.1.1",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",
-    "asmcrypto.js": "0.22.0",
+    "asmcrypto.js": "^2.3.2",
     "async": "^2.5.0",
     "await-semaphore": "^0.1.1",
     "babel-runtime": "^6.23.0",
