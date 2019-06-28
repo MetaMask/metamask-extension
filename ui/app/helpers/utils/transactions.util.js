@@ -103,6 +103,20 @@ export function getFourBytePrefix (data = '') {
 }
 
 /**
+  * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
+  *
+  * @param {string} transactionCategory - The category of transaction being evaluated
+  * @returns {boolean} - whether the transaction is calling an erc20 token method
+  */
+export function isTokenMethodAction (transactionCategory) {
+  return [
+    TOKEN_METHOD_TRANSFER,
+    TOKEN_METHOD_APPROVE,
+    TOKEN_METHOD_TRANSFER_FROM,
+  ].includes(transactionCategory)
+}
+
+/**
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
  * @returns {string|undefined}
@@ -122,11 +136,7 @@ export function getTransactionActionKey (transaction) {
     return DEPLOY_CONTRACT_ACTION_KEY
   }
 
-  const isTokenAction = [
-    TOKEN_METHOD_TRANSFER,
-    TOKEN_METHOD_APPROVE,
-    TOKEN_METHOD_TRANSFER_FROM,
-  ].find(actionName => actionName === transactionCategory)
+  const isTokenAction = isTokenMethodAction(transactionCategory)
   const isNonTokenSmartContract = transactionCategory === CONTRACT_INTERACTION_KEY
 
   if (isTokenAction || isNonTokenSmartContract) {
