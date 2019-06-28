@@ -9,6 +9,7 @@ const {
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
+const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
@@ -367,6 +368,12 @@ var actions = {
   loadingMethoDataFinished,
   LOADING_METHOD_DATA_STARTED: 'LOADING_METHOD_DATA_STARTED',
   LOADING_METHOD_DATA_FINISHED: 'LOADING_METHOD_DATA_FINISHED',
+
+  getTokenParams,
+  loadingTokenParamsStarted,
+  LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
+  loadingTokenParamsFinished,
+  LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
 }
 
 module.exports = actions
@@ -2813,6 +2820,42 @@ function getContractMethodData (data = '') {
         background.addKnownMethodData(fourBytePrefix, { name, params })
 
         return { name, params }
+      })
+  }
+}
+
+function loadingTokenParamsStarted () {
+  return {
+    type: actions.LOADING_TOKEN_PARAMS_STARTED,
+  }
+}
+
+function loadingTokenParamsFinished () {
+  return {
+    type: actions.LOADING_TOKEN_PARAMS_FINISHED,
+  }
+}
+
+function getTokenParams (tokenAddress) {
+  return (dispatch, getState) => {
+    const existingTokens = getState().metamask.tokens
+    const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+
+    if (existingToken) {
+      return Promise.resolve({
+        symbol: existingToken.symbol,
+        decimals: existingToken.decimals,
+      })
+    }
+
+    dispatch(actions.loadingTokenParamsStarted())
+    log.debug(`loadingTokenParams`)
+
+
+    return fetchSymbolAndDecimals(tokenAddress, existingTokens)
+      .then(({ symbol, decimals }) => {
+        dispatch(actions.addToken(tokenAddress, symbol, decimals))
+        dispatch(actions.loadingTokenParamsFinished())
       })
   }
 }
