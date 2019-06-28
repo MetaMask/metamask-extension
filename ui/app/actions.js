@@ -2652,10 +2652,20 @@ function updateCurrentLocale (key) {
   }
 }
 
-function setDProvider(key){
-  return {
-    type: actions.SET_DPROVIDER,
-    value: key,
+function setDProvider (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setDProvider`)
+    background.setDProvider(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_DPROVIDER,
+      value: val,
+    })
   }
 }
 

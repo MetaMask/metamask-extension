@@ -1757,6 +1757,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function called when complete.
    */
   setDProvider (key, cb) {
+    console.log("SETDPROVIDER CALLED ON METAMASK CONTROLLER" + key)
     try {
       this.networkController.setDProvider(key)
       cb(null)

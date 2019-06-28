@@ -10,7 +10,7 @@ const createMetamaskMiddleware = require('./createMetamaskMiddleware')
 const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
-//const createPocketClient = require('./createPocketClient')
+const createPocketClient = require('./createPocketClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
 const ethNetProps = require('eth-net-props')
 const parse = require('url-parse')
@@ -56,7 +56,8 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, dProvider: false })
+    this.dProviderStore = new ObservableStore({dProvider: false})
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, dProviderStore: this.dProviderStore })
     this.on('networkDidChange', this.lookupNetwork)
     // provider and block tracker
     this._provider = null
@@ -154,12 +155,13 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   getDProvider(){
-    return this.store.getState().dProvider
+    return this.dProviderStore.getState().dProvider
   }
 
   setDProvider(key){
-    this.store.updateState({
-      dProvider: key
+    console.log("UPDATING STATE TO " + key)
+    this.dProviderStore.updateState({
+      dProvider: key,
     })
   }
 
@@ -178,11 +180,10 @@ module.exports = class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
-      if (this.store.dProvider) {
-       // log.debug("IS POCKET")
+      console.log(this.dProviderStore.getState())
+      if (this.dProviderStore.getState().dProvider) {
         this._configurePocketProvider(opts)
       } else {
-        // log.debug("IS INFURA")
         this._configureInfuraProvider(opts)
       }
     // other type-based rpc endpoints
@@ -218,8 +219,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configurePocketProvider ({ type }) {
     log.info('NetworkController - configurePocketProvider', type)
-    //const networkClient = createPocketClient({ network: type })
-    const networkClient = createInfuraClient({ network: type })
+    const networkClient = createPocketClient({ network: type })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {

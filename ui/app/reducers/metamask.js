@@ -356,7 +356,9 @@ function reduceMetamask (state, action) {
 
     case actions.SET_DPROVIDER:
       return extend(metamaskState, {
-        dProvider: action.value
+        dProviderStore: {
+          dProvider : action.value,
+        },
       })
 
     case actions.SET_CURRENT_LOCALE:
