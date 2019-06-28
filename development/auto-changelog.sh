@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 set -e
 set -u
@@ -16,22 +16,34 @@ for commit in "${commits[@]}"
 do
     subject="$(git show -s --format="%s" "$commit")"
 
-    # Gets PR id embedded in commit subject, for PRs merged with Github squash merge or regular merge
-    if grep -E -q '\(#[[:digit:]]+\)|#[[:digit:]]+\sfrom' <<< "$subject"
+    # Squash & Merge: the commit subject is parsed as `<description> (#<PR ID>)`
+    if grep -E -q '\(#[[:digit:]]+\)' <<< "$subject"
     then
-        # shellcheck disable=SC2001
-        pr="$(printf "%s" "$subject" | sed 's/^.*#\([[:digit:]]\+\).*$/\1/')"
-        prefix="[#$pr]($URL/pull/$pr): "
+        pr="$(awk '{print $NF}' <<< "$subject")"
+        prefix="[$pr]($URL/pull/${pr###}): "
+        description="$(awk '{NF--; print $0}' <<< "$subject")"
+
+    # Merge: the PR ID is parsed from the git subject (which is of the form `Merge pull request
+    #   #<PR ID> from <branch>`, and the description is assumed to be the first line of the body.
+    #   If no body is found, the description is set to the commit subject
+    elif grep -E -q '#[[:digit:]]+\sfrom' <<< "$subject"
+    then
+        pr="$(awk '{print $4}' <<< "$subject")"
+        prefix="[$pr]($URL/pull/${pr###}): "
+
+        first_line_of_body="$(git show -s --format="%b" "$commit" | head -n 1 | tr -d '\r')"
+        if [[ -z "$first_line_of_body" ]]
+        then
+            description="$subject"
+        else
+            description="$first_line_of_body"
+        fi
+
+    # Normal commits: The commit subject is the description, and the PR ID is omitted.
     else
         pr=''
         prefix=''
-    fi
-
-    body="$(git show -s --format="%b" "$commit" | head -n 1 | tr -d '\r')"
-    if [[ -z "$body" ]]
-    then
-        # shellcheck disable=SC2001
-        body="$(printf "%s" "$subject" | sed "s/\s*(#$pr)//g")"
+        description="$subject"
     fi
 
     # add entry to CHANGELOG
@@ -39,11 +51,11 @@ do
     then
         # shellcheck disable=SC1004
         sed -i'' '/## Current Develop Branch/a\
-- '"$prefix$body"''$'\n' CHANGELOG.md
+- '"$prefix$description"''$'\n' CHANGELOG.md
     else
         # shellcheck disable=SC1004
         sed -i '' '/## Current Develop Branch/a\
-- '"$prefix$body"''$'\n' CHANGELOG.md
+- '"$prefix$description"''$'\n' CHANGELOG.md
     fi
 done
 
