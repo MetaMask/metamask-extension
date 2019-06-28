@@ -125,6 +125,11 @@ class TransactionStateManager extends EventEmitter {
     @returns {object} the txMeta
   */
   addTx (txMeta) {
+    // normalize and validate txParams if present
+    if (txMeta.txParams) {
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
+    }
+
     this.once(`${txMeta.id}:signed`, function () {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
@@ -174,13 +179,9 @@ class TransactionStateManager extends EventEmitter {
     @param [note] {string} - a note about the update for history
   */
   updateTx (txMeta, note) {
-    // validate txParams
+    // normalize and validate txParams if present
     if (txMeta.txParams) {
-      if (typeof txMeta.txParams.data === 'undefined') {
-        delete txMeta.txParams.data
-      }
-      txMeta.txParams = normalizeTxParams(txMeta.txParams, false)
-      this.validateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -210,6 +211,19 @@ class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
+  }
+
+  /**
+   * normalize and validate txParams members
+   * @param txParams {object} - txParams
+   */
+  normalizeAndValidateTxParams (txParams) {
+    if (typeof txParams.data === 'undefined') {
+      delete txParams.data
+    }
+    txParams = normalizeTxParams(txParams, false)
+    this.validateTxParams(txParams)
+    return txParams
   }
 
   /**
