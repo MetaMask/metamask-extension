@@ -31,10 +31,10 @@ workflows:
     - test-unit:
         requires:
         - prep-deps-npm
-    - test-integration-mascara-chrome:
-        requires:
-        - prep-deps-npm
-        - prep-scss
+    # - test-integration-mascara-chrome:
+    #     requires:
+    #     - prep-deps-npm
+    #     - prep-scss
     # - test-integration-mascara-firefox:
     #     requires:
     #     - prep-deps-npm
