@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 6.7.1 Fri Jun 28 2019
+- [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
+
 ## 6.7.0 Tue Jun 18 2019
 
 - [#6623](https://github.com/MetaMask/metamask-extension/pull/6623): Improve contract method data fetching (#6623)
