@@ -2,6 +2,15 @@
 
 ## Current Master
 
+## 4.11.7 Tue Jun 25 2019
+
+- [#294](https://github.com/poanetwork/nifty-wallet/pull/294): Address checksum for RSK chains. RSKIP60
+- [#293](https://github.com/poanetwork/nifty-wallet/pull/293): RSK tx status fix
+- [#292](https://github.com/poanetwork/nifty-wallet/pull/292): Fix gas price for RSK
+- [#291](https://github.com/poanetwork/nifty-wallet/pull/291): Fix fiat value for RSK
+- [#290](https://github.com/poanetwork/nifty-wallet/pull/290): gas limit fix for RSK chain
+- [#289](https://github.com/poanetwork/nifty-wallet/pull/289): RSK testnet support
+
 ## 4.11.6 Thu Jun 06 2019
 
 - [#285](https://github.com/poanetwork/nifty-wallet/pull/285): (Feature) Add RSK mainnet support

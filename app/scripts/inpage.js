@@ -4,7 +4,7 @@ require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
-const MetamaskInpageProvider = require('metamask-inpage-provider')
+const MetamaskInpageProvider = require('nifty-wallet-inpage-provider')
 
 restoreContextAfterImports()
 
