@@ -23,8 +23,23 @@ class ConfigScreen extends Component {
     }
   }
 
+<<<<<<< ef400f8d291b983ac5a95bb2d4a3287dae588f76
   static propTypes = {
     dispatch: PropTypes.func,
+=======
+inherits(ConfigScreen, Component)
+function ConfigScreen (props) {
+  if (props.metamask.dProvider){
+    this.state = {
+      loading: false,
+      provider: "Decentralized"
+    }
+  } else{
+    this.state = {
+      loading: false,
+      provider: "Centralized"
+    }
+>>>>>>> wip
   }
 
   render () {
@@ -83,6 +98,7 @@ class ConfigScreen extends Component {
 
             this.currentProviderDisplay(metamaskState, state),
 
+<<<<<<< ef400f8d291b983ac5a95bb2d4a3287dae588f76
             h('div', { style: {display: 'flex'} }, [
               h('input#new_rpc', {
                 placeholder: 'New RPC URL',
@@ -126,6 +142,42 @@ class ConfigScreen extends Component {
                 marginTop: '20px',
               },
             }),
+=======
+          // POCKET NETWORK UI CHANGES START
+          h('p', {
+            style: {
+              fontFamily: 'Nunito Regular',
+              fontSize: '14px',
+              lineHeight: '18px',
+            },
+          }, [
+            'Choose Pocket Nework for a decentralized blockchain provider for applicable networks',
+          ]),
+
+          h('button', {
+            style: {
+              alignSelf: 'center',
+              marginTop: '20px',
+            },
+            onClick: (event) => {
+              event.preventDefault()
+              this.toggleProvider()
+            },
+          }, this.state.provider),
+
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            },
+          }),
+          // POCKET NETWORK UI CHANGES END
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+>>>>>>> wip
 
             h('div', {
               style: {
@@ -183,8 +235,12 @@ class ConfigScreen extends Component {
                 marginTop: '20px',
               },
             }),
+<<<<<<< ef400f8d291b983ac5a95bb2d4a3287dae588f76
 
             h('div', {
+=======
+            h('button', {
+>>>>>>> wip
               style: {
                 marginTop: '20px',
               },
@@ -233,9 +289,30 @@ class ConfigScreen extends Component {
     )
   }
 
+<<<<<<< ef400f8d291b983ac5a95bb2d4a3287dae588f76
   componentWillUnmount () {
     this.props.dispatch(actions.displayWarning(''))
   }
+=======
+ConfigScreen.prototype.toggleProvider = function (){
+  // console.log(this)
+  if (this.state.provider == "Centralized"){
+    this.setState({
+      provider: "Decentralized"
+    })
+    this.props.dispatch(actions.setDProvider(true))
+  } else {
+    this.setState({
+      provider: "Centralized"
+    })
+    this.props.dispatch(actions.setDProvider(false))
+  }
+}
+
+ConfigScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+>>>>>>> wip
 
   rpcValidation (newRpc, state) {
     if (validUrl.isWebUri(newRpc)) {

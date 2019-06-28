@@ -319,6 +319,10 @@ var actions = {
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
 
+  // DProvider
+  SET_DPROVIDER: 'SET_DPROVIDER',
+  setDProvider,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -2645,6 +2649,13 @@ function updateCurrentLocale (key) {
           dispatch(actions.setLocaleMessages(localeMessages))
         })
       })
+  }
+}
+
+function setDProvider(key){
+  return {
+    type: actions.SET_DPROVIDER,
+    value: key,
   }
 }
 

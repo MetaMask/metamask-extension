@@ -50,6 +50,8 @@ function reduceMetamask (state, action) {
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
+    // // attempting to add new state to metamask state
+    // dProvider: false,
     currentLocale: '',
     preferences: {
       useETHAsPrimaryCurrency: true,
@@ -350,6 +352,11 @@ function reduceMetamask (state, action) {
     case actions.CLOSE_WELCOME_SCREEN:
       return extend(metamaskState, {
         welcomeScreenSeen: true,
+      })
+
+    case actions.SET_DPROVIDER:
+      return extend(metamaskState, {
+        dProvider: action.value
       })
 
     case actions.SET_CURRENT_LOCALE:
