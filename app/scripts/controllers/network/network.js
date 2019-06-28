@@ -188,13 +188,25 @@ module.exports = class NetworkController extends EventEmitter {
       }
     // other type-based rpc endpoints
     } else if (type === POA) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
+      if (this.dProviderStore.getState().dProvider) {
+        this._configurePocketProvider(opts)
+      } else {
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
+      }
     } else if (type === DAI) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
+      if (this.dProviderStore.getState().dProvider) {
+        this._configurePocketProvider(opts)
+      } else {
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
+      }
     } else if (type === POA_SOKOL) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
     } else if (type === GOERLI_TESTNET) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
+      if (this.dProviderStore.getState().dProvider) {
+        this._configurePocketProvider(opts)
+      } else {
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
+      }
     } else if (type === CLASSIC) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(CLASSIC_CODE)[0] })
     } else if (type === RSK) {
@@ -221,11 +233,6 @@ module.exports = class NetworkController extends EventEmitter {
     log.info('NetworkController - configurePocketProvider', type)
     const networkClient = createPocketClient({ network: type })
     this._setNetworkClient(networkClient)
-    // setup networkConfig
-    var settings = {
-      ticker: 'ETH',
-    }
-    this.networkConfig.putState(settings)
   }
 
   _configureLocalhostProvider () {
