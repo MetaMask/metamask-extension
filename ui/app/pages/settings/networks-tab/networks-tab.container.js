@@ -64,8 +64,8 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
       dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
     },
-    showConfirmDeleteNetworkModal: (target) => {
-      return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target }))
+    showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
+      return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
     },
     displayWarning: warning => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),

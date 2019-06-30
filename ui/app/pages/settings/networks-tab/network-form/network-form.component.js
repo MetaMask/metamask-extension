@@ -132,9 +132,13 @@ export default class NetworkForm extends PureComponent {
 
   onDelete = () => {
     const { showConfirmDeleteNetworkModal, rpcUrl, onClear } = this.props
-    showConfirmDeleteNetworkModal(rpcUrl)
-    this.resetForm()
-    onClear()
+    showConfirmDeleteNetworkModal({
+      target: rpcUrl,
+      onConfirm: () => {
+        this.resetForm()
+        onClear()
+      },
+    })
   }
 
   stateIsUnchanged () {

@@ -6,6 +6,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     delRpcTarget: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
     target: PropTypes.string.isRequired,
   }
 
@@ -15,7 +16,10 @@ export default class ConfirmDeleteNetwork extends PureComponent {
 
   handleDelete = () => {
     this.props.delRpcTarget(this.props.target)
-      .then(() => this.props.hideModal())
+      .then(() => {
+        this.props.onConfirm()
+        this.props.hideModal()
+      })
   }
 
   render () {
