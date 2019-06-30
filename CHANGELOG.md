@@ -2,7 +2,7 @@
 
 ## Current Develop Branch
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
-- [#6775](https://github.com/MetaMask/metamask-extension/pull/6775): Started adding visual documentation of MetaMask plugin components with the menu bar component first
+- [#6775](https://github.com/MetaMask/metamask-extension/pull/6775): Started adding visual documentation of MetaMask plugin components with the account menu component first
 
 ## 6.6.2 Fri Jun 07 2019
 
