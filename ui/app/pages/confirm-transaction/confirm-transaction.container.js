@@ -6,11 +6,15 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
+  isTokenMethodAction,
+} from '../../helpers/utils/transactions.util'
+import {
   fetchBasicGasAndTimeEstimates,
 } from '../../ducks/gas/gas.duck'
 
 import {
   getContractMethodData,
+  getTokenParams,
 } from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
@@ -25,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[totalUnconfirmed - 1]
     : {}
+  const { id: transactionId, transactionCategory } = transaction
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
@@ -33,9 +38,10 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     id,
     paramsTransactionId: id && String(id),
-    transactionId: transaction.id && String(transaction.id),
+    transactionId: transactionId && String(transactionId),
     unconfirmedTransactions,
     transaction,
+    isTokenMethodAction: isTokenMethodAction(transactionCategory),
   }
 }
 
@@ -47,6 +53,7 @@ const mapDispatchToProps = dispatch => {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     getContractMethodData: (data) => dispatch(getContractMethodData(data)),
+    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
   }
 }
 

@@ -8,9 +8,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps-npm
-      - prep-docs:
-          requires:
-            - prep-deps-npm
+      # - prep-docs:
+      #    requires:
+      #      - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -73,7 +73,7 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-            - prep-docs
+      #       - prep-docs
             - job-screens
             - all-tests-pass
 
@@ -258,12 +258,12 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: npm run sentry:publish
-      - run:
-          name: github gh-pages docs publish
-          command: >
-            git config --global user.name "metamaskbot" &&
-            git config --global user.email "admin@metamask.io" &&
-            npm run publish-docs
+      # - run:
+      #    name: github gh-pages docs publish
+      #    command: >
+      #      git config --global user.name "metamaskbot" &&
+      #      git config --global user.email "admin@metamask.io" &&
+      #      npm run publish-docs
 
   test-unit:
     docker:

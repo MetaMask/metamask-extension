@@ -37,6 +37,8 @@ export default class ConfirmTransaction extends Component {
     getContractMethodData: PropTypes.func,
     transactionId: PropTypes.string,
     paramsTransactionId: PropTypes.string,
+    getTokenParams: PropTypes.func,
+    isTokenMethodAction: PropTypes.bool,
   }
 
   getParamsTransactionId () {
@@ -49,11 +51,13 @@ export default class ConfirmTransaction extends Component {
       totalUnapprovedCount = 0,
       send = {},
       history,
-      transaction: { txParams: { data } = {} } = {},
+      transaction: { txParams: { data, to } = {} } = {},
       fetchBasicGasAndTimeEstimates,
       getContractMethodData,
       transactionId,
       paramsTransactionId,
+      getTokenParams,
+      isTokenMethodAction,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -63,6 +67,9 @@ export default class ConfirmTransaction extends Component {
 
     fetchBasicGasAndTimeEstimates()
     getContractMethodData(data)
+    if (isTokenMethodAction) {
+      getTokenParams(to)
+    }
     this.props.setTransactionToConfirm(transactionId || paramsTransactionId)
   }
 
