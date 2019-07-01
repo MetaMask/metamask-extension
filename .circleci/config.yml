@@ -66,16 +66,16 @@ workflows:
             - prep-build
             - job-screens
             - all-tests-pass
-      # - job-publish-release:
-      #    filters:
-      #      branches:
-      #        only: master
-      #    requires:
-      #      - prep-deps-npm
-      #      - prep-build
+       - job-publish-release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - prep-deps-npm
+            - prep-build
       #       - prep-docs
-      #      - job-screens
-      #      - all-tests-pass
+            - job-screens
+            - all-tests-pass
 
 jobs:
   prep-deps-npm:
@@ -258,12 +258,12 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: npm run sentry:publish
-      - run:
-          name: github gh-pages docs publish
-          command: >
-            git config --global user.name "metamaskbot" &&
-            git config --global user.email "admin@metamask.io" &&
-            npm run publish-docs
+      # - run:
+      #    name: github gh-pages docs publish
+      #    command: >
+      #      git config --global user.name "metamaskbot" &&
+      #      git config --global user.email "admin@metamask.io" &&
+      #      npm run publish-docs
 
   test-unit:
     docker:
