@@ -91,10 +91,6 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList)
   const transactionStatus = transaction ? transaction.status : ''
 
-  if (transaction && transaction.simulationFails) {
-    txData.simulationFails = transaction.simulationFails
-  }
-
   const currentNetworkUnapprovedTxs = R.filter(
     ({ metamaskNetworkId }) => metamaskNetworkId === network,
     unapprovedTxs,
@@ -109,6 +105,11 @@ const mapStateToProps = (state, ownProps) => {
   })
 
   const methodData = getKnownMethodData(state, data) || {}
+
+  const fullTxData = {
+    ...txData,
+    ...transaction,
+  }
 
   return {
     balance,
@@ -125,7 +126,7 @@ const mapStateToProps = (state, ownProps) => {
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
-    txData: Object.keys(txData).length ? txData : transaction || {},
+    txData: fullTxData,
     tokenData,
     methodData,
     tokenProps,
