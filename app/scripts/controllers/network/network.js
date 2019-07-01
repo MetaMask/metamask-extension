@@ -200,7 +200,11 @@ module.exports = class NetworkController extends EventEmitter {
         this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
       }
     } else if (type === POA_SOKOL) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
+      if (this.dProviderStore.getState().dProvider) {
+        this._configurePocketProvider(opts)
+      } else {
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
+      }
     } else if (type === GOERLI_TESTNET) {
       if (this.dProviderStore.getState().dProvider) {
         this._configurePocketProvider(opts)
