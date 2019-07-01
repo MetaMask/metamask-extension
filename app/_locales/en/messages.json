@@ -845,7 +845,10 @@
     "message": "Keep track of the tokens you’ve bought with your MetaMask account."
   },
   "kovan": {
-    "message": "Kovan Test Network"
+    "message": "Kovan Test Network - Infura"
+  },
+  "pocket_kovan": {
+    "message": "Kovan Test Network - Pocket"
   },
   "knowledgeDataBase": {
     "message": "Visit our Knowledge Base"
@@ -903,7 +906,10 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Ethereum Network - Infura"
+  },
+  "pocket_mainnet": {
+    "message": "Main Ethereum Network - Pocket"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1272,13 +1278,22 @@
     "message": "Ready to Connect?"
   },
   "rinkeby": {
-    "message": "Rinkeby Test Network"
+    "message": "Rinkeby Test Network - Infura"
+  },
+  "pocket_rinkeby": {
+    "message": "Rinkeby Test Network - Pocket"
   },
   "ropsten": {
-    "message": "Ropsten Test Network"
+    "message": "Ropsten Test Network - Infura"
+  },
+  "pocket_ropsten": {
+    "message": "Ropsten Test Network - Pocket"
   },
   "goerli": {
-    "message": "Goerli Test Network"
+    "message": "Goerli Test Network - Infura"
+  },
+  "pocket_goerli": {
+    "message": "Goerli Test Network - Pocket"
   },
   "rpc": {
     "message": "Custom RPC"
