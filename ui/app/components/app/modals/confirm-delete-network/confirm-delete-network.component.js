@@ -34,7 +34,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
         submitType="danger"
       >
         <ModalContent
-          title={`${t('deleteNetwork')}?`}
+          title={t('deleteNetwork')}
           description={t('deleteNetworkDescription')}
         />
       </Modal>
