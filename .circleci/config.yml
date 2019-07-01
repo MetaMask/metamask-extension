@@ -8,9 +8,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps-npm
-      - prep-docs:
-          requires:
-            - prep-deps-npm
+      # - prep-docs:
+      #    requires:
+      #      - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -66,16 +66,16 @@ workflows:
             - prep-build
             - job-screens
             - all-tests-pass
-      - job-publish-release:
-          filters:
-            branches:
-              only: master
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - prep-docs
-            - job-screens
-            - all-tests-pass
+      # - job-publish-release:
+      #    filters:
+      #      branches:
+      #        only: master
+      #    requires:
+      #      - prep-deps-npm
+      #      - prep-build
+      #       - prep-docs
+      #      - job-screens
+      #      - all-tests-pass
 
 jobs:
   prep-deps-npm:
