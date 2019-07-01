@@ -1514,6 +1514,15 @@ describe('MetaMask', function () {
       const deleteButton = await findElement(driver, By.css('.btn-danger'))
       await deleteButton.click()
       await delay(regularDelayMs)
+
+      const confirmDeleteNetworkModal = await findElement(driver, By.css('span .modal'))
+
+      const byConfirmDeleteNetworkButton = By.css('.button.btn-danger.modal-container__footer-button')
+      const confirmDeleteNetworkButton = await driver.wait(until.elementLocated(byConfirmDeleteNetworkButton))
+      await confirmDeleteNetworkButton.click()
+
+      await driver.wait(until.stalenessOf(confirmDeleteNetworkModal))
+
       const newNetworkListItems = await findElements(driver, By.css('.networks-tab__networks-list-name'))
 
       assert.equal(networkListItems.length - 1, newNetworkListItems.length)
