@@ -33,7 +33,9 @@ export default class LoadingNetworkScreen extends PureComponent {
       return loadingMessage
     }
     const { provider, providerId } = this.props
-    const providerName = provider.type
+    const providerName = provider.type.startsWith('pocket_') ?
+                          provider.type.replace('pocket_', '') :
+                          provider.type
 
     let name
 

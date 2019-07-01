@@ -5,6 +5,7 @@ import {
   MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEYBY_CODE,
+  POCKET_RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
 } from '../../../../../app/scripts/controllers/network/enums'
@@ -13,6 +14,7 @@ const networkToClassHash = {
   [MAINNET_CODE]: 'mainnet',
   [ROPSTEN_CODE]: 'ropsten',
   [RINKEYBY_CODE]: 'rinkeby',
+  [POCKET_RINKEBY_CODE]: 'rinkeby',
   [GOERLI_CODE]: 'goerli',
   [KOVAN_CODE]: 'kovan',
 }

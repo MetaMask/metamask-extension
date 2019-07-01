@@ -25,7 +25,9 @@ Network.prototype.render = function () {
   const networkNumber = props.network
   let providerName, providerNick, providerUrl
   try {
-    providerName = props.provider.type
+    providerName = props.provider.type.startsWith('pocket_') ?
+                    props.provider.type.replace('pocket_', '') :
+                    props.provider.type
     providerNick = props.provider.nickname || ''
     providerUrl = props.provider.rpcTarget
   } catch (e) {

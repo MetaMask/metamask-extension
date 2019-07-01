@@ -140,6 +140,27 @@ NetworkDropdown.prototype.render = function () {
     ),
 
     h(
+      DropdownMenuItem, {
+        key: 'pocket_mainnet',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('pocket_mainnet'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'pocket_mainnet' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#29B6AF', // $saffron
+          isSelected: providerType === 'pocket_mainnet',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'pocket_mainnet' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('pocket_mainnet')),
+      ]
+    ),
+
+    h(
       DropdownMenuItem,
       {
         key: 'ropsten',
@@ -158,6 +179,27 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('ropsten')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem, {
+        key: 'pocket_ropsten',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('pocket_ropsten'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'pocket_ropsten' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#ff4a8d', // $saffron
+          isSelected: providerType === 'pocket_ropsten',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'pocket_ropsten' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('pocket_ropsten')),
       ]
     ),
 
@@ -184,6 +226,27 @@ NetworkDropdown.prototype.render = function () {
     ),
 
     h(
+      DropdownMenuItem, {
+        key: 'pocket_kovan',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('pocket_kovan'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'pocket_kovan' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#7057ff', // $cornflower-blue
+          isSelected: providerType === 'pocket_kovan',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'pocket_kovan' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('pocket_kovan')),
+      ]
+    ),
+
+    h(
       DropdownMenuItem,
       {
         key: 'rinkeby',
@@ -206,6 +269,27 @@ NetworkDropdown.prototype.render = function () {
     ),
 
     h(
+      DropdownMenuItem, {
+        key: 'pocket_rinkeby',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('pocket_rinkeby'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'pocket_rinkeby' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#f6c343', // $saffron
+          isSelected: providerType === 'pocket_rinkeby',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'pocket_rinkeby' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('pocket_rinkeby')),
+      ]
+    ),
+
+    h(
       DropdownMenuItem,
       {
         key: 'goerli',
@@ -224,6 +308,27 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'goerli' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('goerli')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem, {
+        key: 'pocket_goerli',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('pocket_goerli'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'pocket_goerli' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#3099f2', // $dodger-blue
+          isSelected: providerType === 'pocket_goerli',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'pocket_goerli' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('pocket_goerli')),
       ]
     ),
 
@@ -299,6 +404,7 @@ NetworkDropdown.prototype.handleClick = function (newProviderType) {
 
 NetworkDropdown.prototype.getNetworkName = function () {
   const { provider } = this.props
+  console.log(this.props)
   const providerName = provider.type
 
   let name
@@ -315,6 +421,16 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('localhost')
   } else if (providerName === 'goerli') {
     name = this.context.t('goerli')
+  } else if (providerName === 'pocket_mainnet') {
+    name = this.context.t('pocket_mainnet')
+  } else if (providerName === 'pocket_ropsten') {
+    name = this.context.t('pocket_ropsten')
+  } else if (providerName === 'pocket_kovan') {
+    name = this.context.t('pocket_kovan')
+  } else if (providerName === 'pocket_rinkeby') {
+    name = this.context.t('pocket_rinkeby')
+  } else if (providerName === 'pocket_goerli') {
+    name = this.context.t('pocket_goerli')
   } else {
     name = provider.nickname || this.context.t('unknownNetwork')
   }
