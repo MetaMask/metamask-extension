@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 6.7.2 Mon Jul 2019
+- [#6783](https://github.com/MetaMask/metamask-extension/pull/6783): Add decentralized infrastructure option
+
 ## 6.7.1 Fri Jun 28 2019
 - [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
 
