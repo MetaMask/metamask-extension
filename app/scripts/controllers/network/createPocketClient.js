@@ -8,7 +8,7 @@ const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/b
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const createPocketMiddleware = require('json-rpc-pocket')
 const BlockTracker = require('eth-block-tracker')
-const devid = 'DEVO7QQqPHCK2h3cGXhh2rY'
+const devid = 'DEVVGQ8VfHgBBet8CyowHcN'
 
 module.exports = createPocketClient
 
