@@ -8,6 +8,7 @@ const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const log = require('loglevel')
 const createMetamaskMiddleware = require('./createMetamaskMiddleware')
 const createInfuraClient = require('./createInfuraClient')
+const createPocketClient = require('./createPocketClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
@@ -16,13 +17,19 @@ const networks = { networkList: {} }
 
 const {
   ROPSTEN,
+  POCKET_ROPSTEN,
   RINKEBY,
+  POCKET_RINKEBY,
   KOVAN,
+  POCKET_KOVAN,
   MAINNET,
+  POCKET_MAINNET,
   LOCALHOST,
   GOERLI,
+  POCKET_GOERLI,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+const POCKET_PROVIDER_TYPES = [POCKET_ROPSTEN, POCKET_RINKEBY, POCKET_KOVAN, POCKET_MAINNET, POCKET_GOERLI]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -143,7 +150,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(POCKET_PROVIDER_TYPES.includes(type) || INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
@@ -175,8 +182,13 @@ module.exports = class NetworkController extends EventEmitter {
     const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    const isPocket = POCKET_PROVIDER_TYPES.includes(type)
+    log.info(isPocket)
     if (isInfura) {
       this._configureInfuraProvider(opts)
+    } else if (isPocket) {
+      //throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
+      this._configurePocketProvider(opts)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -191,6 +203,17 @@ module.exports = class NetworkController extends EventEmitter {
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({ network: type })
+    this._setNetworkClient(networkClient)
+    // setup networkConfig
+    var settings = {
+      ticker: 'ETH',
+    }
+    this.networkConfig.putState(settings)
+  }
+
+  _configurePocketProvider ({ type }) {
+    log.info('NetworkController - configurePocketProvider', type)
+    const networkClient = createPocketClient({ network: type })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {
