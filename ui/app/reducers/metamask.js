@@ -50,8 +50,6 @@ function reduceMetamask (state, action) {
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
-    // // attempting to add new state to metamask state
-    // dProvider: false,
     currentLocale: '',
     preferences: {
       useETHAsPrimaryCurrency: true,
