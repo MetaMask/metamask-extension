@@ -1188,15 +1188,6 @@ div.message-container > div:first-child {
   height: 22px;
 }
 
-.menu-droppo-container::-webkit-scrollbar {
-  width: 0px;
-}
- 
-.menu-droppo-container::-webkit-scrollbar-thumb {
-  border: none;
-  background-clip: content-box;
-}
-
 .hidden {
   visibility: hidden;
 }
