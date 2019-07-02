@@ -187,9 +187,12 @@ function getUseContractAccount (state) {
 }
 
 function getContractAccountOwner (state) {
-  const controllingAccountAddress = Object.keys(state.metamask.contracts)[0]
+  let controllingAccount = ''
+  if(state.metamask.contracts){
+    const controllingAccountAddress = Object.keys(state.metamask.contracts)[0]
   
-  const controllingAccount = state.metamask.contracts[controllingAccountAddress].controllingAccount
+    controllingAccount = state.metamask.contracts[controllingAccountAddress].controllingAccount
+  }
   return controllingAccount
 }
 

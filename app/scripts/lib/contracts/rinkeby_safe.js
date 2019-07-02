@@ -47,6 +47,7 @@ class GnosisSafe {
     }
 
     // with controlled keyring logic, need to make the tx from the controlling account
+    // gnosis to do: hand make the data field - how though?
     /**
      * 
      * @param {*} originalTxParams 
@@ -143,6 +144,22 @@ class GnosisSafe {
             return payload
         }
     }
+
+
+    // function requiredTxGas(address to, uint256 value, bytes calldata data, Enum.Operation operation)
+    // external
+    // authorized
+    // returns (uint256)
+    // {
+    //   uint256 startGas = gasleft();
+    //   // We don't provide an error message here, as we use it to return the estimate
+    //   // solium-disable-next-line error-reason
+    //   require(execute(to, value, data, operation, gasleft()));
+    //   uint256 requiredGas = startGas - gasleft();
+    //   // Convert response to string and return via error message
+    //   revert(string(abi.encodePacked(requiredGas)));
+    // }
+
   
     async generateSafeTxGasEstimate (safeAddress, estimatedData) {
         let estimate

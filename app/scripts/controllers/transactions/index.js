@@ -222,6 +222,11 @@ class TransactionController extends EventEmitter {
 
     try {
       // check whether recipient account is blacklisted
+
+      // gnosis to do: need to also check the original tx params here for the to field being blacklisted
+      if (isContractAccountFlow) {
+        recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, originalTxParams.to)
+      }
       recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
       // add default tx params
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)

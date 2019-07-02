@@ -11,6 +11,7 @@ export default class ConfirmRemoveAccount extends Component {
     removeAccount: PropTypes.func.isRequired,
     identity: PropTypes.object.isRequired,
     network: PropTypes.string.isRequired,
+    useContractAccount: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -60,6 +61,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   render () {
     const { t } = this.context
+    const { useContractAccount } = this.props
 
     return (
       <Modal
@@ -74,7 +76,7 @@ export default class ConfirmRemoveAccount extends Component {
         <div>
           { this.renderSelectedAccount() }
           <div className="confirm-remove-account__description">
-            { t('removeAccountDescription') }
+            { useContractAccount ? t('removeContractAccountDescription') : t('removeAccountDescription')  }
             <a
               className="confirm-remove-account__link"
               rel="noopener noreferrer"
