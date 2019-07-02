@@ -25,7 +25,7 @@ export default class NetworksTab extends PureComponent {
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
-    delRpcTarget: PropTypes.func.isRequired,
+    showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,
@@ -160,7 +160,7 @@ export default class NetworksTab extends PureComponent {
     const { t } = this.context
     const {
       setRpcTarget,
-      delRpcTarget,
+      showConfirmDeleteNetworkModal,
       setSelectedSettingsRpcUrl,
       setNetworksTabAddMode,
       selectedNetwork: {
@@ -199,7 +199,7 @@ export default class NetworksTab extends PureComponent {
                   setNetworksTabAddMode(false)
                   setSelectedSettingsRpcUrl(null)
                 }}
-                delRpcTarget={delRpcTarget}
+                showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
                 viewOnly={viewOnly}
                 isCurrentRpcTarget={providerUrl === rpcUrl}
                 networksTabIsInAddMode={networksTabIsInAddMode}

@@ -8,7 +8,7 @@ import {
   displayWarning,
   setNetworksTabAddMode,
   editRpc,
-  delRpcTarget,
+  showModal,
 } from '../../../store/actions'
 import { defaultNetworksData } from './networks-tab.constants'
 const defaultNetworks = defaultNetworksData.map(network => ({ ...network, viewOnly: true }))
@@ -64,8 +64,8 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
       dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
     },
-    delRpcTarget: (target) => {
-      dispatch(delRpcTarget(target))
+    showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
+      return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
     },
     displayWarning: warning => dispatch(displayWarning(warning)),
     setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),

@@ -29,6 +29,7 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ConfirmDeleteNetwork from './confirm-delete-network'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -290,6 +291,19 @@ const MODALS = {
 
   CONFIRM_REMOVE_ACCOUNT: {
     contents: h(ConfirmRemoveAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_DELETE_NETWORK: {
+    contents: h(ConfirmDeleteNetwork),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

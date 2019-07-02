@@ -1208,6 +1208,12 @@
   "resetAccountDescription": {
     "message": "Resetting your account will clear your transaction history."
   },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
   "restoreFromSeed": {
     "message": "Restore account?"
   },
