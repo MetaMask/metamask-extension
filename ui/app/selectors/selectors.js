@@ -190,7 +190,6 @@ function getContractAccountOwner (state) {
   let controllingAccount = ''
   if(state.metamask.contracts){
     const controllingAccountAddress = Object.keys(state.metamask.contracts)[0]
-
     controllingAccount = state.metamask.contracts[controllingAccountAddress].controllingAccount
   }
   return controllingAccount
