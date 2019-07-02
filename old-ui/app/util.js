@@ -1,6 +1,9 @@
 const ethUtil = require('ethereumjs-util')
 const ethNetProps = require('eth-net-props')
 const {
+  POA_SOKOL_CODE,
+  POA_CODE,
+  DAI_CODE,
   RSK_CODE,
   RSK_TESTNET_CODE,
 } = require('../../app/scripts/controllers/network/enums')
@@ -51,6 +54,7 @@ module.exports = {
   ifHardwareAcc,
   getAllKeyRingsAccounts,
   ifRSK,
+  ifPOA,
   toChecksumAddress,
   isValidChecksumAddress,
 }
@@ -385,6 +389,12 @@ function ifRSK (network) {
   if (!network) return false
   const numericNet = isNaN(network) ? network : parseInt(network)
   return numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
+}
+
+function ifPOA (network) {
+  if (!network) return false
+  const numericNet = isNaN(network) ? network : parseInt(network)
+  return numericNet === POA_SOKOL_CODE || numericNet === POA_CODE || numericNet === DAI_CODE
 }
 
 function toChecksumAddressRSK (address, chainId = null) {

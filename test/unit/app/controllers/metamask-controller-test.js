@@ -96,7 +96,7 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#getGasPrice', function () {
+  describe('#getGasPrice (ETH)', function () {
 
     it('gives the 50th percentile lowest accepted gas price from recentBlocksController', async function () {
       const realRecentBlocksController = metamaskController.recentBlocksController
@@ -115,8 +115,84 @@ describe('MetaMaskController', function () {
         },
       }
 
+
+      metamaskController.networkController = {
+        store: {
+          getState: () => {
+            return {
+              network: '1',
+            }
+          },
+        },
+      }
+
       const gasPrice = await metamaskController.getGasPrice()
       assert.equal(gasPrice, '0x174876e800', 'accurately estimates 65th percentile accepted gas price')
+
+      metamaskController.recentBlocksController = realRecentBlocksController
+    })
+  })
+
+  describe('#getGasPrice (RSK)', function () {
+
+    const networkController = {
+      store: {
+        getState: () => {
+          return {
+            network: '30',
+          }
+        },
+      },
+    }
+
+    const recentBlocksController1 = {
+      store: {
+        getState: () => {
+          return {
+            recentBlocks: [
+              { number: '0x1', minimumGasPrice: '59240010' },
+              { number: '0x2', minimumGasPrice: '59240005' },
+              { number: '0x3', minimumGasPrice: '59240000' },
+            ],
+          }
+        },
+      },
+    }
+
+    const recentBlocksController2 = {
+      store: {
+        getState: () => {
+          return {
+            recentBlocks: [
+              { number: '0x4', minimumGasPrice: '0' },
+            ],
+          }
+        },
+      },
+    }
+
+    it('gives the min gas price from the latest block', async function () {
+
+      metamaskController.networkController = networkController
+      const realRecentBlocksController = metamaskController.recentBlocksController
+
+      metamaskController.recentBlocksController = recentBlocksController1
+
+      const gasPrice = await metamaskController.getGasPrice()
+      assert.equal(gasPrice, '0x387ee40', 'takes the min gas price from the latest block')
+
+      metamaskController.recentBlocksController = realRecentBlocksController
+    })
+
+    it('returns not 0 gas price from the latest block', async function () {
+
+      metamaskController.networkController = networkController
+      const realRecentBlocksController = metamaskController.recentBlocksController
+
+      metamaskController.recentBlocksController = recentBlocksController2
+
+      const gasPrice = await metamaskController.getGasPrice()
+      assert.equal(gasPrice, '0x3b9aca00', 'returns not 0 for min gas price from the latest block')
 
       metamaskController.recentBlocksController = realRecentBlocksController
     })
