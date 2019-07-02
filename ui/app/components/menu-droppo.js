@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const findDOMNode = require('react-dom').findDOMNode
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+import { CSSTransitionGroup } from 'react-transition-group'
 
 module.exports = MenuDroppoComponent
 
@@ -54,7 +54,7 @@ MenuDroppoComponent.prototype.render = function () {
       `),
 
       useCssTransition
-        ? h(ReactCSSTransitionGroup, {
+        ? h(CSSTransitionGroup, {
           className: 'css-transition-group',
           transitionName: 'menu-droppo',
           transitionEnterTimeout: parseInt(speed),

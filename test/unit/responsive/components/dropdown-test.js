@@ -3,7 +3,7 @@ const assert = require('assert')
 const h = require('react-hyperscript')
 const sinon = require('sinon')
 const path = require('path')
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdowns', 'index.js')).Dropdown
+const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'old-ui', 'app', 'components', 'dropdown.js')).Dropdown
 
 const { createMockStore } = require('redux-test-utils')
 const { mountWithStore } = require('../../../lib/render-helpers')

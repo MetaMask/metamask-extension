@@ -1,7 +1,7 @@
 const Ganache = require('ganache-core')
 const nock = require('nock')
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
+import Adapter from 'enzyme-adapter-react-16'
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
@@ -32,7 +32,7 @@ global.fetch = require('isomorphic-fetch')
 require('jsdom-global')()
 
 // localStorage
-window.localStorage = {}
+Object.defineProperty(window, 'localStorage', {value: {}})
 
 // crypto.getRandomValues
 if (!window.crypto) window.crypto = {}

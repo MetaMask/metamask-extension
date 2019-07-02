@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group'
 import WalletView from '../wallet-view'
 import { WALLET_VIEW_SIDEBAR } from './sidebar.constants'
 
@@ -34,13 +34,13 @@ export default class Sidebar extends Component {
 
     return (
       <div>
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName={transitionName}
           transitionEnterTimeout={300}
           transitionLeaveTimeout={200}
         >
           { sidebarOpen ? this.renderSidebarContent() : null }
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
         { sidebarOpen ? this.renderOverlay() : null }
       </div>
     )

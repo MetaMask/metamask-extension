@@ -1,22 +1,24 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const ReactTooltip = require('react-tooltip-component')
+import React, { Component } from 'react'
+import ReactTooltip from 'react-tooltip'
+
+class Tooltip extends Component {
+
+    render () {
+      const props = this.props
+      const { position, title, children, id } = props
+
+      return (<React.Fragment>
+      {children}
+      <ReactTooltip
+        id={id}
+        place={position || 'left'}
+        type="dark"
+      >
+        {title}
+      </ReactTooltip>
+      </React.Fragment>)
+    }
+
+}
 
 module.exports = Tooltip
-
-inherits(Tooltip, Component)
-function Tooltip () {
-  Component.call(this)
-}
-
-Tooltip.prototype.render = function () {
-  const props = this.props
-  const { position, title, children } = props
-
-  return h(ReactTooltip, {
-    position: position || 'left',
-    title,
-    fixed: true,
-  }, children)
-}
