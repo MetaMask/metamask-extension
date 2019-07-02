@@ -54,15 +54,11 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
+const { ifPOA, ifRSK } = require('../../old-ui/app/util')
 
 const {
-  POA_CODE,
-  DAI_CODE,
-  POA_SOKOL_CODE,
   CLASSIC_CODE,
-  MAINNET_CODE,
-  RSK_CODE,
-  RSK_TESTNET_CODE } = require('./controllers/network/enums')
+  MAINNET_CODE } = require('./controllers/network/enums')
 const accountsPerPage = 5
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -1522,6 +1518,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const networkIdStr = networkController.store.getState().network
       const networkId = parseInt(networkIdStr)
       const isETHC = networkId === CLASSIC_CODE || networkId === MAINNET_CODE
+      const isRSK = ifRSK(networkId)
       let gasPrice
 
       if (isETHC) {
@@ -1537,6 +1534,9 @@ module.exports = class MetamaskController extends EventEmitter {
           gasPrice = this.getGasPriceFromBlocks(networkId)
           resolve(gasPrice)
         }
+      } else if (isRSK) {
+        gasPrice = this.getGasPriceFromLastBlockRSK(networkId)
+        resolve(gasPrice)
       } else {
         gasPrice = this.getGasPriceFromBlocks(networkId)
         resolve(gasPrice)
@@ -1554,7 +1554,7 @@ module.exports = class MetamaskController extends EventEmitter {
   getGasPriceFromBlocks (networkId) {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
-    const isPOA = networkId === POA_SOKOL_CODE || networkId === POA_CODE || networkId === DAI_CODE
+    const isPOA = ifPOA(networkId)
 
     // Return 1 gwei if using a POA network or if there are no blocks have been observed:
     if (isPOA || recentBlocks.length === 0) {
@@ -1575,15 +1575,33 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     .map(number => number && number.div(GWEI_BN).toNumber()).filter(number => typeof number !== 'undefined' && number !== 0)
 
-    if (networkId === RSK_CODE || networkId === RSK_TESTNET_CODE) {
-      if (lowestPrices.length === 0) {
-        lowestPrices.push(1)
-      }
-    }
-
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }
+
+  /**
+   * A method to get min gas price from the best block (last block in the chain) for RSK.
+   * https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP09.md
+   * Related issue: https://github.com/poanetwork/nifty-wallet/issues/301
+   * @returns {string} A hex representation of the suggested wei gas price.
+   */
+  getGasPriceFromLastBlockRSK (networkId) {
+    const { recentBlocksController } = this
+    const { recentBlocks } = recentBlocksController.store.getState()
+
+    const recentBlock = recentBlocks
+      .sort((block1, block2) => block1.number - block2.number)[recentBlocks.length - 1]
+
+    const gasPrice = recentBlock && recentBlock.minimumGasPrice
+
+    const gasPriceInt = parseInt(gasPrice, 10)
+
+    if (gasPriceInt !== 0) {
+      return '0x' + gasPriceInt.toString(16)
+    } else {
+      return '0x' + GWEI_BN.toString(16)
+    }
   }
 
   /**

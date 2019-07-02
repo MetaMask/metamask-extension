@@ -14,6 +14,7 @@ const {
   normalizeNumberToWei,
   isHex,
   ifRSK,
+  ifPOA,
   toChecksumAddress,
   isValidChecksumAddress,
 } = require('../../../../old-ui/app/util')
@@ -342,6 +343,22 @@ describe('normalizing values', function () {
       var result3 = ifRSK(1)
       assert(!result3)
       var result4 = ifRSK()
+      assert(!result4)
+    })
+  })
+
+
+  describe('#ifPOA', function () {
+    it('checks if this is POA chain', function () {
+      var resultSokol = ifPOA(77)
+      assert(resultSokol)
+      var resultCore = ifPOA(99)
+      assert(resultCore)
+      var resultXDai = ifPOA(100)
+      assert(resultXDai)
+      var resultMainnet = ifPOA(1)
+      assert(!resultMainnet)
+      var result4 = ifPOA()
       assert(!result4)
     })
   })
