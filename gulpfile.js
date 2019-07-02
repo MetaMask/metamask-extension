@@ -501,6 +501,8 @@ function generateBundler (opts, performBundle) {
   }
 
   let bundler = browserify(browserifyOpts)
+    .transform('babelify')
+    .transform('brfs')
 
   if (opts.buildLib) {
     bundler = bundler.require(opts.dependenciesToBundle)

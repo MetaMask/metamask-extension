@@ -31,7 +31,7 @@
     "test:flat:build:tests": "node test/integration/index.js",
     "test:flat:build:states": "node development/genStates.js",
     "test:flat:build:locales": "mkdirp dist/chrome && cp -R app/_locales dist/chrome/_locales",
-    "test:flat:build:ui": "npm run test:flat:build:states && browserify ./development/mock-dev.js -o ./development/bundle.js",
+    "test:flat:build:ui": "npm run test:flat:build:states && browserify --transform babelify --transform brfs ./development/mock-dev.js -o ./development/bundle.js",
     "ganache:start": "ganache-cli --noVMErrorsOnRPCResponse -i 5777 -m 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "eslint .",
@@ -44,12 +44,6 @@
     "storybook": "start-storybook -p 6006 -c .storybook",
     "update-changelog": "./development/auto-changelog.sh",
     "rollback": "./development/rollback.sh"
-  },
-  "browserify": {
-    "transform": [
-      "babelify",
-      "brfs"
-    ]
   },
   "dependencies": {
     "@material-ui/core": "1.0.0",
