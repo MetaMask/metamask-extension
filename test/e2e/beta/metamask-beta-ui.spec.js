@@ -428,6 +428,10 @@ describe('MetaMask', function () {
     })
 
     it('confirms the transaction', async function () {
+      const transactionAmounts = await findElements(driver, By.css('.currency-display-component__text'))
+      const transactionAmount = transactionAmounts[0]
+      assert.equal(await transactionAmount.getText(), '1')
+
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(largeDelayMs)
@@ -1105,6 +1109,10 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txListValue, /-1.5\s*TST/), 10000)
       await txListValue.click()
       await delay(regularDelayMs)
+
+      const transactionAmounts = await findElements(driver, By.css('.currency-display-component__text'))
+      const transactionAmount = transactionAmounts[0]
+      assert(await transactionAmount.getText(), '1.5 TST')
 
       // Set the gas limit
       const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')), 10000)
