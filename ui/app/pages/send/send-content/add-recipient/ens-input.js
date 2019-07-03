@@ -145,7 +145,7 @@ class EnsInput extends Component {
           <input
             className="ens-input__wrapper__input"
             type="text"
-            placeholder={t('recipientAddress')}
+            placeholder={t('recipientAddressPlaceholder')}
             onChange={this.onChange}
             value={selectedAddress || input}
             autoFocus
