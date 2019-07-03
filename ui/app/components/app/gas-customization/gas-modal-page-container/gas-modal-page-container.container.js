@@ -75,11 +75,16 @@ import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-ro
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
+  const { selectedAddressTxList } = state.metamask
+  const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
+  const { txData } = modalProps || {}
   const { transaction = {} } = ownProps
+  const selectedTransaction = selectedAddressTxList.find(({ id }) => id === (transaction.id || txData.id))
+
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
 
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, selectedTransaction)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
@@ -116,8 +121,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
-  const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
-  const { txData } = modalProps || {}
 
   return {
     hideBasic,
@@ -293,12 +296,10 @@ function calcCustomGasLimit (customGasLimitInHex) {
   return parseInt(customGasLimitInHex, 16)
 }
 
-function getTxParams (state, transactionId) {
+function getTxParams (state, selectedTransaction = {}) {
   const { confirmTransaction: { txData }, metamask: { send } } = state
-  const pendingTransactions = submittedPendingTransactionsSelector(state)
-  const pendingTransaction = pendingTransactions.find(({ id }) => id === transactionId)
-  const { txParams: pendingTxParams } = pendingTransaction || {}
-  return txData.txParams || pendingTxParams || {
+  const { txParams } = selectedTransaction
+  return txParams || {
     from: send.from,
     gas: send.gasLimit || '0x5208',
     gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
