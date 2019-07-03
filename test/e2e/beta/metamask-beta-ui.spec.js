@@ -688,7 +688,7 @@ describe('MetaMask', function () {
       await delay(tinyDelayMs)
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       await delay(tinyDelayMs)
@@ -1344,10 +1344,10 @@ describe('MetaMask', function () {
     })
 
     it('submits the transaction', async function () {
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {
