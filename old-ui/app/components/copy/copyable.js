@@ -14,13 +14,15 @@ class Copyable extends CopyComponent {
         style={{
           cursor: 'pointer',
         }}
+        data-tip
+        data-for="copyable"
         onClick={(event) => this.onClick(event, value)}
       >{children}
       </span>
     )
 
     return (
-      this.renderTooltip(message, position, tooltipChild)
+      this.renderTooltip(message, position, tooltipChild, 'copyable')
     )
   }
 

@@ -144,6 +144,7 @@ TransactionListItem.prototype.render = function () {
         h(Tooltip, {
           title: 'Transaction Number',
           position: 'right',
+          id: 'transactionListItem',
         }, [
           h('span', {
             style: {
@@ -155,6 +156,8 @@ TransactionListItem.prototype.render = function () {
               justifyContent: 'center',
               padding: '10px',
             },
+            'data-tip': '',
+            'data-for': 'transactionListItem',
           }, nonce),
         ]),
 
@@ -288,8 +291,12 @@ function renderErrorOrWarning (transaction, network) {
         h(Tooltip, {
           title: message,
           position: 'bottom',
+          id: 'transactionListErrorItem',
         }, [
-          h(`div`, ` (Failed)`),
+          h(`div`, {
+            'data-tip': '',
+            'data-for': 'transactionListErrorItem',
+          }, ` (Failed)`),
         ])
     )
   }

@@ -42,7 +42,10 @@ export default class InfoBox extends Component {
                       'token-list__token--disabled': tokenAlreadyAdded,
                     })}
                     onClick={() => !tokenAlreadyAdded && onToggleToken(results[i])}
-                    key={key || 'tokenRow'}>
+                    key={key || 'tokenRow'}
+                    data-tip=""
+                    data-for={`addToken{key}`}
+                    >
                       <div
                         className="token-list__token-icon"
                         style={{
@@ -60,8 +63,9 @@ export default class InfoBox extends Component {
                       position="top"
                       title={title}
                       key={i}
+                      id={`addToken{i}`}
                     >
-                      {tokenRow()}
+                      {tokenRow(i)}
                     </Tooltip> : tokenRow(i)
                   )
                 })

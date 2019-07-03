@@ -26,11 +26,14 @@ TransactionIcon.prototype.render = function () {
       return h(Tooltip, {
         title: 'Pending',
         position: 'right',
+        id: 'transactionIcon',
       }, [
         h('i.new-tx', {
           style: {
             marginLeft: '10px',
           },
+          'data-tip': '',
+          'data-for': 'transactionIcon',
         }),
       ])
   }

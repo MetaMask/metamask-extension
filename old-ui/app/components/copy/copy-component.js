@@ -28,11 +28,12 @@ class CopyComponent extends Component {
     clearTimeout(this.timerID)
   }
 
-  renderTooltip (message, position, children) {
+  renderTooltip (message, position, children, id) {
     return (
       <Tooltip
         title={message}
         position={position}
+        id={id}
       >
       {children}
       </Tooltip>

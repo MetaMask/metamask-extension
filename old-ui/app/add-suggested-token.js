@@ -58,13 +58,16 @@ AddSuggestedTokenScreen.prototype.render = function () {
 
           h('div', [
             h(Tooltip, {
-              position: 'top',
               title: 'The contract of the actual token contract. Click for more info.',
+              position: 'top',
+              id: 'addSuggestedToken',
             }, [
               h('a', {
                 style: { fontWeight: 'bold', paddingRight: '10px'},
                 href: 'https://support.metamask.io/kb/article/24-what-is-a-token-contract-address',
                 target: '_blank',
+                'data-tip': '',
+                'data-for': 'addSuggestedToken',
               }, [
                 h('span', 'Token Contract Address  '),
                 h('i.fa.fa-question-circle'),

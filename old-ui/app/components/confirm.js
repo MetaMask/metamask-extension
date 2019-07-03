@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 
 class ConfirmScreen extends Component {
 	static propTypes = {
@@ -68,11 +67,4 @@ class ConfirmScreen extends Component {
 	}
 }
 
-const mapStateToProps = (state) => {
-	return {
-		metamask: state.metamask,
-		warning: state.appState.warning,
-	}
-}
-
-module.exports = connect(mapStateToProps)(ConfirmScreen)
+module.exports = ConfirmScreen

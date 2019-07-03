@@ -70,17 +70,20 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 
         h(Tooltip, {
           title: 'Your DEN is your password-encrypted storage within Nifty Wallet.',
-        }, [
-          h('i.fa.fa-question-circle.pointer', {
-            style: {
-              fontSize: '18px',
-              position: 'relative',
-              color: '#60db97',
-              top: '2px',
-              marginLeft: '4px',
-            },
-          }),
-        ]),
+          id: 'initMenu',
+        },
+
+        h('i.fa.fa-question-circle.pointer', {
+          style: {
+            fontSize: '18px',
+            position: 'relative',
+            color: '#60db97',
+            top: '2px',
+            marginLeft: '4px',
+          },
+          'data-tip': '',
+          'data-for': 'initMenu',
+        })),
       ]),
 
       state.warning ? h('div', {

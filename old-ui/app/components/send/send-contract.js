@@ -8,10 +8,11 @@ import ErrorComponent from '../error'
 import ToastComponent from '../toast'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
-import abiEncoder from 'web3-eth-abi'
+import { AbiCoder } from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
 import CopyButton from '../copy/copy-button'
+const abiEncoder = new AbiCoder()
 
 class SendTransactionField extends Component {
 	constructor (props) {
