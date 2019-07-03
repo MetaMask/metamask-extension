@@ -30,7 +30,7 @@ function delay (time) {
 
 
 function createEstimateGasMiddleware () {
-  return createAsyncMiddleware(async (req, res, next) => {
+  return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'eth_estimateGas' && inTest) {
       await delay(2000)
     }

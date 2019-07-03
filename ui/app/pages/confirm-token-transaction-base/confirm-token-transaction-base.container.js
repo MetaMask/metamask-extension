@@ -27,7 +27,7 @@ const mapStateToProps = (state, ownProps) => {
   } = confirmTransaction
 
   const transaction = selectedAddressTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId))
-  console.log('!!! * transaction', transaction)
+
   const {
     ethTransactionTotal,
     fiatTransactionTotal,

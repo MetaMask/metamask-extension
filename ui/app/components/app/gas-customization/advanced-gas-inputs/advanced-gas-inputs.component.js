@@ -16,10 +16,6 @@ export default class AdvancedTabContent extends Component {
     }
     this.changeGasPrice = debounce(this.changeGasPrice, 500)
     this.changeGasLimit = debounce(this.changeGasLimit, 500)
-    const tempSetState = this.setState.bind(this)
-    this.setState = (...args) => {
-      return tempSetState(...args)
-    }
   }
 
 

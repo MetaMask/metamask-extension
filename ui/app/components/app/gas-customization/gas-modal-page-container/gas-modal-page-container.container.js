@@ -50,9 +50,6 @@ import {
   getTokenBalance,
 } from '../../../../pages/send/send.selectors'
 import {
-  submittedPendingTransactionsSelector,
-} from '../../../../selectors/transactions'
-import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'
 import {
@@ -297,7 +294,7 @@ function calcCustomGasLimit (customGasLimitInHex) {
 }
 
 function getTxParams (state, selectedTransaction = {}) {
-  const { confirmTransaction: { txData }, metamask: { send } } = state
+  const { metamask: { send } } = state
   const { txParams } = selectedTransaction
   return txParams || {
     from: send.from,
