@@ -812,6 +812,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      assert(Number(gasLimitInput.getAttribute('value')) < 100000, 'Gas Limit too high')
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
