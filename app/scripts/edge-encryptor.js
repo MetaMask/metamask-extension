@@ -74,8 +74,10 @@ class EdgeEncryptor {
 
       var passBuffer = Unibabel.utf8ToBuffer(password)
       var saltBuffer = Unibabel.base64ToBuffer(salt)
+      const iterations = 10000
+      const length = 32 // SHA256 hash size
       return new Promise((resolve) => {
-          var key = asmcrypto.PBKDF2_HMAC_SHA256.bytes(passBuffer, saltBuffer, 10000)
+          var key = asmcrypto.Pbkdf2HmacSha256(passBuffer, saltBuffer, iterations, length)
           resolve(key)
       })
   }
