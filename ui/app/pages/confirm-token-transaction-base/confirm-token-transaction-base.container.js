@@ -26,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
     txData: { id: transactionId, txParams: { to: tokenAddress, data } = {} } = {},
   } = confirmTransaction
 
-  const transaction = selectedAddressTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId))
+  const transaction = selectedAddressTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId)) || {}
 
   const {
     ethTransactionTotal,

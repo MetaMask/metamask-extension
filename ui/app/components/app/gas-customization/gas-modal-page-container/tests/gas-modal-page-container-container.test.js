@@ -63,6 +63,9 @@ describe('gas-modal-page-container container', () => {
             modalState: {
               props: {
                 hideBasic: true,
+                txData: {
+                  id: 34,
+                },
               },
             },
           },
@@ -82,6 +85,14 @@ describe('gas-modal-page-container container', () => {
           provider: {
             type: 'mainnet',
           },
+          selectedAddressTxList: [{
+            id: 34,
+            txParams: {
+              gas: '0x1600000',
+              gasPrice: '0x3200000',
+              value: '0x640000000000000',
+            },
+          }],
         },
         gas: {
           basicEstimates: {
@@ -171,7 +182,7 @@ describe('gas-modal-page-container container', () => {
           mockOwnProps: Object.assign({}, baseMockOwnProps, {
             transaction: { id: 34, status: 'submitted' },
           }),
-          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true, transaction: { id: 34, status: 'submitted' } }),
+          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true, transaction: { id: 34 } }),
         },
         {
           mockState: Object.assign({}, baseMockState, {

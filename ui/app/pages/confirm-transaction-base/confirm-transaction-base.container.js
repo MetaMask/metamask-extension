@@ -52,7 +52,7 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
-  const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList)
+  const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList) || {}
   const {
     from: fromAddress,
     to: txParamsToAddress,

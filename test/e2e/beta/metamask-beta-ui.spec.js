@@ -340,7 +340,7 @@ describe('MetaMask', function () {
     it('confirms the transaction', async function () {
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
-      await delay(largeDelayMs)
+      await delay(largeDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {

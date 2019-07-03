@@ -118,13 +118,13 @@ export default class AdvancedTabContent extends Component {
         })}>
           <div
             className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-            onClick={() => onChange(value + 1)}
+            onClick={() => onChange({ target: { value: value + 1 } })}
           >
             <i className="fa fa-sm fa-angle-up" />
           </div>
           <div
             className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-            onClick={() => onChange(Math.max(value - 1, 0))}
+            onClick={() => onChange({ target: { value: Math.max(value - 1, 0) } })}
           >
             <i className="fa fa-sm fa-angle-down" />
           </div>
