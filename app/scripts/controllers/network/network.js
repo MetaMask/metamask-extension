@@ -183,7 +183,6 @@ module.exports = class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     const isPocket = POCKET_PROVIDER_TYPES.includes(type)
-    log.info(isPocket)
     if (isInfura) {
       this._configureInfuraProvider(opts)
     } else if (isPocket) {
