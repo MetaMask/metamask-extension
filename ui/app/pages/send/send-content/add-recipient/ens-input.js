@@ -148,6 +148,7 @@ class EnsInput extends Component {
             placeholder={t('recipientAddress')}
             onChange={this.onChange}
             value={selectedAddress || input}
+            autoFocus
           />
           <div
             className={c('ens-input__wrapper__action-icon', {
