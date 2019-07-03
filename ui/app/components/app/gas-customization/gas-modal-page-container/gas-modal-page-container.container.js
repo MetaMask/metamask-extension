@@ -74,7 +74,7 @@ import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-r
 const mapStateToProps = (state, ownProps) => {
   const { selectedAddressTxList } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
-  const { txData } = modalProps || {}
+  const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
   const selectedTransaction = selectedAddressTxList.find(({ id }) => id === (transaction.id || txData.id))
 

@@ -685,11 +685,13 @@ describe('MetaMask', function () {
     })
 
     it('confirms a transaction', async () => {
+      await delay(tinyDelayMs)
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
       await delay(regularDelayMs)
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      await delay(tinyDelayMs)
       const navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('4'), true, 'transaction confirmed')
     })
@@ -792,7 +794,7 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(contractStatus, /Deposit\sinitiated/), 10000)
 
       await driver.switchTo().window(extension)
-      await delay(largeDelayMs)
+      await delay(largeDelayMs * 2)
 
       await findElements(driver, By.css('.transaction-list-item'))
       const [txListValue] = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
@@ -812,7 +814,8 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
-      assert(Number(gasLimitInput.getAttribute('value')) < 100000, 'Gas Limit too high')
+      const gasLimitValue = await gasLimitInput.getAttribute('value')
+      assert(Number(gasLimitValue) < 100000, 'Gas Limit too high')
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
@@ -871,7 +874,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       const txListItem = await findElement(driver, By.css('.transaction-list-item'))
       await txListItem.click()
