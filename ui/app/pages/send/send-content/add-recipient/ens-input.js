@@ -101,7 +101,16 @@ class EnsInput extends Component {
       })
   }
 
+  onPaste = event => {
+    event.clipboardData.items[0].getAsString(text => {
+      if (isValidAddress(text)) {
+        this.props.updateSendTo(text)
+      }
+    })
+  }
+
   onChange = e => {
+    console.log('onchange', e.target.value)
     const { network, onChange, updateEnsResolution, updateEnsResolutionError } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
@@ -147,6 +156,7 @@ class EnsInput extends Component {
             type="text"
             placeholder={t('recipientAddressPlaceholder')}
             onChange={this.onChange}
+            onPaste={this.onPaste}
             value={selectedAddress || input}
             autoFocus
           />
