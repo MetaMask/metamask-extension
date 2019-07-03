@@ -1217,8 +1217,8 @@
   "recents": {
     "message": "Recents"
   },
-  "recipientAddress": {
-    "message": "Recipient Address"
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
   },
   "refundAddress": {
     "message": "Your Refund Address"
