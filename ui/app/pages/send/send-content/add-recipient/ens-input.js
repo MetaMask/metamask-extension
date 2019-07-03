@@ -8,6 +8,7 @@ import {
   updateEnsResolution,
   updateEnsResolutionError,
 } from '../../../../store/actions'
+import {ellipsify} from '../../send.utils'
 
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard/index')
@@ -190,14 +191,14 @@ class EnsInput extends Component {
         <div
           className="ens-input__wrapper ens-input__wrapper--valid"
         >
-          <div className="ens-input__wrapper__status-icon" />
+          <div className="ens-input__wrapper__status-icon ens-input__wrapper__status-icon--valid" />
           <div
             className="ens-input__wrapper__input ens-input__wrapper__input--selected"
             placeholder={t('recipientAddress')}
             onChange={this.onChange}
           >
             <div className="ens-input__selected-input__title">
-              {name || selectedAddress}
+              {name || ellipsify(selectedAddress)}
             </div>
             { name && <div className="ens-input__selected-input__subtitle">{selectedAddress}</div> }
           </div>
