@@ -39,7 +39,7 @@ export default class TransactionList extends PureComponent {
     const { transactions = [], hasRetried } = transactionGroup
     const [earliestTransaction = {}] = transactions
     const { submittedTime } = earliestTransaction
-    return Date.now() - submittedTime > 30000 && isEarliestNonce && !hasRetried
+    return Date.now() - submittedTime > 5000 && isEarliestNonce && !hasRetried
   }
 
   shouldShowCancel (transactionGroup) {
