@@ -2,6 +2,14 @@
 
 ## Current Master
 
+## 4.11.8 Wed Jul 03 2019
+
+- [#305](https://github.com/poanetwork/nifty-wallet/pull/305): (Feature) gas price for RSK from the last block
+- [#298](https://github.com/poanetwork/nifty-wallet/pull/298): (Feature) isNiftyWallet property added
+- [#299](https://github.com/poanetwork/nifty-wallet/pull/299): (Upgrade) Node 10 support
+- [#306](https://github.com/poanetwork/nifty-wallet/pull/306): (Fix) Replace Goerli RPC endpoint
+- [#302](https://github.com/poanetwork/nifty-wallet/pull/302): (Fix) Return scrolls in dropdowns
+
 ## 4.11.7 Tue Jun 25 2019
 
 - [#294](https://github.com/poanetwork/nifty-wallet/pull/294): Address checksum for RSK chains. RSKIP60
