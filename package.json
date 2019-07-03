@@ -166,6 +166,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.4.5",
     "@sentry/cli": "^1.30.3",
     "@storybook/addon-info": "^5.1.1",
     "@storybook/addon-knobs": "^3.4.2",
