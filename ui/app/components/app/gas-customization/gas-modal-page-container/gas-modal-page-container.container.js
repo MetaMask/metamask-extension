@@ -9,6 +9,7 @@ import {
   hideSidebar,
   updateSendAmount,
   setGasTotal,
+  updateTransaction,
 } from '../../../../store/actions'
 import {
   setCustomGasPrice,
@@ -22,9 +23,6 @@ import {
   hideGasButtonGroup,
   updateSendErrors,
 } from '../../../../ducks/send/send.duck'
-import {
-  updateGasAndCalculate,
-} from '../../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
   conversionRateSelector as getConversionRate,
   getCurrentCurrency,
@@ -118,6 +116,9 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
+  const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
+  const { txData } = modalProps || {}
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -151,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount,
     },
+    transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
     txId: transaction.id,
     insufficientBalance,
@@ -179,10 +181,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
     },
-    updateConfirmTxGasAndCalculate: (gasLimit, gasPrice) => {
+    updateConfirmTxGasAndCalculate: (gasLimit, gasPrice, updatedTx) => {
       updateCustomGasPrice(gasPrice)
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
-      return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
+      return dispatch(updateTransaction(updatedTx))
     },
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
@@ -214,6 +216,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     selectedToken,
     tokenBalance,
     customGasLimit,
+    transaction,
   } = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
@@ -234,7 +237,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
       if (isConfirm) {
-        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
+        const updatedTx = {
+          ...transaction,
+          txParams: {
+            ...transaction.txParams,
+            gas: gasLimit,
+            gasPrice,
+          },
+        }
+        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice, updatedTx)
         dispatchHideModal()
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)

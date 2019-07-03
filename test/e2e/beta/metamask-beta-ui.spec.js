@@ -528,7 +528,7 @@ describe('MetaMask', function () {
       await delay(50)
 
       await gasLimitInput.sendKeys('25000')
-      await delay(tinyDelayMs)
+      await delay(largeDelayMs * 2)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()

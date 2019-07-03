@@ -152,6 +152,9 @@ describe('gas-modal-page-container container', () => {
         maxModeOn: false,
         selectedToken: null,
         tokenBalance: '0x0',
+        transaction: {
+          id: 34,
+        },
       }
       const baseMockOwnProps = { transaction: { id: 34 } }
       const tests = [
@@ -168,7 +171,7 @@ describe('gas-modal-page-container container', () => {
           mockOwnProps: Object.assign({}, baseMockOwnProps, {
             transaction: { id: 34, status: 'submitted' },
           }),
-          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true }),
+          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true, transaction: { id: 34, status: 'submitted' } }),
         },
         {
           mockState: Object.assign({}, baseMockState, {
@@ -317,8 +320,10 @@ describe('gas-modal-page-container container', () => {
       it('should dispatch a updateGasAndCalculate action with the correct props', () => {
         mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa')
         assert.equal(dispatchSpy.callCount, 3)
-        assert(confirmTransactionActionSpies.updateGasAndCalculate.calledOnce)
-        assert.deepEqual(confirmTransactionActionSpies.updateGasAndCalculate.getCall(0).args[0], { gasLimit: 'ffff', gasPrice: 'aaaa' })
+        assert(actionSpies.setGasPrice.calledOnce)
+        assert(actionSpies.setGasLimit.calledOnce)
+        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
+        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
       })
     })
 
@@ -337,6 +342,7 @@ describe('gas-modal-page-container container', () => {
           },
           isConfirm: true,
           someOtherStateProp: 'baz',
+          transaction: {},
         }
         dispatchProps = {
           updateCustomGasPrice: sinon.spy(),
