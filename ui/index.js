@@ -12,19 +12,19 @@ module.exports = launchMetamaskUi
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {
-  var accountManager = opts.accountManager
-  actions._setBackgroundConnection(accountManager)
+  var {backgroundConnection} = opts
+  actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
-  accountManager.getState(function (err, metamaskState) {
+  backgroundConnection.getState(function (err, metamaskState) {
     if (err) return cb(err)
-    startApp(metamaskState, accountManager, opts)
+    startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
         cb(null, store)
       })
   })
 }
 
-async function startApp (metamaskState, accountManager, opts) {
+async function startApp (metamaskState, backgroundConnection, opts) {
   // parse opts
   if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
 
@@ -59,7 +59,7 @@ async function startApp (metamaskState, accountManager, opts) {
     }))
   }
 
-  accountManager.on('update', function (metamaskState) {
+  backgroundConnection.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
