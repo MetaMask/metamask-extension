@@ -4,6 +4,7 @@ import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
 import {isValidAddress} from '../../../../helpers/utils/util'
 import Dialog from '../../../../components/ui/dialog'
+import {ellipsify} from '../../send.utils'
 
 export default class AddRecipient extends Component {
 
@@ -277,10 +278,6 @@ export default class AddRecipient extends Component {
     }
   }
 
-}
-
-function ellipsify (text, first = 6, last = 4) {
-  return `${text.slice(0, first)}...${text.slice(-last)}`
 }
 
 export function RecipientGroup ({ label, items, onSelect }) {
