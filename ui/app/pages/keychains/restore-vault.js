@@ -123,6 +123,7 @@ class RestoreVaultPage extends Component {
               className="import-account__back-button"
               onClick={e => {
                 e.preventDefault()
+                this.props.leaveImportSeedScreenState()
                 this.props.history.goBack()
               }}
               href="#"

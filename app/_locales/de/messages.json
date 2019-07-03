@@ -249,10 +249,6 @@
   "depositBTC": {
     "message": "Zahle dein BTC in die unten stehende Adresse ein:"
   },
-  "depositCoin": {
-    "message": "Zahle deine $1 in die unten stehende Adresse ein",
-    "description": "Teilt dem Benutzer mit welchen Token er beim Einzahlen mit Shapeshift ausgewählt hat"
-  },
   "depositEth": {
     "message": "Eth kaufen"
   },

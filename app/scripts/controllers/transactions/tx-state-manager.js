@@ -1,11 +1,10 @@
 const extend = require('xtend')
 const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
 const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
-const { getFinalStates } = require('./lib/util')
+const { getFinalStates, normalizeTxParams } = require('./lib/util')
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -126,6 +125,11 @@ class TransactionStateManager extends EventEmitter {
     @returns {object} the txMeta
   */
   addTx (txMeta) {
+    // normalize and validate txParams if present
+    if (txMeta.txParams) {
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
+    }
+
     this.once(`${txMeta.id}:signed`, function () {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
@@ -175,13 +179,9 @@ class TransactionStateManager extends EventEmitter {
     @param [note] {string} - a note about the update for history
   */
   updateTx (txMeta, note) {
-    // validate txParams
+    // normalize and validate txParams if present
     if (txMeta.txParams) {
-      if (typeof txMeta.txParams.data === 'undefined') {
-        delete txMeta.txParams.data
-      }
-
-      this.validateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -214,6 +214,19 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * normalize and validate txParams members
+   * @param txParams {object} - txParams
+   */
+  normalizeAndValidateTxParams (txParams) {
+    if (typeof txParams.data === 'undefined') {
+      delete txParams.data
+    }
+    txParams = normalizeTxParams(txParams, false)
+    this.validateTxParams(txParams)
+    return txParams
+  }
+
+  /**
     validates txParams members by type
     @param txParams {object} - txParams to validate
   */
@@ -227,7 +240,6 @@ class TransactionStateManager extends EventEmitter {
           break
         default:
           if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
-          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
           break
       }
     })

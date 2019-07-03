@@ -2,6 +2,21 @@
 
 ## Current Develop Branch
 
+## 6.7.2 Mon Jul 01 2019
+
+- [#6713](https://github.com/MetaMask/metamask-extension/pull/6713): * Normalize and Validate txParams in TransactionStateManager.addTx too
+- [#6759](https://github.com/MetaMask/metamask-extension/pull/6759): Update to Node.js v10
+- [#Fixes #6694](https://github.com/MetaMask/metamask-extension/pull/Fixes #6694): Fixes #6694
+- [#6743](https://github.com/MetaMask/metamask-extension/pull/6743): * Add tests for ImportWithSeedPhrase#parseSeedPhrase
+- [#Fixes #6740](https://github.com/MetaMask/metamask-extension/pull/Fixes #6740): Fixes #6740
+- [#Fixes #6741](https://github.com/MetaMask/metamask-extension/pull/Fixes #6741): Fixes #6741
+- [#6761](https://github.com/MetaMask/metamask-extension/pull/6761): Fixes #6760, correct PropTypes for nextRoute
+- [#6754](https://github.com/MetaMask/metamask-extension/pull/6754): There is currently a bug in chrome that prevents reading source maps
+- [#6589](https://github.com/MetaMask/metamask-extension/pull/6589): Document hotfix protocol
+- [#6738](https://github.com/MetaMask/metamask-extension/pull/6738): Add codeowner for package-lock-old.json package-lock.json package.json packagelock-old.json files
+- [#6648](https://github.com/MetaMask/metamask-extension/pull/6648): Add loading view to notification.html
+- [#6731](https://github.com/MetaMask/metamask-extension/pull/6731): Add brave as a platform type for MetaMask
+
 ## 6.7.1 Fri Jun 28 2019
 - [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
 

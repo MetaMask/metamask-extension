@@ -47,6 +47,7 @@ function gulpParallel (...args) {
 const browserPlatforms = [
   'firefox',
   'chrome',
+  'brave',
   'edge',
   'opera',
 ]
@@ -180,6 +181,7 @@ gulp.task('manifest:production', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
+    './dist/brave/manifest.json',
     './dist/edge/manifest.json',
     './dist/opera/manifest.json',
   ], {base: './dist/'})
@@ -345,7 +347,7 @@ function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, te
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
-    sourceMapDir: devMode ? './' : '../sourcemaps',
+    sourceMapDir: '../sourcemaps',
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
     watch: devMode,
@@ -602,10 +604,17 @@ function bundleTask (opts) {
       }))
     }
 
-    // Finalize Source Maps (writes .map file)
+    // Finalize Source Maps
     if (opts.buildSourceMaps) {
-      buildStream = buildStream
-        .pipe(sourcemaps.write(opts.sourceMapDir))
+      if (opts.devMode) {
+        // Use inline source maps for development due to Chrome DevTools bug
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+        buildStream = buildStream
+          .pipe(sourcemaps.write())
+      } else {
+        buildStream = buildStream
+          .pipe(sourcemaps.write(opts.sourceMapDir))
+      }
     }
 
     // write completed bundles

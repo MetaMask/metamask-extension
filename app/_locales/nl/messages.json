@@ -240,10 +240,6 @@
   "depositBTC": {
     "message": "Stort uw BTC op het onderstaande adres:"
   },
-  "depositCoin": {
-    "message": "Stort uw $1 op het onderstaande adres",
-    "description": "Laat de gebruiker weten welk muntje ze hebben geselecteerd om te deponeren met shapeshift"
-  },
   "depositEth": {
     "message": "Aanbetaling Eth"
   },
