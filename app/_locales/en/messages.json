@@ -86,6 +86,9 @@
   "addNetwork": {
     "message": "Add Network"
   },
+  "addRecipient": {
+    "message": "Add Recipient"
+  },
   "advanced": {
     "message": "Advanced"
   },
