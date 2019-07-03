@@ -276,7 +276,7 @@ describe('MetaMask', function () {
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Search, public address (0x), or ENS"]'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
       const recipientRow = await findElement(driver, By.css('.send__select-recipient-wrapper__group-item'))
