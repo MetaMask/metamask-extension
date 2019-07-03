@@ -55,7 +55,6 @@ class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
-      completedUiMigration: true,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
@@ -610,14 +609,6 @@ class PreferencesController {
    */
   completeOnboarding () {
     this.store.updateState({ completedOnboarding: true })
-    return Promise.resolve(true)
-  }
-
-  /**
-   * Sets the {@code completedUiMigration} state to {@code true}, indicating that the user has completed the UI switch.
-   */
-  completeUiMigration () {
-    this.store.updateState({ completedUiMigration: true })
     return Promise.resolve(true)
   }
 

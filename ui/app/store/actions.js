@@ -321,11 +321,6 @@ var actions = {
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
 
-  // Migration of users to new UI
-  setCompletedUiMigration,
-  completeUiMigration,
-  COMPLETE_UI_MIGRATION: 'COMPLETE_UI_MIGRATION',
-
   // Onboarding
   setCompletedOnboarding,
   completeOnboarding,
@@ -2510,31 +2505,6 @@ function setCompletedOnboarding () {
 function completeOnboarding () {
   return {
     type: actions.COMPLETE_ONBOARDING,
-  }
-}
-
-function setCompletedUiMigration () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeUiMigration(err => {
-        dispatch(actions.hideLoadingIndication())
-
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.completeUiMigration())
-        resolve()
-      })
-    })
-  }
-}
-
-function completeUiMigration () {
-  return {
-    type: actions.COMPLETE_UI_MIGRATION,
   }
 }
 
