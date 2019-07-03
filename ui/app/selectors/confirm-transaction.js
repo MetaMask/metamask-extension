@@ -254,7 +254,7 @@ export const transactionFeeSelector = function (state, txData) {
   const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
   return {
-    hexTransactionAmount: txData.value,
+    hexTransactionAmount: value,
     fiatTransactionAmount,
     ethTransactionAmount,
     hexTransactionFee,
