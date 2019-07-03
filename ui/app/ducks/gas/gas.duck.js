@@ -50,7 +50,6 @@ const initState = {
   basicEstimateIsLoading: true,
   gasEstimatesLoading: true,
   priceAndTimeEstimates: [],
-  basicPriceAndTimeEstimates: [],
   priceAndTimeEstimatesLastRetrieved: 0,
   basicPriceAndTimeEstimatesLastRetrieved: 0,
   basicPriceEstimatesLastRetrieved: 0,
@@ -178,10 +177,7 @@ export function gasEstimatesLoadingFinished () {
 
 export function fetchBasicGasEstimates () {
   return (dispatch, getState) => {
-    const {
-      basicPriceEstimatesLastRetrieved,
-      basicPriceAndTimeEstimates,
-    } = getState().gas
+    const { basicPriceEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved = basicPriceEstimatesLastRetrieved || loadLocalStorageData('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(basicGasEstimatesLoadingStarted())
@@ -220,10 +216,7 @@ export function fetchBasicGasEstimates () {
 
         return basicEstimates
       })
-    : Promise.resolve(basicPriceAndTimeEstimates.length
-        ? basicPriceAndTimeEstimates
-        : loadLocalStorageData('BASIC_PRICE_ESTIMATES')
-      )
+    : Promise.resolve(loadLocalStorageData('BASIC_PRICE_ESTIMATES'))
 
     return promiseToFetch.then(basicEstimates => {
       dispatch(setBasicGasEstimateData(basicEstimates))
@@ -235,10 +228,7 @@ export function fetchBasicGasEstimates () {
 
 export function fetchBasicGasAndTimeEstimates () {
   return (dispatch, getState) => {
-    const {
-      basicPriceAndTimeEstimatesLastRetrieved,
-      basicPriceAndTimeEstimates,
-    } = getState().gas
+    const { basicPriceAndTimeEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved = basicPriceAndTimeEstimatesLastRetrieved || loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(basicGasEstimatesLoadingStarted())
@@ -294,10 +284,7 @@ export function fetchBasicGasAndTimeEstimates () {
 
           return basicEstimates
         })
-      : Promise.resolve(basicPriceAndTimeEstimates.length
-          ? basicPriceAndTimeEstimates
-          : loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES')
-        )
+      : Promise.resolve(loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES'))
 
       return promiseToFetch.then(basicEstimates => {
         dispatch(setBasicGasEstimateData(basicEstimates))

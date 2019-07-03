@@ -118,7 +118,6 @@ describe('Gas Duck', () => {
     gasEstimatesLoading: true,
     priceAndTimeEstimates: [],
     priceAndTimeEstimatesLastRetrieved: 0,
-    basicPriceAndTimeEstimates: [],
     basicPriceAndTimeEstimatesLastRetrieved: 0,
     basicPriceEstimatesLastRetrieved: 0,
   }
