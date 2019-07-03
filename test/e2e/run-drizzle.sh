@@ -20,7 +20,7 @@ BROWSER=none npm start >> /dev/null 2>&1 &
 npm_start_pid=$!
 
 popd
-if ! mocha test/e2e/beta/drizzle.spec
+if ! mocha test/e2e/drizzle.spec
 then
     test_status=1
 fi

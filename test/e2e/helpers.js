@@ -2,7 +2,7 @@ const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-const { delay } = require('../func')
+const { delay } = require('./func')
 const { until } = require('selenium-webdriver')
 
 module.exports = {
