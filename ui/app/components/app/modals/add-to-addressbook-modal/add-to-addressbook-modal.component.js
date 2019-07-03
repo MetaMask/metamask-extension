@@ -24,6 +24,18 @@ export default class AddToAddressBookModal extends Component {
     hideModal()
   }
 
+  onChange = e => {
+    this.setState({
+      alias: e.target.value,
+    })
+  }
+
+  onKeyPress = e => {
+    if (e.key === 'Enter' && this.state.alias) {
+      this.onSave()
+    }
+  }
+
   render () {
     const { t } = this.context
 
@@ -40,8 +52,10 @@ export default class AddToAddressBookModal extends Component {
             type="text"
             className="add-to-address-book-modal__input"
             placeholder={t('addToAddressBookModalPlaceholder')}
-            onChange={e => this.setState({ alias: e.target.value })}
+            onChange={this.onChange}
+            onKeyPress={this.onKeyPress}
             value={this.state.alias}
+            autoFocus
           />
         </div>
         <div className="add-to-address-book-modal__footer">
