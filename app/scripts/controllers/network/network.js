@@ -187,7 +187,6 @@ module.exports = class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(opts)
     } else if (isPocket) {
-      //throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
       this._configurePocketProvider(opts)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
