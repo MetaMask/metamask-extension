@@ -2,6 +2,6 @@
 # Each line is a file pattern followed by one or more owners.
 
 package*.json                        @whymarrh
-ui/                                  @danjm @whymarrh
+ui/                                  @danjm @whymarrh @Gudahtt
 app/scripts/controllers/transactions @frankiebee
 
