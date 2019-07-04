@@ -284,7 +284,7 @@ jobs:
           at: .
       - run:
           name: test:mozilla-lint
-          command: npm run mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 npm run mozilla-lint
 
   test-integration-flat-firefox:
     docker:
