@@ -679,19 +679,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#newUnsignedPersonalMessage', function () {
-
-    it('errors with no from in msgParams', async () => {
-      const msgParams = {
-        'data': data,
-      }
-      try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
-        assert.fail('should have thrown')
-      } catch (error) {
-        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
-      }
-    })
-
     let msgParams, metamaskPersonalMsgs, personalMessages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
@@ -716,6 +703,18 @@ describe('MetaMaskController', function () {
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
       personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+    })
+
+    it('errors with no from in msgParams', async () => {
+      const msgParams = {
+        'data': data,
+      }
+      try {
+        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        assert.fail('should have thrown')
+      } catch (error) {
+        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+      }
     })
 
     it('persists address from msg params', function () {
