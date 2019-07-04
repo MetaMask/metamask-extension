@@ -176,122 +176,132 @@ export function gasEstimatesLoadingFinished () {
 }
 
 export function fetchBasicGasEstimates () {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { basicPriceEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved = basicPriceEstimatesLastRetrieved || loadLocalStorageData('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(basicGasEstimatesLoadingStarted())
 
-    const promiseToFetch = Date.now() - timeLastRetrieved > 75000
-    ? fetch('https://dev.blockscale.net/api/gasexpress.json', {
-      'headers': {},
-      'referrer': 'https://dev.blockscale.net/api/',
-      'referrerPolicy': 'no-referrer-when-downgrade',
-      'body': null,
-      'method': 'GET',
-      'mode': 'cors'}
-    )
-      .then(r => r.json())
-      .then(({
-        safeLow,
-        standard: average,
-        fast,
-        fastest,
-        block_time: blockTime,
-        blockNum,
-      }) => {
-        const basicEstimates = {
-          safeLow,
-          average,
-          fast,
-          fastest,
-          blockTime,
-          blockNum,
-        }
+    let basicEstimates
+    if (Date.now() - timeLastRetrieved > 75000) {
+      basicEstimates = await fetchExternalBasicGasEstimates(dispatch)
+    } else {
+      const cachedBasicEstimates = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
+      basicEstimates = cachedBasicEstimates || await fetchExternalBasicGasEstimates(dispatch)
+    }
 
-        const timeRetrieved = Date.now()
-        dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved))
-        saveLocalStorageData(timeRetrieved, 'BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
-        saveLocalStorageData(basicEstimates, 'BASIC_PRICE_ESTIMATES')
+    dispatch(setBasicGasEstimateData(basicEstimates))
+    dispatch(basicGasEstimatesLoadingFinished())
 
-        return basicEstimates
-      })
-    : Promise.resolve(loadLocalStorageData('BASIC_PRICE_ESTIMATES'))
-
-    return promiseToFetch.then(basicEstimates => {
-      dispatch(setBasicGasEstimateData(basicEstimates))
-      dispatch(basicGasEstimatesLoadingFinished())
-      return basicEstimates
-    })
+    return basicEstimates
   }
 }
 
+async function fetchExternalBasicGasEstimates (dispatch) {
+  const response = await fetch('https://dev.blockscale.net/api/gasexpress.json', {
+    'headers': {},
+    'referrer': 'https://dev.blockscale.net/api/',
+    'referrerPolicy': 'no-referrer-when-downgrade',
+    'body': null,
+    'method': 'GET',
+    'mode': 'cors'}
+  )
+  const {
+    safeLow,
+    standard: average,
+    fast,
+    fastest,
+    block_time: blockTime,
+    blockNum,
+  } = await response.json()
+
+  const basicEstimates = {
+    safeLow,
+    average,
+    fast,
+    fastest,
+    blockTime,
+    blockNum,
+  }
+
+  const timeRetrieved = Date.now()
+  saveLocalStorageData(basicEstimates, 'BASIC_PRICE_ESTIMATES')
+  saveLocalStorageData(timeRetrieved, 'BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
+  dispatch(setBasicPriceEstimatesLastRetrieved(timeRetrieved))
+
+  return basicEstimates
+}
+
 export function fetchBasicGasAndTimeEstimates () {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { basicPriceAndTimeEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved = basicPriceAndTimeEstimatesLastRetrieved || loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(basicGasEstimatesLoadingStarted())
 
-    const promiseToFetch = Date.now() - timeLastRetrieved > 75000
-      ? fetch('https://ethgasstation.info/json/ethgasAPI.json', {
-        'headers': {},
-        'referrer': 'http://ethgasstation.info/json/',
-        'referrerPolicy': 'no-referrer-when-downgrade',
-        'body': null,
-        'method': 'GET',
-        'mode': 'cors'}
-      )
-        .then(r => r.json())
-        .then(({
-          average: averageTimes10,
-          avgWait,
-          block_time: blockTime,
-          blockNum,
-          fast: fastTimes10,
-          fastest: fastestTimes10,
-          fastestWait,
-          fastWait,
-          safeLow: safeLowTimes10,
-          safeLowWait,
-          speed,
-        }) => {
-          const [average, fast, fastest, safeLow] = [
-            averageTimes10,
-            fastTimes10,
-            fastestTimes10,
-            safeLowTimes10,
-          ].map(price => (new BigNumber(price)).div(10).toNumber())
+    let basicEstimates
+    if (Date.now() - timeLastRetrieved > 75000) {
+      basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch)
+    } else {
+      const cachedBasicEstimates = loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES')
+      basicEstimates = cachedBasicEstimates || await fetchExternalBasicGasAndTimeEstimates(dispatch)
+    }
 
-          const basicEstimates = {
-            average,
-            avgWait,
-            blockTime,
-            blockNum,
-            fast,
-            fastest,
-            fastestWait,
-            fastWait,
-            safeLow,
-            safeLowWait,
-            speed,
-          }
-
-          const timeRetrieved = Date.now()
-          dispatch(setBasicApiEstimatesLastRetrieved(timeRetrieved))
-          saveLocalStorageData(timeRetrieved, 'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
-          saveLocalStorageData(basicEstimates, 'BASIC_GAS_AND_TIME_API_ESTIMATES')
-
-          return basicEstimates
-        })
-      : Promise.resolve(loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES'))
-
-      return promiseToFetch.then(basicEstimates => {
-        dispatch(setBasicGasEstimateData(basicEstimates))
-        dispatch(basicGasEstimatesLoadingFinished())
-        return basicEstimates
-      })
+    dispatch(setBasicGasEstimateData(basicEstimates))
+    dispatch(basicGasEstimatesLoadingFinished())
+    return basicEstimates
   }
+}
+
+async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
+  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+    'headers': {},
+    'referrer': 'http://ethgasstation.info/json/',
+    'referrerPolicy': 'no-referrer-when-downgrade',
+    'body': null,
+    'method': 'GET',
+    'mode': 'cors'}
+  )
+  const {
+    average: averageTimes10,
+    avgWait,
+    block_time: blockTime,
+    blockNum,
+    fast: fastTimes10,
+    fastest: fastestTimes10,
+    fastestWait,
+    fastWait,
+    safeLow: safeLowTimes10,
+    safeLowWait,
+    speed,
+  } = await response.json()
+  const [average, fast, fastest, safeLow] = [
+    averageTimes10,
+    fastTimes10,
+    fastestTimes10,
+    safeLowTimes10,
+  ].map(price => (new BigNumber(price)).div(10).toNumber())
+
+  const basicEstimates = {
+    average,
+    avgWait,
+    blockTime,
+    blockNum,
+    fast,
+    fastest,
+    fastestWait,
+    fastWait,
+    safeLow,
+    safeLowWait,
+    speed,
+  }
+
+  const timeRetrieved = Date.now()
+  saveLocalStorageData(basicEstimates, 'BASIC_GAS_AND_TIME_API_ESTIMATES')
+  saveLocalStorageData(timeRetrieved, 'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
+  dispatch(setBasicApiEstimatesLastRetrieved(timeRetrieved))
+
+  return basicEstimates
 }
 
 function extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation }) {

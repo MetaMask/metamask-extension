@@ -2,12 +2,10 @@ import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
+const fakeLocalStorage = {}
 
 const GasDuck = proxyquire('./gas.duck.js', {
-  '../../../lib/local-storage-helpers': {
-    loadLocalStorageData: sinon.spy(),
-    saveLocalStorageData: sinon.spy(),
-  },
+  '../../../lib/local-storage-helpers': fakeLocalStorage,
 })
 
 const {
@@ -68,24 +66,28 @@ describe('Gas Duck', () => {
     { expectedTime: 1.1, expectedWait: 0.6, gasprice: 19.9, somethingElse: 'foobar' },
     { expectedTime: 1, expectedWait: 0.5, gasprice: 20, somethingElse: 'foobar' },
   ]
-  const fetchStub = sinon.stub().callsFake((url) => new Promise(resolve => {
+  const fakeFetch = (url) => new Promise(resolve => {
     const dataToResolve = url.match(/ethgasAPI|gasexpress/)
       ? mockEthGasApiResponse
       : mockPredictTableResponse
     resolve({
       json: () => new Promise(resolve => resolve(dataToResolve)),
     })
-  }))
+  })
 
   beforeEach(() => {
     tempFetch = global.fetch
     tempDateNow = global.Date.now
-    global.fetch = fetchStub
+
+    fakeLocalStorage.loadLocalStorageData = sinon.stub()
+    fakeLocalStorage.saveLocalStorageData = sinon.spy()
+    global.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
   })
 
   afterEach(() => {
-    fetchStub.resetHistory()
+    sinon.restore()
+
     global.fetch = tempFetch
     global.Date.now = tempDateNow
   })
@@ -304,8 +306,9 @@ describe('Gas Duck', () => {
   })
 
   describe('fetchBasicGasEstimates', () => {
-    const mockDistpatch = sinon.spy()
     it('should call fetch with the expected params', async () => {
+      const mockDistpatch = sinon.spy()
+
       await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
         {},
         initState,
@@ -329,12 +332,109 @@ describe('Gas Duck', () => {
           },
         ]
       )
-
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
         [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ]
       )
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
+        [{
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 20,
+            blockTime: 'mockBlock_time',
+            blockNum: 'mockBlockNum',
+            fast: 30,
+            fastest: 40,
+            safeLow: 10,
+          },
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(3).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
+      )
+    })
 
+    it('should fetch recently retrieved estimates from local storage', async () => {
+      const mockDistpatch = sinon.spy()
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
+        .returns(2000000 - 1) // one second ago from "now"
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_PRICE_ESTIMATES')
+        .returns({
+          average: 25,
+          blockTime: 'mockBlock_time',
+          blockNum: 'mockBlockNum',
+          fast: 35,
+          fastest: 45,
+          safeLow: 15,
+        })
+
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        {}
+      ) }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.ok(global.fetch.notCalled)
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 25,
+            blockTime: 'mockBlock_time',
+            blockNum: 'mockBlockNum',
+            fast: 35,
+            fastest: 45,
+            safeLow: 15,
+          },
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
+      )
+    })
+
+    it('should fallback to network if retrieving estimates from local storage fails', async () => {
+      const mockDistpatch = sinon.spy()
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_PRICE_ESTIMATES_LAST_RETRIEVED')
+        .returns(2000000 - 1) // one second ago from "now"
+
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        {}
+      ) }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.deepEqual(
+        global.fetch.getCall(0).args,
+        [
+          'https://dev.blockscale.net/api/gasexpress.json',
+          {
+            'headers': {},
+            'referrer': 'https://dev.blockscale.net/api/',
+            'referrerPolicy': 'no-referrer-when-downgrade',
+            'body': null,
+            'method': 'GET',
+            'mode': 'cors',
+          },
+        ]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ]
+      )
       assert.deepEqual(
         mockDistpatch.getCall(2).args,
         [{
@@ -357,8 +457,9 @@ describe('Gas Duck', () => {
   })
 
   describe('fetchBasicGasAndTimeEstimates', () => {
-    const mockDistpatch = sinon.spy()
     it('should call fetch with the expected params', async () => {
+      const mockDistpatch = sinon.spy()
+
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
         {},
         initState,
@@ -414,17 +515,133 @@ describe('Gas Duck', () => {
         [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
       )
     })
+
+    it('should fetch recently retrieved estimates from local storage', async () => {
+      const mockDistpatch = sinon.spy()
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
+        .returns(2000000 - 1) // one second ago from "now"
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES')
+        .returns({
+          average: 5,
+          avgWait: 'mockAvgWait',
+          blockTime: 'mockBlock_time',
+          blockNum: 'mockBlockNum',
+          fast: 6,
+          fastest: 7,
+          fastestWait: 'mockFastestWait',
+          fastWait: 'mockFastWait',
+          safeLow: 1,
+          safeLowWait: 'mockSafeLowWait',
+          speed: 'mockSpeed',
+        })
+
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        {}
+      ),
+        metamask: { provider: { type: 'ropsten' } },
+      }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.ok(global.fetch.notCalled)
+
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 5,
+            avgWait: 'mockAvgWait',
+            blockTime: 'mockBlock_time',
+            blockNum: 'mockBlockNum',
+            fast: 6,
+            fastest: 7,
+            fastestWait: 'mockFastestWait',
+            fastWait: 'mockFastWait',
+            safeLow: 1,
+            safeLowWait: 'mockSafeLowWait',
+            speed: 'mockSpeed',
+          },
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
+      )
+    })
+
+    it('should fallback to network if retrieving estimates from local storage fails', async () => {
+      const mockDistpatch = sinon.spy()
+      fakeLocalStorage.loadLocalStorageData
+        .withArgs('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
+        .returns(2000000 - 1) // one second ago from "now"
+
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        {}
+      ),
+        metamask: { provider: { type: 'ropsten' } },
+      }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.deepEqual(
+        global.fetch.getCall(0).args,
+        [
+          'https://ethgasstation.info/json/ethgasAPI.json',
+          {
+            'headers': {},
+            'referrer': 'http://ethgasstation.info/json/',
+            'referrerPolicy': 'no-referrer-when-downgrade',
+            'body': null,
+            'method': 'GET',
+            'mode': 'cors',
+          },
+        ]
+      )
+
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ]
+      )
+
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
+        [{
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 2,
+            avgWait: 'mockAvgWait',
+            blockTime: 'mockBlock_time',
+            blockNum: 'mockBlockNum',
+            fast: 3,
+            fastest: 4,
+            fastestWait: 'mockFastestWait',
+            fastWait: 'mockFastWait',
+            safeLow: 1,
+            safeLowWait: 'mockSafeLowWait',
+            speed: 'mockSpeed',
+          },
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(3).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
+      )
+    })
   })
 
   describe('fetchGasEstimates', () => {
-    const mockDistpatch = sinon.spy()
-
-    beforeEach(() => {
-      mockDistpatch.resetHistory()
-    })
-
     it('should call fetch with the expected params', async () => {
-      global.fetch.resetHistory()
+      const mockDistpatch = sinon.spy()
+
       await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
         {},
         initState,
@@ -470,7 +687,8 @@ describe('Gas Duck', () => {
     })
 
     it('should not call fetch if the estimates were retrieved < 75000 ms ago', async () => {
-      global.fetch.resetHistory()
+      const mockDistpatch = sinon.spy()
+
       await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
         {},
         initState,
