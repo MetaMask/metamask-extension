@@ -1,7 +1,6 @@
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
-const disc = require('disc')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
@@ -13,10 +12,7 @@ const zip = require('gulp-zip')
 const assign = require('lodash.assign')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const fs = require('fs')
-const path = require('path')
 const manifest = require('./app/manifest.json')
-const mkdirp = require('mkdirp')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
@@ -377,14 +373,6 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
 
-// disc bundle analyzer tasks
-
-buildJsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`, discTask({ label: jsFile, filename: `${jsFile}.js` }))
-})
-
-gulp.task('disc', gulp.parallel(buildJsFiles.map(jsFile => `disc:${jsFile}`)))
-
 // clean dist
 
 gulp.task('clean', function clean () {
@@ -535,32 +523,6 @@ function generateBundler (opts, performBundle) {
 
   return bundler
 }
-
-function discTask (opts) {
-  opts = Object.assign({
-    buildWithFullPaths: true,
-  }, opts)
-
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
-
-  return performBundle
-
-  function performBundle () {
-    // start "disc" build
-    const discDir = path.join(__dirname, 'disc')
-    mkdirp.sync(discDir)
-    const discPath = path.join(discDir, `${opts.label}.html`)
-
-    return (
-      bundler.bundle()
-      .pipe(disc())
-      .pipe(fs.createWriteStream(discPath))
-    )
-  }
-}
-
 
 function bundleTask (opts) {
   const bundler = generateBundler(opts, performBundle)
