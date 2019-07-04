@@ -9,7 +9,7 @@
     "publish-docs": "gh-pages -d docs/jsdocs",
     "start:test": "gulp dev:test",
     "build:test": "gulp build:test",
-    "test": "npm run test:unit && npm run test:integration && npm run lint",
+    "test": "npm run test:unit && npm run lint",
     "dapp": "static-server test/e2e/contract-test --port 8080",
     "dapp-chain": "shell-parallel -s 'npm run ganache:start -- -b 2' -x 'sleep 5 && static-server test/e2e/contract-test --port 8080'",
     "watch:test:unit": "nodemon --exec \"npm run test:unit\" ./test ./app ./ui",
