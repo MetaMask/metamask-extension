@@ -183,18 +183,6 @@ class Routes extends Component {
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
-
     const {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
@@ -202,6 +190,18 @@ class Routes extends Component {
       props,
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
+
+    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
+    ? () => {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Wallet Sidebar',
+          name: 'Closed Sidebare Via Overlay',
+        },
+      })
+    }
+    : null
 
     return (
       <div

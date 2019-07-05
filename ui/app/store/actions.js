@@ -1210,6 +1210,20 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function updateTransaction (txData) {
   log.info('actions: updateTx: ' + JSON.stringify(txData))
   return dispatch => {
@@ -1614,20 +1628,6 @@ const backgroundSetLocked = () => {
         return reject(error)
       }
       resolve()
-    })
-  })
-}
-
-const updateMetamaskStateFromBackground = () => {
-  log.debug(`background.getState`)
-
-  return new Promise((resolve, reject) => {
-    background.getState((error, newState) => {
-      if (error) {
-        return reject(error)
-      }
-
-      resolve(newState)
     })
   })
 }

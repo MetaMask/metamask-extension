@@ -1,4 +1,36 @@
 /*global Web3*/
+
+
+// need to make sure we aren't affected by overlapping namespaces
+// and that we dont affect the app with our namespace
+// mostly a fix for web3's BigNumber if AMD's "define" is defined...
+let __define
+
+/**
+ * Caches reference to global define object and deletes it to
+ * avoid conflicts with other global define objects, such as
+ * AMD's define function
+ */
+const cleanContextForImports = () => {
+  __define = global.define
+  try {
+    global.define = undefined
+  } catch (_) {
+    console.warn('MetaMask - global.define could not be deleted.')
+  }
+}
+
+/**
+ * Restores global define object from cached reference
+ */
+const restoreContextAfterImports = () => {
+  try {
+    global.define = __define
+  } catch (_) {
+    console.warn('MetaMask - global.define could not be overwritten.')
+  }
+}
+
 cleanContextForImports()
 require('web3/dist/web3.min.js')
 const log = require('loglevel')
@@ -46,6 +78,20 @@ inpageProvider.enable = function ({ force } = {}) {
 // this will be default true so it does not break any old apps.
 inpageProvider.autoRefreshOnNetworkChange = true
 
+
+// publicConfig isn't populated until we get a message from background.
+// Using this getter will ensure the state is available
+const getPublicConfigWhenReady = async () => {
+  const store = inpageProvider.publicConfigStore
+  let state = store.getState()
+  // if state is missing, wait for first update
+  if (!state.networkVersion) {
+    state = await new Promise(resolve => store.once('update', resolve))
+    console.log('new state', state)
+  }
+  return state
+}
+
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
   /**
@@ -86,19 +132,6 @@ inpageProvider._metamask = new Proxy({
     return obj[prop]
   },
 })
-
-// publicConfig isn't populated until we get a message from background.
-// Using this getter will ensure the state is available
-async function getPublicConfigWhenReady () {
-  const store = inpageProvider.publicConfigStore
-  let state = store.getState()
-  // if state is missing, wait for first update
-  if (!state.networkVersion) {
-    state = await new Promise(resolve => store.once('update', resolve))
-    console.log('new state', state)
-  }
-  return state
-}
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues with drizzle
@@ -161,33 +194,3 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
     window.postMessage('onboardingcomplete', '*')
   }
 })
-
-// need to make sure we aren't affected by overlapping namespaces
-// and that we dont affect the app with our namespace
-// mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let __define
-
-/**
- * Caches reference to global define object and deletes it to
- * avoid conflicts with other global define objects, such as
- * AMD's define function
- */
-function cleanContextForImports () {
-  __define = global.define
-  try {
-    global.define = undefined
-  } catch (_) {
-    console.warn('MetaMask - global.define could not be deleted.')
-  }
-}
-
-/**
- * Restores global define object from cached reference
- */
-function restoreContextAfterImports () {
-  try {
-    global.define = __define
-  } catch (_) {
-    console.warn('MetaMask - global.define could not be overwritten.')
-  }
-}
