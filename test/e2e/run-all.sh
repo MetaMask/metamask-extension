@@ -31,3 +31,11 @@ concurrently --kill-others \
   --success first \
   'yarn ganache:start' \
   'sleep 5 && mocha test/e2e/from-import-ui.spec'
+
+export GANACHE_ARGS="$GANACHE_ARGS --deterministic --account=0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9,25000000000000000000"
+concurrently --kill-others \
+  --names 'ganache,e2e' \
+  --prefix '[{time}][{name}]' \
+  --success first \
+  'npm run ganache:start' \
+  'sleep 5 && mocha test/e2e/send-edit.spec'
