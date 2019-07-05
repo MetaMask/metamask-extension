@@ -1,5 +1,3 @@
-require('react-devtools')
-
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./app/pages')
