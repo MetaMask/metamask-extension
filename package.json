@@ -224,7 +224,6 @@
     "gulp-sourcemaps": "^2.6.0",
     "gulp-stylefmt": "^1.1.0",
     "gulp-stylelint": "^7.0.0",
-    "gulp-uglify": "^3.0.0",
     "gulp-uglify-es": "^1.0.1",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^5.0.1",
