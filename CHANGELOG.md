@@ -14,6 +14,7 @@
 - [#6714](https://github.com/MetaMask/metamask-extension/pull/6714): Wrap smaller custom block explorer url text
 - [#6706](https://github.com/MetaMask/metamask-extension/pull/6706): Pin ethereumjs-tx
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+- [#6775](https://github.com/MetaMask/metamask-extension/pull/6775): Started adding visual documentation of MetaMask plugin components with the account menu component first
 
 ## 6.6.2 Fri Jun 07 2019
 
