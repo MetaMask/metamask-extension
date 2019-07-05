@@ -330,9 +330,36 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      await inputAmount.sendKeys('1000')
+
+      const errorAmount = await findElement(driver, By.css('.send-v2__error-amount'))
+      assert.equal(await errorAmount.getText(), 'Insufficient funds.', 'send screen should render an insufficient fund error message')
+
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(50)
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(50)
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(tinyDelayMs)
+
+      await assertElementNotPresent(webdriver, driver, By.css('.send-v2__error-amount'))
+
+      const amountMax = await findElement(driver, By.css('.send-v2__amount-max'))
+      await amountMax.click()
+
+      assert.equal(await inputAmount.isEnabled(), false)
+
+      let inputValue = await inputAmount.getAttribute('value')
+
+      assert(Number(inputValue) > 99)
+
+      await amountMax.click()
+
+      assert.equal(await inputAmount.isEnabled(), true)
+
       await inputAmount.sendKeys('1')
 
-      const inputValue = await inputAmount.getAttribute('value')
+      inputValue = await inputAmount.getAttribute('value')
       assert.equal(inputValue, '1')
       await delay(regularDelayMs)
 
