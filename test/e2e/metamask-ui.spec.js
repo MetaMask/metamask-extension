@@ -1028,7 +1028,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAmount = await findElement(driver, By.css('.unit-input__input'))
-      await inputAmount.sendKeys('50')
+      await inputAmount.sendKeys('1')
 
       // Set the gas limit
       const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
