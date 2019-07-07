@@ -20,6 +20,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     text-overflow: ellipsis;
     min-width: 0;
     max-width: 100%;
+
+    [dir='rtl'] & {
+      margin-left: 4px;
+      margin-right: 0;
+    }
   }
 
   &__token-balance, &__token-symbol {
@@ -56,8 +61,18 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     border: '1px solid #dedede';
     min-width: 50px;
 
+    [dir='rtl'] & {
+      margin-left: 15px;
+      margin-right: 0;
+    }
+
     @media #{$wallet-balance-breakpoint-range} {
       margin-right: 4%;
+
+      [dir='rtl'] & {
+        margin-left: 4%;
+        margin-right: 0;
+      }
     }
   }
 
@@ -71,6 +86,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__ellipsis {
     line-height: 45px;
     margin-left: 5px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 5px;
+    }
   }
 
   &__balance-wrapper {
@@ -88,8 +108,18 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   right: 25px;
   z-index: 2000;
 
+  [dir='rtl'] & {
+    left: 25px;
+    right: auto;
+  }
+
   @media #{$wallet-balance-breakpoint-range} {
     right: 18px;
+
+    [dir='rtl'] & {
+      left: 18px;
+      right: auto;
+    }
   }
 
   &__close-area {
@@ -100,6 +130,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     width: 100%;
     height: 100%;
     cursor: default;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 0;
+    }
   }
 
   &__container {

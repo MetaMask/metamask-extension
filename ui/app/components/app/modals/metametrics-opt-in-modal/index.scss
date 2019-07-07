@@ -5,6 +5,11 @@
     margin-right: 0%;
     max-height: 75vh;
 
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 3%;
+    }
+
     @media screen and (max-width: 575px) {
       max-height: 100vh;
     }
@@ -17,6 +22,11 @@
 
   .metametrics-opt-in__content {
     padding-right: 6px;
+
+    [dir='rtl'] & {
+      padding-left: 6px;
+      padding-right: 0;
+    }
   }
 
   .metametrics-opt-in__footer {
@@ -25,6 +35,11 @@
       justify-content: center;
       margin-left: 2%;
       max-height: 520px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 2%;
+      }
     }
   }
 }

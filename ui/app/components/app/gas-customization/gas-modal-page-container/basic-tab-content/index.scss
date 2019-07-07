@@ -7,6 +7,11 @@
   background: #F5F7F8;
   border-bottom: 1px solid #d2d8dd;
 
+  [dir='rtl'] & {
+    padding-left: 0;
+    padding-right: 21px;
+  }
+
   &__title {
     margin-top: 19px;
     font-size: 16px;

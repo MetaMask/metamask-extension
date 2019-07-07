@@ -26,6 +26,13 @@
     position: absolute;
     margin-left: 10px;
     left: 100%;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 10px;
+      left: auto;
+      right: 100%;
+    }
   }
 
   &__icon {

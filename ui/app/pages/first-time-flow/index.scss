@@ -155,6 +155,11 @@
     font-size: 18px;
     color: #939090;
     margin-left: 18px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 18px;
+    }
   }
 
   &__link-text {

@@ -32,6 +32,11 @@
   &__identicon {
     flex: 0 0 auto;
     margin-right: 8px;
+
+    [dir='rtl'] & {
+      margin-left: 8px;
+      margin-right: 0;
+    }
   }
 
   &__title-text {

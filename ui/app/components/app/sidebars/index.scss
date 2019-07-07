@@ -56,14 +56,28 @@
   width: 85%;
   height: 100%;
 
+  [dir='rtl'] & {
+    left: 0;
+    right: 15%;
+  }
+
   @media screen and (min-width: 769px) {
     width: 408px;
     left: calc(100% - 408px);
+
+    [dir='rtl'] & {
+      left: 0;
+      right: calc(100% - 408px);
+    }
   }
 
   @media screen and (max-width: $break-small) {
     width: 100%;
     left: 0%;
+
+    [dir='rtl'] & {
+      right: 0;
+    }
   }
 }
 

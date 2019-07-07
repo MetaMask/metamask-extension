@@ -30,6 +30,11 @@
         font-size: 43px;
         line-height: 43px;
         margin-right: 8px;
+
+        [dir='rtl'] & {
+          margin-left: 8px;
+          margin-right: 0;
+        }
       }
 
       &__symbol {
@@ -65,5 +70,10 @@
   &__token-icon {
     margin-right: 12px;
     flex: 0 0 auto;
+
+    [dir='rtl'] & {
+      margin-left: 12px;
+      margin-right: 0;
+    }
   }
 }

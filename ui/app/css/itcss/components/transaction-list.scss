@@ -138,6 +138,11 @@
   padding: 4px;
   cursor: pointer;
 
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 44px;
+  }
+
   @media screen and (min-width: 576px) and (max-width: 679px) {
     flex-flow: column;
     align-items: center;
@@ -158,17 +163,34 @@
   margin-left: 6px;
   cursor: pointer;
 
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 6px;
+  }
+
   @media screen and (min-width: 576px) and (max-width: 679px) {
     margin-left: 0px;
+
+    [dir='rtl'] & {
+      margin-right: 0;
+    }
   }
 
   @media screen and (min-width: 380px) and (max-width: 575px) {
     margin-left: 6px;
+
+    [dir='rtl'] & {
+      margin-right: 6px;
+    }
   }
 
   @media screen and (max-width: 379px) {
     margin-left: 0px;
     text-align: center;
+
+    [dir='rtl'] & {
+      margin-right: 0;
+    }
   }
 }
 
@@ -183,6 +205,11 @@
   flex: 0 0 auto;
   margin-right: 16px;
   display: flex;
+
+  [dir='rtl'] & {
+    margin-left: 16px;
+    margin-right: 0;
+  }
 }
 
 .tx-list-account-and-status-wrapper {
@@ -269,6 +296,10 @@
     .tx-list-value {
       font-size: 16px;
       text-align: right;
+
+      [dir='rtl'] & {
+        text-align: left;
+      }
     }
 
     .tx-list-value--confirmed {
@@ -278,6 +309,10 @@
     .tx-list-fiat-value {
       font-size: 12px;
       text-align: right;
+
+      [dir='rtl'] & {
+        text-align: left;
+      }
     }
   }
 
@@ -299,6 +334,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+  [dir='rtl'] & {
+    text-align: left;
+  }
 }
 
 .tx-list-fiat-value {
@@ -308,6 +347,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+  [dir='rtl'] & {
+    text-align: left;
+  }
 }
 
 .tx-list-value--confirmed {

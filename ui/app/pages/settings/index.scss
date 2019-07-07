@@ -37,6 +37,11 @@
     display: flex;
     flex-flow: row nowrap;
 
+    [dir='rtl'] & {
+      margin-left: 24px;
+      margin-right: 0;
+    }
+
     @media screen and (max-width: 575px) {
       display: none;
     }
@@ -92,6 +97,11 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        margin-left: 16px;
+        margin-right: 0;
+      }
     }
   }
 

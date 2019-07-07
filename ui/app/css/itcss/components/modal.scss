@@ -160,6 +160,11 @@
   top: 12px;
   right: 20px;
   font-size: 25px;
+
+  [dir='rtl'] & {
+    left: 20px;
+    right: auto;
+  }
 }
 
 .edit-account-name-modal-title {
@@ -181,6 +186,10 @@
   margin: 10px;
   padding: 10px;
   font-size: 18px;
+
+  [dir='rtl'] & {
+    text-align: right;
+  }
 }
 
 // Account Modal Container
@@ -207,6 +216,11 @@
   left: 17px;
   cursor: pointer;
 
+  [dir='rtl'] & {
+    left: auto;
+    right: 17px;
+  }
+
   &__text {
     margin-top: 2px;
     font-family: Roboto;
@@ -223,6 +237,11 @@
   top: 10px;
   right: 12px;
   cursor: pointer;
+
+  [dir='rtl'] & {
+    left: 12px;
+    right: auto;
+  }
 }
 
 .account-modal-container .identicon {
@@ -313,6 +332,10 @@
   line-height: 21px;
   width: 291px;
   height: 44px;
+
+  [dir='rtl'] & {
+    padding: 10px 17px 13px 0;
+  }
 }
 
 .private-key-password::-webkit-input-placeholder {
@@ -347,6 +370,11 @@
 
 .export-private-key__button--cancel {
   margin-right: 15px;
+
+  [dir='rtl'] & {
+    margin-left: 15px;
+    margin-right: 0;
+  }
 }
 
 .private-key-password-display-wrapper {
@@ -403,6 +431,11 @@
   right: 17.5px;
   font-family: sans-serif;
   cursor: pointer;
+
+  [dir='rtl'] & {
+    left: 17.5px;
+    right: auto;
+  }
 }
 
 .new-account-modal-content {
@@ -635,6 +668,11 @@
       top: 20.8px;
       right: 28px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        left: 28px;
+        right: auto;
+      }
     }
   }
 
@@ -701,6 +739,11 @@
       position: absolute;
       top: 10px;
       left: 0px;
+
+      [dir='rtl'] & {
+        left: auto;
+        right: 0;
+      }
     }
 
     &__shapeshift-buy {

@@ -13,10 +13,20 @@
     margin-right: 28%;
     color: black;
 
+    [dir='rtl'] & {
+      margin-left: 28%;
+      margin-right: 26.26%;
+    }
+
     @media screen and (max-width: 575px) {
       justify-content: center;
       margin-left: 2%;
       margin-right: 0%;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 2%;
+      }
     }
 
     .app-header__logo-container {
@@ -69,11 +79,21 @@
     .fa-check {
       margin-right: 12px;
       color: #1ACC56;
+
+      [dir='rtl'] & {
+        margin-left: 12px;
+        margin-right: 0;
+      }
     }
 
     .fa-times {
       margin-right: 12px;
       color: #D0021B;
+
+      [dir='rtl'] & {
+        margin-left: 12px;
+        margin-right: 0;
+      }
     }
   }
 
@@ -115,6 +135,11 @@
       justify-content: center;
       margin-left: 2%;
       max-height: 520px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 2%;
+      }
     }
 
     .page-container__footer {
@@ -126,6 +151,11 @@
         height: 44px;
         min-height: 44px;
         margin-right: 16px;
+
+        [dir='rtl'] & {
+          margin-left: 16px;
+          margin-right: 0;
+        }
       }
 
       header {

@@ -43,6 +43,11 @@
     &-label {
       font-weight: 500;
       padding-right: 16px;
+
+      [dir='rtl'] & {
+        padding-left: 16px;
+        padding-right: 0;
+      }
     }
 
     &:not(:last-child) {
@@ -64,5 +69,10 @@
     text-transform: capitalize;
     color: $black;
     padding-left: 5px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 5px;
+    }
   }
 }

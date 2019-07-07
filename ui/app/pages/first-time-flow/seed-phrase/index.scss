@@ -27,6 +27,11 @@
 
     @media screen and (min-width: $break-large) {
       margin-left: 81px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 81px;
+      }
     }
 
     @media screen and (max-width: $break-small) {

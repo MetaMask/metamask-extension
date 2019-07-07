@@ -1,0 +1,22 @@
+.time-remaining {
+  color: #313A5E;
+  font-size: 16px;
+
+  .minutes-num, .seconds-num {
+    font-size: 16px;
+  }
+
+  .seconds-num {
+    margin-left: 7px;
+    font-size: 16px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 7px;
+    }
+  }
+
+  .minutes-label, .seconds-label {
+    font-size: 16px;
+  }
+}

@@ -48,6 +48,11 @@
     box-shadow: 0 2px 4px 0 rgba($black, .24);
     margin-right: 12px;
     flex: 0 0 auto;
+
+    [dir='rtl'] & {
+      margin-left: 12px;
+      margin-right: 0;
+    }
   }
 
   &__token-data {

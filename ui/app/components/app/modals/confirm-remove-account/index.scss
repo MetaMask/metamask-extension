@@ -15,12 +15,22 @@
 
     &__identicon {
       margin-right: 10px;
+
+      [dir='rtl'] & {
+        margin-left: 10px;
+        margin-right: 0;
+      }
     }
 
     &__name,
     &__address {
       margin-right: 10px;
       font-size: 14px;
+
+      [dir='rtl'] & {
+        margin-left: 10px;
+        margin-right: 0;
+      }
     }
 
     &__name {

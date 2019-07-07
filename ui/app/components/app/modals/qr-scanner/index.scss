@@ -59,6 +59,11 @@
 
     button {
       margin-right: 15px;
+
+      [dir='rtl'] & {
+        margin-left: 15px;
+        margin-right: 0;
+      }
     }
 
     button:last-of-type {
@@ -66,6 +71,10 @@
       background-color: #009eec;
       border: none;
       color: #fff;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+      }
     }
   }
 
@@ -78,6 +87,10 @@
     right: 20px;
     cursor: pointer;
     font-weight: 300;
+
+    [dir='rtl'] & {
+      left: 20px;
+      right: auto;
+    }
   }
 }
-

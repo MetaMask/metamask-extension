@@ -33,6 +33,11 @@
       height: 16px;
       width: 16px;
       margin-right: 14px;
+
+      [dir='rtl'] & {
+        margin-left: 14px;
+        margin-right: 0;
+      }
     }
 
     &__text {
@@ -59,5 +64,10 @@
     top: 0;
     left: 0;
     z-index: 100;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 0;
+    }
   }
 }

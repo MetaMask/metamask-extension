@@ -6,23 +6,48 @@
 
   @media screen and (max-width: 575px) {
     right: calc(((100vw - 100%) / 2) + 8px);
+
+    [dir='rtl'] & {
+      left: calc(((100vw - 100%) / 2) + 8px);
+      right: auto;
+    }
   }
 
   @media screen and (min-width: 576px) {
-    right: calc((100vw - 85vw) / 2);
+    right: calc(((100vw - 100%) / 2) + 8px);
+
+    [dir='rtl'] & {
+      left: calc(((100vw - 100%) / 2) + 8px);
+      right: auto;
+    }
   }
 
   @media screen and (min-width: 769px) {
     right: calc((100vw - 80vw) / 2);
+
+    [dir='rtl'] & {
+      left: calc((100vw - 80vw) / 2);
+      right: auto;
+    }
   }
 
   @media screen and (min-width: 1281px) {
     right: calc((100vw - 65vw) / 2);
+
+    [dir='rtl'] & {
+      left: calc((100vw - 65vw) / 2);
+      right: auto;
+    }
   }
 
   &__icon {
     margin-left: 1rem;
     cursor: pointer;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 1rem;
+    }
 
     &--disabled {
       cursor: initial;
@@ -90,6 +115,11 @@
       width: 15px;
       margin-left: 10px;
       height: 15px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 10px;
+      }
     }
 
     &:hover {
@@ -114,6 +144,11 @@
     width: 14px;
     margin-right: 12px;
     flex: 0 0 auto;
+
+    [dir='rtl'] & {
+      margin-left: 12px;
+      margin-right: 0;
+    }
   }
 
   &__check-mark-icon {
@@ -169,6 +204,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    [dir='rtl'] & {
+      left: 12px;
+      right: auto;
+    }
 
     &:hover {
       opacity: 1;

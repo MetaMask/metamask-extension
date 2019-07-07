@@ -99,6 +99,11 @@
   @media screen and (max-width: $break-small) {
     margin-left: 22px;
     margin-right: 8px;
+
+    [dir='rtl'] & {
+      margin-left: 8px;
+      margin-right: 22px;
+    }
   }
 }
 
@@ -110,6 +115,11 @@
   top: 38px;
   right: 38px;
   background: none;
+
+  [dir='rtl'] & {
+    left: 38px;
+    right: auto;
+  }
 }
 
 .confirm-screen-account-wrapper {
@@ -205,6 +215,10 @@
   line-height: 40px;
   color: $scorpion;
   text-align: left;
+
+  [dir='rtl'] & {
+    text-align: right;
+  }
 }
 
 section .confirm-screen-account-name,
@@ -212,6 +226,10 @@ section .confirm-screen-account-number,
 .confirm-screen-row-info,
 .confirm-screen-row-detail {
   text-align: left;
+
+  [dir='rtl'] & {
+    text-align: right;
+  }
 }
 
 .confirm-screen-rows {
@@ -234,6 +252,11 @@ section .confirm-screen-account-number,
   padding-left: 35px;
   font-size: 16px;
   line-height: 22px;
+
+  [dir='rtl'] & {
+    padding-left: 12px;
+    padding-right: 25px;
+  }
 
   &:not(:last-of-type) {
     border-bottom: 1px solid $alto;
@@ -294,6 +317,12 @@ section .confirm-screen-account-number,
   right: 12px;
   width: 80px;
   text-align: right;
+
+  [dir='rtl'] & {
+    text-align: left;
+    left: 12px;
+    right: auto;
+  }
 }
 
 .confirm-screen-row.confirm-screen-total-box {
@@ -318,6 +347,11 @@ section .confirm-screen-account-number,
     width: 100%;
     margin-top: 7px;
     text-align: center;
+
+    [dir='rtl'] & {
+      left: 0;
+      right: auto;
+    }
   }
 }
 

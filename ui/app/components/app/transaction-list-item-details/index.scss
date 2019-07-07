@@ -21,6 +21,11 @@
 
     &:not(:last-child) {
       margin-right: 8px;
+
+      [dir='rtl'] & {
+        margin-left: 8px;
+        margin-right: 0;
+      }
     }
 
     &__copy-icon {
@@ -47,6 +52,11 @@
     margin-right: 8px;
     min-width: 0;
 
+    [dir='rtl'] & {
+      margin-left: 8px;
+      margin-right: 0;
+    }
+
     @media screen and (max-width: $break-small) {
       margin: 0 0 8px 0;
     }
@@ -58,6 +68,11 @@
 
     @media screen and (min-width: $break-large) {
       padding-left: 12px;
+
+      [dir='rtl'] & {
+        padding-left: 0;
+        padding-right: 12px;
+      }
     }
   }
 }

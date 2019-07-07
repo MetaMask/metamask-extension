@@ -205,10 +205,20 @@
 
     &:first-child {
       margin-right: 6px;
+
+      [dir='rtl'] & {
+        margin-left: 6px;
+        margin-right: 0;
+      }
     }
 
     &:last-child {
       margin-left: 6px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 6px;
+      }
     }
   }
 
@@ -228,6 +238,11 @@
       flex-flow: row;
       justify-content: center;
       align-items: center;
+
+      [dir='rtl'] & {
+        left: -10px;
+        right: auto;
+      }
     }
 
     i {

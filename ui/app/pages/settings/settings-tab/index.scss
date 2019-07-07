@@ -8,6 +8,11 @@
   &__advanced-link {
     @extend %small-link;
     padding-left: 5px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 5px;
+    }
   }
 
   &__rpc-save-button {
@@ -42,10 +47,20 @@
 
     &:not(:last-child) {
       margin-right: 16px;
+
+      [dir='rtl'] & {
+        margin-left: 16px;
+        margin-right: 0;
+      }
     }
   }
 
   &__radio-label {
     padding-left: 4px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 4px;
+    }
   }
 }

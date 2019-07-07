@@ -17,6 +17,11 @@
     display: flex;
     flex-direction: column;
 
+    [dir='rtl'] & {
+      padding-left: 24px;
+      padding-right: 0;
+    }
+
     @media screen and (max-width: 575px) {
       padding: 0;
     }
@@ -38,6 +43,11 @@
       cursor: pointer;
       position: absolute;
       margin-left: 10px;
+
+      [dir='rtl'] & {
+        margin-left: 16px;
+        margin-right: 10px;
+      }
     }
   }
 
@@ -169,6 +179,11 @@
     line-height: 23px;
     color: #6A737D;
 
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 11px;
+    }
+
     &:hover {
       cursor: pointer;
     }
@@ -190,6 +205,11 @@
       position: absolute;
       width: 24px;
       height: 24px;
+
+      [dir='rtl'] & {
+        left: 10px;
+        right: auto;
+      }
     }
   }
 
@@ -207,14 +227,29 @@
 
     .btn-default {
       margin-right: .375rem;
+
+      [dir='rtl'] & {
+        margin-left: .375rem;
+        margin-right: 0;
+      }
     }
 
     .btn-secondary {
       margin-left: .375rem;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: .375rem;
+      }
     }
 
     .btn-danger {
       margin-right: 3.75rem;
+
+      [dir='rtl'] & {
+        margin-left: 3.75rem;
+        margin-right: 0;
+      }
     }
   }
 }

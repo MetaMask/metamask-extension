@@ -24,6 +24,13 @@
       height: 100%;
       width: 7px;
       border-right: 1px solid #909090;
+
+      [dir='rtl'] & {
+        left: auto;
+        right: 0;
+        border-left: 1px solid #909090;
+        border-right: 0;
+      }
     }
 
     &:first-child::after {
@@ -51,6 +58,11 @@
     justify-content: center;
     align-items: center;
     z-index: 1;
+
+    [dir='rtl'] & {
+      margin-left: 6px;
+      margin-right: 0;
+    }
   }
 
   &__activity-text {

@@ -22,10 +22,20 @@
     margin-top: 10px;
     margin-left: 8px;
     position: relative;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 8px;
+    }
   }
 
   &__tooltip-wrapper {
     left: -10px;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: -10px;
+    }
   }
 
   &__account-balances {
@@ -36,6 +46,11 @@
     margin-left: 34px;
     margin-top: 4px;
     position: relative;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 34px;
+    }
   }
 
   &__primary-cached-container {
@@ -44,6 +59,11 @@
 
   &__cached-star {
     margin-left: 4px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 4px;
+    }
   }
 
   &__cached-balances {
@@ -59,12 +79,22 @@
   &__account-name {
     font-size: 16px;
     margin-left: 8px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 8px;
+    }
   }
 
   &__icon {
     position: absolute;
     right: 12px;
     top: 1px;
+
+    [dir='rtl'] & {
+      left: 12px;
+      right: auto;
+    }
   }
 
   &__account-primary-balance,
@@ -79,6 +109,11 @@
     top: 3px;
     left: -8px;
     color: $curious-blue;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: -8px;
+    }
   }
 
   &__account-primary-balance {
@@ -95,6 +130,11 @@
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 35px;
+    }
   }
 
   &__dropdown {

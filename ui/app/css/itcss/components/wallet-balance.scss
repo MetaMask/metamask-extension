@@ -40,6 +40,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     margin-left: 15px;
     min-width: 0;
 
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 15px;
+    }
+
     .token-amount {
       font-size: 1.5rem;
     }
@@ -51,6 +56,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
     @media #{$wallet-balance-breakpoint-range} {
       margin-left: 4%;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 4%;
+      }
 
       .token-amount {
         font-size: 105%;

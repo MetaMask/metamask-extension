@@ -23,12 +23,22 @@
     line-height: 43px;
     margin-top: 22px;
     margin-left: 29px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 29px;
+    }
   }
 
   &__tabs {
     margin-left: 22px;
     display: flex;
     margin-top: 10px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 22px;
+    }
 
     &__tab {
       height: 54px;
@@ -225,10 +235,20 @@
   &__btn:first-child {
     margin-right: 15px;
     margin-left: 20px;
+
+    [dir='rtl'] & {
+      margin-left: 15px;
+      margin-right: 20px;
+    }
   }
 
   &__btn:last-child {
     margin-right: 20px;
+
+    [dir='rtl'] & {
+      margin-left: 20px;
+      margin-right: 0;
+    }
   }
 
   &__hdPath {
@@ -242,6 +262,11 @@
       display: flex;
       margin-top: 10px;
       margin-right: 15px;
+
+      [dir='rtl'] & {
+        margin-left: 15px;
+        margin-right: 0;
+      }
     }
 
     &__select {
@@ -308,11 +333,21 @@
       width: 100%;
       display: block;
       margin-left: 20px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 20px;
+      }
     }
 
     &__link {
       color: #2f9ae0;
       margin-left: 5px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 5px;
+      }
     }
   }
 
@@ -416,6 +451,11 @@
     padding-left: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 10px;
+    }
   }
 
   &__item__balance {
@@ -454,6 +494,11 @@
     padding: 0px;
     text-transform: uppercase;
     font-family: Roboto;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 16px;
+    }
   }
 }
 
@@ -484,6 +529,11 @@
 
   &__button:not(:last-child) {
     margin-right: 16px;
+
+    [dir='rtl'] & {
+      margin-left: 16px;
+      margin-right: 0;
+    }
   }
 }
 

@@ -40,6 +40,12 @@
       color: $curious-blue;
       padding-right: 4px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        text-align: left;
+        padding-left: 4px;
+        padding-right: 0;
+      }
     }
   }
 }

@@ -6,6 +6,11 @@
     width: 322px;
     margin-left: -2px;
     z-index: 2;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: -2px;
+    }
   }
 
   input[type=range] {
@@ -42,6 +47,11 @@
     width: 322px;
     z-index: 1;
     background-color: $blizzard-blue;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 102px;
+    }
   }
 
   &__labels {

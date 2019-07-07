@@ -69,6 +69,11 @@
 
   .fa-bolt {
     padding-right: 4px;
+
+    [dir='rtl'] & {
+      padding-left: 4px;
+      padding-right: 0;
+    }
   }
 
   .large-input {
@@ -102,6 +107,11 @@
       line-height: 12px;
       left: 8px;
       color: $red;
+
+      [dir='rtl'] & {
+        left: auto;
+        right: 8px;
+      }
     }
   }
 
@@ -113,6 +123,11 @@
     line-height: 12px;
     left: 8px;
     color: $red;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 8px;
+    }
   }
 }
 
@@ -134,6 +149,11 @@
   padding-right: 12px;
   font-size: 16px;
   color: $scorpion;
+
+  [dir='rtl'] & {
+    padding-left: 12px;
+    padding-right: 10px;
+  }
 }
 
 .send-screen-amount-labels {
@@ -173,6 +193,11 @@
   z-index: 1000;
   width: 100%;
   height: 100%;
+
+  [dir='rtl'] & {
+    left: auto;
+    right: 0;
+  }
 }
 
 .customize-gas-tooltip-container {
@@ -201,6 +226,11 @@
   left: 107px;
   top: 294px;
   box-shadow: 2px 2px 2px $alto;
+
+  [dir='rtl'] & {
+    left: auto;
+    right: 107px;
+  }
 }
 
 .customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
@@ -238,6 +268,11 @@
 .gas-tooltip-input-label i {
   color: $silver-chalice;
   margin-left: 6px;
+
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 6px;
+  }
 }
 
 .customize-gas-input {
@@ -247,6 +282,11 @@
   font-size: 16px;
   color: $nile-blue;
   padding-left: 8px;
+
+  [dir='rtl'] & {
+    padding-left: 0;
+    padding-right: 8px;
+  }
 }
 
 .customize-gas-input-wrapper {
@@ -259,6 +299,11 @@
   right: 26px;
   font-size: 12px;
   color: $silver-chalice;
+
+  [dir='rtl'] & {
+    left: 26px;
+    right: auto;
+  }
 }
 
 .gas-tooltip-input-arrows {
@@ -275,12 +320,24 @@
   font-size: .8em;
   padding: 1px 4px;
   cursor: pointer;
+
+  [dir='rtl'] & {
+    border-left: 1px solid #dadada;
+    border-right: 0;
+    left: 4px;
+    right: auto;
+  }
 }
 
 .token-gas {
   &__amount {
     display: inline-block;
     margin-right: 4px;
+
+    [dir='rtl'] & {
+      margin-left: 4px;
+      margin-right: 0;
+    }
   }
 
   &__symbol {
@@ -374,6 +431,11 @@
 
     .token-balance__amount {
       padding-right: 12px;
+
+      [dir='rtl'] & {
+        padding-left: 12px;
+        padding-right: 0;
+      }
     }
   }
 
@@ -447,6 +509,11 @@
     top: -2px;
     left: 0;
     font-size: 1.12em;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 0;
+    }
   }
 
   &__arrow-background {
@@ -458,6 +525,11 @@
     left: 199px;
     border-radius: 50%;
     z-index: 100;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 199px;
+    }
 
     @media screen and (max-width: $break-small) {
       top: 36px;
@@ -488,11 +560,21 @@
     left: 178px;
     top: 75px;
 
+    [dir='rtl'] & {
+      left: auto;
+      right: 178px;
+    }
+
     @media screen and (max-width: $break-small) {
       top: 46px;
       left: 0;
       right: 0;
       margin: 0 auto;
+
+      [dir='rtl'] & {
+        left: 0;
+        right: auto;
+      }
     }
   }
 
@@ -518,6 +600,11 @@
     line-height: 12px;
     left: 8px;
     color: $red;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 8px;
+    }
   }
 
   &__error-amount {
@@ -529,6 +616,11 @@
     line-height: 12px;
     left: 8px;
     color: $orange;
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 8px;
+    }
   }
 
   &__error-border {
@@ -618,6 +710,11 @@
       z-index: 1000;
       width: 100%;
       height: 100%;
+
+      [dir='rtl'] & {
+        left: auto;
+        right: 0;
+      }
     }
 
     &__list {
@@ -632,6 +729,11 @@
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: -1px;
+      }
     }
   }
 
@@ -676,6 +778,11 @@
       display: flex;
       flex-flow: column nowrap;
       margin-left: 8px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 8px;
+      }
     }
 
     &__symbol {
@@ -690,6 +797,11 @@
 
       &__label {
         margin-right: .25rem;
+
+        [dir='rtl'] & {
+          margin-left: .25rem;
+          margin-right: 0;
+        }
       }
     }
 
@@ -712,6 +824,11 @@
       overflow-y: scroll;
       margin-top: 0;
       padding: 4px 0;
+
+      [dir='rtl'] & {
+        left: auto;
+        right: 0;
+      }
 
       .send-v2__asset-dropdown__asset {
         padding: 8px;
@@ -762,6 +879,11 @@
       cursor: pointer;
       padding: 8px 5px 5px;
       border-radius: 4px;
+
+      [dir='rtl'] & {
+        left: 33px;
+        right: auto;
+      }
     }
 
     &__qr-code:hover {
@@ -899,6 +1021,11 @@
     top: 14px;
     cursor: pointer;
     font-size: 1em;
+
+    [dir='rtl'] & {
+      left: 15px;
+      right: auto;
+    }
   }
 
   &__sliders-icon {
@@ -958,6 +1085,11 @@
 
     &__title {
       margin-left: 19.25px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 19.25px;
+      }
     }
 
     &__close::after {
@@ -967,6 +1099,11 @@
       font-family: sans-serif;
       cursor: pointer;
       margin-right: 19.25px;
+
+      [dir='rtl'] & {
+        margin-left: 19.25px;
+        margin-right: 0;
+      }
     }
 
     &__content {
@@ -1003,6 +1140,11 @@
       display: flex;
       justify-content: space-between;
       margin-right: 21.25px;
+
+      [dir='rtl'] & {
+        margin-left: 21.25px;
+        margin-right: 0;
+      }
     }
 
     &__revert, &__cancel, &__save, &__save__error {
@@ -1017,6 +1159,11 @@
       color: $silver-chalice;
       font-size: 16px;
       margin-left: 21.25px;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: 21.25px;
+      }
     }
 
     &__cancel, &__save, &__save__error {
@@ -1039,10 +1186,20 @@
       color: $red;
       width: 100%;
       text-align: center;
+
+      [dir='rtl'] & {
+        left: 0;
+        right: auto;
+      }
     }
 
     &__cancel {
       margin-right: 10px;
+
+      [dir='rtl'] & {
+        margin-left: 10px;
+        margin-right: 0;
+      }
     }
   }
 
@@ -1052,6 +1209,11 @@
     flex-flow: column;
     align-items: flex-start;
     padding-left: 20px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 20px;
+    }
 
     &__title {
       height: 26px;
@@ -1082,6 +1244,11 @@
       border: 1px solid $geyser;
       background-color: $white;
       padding-left: 15px;
+
+      [dir='rtl'] & {
+        padding-left: 0;
+        padding-right: 15px;
+      }
     }
 
     .gas-tooltip-input-arrows {
@@ -1095,6 +1262,13 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+
+      [dir='rtl'] & {
+        border-left: 0;
+        border-right: 1px solid #dadada;
+        left: 0;
+        right: auto;
+      }
     }
 
     .gas-tooltip-input-arrow-wrapper {
@@ -1142,6 +1316,11 @@
   top: 14px;
   cursor: pointer;
   font-size: 1em;
+
+  [dir='rtl'] & {
+    left: 15px;
+    right: auto;
+  }
 }
 
 .gas-fee-reset {
@@ -1159,6 +1338,11 @@
   font-size: 14px;
   color: #2f9ae0;
   font-family: Roboto;
+
+  [dir='rtl'] & {
+    left: 12px;
+    right: auto;
+  }
 }
 
 .sliders-icon {

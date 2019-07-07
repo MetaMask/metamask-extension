@@ -27,6 +27,11 @@
 
   &__title {
     margin-left: 19.25px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 19.25px;
+    }
   }
 
   &__close::after {
@@ -36,6 +41,11 @@
     font-family: sans-serif;
     cursor: pointer;
     margin-right: 19.25px;
+
+    [dir='rtl'] & {
+      margin-left: 19.25px;
+      margin-right: 0;
+    }
   }
 
   &__content {
@@ -72,6 +82,11 @@
     display: flex;
     justify-content: space-between;
     margin-right: 21.25px;
+
+    [dir='rtl'] & {
+      margin-left: 21.25px;
+      margin-right: 0;
+    }
   }
 
   &__revert, &__cancel, &__save, &__save__error {
@@ -86,6 +101,11 @@
     color: $silver-chalice;
     font-size: 16px;
     margin-left: 21.25px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 21.25px;
+    }
   }
 
   &__cancel, &__save, &__save__error {
@@ -106,5 +126,10 @@
     font-size: 12px;
     line-height: 12px;
     color: $red;
+
+    [dir='rtl'] & {
+      left: 4px;
+      right: auto;
+    }
   }
 }

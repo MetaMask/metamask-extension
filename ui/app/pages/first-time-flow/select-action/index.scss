@@ -40,6 +40,11 @@
     border-radius: 10px;
     margin-left: 22px;
 
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 22px;
+    }
+
     .first-time-flow__button {
       max-width: 221px;
       height: 44px;

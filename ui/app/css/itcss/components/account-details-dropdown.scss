@@ -4,4 +4,9 @@
 	top: 120px;
 	right: 15px;
 	z-index: 2000;
+
+	[dir='rtl'] & {
+		left: 15px;
+		right: auto;
+	}
 }

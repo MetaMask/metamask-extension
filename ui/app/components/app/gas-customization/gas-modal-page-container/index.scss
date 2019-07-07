@@ -38,6 +38,11 @@
       right: 16px;
       cursor: pointer;
       overflow: hidden;
+
+      [dir='rtl'] & {
+        left: 16px;
+        right: auto;
+      }
     }
 
     &__title {
@@ -49,6 +54,10 @@
       justify-content: center;
       align-items: flex-start;
       margin-right: 0;
+
+      [dir='rtl'] & {
+        margin-left: 0;
+      }
     }
 
     &__subtitle {
@@ -65,6 +74,10 @@
 
       &:last-of-type {
         margin-right: 0;
+
+        [dir='rtl'] & {
+          margin-left: 0;
+        }
       }
 
       &--selected {

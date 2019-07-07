@@ -81,6 +81,11 @@ $wallet-view-bg: $alabaster;
   margin-left: 15px;
   font-size: 16px;
 
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 15px;
+  }
+
   // No title on mobile
   @media screen and (max-width: 575px) {
     display: none;

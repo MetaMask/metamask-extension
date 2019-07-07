@@ -93,12 +93,21 @@ textarea.twelve-word-phrase {
 
 .section-title .fa-arrow-left {
   margin: -2px 8px 0px -8px;
+
+  [dir='rtl'] & {
+    margin: -2px -8px 0 8px;
+  }
 }
 
 .sizing-input {
   font-size: 14px;
   height: 30px;
   padding-left: 5px;
+
+  [dir='rtl'] & {
+    padding-left: 0;
+    padding-right: 5px;
+  }
 }
 
 .editable-label {
@@ -130,6 +139,10 @@ textarea.twelve-word-phrase {
 
 .unconftx-link .fa-arrow-right {
   margin: 0 -8px 0px 8px;
+
+  [dir='rtl'] & {
+    margin: 0 8px 0 -8px;
+  }
 }
 
 /* identity panel */
@@ -157,6 +170,11 @@ textarea.twelve-word-phrase {
   margin-top: 32px;
   margin-right: 6px;
   color: #b9b9b9;
+
+  [dir='rtl'] & {
+    margin-left: 6px;
+    margin-right: 0;
+  }
 }
 
 .identity-panel .arrow-right {
@@ -164,6 +182,11 @@ textarea.twelve-word-phrase {
   width: 42px;
   min-width: 18px;
   height: 100%;
+
+  [dir='rtl'] & {
+    padding-left: 0;
+    padding-right: 18px;
+  }
 }
 
 .identity-copy.flex-column {
@@ -233,6 +256,11 @@ textarea.twelve-word-phrase {
   font-size: 11px;
   text-rendering: geometricPrecision;
   color: #f7861c;
+
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 50px;
+  }
 }
 
 .name-label:hover .edit-text {
@@ -276,6 +304,11 @@ textarea.twelve-word-phrase {
   padding-bottom: 10px;
   display: inline-block;
   padding-left: 5px;
+
+  [dir='rtl'] & {
+    padding-left: 0;
+    padding-right: 5px;
+  }
 }
 
 /* buy eth warning screen */

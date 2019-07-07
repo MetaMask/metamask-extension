@@ -11,6 +11,11 @@
 
   &__title {
     padding-right: 8px;
+
+    [dir='rtl'] & {
+      padding-left: 8px;
+      padding-right: 0;
+    }
   }
 
   &__value {

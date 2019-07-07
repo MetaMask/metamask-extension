@@ -16,6 +16,11 @@
     right: 12px;
     top: 0;
     cursor: pointer;
+
+    [dir='rtl'] & {
+      left: 12px;
+      right: auto;
+    }
   }
 
   &__description {

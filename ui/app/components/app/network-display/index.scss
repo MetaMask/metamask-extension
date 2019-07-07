@@ -35,6 +35,11 @@
   &__name {
     font-size: .75rem;
     padding-left: 5px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 5px;
+    }
   }
 
   &__icon {

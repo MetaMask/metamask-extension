@@ -194,4 +194,9 @@
   font-size: 18px;
   line-height: 23px;
   margin-left: 22px;
+
+  [dir='rtl'] & {
+    margin-left: 0;
+    margin-right: 22px;
+  }
 }

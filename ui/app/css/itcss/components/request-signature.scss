@@ -95,6 +95,11 @@
   &__account {
     color: $dusty-gray;
     margin-left: 17px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 17px;
+    }
   }
 
   &__account-text {
@@ -129,16 +134,29 @@
     color: $dusty-gray;
     margin-right: 17px;
     width: 124px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 17px;
+    }
   }
 
   &__balance-text {
     text-align: right;
     font-size: 14px;
+
+    [dir='rtl'] & {
+      text-align: left;
+    }
   }
 
   &__balance-value {
     text-align: right;
     margin-top: 2.5px;
+
+    [dir='rtl'] & {
+      text-align: left;
+    }
   }
 
   &__request-icon {
@@ -213,6 +231,11 @@
     margin-top: 12px;
     margin-left: 18px;
     width: 100%;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 18px;
+    }
   }
 
   &__row-value {
@@ -250,6 +273,11 @@
 
     &__cancel-button {
       margin-right: 1.2rem;
+
+      [dir='rtl'] & {
+        margin-left: 1.2rem;
+        margin-right: 0;
+      }
     }
   }
 }

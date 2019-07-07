@@ -20,11 +20,16 @@
       @media screen and (max-width: 576px) {
         font-size: 10px;
       }
-      
+
       .fa-info-circle {
         color: $silver;
         margin-left: 10px;
         cursor: pointer;
+
+        [dir='rtl'] & {
+          margin-left: 0;
+          margin-right: 10px;
+        }
       }
 
       .fa-info-circle:hover {
@@ -56,6 +61,11 @@
       padding-left: 8px;
       padding-top: 2px;
       margin-top: 7px;
+
+      [dir='rtl'] & {
+        padding-left: 0;
+        padding-right: 8px;
+      }
     }
 
     &__input--error {
@@ -80,6 +90,11 @@
       font-size: .8em;
       border-bottom-right-radius: 4px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        left: 0;
+        right: auto;
+      }
 
       &__i-wrap {
         width: 100%;
@@ -128,6 +143,11 @@
       top: 8px;
       right: 10px;
       color: $dusty-gray;
+
+      [dir='rtl'] & {
+        left: 10px;
+        right: auto;
+      }
     }
   }
 }

@@ -9,6 +9,11 @@
   &__icon {
     flex: 0 0 auto;
     margin-right: 16px;
+
+    [dir='rtl'] & {
+      margin-left: 16px;
+      margin-right: 0;
+    }
   }
 
   &__warning {

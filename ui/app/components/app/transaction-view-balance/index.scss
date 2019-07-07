@@ -46,6 +46,11 @@
 
   &__cached-star {
     margin-left: 4px;
+
+    [dir='rtl'] & {
+      margin-left: 0;
+      margin-right: 4px;
+    }
   }
 
   &__cached-balance, &__cached-star {
@@ -93,6 +98,11 @@
 
     &:not(:last-child) {
       margin-right: 12px;
+
+      [dir='rtl'] & {
+        margin-left: 12px;
+        margin-right: 0;
+      }
     }
   }
 }
