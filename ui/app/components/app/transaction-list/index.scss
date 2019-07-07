@@ -18,8 +18,16 @@
     border-bottom: 1px solid $Grey-100;
     padding: 8px 0 8px 20px;
 
+    [dir='rtl'] & {
+      padding: 8px 20px 8px 0;
+    }
+
     @media screen and (max-width: $break-small) {
       padding: 8px 0 8px 16px;
+
+      [dir='rtl'] & {
+        padding: 8px 16px 8px 0;
+      }
     }
   }
 

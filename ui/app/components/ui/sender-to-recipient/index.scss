@@ -50,6 +50,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        [dir='rtl'] & {
+          transform: rotate(180deg);
+        }
       }
 
       &__arrow-circle {
@@ -108,6 +112,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        [dir='rtl'] & {
+          transform: rotate(180deg);
+        }
       }
     }
   }
@@ -143,6 +151,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        [dir='rtl'] & {
+          transform: rotate(180deg);
+        }
       }
     }
   }

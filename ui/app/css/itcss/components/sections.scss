@@ -449,6 +449,7 @@ textarea.twelve-word-phrase {
 .qr-ellip-address, .ellip-address {
   overflow: hidden;
   text-overflow: ellipsis;
+  direction: ltr;
 }
 
 .qr-header {

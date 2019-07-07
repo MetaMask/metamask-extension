@@ -34,6 +34,11 @@
       font-size: 40px;
       line-height: 20px;
     }
+
+    [dir='rtl'] & {
+      left: 16px;
+      right: auto;
+    }
   }
 
   &__header-row {

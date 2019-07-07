@@ -11,5 +11,10 @@
 
   &__suffix {
     padding-left: 4px;
+
+    [dir='rtl'] & {
+      padding-left: 0;
+      padding-right: 4px;
+    }
   }
 }

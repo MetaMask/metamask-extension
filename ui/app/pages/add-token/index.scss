@@ -17,6 +17,11 @@
 
   &__search-token {
     padding: 16px;
+
+    [dir='rtl'] & img {
+      margin-left: 12px !important;
+      margin-right: 0 !important;
+    }
   }
 
   &__token-list {

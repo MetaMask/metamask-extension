@@ -164,6 +164,10 @@
   .identicon {
     margin: 0 12px 0 0;
     flex: 0 0 auto;
+
+    [dir='rtl'] & {
+      margin: 0 0 0 12px;
+    }
   }
 
   &__name {

@@ -145,11 +145,6 @@
 .network-check__transparent {
   color: $white;
   margin-left: 7px;
-
-  [dir='rtl'] & {
-    margin-left: 0;
-    margin-right: 7px;
-  }
 }
 
 .network-check__transparent {
