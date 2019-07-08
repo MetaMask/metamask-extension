@@ -74,6 +74,16 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: .875rem;
+
+        [dir='rtl'] & {
+          direction: ltr;
+          text-align: right;
+
+          span {
+            display: block;
+            direction: rtl;
+          }
+        }
       }
     }
   }
@@ -106,6 +116,16 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: .5rem;
+
+        [dir='rtl'] & {
+          direction: ltr;
+          text-align: right;
+
+          span {
+            display: block;
+            direction: rtl;
+          }
+        }
       }
 
       &__arrow-container {
@@ -145,6 +165,16 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: .6875rem;
+
+        [dir='rtl'] & {
+          direction: ltr;
+          text-align: right;
+
+          span {
+            display: block;
+            direction: rtl;
+          }
+        }
       }
 
       &__arrow-container {

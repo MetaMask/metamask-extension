@@ -112,6 +112,7 @@ export default class SenderToRecipient extends PureComponent {
           onHidden={() => this.setState({ recipientAddressCopied: false })}
         >
           <div className="sender-to-recipient__name">
+            <span>{ addressOnly ? `${t('to')}: ` : '' }</span>
             {
               addressOnly
                 ? `${t('to')}: ${checksummedRecipientAddress}`
