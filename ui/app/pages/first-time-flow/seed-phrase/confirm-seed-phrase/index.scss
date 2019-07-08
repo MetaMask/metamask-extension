@@ -73,6 +73,7 @@
     background-color: $white;
     margin: 24px 0 36px;
     padding: 12px;
+    direction: ltr;
 
     &__pending-seed {
       display: none;
