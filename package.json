@@ -22,8 +22,6 @@
     "test:web3:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-web3.sh",
     "test:web3:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-web3.sh",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-all.sh",
-    "test:screens": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:screens:run'",
-    "test:screens:run": "node test/screens/new-ui.js",
     "test:coverage": "nyc --reporter=text --reporter=html npm run test:unit && npm run test:coveralls-upload",
     "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "test:flat": "npm run test:flat:build && karma start test/flat.conf.js",

@@ -55,16 +55,10 @@ workflows:
             # - test-e2e-beta-drizzle
             - test-integration-flat-chrome
             - test-integration-flat-firefox
-      - job-screens:
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - all-tests-pass
       - job-publish-prerelease:
           requires:
             - prep-deps-npm
             - prep-build
-            - job-screens
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -74,7 +68,6 @@ workflows:
             - prep-deps-npm
             - prep-build
       #       - prep-docs
-            - job-screens
             - all-tests-pass
 
 jobs:
@@ -212,21 +205,6 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-
-  job-screens:
-    docker:
-      - image: circleci/node:10.16-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test
-          command: npm run test:screens
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
 
   job-publish-prerelease:
     docker:
