@@ -22,7 +22,7 @@ function setupDappAutoReload (web3, observable) {
   observable.subscribe(function (state) {
     // if the auto refresh on network change is false do not
     // do anything
-    if (!window.ethereum.autoRefreshOnNetworkChange) return
+    if (!window.ethereum.autoRefreshOnNetworkChange || !window.MetaMaskEthereum.autoRefreshOnNetworkChange) return
 
     // if reload in progress, no need to check reload logic
     if (reloadInProgress) return

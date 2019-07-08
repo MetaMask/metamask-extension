@@ -143,6 +143,10 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 
 window.ethereum = createStandardProvider(proxiedInpageProvider)
 
+// Set window.MetaMaskEthereum to allow applications to specifically choose to use the MetaMask provider over other 3rd party
+// window.ethereum implementations.
+window.MetaMaskEthereum = createStandardProvider(proxiedInpageProvider)
+
 //
 // setup web3
 //
