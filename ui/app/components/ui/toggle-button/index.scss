@@ -1,0 +1,14 @@
+.toggle-button {
+  display: flex;
+
+  &__status-label {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+  }
+}
