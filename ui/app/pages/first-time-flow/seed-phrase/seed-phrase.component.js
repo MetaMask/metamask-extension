@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/routes'
 import HTML5Backend from 'react-dnd-html5-backend'
 import {DragDropContextProvider} from 'react-dnd'
+import MetaFoxLogo from '../../../components/ui/metafox-logo'
 
 export default class SeedPhrase extends PureComponent {
   static propTypes = {
@@ -32,19 +33,7 @@ export default class SeedPhrase extends PureComponent {
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div className="first-time-flow__wrapper">
-          <div className="app-header__logo-container">
-            <img
-              className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-              src="/images/logo/metamask-logo-horizontal.svg"
-              height={30}
-            />
-            <img
-              className="app-header__metafox-logo app-header__metafox-logo--icon"
-              src="/images/logo/metamask-fox.svg"
-              height={42}
-              width={42}
-            />
-          </div>
+          <MetaFoxLogo />
           <Switch>
             <Route
               exact
