@@ -210,10 +210,10 @@ class PreferencesController {
    *
    */
   setCurrentLocale (key) {
-    let textDirection = (['ar','dv','fa','he','ku'].indexOf(key) > -1) ? 'rtl' : 'auto';
+    const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].indexOf(key) > -1) ? 'rtl' : 'auto'
     this.store.updateState({
       currentLocale: key,
-      textDirection: textDirection
+      textDirection: textDirection,
     })
   }
 
