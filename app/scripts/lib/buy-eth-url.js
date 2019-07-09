@@ -16,6 +16,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
   if (!service) service = getDefaultServiceForNetwork(network)
 
   switch (service) {
+    case 'safello':
+      return `https://app.safello.com/metamask?address=${address}`
     case 'wyre':
       return `https://dash.sendwyre.com/sign-up`
     case 'coinswitch':

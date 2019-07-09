@@ -32,6 +32,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    toSafello: (address) => {
+      dispatch(actions.buyEth({ service: 'safello', address }))
+    },
     toWyre: (address) => {
       dispatch(actions.buyEth({ service: 'wyre', address, amount: 0 }))
     },
@@ -130,8 +133,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toCoinSwitch, address, toFaucet } = this.props
-  const { buyingWithSafello } = this.state
+  const { network, toCoinSwitch, address, toFaucet, toSafello } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -171,7 +173,6 @@ DepositEtherModal.prototype.render = function () {
           text: DIRECT_DEPOSIT_ROW_TEXT,
           buttonLabel: this.context.t('viewAccount'),
           onButtonClick: () => this.goToAccountDetailsModal(),
-          hide: buyingWithSafello,
         }),
 
         this.renderRow({
@@ -180,7 +181,7 @@ DepositEtherModal.prototype.render = function () {
           text: this.facuetRowText(networkName),
           buttonLabel: this.context.t('getEther'),
           onButtonClick: () => toFaucet(network),
-          hide: !isTestNetwork || buyingWithSafello,
+          hide: !isTestNetwork,
         }),
 
         this.renderRow({
@@ -200,7 +201,7 @@ DepositEtherModal.prototype.render = function () {
               openWyre(address)
             }
           },
-          hide: isTestNetwork && !network === '42' || buyingWithSafello,
+          hide: isTestNetwork && !network === '42',
         }),
 
         this.renderRow({
@@ -213,13 +214,8 @@ DepositEtherModal.prototype.render = function () {
           title: SAFELLO_ROW_TITLE,
           text: SAFELLO_ROW_TEXT,
           buttonLabel: this.context.t('safelloBuy'),
-          onButtonClick: () => this.setState({ buyingWithSafello: true }),
+          onButtonClick: () => toSafello(address),
           hide: isTestNetwork,
-          hideButton: buyingWithSafello,
-          hideTitle: buyingWithSafello,
-          onBackClick: () => this.setState({ buyingWithSafello: false }),
-          showBackButton: this.state.buyingWithSafello,
-          className: buyingWithSafello && 'deposit-ether-modal__buy-row__safello-buy',
         }),
 
         this.renderRow({
@@ -233,12 +229,9 @@ DepositEtherModal.prototype.render = function () {
           text: COINSWITCH_ROW_TEXT,
           buttonLabel: this.context.t('continueToCoinSwitch'),
           onButtonClick: () => toCoinSwitch(address),
-          hide: isTestNetwork || buyingWithSafello,
+          hide: isTestNetwork,
         }),
-
-        buyingWithSafello && h(SafelloForm),
       ]),
-
     ]),
   ])
 }

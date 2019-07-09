@@ -370,20 +370,6 @@
       height: 0;
     }
 
-    .safello-form-wrapper {
-      width: 500px;
-
-      iframe {
-        width: 100%;
-        min-height: 650px;
-      }
-
-      @media screen and (max-width: 575px) {
-        width: 100vw;
-        margin: 0 -30px;
-      }
-    }
-
     .shapeshift-form-wrapper {
       display: flex;
       flex-flow: column;
