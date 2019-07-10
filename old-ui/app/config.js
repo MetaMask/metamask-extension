@@ -44,7 +44,7 @@ class ConfigScreen extends Component {
     const metamaskState = state.metamask
     const warning = state.warning
 
-    if( state.metamask.dProviderStore.dProvider != this.state.dProvider){
+    if(state.metamask.dProviderStore.dProvider != this.state.dProvider){
       this.setState({
         dProvider: this.props.metamask.dProviderStore.dProvider
       })
