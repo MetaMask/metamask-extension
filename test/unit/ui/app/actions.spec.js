@@ -1108,7 +1108,7 @@ describe('Actions', () => {
     })
 
     it('', () => {
-      const store = mockStore()
+      const store = mockStore({ metamask: devState })
       store.dispatch(actions.addToAddressBook('test'))
       assert(addToAddressBookSpy.calledOnce)
     })
