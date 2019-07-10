@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { addressSlicer } from '../../../../helpers/utils/util'
-import TextField from '../../../../components/ui/text-field'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class EditContact extends PureComponent {
@@ -27,9 +26,8 @@ export default class EditContact extends PureComponent {
    render () {
     const { t } = this.context
     const { history, match, addressBook, addToAddressBook } = this.props
-    const { newName } = this.state
     const address = match.params.id
-    const currentEntry = addressBook.filter(contact => contact.address === address)[0] || {}
+    const currentEntry = addressBook[address]
     const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
 
     return (
@@ -66,7 +64,7 @@ export default class EditContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           onSubmit={() => {
-            addToAddressBook(address, newName)
+            addToAddressBook(this.state.newAddress || address, this.state.newName || name)
             history.push(CONTACT_LIST_ROUTE)
           }}
           onCancel={() => {

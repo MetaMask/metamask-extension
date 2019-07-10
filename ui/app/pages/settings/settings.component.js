@@ -56,7 +56,7 @@ class SettingsPage extends PureComponent {
   }
 
   render () {
-    const { history, location } = this.props
+    const { history } = this.props
 
     return (
       <div
