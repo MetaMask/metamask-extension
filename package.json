@@ -38,6 +38,7 @@
     "watch": "cross-env METAMASK_ENV=test mocha --watch --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "devtools:react": "react-devtools",
     "devtools:redux": "remotedev --hostname=localhost --port=8000",
+    "start:dev": "concurrently -k -n build,react,redux npm:start npm:devtools:react npm:devtools:redux",
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",

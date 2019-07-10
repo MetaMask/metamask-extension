@@ -19,6 +19,8 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - If you have issues with node-sass compilation, try `npm rebuild node-sass`
 - Build the project to the `./dist/` folder with `npm run dist`.
 - Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
+    - To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
+      alongside the app, use `npm run start:dev`. You'll need to install the Redux DevTools to access Redux state logs.
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
