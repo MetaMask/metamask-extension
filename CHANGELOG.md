@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI  
 
 ## 6.7.1 Fri Jun 28 2019
 - [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
