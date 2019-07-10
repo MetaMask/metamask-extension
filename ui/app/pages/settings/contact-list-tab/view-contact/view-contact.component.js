@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
 import { addressSlicer } from '../../../../helpers/utils/util'
-import Button from "../../../../components/ui/button/button.component";
+import Button from '../../../../components/ui/button/button.component'
 const copyToClipboard = require('copy-to-clipboard')
 
 export default class ViewContact extends PureComponent {
@@ -24,7 +24,7 @@ export default class ViewContact extends PureComponent {
     const { t } = this.context
     const { removeFromAddressBook, history, match, addressBook } = this.props
     const address = match.params.id
-    const currentEntry = addressBook.filter(contact => contact.address === address)[0] || {}
+    const currentEntry = addressBook[address]
     const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
 
     return (
@@ -68,10 +68,10 @@ export default class ViewContact extends PureComponent {
             </div>
             <div className="address-book__view-contact__group__value">
               <div
-                className="address-book__view-contact__group__value--address"
+                className="address-book__view-contact__group__value"
                 onClick={() => copyToClipboard(address)}
               >
-                { `${address.slice(0, 2)} ${address.slice(2).match(/.{1,4}/g).join(' ')}`}
+                { address }
               </div>
               <img
                 className="address-book__view-contact__group__value--copy-icon"
