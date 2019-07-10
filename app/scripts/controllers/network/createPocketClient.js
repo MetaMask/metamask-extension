@@ -9,6 +9,34 @@ const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMidd
 const createPocketMiddleware = require('json-rpc-pocket')
 const BlockTracker = require('eth-block-tracker')
 const devid = 'DEVVGQ8VfHgBBet8CyowHcN'
+const {
+  ROPSTEN,
+  ROPSTEN_CODE,
+  ROPSTEN_CHAINID,
+  RINKEBY_CODE,
+  RINKEBY_CHAINID,
+  RINKEBY,
+  KOVAN,
+  KOVAN_CODE,
+  KOVAN_CHAINID,
+  MAINNET,
+  MAINNET_CODE,
+  MAINNET_CHAINID,
+  ETH_TICK,
+  POA_SOKOL,
+  POA_CODE,
+  POA_CHAINID,
+  POA_TICK,
+  POA,
+  DAI,
+  DAI_CODE,
+  DAI_CHAINID,
+  GOERLI_TESTNET,
+  GOERLI_TESTNET_CODE,
+  GOERLI_TESTNET_CHAINID,
+  POA_SOKOL_CODE,
+  POA_SOKOL_CHAINID,
+} = require('./enums')
 
 module.exports = createPocketClient
 
@@ -38,45 +66,45 @@ function getNetworkIds ({ network }) {
   let netId
   let ticker
   switch (network) {
-    case 'mainnet':
-      netId = '1'
-      chainId = '0x01'
-      ticker = "ETH"
+    case MAINNET:
+      netId = MAINNET_CODE.toString()
+      chainId = MAINNET_CHAINID
+      ticker = ETH_TICK
       break
-    case 'ropsten':
-      netId = '3'
-      chainId = '0x03'
-      ticker = "ETH"
+    case ROPSTEN:
+      netId = ROPSTEN_CODE.toString()
+      chainId = ROPSTEN_CHAINID
+      ticker = ETH_TICK
       break
-    case 'rinkeby':
-      netId = '4'
-      chainId = '0x04'
-      ticker = "ETH"
+    case RINKEBY:
+      netId = RINKEBY_CODE.toString()
+      chainId = RINKEBY_CHAINID
+      ticker = ETH_TICK
       break
-    case 'kovan':
-      netId = '42'
-      chainId = '0x2a'
-      ticker = "ETH"
+    case KOVAN:
+      netId = KOVAN_CODE.toString()
+      chainId = KOVAN_CHAINID
+      ticker = ETH_TICK
       break
-    case 'goerli':
-      netId = '5'
-      chainId = '0x05'
-      ticker = "ETH"
+    case GOERLI_TESTNET:
+      netId = GOERLI_TESTNET_CODE.toString()
+      chainId = GOERLI_TESTNET_CHAINID
+      ticker = ETH_TICK
       break
-    case 'poa':
-      netId = '99'
-      chainId = '0x63'
-      ticker = 'POA'
+    case POA:
+      netId = POA_CODE.toString()
+      chainId = POA_CHAINID
+      ticker = POA_TICK
       break
-    case 'dai':
-      netId = '100'
-      chainId = '0x64'
-      ticker = 'POA'
+    case DAI:
+      netId = DAI_CODE.toString()
+      chainId = DAI_CHAINID
+      ticker = POA_TICK
       break
-    case 'sokol':
-      netId= '77'
-      chainId = '0x4D'
-      ticker = 'POA'
+    case POA_SOKOL:
+      netId= POA_SOKOL_CODE.toString()
+      chainId = POA_SOKOL_CHAINID
+      ticker = POA_TICK
       break
     default:
       throw new Error(`createPocketClient - unknown network "${network}"`)

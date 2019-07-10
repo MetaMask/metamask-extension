@@ -37,6 +37,7 @@ const {
   RSK_TESTNET_CODE,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+const POCKET_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, POA, DAI, GOERLI_TESTNET, POA_SOKOL]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -159,7 +160,6 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   setDProvider(key){
-    console.log("UPDATING STATE TO " + key)
     this.dProviderStore.updateState({
       dProvider: key,
     })
@@ -179,38 +179,28 @@ module.exports = class NetworkController extends EventEmitter {
     const { type, rpcTarget } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    if (isInfura) {
-      console.log(this.dProviderStore.getState())
-      if (this.dProviderStore.getState().dProvider) {
-        this._configurePocketProvider(opts)
-      } else {
+    // pocket type-based endpointes
+    const isPocket = POCKET_PROVIDER_TYPES.includes(type)
+
+    if (!isPocket && this.dProviderStore.getState().dProvider){
+      this.dProviderStore.updateState({
+        dProvider: false
+      })
+    }
+
+    if (isPocket && this.dProviderStore.getState().dProvider){
+      this._configurePocketProvider(opts)
+    } else if (isInfura) {
         this._configureInfuraProvider(opts)
-      }
     // other type-based rpc endpoints
     } else if (type === POA) {
-      if (this.dProviderStore.getState().dProvider) {
-        this._configurePocketProvider(opts)
-      } else {
         this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
-      }
     } else if (type === DAI) {
-      if (this.dProviderStore.getState().dProvider) {
-        this._configurePocketProvider(opts)
-      } else {
         this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
-      }
     } else if (type === POA_SOKOL) {
-      if (this.dProviderStore.getState().dProvider) {
-        this._configurePocketProvider(opts)
-      } else {
         this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
-      }
     } else if (type === GOERLI_TESTNET) {
-      if (this.dProviderStore.getState().dProvider) {
-        this._configurePocketProvider(opts)
-      } else {
         this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
-      }
     } else if (type === CLASSIC) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(CLASSIC_CODE)[0] })
     } else if (type === RSK) {

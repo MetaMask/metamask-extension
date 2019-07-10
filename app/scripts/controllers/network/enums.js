@@ -11,6 +11,18 @@ const RSK = 'rsk'
 const RSK_TESTNET = 'rsk_testnet'
 const LOCALHOST = 'localhost'
 
+const ETH_TICK = "ETH"
+const POA_TICK = "POA"
+
+const MAINNET_CHAINID = "0X01"
+const ROPSTEN_CHAINID = "0x03"
+const RINKEBY_CHAINID = "0x04"
+const KOVAN_CHAINID = "0x2a"
+const GOERLI_TESTNET_CHAINID = "0X5"
+const POA_CHAINID = "0x63"
+const DAI_CHAINID = "0x64"
+const POA_SOKOL_CHAINID = "0x4D"
+
 const POA_CODE = 99
 const DAI_CODE = 100
 const POA_SOKOL_CODE = 77
