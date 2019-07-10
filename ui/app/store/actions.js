@@ -2038,8 +2038,11 @@ function delRpcTarget (oldRpc) {
 // Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
-  return (dispatch) => {
-    background.setAddressBook(recipient, nickname, (err) => {
+
+  return (dispatch, getState) => {
+    const chainId = getState().metamask.network
+    const memo = ''
+    background.setAddressBook(recipient, nickname, chainId, memo, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Address book failed to update'))
