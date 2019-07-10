@@ -19,7 +19,7 @@ function initializePopup ({ container, connectionStream }, cb) {
   // setup app
   async.waterfall([
     (cb) => connectToAccountManager(connectionStream, cb),
-    (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
+    (backgroundConnection, cb) => launchMetamaskUi({ container, backgroundConnection }, cb),
   ], cb)
 }
 
@@ -63,15 +63,15 @@ function setupControllerConnection (connectionStream, cb) {
   // this is a really sneaky way of adding EventEmitter api
   // to a bi-directional dnode instance
   const eventEmitter = new EventEmitter()
-  const accountManagerDnode = Dnode({
+  const backgroundDnode = Dnode({
     sendUpdate: function (state) {
       eventEmitter.emit('update', state)
     },
   })
-  connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
-  accountManagerDnode.once('remote', function (accountManager) {
+  connectionStream.pipe(backgroundDnode).pipe(connectionStream)
+  backgroundDnode.once('remote', function (backgroundConnection) {
     // setup push events
-    accountManager.on = eventEmitter.on.bind(eventEmitter)
-    cb(null, accountManager)
+    backgroundConnection.on = eventEmitter.on.bind(eventEmitter)
+    cb(null, backgroundConnection)
   })
 }
