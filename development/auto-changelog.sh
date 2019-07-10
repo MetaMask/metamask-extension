@@ -19,7 +19,7 @@ do
     # Squash & Merge: the commit subject is parsed as `<description> (#<PR ID>)`
     if grep -E -q '\(#[[:digit:]]+\)' <<< "$subject"
     then
-        pr="$(awk '{print $NF}' <<< "$subject")"
+        pr="$(awk '{print $NF}' <<< "$subject" | tr -d '()')"
         prefix="[$pr]($URL/pull/${pr###}): "
         description="$(awk '{NF--; print $0}' <<< "$subject")"
 
