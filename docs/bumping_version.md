@@ -1,7 +1,7 @@
 # How to Bump MetaMask's Version Automatically
 
 ```
-npm run version:bump patch
+yarn version:bump patch
 ```
 
 MetaMask publishes using a loose [semver](https://semver.org/) interpretation. We divide the three segments of our version into three types of version bump:
@@ -20,7 +20,7 @@ Means a fix for a bug, or correcting something that should have been assumed to 
 
 # Bumping the version
 
-`npm run version:bump $BUMP_TYPE` where `$BUMP_TYPE` is one of `major`, `minor`, or `patch`.
+`yarn version:bump $BUMP_TYPE` where `$BUMP_TYPE` is one of `major`, `minor`, or `patch`.
 
 This will increment the version in the `app/manifest.json` and `CHANGELOG.md` files according to our current protocol, where the manifest's version is updated, and any line items currently under the changelog's "master" section are now under the new dated version section.
 

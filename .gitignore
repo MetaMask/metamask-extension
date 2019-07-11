@@ -1,6 +1,7 @@
 npm-debug.log
+yarn-error.log
 node_modules
-yarn.lock
+package-lock.json
 
 audit.json
 
