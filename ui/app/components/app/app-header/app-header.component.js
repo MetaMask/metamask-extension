@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
+import MetaFoxLogo from '../../ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 const NetworkIndicator = require('../network')
 
@@ -70,6 +71,7 @@ export default class AppHeader extends PureComponent {
         <Identicon
           address={selectedAddress}
           diameter={32}
+          addBorder={true}
         />
       </div>
     )
@@ -89,22 +91,10 @@ export default class AppHeader extends PureComponent {
       <div
         className={classnames('app-header', { 'app-header--back-drop': isUnlocked })}>
         <div className="app-header__contents">
-          <div
-            className="app-header__logo-container"
+          <MetaFoxLogo
+            unsetIconHeight={true}
             onClick={() => history.push(DEFAULT_ROUTE)}
-          >
-            <img
-              className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-              src="/images/logo/metamask-logo-horizontal.svg"
-              height={30}
-            />
-            <img
-              className="app-header__metafox-logo app-header__metafox-logo--icon"
-              src="/images/logo/metamask-fox.svg"
-              height={42}
-              width={42}
-            />
-          </div>
+          />
           <div className="app-header__account-menu-container">
             {
               !hideNetworkIndicator && (

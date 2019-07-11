@@ -20,16 +20,18 @@ Item.prototype.render = function () {
     icon,
     children,
     text,
+    subText,
     className = '',
     onClick,
   } = this.props
   const itemClassName = `menu__item ${className} ${onClick ? 'menu__item--clickable' : ''}`
   const iconComponent = icon ? h('div.menu__item__icon', [icon]) : null
   const textComponent = text ? h('div.menu__item__text', text) : null
+  const subTextComponent = subText ? h('div.menu__item__subtext', subText) : null
 
   return children
     ? h('div', { className: itemClassName, onClick }, children)
-    : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent ]
+    : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent, subTextComponent ]
       .filter(d => Boolean(d))
     )
 }

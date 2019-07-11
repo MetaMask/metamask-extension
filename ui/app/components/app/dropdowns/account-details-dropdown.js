@@ -119,8 +119,11 @@ AccountDetailsDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: (rpcPrefs.blockExplorerUrl
-        ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+        ? this.context.t('viewinExplorer')
         : this.context.t('viewOnEtherscan')),
+      subText: (rpcPrefs.blockExplorerUrl
+        ? rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]
+        : null),
       icon: h(`img`, { src: 'images/open-etherscan.svg', style: { height: '15px' } }),
     }),
     isRemovable ? h(Item, {

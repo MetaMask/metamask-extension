@@ -700,7 +700,7 @@ describe('App State', () => {
   })
 
   it('hides sub loading indicator', () => {
-    const oldState = {...metamaskState, ...oldState}
+    const oldState = {...metamaskState, isSubLoading: true }
     const state = reduceApp(oldState, {
       type: actions.HIDE_SUB_LOADING_INDICATION,
     })

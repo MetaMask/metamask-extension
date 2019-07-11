@@ -12,11 +12,10 @@ const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
-const AccountDetailsModal = require('./account-details-modal')
+import AccountDetailsModal from './account-details-modal'
 const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
-const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
@@ -30,6 +29,7 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ConfirmDeleteNetwork from './confirm-delete-network'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -181,13 +181,6 @@ const MODALS = {
     ...accountModalStyle,
   },
 
-  SHAPESHIFT_DEPOSIT_TX: {
-    contents: [
-      h(ShapeshiftDepositTxModal),
-    ],
-    ...accountModalStyle,
-  },
-
   HIDE_TOKEN_CONFIRMATION: {
     contents: [
       h(HideTokenConfirmationModal, {}, []),
@@ -298,6 +291,19 @@ const MODALS = {
 
   CONFIRM_REMOVE_ACCOUNT: {
     contents: h(ConfirmRemoveAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_DELETE_NETWORK: {
+    contents: h(ConfirmDeleteNetwork),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

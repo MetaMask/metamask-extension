@@ -228,10 +228,6 @@
   "depositBTC": {
     "message": "BTCを下記のアドレスへ振込んでください:"
   },
-  "depositCoin": {
-    "message": "$1を下記のアドレスへ振込んでください",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
-  },
   "depositEth": {
     "message": "ETHを入金"
   },

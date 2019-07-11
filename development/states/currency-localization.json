@@ -116,7 +116,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "showFiatInTestnets": true
     },
-    "completedUiMigration": true,
     "frequentRpcListDetail": []
   },
   "appState": {
@@ -179,7 +178,6 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
-    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",

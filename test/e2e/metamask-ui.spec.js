@@ -9,7 +9,7 @@ const {
   installWebExt,
   getExtensionIdChrome,
   getExtensionIdFirefox,
-} = require('../func')
+} = require('./func')
 const {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
@@ -463,13 +463,13 @@ describe('MetaMask', function () {
       await advancedTab.click()
       await delay(regularDelayMs)
 
-      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(7) .settings-page__content-item-col > div'))
+      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(6) .settings-page__content-item-col > div > div'))
       await showConversionToggle.click()
 
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
-      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(5) .settings-page__content-item-col > div'))
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(4) .settings-page__content-item-col > div > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
@@ -983,9 +983,9 @@ describe('MetaMask', function () {
 
     it('renders the balance for the new token', async () => {
       const balance = await findElement(driver, By.css('.transaction-view-balance .transaction-view-balance__primary-balance'))
-      await driver.wait(until.elementTextMatches(balance, /^100\s*TST\s*$/))
+      await driver.wait(until.elementTextMatches(balance, /^10.000\s*TST\s*$/))
       const tokenAmount = await balance.getText()
-      assert.ok(/^100\s*TST\s*$/.test(tokenAmount))
+      assert.ok(/^10.000\s*TST\s*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })
@@ -1000,7 +1000,7 @@ describe('MetaMask', function () {
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
       const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
-      await inputAmount.sendKeys('50')
+      await inputAmount.sendKeys('1')
 
       // Set the gas limit
       const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
@@ -1036,6 +1036,10 @@ describe('MetaMask', function () {
       const functionTypeText = await functionType.getText()
       assert.equal(functionTypeText, 'Transfer')
 
+      const tokenAmount = await findElement(driver, By.css('.confirm-page-container-summary__title-text'))
+      const tokenAmountText = await tokenAmount.getText()
+      assert.equal(tokenAmountText, '1 TST')
+
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
 
@@ -1063,7 +1067,7 @@ describe('MetaMask', function () {
       // test cancelled on firefox until https://github.com/mozilla/geckodriver/issues/906 is resolved,
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        await driver.wait(until.elementTextMatches(txValues[0], /-50\s*TST/), 10000)
+        await driver.wait(until.elementTextMatches(txValues[0], /-1\s*TST/), 10000)
       }
 
       await driver.wait(async () => {
@@ -1094,7 +1098,7 @@ describe('MetaMask', function () {
 
       await findElements(driver, By.css('.transaction-list__pending-transactions'))
       const [txListValue] = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/), 10000)
+      await driver.wait(until.elementTextMatches(txListValue, /-1.5\s*TST/), 10000)
       await txListValue.click()
       await delay(regularDelayMs)
 
@@ -1148,6 +1152,10 @@ describe('MetaMask', function () {
     })
 
     it('submits the transaction', async function () {
+      const tokenAmount = await findElement(driver, By.css('.confirm-page-container-summary__title-text'))
+      const tokenAmountText = await tokenAmount.getText()
+      assert.equal(tokenAmountText, '1.5 TST')
+
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
@@ -1161,7 +1169,7 @@ describe('MetaMask', function () {
 
       await delay(regularDelayMs)
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
+      await driver.wait(until.elementTextMatches(txValues[0], /-1.5\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken/), 10000)
 
@@ -1176,7 +1184,7 @@ describe('MetaMask', function () {
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
         const tokenBalanceAmount = await findElements(driver, By.css('.transaction-view-balance__primary-balance'))
-        await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /43\s*TST/), 10000)
+        await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/), 10000)
       }
     })
   })
@@ -1326,7 +1334,7 @@ describe('MetaMask', function () {
 
       const [txListItem] = await findElements(driver, By.css('.transaction-list-item'))
       const [txListValue] = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
+      await driver.wait(until.elementTextMatches(txListValue, /-1.5\s*TST/))
       await txListItem.click()
       await delay(regularDelayMs)
     })
@@ -1345,7 +1353,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
+      await driver.wait(until.elementTextMatches(txValues[0], /-1.5\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Sent Tokens/))
     })
@@ -1478,7 +1486,7 @@ describe('MetaMask', function () {
         await customRpcInput.clear()
         await customRpcInput.sendKeys(customRpcUrl)
 
-        const customRpcSave = await findElement(driver, By.css('.page-container__footer-button'))
+        const customRpcSave = await findElement(driver, By.css('.network-form__footer .btn-secondary'))
         await customRpcSave.click()
         await delay(largeDelayMs * 2)
       })
@@ -1503,6 +1511,29 @@ describe('MetaMask', function () {
       const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'http://127.0.0.1:8545/')]`))
 
       assert.equal(customRpcs.length, customRpcUrls.length)
+    })
+
+    it('deletes a custom RPC', async () => {
+      const networkListItems = await findElements(driver, By.css('.networks-tab__networks-list-name'))
+      const lastNetworkListItem = networkListItems[networkListItems.length - 1]
+      await lastNetworkListItem.click()
+      await delay(100)
+
+      const deleteButton = await findElement(driver, By.css('.btn-danger'))
+      await deleteButton.click()
+      await delay(regularDelayMs)
+
+      const confirmDeleteNetworkModal = await findElement(driver, By.css('span .modal'))
+
+      const byConfirmDeleteNetworkButton = By.css('.button.btn-danger.modal-container__footer-button')
+      const confirmDeleteNetworkButton = await driver.wait(until.elementLocated(byConfirmDeleteNetworkButton))
+      await confirmDeleteNetworkButton.click()
+
+      await driver.wait(until.stalenessOf(confirmDeleteNetworkModal))
+
+      const newNetworkListItems = await findElements(driver, By.css('.networks-tab__networks-list-name'))
+
+      assert.equal(networkListItems.length - 1, newNetworkListItems.length)
     })
   })
 })

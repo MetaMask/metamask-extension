@@ -3,7 +3,11 @@
   background-color: #FFFFFF;
   box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   z-index: 25;
-  height: 100%;
+  height: unset;
+
+  @media screen and (min-width: 576px) {
+    position: absolute;
+  }
 
   &__header {
     display: flex;
@@ -143,6 +147,7 @@
     flex-flow: column;
     align-items: center;
     margin-top: 29px;
+    width: 100%;
   }
 
   &__buttons {

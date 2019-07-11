@@ -330,10 +330,6 @@
   "depositBTC": {
     "message": "Déposez vos BTC à l'adresse ci-dessous:"
   },
-  "depositCoin": {
-    "message": "Déposer votre $1 à l'adresse ci-dessous",
-    "description": "Indique à l'utilisateur quelle monnaie il a choisi de déposer avec Shapeshift"
-  },
   "depositEth": {
     "message": "Déposer Eth"
   },

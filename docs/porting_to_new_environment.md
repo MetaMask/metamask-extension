@@ -52,7 +52,7 @@ Returns a JavaScript object filled with callback functions representing every op
 
 The MetaMask UI is essentially just a website that can be configured by passing it the API and state subscriptions from above. Anyone could make a UI that consumes these, effectively reskinning MetaMask.
 
-You can see this in action in our file [ui/index.js](https://github.com/MetaMask/metamask-extension/blob/master/ui/index.js). There you can see an argument being passed in named `accountManager`, which is essentially a MetaMask controller (forgive its really outdated parameter name!). With access to that object, the UI is able to initialize a whole React/Redux app that relies on this API for its account/blockchain-related/persistent states.
+You can see this in action in our file [ui/index.js](https://github.com/MetaMask/metamask-extension/blob/master/ui/index.js). There you can see the background connection being passed in, which is essentially the MetaMask controller. With access to that object, the UI is able to initialize a whole React/Redux app that relies on this API for its account/blockchain-related/persistent states.
 
 ## Putting it Together
 

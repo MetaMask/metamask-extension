@@ -24,7 +24,6 @@ import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
-import UiMigrationAnnouncement from '../../components/app/ui-migration-annoucement'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
 const MobileSyncPage = require('../mobile-sync')
@@ -184,18 +183,6 @@ class Routes extends Component {
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
-
     const {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
@@ -203,6 +190,18 @@ class Routes extends Component {
       props,
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
+
+    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
+    ? () => {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Wallet Sidebar',
+          name: 'Closed Sidebare Via Overlay',
+        },
+      })
+    }
+    : null
 
     return (
       <div
@@ -214,7 +213,6 @@ class Routes extends Component {
           }
         }}
       >
-        <UiMigrationAnnouncement />
         <Modal />
         <Alert
           visible={this.props.alertOpen}

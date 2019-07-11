@@ -29,7 +29,7 @@ export default class FirstTimeFlow extends PureComponent {
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
     unlockAccount: PropTypes.func,
-    nextRoute: PropTypes.func,
+    nextRoute: PropTypes.string,
   }
 
   state = {

@@ -249,8 +249,14 @@
   "bytes": {
     "message": "Bytes"
   },
+  "off": {
+    "message": "Off"
+  },
   "ok": {
     "message": "Ok"
+  },
+  "on": {
+    "message": "On"
   },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
@@ -472,6 +478,9 @@
   "defaultNetwork": {
     "message": "The default network for Ether transactions is Main Net."
   },
+  "delete": {
+    "message": "Delete"
+  },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },
@@ -480,10 +489,6 @@
   },
   "depositBTC": {
     "message": "Deposit your BTC to the address below:"
-  },
-  "depositCoin": {
-    "message": "Deposit your $1 to the address below",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
     "message": "Deposit Eth"
@@ -1239,6 +1244,12 @@
   "resetAccountDescription": {
     "message": "Resetting your account will clear your transaction history."
   },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
   "restoreFromSeed": {
     "message": "Restore account?"
   },
@@ -1488,7 +1499,7 @@
     "message": "there can only be a space between words"
   },
   "speedUp": {
-    "message": "speed up"
+    "message": "Speed Up"
   },
   "speedUpTitle": {
     "message": "Speed Up Transaction"
@@ -1777,6 +1788,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewinExplorer": {
+    "message": "View in Explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"

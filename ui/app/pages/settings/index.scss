@@ -30,6 +30,10 @@
     font-size: 20px;
     border-bottom: 1px solid $alto;
     margin-right: 24px;
+    height: 72px;
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
 
     @media screen and (max-width: 575px) {
       display: none;
@@ -54,9 +58,7 @@
     font-family: Roboto;
     font-style: normal;
     font-weight: normal;
-    font-size: 24px;
-    line-height: 24px;
-    color: black;
+    font-size: 20px;
 
     @media screen and (max-width: 575px) {
       font-size: 16px;
@@ -142,7 +144,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    min-height: 71px;
+    margin-bottom: 20px;
 
     @media screen and (max-width: 575px) {
       height: initial;

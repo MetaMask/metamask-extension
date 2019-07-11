@@ -8,6 +8,8 @@ const {
 } = require('../pages/send/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
+const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
+const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
@@ -321,11 +323,6 @@ var actions = {
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
 
-  // Migration of users to new UI
-  setCompletedUiMigration,
-  completeUiMigration,
-  COMPLETE_UI_MIGRATION: 'COMPLETE_UI_MIGRATION',
-
   // Onboarding
   setCompletedOnboarding,
   completeOnboarding,
@@ -362,6 +359,18 @@ var actions = {
   // AppStateController-related actions
   SET_LAST_ACTIVE_TIME: 'SET_LAST_ACTIVE_TIME',
   setLastActiveTime,
+
+  getContractMethodData,
+  loadingMethoDataStarted,
+  loadingMethoDataFinished,
+  LOADING_METHOD_DATA_STARTED: 'LOADING_METHOD_DATA_STARTED',
+  LOADING_METHOD_DATA_FINISHED: 'LOADING_METHOD_DATA_FINISHED',
+
+  getTokenParams,
+  loadingTokenParamsStarted,
+  LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
+  loadingTokenParamsFinished,
+  LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
 }
 
 module.exports = actions
@@ -1203,6 +1212,20 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function updateTransaction (txData) {
   log.info('actions: updateTx: ' + JSON.stringify(txData))
   return dispatch => {
@@ -1611,20 +1634,6 @@ const backgroundSetLocked = () => {
   })
 }
 
-const updateMetamaskStateFromBackground = () => {
-  log.debug(`background.getState`)
-
-  return new Promise((resolve, reject) => {
-    background.getState((error, newState) => {
-      if (error) {
-        return reject(error)
-      }
-
-      resolve(newState)
-    })
-  })
-}
-
 function lockMetamask () {
   log.debug(`background.setLocked`)
 
@@ -2025,12 +2034,16 @@ function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
 function delRpcTarget (oldRpc) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
-    background.delCustomRpc(oldRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
-      }
-      dispatch(actions.setSelectedToken())
+    return new Promise((resolve, reject) => {
+      background.delCustomRpc(oldRpc, (err) => {
+        if (err) {
+          log.error(err)
+          dispatch(self.displayWarning('Had a problem removing network!'))
+          return reject(err)
+        }
+        dispatch(actions.setSelectedToken())
+        resolve()
+      })
     })
   }
 }
@@ -2394,10 +2407,6 @@ function reshowQrCode (data, coin) {
 
       dispatch(actions.hideLoadingIndication())
       return dispatch(actions.showQrView(data, message))
-      // return dispatch(actions.showModal({
-      //   name: 'SHAPESHIFT_DEPOSIT_TX',
-      //   Qr: { data, message },
-      // }))
     })
   }
 }
@@ -2513,31 +2522,6 @@ function setCompletedOnboarding () {
 function completeOnboarding () {
   return {
     type: actions.COMPLETE_ONBOARDING,
-  }
-}
-
-function setCompletedUiMigration () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeUiMigration(err => {
-        dispatch(actions.hideLoadingIndication())
-
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.completeUiMigration())
-        resolve()
-      })
-    })
-  }
-}
-
-function completeUiMigration () {
-  return {
-    type: actions.COMPLETE_UI_MIGRATION,
   }
 }
 
@@ -2789,5 +2773,76 @@ function setLastActiveTime () {
         return dispatch(actions.displayWarning(err.message))
       }
     })
+  }
+}
+
+function loadingMethoDataStarted () {
+  return {
+    type: actions.LOADING_METHOD_DATA_STARTED,
+  }
+}
+
+function loadingMethoDataFinished () {
+  return {
+    type: actions.LOADING_METHOD_DATA_FINISHED,
+  }
+}
+
+function getContractMethodData (data = '') {
+  return (dispatch, getState) => {
+    const prefixedData = ethUtil.addHexPrefix(data)
+    const fourBytePrefix = prefixedData.slice(0, 10)
+    const { knownMethodData } = getState().metamask
+    if (knownMethodData && knownMethodData[fourBytePrefix]) {
+      return Promise.resolve(knownMethodData[fourBytePrefix])
+    }
+
+    dispatch(actions.loadingMethoDataStarted())
+    log.debug(`loadingMethodData`)
+
+    return getMethodDataAsync(fourBytePrefix)
+      .then(({ name, params }) => {
+        dispatch(actions.loadingMethoDataFinished())
+
+        background.addKnownMethodData(fourBytePrefix, { name, params })
+
+        return { name, params }
+      })
+  }
+}
+
+function loadingTokenParamsStarted () {
+  return {
+    type: actions.LOADING_TOKEN_PARAMS_STARTED,
+  }
+}
+
+function loadingTokenParamsFinished () {
+  return {
+    type: actions.LOADING_TOKEN_PARAMS_FINISHED,
+  }
+}
+
+function getTokenParams (tokenAddress) {
+  return (dispatch, getState) => {
+    const existingTokens = getState().metamask.tokens
+    const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+
+    if (existingToken) {
+      return Promise.resolve({
+        symbol: existingToken.symbol,
+        decimals: existingToken.decimals,
+      })
+    }
+
+    dispatch(actions.loadingTokenParamsStarted())
+    log.debug(`loadingTokenParams`)
+
+
+    return fetchSymbolAndDecimals(tokenAddress, existingTokens)
+      .then(({ symbol, decimals }) => {
+        dispatch(actions.addToken(tokenAddress, symbol, decimals))
+        dispatch(actions.loadingTokenParamsFinished())
+      })
   }
 }

@@ -3,7 +3,7 @@ const {
   timeout,
   queryAsync,
 } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/beta/fetch-mocks.js')
+const fetchMockResponses = require('../../e2e/fetch-mocks.js')
 
 QUnit.module('confirm sig requests')
 

@@ -127,7 +127,7 @@ class SettingsPage extends PureComponent {
       subheaderText = t(ROUTES_TO_I18N_KEYS[pathname] || 'general')
     }
 
-    return (
+    return pathname !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
         {subheaderText}
       </div>
