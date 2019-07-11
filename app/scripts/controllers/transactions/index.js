@@ -189,7 +189,7 @@ class TransactionController extends EventEmitter {
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
-    
+
     // Assert the from address is the selected address
     if (normalizedTxParams.from !== this.getSelectedAddress() && !isContractAccountFlow) {
       throw new Error(`Transaction from address isn't valid for this account`)
@@ -632,13 +632,24 @@ class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore () {
+    const isContractAccount = this.preferencesStore.getState().useContractAccount
+
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     const selectedAddressTxList = this.txStateManager.getFilteredTxList({
       from: this.getSelectedAddress(),
       metamaskNetworkId: this.getNetwork(),
     })
-    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+
+    if (isContractAccount) {
+      selectedAddressTxList.concat(this.txStateManager.getFilteredTxList({
+        from: this.accountsController.currentContractInstance.controllingAccount,
+        to: this.getSelectedAddress(),
+        metamaskNetworkId: this.getNetwork(),
+      }))
+    }
+
+    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList: {} })
   }
 }
 
