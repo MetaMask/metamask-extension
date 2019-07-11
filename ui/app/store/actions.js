@@ -1476,7 +1476,9 @@ function cancelAllTx (txsData) {
     txsData.forEach((txData, i) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.completedTx(txData.id))
-        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+        if (i === txsData.length - 1) {
+          dispatch(actions.goHome())
+        }
       })
     })
   }
@@ -2394,18 +2396,21 @@ function reshowQrCode (data, coin) {
   }
 }
 
-function shapeShiftRequest (query, options, cb) {
+function shapeShiftRequest (query, options = {}, cb) {
   var queryResponse, method
-  !options ? options = {} : null
   options.method ? method = options.method : method = 'GET'
 
   var requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
-      cb ? cb(queryResponse) : null
+      if (cb) {
+        cb(queryResponse)
+      }
       return queryResponse
     } catch (e) {
-      cb ? cb({error: e}) : null
+      if (cb) {
+        cb({error: e})
+      }
       return e
     }
   }
