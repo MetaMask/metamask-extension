@@ -5,7 +5,7 @@
   "scripts": {
     "start": "gulp dev:extension",
     "dist": "gulp dist",
-    "doc": "jsdoc -c development/tools/.jsdoc.json",
+    "doc": "jsdoc -c development/.jsdoc.json",
     "publish-docs": "gh-pages -d docs/jsdocs",
     "start:test": "gulp dev:test",
     "build:test": "gulp build:test",
