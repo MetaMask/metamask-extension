@@ -151,26 +151,26 @@ function copyTask (taskName, opts) {
 
 gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    delete json.applications
-    return json
-  }))
-  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      delete json.applications
+      return json
+    }))
+    .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
 gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [
-      'storage',
-      'tabs',
-      'clipboardWrite',
-      'clipboardRead',
-      'http://localhost:8545/',
-    ]
-    return json
-  }))
-  .pipe(gulp.dest('./dist/opera', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [
+        'storage',
+        'tabs',
+        'clipboardWrite',
+        'clipboardRead',
+        'http://localhost:8545/',
+      ]
+      return json
+    }))
+    .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
 gulp.task('manifest:production', function () {
@@ -183,14 +183,14 @@ gulp.task('manifest:production', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.background.scripts = json.background.scripts.filter((script) => {
-      return !script.includes('chromereload')
-    })
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.background.scripts = json.background.scripts.filter((script) => {
+        return !script.includes('chromereload')
+      })
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('manifest:testing', function () {
@@ -200,12 +200,12 @@ gulp.task('manifest:testing', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [...json.permissions, 'webRequestBlocking']
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [...json.permissions, 'webRequestBlocking']
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('copy',
@@ -472,8 +472,8 @@ gulp.task('dist',
 function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'))
+      .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+      .pipe(gulp.dest('builds'))
   }
 }
 
@@ -561,11 +561,11 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-      .pipe(uglify({
-        mangle: {
-          reserved: [ 'MetamaskInpageProvider' ],
-        },
-      }))
+        .pipe(uglify({
+          mangle: {
+            reserved: [ 'MetamaskInpageProvider' ],
+          },
+        }))
     }
 
     // Finalize Source Maps

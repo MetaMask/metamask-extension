@@ -16,36 +16,36 @@ function getBuyEthUrl ({ network, amount, address, service }) {
   if (!service) service = getDefaultServiceForNetwork(network)
 
   switch (service) {
-    case 'wyre':
-      return `https://dash.sendwyre.com/sign-up`
-    case 'coinswitch':
-      return `https://metamask.coinswitch.co/?address=${address}&to=eth`
-    case 'coinbase':
-      return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-    case 'metamask-faucet':
-      return 'https://faucet.metamask.io/'
-    case 'rinkeby-faucet':
-      return 'https://www.rinkeby.io/'
-    case 'kovan-faucet':
-      return 'https://github.com/kovan-testnet/faucet'
-    case 'goerli-faucet':
-      return 'https://goerli-faucet.slock.it/'
+  case 'wyre':
+    return `https://dash.sendwyre.com/sign-up`
+  case 'coinswitch':
+    return `https://metamask.coinswitch.co/?address=${address}&to=eth`
+  case 'coinbase':
+    return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+  case 'metamask-faucet':
+    return 'https://faucet.metamask.io/'
+  case 'rinkeby-faucet':
+    return 'https://www.rinkeby.io/'
+  case 'kovan-faucet':
+    return 'https://github.com/kovan-testnet/faucet'
+  case 'goerli-faucet':
+    return 'https://goerli-faucet.slock.it/'
   }
   throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
 }
 
 function getDefaultServiceForNetwork (network) {
   switch (network) {
-    case '1':
-      return 'wyre'
-    case '3':
-      return 'metamask-faucet'
-    case '4':
-      return 'rinkeby-faucet'
-    case '42':
-      return 'kovan-faucet'
-    case '5':
-      return 'goerli-faucet'
+  case '1':
+    return 'wyre'
+  case '3':
+    return 'metamask-faucet'
+  case '4':
+    return 'rinkeby-faucet'
+  case '42':
+    return 'kovan-faucet'
+  case '5':
+    return 'goerli-faucet'
   }
   throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }

@@ -94,8 +94,8 @@ async function startContainer (fileRegEx) {
             .map((s) => {
               const proxyKeys = s.match(/{.+}/)[0].match(/\w+/g)
               return '\'' + s.match(/'(.+)'/)[1] + '\': { ' + (proxyKeys.length > 1
-                  ? '\n    ' + proxyKeys.join(': () => {},\n    ') + ': () => {},\n '
-                  : proxyKeys[0] + ': () => {},') + ' }'
+                ? '\n    ' + proxyKeys.join(': () => {},\n    ') + ': () => {},\n '
+                : proxyKeys[0] + ': () => {},') + ' }'
             })
             .join(',\n  ') + '\n}')
             .replace('{ connect: () => {}, },', `{
@@ -205,7 +205,7 @@ function generateContainerTest (sPath, {
   mapDispatchToPropsMethodNames,
   proxyquireObject,
 }) {
-return `import assert from 'assert'
+  return `import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 

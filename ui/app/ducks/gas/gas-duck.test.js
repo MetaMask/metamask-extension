@@ -465,7 +465,7 @@ describe('Gas Duck', () => {
         initState,
         { basicPriceAndTimeEstimatesLastRetrieved: 1000000 }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -542,7 +542,7 @@ describe('Gas Duck', () => {
         initState,
         {}
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -586,7 +586,7 @@ describe('Gas Duck', () => {
         initState,
         {}
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -647,7 +647,7 @@ describe('Gas Duck', () => {
         initState,
         { priceAndTimeEstimatesLastRetrieved: 1000000 }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -701,7 +701,7 @@ describe('Gas Duck', () => {
           }],
         }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,

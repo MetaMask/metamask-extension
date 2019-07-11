@@ -25,48 +25,48 @@ export default function reducer ({ send: sendState = initState }, action = {}) {
   const newState = extend({}, sendState)
 
   switch (action.type) {
-    case OPEN_FROM_DROPDOWN:
-      return extend(newState, {
-        fromDropdownOpen: true,
-      })
-    case CLOSE_FROM_DROPDOWN:
-      return extend(newState, {
-        fromDropdownOpen: false,
-      })
-    case OPEN_TO_DROPDOWN:
-      return extend(newState, {
-        toDropdownOpen: true,
-      })
-    case CLOSE_TO_DROPDOWN:
-      return extend(newState, {
-        toDropdownOpen: false,
-      })
-    case UPDATE_SEND_ERRORS:
-      return extend(newState, {
-        errors: {
-          ...newState.errors,
-          ...action.value,
-        },
-      })
-    case UPDATE_SEND_WARNINGS:
-      return extend(newState, {
-        warnings: {
-          ...newState.warnings,
-          ...action.value,
-        },
-      })
-    case SHOW_GAS_BUTTON_GROUP:
-      return extend(newState, {
-        gasButtonGroupShown: true,
-      })
-    case HIDE_GAS_BUTTON_GROUP:
-      return extend(newState, {
-        gasButtonGroupShown: false,
-      })
-    case RESET_SEND_STATE:
-      return extend({}, initState)
-    default:
-      return newState
+  case OPEN_FROM_DROPDOWN:
+    return extend(newState, {
+      fromDropdownOpen: true,
+    })
+  case CLOSE_FROM_DROPDOWN:
+    return extend(newState, {
+      fromDropdownOpen: false,
+    })
+  case OPEN_TO_DROPDOWN:
+    return extend(newState, {
+      toDropdownOpen: true,
+    })
+  case CLOSE_TO_DROPDOWN:
+    return extend(newState, {
+      toDropdownOpen: false,
+    })
+  case UPDATE_SEND_ERRORS:
+    return extend(newState, {
+      errors: {
+        ...newState.errors,
+        ...action.value,
+      },
+    })
+  case UPDATE_SEND_WARNINGS:
+    return extend(newState, {
+      warnings: {
+        ...newState.warnings,
+        ...action.value,
+      },
+    })
+  case SHOW_GAS_BUTTON_GROUP:
+    return extend(newState, {
+      gasButtonGroupShown: true,
+    })
+  case HIDE_GAS_BUTTON_GROUP:
+    return extend(newState, {
+      gasButtonGroupShown: false,
+    })
+  case RESET_SEND_STATE:
+    return extend({}, initState)
+  default:
+    return newState
   }
 }
 

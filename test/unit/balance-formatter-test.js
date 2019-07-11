@@ -11,14 +11,14 @@ describe('currencyFormatting', function () {
       const result = currencyFormatter.format(number, { code })
 
       switch (code) {
-        case 'USD':
-          assert.equal(result, '$10,000.00')
-          break
-        case 'JPY':
-          assert.equal(result, '¥10,000')
-          break
-        default:
-          assert.ok(result, `Currency ${code} formatted as ${result}`)
+      case 'USD':
+        assert.equal(result, '$10,000.00')
+        break
+      case 'JPY':
+        assert.equal(result, '¥10,000')
+        break
+      default:
+        assert.ok(result, `Currency ${code} formatted as ${result}`)
       }
     })
 

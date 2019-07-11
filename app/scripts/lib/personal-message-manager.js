@@ -64,7 +64,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages.filter(msg => msg.status === 'unapproved')
-    .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
   }
 
   /**
@@ -85,12 +85,12 @@ module.exports = class PersonalMessageManager extends EventEmitter {
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
-          case 'signed':
-            return resolve(data.rawSig)
-          case 'rejected':
-            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
-          default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+        case 'signed':
+          return resolve(data.rawSig)
+        case 'rejected':
+          return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
       })
     })

@@ -33,7 +33,7 @@ export default class AdvancedTab extends PureComponent {
   renderMobileSync () {
     const { t } = this.context
     const { history } = this.props
-//
+    //
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">

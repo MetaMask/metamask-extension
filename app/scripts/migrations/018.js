@@ -43,9 +43,9 @@ function transformState (state) {
       const newHistory = (
         txStateHistoryHelper.migrateFromSnapshotsToDiffs(txMeta.history)
         // remove empty diffs
-        .filter((entry) => {
-          return !Array.isArray(entry) || entry.length > 0
-        })
+          .filter((entry) => {
+            return !Array.isArray(entry) || entry.length > 0
+          })
       )
       txMeta.history = newHistory
       return txMeta

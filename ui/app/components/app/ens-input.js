@@ -82,37 +82,37 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
 
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
-  .then((address) => {
-    if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
-    if (address !== ensResolution) {
-      this.setState({
+    .then((address) => {
+      if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
+      if (address !== ensResolution) {
+        this.setState({
+          loadingEns: false,
+          ensResolution: address,
+          nickname: recipient.trim(),
+          hoverText: address + '\n' + this.context.t('clickCopy'),
+          ensFailure: false,
+          toError: null,
+        })
+      }
+    })
+    .catch((reason) => {
+      const setStateObj = {
         loadingEns: false,
-        ensResolution: address,
-        nickname: recipient.trim(),
-        hoverText: address + '\n' + this.context.t('clickCopy'),
-        ensFailure: false,
+        ensResolution: recipient,
+        ensFailure: true,
         toError: null,
-      })
-    }
-  })
-  .catch((reason) => {
-    const setStateObj = {
-      loadingEns: false,
-      ensResolution: recipient,
-      ensFailure: true,
-      toError: null,
-    }
-    if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-      setStateObj.hoverText = this.context.t('ensNameNotFound')
-      setStateObj.toError = 'ensNameNotFound'
-      setStateObj.ensFailure = false
-    } else {
-      log.error(reason)
-      setStateObj.hoverText = reason.message
-    }
+      }
+      if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
+        setStateObj.hoverText = this.context.t('ensNameNotFound')
+        setStateObj.toError = 'ensNameNotFound'
+        setStateObj.ensFailure = false
+      } else {
+        log.error(reason)
+        setStateObj.hoverText = reason.message
+      }
 
-    return this.setState(setStateObj)
-  })
+      return this.setState(setStateObj)
+    })
 }
 
 EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {

@@ -141,16 +141,16 @@ export function getTransactionActionKey (transaction) {
 
   if (isTokenAction || isNonTokenSmartContract) {
     switch (transactionCategory) {
-      case TOKEN_METHOD_TRANSFER:
-        return SEND_TOKEN_ACTION_KEY
-      case TOKEN_METHOD_APPROVE:
-        return APPROVE_ACTION_KEY
-      case TOKEN_METHOD_TRANSFER_FROM:
-        return TRANSFER_FROM_ACTION_KEY
-      case CONTRACT_INTERACTION_KEY:
-        return CONTRACT_INTERACTION_KEY
-      default:
-        return undefined
+    case TOKEN_METHOD_TRANSFER:
+      return SEND_TOKEN_ACTION_KEY
+    case TOKEN_METHOD_APPROVE:
+      return APPROVE_ACTION_KEY
+    case TOKEN_METHOD_TRANSFER_FROM:
+      return TRANSFER_FROM_ACTION_KEY
+    case CONTRACT_INTERACTION_KEY:
+      return CONTRACT_INTERACTION_KEY
+    default:
+      return undefined
     }
   } else {
     return SEND_ETHER_ACTION_KEY

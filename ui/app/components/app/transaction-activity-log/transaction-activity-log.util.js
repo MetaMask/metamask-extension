@@ -94,73 +94,73 @@ export function getActivities (transaction, isFirstTransaction = false) {
 
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {
-            case STATUS_PATH: {
-              const gasFee = cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
-                ? getHexGasTotal({ gasLimit: paramsGasLimit, gasPrice: paramsGasPrice })
-                : getHexGasTotal({ gasLimit: cachedGasLimit, gasPrice: cachedGasPrice })
+          case STATUS_PATH: {
+            const gasFee = cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+              ? getHexGasTotal({ gasLimit: paramsGasLimit, gasPrice: paramsGasPrice })
+              : getHexGasTotal({ gasLimit: cachedGasLimit, gasPrice: cachedGasPrice })
 
-              if (value in statusHash) {
-                let eventKey = statusHash[value]
+            if (value in statusHash) {
+              let eventKey = statusHash[value]
 
-                // If the status is 'submitted', we need to determine whether the event is a
-                // transaction retry or a cancellation attempt.
-                if (value === SUBMITTED_STATUS) {
-                  if (type === TRANSACTION_TYPE_RETRY) {
-                    eventKey = TRANSACTION_RESUBMITTED_EVENT
-                  } else if (type === TRANSACTION_TYPE_CANCEL) {
-                    eventKey = TRANSACTION_CANCEL_ATTEMPTED_EVENT
-                  }
-                } else if (value === CONFIRMED_STATUS) {
-                  if (type === TRANSACTION_TYPE_CANCEL) {
-                    eventKey = TRANSACTION_CANCEL_SUCCESS_EVENT
-                  }
+              // If the status is 'submitted', we need to determine whether the event is a
+              // transaction retry or a cancellation attempt.
+              if (value === SUBMITTED_STATUS) {
+                if (type === TRANSACTION_TYPE_RETRY) {
+                  eventKey = TRANSACTION_RESUBMITTED_EVENT
+                } else if (type === TRANSACTION_TYPE_CANCEL) {
+                  eventKey = TRANSACTION_CANCEL_ATTEMPTED_EVENT
                 }
-
-                events.push({
-                  id,
-                  hash,
-                  eventKey,
-                  timestamp,
-                  value: gasFee,
-                })
+              } else if (value === CONFIRMED_STATUS) {
+                if (type === TRANSACTION_TYPE_CANCEL) {
+                  eventKey = TRANSACTION_CANCEL_SUCCESS_EVENT
+                }
               }
 
-              break
-            }
-
-            // If the gas price or gas limit has been changed, we update the gasFee of the
-            // previously submitted event. These events happen when the gas limit and gas price is
-            // changed at the confirm screen.
-            case GAS_PRICE_PATH:
-            case GAS_LIMIT_PATH: {
-              const lastEvent = events[events.length - 1] || {}
-              const { lastEventKey } = lastEvent
-
-              if (path === GAS_LIMIT_PATH) {
-                cachedGasLimit = value
-              } else if (path === GAS_PRICE_PATH) {
-                cachedGasPrice = value
-              }
-
-              if (lastEventKey === TRANSACTION_SUBMITTED_EVENT ||
-                lastEventKey === TRANSACTION_RESUBMITTED_EVENT) {
-                lastEvent.value = getHexGasTotal({
-                  gasLimit: cachedGasLimit,
-                  gasPrice: cachedGasPrice,
-                })
-              }
-
-              break
-            }
-
-            default: {
               events.push({
                 id,
                 hash,
-                eventKey: TRANSACTION_UPDATED_EVENT,
+                eventKey,
                 timestamp,
+                value: gasFee,
               })
             }
+
+            break
+          }
+
+          // If the gas price or gas limit has been changed, we update the gasFee of the
+          // previously submitted event. These events happen when the gas limit and gas price is
+          // changed at the confirm screen.
+          case GAS_PRICE_PATH:
+          case GAS_LIMIT_PATH: {
+            const lastEvent = events[events.length - 1] || {}
+            const { lastEventKey } = lastEvent
+
+            if (path === GAS_LIMIT_PATH) {
+              cachedGasLimit = value
+            } else if (path === GAS_PRICE_PATH) {
+              cachedGasPrice = value
+            }
+
+            if (lastEventKey === TRANSACTION_SUBMITTED_EVENT ||
+                lastEventKey === TRANSACTION_RESUBMITTED_EVENT) {
+              lastEvent.value = getHexGasTotal({
+                gasLimit: cachedGasLimit,
+                gasPrice: cachedGasPrice,
+              })
+            }
+
+            break
+          }
+
+          default: {
+            events.push({
+              id,
+              hash,
+              eventKey: TRANSACTION_UPDATED_EVENT,
+              timestamp,
+            })
+          }
           }
         }
       })

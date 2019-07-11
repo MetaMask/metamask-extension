@@ -164,7 +164,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 type="raised"
                 onClick={this.handleEtherscanClick}
                 className="transaction-list-item-details__header-button"
-                >
+              >
                 <img src="/images/arrow-popout.svg" />
               </Button>
             </Tooltip>

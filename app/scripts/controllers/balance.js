@@ -70,13 +70,13 @@ class BalanceController {
 
     this.txController.on('tx:status-update', (_, status) => {
       switch (status) {
-        case 'submitted':
-        case 'confirmed':
-        case 'failed':
-          update()
-          return
-        default:
-          return
+      case 'submitted':
+      case 'confirmed':
+      case 'failed':
+        update()
+        return
+      default:
+        return
       }
     })
     this.accountTracker.store.subscribe(update)

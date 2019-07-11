@@ -174,7 +174,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     })
 
     this.setState((prevState) => ({
-        termsChecked: !prevState.termsChecked,
+      termsChecked: !prevState.termsChecked,
     }))
   }
 

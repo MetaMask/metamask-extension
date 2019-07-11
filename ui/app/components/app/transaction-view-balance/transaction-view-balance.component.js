@@ -43,38 +43,38 @@ export default class TransactionViewBalance extends PureComponent {
           />
         </div>
       ) : (
-          <Tooltip position="top" title={this.context.t('balanceOutdated')} disabled={!balanceIsCached}>
-            <div className="transaction-view-balance__balance">
-                <div className="transaction-view-balance__primary-container">
-                  <UserPreferencedCurrencyDisplay
-                    className={classnames('transaction-view-balance__primary-balance', {
-                      'transaction-view-balance__cached-balance': balanceIsCached,
-                    })}
-                    value={balance}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle={true}
-                  />
-                  {
-                    balanceIsCached ? <span className="transaction-view-balance__cached-star">*</span> : null
-                  }
-                </div>
-                {
-                  showFiat && (
-                    <UserPreferencedCurrencyDisplay
-                      className={classnames({
-                        'transaction-view-balance__cached-secondary-balance': balanceIsCached,
-                        'transaction-view-balance__secondary-balance': !balanceIsCached,
-                      })}
-                      value={balance}
-                      type={SECONDARY}
-                      ethNumberOfDecimals={4}
-                      hideTitle={true}
-                    />
-                  )
-                }
+        <Tooltip position="top" title={this.context.t('balanceOutdated')} disabled={!balanceIsCached}>
+          <div className="transaction-view-balance__balance">
+            <div className="transaction-view-balance__primary-container">
+              <UserPreferencedCurrencyDisplay
+                className={classnames('transaction-view-balance__primary-balance', {
+                  'transaction-view-balance__cached-balance': balanceIsCached,
+                })}
+                value={balance}
+                type={PRIMARY}
+                ethNumberOfDecimals={4}
+                hideTitle={true}
+              />
+              {
+                balanceIsCached ? <span className="transaction-view-balance__cached-star">*</span> : null
+              }
             </div>
-          </Tooltip>
+            {
+              showFiat && (
+                <UserPreferencedCurrencyDisplay
+                  className={classnames({
+                    'transaction-view-balance__cached-secondary-balance': balanceIsCached,
+                    'transaction-view-balance__secondary-balance': !balanceIsCached,
+                  })}
+                  value={balance}
+                  type={SECONDARY}
+                  ethNumberOfDecimals={4}
+                  hideTitle={true}
+                />
+              )
+            }
+          </div>
+        </Tooltip>
       )
   }
 

@@ -21,14 +21,14 @@ module.exports = {
 
 async function loadExtension (driver, extensionId) {
   switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
-    }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
-    }
+  case 'chrome': {
+    await driver.get(`chrome-extension://${extensionId}/home.html`)
+    break
+  }
+  case 'firefox': {
+    await driver.get(`moz-extension://${extensionId}/home.html`)
+    break
+  }
   }
 }
 
@@ -162,6 +162,6 @@ async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) 
   if (windowUrl.match(regexp)) {
     return firstHandle
   } else {
-     return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
+    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
   }
 }

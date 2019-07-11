@@ -40,7 +40,7 @@ export default class SelectAction extends PureComponent {
     const { t } = this.context
 
     return (
-       <div className="select-action">
+      <div className="select-action">
         <MetaFoxLogo />
 
         <div className="select-action__wrapper">
@@ -95,7 +95,7 @@ export default class SelectAction extends PureComponent {
           </div>
 
         </div>
-       </div>
+      </div>
     )
   }
 }

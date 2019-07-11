@@ -75,8 +75,8 @@ export default class TransactionList extends PureComponent {
           {
             completedTransactions.length > 0
               ? completedTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index)
-                ))
+                this.renderTransaction(transactionGroup, index)
+              ))
               : this.renderEmpty()
           }
         </div>

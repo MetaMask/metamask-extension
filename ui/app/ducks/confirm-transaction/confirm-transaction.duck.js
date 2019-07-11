@@ -68,100 +68,100 @@ const initState = {
 // Reducer
 export default function reducer ({ confirmTransaction: confirmState = initState }, action = {}) {
   switch (action.type) {
-    case UPDATE_TX_DATA:
-      return {
-        ...confirmState,
-        txData: {
-          ...action.payload,
-        },
-      }
-    case CLEAR_TX_DATA:
-      return {
-        ...confirmState,
-        txData: {},
-      }
-    case UPDATE_TOKEN_DATA:
-      return {
-        ...confirmState,
-        tokenData: {
-          ...action.payload,
-        },
-      }
-    case CLEAR_TOKEN_DATA:
-      return {
-        ...confirmState,
-        tokenData: {},
-      }
-    case UPDATE_METHOD_DATA:
-      return {
-        ...confirmState,
-        methodData: {
-          ...action.payload,
-        },
-      }
-    case CLEAR_METHOD_DATA:
-      return {
-        ...confirmState,
-        methodData: {},
-      }
-    case UPDATE_TRANSACTION_AMOUNTS:
-      const { fiatTransactionAmount, ethTransactionAmount, hexTransactionAmount } = action.payload
-      return {
-        ...confirmState,
-        fiatTransactionAmount: fiatTransactionAmount || confirmState.fiatTransactionAmount,
-        ethTransactionAmount: ethTransactionAmount || confirmState.ethTransactionAmount,
-        hexTransactionAmount: hexTransactionAmount || confirmState.hexTransactionAmount,
-      }
-    case UPDATE_TRANSACTION_FEES:
-      const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } = action.payload
-      return {
-        ...confirmState,
-        fiatTransactionFee: fiatTransactionFee || confirmState.fiatTransactionFee,
-        ethTransactionFee: ethTransactionFee || confirmState.ethTransactionFee,
-        hexTransactionFee: hexTransactionFee || confirmState.hexTransactionFee,
-      }
-    case UPDATE_TRANSACTION_TOTALS:
-      const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } = action.payload
-      return {
-        ...confirmState,
-        fiatTransactionTotal: fiatTransactionTotal || confirmState.fiatTransactionTotal,
-        ethTransactionTotal: ethTransactionTotal || confirmState.ethTransactionTotal,
-        hexTransactionTotal: hexTransactionTotal || confirmState.hexTransactionTotal,
-      }
-    case UPDATE_TOKEN_PROPS:
-      const { tokenSymbol = '', tokenDecimals = '' } = action.payload
-      return {
-        ...confirmState,
-        tokenProps: {
-          ...confirmState.tokenProps,
-          tokenSymbol,
-          tokenDecimals,
-        },
-      }
-    case UPDATE_NONCE:
-      return {
-        ...confirmState,
-        nonce: action.payload,
-      }
-    case UPDATE_TO_SMART_CONTRACT:
-      return {
-        ...confirmState,
-        toSmartContract: action.payload,
-      }
-    case FETCH_DATA_START:
-      return {
-        ...confirmState,
-        fetchingData: true,
-      }
-    case FETCH_DATA_END:
-      return {
-        ...confirmState,
-        fetchingData: false,
-      }
-    case CLEAR_CONFIRM_TRANSACTION:
-      return initState
-    default:
-      return confirmState
+  case UPDATE_TX_DATA:
+    return {
+      ...confirmState,
+      txData: {
+        ...action.payload,
+      },
+    }
+  case CLEAR_TX_DATA:
+    return {
+      ...confirmState,
+      txData: {},
+    }
+  case UPDATE_TOKEN_DATA:
+    return {
+      ...confirmState,
+      tokenData: {
+        ...action.payload,
+      },
+    }
+  case CLEAR_TOKEN_DATA:
+    return {
+      ...confirmState,
+      tokenData: {},
+    }
+  case UPDATE_METHOD_DATA:
+    return {
+      ...confirmState,
+      methodData: {
+        ...action.payload,
+      },
+    }
+  case CLEAR_METHOD_DATA:
+    return {
+      ...confirmState,
+      methodData: {},
+    }
+  case UPDATE_TRANSACTION_AMOUNTS:
+    const { fiatTransactionAmount, ethTransactionAmount, hexTransactionAmount } = action.payload
+    return {
+      ...confirmState,
+      fiatTransactionAmount: fiatTransactionAmount || confirmState.fiatTransactionAmount,
+      ethTransactionAmount: ethTransactionAmount || confirmState.ethTransactionAmount,
+      hexTransactionAmount: hexTransactionAmount || confirmState.hexTransactionAmount,
+    }
+  case UPDATE_TRANSACTION_FEES:
+    const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } = action.payload
+    return {
+      ...confirmState,
+      fiatTransactionFee: fiatTransactionFee || confirmState.fiatTransactionFee,
+      ethTransactionFee: ethTransactionFee || confirmState.ethTransactionFee,
+      hexTransactionFee: hexTransactionFee || confirmState.hexTransactionFee,
+    }
+  case UPDATE_TRANSACTION_TOTALS:
+    const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } = action.payload
+    return {
+      ...confirmState,
+      fiatTransactionTotal: fiatTransactionTotal || confirmState.fiatTransactionTotal,
+      ethTransactionTotal: ethTransactionTotal || confirmState.ethTransactionTotal,
+      hexTransactionTotal: hexTransactionTotal || confirmState.hexTransactionTotal,
+    }
+  case UPDATE_TOKEN_PROPS:
+    const { tokenSymbol = '', tokenDecimals = '' } = action.payload
+    return {
+      ...confirmState,
+      tokenProps: {
+        ...confirmState.tokenProps,
+        tokenSymbol,
+        tokenDecimals,
+      },
+    }
+  case UPDATE_NONCE:
+    return {
+      ...confirmState,
+      nonce: action.payload,
+    }
+  case UPDATE_TO_SMART_CONTRACT:
+    return {
+      ...confirmState,
+      toSmartContract: action.payload,
+    }
+  case FETCH_DATA_START:
+    return {
+      ...confirmState,
+      fetchingData: true,
+    }
+  case FETCH_DATA_END:
+    return {
+      ...confirmState,
+      fetchingData: false,
+    }
+  case CLEAR_CONFIRM_TRANSACTION:
+    return initState
+  default:
+    return confirmState
   }
 }
 

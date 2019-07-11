@@ -147,10 +147,10 @@ function startApp () {
         },
       }, [
         h(Root, {
-         store: store,
+          store: store,
         }),
       ]),
 
     ]
-  ), container)
+    ), container)
 }

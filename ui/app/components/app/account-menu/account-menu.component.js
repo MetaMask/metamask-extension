@@ -149,13 +149,13 @@ export default class AccountMenu extends PureComponent {
     let label
 
     switch (type) {
-      case 'Trezor Hardware':
-      case 'Ledger Hardware':
-        label = t('hardware')
-        break
-      case 'Simple Key Pair':
-        label = t('imported')
-        break
+    case 'Trezor Hardware':
+    case 'Ledger Hardware':
+      label = t('hardware')
+      break
+    case 'Simple Key Pair':
+      label = t('imported')
+      break
     }
 
     return label && (

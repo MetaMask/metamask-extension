@@ -61,7 +61,7 @@ export default class SendToRow extends Component {
         showError={inError}
         showWarning={inWarning}
         warningType={'to'}
-        >
+      >
         <EnsInput
           scanQrCode={_ => {
             this.context.metricsEvent({

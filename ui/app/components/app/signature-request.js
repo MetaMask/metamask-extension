@@ -257,7 +257,7 @@ SignatureRequest.prototype.renderBody = function () {
             url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
           })
         },
-    }, this.context.t('learnMore'))]
+      }, this.context.t('learnMore'))]
   }
 
   return h('div.request-signature__body', {}, [

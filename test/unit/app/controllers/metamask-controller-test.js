@@ -516,7 +516,7 @@ describe('MetaMaskController', function () {
 
       metamaskController.placeSeedWords((err, result) => {
         if (err) {
-         console.log(err)
+          console.log(err)
         } else {
           getConfigSeed = metamaskController.configManager.getSeedWords()
           assert.equal(result, seedPhrase)

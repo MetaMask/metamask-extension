@@ -102,7 +102,7 @@ export default class MetaMetricsOptIn extends Component {
                       .then(() => {
                         history.push(nextRoute)
                       })
-                })
+                  })
               }}
               cancelText={'No Thanks'}
               hideCancel={false}
@@ -135,7 +135,7 @@ export default class MetaMetricsOptIn extends Component {
                       .then(() => {
                         history.push(nextRoute)
                       })
-                })
+                  })
               }}
               submitText={'I agree'}
               submitButtonType={'primary'}

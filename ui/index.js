@@ -79,7 +79,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       // inject initial state
       store: store,
     }
-  ), opts.container)
+    ), opts.container)
 
   return store
 }

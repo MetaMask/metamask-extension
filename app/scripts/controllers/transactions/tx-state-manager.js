@@ -34,7 +34,7 @@ class TransactionStateManager extends EventEmitter {
     this.store = new ObservableStore(
       extend({
         transactions: [],
-    }, initState))
+      }, initState))
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -235,17 +235,17 @@ class TransactionStateManager extends EventEmitter {
       const value = txParams[key]
       // validate types
       switch (key) {
-        case 'chainId':
-          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
-          break
-        default:
-          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
-          break
+      case 'chainId':
+        if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
+        break
+      default:
+        if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
+        break
       }
     })
   }
 
-/**
+  /**
   @param opts {object} -  an object of fields to search for eg:<br>
   let <code>thingsToLookFor = {<br>
     to: '0x0..',<br>
@@ -403,9 +403,9 @@ class TransactionStateManager extends EventEmitter {
     // Update state
     this._saveTxList(otherAccountTxs)
   }
-//
-//           PRIVATE METHODS
-//
+  //
+  //           PRIVATE METHODS
+  //
 
   // STATUS METHODS
   // statuses:

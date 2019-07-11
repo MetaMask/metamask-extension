@@ -867,7 +867,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'LOCK_METAMASK' },
-    ]
+      ]
       backgroundSetLockedSpy = sinon.stub(background, 'setLocked')
       backgroundSetLockedSpy.callsFake(callback => {
         callback(new Error('error'))

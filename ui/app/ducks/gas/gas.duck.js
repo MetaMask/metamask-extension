@@ -61,92 +61,92 @@ export default function reducer ({ gas: gasState = initState }, action = {}) {
   const newState = clone(gasState)
 
   switch (action.type) {
-    case BASIC_GAS_ESTIMATE_LOADING_STARTED:
-      return {
-        ...newState,
-        basicEstimateIsLoading: true,
-      }
-    case BASIC_GAS_ESTIMATE_LOADING_FINISHED:
-      return {
-        ...newState,
-        basicEstimateIsLoading: false,
-      }
-    case GAS_ESTIMATE_LOADING_STARTED:
-      return {
-        ...newState,
-        gasEstimatesLoading: true,
-      }
-    case GAS_ESTIMATE_LOADING_FINISHED:
-      return {
-        ...newState,
-        gasEstimatesLoading: false,
-      }
-    case SET_BASIC_GAS_ESTIMATE_DATA:
-      return {
-        ...newState,
-        basicEstimates: action.value,
-      }
-    case SET_CUSTOM_GAS_PRICE:
-      return {
-        ...newState,
-        customData: {
-          ...newState.customData,
-          price: action.value,
-        },
-      }
-    case SET_CUSTOM_GAS_LIMIT:
-      return {
-        ...newState,
-        customData: {
-          ...newState.customData,
-          limit: action.value,
-        },
-      }
-    case SET_CUSTOM_GAS_TOTAL:
-      return {
-        ...newState,
-        customData: {
-          ...newState.customData,
-          total: action.value,
-        },
-      }
-    case SET_PRICE_AND_TIME_ESTIMATES:
-      return {
-        ...newState,
-        priceAndTimeEstimates: action.value,
-      }
-    case SET_CUSTOM_GAS_ERRORS:
-      return {
-        ...newState,
-        errors: {
-          ...newState.errors,
-          ...action.value,
-        },
-      }
-    case SET_API_ESTIMATES_LAST_RETRIEVED:
-      return {
-        ...newState,
-        priceAndTimeEstimatesLastRetrieved: action.value,
-      }
-    case SET_BASIC_API_ESTIMATES_LAST_RETRIEVED:
-      return {
-        ...newState,
-        basicPriceAndTimeEstimatesLastRetrieved: action.value,
-      }
-    case SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED:
-      return {
-        ...newState,
-        basicPriceEstimatesLastRetrieved: action.value,
-      }
-    case RESET_CUSTOM_DATA:
-      return {
-        ...newState,
-        customData: clone(initState.customData),
-      }
-    case RESET_CUSTOM_GAS_STATE:
-      return clone(initState)
-    default:
-      return newState
+  case BASIC_GAS_ESTIMATE_LOADING_STARTED:
+    return {
+      ...newState,
+      basicEstimateIsLoading: true,
+    }
+  case BASIC_GAS_ESTIMATE_LOADING_FINISHED:
+    return {
+      ...newState,
+      basicEstimateIsLoading: false,
+    }
+  case GAS_ESTIMATE_LOADING_STARTED:
+    return {
+      ...newState,
+      gasEstimatesLoading: true,
+    }
+  case GAS_ESTIMATE_LOADING_FINISHED:
+    return {
+      ...newState,
+      gasEstimatesLoading: false,
+    }
+  case SET_BASIC_GAS_ESTIMATE_DATA:
+    return {
+      ...newState,
+      basicEstimates: action.value,
+    }
+  case SET_CUSTOM_GAS_PRICE:
+    return {
+      ...newState,
+      customData: {
+        ...newState.customData,
+        price: action.value,
+      },
+    }
+  case SET_CUSTOM_GAS_LIMIT:
+    return {
+      ...newState,
+      customData: {
+        ...newState.customData,
+        limit: action.value,
+      },
+    }
+  case SET_CUSTOM_GAS_TOTAL:
+    return {
+      ...newState,
+      customData: {
+        ...newState.customData,
+        total: action.value,
+      },
+    }
+  case SET_PRICE_AND_TIME_ESTIMATES:
+    return {
+      ...newState,
+      priceAndTimeEstimates: action.value,
+    }
+  case SET_CUSTOM_GAS_ERRORS:
+    return {
+      ...newState,
+      errors: {
+        ...newState.errors,
+        ...action.value,
+      },
+    }
+  case SET_API_ESTIMATES_LAST_RETRIEVED:
+    return {
+      ...newState,
+      priceAndTimeEstimatesLastRetrieved: action.value,
+    }
+  case SET_BASIC_API_ESTIMATES_LAST_RETRIEVED:
+    return {
+      ...newState,
+      basicPriceAndTimeEstimatesLastRetrieved: action.value,
+    }
+  case SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED:
+    return {
+      ...newState,
+      basicPriceEstimatesLastRetrieved: action.value,
+    }
+  case RESET_CUSTOM_DATA:
+    return {
+      ...newState,
+      customData: clone(initState.customData),
+    }
+  case RESET_CUSTOM_GAS_STATE:
+    return clone(initState)
+  default:
+    return newState
   }
 }
 
@@ -372,13 +372,13 @@ export function fetchGasEstimates (blockTime) {
 
     const promiseToFetch = Date.now() - timeLastRetrieved > 75000
       ? fetch('https://ethgasstation.info/json/predictTable.json', {
-          'headers': {},
-          'referrer': 'http://ethgasstation.info/json/',
-          'referrerPolicy': 'no-referrer-when-downgrade',
-          'body': null,
-          'method': 'GET',
-          'mode': 'cors'}
-        )
+        'headers': {},
+        'referrer': 'http://ethgasstation.info/json/',
+        'referrerPolicy': 'no-referrer-when-downgrade',
+        'body': null,
+        'method': 'GET',
+        'mode': 'cors'}
+      )
         .then(r => r.json())
         .then(r => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
@@ -429,14 +429,14 @@ export function fetchGasEstimates (blockTime) {
           return timeMappedToSeconds
         })
       : Promise.resolve(priceAndTimeEstimates.length
-          ? priceAndTimeEstimates
-          : loadLocalStorageData('GAS_API_ESTIMATES')
-        )
+        ? priceAndTimeEstimates
+        : loadLocalStorageData('GAS_API_ESTIMATES')
+      )
 
-      return promiseToFetch.then(estimates => {
-        dispatch(setPricesAndTimeEstimates(estimates))
-        dispatch(gasEstimatesLoadingFinished())
-      })
+    return promiseToFetch.then(estimates => {
+      dispatch(setPricesAndTimeEstimates(estimates))
+      dispatch(gasEstimatesLoadingFinished())
+    })
   }
 }
 

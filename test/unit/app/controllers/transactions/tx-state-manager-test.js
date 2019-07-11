@@ -43,7 +43,7 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#setTxStatusRejected', function () {
-     it('sets the tx status to rejected and removes it from history', function () {
+    it('sets the tx status to rejected and removes it from history', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       txStateManager.setTxStatusRejected(1)
@@ -56,11 +56,11 @@ describe('TransactionStateManager', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = function (err) {
-          if (err) {
-            console.log('Error: ', err)
-          }
-          assert(true, 'event listener has been triggered and noop executed')
-          done()
+        if (err) {
+          console.log('Error: ', err)
+        }
+        assert(true, 'event listener has been triggered and noop executed')
+        done()
       }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)

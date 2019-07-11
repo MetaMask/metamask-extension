@@ -36,13 +36,13 @@ async function start () {
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
   await request({
-      method: 'POST',
-      uri: POST_COMMENT_URI,
-      body: JSON_PAYLOAD,
-      headers: {
-        'User-Agent': 'metamaskbot',
-        'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
-      },
+    method: 'POST',
+    uri: POST_COMMENT_URI,
+    body: JSON_PAYLOAD,
+    headers: {
+      'User-Agent': 'metamaskbot',
+      'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
+    },
   })
 
 }

@@ -357,12 +357,12 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
             },
           }, nickname || rpc),
           h('i.fa.fa-times.delete',
-          {
-            onClick: (e) => {
-              e.stopPropagation()
-              props.delRpcTarget(rpc)
-            },
-          }),
+            {
+              onClick: (e) => {
+                e.stopPropagation()
+                props.delRpcTarget(rpc)
+              },
+            }),
         ]
       )
     }
@@ -378,31 +378,31 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
 
   switch (rpcTarget) {
 
-    case 'http://localhost:8545':
-      return null
+  case 'http://localhost:8545':
+    return null
 
-    default:
-      return h(
-        DropdownMenuItem,
-        {
-          key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget, network, ticker, nickname),
-          closeMenu: () => this.props.hideNetworkDropdown(),
-          style: {
-            fontSize: '16px',
-            lineHeight: '20px',
-            padding: '12px 0',
-          },
+  default:
+    return h(
+      DropdownMenuItem,
+      {
+        key: rpcTarget,
+        onClick: () => props.setRpcTarget(rpcTarget, network, ticker, nickname),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        style: {
+          fontSize: '16px',
+          lineHeight: '20px',
+          padding: '12px 0',
         },
-        [
-          h('i.fa.fa-check'),
-          h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
-          h('span.network-name-item', {
-            style: {
-              color: '#ffffff',
-            },
-          }, nickname || rpcTarget),
-        ]
-      )
+      },
+      [
+        h('i.fa.fa-check'),
+        h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
+        h('span.network-name-item', {
+          style: {
+            color: '#ffffff',
+          },
+        }, nickname || rpcTarget),
+      ]
+    )
   }
 }

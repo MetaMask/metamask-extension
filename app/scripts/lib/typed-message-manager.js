@@ -75,14 +75,14 @@ module.exports = class TypedMessageManager extends EventEmitter {
       const msgId = this.addUnapprovedMessage(msgParams, req, version)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
-          case 'signed':
-            return resolve(data.rawSig)
-          case 'rejected':
-            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
-          case 'errored':
-            return reject(new Error(`MetaMask Message Signature: ${data.error}`))
-          default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+        case 'signed':
+          return resolve(data.rawSig)
+        case 'rejected':
+          return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+        case 'errored':
+          return reject(new Error(`MetaMask Message Signature: ${data.error}`))
+        default:
+          return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
       })
     })
@@ -130,31 +130,31 @@ module.exports = class TypedMessageManager extends EventEmitter {
    */
   validateParams (params) {
     switch (params.version) {
-      case 'V1':
-        assert.equal(typeof params, 'object', 'Params should ben an object.')
-        assert.ok('data' in params, 'Params must include a data field.')
-        assert.ok('from' in params, 'Params must include a from field.')
-        assert.ok(Array.isArray(params.data), 'Data should be an array.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
-        assert.doesNotThrow(() => {
-          sigUtil.typedSignatureHash(params.data)
-        }, 'Expected EIP712 typed data')
-        break
-      case 'V3':
-        let data
-        assert.equal(typeof params, 'object', 'Params should be an object.')
-        assert.ok('data' in params, 'Params must include a data field.')
-        assert.ok('from' in params, 'Params must include a from field.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
-        assert.equal(typeof params.data, 'string', 'Data must be passed as a valid JSON string.')
-        assert.doesNotThrow(() => { data = JSON.parse(params.data) }, 'Data must be passed as a valid JSON string.')
-        const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
-        assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
-        assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
-        const chainId = data.domain.chainId
-        const activeChainId = parseInt(this.networkController.getNetworkState())
-        chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
-        break
+    case 'V1':
+      assert.equal(typeof params, 'object', 'Params should ben an object.')
+      assert.ok('data' in params, 'Params must include a data field.')
+      assert.ok('from' in params, 'Params must include a from field.')
+      assert.ok(Array.isArray(params.data), 'Data should be an array.')
+      assert.equal(typeof params.from, 'string', 'From field must be a string.')
+      assert.doesNotThrow(() => {
+        sigUtil.typedSignatureHash(params.data)
+      }, 'Expected EIP712 typed data')
+      break
+    case 'V3':
+      let data
+      assert.equal(typeof params, 'object', 'Params should be an object.')
+      assert.ok('data' in params, 'Params must include a data field.')
+      assert.ok('from' in params, 'Params must include a from field.')
+      assert.equal(typeof params.from, 'string', 'From field must be a string.')
+      assert.equal(typeof params.data, 'string', 'Data must be passed as a valid JSON string.')
+      assert.doesNotThrow(() => { data = JSON.parse(params.data) }, 'Data must be passed as a valid JSON string.')
+      const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
+      assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
+      assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
+      const chainId = data.domain.chainId
+      const activeChainId = parseInt(this.networkController.getNetworkState())
+      chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
+      break
     }
   }
 

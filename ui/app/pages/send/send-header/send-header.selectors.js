@@ -24,14 +24,14 @@ function getTitleKey (state) {
 }
 
 function getSubtitleParams (state) {
-    const isEditing = Boolean(getSendEditingTransactionId(state))
-    const token = getSelectedToken(state)
+  const isEditing = Boolean(getSendEditingTransactionId(state))
+  const token = getSelectedToken(state)
 
-    if (isEditing) {
-      return [ 'editingTransaction' ]
-    } else if (token) {
-      return [ 'onlySendTokensToAccountAddress', [ token.symbol ] ]
-    } else {
-      return [ 'onlySendToEtherAddress' ]
-    }
+  if (isEditing) {
+    return [ 'editingTransaction' ]
+  } else if (token) {
+    return [ 'onlySendTokensToAccountAddress', [ token.symbol ] ]
+  } else {
+    return [ 'onlySendToEtherAddress' ]
+  }
 }

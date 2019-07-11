@@ -64,10 +64,10 @@ export default class SenderToRecipient extends PureComponent {
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => this.setState({ senderAddressCopied: false })}
       >
-      <div className="sender-to-recipient__name">
-        { addressOnly ? `${t('from')}: ${checksummedSenderAddress}` : senderName }
-      </div>
-    </Tooltip>
+        <div className="sender-to-recipient__name">
+          { addressOnly ? `${t('from')}: ${checksummedSenderAddress}` : senderName }
+        </div>
+      </Tooltip>
     )
   }
 

@@ -182,23 +182,23 @@ class AccountTracker {
     const currentNetwork = parseInt(this.network.getNetworkState())
 
     switch (currentNetwork) {
-      case MAINNET_CODE:
+    case MAINNET_CODE:
       await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
       break
 
-      case RINKEYBY_CODE:
+    case RINKEYBY_CODE:
       await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
       break
 
-      case ROPSTEN_CODE:
+    case ROPSTEN_CODE:
       await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
       break
 
-      case KOVAN_CODE:
+    case KOVAN_CODE:
       await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
       break
 
-      default:
+    default:
       await Promise.all(addresses.map(this._updateAccount.bind(this)))
     }
   }

@@ -84,10 +84,10 @@ class ExtensionPlatform {
     extension.notifications.create(
       url,
       {
-      'type': 'basic',
-      'title': title,
-      'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-      'message': message,
+        'type': 'basic',
+        'title': title,
+        'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
+        'message': message,
       })
   }
 

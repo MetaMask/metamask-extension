@@ -71,134 +71,134 @@ ShiftListItem.prototype.renderUtilComponents = function () {
   const { conversionRate, currentCurrency } = props
 
   switch (props.response.status) {
-    case 'no_deposits':
-      return h('.flex-row', [
-        h(CopyButton, {
-          value: this.props.depositAddress,
-        }),
-        h(Tooltip, {
-          title: this.context.t('qrCode'),
-        }, [
-          h('i.fa.fa-qrcode.pointer.pop-hover', {
-            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
-            style: {
-              margin: '5px',
-              marginLeft: '23px',
-              marginRight: '12px',
-              fontSize: '20px',
-              color: '#F7861C',
-            },
-          }),
-        ]),
-      ])
-    case 'received':
-      return h('.flex-row')
-
-    case 'complete':
-      return h('.flex-row', [
-        h(CopyButton, {
-          value: this.props.response.transaction,
-        }),
-        h(EthBalance, {
-          value: `${props.response.outgoingCoin}`,
-          conversionRate,
-          currentCurrency,
-          width: '55px',
-          shorten: true,
-          needsParse: false,
-          incoming: true,
+  case 'no_deposits':
+    return h('.flex-row', [
+      h(CopyButton, {
+        value: this.props.depositAddress,
+      }),
+      h(Tooltip, {
+        title: this.context.t('qrCode'),
+      }, [
+        h('i.fa.fa-qrcode.pointer.pop-hover', {
+          onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
           style: {
-            fontSize: '15px',
-            color: '#01888C',
+            margin: '5px',
+            marginLeft: '23px',
+            marginRight: '12px',
+            fontSize: '20px',
+            color: '#F7861C',
           },
         }),
-      ])
+      ]),
+    ])
+  case 'received':
+    return h('.flex-row')
 
-    case 'failed':
-      return ''
-    default:
-      return ''
+  case 'complete':
+    return h('.flex-row', [
+      h(CopyButton, {
+        value: this.props.response.transaction,
+      }),
+      h(EthBalance, {
+        value: `${props.response.outgoingCoin}`,
+        conversionRate,
+        currentCurrency,
+        width: '55px',
+        shorten: true,
+        needsParse: false,
+        incoming: true,
+        style: {
+          fontSize: '15px',
+          color: '#01888C',
+        },
+      }),
+    ])
+
+  case 'failed':
+    return ''
+  default:
+    return ''
   }
 }
 
 ShiftListItem.prototype.renderInfo = function () {
   var props = this.props
   switch (props.response.status) {
-    case 'no_deposits':
-      return h('.flex-column', {
+  case 'no_deposits':
+    return h('.flex-column', {
+      style: {
+        overflow: 'hidden',
+      },
+    }, [
+      h('div', {
         style: {
-          overflow: 'hidden',
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
         },
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('toETHviaShapeShift', [props.depositType])),
-        h('div', this.context.t('noDeposits')),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, formatDate(props.time)),
-      ])
-    case 'received':
-      return h('.flex-column', {
+      }, this.context.t('toETHviaShapeShift', [props.depositType])),
+      h('div', this.context.t('noDeposits')),
+      h('div', {
         style: {
-          width: '200px',
-          overflow: 'hidden',
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
         },
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('toETHviaShapeShift', [props.depositType])),
-        h('div', this.context.t('conversionProgress')),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, formatDate(props.time)),
-      ])
-    case 'complete':
-      var url = explorerLink(props.response.transaction, parseInt('1'))
+      }, formatDate(props.time)),
+    ])
+  case 'received':
+    return h('.flex-column', {
+      style: {
+        width: '200px',
+        overflow: 'hidden',
+      },
+    }, [
+      h('div', {
+        style: {
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
+        },
+      }, this.context.t('toETHviaShapeShift', [props.depositType])),
+      h('div', this.context.t('conversionProgress')),
+      h('div', {
+        style: {
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
+        },
+      }, formatDate(props.time)),
+    ])
+  case 'complete':
+    var url = explorerLink(props.response.transaction, parseInt('1'))
 
-      return h('.flex-column.pointer', {
+    return h('.flex-column.pointer', {
+      style: {
+        width: '200px',
+        overflow: 'hidden',
+      },
+      onClick: () => global.platform.openWindow({ url }),
+    }, [
+      h('div', {
         style: {
-          width: '200px',
-          overflow: 'hidden',
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
         },
-        onClick: () => global.platform.openWindow({ url }),
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('fromShapeShift')),
-        h('div', formatDate(props.time)),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, addressSummary(props.response.transaction)),
-      ])
+      }, this.context.t('fromShapeShift')),
+      h('div', formatDate(props.time)),
+      h('div', {
+        style: {
+          fontSize: 'x-small',
+          color: '#ABA9AA',
+          width: '100%',
+        },
+      }, addressSummary(props.response.transaction)),
+    ])
 
-    case 'failed':
-      return h('span.error', '(' + this.context.t('failed') + ')')
-    default:
-      return ''
+  case 'failed':
+    return h('span.error', '(' + this.context.t('failed') + ')')
+  default:
+    return ''
   }
 }

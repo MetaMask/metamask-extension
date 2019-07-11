@@ -86,11 +86,11 @@ AccountImportSubview.prototype.renderImportView = function () {
   const current = type || menuItems[0]
 
   switch (current) {
-    case this.context.t('privateKey'):
-      return h(PrivateKeyImportView)
-    case this.context.t('jsonFile'):
-      return h(JsonImportView)
-    default:
-      return h(JsonImportView)
+  case this.context.t('privateKey'):
+    return h(PrivateKeyImportView)
+  case this.context.t('jsonFile'):
+    return h(JsonImportView)
+  default:
+    return h(JsonImportView)
   }
 }

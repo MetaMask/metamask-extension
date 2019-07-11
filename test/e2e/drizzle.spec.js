@@ -35,21 +35,21 @@ describe('MetaMask', function () {
 
   before(async function () {
     switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        break
-      }
-      case 'firefox': {
-        const extPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extPath)
-        await delay(700)
-        extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-      }
+    case 'chrome': {
+      const extPath = path.resolve('dist/chrome')
+      driver = buildChromeWebDriver(extPath)
+      extensionId = await getExtensionIdChrome(driver)
+      await driver.get(`chrome-extension://${extensionId}/popup.html`)
+      break
+    }
+    case 'firefox': {
+      const extPath = path.resolve('dist/firefox')
+      driver = buildFirefoxWebdriver()
+      await installWebExt(driver, extPath)
+      await delay(700)
+      extensionId = await getExtensionIdFirefox(driver)
+      await driver.get(`moz-extension://${extensionId}/popup.html`)
+    }
     }
   })
 

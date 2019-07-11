@@ -28,18 +28,18 @@ function newVersionFrom (manifest, bumpType) {
   const segments = string.split('.').map((str) => parseInt(str))
 
   switch (bumpType) {
-    case 'major':
-      segments[0] += 1
-      segments[1] = 0
-      segments[2] = 0
-      break
-    case 'minor':
-      segments[1] += 1
-      segments[2] = 0
-      break
-    case 'patch':
-      segments[2] += 1
-      break
+  case 'major':
+    segments[0] += 1
+    segments[1] = 0
+    segments[2] = 0
+    break
+  case 'minor':
+    segments[1] += 1
+    segments[2] = 0
+    break
+  case 'patch':
+    segments[2] += 1
+    break
   }
 
   return segments.map(String).join('.')

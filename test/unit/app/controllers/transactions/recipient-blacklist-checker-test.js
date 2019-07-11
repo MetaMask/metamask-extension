@@ -31,8 +31,8 @@ describe('Recipient Blacklist Checker', function () {
       const networks = [ROPSTEN_CODE, RINKEYBY_CODE, KOVAN_CODE, GOERLI_CODE]
       for (const networkId in networks) {
         publicAccounts.forEach((account) => {
-           recipientBlackListChecker.checkAccount(networkId, account)
-            callCount++
+          recipientBlackListChecker.checkAccount(networkId, account)
+          callCount++
         })
       }
       assert.equal(callCount, 40)

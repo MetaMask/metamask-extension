@@ -128,7 +128,7 @@ class TransactionController extends EventEmitter {
     }
   }
 
-/**
+  /**
   Adds a tx to the txlist
   @emits ${txMeta.id}:unapproved
 */
@@ -162,14 +162,14 @@ class TransactionController extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
         switch (finishedTxMeta.status) {
-          case 'submitted':
-            return resolve(finishedTxMeta.hash)
-          case 'rejected':
-            return reject(cleanErrorStack(new Error('MetaMask Tx Signature: User denied transaction signature.')))
-          case 'failed':
-            return reject(cleanErrorStack(new Error(finishedTxMeta.err.message)))
-          default:
-            return reject(cleanErrorStack(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
+        case 'submitted':
+          return resolve(finishedTxMeta.hash)
+        case 'rejected':
+          return reject(cleanErrorStack(new Error('MetaMask Tx Signature: User denied transaction signature.')))
+        case 'failed':
+          return reject(cleanErrorStack(new Error(finishedTxMeta.err.message)))
+        default:
+          return reject(cleanErrorStack(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })
@@ -219,7 +219,7 @@ class TransactionController extends EventEmitter {
 
     return txMeta
   }
-/**
+  /**
   adds the tx gas defaults: gas && gasPrice
   @param txMeta {Object} - the txMeta object
   @returns {Promise<object>} resolves with txMeta
@@ -483,9 +483,9 @@ class TransactionController extends EventEmitter {
     this.txStateManager.updateTx(txMeta, 'transactions#setTxHash')
   }
 
-//
-//           PRIVATE METHODS
-//
+  //
+  //           PRIVATE METHODS
+  //
   /** maps methods for convenience*/
   _mapMethods () {
     /** @returns the state in transaction controller */
@@ -525,14 +525,14 @@ class TransactionController extends EventEmitter {
       loadingDefaults: true,
     }).forEach((tx) => {
       this.addTxGasDefaults(tx)
-      .then((txMeta) => {
-        txMeta.loadingDefaults = false
-        this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
-      }).catch((error) => {
-        tx.loadingDefaults = false
-        this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
-        this.txStateManager.setTxStatusFailed(tx.id, error)
-      })
+        .then((txMeta) => {
+          txMeta.loadingDefaults = false
+          this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
+        }).catch((error) => {
+          tx.loadingDefaults = false
+          this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
+          this.txStateManager.setTxStatusFailed(tx.id, error)
+        })
     })
 
     this.txStateManager.getFilteredTxList({

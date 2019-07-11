@@ -1,19 +1,19 @@
 import { connect } from 'react-redux'
 import {
-    getCurrentNetwork,
-    getSelectedToken,
-    getSendTo,
-    getSendToAccounts,
-    getSendHexData,
+  getCurrentNetwork,
+  getSelectedToken,
+  getSendTo,
+  getSendToAccounts,
+  getSendHexData,
 } from '../../send.selectors.js'
 import {
-    getToDropdownOpen,
-    getTokens,
-    sendToIsInError,
-    sendToIsInWarning,
+  getToDropdownOpen,
+  getTokens,
+  sendToIsInError,
+  sendToIsInWarning,
 } from './send-to-row.selectors.js'
 import {
-    updateSendTo,
+  updateSendTo,
 } from '../../../../store/actions'
 import {
   updateSendErrors,
@@ -45,10 +45,10 @@ function mapDispatchToProps (dispatch) {
     openToDropdown: () => dispatch(openToDropdown()),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     updateSendToError: (toErrorObject) => {
-        dispatch(updateSendErrors(toErrorObject))
+      dispatch(updateSendErrors(toErrorObject))
     },
     updateSendToWarning: (toWarningObject) => {
       dispatch(updateSendWarnings(toWarningObject))
-  },
+    },
   }
 }

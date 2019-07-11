@@ -161,32 +161,32 @@ class AddToken extends Component {
     const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
     switch (true) {
-      case !isValidAddress:
-        this.setState({
-          customAddressError: this.context.t('invalidAddress'),
-          customSymbol: '',
-          customDecimals: 0,
-          customSymbolError: null,
-          customDecimalsError: null,
-        })
+    case !isValidAddress:
+      this.setState({
+        customAddressError: this.context.t('invalidAddress'),
+        customSymbol: '',
+        customDecimals: 0,
+        customSymbolError: null,
+        customDecimalsError: null,
+      })
 
-        break
-      case Boolean(this.props.identities[standardAddress]):
-        this.setState({
-          customAddressError: this.context.t('personalAddressDetected'),
-        })
+      break
+    case Boolean(this.props.identities[standardAddress]):
+      this.setState({
+        customAddressError: this.context.t('personalAddressDetected'),
+      })
 
-        break
-      case checkExistingAddresses(customAddress, this.props.tokens):
-        this.setState({
-          customAddressError: this.context.t('tokenAlreadyAdded'),
-        })
+      break
+    case checkExistingAddresses(customAddress, this.props.tokens):
+      this.setState({
+        customAddressError: this.context.t('tokenAlreadyAdded'),
+      })
 
-        break
-      default:
-        if (customAddress !== emptyAddr) {
-          this.attemptToAutoFillTokenParams(customAddress)
-        }
+      break
+    default:
+      if (customAddress !== emptyAddr) {
+        this.attemptToAutoFillTokenParams(customAddress)
+      }
     }
   }
 
