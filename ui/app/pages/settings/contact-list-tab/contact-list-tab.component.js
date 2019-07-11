@@ -13,14 +13,18 @@ export default class ContactListTab extends Component {
   static propTypes = {
     addressBook: PropTypes.object,
     history: PropTypes.object,
+    network: PropTypes.string,
   }
 
   renderAddresses () {
-    const { addressBook, history } = this.props
+    const { addressBook, history, network } = this.props
+    console.log('this network', network)
 
     return (
       <div>
-       { Object.keys(addressBook).map((address) => {
+       { Object.keys(addressBook).filter(address => {
+         return addressBook[address].chainId.toString() === network
+        }).map((address) => {
           return (
             <div className="address-book__entry" key= { address }
               onClick={() => {
