@@ -1,5 +1,3 @@
-/* global AbortController */
-
 export default function ({ timeout = 120000 } = {}) {
   return function _fetch (url, opts) {
     return new Promise(async (resolve, reject) => {
