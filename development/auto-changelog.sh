@@ -10,9 +10,7 @@ git fetch --tags
 
 most_recent_tag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
 
-readarray -t commits <<< "$(git rev-list "${most_recent_tag}"..HEAD)"
-
-for commit in "${commits[@]}"
+git rev-list "${most_recent_tag}"..HEAD | while read commit
 do
     subject="$(git show -s --format="%s" "$commit")"
 
