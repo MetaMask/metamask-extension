@@ -133,6 +133,7 @@
     "no-unneeded-ternary": [2, { "defaultAssignment": false }],
     "no-unreachable": 2,
     "no-unsafe-finally": 2,
+    "no-unused-expressions": ["error", { "allowShortCircuit" : true, "allowTernary": true }],
     "no-unused-vars": [2, { "vars": "all", "args": "all", "argsIgnorePattern": "[_]+" }],
     "no-use-before-define": [2, { "functions": false }],
     "no-useless-call": 2,
