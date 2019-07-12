@@ -703,10 +703,20 @@ class TransactionController extends EventEmitter {
   _updateMemstore () {
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
-      from: this.getSelectedAddress(),
-      metamaskNetworkId: this.getNetwork(),
-    })
+    let selectedAddressTxList = []
+
+    if (this.preferencesStore.getState().useContractAccount){
+        selectedAddressTxList = this.txStateManager.getFilteredTxList({
+        type: TRANSACTION_TYPE_GNOSIS,
+      })
+    }
+    else{
+      selectedAddressTxList = this.txStateManager.getFilteredTxList({
+        from: this.getSelectedAddress(),
+        metamaskNetworkId: this.getNetwork(),
+      })
+    }
+
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 }
