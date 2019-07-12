@@ -485,7 +485,11 @@ function generateBundler (opts, performBundle) {
   })
 
   if (!opts.buildLib) {
-    browserifyOpts['entries'] = [opts.filepath]
+    if (opts.devMode && opts.filename === 'ui.js') {
+      browserifyOpts['entries'] = ['./development/require-react-devtools.js', opts.filepath]
+    } else {
+      browserifyOpts['entries'] = [opts.filepath]
+    }
   }
 
   let bundler = browserify(browserifyOpts)
