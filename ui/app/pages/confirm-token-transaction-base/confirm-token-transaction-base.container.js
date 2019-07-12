@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
+import { compose } from 'recompose'
+import { withRouter } from 'react-router-dom'
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 import {
   contractExchangeRateSelector,
+  transactionFeeSelector,
 } from '../../selectors/confirm-transaction'
 import { tokenSelector } from '../../selectors/tokens'
 import {
@@ -14,15 +17,21 @@ import {
 } from '../../helpers/utils/token-util'
 
 
-const mapStateToProps = (state) => {
-  const { confirmTransaction, metamask: { currentCurrency, conversionRate } } = state
+const mapStateToProps = (state, ownProps) => {
+  const { match: { params = {} } } = ownProps
+  const { id: paramsTransactionId } = params
+  const { confirmTransaction, metamask: { currentCurrency, conversionRate, selectedAddressTxList } } = state
+
   const {
-    txData: { txParams: { to: tokenAddress, data } = {} } = {},
-    fiatTransactionTotal,
-    ethTransactionTotal,
+    txData: { id: transactionId, txParams: { to: tokenAddress, data } = {} } = {},
   } = confirmTransaction
 
+  const transaction = selectedAddressTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId)) || {}
 
+  const {
+    ethTransactionTotal,
+    fiatTransactionTotal,
+  } = transactionFeeSelector(state, transaction)
   const tokens = tokenSelector(state)
   const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address)
   const { decimals, symbol: tokenSymbol } = currentToken || {}
@@ -46,4 +55,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(ConfirmTokenTransactionBase)
+export default compose(
+  withRouter,
+  connect(mapStateToProps)
+)(ConfirmTokenTransactionBase)
