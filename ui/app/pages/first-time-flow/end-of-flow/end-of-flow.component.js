@@ -57,7 +57,7 @@ export default class EndOfFlowScreen extends PureComponent {
             <span className="first-time-flow__link-text">
               {t('endOfFlowMessage9')}
             </span>
-          </a>.
+          </a>
         </div>
         <Button
           type="primary"
