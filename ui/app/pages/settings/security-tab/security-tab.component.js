@@ -12,8 +12,6 @@ export default class SecurityTab extends PureComponent {
   }
 
   static propTypes = {
-    setPrivacyMode: PropTypes.func,
-    privacyMode: PropTypes.bool,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
     showClearApprovalModal: PropTypes.func,
@@ -123,32 +121,6 @@ export default class SecurityTab extends PureComponent {
     )
   }
 
-  renderPrivacyOptIn () {
-    const { t } = this.context
-    const { privacyMode, setPrivacyMode } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('privacyMode') }</span>
-          <div className="settings-page__content-description">
-            { t('privacyModeDescription') }
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={privacyMode}
-              onToggle={value => setPrivacyMode(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   renderMetaMetricsOptIn () {
     const { t } = this.context
     const { participateInMetaMetrics, setParticipateInMetaMetrics } = this.props
@@ -181,7 +153,6 @@ export default class SecurityTab extends PureComponent {
     return (
       <div className="settings-page__body">
         { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderPrivacyOptIn() }
         { this.renderClearApproval() }
         { this.renderSeedWords() }
         { this.renderMetaMetricsOptIn() }

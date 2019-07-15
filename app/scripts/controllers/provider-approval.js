@@ -114,9 +114,7 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @returns {boolean} - True if the origin has been approved
    */
   shouldExposeAccounts (origin) {
-    const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
-    const result = !privacyMode || Boolean(this.approvedOrigins[origin])
-    return result
+    return Boolean(this.approvedOrigins[origin])
   }
 
 }
