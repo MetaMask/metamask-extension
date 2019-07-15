@@ -1,9 +1,4 @@
 {
-  "confirmTransaction": {
-    "txData": {
-      "id": 4768706228115573
-    }
-  },
   "metamask": {
     "completedOnboarding": true,
     "isInitialized": true,
@@ -30,8 +25,6 @@
     },
     "cachedBalances": {},
     "assetImages": {},
-    "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,
     "noActiveNotices": true,

@@ -7,7 +7,6 @@
     "computedBalances": {},
     "frequentRpcList": [],
     "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "featureFlags": {"betaUI": false},
     "conversionRate": 12.7527416,
     "conversionDate": 1487624341,
