@@ -651,7 +651,7 @@
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "importUsingSeed": {
-    "message": "利用助憶詞匯入帳戶" ,
+    "message": "利用助憶詞匯入帳戶",
     "description": "登入頁面下方"
   },
   "importWithSeedPhrase": {
@@ -1584,6 +1584,6 @@
     "message": "您每一次在交易時，都會看到這個圖案。"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":"加速的 Gas 價格為 0"
+    "message": "加速的 Gas 價格為 0"
   }
 }
