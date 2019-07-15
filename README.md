@@ -68,7 +68,6 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [The MetaMask Team](./docs/team.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
-- [How to manage notices that appear when the app starts up](./docs/notices.md)
 - [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./docs/development-visualization.md)
