@@ -1,24 +1,6 @@
 {
-  "privacyMode": {
-    "message": "Privacy-modus"
-  },
-  "privacyModeDescription": {
-    "message": "Websites moeten toegang vragen om uw accountgegevens te bekijken."
-  },
-  "exposeAccounts": {
-    "message": "Expose Accounts"
-  },
-  "exposeDescription": {
-    "message": "Stel accounts vrij op de huidige website. Handig voor legacy dapps."
-  },
-  "confirmExpose": {
-    "message": "Weet u zeker dat u uw accounts wilt weergeven aan de huidige website?"
-  },
   "confirmClear": {
     "message": "Weet je zeker dat je goedgekeurde websites wilt wissen?"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Goedgekeurde websitegegevens zijn met succes gewist."
   },
   "approvalData": {
     "message": "Goedkeuringsgegevens"
@@ -34,12 +16,6 @@
   },
   "reject": {
     "message": "Afwijzen"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API-aanvraag"
-  },
-  "reviewProviderRequest": {
-    "message": "Bekijk deze Ethereum API-aanvraag."
   },
   "providerRequestInfo": {
     "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."

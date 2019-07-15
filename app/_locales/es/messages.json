@@ -1,24 +1,6 @@
 {
-  "privacyMode": {
-    "message": "Modo privado"
-  },
-  "privacyModeDescription": {
-    "message": "Los sitios web deben solicitar acceso para ver la información de su cuenta."
-  },
-  "exposeAccounts": {
-    "message": "Exponer cuentas"
-  },
-  "exposeDescription": {
-    "message": "Exponer cuentas al sitio web actual. Útil para dapps heredados."
-  },
-  "confirmExpose": {
-    "message": "¿Seguro que quieres exponer tus cuentas al sitio web actual?"
-  },
   "confirmClear": {
     "message": "¿Seguro que quieres borrar los sitios web aprobados?"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Los datos aprobados del sitio web se borraron con éxito."
   },
   "approvalData": {
     "message": "Datos de aprobación"
@@ -34,12 +16,6 @@
   },
   "reject": {
     "message": "Rechazar"
-  },
-  "providerAPIRequest": {
-    "message": "Solicitud de API Web3"
-  },
-  "reviewProviderRequest": {
-    "message": "Por favor, revise esta solicitud API Ethereum."
   },
   "providerRequestInfo": {
     "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la blockchain de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."

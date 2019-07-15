@@ -1,24 +1,6 @@
 {
-  "privacyMode": {
-    "message": "隐私模式"
-  },
-  "privacyModeDescription": {
-    "message": "网站必须请求访问权限才能查看您的帐户信息。"
-  },
-  "exposeAccounts": {
-    "message": "公开账户"
-  },
-  "exposeDescription": {
-    "message": "将帐户公开给当前网站。对传统dapps很有用。"
-  },
-  "confirmExpose": {
-    "message": "您确定要将帐户公开到当前网站吗？"
-  },
   "confirmClear": {
     "message": "您确定要清除已批准的网站吗？"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "已批准的网站数据已成功清除。"
   },
   "approvalData": {
     "message": "审批数据"
@@ -34,12 +16,6 @@
   },
   "reject": {
     "message": "拒绝"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API请求"
-  },
-  "reviewProviderRequest": {
-    "message": "请查看此Ethereum API请求。"
   },
   "providerRequestInfo": {
     "message": "下面列出的域正在尝试请求访问Ethereum API，以便它可以与以太坊区块链进行交互。在批准Ethereum访问之前，请务必仔细检查您是否在正确的站点上。"

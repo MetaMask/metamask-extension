@@ -1,24 +1,6 @@
 {
-  "privacyMode": {
-    "message": "개인 정보 보호 모드"
-  },
-  "privacyModeDescription": {
-    "message": "웹 사이트는 계정 정보를 볼 수있는 액세스 권한을 요청해야합니다."
-  },
-  "exposeAccounts": {
-    "message": "계정 노출"
-  },
-  "exposeDescription": {
-    "message": "계정을 현재 웹 사이트에 노출하십시오. 기존 dapps에 유용합니다."
-  },
-  "confirmExpose": {
-    "message": "계정을 현재 웹 사이트에 공개 하시겠습니까?"
-  },
   "confirmClear": {
     "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
   },
   "approvalData": {
     "message": "승인 데이터"
@@ -31,12 +13,6 @@
   },
   "reject": {
     "message": "거부"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API 요청"
-  },
-  "reviewProviderRequest": {
-    "message": "이 Ethereum API 요청을 검토하세요."
   },
   "providerRequest": {
     "message": "$1이 당신의 계정에 연결하길 원합니다."

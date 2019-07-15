@@ -1,30 +1,12 @@
 {
-  "privacyMode": {
-    "message": "Modalità privacy"
-  },
-  "privacyModeDescription": {
-    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
-  },
-  "exposeAccounts": {
-    "message": "Esponi Accounts"
-  },
-  "exposeDescription": {
-    "message": "Esporre gli account al sito Web corrente. Utile per dapps legacy."
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
-  },
-  "confirmExpose": {
-    "message": "Sei sicuro di voler esporre i tuoi account al sito web corrente?"
   },
   "confirmClear": {
     "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Dati del sito Web approvati cancellati correttamente."
   },
   "approvalData": {
     "message": "Dati di approvazione"

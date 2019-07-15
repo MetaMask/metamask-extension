@@ -1,27 +1,9 @@
 {
-  "privacyMode": {
-    "message": "隱私模式"
-  },
-  "privacyModeDescription": {
-    "message": "網站必須請求訪問權限才能查看您的帳戶資訊"
-  },
-  "exposeAccounts": {
-    "message": "公開賬戶"
-  },
-  "exposeDescription": {
-    "message": "將帳戶公開給當前網站。對傳統去中心化應用服務很有用。"
-  },
-  "confirmExpose": {
-    "message": "您確定要將帳戶公開到當前網站嗎？"
-  },
   "confirmClear": {
     "message": "您確定要清除已批准的網站紀錄？"
   },
   "contractInteraction": {
     "message": "合約互動"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "已批准的網站紀錄已成功清除。"
   },
   "approvalData": {
     "message": "審核紀錄"
@@ -43,12 +25,6 @@
   },
   "providerRequestInfo": {
     "message": "此網站希望能讀取您的帳戶資訊。請務必確認您信任這個網站、並了解後續可能的交易行為。"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API 請求"
-  },
-  "reviewProviderRequest": {
-    "message": "請查看此Ethereum API請求。"
   },
   "accept": {
     "message": "接受"

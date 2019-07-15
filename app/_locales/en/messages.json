@@ -1,30 +1,12 @@
 {
-  "privacyMode": {
-    "message": "Privacy Mode"
-  },
-  "privacyModeDescription": {
-    "message": "Websites must request access to view your account information."
-  },
-  "exposeAccounts": {
-    "message": "Expose Accounts"
-  },
-  "exposeDescription": {
-    "message": "Expose accounts to the current website. Useful for legacy dapps."
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
-  },
-  "confirmExpose": {
-    "message": "Are you sure you want to expose your accounts to the current website?"
   },
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Approved website data cleared successfully."
   },
   "approvalData": {
     "message": "Privacy Data"
