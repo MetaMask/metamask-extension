@@ -26,10 +26,6 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-      # - test-e2e-beta-drizzle:
-      #     requires:
-      #       - prep-deps-npm
-      #       - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
@@ -52,7 +48,6 @@ workflows:
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
-            # - test-e2e-beta-drizzle
             - test-integration-flat-chrome
             - test-integration-flat-firefox
       - job-publish-prerelease:
@@ -160,19 +155,6 @@ jobs:
           name: npm audit
           command: .circleci/scripts/npm-audit
 
-  # test-e2e-beta-drizzle:
-  #   docker:
-  #     - image: circleci/node:8.11.3-browsers
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: test:e2e:drizzle:beta
-  #         command: npm run test:e2e:drizzle:beta
-  #     - store_artifacts:
-  #         path: test-artifacts
-  #         destination: test-artifacts
   test-e2e-chrome:
     docker:
       - image: circleci/node:10.16-browsers

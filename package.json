@@ -17,7 +17,6 @@
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:integration:build && npm run test:flat",
     "test:integration:build": "gulp build:scss",
-    "test:e2e:drizzle:beta": "SELENIUM_BROWSER=chrome test/e2e/run-drizzle.sh",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
     "test:web3:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-web3.sh",
     "test:web3:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-web3.sh",
