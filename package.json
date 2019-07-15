@@ -197,6 +197,7 @@
     "envify": "^4.0.0",
     "enzyme": "^3.4.4",
     "enzyme-adapter-react-15": "^1.0.6",
+    "eslint": "^6.0.1",
     "eslint-plugin-chai": "0.0.1",
     "eslint-plugin-json": "^1.2.0",
     "eslint-plugin-mocha": "^5.0.0",
