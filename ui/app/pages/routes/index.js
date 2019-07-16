@@ -7,6 +7,7 @@ import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import classnames from 'classnames'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
@@ -177,6 +178,7 @@ class Routes extends Component {
       setMouseUserState,
       sidebar,
       submittedPendingTransactions,
+      isMouseUser,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
@@ -205,7 +207,7 @@ class Routes extends Component {
 
     return (
       <div
-        className="app"
+        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
           if (e.keyCode === 9) {

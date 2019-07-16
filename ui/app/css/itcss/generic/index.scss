@@ -43,6 +43,12 @@ textarea:focus {
   outline: none;
 }
 
+.mouse-user-styles {
+  button:focus {
+    outline: none;
+  }
+}
+
 /* stylelint-disable */
 #app-content {
   overflow-x: hidden;
