@@ -38,13 +38,15 @@ html {
   display: flex;
 }
 
-input:focus,
-textarea:focus {
-  outline: none;
-}
-
 .mouse-user-styles {
-  button:focus {
+  button:focus,
+  input:focus,
+  textarea:focus,
+  .unit-input__input,
+  .account-list-item__account-primary-balance,
+  .account-list-item__input,
+  .currency-display__input
+   {
     outline: none;
   }
 }
