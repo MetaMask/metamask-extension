@@ -54,4 +54,12 @@
   button {
     margin-top: 0xp;
   }
+
+  &__buttons {
+    display: flex;
+
+    .first-time-flow__button:last-of-type {
+      margin-left: 20px;
+    }
+  }
 }

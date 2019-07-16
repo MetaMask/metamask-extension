@@ -1,0 +1,68 @@
+.backup-notification {
+  background: rgba(36, 41, 46, 0.9);
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  height: 116px;
+  padding: 16px;
+  margin: 8px;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+
+  &__header {
+    display: flex;
+  }
+
+  &__text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: #FFFFFF;
+    margin-left: 10px;
+    margin-right: 8px;
+  }
+
+  .fa-info-circle {
+    color: #6A737D;
+  }
+
+  &__ignore-button {
+    border: 2px solid #6A737D;
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: $white;
+    background-color: rgba(36, 41, 46, 0.9);
+    height: 34px;
+    width: 155px;
+    padding: 0;
+
+    &:hover {
+      border-color: #6A737D;
+      background-color: #6A737D;
+    }
+  }
+
+  &__submit-button {
+    border: 2px solid #6A737D;
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: $white;
+    background-color: rgba(36, 41, 46, 0.9);
+    height: 34px;
+    width: 155px;
+    padding: 0;
+
+    &:hover {
+      border-color: #6A737D;
+      background-color: #6A737D;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

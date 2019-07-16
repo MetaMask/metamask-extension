@@ -30,6 +30,9 @@ export default class FirstTimeFlow extends PureComponent {
     isUnlocked: PropTypes.bool,
     unlockAccount: PropTypes.func,
     nextRoute: PropTypes.string,
+    showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
+    seedPhraseBackedUp: PropTypes.bool,
+    verifySeedPhrase: PropTypes.func,
   }
 
   state = {
@@ -38,9 +41,16 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   componentDidMount () {
-    const { completedOnboarding, history, isInitialized, isUnlocked } = this.props
+    const {
+      completedOnboarding,
+      history,
+      isInitialized,
+      isUnlocked,
+      showingSeedPhraseBackupAfterOnboarding,
+      seedPhraseBackedUp,
+    } = this.props
 
-    if (completedOnboarding) {
+    if (completedOnboarding && (!showingSeedPhraseBackupAfterOnboarding || seedPhraseBackedUp)) {
       history.push(DEFAULT_ROUTE)
       return
     }
@@ -88,6 +98,7 @@ export default class FirstTimeFlow extends PureComponent {
 
   render () {
     const { seedPhrase, isImportedKeyring } = this.state
+    const { verifySeedPhrase } = this.props
 
     return (
       <div className="first-time-flow">
@@ -98,6 +109,7 @@ export default class FirstTimeFlow extends PureComponent {
               <SeedPhrase
                 { ...props }
                 seedPhrase={seedPhrase}
+                verifySeedPhrase={verifySeedPhrase}
               />
             )}
           />

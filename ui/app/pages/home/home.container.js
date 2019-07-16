@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   forceApproveProviderRequestByOrigin,
   unsetMigratedPrivacyMode,
@@ -21,7 +22,9 @@ const mapStateToProps = state => {
     featureFlags: {
       privacyMode,
     } = {},
+    seedPhraseBackedUp,
   } = metamask
+  const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword } = appState
 
   const isUnconnected = Boolean(activeTab && privacyMode && !approvedOrigins[activeTab.origin])
@@ -36,6 +39,7 @@ const mapStateToProps = state => {
     showPrivacyModeNotification: migratedPrivacyMode,
     activeTab,
     viewingUnconnectedDapp: isUnconnected && isPopup,
+    shouldShowSeedPhraseReminder: parseInt(accountBalance, 16) > 0 && !seedPhraseBackedUp,
   }
 }
 

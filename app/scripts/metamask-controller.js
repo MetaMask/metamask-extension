@@ -28,6 +28,7 @@ const PreferencesController = require('./controllers/preferences')
 const AppStateController = require('./controllers/app-state')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
+const OnboardingController = require('./controllers/onboarding')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -158,6 +159,10 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.CachedBalancesController,
     })
 
+    this.onboardingController = new OnboardingController({
+      initState: initState.OnboardingController,
+    })
+
     // ensure accountTracker updates balances after network change
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
@@ -262,6 +267,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      OnboardingController: this.onboardingController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -283,6 +289,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      OnboardingController: this.onboardingController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -398,6 +405,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const txController = this.txController
     const networkController = this.networkController
     const providerApprovalController = this.providerApprovalController
+    const onboardingController = this.onboardingController
 
     return {
       // etc
@@ -501,6 +509,9 @@ module.exports = class MetamaskController extends EventEmitter {
       rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
       forceApproveProviderRequestByOrigin: providerApprovalController.forceApproveProviderRequestByOrigin.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
+
+      // onboarding controller
+      setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
     }
   }
 

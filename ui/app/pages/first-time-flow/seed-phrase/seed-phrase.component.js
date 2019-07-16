@@ -17,18 +17,34 @@ export default class SeedPhrase extends PureComponent {
     address: PropTypes.string,
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
+    verifySeedPhrase: PropTypes.func,
+  }
+
+  state = {
+    verifiedSeedPhrase: '',
   }
 
   componentDidMount () {
-    const { seedPhrase, history } = this.props
+    const { seedPhrase, history, verifySeedPhrase } = this.props
+    console.log('this.props', this.props)
+    console.log('!!! seedPhrase', seedPhrase)
 
     if (!seedPhrase) {
-      history.push(DEFAULT_ROUTE)
+      console.log('!!!444!!!')
+      verifySeedPhrase()
+        .then(verifiedSeedPhrase => {
+          if (!verifiedSeedPhrase) {
+            history.push(DEFAULT_ROUTE)
+          } else {
+            this.setState({ verifiedSeedPhrase })
+          }
+        })
     }
   }
 
   render () {
     const { seedPhrase } = this.props
+    const { verifiedSeedPhrase } = this.state
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
@@ -41,7 +57,7 @@ export default class SeedPhrase extends PureComponent {
               render={props => (
                 <ConfirmSeedPhrase
                   { ...props }
-                  seedPhrase={seedPhrase}
+                  seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
             />
@@ -51,7 +67,7 @@ export default class SeedPhrase extends PureComponent {
               render={props => (
                 <RevealSeedPhrase
                   { ...props }
-                  seedPhrase={seedPhrase}
+                  seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
             />
