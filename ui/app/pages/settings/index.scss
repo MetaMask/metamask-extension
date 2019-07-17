@@ -92,6 +92,12 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      /*rtl:ignore*/
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+      /*rtl:ignore*/
     }
   }
 

@@ -62,6 +62,12 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+
+      /*rtl:ignore*/
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+      /*rtl:ignore*/
     }
   }
 

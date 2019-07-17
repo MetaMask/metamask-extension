@@ -7,6 +7,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 
+    /*rtl:ignore*/
+    direction: ltr;
+    /*rtl:ignore*/
   }
 
   &__suffix {

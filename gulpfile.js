@@ -19,6 +19,7 @@ const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
 const pify = require('pify')
+const rtlcss = require('gulp-rtlcss')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
@@ -274,12 +275,19 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
       .pipe(sourcemaps.write())
       .pipe(autoprefixer())
       .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dest))
   }
 
   function buildScss () {
     return gulp.src(src)
       .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
       .pipe(gulp.dest(dest))
   }
 }

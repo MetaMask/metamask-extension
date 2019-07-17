@@ -81,6 +81,10 @@
     background-color: #FFFFFF;
     padding: 16px;
     margin-top: 8px;
+
+    /*rtl:ignore*/
+    direction: ltr;
+    /*rtl:ignore*/
   }
 
   &__breadcrumbs {

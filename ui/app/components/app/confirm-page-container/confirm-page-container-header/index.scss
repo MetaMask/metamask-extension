@@ -15,6 +15,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    /*rtl:ignore*/
+    [dir='rtl'] & img {
+      transform: rotate(180deg);
+    }
+    /*rtl:ignore*/
   }
 
   &__back-button {

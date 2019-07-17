@@ -5,6 +5,10 @@
   justify-content: center;
   overflow: hidden;
 
+  /*rtl:ignore*/
+  direction: ltr;
+  /*rtl:ignore*/
+
   &__address-wrapper {
     height: 40px;
     width: 40px;

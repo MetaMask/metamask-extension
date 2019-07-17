@@ -22,6 +22,10 @@
   border: none;
   font-family: Roboto;
   font-size: 14px;
+
+  /*rtl:ignore*/
+  direction: ltr;
+  /*rtl:ignore*/
 }
 
 @media screen and (max-width: 575px) {

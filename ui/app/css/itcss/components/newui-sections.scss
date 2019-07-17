@@ -57,6 +57,13 @@ $wallet-view-bg: $alabaster;
   z-index: 200;
   position: relative;
 
+  /*rtl:ignore*/
+  [dir='rtl'] & i.fa.fa-clipboard {
+    margin-left: 0 !important;
+    margin-right: 8px !important;
+  }
+  /*rtl:ignore*/
+
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
     overflow-x: hidden;
