@@ -14,7 +14,7 @@
   }
 
   @media screen and (min-width: 576px) {
-    right: calc(((100vw - 100%) / 2) + 8px);
+    right: calc((100vw - 85vw) / 2);
 
     [dir='rtl'] & {
       left: calc(((100vw - 100%) / 2) + 8px);
