@@ -1,6 +1,7 @@
 const path = require('path')
 const Func = require('./func').Functions
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
+const account1RSK = '0x2E428aBd9313D256d64D1f69fe3929c3Be18Fd1F'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const testsFolder = './test-cases'
 const setup = require(`${testsFolder}/setup.spec`)
@@ -117,7 +118,7 @@ describe('Metamask popup page', async function () {
   })
 
   describe('RSK network tests', async () => {
-    await RSKNetworkTests(f, account1)
+    await RSKNetworkTests(f, account1RSK)
   })
 
   describe('Check the filter of emitted events', async () => {
@@ -137,7 +138,7 @@ describe('Metamask popup page', async function () {
     await addTokeFromSearch(f)
   })
 
-  describe('Custom Rpc', async () => {
+  describe('Custom RPC', async () => {
     await customRPC(f)
   })
 })

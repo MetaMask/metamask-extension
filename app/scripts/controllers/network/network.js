@@ -15,6 +15,7 @@ const ethNetProps = require('eth-net-props')
 const parse = require('url-parse')
 const extend = require('extend')
 const networks = { networkList: {} }
+const { isKnownProvider } = require('../../../../old-ui/app/util')
 
 const {
   ROPSTEN,
@@ -164,16 +165,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) ||
-      type === LOCALHOST ||
-      type === POA_SOKOL ||
-      type === POA ||
-      type === DAI ||
-      type === GOERLI_TESTNET ||
-      type === CLASSIC ||
-      type === RSK ||
-      type === RSK_TESTNET
-      , `NetworkController - Unknown rpc type "${type}"`)
+    assert(isKnownProvider(type), `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
