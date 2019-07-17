@@ -3,6 +3,8 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const log = require('loglevel')
 const pify = require('pify')
+const { isKnownProvider, ifRSKByProviderType } = require('../../../old-ui/app/util')
+
 
 class RecentBlocksController {
 
@@ -24,24 +26,56 @@ class RecentBlocksController {
    *
    */
   constructor (opts = {}) {
-    const { blockTracker, provider } = opts
+    const { blockTracker, provider, networkController } = opts
+    const { type } = networkController.getProviderConfig()
     this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
-    this.historyLength = opts.historyLength || 40
+    this.setHistoryLength(type, opts)
 
     const initState = extend({
       recentBlocks: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
-
-    this.blockTracker.on('latest', async (newBlockNumberHex) => {
+    const blockListner = async (newBlockNumberHex) => {
       try {
         await this.processBlock(newBlockNumberHex)
       } catch (err) {
         log.error(err)
       }
+    }
+    let isListening = false
+
+    if (!isKnownProvider(type) && type !== 'loading') {
+      this.blockTracker.on('latest', blockListner)
+      isListening = true
+    }
+    networkController.on('networkDidChange', (newType) => {
+      this.setHistoryLength(newType, opts)
+      this.resetState()
+      this.backfill()
+      if (isKnownProvider(newType) && isListening) {
+        this.blockTracker.removeListener('latest', blockListner)
+      } else if (
+        !isKnownProvider(type) &&
+        type !== 'loading' &&
+        !isListening
+      ) {
+        this.blockTracker.on('latest', blockListner)
+      }
     })
     this.backfill()
+  }
+
+  /**
+   * Sets historyLength param
+   *
+   */
+  setHistoryLength (type, opts) {
+    if (ifRSKByProviderType(type)) {
+      this.historyLength = 1
+    } else {
+      this.historyLength = opts.historyLength || 40
+    }
   }
 
   /**

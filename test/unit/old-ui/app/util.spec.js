@@ -14,9 +14,12 @@ const {
   normalizeNumberToWei,
   isHex,
   ifRSK,
+  ifRSKByProviderType,
   ifPOA,
   toChecksumAddress,
   isValidChecksumAddress,
+  isInfuraProvider,
+  isKnownProvider,
 } = require('../../../../old-ui/app/util')
 const ethUtil = require('ethereumjs-util')
 let ethInWei = '1'
@@ -347,6 +350,18 @@ describe('normalizing values', function () {
     })
   })
 
+  describe('#ifRSKByProviderType', function () {
+    it('checks if this is RSK chain based on provider type', function () {
+      var result1 = ifRSKByProviderType('rsk')
+      assert(result1)
+      var result2 = ifRSKByProviderType('rsk_testnet')
+      assert(result2)
+      var result3 = ifRSKByProviderType('mainnet')
+      assert(!result3)
+      var result4 = ifRSKByProviderType()
+      assert(!result4)
+    })
+  })
 
   describe('#ifPOA', function () {
     it('checks if this is POA chain', function () {
@@ -386,6 +401,50 @@ describe('normalizing values', function () {
       assert(resultTestnet)
       var resultNotRSK = isValidChecksumAddress('1', addrETHMainnet)
       assert(resultNotRSK)
+    })
+  })
+
+  describe('#isInfuraProvider', function () {
+    it('checks, that the given provider is Infura provider', function () {
+      var resultKovan = isInfuraProvider('kovan')
+      assert(resultKovan)
+      var resultRopsten = isInfuraProvider('ropsten')
+      assert(resultRopsten)
+      var resultRinkeby = isInfuraProvider('rinkeby')
+      assert(resultRinkeby)
+      var resultMainnet = isInfuraProvider('mainnet')
+      assert(resultMainnet)
+      var resultGoerli = !isInfuraProvider('goerli_testnet')
+      assert(resultGoerli)
+      var resultSokol = !isInfuraProvider('sokol')
+      assert(resultSokol)
+      var resultClassic = !isInfuraProvider('classic')
+      assert(resultClassic)
+      var resultRSK = !isInfuraProvider('rsk')
+      assert(resultRSK)
+    })
+  })
+
+  describe('#isKnownProvider', function () {
+    it('checks, that the given provider is Infura provider', function () {
+      var resultKovan = isKnownProvider('kovan')
+      assert(resultKovan)
+      var resultRopsten = isKnownProvider('ropsten')
+      assert(resultRopsten)
+      var resultRinkeby = isKnownProvider('rinkeby')
+      assert(resultRinkeby)
+      var resultMainnet = isKnownProvider('mainnet')
+      assert(resultMainnet)
+      var resultGoerli = isKnownProvider('goerli_testnet')
+      assert(resultGoerli)
+      var resultSokol = isKnownProvider('sokol')
+      assert(resultSokol)
+      var resultClassic = isKnownProvider('classic')
+      assert(resultClassic)
+      var resultRSK = isKnownProvider('rsk')
+      assert(resultRSK)
+      var resultUnknown = !isKnownProvider('unknown_network')
+      assert(resultUnknown)
     })
   })
 })

@@ -6,6 +6,18 @@ const {
   DAI_CODE,
   RSK_CODE,
   RSK_TESTNET_CODE,
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  LOCALHOST,
+  POA_SOKOL,
+  POA,
+  DAI,
+  GOERLI_TESTNET,
+  CLASSIC,
+  RSK,
+  RSK_TESTNET,
 } = require('../../app/scripts/controllers/network/enums')
 
 var valueTable = {
@@ -54,9 +66,12 @@ module.exports = {
   ifHardwareAcc,
   getAllKeyRingsAccounts,
   ifRSK,
+  ifRSKByProviderType,
   ifPOA,
   toChecksumAddress,
   isValidChecksumAddress,
+  isInfuraProvider,
+  isKnownProvider,
 }
 
 function valuesFor (obj) {
@@ -391,6 +406,11 @@ function ifRSK (network) {
   return numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
 }
 
+function ifRSKByProviderType (type) {
+  if (!type) return false
+  return type === RSK || type === RSK_TESTNET
+}
+
 function ifPOA (network) {
   if (!network) return false
   const numericNet = isNaN(network) ? network : parseInt(network)
@@ -423,4 +443,22 @@ function toChecksumAddress (network, address, chainId = null) {
 
 function isValidChecksumAddress (network, address) {
   return isValidAddress(address, network) && toChecksumAddress(network, address) === address
+}
+
+function isInfuraProvider (type) {
+  const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+  return INFURA_PROVIDER_TYPES.includes(type)
+}
+
+function isKnownProvider (type) {
+  const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+  return INFURA_PROVIDER_TYPES.includes(type) ||
+  type === LOCALHOST ||
+  type === POA_SOKOL ||
+  type === POA ||
+  type === DAI ||
+  type === GOERLI_TESTNET ||
+  type === CLASSIC ||
+  type === RSK ||
+  type === RSK_TESTNET
 }
