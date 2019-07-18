@@ -20,7 +20,10 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Build the project to the `./dist/` folder with `npm run dist`.
 - Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
     - To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
-      alongside the app, use `npm run start:dev`. You'll need to install the Redux DevTools to access Redux state logs.
+      alongside the app, use `npm run start:dev`.
+      - React DevTools will open in a separate window; no browser extension is required
+      - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote DevTools (shown in the context menu and in the extension menu) to access Redux state logs.
+        - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
