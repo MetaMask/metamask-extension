@@ -62,7 +62,7 @@
     "browserify-derequire": "^0.9.4",
     "browserify-unibabel": "^3.0.0",
     "c3": "^0.6.7",
-    "capnode": "^3.0.0",
+    "capnode": "^3.1.2",
     "classnames": "^2.2.5",
     "clone": "^2.1.2",
     "content-hash": "^2.3.2",
