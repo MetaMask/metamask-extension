@@ -13,6 +13,7 @@
     "dapp": "static-server test/e2e/contract-test --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && static-server test/e2e/contract-test --port 8080'",
     "watch:test:unit": "nodemon --exec \"yarn test:unit\" ./test ./app ./ui",
+    "sendwithprivatedapp": "static-server test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "yarn test:integration:build && yarn test:flat",
