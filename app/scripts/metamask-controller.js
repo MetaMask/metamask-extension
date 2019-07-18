@@ -314,16 +314,20 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        // log.debug('__TEST__\ngetAccounts from: ' + origin)
-        // const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        // const selectedAddress = this.preferencesController.getSelectedAddress()
-        // if (isUnlocked) {
-        //   if (origin === 'MetaMask' && selectedAddress) {
-        //     return [selectedAddress]
-        //   } else return await this.permissionsController.getAccounts(origin)
-        // }
-        // return []
-        throw new Error('KAPLAAAAAH')
+        /**
+         * TODO:lps:review this is called all over the wallet subprovider,
+         * i.e. eth-json-rpc-middleware/wallet.
+         * Simple eth_accounts calls are intercepted by the permissions
+         * restricted methods, however other methods in the wallet
+         * subprovider require this at least for now.
+         */
+        // TODO:lps:delete:log
+        log.debug('Internal getAccounts call from: ' + origin)
+        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+        if (isUnlocked) {
+          return await this.permissionsController.getAccounts(origin)
+        }
+        return []
       },
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
@@ -362,15 +366,15 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     async function selectPublicState ({
-      isUnlocked, completedOnboarding,
-      // selectedAddress, network
+      isUnlocked, completedOnboarding, network
+      // network
     }) {
       const result = {
         isUnlocked,
         onboardingcomplete: completedOnboarding,
+        networkVersion: network,
         // TODO:synchronous re-implement
         // selectedAddress: isUnlocked && isEnabled ? selectedAddress : undefined,
-        // networkVersion: network,
       }
       return result
     }
