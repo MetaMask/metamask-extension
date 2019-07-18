@@ -21,7 +21,8 @@
   },
   "applications": {
     "gecko": {
-      "id": "webextension@metamask.io"
+      "id": "webextension@metamask.io",
+      "strict_min_version": "53.0"
     }
   },
   "default_locale": "en",
