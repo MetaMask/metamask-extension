@@ -2,12 +2,24 @@ version: 2
 
 workflows:
   version: 2
-  full_test:
+  test_and_release:
     jobs:
+      - create_release_pull_request:
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps-npm
       - prep-build:
           requires:
             - prep-deps-npm
+      - create_github_release:
+          requires:
+            - prep-build
+          filters:
+            branches:
+              only:
+                - develop
       # - prep-docs:
       #    requires:
       #      - prep-deps-npm
@@ -66,6 +78,18 @@ workflows:
             - all-tests-pass
 
 jobs:
+  create_release_pull_request:
+    docker:
+      - image: circleci/node:8.15.1-browsers
+    steps:
+      - checkout
+      - run:
+          name: Create GitHub Pull Request for version
+          command: |
+            .circleci/scripts/release-bump-changelog-version
+            .circleci/scripts/release-bump-manifest-version
+            .circleci/scripts/release-create-release-pr
+
   prep-deps-npm:
     docker:
       - image: circleci/node:10.16-browsers
@@ -280,3 +304,15 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
+
+  create_github_release:
+    docker:
+      - image: circleci/node:8.15.1-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release
