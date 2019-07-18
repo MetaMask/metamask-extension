@@ -290,6 +290,11 @@ module.exports = class MetamaskController extends EventEmitter {
       index: {
         foo: async () => 'BAR!',
         ping: async () => 'pong',
+        getAlerter: async (opts) => {
+          return async (message) => {
+            alert('background sez ' + message);
+          }
+        },
       }
     })
   }
