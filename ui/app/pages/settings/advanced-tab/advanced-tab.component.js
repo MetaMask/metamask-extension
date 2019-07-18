@@ -26,6 +26,9 @@ export default class AdvancedTab extends PureComponent {
     autoLogoutTimeLimit: PropTypes.number,
     setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    threeBoxSyncing: PropTypes.bool.isRequired,
+    setThreeBoxSyncing: PropTypes.func.isRequired,
+    threeboxSyncing: PropTypes.bool.isRequired,
   }
 
   state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
@@ -250,6 +253,35 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderThreeBoxControl () {
+    const { t } = this.context
+    const {
+      threeboxSyncing,
+      setThreeBoxSyncing,
+    } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithThreeBox') }</span>
+          <div className="settings-page__content-description">
+            { t('syncWithThreeBoxDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={threeboxSyncing}
+              onToggle={value => setThreeBoxSyncing(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -263,6 +295,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
         { this.renderAutoLogoutTimeLimit() }
+        { this.renderThreeBoxControl() }
       </div>
     )
   }
