@@ -1,5 +1,5 @@
 const ObservableStore = require('obs-store')
-const Box = require('3box')
+const Box = require('3box/dist/3box.min')
 
 class ThreeBoxController {
   constructor (opts = {}) {
@@ -12,10 +12,11 @@ class ThreeBoxController {
     const initState = {
       syncDone3Box: false,
       threeBoxAddress: null,
-      preferNoSync: null,
+      threeboxSyncing: true,
       ...opts.initState,
     }
     this.store = new ObservableStore(initState)
+    this._signPersonalMessage =
 
     this.init()
   }
@@ -29,44 +30,70 @@ class ThreeBoxController {
   }
 
   async _update3Box ({ type }, newState) {
-    await this.box.private.set(type, JSON.stringify(newState))
+    const threeBoxSyncing = this.store.getState().threeboxSyncing
+    if (threeBoxSyncing) {
+      await this.box.private.set(type, JSON.stringify(newState))
+    }
   }
 
-  async new3Box (address, forceNewThreeBoxApproval) {
-    if (!forceNewThreeBoxApproval && this.store.getState().preferNoSync) {
-      return
-    }
+  async new3Box (address) {
+    const threeBoxSyncing = this.store.getState().threeboxSyncing
+    console.log('new3Box threeBoxSyncing', threeBoxSyncing)
+    if (threeBoxSyncing) {
+      this.store.updateState({ syncDone3Box: false })
+      this.address = address
 
-    this.store.updateState({ syncDone3Box: false })
-    this.address = address
-
-    try {
-      this.box = await Box.openBox(address, {
-        ...this.provider,
-        sendAsync: (req, cb) => {
-          req.origin = 'MetaMask'
-          req.params = [...req.params, { isMetaMask3BoxApproval: true }]
-          return this.provider.sendAsync(req, cb)
-        },
-      })
-      this.box && this.box.onSyncDone(() => {
-        this._restoreFrom3Box()
-        this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
-      })
-    } catch (e) {
-      if (e.message.match(/User denied message signature/)) {
-        this.store.updateState({ preferNoSync: true })
-      } else {
+      try {
+        const messageDataToSign = '0x' + Buffer.from('This app wants to view and update your 3Box profile.', 'utf8').toString('hex')
+        this.keyringController.signPersonalMessage({
+          data: messageDataToSign,
+          from: address,
+        })
+          .then(signature => Box.openBox(
+            address,
+            this.provider,
+            {
+              walletProvidedSignature: signature,
+            }
+          ))
+          .then(box => {
+            this.box = box
+            box.onSyncDone(() => {
+              console.log('3box onSyncDone!')
+              this._restoreFrom3Box()
+              this.store.updateState({ syncDone3Box: true, threeBoxAddress: address })
+            })
+          })
+      } catch (e) {
         console.error(e)
       }
     }
   }
 
   async _restoreFrom3Box () {
-    const backedUpPreferences = await this.box.private.get('preferences')
-    backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
-    this._registerUpdates()
-    this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
+    const threeBoxSyncing = this.store.getState().threeboxSyncing
+    if (threeBoxSyncing) {
+      const backedUpPreferences = await this.box.private.get('preferences')
+      backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
+      this._registerUpdates()
+      this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
+    }
+  }
+
+  setThreeBoxSyncing (newThreeboxSyncingState) {
+    const currentState = this.store.getState()
+    this.store.updateState({
+      ...currentState,
+      threeboxSyncing: newThreeboxSyncingState,
+    })
+
+    if (newThreeboxSyncingState && !(this.box && currentState.syncDone3Box)) {
+      this.init()
+    }
+
+    if (!newThreeboxSyncingState && this.box) {
+      this.box.logout()
+    }
   }
 
   getThreeBoxAddress () {

@@ -1642,6 +1642,12 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be between 0 and 12 characters."
   },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3box"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Turn on to have your settings backed up with 3box"
+  },
   "syncWithMobile": {
     "message": "Sync with mobile"
   },
