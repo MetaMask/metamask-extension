@@ -13,6 +13,7 @@ const log = require('loglevel')
 const extension = require('extensionizer')
 const ReadOnlyNetworkStore = require('./lib/network-store')
 const LocalStorageStore = require('obs-store/lib/localStorage')
+const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
@@ -64,8 +65,11 @@ let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
 
 // state persistence
+const inTest = process.env.IN_TEST === 'true'
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
-const localStore = new ReadOnlyNetworkStore()
+const localStore = inTest
+  ? new ReadOnlyNetworkStore()
+  : new LocalStore()
 let versionedData
 
 // initialization flow
