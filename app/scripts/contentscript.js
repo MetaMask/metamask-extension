@@ -1,5 +1,3 @@
-const fs = require('fs')
-const path = require('path')
 const pump = require('pump')
 const log = require('loglevel')
 const Dnode = require('dnode')
@@ -9,10 +7,6 @@ const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
 
-const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
-const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
-const inpageBundle = inpageContent + inpageSuffix
-
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
 //
@@ -21,7 +15,7 @@ const inpageBundle = inpageContent + inpageSuffix
 // MetaMask will be much faster loading and performant on Firefox.
 
 if (shouldInjectWeb3()) {
-  injectScript(inpageBundle)
+  injectScript()
   start()
 }
 
@@ -30,12 +24,12 @@ if (shouldInjectWeb3()) {
  *
  * @param {string} content - Code to be executed in the current document
  */
-function injectScript (content) {
+function injectScript () {
   try {
     const container = document.head || document.documentElement
     const scriptTag = document.createElement('script')
     scriptTag.setAttribute('async', false)
-    scriptTag.textContent = content
+    scriptTag.src = extension.runtime.getURL('inpage.js')
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
   } catch (e) {
