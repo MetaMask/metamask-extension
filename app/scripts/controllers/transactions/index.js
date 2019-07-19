@@ -96,12 +96,6 @@ class TransactionController extends EventEmitter {
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: () => {
         const pending = this.txStateManager.getPendingTransactions()
-
-        // Why are we adding mere approved transactions?
-        // Because some transactions got stuck in approved state, and weren't getting signed.
-        // So we need to make sure the signing of unsigned transactions is done atomically, but the resubmitTx function that is called on every new block is a danger right now.
-        // We can either fix this by moving that behavior (signing approved txs) to another function,
-        // or to ensure that the resubmit/approve function is called atomically
         const approved = this.txStateManager.getApprovedTransactions()
         return [...pending, ...approved]
       },
