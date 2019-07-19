@@ -359,13 +359,14 @@ class TransactionController extends EventEmitter {
       // approve
       this.txStateManager.setTxStatusApproved(txId)
       // get next nonce
-      const txMeta = this.txStateManager.getTx(txId)
-      const fromAddress = txMeta.txParams.from
+      const { txParams } = this.txStateManager.getTx(txId)
+      const fromAddress = txParams.from
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
+      const txMeta = this.txStateManager.getTx(txId)
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
