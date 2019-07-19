@@ -68,7 +68,7 @@ class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.getGasPrice = opts.getGasPrice
-    this.pendingApprovals = new Set()
+    this.inProcessOfSigning = new Set()
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -366,10 +366,10 @@ class TransactionController extends EventEmitter {
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
     // that is already being incrmented & signed.
-    if (this.pendingApprovals.has(txId)) {
+    if (this.inProcessOfSigning.has(txId)) {
       return
     }
-    this.pendingApprovals.add(txId)
+    this.inProcessOfSigning.add(txId)
     let nonceLock
     try {
       // approve
@@ -404,7 +404,7 @@ class TransactionController extends EventEmitter {
       // continue with error chain
       throw err
     } finally {
-      this.pendingApprovals.delete(txId)
+      this.inProcessOfSigning.delete(txId)
     }
   }
   /**
