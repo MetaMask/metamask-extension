@@ -101,7 +101,7 @@ class TransactionController extends EventEmitter {
         // Because some transactions got stuck in approved state, and weren't getting signed.
         // So we need to make sure the signing of unsigned transactions is done atomically, but the resubmitTx function that is called on every new block is a danger right now.
         // We can either fix this by moving that behavior (signing approved txs) to another function,
-        // or to ensure that the resubmit/approve function is called atomically.
+        // or to ensure that the resubmit/approve function is called atomically
         const approved = this.txStateManager.getApprovedTransactions()
         return [...pending, ...approved]
       },
@@ -361,7 +361,11 @@ class TransactionController extends EventEmitter {
     @param txId {number} - the tx's Id
   */
   async approveTransaction (txId) {
+    // TODO: Move this safety out of this function.
     // Since this transaction is async,
+    // we need to keep track of what is currently being signed,
+    // So that we do not increment nonce + resubmit something
+    // that is already being submitted.
     if (this.pendingApprovals.has(txId)) {
       return
     }
