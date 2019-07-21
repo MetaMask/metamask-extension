@@ -1,0 +1,33 @@
+@import 'signature-request-footer/index';
+@import 'signature-request-header/index';
+
+.signature-request {
+    display: flex;
+    flex-direction: column;
+}
+
+.signature-request-header {
+    flex: 1;
+}
+
+.signature-request-content {
+    flex: 1 50%;
+    margin: 1rem;
+}
+
+.signature-request-message {
+    flex: 1 50%;
+    margin: 1rem;
+    h2 {
+        text-align: left;
+        font-size: 1rem;
+        border-bottom: 1px solid $geyser;
+        color: 1px;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.signature-request-footer {
+    flex: 1;
+}

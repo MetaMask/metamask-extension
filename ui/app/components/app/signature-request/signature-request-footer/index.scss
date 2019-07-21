@@ -1,0 +1,10 @@
+.signature-request-footer {
+    display: flex;
+    border-top: 1px solid $geyser;
+
+    button {
+        text-transform: uppercase;
+        flex: 1;
+        margin: 1rem;
+    }
+}
