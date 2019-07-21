@@ -1,0 +1,40 @@
+.signature-request-message {
+    flex: 1 60%;
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+        flex: 1 1 0;
+        text-align: left;
+        font-size: 0.8rem;
+        border-bottom: 1px solid #d2d8dd;
+        padding: 0.5rem;
+        margin: 0;
+        color: #ccc;
+    }
+
+    &--root {
+        flex: 1 100%;
+        background-color: #f8f9fb;
+        padding-bottom: 0.5rem;
+        overflow: auto;
+    }
+    
+    &--type {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+
+    &--node {
+        padding-left: 0.8rem;
+        margin-bottom: 0.5rem;
+
+        &-label {
+            color: #e0e0e0;
+        }
+
+        &-value {
+            margin-left: 0.5rem;
+        }
+    }
+}

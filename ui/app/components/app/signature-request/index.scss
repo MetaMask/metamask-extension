@@ -1,9 +1,12 @@
 @import 'signature-request-footer/index';
 @import 'signature-request-header/index';
+@import 'signature-request-message/index';
 
 .signature-request {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
+    min-width: 0;
 }
 
 .signature-request-header {
@@ -11,23 +14,29 @@
 }
 
 .signature-request-content {
-    flex: 1 50%;
-    margin: 1rem;
-}
+    flex: 1 40%;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    min-height: min-content;
 
-.signature-request-message {
-    flex: 1 50%;
-    margin: 1rem;
-    h2 {
-        text-align: left;
+    &__identicon-container {
+        padding: 1rem;
+        flex: 1;
+    }
+
+    &__from {
         font-size: 1rem;
-        border-bottom: 1px solid $geyser;
-        color: 1px;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
+        color: #000000;
+    }
+
+    p {
+        color: #999999;
+        font-size: 0.8rem;
     }
 }
 
 .signature-request-footer {
-    flex: 1;
+    flex: 1 1 auto;
 }
