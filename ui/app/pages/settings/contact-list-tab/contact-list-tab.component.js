@@ -18,7 +18,6 @@ export default class ContactListTab extends Component {
 
   renderAddresses () {
     const { addressBook, history, network } = this.props
-    console.log('this network', network)
 
     return (
       <div>
@@ -40,15 +39,6 @@ export default class ContactListTab extends Component {
     )
   }
 
-  render () {
-    return (
-      <div className="address-book-container">
-        { this.renderAddresses() }
-        { this.renderAddButton() }
-      </div>
-    )
-  }
-
   renderAddButton () {
     const { history } = this.props
     return <Button
@@ -58,5 +48,14 @@ export default class ContactListTab extends Component {
       }}>
       { this.context.t('add') }
     </Button>
+  }
+
+  render () {
+    return (
+      <div className="address-book-container">
+        { this.renderAddresses() }
+        { this.renderAddButton() }
+      </div>
+    )
   }
 }

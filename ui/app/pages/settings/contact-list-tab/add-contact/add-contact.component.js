@@ -19,17 +19,17 @@ export default class AddContact extends PureComponent {
   state = {
     nickname: '',
     address: '',
+    error: '',
   }
 
    render () {
-    const { nickname, address } = this.state
+    const { nickname, address, error } = this.state
     const { history, addToAddressBook } = this.props
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-
             <TextField
               type="text"
               id="nickname"
@@ -39,12 +39,12 @@ export default class AddContact extends PureComponent {
               fullWidth
               margin="dense"
             />
-
             <TextField
               type="text"
               id="address"
               placeholder={this.context.t('addEthAddress')}
               value={address}
+              error={error}
               onChange={e => this.setState({ address: e.target.value })}
               fullWidth
               margin="dense"
@@ -58,7 +58,7 @@ export default class AddContact extends PureComponent {
               addToAddressBook(address, nickname)
               history.push(CONTACT_LIST_ROUTE)
             } else {
-              this.setState({ address: 'invalid address' })
+              this.setState({ error: 'invalid address' })
             }
           }}
           onCancel={() => {

@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
-import { addressSlicer } from '../../../../helpers/utils/util'
 import Button from '../../../../components/ui/button/button.component'
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -13,19 +12,15 @@ export default class ViewContact extends PureComponent {
   }
 
   static propTypes = {
-    addressBook: PropTypes.object,
-    addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
+    name: PropTypes.string,
+    address: PropTypes.string,
     history: PropTypes.object,
-    match: PropTypes.object,
   }
 
    render () {
     const { t } = this.context
-    const { removeFromAddressBook, history, match, addressBook } = this.props
-    const address = match.params.id
-    const currentEntry = addressBook[address]
-    const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
+    const { removeFromAddressBook, history, name, address } = this.props
 
     return (
       <div className="settings-page__content-row">

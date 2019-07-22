@@ -3,17 +3,24 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBook } from '../../../../selectors/selectors'
-import { addToAddressBook, removeFromAddressBook } from '../../../../store/actions'
+import { removeFromAddressBook } from '../../../../store/actions'
+import { addressSlicer } from '../../../../helpers/utils/util'
 
-const mapStateToProps = state => {
+
+const mapStateToProps = (state, ownProps) => {
+  const address = ownProps.match.params.id
+  const addressBook = getAddressBook(state)
+  const currentEntry = addressBook[address]
+  const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
   return {
     addressBook: getAddressBook(state),
+    name,
+    address,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addToAddressBook: (recipient, nickname) => dispatch(addToAddressBook(recipient, nickname)),
     removeFromAddressBook: (addressToRemove) => dispatch(removeFromAddressBook(addressToRemove)),
   }
 }
