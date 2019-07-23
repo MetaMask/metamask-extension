@@ -103,7 +103,6 @@
     "fuse.js": "^3.2.0",
     "gaba": "^1.4.1",
     "human-standard-token-abi": "^2.0.0",
-    "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
     "json-rpc-engine": "^4.0.0",
     "json-rpc-middleware-stream": "^2.1.1",

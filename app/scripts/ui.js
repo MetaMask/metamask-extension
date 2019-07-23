@@ -1,5 +1,3 @@
-const injectCss = require('inject-css')
-const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
@@ -53,8 +51,6 @@ async function start () {
       global.platform.openExtensionInBrowser()
       return
     }
-
-    injectCss(NewMetaMaskUiCss())
   })
 
 
