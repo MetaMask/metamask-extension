@@ -38,11 +38,17 @@
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
   },
-  "clearApprovalData": {
-    "message": "Rimuovi tutti i siti"
+  "permissionsData": {
+    "message": "Dati di approvazione"
+  },
+  "permissionsDataDescription": {
+    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
+  },
+  "clearPermissionsData": {
+    "message": "Cancella i dati di approvazione"
   },
   "reject": {
     "message": "Annulla"
@@ -359,9 +365,6 @@
   },
   "connect": {
     "message": "Connetti"
-  },
-  "connectRequest": {
-    "message": "Richiesta Connessione"
   },
   "connecting": {
     "message": "Connessione..."

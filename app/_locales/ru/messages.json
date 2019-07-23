@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Утвержденные данные веб-сайта успешно удалены."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "Данные об утверждении"
+  },
+  "permissionsDataDescription": {
+    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
+  },
+  "clearPermissionsData": {
     "message": "Четкие данные об утверждении"
   },
   "approve": {

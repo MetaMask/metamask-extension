@@ -30,7 +30,7 @@ export default class ClearPermissions extends PureComponent {
         submitType="secondary"
       >
         <ModalContent
-          title={t('clearApprovalData')}
+          title={t('clearPermissionsData')}
           description={t('confirmClear')}
         />
       </Modal>

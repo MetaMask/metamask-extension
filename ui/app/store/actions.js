@@ -355,6 +355,7 @@ var actions = {
   // Permissions
   approvePermissionsRequest,
   rejectPermissionsRequest,
+  removePermissionsFor,
   clearPermissions,
 
   setFirstTimeFlowType,
@@ -2676,6 +2677,15 @@ function approvePermissionsRequest (requestId) {
 function rejectPermissionsRequest (requestId) {
   return () => {
     background.rejectPermissionsRequest(requestId)
+  }
+}
+
+/**
+ * Clears the given permissions for the given origin.
+ */
+function removePermissionsFor (domains) {
+  return () => {
+    background.removePermissionsFor(domains)
   }
 }
 

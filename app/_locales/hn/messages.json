@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "क्या आप वाकई अनुमोदित वेबसाइटों को साफ़ करना चाहते हैं?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "स्वीकृत वेबसाइट डेटा सफलतापूर्वक मंजूरी दे दी।"
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "स्वीकृति डेटा"
+  },
+  "permissionsDataDescription": {
+    "message": "अनुमोदित वेबसाइट डेटा साफ़ करें ताकि सभी साइटों को फिर से अनुमोदन का अनुरोध करना होगा।"
+  },
+  "clearPermissionsData": {
     "message": "अनुमोदन डेटा साफ़ करें"
   },
   "approve": {

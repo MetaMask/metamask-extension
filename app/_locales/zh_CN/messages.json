@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "您确定要清除已批准的网站吗？"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "已批准的网站数据已成功清除。"
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "审批数据"
+  },
+  "permissionsDataDescription": {
+    "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
+  },
+  "clearPermissionsData": {
     "message": "清除批准数据"
   },
   "approve": {

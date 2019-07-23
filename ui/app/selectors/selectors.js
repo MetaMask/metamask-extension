@@ -52,6 +52,7 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
+  getAllPermissions,
   getPermissionsDescriptions,
   getPermissionsRequests,
   getMetaMetricState,
@@ -340,6 +341,10 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getAllPermissions (state) {
+  return state.metamask.domains || {}
 }
 
 function getPermissionsDescriptions (state) {

@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "승인 데이터"
+  },
+  "permissionsDataDescription": {
+    "message": "승인 된 웹 사이트 데이터를 삭제하여 모든 사이트에서 승인을 다시 요청해야합니다."
+  },
+  "clearPermissionsData": {
     "message": "승인 데이터 삭제"
   },
   "reject": {
@@ -244,9 +250,6 @@
   },
   "connect": {
     "message": "연결"
-  },
-  "connectRequest": {
-    "message": "연결 요청"
   },
   "connecting": {
     "message": "연결 중..."

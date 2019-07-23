@@ -14,10 +14,16 @@
   "contractInteraction": {
     "message": "合約互動"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "已批准的網站紀錄已成功清除。"
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "審核紀錄"
+  },
+  "permissionsDataDescription": {
+    "message": "清除之前已批准過的網站審核紀錄，所有網站都必須再次申請"
+  },
+  "clearPermissionsData": {
     "message": "清除批准數據"
   },
   "approve": {
@@ -244,9 +250,6 @@
   },
   "connect": {
     "message": "連線"
-  },
-  "connectRequest": {
-    "message": "連線請求"
   },
   "connecting": {
     "message": "連線中..."

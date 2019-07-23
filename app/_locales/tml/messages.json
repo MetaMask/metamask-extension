@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "அங்கீகரிக்கப்பட்ட வலைத்தளங்களை நிச்சயமாக நீக்க விரும்புகிறீர்களா?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவு வெற்றிகரமாக அழிக்கப்பட்டது."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "ஒப்புதல் தரவு"
+  },
+  "permissionsDataDescription": {
+    "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவை அழிக்கவும், அனைத்து தளங்களும் ஒப்புதல் மீண்டும் கோர வேண்டும்."
+  },
+  "clearPermissionsData": {
     "message": "ஒப்புதல் தரவை அழி"
   },
   "approve": {

@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "Êtes-vous sûr de vouloir supprimer les sites Web approuvés?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Les données de site Web approuvées ont été supprimées."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "Données d'approbation"
+  },
+  "permissionsDataDescription": {
+    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
+  },
+  "clearPermissionsData": {
     "message": "Effacer les données d'approbation"
   },
   "providerAPIRequest": {

@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "Naozaj chcete vymazať schválené webové stránky?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "Údaje o schválení"
+  },
+  "permissionsDataDescription": {
+    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
+  },
+  "clearPermissionsData": {
     "message": "Jasné údaje o schválení"
   },
   "approve": {

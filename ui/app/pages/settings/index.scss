@@ -222,6 +222,28 @@
     margin-left: 1.875rem;
   }
 
+  &__content-list-item {
+    margin-left: 10px;
+
+    &__caveat {
+      list-style-type: disc;
+      margin-left: 50px;
+    }
+
+    &__caveat-value {
+      list-style-type: disc;
+      margin-left: 30px;
+    }
+  }
+
+  &__content-list-checkbox {
+    margin-right: 10px;
+  }
+
+  &__content-list-summary-checkbox {
+    margin-left: 10px;
+  }
+
   &--selected {
     .settings-page {
       &__content {

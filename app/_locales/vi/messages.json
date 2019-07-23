@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "Dữ liệu phê duyệt"
+  },
+  "permissionsDataDescription": {
+    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
+  },
+  "clearPermissionsData": {
     "message": "Xóa dữ liệu phê duyệt"
   },
   "approve": {

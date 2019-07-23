@@ -1,41 +1,43 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 import AccountDropdownMini from '../../../ui/account-dropdown-mini'
 
 export default class PermissionPageContainerContent extends PureComponent {
+
   static propTypes = {
-    requests: PropTypes.array.isRequired,
+    metadata: PropTypes.object.isRequired,
+    selectedPermissions: PropTypes.object.isRequired,
+    permissionsDescriptions: PropTypes.object.isRequired,
+    onPermissionToggle: PropTypes.func.isRequired,
     selectedAccount: PropTypes.object.isRequired,
-    permissionsDescriptions: PropTypes.array.isRequired,
     onAccountSelect: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
-  renderConnectVisual = () => {
-    const { requests, selectedAccount, onAccountSelect } = this.props
-    const { origin, site } = requests[0].metadata
-
-    // const { t } = this.context
+  renderPermissionApprovalVisual = () => {
+    const {
+      metadata, selectedAccount, onAccountSelect,
+    } = this.props
 
     return (
       <div className="permission-approval-visual">
         <section>
-          {site.icon ? (
+          {metadata.site.icon ? (
             <img
               className="permission-approval-visual__identicon"
-              src={site.icon}
+              src={metadata.site.icon}
             />
           ) : (
             <i className="permission-approval-visual__identicon--default">
-              {site.name.charAt(0).toUpperCase()}
+              {metadata.site.name.charAt(0).toUpperCase()}
             </i>
           )}
-          <h1>{site.name}</h1>
-          <h2>{origin}</h2>
+          <h1>{metadata.site.name}</h1>
+          <h2>{metadata.origin}</h2>
         </section>
         <span className="permission-approval-visual__check" />
         <section>
@@ -55,56 +57,58 @@ export default class PermissionPageContainerContent extends PureComponent {
   }
 
   renderRequestedPermissions () {
-    const { requests, permissionsDescriptions } = this.props
+    const {
+      onPermissionToggle, selectedPermissions, permissionsDescriptions,
+    } = this.props
 
-    const request = requests[0]
+    const items = Object.keys(selectedPermissions).map((methodName) => {
 
-    const requestedMethods = Object.keys(request.permissions)
-
-    const items = requestedMethods.map((methodName) => {
-
-      const matchingFuncs = permissionsDescriptions.filter((perm) => {
-        return perm.method === methodName
-      })
-
-      const match = matchingFuncs[0]
-      if (!match) {
-        throw new Error('Requested unknown permission: ' + methodName)
+      // TODO:lps:review is this how we want to handle permissions without
+      // descriptions? In all current cases, if this condition triggers,
+      // approving the permissions will fail.
+      if (!permissionsDescriptions[methodName]) {
+        console.warn('Unknown permission requested.')
       }
+      const description = permissionsDescriptions[methodName] || methodName
+
       return (
-        <li
-          className="permission-requested"
-          key={methodName}
-          >
-          {match.description}
+        <li key={methodName}>
+          <input
+            className="permission-approval-container__content__checkbox"
+            type="checkbox"
+            checked={selectedPermissions[methodName]}
+            onChange={onPermissionToggle(methodName)}
+            disabled={methodName === 'eth_accounts'}
+          />
+          <label>{description}</label>
         </li>
       )
     })
 
     return (
-      <ul className="permissions-requested">
+      <ul className="permission-approval-container__content__requested">
         {items}
       </ul>
     )
   }
 
   render () {
-    const { requests } = this.props
-    const { site } = requests[0].metadata
+    const { metadata } = this.props
     const { t } = this.context
 
+    // TODO:lps change the learnMore link
     return (
       <div className="permission-approval-container__content">
         <section>
-          <h2>{t('connectRequest')}</h2>
-          {this.renderConnectVisual()}
+          <h2>{t('permissionsRequest')}</h2>
+          {this.renderPermissionApprovalVisual()}
           <section>
-            <h1>{site.name}</h1>
+            <h1>{metadata.site.name}</h1>
             <h2>{'Would like to:'}</h2>
             {this.renderRequestedPermissions()}
             <br/>
             <a
-              href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
+              href="https://metamask.io"
               target="_blank"
               rel="noopener noreferrer"
             >

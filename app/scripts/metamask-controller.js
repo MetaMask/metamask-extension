@@ -35,7 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
-const PermissionsController = require('./controllers/permissions')
+const { PermissionsController } = require('./controllers/permissions')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -315,16 +315,15 @@ module.exports = class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: async ({ origin }) => {
         /**
-         * TODO:lps:review this is called all over the wallet subprovider,
-         * i.e. eth-json-rpc-middleware/wallet.
-         * Simple eth_accounts calls are intercepted by the permissions
-         * restricted methods, however other methods in the wallet
-         * subprovider require this at least for now.
+         * TODO:lps:review this is called all over eth-json-rpc-middleware.
+         * By implementing this method using the permissionsController, we
+         * effectively enforce eth_accounts permissions by origin for all
+         * methods using accounts in the Ethereum provider.
+         * We should consider centralizing this logic in the near future.
          */
-        // TODO:lps:delete:log
-        log.debug('Internal getAccounts call from: ' + origin)
-        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        if (isUnlocked) {
+        if (
+          this.keyringController.memStore.getState().isUnlocked
+        ) {
           return await this.permissionsController.getAccounts(origin)
         }
         return []
@@ -517,6 +516,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // permissions
       approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
       rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
+      removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
       clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
     }
   }

@@ -7,9 +7,10 @@ const uuid = require('uuid/v4')
 // Methods that do not require any permissions to use:
 const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
-// listener call back for keyring store updates
-const updateCallback = resolve => state => {
-  if (state.isUnlocked) resolve()
+const METHOD_PREFIX = 'wallet_'
+
+function prefix (method) {
+  return METHOD_PREFIX + method
 }
 
 // class PermissionsController extends SafeEventEmitter {
@@ -22,8 +23,6 @@ class PermissionsController {
     this._closePopup = closePopup
     this.keyringController = keyringController
     this._initializePermissions(restoredState)
-    // TODO:deprecate ?
-    this.engines = {}
   }
 
   createMiddleware (options) {
@@ -33,7 +32,6 @@ class PermissionsController {
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
-    this.engines[origin] = engine
     return asMiddleware(engine)
   }
 
@@ -43,44 +41,39 @@ class PermissionsController {
   createRequestMiddleware () {
     return createAsyncMiddleware(async (req, res, next) => {
 
-      const keyring = this.keyringController
 
       /**
-       * TODO:lps:review as a placeholder, we currently set a 10-second timer,
-       * then reject the request. We can't use a .once listener, for reasons
-       * described below. Recommend re-implementing this such that RPC calls
-       * are blocked further up the stack. The goal must be to keep the RPC
-       * calls out of the rpc-cap middleware until the extension is unlocked.
+       * TODO:lps:review I believe we should centralize permissioning
+       * logic by blocking requests here. For example, the extension currently
+       * behaves differently when it receives an eth_accounts call while locked.
+       * If the calling domain has the permission, an empty array is returned
+       * by the KeyringController's locked behavior. If it does not have the
+       * permission, an auth error is thrown.
+       * Centralizing this logic here requires thoughtful design.
        */
-      // wait for unlock
-      if (!keyring.memStore.getState().isUnlocked) {
-        try {
-          this._openPopup()
-          await new Promise((resolve, reject) => {
-            let cb = updateCallback(resolve)
-            // we cannot use .once since we cannot know which 'update' event
-            // changes the isUnlocked property
-            keyring.memStore.on('update', cb)
-            setTimeout(() => {
-              reject()
-              keyring.memStore.removeListener('update', cb)
-            }, 10000)
-          })
-        } catch (error) {
-          res.error = { code: 1, message: 'User denied access.' }
-          return
-        }
-      }
+      // if (
+      //   !keyring.memStore.getState().isUnlocked
+      //   && !SAFE_METHODS.includes(req.method)
+      // ) {
+      //   try {
+      //     this._openPopup()
+      //     await new Promise((resolve, reject) => {
+      //       ...
+      //     })
+      //   } catch (error) {
+      //     res.error = { code: 1, message: 'User denied access.' }
+      //     return
+      //   }
+      // }
 
       // validate and add metadata to permissions requests
-      if (req.method === 'wallet_requestPermissions') {
+      if (req.method === prefix('requestPermissions')) {
 
         if (
           !Array.isArray(req.params) ||
           req.params.length !== 1 ||
           typeof req.params[0] !== 'object' ||
-          Array.isArray(req.params[0]) ||
-          Object.keys(req.params[0]).length !== 1
+          Array.isArray(req.params[0])
         ) throw new Error('Bad request.')
 
         // add unique id and site metadata to request params, as expected by
@@ -102,7 +95,8 @@ class PermissionsController {
     })
   }
 
-  // TODO:lps:review see initializeProvider() in metamask-controller
+  // TODO:lps:review see initializeProvider() in metamask-controller for why this
+  // method exists
   /**
    * Returns the accounts that should be exposed for the given origin domain,
    * if any.
@@ -110,31 +104,39 @@ class PermissionsController {
    */
   async getAccounts (origin) {
     return new Promise((resolve, reject) => {
-      // TODO:lps:review This error will almost certainly occur when permissions
-      // are cleared (see clearPermissions below). Rejecting with an error
-      // may be fine?
-      if (!this.engines[origin]) reject(new Error('Unknown origin: ${origin}'))
-      this.engines[origin].handle(
-        { method: 'eth_accounts' },
-        (err, res) => {
-          if (err || res.error || !Array.isArray(res.result)) {
-            resolve([])
-          } else {
-            resolve(res.result)
-          }
-        }
+      const req = { method: 'eth_accounts' }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+      
+      function _end() {
+        if (res.error || !Array.isArray(res.result)) resolve([])
+        else resolve(res.result)
+      }
+    })
+  }
+
+  /**
+   * Removes the given permissions for the given domain.
+   * @param {object} domains { origin: [permissions] }
+   */
+  removePermissionsFor (domains) {
+    Object.entries(domains).forEach(([origin, perms]) => {
+      this.permissions.removePermissionsFor(
+        origin,
+        perms.map(methodName => {
+          return { parentCapability: methodName }
+        })
       )
     })
   }
 
   /**
-   * Removes all known domains their related permissions.
+   * Removes all known domains and their related permissions.
    */
   clearPermissions () {
     this.permissions.clearDomains()
-    Object.keys(this.engines).forEach(s => {
-      delete this.engines[s]
-    })
   }
 
   /**
@@ -144,8 +146,8 @@ class PermissionsController {
   async approvePermissionsRequest (approved) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
-    const res = approval.res
-    res(approved.permissions)
+    const resolve = approval.resolve
+    resolve(approved.permissions)
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -156,8 +158,8 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
-    const rej = approval.rej
-    rej(false)
+    const reject = approval.reject
+    reject(false) // TODO:lps:review should this be an error instead?
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -181,7 +183,7 @@ class PermissionsController {
       safeMethods: SAFE_METHODS,
 
       // optional prefix for internal methods
-      methodPrefix: 'wallet_',
+      methodPrefix: METHOD_PREFIX,
 
       restrictedMethods: {
 
@@ -236,8 +238,8 @@ class PermissionsController {
 
         this._openPopup && this._openPopup()
 
-        return new Promise((res, rej) => {
-          this.pendingApprovals[id] = { res, rej }
+        return new Promise((resolve, reject) => {
+          this.pendingApprovals[id] = { resolve, reject }
         },
         // TODO: This should be persisted/restored state.
         {})
@@ -250,4 +252,7 @@ class PermissionsController {
 
 }
 
-module.exports = PermissionsController
+module.exports = {
+  PermissionsController,
+  addInternalMethodPrefix: prefix,
+}

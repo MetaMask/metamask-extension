@@ -11,10 +11,16 @@
   "confirmClear": {
     "message": "¿Seguro que quieres borrar los sitios web aprobados?"
   },
-  "clearApprovalDataSuccess": {
+  "clearPermissionsDataSuccess": {
     "message": "Los datos aprobados del sitio web se borraron con éxito."
   },
-  "clearApprovalData": {
+  "permissionsData": {
+    "message": "Datos de aprobación"
+  },
+  "permissionsDataDescription": {
+    "message": "Borrar la información privada de modo que todos los sitios deban volver a requerir acceso para acceder a los datos de la cuenta."
+  },
+  "clearPermissionsData": {
     "message": "Borrar datos de aprobación"
   },
   "approve": {
@@ -1009,9 +1015,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectRequest": {
-    "message": "Petición para conectar"
   },
   "connecting": {
     "message": "Conectándose..."
