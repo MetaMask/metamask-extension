@@ -20,9 +20,9 @@ We try to ensure certain criteria are met before deploying:
 
 ## Incrementing Version & Changelog
 
-Version can be automatically incremented [using our bump script](./bumping-version.md).
+Version can be automatically incremented by creating a branch with the name `Version-vX.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
 
-npm run version:bump `$BUMP_TYPE` where `$BUMP_TYPE` is one of `major`, `minor`, or `patch`.
+Once a version branch has been created, a build on CircleCI will create a Pull Request for the release with the app manifest and changelog versions bumped.
 
 ## Preparing for Sensitive Changes
 
