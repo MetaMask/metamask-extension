@@ -2,7 +2,16 @@
   "confirmClear": {
     "message": "Sigurado ka bang gusto mong i-clear ang mga naaprubahang website?"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Matagumpay na na-clear ang data ng aprubadong website."
+  },
+  "permissionsData": {
+    "message": "Data ng Pag-apruba"
+  },
+  "permissionsDataDescription": {
+    "message": "I-clear ang naaprubahang data ng website upang ang lahat ng site ay dapat humiling muli ng pag-apruba"
+  },
+  "clearPermissionsData": {
     "message": "Tanggalin ang data ng pag-apruba"
   },
   "appName": {

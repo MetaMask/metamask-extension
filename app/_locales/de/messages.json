@@ -11,7 +11,16 @@
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
+  },
+  "permissionsData": {
+    "message": "Genehmigungsdaten"
+  },
+  "permissionsDataDescription": {
+    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
+  },
+  "clearPermissionsData": {
     "message": "Genehmigungsdaten löschen"
   },
   "reject": {

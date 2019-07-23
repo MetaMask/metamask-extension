@@ -10,6 +10,7 @@ import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
 import ContactListTab from './contact-list-tab'
+import PermissionsTab from './permissions-tab'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -26,6 +27,7 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
+  PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes'
 
 class SettingsPage extends PureComponent {
@@ -158,6 +160,7 @@ class SettingsPage extends PureComponent {
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('contacts'), description: t('contactsSettingsDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
+          { content: t('permissions'), description: t('permissionsSettingsDescription'), key: PERMISSIONS_ROUTE },
           { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
@@ -239,6 +242,11 @@ class SettingsPage extends PureComponent {
           exact
           path={`${CONTACT_MY_ACCOUNTS_EDIT_ROUTE}/:id`}
           component={ContactListTab}
+        />
+        <Route
+          exact
+          path={PERMISSIONS_ROUTE}
+          component={PermissionsTab}
         />
         <Route
           component={SettingsTab}

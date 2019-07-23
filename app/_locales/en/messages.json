@@ -5,6 +5,12 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "caveat:filterParams": {
+    "message": "Only with: "
+  },
+  "caveat_filterResponse": {
+    "message": "Only: "
+  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
@@ -35,17 +41,26 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearApprovalDataSuccess": {
-    "message": "Dapp/website permissions cleared successfully."
+  "clearPermissionsDataSuccess": {
+    "message": "Permissions cleared successfully."
   },
-  "approvalData": {
-    "message": "Dapp/Website Permissions"
+  "permissionsData": {
+    "message": "Manage Permissions"
   },
-  "approvalDataDescription": {
-    "message": "Clear permissions so all dapps/websites must request access again."
+  "permissionsDataDescription": {
+    "message": "All currently granted permissions, by dapp/website. Deselect permissions and click \"Update Permissions\" to remove them."
   },
-  "clearApprovalData": {
+  "permissionsDataEmpty": {
+    "message": "No permissions found."
+  },
+  "clearPermissionsDataDescription": {
+    "message": "Clear permissions so that all dapps/websites must request access again."
+  },
+  "clearPermissionsData": {
     "message": "Clear Permissions"
+  },
+  "updatePermissionsData": {
+    "message": "Update Permissions"
   },
   "reject": {
     "message": "Reject"
@@ -285,8 +300,8 @@
   "connect": {
     "message": "Connect"
   },
-  "connectRequest": {
-    "message": "Connect Request"
+  "permissionsRequest": {
+    "message": "Permissions Request"
   },
   "connectingTo": {
     "message": "Connecting to $1"
@@ -920,6 +935,12 @@
   },
   "pending": {
     "message": "pending"
+  },
+  "permissions": {
+    "message": "Permissions"
+  },
+  "permissionsSettingsDescription": {
+    "message": "Manage dapp/website permissions."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

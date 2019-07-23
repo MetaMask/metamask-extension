@@ -11,7 +11,16 @@
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Les données de site Web approuvées ont été supprimées."
+  },
+  "permissionsData": {
+    "message": "Données d'approbation"
+  },
+  "permissionsDataDescription": {
+    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
+  },
+  "clearPermissionsData": {
     "message": "Effacer les données d'approbation"
   },
   "reject": {

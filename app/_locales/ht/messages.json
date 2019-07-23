@@ -2,7 +2,16 @@
   "confirmClear": {
     "message": "Èske ou sèten ou vle klè sitwèb apwouve?"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Done sou sit wèb apwouve yo te klarifye avèk siksè."
+  },
+  "permissionsData": {
+    "message": "Done sou vi prive"
+  },
+  "permissionsDataDescription": {
+    "message": "Done sou vi prive klè pou tout sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ankò."
+  },
+  "clearPermissionsData": {
     "message": "Klè Done sou vi prive"
   },
   "providerRequestInfo": {

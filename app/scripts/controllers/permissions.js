@@ -1,29 +1,33 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
+const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
-const uuid = require('uuid/v4')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 // Methods that do not require any permissions to use:
 const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
-// listener call back for keyring store updates
-const updateCallback = resolve => state => {
-  if (state.isUnlocked) resolve()
+const METHOD_PREFIX = 'wallet_'
+const INTERNAL_METHOD_PREFIX = 'metamask_'
+
+function prefix (method) {
+  return METHOD_PREFIX + method
 }
 
 // class PermissionsController extends SafeEventEmitter {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController
-  } = {}, restoredState) {
+    openPopup, closePopup, keyringController,
+  } = {}, restoredPermissions = {}, restoredState = { siteMetadata: {} }) {
+    this.store = new ObservableStore({
+      siteMetadata: { ...restoredState.siteMetadata },
+    })
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
-    this._initializePermissions(restoredState)
-    // TODO:deprecate ?
-    this.engines = {}
+    this._initializePermissions(restoredPermissions)
   }
 
   createMiddleware (options) {
@@ -33,7 +37,6 @@ class PermissionsController {
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
-    this.engines[origin] = engine
     return asMiddleware(engine)
   }
 
@@ -43,98 +46,82 @@ class PermissionsController {
   createRequestMiddleware () {
     return createAsyncMiddleware(async (req, res, next) => {
 
-      const keyring = this.keyringController
-
-      /**
-       * TODO:lps:review as a placeholder, we currently set a 10-second timer,
-       * then reject the request. We can't use a .once listener, for reasons
-       * described below. Recommend re-implementing this such that RPC calls
-       * are blocked further up the stack. The goal must be to keep the RPC
-       * calls out of the rpc-cap middleware until the extension is unlocked.
-       */
-      // wait for unlock
-      if (!keyring.memStore.getState().isUnlocked) {
-        try {
-          this._openPopup()
-          await new Promise((resolve, reject) => {
-            let cb = updateCallback(resolve)
-            // we cannot use .once since we cannot know which 'update' event
-            // changes the isUnlocked property
-            keyring.memStore.on('update', cb)
-            setTimeout(() => {
-              reject()
-              keyring.memStore.removeListener('update', cb)
-            }, 10000)
-          })
-        } catch (error) {
-          res.error = { code: 1, message: 'User denied access.' }
-          return
-        }
+      if (typeof req.method !== 'string') {
+        res.error = rpcErrors.invalidRequest(null, req)
+        return // TODO:json-rpc-engine
       }
 
-      // validate and add metadata to permissions requests
-      if (req.method === 'wallet_requestPermissions') {
-
-        if (
-          !Array.isArray(req.params) ||
-          req.params.length !== 1 ||
-          typeof req.params[0] !== 'object' ||
-          Array.isArray(req.params[0]) ||
-          Object.keys(req.params[0]).length !== 1
-        ) throw new Error('Bad request.')
-
-        // add unique id and site metadata to request params, as expected by
-        // json-rpc-capabilities-middleware
-        const metadata = {
-          metadata: {
-            id: uuid(),
-            site: (
-              req._siteMetadata
-              ? req._siteMetadata
-              : { name: null, icon: null }
-            ),
-          },
+      if (req.method.startsWith(INTERNAL_METHOD_PREFIX)) {
+        switch (req.method.split(INTERNAL_METHOD_PREFIX)[1]) {
+          case 'sendSiteMetadata':
+            if (
+              req.siteMetadata &&
+              typeof req.siteMetadata.name === 'string'
+            ) {
+              this.store.putState({
+                siteMetadata: {
+                  ...this.store.getState().siteMetadata,
+                  [req.origin]: req.siteMetadata,
+                },
+              })
+            }
+            break
+          default:
+            res.error = rpcErrors.methodNotFound(null, req.method)
+            break
         }
-        req.params.push(metadata)
+        if (!res.error) res.result = true
+        return
       }
 
       return next()
     })
   }
 
-  // TODO:lps:review see initializeProvider() in metamask-controller
   /**
    * Returns the accounts that should be exposed for the given origin domain,
-   * if any.
+   * if any. This method exists for when a trusted context needs to know
+   * which accounts are exposed to a given domain.
+   *
+   * Do not use in untrusted contexts; just send an RPC request.
+   *
    * @param {string} origin
    */
-  async getAccounts (origin) {
-    return new Promise((resolve, reject) => {
-      // TODO:lps:review This error will almost certainly occur when permissions
-      // are cleared (see clearPermissions below). Rejecting with an error
-      // may be fine?
-      if (!this.engines[origin]) reject(new Error('Unknown origin: ${origin}'))
-      this.engines[origin].handle(
-        { method: 'eth_accounts' },
-        (err, res) => {
-          if (err || res.error || !Array.isArray(res.result)) {
-            resolve([])
-          } else {
-            resolve(res.result)
-          }
-        }
+  getAccounts (origin) {
+    return new Promise((resolve, _) => {
+      const req = { method: 'eth_accounts' }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+
+      function _end () {
+        if (res.error || !Array.isArray(res.result)) resolve([])
+        else resolve(res.result)
+      }
+    })
+  }
+
+  /**
+   * Removes the given permissions for the given domain.
+   * @param {object} domains { origin: [permissions] }
+   */
+  removePermissionsFor (domains) {
+    Object.entries(domains).forEach(([origin, perms]) => {
+      this.permissions.removePermissionsFor(
+        origin,
+        perms.map(methodName => {
+          return { parentCapability: methodName }
+        })
       )
     })
   }
 
   /**
-   * Removes all known domains their related permissions.
+   * Removes all known domains and their related permissions.
    */
   clearPermissions () {
     this.permissions.clearDomains()
-    Object.keys(this.engines).forEach(s => {
-      delete this.engines[s]
-    })
   }
 
   /**
@@ -144,8 +131,8 @@ class PermissionsController {
   async approvePermissionsRequest (approved) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
-    const res = approval.res
-    res(approved.permissions)
+    const resolve = approval.resolve
+    resolve(approved.permissions)
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -156,8 +143,8 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
-    const rej = approval.rej
-    rej(false)
+    const reject = approval.reject
+    reject(false) // TODO:lps:review should this be an error instead?
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -169,6 +156,10 @@ class PermissionsController {
    * @param {string} origin = The origin string representing the domain.
    */
   _initializePermissions (restoredState) {
+
+    // these permission requests are almost certainly stale
+    const initState = { ...restoredState, permissionsRequests: [] }
+
     this.testProfile = {
       name: 'Dan Finlay',
     }
@@ -181,7 +172,7 @@ class PermissionsController {
       safeMethods: SAFE_METHODS,
 
       // optional prefix for internal methods
-      methodPrefix: 'wallet_',
+      methodPrefix: METHOD_PREFIX,
 
       restrictedMethods: {
 
@@ -189,14 +180,14 @@ class PermissionsController {
           description: 'View Ethereum accounts',
           method: (_, res, __, end) => {
             this.keyringController.getAccounts()
-            .then((accounts) => {
-              res.result = accounts
-              end()
-            })
-            .catch((reason) => {
-              res.error = reason
-              end(reason)
-            })
+              .then((accounts) => {
+                res.result = accounts
+                end()
+              })
+              .catch((reason) => {
+                res.error = reason
+                end(reason)
+              })
           },
         },
 
@@ -236,8 +227,8 @@ class PermissionsController {
 
         this._openPopup && this._openPopup()
 
-        return new Promise((res, rej) => {
-          this.pendingApprovals[id] = { res, rej }
+        return new Promise((resolve, reject) => {
+          this.pendingApprovals[id] = { resolve, reject }
         },
         // TODO: This should be persisted/restored state.
         {})
@@ -245,9 +236,12 @@ class PermissionsController {
         // TODO: Attenuate requested permissions in approval screen.
         // Like selecting the account to display.
       },
-    }, restoredState)
+    }, initState)
   }
 
 }
 
-module.exports = PermissionsController
+module.exports = {
+  PermissionsController,
+  addInternalMethodPrefix: prefix,
+}

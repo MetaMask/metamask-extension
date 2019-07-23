@@ -11,7 +11,16 @@
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
+  },
+  "permissionsData": {
+    "message": "Údaje o schválení"
+  },
+  "permissionsDataDescription": {
+    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
+  },
+  "clearPermissionsData": {
     "message": "Jasné údaje o schválení"
   },
   "reject": {

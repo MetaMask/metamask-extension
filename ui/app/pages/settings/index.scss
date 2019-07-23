@@ -182,6 +182,36 @@
       cursor: not-allowed;
       opacity: .5;
     }
+
+    details > summary {
+      list-style: none;
+    }
+
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details > summary > i {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      margin: 6px 15px 0 0;
+    }
+
+    .caret {
+      float: right;
+    }
+
+    details[open] > summary > .caret {
+      transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+    }
+
+    details > summary > .caret {
+      transform: rotate(-135deg);
+      -webkit-transform: rotate(-135deg);
+    }
   }
 
   &__content-label {
@@ -234,6 +264,47 @@
 
   &__address-book-button + &__address-book-button {
     margin-left: 1.875rem;
+  }
+
+  &__content-list-item {
+    margin: 5px 0 0 10px;
+
+    &__caveat {
+      list-style-type: disc;
+      margin: 5px 0 0 50px;
+    }
+
+    &__caveat-value {
+      list-style-type: disc;
+      margin: 5px 0 0 30px;
+    }
+  }
+
+  &__content-list-details {
+    margin-bottom: 10px;
+  }
+
+  &__content-list-checkbox {
+    margin-right: 10px;
+  }
+
+  // lifted from permission-page-container
+  // TODO: these look like trash and should be fixed
+  &__content-list-identicon {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+
+    &--default {
+      background-color: #777A87;
+      color: white;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
   }
 
   &--selected {

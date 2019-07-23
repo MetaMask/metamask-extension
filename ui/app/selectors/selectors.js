@@ -52,15 +52,17 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
-  getPermissionsDescriptions,
+  getAllPermissions,
   getPermissionsRequests,
+  getPermissionsDescriptions,
+  getSiteMetadata,
+  getActiveTab,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
   getFeatureFlags,
-  getPermissionsDescriptions,
 }
 
 module.exports = selectors
@@ -343,12 +345,24 @@ function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }
 
+function getAllPermissions (state) {
+  return state.metamask.domains || {}
+}
+
 function getPermissionsDescriptions (state) {
   return state.metamask.permissionsDescriptions
 }
 
 function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests
+}
+
+function getSiteMetadata (state) {
+  return state.metamask.siteMetadata
+}
+
+function getActiveTab (state) {
+  return state.activeTab
 }
 
 function getMetaMetricState (state) {

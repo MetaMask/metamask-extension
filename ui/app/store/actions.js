@@ -322,7 +322,6 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -345,15 +344,12 @@ var actions = {
   createCancelTransaction,
   createSpeedUpTransaction,
 
-  // Provider
-  approveProviderRequestByOrigin,
-  rejectProviderRequestByOrigin,
-  clearApprovedOrigins,
-
   // Permissions
   approvePermissionsRequest,
   rejectPermissionsRequest,
+  removePermissionsFor,
   clearPermissions,
+  selectApprovedAccount,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -2646,15 +2642,22 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-// Provider
+// Permissions
 
-function rejectProviderRequestByOrigin (origin) {
-  return () => {
-    background.rejectProviderRequestByOrigin(origin)
+/**
+ * @param {string} origin
+ */
+function selectApprovedAccount (origin) {
+  return (dispatch) => {
+    background.getApprovedAccounts(origin, (err, accounts) => {
+      if (err) {
+        log.error(err)
+      } else if (Array.isArray(accounts) && accounts.length > 0) {
+        dispatch(actions.setSelectedAddress(accounts[0]))
+      }
+    })
   }
 }
-
-// Permissions
 
 /**
  * Approves the permission requests with the given IDs.
@@ -2673,6 +2676,15 @@ function approvePermissionsRequest (requestId) {
 function rejectPermissionsRequest (requestId) {
   return () => {
     background.rejectPermissionsRequest(requestId)
+  }
+}
+
+/**
+ * Clears the given permissions for the given origin.
+ */
+function removePermissionsFor (domains) {
+  return () => {
+    background.removePermissionsFor(domains)
   }
 }
 
@@ -2794,12 +2806,6 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
-  }
-}
-
-function unsetMigratedPrivacyMode () {
-  return () => {
-    background.unsetMigratedPrivacyMode()
   }
 }
 

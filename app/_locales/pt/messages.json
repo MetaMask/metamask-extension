@@ -2,7 +2,16 @@
   "confirmClear": {
     "message": "Tem certeza de que deseja limpar sites aprovados?"
   },
-  "clearApprovalData": {
+  "clearPermissionsDataSuccess": {
+    "message": "Dados aprovados do website foram limpos com sucesso."
+  },
+  "permissionsData": {
+    "message": "Dados de aprovação"
+  },
+  "permissionsDataDescription": {
+    "message": "Limpe os dados aprovados do website para que todos os sites solicitem aprovação novamente."
+  },
+  "clearPermissionsData": {
     "message": "Limpar dados de aprovação"
   },
   "reject": {
