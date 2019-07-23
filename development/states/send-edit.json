@@ -25,8 +25,6 @@
     },
     "cachedBalances": {},
     "assetImages": {},
-    "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,
     "noActiveNotices": true,
@@ -66,7 +64,22 @@
     ],
     "tokens": [],
     "transactions": {},
-    "selectedAddressTxList": [],
+    "selectedAddressTxList": [{
+      "id": 4768706228115573,
+      "time": 1487363153561,
+      "status": "unapproved",
+      "gasMultiplier": 1,
+      "metamaskNetworkId": "3",
+      "txParams": {
+        "from": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb",
+        "to": "0x2f8d4a878cfa04a6e60d46362f5644deab66572d",
+        "value": "0x1bc16d674ec80000",
+        "metamaskId": 4768706228115573,
+        "metamaskNetworkId": "3",
+        "gas": "0xea60",
+        "gasPrice": "0xba43b7400"
+      }
+    }],
     "unapprovedTxs": {
       "4768706228115573": {
         "id": 4768706228115573,

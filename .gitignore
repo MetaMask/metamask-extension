@@ -11,6 +11,8 @@ package
 .vscode
 .sublime-project
 
+*.bak
+
 # VIM
 *.swp
 *.swo

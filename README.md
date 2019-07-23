@@ -19,6 +19,11 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - If you have issues with node-sass compilation, try `npm rebuild node-sass`
 - Build the project to the `./dist/` folder with `npm run dist`.
 - Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
+    - To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
+      alongside the app, use `npm run start:dev`.
+      - React DevTools will open in a separate window; no browser extension is required
+      - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote DevTools (shown in the context menu and in the extension menu) to access Redux state logs.
+        - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
@@ -66,7 +71,6 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [The MetaMask Team](./docs/team.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
-- [How to manage notices that appear when the app starts up](./docs/notices.md)
 - [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./docs/development-visualization.md)

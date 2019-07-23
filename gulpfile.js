@@ -153,6 +153,7 @@ gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
   .pipe(jsoneditor(function (json) {
     delete json.applications
+    json.minimum_chrome_version = '58'
     return json
   }))
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
@@ -485,7 +486,11 @@ function generateBundler (opts, performBundle) {
   })
 
   if (!opts.buildLib) {
-    browserifyOpts['entries'] = [opts.filepath]
+    if (opts.devMode && opts.filename === 'ui.js') {
+      browserifyOpts['entries'] = ['./development/require-react-devtools.js', opts.filepath]
+    } else {
+      browserifyOpts['entries'] = [opts.filepath]
+    }
   }
 
   let bundler = browserify(browserifyOpts)

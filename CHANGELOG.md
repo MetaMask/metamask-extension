@@ -1,7 +1,23 @@
 # Changelog
 
 ## Current Develop Branch
-- [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI  
+- [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI
+- [#6833](https://github.com/MetaMask/metamask-extension/pull/6833): Fix "npm install" failing due to pinned sub-dependency
+
+## 6.7.2 Mon Jul 01 2019
+
+- [#6713](https://github.com/MetaMask/metamask-extension/pull/6713): * Normalize and Validate txParams in TransactionStateManager.addTx too
+- [#6759](https://github.com/MetaMask/metamask-extension/pull/6759): Update to Node.js v10
+- [#6694](https://github.com/MetaMask/metamask-extension/pull/6694): Fixes #6694
+- [#6743](https://github.com/MetaMask/metamask-extension/pull/6743): * Add tests for ImportWithSeedPhrase#parseSeedPhrase
+- [#6740](https://github.com/MetaMask/metamask-extension/pull/6740): Fixes #6740
+- [#6741](https://github.com/MetaMask/metamask-extension/pull/6741): Fixes #6741
+- [#6761](https://github.com/MetaMask/metamask-extension/pull/6761): Fixes #6760, correct PropTypes for nextRoute
+- [#6754](https://github.com/MetaMask/metamask-extension/pull/6754): Use inline source maps in development
+- [#6589](https://github.com/MetaMask/metamask-extension/pull/6589): Document hotfix protocol
+- [#6738](https://github.com/MetaMask/metamask-extension/pull/6738): Add codeowner for package-lock-old.json package-lock.json package.json packagelock-old.json files
+- [#6648](https://github.com/MetaMask/metamask-extension/pull/6648): Add loading view to notification.html
+- [#6731](https://github.com/MetaMask/metamask-extension/pull/6731): Add brave as a platform type for MetaMask
 
 ## 6.7.1 Fri Jun 28 2019
 - [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
@@ -10,7 +26,7 @@
 
 - [#6623](https://github.com/MetaMask/metamask-extension/pull/6623): Improve contract method data fetching (#6623)
 - [#6551](https://github.com/MetaMask/metamask-extension/pull/6551): Adds 4byte registry fallback to getMethodData() (#6435)
-- [#6718, #6650](https://github.com/MetaMask/metamask-extension/pull/6718, #6650): Add delete to custom RPC form
+- [#6718](https://github.com/MetaMask/metamask-extension/pull/6718): Add delete to custom RPC form
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
 - [#6714](https://github.com/MetaMask/metamask-extension/pull/6714): Wrap smaller custom block explorer url text
 - [#6706](https://github.com/MetaMask/metamask-extension/pull/6706): Pin ethereumjs-tx

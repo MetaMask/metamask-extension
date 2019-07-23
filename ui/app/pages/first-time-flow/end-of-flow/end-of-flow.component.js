@@ -55,9 +55,9 @@ export default class EndOfFlowScreen extends PureComponent {
             rel="noopener noreferrer"
           >
             <span className="first-time-flow__link-text">
-              Learn More
+              {t('endOfFlowMessage9')}
             </span>
-          </a>.
+          </a>
         </div>
         <Button
           type="primary"
@@ -74,7 +74,7 @@ export default class EndOfFlowScreen extends PureComponent {
             history.push(DEFAULT_ROUTE)
           }}
         >
-          { 'All Done' }
+          { t('endOfFlowMessage10') }
         </Button>
       </div>
     )

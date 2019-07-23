@@ -1145,7 +1145,7 @@
   },
   "seedPhraseAlert": {
     "message": "Opozorilo o seed phrase"
-  },  
+  },
   "select": {
     "message": "Izberi"
   },
@@ -1549,6 +1549,6 @@
     "message": "Vaš zasebni seed phrase"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":"Ničelni gas price na pospešitvi"
+    "message": "Ničelni gas price na pospešitvi"
   }
 }

@@ -8,6 +8,17 @@ export default class AdvancedTabContent extends Component {
     t: PropTypes.func,
   }
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      gasPrice: this.props.customGasPrice,
+      gasLimit: this.props.customGasLimit,
+    }
+    this.changeGasPrice = debounce(this.changeGasPrice, 500)
+    this.changeGasLimit = debounce(this.changeGasLimit, 500)
+  }
+
+
   static propTypes = {
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
@@ -20,15 +31,40 @@ export default class AdvancedTabContent extends Component {
     showGasLimitInfoModal: PropTypes.func,
   }
 
-  debouncedGasLimitReset = debounce((dVal) => {
-    if (dVal < 21000) {
-      this.props.updateCustomGasLimit(21000)
-    }
-  }, 1000, { trailing: true })
+  componentDidUpdate (prevProps) {
+    const { customGasPrice: prevCustomGasPrice, customGasLimit: prevCustomGasLimit } = prevProps
+    const { customGasPrice, customGasLimit } = this.props
+    const { gasPrice, gasLimit } = this.state
 
-  onChangeGasLimit = (val) => {
-    this.props.updateCustomGasLimit(val)
-    this.debouncedGasLimitReset(val)
+    if (customGasPrice !== prevCustomGasPrice && customGasPrice !== gasPrice) {
+      this.setState({ gasPrice: customGasPrice })
+    }
+    if (customGasLimit !== prevCustomGasLimit && customGasLimit !== gasLimit) {
+      this.setState({ gasLimit: customGasLimit })
+    }
+  }
+
+  onChangeGasLimit = (e) => {
+    this.setState({ gasLimit: e.target.value })
+    this.changeGasLimit({ target: { value: e.target.value } })
+  }
+
+  changeGasLimit = (e) => {
+    if (e.target.value < 21000) {
+      this.setState({ gasLimit: 21000 })
+      this.props.updateCustomGasLimit(21000)
+    } else {
+      this.props.updateCustomGasLimit(Number(e.target.value))
+    }
+  }
+
+  onChangeGasPrice = (e) => {
+    this.setState({ gasPrice: e.target.value })
+    this.changeGasPrice({ target: { value: e.target.value } })
+  }
+
+  changeGasPrice = (e) => {
+    this.props.updateCustomGasPrice(Number(e.target.value))
   }
 
   gasInputError ({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
@@ -74,7 +110,7 @@ export default class AdvancedTabContent extends Component {
           })}
           type="number"
           value={value}
-          onChange={event => onChange(Number(event.target.value))}
+          onChange={onChange}
         />
         <div className={classnames('advanced-gas-inputs__gas-edit-row__input-arrows', {
           'advanced-gas-inputs__gas-edit-row__input--error': isInError && errorType === 'error',
@@ -82,13 +118,13 @@ export default class AdvancedTabContent extends Component {
         })}>
           <div
             className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-            onClick={() => onChange(value + 1)}
+            onClick={() => onChange({ target: { value: value + 1 } })}
           >
             <i className="fa fa-sm fa-angle-up" />
           </div>
           <div
             className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-            onClick={() => onChange(Math.max(value - 1, 0))}
+            onClick={() => onChange({ target: { value: Math.max(value - 1, 0) } })}
           >
             <i className="fa fa-sm fa-angle-down" />
           </div>
@@ -120,9 +156,6 @@ export default class AdvancedTabContent extends Component {
 
   render () {
     const {
-      customGasPrice,
-      updateCustomGasPrice,
-      customGasLimit,
       insufficientBalance,
       customPriceIsSafe,
       isSpeedUp,
@@ -134,8 +167,8 @@ export default class AdvancedTabContent extends Component {
       <div className="advanced-gas-inputs__gas-edit-rows">
         { this.renderGasEditRow({
           labelKey: 'gasPrice',
-          value: customGasPrice,
-          onChange: updateCustomGasPrice,
+          value: this.state.gasPrice,
+          onChange: this.onChangeGasPrice,
           insufficientBalance,
           customPriceIsSafe,
           showGWEI: true,
@@ -144,7 +177,7 @@ export default class AdvancedTabContent extends Component {
         }) }
         { this.renderGasEditRow({
           labelKey: 'gasLimit',
-          value: customGasLimit,
+          value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           insufficientBalance,
           customPriceIsSafe,

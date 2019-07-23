@@ -68,6 +68,7 @@ class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.getGasPrice = opts.getGasPrice
+    this.inProcessOfSigning = new Set()
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -354,6 +355,15 @@ class TransactionController extends EventEmitter {
     @param txId {number} - the tx's Id
   */
   async approveTransaction (txId) {
+    // TODO: Move this safety out of this function.
+    // Since this transaction is async,
+    // we need to keep track of what is currently being signed,
+    // So that we do not increment nonce + resubmit something
+    // that is already being incrmented & signed.
+    if (this.inProcessOfSigning.has(txId)) {
+      return
+    }
+    this.inProcessOfSigning.add(txId)
     let nonceLock
     try {
       // approve
@@ -387,6 +397,8 @@ class TransactionController extends EventEmitter {
       if (nonceLock) nonceLock.releaseLock()
       // continue with error chain
       throw err
+    } finally {
+      this.inProcessOfSigning.delete(txId)
     }
   }
   /**

@@ -26,6 +26,9 @@ var actions = {
   MODAL_CLOSE: 'UI_MODAL_CLOSE',
   showModal: showModal,
   hideModal: hideModal,
+  // notification state
+  CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
+  closeNotifacationWindow: closeNotifacationWindow,
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -915,7 +918,7 @@ function setCurrentCurrency (currencyCode) {
 
 function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
 
@@ -933,11 +936,7 @@ function signMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -947,7 +946,7 @@ function signMsg (msgData) {
 
 function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -964,11 +963,7 @@ function signPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -978,7 +973,7 @@ function signPersonalMsg (msgData) {
 
 function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -995,11 +990,7 @@ function signTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1257,7 +1248,7 @@ function updateTransaction (txData) {
 
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
@@ -1282,11 +1273,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1320,7 +1307,7 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1334,11 +1321,7 @@ function cancelMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1347,7 +1330,7 @@ function cancelMsg (msgData) {
 }
 
 function cancelPersonalMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1361,11 +1344,7 @@ function cancelPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1374,7 +1353,7 @@ function cancelPersonalMsg (msgData) {
 }
 
 function cancelTypedMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1388,11 +1367,7 @@ function cancelTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1401,7 +1376,7 @@ function cancelTypedMsg (msgData) {
 }
 
 function cancelTx (txData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
@@ -1420,11 +1395,7 @@ function cancelTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1478,7 +1449,9 @@ function cancelAllTx (txsData) {
     txsData.forEach((txData, i) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.completedTx(txData.id))
-        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+        if (i === txsData.length - 1) {
+          dispatch(actions.goHome())
+        }
       })
     })
   }
@@ -2112,6 +2085,23 @@ function hideModal (payload) {
   }
 }
 
+function closeCurrentNotificationWindow () {
+  return (dispatch, getState) => {
+    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+      !hasUnconfirmedTransactions(getState())) {
+      global.platform.closeCurrentWindow()
+
+      dispatch(closeNotifacationWindow())
+    }
+  }
+}
+
+function closeNotifacationWindow () {
+  return {
+    type: actions.CLOSE_NOTIFICATION_WINDOW,
+  }
+}
+
 function showSidebar ({ transitionName, type, props }) {
   return {
     type: actions.SIDEBAR_OPEN,
@@ -2411,18 +2401,21 @@ function reshowQrCode (data, coin) {
   }
 }
 
-function shapeShiftRequest (query, options, cb) {
+function shapeShiftRequest (query, options = {}, cb) {
   var queryResponse, method
-  !options ? options = {} : null
   options.method ? method = options.method : method = 'GET'
 
   var requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
-      cb ? cb(queryResponse) : null
+      if (cb) {
+        cb(queryResponse)
+      }
       return queryResponse
     } catch (e) {
-      cb ? cb({error: e}) : null
+      if (cb) {
+        cb({error: e})
+      }
       return e
     }
   }
