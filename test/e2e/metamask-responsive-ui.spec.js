@@ -156,7 +156,7 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = (await findElements(driver, By.css('button.first-time-flow__button')))[1]
       await nextScreen.click()
       await delay(regularDelayMs)
     })
