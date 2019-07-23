@@ -1,26 +1,84 @@
 const {EventEmitter} = require('events')
-const async = require('async')
+const promisify = require('pify')
 const Dnode = require('dnode')
 const Eth = require('ethjs')
 const EthQuery = require('eth-query')
-const launchMetamaskUi = require('../../ui')
+const PortStream = require('extension-port-stream')
+const extension = require('extensionizer')
+const log = require('loglevel')
+const launchMetamaskUi = promisify(require('../../ui'))
 const StreamProvider = require('web3-stream-provider')
 const {setupMultiplex} = require('./lib/stream-utils.js')
+const ExtensionPlatform = require('./platforms/extension')
+const NotificationManager = require('./lib/notification-manager')
+const setupSentry = require('./lib/setupSentry')
+const { getEnvironmentType } = require('./lib/util')
+const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN } = require('./lib/enums')
 
-module.exports = initializePopup
+const notificationManager = new NotificationManager()
+
+module.exports = startPopup
 
 /**
- * Asynchronously initializes the MetaMask popup UI
+ * Starts the MetaMask popup UI
  *
- * @param {{ container: Element, connectionStream: * }} config Popup configuration object
- * @param {Function} cb Called when initialization is complete
+ * @param {React.Component} Root Root UI component
  */
-function initializePopup ({ container, connectionStream, Root }, cb) {
-  // setup app
-  async.waterfall([
-    (cb) => connectToAccountManager(connectionStream, cb),
-    (backgroundConnection, cb) => launchMetamaskUi({ container, backgroundConnection, Root }, cb),
-  ], cb)
+async function startPopup (Root) {
+  // create platform global
+  global.platform = new ExtensionPlatform()
+
+  // setup sentry error reporting
+  const release = global.platform.getVersion()
+  setupSentry({ release, getState })
+  // provide app state to append to error logs
+  function getState () {
+    // get app state
+    const state = window.getCleanAppState()
+    // remove unnecessary data
+    delete state.localeMessages
+    delete state.metamask.recentBlocks
+    // return state to be added to request
+    return state
+  }
+
+  // identify window type (popup, notification)
+  const windowType = getEnvironmentType(window.location.href)
+  global.METAMASK_UI_TYPE = windowType
+  closePopupIfOpen(windowType)
+
+  // setup stream to background
+  const extensionPort = extension.runtime.connect({ name: windowType })
+  const connectionStream = new PortStream(extensionPort)
+
+  // start ui
+  const container = document.getElementById('app-content')
+  const backgroundConnection = await connectToAccountManager(connectionStream)
+
+  let store
+  try {
+    store = await launchMetamaskUi({ container, backgroundConnection, Root })
+  } catch (error) {
+    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+    container.style.height = '80px'
+    log.error(error.stack)
+    throw error
+  }
+
+  const state = store.getState()
+  const { metamask: { completedOnboarding } = {} } = state
+
+  if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+    global.platform.openExtensionInBrowser()
+    return
+  }
+}
+
+function closePopupIfOpen (windowType) {
+  if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
+    // should close only chrome popup
+    notificationManager.closePopup()
+  }
 }
 
 /**
@@ -29,13 +87,14 @@ function initializePopup ({ container, connectionStream, Root }, cb) {
  * @param {PortDuplexStream} connectionStream PortStream instance establishing a background connection
  * @param {Function} cb Called when controller connection is established
  */
-function connectToAccountManager (connectionStream, cb) {
+async function connectToAccountManager (connectionStream) {
   // setup communication with background
   // setup multiplexing
   const mx = setupMultiplex(connectionStream)
   // connect features
-  setupControllerConnection(mx.createStream('controller'), cb)
   setupWeb3Connection(mx.createStream('provider'))
+  const promisifiedSetupControllerConnection = promisify(setupControllerConnection)
+  return await promisifiedSetupControllerConnection(mx.createStream('controller'))
 }
 
 /**
