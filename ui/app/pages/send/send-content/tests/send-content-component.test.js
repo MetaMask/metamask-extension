@@ -10,6 +10,7 @@ import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendToRow from '../send-to-row/send-to-row.container'
 import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
 import SendAssetRow from '../send-asset-row/send-asset-row.container'
+import { SendRowWrapper } from "../send-row-wrapper/send-row-wrapper.component";
 
 describe('SendContent Component', function () {
   let wrapper
@@ -49,5 +50,12 @@ describe('SendContent Component', function () {
       assert(PageContainerContentChild.childAt(4).is(SendGasRow))
       assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
+  })
+
+  it('should not render the asset dropdown if token length is 0 ', () => {
+    wrapper.setProps({ tokens: [] })
+    const PageContainerContentChild = wrapper.find(PageContainerContent).children()
+    assert(PageContainerContentChild.childAt(2).is(SendAssetRow))
+    assert(PageContainerContentChild.childAt(2).find('send-v2__asset-dropdown__single-asset'), true)
   })
 })
