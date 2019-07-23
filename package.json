@@ -85,7 +85,7 @@
     "eth-method-registry": "^1.2.0",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
-    "eth-sig-util": "^2.0.2",
+    "eth-sig-util": "^2.3.0",
     "eth-token-tracker": "^1.1.5",
     "eth-trezor-keyring": "^0.4.0",
     "ethereumjs-abi": "^0.6.4",
