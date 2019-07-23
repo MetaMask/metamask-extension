@@ -50,4 +50,11 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(5).exists(), false)
     })
   })
+
+  it('should not render the asset dropdown if token length is 0 ', () => {
+    wrapper.setProps({ tokens: [] })
+    const PageContainerContentChild = wrapper.find(PageContainerContent).children()
+    assert(PageContainerContentChild.childAt(2).is(SendAssetRow))
+    assert(PageContainerContentChild.childAt(2).find('send-v2__asset-dropdown__single-asset'), true)
+  })
 })

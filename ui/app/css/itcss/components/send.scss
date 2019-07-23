@@ -646,6 +646,17 @@
     height: 54px;
     border: none;
 
+    &__single-asset {
+      display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        padding: 8px 8px;
+
+        &:hover {
+          background-color: rgba($alto, 0.2);
+        }
+    }
+
     &__asset {
       display: flex;
       flex-flow: row nowrap;
