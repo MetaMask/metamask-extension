@@ -87,7 +87,7 @@ export default class EnsInput extends Component {
       })
       .catch((reason) => {
         if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-          this.props.updateEnsResolutionError(reason.message)
+          this.props.updateEnsResolutionError('ENS name not found on current network')
         } else {
           log.error(reason)
           this.props.updateEnsResolutionError(reason.message)
