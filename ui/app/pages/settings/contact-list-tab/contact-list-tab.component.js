@@ -38,13 +38,16 @@ export default class ContactListTab extends Component {
 
   renderAddButton () {
     const { history } = this.props
-    return <Button
-      type="default"
+    return <div
+      className="address-book-add-button__button"
       onClick={() => {
         history.push(CONTACT_ADD_ROUTE)
       }}>
-      { this.context.t('add') }
-    </Button>
+      <img
+        className="account-menu__item-icon"
+        src="images/plus-btn-white.svg"
+      />
+    </div>
   }
 
   renderMyAccounts () {
@@ -70,10 +73,14 @@ export default class ContactListTab extends Component {
 
   render () {
     return (
-      <div className="address-book">
-        { this.renderMyAccounts() }
-        { this.renderAddresses() }
-        { this.renderAddButton() }
+      <div>
+        <div className="address-book">
+          { this.renderMyAccounts() }
+          { this.renderAddresses() }
+        </div>
+        <div className="address-book-add-button">
+          { this.renderAddButton() }
+        </div>
       </div>
     )
   }

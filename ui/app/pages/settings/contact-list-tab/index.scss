@@ -118,3 +118,27 @@
     }
   }
 }
+
+.address-book-add-button {
+  height: 100%;
+  width: 100;
+  position: inherit;
+
+  &__button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    height: 56px;
+    width: 56px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border-width: 2px;
+    background: #037DD6;
+    margin-right: 5px;
+    cursor: pointer;
+    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.25);
+  }
+}

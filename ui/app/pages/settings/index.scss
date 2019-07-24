@@ -96,6 +96,7 @@
     height: 100%;
     overflow: auto;
     border-top: 1px solid #D8D8D8;
+    transform: rotate(0deg);
 
     &__tabs {
       display: flex;
