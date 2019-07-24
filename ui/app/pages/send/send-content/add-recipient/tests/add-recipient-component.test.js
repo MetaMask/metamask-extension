@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import AddRecipient, { RecipientGroup } from '../add-recipient.component'
+import AddRecipient from '../add-recipient.component'
 import Dialog from '../../../../../components/ui/dialog'
 
 const propsMethodSpies = {
@@ -82,29 +82,28 @@ describe('AddRecipient Component', function () {
 
     it('should render transfer', () => {
       wrapper.setProps({
-        ownedAccounts: [{'0x123': { address: '0x123'}}, {'0x124': { address: '0x124'}}],
-        addressBook: [],
+        ownedAccounts: [{ address: '0x123', name: '123' }, { address: '0x124', name: '124' }],
+        addressBook: [{ address: '0x456', name: 'test-name' }],
       })
+      wrapper.setState({ isShowingTransfer: true })
 
       const xferLink = wrapper.find('.send__select-recipient-wrapper__list__link')
       assert.equal(xferLink.length, 1)
-      assert.equal(wrapper.find('.send__select-recipient-wrapper__group').length, 0)
 
-      const groups = wrapper.find(RecipientGroup)
-      assert.equal(groups.shallow().find('.send__select-recipient-wrapper__group').length, 0)
+
+      const groups = wrapper.find('RecipientGroup')
+      assert.equal(groups.shallow().find('.send__select-recipient-wrapper__group').length, 1)
     })
 
-    it('should render recents', () => {
+    it('should render ContactList', () => {
       wrapper.setProps({
-        // ownedAccounts: [{'0x123': { address: '0x123'}}, {'0x124': { address: '0x124'}}],
+        ownedAccounts: [{ address: '0x123', name: '123' }, { address: '0x124', name: '124' }],
         addressBook: [{ address: '0x125' }],
       })
 
-      const xferLink = wrapper.find('.send__select-recipient-wrapper__list__link')
-      assert.equal(xferLink.length, 0)
+      const contactList = wrapper.find('ContactList')
 
-      const groups = wrapper.find(RecipientGroup)
-      assert.equal(groups.shallow().find('.send__select-recipient-wrapper__group-item').length, 1)
+      assert.equal(contactList.length, 1)
     })
 
     it('should render contacts', () => {
@@ -115,15 +114,15 @@ describe('AddRecipient Component', function () {
           { address: '0x127', name: 'catherine' },
         ],
       })
+      wrapper.setState({ isShowingTransfer: false })
 
       const xferLink = wrapper.find('.send__select-recipient-wrapper__list__link')
       assert.equal(xferLink.length, 0)
 
-      const groups = wrapper.find(RecipientGroup)
-      assert.equal(groups.length, 3)
-      assert.equal(groups.at(0).shallow().find('.send__select-recipient-wrapper__group-item').length, 0)
-      assert.equal(groups.at(1).shallow().find('.send__select-recipient-wrapper__group-item').length, 2)
-      assert.equal(groups.at(2).shallow().find('.send__select-recipient-wrapper__group-item').length, 1)
+      const groups = wrapper.find('ContactList')
+      assert.equal(groups.length, 1)
+
+      assert.equal(groups.find('.send__select-recipient-wrapper__group-item').length, 0)
     })
 
     it('should render error when query has no results', () => {

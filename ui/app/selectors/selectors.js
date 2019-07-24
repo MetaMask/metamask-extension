@@ -213,7 +213,7 @@ function getAddressBook (state) {
     .map(([key, account]) => {
       return Object.assign({}, account, state.metamask.addressBook[key])
     })
-    .filter(entry => entry.chainId.toString() === network)
+    .filter(entry => entry.chainId && entry.chainId.toString() === network)
 
   return addressBookEntries
 }

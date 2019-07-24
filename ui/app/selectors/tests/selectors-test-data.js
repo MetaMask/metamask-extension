@@ -60,6 +60,7 @@ module.exports = {
       {
         'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
         'name': 'Address Book Account 1',
+        'chainId': '3',
       },
     ],
     'tokens': [
