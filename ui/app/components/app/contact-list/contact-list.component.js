@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import RecipientGroup from './recipient-group/recipient-group.component'
-import Fuse from 'fuse.js'
 
 export default class ContactList extends PureComponent {
   static propTypes = {
-    query: PropTypes.string,
-    ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
     searchForContacts: PropTypes.func,
     searchForRecents: PropTypes.func,
+    selectRecipient: PropTypes.func,
+    children: PropTypes.node,
   }
 
   static contextTypes = {
@@ -21,9 +20,9 @@ export default class ContactList extends PureComponent {
   }
 
   renderRecents () {
+    const { t } = this.context
     const { isShowingAllRecent } = this.state
     const nonContacts = this.props.searchForRecents()
-    const { t } = this.context
 
     const showLoadMore = !isShowingAllRecent && nonContacts.length > 2
 
@@ -72,8 +71,7 @@ export default class ContactList extends PureComponent {
   }
 
   render () {
-    const { t } = this.context
-    const { query, ownedAccounts = [], children } = this.props
+    const { children } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">

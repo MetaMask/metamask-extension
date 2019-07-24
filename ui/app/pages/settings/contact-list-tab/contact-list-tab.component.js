@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../components/ui/button'
-import Identicon from '../../../components/ui/identicon'
-import { addressSlicer } from '../../../helpers/utils/util'
+import ContactList from '../../../components/app/contact-list'
 import { CONTACT_ADD_ROUTE, CONTACT_VIEW_ROUTE } from '../../../helpers/constants/routes'
 
 export default class ContactListTab extends Component {
@@ -11,30 +10,25 @@ export default class ContactListTab extends Component {
   }
 
   static propTypes = {
-    addressBook: PropTypes.object,
+    addressBook: PropTypes.array,
     history: PropTypes.object,
-    network: PropTypes.string,
   }
 
   renderAddresses () {
-    const { addressBook, history, network } = this.props
+    const { addressBook, history } = this.props
+    const contacts = addressBook.filter(({ name }) => !!name)
+    const nonContacts = addressBook.filter(({ name }) => !name)
 
     return (
       <div>
-       { Object.keys(addressBook).filter(address => {
-         return addressBook[address].chainId.toString() === network
-        }).map((address) => {
-          return (
-            <div className="address-book__entry" key= { address }
-              onClick={() => {
-                history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
-              }}>
-              <Identicon address= { address } diameter={ 25 }/>
-              <div className="address-book__name"> { addressBook[address].name !== '' ? addressBook[address].name : addressSlicer(address) } </div>
-            </div>
-          )
-        }
-      )}
+        <ContactList
+          addressBook={addressBook}
+          searchForContacts={() => contacts}
+          searchForRecents={() => nonContacts}
+          selectRecipient={(address) => {
+            history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
+          }}
+        />
       </div>
     )
   }

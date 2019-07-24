@@ -42,9 +42,9 @@ export default function RecipientGroup ({ label, items, onSelect }) {
 
 RecipientGroup.propTypes = {
   label: PropTypes.string,
-  items: PropTypes.arrayOf({
+  items: PropTypes.arrayOf(PropTypes.shape({
     address: PropTypes.string,
     name: PropTypes.string,
-  }),
+  })),
   onSelect: PropTypes.func.isRequired,
 }

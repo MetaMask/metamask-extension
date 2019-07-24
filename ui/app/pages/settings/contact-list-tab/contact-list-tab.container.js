@@ -7,7 +7,6 @@ import { getAddressBook } from '../../../selectors/selectors'
 const mapStateToProps = state => {
   return {
     addressBook: getAddressBook(state),
-    network: state.metamask.network,
   }
 }
 
