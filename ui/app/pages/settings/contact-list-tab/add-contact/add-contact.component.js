@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
+import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress } from '../../../../helpers/utils/util'
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class AddContact extends PureComponent {
+
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -21,40 +23,48 @@ export default class AddContact extends PureComponent {
     error: '',
   }
 
-   render () {
+  render () {
+    const { t } = this.context
     const { nickname, address, error } = this.state
     const { history, addToAddressBook } = this.props
 
     return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+      <div className="settings-page__content-row address-book__add-contact">
+        <div className="address-book__add-contact__content">
+            <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+                { t('userName') }
+            </div>
             <TextField
               type="text"
               id="nickname"
-              placeholder={this.context.t('addAlias')}
-              value={nickname}
-              onChange={e => this.setState({ nickname: e.target.value })}
+              value={this.state.newName}
+              onChange={e => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />
+          </div>
+
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+              { t('ethereumPublicAddress') }
+            </div>
             <TextField
               type="text"
               id="address"
-              placeholder={this.context.t('addEthAddress')}
-              value={address}
-              error={error}
-              onChange={e => this.setState({ address: e.target.value })}
+              value={this.state.newAddress}
+              error={this.state.error}
+              onChange={e => this.setState({ newAddress: e.target.value })}
               fullWidth
               margin="dense"
             />
-            </div>
           </div>
+        </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           onSubmit={() => {
-            if (isValidAddress(address)) {
-              addToAddressBook(address, nickname)
+            if (isValidAddress(this.state.newAddress)) {
+              addToAddressBook(this.state.newAddress, this.state.newName)
               history.push(CONTACT_LIST_ROUTE)
             } else {
               this.setState({ error: 'invalid address' })

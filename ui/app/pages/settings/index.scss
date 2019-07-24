@@ -118,6 +118,8 @@
     &__modules {
       overflow-y: auto;
       flex: 1 1 auto;
+      display: flex;
+      flex-flow: column;
 
       @media screen and (max-width: 575px) {
         display: none;

@@ -88,6 +88,18 @@
     }
   }
 
+  &__add-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+      height: 100%;
+    }
+  }
+
   &__my-accounts-button {
     display: flex;
     flex-flow: column;
