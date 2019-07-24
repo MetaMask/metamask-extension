@@ -4,6 +4,8 @@ import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
 import {isValidAddress} from '../../../../helpers/utils/util'
 import Dialog from '../../../../components/ui/dialog'
+import ContactList from '../../../../components/app/contact-list'
+import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
 import {ellipsify} from '../../send.utils'
 
 export default class AddRecipient extends Component {
@@ -42,9 +44,8 @@ export default class AddRecipient extends Component {
   }
 
   searchForContacts = () => {
-    const { addressBook } = this.props
+    const { addressBook, query } = this.props
     let contacts = addressBook.filter(({ name }) => !!name)
-    const { query } = this.props
 
     if (query) {
       if (!this.contactFuse) {
@@ -162,75 +163,29 @@ export default class AddRecipient extends Component {
 
   renderMain () {
     const { t } = this.context
-    const { query, ownedAccounts = [] } = this.props
+    const { query, ownedAccounts = [], addressBook } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        {
-          (ownedAccounts && ownedAccounts.length > 1) && !query && (
-            <div
-              className="send__select-recipient-wrapper__list__link"
-              onClick={() => this.setState({ isShowingTransfer: true })}
-            >
-              { t('transferBetweenAccounts') }
-            </div>
-          )
-        }
-        { this.renderRecents() }
-        { this.renderAddressBook() }
+        <ContactList
+          addressBook={addressBook}
+          searchForContacts={this.searchForContacts.bind(this)}
+          searchForRecents={this.searchForRecents.bind(this)}
+          selectRecipient={this.selectRecipient.bind(this)}
+        >
+          {
+            (ownedAccounts && ownedAccounts.length > 1) && !query && (
+              <div
+                className="send__select-recipient-wrapper__list__link"
+                onClick={() => this.setState({ isShowingTransfer: true })}
+              >
+                { t('transferBetweenAccounts') }
+              </div>
+            )
+          }
+        </ContactList>
       </div>
     )
-  }
-
-  renderRecents () {
-    const { isShowingAllRecent } = this.state
-    const nonContacts = this.searchForRecents()
-    const { t } = this.context
-
-    const showLoadMore = !isShowingAllRecent && nonContacts.length > 2
-
-    return (
-      <div className="send__select-recipient-wrapper__recent-group-wrapper">
-        <RecipientGroup
-          label={t('recents')}
-          items={showLoadMore ? nonContacts.slice(0, 2) : nonContacts}
-          onSelect={this.selectRecipient}
-        />
-        {
-          showLoadMore && (
-            <div
-              className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
-              onClick={() => this.setState({ isShowingAllRecents: true })}
-            >
-              {t('loadMore')}
-            </div>
-          )
-        }
-      </div>
-    )
-  }
-
-  renderAddressBook () {
-    const contacts = this.searchForContacts()
-
-    const contactGroups = contacts.reduce((acc, contact) => {
-      const firstLetter = contact.name.slice(0, 1).toUpperCase()
-      acc[firstLetter] = acc[firstLetter] || []
-      const bucket = acc[firstLetter]
-      bucket.push(contact)
-      return acc
-    }, {})
-
-    return Object
-      .entries(contactGroups)
-      .map(([letter, groupItems]) => (
-        <RecipientGroup
-          key={`${letter}-contract-group`}
-          label={letter}
-          items={groupItems}
-          onSelect={this.selectRecipient}
-        />
-      ))
   }
 
   renderDialogs () {
@@ -278,50 +233,4 @@ export default class AddRecipient extends Component {
     }
   }
 
-}
-
-export function RecipientGroup ({ label, items, onSelect }) {
-  if (!items || !items.length) {
-    return null
-  }
-
-  return (
-    <div className="send__select-recipient-wrapper__group">
-      <div className="send__select-recipient-wrapper__group-label">
-        {label}
-      </div>
-      {
-        items.map(({ address, name }) => (
-          <div
-            key={address}
-            className="send__select-recipient-wrapper__group-item"
-            onClick={() => onSelect(address, name)}
-          >
-            <Identicon address={address} diameter={28} />
-            <div className="send__select-recipient-wrapper__group-item__content">
-              <div className="send__select-recipient-wrapper__group-item__title">
-                {name || ellipsify(address)}
-              </div>
-              {
-                name && (
-                  <div className="send__select-recipient-wrapper__group-item__subtitle">
-                    {ellipsify(address)}
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  )
-}
-
-RecipientGroup.propTypes = {
-  label: PropTypes.string,
-  items: PropTypes.arrayOf({
-    address: PropTypes.string,
-    name: PropTypes.string,
-  }),
-  onSelect: PropTypes.func.isRequired,
 }

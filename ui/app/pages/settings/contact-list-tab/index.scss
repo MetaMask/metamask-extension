@@ -6,6 +6,11 @@
     padding: 16px 14px;
     flex: 0 0 auto;
     border-bottom: 1px solid #dedede;
+
+    &:hover {
+      border: 1px solid #037DD6;
+      cursor: pointer;
+    }
   }
 
   &__name {
