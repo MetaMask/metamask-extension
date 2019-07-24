@@ -63,7 +63,6 @@ function updateQueryParams (newView) {
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
-  unlockAccountMessage: noop,
   showUnapprovedTx: noop,
   platform: {},
   // initial state
