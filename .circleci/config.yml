@@ -96,6 +96,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update npm
+          command: sudo npm install -g npm@6.10.2
+      - run:
           name: Install deps via npm
           command: |
            npm ci
@@ -175,6 +178,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Update npm
+          command: sudo npm install -g npm@6.10.2
       - run:
           name: npm audit
           command: .circleci/scripts/npm-audit

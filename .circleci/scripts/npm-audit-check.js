@@ -13,7 +13,7 @@ for (const advisory of advisories) {
     continue
   }
 
-  count += advisory.findings.some((finding) => (!finding.dev && !finding.optional))
+  count += advisory.findings.length
 }
 
 if (count > 0) {
