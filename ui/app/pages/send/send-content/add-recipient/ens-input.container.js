@@ -1,5 +1,12 @@
 import EnsInput from './ens-input.component'
-import {getAddressBook, getCurrentNetwork, getSendTo, getSendToNickname} from '../../send.selectors'
+import {
+  getCurrentNetwork,
+  getSendTo,
+  getSendToNickname
+} from '../../send.selectors'
+import {
+  getAddressBook,
+} from '../../../../selectors/selectors'
 import {
   updateSendTo,
   updateEnsResolution,

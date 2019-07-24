@@ -52,6 +52,8 @@ const selectors = {
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
+  getAddressBookEntry,
+  getAddressBookEntryName,
 }
 
 module.exports = selectors
@@ -203,7 +205,26 @@ function conversionRateSelector (state) {
 }
 
 function getAddressBook (state) {
-  return state.metamask.addressBook
+  const network = state.metamask.network
+  const addressBookEntries = Object.entries(state.metamask.addressBook)
+    .map(([key, account]) => {
+      return Object.assign({}, account, state.metamask.addressBook[key])
+    })
+    .filter(entry => entry.chainId.toString() === network)
+
+  return addressBookEntries
+}
+
+function getAddressBookEntry (state, address) {
+  const addressBook = getAddressBook(state)
+  const entry = addressBook.find(contact => contact.address === address)
+  return entry
+}
+
+function getAddressBookEntryName (state, address) {
+  const entry = getAddressBookEntry(state, address)
+  const name = entry.name !== '' ? entry.name : addressSlicer(address)
+  return name
 }
 
 function accountsWithSendEtherInfoSelector (state) {

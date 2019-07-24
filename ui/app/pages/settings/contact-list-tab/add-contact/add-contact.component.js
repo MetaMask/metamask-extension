@@ -11,7 +11,6 @@ export default class AddContact extends PureComponent {
   }
 
   static propTypes = {
-    addressBook: PropTypes.object,
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
   }

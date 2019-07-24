@@ -18,10 +18,12 @@ proxyquire('../add-recipient.container.js', {
     },
   },
   '../../send.selectors.js': {
-    getAddressBook: (s) => `mockAddressBook:${s}`,
     getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
     accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
+  },
+  '../../../../selectors/selectors': {
+    getAddressBook: (s) => `mockAddressBook:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })

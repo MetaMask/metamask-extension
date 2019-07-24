@@ -6,6 +6,7 @@ const {
 const {
   getMetaMaskAccounts,
   getSelectedAddress,
+  getAddressBook,
 } = require('../../selectors/selectors')
 const {
   estimateGasPriceFromRecentBlocks,
@@ -17,7 +18,6 @@ import {
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  getAddressBook,
   getAmountConversionRate,
   getBlockGasLimit,
   getConversionRate,
@@ -71,14 +71,6 @@ function accountsWithSendEtherInfoSelector (state) {
   })
 
   return accountsWithSendEtherInfo
-}
-
-function getAddressBook (state) {
-  const addressBookEntries = Object.entries(state.metamask.addressBook).map(([key, account]) => {
-    return Object.assign({}, account, state.metamask.addressBook[key])
-  })
-
-  return addressBookEntries
 }
 
 function getAmountConversionRate (state) {

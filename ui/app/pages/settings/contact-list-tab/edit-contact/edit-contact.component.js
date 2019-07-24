@@ -13,11 +13,11 @@ export default class EditContact extends PureComponent {
   }
 
   static propTypes = {
-    addressBook: PropTypes.object,
     addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
     history: PropTypes.object,
-    match: PropTypes.object,
+    name: PropTypes.string,
+    address: PropTypes.string,
   }
 
   state = {
@@ -28,10 +28,7 @@ export default class EditContact extends PureComponent {
 
    render () {
     const { t } = this.context
-    const { history, match, addressBook, addToAddressBook, removeFromAddressBook } = this.props
-    const address = match.params.id
-    const currentEntry = addressBook[address]
-    const name = currentEntry.name !== '' ? currentEntry.name : addressSlicer(address)
+    const { history, name, addToAddressBook, removeFromAddressBook, address } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
