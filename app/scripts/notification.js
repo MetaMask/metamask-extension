@@ -1,4 +1,4 @@
-const NotificationRoot = require('../../ui/app/pages/notification-root')
+import NotificationRoot from '../../ui/app/pages/notification-root'
 const startPopup = require('./popup-core')
 const log = require('loglevel')
 

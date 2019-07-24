@@ -1,20 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import NotificationRoutes from './routes/notification-routes'
+import Routes from './routes'
 import Root from './root'
 
-const NotificationRoot = (props) => {
+const UiRoot = (props) => {
   const { store } = props
 
   return (
     <Root store={store}>
-      <NotificationRoutes />
+      <Routes />
     </Root>
   )
 }
 
-NotificationRoot.propTypes = {
+UiRoot.propTypes = {
   store: PropTypes.object,
 }
 
-export default NotificationRoot
+export default UiRoot

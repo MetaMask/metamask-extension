@@ -12,7 +12,7 @@
 
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('../ui/app/pages')
+import Root from '../ui/app/pages/ui-root'
 const configureStore = require('../ui/app/store/store')
 const actions = require('../ui/app/store/actions')
 const states = require('./states')
