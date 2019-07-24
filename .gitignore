@@ -2,6 +2,8 @@ npm-debug.log
 node_modules
 yarn.lock
 
+audit.json
+
 app/bower_components
 test/bower_components
 package
