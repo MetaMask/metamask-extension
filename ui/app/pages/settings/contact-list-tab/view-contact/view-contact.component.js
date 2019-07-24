@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
 import Button from '../../../../components/ui/button/button.component'
-import { addressSlicer } from '../../../../helpers/utils/util'
 const copyToClipboard = require('copy-to-clipboard')
 
 function quadSplit (address) {

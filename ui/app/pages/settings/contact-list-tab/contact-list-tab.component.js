@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../../../components/ui/button'
 import ContactList from '../../../components/app/contact-list'
 import {
   CONTACT_ADD_ROUTE,

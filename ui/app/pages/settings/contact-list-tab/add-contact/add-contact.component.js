@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress } from '../../../../helpers/utils/util'
@@ -25,7 +24,6 @@ export default class AddContact extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { nickname, address, error } = this.state
     const { history, addToAddressBook } = this.props
 
     return (
