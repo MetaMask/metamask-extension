@@ -10,9 +10,9 @@ export default function RecipientGroup ({ label, items, onSelect }) {
 
   return (
     <div className="send__select-recipient-wrapper__group">
-      <div className="send__select-recipient-wrapper__group-label">
+      {label && <div className="send__select-recipient-wrapper__group-label">
         {label}
-      </div>
+      </div>}
       {
         items.map(({ address, name }) => (
           <div

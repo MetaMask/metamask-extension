@@ -87,6 +87,10 @@
       line-height: .875rem;
       padding: .5rem 1rem;
       border-bottom: 1px solid $alto;
+
+      &:first-of-type {
+        border-top: 1px solid $alto;
+      }
     }
 
     &__group-item {

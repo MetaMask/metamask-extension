@@ -992,6 +992,12 @@
   "myAccounts": {
     "message": "My Accounts"
   },
+  "myWalletAccounts": {
+    "message": "My Wallet Accounts"
+  },
+  "myWalletAccountsDescription": {
+    "message": "All of your MetaMask created accounts will automatically be added to this section."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },

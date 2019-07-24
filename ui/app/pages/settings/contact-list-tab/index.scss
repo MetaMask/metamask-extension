@@ -75,4 +75,46 @@
       height: 0;
     }
   }
+
+  &__my-accounts-button {
+    display: flex;
+    flex-flow: column;
+    cursor: pointer;
+    padding: 15px;
+
+    &:hover {
+      background-color: rgba(222, 222, 222, 0.2);
+    }
+
+    &__header {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 25px;
+      color: #000000;
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__text {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      color: #6A737D;
+    }
+
+    &__caret {
+      display: block;
+      background-image: url(/images/caret-right.svg);
+      width: 30px;
+      opacity: .5;
+      background-repeat: no-repeat;
+    }
+  }
 }

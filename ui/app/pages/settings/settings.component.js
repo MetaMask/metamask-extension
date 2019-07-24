@@ -14,6 +14,7 @@ import ContactListTab from './contact-list-tab'
 import AddContact from './contact-list-tab/add-contact'
 import EditContact from './contact-list-tab/edit-contact'
 import ViewContact from './contact-list-tab/view-contact'
+import MyAccounts from './contact-list-tab/my-accounts'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -26,6 +27,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  CONTACT_MY_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes'
 import {addressSlicer} from '../../helpers/utils/util'
 
@@ -38,6 +40,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
+  [CONTACT_MY_ACCOUNTS_ROUTE]: 'myAccounts',
 }
 
 class SettingsPage extends PureComponent {
@@ -58,9 +61,10 @@ class SettingsPage extends PureComponent {
   render () {
     const { history, location } = this.props
     const isAddressEntryPage = location.pathname.includes('0x')
+    const isMyAccountsPage = location.pathname.includes('my-accounts')
 
     let backRoute
-    if (isAddressEntryPage) {
+    if (isAddressEntryPage || isMyAccountsPage) {
       backRoute = CONTACT_LIST_ROUTE
     } else {
       backRoute = SETTINGS_ROUTE
@@ -209,6 +213,11 @@ class SettingsPage extends PureComponent {
           exact
           path={CONTACT_ADD_ROUTE}
           component={AddContact}
+        />
+        <Route
+          exact
+          path={CONTACT_MY_ACCOUNTS_ROUTE}
+          component={MyAccounts}
         />
         <Route
           exact

@@ -7,8 +7,6 @@ import { removeFromAddressBook } from '../../../../store/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const address = ownProps.match.params.id
-  console.log('!! ownProps', ownProps)
-  console.log('!! address', address)
   const name = getAddressBookEntryName(state, address)
 
   return {

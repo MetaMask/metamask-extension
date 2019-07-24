@@ -225,8 +225,8 @@ function getAddressBookEntry (state, address) {
 }
 
 function getAddressBookEntryName (state, address) {
-  const entry = getAddressBookEntry(state, address)
-  const name = entry.name !== '' ? entry.name : addressSlicer(address)
+  const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
+  const name = entry && entry.name !== '' ? entry.name : addressSlicer(address)
   return name
 }
 

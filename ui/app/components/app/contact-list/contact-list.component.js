@@ -4,9 +4,9 @@ import RecipientGroup from './recipient-group/recipient-group.component'
 
 export default class ContactList extends PureComponent {
   static propTypes = {
-    addressBook: PropTypes.array,
     searchForContacts: PropTypes.func,
     searchForRecents: PropTypes.func,
+    searchForMyAccounts: PropTypes.func,
     selectRecipient: PropTypes.func,
     children: PropTypes.node,
   }
@@ -70,14 +70,31 @@ export default class ContactList extends PureComponent {
       ))
   }
 
+  renderMyAccounts () {
+    const myAccounts = this.props.searchForMyAccounts()
+
+    return (
+      <RecipientGroup
+        items={myAccounts}
+        onSelect={this.props.selectRecipient}
+      />
+    )
+  }
+
   render () {
-    const { children } = this.props
+    const {
+      children,
+      searchForRecents,
+      searchForContacts,
+      searchForMyAccounts,
+    } = this.props
 
     return (
       <div className="send__select-recipient-wrapper__list">
         { children || null }
-        { this.renderRecents() }
-        { this.renderAddressBook() }
+        { searchForRecents && this.renderRecents() }
+        { searchForContacts && this.renderAddressBook() }
+        { searchForMyAccounts && this.renderMyAccounts() }
       </div>
     )
   }

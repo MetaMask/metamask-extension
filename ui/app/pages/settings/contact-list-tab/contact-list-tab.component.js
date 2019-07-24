@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../components/ui/button'
 import ContactList from '../../../components/app/contact-list'
-import { CONTACT_ADD_ROUTE, CONTACT_VIEW_ROUTE } from '../../../helpers/constants/routes'
+import {
+  CONTACT_ADD_ROUTE,
+  CONTACT_VIEW_ROUTE,
+  CONTACT_MY_ACCOUNTS_ROUTE,
+} from '../../../helpers/constants/routes'
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -22,7 +26,6 @@ export default class ContactListTab extends Component {
     return (
       <div>
         <ContactList
-          addressBook={addressBook}
           searchForContacts={() => contacts}
           searchForRecents={() => nonContacts}
           selectRecipient={(address) => {
@@ -44,9 +47,31 @@ export default class ContactListTab extends Component {
     </Button>
   }
 
+  renderMyAccounts () {
+    const { history } = this.props
+    const { t } = this.context
+    return (
+      <div
+        className="address-book__my-accounts-button"
+        onClick={() => {
+          history.push(CONTACT_MY_ACCOUNTS_ROUTE)
+        }}
+      >
+        <div className="address-book__my-accounts-button__header">{t('myWalletAccounts')}</div>
+        <div className="address-book__my-accounts-button__content">
+          <div className="address-book__my-accounts-button__text">
+            { t('myWalletAccountsDescription') }
+          </div>
+          <div className="address-book__my-accounts-button__caret" />
+        </div>
+      </div>
+    )
+  }
+
   render () {
     return (
-      <div className="address-book-container">
+      <div className="address-book">
+        { this.renderMyAccounts() }
         { this.renderAddresses() }
         { this.renderAddButton() }
       </div>
