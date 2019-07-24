@@ -35,8 +35,12 @@ describe('Actions', () => {
   const password = 'a-fake-password'
   const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
-  beforeEach(async () => {
+  before((done) => {
 
+    nock('https://api.infura.io')
+      .persist()
+      .get(/.*/)
+      .reply(200)
 
     metamaskController = new MetaMaskController({
       provider,
@@ -61,15 +65,16 @@ describe('Actions', () => {
       getThreeBoxSyncingState: sinon.spy(),
     }
 
-    await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+    metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-    await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
 
     background = metamaskController.getApi()
 
     actions._setBackgroundConnection(background)
 
     global.ethQuery = new EthQuery(provider)
+    done()
   })
 
   describe('#tryUnlockMetamask', () => {
@@ -88,11 +93,9 @@ describe('Actions', () => {
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
       verifySeedPhraseSpy = sinon.spy(background, 'verifySeedPhrase')
 
-      return store.dispatch(actions.tryUnlockMetamask())
-        .then(() => {
-          assert(submitPasswordSpy.calledOnce)
-          assert(verifySeedPhraseSpy.calledOnce)
-        })
+      await store.dispatch(actions.tryUnlockMetamask())
+      assert(submitPasswordSpy.calledOnce)
+      assert(verifySeedPhraseSpy.calledOnce)
     })
 
     it('errors on submitPassword will fail', async () => {
@@ -152,18 +155,19 @@ describe('Actions', () => {
       createNewVaultAndRestoreSpy.restore()
     })
 
-    it('restores new vault', async () => {
+    it('restores new vault', (done) => {
 
       const store = mockStore({})
 
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
 
       try {
-        await store.dispatch(actions.createNewVaultAndRestore())
+        store.dispatch(actions.createNewVaultAndRestore())
         assert.fail('Should have thrown error')
       } catch (_) {
         assert(createNewVaultAndRestoreSpy.calledOnce)
       }
+      done()
     })
 
     it('errors when callback in createNewVaultAndRestore throws', async () => {
@@ -192,6 +196,10 @@ describe('Actions', () => {
 
   describe('#requestRevealSeedWords', () => {
     let submitPasswordSpy
+
+    afterEach(() => {
+      submitPasswordSpy.restore()
+    })
 
     it('calls submitPassword in background', () => {
       const store = mockStore()
@@ -231,12 +239,17 @@ describe('Actions', () => {
   describe('#removeAccount', () => {
     let removeAccountSpy
 
+    before(async () => {
+      const store = mockStore()
+      await store.dispatch(actions.tryUnlockMetamask(password))
+    })
+
     afterEach(() => {
       removeAccountSpy.restore()
     })
 
-    it('calls removeAccount in background and expect actions to show account', () => {
-      const store = mockStore(devState)
+    it('calls removeAccount in background and expect actions to show account', async () => {
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -245,11 +258,10 @@ describe('Actions', () => {
 
       removeAccountSpy = sinon.spy(background, 'removeAccount')
 
-      return store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
-        .then(() => {
-          assert(removeAccountSpy.calledOnce)
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      await store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
+
+      assert(removeAccountSpy.calledOnce)
+      assert.deepEqual(store.getActions(), expectedActions)
     })
 
     it('displays warning error message when removeAccount callback errors', async () => {
