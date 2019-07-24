@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import { addressSlicer, isValidAddress } from '../../../../helpers/utils/util'
+import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class EditContact extends PureComponent {

@@ -1,5 +1,4 @@
 import assert from 'assert'
-import sinon from 'sinon'
 import selectors from '../selectors.js'
 const {
   getAddressBook,

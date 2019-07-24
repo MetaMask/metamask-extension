@@ -2,7 +2,7 @@ import EnsInput from './ens-input.component'
 import {
   getCurrentNetwork,
   getSendTo,
-  getSendToNickname
+  getSendToNickname,
 } from '../../send.selectors'
 import {
   getAddressBook,

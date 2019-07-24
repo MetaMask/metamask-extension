@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntryName } from '../../../../selectors/selectors'
 import { removeFromAddressBook } from '../../../../store/actions'
-import { addressSlicer } from '../../../../helpers/utils/util'
-
 
 const mapStateToProps = (state, ownProps) => {
   const address = ownProps.match.params.id
+  console.log('!! ownProps', ownProps)
+  console.log('!! address', address)
   const name = getAddressBookEntryName(state, address)
 
   return {
