@@ -115,7 +115,7 @@ export default class EnsInput extends Component {
     // maybe scan ENS
     if (!input || isValidAddress(input) || !networkHasEnsSupport) {
       updateEnsResolution('')
-      updateEnsResolutionError('')
+      updateEnsResolutionError(!networkHasEnsSupport ? 'Network does not support ENS' : '')
       return
     }
 
