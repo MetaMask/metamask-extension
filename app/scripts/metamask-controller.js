@@ -1649,10 +1649,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
 
-  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
-    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname, rpcPrefs)
-    return rpcUrl
+  async updateAndSetCustomRpc (networkConfig) {
+    await this.networkController.updateRpc(networkConfig)
+    this.networkController.setNetwork(networkConfig)
+    return networkConfig.rpcUrl
   }
 
 
@@ -1664,25 +1664,24 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
-    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail()
-    const rpcSettings = frequentRpcListDetail.find((rpc) => rpcTarget === rpc.rpcUrl)
+  setCustomRpc (opts) {
+    const config = this.networkController.networkConfigs.find((net) => net.rpcUrl === opts.rpcUrl)
 
-    if (rpcSettings) {
-      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname, rpcPrefs)
+    if (config) {
+      this.networkController.setNetwork(config)
     } else {
-      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname, rpcPrefs)
-      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname, rpcPrefs)
+      this.networkController.addNetwork(opts)
+      this.networkController.setNetwork(opts)
     }
-    return rpcTarget
+    return opts.rpcUrl
   }
 
   /**
    * A method for deleting a selected custom URL.
    * @param {string} rpcTarget - A RPC URL to delete.
    */
-  async delCustomRpc (rpcTarget) {
-    await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
+  async delCustomRpc (rpcUrl) {
+    await this.networkController.removeNetwork(rpcUrl)
   }
 
   /**

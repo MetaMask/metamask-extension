@@ -12,7 +12,8 @@ const BlockTracker = require('eth-block-tracker')
 module.exports = createInfuraClient
 
 function createInfuraClient ({ network }) {
-  const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
+  const net = network.split(':')[1]
+  const infuraMiddleware = createInfuraMiddleware({ net, maxAttempts: 5, source: 'metamask' })
   const infuraProvider = providerFromMiddleware(infuraMiddleware)
   const blockTracker = new BlockTracker({ provider: infuraProvider })
 
@@ -33,23 +34,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
   let netId
 
   switch (network) {
-    case 'mainnet':
+    case 'default#eth:mainnet':
       netId = '1'
       chainId = '0x01'
       break
-    case 'ropsten':
+    case 'default#eth:ropsten':
       netId = '3'
       chainId = '0x03'
       break
-    case 'rinkeby':
+    case 'default#eth:rinkeby':
       netId = '4'
       chainId = '0x04'
       break
-    case 'kovan':
+    case 'default#eth:kovan':
       netId = '42'
       chainId = '0x2a'
       break
-    case 'goerli':
+    case 'default#eth:goerli':
       netId = '5'
       chainId = '0x05'
       break

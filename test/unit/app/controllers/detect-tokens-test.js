@@ -3,7 +3,7 @@ const nock = require('nock')
 const sinon = require('sinon')
 const ObservableStore = require('obs-store')
 const DetectTokensController = require('../../../../app/scripts/controllers/detect-tokens')
-const NetworkController = require('../../../../app/scripts/controllers/network/network')
+const NetworkController = require('../../../../app/scripts/controllers/network/index.js')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 
 describe('DetectTokensController', () => {
@@ -48,7 +48,7 @@ describe('DetectTokensController', () => {
     clock = sandbox.useFakeTimers()
     const network = new NetworkController()
     network.initializeProvider(networkControllerProviderConfig)
-    network.setProviderType('mainnet')
+    network.setProviderType('default#eth:mainnet')
     const preferences = new PreferencesController({ network })
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true

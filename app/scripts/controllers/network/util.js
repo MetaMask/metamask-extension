@@ -5,7 +5,7 @@ const {
   MAINNET,
   GOERLI,
   ROPSTEN_CODE,
-  RINKEYBY_CODE,
+  RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
   ROPSTEN_DISPLAY_NAME,
@@ -15,6 +15,8 @@ const {
   GOERLI_DISPLAY_NAME,
 } = require('./enums')
 
+const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+
 const networkToNameMap = {
   [ROPSTEN]: ROPSTEN_DISPLAY_NAME,
   [RINKEBY]: RINKEBY_DISPLAY_NAME,
@@ -22,13 +24,18 @@ const networkToNameMap = {
   [MAINNET]: MAINNET_DISPLAY_NAME,
   [GOERLI]: GOERLI_DISPLAY_NAME,
   [ROPSTEN_CODE]: ROPSTEN_DISPLAY_NAME,
-  [RINKEYBY_CODE]: RINKEBY_DISPLAY_NAME,
+  [RINKEBY_CODE]: RINKEBY_DISPLAY_NAME,
   [KOVAN_CODE]: KOVAN_DISPLAY_NAME,
   [GOERLI_CODE]: GOERLI_DISPLAY_NAME,
 }
 
 const getNetworkDisplayName = key => networkToNameMap[key]
 
+function isInfura (type) {
+  return INFURA_PROVIDER_TYPES.includes(type)
+}
+
 module.exports = {
   getNetworkDisplayName,
+  isInfura,
 }

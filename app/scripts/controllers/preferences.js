@@ -11,7 +11,6 @@ class PreferencesController {
    * @typedef {Object} PreferencesController
    * @param {object} opts Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
-	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
@@ -28,7 +27,6 @@ class PreferencesController {
    */
   constructor (opts = {}) {
     const initState = extend({
-      frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
       assetImages: {},
@@ -464,86 +462,6 @@ class PreferencesController {
       this.store.updateState({ currentAccountTab })
       resolve()
     })
-  }
-
-  /**
-   * updates custom RPC details
-   *
-   * @param {string} url The RPC url to add to frequentRpcList.
-   * @param {number} chainId Optional chainId of the selected network.
-   * @param {string} ticker   Optional ticker symbol of the selected network.
-   * @param {string} nickname Optional nickname of the selected network.
-   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
-   *
-   */
-
-
-  updateRpc (newRpcDetails) {
-    const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === newRpcDetails.rpcUrl })
-    if (index > -1) {
-      const rpcDetail = rpcList[index]
-      const updatedRpc = extend(rpcDetail, newRpcDetails)
-      rpcList[index] = updatedRpc
-      this.store.updateState({ frequentRpcListDetail: rpcList })
-    } else {
-      const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
-      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
-    }
-    return Promise.resolve(rpcList)
-  }
-  /**
-   * Adds custom RPC url to state.
-   *
-   * @param {string} url The RPC url to add to frequentRpcList.
-   * @param {number} chainId Optional chainId of the selected network.
-   * @param {string} ticker   Optional ticker symbol of the selected network.
-   * @param {string} nickname Optional nickname of the selected network.
-   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
-   *
-   */
-    addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
-      const rpcList = this.getFrequentRpcListDetail()
-      const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
-      if (index !== -1) {
-        rpcList.splice(index, 1)
-      }
-      if (url !== 'http://localhost:8545') {
-        let checkedChainId
-        if (!!chainId && !Number.isNaN(parseInt(chainId))) {
-          checkedChainId = chainId
-        }
-        rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
-      }
-      this.store.updateState({ frequentRpcListDetail: rpcList })
-      return Promise.resolve(rpcList)
-    }
-
-  /**
-   * Removes custom RPC url from state.
-   *
-   * @param {string} url The RPC url to remove from frequentRpcList.
-   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
-   *
-   */
-  removeFromFrequentRpcList (url) {
-    const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
-    if (index !== -1) {
-      rpcList.splice(index, 1)
-    }
-    this.store.updateState({ frequentRpcListDetail: rpcList })
-    return Promise.resolve(rpcList)
-  }
-
-  /**
-   * Getter for the `frequentRpcListDetail` property.
-   *
-   * @returns {array<array>} An array of rpc urls.
-   *
-   */
-  getFrequentRpcListDetail () {
-    return this.store.getState().frequentRpcListDetail
   }
 
   /**
