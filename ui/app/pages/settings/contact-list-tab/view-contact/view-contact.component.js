@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
 import Button from '../../../../components/ui/button/button.component'
+import { addressSlicer } from '../../../../helpers/utils/util'
 const copyToClipboard = require('copy-to-clipboard')
+
+function quadSplit (address) {
+  return '0x' + address.slice(2).match(/.{1,4}/g).join(' ')
+}
 
 export default class ViewContact extends PureComponent {
 
@@ -63,13 +68,13 @@ export default class ViewContact extends PureComponent {
             </div>
             <div className="address-book__view-contact__group__value">
               <div
-                className="address-book__view-contact__group__value"
-                onClick={() => copyToClipboard(address)}
+                className="address-book__view-contact__group__static-address"
               >
-                { address }
+                { quadSplit(address) }
               </div>
               <img
-                className="address-book__view-contact__group__value--copy-icon"
+                className="address-book__view-contact__group__static-address--copy-icon"
+                onClick={() => copyToClipboard(address)}
                 src="/images/copy-to-clipboard.svg"
               />
             </div>

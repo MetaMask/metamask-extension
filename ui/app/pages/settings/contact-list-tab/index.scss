@@ -42,11 +42,12 @@
         margin-bottom: .25rem;
       }
 
-      &__value {
+      &__value, &__static-address {
         display: flex;
         flex-flow: row nowrap;
         font-size: 1.125rem;
         color: $Grey-800;
+        word-break: break-word;
 
         &--address {
           font-size: 0.875rem;
@@ -54,6 +55,17 @@
 
         &--copy-icon {
           padding-left: 4px;
+        }
+      }
+
+      &__static-address {
+        font-size: 0.875rem;
+        &--copy-icon {
+          cursor: pointer;
+
+          &:hover {
+            color: black;
+          }
         }
       }
 
@@ -121,8 +133,7 @@
 
 .address-book-add-button {
   height: 100%;
-  width: 100;
-  position: inherit;
+  width: 100%;
 
   &__button {
     position: absolute;
