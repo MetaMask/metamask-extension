@@ -76,9 +76,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    ...ownProps,
     txData,
     cancel,
     sign,
