@@ -56,7 +56,15 @@ class SettingsPage extends PureComponent {
   }
 
   render () {
-    const { history } = this.props
+    const { history, location } = this.props
+    const isAddressEntryPage = location.pathname.includes('0x')
+
+    let backRoute
+    if (isAddressEntryPage) {
+      backRoute = CONTACT_LIST_ROUTE
+    } else {
+      backRoute = SETTINGS_ROUTE
+    }
 
     return (
       <div
@@ -69,7 +77,7 @@ class SettingsPage extends PureComponent {
             !this.isCurrentPath(SETTINGS_ROUTE) && !this.isCurrentPath(NETWORKS_ROUTE) && (
               <div
                 className="settings-page__back-button"
-                onClick={() => history.push(SETTINGS_ROUTE)}
+                onClick={() => history.push(backRoute)}
               />
             )
           }
@@ -99,9 +107,10 @@ class SettingsPage extends PureComponent {
     let titleText
 
     const pathnameI18nKey = ROUTES_TO_I18N_KEYS[location.pathname]
+    const isAddressEntryPage = location.pathname.includes('0x')
     const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
 
-    if (isPopupView && location.pathname.includes('0x')) {
+    if (isPopupView && isAddressEntryPage) {
       titleText = addressSlicer(location.pathname.slice(-42))
     } else if (pathnameI18nKey && isPopupView) {
       titleText = t(pathnameI18nKey)
@@ -119,10 +128,14 @@ class SettingsPage extends PureComponent {
   renderSubHeader () {
     const { t } = this.context
     const { location: { pathname } } = this.props
+    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+
     let subheaderText
 
-    if (pathname.includes('0x')) {
+    if (isPopupView && pathname.includes('0x')) {
       subheaderText = t('settings')
+    } else if (pathname.includes('0x')) {
+      subheaderText = addressSlicer(pathname.slice(-42))
     } else {
       subheaderText = t(ROUTES_TO_I18N_KEYS[pathname] || 'general')
     }

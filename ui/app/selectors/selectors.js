@@ -9,6 +9,9 @@ import {
 const {
   multiplyCurrencies,
 } = require('../helpers/utils/conversion-util')
+import {
+  addressSlicer,
+} from '../helpers/utils/util'
 
 const selectors = {
   getSelectedAddress,
