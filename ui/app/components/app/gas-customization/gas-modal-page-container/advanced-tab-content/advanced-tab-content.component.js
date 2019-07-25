@@ -126,7 +126,7 @@ export default class AdvancedTabContent extends Component {
           <div className="advanced-tab__transaction-data-summary__fee">
             {transactionFee}
           </div>
-          <div className="time-remaining">{timeRemaining}</div>
+          <div className="advanced-tab__transaction-data-summary__time-remaining">{timeRemaining}</div>
         </div>
       </div>
     )
