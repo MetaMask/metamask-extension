@@ -31,7 +31,7 @@ export default class AddToAddressBookModal extends Component {
   }
 
   onKeyPress = e => {
-    if (e.key === 'Enter' && this.state.alias) {
+    if (e.keyCode === 13 && this.state.alias) {
       this.onSave()
     }
   }
