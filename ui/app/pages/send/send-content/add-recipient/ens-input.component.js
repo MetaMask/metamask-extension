@@ -4,11 +4,11 @@ import c from 'classnames'
 import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
 import {ellipsify} from '../../send.utils'
 
-const debounce = require('debounce')
-const copyToClipboard = require('copy-to-clipboard/index')
-const ENS = require('ethjs-ens')
-const networkMap = require('ethjs-ens/lib/network-map.json')
-const log = require('loglevel')
+import debounce from 'debounce'
+import copyToClipboard from 'copy-to-clipboard/index'
+import ENS from 'ethjs-ens'
+import networkMap from 'ethjs-ens/lib/network-map.json'
+import log from 'loglevel'
 
 
 // Local Constants

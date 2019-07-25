@@ -1960,7 +1960,10 @@ function addToAddressBook (recipient, nickname = '') {
   }
 }
 
-// Calls the addressBookController to remove an existing address.
+/**
+ * @description Calls the addressBookController to remove an existing address.
+ * @param {String} addressToRemove - Address of the entry to remove from the address book
+ */
 function removeFromAddressBook (addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
   return (dispatch) => {

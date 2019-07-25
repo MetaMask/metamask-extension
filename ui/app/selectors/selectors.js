@@ -209,10 +209,7 @@ function conversionRateSelector (state) {
 
 function getAddressBook (state) {
   const network = state.metamask.network
-  const addressBookEntries = Object.entries(state.metamask.addressBook)
-    .map(([key, account]) => {
-      return Object.assign({}, account, state.metamask.addressBook[key])
-    })
+  const addressBookEntries = Object.values(state.metamask.addressBook)
     .filter(entry => entry.chainId && entry.chainId.toString() === network)
 
   return addressBookEntries
@@ -226,8 +223,7 @@ function getAddressBookEntry (state, address) {
 
 function getAddressBookEntryName (state, address) {
   const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
-  const name = entry && entry.name !== '' ? entry.name : addressSlicer(address)
-  return name
+  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
 }
 
 function accountsWithSendEtherInfoSelector (state) {

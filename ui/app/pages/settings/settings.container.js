@@ -35,9 +35,10 @@ const ROUTES_TO_I18N_KEYS = {
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
+  const pathNameTail = pathname.match(/[^/]+$/)[0]
 
-  const isAddressEntryPage = pathname.includes('0x')
-  const isMyAccountsPage = pathname.includes('my-accounts')
+  const isAddressEntryPage = pathNameTail.includes('0x')
+  const isMyAccountsPage = pathNameTail === 'my-accounts'
 
   const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
@@ -49,8 +50,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = SETTINGS_ROUTE
   }
 
-  const address = pathname.slice(-42)
-  const addressName = getAddressBookEntryName(state, isValidAddress(address) ? address : '')
+  const addressName = getAddressBookEntryName(state, isValidAddress(pathNameTail) ? pathNameTail : '')
 
   return {
     isAddressEntryPage,

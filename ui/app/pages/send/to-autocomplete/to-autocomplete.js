@@ -39,10 +39,6 @@ ToAutoComplete.prototype.renderDropdown = function () {
 
   return !!accountsToRender.length && h('div', {}, [
 
-    // h('div.send-v2__from-dropdown__close-area', {
-    //   onClick: closeDropdown,
-    // }),
-
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accountsToRender.map(account => h(AccountListItem, {
@@ -117,10 +113,6 @@ ToAutoComplete.prototype.render = function () {
       style: { color: '#33333' },
       onClick: () => this.props.scanQrCode(),
     })),
-    // !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {
-    //   style: { color: '#dedede' },
-    //   onClick: () => this.handleInputEvent(),
-    // }),
 
     this.renderDropdown(),
 

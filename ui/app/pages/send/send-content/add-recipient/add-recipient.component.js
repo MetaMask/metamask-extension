@@ -29,6 +29,34 @@ export default class AddRecipient extends Component {
     nonContacts: PropTypes.array,
   }
 
+  constructor (props) {
+    super(props)
+    this.recentFuse = new Fuse(props.nonContacts, {
+      shouldSort: true,
+      threshold: 0.45,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [
+        { name: 'address', weight: 0.5 },
+      ],
+    })
+
+    this.contactFuse = new Fuse(props.contacts, {
+      shouldSort: true,
+      threshold: 0.45,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [
+        { name: 'name', weight: 0.5 },
+        { name: 'address', weight: 0.5 },
+      ],
+    })
+  }
+
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -52,22 +80,7 @@ export default class AddRecipient extends Component {
     let _contacts = contacts
 
     if (query) {
-      if (!this.contactFuse) {
-        this.contactFuse = new Fuse(contacts, {
-          shouldSort: true,
-          threshold: 0.45,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          minMatchCharLength: 1,
-          keys: [
-            { name: 'name', weight: 0.5 },
-            { name: 'address', weight: 0.5 },
-          ],
-        })
-      } else {
-        this.contactFuse.setCollection(contacts)
-      }
+      this.contactFuse.setCollection(contacts)
       _contacts = this.contactFuse.search(query)
     }
 
@@ -80,21 +93,7 @@ export default class AddRecipient extends Component {
     let _nonContacts = nonContacts
 
     if (query) {
-      if (!this.recentFuse) {
-        this.recentFuse = new Fuse(nonContacts, {
-          shouldSort: true,
-          threshold: 0.45,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          minMatchCharLength: 1,
-          keys: [
-            { name: 'address', weight: 0.5 },
-          ],
-        })
-      } else {
-        this.recentFuse.setCollection(nonContacts)
-      }
+      this.recentFuse.setCollection(nonContacts)
       _nonContacts = this.recentFuse.search(query)
     }
 

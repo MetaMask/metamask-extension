@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
 import Button from '../../../../components/ui/button/button.component'
-const copyToClipboard = require('copy-to-clipboard')
+import copyToClipboard from 'copy-to-clipboard'
 
 function quadSplit (address) {
   return '0x' + address.slice(2).match(/.{1,4}/g).join(' ')
