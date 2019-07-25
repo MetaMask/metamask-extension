@@ -24,6 +24,7 @@ export default class AddRecipient extends Component {
     selectedToken: PropTypes.object,
     hasHexData: PropTypes.bool,
     tokens: PropTypes.array,
+    addressBookEntryName: PropTypes.string,
   }
 
   static contextTypes = {
@@ -94,7 +95,7 @@ export default class AddRecipient extends Component {
   }
 
   render () {
-    const { ensResolution, query } = this.props
+    const { ensResolution, query, addressBookEntryName } = this.props
     const { isShowingTransfer } = this.state
 
     let content
@@ -102,7 +103,7 @@ export default class AddRecipient extends Component {
     if (isValidAddress(query)) {
       content = this.renderExplicitAddress(query)
     } else if (ensResolution) {
-      content = this.renderExplicitAddress(ensResolution, query)
+      content = this.renderExplicitAddress(ensResolution, addressBookEntryName || query)
     } else if (isShowingTransfer) {
       content = this.renderTransfer()
     }
