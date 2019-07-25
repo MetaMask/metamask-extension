@@ -5,6 +5,8 @@ import { Redirect } from 'react-router-dom'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -52,7 +54,10 @@ export default class Home extends PureComponent {
     } = this.props
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+      if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+        return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+      }
+      return global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
     }
 
     if (providerRequests && providerRequests.length > 0) {

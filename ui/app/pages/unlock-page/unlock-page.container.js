@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes'
 import {
   tryUnlockMetamask,
@@ -36,9 +36,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onImport = () => {
     markPasswordForgotten()
-    history.push(RESTORE_VAULT_ROUTE)
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+      history.push(RESTORE_VAULT_ROUTE)
+    } else {
       global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
     }
   }

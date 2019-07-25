@@ -56,7 +56,7 @@ export default class NotificationHome extends PureComponent {
     }
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+      return global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
     }
 
     if (providerRequests && providerRequests.length > 0) {
