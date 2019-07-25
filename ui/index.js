@@ -60,6 +60,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   backgroundConnection.on('update', function (metamaskState) {
+    console.log('metamaskState', metamaskState)
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 

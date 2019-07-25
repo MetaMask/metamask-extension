@@ -30,6 +30,9 @@ import {
   getSendEnsResolution,
   getSendEnsResolutionError,
 } from './send.selectors'
+import {
+  getAddressBook,
+} from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
@@ -51,6 +54,9 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
+import {
+  isValidENSAddress,
+} from '../../helpers/utils/util'
 
 import {
   SEND_ROUTE,
@@ -87,6 +93,7 @@ function mapStateToProps (state) {
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
     qrCodeData: getQrCodeData(state),
+    addressBook: getAddressBook(state),
   }
 }
 
@@ -123,5 +130,13 @@ function mapDispatchToProps (dispatch) {
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     updateSendEnsResolution: (ensResolution) => dispatch(updateSendEnsResolution(ensResolution)),
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
+    updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
+      if (isValidENSAddress(toNickname)) {
+        const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
+        if (!addressBookEntry.name !== toNickname) {
+          dispatch(updateSendTo(to, addressBookEntry.name || ''))
+        }
+      }
+    },
   }
 }

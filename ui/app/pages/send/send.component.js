@@ -97,6 +97,10 @@ export default class SendTransactionScreen extends PersistentForm {
       updateSendErrors,
       updateSendTokenBalance,
       tokenContract,
+      to,
+      toNickname,
+      addressBook,
+      updateToNicknameIfNecessary,
     } = this.props
 
     const {
@@ -151,6 +155,7 @@ export default class SendTransactionScreen extends PersistentForm {
           tokenContract,
           address,
         })
+        updateToNicknameIfNecessary(to, toNickname, addressBook)
         this.updateGas()
       }
     }
