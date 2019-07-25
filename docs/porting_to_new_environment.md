@@ -99,7 +99,6 @@ In that file, there's a lot going on, so it's maybe worth focusing on our MetaMa
 const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
-    unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
     // initial state
     initState,
