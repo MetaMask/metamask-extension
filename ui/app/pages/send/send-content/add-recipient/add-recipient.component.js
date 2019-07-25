@@ -25,6 +25,8 @@ export default class AddRecipient extends Component {
     hasHexData: PropTypes.bool,
     tokens: PropTypes.array,
     addressBookEntryName: PropTypes.string,
+    contacts: PropTypes.array,
+    nonContacts: PropTypes.array,
   }
 
   static contextTypes = {
@@ -45,8 +47,9 @@ export default class AddRecipient extends Component {
   }
 
   searchForContacts = () => {
-    const { addressBook, query } = this.props
-    let contacts = addressBook.filter(({ name }) => !!name)
+    const { query, contacts } = this.props
+
+    let _contacts = contacts
 
     if (query) {
       if (!this.contactFuse) {
@@ -62,17 +65,19 @@ export default class AddRecipient extends Component {
             { name: 'address', weight: 0.5 },
           ],
         })
+      } else {
+        this.contactFuse.setCollection(contacts)
       }
-      contacts = this.contactFuse.search(query)
+      _contacts = this.contactFuse.search(query)
     }
 
-    return contacts
+    return _contacts
   }
 
   searchForRecents = () => {
-    const { addressBook, query } = this.props
+    const { query, nonContacts } = this.props
 
-    let nonContacts = addressBook.filter(({ name }) => !name)
+    let _nonContacts = nonContacts
 
     if (query) {
       if (!this.recentFuse) {
@@ -87,11 +92,13 @@ export default class AddRecipient extends Component {
             { name: 'address', weight: 0.5 },
           ],
         })
+      } else {
+        this.recentFuse.setCollection(nonContacts)
       }
-      nonContacts = this.recentFuse.search(query)
+      _nonContacts = this.recentFuse.search(query)
     }
 
-    return nonContacts
+    return _nonContacts
   }
 
   render () {

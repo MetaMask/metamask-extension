@@ -24,12 +24,16 @@ function mapStateToProps (state) {
     addressBookEntryName = addressBookEntry.name
   }
 
+  const addressBook = getAddressBook(state)
+
   return {
     ownedAccounts: accountsWithSendEtherInfoSelector(state),
-    addressBook: getAddressBook(state),
+    addressBook,
     ensResolution,
     addressBookEntryName,
     ensResolutionError: getSendEnsResolutionError(state),
+    contacts: addressBook.filter(({ name }) => !!name),
+    nonContacts: addressBook.filter(({ name }) => !name),
   }
 }
 
