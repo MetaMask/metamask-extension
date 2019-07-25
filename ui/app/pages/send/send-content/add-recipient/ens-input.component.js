@@ -30,6 +30,8 @@ export default class EnsInput extends Component {
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
     addressBook: PropTypes.array,
+    onPaste: PropTypes.func,
+    onReset: PropTypes.func,
   }
 
   state = {
@@ -69,9 +71,9 @@ export default class EnsInput extends Component {
   }
 
   resetInput = () => {
-    const { updateSendTo, updateEnsResolution, updateEnsResolutionError } = this.props
+    const { updateEnsResolution, updateEnsResolutionError, onReset } = this.props
     this.onChange({ target: { value: '' } })
-    updateSendTo('', '')
+    onReset()
     updateEnsResolution('')
     updateEnsResolutionError('')
   }
@@ -98,13 +100,12 @@ export default class EnsInput extends Component {
   onPaste = event => {
     event.clipboardData.items[0].getAsString(text => {
       if (isValidAddress(text)) {
-        this.props.updateSendTo(text)
+        this.props.onPaste(text)
       }
     })
   }
 
   onChange = e => {
-    console.log('onchange', e.target.value)
     const { network, onChange, updateEnsResolution, updateEnsResolutionError } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)

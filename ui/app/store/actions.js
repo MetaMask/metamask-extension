@@ -196,10 +196,10 @@ var actions = {
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
-  UPDATE_ENS_RESOLUTION: 'UPDATE_ENS_RESOLUTION',
-  UPDATE_ENS_RESOLUTION_ERROR: 'UPDATE_ENS_RESOLUTION_ERROR',
-  updateEnsResolution,
-  updateEnsResolutionError,
+  UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
+  UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -1085,16 +1085,16 @@ function clearSend () {
   }
 }
 
-function updateEnsResolution (ensResolution) {
+function updateSendEnsResolution (ensResolution) {
   return {
-    type: actions.UPDATE_ENS_RESOLUTION,
+    type: actions.UPDATE_SEND_ENS_RESOLUTION,
     payload: ensResolution,
   }
 }
 
-function updateEnsResolutionError (errorMessage) {
+function updateSendEnsResolutionError (errorMessage) {
   return {
-    type: actions.UPDATE_ENS_RESOLUTION_ERROR,
+    type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,
   }
 }

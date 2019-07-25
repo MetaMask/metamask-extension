@@ -38,6 +38,8 @@ import {
   setGasTotal,
   showQrScanner,
   qrCodeDetected,
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
 } from '../../store/actions'
 import {
   resetSendState,
@@ -119,5 +121,7 @@ function mapDispatchToProps (dispatch) {
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
+    updateSendEnsResolution: (ensResolution) => dispatch(updateSendEnsResolution(ensResolution)),
+    updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
   }
 }

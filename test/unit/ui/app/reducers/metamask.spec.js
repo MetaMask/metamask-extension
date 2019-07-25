@@ -497,7 +497,7 @@ describe('MetaMask Reducers', () => {
 
   it('update ensResolution', () => {
     const state = reduceMetamask({}, {
-      type: actions.UPDATE_ENS_RESOLUTION,
+      type: actions.UPDATE_SEND_ENS_RESOLUTION,
       payload: '0x1337',
     })
 
@@ -507,7 +507,7 @@ describe('MetaMask Reducers', () => {
 
   it('update ensResolutionError', () => {
     const state = reduceMetamask({}, {
-      type: actions.UPDATE_ENS_RESOLUTION_ERROR,
+      type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
       payload: 'ens name not found',
     })
 
