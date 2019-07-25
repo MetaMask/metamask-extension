@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import { isValidAddress } from '../../../../helpers/utils/util'
+import { isValidAddress, isValidENSAddress } from '../../../../helpers/utils/util'
+import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
+import debounce from 'lodash.debounce'
 
 export default class AddContact extends PureComponent {
 
@@ -14,17 +16,53 @@ export default class AddContact extends PureComponent {
   static propTypes = {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
+    scanQrCode: PropTypes.func,
   }
 
   state = {
     nickname: '',
-    address: '',
+    ethAddress: '',
+    ensAddress: '',
     error: '',
+    ensError: '',
+  }
+
+  constructor (props) {
+    super(props)
+    this.dValidate = debounce(this.validate, 1000)
+  }
+
+  validate = address => {
+    const valid = isValidAddress(address)
+    const validEnsAddress = isValidENSAddress(address)
+    if (valid || validEnsAddress || address === '') {
+      this.setState({ error: '', ethAddress: address })
+    } else {
+      this.setState({ error: 'Invalid Address' })
+    }
+  }
+
+  renderInput () {
+    return (
+      <EnsInput
+        className="send__to-row"
+        scanQrCode={_ => { this.props.scanQrCode() }}
+        onChange={this.dValidate}
+        onPaste={text => this.setState({ ethAddress: text })}
+        onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
+        updateEnsResolution={address => {
+          this.setState({ ensAddress: address, error: '', ensError: '' })
+        }}
+        updateEnsResolutionError={message => this.setState({ ensError: message })}
+      />
+    )
   }
 
   render () {
     const { t } = this.context
     const { history, addToAddressBook } = this.props
+
+    const errorToRender = this.state.ensError || this.state.error
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
@@ -47,26 +85,16 @@ export default class AddContact extends PureComponent {
             <div className="address-book__view-contact__group__label">
               { t('ethereumPublicAddress') }
             </div>
-            <TextField
-              type="text"
-              id="address"
-              value={this.state.newAddress}
-              error={this.state.error}
-              onChange={e => this.setState({ newAddress: e.target.value })}
-              fullWidth
-              margin="dense"
-            />
+            { this.renderInput() }
+            { errorToRender && <div className="address-book__add-contact__error">{errorToRender}</div>}
           </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
+          disabled={Boolean(this.state.error)}
           onSubmit={() => {
-            if (isValidAddress(this.state.newAddress)) {
-              addToAddressBook(this.state.newAddress, this.state.newName)
-              history.push(CONTACT_LIST_ROUTE)
-            } else {
-              this.setState({ error: 'invalid address' })
-            }
+            addToAddressBook(this.state.ensAddress || this.state.ethAddress, this.state.newName)
+            history.push(CONTACT_LIST_ROUTE)
           }}
           onCancel={() => {
             history.push(CONTACT_LIST_ROUTE)

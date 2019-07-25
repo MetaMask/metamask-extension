@@ -98,6 +98,13 @@
       flex: 1 1 auto;
       height: 100%;
     }
+
+    &__error {
+      font-size: 12px;
+      line-height: 12px;
+      left: 8px;
+      color: $red;
+    }
   }
 
   &__my-accounts-button {
