@@ -37,7 +37,7 @@ export default class ContactList extends PureComponent {
           showLoadMore && (
             <div
               className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
-              onClick={() => this.setState({ isShowingAllRecents: true })}
+              onClick={() => this.setState({ isShowingAllRecent: true })}
             >
               {t('loadMore')}
             </div>
