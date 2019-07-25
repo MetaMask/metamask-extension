@@ -18,6 +18,8 @@ export default class AddContact extends PureComponent {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
+    qrCodeData: PropTypes.object,
+    qrCodeDetected: PropTypes.func,
   }
 
   state = {
@@ -31,6 +33,20 @@ export default class AddContact extends PureComponent {
   constructor (props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.qrCodeData) {
+      if (nextProps.qrCodeData.type === 'address') {
+        const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
+        const currentAddress = this.state.ensAddress || this.state.ethAddress
+        if (currentAddress.toLowerCase() !== scannedAddress) {
+          this.setState({ ethAddress: scannedAddress, ensAddress: '' })
+          // Clean up QR code data after handling
+          this.props.qrCodeDetected(null)
+        }
+      }
+    }
   }
 
   validate = address => {
