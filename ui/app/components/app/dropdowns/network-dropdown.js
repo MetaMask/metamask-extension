@@ -32,9 +32,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: () => {
-      dispatch(actions.hideModal())
-    },
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     },
@@ -47,7 +44,6 @@ function mapDispatchToProps (dispatch) {
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
     },
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setNetworksTabAddMode: isInAddMode => dispatch(actions.setNetworksTabAddMode(isInAddMode)),
   }
