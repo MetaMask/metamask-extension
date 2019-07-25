@@ -15,7 +15,7 @@ export default class AddToAddressBookModal extends Component {
   }
 
   state = {
-    alias: null,
+    alias: '',
   }
 
   onSave = () => {
