@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress, isValidENSAddress } from '../../../../helpers/utils/util'
@@ -66,6 +67,12 @@ export default class AddContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
+        {this.state.ensAddress && <div className="address-book__view-contact__group">
+            <Identicon address={this.state.ensAddress} diameter={60} />
+            <div className="address-book__view-contact__group__value">
+              { this.state.ensAddress }
+            </div>
+        </div>}
         <div className="address-book__add-contact__content">
             <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
