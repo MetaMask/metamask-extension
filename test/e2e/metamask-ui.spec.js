@@ -1263,7 +1263,6 @@ describe('MetaMask', function () {
       const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Approve Tokens')]`))
       await transferTokens.click()
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
