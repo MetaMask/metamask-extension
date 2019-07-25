@@ -20,11 +20,12 @@ export default class ViewContact extends PureComponent {
     name: PropTypes.string,
     address: PropTypes.string,
     history: PropTypes.object,
+    checkSummedAddress: PropTypes.string,
   }
 
    render () {
     const { t } = this.context
-    const { removeFromAddressBook, history, name, address } = this.props
+    const { removeFromAddressBook, history, name, address, checkSummedAddress } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -69,11 +70,11 @@ export default class ViewContact extends PureComponent {
               <div
                 className="address-book__view-contact__group__static-address"
               >
-                { quadSplit(address) }
+                { quadSplit(checkSummedAddress) }
               </div>
               <img
                 className="address-book__view-contact__group__static-address--copy-icon"
-                onClick={() => copyToClipboard(address)}
+                onClick={() => copyToClipboard(checkSummedAddress)}
                 src="/images/copy-to-clipboard.svg"
               />
             </div>

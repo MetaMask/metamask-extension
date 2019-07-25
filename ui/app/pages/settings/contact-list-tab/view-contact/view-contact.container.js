@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntryName } from '../../../../selectors/selectors'
 import { removeFromAddressBook } from '../../../../store/actions'
+import { checksumAddress } from '../../../../helpers/utils/util'
 
 const mapStateToProps = (state, ownProps) => {
   const address = ownProps.match.params.id
@@ -12,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name,
     address,
+    checkSummedAddress: checksumAddress(address),
   }
 }
 
