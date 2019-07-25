@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
@@ -29,24 +27,17 @@ import {
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes'
-import {addressSlicer} from '../../helpers/utils/util'
-
-const ROUTES_TO_I18N_KEYS = {
-  [GENERAL_ROUTE]: 'general',
-  [ADVANCED_ROUTE]: 'advanced',
-  [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [ABOUT_US_ROUTE]: 'about',
-  [CONTACT_LIST_ROUTE]: 'contactList',
-  [CONTACT_ADD_ROUTE]: 'newContact',
-  [CONTACT_EDIT_ROUTE]: 'editContact',
-  [CONTACT_VIEW_ROUTE]: 'viewContact',
-  [CONTACT_MY_ACCOUNTS_ROUTE]: 'myAccounts',
-}
 
 class SettingsPage extends PureComponent {
   static propTypes = {
-    location: PropTypes.object,
+    addressName: PropTypes.string,
+    backRoute: PropTypes.string,
+    currentPath: PropTypes.string,
     history: PropTypes.object,
+    isAddressEntryPage: PropTypes.bool,
+    isPopupView: PropTypes.bool,
+    location: PropTypes.object,
+    pathnameI18nKey: PropTypes.string,
     t: PropTypes.func,
   }
 
@@ -54,31 +45,18 @@ class SettingsPage extends PureComponent {
     t: PropTypes.func,
   }
 
-  isCurrentPath (pathname) {
-    return this.props.location.pathname === pathname
-  }
-
   render () {
-    const { history, location } = this.props
-    const isAddressEntryPage = location.pathname.includes('0x')
-    const isMyAccountsPage = location.pathname.includes('my-accounts')
-
-    let backRoute
-    if (isAddressEntryPage || isMyAccountsPage) {
-      backRoute = CONTACT_LIST_ROUTE
-    } else {
-      backRoute = SETTINGS_ROUTE
-    }
+    const { history, backRoute, currentPath } = this.props
 
     return (
       <div
         className={c('main-container settings-page', {
-          'settings-page--selected': !this.isCurrentPath(SETTINGS_ROUTE),
+          'settings-page--selected': currentPath !== SETTINGS_ROUTE,
         })}
       >
         <div className="settings-page__header">
           {
-            !this.isCurrentPath(SETTINGS_ROUTE) && !this.isCurrentPath(NETWORKS_ROUTE) && (
+            currentPath !== SETTINGS_ROUTE && currentPath !== NETWORKS_ROUTE && (
               <div
                 className="settings-page__back-button"
                 onClick={() => history.push(backRoute)}
@@ -106,16 +84,12 @@ class SettingsPage extends PureComponent {
 
   renderTitle () {
     const { t } = this.context
-    const { location } = this.props
+    const { isPopupView, pathnameI18nKey, addressName } = this.props
 
     let titleText
 
-    const pathnameI18nKey = ROUTES_TO_I18N_KEYS[location.pathname]
-    const isAddressEntryPage = location.pathname.includes('0x')
-    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
-
-    if (isPopupView && isAddressEntryPage) {
-      titleText = addressSlicer(location.pathname.slice(-42))
+    if (isPopupView && addressName) {
+      titleText = addressName
     } else if (pathnameI18nKey && isPopupView) {
       titleText = t(pathnameI18nKey)
     } else {
@@ -131,20 +105,19 @@ class SettingsPage extends PureComponent {
 
   renderSubHeader () {
     const { t } = this.context
-    const { location: { pathname } } = this.props
-    const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+    const { currentPath, isPopupView, isAddressEntryPage, pathnameI18nKey, addressName } = this.props
 
     let subheaderText
 
-    if (isPopupView && pathname.includes('0x')) {
+    if (isPopupView && isAddressEntryPage) {
       subheaderText = t('settings')
-    } else if (pathname.includes('0x')) {
-      subheaderText = addressSlicer(pathname.slice(-42))
+    } else if (isAddressEntryPage) {
+      subheaderText = addressName
     } else {
-      subheaderText = t(ROUTES_TO_I18N_KEYS[pathname] || 'general')
+      subheaderText = t(pathnameI18nKey || 'general')
     }
 
-    return pathname !== NETWORKS_ROUTE && (
+    return currentPath !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
         {subheaderText}
       </div>
@@ -152,7 +125,7 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs () {
-    const { history, location } = this.props
+    const { history, currentPath } = this.props
     const { t } = this.context
 
     return (
@@ -166,10 +139,10 @@ class SettingsPage extends PureComponent {
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
         isActive={key => {
-          if (key === GENERAL_ROUTE && this.isCurrentPath(SETTINGS_ROUTE)) {
+          if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true
           }
-          return matchPath(location.pathname, { path: key, exact: true })
+          return matchPath(currentPath, { path: key, exact: true })
         }}
         onSelect={key => history.push(key)}
       />
