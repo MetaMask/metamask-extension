@@ -10,6 +10,7 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps-npm
+      - test-deps
       - prep-build:
           requires:
             - prep-deps-npm
@@ -27,9 +28,6 @@ workflows:
           requires:
             - prep-deps-npm
       - test-lint:
-          requires:
-            - prep-deps-npm
-      - test-deps:
           requires:
             - prep-deps-npm
       - test-e2e-chrome:
