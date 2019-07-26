@@ -134,92 +134,22 @@ describe('Actions', () => {
     })
   })
 
-  describe('#confirmSeedWords', () => {
-
-    let clearSeedWordCacheSpy
-
-    afterEach(() => {
-      clearSeedWordCacheSpy.restore()
-    })
-
-    it('shows account page after clearing seed word cache', () => {
-
-      const store = mockStore({})
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'SHOW_ACCOUNTS_PAGE' },
-      ]
-
-      clearSeedWordCacheSpy = sinon.spy(background, 'clearSeedWordCache')
-
-      return store.dispatch(actions.confirmSeedWords())
-        .then(() => {
-          assert.equal(clearSeedWordCacheSpy.callCount, 1)
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-
-    it('errors in callback will display warning', () => {
-      const store = mockStore({})
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      clearSeedWordCacheSpy = sinon.stub(background, 'clearSeedWordCache')
-
-      clearSeedWordCacheSpy.callsFake((callback) => {
-        callback(new Error('error'))
-      })
-
-      return store.dispatch(actions.confirmSeedWords())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-  })
-
   describe('#createNewVaultAndRestore', () => {
 
-    let createNewVaultAndRestoreSpy, clearSeedWordCacheSpy
+    let createNewVaultAndRestoreSpy
 
     afterEach(() => {
       createNewVaultAndRestoreSpy.restore()
     })
 
-    it('clears seed words and restores new vault', () => {
+    it('restores new vault', () => {
 
       const store = mockStore({})
 
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
-      clearSeedWordCacheSpy = sinon.spy(background, 'clearSeedWordCache')
       return store.dispatch(actions.createNewVaultAndRestore())
         .catch(() => {
-          assert(clearSeedWordCacheSpy.calledOnce)
           assert(createNewVaultAndRestoreSpy.calledOnce)
-        })
-    })
-
-    it('errors when callback in clearSeedWordCache throws', () => {
-      const store = mockStore()
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ]
-
-      clearSeedWordCacheSpy = sinon.stub(background, 'clearSeedWordCache')
-      clearSeedWordCacheSpy.callsFake((callback) => {
-        callback(new Error('error'))
-      })
-
-      return store.dispatch(actions.createNewVaultAndRestore())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -240,113 +170,6 @@ describe('Actions', () => {
       })
 
       return store.dispatch(actions.createNewVaultAndRestore())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-  })
-
-  describe('#createNewVaultAndKeychain', () => {
-
-    let createNewVaultAndKeychainSpy, placeSeedWordsSpy
-
-    afterEach(() => {
-      createNewVaultAndKeychainSpy.restore()
-      placeSeedWordsSpy.restore()
-    })
-
-    it('calls createNewVaultAndKeychain and placeSeedWords in background', () => {
-
-      const store = mockStore()
-
-      createNewVaultAndKeychainSpy = sinon.spy(background, 'createNewVaultAndKeychain')
-      placeSeedWordsSpy = sinon.spy(background, 'placeSeedWords')
-
-      return store.dispatch(actions.createNewVaultAndKeychain())
-        .then(() => {
-          assert(createNewVaultAndKeychainSpy.calledOnce)
-          assert(placeSeedWordsSpy.calledOnce)
-        })
-    })
-
-    it('displays error and value when callback errors', () => {
-      const store = mockStore()
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ]
-
-      createNewVaultAndKeychainSpy = sinon.stub(background, 'createNewVaultAndKeychain')
-      createNewVaultAndKeychainSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      return store.dispatch(actions.createNewVaultAndKeychain())
-        .then(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-
-    })
-
-    it('errors when placeSeedWords throws', () => {
-      const store = mockStore()
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ]
-
-      placeSeedWordsSpy = sinon.stub(background, 'placeSeedWords')
-      placeSeedWordsSpy.callsFake((callback) => {
-        callback(new Error('error'))
-      })
-
-      return store.dispatch(actions.createNewVaultAndKeychain())
-        .then(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-  })
-
-  describe('#requestRevealSeed', () => {
-
-    let submitPasswordSpy, placeSeedWordsSpy
-
-    afterEach(() => {
-      submitPasswordSpy.restore()
-    })
-
-    it('calls submitPassword and placeSeedWords from background', () => {
-
-      const store = mockStore()
-
-      submitPasswordSpy = sinon.spy(background, 'submitPassword')
-      placeSeedWordsSpy = sinon.spy(background, 'placeSeedWords')
-
-      return store.dispatch(actions.requestRevealSeed())
-        .then(() => {
-          assert(submitPasswordSpy.calledOnce)
-          assert(placeSeedWordsSpy.calledOnce)
-        })
-    })
-
-    it('displays warning error with value when callback errors', () => {
-      const store = mockStore()
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      return store.dispatch(actions.requestRevealSeed())
         .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
@@ -386,68 +209,6 @@ describe('Actions', () => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
 
-    })
-  })
-
-  describe('#requestRevealSeed', () => {
-
-    let submitPasswordSpy, placeSeedWordsSpy
-
-    afterEach(() => {
-      submitPasswordSpy.restore()
-      placeSeedWordsSpy.restore()
-    })
-
-    it('calls submitPassword and placeSeedWords in background', () => {
-
-      const store = mockStore()
-
-      submitPasswordSpy = sinon.spy(background, 'submitPassword')
-      placeSeedWordsSpy = sinon.spy(background, 'placeSeedWords')
-
-      return store.dispatch(actions.requestRevealSeed())
-        .then(() => {
-          assert(submitPasswordSpy.calledOnce)
-          assert(placeSeedWordsSpy.calledOnce)
-        })
-    })
-
-    it('displays warning error message when submitPassword in background errors', () => {
-      submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      const store = mockStore()
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      return store.dispatch(actions.requestRevealSeed())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
-    })
-
-    it('errors when placeSeedWords throw', () => {
-      placeSeedWordsSpy = sinon.stub(background, 'placeSeedWords')
-      placeSeedWordsSpy.callsFake((callback) => {
-        callback(new Error('error'))
-      })
-
-      const store = mockStore()
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      return store.dispatch(actions.requestRevealSeed())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
     })
   })
 

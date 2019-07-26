@@ -27,13 +27,6 @@ function reduceApp (state, action) {
     context: selectedAddress,
   }
 
-  // confirm seed words
-  var seedWords = state.metamask.seedWords
-  var seedConfView = {
-    name: 'createVaultComplete',
-    seedWords,
-  }
-
   // default state
   var appState = extend({
     shouldClose: false,
@@ -58,7 +51,7 @@ function reduceApp (state, action) {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
-    currentView: seedWords ? seedConfView : defaultView,
+    currentView: defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -279,16 +272,6 @@ function reduceApp (state, action) {
         isLoading: true,
       })
 
-    case actions.SHOW_NEW_VAULT_SEED:
-      return extend(appState, {
-        currentView: {
-          name: 'createVaultComplete',
-          seedWords: action.value,
-        },
-        transForward: true,
-        isLoading: false,
-      })
-
     case actions.NEW_ACCOUNT_SCREEN:
       return extend(appState, {
         currentView: {
@@ -428,8 +411,7 @@ function reduceApp (state, action) {
     case actions.SHOW_ACCOUNTS_PAGE:
       return extend(appState, {
         currentView: {
-          name: seedWords ? 'createVaultComplete' : 'accounts',
-          seedWords,
+          name: 'accounts',
         },
         transForward: true,
         isLoading: false,

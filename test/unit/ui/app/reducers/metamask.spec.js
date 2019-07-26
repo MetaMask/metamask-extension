@@ -9,32 +9,6 @@ describe('MetaMask Reducers', () => {
     assert(initState)
   })
 
-  it('sets revealing seed to true and adds seed words to new state', () => {
-    const seedWordsState = reduceMetamask({}, {
-      type: actions.SHOW_NEW_VAULT_SEED,
-      value: 'test seed words',
-    })
-
-    assert.equal(seedWordsState.seedWords, 'test seed words')
-    assert.equal(seedWordsState.isRevealingSeedWords, true)
-  })
-
-  it('shows account page', () => {
-    const seedWordsState = {
-      metamask: {
-        seedwords: 'test seed words',
-        isRevealing: true,
-      },
-    }
-
-    const state = reduceMetamask(seedWordsState, {
-      type: actions.SHOW_ACCOUNTS_PAGE,
-    })
-
-    assert.equal(state.seedWords, undefined)
-    assert.equal(state.isRevealingSeedWords, false)
-  })
-
   it('unlocks MetaMask', () => {
     const state = reduceMetamask({}, {
       type: actions.UNLOCK_METAMASK,
@@ -150,16 +124,6 @@ describe('MetaMask Reducers', () => {
       assert.equal(Object.keys(state.unapprovedMsgs).length, 1)
       assert.equal(state.unapprovedTxs[2].test, 'Should persist')
     })
-  })
-
-  it('shows new vault seed words and sets isRevealingSeedWords to true', () => {
-    const showNewVaultSeedState = reduceMetamask({}, {
-      type: actions.SHOW_NEW_VAULT_SEED,
-      value: 'test seed words',
-    })
-
-    assert.equal(showNewVaultSeedState.isRevealingSeedWords, true)
-    assert.equal(showNewVaultSeedState.seedWords, 'test seed words')
   })
 
   it('shows account detail', () => {

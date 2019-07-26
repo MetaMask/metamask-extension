@@ -116,7 +116,6 @@ setupMetamaskMeshMetrics()
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
  * @property {Object} featureFlags - An object for optional feature flags.
  * @property {string} networkEndpointType - TODO: Document
- * @property {boolean} isRevealingSeedWords - True if seed words are currently being recovered, and should be shown to user.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {Object} provider - The current selected network provider.

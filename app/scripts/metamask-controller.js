@@ -420,9 +420,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
-      placeSeedWords: this.placeSeedWords.bind(this),
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
-      clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
@@ -845,26 +843,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds the current vault's seed words to the UI's state tree.
-   *
-   * Used when creating a first vault, to allow confirmation.
-   * Also used when revealing the seed words in the confirmation view.
-   *
-   * @param {Function} cb - A callback called on completion.
-   */
-  placeSeedWords (cb) {
-
-    this.verifySeedPhrase()
-      .then((seedWords) => {
-        this.preferencesController.setSeedWords(seedWords)
-        return cb(null, seedWords)
-      })
-      .catch((err) => {
-        return cb(err)
-      })
-  }
-
-  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -895,18 +873,6 @@ module.exports = class MetamaskController extends EventEmitter {
       log.error(err.message)
       throw err
     }
-  }
-
-  /**
-   * Remove the primary account seed phrase from the UI's state tree.
-   *
-   * The seed phrase remains available in the background process.
-   *
-   * @param {function} cb Callback function called with the current address.
-   */
-  clearSeedWordCache (cb) {
-    this.preferencesController.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
   }
 
   /**

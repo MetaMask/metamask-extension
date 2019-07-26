@@ -35,7 +35,6 @@ describe('tx confirmation screen', function () {
       actions._setBackgroundConnection({
         approveTransaction (_, cb) { cb('An error!') },
         cancelTransaction (_, cb) { cb() },
-        clearSeedWordCache (cb) { cb() },
         getState (cb) { cb() },
       })
       done()

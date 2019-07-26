@@ -49,7 +49,6 @@ class PreferencesController {
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
-      seedWords: null,
       forgottenPassword: false,
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
@@ -77,14 +76,6 @@ class PreferencesController {
    */
   setPasswordForgotten (forgottenPassword) {
     this.store.updateState({ forgottenPassword })
-  }
-
-  /**
-   * Sets the {@code seedWords} seed words
-   * @param {string|null} seedWords the seed words
-   */
-  setSeedWords (seedWords) {
-    this.store.updateState({ seedWords })
   }
 
   /**
