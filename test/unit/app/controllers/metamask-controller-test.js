@@ -497,8 +497,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#verifyseedPhrase', function () {
-    let seedPhrase, getConfigSeed
-
     it('errors when no keying is provided', async function () {
       try {
         await metamaskController.verifySeedPhrase()
@@ -509,21 +507,6 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain('password')
-      seedPhrase = await metamaskController.verifySeedPhrase()
-    })
-
-    it('#placeSeedWords should match the initially created vault seed', function () {
-
-      metamaskController.placeSeedWords((err, result) => {
-        if (err) {
-         console.log(err)
-        } else {
-          getConfigSeed = metamaskController.configManager.getSeedWords()
-          assert.equal(result, seedPhrase)
-          assert.equal(result, getConfigSeed)
-        }
-      })
-      assert.equal(getConfigSeed, undefined)
     })
 
     it('#addNewAccount', async function () {
@@ -586,21 +569,6 @@ describe('MetaMaskController', function () {
     })
     it('should return address', async function () {
       assert.equal(ret, '0x1')
-    })
-  })
-
-  describe('#clearSeedWordCache', function () {
-    it('should set seed words to null', function (done) {
-      sandbox.stub(metamaskController.preferencesController, 'setSeedWords')
-      metamaskController.clearSeedWordCache((err) => {
-        if (err) {
-          done(err)
-        }
-
-        assert.ok(metamaskController.preferencesController.setSeedWords.calledOnce)
-        assert.deepEqual(metamaskController.preferencesController.setSeedWords.args, [[null]])
-        done()
-      })
     })
   })
 
