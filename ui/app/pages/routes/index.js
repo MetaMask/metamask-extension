@@ -32,6 +32,7 @@ const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
 const CreateAccountPage = require('../create-account')
+import ProviderApproval from '../provider-approval'
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
@@ -67,6 +68,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  PROVIDER_APPROVAL,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -116,6 +118,7 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={PROVIDER_APPROVAL} component={ProviderApproval} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )

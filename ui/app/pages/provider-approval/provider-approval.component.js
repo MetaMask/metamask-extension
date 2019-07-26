@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import ProviderPageContainer from '../../components/app/provider-page-container'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class ProviderApproval extends Component {
   static propTypes = {
     approveProviderRequestByOrigin: PropTypes.func.isRequired,
     rejectProviderRequestByOrigin: PropTypes.func.isRequired,
-    providerRequest: PropTypes.object.isRequired,
+    providerRequest: PropTypes.object,
   };
 
   static contextTypes = {
@@ -15,6 +17,11 @@ export default class ProviderApproval extends Component {
 
   render () {
     const { approveProviderRequestByOrigin, providerRequest, rejectProviderRequestByOrigin } = this.props
+
+    if (!providerRequest) {
+      return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+    }
+
     return (
       <ProviderPageContainer
         approveProviderRequestByOrigin={approveProviderRequestByOrigin}

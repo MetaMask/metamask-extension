@@ -1,6 +1,13 @@
 import { connect } from 'react-redux'
 import ProviderApproval from './provider-approval.component'
 import { approveProviderRequestByOrigin, rejectProviderRequestByOrigin } from '../../store/actions'
+import { getProviderRequest } from './provider-approval.selectors'
+
+function mapStateToProps (state) {
+  return {
+    providerRequest: getProviderRequest(state),
+  }
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -9,4 +16,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(ProviderApproval)
+export default connect(mapStateToProps, mapDispatchToProps)(ProviderApproval)

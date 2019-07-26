@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
-import ProviderApproval from '../provider-approval'
 
 import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  PROVIDER_APPROVAL,
 } from '../../helpers/constants/routes'
 
 export default class NotificationHome extends PureComponent {
@@ -60,9 +60,7 @@ export default class NotificationHome extends PureComponent {
     }
 
     if (providerRequests && providerRequests.length > 0) {
-      return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
-      )
+      return <Redirect to={{ pathname: PROVIDER_APPROVAL }}/>
     }
 
     return (

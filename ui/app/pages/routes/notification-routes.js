@@ -14,6 +14,7 @@ const ConfirmTransaction = require('../confirm-transaction')
 // other views
 import NotificationHome from '../notification-home'
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token'
+import ProviderApproval from '../provider-approval'
 
 // import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
@@ -39,6 +40,7 @@ import {
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  PROVIDER_APPROVAL,
 } from '../../helpers/constants/routes'
 
 class NotificationRoutes extends Component {
@@ -74,6 +76,7 @@ class NotificationRoutes extends Component {
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
         <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
+        <Authenticated path={PROVIDER_APPROVAL} component={ProviderApproval} exact />
         <Authenticated path={DEFAULT_ROUTE} component={NotificationHome} exact />
       </Switch>
     )

@@ -4,7 +4,6 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
-import ProviderApproval from '../provider-approval'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 
@@ -12,6 +11,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  PROVIDER_APPROVAL,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -61,9 +61,7 @@ export default class Home extends PureComponent {
     }
 
     if (providerRequests && providerRequests.length > 0) {
-      return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
-      )
+      return <Redirect to={{ pathname: PROVIDER_APPROVAL }}/>
     }
 
     return (
