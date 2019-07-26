@@ -33,6 +33,8 @@
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "eslint . --ext js,json",
     "lint:fix": "eslint . --ext js,json --fix",
+    "lint:diffed": "eslint $(git diff --name-only) $(git diff --cached --name-only) --ext js,json",
+    "lint:diffed:fix": "eslint $(git diff --name-only) $(git diff --cached --name-only) --ext js,json --fix",
     "mozilla-lint": "addons-linter dist/firefox",
     "watch": "cross-env METAMASK_ENV=test mocha --watch --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "devtools:react": "react-devtools",
