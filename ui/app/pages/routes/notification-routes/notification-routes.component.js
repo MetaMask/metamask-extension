@@ -1,39 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Route, Switch, withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
-import actions from '../../store/actions'
+import { Route, Switch } from 'react-router-dom'
 import IdleTimer from 'react-idle-timer'
-import { preferencesSelector } from '../../selectors/selectors'
-import { getLoadMessage, isLoadingNetwork } from './routes.selectors'
 
-// accounts
-const SendTransactionScreen = require('../send/send.container')
-const ConfirmTransaction = require('../confirm-transaction')
-
-// other views
-import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token'
-import ProviderApproval from '../provider-approval'
-import NotificationRedirect from '../notification-redirect'
-
-// import Settings from '../settings'
-import Authenticated from '../../helpers/higher-order-components/authenticated'
-import Initialized from '../../helpers/higher-order-components/initialized'
-import Lock from '../lock'
-
-const Loading = require('../../components/ui/loading-screen')
-const LoadingNetwork = require('../../components/app/loading-network-screen').default
-const NetworkDropdown = require('../../components/app/dropdowns/network-dropdown')
-
-// Global Modals
-const Modal = require('../../components/app/modals').Modal
-// Global Alert
-const Alert = require('../../components/ui/alert')
-
-import UnlockPage from '../unlock-page'
-
-// Routes
+import ConfirmAddSuggestedTokenPage from '../../confirm-add-suggested-token'
+import ProviderApproval from '../../provider-approval'
+import NotificationRedirect from '../../notification-redirect'
+import Authenticated from '../../../helpers/higher-order-components/authenticated'
+import Initialized from '../../../helpers/higher-order-components/initialized'
+import Lock from '../../lock'
+import LoadingNetwork from '../../../components/app/loading-network-screen'
+const SendTransactionScreen = require('../../send/send.container')
+const ConfirmTransaction = require('../../confirm-transaction')
+const Loading = require('../../../components/ui/loading-screen')
+const NetworkDropdown = require('../../../components/app/dropdowns/network-dropdown')
+const Modal = require('../../../components/app/modals').Modal
+const Alert = require('../../../components/ui/alert')
+import UnlockPage from '../../unlock-page'
 import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
@@ -42,7 +25,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   PROVIDER_APPROVAL,
-} from '../../helpers/constants/routes'
+} from '../../../helpers/constants/routes'
 
 class NotificationRoutes extends Component {
   componentWillMount () {
@@ -149,46 +132,9 @@ NotificationRoutes.propTypes = {
   setMouseUserState: PropTypes.func,
 }
 
-function mapStateToProps (state) {
-  const { appState, metamask } = state
-  const {
-    alertOpen,
-    alertMessage,
-    isLoading,
-  } = appState
-  const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
-
-  const {
-    currentCurrency,
-    frequentRpcListDetail = [],
-  } = metamask
-
-  return {
-    alertMessage,
-    alertOpen,
-    autoLogoutTimeLimit,
-    currentCurrency,
-    frequentRpcListDetail,
-    isLoading,
-    isLoadingNetwork: isLoadingNetwork(state),
-    loadMessage: getLoadMessage(state),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-  }
-}
-
 NotificationRoutes.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(NotificationRoutes)
+export default NotificationRoutes
