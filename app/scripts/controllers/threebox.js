@@ -10,13 +10,12 @@ class ThreeBoxController {
     this.provider = provider
 
     const initState = {
-      syncDone3Box: false,
       threeBoxAddress: null,
       threeboxSyncing: true,
       ...opts.initState,
+      syncDone3Box: false,
     }
     this.store = new ObservableStore(initState)
-    this._signPersonalMessage =
 
     this.init()
   }
@@ -53,7 +52,7 @@ class ThreeBoxController {
             address,
             this.provider,
             {
-              walletProvidedSignature: signature,
+              contentSignature: signature,
             }
           ))
           .then(box => {
@@ -97,7 +96,7 @@ class ThreeBoxController {
   }
 
   getThreeBoxAddress () {
-    return this.store.getState().threeBoxAddress
+    return this.box && this.store.getState().threeBoxAddress
   }
 
   _registerUpdates () {
