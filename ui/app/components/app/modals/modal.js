@@ -369,19 +369,6 @@ const MODALS = {
     },
   },
 
-  THREEBOX_APPROVAL: {
-    contents: h(ThreeBoxApproval),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
   CUSTOMIZE_GAS: {
     contents: [
       h(ConfirmCustomizeGasModal),

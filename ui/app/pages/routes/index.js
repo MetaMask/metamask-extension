@@ -98,19 +98,6 @@ class Routes extends Component {
     })
   }
 
-  componentDidUpdate (prevProps) {
-    const {
-      threeBoxApprovalRequest,
-      showApprovalForThreeBox,
-      completedOnboarding,
-    } = this.props
-
-    if (!(prevProps.threeBoxApprovalRequest && prevProps.completedOnboarding) &&
-      (threeBoxApprovalRequest && completedOnboarding)) {
-      showApprovalForThreeBox(threeBoxApprovalRequest.id)
-    }
-  }
-
   renderRoutes () {
     const { autoLogoutTimeLimit, setLastActiveTime } = this.props
 
@@ -357,8 +344,6 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
-  threeBoxApprovalRequest: PropTypes.object,
-  showApprovalForThreeBox: PropTypes.func,
   completedOnboarding: PropTypes.bool,
 }
 
@@ -403,7 +388,6 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    showApprovalForThreeBox: id => dispatch(actions.showModal({ name: 'THREEBOX_APPROVAL', id })),
   }
 }
 
