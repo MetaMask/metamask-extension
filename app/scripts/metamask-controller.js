@@ -191,7 +191,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
-      addressBook: this.addressBookController,
+      addressBookController: this.addressBookController,
       keyringController: this.keyringController,
       provider: this.provider,
       restoreFrom3Box: false,

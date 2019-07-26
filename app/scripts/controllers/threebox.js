@@ -3,9 +3,10 @@ const Box = require('3box/dist/3box.min')
 
 class ThreeBoxController {
   constructor (opts = {}) {
-    const { preferencesController, keyringController, provider } = opts
+    const { preferencesController, keyringController, addressBookController, provider } = opts
 
     this.preferencesController = preferencesController
+    this.addressBookController = addressBookController
     this.keyringController = keyringController
     this.provider = provider
 
@@ -23,7 +24,7 @@ class ThreeBoxController {
   async init () {
     const accounts = await this.keyringController.getAccounts()
     this.address = accounts[0]
-    if (this.address) {
+    if (this.address && !(this.box && this.store.getState().syncDone3Box)) {
       await this.new3Box(this.address)
     }
   }
@@ -74,6 +75,8 @@ class ThreeBoxController {
     if (threeBoxSyncing) {
       const backedUpPreferences = await this.box.private.get('preferences')
       backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
+      const backedUpAddressBook = await this.box.private.get('addressBook')
+      backedUpAddressBook && this.addressBookController.update(JSON.parse(backedUpAddressBook), true)
       this._registerUpdates()
       this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
     }
@@ -102,6 +105,8 @@ class ThreeBoxController {
   _registerUpdates () {
     const updatePreferences = this._update3Box.bind(this, { type: 'preferences' })
     this.preferencesController.store.subscribe(updatePreferences)
+    const updateAddressBook = this._update3Box.bind(this, { type: 'addressBook' })
+    this.addressBookController.subscribe(updateAddressBook)
   }
 }
 
