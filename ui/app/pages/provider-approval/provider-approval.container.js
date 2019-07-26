@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import ProviderApproval from './provider-approval.component'
 import { approveProviderRequestByOrigin, rejectProviderRequestByOrigin } from '../../store/actions'
-import { getProviderRequest } from './provider-approval.selectors'
+import providerApprovalSelectors from './provider-approval.selectors'
 
 function mapStateToProps (state) {
   return {
-    providerRequest: getProviderRequest(state),
+    providerRequest: providerApprovalSelectors.getProviderRequest(state),
   }
 }
 
