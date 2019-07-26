@@ -5,7 +5,8 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import actions from '../../store/actions'
 import IdleTimer from 'react-idle-timer'
-import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import { preferencesSelector } from '../../selectors/selectors'
+import { getLoadMessage, isLoadingNetwork } from './routes.selectors'
 
 // accounts
 const SendTransactionScreen = require('../send/send.container')
@@ -94,18 +95,14 @@ class NotificationRoutes extends Component {
 
   render () {
     const {
-      isLoading,
       alertMessage,
-      loadingMessage,
-      network,
-      provider,
       frequentRpcListDetail,
-      currentView,
+      isLoading,
+      isLoadingNetwork,
+      loadMessage,
+      provider,
       setMouseUserState,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const loadMessage = loadingMessage || isLoadingNetwork ?
-      this.getConnectingLabel(loadingMessage) : null
 
     return (
       <div
@@ -134,152 +131,52 @@ class NotificationRoutes extends Component {
       </div>
     )
   }
-
-  getConnectingLabel = function (loadingMessage) {
-    if (loadingMessage) {
-      return loadingMessage
-    }
-    const { provider, providerId } = this.props
-    const providerName = provider.type
-
-    let name
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet')
-    } else if (providerName === 'ropsten') {
-      name = this.context.t('connectingToRopsten')
-    } else if (providerName === 'kovan') {
-      name = this.context.t('connectingToKovan')
-    } else if (providerName === 'rinkeby') {
-      name = this.context.t('connectingToRinkeby')
-    } else if (providerName === 'localhost') {
-      name = this.context.t('connectingToLocalhost')
-    } else if (providerName === 'goerli') {
-      name = this.context.t('connectingToGoerli')
-    } else {
-      name = this.context.t('connectingTo', [providerId])
-    }
-
-    return name
-  }
 }
 
 NotificationRoutes.propTypes = {
-  currentCurrency: PropTypes.string,
-  setCurrentCurrencyToUSD: PropTypes.func,
-  isLoading: PropTypes.bool,
-  loadingMessage: PropTypes.string,
   alertMessage: PropTypes.string,
-  network: PropTypes.string,
-  provider: PropTypes.object,
-  frequentRpcListDetail: PropTypes.array,
-  currentView: PropTypes.object,
   alertOpen: PropTypes.bool,
-  hideSidebar: PropTypes.func,
-  isOnboarding: PropTypes.bool,
-  isUnlocked: PropTypes.bool,
-  networkDropdownOpen: PropTypes.bool,
-  hideNetworkDropdown: PropTypes.func,
-  setLastActiveTime: PropTypes.func,
-  history: PropTypes.object,
-  location: PropTypes.object,
-  dispatch: PropTypes.func,
-  selectedAddress: PropTypes.string,
-  lostAccounts: PropTypes.array,
-  isInitialized: PropTypes.bool,
-  forgottenPassword: PropTypes.bool,
-  activeAddress: PropTypes.string,
-  unapprovedTxs: PropTypes.object,
-  seedWords: PropTypes.string,
-  unapprovedMsgCount: PropTypes.number,
-  unapprovedPersonalMsgCount: PropTypes.number,
-  unapprovedTypedMessagesCount: PropTypes.number,
-  welcomeScreenSeen: PropTypes.bool,
-  isPopup: PropTypes.bool,
-  isMouseUser: PropTypes.bool,
-  setMouseUserState: PropTypes.func,
-  t: PropTypes.func,
-  providerId: PropTypes.string,
-  providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
+  currentCurrency: PropTypes.string,
+  frequentRpcListDetail: PropTypes.array,
+  history: PropTypes.object,
+  isLoading: PropTypes.bool,
+  isLoadingNetwork: PropTypes.bool,
+  loadMessage: PropTypes.string,
+  provider: PropTypes.object,
+  setCurrentCurrencyToUSD: PropTypes.func,
+  setLastActiveTime: PropTypes.func,
+  setMouseUserState: PropTypes.func,
 }
 
 function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
-    networkDropdownOpen,
     alertOpen,
     alertMessage,
     isLoading,
-    loadingMessage,
   } = appState
-
-  const accounts = getMetaMaskAccounts(state)
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
 
   const {
-    identities,
-    address,
-    keyrings,
-    isInitialized,
-    seedWords,
-    unapprovedTxs,
-    lostAccounts,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    providerRequests,
+    currentCurrency,
+    frequentRpcListDetail = [],
   } = metamask
-  const selected = address || Object.keys(accounts)[0]
 
   return {
-    // state from plugin
-    networkDropdownOpen,
-    alertOpen,
     alertMessage,
-    isLoading,
-    loadingMessage,
-    isInitialized,
-    isUnlocked: state.metamask.isUnlocked,
-    selectedAddress: state.metamask.selectedAddress,
-    currentView: state.appState.currentView,
-    activeAddress: state.appState.activeAddress,
-    transForward: state.appState.transForward,
-    isOnboarding: Boolean(seedWords || !isInitialized),
-    isPopup: state.metamask.isPopup,
-    seedWords: state.metamask.seedWords,
-    unapprovedTxs,
-    unapprovedMsgs: state.metamask.unapprovedMsgs,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    menuOpen: state.appState.menuOpen,
-    network: state.metamask.network,
-    provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
-    lostAccounts,
-    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
-    currentCurrency: state.metamask.currentCurrency,
-    isMouseUser: state.appState.isMouseUser,
-    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
-    Qr: state.appState.Qr,
-    welcomeScreenSeen: state.metamask.welcomeScreenSeen,
-    providerId: getNetworkIdentifier(state),
+    alertOpen,
     autoLogoutTimeLimit,
-
-    // state needed to get account dropdown temporarily rendering from app bar
-    identities,
-    selected,
-    keyrings,
-    providerRequests,
+    currentCurrency,
+    frequentRpcListDetail,
+    isLoading,
+    isLoadingNetwork: isLoadingNetwork(state),
+    loadMessage: getLoadMessage(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    dispatch,
-    hideSidebar: () => dispatch(actions.hideSidebar()),
-    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),

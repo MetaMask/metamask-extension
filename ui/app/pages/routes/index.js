@@ -8,6 +8,7 @@ import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 import classnames from 'classnames'
+import { getLoadMessage, isLoadingNetwork } from './routes.selectors'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
@@ -173,19 +174,15 @@ class Routes extends Component {
     const {
       isLoading,
       alertMessage,
-      loadingMessage,
-      network,
+      loadMessage,
+      isLoadingNetwork,
       provider,
       frequentRpcListDetail,
-      currentView,
       setMouseUserState,
       sidebar,
       submittedPendingTransactions,
       isMouseUser,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const loadMessage = loadingMessage || isLoadingNetwork ?
-      this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
     const {
@@ -266,34 +263,6 @@ class Routes extends Component {
     }
   }
 
-  getConnectingLabel = function (loadingMessage) {
-    if (loadingMessage) {
-      return loadingMessage
-    }
-    const { provider, providerId } = this.props
-    const providerName = provider.type
-
-    let name
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('connectingToMainnet')
-    } else if (providerName === 'ropsten') {
-      name = this.context.t('connectingToRopsten')
-    } else if (providerName === 'kovan') {
-      name = this.context.t('connectingToKovan')
-    } else if (providerName === 'rinkeby') {
-      name = this.context.t('connectingToRinkeby')
-    } else if (providerName === 'localhost') {
-      name = this.context.t('connectingToLocalhost')
-    } else if (providerName === 'goerli') {
-      name = this.context.t('connectingToGoerli')
-    } else {
-      name = this.context.t('connectingTo', [providerId])
-    }
-
-    return name
-  }
-
   getNetworkName () {
     const { provider } = this.props
     const providerName = provider.type
@@ -324,12 +293,9 @@ Routes.propTypes = {
   currentCurrency: PropTypes.string,
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
-  loadingMessage: PropTypes.string,
   alertMessage: PropTypes.string,
-  network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcListDetail: PropTypes.array,
-  currentView: PropTypes.object,
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
@@ -344,6 +310,8 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
+  isLoadingNetwork: PropTypes.bool,
+  loadMessage: PropTypes.string,
 }
 
 function mapStateToProps (state) {
@@ -353,7 +321,6 @@ function mapStateToProps (state) {
     alertOpen,
     alertMessage,
     isLoading,
-    loadingMessage,
   } = appState
 
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
@@ -364,11 +331,8 @@ function mapStateToProps (state) {
     alertOpen,
     alertMessage,
     isLoading,
-    loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    currentView: state.appState.currentView,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
-    network: state.metamask.network,
     provider: state.metamask.provider,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
@@ -376,6 +340,8 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
     providerRequests: metamask.providerRequests,
+    isLoadingNetwork: isLoadingNetwork(state),
+    loadMessage: getLoadMessage(state),
   }
 }
 
