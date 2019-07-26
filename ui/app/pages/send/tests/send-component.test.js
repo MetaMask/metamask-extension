@@ -21,6 +21,7 @@ const propsMethodSpies = {
   resetSendState: sinon.spy(),
   fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
   fetchGasEstimates: sinon.spy(),
+  updateToNicknameIfNecessary: sinon.spy(),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
@@ -64,6 +65,7 @@ describe('Send Component', function () {
       updateSendErrors={propsMethodSpies.updateSendErrors}
       updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
       resetSendState={propsMethodSpies.resetSendState}
+      updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}
     />)
   })
 

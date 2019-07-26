@@ -23,7 +23,8 @@ proxyquire('../add-recipient.container.js', {
     accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {
-    getAddressBook: (s) => `mockAddressBook:${s}`,
+    getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
+    getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })
@@ -34,10 +35,13 @@ describe('add-recipient container', () => {
 
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
-        addressBook: 'mockAddressBook:mockState',
+        addressBook: [{ name: 'mockAddressBook:mockState' }],
+        contacts: [{ name: 'mockAddressBook:mockState' }],
         ensResolution: 'mockSendEnsResolution:mockState',
         ensResolutionError: 'mockSendEnsResolutionError:mockState',
         ownedAccounts: 'mockAccountsWithSendEtherInfoSelector:mockState',
+        addressBookEntryName: undefined,
+        nonContacts: [],
       })
     })
 

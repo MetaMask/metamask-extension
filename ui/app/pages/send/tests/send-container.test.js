@@ -53,6 +53,7 @@ proxyquire('../send.container.js', {
     getTokens: s => `mockTokens:${s}`,
   },
   '../../selectors/selectors': {
+    getAddressBook: (s) => `mockAddressBook:${s}`,
     getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
   },
   '../../store/actions': actionSpies,
@@ -93,6 +94,7 @@ describe('send container', () => {
         ensResolution: 'mockSendEnsResolution:mockState',
         ensResolutionError: 'mockSendEnsResolutionError:mockState',
         toNickname: 'mockToNickname:mockState',
+        addressBook: 'mockAddressBook:mockState',
       })
     })
 
