@@ -1,5 +1,5 @@
 const ObservableStore = require('obs-store')
-const Box = require('3box/dist/3box.min')
+const Box = require('3box')
 
 class ThreeBoxController {
   constructor (opts = {}) {

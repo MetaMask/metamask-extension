@@ -15,6 +15,7 @@ const defaultState = {
       showFiatInTestnets: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    threeboxSyncing: false,
   },
 }
 
@@ -27,6 +28,7 @@ describe('AdvancedTab Container', () => {
       advancedInlineGas: false,
       showFiatInTestnets: false,
       autoLogoutTimeLimit: 0,
+      threeboxSyncing: false,
     }
 
     assert.deepEqual(props, expected)
