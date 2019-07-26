@@ -4,10 +4,27 @@ const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
-const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
 const EthQuery = require('eth-query')
+
+const threeBoxNew3BoxSpy = sinon.spy()
+const threeBoxGetThreeBoxAddressSpy = sinon.spy()
+const proxyquire = require('proxyquire')
+
+class ThreeBoxControllerMock {
+    constructor () {
+      this.store = {
+        subscribe: () => {},
+      }
+      this.new3Box = threeBoxNew3BoxSpy
+      this.getThreeBoxAddress = threeBoxGetThreeBoxAddressSpy
+    }
+}
+
+const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
+  './controllers/threebox': ThreeBoxControllerMock,
+})
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'
@@ -82,6 +99,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
+      threeBoxNew3BoxSpy.reset()
+      threeBoxGetThreeBoxAddressSpy.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -99,6 +118,14 @@ describe('MetaMaskController', function () {
       addresses.forEach((address) => {
         assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
       })
+    })
+
+    it('gets the address from threebox and creates a new 3box instance', async () => {
+      await metamaskController.submitPassword(password)
+      assert(threeBoxGetThreeBoxAddressSpy.calledOnce)
+      assert(threeBoxNew3BoxSpy.calledOnce)
+      const addresses = await metamaskController.keyringController.getAccounts()
+      assert.equal(threeBoxNew3BoxSpy.args[0][0], addresses[0])
     })
   })
 
