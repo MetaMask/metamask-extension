@@ -45,7 +45,7 @@ export default class TransactionTimeRemaining extends PureComponent {
 
     return (
       <div className={className}>
-       
+        {statusToTextHash[statusKey] === 'pending' ? this.props.currentTimeEstimate : null}
       </div>
 
     )

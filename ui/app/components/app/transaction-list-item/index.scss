@@ -26,6 +26,9 @@
         "nonce nonce nonce"
         "identicon action primary-amount"
         "identicon status secondary-amount";
+        "nonce nonce nonce nonce"
+        "identicon action estimated-time primary-amount"
+        "identicon status estimated-time secondary-amount";
       grid-template-rows: auto 24px;
     }
 
@@ -72,6 +75,8 @@
 
     @media screen and (max-width: $break-small) {
       grid-row: 3;
+      grid-column: 4;
+      font-size: small;
     }
   }
 
