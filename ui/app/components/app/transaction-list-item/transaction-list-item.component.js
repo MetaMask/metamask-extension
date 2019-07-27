@@ -62,13 +62,7 @@ export default class TransactionListItem extends PureComponent {
       this.props.getContractMethodData(this.props.data)
     }
 
-    const promise = this.props.fetchBasicGasAndTimeEstimates()
-      .then(basicEstimates => basicEstimates.blockTime)
-
-    promise
-      .then(blockTime => {
-        this.props.fetchGasEstimates(blockTime)
-      })
+    
   }
 
   handleClick = () => {
@@ -234,7 +228,13 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
-          <TransactionTimeRemaining />
+          <TransactionTimeRemaining
+            className="transaction-list-item__estimated-time"
+            statusKey={getStatusKey(primaryTransaction) }
+            blockTime={this.props.blockTime}
+            fetchBasicGasAndTimeEstimates={this.props.fetchBasicGasAndTimeEstimates}
+            fetchGasEstimates={this.props.fetchGasEstimates}
+          />
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
