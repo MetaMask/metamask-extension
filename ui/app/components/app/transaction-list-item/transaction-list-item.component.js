@@ -62,7 +62,6 @@ export default class TransactionListItem extends PureComponent {
       this.props.getContractMethodData(this.props.data)
     }
 
-    
   }
 
   handleClick = () => {
