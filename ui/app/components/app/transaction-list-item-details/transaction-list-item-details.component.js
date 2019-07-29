@@ -128,7 +128,7 @@ export default class TransactionListItemDetails extends PureComponent {
       rpcPrefs: { blockExplorerUrl } = {},
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
-    const { txParams: { to, from } = {} } = transaction
+    const { hash, txParams: { to, from } = {} } = transaction
 
     return (
       <div className="transaction-list-item-details">
@@ -152,6 +152,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 type="raised"
                 onClick={this.handleCopyTxId}
                 className="transaction-list-item-details__header-button"
+                disabled={!hash}
               >
                 <img
                   className="transaction-list-item-details__header-button__copy-icon"
@@ -164,6 +165,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 type="raised"
                 onClick={this.handleEtherscanClick}
                 className="transaction-list-item-details__header-button"
+                disabled={!hash}
                 >
                 <img src="/images/arrow-popout.svg" />
               </Button>
