@@ -604,6 +604,9 @@
   "ensNameNotFound": {
     "message": "ENS name not found"
   },
+  "ensRegistrationError": {
+    "message": "Error in ENS name registration"
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
   },

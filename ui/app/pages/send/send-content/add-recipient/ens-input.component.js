@@ -13,6 +13,7 @@ import log from 'loglevel'
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const ZERO_X_ERROR_ADDRESS = '0x'
 
 export default class EnsInput extends Component {
   static contextTypes = {
@@ -85,6 +86,7 @@ export default class EnsInput extends Component {
     this.ens.lookup(recipient)
       .then((address) => {
         if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
+        if (address === ZERO_X_ERROR_ADDRESS) throw new Error(this.context.t('ensRegistrationError'))
         this.props.updateEnsResolution(address)
       })
       .catch((reason) => {
