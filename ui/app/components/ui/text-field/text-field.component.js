@@ -61,6 +61,9 @@ const styles = {
     ...inputLabelBase,
     fontSize: '.75rem',
   },
+  inputMultiline: {
+    lineHeight: 'initial !important',
+  },
 }
 
 const TextField = props => {

@@ -18,17 +18,19 @@ export default class EditContact extends PureComponent {
     history: PropTypes.object,
     name: PropTypes.string,
     address: PropTypes.string,
+    memo: PropTypes.string,
   }
 
   state = {
     newName: '',
     newAddress: '',
+    newMemo: '',
     error: '',
   }
 
    render () {
     const { t } = this.context
-    const { history, name, addToAddressBook, removeFromAddressBook, address } = this.props
+    const { history, name, addToAddressBook, removeFromAddressBook, address, memo } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
@@ -66,6 +68,27 @@ export default class EditContact extends PureComponent {
               margin="dense"
             />
           </div>
+
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label--capitalized">
+              { t('memo') }
+            </div>
+            <TextField
+              type="text"
+              id="memo"
+              placeholder={memo}
+              value={this.state.newMemo || memo}
+              onChange={e => this.setState({ newMemo: e.target.value })}
+              fullWidth
+              margin="dense"
+              multiline={true}
+              rows={3}
+              classes={{
+                inputMultiline: 'address-book__view-contact__text-area',
+                inputRoot: 'address-book__view-contact__text-area-wrapper',
+              }}
+            />
+          </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
@@ -74,14 +97,14 @@ export default class EditContact extends PureComponent {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
                 removeFromAddressBook(address)
-                addToAddressBook(this.state.newAddress, this.state.newName || name)
+                addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
                 history.push(CONTACT_LIST_ROUTE)
               } else {
                 this.setState({ error: 'invalid address' })
               }
             } else {
               // update name
-              addToAddressBook(address, this.state.newName || name)
+              addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
               history.push(CONTACT_LIST_ROUTE)
             }
           }}

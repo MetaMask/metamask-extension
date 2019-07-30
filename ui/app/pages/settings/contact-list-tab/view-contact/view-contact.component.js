@@ -6,7 +6,7 @@ import Button from '../../../../components/ui/button/button.component'
 import copyToClipboard from 'copy-to-clipboard'
 
 function quadSplit (address) {
-  return '0x' + address.slice(2).match(/.{1,4}/g).join(' ')
+  return '0x ' + address.slice(2).match(/.{1,4}/g).join(' ')
 }
 
 export default class ViewContact extends PureComponent {
@@ -25,7 +25,7 @@ export default class ViewContact extends PureComponent {
 
    render () {
     const { t } = this.context
-    const { removeFromAddressBook, history, name, address, checkSummedAddress } = this.props
+    const { removeFromAddressBook, history, name, address, checkSummedAddress, memo } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -77,6 +77,14 @@ export default class ViewContact extends PureComponent {
                 onClick={() => copyToClipboard(checkSummedAddress)}
                 src="/images/copy-to-clipboard.svg"
               />
+            </div>
+          </div>
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label--capitalized">
+              { t('memo') }
+            </div>
+            <div className="address-book__view-contact__group__value">
+              { memo }
             </div>
           </div>
         </div>

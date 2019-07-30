@@ -31,15 +31,27 @@
   }
 
   &__view-contact {
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
     &__group {
       display: flex;
       flex-flow: column nowrap;
       padding: 1.5rem 1.5rem 0 1.5rem;
 
-      &__label {
+      &__label, &__label--capitalized {
         font-size: .75rem;
         color: $Grey-500;
         margin-bottom: .25rem;
+      }
+
+      &__label--capitalized {
+        text-transform: capitalize;
       }
 
       &__value, &__static-address {
