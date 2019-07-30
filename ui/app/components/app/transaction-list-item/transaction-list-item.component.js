@@ -43,6 +43,7 @@ export default class TransactionListItem extends PureComponent {
       PropTypes.string,
       PropTypes.number,
     ]),
+    currentTimeEstimate: PropTypes.string,
   }
 
   static defaultProps = {
@@ -230,9 +231,7 @@ export default class TransactionListItem extends PureComponent {
           <TransactionTimeRemaining
             className="transaction-list-item__estimated-time"
             statusKey={getStatusKey(primaryTransaction) }
-            blockTime={this.props.blockTime}
-            fetchBasicGasAndTimeEstimates={this.props.fetchBasicGasAndTimeEstimates}
-            fetchGasEstimates={this.props.fetchGasEstimates}
+            currentTimeEstimate={this.props.currentTimeEstimate}
           />
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }

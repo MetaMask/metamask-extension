@@ -28,6 +28,7 @@ export default class TransactionList extends PureComponent {
       PropTypes.string,
       PropTypes.number,
     ]),
+    currentTimeEstimate: PropTypes.string,
   }
 
   componentDidMount () {
@@ -119,6 +120,7 @@ export default class TransactionList extends PureComponent {
           token={selectedToken}
           assetImages={assetImages}
           fetchBasicGasAndTimeEstimates={this.props.fetchBasicGasAndTimeEstimates}
+          currentTimeEstimate={this.props.currentTimeEstimate}
         />
       )
   }
