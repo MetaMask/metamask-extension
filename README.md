@@ -11,16 +11,14 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 ## Building locally
 
-- Install [Node.js](https://nodejs.org) version 10 and the latest available npm@6
+- Install [Node.js](https://nodejs.org) version 10
     - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
-    - If you install Node.js manually, ensure you're using npm@6
-        - Install npm@6 using `npm install -g npm@6`
-- Install dependencies: `npm ci`
-    - If you have issues with node-sass compilation, try `npm rebuild node-sass`
-- Build the project to the `./dist/` folder with `npm run dist`.
-- Optionally, to start a development build (e.g. with logging and file watching) run `npm start` instead.
+- Install [Yarn](https://yarnpkg.com/en/docs/install)
+- Install dependencies: `yarn`
+- Build the project to the `./dist/` folder with `yarn dist`.
+- Optionally, to start a development build (e.g. with logging and file watching) run `yarn start` instead.
     - To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
-      alongside the app, use `npm run start:dev`.
+      alongside the app, use `yarn start:dev`.
       - React DevTools will open in a separate window; no browser extension is required
       - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
         - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
@@ -31,15 +29,15 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
 
-You can re-generate the docs locally by running `npm run doc`, and contributors can update the hosted docs by running `npm run publish-docs`.
+You can re-generate the docs locally by running `yarn doc`, and contributors can update the hosted docs by running `yarn publish-docs`.
 
 ### Running Tests
 
-Run tests with `npm test`.
+Run tests with `yarn test`.
 
-You can also test with a continuously watching process, via `npm run watch`.
+You can also test with a continuously watching process, via `yarn watch`.
 
-You can run the linter by itself with `npm run lint`.
+You can run the linter by itself with `yarn lint`.
 
 ## Architecture
 
@@ -48,14 +46,14 @@ You can run the linter by itself with `npm run lint`.
 ## Development
 
 ```bash
-npm install
-npm start
+yarn
+yarn start
 ```
 
 ## Build for Publishing
 
 ```bash
-npm run dist
+yarn dist
 ```
 
 #### Writing Browser Tests

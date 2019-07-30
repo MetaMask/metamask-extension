@@ -9,11 +9,11 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
-      - prep-deps-npm
+      - prep-deps
       - test-deps
       - prep-build:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - create_github_release:
           requires:
             - prep-build
@@ -23,33 +23,33 @@ workflows:
                 - develop
       # - prep-docs:
       #    requires:
-      #      - prep-deps-npm
+      #      - prep-deps
       - prep-scss:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-lint:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-e2e-chrome:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-e2e-firefox:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-unit:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-mozilla-lint:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
       - test-integration-flat-chrome:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-scss
       - test-integration-flat-firefox:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-scss
       - all-tests-pass:
           requires:
@@ -62,7 +62,7 @@ workflows:
             - test-integration-flat-firefox
       - job-publish-prerelease:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
             - all-tests-pass
       - job-publish-release:
@@ -70,7 +70,7 @@ workflows:
             branches:
               only: master
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
       #       - prep-docs
             - all-tests-pass
@@ -88,18 +88,15 @@ jobs:
             .circleci/scripts/release-bump-manifest-version
             .circleci/scripts/release-create-release-pr
 
-  prep-deps-npm:
+  prep-deps:
     docker:
       - image: circleci/node:10.16-browsers
     steps:
       - checkout
       - run:
-          name: Update npm
-          command: sudo npm install -g npm@6.10.2
-      - run:
-          name: Install deps via npm
+          name: Install deps
           command: |
-           npm ci
+           yarn --frozen-lockfile
       - persist_to_workspace:
           root: .
           paths:
@@ -114,7 +111,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: npm run dist
+          command: yarn dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -133,7 +130,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: npm run doc
+          command: yarn doc
       - persist_to_workspace:
           root: .
           paths:
@@ -152,7 +149,7 @@ jobs:
           command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - run:
           name: Build for integration tests
-          command: npm run test:integration:build
+          command: yarn test:integration:build
       - persist_to_workspace:
           root: .
           paths:
@@ -167,7 +164,7 @@ jobs:
           at: .
       - run:
           name: Test
-          command: npm run lint
+          command: yarn lint
 
   test-deps:
     docker:
@@ -177,11 +174,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Update npm
-          command: sudo npm install -g npm@6.10.2
-      - run:
-          name: npm audit
-          command: .circleci/scripts/npm-audit
+          name: yarn audit
+          command: .circleci/scripts/yarn-audit
 
   test-e2e-chrome:
     docker:
@@ -192,7 +186,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:chrome
-          command: npm run build:test && npm run test:e2e:chrome
+          command: yarn build:test && yarn test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -210,7 +204,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:firefox
-          command: npm run build:test && npm run test:e2e:chrome
+          command: yarn build:test && yarn test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -245,13 +239,13 @@ jobs:
           at: .
       - run:
           name: sentry sourcemaps upload
-          command: npm run sentry:publish
+          command: yarn sentry:publish
       # - run:
       #    name: github gh-pages docs publish
       #    command: >
       #      git config --global user.name "metamaskbot" &&
       #      git config --global user.email "admin@metamask.io" &&
-      #      npm run publish-docs
+      #      yarn publish-docs
 
   test-unit:
     docker:
@@ -262,7 +256,7 @@ jobs:
           at: .
       - run:
           name: test:coverage
-          command: npm run test:coverage
+          command: yarn test:coverage
   test-mozilla-lint:
     docker:
       - image: circleci/node:10.16-browsers
@@ -272,7 +266,7 @@ jobs:
           at: .
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 npm run mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   test-integration-flat-firefox:
     docker:
@@ -286,7 +280,7 @@ jobs:
           command: ./.circleci/scripts/firefox-install
       - run:
           name: test:integration:flat
-          command: npm run test:flat
+          command: yarn test:flat
 
   test-integration-flat-chrome:
     environment:
@@ -299,7 +293,7 @@ jobs:
           at: .
       - run:
           name: test:integration:flat
-          command: npm run test:flat
+          command: yarn test:flat
 
   all-tests-pass:
     docker:
