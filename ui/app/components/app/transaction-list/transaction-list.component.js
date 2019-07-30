@@ -22,10 +22,23 @@ export default class TransactionList extends PureComponent {
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
+    fetchBasicGasAndTimeEstimates: PropTypes.func,
+    fetchGasEstimates: PropTypes.func,
+    blockTime: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
   }
 
   componentDidMount () {
     this.props.updateNetworkNonce()
+    const promise = this.props.fetchBasicGasAndTimeEstimates()
+      .then(basicEstimates => basicEstimates.blockTime)
+
+    promise
+      .then(blockTime => {
+        this.props.fetchGasEstimates(blockTime)
+      })
   }
 
   componentDidUpdate (prevProps) {
@@ -105,6 +118,7 @@ export default class TransactionList extends PureComponent {
           isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}
           assetImages={assetImages}
+          fetchBasicGasAndTimeEstimates={this.props.fetchBasicGasAndTimeEstimates}
         />
       )
   }

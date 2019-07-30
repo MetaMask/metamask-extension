@@ -8,7 +8,6 @@ import { getTokenData } from '../../../helpers/utils/transactions.util'
 import { getHexGasTotal, increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
 import { formatDate } from '../../../helpers/utils/util'
 import {
-  fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
@@ -52,7 +51,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
     getContractMethodData: methodData => dispatch(getContractMethodData(methodData)),

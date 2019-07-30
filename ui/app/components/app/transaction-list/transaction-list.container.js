@@ -9,6 +9,8 @@ import {
 import { getSelectedAddress, getAssetImages } from '../../../selectors/selectors'
 import { selectedTokenSelector } from '../../../selectors/tokens'
 import { updateNetworkNonce } from '../../../store/actions'
+import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
+import { getBasicGasEstimateBlockTime } from '../../../selectors/custom-gas'
 
 const mapStateToProps = state => {
   return {
@@ -17,12 +19,15 @@ const mapStateToProps = state => {
     selectedToken: selectedTokenSelector(state),
     selectedAddress: getSelectedAddress(state),
     assetImages: getAssetImages(state),
+    blockTime: getBasicGasEstimateBlockTime(state),
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     updateNetworkNonce: address => dispatch(updateNetworkNonce(address)),
+    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
+    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
   }
 }
 
