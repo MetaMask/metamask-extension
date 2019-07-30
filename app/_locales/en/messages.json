@@ -11,10 +11,10 @@
   "exposeDescription": {
     "message": "Expose accounts to the current website. Useful for legacy dapps."
   },
-  "caveat:filterParams": {
+  "caveat_filterParams": {
     "message": "Only with: "
   },
-  "caveat:filterResponse": {
+  "caveat_filterResponse": {
     "message": "Only: "
   },
   "chartOnlyAvailableEth": {

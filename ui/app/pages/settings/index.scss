@@ -168,6 +168,32 @@
     &--without-height {
       height: initial;
     }
+
+    details > summary {
+      list-style: none;
+    }
+
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details > summary > i {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      margin: 6px 15px 0 0;
+    }
+
+    details[open] > summary > .caret {
+      transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+    }
+
+    details > summary > .caret {
+      transform: rotate(-135deg);
+      -webkit-transform: rotate(-135deg);
+    }
   }
 
   &__content-label {
@@ -223,25 +249,21 @@
   }
 
   &__content-list-item {
-    margin-left: 10px;
+    margin: 5px 0 0 10px;
 
     &__caveat {
       list-style-type: disc;
-      margin-left: 50px;
+      margin: 5px 0 0 50px;
     }
 
     &__caveat-value {
       list-style-type: disc;
-      margin-left: 30px;
+      margin: 5px 0 0 30px;
     }
   }
 
   &__content-list-checkbox {
     margin-right: 10px;
-  }
-
-  &__content-list-summary-checkbox {
-    margin-left: 10px;
   }
 
   &--selected {

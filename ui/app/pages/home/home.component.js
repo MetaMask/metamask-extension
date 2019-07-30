@@ -21,7 +21,7 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    unsetMigratedPrivacyMode: null,
+    activeTab: {},
   }
 
   static propTypes = {
@@ -29,9 +29,6 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    providerRequests: PropTypes.array,
-    showPrivacyModeNotification: PropTypes.bool.isRequired,
-    unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
     permissionsRequests: PropTypes.array,
@@ -65,12 +62,9 @@ export default class Home extends PureComponent {
     const {
       forgottenPassword,
       history,
-      showPrivacyModeNotification,
-      unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
       isPopup,
       permissionsRequests,
-      history,
     } = this.props
 
     if (forgottenPassword) {
@@ -96,18 +90,6 @@ export default class Home extends PureComponent {
                 <MultipleNotifications
                   className
                   notifications={[
-                    {
-                      shouldBeRendered: showPrivacyModeNotification,
-                      component: <HomeNotification
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                          unsetMigratedPrivacyMode()
-                        }}
-                        key="home-privacyModeDefault"
-                      />,
-                    },
                     {
                       shouldBeRendered: shouldShowSeedPhraseReminder,
                       component: <HomeNotification

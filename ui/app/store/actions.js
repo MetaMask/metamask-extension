@@ -324,7 +324,6 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -346,11 +345,6 @@ var actions = {
 
   createCancelTransaction,
   createSpeedUpTransaction,
-
-  // Provider
-  approveProviderRequestByOrigin,
-  rejectProviderRequestByOrigin,
-  clearApprovedOrigins,
 
   // Permissions
   approvePermissionsRequest,
@@ -2650,14 +2644,6 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-// Provider
-
-function rejectProviderRequestByOrigin (origin) {
-  return () => {
-    background.rejectProviderRequestByOrigin(origin)
-  }
-}
-
 // Permissions
 
 /**
@@ -2807,12 +2793,6 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
-  }
-}
-
-function unsetMigratedPrivacyMode () {
-  return () => {
-    background.unsetMigratedPrivacyMode()
   }
 }
 

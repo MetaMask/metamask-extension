@@ -53,7 +53,6 @@ const selectors = {
   getNumberOfTokens,
   isEthereumNetwork,
   getAllPermissions,
-  getPermissionsDescriptions,
   getPermissionsRequests,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,

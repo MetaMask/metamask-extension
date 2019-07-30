@@ -7,6 +7,11 @@ import Button from '../../../components/ui/button'
 
 import { addressSlicer, isValidAddress } from '../../../helpers/utils/util'
 
+// TODO:Bug
+// If the UI is open (probably in its own tab), and new permissions are granted,
+// this errors because the parent object of one of the ".selected" properties
+// here is undefined
+
 export default class PermissionsTab extends Component {
 
   static propTypes = {
@@ -97,10 +102,10 @@ export default class PermissionsTab extends Component {
     const perm = { ...this.state.permissions[id] }
     perm.selected = !perm.selected
     const newState = {
-       permissions: {
-          ...this.state.permissions,
-          [id]: perm,
-       },
+      permissions: {
+        ...this.state.permissions,
+        [id]: perm,
+      },
     }
     if (perm.selected && !this.state.domains[perm.domain].selected) {
       const domains = { ...this.state.domains }
@@ -136,8 +141,8 @@ export default class PermissionsTab extends Component {
         <div className="settings-page__content-item">
           {
             hasPermissions
-            ? this.renderPermissionsList()
-            : t('permissionsDataEmpty')
+              ? this.renderPermissionsList()
+              : t('permissionsDataEmpty')
           }
         </div>
         <div className="settings-page__content-item">
@@ -163,38 +168,38 @@ export default class PermissionsTab extends Component {
   renderPermissionsList () {
     const { permissions, permissionsDescriptions } = this.props
     return (
-        <ul>
-          {
-            Object.keys(permissions).map(domain => {
-              if (permissions[domain].permissions.length === 0) return null
-              return (
-                <li key={domain}>
-                  <details>
-                    <summary>
-                      <input
-                        type="checkbox"
-                        checked={this.state.domains[domain].selected}
-                        onChange={this.onDomainToggle(domain)}
-                        className="settings-page__content-list-checkbox"
-                      />
-                      {domain}
-                      <i className="caret" style={{ float: 'right' }}></i>
-                    </summary>
-                    <ul>
-                      {
-                        permissions[domain].permissions.map(perm => {
-                          return this.renderPermissionsListItem(
-                            perm, permissionsDescriptions[perm.parentCapability]
-                          )
-                        })
-                      }
-                    </ul>
-                  </details>
-                </li>
-              )
-            })
-          }
-        </ul>
+      <ul>
+        {
+          Object.keys(permissions).map(domain => {
+            if (permissions[domain].permissions.length === 0) return null
+            return (
+              <li key={domain}>
+                <details>
+                  <summary>
+                    <input
+                      type="checkbox"
+                      checked={this.state.domains[domain].selected}
+                      onChange={this.onDomainToggle(domain)}
+                      className="settings-page__content-list-checkbox"
+                    />
+                    {domain}
+                    <i className="caret" style={{ float: 'right' }}></i>
+                  </summary>
+                  <ul>
+                    {
+                      permissions[domain].permissions.map(perm => {
+                        return this.renderPermissionsListItem(
+                          perm, permissionsDescriptions[perm.parentCapability]
+                        )
+                      })
+                    }
+                  </ul>
+                </details>
+              </li>
+            )
+          })
+        }
+      </ul>
     )
   }
 
@@ -210,8 +215,8 @@ export default class PermissionsTab extends Component {
         <label>{description || permission.parentCapability}</label>
         {
           permission.caveats && permission.caveats.length > 0
-          ? this.renderCaveatList(permission)
-          : null
+            ? this.renderCaveatList(permission)
+            : null
         }
       </li>
     )
@@ -242,10 +247,10 @@ export default class PermissionsTab extends Component {
               <li key={i} className="settings-page__content-list-item__caveat-value">
                 {
                   typeof v === 'string' && isValidAddress(v)
-                  ? addressSlicer(v)
-                  : typeof v !== 'object'
-                    ? v
-                    : JSON.stringify(v)
+                    ? addressSlicer(v)
+                    : typeof v !== 'object'
+                      ? v
+                      : JSON.stringify(v)
                 }
               </li>
             ))

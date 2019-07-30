@@ -268,9 +268,7 @@ module.exports = class MetamaskController extends EventEmitter {
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
-      ProviderApprovalController: this.providerApprovalController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
-      PermissionsController: this.permissionsController.store,
       PermissionsController: this.permissionsController.permissions,
     })
 
@@ -292,11 +290,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       OnboardingController: this.onboardingController.store,
-      // ProviderApprovalController
-      ProviderApprovalController: this.providerApprovalController.store,
-      ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
       IncomingTransactionsController: this.incomingTransactionsController.store,
-      PermissionsController: this.permissionsController.memStore,
       PermissionsController: this.permissionsController.permissions,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
@@ -365,7 +359,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     async function selectPublicState ({
-      isUnlocked, completedOnboarding, network
+      isUnlocked, completedOnboarding, network,
       // network
     }) {
       const result = {
@@ -468,7 +462,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-      unsetMigratedPrivacyMode: nodeify(preferencesController.unsetMigratedPrivacyMode, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),

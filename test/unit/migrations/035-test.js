@@ -79,7 +79,6 @@ describe('migration #35', () => {
             useNativeCurrencyAsPrimaryCurrency: true,
           },
           completedOnboarding: false,
-          migratedPrivacyMode: false,
           metaMetricsId: null,
           metaMetricsSendCount: 0,
         },

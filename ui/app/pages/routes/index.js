@@ -356,12 +356,8 @@ function mapStateToProps (state) {
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
 
   const {
-    identities,
-    address,
-    keyrings,
     permissionsRequests,
   } = metamask
-  const selected = address || Object.keys(accounts)[0]
 
   return {
     // state from plugin
@@ -380,11 +376,6 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-
-    // state needed to get account dropdown temporarily rendering from app bar
-    identities,
-    selected,
-    keyrings,
     permissionsRequests,
   }
 }

@@ -73,9 +73,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
-    ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    ...ownProps,
     txData,
     cancel,
     sign,
@@ -166,7 +166,7 @@ SignatureRequest.prototype.renderBalance = function () {
 SignatureRequest.prototype.renderAccountInfo = function () {
   return h('div.request-signature__account-info', [
 
-    this.renderAccount(),
+    this.renderAccountDropdown(),
 
     this.renderRequestIcon(),
 

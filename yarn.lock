@@ -12029,6 +12029,11 @@ interpret@^1.2.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
   integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
+intersect-objects@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/intersect-objects/-/intersect-objects-1.0.0.tgz#b7630d28994b89b0f04d44728106136549ce816e"
+  integrity sha512-MS1xypHKJhWopnJgn4IbitVvt2vFy2KjINQJAPhAtDejZ+ZbMDfyPc6JsS/mWFRt9Eoku4A4usE4f2loEOoeKQ==
+
 invariant@2.2.4, invariant@^2.2.3, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -12903,7 +12908,22 @@ json-parse-better-errors@^1.0.1, json-parse-better-errors@^1.0.2:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0:
+json-rpc-capabilities-middleware@^0.15.2:
+  version "0.15.2"
+  resolved "https://registry.yarnpkg.com/json-rpc-capabilities-middleware/-/json-rpc-capabilities-middleware-0.15.2.tgz#aac058a84beae78c9727cfdecf88eb7e72a02f6d"
+  integrity sha512-ODNCDudtmssCveEYA2Y/TkcWKmw7CPadqnJ/g7Ft60AB6EYyeWWpvV6aYOjv0wRCRZugCWun32OL8kQ/g3SPog==
+  dependencies:
+    clone "^2.1.2"
+    fast-deep-equal "^2.0.1"
+    gaba "^1.4.1"
+    intersect-objects "^1.0.0"
+    is-subset "^0.1.1"
+    json-rpc-engine "^5.1.1"
+    json-rpc-error "^2.0.0"
+    obs-store "^3.0.2"
+    uuid "^3.3.2"
+
+json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0, json-rpc-engine@^3.6.3, json-rpc-engine@^3.8.0:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-3.8.0.tgz#9d4ff447241792e1d0a232f6ef927302bb0c62a9"
   integrity sha512-6QNcvm2gFuuK4TKU1uwfH0Qd/cOSb9c1lls0gbnIhciktIUQJwz6NQNAW4B1KiGPenv7IKu97V222Yo1bNhGuA==
@@ -14558,10 +14578,9 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-2.0.3.tgz#8a8ccf73d830ec76b3c746265d5977edf36a5c2f"
-  integrity sha512-8/c77tyM56RgKIEUDTenORVmX2xy5a5isOWVRqE8w8u584WTrf56iWewzFpU2KxbHDF3Drx+jR9tII3Qwx83kg==
+"metamask-inpage-provider@github:rekmarks/metamask-inpage-provider#permissions":
+  version "2.0.1"
+  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/b1a76d67302de58307a0c609f4fb3d07f01dd1ac"
   dependencies:
     json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
@@ -14570,6 +14589,7 @@ metamask-inpage-provider@^2.0.3:
     obs-store "^4.0.3"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
+    through2 "^2.0.3"
 
 metamask-logo@^2.1.4:
   version "2.1.4"
