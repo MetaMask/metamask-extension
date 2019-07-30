@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
-import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
+import { CONTACT_LIST_ROUTE, CONTACT_VIEW_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
@@ -86,7 +86,7 @@ export default class EditContact extends PureComponent {
             }
           }}
           onCancel={() => {
-            history.push(CONTACT_LIST_ROUTE)
+            history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
           }}
           submitText={this.context.t('save')}
           submitButtonType={'confirm'}
