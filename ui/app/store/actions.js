@@ -1950,12 +1950,10 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
 
   return (dispatch, getState) => {
     const chainId = getState().metamask.network
-    background.setAddressBook(recipient, nickname, chainId, memo, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Address book failed to update'))
-      }
-    })
+    const set = background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+    if (!set) {
+      return dispatch(displayWarning('Address book failed to update'))
+    }
   }
 }
 
@@ -1966,13 +1964,8 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
 function removeFromAddressBook (addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
-  return (dispatch) => {
-    background.removeFromAddressBook(checksumAddress(addressToRemove), (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Address book failed to update'))
-      }
-    })
+  return () => {
+    background.removeFromAddressBook(checksumAddress(addressToRemove))
   }
 }
 
