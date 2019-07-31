@@ -68,7 +68,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @constructor
    * @param {Object} opts
    */
-   constructor (opts) {
+  constructor (opts) {
     super()
 
     this.defaultMaxListeners = 20
@@ -362,9 +362,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
-//=============================================================================
-// EXPOSED TO THE UI SUBSYSTEM
-//=============================================================================
+  //=============================================================================
+  // EXPOSED TO THE UI SUBSYSTEM
+  //=============================================================================
 
   /**
    * The metamask-state of the various controllers, made available to the UI
@@ -503,9 +503,9 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
 
-//=============================================================================
-// VAULT / KEYRING RELATED METHODS
-//=============================================================================
+  //=============================================================================
+  // VAULT / KEYRING RELATED METHODS
+  //=============================================================================
 
   /**
    * Creates a new Vault and create a new keychain.
@@ -615,7 +615,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * with the mobile client for syncing purposes
    * @returns Promise<Object> Parts of the state that we want to syncx
    */
-   async fetchInfoToSync () {
+  async fetchInfoToSync () {
     // Preferences
     const {
       accountTokens,
@@ -744,14 +744,14 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
     let accounts = []
     switch (page) {
-        case -1:
-          accounts = await keyring.getPreviousPage()
-          break
-        case 1:
-          accounts = await keyring.getNextPage()
-          break
-        default:
-          accounts = await keyring.getFirstPage()
+      case -1:
+        accounts = await keyring.getPreviousPage()
+        break
+      case 1:
+        accounts = await keyring.getNextPage()
+        break
+      default:
+        accounts = await keyring.getFirstPage()
     }
 
     // Merge with existing accounts
@@ -808,7 +808,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
-   }
+  }
 
 
   //
@@ -975,16 +975,16 @@ module.exports = class MetamaskController extends EventEmitter {
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
     return this.messageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
+      .then((cleanMsgParams) => {
       // signs the message
-      return this.keyringController.signMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
+        return this.keyringController.signMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
-      this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
+        this.messageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
   }
 
   /**
@@ -1033,16 +1033,16 @@ module.exports = class MetamaskController extends EventEmitter {
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
     return this.personalMessageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
+      .then((cleanMsgParams) => {
       // signs the message
-      return this.keyringController.signPersonalMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
+        return this.keyringController.signPersonalMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
+        this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
   }
 
   /**
@@ -1142,7 +1142,7 @@ module.exports = class MetamaskController extends EventEmitter {
   restoreOldVaultAccounts (migratorOutput) {
     const { serialized } = migratorOutput
     return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
+      .then(() => migratorOutput)
   }
 
   /**
@@ -1185,9 +1185,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-//=============================================================================
-// END (VAULT / KEYRING RELATED METHODS)
-//=============================================================================
+  //=============================================================================
+  // END (VAULT / KEYRING RELATED METHODS)
+  //=============================================================================
 
   /**
    * Allows a user to try to speed up a transaction by retrying it
@@ -1236,9 +1236,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-//=============================================================================
-// PASSWORD MANAGEMENT
-//=============================================================================
+  //=============================================================================
+  // PASSWORD MANAGEMENT
+  //=============================================================================
 
   /**
    * Allows a user to begin the seed phrase recovery process.
@@ -1260,9 +1260,9 @@ module.exports = class MetamaskController extends EventEmitter {
     cb()
   }
 
-//=============================================================================
-// SETUP
-//=============================================================================
+  //=============================================================================
+  // SETUP
+  //=============================================================================
 
   /**
    * Used to create a multiplexed stream for connecting to an untrusted context
@@ -1531,13 +1531,13 @@ module.exports = class MetamaskController extends EventEmitter {
         return GWEI_BN
       }
       return block.gasPrices
-      .map(hexPrefix => hexPrefix.substr(2))
-      .map(hex => new BN(hex, 16))
-      .sort((a, b) => {
-        return a.gt(b) ? 1 : -1
-      })[0]
+        .map(hexPrefix => hexPrefix.substr(2))
+        .map(hex => new BN(hex, 16))
+        .sort((a, b) => {
+          return a.gt(b) ? 1 : -1
+        })[0]
     })
-    .map(number => number.div(GWEI_BN).toNumber())
+      .map(number => number.div(GWEI_BN).toNumber())
 
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
@@ -1557,9 +1557,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return pendingNonce
   }
 
-//=============================================================================
-// CONFIG
-//=============================================================================
+  //=============================================================================
+  // CONFIG
+  //=============================================================================
 
   // Log blocks
 
@@ -1754,7 +1754,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.tokenRatesController.isActive = active
   }
 
- /**
+  /**
   * Creates RPC engine middleware for processing eth_signTypedData requests
   *
   * @param {Object} req - request object

@@ -59,7 +59,7 @@ AccountDetailsDropdown.prototype.render = function () {
     viewOnEtherscan,
     showRemoveAccountConfirmationModal,
     rpcPrefs,
-   } = this.props
+  } = this.props
 
   const address = selectedIdentity.address
 

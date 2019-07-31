@@ -57,41 +57,41 @@ storage.data.TransactionController.transactions = transactions
 describe('storage is migrated successfully and the proper transactions are remove from state', () => {
   it('should remove transactions that are unneeded', (done) => {
     migration23.migrate(storage)
-    .then((migratedData) => {
-      let leftoverNonDeletableTxCount = 0
-      const migratedTransactions = migratedData.data.TransactionController.transactions
-      migratedTransactions.forEach((tx) => {
-        if (!deletableTxStates.find((s) => s === tx.status)) {
-          leftoverNonDeletableTxCount++
-        }
-      })
-      assert.equal(leftoverNonDeletableTxCount, nonDeletableCount, 'migration shouldnt delete transactions we want to keep')
-      assert((migratedTransactions.length >= 40), `should be equal or greater to 40 if they are non deletable states got ${migratedTransactions.length} transactions`)
-      done()
-    }).catch(done)
+      .then((migratedData) => {
+        let leftoverNonDeletableTxCount = 0
+        const migratedTransactions = migratedData.data.TransactionController.transactions
+        migratedTransactions.forEach((tx) => {
+          if (!deletableTxStates.find((s) => s === tx.status)) {
+            leftoverNonDeletableTxCount++
+          }
+        })
+        assert.equal(leftoverNonDeletableTxCount, nonDeletableCount, 'migration shouldnt delete transactions we want to keep')
+        assert((migratedTransactions.length >= 40), `should be equal or greater to 40 if they are non deletable states got ${migratedTransactions.length} transactions`)
+        done()
+      }).catch(done)
   })
 
   it('should not remove any transactions because 40 is the expectable limit', (done) => {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions40
     migration23.migrate(storage)
-    .then((migratedData) => {
-      const migratedTransactions = migratedData.data.TransactionController.transactions
+      .then((migratedData) => {
+        const migratedTransactions = migratedData.data.TransactionController.transactions
 
-      assert.equal(migratedTransactions.length, 40, 'migration shouldnt delete when at limit')
-      done()
-    }).catch(done)
+        assert.equal(migratedTransactions.length, 40, 'migration shouldnt delete when at limit')
+        done()
+      }).catch(done)
   })
 
   it('should not remove any transactions because 20 txs is under the expectable limit', (done) => {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions20
     migration23.migrate(storage)
-    .then((migratedData) => {
-      const migratedTransactions = migratedData.data.TransactionController.transactions
-      assert.equal(migratedTransactions.length, 20, 'migration shouldnt delete when under limit')
-      done()
-    }).catch(done)
+      .then((migratedData) => {
+        const migratedTransactions = migratedData.data.TransactionController.transactions
+        assert.equal(migratedTransactions.length, 20, 'migration shouldnt delete when under limit')
+        done()
+      }).catch(done)
   })
 
 })

@@ -31,7 +31,7 @@ export default class EditContact extends PureComponent {
     error: '',
   }
 
-   render () {
+  render () {
     const { t } = this.context
     const { history, name, addToAddressBook, removeFromAddressBook, address, memo, viewRoute, listRoute, setAccountLabel } = this.props
 
@@ -51,9 +51,9 @@ export default class EditContact extends PureComponent {
           </Button>
         </div>
         <div className="address-book__edit-contact__content">
-            <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-                { t('userName') }
+              { t('userName') }
             </div>
             <TextField
               type="text"

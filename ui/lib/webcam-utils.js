@@ -14,16 +14,16 @@ class WebcamUtils {
       try {
         DetectRTC.load(_ => {
           if (DetectRTC.hasWebcam) {
-              let environmentReady = true
-              if ((isFirefoxOrBrave && isPopup) || (isPopup && !DetectRTC.isWebsiteHasWebcamPermissions)) {
-                environmentReady = false
-              }
-              resolve({
-                permissions: DetectRTC.isWebsiteHasWebcamPermissions,
-                environmentReady,
-              })
+            let environmentReady = true
+            if ((isFirefoxOrBrave && isPopup) || (isPopup && !DetectRTC.isWebsiteHasWebcamPermissions)) {
+              environmentReady = false
+            }
+            resolve({
+              permissions: DetectRTC.isWebsiteHasWebcamPermissions,
+              environmentReady,
+            })
           } else {
-              reject({type: 'NO_WEBCAM_FOUND'})
+            reject({type: 'NO_WEBCAM_FOUND'})
           }
         })
       } catch (e) {

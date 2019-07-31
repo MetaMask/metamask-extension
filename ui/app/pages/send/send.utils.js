@@ -319,7 +319,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-  .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }

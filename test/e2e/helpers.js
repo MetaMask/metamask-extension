@@ -162,6 +162,6 @@ async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) 
   if (windowUrl.match(regexp)) {
     return firstHandle
   } else {
-     return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
+    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
   }
 }

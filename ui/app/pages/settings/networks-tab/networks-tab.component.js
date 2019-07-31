@@ -50,16 +50,16 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div className="settings-page__sub-header">
-          <div
-            className="networks-tab__back-button"
-            onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
-              ? () => {
-                  setNetworksTabAddMode(false)
-                  setSelectedSettingsRpcUrl(null)
-                }
-              : () => this.props.history.push(SETTINGS_ROUTE)
+        <div
+          className="networks-tab__back-button"
+          onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
+            ? () => {
+              setNetworksTabAddMode(false)
+              setSelectedSettingsRpcUrl(null)
             }
-          />
+            : () => this.props.history.push(SETTINGS_ROUTE)
+          }
+        />
         <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
@@ -109,7 +109,7 @@ export default class NetworksTab extends PureComponent {
           setNetworksTabAddMode(false)
           setSelectedSettingsRpcUrl(rpcUrl)
         }}
-       >
+      >
         <NetworkDropdownIcon
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
@@ -223,16 +223,16 @@ export default class NetworksTab extends PureComponent {
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
           ? <div className="networks-tab__add-network-button-wrapper">
-              <Button
-                type="primary"
-                onClick={event => {
-                  event.preventDefault()
-                  setSelectedSettingsRpcUrl(null)
-                  setNetworksTabAddMode(true)
-                }}
-              >
-                { this.context.t('addNetwork') }
-              </Button>
+            <Button
+              type="primary"
+              onClick={event => {
+                event.preventDefault()
+                setSelectedSettingsRpcUrl(null)
+                setNetworksTabAddMode(true)
+              }}
+            >
+              { this.context.t('addNetwork') }
+            </Button>
           </div>
           : null
         }

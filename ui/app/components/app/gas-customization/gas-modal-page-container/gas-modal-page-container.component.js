@@ -47,7 +47,7 @@ export default class GasModalPageContainer extends Component {
     const promise = this.props.hideBasic
       ? Promise.resolve(this.props.blockTime)
       : this.props.fetchBasicGasAndTimeEstimates()
-          .then(basicEstimates => basicEstimates.blockTime)
+        .then(basicEstimates => basicEstimates.blockTime)
 
     promise
       .then(blockTime => {
@@ -144,11 +144,11 @@ export default class GasModalPageContainer extends Component {
     return (
       <Tabs>
         {tabsToRender.map(({ name, content }, i) => <Tab name={this.context.t(name)} key={`gas-modal-tab-${i}`}>
-            <div className="gas-modal-content">
-              { content }
-              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
-            </div>
-          </Tab>
+          <div className="gas-modal-content">
+            { content }
+            { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
+          </div>
+        </Tab>
         )}
       </Tabs>
     )

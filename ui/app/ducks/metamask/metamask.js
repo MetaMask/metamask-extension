@@ -275,7 +275,7 @@ function reduceMetamask (state, action) {
         },
       })
 
-      case actions.UPDATE_SEND_ENS_RESOLUTION:
+    case actions.UPDATE_SEND_ENS_RESOLUTION:
       return extend(metamaskState, {
         send: {
           ...metamaskState.send,

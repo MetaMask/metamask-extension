@@ -194,16 +194,16 @@ class Routes extends Component {
     const { transaction: sidebarTransaction } = props || {}
 
     const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-    ? () => {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
-          action: 'Wallet Sidebar',
-          name: 'Closed Sidebare Via Overlay',
-        },
-      })
-    }
-    : null
+      ? () => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Wallet Sidebar',
+            name: 'Closed Sidebare Via Overlay',
+          },
+        })
+      }
+      : null
 
     return (
       <div

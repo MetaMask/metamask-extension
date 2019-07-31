@@ -274,12 +274,12 @@ var actions = {
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
   hideSubLoadingIndication: hideSubLoadingIndication,
-// QR STUFF:
+  // QR STUFF:
   SHOW_QR: 'SHOW_QR',
   showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
-// FORGOT PASSWORD:
+  // FORGOT PASSWORD:
   BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
   goBackToInitView: goBackToInitView,
   RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
@@ -791,22 +791,22 @@ function showInfoPage () {
 function showQrScanner (ROUTE) {
   return (dispatch) => {
     return WebcamUtils.checkStatus()
-    .then(status => {
-      if (!status.environmentReady) {
-         // We need to switch to fullscreen mode to ask for permission
-         global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
-      } else {
+      .then(status => {
+        if (!status.environmentReady) {
+          // We need to switch to fullscreen mode to ask for permission
+          global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
+        } else {
+          dispatch(actions.showModal({
+            name: 'QR_SCANNER',
+          }))
+        }
+      }).catch(e => {
         dispatch(actions.showModal({
           name: 'QR_SCANNER',
+          error: true,
+          errorType: e.type,
         }))
-      }
-    }).catch(e => {
-      dispatch(actions.showModal({
-        name: 'QR_SCANNER',
-        error: true,
-        errorType: e.type,
-      }))
-    })
+      })
   }
 }
 
@@ -967,17 +967,17 @@ function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-    .then(gas => {
-      dispatch(actions.setGasLimit(gas))
-      dispatch(gasDuck.setCustomGasLimit(gas))
-      dispatch(updateSendErrors({ gasLoadingError: null }))
-      dispatch(actions.gasLoadingFinished())
-    })
-    .catch(err => {
-      log.error(err)
-      dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
-      dispatch(actions.gasLoadingFinished())
-    })
+      .then(gas => {
+        dispatch(actions.setGasLimit(gas))
+        dispatch(gasDuck.setCustomGasLimit(gas))
+        dispatch(updateSendErrors({ gasLoadingError: null }))
+        dispatch(actions.gasLoadingFinished())
+      })
+      .catch(err => {
+        log.error(err)
+        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+        dispatch(actions.gasLoadingFinished())
+      })
   }
 }
 
@@ -1166,9 +1166,9 @@ function updateTransaction (txData) {
         resolve(txData)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => {
+      .then(() => updateMetamaskStateFromBackground())
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => {
         dispatch(actions.showConfTxPage({ id: txData.id }))
         dispatch(actions.hideLoadingIndication())
         return txData
@@ -1711,10 +1711,10 @@ function addTokens (tokens) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
-        .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
-        ))
+          .entries(tokens)
+          .map(([_, { address, symbol, decimals }]) => (
+            dispatch(addToken(address, symbol, decimals))
+          ))
       )
     }
   }
@@ -1737,8 +1737,8 @@ function removeSuggestedTokens () {
         resolve(suggestedTokens)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(() => updateMetamaskStateFromBackground())
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
   }
 }
 
@@ -1813,8 +1813,8 @@ function createCancelTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTxId)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 
@@ -1835,8 +1835,8 @@ function createSpeedUpTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTx)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
   }
 }
 
@@ -2071,10 +2071,10 @@ function showLoadingIndication (message) {
 }
 
 function setHardwareWalletDefaultHdPath ({ device, path }) {
-    return {
-      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-      value: {device, path},
-    }
+  return {
+    type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+    value: {device, path},
+  }
 }
 
 function hideLoadingIndication () {

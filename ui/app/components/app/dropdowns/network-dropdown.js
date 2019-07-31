@@ -353,12 +353,12 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
             },
           }, nickname || rpc),
           h('i.fa.fa-times.delete',
-          {
-            onClick: (e) => {
-              e.stopPropagation()
-              props.delRpcTarget(rpc)
-            },
-          }),
+            {
+              onClick: (e) => {
+                e.stopPropagation()
+                props.delRpcTarget(rpc)
+              },
+            }),
         ]
       )
     }

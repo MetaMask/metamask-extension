@@ -100,15 +100,15 @@ class MobileSyncPage extends Component {
         }
 
         if (message.event === 'start-sync') {
-            this.startSyncing()
+          this.startSyncing()
         } else if (message.event === 'connection-info') {
-            this.handle && clearTimeout(this.handle)
-            this.disconnectWebsockets()
-            this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
-            this.initWebsockets()
+          this.handle && clearTimeout(this.handle)
+          this.disconnectWebsockets()
+          this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
+          this.initWebsockets()
         } else if (message.event === 'end-sync') {
-            this.disconnectWebsockets()
-            this.setState({syncing: false, completed: true})
+          this.disconnectWebsockets()
+          this.setState({syncing: false, completed: true})
         }
       },
     })
@@ -126,10 +126,10 @@ class MobileSyncPage extends Component {
     }
   }
 
-    // Calculating a PubNub Message Payload Size.
+  // Calculating a PubNub Message Payload Size.
   calculatePayloadSize (channel, message) {
     return encodeURIComponent(
-        channel + JSON.stringify(message)
+      channel + JSON.stringify(message)
     ).length + 100
   }
 
@@ -153,14 +153,14 @@ class MobileSyncPage extends Component {
           channel: this.channelName,
           sendByPost: false, // true to send via post
           storeInHistory: false,
-      },
-      (status, response) => {
-        if (!status.error) {
-          resolve()
-        } else {
-          reject(response)
-        }
-      })
+        },
+        (status, response) => {
+          if (!status.error) {
+            resolve()
+          } else {
+            reject(response)
+          }
+        })
     })
   }
 
@@ -199,16 +199,16 @@ class MobileSyncPage extends Component {
   sendMessage (data, pkg, count) {
     return new Promise((resolve, reject) => {
       this.pubnub.publish(
-         {
-            message: {
-              event: 'syncing-data',
-              data,
-              totalPkg: count,
-              currentPkg: pkg,
-            },
-            channel: this.channelName,
-            sendByPost: false, // true to send via post
-            storeInHistory: false,
+        {
+          message: {
+            event: 'syncing-data',
+            data,
+            totalPkg: count,
+            currentPkg: pkg,
+          },
+          channel: this.channelName,
+          sendByPost: false, // true to send via post
+          storeInHistory: false,
         },
         (status, response) => {
           if (!status.error) {
@@ -229,7 +229,7 @@ class MobileSyncPage extends Component {
   renderWarning (text) {
     return (
       h('.page-container__warning-container', [
-       h('.page-container__warning-message', [
+        h('.page-container__warning-message', [
           h('div', [text]),
         ]),
       ])
@@ -245,12 +245,12 @@ class MobileSyncPage extends Component {
 
     if (this.state.completed) {
       return h('div.reveal-seed__content', {},
-          h('label.reveal-seed__label', {
-            style: {
-             width: '100%',
-             textAlign: 'center',
-            },
-          }, t('syncWithMobileComplete')),
+        h('label.reveal-seed__label', {
+          style: {
+            width: '100%',
+            textAlign: 'center',
+          },
+        }, t('syncWithMobileComplete')),
       )
     }
 
@@ -303,8 +303,8 @@ class MobileSyncPage extends Component {
       h('div', [
         h('label.reveal-seed__label', {
           style: {
-           width: '100%',
-           textAlign: 'center',
+            width: '100%',
+            textAlign: 'center',
           },
         }, t('syncWithMobileScanThisCode')),
         h('.div.qr-wrapper', {
@@ -370,7 +370,7 @@ class MobileSyncPage extends Component {
           this.state.screen === PASSWORD_PROMPT_SCREEN ? h('.page-container__subtitle', this.context.t('syncWithMobileDescNewUsers')) : null,
         ]),
         h('.page-container__content', [
-            this.renderContent(),
+          this.renderContent(),
         ]),
         this.renderFooter(),
       ])

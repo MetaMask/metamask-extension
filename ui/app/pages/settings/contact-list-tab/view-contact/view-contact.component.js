@@ -25,7 +25,7 @@ export default class ViewContact extends PureComponent {
     editRoute: PropTypes.string,
   }
 
-   render () {
+  render () {
     const { t } = this.context
     const { history, name, address, checkSummedAddress, memo, editRoute } = this.props
 
