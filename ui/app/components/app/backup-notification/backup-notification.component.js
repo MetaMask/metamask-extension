@@ -22,10 +22,6 @@ export default class BackupNotification extends PureComponent {
     history.push(INITIALIZE_SEED_PHRASE_ROUTE)
   }
 
-  handleIgnore () {
-
-  }
-
   render () {
     const { t } = this.context
 
@@ -40,13 +36,6 @@ export default class BackupNotification extends PureComponent {
           <i className="fa fa-info-circle"></i>
         </div>
         <div className="backup-notification__buttons">
-          <Button
-            type="secondary"
-            className="backup-notification__ignore-button"
-            onClick={this.handleIgnore}
-          >
-            { t('remindMeLater') }
-          </Button>
           <Button
             type="primary"
             className="backup-notification__submit-button"

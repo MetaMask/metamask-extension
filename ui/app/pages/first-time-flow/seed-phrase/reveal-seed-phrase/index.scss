@@ -1,4 +1,12 @@
 .reveal-seed-phrase {
+  @media screen and (max-width: 576px) {
+    display: flex;
+    flex-direction: column;
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
   &__secret {
     position: relative;
     display: flex;

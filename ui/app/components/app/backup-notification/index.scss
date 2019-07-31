@@ -10,6 +10,10 @@
   flex-flow: column;
   justify-content: space-between;
 
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
   &__header {
     display: flex;
   }
@@ -55,14 +59,17 @@
     padding: 0;
 
     &:hover {
-      border-color: #6A737D;
-      background-color: #6A737D;
+      background-color: #3b4046;
+    }
+
+    &:active {
+      background-color:#141618;
     }
   }
 
   &__buttons {
     display: flex;
-    width: 100%;
-    justify-content: space-between;
+    width: 130px;
+    align-self: flex-end;
   }
 }
