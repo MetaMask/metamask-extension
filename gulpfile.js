@@ -20,6 +20,7 @@ const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
 const pify = require('pify')
 const rtlcss = require('gulp-rtlcss')
+const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
