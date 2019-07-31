@@ -1,4 +1,17 @@
+.address-book-wrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+
 .address-book {
+  flex: 0.4 1 40%;
+  max-width: 40%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1;
+    max-width: 100%;
+  }
 
   &__entry {
     display: flex;
@@ -114,12 +127,15 @@
 
     &__content {
       flex: 1 1 auto;
-      height: 0;
-      overflow: auto;
 
       > div {
-        padding-top: 1rem;
+        padding-top: 0;
       }
+
+    }
+
+    .page-container__footer {
+      border-top: none;
     }
   }
 
@@ -186,12 +202,9 @@
 }
 
 .address-book-add-button {
-  height: 100%;
-  width: 100%;
-
   &__button {
     position: absolute;
-    bottom: 16px;
+    top: 10px;
     right: 16px;
     height: 56px;
     width: 56px;
@@ -205,5 +218,17 @@
     margin-right: 5px;
     cursor: pointer;
     box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.address-book--hidden {
+  display: none;
+}
+
+.address-book-contact-content {
+  flex: 0.4 1 40%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1
   }
 }

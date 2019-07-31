@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import Button from '../../../../components/ui/button/button.component'
 import TextField from '../../../../components/ui/text-field'
-import { CONTACT_LIST_ROUTE, CONTACT_VIEW_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
@@ -20,6 +19,9 @@ export default class EditContact extends PureComponent {
     name: PropTypes.string,
     address: PropTypes.string,
     memo: PropTypes.string,
+    viewRoute: PropTypes.string,
+    listRoute: PropTypes.string,
+    setAccountLabel: PropTypes.func,
   }
 
   state = {
@@ -31,7 +33,7 @@ export default class EditContact extends PureComponent {
 
    render () {
     const { t } = this.context
-    const { history, name, addToAddressBook, removeFromAddressBook, address, memo } = this.props
+    const { history, name, addToAddressBook, removeFromAddressBook, address, memo, viewRoute, listRoute, setAccountLabel } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
@@ -42,7 +44,7 @@ export default class EditContact extends PureComponent {
             className="settings-page__address-book-button"
             onClick={() => {
               removeFromAddressBook(address)
-              history.push(CONTACT_LIST_ROUTE)
+              history.push(listRoute)
             }}
           >
             {t('deleteAccount')}
@@ -109,18 +111,20 @@ export default class EditContact extends PureComponent {
               if (isValidAddress(this.state.newAddress)) {
                 removeFromAddressBook(address)
                 addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
-                history.push(CONTACT_LIST_ROUTE)
+                setAccountLabel(this.state.newAddress, this.state.newName || name)
+                history.push(listRoute)
               } else {
                 this.setState({ error: 'invalid address' })
               }
             } else {
               // update name
               addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
-              history.push(CONTACT_LIST_ROUTE)
+              setAccountLabel(address, this.state.newName || name)
+              history.push(listRoute)
             }
           }}
           onCancel={() => {
-            history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
+            history.push(`${viewRoute}/${address}`)
           }}
           submitText={this.context.t('save')}
           submitButtonType={'confirm'}

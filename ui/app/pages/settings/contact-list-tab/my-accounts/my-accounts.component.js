@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import ContactList from '../../../../components/app/contact-list'
-import { CONTACT_VIEW_ROUTE } from '../../../../helpers/constants/routes'
+import { CONTACT_MY_ACCOUNTS_VIEW_ROUTE } from '../../../../helpers/constants/routes'
 
 export default class ViewContact extends PureComponent {
 
@@ -22,7 +22,7 @@ export default class ViewContact extends PureComponent {
         <ContactList
           searchForMyAccounts={() => myAccounts}
           selectRecipient={(address) => {
-            history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
+            history.push(`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${address}`)
           }}
         />
       </div>

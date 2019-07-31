@@ -18,6 +18,8 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
+  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
+  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../helpers/constants/routes'
 
 const ROUTES_TO_I18N_KEYS = {
@@ -38,16 +40,34 @@ const mapStateToProps = (state, ownProps) => {
   const pathNameTail = pathname.match(/[^/]+$/)[0]
 
   const isAddressEntryPage = pathNameTail.includes('0x')
-  const isMyAccountsPage = pathNameTail === 'my-accounts'
+  const isMyAccountsPage = pathname.match('my-accounts')
+  const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE))
+  const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE))
+  const isEditMyAccountsContactPage = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 
   const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
 
   let backRoute
-  if (isAddressEntryPage || isMyAccountsPage) {
+  if (isMyAccountsPage && isAddressEntryPage) {
+    backRoute = CONTACT_MY_ACCOUNTS_ROUTE
+  } else if (isEditContactPage) {
+    backRoute = `${CONTACT_VIEW_ROUTE}/${pathNameTail}`
+  } else if (isEditMyAccountsContactPage) {
+    backRoute = `${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${pathNameTail}`
+  } else if (isAddressEntryPage || isMyAccountsPage || isAddContactPage) {
     backRoute = CONTACT_LIST_ROUTE
   } else {
     backRoute = SETTINGS_ROUTE
+  }
+
+  let initialBreadCrumbRoute
+  let breadCrumbTextKey
+  let initialBreadCrumbKey
+  if (isMyAccountsPage) {
+    initialBreadCrumbRoute = CONTACT_LIST_ROUTE
+    breadCrumbTextKey = 'myWalletAccounts'
+    initialBreadCrumbKey = ROUTES_TO_I18N_KEYS[initialBreadCrumbRoute]
   }
 
   const addressName = getAddressBookEntryName(state, isValidAddress(pathNameTail) ? pathNameTail : '')
@@ -60,6 +80,9 @@ const mapStateToProps = (state, ownProps) => {
     isPopupView,
     pathnameI18nKey,
     addressName,
+    initialBreadCrumbRoute,
+    breadCrumbTextKey,
+    initialBreadCrumbKey,
   }
 }
 

@@ -9,10 +9,6 @@ import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
 import ContactListTab from './contact-list-tab'
-import AddContact from './contact-list-tab/add-contact'
-import EditContact from './contact-list-tab/edit-contact'
-import ViewContact from './contact-list-tab/view-contact'
-import MyAccounts from './contact-list-tab/my-accounts'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
@@ -26,6 +22,8 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
+  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
+  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
 } from '../../helpers/constants/routes'
 
 class SettingsPage extends PureComponent {
@@ -38,6 +36,9 @@ class SettingsPage extends PureComponent {
     isPopupView: PropTypes.bool,
     location: PropTypes.object,
     pathnameI18nKey: PropTypes.string,
+    initialBreadCrumbRoute: PropTypes.string,
+    breadCrumbTextKey: PropTypes.string,
+    initialBreadCrumbKey: PropTypes.string,
     t: PropTypes.func,
   }
 
@@ -105,21 +106,36 @@ class SettingsPage extends PureComponent {
 
   renderSubHeader () {
     const { t } = this.context
-    const { currentPath, isPopupView, isAddressEntryPage, pathnameI18nKey, addressName } = this.props
+    const {
+      currentPath,
+      isPopupView,
+      isAddressEntryPage,
+      pathnameI18nKey,
+      addressName,
+      initialBreadCrumbRoute,
+      breadCrumbTextKey,
+      history,
+      initialBreadCrumbKey,
+    } = this.props
 
     let subheaderText
 
     if (isPopupView && isAddressEntryPage) {
       subheaderText = t('settings')
-    } else if (isAddressEntryPage) {
-      subheaderText = addressName
+    } else if (initialBreadCrumbKey) {
+      subheaderText = t(initialBreadCrumbKey)
     } else {
       subheaderText = t(pathnameI18nKey || 'general')
     }
 
     return currentPath !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
-        {subheaderText}
+        <div
+          className={c({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
+          onClick={() => initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)}
+        >{subheaderText}</div>
+        {breadCrumbTextKey && <div><span>{'> '}</span>{t(breadCrumbTextKey)}</div>}
+        {isAddressEntryPage && <div><span>{' > '}</span>{addressName}</div>}
       </div>
     )
   }
@@ -185,22 +201,32 @@ class SettingsPage extends PureComponent {
         <Route
           exact
           path={CONTACT_ADD_ROUTE}
-          component={AddContact}
+          component={ContactListTab}
         />
         <Route
           exact
           path={CONTACT_MY_ACCOUNTS_ROUTE}
-          component={MyAccounts}
+          component={ContactListTab}
         />
         <Route
           exact
           path={`${CONTACT_EDIT_ROUTE}/:id`}
-          component={EditContact}
+          component={ContactListTab}
         />
         <Route
           exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
-          component={ViewContact}
+          component={ContactListTab}
+        />
+        <Route
+          exact
+          path={`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/:id`}
+          component={ContactListTab}
+        />
+        <Route
+          exact
+          path={`${CONTACT_MY_ACCOUNTS_EDIT_ROUTE}/:id`}
+          component={ContactListTab}
         />
         <Route
           component={SettingsTab}

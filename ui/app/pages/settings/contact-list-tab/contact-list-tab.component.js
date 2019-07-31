@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ContactList from '../../../components/app/contact-list'
+import EditContact from './edit-contact'
+import AddContact from './add-contact'
+import ViewContact from './view-contact'
+import MyAccounts from './my-accounts'
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
@@ -15,10 +19,17 @@ export default class ContactListTab extends Component {
   static propTypes = {
     addressBook: PropTypes.array,
     history: PropTypes.object,
+    selectedAddress: PropTypes.string,
+    viewingContact: PropTypes.bool,
+    editingContact: PropTypes.bool,
+    addingContact: PropTypes.bool,
+    showContactContent: PropTypes.bool,
+    hideAddressBook: PropTypes.bool,
+    showingMyAccounts: PropTypes.bool,
   }
 
   renderAddresses () {
-    const { addressBook, history } = this.props
+    const { addressBook, history, selectedAddress } = this.props
     const contacts = addressBook.filter(({ name }) => !!name)
     const nonContacts = addressBook.filter(({ name }) => !name)
 
@@ -30,6 +41,7 @@ export default class ContactListTab extends Component {
           selectRecipient={(address) => {
             history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
           }}
+          selectedAddress={selectedAddress}
         />
       </div>
     )
@@ -49,7 +61,7 @@ export default class ContactListTab extends Component {
     </div>
   }
 
-  renderMyAccounts () {
+  renderMyAccountsButton () {
     const { history } = this.props
     const { t } = this.context
     return (
@@ -70,16 +82,50 @@ export default class ContactListTab extends Component {
     )
   }
 
+  renderContactContent () {
+    const { viewingContact, editingContact, addingContact, showContactContent } = this.props
+
+    if (!showContactContent) {
+      return null
+    }
+
+    let ContactContentComponent = null
+    if (viewingContact) {
+      ContactContentComponent = ViewContact
+    } else if (editingContact) {
+      ContactContentComponent = EditContact
+    } else if (addingContact) {
+      ContactContentComponent = AddContact
+    }
+
+    return (ContactContentComponent && <div className="address-book-contact-content">
+      <ContactContentComponent />
+    </div>)
+  }
+
+  renderAddressBookContent () {
+    const { hideAddressBook, showingMyAccounts } = this.props
+
+    if (!hideAddressBook && !showingMyAccounts) {
+      return (<div className="address-book">
+        { this.renderMyAccountsButton() }
+        { this.renderAddresses() }
+      </div>)
+    } else if (!hideAddressBook && showingMyAccounts) {
+      return (<MyAccounts />)
+    }
+  }
+
   render () {
+    const { addingContact } = this.props
+
     return (
-      <div>
-        <div className="address-book">
-          { this.renderMyAccounts() }
-          { this.renderAddresses() }
-        </div>
-        <div className="address-book-add-button">
+      <div className="address-book-wrapper">
+        { this.renderAddressBookContent() }
+        { this.renderContactContent() }
+        {!addingContact && <div className="address-book-add-button">
           { this.renderAddButton() }
-        </div>
+        </div>}
       </div>
     )
   }

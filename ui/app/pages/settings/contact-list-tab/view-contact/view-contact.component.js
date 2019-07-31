@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
-import { CONTACT_LIST_ROUTE, CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes'
+
 import Button from '../../../../components/ui/button/button.component'
 import copyToClipboard from 'copy-to-clipboard'
 
@@ -21,11 +21,13 @@ export default class ViewContact extends PureComponent {
     address: PropTypes.string,
     history: PropTypes.object,
     checkSummedAddress: PropTypes.string,
+    memo: PropTypes.string,
+    editRoute: PropTypes.string,
   }
 
    render () {
     const { t } = this.context
-    const { removeFromAddressBook, history, name, address, checkSummedAddress, memo } = this.props
+    const { history, name, address, checkSummedAddress, memo, editRoute } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -38,7 +40,7 @@ export default class ViewContact extends PureComponent {
             <Button
               type="secondary"
               onClick={() => {
-                history.push(`${CONTACT_EDIT_ROUTE}/${address}`)
+                history.push(`${editRoute}/${address}`)
               }}
             >
               {t('edit')}

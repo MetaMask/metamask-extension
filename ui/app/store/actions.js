@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
+const { getTokenAddressFromTokenObject, checksumAddress } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
@@ -1965,8 +1965,9 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
  */
 function removeFromAddressBook (addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
+
   return (dispatch) => {
-    background.removeFromAddressBook(addressToRemove, (err) => {
+    background.removeFromAddressBook(checksumAddress(addressToRemove), (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Address book failed to update'))

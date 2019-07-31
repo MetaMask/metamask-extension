@@ -93,7 +93,7 @@
       }
     }
 
-    &__group-item {
+    &__group-item, &__group-item--selected {
       @extend %row-nowrap;
       padding: .75rem 1rem;
       align-items: center;
@@ -125,6 +125,11 @@
         @extend %h8;
         color: $Grey-500;
       }
+    }
+
+    &__group-item--selected {
+      border: 2px solid #2b7cd6;
+      border-radius: 8px;
     }
   }
 }

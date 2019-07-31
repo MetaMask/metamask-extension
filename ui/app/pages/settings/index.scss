@@ -25,7 +25,7 @@
     }
   }
 
-  &__subheader {
+  &__subheader, &__subheader--link {
     padding: 16px 4px;
     font-size: 20px;
     border-bottom: 1px solid $alto;
@@ -38,6 +38,16 @@
     @media screen and (max-width: 575px) {
       display: none;
     }
+  }
+
+  &__subheader--link {
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  &__subheader--link:hover {
+    cursor: pointer;
+    color: #037DD6;
   }
 
   &__sub-header {

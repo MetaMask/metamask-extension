@@ -1,9 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../ui/identicon'
+import classnames from 'classnames'
 import { ellipsify } from '../../../../pages/send/send.utils'
 
-export default function RecipientGroup ({ label, items, onSelect }) {
+function addressesEqual (address1, address2) {
+  return String(address1).toLowerCase() === String(address2).toLowerCase()
+}
+
+export default function RecipientGroup ({ label, items, onSelect, selectedAddress }) {
   if (!items || !items.length) {
     return null
   }
@@ -17,8 +22,11 @@ export default function RecipientGroup ({ label, items, onSelect }) {
         items.map(({ address, name }) => (
           <div
             key={address}
-            className="send__select-recipient-wrapper__group-item"
             onClick={() => onSelect(address, name)}
+            className={classnames({
+              'send__select-recipient-wrapper__group-item': !addressesEqual(address, selectedAddress),
+              'send__select-recipient-wrapper__group-item--selected': addressesEqual(address, selectedAddress),
+            })}
           >
             <Identicon address={address} diameter={28} />
             <div className="send__select-recipient-wrapper__group-item__content">
@@ -47,4 +55,5 @@ RecipientGroup.propTypes = {
     name: PropTypes.string,
   })),
   onSelect: PropTypes.func.isRequired,
+  selectedAddress: PropTypes.string,
 }

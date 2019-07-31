@@ -12,6 +12,8 @@ const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact'
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact'
 const CONTACT_MY_ACCOUNTS_ROUTE = '/settings/contact-list/my-accounts'
+const CONTACT_MY_ACCOUNTS_VIEW_ROUTE = '/settings/contact-list/my-accounts/view'
+const CONTACT_MY_ACCOUNTS_EDIT_ROUTE = '/settings/contact-list/my-accounts/edit'
 const REVEAL_SEED_ROUTE = '/seed'
 const MOBILE_SYNC_ROUTE = '/mobile-sync'
 const RESTORE_VAULT_ROUTE = '/restore-vault'
@@ -85,5 +87,7 @@ module.exports = {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
+  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
+  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
 }

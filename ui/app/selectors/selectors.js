@@ -217,7 +217,7 @@ function getAddressBook (state) {
 
 function getAddressBookEntry (state, address) {
   const addressBook = getAddressBook(state)
-  const entry = addressBook.find(contact => contact.address === address)
+  const entry = addressBook.find(contact => contact.address.toLowerCase() === address.toLowerCase())
   return entry
 }
 
