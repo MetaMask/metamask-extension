@@ -1,4 +1,3 @@
-
 import { connect } from 'react-redux'
 import ConfirmSeedPhrase from './confirm-seed-phrase.component'
 import {

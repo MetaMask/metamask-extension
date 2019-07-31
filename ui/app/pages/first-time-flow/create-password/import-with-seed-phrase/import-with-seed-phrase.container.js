@@ -1,4 +1,3 @@
-
 import { connect } from 'react-redux'
 import ImportWithSeedPhrase from './import-with-seed-phrase.component'
 import {
