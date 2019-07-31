@@ -17,8 +17,26 @@
     padding: 3px;
   }
 
-  &__header {
-    align-items: flex-start !important;
+  &__header, &__header--edit {
+    &__name {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 24px;
+      line-height: 34px;
+      margin-left: 24px;
+    }
+  }
+
+  &__header--edit {
+    display: flex;
+    justify-content: space-between;
+
+    .button {
+      justify-content: flex-end;
+      color: #D73A49;
+      font-size: 14px;
+    }
   }
 
   &__input {
@@ -97,6 +115,11 @@
     &__content {
       flex: 1 1 auto;
       height: 0;
+      overflow: auto;
+
+      > div {
+        padding-top: 1rem;
+      }
     }
   }
 

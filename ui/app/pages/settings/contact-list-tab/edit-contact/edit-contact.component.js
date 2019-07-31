@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
+import Button from '../../../../components/ui/button/button.component'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE, CONTACT_VIEW_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress } from '../../../../helpers/utils/util'
@@ -34,8 +35,18 @@ export default class EditContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
-        <div className="settings-page__header address-book__header">
+        <div className="settings-page__header address-book__header--edit">
           <Identicon address={address} diameter={60}/>
+          <Button
+            type="link"
+            className="settings-page__address-book-button"
+            onClick={() => {
+              removeFromAddressBook(address)
+              history.push(CONTACT_LIST_ROUTE)
+            }}
+          >
+            {t('deleteAccount')}
+          </Button>
         </div>
         <div className="address-book__edit-contact__content">
             <div className="address-book__view-contact__group">

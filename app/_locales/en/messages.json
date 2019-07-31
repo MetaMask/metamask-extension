@@ -493,6 +493,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteAccount": {
+    "message": "Delete Account"
+  },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },

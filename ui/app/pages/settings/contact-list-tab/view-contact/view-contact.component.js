@@ -32,35 +32,17 @@ export default class ViewContact extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__header address-book__header">
             <Identicon address={address} diameter={60} />
-            <div className="settings-page__button-group">
+            <div className="address-book__header__name">{ name }</div>
+          </div>
+          <div className="address-book__view-contact__group">
             <Button
-              type="link"
-              className="settings-page__address-book-button"
+              type="secondary"
               onClick={() => {
                 history.push(`${CONTACT_EDIT_ROUTE}/${address}`)
               }}
             >
               {t('edit')}
             </Button>
-            <Button
-              type="link"
-              className="settings-page__address-book-button"
-              onClick={() => {
-                removeFromAddressBook(address)
-                history.push(CONTACT_LIST_ROUTE)
-              }}
-            >
-              {t('remove')}
-            </Button>
-            </div>
-          </div>
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
-              { t('userName') }
-            </div>
-            <div className="address-book__view-contact__group__value">
-              { name }
-            </div>
           </div>
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
@@ -83,7 +65,7 @@ export default class ViewContact extends PureComponent {
             <div className="address-book__view-contact__group__label--capitalized">
               { t('memo') }
             </div>
-            <div className="address-book__view-contact__group__value">
+            <div className="address-book__view-contact__group__static-address">
               { memo }
             </div>
           </div>
