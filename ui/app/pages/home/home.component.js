@@ -40,7 +40,7 @@ export default class Home extends PureComponent {
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
-        history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
+      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
     }
   }
 

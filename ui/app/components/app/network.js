@@ -127,19 +127,19 @@ Network.prototype.render = function () {
           default:
             return h('.network-indicator', [
               networkNumber === 'loading'
-              ? h('span.pointer.network-loading-spinner', {
-                onClick: (event) => this.props.onClick(event),
-              }, [
-                h('img', {
-                  title: context.t('attemptingConnect'),
-                  src: 'images/loading.svg',
+                ? h('span.pointer.network-loading-spinner', {
+                  onClick: (event) => this.props.onClick(event),
+                }, [
+                  h('img', {
+                    title: context.t('attemptingConnect'),
+                    src: 'images/loading.svg',
+                  }),
+                ])
+                : h('i.fa.fa-question-circle.fa-lg', {
+                  style: {
+                    color: 'rgb(125, 128, 130)',
+                  },
                 }),
-              ])
-              : h('i.fa.fa-question-circle.fa-lg', {
-                style: {
-                  color: 'rgb(125, 128, 130)',
-                },
-              }),
 
               h('.network-name', providerName === 'localhost' ? context.t('localhost') : providerNick || context.t('privateNetwork')),
               h('.network-indicator__down-arrow'),

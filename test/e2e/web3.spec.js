@@ -34,9 +34,9 @@ describe('Using MetaMask with an existing account', function () {
   const button = async (x) => {
     const buttoncheck = x
     await buttoncheck.click()
-   await delay(largeDelayMs)
-   const [results] = await findElements(driver, By.css('#results'))
-   const resulttext = await results.getText()
+    await delay(largeDelayMs)
+    const [results] = await findElements(driver, By.css('#results'))
+    const resulttext = await results.getText()
     var parsedData = JSON.parse(resulttext)
 
     return (parsedData)
@@ -169,197 +169,197 @@ describe('Using MetaMask with an existing account', function () {
   })
 
 
-    describe('opens dapp', () => {
+  describe('opens dapp', () => {
 
-      it('switches to mainnet', async () => {
-        const networkDropdown = await findElement(driver, By.css('.network-name'))
-        await networkDropdown.click()
-        await delay(regularDelayMs)
+    it('switches to mainnet', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
 
-        const [mainnet] = await findElements(driver, By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`))
-        await mainnet.click()
-        await delay(largeDelayMs * 2)
-      })
-
-      it('', async () => {
-        await openNewPage(driver, 'http://127.0.0.1:8080/')
-        await delay(regularDelayMs)
-
-        await waitUntilXWindowHandles(driver, 3)
-        const windowHandles = await driver.getAllWindowHandles()
-
-        const extension = windowHandles[0]
-        const popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-        const dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
-
-        await delay(regularDelayMs)
-        const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-        await approveButton.click()
-
-        await driver.switchTo().window(dapp)
-        await delay(regularDelayMs)
-
-
-      })
+      const [mainnet] = await findElements(driver, By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`))
+      await mainnet.click()
+      await delay(largeDelayMs * 2)
     })
 
-    describe('testing web3 methods', async () => {
+    it('', async () => {
+      await openNewPage(driver, 'http://127.0.0.1:8080/')
+      await delay(regularDelayMs)
+
+      await waitUntilXWindowHandles(driver, 3)
+      const windowHandles = await driver.getAllWindowHandles()
+
+      const extension = windowHandles[0]
+      const popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
+      const dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+
+      await delay(regularDelayMs)
+      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await approveButton.click()
+
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
 
 
-      it('testing hexa methods', async () => {
+    })
+  })
+
+  describe('testing web3 methods', async () => {
 
 
-          var List = await driver.findElements(By.className('hexaNumberMethods'))
+    it('testing hexa methods', async () => {
 
-          for (let i = 0; i < List.length; i++) {
-            try {
 
-             var parsedData = await button(List[i])
-            console.log(parsedData)
-            var result = parseInt(parsedData.result, 16)
+      var List = await driver.findElements(By.className('hexaNumberMethods'))
 
-            assert.equal((typeof result === 'number'), true)
-            await delay(regularDelayMs)
-          } catch (err) {
-            console.log(err)
-            assert(false)
+      for (let i = 0; i < List.length; i++) {
+        try {
 
-          }
+          var parsedData = await button(List[i])
+          console.log(parsedData)
+          var result = parseInt(parsedData.result, 16)
+
+          assert.equal((typeof result === 'number'), true)
+          await delay(regularDelayMs)
+        } catch (err) {
+          console.log(err)
+          assert(false)
+
         }
-      })
+      }
+    })
 
-      it('testing booleanMethods', async () => {
+    it('testing booleanMethods', async () => {
 
-          var List = await driver.findElements(By.className('booleanMethods'))
+      var List = await driver.findElements(By.className('booleanMethods'))
 
-          for (let i = 0; i < List.length; i++) {
-            try {
+      for (let i = 0; i < List.length; i++) {
+        try {
 
-              var parsedData = await button(List[i])
-              console.log(parsedData)
-            var result = parsedData.result
+          var parsedData = await button(List[i])
+          console.log(parsedData)
+          var result = parsedData.result
 
-            assert.equal(result, false)
-            await delay(regularDelayMs)
-          } catch (err) {
-            console.log(err)
-            assert(false)
+          assert.equal(result, false)
+          await delay(regularDelayMs)
+        } catch (err) {
+          console.log(err)
+          assert(false)
 
 
-          }
         }
+      }
 
-      })
+    })
 
-      it('testing  transactionMethods', async () => {
+    it('testing  transactionMethods', async () => {
 
-          var List = await driver.findElements(By.className('transactionMethods'))
+      var List = await driver.findElements(By.className('transactionMethods'))
 
-          for (let i = 0; i < List.length; i++) {
-            try {
+      for (let i = 0; i < List.length; i++) {
+        try {
 
-              var parsedData = await button(List[i])
+          var parsedData = await button(List[i])
 
+          console.log(parsedData.result.blockHash)
+
+          var result = []
+          result.push(parseInt(parsedData.result.blockHash, 16))
+          result.push(parseInt(parsedData.result.blockNumber, 16))
+          result.push(parseInt(parsedData.result.gas, 16))
+          result.push(parseInt(parsedData.result.gasPrice, 16))
+          result.push(parseInt(parsedData.result.hash, 16))
+          result.push(parseInt(parsedData.result.input, 16))
+          result.push(parseInt(parsedData.result.nonce, 16))
+          result.push(parseInt(parsedData.result.r, 16))
+          result.push(parseInt(parsedData.result.s, 16))
+          result.push(parseInt(parsedData.result.v, 16))
+          result.push(parseInt(parsedData.result.to, 16))
+          result.push(parseInt(parsedData.result.value, 16))
+
+
+          result.forEach((value) => {
+            assert.equal((typeof value === 'number'), true)
+          })
+
+
+        } catch (err) {
+
+          console.log(err)
+          assert(false)
+
+
+        }
+      }
+
+    })
+
+    it('testing blockMethods', async () => {
+
+      var List = await driver.findElements(By.className('blockMethods'))
+
+      for (let i = 0; i < List.length; i++) {
+        try {
+
+          var parsedData = await button(List[i])
+          console.log(JSON.stringify(parsedData) + i)
+
+          console.log(parsedData.result.parentHash)
+
+          var result = parseInt(parsedData.result.parentHash, 16)
+
+          assert.equal((typeof result === 'number'), true)
+          await delay(regularDelayMs)
+        } catch (err) {
+
+          console.log(err)
+          assert(false)
+
+
+        }
+      }
+    })
+
+    it('testing methods', async () => {
+
+      var List = await driver.findElements(By.className('methods'))
+      var parsedData
+      var result
+
+      for (let i = 0; i < List.length; i++) {
+        try {
+
+          if (i === 2) {
+
+            parsedData = await button(List[i])
             console.log(parsedData.result.blockHash)
 
-            var result = []
-             result.push(parseInt(parsedData.result.blockHash, 16))
-             result.push(parseInt(parsedData.result.blockNumber, 16))
-             result.push(parseInt(parsedData.result.gas, 16))
-             result.push(parseInt(parsedData.result.gasPrice, 16))
-             result.push(parseInt(parsedData.result.hash, 16))
-             result.push(parseInt(parsedData.result.input, 16))
-             result.push(parseInt(parsedData.result.nonce, 16))
-             result.push(parseInt(parsedData.result.r, 16))
-             result.push(parseInt(parsedData.result.s, 16))
-             result.push(parseInt(parsedData.result.v, 16))
-             result.push(parseInt(parsedData.result.to, 16))
-             result.push(parseInt(parsedData.result.value, 16))
+            result = parseInt(parsedData.result.blockHash, 16)
 
-
-              result.forEach((value) => {
-                assert.equal((typeof value === 'number'), true)
-              })
-
-
-          } catch (err) {
-
-            console.log(err)
-            assert(false)
-
-
-          }
-        }
-
-      })
-
-      it('testing blockMethods', async () => {
-
-          var List = await driver.findElements(By.className('blockMethods'))
-
-          for (let i = 0; i < List.length; i++) {
-            try {
-
-              var parsedData = await button(List[i])
-              console.log(JSON.stringify(parsedData) + i)
-
-            console.log(parsedData.result.parentHash)
-
-            var result = parseInt(parsedData.result.parentHash, 16)
-
-            assert.equal((typeof result === 'number'), true)
+            assert.equal((typeof result === 'number' || (result === 0)), true)
             await delay(regularDelayMs)
-          } catch (err) {
+          } else {
+            parsedData = await button(List[i])
+            console.log(parsedData.result)
 
-            console.log(err)
-            assert(false)
+            result = parseInt(parsedData.result, 16)
 
-
+            assert.equal((typeof result === 'number' || (result === 0)), true)
+            await delay(regularDelayMs)
           }
+
+
+        } catch (err) {
+
+          console.log(err)
+          assert(false)
+
+
         }
-      })
-
-      it('testing methods', async () => {
-
-          var List = await driver.findElements(By.className('methods'))
-          var parsedData
-          var result
-
-          for (let i = 0; i < List.length; i++) {
-            try {
-
-              if (i === 2) {
-
-                parsedData = await button(List[i])
-                console.log(parsedData.result.blockHash)
-
-                result = parseInt(parsedData.result.blockHash, 16)
-
-                assert.equal((typeof result === 'number' || (result === 0)), true)
-                await delay(regularDelayMs)
-              } else {
-                parsedData = await button(List[i])
-                console.log(parsedData.result)
-
-                result = parseInt(parsedData.result, 16)
-
-                assert.equal((typeof result === 'number' || (result === 0)), true)
-                await delay(regularDelayMs)
-              }
+      }
+    })
 
 
-          } catch (err) {
-
-            console.log(err)
-            assert(false)
+  })
 
 
-          }
-        }
-      })
-
-
-      })
-
-
-      })
+})

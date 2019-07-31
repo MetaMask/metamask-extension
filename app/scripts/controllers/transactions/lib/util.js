@@ -26,7 +26,7 @@ const normalizers = {
   gasPrice: gasPrice => addHexPrefix(gasPrice),
 }
 
- /**
+/**
   normalizes txParams
   @param txParams {object}
   @returns {object} normalized txParams
@@ -40,7 +40,7 @@ function normalizeTxParams (txParams, LowerCase) {
   return normalizedTxParams
 }
 
- /**
+/**
   validates txParams
   @param txParams {object}
  */
@@ -59,7 +59,7 @@ function validateTxParams (txParams) {
   }
 }
 
- /**
+/**
   validates the from field in  txParams
   @param txParams {object}
  */
@@ -68,7 +68,7 @@ function validateFrom (txParams) {
   if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
 }
 
- /**
+/**
   validates the to field in  txParams
   @param txParams {object}
  */
@@ -85,7 +85,7 @@ function validateRecipient (txParams) {
   return txParams
 }
 
-  /**
+/**
     @returns an {array} of states that can be considered final
   */
 function getFinalStates () {

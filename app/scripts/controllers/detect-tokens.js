@@ -54,7 +54,7 @@ class DetectTokensController {
     })
   }
 
-   /**
+  /**
    * Find if selectedAddress has tokens with contract in contractAddress.
    *
    * @param {string} contractAddress Hex address of the token contract to explore.

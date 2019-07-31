@@ -372,13 +372,13 @@ export function fetchGasEstimates (blockTime) {
 
     const promiseToFetch = Date.now() - timeLastRetrieved > 75000
       ? fetch('https://ethgasstation.info/json/predictTable.json', {
-          'headers': {},
-          'referrer': 'http://ethgasstation.info/json/',
-          'referrerPolicy': 'no-referrer-when-downgrade',
-          'body': null,
-          'method': 'GET',
-          'mode': 'cors'}
-        )
+        'headers': {},
+        'referrer': 'http://ethgasstation.info/json/',
+        'referrerPolicy': 'no-referrer-when-downgrade',
+        'body': null,
+        'method': 'GET',
+        'mode': 'cors'}
+      )
         .then(r => r.json())
         .then(r => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
@@ -429,14 +429,14 @@ export function fetchGasEstimates (blockTime) {
           return timeMappedToSeconds
         })
       : Promise.resolve(priceAndTimeEstimates.length
-          ? priceAndTimeEstimates
-          : loadLocalStorageData('GAS_API_ESTIMATES')
-        )
+        ? priceAndTimeEstimates
+        : loadLocalStorageData('GAS_API_ESTIMATES')
+      )
 
-      return promiseToFetch.then(estimates => {
-        dispatch(setPricesAndTimeEstimates(estimates))
-        dispatch(gasEstimatesLoadingFinished())
-      })
+    return promiseToFetch.then(estimates => {
+      dispatch(setPricesAndTimeEstimates(estimates))
+      dispatch(gasEstimatesLoadingFinished())
+    })
   }
 }
 

@@ -104,8 +104,8 @@ export default class AdvancedTabContent extends Component {
         </div>
         { isInError
           ? <div className={`advanced-tab__gas-edit-row__${errorType}-text`}>
-              { errorText }
-            </div>
+            { errorText }
+          </div>
           : null }
       </div>
     )

@@ -26,7 +26,7 @@ export default class Sidebar extends Component {
         onOverlayClose && onOverlayClose()
         this.props.hideSidebar()
       }
-    } />
+      } />
   }
 
   renderSidebarContent () {

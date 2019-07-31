@@ -27,7 +27,7 @@ describe('Confirm Detail Row Component', function () {
     )
   })
 
-	describe('render', () => {
+  describe('render', () => {
     it('should render a div with a confirm-detail-row class', () => {
       assert.equal(wrapper.find('div.confirm-detail-row').length, 1)
     })
@@ -60,5 +60,5 @@ describe('Confirm Detail Row Component', function () {
       wrapper.find('.confirm-detail-row__header-text').props().onClick()
       assert.equal(assert.equal(propsMethodSpies.onHeaderClick.callCount, 1))
     })
-	})
+  })
 })

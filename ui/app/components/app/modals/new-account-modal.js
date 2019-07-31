@@ -69,7 +69,7 @@ NewAccountModal.propTypes = {
   showImportPage: PropTypes.func,
   createAccount: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
-    t: PropTypes.func,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {

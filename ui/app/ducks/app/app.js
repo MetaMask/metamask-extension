@@ -160,7 +160,7 @@ function reduceApp (state, action) {
         transForward: false,
       })
 
-    // intialize
+      // intialize
 
     case actions.SHOW_CREATE_VAULT:
       return extend(appState, {
@@ -262,7 +262,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -310,7 +310,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  // unlock
+      // unlock
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
@@ -347,7 +347,7 @@ function reduceApp (state, action) {
           name: 'UnlockScreen',
         },
       })
-  // reveal seed words
+      // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
       return extend(appState, {
@@ -358,7 +358,7 @@ function reduceApp (state, action) {
         warning: null,
       })
 
-  // accounts
+      // accounts
 
     case actions.SET_SELECTED_ACCOUNT:
       return extend(appState, {

@@ -72,7 +72,7 @@ web3.currentProvider.enable().then(() => {
             })
           })
         }
-    })
+      })
 
     console.log(piggybank)
   })
@@ -161,7 +161,7 @@ web3.currentProvider.enable().then(() => {
             })
           })
         }
-    })
+      })
 
   })
 })

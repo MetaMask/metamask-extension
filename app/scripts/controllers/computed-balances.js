@@ -65,7 +65,7 @@ class ComputedbalancesController {
   syncAllAccountsFromStore (store) {
     const upstream = Object.keys(store.accounts)
     const balances = Object.keys(this.balances)
-    .map(address => this.balances[address])
+      .map(address => this.balances[address])
 
     // Follow new addresses
     for (const address in balances) {

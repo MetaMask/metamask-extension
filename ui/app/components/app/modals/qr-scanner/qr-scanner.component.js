@@ -75,23 +75,23 @@ export default class QrScanner extends Component {
         clearTimeout(this.permissionChecker)
         this.checkPermisisions()
         this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
-        .then(content => {
-          const result = this.parseContent(content.text)
-          if (result.type !== 'unknown') {
-            this.props.qrCodeDetected(result)
-            this.stopAndClose()
-          } else {
-            this.setState({msg: this.context.t('unknownQrCode')})
-          }
-        })
-        .catch(err => {
-          if (err && err.name === 'NotAllowedError') {
-            this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
-            clearTimeout(this.permissionChecker)
-            this.needsToReinit = true
-            this.checkPermisisions()
-          }
-        })
+          .then(content => {
+            const result = this.parseContent(content.text)
+            if (result.type !== 'unknown') {
+              this.props.qrCodeDetected(result)
+              this.stopAndClose()
+            } else {
+              this.setState({msg: this.context.t('unknownQrCode')})
+            }
+          })
+          .catch(err => {
+            if (err && err.name === 'NotAllowedError') {
+              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+              clearTimeout(this.permissionChecker)
+              this.needsToReinit = true
+              this.checkPermisisions()
+            }
+          })
       }).catch(err => {
         console.error('[QR-SCANNER]: getVideoInputDevices threw an exception: ', err)
       })
