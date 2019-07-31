@@ -68,7 +68,13 @@ class TransactionStateManager extends EventEmitter {
     @returns {array} of all the txMetas in store
   */
   getFullTxList () {
-    return this.store.getState().transactions
+    const txs = this.store.getState().transactions
+    // Clean transaction history if it is too big, in some cases that list is growing to 1000's of objects
+    // and slowing down Metamask to the point that it is unusable
+    for (var i = 0; i < txs.length; i++) {
+      if (txs[i].history) txs[i].history.length = Math.min(txs[i].history.length, 50)
+    }
+    return txs
   }
 
   /**
