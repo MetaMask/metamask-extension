@@ -2,13 +2,17 @@ const ObservableStore = require('obs-store')
 const extend = require('xtend')
 
 /**
- * @typedef {Object} OnboardingOptions
+ * @typedef {Object} InitState
  * @property {Boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
- * @property {Object} initState The initial controller state
  */
 
 /**
- * Background controller responsible for maintaining
+ * @typedef {Object} OnboardingOptions
+ * @property {InitState} initState The initial controller state
+ */
+
+/**
+ * Controller responsible for maintaining
  * a cache of account balances in local storage
  */
 class OnboardingController {
