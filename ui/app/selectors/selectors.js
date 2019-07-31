@@ -9,6 +9,9 @@ import {
 const {
   multiplyCurrencies,
 } = require('../helpers/utils/conversion-util')
+import {
+  addressSlicer,
+} from '../helpers/utils/util'
 
 const selectors = {
   getSelectedAddress,
@@ -52,6 +55,8 @@ const selectors = {
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
+  getAddressBookEntry,
+  getAddressBookEntryName,
 }
 
 module.exports = selectors
@@ -203,7 +208,22 @@ function conversionRateSelector (state) {
 }
 
 function getAddressBook (state) {
-  return state.metamask.addressBook
+  const network = state.metamask.network
+  const addressBookEntries = Object.values(state.metamask.addressBook)
+    .filter(entry => entry.chainId && entry.chainId.toString() === network)
+
+  return addressBookEntries
+}
+
+function getAddressBookEntry (state, address) {
+  const addressBook = getAddressBook(state)
+  const entry = addressBook.find(contact => contact.address.toLowerCase() === address.toLowerCase())
+  return entry
+}
+
+function getAddressBookEntryName (state, address) {
+  const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
+  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
 }
 
 function accountsWithSendEtherInfoSelector (state) {

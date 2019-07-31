@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
+const { getTokenAddressFromTokenObject, checksumAddress } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
@@ -135,6 +135,8 @@ var actions = {
   showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
+  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
+  removeFromAddressBook: removeFromAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -194,6 +196,10 @@ var actions = {
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
+  UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
+  UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -1079,6 +1085,20 @@ function clearSend () {
   }
 }
 
+function updateSendEnsResolution (ensResolution) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION,
+    payload: ensResolution,
+  }
+}
+
+function updateSendEnsResolutionError (errorMessage) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
+    payload: errorMessage,
+  }
+}
+
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
@@ -1924,17 +1944,28 @@ function delRpcTarget (oldRpc) {
   }
 }
 
-
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname = '') {
+function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
-  return (dispatch) => {
-    background.setAddressBook(recipient, nickname, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Address book failed to update'))
-      }
-    })
+
+  return (dispatch, getState) => {
+    const chainId = getState().metamask.network
+    const set = background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+    if (!set) {
+      return dispatch(displayWarning('Address book failed to update'))
+    }
+  }
+}
+
+/**
+ * @description Calls the addressBookController to remove an existing address.
+ * @param {String} addressToRemove - Address of the entry to remove from the address book
+ */
+function removeFromAddressBook (addressToRemove) {
+  log.debug(`background.removeFromAddressBook`)
+
+  return () => {
+    background.removeFromAddressBook(checksumAddress(addressToRemove))
   }
 }
 

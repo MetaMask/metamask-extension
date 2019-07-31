@@ -6,6 +6,7 @@ const {
 const {
   getMetaMaskAccounts,
   getSelectedAddress,
+  getAddressBook,
 } = require('../../selectors/selectors')
 const {
   estimateGasPriceFromRecentBlocks,
@@ -17,7 +18,6 @@ import {
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  getAddressBook,
   getAmountConversionRate,
   getBlockGasLimit,
   getConversionRate,
@@ -43,6 +43,8 @@ const selectors = {
   getSendHexData,
   getSendHexDataFeatureFlagState,
   getSendEditingTransactionId,
+  getSendEnsResolution,
+  getSendEnsResolutionError,
   getSendErrors,
   getSendFrom,
   getSendFromBalance,
@@ -50,6 +52,7 @@ const selectors = {
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
+  getSendToNickname,
   getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
@@ -63,16 +66,11 @@ module.exports = selectors
 function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
-
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
   })
 
   return accountsWithSendEtherInfo
-}
-
-function getAddressBook (state) {
-  return state.metamask.addressBook
 }
 
 function getAmountConversionRate (state) {
@@ -237,6 +235,10 @@ function getSendTo (state) {
   return state.metamask.send.to
 }
 
+function getSendToNickname (state) {
+  return state.metamask.send.toNickname
+}
+
 function getSendToAccounts (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const addressBookAccounts = getAddressBook(state)
@@ -249,6 +251,14 @@ function getSendWarnings (state) {
 
 function getTokenBalance (state) {
   return state.metamask.send.tokenBalance
+}
+
+function getSendEnsResolution (state) {
+  return state.metamask.send.ensResolution
+}
+
+function getSendEnsResolutionError (state) {
+  return state.metamask.send.ensResolutionError
 }
 
 function getTokenExchangeRate (state, tokenSymbol) {

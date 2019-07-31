@@ -80,11 +80,20 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "address": {
     "message": "Address"
   },
   "addNetwork": {
     "message": "Add Network"
+  },
+  "addRecipient": {
+    "message": "Add Recipient"
+  },
+  "addressBook": {
+    "message": "Address Book"
   },
   "advanced": {
     "message": "Advanced"
@@ -97,6 +106,18 @@
   },
   "addCustomToken": {
     "message": "Add custom token"
+  },
+  "addToAddressBook": {
+    "message": "Add to address book"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "e.g. John D."
+  },
+  "addAlias": {
+    "message": "Add alias"
+  },
+  "addEthAddress": {
+    "message": "Add an Ethereum address"
   },
   "addToken": {
     "message": "Add Token"
@@ -171,6 +192,9 @@
   },
   "back": {
     "message": "Back"
+  },
+  "backToAll": {
+    "message": "Back to All"
   },
   "balance": {
     "message": "Balance"
@@ -354,6 +378,12 @@
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
+  "contactList": {
+    "message": "Contact List"
+  },
+  "contactListDescription": {
+    "message": "Add, edit, remove, and manage your contacts"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -463,6 +493,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteAccount": {
+    "message": "Delete Account"
+  },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },
@@ -529,6 +562,9 @@
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "editContact":{
+    "message": "Edit Contact"
+  },
   "editingTransaction": {
     "message": "Make changes to your transaction"
   },
@@ -571,6 +607,15 @@
   "ensNameNotFound": {
     "message": "ENS name not found"
   },
+  "ensRegistrationError": {
+    "message": "Error in ENS name registration"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+  },
+  "enterAnAlias": {
+    "message": "Enter an alias"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -582,6 +627,9 @@
   },
   "eth": {
     "message": "ETH"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Public Address"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -893,6 +941,9 @@
   "loadingTokens": {
     "message": "Loading Tokens..."
   },
+  "loadMore": {
+    "message": "Load More"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -913,6 +964,9 @@
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
+  },
+  "memo": {
+    "message": "memo"
   },
   "menu": {
     "message": "Menu"
@@ -947,6 +1001,12 @@
   "myAccounts": {
     "message": "My Accounts"
   },
+  "myWalletAccounts": {
+    "message": "My Wallet Accounts"
+  },
+  "myWalletAccountsDescription": {
+    "message": "All of your MetaMask created accounts will automatically be added to this section."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -979,9 +1039,15 @@
   "newAccount": {
     "message": "New Account"
   },
+  "newAccountDetectedDialogMessage": {
+    "message": "New address detected! Click here to add to your address book."
+  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "New Contact"
   },
   "newContract": {
     "message": "New Contract"
@@ -1193,8 +1259,14 @@
   "receive": {
     "message": "Receive"
   },
+  "recents": {
+    "message": "Recents"
+  },
   "recipientAddress": {
     "message": "Recipient Address"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
   },
   "refundAddress": {
     "message": "Your Refund Address"
@@ -1670,6 +1742,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferBetweenAccounts": {
+    "message": "Transfer between my accounts"
+  },
   "transferFrom": {
     "message": "Transfer From"
   },
@@ -1750,6 +1825,9 @@
   "useOldUI": {
     "message": "Use old UI"
   },
+  "userName":{
+    "message": "Username"
+  },
   "validFileImport": {
     "message": "You must select a valid file to import."
   },
@@ -1761,6 +1839,9 @@
   },
   "viewinExplorer": {
     "message": "View in Explorer"
+  },
+  "viewContact": {
+    "message": "View Contact"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"

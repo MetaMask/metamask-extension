@@ -35,6 +35,7 @@ module.exports = {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
+  ellipsify,
 }
 
 function calcGasTotal (gasLimit = '0', gasPrice = '0') {
@@ -329,4 +330,8 @@ function getToAddressForGasUpdate (...addresses) {
 
 function removeLeadingZeroes (str) {
   return str.replace(/^0*(?=\d)/, '')
+}
+
+function ellipsify (text, first = 6, last = 4) {
+  return `${text.slice(0, first)}...${text.slice(-last)}`
 }
