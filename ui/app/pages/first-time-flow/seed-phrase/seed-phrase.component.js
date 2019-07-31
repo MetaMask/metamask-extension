@@ -26,11 +26,8 @@ export default class SeedPhrase extends PureComponent {
 
   componentDidMount () {
     const { seedPhrase, history, verifySeedPhrase } = this.props
-    console.log('this.props', this.props)
-    console.log('!!! seedPhrase', seedPhrase)
 
     if (!seedPhrase) {
-      console.log('!!!444!!!')
       verifySeedPhrase()
         .then(verifiedSeedPhrase => {
           if (!verifiedSeedPhrase) {
