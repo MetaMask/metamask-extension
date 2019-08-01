@@ -19,6 +19,7 @@ export default class SenderToRecipient extends PureComponent {
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
+    recipientNickname: PropTypes.object,
     t: PropTypes.func,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
@@ -88,7 +89,7 @@ export default class SenderToRecipient extends PureComponent {
 
   renderRecipientWithAddress () {
     const { t } = this.context
-    const { recipientName, recipientAddress, addressOnly, onRecipientClick } = this.props
+    const { recipientName, recipientAddress, recipientNickname, addressOnly, onRecipientClick } = this.props
     const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
@@ -114,7 +115,7 @@ export default class SenderToRecipient extends PureComponent {
             {
               addressOnly
                 ? `${t('to')}: ${checksummedRecipientAddress}`
-                : (recipientName || this.context.t('newContract'))
+                : (recipientNickname || recipientName || this.context.t('newContract'))
             }
           </div>
         </Tooltip>

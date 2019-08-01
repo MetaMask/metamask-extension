@@ -24,6 +24,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toNickname: PropTypes.object,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -68,6 +69,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toNickname,
       toAddress,
       disabled,
       errorKey,
@@ -126,6 +128,7 @@ export default class ConfirmPageContainer extends Component {
             senderAddress={fromAddress}
             recipientName={toName}
             recipientAddress={toAddress}
+            recipientNickname={toNickname}
             assetImage={renderAssetImage ? assetImage : undefined}
           />
         </ConfirmPageContainerHeader>

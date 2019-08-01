@@ -529,6 +529,7 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
+      toNickname,
       methodData,
       valid: propsValid = true,
       errorMessage,
@@ -558,6 +559,7 @@ export default class ConfirmTransactionBase extends Component {
         fromAddress={fromAddress}
         toName={toName}
         toAddress={toAddress}
+        toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
         action={getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction')}
