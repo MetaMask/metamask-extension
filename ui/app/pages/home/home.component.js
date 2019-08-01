@@ -6,7 +6,7 @@ import HomeNotification from '../../components/app/home-notification'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
-import BackupNotification from '../backup-notification'
+import BackupNotification from '../../components/app/backup-notification'
 
 import {
   RESTORE_VAULT_ROUTE,
