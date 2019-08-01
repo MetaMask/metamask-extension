@@ -539,7 +539,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
 
-      // 3box syncing
+      // 3Box syncing
       setThreeBoxSyncing: nodeify(threeBoxController.setThreeBoxSyncing, threeBoxController),
     }
   }
