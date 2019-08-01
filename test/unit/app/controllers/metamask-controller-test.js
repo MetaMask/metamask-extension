@@ -10,16 +10,19 @@ const EthQuery = require('eth-query')
 
 const threeBoxNew3BoxSpy = sinon.spy()
 const threeBoxGetThreeBoxAddressSpy = sinon.spy()
+const threeBoxGetThreeBoxSyncingStateStub = sinon.stub().returns(true)
 const proxyquire = require('proxyquire')
 
 class ThreeBoxControllerMock {
-    constructor () {
-      this.store = {
-        subscribe: () => {},
-      }
-      this.new3Box = threeBoxNew3BoxSpy
-      this.getThreeBoxAddress = threeBoxGetThreeBoxAddressSpy
+  constructor () {
+    this.store = {
+      subscribe: () => {},
+      getState: () => ({}),
     }
+    this.new3Box = threeBoxNew3BoxSpy
+    this.getThreeBoxAddress = threeBoxGetThreeBoxAddressSpy
+    this.getThreeBoxSyncingState = threeBoxGetThreeBoxSyncingStateStub
+  }
 }
 
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
