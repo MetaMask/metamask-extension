@@ -12,7 +12,7 @@ class ThreeBoxController {
 
     const initState = {
       threeBoxAddress: null,
-      threeboxSyncing: true,
+      threeboxSyncing: false,
       ...opts.initState,
       syncDone3Box: false,
     }
@@ -30,7 +30,7 @@ class ThreeBoxController {
   }
 
   async _update3Box ({ type }, newState) {
-    const threeBoxSyncing = this.store.getState().threeboxSyncing
+    const threeBoxSyncing = this.getThreeBoxSyncingState()
     if (threeBoxSyncing) {
       await this.box.private.set(type, JSON.stringify(newState))
     }
@@ -38,7 +38,7 @@ class ThreeBoxController {
 
   async new3Box (address) {
     const threeBoxSyncing = this.store.getState().threeboxSyncing
-    console.log('new3Box threeBoxSyncing', threeBoxSyncing)
+
     if (threeBoxSyncing) {
       this.store.updateState({ syncDone3Box: false })
       this.address = address
@@ -71,7 +71,7 @@ class ThreeBoxController {
   }
 
   async _restoreFrom3Box () {
-    const threeBoxSyncing = this.store.getState().threeboxSyncing
+    const threeBoxSyncing = this.getThreeBoxSyncingState()
     if (threeBoxSyncing) {
       const backedUpPreferences = await this.box.private.get('preferences')
       backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
@@ -96,6 +96,10 @@ class ThreeBoxController {
     if (!newThreeboxSyncingState && this.box) {
       this.box.logout()
     }
+  }
+
+  getThreeBoxSyncingState () {
+    return this.store.getState().threeboxSyncing
   }
 
   getThreeBoxAddress () {
