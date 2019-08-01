@@ -59,7 +59,7 @@ class ThreeBoxController {
           .then(box => {
             this.box = box
             box.onSyncDone(() => {
-              console.log('3box onSyncDone!')
+              console.log('3Box onSyncDone!')
               this._restoreFrom3Box()
               this.store.updateState({ syncDone3Box: true, threeBoxAddress: address })
             })

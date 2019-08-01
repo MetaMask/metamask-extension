@@ -1640,10 +1640,10 @@
     "message": "Symbol must be between 0 and 12 characters."
   },
   "syncWithThreeBox": {
-    "message": "Sync data with 3box"
+    "message": "Sync data with 3Box"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3box"
+    "message": "Turn on to have your settings backed up with 3Box"
   },
   "syncWithMobile": {
     "message": "Sync with mobile"
