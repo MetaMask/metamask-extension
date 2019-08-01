@@ -5,5 +5,4 @@ CHANGELOG.md merge=union
 package-lock.json linguist-generated=false
 yarn.lock linguist-generated=false
 
-/home/danjm/kyokan/metamask-extension/test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored
-/home/danjm/kyokan/metamask-extension/test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-generated=true
+test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored linguist-generated
