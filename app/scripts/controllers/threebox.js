@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const Box = require('3box/dist/3box.min')
+const log = require('loglevel')
 
 class ThreeBoxController {
   constructor (opts = {}) {
@@ -59,7 +60,7 @@ class ThreeBoxController {
           .then(box => {
             this.box = box
             box.onSyncDone(() => {
-              console.log('3Box onSyncDone!')
+              log.debug('3Box onSyncDone!')
               this._restoreFrom3Box()
               this.store.updateState({ syncDone3Box: true, threeBoxAddress: address })
             })
