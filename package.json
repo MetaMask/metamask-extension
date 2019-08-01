@@ -45,6 +45,9 @@
     "update-changelog": "./development/auto-changelog.sh",
     "rollback": "./development/rollback.sh"
   },
+  "resolutions": {
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12"
+  },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
     "@material-ui/core": "1.0.0",
