@@ -6,7 +6,7 @@
         "targets": {
           "browsers": [
             "chrome >= 58",
-            "firefox >= 53"
+            "firefox >= 60"
           ]
         }
       }
