@@ -221,7 +221,7 @@ describe('MetaMask', function () {
 
   describe('Show account information', () => {
     it('shows the QR code for the account', async () => {
-      await driver.findElement(By.css('.wallet-view__details-button')).click()
+      await driver.findElement(By.css('.account-details__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -273,7 +273,7 @@ describe('MetaMask', function () {
     })
 
     it('should display correct account name', async () => {
-      const accountName = await findElement(driver, By.css('.account-name'))
+      const accountName = await findElement(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await delay(regularDelayMs)
     })
