@@ -126,7 +126,6 @@ export default class NetworksTab extends PureComponent {
 
   renderNetworksList () {
     const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode, networkDefaultedToProvider } = this.props
-    console.log(networksToRender)
     return (
       <div
         className={classnames('networks-tab__networks-list', {
