@@ -529,7 +529,6 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
-      toNickname,
       methodData,
       valid: propsValid = true,
       errorMessage,
@@ -552,7 +551,10 @@ export default class ConfirmTransactionBase extends Component {
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
     const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
+<<<<<<< HEAD
 
+=======
+>>>>>>> fix lint issues
     return (
       <ConfirmPageContainer
         fromName={fromName}
