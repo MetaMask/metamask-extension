@@ -604,7 +604,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      this.threeBoxController.new3Box(accounts[0], true)
       releaseLock()
       return vault
     } catch (err) {
@@ -713,9 +712,10 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.balancesController.updateAllBalances()
     await this.txController.pendingTxTracker.updatePendingTxs()
 
+    const threeBoxSyncingIsOn = this.threeBoxController.getThreeBoxSyncingState()
     const current3BoxAddress = this.threeBoxController.getThreeBoxAddress()
     const firstAccountAddress = accounts[0]
-    if (current3BoxAddress !== firstAccountAddress) {
+    if (threeBoxSyncingIsOn && current3BoxAddress !== firstAccountAddress) {
       this.threeBoxController.new3Box(firstAccountAddress)
     }
 
