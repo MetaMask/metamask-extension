@@ -324,6 +324,7 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
+  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -348,6 +349,7 @@ var actions = {
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
+  forceApproveProviderRequestByOrigin,
   clearApprovedOrigins,
 
   setFirstTimeFlowType,
@@ -2637,6 +2639,12 @@ function approveProviderRequestByOrigin (origin) {
   }
 }
 
+function forceApproveProviderRequestByOrigin (origin) {
+  return () => {
+    background.forceApproveProviderRequestByOrigin(origin)
+  }
+}
+
 function rejectProviderRequestByOrigin (origin) {
   return () => {
     background.rejectProviderRequestByOrigin(origin)
@@ -2756,5 +2764,11 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
+  }
+}
+
+function unsetMigratedPrivacyMode () {
+  return () => {
+    background.unsetMigratedPrivacyMode()
   }
 }

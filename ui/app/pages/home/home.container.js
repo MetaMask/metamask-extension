@@ -3,15 +3,29 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+import {
+  forceApproveProviderRequestByOrigin,
+  unsetMigratedPrivacyMode,
+} from '../../store/actions'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
 const mapStateToProps = state => {
-  const { metamask, appState } = state
+  const { activeTab, metamask, appState } = state
   const {
+    approvedOrigins,
     lostAccounts,
     suggestedTokens,
     providerRequests,
+    migratedPrivacyMode,
+    featureFlags: {
+      privacyMode,
+    } = {},
   } = metamask
   const { forgottenPassword } = appState
+
+  const isUnconnected = Boolean(activeTab && privacyMode && !approvedOrigins[activeTab.origin])
+  const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
   return {
     lostAccounts,
@@ -19,10 +33,18 @@ const mapStateToProps = state => {
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     providerRequests,
+    showPrivacyModeNotification: migratedPrivacyMode,
+    activeTab,
+    viewingUnconnectedDapp: isUnconnected && isPopup,
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
+  forceApproveProviderRequestByOrigin: (origin) => dispatch(forceApproveProviderRequestByOrigin(origin)),
+})
+
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps, mapDispatchToProps)
 )(Home)

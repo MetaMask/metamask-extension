@@ -114,6 +114,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 
 async function setupPublicApi (outStream) {
   const api = {
+    forceReloadSite: (cb) => cb(null, forceReloadSite()),
     getSiteMetadata: (cb) => cb(null, getSiteMetadata()),
   }
   const dnode = Dnode(api)
@@ -305,4 +306,11 @@ async function domIsReady () {
   if (['interactive', 'complete'].includes(document.readyState)) return
   // wait for load
   await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+}
+
+/**
+ * Reloads the site
+ */
+function forceReloadSite () {
+  window.location.reload()
 }

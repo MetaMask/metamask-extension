@@ -10,11 +10,13 @@ export default class TransactionList extends PureComponent {
   }
 
   static defaultProps = {
+    children: null,
     pendingTransactions: [],
     completedTransactions: [],
   }
 
   static propTypes = {
+    children: PropTypes.node,
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
     selectedToken: PropTypes.object,
@@ -120,6 +122,7 @@ export default class TransactionList extends PureComponent {
     return (
       <div className="transaction-list">
         { this.renderTransactions() }
+        { this.props.children }
       </div>
     )
   }
