@@ -58,6 +58,7 @@ describe('Actions', () => {
     metamaskController.threeBoxController = {
       new3Box: sinon.spy(),
       getThreeBoxAddress: sinon.spy(),
+      getThreeBoxSyncingState: sinon.spy(),
     }
 
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
