@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
-import { isValidENSAddress, isValidAddress } from '../../../../helpers/utils/util'
+import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 import {ellipsify} from '../../send.utils'
 
 import debounce from 'debounce'
@@ -33,6 +33,7 @@ export default class EnsInput extends Component {
     addressBook: PropTypes.array,
     onPaste: PropTypes.func,
     onReset: PropTypes.func,
+    onValidAddressTyped: PropTypes.func,
   }
 
   state = {
@@ -108,7 +109,7 @@ export default class EnsInput extends Component {
   }
 
   onChange = e => {
-    const { network, onChange, updateEnsResolution, updateEnsResolutionError } = this.props
+    const { network, onChange, updateEnsResolution, updateEnsResolutionError, onValidAddressTyped } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
@@ -116,7 +117,8 @@ export default class EnsInput extends Component {
 
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (!input || isValidAddress(input) || !networkHasEnsSupport) {
+
+    if (!networkHasEnsSupport && !isValidAddress(input) && !isValidAddressHead(input)) {
       updateEnsResolution('')
       updateEnsResolutionError(!networkHasEnsSupport ? 'Network does not support ENS' : '')
       return
@@ -124,6 +126,8 @@ export default class EnsInput extends Component {
 
     if (isValidENSAddress(input)) {
       this.lookupEnsName(input)
+    } else if (onValidAddressTyped && isValidAddress(input)) {
+      onValidAddressTyped(input)
     } else {
       updateEnsResolution('')
       updateEnsResolutionError('')
