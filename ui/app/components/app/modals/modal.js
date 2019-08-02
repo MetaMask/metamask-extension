@@ -22,6 +22,7 @@ const QRScanner = require('./qr-scanner')
 
 import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
+import ThreeBoxRestoreConfirm from './threebox-restore-confirm'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
 
@@ -308,6 +309,19 @@ const MODALS = {
 
   CONFIRM_RESET_ACCOUNT: {
     contents: h(ConfirmResetAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  THREEBOX_RESTORE_CONFIRM: {
+    contents: h(ThreeBoxRestoreConfirm),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
