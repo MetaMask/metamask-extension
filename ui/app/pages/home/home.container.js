@@ -8,6 +8,7 @@ import {
   forceApproveProviderRequestByOrigin,
   unsetMigratedPrivacyMode,
   showSeedPhraseBackupAfterOnboarding,
+  rejectProviderRequestByOrigin,
 } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -18,6 +19,7 @@ const mapStateToProps = state => {
   const { activeTab, metamask, appState } = state
   const {
     approvedOrigins,
+    dismissedOrigins,
     lostAccounts,
     suggestedTokens,
     providerRequests,
@@ -35,7 +37,8 @@ const mapStateToProps = state => {
     activeTab &&
     activeTabDappProtocols.includes(activeTab.protocol) &&
     privacyMode &&
-    !approvedOrigins[activeTab.origin]
+    !approvedOrigins[activeTab.origin] &&
+    !dismissedOrigins[activeTab.origin]
   )
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
@@ -56,6 +59,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
   forceApproveProviderRequestByOrigin: (origin) => dispatch(forceApproveProviderRequestByOrigin(origin)),
+  rejectProviderRequestByOrigin: origin => dispatch(rejectProviderRequestByOrigin(origin)),
   showSeedPhraseBackupAfterOnboarding: () => dispatch(showSeedPhraseBackupAfterOnboarding()),
 })
 

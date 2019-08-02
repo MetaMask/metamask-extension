@@ -42,6 +42,7 @@ export default class Home extends PureComponent {
     forceApproveProviderRequestByOrigin: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     showSeedPhraseBackupAfterOnboarding: PropTypes.bool,
+    rejectProviderRequestByOrigin: PropTypes.func,
   }
 
   componentWillMount () {
@@ -80,6 +81,7 @@ export default class Home extends PureComponent {
       forceApproveProviderRequestByOrigin,
       shouldShowSeedPhraseReminder,
       showSeedPhraseBackupAfterOnboarding,
+      rejectProviderRequestByOrigin,
     } = this.props
 
     if (forgottenPassword) {
@@ -124,6 +126,8 @@ export default class Home extends PureComponent {
                         onAccept={() => {
                           forceApproveProviderRequestByOrigin(activeTab.origin)
                         }}
+                        ignoreText={t('dismiss')}
+                        onIgnore={() => rejectProviderRequestByOrigin(activeTab.origin)}
                         infoText={t('shareAddressInfo', [activeTab.origin])}
                         key="home-shareAddressToConnect"
                       />,
