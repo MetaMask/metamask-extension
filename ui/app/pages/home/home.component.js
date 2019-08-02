@@ -65,6 +65,12 @@ export default class Home extends PureComponent {
     }
   }
 
+  renderHomeNotifications (notificationConfigs) {
+    return notificationConfigs
+      .filter(notificationConfig => notificationConfig.shouldBeRendered)
+      .map(notificationConfig => notificationConfig.component)
+  }
+
   render () {
     const { t } = this.context
     const {
@@ -100,52 +106,45 @@ export default class Home extends PureComponent {
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
               <TransactionView>
-                {
-                  showPrivacyModeNotification
-                    ? (
-                      <HomeNotification
-                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                          unsetMigratedPrivacyMode()
-                        }}
-                      />
-                    )
-                    : null
-                }
-                {
-                  viewingUnconnectedDapp
-                    ? (
-                      <HomeNotification
-                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                        descriptionText={t('shareAddressToConnect', [activeTab.origin])}
-                        acceptText={t('shareAddress')}
-                        onAccept={() => {
-                          forceApproveProviderRequestByOrigin(activeTab.origin)
-                        }}
-                        infoText={t('shareAddressInfo', [activeTab.origin])}
-                      />
-                    )
-                    : null
-                }
-                {
-                  shouldShowSeedPhraseReminder
-                    ? (
-                      <HomeNotification
-                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                        descriptionText={t('backupApprovalNotice')}
-                        acceptText={t('backupNow')}
-                        onAccept={() => {
-                          showSeedPhraseBackupAfterOnboarding()
-                          history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-                        }}
-                        infoText={t('backupApprovalInfo')}
-                      />
-                    )
-                    : null
-                }
+                {this.renderHomeNotifications([
+                  {
+                    shouldBeRendered: showPrivacyModeNotification,
+                    component: <HomeNotification
+                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
+                      descriptionText={t('privacyModeDefault')}
+                      acceptText={t('learnMore')}
+                      onAccept={() => {
+                        window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
+                        unsetMigratedPrivacyMode()
+                      }}
+                    />,
+                  },
+                  {
+                    shouldBeRendered: viewingUnconnectedDapp,
+                    component: <HomeNotification
+                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
+                      descriptionText={t('shareAddressToConnect', [activeTab.origin])}
+                      acceptText={t('shareAddress')}
+                      onAccept={() => {
+                        forceApproveProviderRequestByOrigin(activeTab.origin)
+                      }}
+                      infoText={t('shareAddressInfo', [activeTab.origin])}
+                    />,
+                  },
+                  {
+                    shouldBeRendered: shouldShowSeedPhraseReminder,
+                    component: <HomeNotification
+                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
+                      descriptionText={t('backupApprovalNotice')}
+                      acceptText={t('backupNow')}
+                      onAccept={() => {
+                        showSeedPhraseBackupAfterOnboarding()
+                        history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+                      }}
+                      infoText={t('backupApprovalInfo')}
+                    />,
+                  },
+                ])}
               </TransactionView>
             )
             : null }
