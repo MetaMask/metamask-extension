@@ -27,8 +27,8 @@ export default class Home extends PureComponent {
 
   static propTypes = {
     activeTab: PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      url: PropTypes.string,
     }),
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
