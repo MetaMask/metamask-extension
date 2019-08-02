@@ -10,7 +10,10 @@
   border-radius: 8px;
   height: 116px;
   padding: 16px;
-  margin: 8px;
+
+  @media screen and (min-width: 576px) {
+    min-width: 472px;
+  }
 
   display: flex;
   flex-flow: column;
@@ -50,6 +53,10 @@
     width: 155px;
     padding: 0;
 
+    @media screen and (max-width: 575px) {
+      width: 135px;
+    }
+
     &:hover {
       border-color: #6A737D;
       background-color: #6A737D;
@@ -69,6 +76,11 @@
     height: 34px;
     width: 155px;
     padding: 0;
+    margin-left: 4px;
+
+    @media screen and (max-width: 575px) {
+      width: 135px;
+    }
 
     &:hover {
       border-color: #6A737D;
@@ -83,7 +95,7 @@
   &__buttons {
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row-reverse;
   }
 }

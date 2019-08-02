@@ -208,6 +208,12 @@
   "backToAll": {
     "message": "Back to All"
   },
+  "backupApprovalNotice": {
+    "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
+  },
+  "backupApprovalInfo": {
+    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
+  },
   "backupNow": {
     "message": "Backup now"
   },
@@ -549,6 +555,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "dismiss": {
+    "message": "Dismiss"
   },
   "done": {
     "message": "Done"

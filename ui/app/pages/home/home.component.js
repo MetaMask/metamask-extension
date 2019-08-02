@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import HomeNotification from '../../components/app/home-notification'
+import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
-import BackupNotification from '../../components/app/backup-notification'
 
 import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -20,15 +21,17 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    activeTab: null,
+    activeTab: {},
     unsetMigratedPrivacyMode: null,
     forceApproveProviderRequestByOrigin: null,
   }
 
   static propTypes = {
     activeTab: PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
+      origin: PropTypes.string,
+      protocol: PropTypes.string,
+      title: PropTypes.string,
+      url: PropTypes.string,
     }),
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
@@ -40,6 +43,8 @@ export default class Home extends PureComponent {
     viewingUnconnectedDapp: PropTypes.bool.isRequired,
     forceApproveProviderRequestByOrigin: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
+    showSeedPhraseBackupAfterOnboarding: PropTypes.bool,
+    rejectProviderRequestByOrigin: PropTypes.func,
   }
 
   componentWillMount () {
@@ -77,6 +82,8 @@ export default class Home extends PureComponent {
       viewingUnconnectedDapp,
       forceApproveProviderRequestByOrigin,
       shouldShowSeedPhraseReminder,
+      showSeedPhraseBackupAfterOnboarding,
+      rejectProviderRequestByOrigin,
     } = this.props
 
     if (forgottenPassword) {
@@ -98,39 +105,49 @@ export default class Home extends PureComponent {
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
               <TransactionView>
-                {
-                  showPrivacyModeNotification
-                    ? (
-                      <HomeNotification
+                <MultipleNotifications
+                  className
+                  notifications={[
+                    {
+                      shouldBeRendered: showPrivacyModeNotification,
+                      component: <HomeNotification
                         descriptionText={t('privacyModeDefault')}
                         acceptText={t('learnMore')}
                         onAccept={() => {
                           window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
                           unsetMigratedPrivacyMode()
                         }}
-                      />
-                    )
-                    : null
-                }
-                {
-                  viewingUnconnectedDapp
-                    ? (
-                      <HomeNotification
+                        key="home-privacyModeDefault"
+                      />,
+                    },
+                    {
+                      shouldBeRendered: viewingUnconnectedDapp,
+                      component: <HomeNotification
                         descriptionText={t('shareAddressToConnect', [activeTab.origin])}
                         acceptText={t('shareAddress')}
                         onAccept={() => {
                           forceApproveProviderRequestByOrigin(activeTab.origin)
                         }}
+                        ignoreText={t('dismiss')}
+                        onIgnore={() => rejectProviderRequestByOrigin(activeTab.origin)}
                         infoText={t('shareAddressInfo', [activeTab.origin])}
-                      />
-                    )
-                    : null
-                }
-                {
-                  shouldShowSeedPhraseReminder
-                    ? (<BackupNotification />)
-                    : null
-                }
+                        key="home-shareAddressToConnect"
+                      />,
+                    },
+                    {
+                      shouldBeRendered: shouldShowSeedPhraseReminder,
+                      component: <HomeNotification
+                        descriptionText={t('backupApprovalNotice')}
+                        acceptText={t('backupNow')}
+                        onAccept={() => {
+                          showSeedPhraseBackupAfterOnboarding()
+                          history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+                        }}
+                        infoText={t('backupApprovalInfo')}
+                        key="home-backupApprovalNotice"
+                      />,
+                    },
+                  ]}/>
               </TransactionView>
             )
             : null }
