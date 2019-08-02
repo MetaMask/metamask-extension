@@ -49,7 +49,6 @@ const browserPlatforms = [
   'firefox',
   'chrome',
   'brave',
-  'edge',
   'opera',
 ]
 const commonPlatforms = [
@@ -188,7 +187,6 @@ gulp.task('manifest:production', function () {
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/brave/manifest.json',
-    './dist/edge/manifest.json',
     './dist/opera/manifest.json',
   ], {base: './dist/'})
 
@@ -399,9 +397,8 @@ gulp.task('clean', function clean () {
 // zip tasks for distribution
 gulp.task('zip:chrome', zipTask('chrome'))
 gulp.task('zip:firefox', zipTask('firefox'))
-gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 // high level tasks
 
