@@ -6,6 +6,7 @@ import HomeNotification from '../../components/app/home-notification'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
+import BackupNotification from '../../components/app/backup-notification'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -38,6 +39,7 @@ export default class Home extends PureComponent {
     unsetMigratedPrivacyMode: PropTypes.func,
     viewingUnconnectedDapp: PropTypes.bool.isRequired,
     forceApproveProviderRequestByOrigin: PropTypes.func,
+    shouldShowSeedPhraseReminder: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -74,6 +76,7 @@ export default class Home extends PureComponent {
       unsetMigratedPrivacyMode,
       viewingUnconnectedDapp,
       forceApproveProviderRequestByOrigin,
+      shouldShowSeedPhraseReminder,
     } = this.props
 
     if (forgottenPassword) {
@@ -85,7 +88,6 @@ export default class Home extends PureComponent {
         <ProviderApproval providerRequest={providerRequests[0]} />
       )
     }
-
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
@@ -122,6 +124,11 @@ export default class Home extends PureComponent {
                         infoText={t('shareAddressInfo', [activeTab.origin])}
                       />
                     )
+                    : null
+                }
+                {
+                  shouldShowSeedPhraseReminder
+                    ? (<BackupNotification />)
                     : null
                 }
               </TransactionView>

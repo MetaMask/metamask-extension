@@ -208,6 +208,9 @@
   "backToAll": {
     "message": "Back to All"
   },
+  "backupNow": {
+    "message": "Backup now"
+  },
   "balance": {
     "message": "Balance"
   },
@@ -1309,6 +1312,9 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Remind me later"
   },
   "restoreFromSeed": {
     "message": "Restore account?"

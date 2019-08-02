@@ -5,16 +5,19 @@ import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
   unlockAndGetSeedPhrase,
+  verifySeedPhrase,
 } from '../../store/actions'
 
 const mapStateToProps = state => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked } } = state
+  const { metamask: { completedOnboarding, isInitialized, isUnlocked, seedPhraseBackedUp }, appState: { showingSeedPhraseBackupAfterOnboarding } } = state
 
   return {
     completedOnboarding,
     isInitialized,
     isUnlocked,
     nextRoute: getFirstTimeFlowTypeRoute(state),
+    showingSeedPhraseBackupAfterOnboarding,
+    seedPhraseBackedUp,
   }
 }
 
@@ -25,6 +28,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(createNewVaultAndRestore(password, seedPhrase))
     },
     unlockAccount: password => dispatch(unlockAndGetSeedPhrase(password)),
+    verifySeedPhrase: () => verifySeedPhrase(),
   }
 }
 

@@ -375,6 +375,15 @@ var actions = {
   LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
   loadingTokenParamsFinished,
   LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
+
+  setSeedPhraseBackedUp,
+  showSeedPhraseBackupAfterOnboarding,
+  SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING: 'SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING',
+  hideSeedPhraseBackupAfterOnboarding,
+  HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING: 'HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING',
+
+  verifySeedPhrase,
+  SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 }
 
 module.exports = actions
@@ -2770,5 +2779,32 @@ function getTokenParams (tokenAddress) {
 function unsetMigratedPrivacyMode () {
   return () => {
     background.unsetMigratedPrivacyMode()
+  }
+}
+
+function setSeedPhraseBackedUp (seedPhraseBackupState) {
+  return (dispatch) => {
+    log.debug(`background.setSeedPhraseBackedUp`)
+    return new Promise((resolve, reject) => {
+      background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        return forceUpdateMetamaskState(dispatch).then(() => resolve())
+      })
+    })
+  }
+}
+
+function showSeedPhraseBackupAfterOnboarding () {
+  return {
+    type: actions.SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
+  }
+}
+
+function hideSeedPhraseBackupAfterOnboarding () {
+  return {
+    type: actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
   }
 }

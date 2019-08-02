@@ -6,6 +6,7 @@ import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import DraggableSeed from './draggable-seed.component'
@@ -88,7 +89,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleSubmit = async () => {
-    const { history } = this.props
+    const { history, setSeedPhraseBackedUp, showingSeedPhraseBackupAfterOnboarding, hideSeedPhraseBackupAfterOnboarding } = this.props
 
     if (!this.isValid()) {
       return
@@ -102,7 +103,15 @@ export default class ConfirmSeedPhrase extends PureComponent {
           name: 'Verify Complete',
         },
       })
-      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
+
+      setSeedPhraseBackedUp(true).then(() => {
+        if (showingSeedPhraseBackupAfterOnboarding) {
+          hideSeedPhraseBackupAfterOnboarding()
+          history.push(DEFAULT_ROUTE)
+        } else {
+          history.push(INITIALIZE_END_OF_FLOW_ROUTE)
+        }
+      })
     } catch (error) {
       console.error(error.message)
     }
