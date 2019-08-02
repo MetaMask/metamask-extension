@@ -130,3 +130,14 @@ input.form-control {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.pinned-to-bottom {
+  position: absolute;
+  bottom: 0px;
+}
+
+.pinned-to-bottom-right {
+  position: absolute;
+  bottom: 0px;
+  right: 0;
+}

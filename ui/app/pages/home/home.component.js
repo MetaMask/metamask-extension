@@ -104,6 +104,7 @@ export default class Home extends PureComponent {
                   showPrivacyModeNotification
                     ? (
                       <HomeNotification
+                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
                         descriptionText={t('privacyModeDefault')}
                         acceptText={t('learnMore')}
                         onAccept={() => {
@@ -118,6 +119,7 @@ export default class Home extends PureComponent {
                   viewingUnconnectedDapp
                     ? (
                       <HomeNotification
+                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
                         descriptionText={t('shareAddressToConnect', [activeTab.origin])}
                         acceptText={t('shareAddress')}
                         onAccept={() => {
@@ -132,6 +134,7 @@ export default class Home extends PureComponent {
                   shouldShowSeedPhraseReminder
                     ? (
                       <HomeNotification
+                        classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
                         descriptionText={t('backupApprovalNotice')}
                         acceptText={t('backupNow')}
                         onAccept={() => {

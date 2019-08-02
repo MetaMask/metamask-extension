@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 import {Tooltip as ReactTippy} from 'react-tippy'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
@@ -22,6 +23,7 @@ export default class HomeNotification extends PureComponent {
     onIgnore: PropTypes.func,
     descriptionText: PropTypes.string.isRequired,
     infoText: PropTypes.string,
+    classNames: PropTypes.array,
   }
 
   handleAccept = () => {
@@ -33,10 +35,10 @@ export default class HomeNotification extends PureComponent {
   }
 
   render () {
-    const { descriptionText, acceptText, onAccept, ignoreText, onIgnore, infoText } = this.props
+    const { descriptionText, acceptText, onAccept, ignoreText, onIgnore, infoText, classNames = [] } = this.props
 
     return (
-      <div className="home-notification">
+      <div className={classnames("home-notification", ...classNames)}>
         <div className="home-notification__header">
           <div className="home-notification__header-container">
             <img
