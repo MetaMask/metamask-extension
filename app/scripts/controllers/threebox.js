@@ -1,3 +1,4 @@
+const ethUtil = require('ethereumjs-util')
 const ObservableStore = require('obs-store')
 const Box = require('3box/dist/3box.min')
 const log = require('loglevel')
@@ -45,28 +46,23 @@ class ThreeBoxController {
       this.address = address
 
       try {
-        const messageDataToSign = '0x' + Buffer.from('This app wants to view and update your 3Box profile.', 'utf8').toString('hex')
-        this.keyringController.signPersonalMessage({
-          data: messageDataToSign,
+        const data = ethUtil.bufferToHex(Buffer.from('This app wants to view and update your 3Box profile.', 'utf8'))
+        const contentSignature = await this.keyringController.signPersonalMessage({
+          data,
           from: address,
         })
-          .then(signature => Box.openBox(
-            address,
-            this.provider,
-            {
-              contentSignature: signature,
-            }
-          ))
-          .then(box => {
-            this.box = box
-            box.onSyncDone(() => {
-              log.debug('3Box onSyncDone!')
-              this._restoreFrom3Box()
-              this.store.updateState({ syncDone3Box: true, threeBoxAddress: address })
-            })
+        this.box = await Box.openBox(address, this.provider, {contentSignature})
+        this.box.onSyncDone(() => {
+          log.debug('3Box onSyncDone')
+          this._restoreFrom3Box()
+          this.store.updateState({
+            syncDone3Box: true,
+            threeBoxAddress: address,
           })
+        })
       } catch (e) {
         console.error(e)
+        throw e
       }
     }
   }
