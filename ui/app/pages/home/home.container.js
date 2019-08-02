@@ -11,6 +11,8 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
+const activeTabDappProtocols = ['http:', 'https:', 'dweb:', 'ipfs:', 'ipns:', 'ssb:']
+
 const mapStateToProps = state => {
   const { activeTab, metamask, appState } = state
   const {
@@ -27,7 +29,12 @@ const mapStateToProps = state => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword } = appState
 
-  const isUnconnected = Boolean(activeTab && privacyMode && !approvedOrigins[activeTab.origin])
+  const isUnconnected = Boolean(
+    activeTab &&
+    activeTabDappProtocols.includes(activeTab.protocol) &&
+    privacyMode &&
+    !approvedOrigins[activeTab.origin]
+  )
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
   return {
