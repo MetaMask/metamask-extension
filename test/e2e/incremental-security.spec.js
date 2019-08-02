@@ -207,12 +207,12 @@ describe('MetaMask', function () {
 
   describe('backs up the seed phrase', () => {
     it('should show a backup reminder', async () => {
-      const backupReminder = await findElements(driver, By.css('.backup-notification'))
+      const backupReminder = await findElements(driver, By.xpath("//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery code to keep your wallet and funds secure')]"))
       assert.equal(backupReminder.length, 1)
     })
 
     it('should take the user to the seedphrase backup screen', async () => {
-      const backupButton = await findElement(driver, By.css('.backup-notification__submit-button'))
+      const backupButton = await findElement(driver, By.css('.home-notification__accept-button'))
       await backupButton.click()
       await delay(regularDelayMs)
     })
