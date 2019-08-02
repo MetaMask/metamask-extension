@@ -1,0 +1,79 @@
+.account-details {
+  flex: 0 0 auto;
+
+  &__keyring-label {
+    height: 50px;
+    color: $dusty-gray;
+    font-family: Roboto;
+    font-size: 10px;
+    text-align: right;
+    padding: 17px 20px 0;
+    box-sizing: border-box;
+  }
+
+  &__name-container {
+    flex: 0 0 auto;
+    cursor: pointer;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  &__account-name {
+    font-size: 24px;
+    color: $black;
+    margin-top: 8px;
+    margin-bottom: .9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  &__details-button {
+    font-size: 10px;
+    border-radius: 17px;
+    background-color: transparent;
+    margin: 0 auto;
+    padding: 4px 12px;
+    flex: 0 0 auto;
+  }
+
+  &__tooltip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+
+  &__address {
+    border-radius: 3px;
+    background-color: $alto;
+    color: $scorpion;
+    font-size: 14px;
+    line-height: 12px;
+    padding: 4px 12px;
+    cursor: pointer;
+    flex: 0 0 auto;
+
+    &__pressed {
+      background-color: $manatee,
+    }
+  }
+
+  &__sidebar-close {
+
+    @media screen and (max-width: 575px) {
+      &::after {
+        content: '\00D7';
+        font-size: 40px;
+        color: $tundora;
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        cursor: pointer;
+      }
+    }
+  }
+}

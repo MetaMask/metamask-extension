@@ -159,7 +159,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Show account information', () => {
     it('shows the correct account address', async () => {
-      await driver.findElement(By.css('.wallet-view__details-button')).click()
+      await driver.findElement(By.css('.account-details__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -171,7 +171,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('shows a QR code for the account', async () => {
-      await driver.findElement(By.css('.wallet-view__details-button')).click()
+      await driver.findElement(By.css('.account-details__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       const detailModal = await driver.findElement(By.css('span .modal'))
       await delay(regularDelayMs)
@@ -232,7 +232,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async () => {
-      const [accountName] = await findElements(driver, By.css('.account-name'))
+      const [accountName] = await findElements(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await delay(regularDelayMs)
     })
@@ -318,13 +318,13 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async () => {
-      const [accountName] = await findElements(driver, By.css('.account-name'))
+      const [accountName] = await findElements(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), 'Account 4')
       await delay(regularDelayMs)
     })
 
     it('should show the imported label', async () => {
-      const [importedLabel] = await findElements(driver, By.css('.wallet-view__keyring-label'))
+      const [importedLabel] = await findElements(driver, By.css('.account-details__keyring-label'))
       assert.equal(await importedLabel.getText(), 'IMPORTED')
       await delay(regularDelayMs)
     })
@@ -350,7 +350,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the remove account modal', async () => {
-      const [accountName] = await findElements(driver, By.css('.account-name'))
+      const [accountName] = await findElements(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), 'Account 5')
       await delay(regularDelayMs)
 
@@ -373,7 +373,7 @@ describe('Using MetaMask with an existing account', function () {
 
       await delay(regularDelayMs)
 
-      const [accountName] = await findElements(driver, By.css('.account-name'))
+      const [accountName] = await findElements(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), 'Account 1')
       await delay(regularDelayMs)
 
