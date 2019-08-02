@@ -28,11 +28,14 @@ const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
 
-const uiDependenciesToBundle = [
-  ...materialUIDependencies,
-  ...reactDepenendencies,
-  ...d3Dependencies,
-]
+const externalDependenciesMap = {
+  background: [
+    '3box/dist/3box.min',
+  ],
+  ui: [
+    ...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies,
+  ],
+}
 
 function gulpParallel (...args) {
   return function spawnGulpChildProcess (cb) {
@@ -310,13 +313,14 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
-createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, filename: 'libs' })
+createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' })
+createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
-function createTasksForBuildJsUIDeps ({ filename }) {
+function createTasksForBuildJsDeps ({ key, filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
 
 
@@ -327,12 +331,12 @@ function createTasksForBuildJsUIDeps ({ filename }) {
     devMode: false,
   })
 
-  gulp.task('build:extension:js:uideps', bundleTask(Object.assign({
+  gulp.task(`build:extension:js:deps:${key}`, bundleTask(Object.assign({
     label: filename,
     filename: `${filename}.js`,
     destinations,
     buildLib: true,
-    dependenciesToBundle: uiDependenciesToBundle,
+    dependenciesToBundle: externalDependenciesMap[key],
   }, bundleTaskOpts)))
 }
 
@@ -364,7 +368,7 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
-      externalDependencies: jsFile === 'ui' && !bundleTaskOpts.devMode && uiDependenciesToBundle,
+      externalDependencies: bundleTaskOpts.devMode ? undefined : externalDependenciesMap[jsFile],
       destinations,
     }, bundleTaskOpts)))
   })
@@ -431,7 +435,8 @@ gulp.task('build',
     'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:uideps',
+      'build:extension:js:deps:background',
+      'build:extension:js:deps:ui',
       'build:extension:js',
       'copy'
     )
@@ -443,7 +448,8 @@ gulp.task('build:test',
     'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:uideps',
+      'build:extension:js:deps:background',
+      'build:extension:js:deps:ui',
       'build:test:extension:js',
       'copy'
     ),
