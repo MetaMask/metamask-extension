@@ -24,7 +24,7 @@ describe('MetaMask', function () {
   let extensionId
   let driver
 
-  const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
+  const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
@@ -246,7 +246,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async () => {
       const balance = await findElement(driver, By.css('.balance-display .token-amount'))
-      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
+      await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
       await delay(regularDelayMs)
     })
   })
