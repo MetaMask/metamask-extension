@@ -150,7 +150,7 @@ describe('MetaMask', function () {
       await buttons[0].click()
       await delay(regularDelayMs)
 
-      const detailsButton = await findElement(driver, By.css('.wallet-view__details-button'))
+      const detailsButton = await findElement(driver, By.css('.account-details__details-button'))
       await detailsButton.click()
       await delay(regularDelayMs)
     })
