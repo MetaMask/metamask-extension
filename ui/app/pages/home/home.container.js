@@ -7,6 +7,7 @@ import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   forceApproveProviderRequestByOrigin,
   unsetMigratedPrivacyMode,
+  showSeedPhraseBackupAfterOnboarding,
 } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -48,12 +49,14 @@ const mapStateToProps = state => {
     activeTab,
     viewingUnconnectedDapp: isUnconnected && isPopup,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    isPopup,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
   forceApproveProviderRequestByOrigin: (origin) => dispatch(forceApproveProviderRequestByOrigin(origin)),
+  showSeedPhraseBackupAfterOnboarding: () => dispatch(showSeedPhraseBackupAfterOnboarding()),
 })
 
 export default compose(
