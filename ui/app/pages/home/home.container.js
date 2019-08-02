@@ -6,6 +6,7 @@ import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-tr
 import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   unsetMigratedPrivacyMode,
+  showModal,
 } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -20,7 +21,7 @@ const mapStateToProps = state => {
     tokens,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
-  const { forgottenPassword } = appState
+  const { forgottenPassword, show3BoxModalAfterImport } = appState
 
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
@@ -32,11 +33,13 @@ const mapStateToProps = state => {
     showPrivacyModeNotification: migratedPrivacyMode,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    show3BoxModalAfterImport,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
+  show3BoxRestoreConfirmModal: () => dispatch(showModal({ name: 'THREEBOX_RESTORE_CONFIRM' }))
 })
 
 export default compose(

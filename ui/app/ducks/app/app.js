@@ -73,6 +73,7 @@ function reduceApp (state, action) {
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
     loadingMethodData: false,
+    show3BoxModalAfterImport: false,
   }, state.appState)
 
   switch (action.type) {
@@ -756,7 +757,12 @@ function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
-    default:
+     case actions.SHOW_3BOX_MODAL_AFTER_IMPORT:
+       return extend(appState, {
+         show3BoxModalAfterImport: true,
+       })
+
+     default:
       return appState
   }
 }

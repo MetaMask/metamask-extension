@@ -1148,6 +1148,9 @@
   "noTransactions": {
     "message": "You have no transactions"
   },
+  "noThanks": {
+    "message": "No Thanks"
+  },
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
@@ -1336,6 +1339,9 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
+  },
+  "restoreWalletPreferences": {
+    "message": "Would you like to restore your wallet preferences?"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
