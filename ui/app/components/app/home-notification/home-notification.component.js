@@ -38,7 +38,7 @@ export default class HomeNotification extends PureComponent {
     const { descriptionText, acceptText, onAccept, ignoreText, onIgnore, infoText, classNames = [] } = this.props
 
     return (
-      <div className={classnames("home-notification", ...classNames)}>
+      <div className={classnames('home-notification', ...classNames)}>
         <div className="home-notification__header">
           <div className="home-notification__header-container">
             <img

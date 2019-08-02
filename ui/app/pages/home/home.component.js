@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import HomeNotification from '../../components/app/home-notification'
+import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import ProviderApproval from '../provider-approval'
@@ -40,6 +41,7 @@ export default class Home extends PureComponent {
     viewingUnconnectedDapp: PropTypes.bool.isRequired,
     forceApproveProviderRequestByOrigin: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
+    showSeedPhraseBackupAfterOnboarding: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -65,12 +67,6 @@ export default class Home extends PureComponent {
     }
   }
 
-  renderHomeNotifications (notificationConfigs) {
-    return notificationConfigs
-      .filter(notificationConfig => notificationConfig.shouldBeRendered)
-      .map(notificationConfig => notificationConfig.component)
-  }
-
   render () {
     const { t } = this.context
     const {
@@ -84,7 +80,6 @@ export default class Home extends PureComponent {
       forceApproveProviderRequestByOrigin,
       shouldShowSeedPhraseReminder,
       showSeedPhraseBackupAfterOnboarding,
-      isPopup,
     } = this.props
 
     if (forgottenPassword) {
@@ -106,45 +101,47 @@ export default class Home extends PureComponent {
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
               <TransactionView>
-                {this.renderHomeNotifications([
-                  {
-                    shouldBeRendered: showPrivacyModeNotification,
-                    component: <HomeNotification
-                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                      descriptionText={t('privacyModeDefault')}
-                      acceptText={t('learnMore')}
-                      onAccept={() => {
-                        window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                        unsetMigratedPrivacyMode()
-                      }}
-                    />,
-                  },
-                  {
-                    shouldBeRendered: viewingUnconnectedDapp,
-                    component: <HomeNotification
-                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                      descriptionText={t('shareAddressToConnect', [activeTab.origin])}
-                      acceptText={t('shareAddress')}
-                      onAccept={() => {
-                        forceApproveProviderRequestByOrigin(activeTab.origin)
-                      }}
-                      infoText={t('shareAddressInfo', [activeTab.origin])}
-                    />,
-                  },
-                  {
-                    shouldBeRendered: shouldShowSeedPhraseReminder,
-                    component: <HomeNotification
-                      classNames={[isPopup ? 'pinned-to-bottom' : 'pinned-to-bottom-right']}
-                      descriptionText={t('backupApprovalNotice')}
-                      acceptText={t('backupNow')}
-                      onAccept={() => {
-                        showSeedPhraseBackupAfterOnboarding()
-                        history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-                      }}
-                      infoText={t('backupApprovalInfo')}
-                    />,
-                  },
-                ])}
+                <MultipleNotifications
+                  className
+                  notifications={[
+                    {
+                      shouldBeRendered: showPrivacyModeNotification,
+                      component: <HomeNotification
+                        descriptionText={t('privacyModeDefault')}
+                        acceptText={t('learnMore')}
+                        onAccept={() => {
+                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
+                          unsetMigratedPrivacyMode()
+                        }}
+                        key="home-privacyModeDefault"
+                      />,
+                    },
+                    {
+                      shouldBeRendered: viewingUnconnectedDapp,
+                      component: <HomeNotification
+                        descriptionText={t('shareAddressToConnect', [activeTab.origin])}
+                        acceptText={t('shareAddress')}
+                        onAccept={() => {
+                          forceApproveProviderRequestByOrigin(activeTab.origin)
+                        }}
+                        infoText={t('shareAddressInfo', [activeTab.origin])}
+                        key="home-shareAddressToConnect"
+                      />,
+                    },
+                    {
+                      shouldBeRendered: shouldShowSeedPhraseReminder,
+                      component: <HomeNotification
+                        descriptionText={t('backupApprovalNotice')}
+                        acceptText={t('backupNow')}
+                        onAccept={() => {
+                          showSeedPhraseBackupAfterOnboarding()
+                          history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+                        }}
+                        infoText={t('backupApprovalInfo')}
+                        key="home-backupApprovalNotice"
+                      />,
+                    },
+                  ]}/>
               </TransactionView>
             )
             : null }

@@ -10,7 +10,10 @@
   border-radius: 8px;
   height: 116px;
   padding: 16px;
-  margin: 8px;
+
+  @media screen and (min-width: 576px) {
+    min-width: 472px;
+  }
 
   display: flex;
   flex-flow: column;
