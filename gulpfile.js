@@ -214,6 +214,29 @@ gulp.task('manifest:testing', function () {
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
+const scriptsToExcludeFromBackgroundDevBuild = {
+  'bg-libs.js': true,
+}
+
+gulp.task('manifest:dev', function () {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+  ], {base: './dist/'})
+
+    .pipe(jsoneditor(function (json) {
+      const currentBackground = json.background
+      json.background = {
+        ...json.background,
+        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+      }
+      json.permissions = [...json.permissions, 'webRequestBlocking']
+      return json
+    }))
+
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
 gulp.task('copy',
   gulp.series(
     gulp.parallel(...copyTaskNames),
@@ -226,6 +249,7 @@ gulp.task('copy',
 gulp.task('dev:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
+    'manifest:dev',
     'manifest:chrome',
     'manifest:opera'
   )
