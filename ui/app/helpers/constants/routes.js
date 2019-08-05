@@ -32,6 +32,7 @@ const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
+const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase'
 const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow'
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm'
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in'
@@ -90,4 +91,6 @@ module.exports = {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
+  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
 }
+
