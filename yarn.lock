@@ -17150,10 +17150,10 @@ public-encrypt@^4.0.0:
     parse-asn1 "^5.0.0"
     randombytes "^2.0.1"
 
-pubnub@^4.21.5:
-  version "4.21.7"
-  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-4.21.7.tgz#4daf999ead1aa9cf8e9af3d2fb2720c35085af6a"
-  integrity sha512-TZ96GuY+gZIu9rJaqcO2cZ6tl4JPLruoUcN01sljm1CcDgzIZbOfcDSZp4NcZas4ECSqAAwo/izMMiImRRS4Yg==
+pubnub@^4.24.4:
+  version "4.24.4"
+  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-4.24.4.tgz#6874b1836539765a1c1ec8c264f6b233ed28192a"
+  integrity sha512-otRny/9au/Xf0uAfPUrVwUPdFIE7nZv6+7TLcG8+wiZESgi7EgiGZ9VXAoe6istBj6hfZe0vj3+XCbkZHLHklw==
   dependencies:
     agentkeepalive "^3.5.2"
     lil-uuid "^0.1.1"
