@@ -6,6 +6,7 @@ import ConfirmSeedPhrase from './confirm-seed-phrase'
 import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
+  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
 import HTML5Backend from 'react-dnd-html5-backend'
@@ -61,6 +62,16 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_SEED_PHRASE_ROUTE}
+              render={props => (
+                <RevealSeedPhrase
+                  { ...props }
+                  seedPhrase={seedPhrase || verifiedSeedPhrase}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
               render={props => (
                 <RevealSeedPhrase
                   { ...props }

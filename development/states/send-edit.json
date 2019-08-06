@@ -182,7 +182,9 @@
     "warnings": {}
   },
   "confirmTransaction": {
-    "txData": {},
+    "txData": {
+      "id": 4768706228115573
+    },
     "tokenData": {},
     "methodData": {},
     "tokenProps": {

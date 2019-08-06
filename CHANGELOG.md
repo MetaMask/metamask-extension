@@ -10,6 +10,10 @@
 - [#6914](https://github.com/MetaMask/metamask-extension/pull/6914): Adds Address Book feature
 - [#6928](https://github.com/MetaMask/metamask-extension/pull/6928): Disable Copy Tx ID and block explorer link for transactions without hash
 
+## 6.7.3 Thu Jul 18 2019
+
+- [#6888](https://github.com/MetaMask/metamask-extension/pull/6888): Fix bug with resubmitting unsigned transactions.
+
 ## 6.7.2 Mon Jul 01 2019
 
 - [#6713](https://github.com/MetaMask/metamask-extension/pull/6713): * Normalize and Validate txParams in TransactionStateManager.addTx too

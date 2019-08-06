@@ -12,7 +12,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -43,8 +43,8 @@ export default class Home extends PureComponent {
     viewingUnconnectedDapp: PropTypes.bool.isRequired,
     forceApproveProviderRequestByOrigin: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
-    showSeedPhraseBackupAfterOnboarding: PropTypes.bool,
     rejectProviderRequestByOrigin: PropTypes.func,
+    isPopup: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -82,8 +82,8 @@ export default class Home extends PureComponent {
       viewingUnconnectedDapp,
       forceApproveProviderRequestByOrigin,
       shouldShowSeedPhraseReminder,
-      showSeedPhraseBackupAfterOnboarding,
       rejectProviderRequestByOrigin,
+      isPopup,
     } = this.props
 
     if (forgottenPassword) {
@@ -140,8 +140,11 @@ export default class Home extends PureComponent {
                         descriptionText={t('backupApprovalNotice')}
                         acceptText={t('backupNow')}
                         onAccept={() => {
-                          showSeedPhraseBackupAfterOnboarding()
-                          history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+                          if (isPopup) {
+                            global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                          } else {
+                            history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                          }
                         }}
                         infoText={t('backupApprovalInfo')}
                         key="home-backupApprovalNotice"
