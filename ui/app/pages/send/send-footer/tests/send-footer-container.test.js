@@ -38,6 +38,7 @@ proxyquire('../send-footer.container.js', {
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFromObject:${s}`,
     getSendTo: (s) => `mockTo:${s}`,
+    getSendToNickname: (s) => `mockToNickname:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendHexData: (s) => `mockHexData:${s}`,
@@ -68,6 +69,7 @@ describe('send-footer container', () => {
         gasTotal: 'mockGasTotal:mockState',
         inError: 'mockInError:mockState',
         to: 'mockTo:mockState',
+        toNickname: 'mockToNickname:mockState',
         toAccounts: 'mockToAccounts:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
         unapprovedTxs: 'mockUnapprovedTxs:mockState',
@@ -102,6 +104,7 @@ describe('send-footer container', () => {
             address: '0xabc',
           },
           to: 'mockTo',
+          toNickname: 'mockToNickname',
           amount: 'mockAmount',
           from: 'mockFrom',
           gas: 'mockGas',
@@ -116,6 +119,7 @@ describe('send-footer container', () => {
               address: '0xabc',
             },
             to: 'mockTo',
+            toNickname: 'mockToNickname',
             amount: 'mockAmount',
             from: 'mockFrom',
             gas: 'mockGas',
@@ -132,6 +136,7 @@ describe('send-footer container', () => {
         utilsStubs.constructTxParams.resetHistory()
         mapDispatchToPropsObject.sign({
           to: 'mockTo',
+          toNickname: 'mockToNickname',
           amount: 'mockAmount',
           from: 'mockFrom',
           gas: 'mockGas',
@@ -144,6 +149,7 @@ describe('send-footer container', () => {
             data: undefined,
             selectedToken: undefined,
             to: 'mockTo',
+            toNickname: 'mockToNickname',
             amount: 'mockAmount',
             from: 'mockFrom',
             gas: 'mockGas',
@@ -161,6 +167,7 @@ describe('send-footer container', () => {
       it('should dispatch an updateTransaction action', () => {
         mapDispatchToPropsObject.update({
           to: 'mockTo',
+          toNickname: 'mockToNickname',
           amount: 'mockAmount',
           from: 'mockFrom',
           gas: 'mockGas',
@@ -175,6 +182,7 @@ describe('send-footer container', () => {
           {
             data: undefined,
             to: 'mockTo',
+            toNickname: 'mockToNickname',
             amount: 'mockAmount',
             from: 'mockFrom',
             gas: 'mockGas',

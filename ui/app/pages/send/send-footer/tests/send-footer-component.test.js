@@ -41,6 +41,7 @@ describe('SendFooter Component', function () {
       selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
       sign={propsMethodSpies.sign}
       to={'mockTo'}
+      toNickname={'mockToNickname'}
       toAccounts={['mockAccount']}
       tokenBalance={'mockTokenBalance'}
       unapprovedTxs={['mockTx']}
@@ -138,6 +139,7 @@ describe('SendFooter Component', function () {
           gasPrice: 'mockGasPrice',
           selectedToken: { mockProp: 'mockSelectedTokenProp' },
           to: 'mockTo',
+          toNickname: 'mockToNickname',
           unapprovedTxs: ['mockTx'],
         }
       )
@@ -198,6 +200,7 @@ describe('SendFooter Component', function () {
         selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
         sign={propsMethodSpies.sign}
         to={'mockTo'}
+        toNickname={'mockToNickname'}
         toAccounts={['mockAccount']}
         tokenBalance={'mockTokenBalance'}
         unapprovedTxs={['mockTx']}
