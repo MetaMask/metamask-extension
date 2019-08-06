@@ -29,6 +29,8 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ConfirmDeleteNetwork from './confirm-delete-network'
+import AddToAddressBookModal from './add-to-addressbook-modal'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -166,6 +168,35 @@ const MODALS = {
     },
   },
 
+  ADD_TO_ADDRESSBOOK: {
+    contents: [
+      h(AddToAddressBookModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
+    },
+  },
+
   ACCOUNT_DETAILS: {
     contents: [
       h(AccountDetailsModal, {}, []),
@@ -290,6 +321,19 @@ const MODALS = {
 
   CONFIRM_REMOVE_ACCOUNT: {
     contents: h(ConfirmRemoveAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_DELETE_NETWORK: {
+    contents: h(ConfirmDeleteNetwork),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -452,7 +496,6 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
-
   const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}

@@ -49,13 +49,12 @@ class PreferencesController {
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
-      seedWords: null,
       forgottenPassword: false,
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
-      completedUiMigration: true,
+      migratedPrivacyMode: false,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
@@ -70,7 +69,7 @@ class PreferencesController {
       return this.setFeatureFlag(key, value)
     }
   }
-// PUBLIC METHODS
+  // PUBLIC METHODS
 
   /**
    * Sets the {@code forgottenPassword} state property
@@ -78,14 +77,6 @@ class PreferencesController {
    */
   setPasswordForgotten (forgottenPassword) {
     this.store.updateState({ forgottenPassword })
-  }
-
-  /**
-   * Sets the {@code seedWords} seed words
-   * @param {string|null} seedWords the seed words
-   */
-  setSeedWords (seedWords) {
-    this.store.updateState({ seedWords })
   }
 
   /**
@@ -139,9 +130,9 @@ class PreferencesController {
    * @param {String} type Indicates the type of first time flow - create or import - the user wishes to follow
    *
    */
-   setFirstTimeFlowType (type) {
-     this.store.updateState({ firstTimeFlowType: type })
-   }
+  setFirstTimeFlowType (type) {
+    this.store.updateState({ firstTimeFlowType: type })
+  }
 
 
   getSuggestedTokens () {
@@ -503,22 +494,22 @@ class PreferencesController {
    * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-    addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
-      const rpcList = this.getFrequentRpcListDetail()
-      const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
-      if (index !== -1) {
-        rpcList.splice(index, 1)
-      }
-      if (url !== 'http://localhost:8545') {
-        let checkedChainId
-        if (!!chainId && !Number.isNaN(parseInt(chainId))) {
-          checkedChainId = chainId
-        }
-        rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
-      }
-      this.store.updateState({ frequentRpcListDetail: rpcList })
-      return Promise.resolve(rpcList)
+  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
+    if (index !== -1) {
+      rpcList.splice(index, 1)
     }
+    if (url !== 'http://localhost:8545') {
+      let checkedChainId
+      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+        checkedChainId = chainId
+      }
+      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname, rpcPrefs })
+    }
+    this.store.updateState({ frequentRpcListDetail: rpcList })
+    return Promise.resolve(rpcList)
+  }
 
   /**
    * Removes custom RPC url from state.
@@ -613,12 +604,11 @@ class PreferencesController {
     return Promise.resolve(true)
   }
 
-  /**
-   * Sets the {@code completedUiMigration} state to {@code true}, indicating that the user has completed the UI switch.
-   */
-  completeUiMigration () {
-    this.store.updateState({ completedUiMigration: true })
-    return Promise.resolve(true)
+  unsetMigratedPrivacyMode () {
+    this.store.updateState({
+      migratedPrivacyMode: false,
+    })
+    return Promise.resolve()
   }
 
   //

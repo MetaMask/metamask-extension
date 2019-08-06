@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
+const { getTokenAddressFromTokenObject, checksumAddress } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
@@ -26,6 +26,9 @@ var actions = {
   MODAL_CLOSE: 'UI_MODAL_CLOSE',
   showModal: showModal,
   hideModal: hideModal,
+  // notification state
+  CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
+  closeNotifacationWindow: closeNotifacationWindow,
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -64,7 +67,6 @@ var actions = {
   markPasswordForgotten,
   unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
-  SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
@@ -78,7 +80,6 @@ var actions = {
   showImportPage,
   showNewAccountPage,
   setNewAccountForm,
-  createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
   createNewVaultAndGetSeedPhrase,
@@ -94,14 +95,12 @@ var actions = {
   navigateToNewAccountScreen,
   resetAccount,
   removeAccount,
-  showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   closeWelcomeScreen,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
-  requestRevealSeed: requestRevealSeed,
   requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -136,6 +135,8 @@ var actions = {
   showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
+  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
+  removeFromAddressBook: removeFromAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -195,6 +196,10 @@ var actions = {
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
+  UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
+  UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -214,7 +219,6 @@ var actions = {
   gasLoadingStarted,
   gasLoadingFinished,
   // app messages
-  confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
   BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
   backToAccountDetail: backToAccountDetail,
@@ -270,12 +274,12 @@ var actions = {
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
   hideSubLoadingIndication: hideSubLoadingIndication,
-// QR STUFF:
+  // QR STUFF:
   SHOW_QR: 'SHOW_QR',
   showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
-// FORGOT PASSWORD:
+  // FORGOT PASSWORD:
   BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
   goBackToInitView: goBackToInitView,
   RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
@@ -320,11 +324,7 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-
-  // Migration of users to new UI
-  setCompletedUiMigration,
-  completeUiMigration,
-  COMPLETE_UI_MIGRATION: 'COMPLETE_UI_MIGRATION',
+  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -349,6 +349,7 @@ var actions = {
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
+  forceApproveProviderRequestByOrigin,
   clearApprovedOrigins,
 
   setFirstTimeFlowType,
@@ -374,6 +375,10 @@ var actions = {
   LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
   loadingTokenParamsFinished,
   LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
+
+  setSeedPhraseBackedUp,
+  verifySeedPhrase,
+  SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 }
 
 module.exports = actions
@@ -446,44 +451,18 @@ function transitionBackward () {
   }
 }
 
-function confirmSeedWords () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.clearSeedWordCache`)
-    return new Promise((resolve, reject) => {
-      background.clearSeedWordCache((err, account) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.info('Seed word cache cleared. ' + account)
-        dispatch(actions.showAccountsPage())
-        resolve(account)
-      })
-    })
-  }
-}
-
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.clearSeedWordCache((err) => {
+      background.createNewVaultAndRestore(password, seed, (err) => {
         if (err) {
           return reject(err)
         }
 
-        background.createNewVaultAndRestore(password, seed, (err) => {
-          if (err) {
-            return reject(err)
-          }
-
-          resolve()
-        })
+        resolve()
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
@@ -496,36 +475,6 @@ function createNewVaultAndRestore (password, seed) {
         dispatch(actions.hideLoadingIndication())
         return Promise.reject(err)
       })
-  }
-}
-
-function createNewVaultAndKeychain (password) {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.createNewVaultAndKeychain`)
-
-    return new Promise((resolve, reject) => {
-      background.createNewVaultAndKeychain(password, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.debug(`background.placeSeedWords`)
-
-        background.placeSeedWords((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-
-          resolve()
-        })
-      })
-    })
-      .then(() => forceUpdateMetamaskState(dispatch))
-      .then(() => dispatch(actions.hideLoadingIndication()))
-      .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -616,33 +565,6 @@ function verifySeedPhrase () {
       resolve(seedWords)
     })
   })
-}
-
-function requestRevealSeed (password) {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.submitPassword`)
-    return new Promise((resolve, reject) => {
-      background.submitPassword(password, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.debug(`background.placeSeedWords`)
-        background.placeSeedWords((err, result) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-
-          dispatch(actions.showNewVaultSeed(result))
-          dispatch(actions.hideLoadingIndication())
-          resolve()
-        })
-      })
-    })
-  }
 }
 
 function requestRevealSeedWords (password) {
@@ -875,22 +797,22 @@ function showInfoPage () {
 function showQrScanner (ROUTE) {
   return (dispatch) => {
     return WebcamUtils.checkStatus()
-    .then(status => {
-      if (!status.environmentReady) {
-         // We need to switch to fullscreen mode to ask for permission
-         global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
-      } else {
+      .then(status => {
+        if (!status.environmentReady) {
+          // We need to switch to fullscreen mode to ask for permission
+          global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
+        } else {
+          dispatch(actions.showModal({
+            name: 'QR_SCANNER',
+          }))
+        }
+      }).catch(e => {
         dispatch(actions.showModal({
           name: 'QR_SCANNER',
+          error: true,
+          errorType: e.type,
         }))
-      }
-    }).catch(e => {
-      dispatch(actions.showModal({
-        name: 'QR_SCANNER',
-        error: true,
-        errorType: e.type,
-      }))
-    })
+      })
   }
 }
 
@@ -918,7 +840,7 @@ function setCurrentCurrency (currencyCode) {
 
 function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
 
@@ -936,11 +858,7 @@ function signMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -950,7 +868,7 @@ function signMsg (msgData) {
 
 function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -967,11 +885,7 @@ function signPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -981,7 +895,7 @@ function signPersonalMsg (msgData) {
 
 function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -998,11 +912,7 @@ function signTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1063,17 +973,17 @@ function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-    .then(gas => {
-      dispatch(actions.setGasLimit(gas))
-      dispatch(gasDuck.setCustomGasLimit(gas))
-      dispatch(updateSendErrors({ gasLoadingError: null }))
-      dispatch(actions.gasLoadingFinished())
-    })
-    .catch(err => {
-      log.error(err)
-      dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
-      dispatch(actions.gasLoadingFinished())
-    })
+      .then(gas => {
+        dispatch(actions.setGasLimit(gas))
+        dispatch(gasDuck.setCustomGasLimit(gas))
+        dispatch(updateSendErrors({ gasLoadingError: null }))
+        dispatch(actions.gasLoadingFinished())
+      })
+      .catch(err => {
+        log.error(err)
+        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+        dispatch(actions.gasLoadingFinished())
+      })
   }
 }
 
@@ -1181,6 +1091,20 @@ function clearSend () {
   }
 }
 
+function updateSendEnsResolution (ensResolution) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION,
+    payload: ensResolution,
+  }
+}
+
+function updateSendEnsResolutionError (errorMessage) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
+    payload: errorMessage,
+  }
+}
+
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
@@ -1215,6 +1139,20 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function updateTransaction (txData) {
   log.info('actions: updateTx: ' + JSON.stringify(txData))
   return dispatch => {
@@ -1234,9 +1172,9 @@ function updateTransaction (txData) {
         resolve(txData)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => {
+      .then(() => updateMetamaskStateFromBackground())
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => {
         dispatch(actions.showConfTxPage({ id: txData.id }))
         dispatch(actions.hideLoadingIndication())
         return txData
@@ -1246,7 +1184,7 @@ function updateTransaction (txData) {
 
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
@@ -1271,11 +1209,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1309,7 +1243,7 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1323,11 +1257,7 @@ function cancelMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1336,7 +1266,7 @@ function cancelMsg (msgData) {
 }
 
 function cancelPersonalMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1350,11 +1280,7 @@ function cancelPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1363,7 +1289,7 @@ function cancelPersonalMsg (msgData) {
 }
 
 function cancelTypedMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
     return new Promise((resolve, reject) => {
@@ -1377,11 +1303,7 @@ function cancelTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1390,7 +1312,7 @@ function cancelTypedMsg (msgData) {
 }
 
 function cancelTx (txData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
     window.onbeforeunload = null
@@ -1409,11 +1331,7 @@ function cancelTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1467,7 +1385,9 @@ function cancelAllTx (txsData) {
     txsData.forEach((txData, i) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.completedTx(txData.id))
-        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+        if (i === txsData.length - 1) {
+          dispatch(actions.goHome())
+        }
       })
     })
   }
@@ -1549,13 +1469,6 @@ function createNewVaultInProgress () {
   }
 }
 
-function showNewVaultSeed (seed) {
-  return {
-    type: actions.SHOW_NEW_VAULT_SEED,
-    value: seed,
-  }
-}
-
 function closeWelcomeScreen () {
   return {
     type: actions.CLOSE_WELCOME_SCREEN,
@@ -1619,20 +1532,6 @@ const backgroundSetLocked = () => {
         return reject(error)
       }
       resolve()
-    })
-  })
-}
-
-const updateMetamaskStateFromBackground = () => {
-  log.debug(`background.getState`)
-
-  return new Promise((resolve, reject) => {
-    background.getState((error, newState) => {
-      if (error) {
-        return reject(error)
-      }
-
-      resolve(newState)
     })
   })
 }
@@ -1818,10 +1717,10 @@ function addTokens (tokens) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
-        .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
-        ))
+          .entries(tokens)
+          .map(([_, { address, symbol, decimals }]) => (
+            dispatch(addToken(address, symbol, decimals))
+          ))
       )
     }
   }
@@ -1844,8 +1743,8 @@ function removeSuggestedTokens () {
         resolve(suggestedTokens)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(() => updateMetamaskStateFromBackground())
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
   }
 }
 
@@ -1920,8 +1819,8 @@ function createCancelTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTxId)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 
@@ -1942,8 +1841,8 @@ function createSpeedUpTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTx)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
   }
 }
 
@@ -2037,27 +1936,42 @@ function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
 function delRpcTarget (oldRpc) {
   return (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
-    background.delCustomRpc(oldRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
-      }
-      dispatch(actions.setSelectedToken())
+    return new Promise((resolve, reject) => {
+      background.delCustomRpc(oldRpc, (err) => {
+        if (err) {
+          log.error(err)
+          dispatch(self.displayWarning('Had a problem removing network!'))
+          return reject(err)
+        }
+        dispatch(actions.setSelectedToken())
+        resolve()
+      })
     })
   }
 }
 
-
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname = '') {
+function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
-  return (dispatch) => {
-    background.setAddressBook(recipient, nickname, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Address book failed to update'))
-      }
-    })
+
+  return (dispatch, getState) => {
+    const chainId = getState().metamask.network
+    const set = background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+    if (!set) {
+      return dispatch(displayWarning('Address book failed to update'))
+    }
+  }
+}
+
+/**
+ * @description Calls the addressBookController to remove an existing address.
+ * @param {String} addressToRemove - Address of the entry to remove from the address book
+ */
+function removeFromAddressBook (addressToRemove) {
+  log.debug(`background.removeFromAddressBook`)
+
+  return () => {
+    background.removeFromAddressBook(checksumAddress(addressToRemove))
   }
 }
 
@@ -2093,6 +2007,23 @@ function hideModal (payload) {
   return {
     type: actions.MODAL_CLOSE,
     payload,
+  }
+}
+
+function closeCurrentNotificationWindow () {
+  return (dispatch, getState) => {
+    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+      !hasUnconfirmedTransactions(getState())) {
+      global.platform.closeCurrentWindow()
+
+      dispatch(closeNotifacationWindow())
+    }
+  }
+}
+
+function closeNotifacationWindow () {
+  return {
+    type: actions.CLOSE_NOTIFICATION_WINDOW,
   }
 }
 
@@ -2146,10 +2077,10 @@ function showLoadingIndication (message) {
 }
 
 function setHardwareWalletDefaultHdPath ({ device, path }) {
-    return {
-      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-      value: {device, path},
-    }
+  return {
+    type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+    value: {device, path},
+  }
 }
 
 function hideLoadingIndication () {
@@ -2395,18 +2326,21 @@ function reshowQrCode (data, coin) {
   }
 }
 
-function shapeShiftRequest (query, options, cb) {
+function shapeShiftRequest (query, options = {}, cb) {
   var queryResponse, method
-  !options ? options = {} : null
   options.method ? method = options.method : method = 'GET'
 
   var requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
-      cb ? cb(queryResponse) : null
+      if (cb) {
+        cb(queryResponse)
+      }
       return queryResponse
     } catch (e) {
-      cb ? cb({error: e}) : null
+      if (cb) {
+        cb({error: e})
+      }
       return e
     }
   }
@@ -2506,31 +2440,6 @@ function setCompletedOnboarding () {
 function completeOnboarding () {
   return {
     type: actions.COMPLETE_ONBOARDING,
-  }
-}
-
-function setCompletedUiMigration () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeUiMigration(err => {
-        dispatch(actions.hideLoadingIndication())
-
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.completeUiMigration())
-        resolve()
-      })
-    })
-  }
-}
-
-function completeUiMigration () {
-  return {
-    type: actions.COMPLETE_UI_MIGRATION,
   }
 }
 
@@ -2734,6 +2643,12 @@ function approveProviderRequestByOrigin (origin) {
   }
 }
 
+function forceApproveProviderRequestByOrigin (origin) {
+  return () => {
+    background.forceApproveProviderRequestByOrigin(origin)
+  }
+}
+
 function rejectProviderRequestByOrigin (origin) {
   return () => {
     background.rejectProviderRequestByOrigin(origin)
@@ -2853,5 +2768,26 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
+  }
+}
+
+function unsetMigratedPrivacyMode () {
+  return () => {
+    background.unsetMigratedPrivacyMode()
+  }
+}
+
+function setSeedPhraseBackedUp (seedPhraseBackupState) {
+  return (dispatch) => {
+    log.debug(`background.setSeedPhraseBackedUp`)
+    return new Promise((resolve, reject) => {
+      background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        return forceUpdateMetamaskState(dispatch).then(() => resolve())
+      })
+    })
   }
 }

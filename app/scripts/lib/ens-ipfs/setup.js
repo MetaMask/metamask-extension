@@ -51,6 +51,8 @@ function setupEnsIpfsResolver ({ provider }) {
         }
       } else if (type === 'swarm-ns') {
         url = `https://swarm-gateways.net/bzz:/${hash}${path}${search || ''}`
+      } else if (type === 'onion' || type === 'onion3') {
+        url = `http://${hash}.onion${path}${search || ''}`
       }
     } catch (err) {
       console.warn(err)

@@ -183,23 +183,23 @@ class AccountTracker {
 
     switch (currentNetwork) {
       case MAINNET_CODE:
-      await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
-      break
+        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
+        break
 
       case RINKEYBY_CODE:
-      await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
-      break
+        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
+        break
 
       case ROPSTEN_CODE:
-      await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
-      break
+        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
+        break
 
       case KOVAN_CODE:
-      await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
-      break
+        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
+        break
 
       default:
-      await Promise.all(addresses.map(this._updateAccount.bind(this)))
+        await Promise.all(addresses.map(this._updateAccount.bind(this)))
     }
   }
 

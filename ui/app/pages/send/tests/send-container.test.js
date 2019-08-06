@@ -41,12 +41,19 @@ proxyquire('../send.container.js', {
     getSendHexDataFeatureFlagState: (s) => `mockSendHexDataFeatureFlagState:${s}`,
     getSendAmount: (s) => `mockAmount:${s}`,
     getSendTo: (s) => `mockTo:${s}`,
+    getSendToNickname: (s) => `mockToNickname:${s}`,
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFrom:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
+    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
+    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+  },
+  './send-content/add-recipient/add-recipient.selectors': {
+    getTokens: s => `mockTokens:${s}`,
   },
   '../../selectors/selectors': {
+    getAddressBook: (s) => `mockAddressBook:${s}`,
     getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
   },
   '../../store/actions': actionSpies,
@@ -83,6 +90,11 @@ describe('send container', () => {
         tokenContract: 'mockTokenContract:mockState',
         tokenToFiatRate: 'mockTokenToFiatRate:mockState',
         qrCodeData: 'mockQrCodeData:mockState',
+        tokens: 'mockTokens:mockState',
+        ensResolution: 'mockSendEnsResolution:mockState',
+        ensResolutionError: 'mockSendEnsResolutionError:mockState',
+        toNickname: 'mockToNickname:mockState',
+        addressBook: 'mockAddressBook:mockState',
       })
     })
 

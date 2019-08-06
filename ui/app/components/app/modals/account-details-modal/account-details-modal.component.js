@@ -72,14 +72,14 @@ export default class AccountDetailsModal extends Component {
         </Button>
 
         {exportPrivateKeyFeatureEnabled
-            ? <Button
-                type="secondary"
-                className="account-modal__button"
-                onClick={() => showExportPrivateKeyModal()}
-              >
-                {this.context.t('exportPrivateKey')}
-              </Button>
-            : null
+          ? <Button
+            type="secondary"
+            className="account-modal__button"
+            onClick={() => showExportPrivateKeyModal()}
+          >
+            {this.context.t('exportPrivateKey')}
+          </Button>
+          : null
         }
       </AccountModalContainer>
     )

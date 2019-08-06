@@ -1,6 +1,9 @@
 npm-debug.log
+yarn-error.log
 node_modules
-yarn.lock
+package-lock.json
+
+audit.json
 
 app/bower_components
 test/bower_components
@@ -10,6 +13,8 @@ package
 .idea
 .vscode
 .sublime-project
+
+*.bak
 
 # VIM
 *.swp
@@ -24,7 +29,6 @@ app/.DS_Store
 coverage/
 dist
 builds/
-disc/
 builds.zip
 docs/jsdocs
 

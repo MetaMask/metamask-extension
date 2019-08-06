@@ -18,7 +18,7 @@ export default class SendRowWarningMessage extends Component {
     const warningMessage = warningType in warnings && warnings[warningType]
 
     return (
-        warningMessage
+      warningMessage
         ? <div className="send-v2__warning">{this.context.t(warningMessage)}</div>
         : null
     )

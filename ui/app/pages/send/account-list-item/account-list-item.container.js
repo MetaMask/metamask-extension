@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import {
-    getConversionRate,
-    getCurrentCurrency,
-    getNativeCurrency,
+  getConversionRate,
+  getCurrentCurrency,
+  getNativeCurrency,
 } from '../send.selectors.js'
 import {
   getIsMainnet,

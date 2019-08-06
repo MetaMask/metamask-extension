@@ -39,12 +39,12 @@ export default class NetworkDisplay extends Component {
     return networkClass
       ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
       : <div
-          className="i fa fa-question-circle fa-med"
-          style={{
-            margin: '0 4px',
-            color: 'rgb(125, 128, 130)',
-          }}
-        />
+        className="i fa fa-question-circle fa-med"
+        style={{
+          margin: '0 4px',
+          color: 'rgb(125, 128, 130)',
+        }}
+      />
   }
 
   render () {
@@ -62,12 +62,12 @@ export default class NetworkDisplay extends Component {
           networkClass
             ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
             : <div
-                className="i fa fa-question-circle fa-med"
-                style={{
-                  margin: '0 4px',
-                  color: 'rgb(125, 128, 130)',
-                }}
-              />
+              className="i fa fa-question-circle fa-med"
+              style={{
+                margin: '0 4px',
+                color: 'rgb(125, 128, 130)',
+              }}
+            />
         }
         <div className="network-display__name">
           { type === 'rpc' && nickname ? nickname : this.context.t(type) }

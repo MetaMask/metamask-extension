@@ -67,8 +67,8 @@ TokenList.prototype.render = function () {
         },
         onClick: () => {
           global.platform.openWindow({
-          url: `https://ethplorer.io/address/${userAddress}`,
-        })
+            url: `https://ethplorer.io/address/${userAddress}`,
+          })
         },
       }, this.context.t('here')),
     ])
@@ -125,13 +125,13 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker.on('error', this.showError)
 
   this.tracker.updateBalances()
-  .then(() => {
-    this.updateBalances(this.tracker.serialize())
-  })
-  .catch((reason) => {
-    log.error(`Problem updating balances`, reason)
-    this.setState({ isLoading: false })
-  })
+    .then(() => {
+      this.updateBalances(this.tracker.serialize())
+    })
+    .catch((reason) => {
+      log.error(`Problem updating balances`, reason)
+      this.setState({ isLoading: false })
+    })
 }
 
 TokenList.prototype.componentDidUpdate = function (prevProps) {

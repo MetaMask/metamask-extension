@@ -1235,7 +1235,7 @@
   },
   "pending": {
     "message": "pendiente"
-  },  
+  },
   "popularTokens": {
     "message": "Tokens Corrientes"
   },
@@ -1504,7 +1504,7 @@
     "message": "Tu frase semilla privada"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":"No hubo precio de gas al agilizar"
+    "message": "No hubo precio de gas al agilizar"
   },
   "currencyConversion": {
     "message": "Cambio de Monedas"

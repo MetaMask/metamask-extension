@@ -26,6 +26,10 @@
 
     .app-header__metafox-logo {
       margin-bottom: 40px;
+
+      @media screen and (max-width: $break-small) {
+        margin-bottom: 0px;
+      }
     }
   }
 

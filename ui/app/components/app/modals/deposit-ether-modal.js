@@ -87,8 +87,8 @@ DepositEtherModal.prototype.renderRow = function ({
   }
 
   return h('div', {
-      className: className || 'deposit-ether-modal__buy-row',
-    }, [
+    className: className || 'deposit-ether-modal__buy-row',
+  }, [
 
     onBackClick && showBackButton && h('div.deposit-ether-modal__buy-row__back', {
       onClick: onBackClick,
@@ -100,22 +100,22 @@ DepositEtherModal.prototype.renderRow = function ({
 
     h('div.deposit-ether-modal__buy-row__logo-container', [logo]),
 
-      h('div.deposit-ether-modal__buy-row__description', [
+    h('div.deposit-ether-modal__buy-row__description', [
 
-        !hideTitle && h('div.deposit-ether-modal__buy-row__description__title', [title]),
+      !hideTitle && h('div.deposit-ether-modal__buy-row__description__title', [title]),
 
-        h('div.deposit-ether-modal__buy-row__description__text', [text]),
+      h('div.deposit-ether-modal__buy-row__description__text', [text]),
 
-      ]),
+    ]),
 
-      !hideButton && h('div.deposit-ether-modal__buy-row__button', [
-        h(Button, {
-          type: 'secondary',
-          className: 'deposit-ether-modal__deposit-button',
-          large: true,
-          onClick: onButtonClick,
-        }, [buttonLabel]),
-      ]),
+    !hideButton && h('div.deposit-ether-modal__buy-row__button', [
+      h(Button, {
+        type: 'secondary',
+        className: 'deposit-ether-modal__deposit-button',
+        large: true,
+        onClick: onButtonClick,
+      }, [buttonLabel]),
+    ]),
 
   ])
 }

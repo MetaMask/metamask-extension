@@ -47,14 +47,14 @@ class DetectTokensController {
       }
       tokensToDetect.forEach((tokenAddress, index) => {
         const balance = result[index]
-        if (!balance.isZero()) {
+        if (balance && !balance.isZero()) {
           this._preferences.addToken(tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals)
         }
       })
     })
   }
 
-   /**
+  /**
    * Find if selectedAddress has tokens with contract in contractAddress.
    *
    * @param {string} contractAddress Hex address of the token contract to explore.

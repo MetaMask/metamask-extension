@@ -61,9 +61,6 @@ window.getCleanAppState = function () {
   // append additional information
   state.version = global.platform.getVersion()
   state.browser = window.navigator.userAgent
-  // ensure seedWords are not included
-  if (state.metamask) delete state.metamask.seedWords
-  if (state.appState.currentView) delete state.appState.currentView.seedWords
   return state
 }
 
@@ -72,7 +69,7 @@ window.logStateString = function (cb) {
   global.platform.getPlatformInfo((err, platform) => {
     if (err) return cb(err)
     state.platform = platform
-    const stateString = JSON.stringify(state, removeSeedWords, 2)
+    const stateString = JSON.stringify(state, null, 2)
     cb(null, stateString)
   })
 }
@@ -88,8 +85,4 @@ window.logState = function (toClipboard) {
       console.log(result)
     }
   })
-}
-
-function removeSeedWords (key, value) {
-  return key === 'seedWords' ? undefined : value
 }

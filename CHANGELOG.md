@@ -2,6 +2,15 @@
 
 ## Current Develop Branch
 
+## 7.0.0 Fri Aug 02 2019
+- [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI
+- [#6874](https://github.com/MetaMask/metamask-extension/pull/6928): Allows skipping of seed phrase challenge during onboarding, and completing it at a later time
+- [#6900](https://github.com/MetaMask/metamask-extension/pull/6900): Prevent opening of asset dropdown if no tokens in account
+- [#6904](https://github.com/MetaMask/metamask-extension/pull/6904): Set privacy mode as default
+- [#6914](https://github.com/MetaMask/metamask-extension/pull/6914): Adds Address Book feature
+- [#6928](https://github.com/MetaMask/metamask-extension/pull/6928): Disable Copy Tx ID and block explorer link for transactions without hash
+- [#6967](https://github.com/MetaMask/metamask-extension/pull/6967): Fix mobile sync
+
 ## 6.7.3 Thu Jul 18 2019
 
 - [#6888](https://github.com/MetaMask/metamask-extension/pull/6888): Fix bug with resubmitting unsigned transactions.
@@ -10,12 +19,12 @@
 
 - [#6713](https://github.com/MetaMask/metamask-extension/pull/6713): * Normalize and Validate txParams in TransactionStateManager.addTx too
 - [#6759](https://github.com/MetaMask/metamask-extension/pull/6759): Update to Node.js v10
-- [#Fixes #6694](https://github.com/MetaMask/metamask-extension/pull/Fixes #6694): Fixes #6694
+- [#6694](https://github.com/MetaMask/metamask-extension/pull/6694): Fixes #6694
 - [#6743](https://github.com/MetaMask/metamask-extension/pull/6743): * Add tests for ImportWithSeedPhrase#parseSeedPhrase
-- [#Fixes #6740](https://github.com/MetaMask/metamask-extension/pull/Fixes #6740): Fixes #6740
-- [#Fixes #6741](https://github.com/MetaMask/metamask-extension/pull/Fixes #6741): Fixes #6741
+- [#6740](https://github.com/MetaMask/metamask-extension/pull/6740): Fixes #6740
+- [#6741](https://github.com/MetaMask/metamask-extension/pull/6741): Fixes #6741
 - [#6761](https://github.com/MetaMask/metamask-extension/pull/6761): Fixes #6760, correct PropTypes for nextRoute
-- [#6754](https://github.com/MetaMask/metamask-extension/pull/6754): There is currently a bug in chrome that prevents reading source maps
+- [#6754](https://github.com/MetaMask/metamask-extension/pull/6754): Use inline source maps in development
 - [#6589](https://github.com/MetaMask/metamask-extension/pull/6589): Document hotfix protocol
 - [#6738](https://github.com/MetaMask/metamask-extension/pull/6738): Add codeowner for package-lock-old.json package-lock.json package.json packagelock-old.json files
 - [#6648](https://github.com/MetaMask/metamask-extension/pull/6648): Add loading view to notification.html
@@ -28,11 +37,12 @@
 
 - [#6623](https://github.com/MetaMask/metamask-extension/pull/6623): Improve contract method data fetching (#6623)
 - [#6551](https://github.com/MetaMask/metamask-extension/pull/6551): Adds 4byte registry fallback to getMethodData() (#6435)
-- [#6718, #6650](https://github.com/MetaMask/metamask-extension/pull/6718, #6650): Add delete to custom RPC form
+- [#6718](https://github.com/MetaMask/metamask-extension/pull/6718): Add delete to custom RPC form
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
 - [#6714](https://github.com/MetaMask/metamask-extension/pull/6714): Wrap smaller custom block explorer url text
 - [#6706](https://github.com/MetaMask/metamask-extension/pull/6706): Pin ethereumjs-tx
 - [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+- [#6775](https://github.com/MetaMask/metamask-extension/pull/6775): Started adding visual documentation of MetaMask plugin components with the account menu component first
 
 ## 6.6.2 Fri Jun 07 2019
 

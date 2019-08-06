@@ -10,6 +10,41 @@ The `metamask-background` describes the file at `app/scripts/background.js`, whi
 
 When a new site is visited, the WebExtension creates a new `ContentScript` in that page's context, which can be seen at `app/scripts/contentscript.js`. This script represents a per-page setup process, which creates the per-page `web3` api, connects it to the background script via the Port API (wrapped in a [stream abstraction](https://github.com/substack/stream-handbook)), and injected into the DOM before anything loads.
 
+You can choose to use this streaming interface to connect to the MetaMask controller over any transport you can wrap with a stream, by connecting it to the [metamask-inpage-provider](https://github.com/MetaMask/metamask-inpage-provider), but you can also construct a provider per domain like this:
+
+```javascript
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
+
+/**
+* returns a provider restricted to the requesting domain
+**/
+function incomingConnection (domain, getSiteMetadata) {
+  const engine = metamaskController.setupProviderEngine(domain, getSiteMetadata)
+  const provider = providerFromEngine(engine)
+  return provider
+}
+```
+
+Please note if you take this approach, you are responsible for cleaning up the filters when the page is closed:
+
+```
+const filterMiddleware = engine._middleware.filter(mid => mid.name === 'filterMiddleware')[0]
+filterMiddleware.destroy()
+```
+
+### getSiteMetadata()
+
+This method is used to enhance our confirmation screens with images and text representing the requesting domain.
+
+It should return a promise that resolves with an object with the following properties:
+
+- `name`: The requesting site's name.
+- `icon`: A URI representing the site's logo.
+
+### Using the Streams Interface
+
+Only use this if you intend to construct the [metamask-inpage-provider](https://github.com/MetaMask/metamask-inpage-provider) over a stream!
+
 The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [port-stream](../app/scripts/lib/port-stream.js) is just a thin wrapper around the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), and a similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
 
 ### The MetaMask Controller
@@ -52,7 +87,7 @@ Returns a JavaScript object filled with callback functions representing every op
 
 The MetaMask UI is essentially just a website that can be configured by passing it the API and state subscriptions from above. Anyone could make a UI that consumes these, effectively reskinning MetaMask.
 
-You can see this in action in our file [ui/index.js](https://github.com/MetaMask/metamask-extension/blob/master/ui/index.js). There you can see an argument being passed in named `accountManager`, which is essentially a MetaMask controller (forgive its really outdated parameter name!). With access to that object, the UI is able to initialize a whole React/Redux app that relies on this API for its account/blockchain-related/persistent states.
+You can see this in action in our file [ui/index.js](https://github.com/MetaMask/metamask-extension/blob/master/ui/index.js). There you can see the background connection being passed in, which is essentially the MetaMask controller. With access to that object, the UI is able to initialize a whole React/Redux app that relies on this API for its account/blockchain-related/persistent states.
 
 ## Putting it Together
 
@@ -64,7 +99,6 @@ In that file, there's a lot going on, so it's maybe worth focusing on our MetaMa
 const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
-    unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
     // initial state
     initState,

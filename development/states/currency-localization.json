@@ -25,7 +25,6 @@
     },
     "cachedBalances": {},
     "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 19855,
     "conversionDate": 1489013762,
     "noActiveNotices": true,
@@ -116,7 +115,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "showFiatInTestnets": true
     },
-    "completedUiMigration": true,
     "frequentRpcListDetail": []
   },
   "appState": {
@@ -179,7 +177,6 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
-    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",

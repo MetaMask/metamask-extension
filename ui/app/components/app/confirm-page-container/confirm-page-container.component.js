@@ -106,16 +106,16 @@ export default class ConfirmPageContainer extends Component {
     return (
       <div className="page-container">
         <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
+          totalTx={totalTx}
+          positionOfCurrentTx={positionOfCurrentTx}
+          nextTxId={nextTxId}
+          prevTxId={prevTxId}
+          showNavigation={showNavigation}
+          onNextTx={(txId) => onNextTx(txId)}
+          firstTx={firstTx}
+          lastTx={lastTx}
+          ofText={ofText}
+          requestsWaitingText={requestsWaitingText}
         />
         <ConfirmPageContainerHeader
           showEdit={showEdit}

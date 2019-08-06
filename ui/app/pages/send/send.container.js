@@ -24,9 +24,16 @@ import {
   getSendHexDataFeatureFlagState,
   getSendFromObject,
   getSendTo,
+  getSendToNickname,
   getTokenBalance,
   getQrCodeData,
+  getSendEnsResolution,
+  getSendEnsResolutionError,
 } from './send.selectors'
+import {
+  getAddressBook,
+} from '../../selectors/selectors'
+import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
   updateSendTokenBalance,
@@ -34,6 +41,8 @@ import {
   setGasTotal,
   showQrScanner,
   qrCodeDetected,
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
 } from '../../store/actions'
 import {
   resetSendState,
@@ -45,6 +54,9 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
+import {
+  isValidENSAddress,
+} from '../../helpers/utils/util'
 
 import {
   SEND_ROUTE,
@@ -72,11 +84,16 @@ function mapStateToProps (state) {
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
+    ensResolution: getSendEnsResolution(state),
+    ensResolutionError: getSendEnsResolutionError(state),
     to: getSendTo(state),
+    toNickname: getSendToNickname(state),
+    tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
     qrCodeData: getQrCodeData(state),
+    addressBook: getAddressBook(state),
   }
 }
 
@@ -111,5 +128,15 @@ function mapDispatchToProps (dispatch) {
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
+    updateSendEnsResolution: (ensResolution) => dispatch(updateSendEnsResolution(ensResolution)),
+    updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
+    updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
+      if (isValidENSAddress(toNickname)) {
+        const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
+        if (!addressBookEntry.name !== toNickname) {
+          dispatch(updateSendTo(to, addressBookEntry.name || ''))
+        }
+      }
+    },
   }
 }

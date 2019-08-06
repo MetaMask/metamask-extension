@@ -28,6 +28,7 @@ const PreferencesController = require('./controllers/preferences')
 const AppStateController = require('./controllers/app-state')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
+const OnboardingController = require('./controllers/onboarding')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -68,7 +69,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @constructor
    * @param {Object} opts
    */
-   constructor (opts) {
+  constructor (opts) {
     super()
 
     this.defaultMaxListeners = 20
@@ -156,6 +157,10 @@ module.exports = class MetamaskController extends EventEmitter {
       accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       initState: initState.CachedBalancesController,
+    })
+
+    this.onboardingController = new OnboardingController({
+      initState: initState.OnboardingController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -262,6 +267,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      OnboardingController: this.onboardingController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -283,6 +289,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      OnboardingController: this.onboardingController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -362,9 +369,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
-//=============================================================================
-// EXPOSED TO THE UI SUBSYSTEM
-//=============================================================================
+  //=============================================================================
+  // EXPOSED TO THE UI SUBSYSTEM
+  //=============================================================================
 
   /**
    * The metamask-state of the various controllers, made available to the UI
@@ -398,6 +405,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const txController = this.txController
     const networkController = this.networkController
     const providerApprovalController = this.providerApprovalController
+    const onboardingController = this.onboardingController
 
     return {
       // etc
@@ -420,9 +428,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
-      placeSeedWords: this.placeSeedWords.bind(this),
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
-      clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
@@ -454,15 +460,16 @@ module.exports = class MetamaskController extends EventEmitter {
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
-      completeUiMigration: nodeify(preferencesController.completeUiMigration, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
+      unsetMigratedPrivacyMode: nodeify(preferencesController.unsetMigratedPrivacyMode, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: this.addressBookController.set.bind(this.addressBookController),
+      removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
 
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
@@ -500,14 +507,18 @@ module.exports = class MetamaskController extends EventEmitter {
       // provider approval
       approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
       rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
+      forceApproveProviderRequestByOrigin: providerApprovalController.forceApproveProviderRequestByOrigin.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
+
+      // onboarding controller
+      setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
     }
   }
 
 
-//=============================================================================
-// VAULT / KEYRING RELATED METHODS
-//=============================================================================
+  //=============================================================================
+  // VAULT / KEYRING RELATED METHODS
+  //=============================================================================
 
   /**
    * Creates a new Vault and create a new keychain.
@@ -617,7 +628,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * with the mobile client for syncing purposes
    * @returns Promise<Object> Parts of the state that we want to syncx
    */
-   async fetchInfoToSync () {
+  async fetchInfoToSync () {
     // Preferences
     const {
       accountTokens,
@@ -746,14 +757,14 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
     let accounts = []
     switch (page) {
-        case -1:
-          accounts = await keyring.getPreviousPage()
-          break
-        case 1:
-          accounts = await keyring.getNextPage()
-          break
-        default:
-          accounts = await keyring.getFirstPage()
+      case -1:
+        accounts = await keyring.getPreviousPage()
+        break
+      case 1:
+        accounts = await keyring.getNextPage()
+        break
+      default:
+        accounts = await keyring.getFirstPage()
     }
 
     // Merge with existing accounts
@@ -810,7 +821,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
-   }
+  }
 
 
   //
@@ -846,26 +857,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds the current vault's seed words to the UI's state tree.
-   *
-   * Used when creating a first vault, to allow confirmation.
-   * Also used when revealing the seed words in the confirmation view.
-   *
-   * @param {Function} cb - A callback called on completion.
-   */
-  placeSeedWords (cb) {
-
-    this.verifySeedPhrase()
-      .then((seedWords) => {
-        this.preferencesController.setSeedWords(seedWords)
-        return cb(null, seedWords)
-      })
-      .catch((err) => {
-        return cb(err)
-      })
-  }
-
-  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -896,18 +887,6 @@ module.exports = class MetamaskController extends EventEmitter {
       log.error(err.message)
       throw err
     }
-  }
-
-  /**
-   * Remove the primary account seed phrase from the UI's state tree.
-   *
-   * The seed phrase remains available in the background process.
-   *
-   * @param {function} cb Callback function called with the current address.
-   */
-  clearSeedWordCache (cb) {
-    this.preferencesController.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
   }
 
   /**
@@ -1009,16 +988,16 @@ module.exports = class MetamaskController extends EventEmitter {
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
     return this.messageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
+      .then((cleanMsgParams) => {
       // signs the message
-      return this.keyringController.signMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
+        return this.keyringController.signMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
-      this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
+        this.messageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
   }
 
   /**
@@ -1067,16 +1046,16 @@ module.exports = class MetamaskController extends EventEmitter {
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
     return this.personalMessageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
+      .then((cleanMsgParams) => {
       // signs the message
-      return this.keyringController.signPersonalMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
+        return this.keyringController.signPersonalMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
+        this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
   }
 
   /**
@@ -1176,7 +1155,7 @@ module.exports = class MetamaskController extends EventEmitter {
   restoreOldVaultAccounts (migratorOutput) {
     const { serialized } = migratorOutput
     return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
+      .then(() => migratorOutput)
   }
 
   /**
@@ -1219,9 +1198,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-//=============================================================================
-// END (VAULT / KEYRING RELATED METHODS)
-//=============================================================================
+  //=============================================================================
+  // END (VAULT / KEYRING RELATED METHODS)
+  //=============================================================================
 
   /**
    * Allows a user to try to speed up a transaction by retrying it
@@ -1270,9 +1249,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-//=============================================================================
-// PASSWORD MANAGEMENT
-//=============================================================================
+  //=============================================================================
+  // PASSWORD MANAGEMENT
+  //=============================================================================
 
   /**
    * Allows a user to begin the seed phrase recovery process.
@@ -1294,9 +1273,9 @@ module.exports = class MetamaskController extends EventEmitter {
     cb()
   }
 
-//=============================================================================
-// SETUP
-//=============================================================================
+  //=============================================================================
+  // SETUP
+  //=============================================================================
 
   /**
    * Used to create a multiplexed stream for connecting to an untrusted context
@@ -1319,6 +1298,8 @@ module.exports = class MetamaskController extends EventEmitter {
     const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
     this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
     this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
+
+    this.providerApprovalController.on(`forceResolvedRequest:${originDomain}`, publicApi.forceReloadSite)
   }
 
   /**
@@ -1392,6 +1373,32 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} origin - The URI of the requesting resource.
    */
   setupProviderConnection (outStream, origin, publicApi) {
+    const getSiteMetadata = publicApi && publicApi.getSiteMetadata
+    const engine = this.setupProviderEngine(origin, getSiteMetadata)
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // cleanup filter polyfill middleware
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy()
+          }
+        })
+        if (err) log.error(err)
+      }
+    )
+  }
+
+  /**
+   * A method for creating a provider that is safely restricted for the requesting domain.
+   **/
+  setupProviderEngine (origin, getSiteMetadata) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1399,6 +1406,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
+
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
     subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
@@ -1414,24 +1422,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // requestAccounts
     engine.push(this.providerApprovalController.createMiddleware({
       origin,
-      getSiteMetadata: publicApi && publicApi.getSiteMetadata,
+      getSiteMetadata,
     }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
-
-    // setup connection
-    const providerStream = createEngineStream({ engine })
-
-    pump(
-      outStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // cleanup filter polyfill middleware
-        filterMiddleware.destroy()
-        if (err) log.error(err)
-      }
-    )
+    return engine
   }
 
   /**
@@ -1485,6 +1480,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const publicApi = {
       // wrap with an await remote
+      forceReloadSite: async () => {
+        const remote = await getRemote()
+        return await pify(remote.forceReloadSite)()
+      },
       getSiteMetadata: async () => {
         const remote = await getRemote()
         return await pify(remote.getSiteMetadata)()
@@ -1551,13 +1550,13 @@ module.exports = class MetamaskController extends EventEmitter {
         return GWEI_BN
       }
       return block.gasPrices
-      .map(hexPrefix => hexPrefix.substr(2))
-      .map(hex => new BN(hex, 16))
-      .sort((a, b) => {
-        return a.gt(b) ? 1 : -1
-      })[0]
+        .map(hexPrefix => hexPrefix.substr(2))
+        .map(hex => new BN(hex, 16))
+        .sort((a, b) => {
+          return a.gt(b) ? 1 : -1
+        })[0]
     })
-    .map(number => number.div(GWEI_BN).toNumber())
+      .map(number => number.div(GWEI_BN).toNumber())
 
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
@@ -1577,9 +1576,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return pendingNonce
   }
 
-//=============================================================================
-// CONFIG
-//=============================================================================
+  //=============================================================================
+  // CONFIG
+  //=============================================================================
 
   // Log blocks
 
@@ -1774,7 +1773,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.tokenRatesController.isActive = active
   }
 
- /**
+  /**
   * Creates RPC engine middleware for processing eth_signTypedData requests
   *
   * @param {Object} req - request object
@@ -1798,3 +1797,4 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.keyringController.setLocked()
   }
 }
+

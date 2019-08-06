@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../components/ui/button'
+import MetaFoxLogo from '../../../components/ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class EndOfFlowScreen extends PureComponent {
@@ -21,19 +22,7 @@ export default class EndOfFlowScreen extends PureComponent {
 
     return (
       <div className="end-of-flow">
-        <div className="app-header__logo-container">
-          <img
-            className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-            src="/images/logo/metamask-logo-horizontal.svg"
-            height={30}
-          />
-          <img
-            className="app-header__metafox-logo app-header__metafox-logo--icon"
-            src="/images/logo/metamask-fox.svg"
-            height={42}
-            width={42}
-          />
-        </div>
+        <MetaFoxLogo />
         <div className="end-of-flow__emoji">🎉</div>
         <div className="first-time-flow__header">
           { t('congratulations') }
@@ -66,9 +55,9 @@ export default class EndOfFlowScreen extends PureComponent {
             rel="noopener noreferrer"
           >
             <span className="first-time-flow__link-text">
-              Learn More
+              {t('endOfFlowMessage9')}
             </span>
-          </a>.
+          </a>
         </div>
         <Button
           type="primary"
@@ -85,7 +74,7 @@ export default class EndOfFlowScreen extends PureComponent {
             history.push(DEFAULT_ROUTE)
           }}
         >
-          { 'All Done' }
+          { t('endOfFlowMessage10') }
         </Button>
       </div>
     )

@@ -131,7 +131,7 @@ describe('ConfirmSeedPhrase Component', () => {
     assert.deepEqual(root.state().pendingSeedIndices, [2, 0, 1])
   })
 
-  it('should submit correctly', () => {
+  it('should submit correctly', async () => {
     const originalSeed = ['鼠', '牛', '虎', '兔', '龍', '蛇', '馬', '羊', '猴', '雞', '狗', '豬']
     const metricsEventSpy = sinon.spy()
     const pushSpy = sinon.spy()
@@ -139,6 +139,7 @@ describe('ConfirmSeedPhrase Component', () => {
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
         history: { push: pushSpy },
+        setSeedPhraseBackedUp: () => Promise.resolve(),
       },
       {
         metricsEvent: metricsEventSpy,
@@ -157,6 +158,9 @@ describe('ConfirmSeedPhrase Component', () => {
     root.update()
 
     root.find('.first-time-flow__button').simulate('click')
+
+    await (new Promise(resolve => setTimeout(resolve, 100)))
+
     assert.deepEqual(metricsEventSpy.args[0][0], {
       eventOpts: {
         category: 'Onboarding',

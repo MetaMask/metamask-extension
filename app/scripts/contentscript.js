@@ -10,7 +10,7 @@ const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
-const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
+const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -114,6 +114,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 
 async function setupPublicApi (outStream) {
   const api = {
+    forceReloadSite: (cb) => cb(null, forceReloadSite()),
     getSiteMetadata: (cb) => cb(null, getSiteMetadata()),
   }
   const dnode = Dnode(api)
@@ -305,4 +306,11 @@ async function domIsReady () {
   if (['interactive', 'complete'].includes(document.readyState)) return
   // wait for load
   await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+}
+
+/**
+ * Reloads the site
+ */
+function forceReloadSite () {
+  window.location.reload()
 }

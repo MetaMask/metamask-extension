@@ -1,9 +1,4 @@
 {
-  "confirmTransaction": {
-    "txData": {
-      "id": 4768706228115573
-    }
-  },
   "metamask": {
     "completedOnboarding": true,
     "isInitialized": true,
@@ -30,8 +25,6 @@
     },
     "cachedBalances": {},
     "assetImages": {},
-    "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,
     "noActiveNotices": true,
@@ -158,7 +151,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "showFiatInTestnets": true
     },
-    "completedUiMigration": true,
     "frequentRpcListDetail": []
   },
   "appState": {
@@ -190,7 +182,9 @@
     "warnings": {}
   },
   "confirmTransaction": {
-    "txData": {},
+    "txData": {
+      "id": 4768706228115573
+    },
     "tokenData": {},
     "methodData": {},
     "tokenProps": {
@@ -227,7 +221,6 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
-    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",

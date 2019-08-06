@@ -24,8 +24,6 @@
       }
     },
     "cachedBalances": {},
-    "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,
     "noActiveNotices": true,
@@ -157,7 +155,6 @@
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true
     },
-    "completedUiMigration": true,
     "frequentRpcListDetail": []
   },
   "appState": {
@@ -229,7 +226,6 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
-    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",

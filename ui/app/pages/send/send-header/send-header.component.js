@@ -24,8 +24,10 @@ export default class SendHeader extends Component {
   render () {
     return (
       <PageContainerHeader
+        className="send__header"
         onClose={() => this.onClose()}
         title={this.context.t(this.props.titleKey)}
+        headerCloseText={this.context.t('cancel')}
       />
     )
   }

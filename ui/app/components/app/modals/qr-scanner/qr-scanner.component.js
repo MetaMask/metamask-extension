@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { BrowserQRCodeReader } from '@zxing/library'
-import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
+import 'webrtc-adapter'
 import Spinner from '../../../ui/spinner'
 import WebcamUtils from '../../../../../lib/webcam-utils'
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component'
@@ -75,23 +75,23 @@ export default class QrScanner extends Component {
         clearTimeout(this.permissionChecker)
         this.checkPermisisions()
         this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
-        .then(content => {
-          const result = this.parseContent(content.text)
-          if (result.type !== 'unknown') {
-            this.props.qrCodeDetected(result)
-            this.stopAndClose()
-          } else {
-            this.setState({msg: this.context.t('unknownQrCode')})
-          }
-        })
-        .catch(err => {
-          if (err && err.name === 'NotAllowedError') {
-            this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
-            clearTimeout(this.permissionChecker)
-            this.needsToReinit = true
-            this.checkPermisisions()
-          }
-        })
+          .then(content => {
+            const result = this.parseContent(content.text)
+            if (result.type !== 'unknown') {
+              this.props.qrCodeDetected(result)
+              this.stopAndClose()
+            } else {
+              this.setState({msg: this.context.t('unknownQrCode')})
+            }
+          })
+          .catch(err => {
+            if (err && err.name === 'NotAllowedError') {
+              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+              clearTimeout(this.permissionChecker)
+              this.needsToReinit = true
+              this.checkPermisisions()
+            }
+          })
       }).catch(err => {
         console.error('[QR-SCANNER]: getVideoInputDevices threw an exception: ', err)
       })

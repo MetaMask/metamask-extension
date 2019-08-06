@@ -341,44 +341,44 @@ describe('gas-modal-page-container container', () => {
   })
 
   describe('mergeProps', () => {
-      let stateProps
-      let dispatchProps
-      let ownProps
+    let stateProps
+    let dispatchProps
+    let ownProps
 
-      beforeEach(() => {
-        stateProps = {
-          gasPriceButtonGroupProps: {
-            someGasPriceButtonGroupProp: 'foo',
-            anotherGasPriceButtonGroupProp: 'bar',
-          },
-          isConfirm: true,
-          someOtherStateProp: 'baz',
-          transaction: {},
-        }
-        dispatchProps = {
-          updateCustomGasPrice: sinon.spy(),
-          hideGasButtonGroup: sinon.spy(),
-          setGasData: sinon.spy(),
-          updateConfirmTxGasAndCalculate: sinon.spy(),
-          someOtherDispatchProp: sinon.spy(),
-          createSpeedUpTransaction: sinon.spy(),
-          hideSidebar: sinon.spy(),
-          hideModal: sinon.spy(),
-          cancelAndClose: sinon.spy(),
-        }
-        ownProps = { someOwnProp: 123 }
-      })
+    beforeEach(() => {
+      stateProps = {
+        gasPriceButtonGroupProps: {
+          someGasPriceButtonGroupProp: 'foo',
+          anotherGasPriceButtonGroupProp: 'bar',
+        },
+        isConfirm: true,
+        someOtherStateProp: 'baz',
+        transaction: {},
+      }
+      dispatchProps = {
+        updateCustomGasPrice: sinon.spy(),
+        hideGasButtonGroup: sinon.spy(),
+        setGasData: sinon.spy(),
+        updateConfirmTxGasAndCalculate: sinon.spy(),
+        someOtherDispatchProp: sinon.spy(),
+        createSpeedUpTransaction: sinon.spy(),
+        hideSidebar: sinon.spy(),
+        hideModal: sinon.spy(),
+        cancelAndClose: sinon.spy(),
+      }
+      ownProps = { someOwnProp: 123 }
+    })
 
-      afterEach(() => {
-        dispatchProps.updateCustomGasPrice.resetHistory()
-        dispatchProps.hideGasButtonGroup.resetHistory()
-        dispatchProps.setGasData.resetHistory()
-        dispatchProps.updateConfirmTxGasAndCalculate.resetHistory()
-        dispatchProps.someOtherDispatchProp.resetHistory()
-        dispatchProps.createSpeedUpTransaction.resetHistory()
-        dispatchProps.hideSidebar.resetHistory()
-        dispatchProps.hideModal.resetHistory()
-      })
+    afterEach(() => {
+      dispatchProps.updateCustomGasPrice.resetHistory()
+      dispatchProps.hideGasButtonGroup.resetHistory()
+      dispatchProps.setGasData.resetHistory()
+      dispatchProps.updateConfirmTxGasAndCalculate.resetHistory()
+      dispatchProps.someOtherDispatchProp.resetHistory()
+      dispatchProps.createSpeedUpTransaction.resetHistory()
+      dispatchProps.hideSidebar.resetHistory()
+      dispatchProps.hideModal.resetHistory()
+    })
     it('should return the expected props when isConfirm is true', () => {
       const result = mergeProps(stateProps, dispatchProps, ownProps)
 

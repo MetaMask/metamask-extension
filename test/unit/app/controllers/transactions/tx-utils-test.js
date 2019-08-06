@@ -93,6 +93,6 @@ describe('txUtils', function () {
       // should run
       txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d'
       txUtils.validateFrom(txParams)
-      })
+    })
   })
 })

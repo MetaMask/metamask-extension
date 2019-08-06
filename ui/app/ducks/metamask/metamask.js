@@ -39,12 +39,13 @@ function reduceMetamask (state, action) {
       editingTransactionId: null,
       forceGasMin: null,
       toNickname: '',
+      ensResolution: null,
+      ensResolutionError: '',
     },
     coinOptions: {},
     useBlockie: false,
     featureFlags: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
-    isRevealingSeedWords: false,
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
@@ -59,13 +60,6 @@ function reduceMetamask (state, action) {
   }, state.metamask)
 
   switch (action.type) {
-
-    case actions.SHOW_ACCOUNTS_PAGE:
-      newState = extend(metamaskState, {
-        isRevealingSeedWords: false,
-      })
-      delete newState.seedWords
-      return newState
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
@@ -128,20 +122,12 @@ function reduceMetamask (state, action) {
         },
       })
 
-
-    case actions.SHOW_NEW_VAULT_SEED:
-      return extend(metamaskState, {
-        isRevealingSeedWords: true,
-        seedWords: action.value,
-      })
-
     case actions.CLEAR_SEED_WORD_CACHE:
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
         selectedAddress: action.value,
       })
-      delete newState.seedWords
       return newState
 
     case actions.SHOW_ACCOUNT_DETAIL:
@@ -150,7 +136,6 @@ function reduceMetamask (state, action) {
         isInitialized: true,
         selectedAddress: action.value,
       })
-      delete newState.seedWords
       return newState
 
     case actions.SET_SELECTED_TOKEN:
@@ -290,6 +275,24 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND_ENS_RESOLUTION:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ensResolution: action.payload,
+          ensResolutionError: '',
+        },
+      })
+
+    case actions.UPDATE_SEND_ENS_RESOLUTION_ERROR:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ensResolution: null,
+          ensResolutionError: action.payload,
+        },
+      })
+
     case actions.CLEAR_SEND:
       return extend(metamaskState, {
         send: {
@@ -400,12 +403,6 @@ function reduceMetamask (state, action) {
     case actions.COMPLETE_ONBOARDING: {
       return extend(metamaskState, {
         completedOnboarding: true,
-      })
-    }
-
-    case actions.COMPLETE_UI_MIGRATION: {
-      return extend(metamaskState, {
-        completedUiMigration: true,
       })
     }
 

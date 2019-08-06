@@ -38,9 +38,17 @@ html {
   display: flex;
 }
 
-input:focus,
-textarea:focus {
-  outline: none;
+.mouse-user-styles {
+  button:focus,
+  input:focus,
+  textarea:focus,
+  .unit-input__input,
+  .account-list-item__account-primary-balance,
+  .account-list-item__input,
+  .currency-display__input
+   {
+    outline: none;
+  }
 }
 
 /* stylelint-disable */
@@ -121,4 +129,15 @@ input.form-control {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.pinned-to-bottom {
+  position: absolute;
+  bottom: 0px;
+}
+
+.pinned-to-bottom-right {
+  position: absolute;
+  bottom: 0px;
+  right: 0;
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import c from 'classnames'
 
 export default class PageContainerHeader extends Component {
   static propTypes = {
@@ -13,6 +13,7 @@ export default class PageContainerHeader extends Component {
     backButtonString: PropTypes.string,
     tabs: PropTypes.node,
     headerCloseText: PropTypes.string,
+    className: PropTypes.string,
   }
 
   renderTabs () {
@@ -42,15 +43,14 @@ export default class PageContainerHeader extends Component {
   }
 
   render () {
-    const { title, subtitle, onClose, tabs, headerCloseText } = this.props
+    const { title, subtitle, onClose, tabs, headerCloseText, className } = this.props
 
     return (
-      <div className={
-        classnames(
-          'page-container__header',
-          { 'page-container__header--no-padding-bottom': Boolean(tabs) }
-        )
-      }>
+      <div
+        className={c('page-container__header', className, {
+          'page-container__header--no-padding-bottom': Boolean(tabs),
+        })}
+      >
 
         { this.renderHeaderRow() }
 

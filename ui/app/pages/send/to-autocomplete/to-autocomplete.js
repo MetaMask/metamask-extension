@@ -37,11 +37,7 @@ ToAutoComplete.prototype.renderDropdown = function () {
   } = this.props
   const { accountsToRender } = this.state
 
-  return accountsToRender.length && h('div', {}, [
-
-    h('div.send-v2__from-dropdown__close-area', {
-      onClick: closeDropdown,
-    }),
+  return !!accountsToRender.length && h('div', {}, [
 
     h('div.send-v2__from-dropdown__list', {}, [
 
@@ -93,7 +89,6 @@ ToAutoComplete.prototype.componentDidUpdate = function (nextProps) {
 ToAutoComplete.prototype.render = function () {
   const {
     to,
-    dropdownOpen,
     onChange,
     inError,
     qrScanner,
@@ -118,12 +113,8 @@ ToAutoComplete.prototype.render = function () {
       style: { color: '#33333' },
       onClick: () => this.props.scanQrCode(),
     })),
-    !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {
-      style: { color: '#dedede' },
-      onClick: () => this.handleInputEvent(),
-    }),
 
-    dropdownOpen && this.renderDropdown(),
+    this.renderDropdown(),
 
   ])
 }

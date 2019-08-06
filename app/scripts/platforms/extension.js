@@ -68,7 +68,7 @@ class ExtensionPlatform {
     const nonce = parseInt(txMeta.txParams.nonce, 16)
 
     const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on EtherScan`
+    const message = `Transaction ${nonce} confirmed! View on Etherscan`
     this._showNotification(title, message, url)
   }
 
@@ -84,20 +84,20 @@ class ExtensionPlatform {
     extension.notifications.create(
       url,
       {
-      'type': 'basic',
-      'title': title,
-      'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-      'message': message,
+        'type': 'basic',
+        'title': title,
+        'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
+        'message': message,
       })
   }
 
   _subscribeToNotificationClicked () {
-    if (!extension.notifications.onClicked.hasListener(this._viewOnEtherScan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherScan)
+    if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
+      extension.notifications.onClicked.addListener(this._viewOnEtherscan)
     }
   }
 
-  _viewOnEtherScan (txId) {
+  _viewOnEtherscan (txId) {
     if (txId.startsWith('http://')) {
       extension.tabs.create({ url: txId })
     }

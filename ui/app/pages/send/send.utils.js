@@ -35,6 +35,7 @@ module.exports = {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
+  ellipsify,
 }
 
 function calcGasTotal (gasLimit = '0', gasPrice = '0') {
@@ -318,7 +319,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-  .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
@@ -329,4 +330,8 @@ function getToAddressForGasUpdate (...addresses) {
 
 function removeLeadingZeroes (str) {
   return str.replace(/^0*(?=\d)/, '')
+}
+
+function ellipsify (text, first = 6, last = 4) {
+  return `${text.slice(0, first)}...${text.slice(-last)}`
 }

@@ -38,13 +38,13 @@ function transformState (state) {
       if (txMeta.status !== 'submitted') return txMeta
 
       const confirmedTxs = txList.filter((tx) => tx.status === 'confirmed')
-      .filter((tx) => tx.txParams.from === txMeta.txParams.from)
-      .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
+        .filter((tx) => tx.txParams.from === txMeta.txParams.from)
+        .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
       const highestConfirmedNonce = getHighestNonce(confirmedTxs)
 
       const pendingTxs = txList.filter((tx) => tx.status === 'submitted')
-      .filter((tx) => tx.txParams.from === txMeta.txParams.from)
-      .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
+        .filter((tx) => tx.txParams.from === txMeta.txParams.from)
+        .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
       const highestContinuousNonce = getHighestContinuousFrom(pendingTxs, highestConfirmedNonce)
 
       const maxNonce = Math.max(highestContinuousNonce, highestConfirmedNonce)
@@ -78,7 +78,7 @@ function getHighestContinuousFrom (txList, startPoint) {
 
 function getHighestNonce (txList) {
   const nonces = txList.map((txMeta) => {
-  const nonce = txMeta.txParams.nonce
+    const nonce = txMeta.txParams.nonce
     return parseInt(nonce || '0x0', 16)
   })
   const highestNonce = Math.max.apply(null, nonces)

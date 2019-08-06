@@ -25,7 +25,7 @@ export default class NetworksTab extends PureComponent {
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
-    delRpcTarget: PropTypes.func.isRequired,
+    showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,
@@ -50,16 +50,16 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div className="settings-page__sub-header">
-          <div
-            className="networks-tab__back-button"
-            onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
-              ? () => {
-                  setNetworksTabAddMode(false)
-                  setSelectedSettingsRpcUrl(null)
-                }
-              : () => this.props.history.push(SETTINGS_ROUTE)
+        <div
+          className="networks-tab__back-button"
+          onClick={(networkIsSelected && !networkDefaultedToProvider) || networksTabIsInAddMode
+            ? () => {
+              setNetworksTabAddMode(false)
+              setSelectedSettingsRpcUrl(null)
             }
-          />
+            : () => this.props.history.push(SETTINGS_ROUTE)
+          }
+        />
         <span className="settings-page__sub-header-text">{ this.context.t('networks') }</span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
@@ -109,7 +109,7 @@ export default class NetworksTab extends PureComponent {
           setNetworksTabAddMode(false)
           setSelectedSettingsRpcUrl(rpcUrl)
         }}
-       >
+      >
         <NetworkDropdownIcon
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
@@ -126,7 +126,7 @@ export default class NetworksTab extends PureComponent {
 
   renderNetworksList () {
     const { networksToRender, selectedNetwork, networkIsSelected, networksTabIsInAddMode, networkDefaultedToProvider } = this.props
-    console.log(networksToRender)
+
     return (
       <div
         className={classnames('networks-tab__networks-list', {
@@ -160,7 +160,7 @@ export default class NetworksTab extends PureComponent {
     const { t } = this.context
     const {
       setRpcTarget,
-      delRpcTarget,
+      showConfirmDeleteNetworkModal,
       setSelectedSettingsRpcUrl,
       setNetworksTabAddMode,
       selectedNetwork: {
@@ -199,7 +199,7 @@ export default class NetworksTab extends PureComponent {
                   setNetworksTabAddMode(false)
                   setSelectedSettingsRpcUrl(null)
                 }}
-                delRpcTarget={delRpcTarget}
+                showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
                 viewOnly={viewOnly}
                 isCurrentRpcTarget={providerUrl === rpcUrl}
                 networksTabIsInAddMode={networksTabIsInAddMode}
@@ -223,16 +223,16 @@ export default class NetworksTab extends PureComponent {
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
           ? <div className="networks-tab__add-network-button-wrapper">
-              <Button
-                type="primary"
-                onClick={event => {
-                  event.preventDefault()
-                  setSelectedSettingsRpcUrl(null)
-                  setNetworksTabAddMode(true)
-                }}
-              >
-                { this.context.t('addNetwork') }
-              </Button>
+            <Button
+              type="primary"
+              onClick={event => {
+                event.preventDefault()
+                setSelectedSettingsRpcUrl(null)
+                setNetworksTabAddMode(true)
+              }}
+            >
+              { this.context.t('addNetwork') }
+            </Button>
           </div>
           : null
         }

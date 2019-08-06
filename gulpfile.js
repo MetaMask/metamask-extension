@@ -1,7 +1,6 @@
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
-const disc = require('disc')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
@@ -13,10 +12,7 @@ const zip = require('gulp-zip')
 const assign = require('lodash.assign')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const fs = require('fs')
-const path = require('path')
 const manifest = require('./app/manifest.json')
-const mkdirp = require('mkdirp')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
@@ -89,6 +85,10 @@ createCopyTasks('vendor', {
   source: './app/vendor/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
 })
+createCopyTasks('css', {
+  source: './ui/app/css/output/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+})
 createCopyTasks('reload', {
   devOnly: true,
   source: './app/scripts/',
@@ -155,26 +155,27 @@ function copyTask (taskName, opts) {
 
 gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    delete json.applications
-    return json
-  }))
-  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      delete json.applications
+      json.minimum_chrome_version = '58'
+      return json
+    }))
+    .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
 gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [
-      'storage',
-      'tabs',
-      'clipboardWrite',
-      'clipboardRead',
-      'http://localhost:8545/',
-    ]
-    return json
-  }))
-  .pipe(gulp.dest('./dist/opera', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [
+        'storage',
+        'tabs',
+        'clipboardWrite',
+        'clipboardRead',
+        'http://localhost:8545/',
+      ]
+      return json
+    }))
+    .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
 gulp.task('manifest:production', function () {
@@ -187,14 +188,14 @@ gulp.task('manifest:production', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.background.scripts = json.background.scripts.filter((script) => {
-      return !script.includes('chromereload')
-    })
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.background.scripts = json.background.scripts.filter((script) => {
+        return !script.includes('chromereload')
+      })
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('manifest:testing', function () {
@@ -204,12 +205,12 @@ gulp.task('manifest:testing', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [...json.permissions, 'webRequestBlocking']
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [...json.permissions, 'webRequestBlocking']
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('copy',
@@ -377,14 +378,6 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
 
-// disc bundle analyzer tasks
-
-buildJsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`, discTask({ label: jsFile, filename: `${jsFile}.js` }))
-})
-
-gulp.task('disc', gulp.parallel(buildJsFiles.map(jsFile => `disc:${jsFile}`)))
-
 // clean dist
 
 gulp.task('clean', function clean () {
@@ -484,8 +477,8 @@ gulp.task('dist',
 function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'))
+      .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+      .pipe(gulp.dest('builds'))
   }
 }
 
@@ -497,10 +490,16 @@ function generateBundler (opts, performBundle) {
   })
 
   if (!opts.buildLib) {
-    browserifyOpts['entries'] = [opts.filepath]
+    if (opts.devMode && opts.filename === 'ui.js') {
+      browserifyOpts['entries'] = ['./development/require-react-devtools.js', opts.filepath]
+    } else {
+      browserifyOpts['entries'] = [opts.filepath]
+    }
   }
 
   let bundler = browserify(browserifyOpts)
+    .transform('babelify')
+    .transform('brfs')
 
   if (opts.buildLib) {
     bundler = bundler.require(opts.dependenciesToBundle)
@@ -533,32 +532,6 @@ function generateBundler (opts, performBundle) {
 
   return bundler
 }
-
-function discTask (opts) {
-  opts = Object.assign({
-    buildWithFullPaths: true,
-  }, opts)
-
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
-
-  return performBundle
-
-  function performBundle () {
-    // start "disc" build
-    const discDir = path.join(__dirname, 'disc')
-    mkdirp.sync(discDir)
-    const discPath = path.join(discDir, `${opts.label}.html`)
-
-    return (
-      bundler.bundle()
-      .pipe(disc())
-      .pipe(fs.createWriteStream(discPath))
-    )
-  }
-}
-
 
 function bundleTask (opts) {
   const bundler = generateBundler(opts, performBundle)
@@ -597,11 +570,11 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-      .pipe(uglify({
-        mangle: {
-          reserved: [ 'MetamaskInpageProvider' ],
-        },
-      }))
+        .pipe(uglify({
+          mangle: {
+            reserved: [ 'MetamaskInpageProvider' ],
+          },
+        }))
     }
 
     // Finalize Source Maps
