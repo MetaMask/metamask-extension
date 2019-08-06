@@ -48,7 +48,7 @@ export default class SendContent extends Component {
   maybeRenderAddContact () {
     const { t } = this.context
     const { to, addressBook = [], ownedAccounts = [], showAddToAddressBookModal } = this.props
-    const isOwnedAccount = !!ownedAccounts.find(({ address }) => address === to)
+    const isOwnedAccount = !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase())
     const contact = addressBook.find(({ address }) => address === to) || {}
 
     if (isOwnedAccount || contact.name) {
