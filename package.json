@@ -126,7 +126,7 @@
     "promise-filter": "^1.1.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
-    "pubnub": "^4.21.5",
+    "pubnub": "4.24.4",
     "pump": "^3.0.0",
     "qrcode-generator": "1.4.1",
     "ramda": "^0.24.1",

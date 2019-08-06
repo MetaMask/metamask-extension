@@ -84,6 +84,9 @@ class MobileSyncPage extends Component {
   }
 
   initWebsockets () {
+    // Make sure there are no existing listeners
+    this.disconnectWebsockets()
+
     this.pubnub = new PubNub({
       subscribeKey: process.env.PUBNUB_SUB_KEY,
       publishKey: process.env.PUBNUB_PUB_KEY,
@@ -91,7 +94,7 @@ class MobileSyncPage extends Component {
       ssl: true,
     })
 
-    this.pubnubListener = this.pubnub.addListener({
+    this.pubnubListener = {
       message: (data) => {
         const {channel, message} = data
         // handle message
@@ -111,7 +114,9 @@ class MobileSyncPage extends Component {
           this.setState({syncing: false, completed: true})
         }
       },
-    })
+    }
+
+    this.pubnub.addListener(this.pubnubListener)
 
     this.pubnub.subscribe({
       channels: [this.channelName],
@@ -122,7 +127,7 @@ class MobileSyncPage extends Component {
 
   disconnectWebsockets () {
     if (this.pubnub && this.pubnubListener) {
-      this.pubnub.disconnect(this.pubnubListener)
+      this.pubnub.removeListener(this.pubnubListener)
     }
   }
 
