@@ -9,6 +9,7 @@
 - [#6904](https://github.com/MetaMask/metamask-extension/pull/6904): Set privacy mode as default
 - [#6914](https://github.com/MetaMask/metamask-extension/pull/6914): Adds Address Book feature
 - [#6928](https://github.com/MetaMask/metamask-extension/pull/6928): Disable Copy Tx ID and block explorer link for transactions without hash
+- [#6967](https://github.com/MetaMask/metamask-extension/pull/6967): Fix mobile sync
 
 ## 6.7.3 Thu Jul 18 2019
 
