@@ -1,16 +1,49 @@
-const ethUtil = require('ethereumjs-util')
 const ObservableStore = require('obs-store')
 const Box = require('3box/dist/3box.min')
 const log = require('loglevel')
 
+const JsonRpcEngine = require('json-rpc-engine')
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
+const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
+const createOriginMiddleware = require('../lib/createOriginMiddleware')
+
 class ThreeBoxController {
   constructor (opts = {}) {
-    const { preferencesController, keyringController, addressBookController, provider } = opts
+    const {
+      preferencesController,
+      keyringController,
+      addressBookController,
+      version,
+      getKeyringControllerState,
+      getSelectedAddress,
+      signPersonalMessage,
+    } = opts
 
     this.preferencesController = preferencesController
     this.addressBookController = addressBookController
     this.keyringController = keyringController
-    this.provider = provider
+    this.provider = this._createProvider({
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      version,
+      getAccounts: async ({ origin }) => {
+        if (origin !== '3Box') { return [] }
+        const isUnlocked = getKeyringControllerState().isUnlocked
+
+        const selectedAddress = getSelectedAddress()
+
+        if (isUnlocked && selectedAddress) {
+          return [selectedAddress]
+        } else {
+          return []
+        }
+      },
+      processPersonalMessage: (msgParams) => {
+        return Promise.resolve(signPersonalMessage(msgParams))
+      },
+    })
 
     const initState = {
       threeBoxAddress: null,
@@ -34,31 +67,49 @@ class ThreeBoxController {
   async _update3Box ({ type }, newState) {
     const threeBoxSyncing = this.getThreeBoxSyncingState()
     if (threeBoxSyncing) {
-      await this.box.private.set(type, JSON.stringify(newState))
+      await this.space.private.set(type, JSON.stringify(newState))
     }
   }
 
-  async new3Box (address) {
-    const threeBoxSyncing = this.store.getState().threeboxSyncing
+  _createProvider (providerOpts) {
+    const metamaskMiddleware = createMetamaskMiddleware(providerOpts)
+    const engine = new JsonRpcEngine()
+    engine.push(createOriginMiddleware({ origin: '3Box' }))
+    engine.push(metamaskMiddleware)
+    const provider = providerFromEngine(engine)
+    return provider
+  }
+
+  async new3Box (address, restoreLocalData) {
+    let threeBoxSyncing
+    if (restoreLocalData) {
+      threeBoxSyncing = true
+      const currentState = this.store.getState()
+      this.store.updateState({
+        ...currentState,
+        threeboxSyncing: true,
+      })
+    } else {
+      threeBoxSyncing = this.store.getState().threeboxSyncing
+    }
 
     if (threeBoxSyncing) {
       this.store.updateState({ syncDone3Box: false })
       this.address = address
 
       try {
-        const data = ethUtil.bufferToHex(Buffer.from('This app wants to view and update your 3Box profile.', 'utf8'))
-        const contentSignature = await this.keyringController.signPersonalMessage({
-          data,
-          from: address,
-        })
-        this.box = await Box.openBox(address, this.provider, {contentSignature})
-        this.box.onSyncDone(() => {
-          log.debug('3Box onSyncDone')
-          this._restoreFrom3Box()
-          this.store.updateState({
-            syncDone3Box: true,
-            threeBoxAddress: address,
-          })
+        this.box = await Box.openBox(address, this.provider)
+        this.space = await this.box.openSpace('metamask', {
+          onSyncDone: () => {
+            log.debug('3Box onSyncDone')
+            if (restoreLocalData) {
+              this._restoreFrom3Box()
+            }
+            this.store.updateState({
+              syncDone3Box: true,
+              threeBoxAddress: address,
+            })
+          },
         })
       } catch (e) {
         console.error(e)
@@ -70,9 +121,9 @@ class ThreeBoxController {
   async _restoreFrom3Box () {
     const threeBoxSyncing = this.getThreeBoxSyncingState()
     if (threeBoxSyncing) {
-      const backedUpPreferences = await this.box.private.get('preferences')
+      const backedUpPreferences = await this.space.private.get('preferences')
       backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
-      const backedUpAddressBook = await this.box.private.get('addressBook')
+      const backedUpAddressBook = await this.space.private.get('addressBook')
       backedUpAddressBook && this.addressBookController.update(JSON.parse(backedUpAddressBook), true)
       this._registerUpdates()
       this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
