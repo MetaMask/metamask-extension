@@ -7,9 +7,13 @@ import {
   unlockAndGetSeedPhrase,
   verifySeedPhrase,
 } from '../../store/actions'
+import {
+  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+} from '../../helpers/constants/routes'
 
-const mapStateToProps = state => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked, seedPhraseBackedUp }, appState: { showingSeedPhraseBackupAfterOnboarding } } = state
+const mapStateToProps = (state, ownProps) => {
+  const { metamask: { completedOnboarding, isInitialized, isUnlocked, seedPhraseBackedUp } } = state
+  const showingSeedPhraseBackupAfterOnboarding = Boolean(ownProps.location.pathname.match(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE))
 
   return {
     completedOnboarding,

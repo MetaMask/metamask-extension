@@ -280,6 +280,12 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    it('can click through the success screen', async () => {
+      const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'All Done')]`))
+      await confirm.click()
+      await delay(regularDelayMs)
+    })
+
     it('should have the correct amount of eth', async () => {
       const balances = await findElements(driver, By.css('.currency-display-component__text'))
       await driver.wait(until.elementTextMatches(balances[0], /1/), 15000)

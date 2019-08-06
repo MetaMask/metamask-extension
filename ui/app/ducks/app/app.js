@@ -73,7 +73,6 @@ function reduceApp (state, action) {
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
     loadingMethodData: false,
-    showingSeedPhraseBackupAfterOnboarding: false,
   }, state.appState)
 
   switch (action.type) {
@@ -756,17 +755,6 @@ function reduceApp (state, action) {
       return extend(appState, {
         loadingMethodData: false,
       })
-
-    case actions.SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING:
-      return extend(appState, {
-        showingSeedPhraseBackupAfterOnboarding: true,
-      })
-
-    case actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING:
-      return extend(appState, {
-        showingSeedPhraseBackupAfterOnboarding: false,
-      })
-
 
     default:
       return appState

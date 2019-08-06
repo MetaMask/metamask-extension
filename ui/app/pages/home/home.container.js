@@ -7,7 +7,6 @@ import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   forceApproveProviderRequestByOrigin,
   unsetMigratedPrivacyMode,
-  showSeedPhraseBackupAfterOnboarding,
   rejectProviderRequestByOrigin,
 } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -60,7 +59,6 @@ const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
   forceApproveProviderRequestByOrigin: (origin) => dispatch(forceApproveProviderRequestByOrigin(origin)),
   rejectProviderRequestByOrigin: origin => dispatch(rejectProviderRequestByOrigin(origin)),
-  showSeedPhraseBackupAfterOnboarding: () => dispatch(showSeedPhraseBackupAfterOnboarding()),
 })
 
 export default compose(

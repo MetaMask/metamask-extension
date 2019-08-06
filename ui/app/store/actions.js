@@ -377,11 +377,6 @@ var actions = {
   LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
 
   setSeedPhraseBackedUp,
-  showSeedPhraseBackupAfterOnboarding,
-  SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING: 'SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING',
-  hideSeedPhraseBackupAfterOnboarding,
-  HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING: 'HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING',
-
   verifySeedPhrase,
   SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 }
@@ -2794,17 +2789,5 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
         return forceUpdateMetamaskState(dispatch).then(() => resolve())
       })
     })
-  }
-}
-
-function showSeedPhraseBackupAfterOnboarding () {
-  return {
-    type: actions.SHOW_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
-  }
-}
-
-function hideSeedPhraseBackupAfterOnboarding () {
-  return {
-    type: actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
   }
 }
