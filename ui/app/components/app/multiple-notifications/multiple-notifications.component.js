@@ -18,21 +18,27 @@ export default class MultipleNotifications extends PureComponent {
 
     const notificationsToBeRendered = notifications.filter(notificationConfig => notificationConfig.shouldBeRendered)
 
-    return (<div
-      className={classnames(...classNames, {
-        'home-notification-wrapper--show-all': showAll,
-        'home-notification-wrapper--show-first': !showAll,
-      })}
-    >
-      { notificationsToBeRendered.map(notificationConfig => notificationConfig.component) }
+    if (notificationsToBeRendered.length === 0) {
+      return null
+    }
+
+    return (
       <div
-        className="home-notification-wrapper__i-container"
-        onClick={() => this.setState({ showAll: !showAll })}
+        className={classnames(...classNames, {
+          'home-notification-wrapper--show-all': showAll,
+          'home-notification-wrapper--show-first': !showAll,
+        })}
       >
-        {notificationsToBeRendered.length > 1 ? <i className={classnames('fa fa-sm fa-sort-amount-asc', {
-          'flipped': !showAll,
-        })} /> : null}
+        { notificationsToBeRendered.map(notificationConfig => notificationConfig.component) }
+        <div
+          className="home-notification-wrapper__i-container"
+          onClick={() => this.setState({ showAll: !showAll })}
+        >
+          {notificationsToBeRendered.length > 1 ? <i className={classnames('fa fa-sm fa-sort-amount-asc', {
+            'flipped': !showAll,
+          })} /> : null}
+        </div>
       </div>
-    </div>)
+    )
   }
 }
