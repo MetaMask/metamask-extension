@@ -10,6 +10,7 @@ const createMetamaskMiddleware = require('./createMetamaskMiddleware')
 const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
+const createPocketClient = require('./createPocketClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
 const ethNetProps = require('eth-net-props')
 const parse = require('url-parse')
@@ -36,6 +37,7 @@ const {
   RSK_TESTNET_CODE,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+const POCKET_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, POA, DAI, GOERLI_TESTNET, POA_SOKOL]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -55,7 +57,8 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    this.dProviderStore = new ObservableStore({dProvider: false})
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, dProviderStore: this.dProviderStore })
     this.on('networkDidChange', this.lookupNetwork)
     // provider and block tracker
     this._provider = null
@@ -152,6 +155,16 @@ module.exports = class NetworkController extends EventEmitter {
     return this.providerStore.getState()
   }
 
+  getDProvider(){
+    return this.dProviderStore.getState().dProvider
+  }
+
+  setDProvider(key){
+    this.dProviderStore.updateState({
+      dProvider: key,
+    })
+  }
+
   //
   // Private
   //
@@ -166,17 +179,28 @@ module.exports = class NetworkController extends EventEmitter {
     const { type, rpcTarget } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    if (isInfura) {
-      this._configureInfuraProvider(opts)
+    // pocket type-based endpointes
+    const isPocket = POCKET_PROVIDER_TYPES.includes(type)
+
+    if (!isPocket && this.dProviderStore.getState().dProvider){
+      this.dProviderStore.updateState({
+        dProvider: false
+      })
+    }
+
+    if (isPocket && this.dProviderStore.getState().dProvider){
+      this._configurePocketProvider(opts)
+    } else if (isInfura) {
+        this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
     } else if (type === POA) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
     } else if (type === DAI) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
     } else if (type === POA_SOKOL) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
     } else if (type === GOERLI_TESTNET) {
-      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
+        this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(GOERLI_TESTNET_CODE)[0] })
     } else if (type === CLASSIC) {
       this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(CLASSIC_CODE)[0] })
     } else if (type === RSK) {
@@ -196,6 +220,12 @@ module.exports = class NetworkController extends EventEmitter {
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({ network: type })
+    this._setNetworkClient(networkClient)
+  }
+
+  _configurePocketProvider ({ type }) {
+    log.info('NetworkController - configurePocketProvider', type)
+    const networkClient = createPocketClient({ network: type })
     this._setNetworkClient(networkClient)
   }
 

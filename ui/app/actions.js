@@ -319,6 +319,10 @@ var actions = {
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
 
+  // DProvider
+  SET_DPROVIDER: 'SET_DPROVIDER',
+  setDProvider,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -2645,6 +2649,23 @@ function updateCurrentLocale (key) {
           dispatch(actions.setLocaleMessages(localeMessages))
         })
       })
+  }
+}
+
+function setDProvider (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setDProvider`)
+    background.setDProvider(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_DPROVIDER,
+      value: val,
+    })
   }
 }
 
