@@ -225,7 +225,6 @@ gulp.task('manifest:dev', function () {
   ], {base: './dist/'})
 
     .pipe(jsoneditor(function (json) {
-      const currentBackground = json.background
       json.background = {
         ...json.background,
         scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),

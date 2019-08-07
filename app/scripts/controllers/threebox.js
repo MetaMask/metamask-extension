@@ -46,12 +46,14 @@ class ThreeBoxController {
     })
 
     const initState = {
-      threeBoxAddress: null,
-      threeboxSyncing: false,
+      threeBoxSyncingAllowed: true,
+      restoredFromThreeBox: null,
       ...opts.initState,
-      syncDone3Box: false,
+      threeBoxAddress: null,
+      threeBoxSynced: false,
     }
     this.store = new ObservableStore(initState)
+    this.registeringUpdates = false
 
     this.init()
   }
@@ -59,14 +61,15 @@ class ThreeBoxController {
   async init () {
     const accounts = await this.keyringController.getAccounts()
     this.address = accounts[0]
-    if (this.address && !(this.box && this.store.getState().syncDone3Box)) {
+    if (this.address && !(this.box && this.store.getState().threeBoxSynced)) {
       await this.new3Box(this.address)
     }
   }
 
   async _update3Box ({ type }, newState) {
-    const threeBoxSyncing = this.getThreeBoxSyncingState()
-    if (threeBoxSyncing) {
+    const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
+    if (threeBoxSyncingAllowed && threeBoxSynced) {
+      await this.space.private.set('lastUpdated', Date.now())
       await this.space.private.set(type, JSON.stringify(newState))
     }
   }
@@ -80,35 +83,30 @@ class ThreeBoxController {
     return provider
   }
 
-  async new3Box (address, restoreLocalData) {
-    let threeBoxSyncing
-    if (restoreLocalData) {
-      threeBoxSyncing = true
-      const currentState = this.store.getState()
-      this.store.updateState({
-        ...currentState,
-        threeboxSyncing: true,
+  _waitForOnSyncDone () {
+    return new Promise((resolve) => {
+      this.box.onSyncDone(() => {
+        log.debug('3Box box sync done')
+        return resolve()
       })
-    } else {
-      threeBoxSyncing = this.store.getState().threeboxSyncing
-    }
+    })
+  }
 
-    if (threeBoxSyncing) {
-      this.store.updateState({ syncDone3Box: false })
+  async new3Box (address) {
+    if (this.getThreeBoxSyncingState()) {
+      this.store.updateState({ threeBoxSynced: false })
       this.address = address
 
       try {
         this.box = await Box.openBox(address, this.provider)
+        await this._waitForOnSyncDone()
         this.space = await this.box.openSpace('metamask', {
-          onSyncDone: () => {
-            log.debug('3Box onSyncDone')
-            if (restoreLocalData) {
-              this._restoreFrom3Box()
-            }
+          onSyncDone: async () => {
             this.store.updateState({
-              syncDone3Box: true,
+              threeBoxSynced: true,
               threeBoxAddress: address,
             })
+            log.debug('3Box space sync done')
           },
         })
       } catch (e) {
@@ -118,47 +116,62 @@ class ThreeBoxController {
     }
   }
 
-  async _restoreFrom3Box () {
-    const threeBoxSyncing = this.getThreeBoxSyncingState()
-    if (threeBoxSyncing) {
-      const backedUpPreferences = await this.space.private.get('preferences')
-      backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
-      const backedUpAddressBook = await this.space.private.get('addressBook')
-      backedUpAddressBook && this.addressBookController.update(JSON.parse(backedUpAddressBook), true)
-      this._registerUpdates()
-      this.store.updateState({ syncDone3Box: true, threeBoxAddress: this.address })
-    }
+  async getLastUpdated () {
+    return await this.space.private.get('lastUpdated')
   }
 
-  setThreeBoxSyncing (newThreeboxSyncingState) {
+  setRestoredFromThreeBox (restored) {
+    this.store.updateState({ restoredFromThreeBox: restored })
+  }
+
+  async restoreFromThreeBox () {
+    this.setRestoredFromThreeBox(true)
+    const backedUpPreferences = await this.space.private.get('preferences')
+    backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
+    const backedUpAddressBook = await this.space.private.get('addressBook')
+    backedUpAddressBook && this.addressBookController.update(JSON.parse(backedUpAddressBook), true)
+  }
+
+  turnThreeBoxSyncingOn () {
+    this._registerUpdates()
+  }
+
+  turnThreeBoxSyncingOff () {
+    this.box.logout()
+  }
+
+  setThreeBoxSyncingPermission (newThreeboxSyncingState) {
     const currentState = this.store.getState()
     this.store.updateState({
       ...currentState,
-      threeboxSyncing: newThreeboxSyncingState,
+      threeBoxSyncingAllowed: newThreeboxSyncingState,
     })
 
-    if (newThreeboxSyncingState && !(this.box && currentState.syncDone3Box)) {
-      this.init()
+    if (newThreeboxSyncingState && this.box) {
+      this.turnThreeBoxSyncingOn()
     }
 
     if (!newThreeboxSyncingState && this.box) {
-      this.box.logout()
+      this.turnThreeBoxSyncingOff()
     }
   }
 
   getThreeBoxSyncingState () {
-    return this.store.getState().threeboxSyncing
+    return this.store.getState().threeBoxSyncingAllowed
   }
 
   getThreeBoxAddress () {
-    return this.box && this.store.getState().threeBoxAddress
+    return this.store.getState().threeBoxAddress
   }
 
   _registerUpdates () {
-    const updatePreferences = this._update3Box.bind(this, { type: 'preferences' })
-    this.preferencesController.store.subscribe(updatePreferences)
-    const updateAddressBook = this._update3Box.bind(this, { type: 'addressBook' })
-    this.addressBookController.subscribe(updateAddressBook)
+    if (!this.registeringUpdates) {
+      const updatePreferences = this._update3Box.bind(this, { type: 'preferences' })
+      this.preferencesController.store.subscribe(updatePreferences)
+      const updateAddressBook = this._update3Box.bind(this, { type: 'addressBook' })
+      this.addressBookController.subscribe(updateAddressBook)
+      this.registeringUpdates = true
+    }
   }
 }
 

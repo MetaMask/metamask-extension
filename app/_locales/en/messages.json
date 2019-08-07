@@ -505,6 +505,9 @@
   "customRPC": {
     "message": "Custom RPC"
   },
+  "dataBackupFound": {
+    "message": "Data backup found"
+  },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
   },

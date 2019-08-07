@@ -18,7 +18,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     history: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
     setSeedPhraseBackedUp: PropTypes.func,
-    show3BoxModalAfterImport: PropTypes.func,
+    initializeThreeBox: PropTypes.func,
   }
 
   state = {
@@ -128,10 +128,10 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }
 
     const { password, seedPhrase } = this.state
-    const { history, onSubmit, setSeedPhraseBackedUp, show3BoxModalAfterImport } = this.props
+    const { history, onSubmit, setSeedPhraseBackedUp, initializeThreeBox } = this.props
 
     try {
-      await onSubmit(password, this.parseSeedPhrase(seedPhrase))
+      const vault = await onSubmit(password, this.parseSeedPhrase(seedPhrase))
       this.context.metricsEvent({
         eventOpts: {
           category: 'Onboarding',
@@ -141,7 +141,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
       })
 
       setSeedPhraseBackedUp(true).then(() => {
-        show3BoxModalAfterImport()
+        const address = vault.keyrings[0].accounts[0]
+        initializeThreeBox(address)
         history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       })
     } catch (error) {

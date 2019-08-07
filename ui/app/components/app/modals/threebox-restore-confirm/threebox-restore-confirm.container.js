@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import ThreeBoxRestoreConfirm from './threebox-restore-confirm.component'
-import { restoreFromThreeBox } from '../../../../store/actions'
+import { restoreFromThreeBox, setRestoredFromThreeBox, setThreeBoxSyncingPermission } from '../../../../store/actions'
 
 const mapStateToProps = state => {
   return {
@@ -13,6 +13,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
+    setRestoredFromThreeBox: (restored) => dispatch(setRestoredFromThreeBox(restored)),
+    setThreeBoxSyncingPermission: (threeBoxSyncingAllowed) => dispatch(setThreeBoxSyncingPermission(threeBoxSyncingAllowed)),
   }
 }
 
