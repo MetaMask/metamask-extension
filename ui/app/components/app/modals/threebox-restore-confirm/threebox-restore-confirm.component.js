@@ -6,15 +6,35 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     restoreFromThreeBox: PropTypes.func.isRequired,
+    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
+    setRestoredFromThreeBox: PropTypes.func.isRequired,
+    address: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
     t: PropTypes.func,
   }
 
+  handleCancel = () => {
+    const { setRestoredFromThreeBox, hideModal } = this.props
+    setRestoredFromThreeBox(false)
+    hideModal()
+  }
+
   handleConfirm = () => {
-    this.props.restoreFromThreeBox(this.props.address)
-      .then(() => this.props.hideModal())
+    const {
+      restoreFromThreeBox,
+      setRestoredFromThreeBox,
+      setThreeBoxSyncingPermission,
+      hideModal,
+      address,
+    } = this.props
+    restoreFromThreeBox(address)
+      .then(() => {
+        setRestoredFromThreeBox(true)
+        setThreeBoxSyncingPermission(true)
+        hideModal()
+      })
   }
 
   render () {
@@ -22,8 +42,9 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
 
     return (
       <Modal
+        headerText={t('dataBackupFound')}
         onSubmit={this.handleConfirm}
-        onCancel={() => this.props.hideModal()}
+        onCancel={this.handleCancel}
         submitText={t('confirm')}
         cancelText={t('noThanks')}
         submitType="secondary"

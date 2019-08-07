@@ -377,11 +377,14 @@ var actions = {
 
   setSeedPhraseBackedUp,
   verifySeedPhrase,
+  hideSeedPhraseBackupAfterOnboarding,
   SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 
-  show3BoxModalAfterImport,
-  SHOW_3BOX_MODAL_AFTER_IMPORT: 'SHOW_3BOX_MODAL_AFTER_IMPORT',
+  initializeThreeBox,
   restoreFromThreeBox,
+  getThreeBoxLastUpdated,
+  setThreeBoxSyncingPermission,
+  setRestoredFromThreeBox,
 }
 
 module.exports = actions
@@ -458,13 +461,13 @@ function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
-
+    let vault
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err) => {
+      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
         if (err) {
           return reject(err)
         }
-
+        vault = _vault
         resolve()
       })
     })
@@ -472,6 +475,7 @@ function createNewVaultAndRestore (password, seed) {
       .then(() => {
         dispatch(actions.showAccountsPage())
         dispatch(actions.hideLoadingIndication())
+        return vault
       })
       .catch(err => {
         dispatch(actions.displayWarning(err.message))
@@ -2813,16 +2817,72 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
   }
 }
 
-function show3BoxModalAfterImport () {
+function hideSeedPhraseBackupAfterOnboarding () {
   return {
-    type: actions.SHOW_3BOX_MODAL_AFTER_IMPORT,
+    type: actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
   }
 }
 
-function restoreFromThreeBox(accountAddress) {
+function initializeThreeBox (address) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.initializeThreeBox(address, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function setRestoredFromThreeBox (restored) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setRestoredFromThreeBox(restored, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function restoreFromThreeBox (accountAddress) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.restoreFromThreeBox(accountAddress, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function getThreeBoxLastUpdated () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.getThreeBoxLastUpdated((err, lastUpdated) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve(lastUpdated)
+      })
+    })
+  }
+}
+
+function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)

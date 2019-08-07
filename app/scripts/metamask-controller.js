@@ -203,7 +203,6 @@ module.exports = class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
       keyringController: this.keyringController,
-      restoreFrom3Box: false,
       initState: initState.ThreeBoxController,
       getKeyringControllerState: this.keyringController.memStore.getState.bind(this.keyringController.memStore),
       getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
@@ -535,8 +534,11 @@ module.exports = class MetamaskController extends EventEmitter {
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
 
       // 3Box
-      setThreeBoxSyncing: nodeify(threeBoxController.setThreeBoxSyncing, threeBoxController),
-      restoreFromThreeBox: nodeify(this.restoreFromThreeBox, this),
+      setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
+      restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
+      setRestoredFromThreeBox: nodeify(threeBoxController.setRestoredFromThreeBox, threeBoxController),
+      getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
+      initializeThreeBox: nodeify(this.initializeThreeBox, this),
     }
   }
 
@@ -571,6 +573,7 @@ module.exports = class MetamaskController extends EventEmitter {
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.threeBoxController.new3Box(accounts[0])
+        this.threeBoxController.turnThreeBoxSyncingOn()
         this.selectFirstIdentity()
       }
       releaseLock()
@@ -740,11 +743,13 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
 
-    const threeBoxSyncingIsOn = this.threeBoxController.getThreeBoxSyncingState()
-    const current3BoxAddress = this.threeBoxController.getThreeBoxAddress()
+    const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
     const firstAccountAddress = accounts[0]
-    if (threeBoxSyncingIsOn && current3BoxAddress !== firstAccountAddress) {
-      this.threeBoxController.new3Box(firstAccountAddress)
+    if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+      await this.threeBoxController.new3Box(firstAccountAddress)
+      this.threeBoxController.turnThreeBoxSyncingOn()
+    } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+      this.threeBoxController.turnThreeBoxSyncingOn()
     }
 
     return this.keyringController.fullUpdate()
@@ -1696,7 +1701,7 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
-  async restoreFromThreeBox (address) {
+  async initializeThreeBox (address) {
     await this.threeBoxController.new3Box(address, true)
   }
 

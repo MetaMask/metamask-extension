@@ -34,8 +34,6 @@ export default class Home extends PureComponent {
     unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
-    show3BoxModalAfterImport: PropTypes.bool,
-    show3BoxRestoreConfirmModal: PropTypes.func,
   }
 
   componentWillMount () {
@@ -53,17 +51,11 @@ export default class Home extends PureComponent {
     const {
       history,
       suggestedTokens = {},
-      show3BoxModalAfterImport,
-      show3BoxRestoreConfirmModal,
     } = this.props
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
-    }
-
-    if (show3BoxModalAfterImport) {
-      show3BoxRestoreConfirmModal()
     }
   }
 

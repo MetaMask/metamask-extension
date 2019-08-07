@@ -757,12 +757,12 @@ function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
-     case actions.SHOW_3BOX_MODAL_AFTER_IMPORT:
-       return extend(appState, {
-         show3BoxModalAfterImport: true,
-       })
+    case actions.SHOW_3BOX_MODAL_AFTER_IMPORT:
+      return extend(appState, {
+        show3BoxModalAfterImport: true,
+      })
 
-     default:
+    default:
       return appState
   }
 }
