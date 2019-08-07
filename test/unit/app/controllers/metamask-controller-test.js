@@ -8,9 +8,13 @@ const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
 const EthQuery = require('eth-query')
 
-const threeBoxNew3BoxSpy = sinon.spy()
-const threeBoxGetThreeBoxAddressSpy = sinon.spy()
-const threeBoxGetThreeBoxSyncingStateStub = sinon.stub().returns(true)
+const threeBoxSpies = {
+  new3Box: sinon.spy(),
+  getThreeBoxAddress: sinon.spy(),
+  getThreeBoxSyncingState: sinon.stub().returns(true),
+  turnThreeBoxSyncingOn: sinon.spy(),
+  _registerUpdates: sinon.spy(),
+}
 const proxyquire = require('proxyquire')
 
 class ThreeBoxControllerMock {
@@ -19,9 +23,11 @@ class ThreeBoxControllerMock {
       subscribe: () => {},
       getState: () => ({}),
     }
-    this.new3Box = threeBoxNew3BoxSpy
-    this.getThreeBoxAddress = threeBoxGetThreeBoxAddressSpy
-    this.getThreeBoxSyncingState = threeBoxGetThreeBoxSyncingStateStub
+    this.new3Box = threeBoxSpies.new3Box
+    this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
+    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
+    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
+    this._registerUpdates = threeBoxSpies._registerUpdates
   }
 }
 
@@ -102,8 +108,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
-      threeBoxNew3BoxSpy.reset()
-      threeBoxGetThreeBoxAddressSpy.reset()
+      threeBoxSpies.new3Box.reset()
+      threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -125,10 +131,10 @@ describe('MetaMaskController', function () {
 
     it('gets the address from threebox and creates a new 3box instance', async () => {
       await metamaskController.submitPassword(password)
-      assert(threeBoxGetThreeBoxAddressSpy.calledOnce)
-      assert(threeBoxNew3BoxSpy.calledOnce)
+      assert(threeBoxSpies.new3Box.calledOnce)
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
       const addresses = await metamaskController.keyringController.getAccounts()
-      assert.equal(threeBoxNew3BoxSpy.args[0][0], addresses[0])
+      assert.equal(threeBoxSpies.new3Box.args[0][0], addresses[0])
     })
   })
 
