@@ -71,45 +71,45 @@ export default compose(
 )(TransactionList)
 
 function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
-    const minGasPrice = gasPrices[0]
-    const maxGasPrice = gasPrices[gasPrices.length - 1]
-    let priceForEstimation = currentGasPrice
-    if (currentGasPrice < minGasPrice) {
-        priceForEstimation = minGasPrice
-    } else if (currentGasPrice > maxGasPrice) {
-        priceForEstimation = maxGasPrice
-    }
+  const minGasPrice = gasPrices[0]
+  const maxGasPrice = gasPrices[gasPrices.length - 1]
+  let priceForEstimation = currentGasPrice
+  if (currentGasPrice < minGasPrice) {
+    priceForEstimation = minGasPrice
+  } else if (currentGasPrice > maxGasPrice) {
+    priceForEstimation = maxGasPrice
+  }
 
-    const {
-        closestLowerValueIndex,
-        closestHigherValueIndex,
-        closestHigherValue,
-        closestLowerValue,
-    } = getAdjacentGasPrices({ gasPrices, priceToPosition: priceForEstimation })
+  const {
+    closestLowerValueIndex,
+    closestHigherValueIndex,
+    closestHigherValue,
+    closestLowerValue,
+  } = getAdjacentGasPrices({ gasPrices, priceToPosition: priceForEstimation })
 
-    const newTimeEstimate = extrapolateY({
-        higherY: estimatedTimes[closestHigherValueIndex],
-        lowerY: estimatedTimes[closestLowerValueIndex],
-        higherX: closestHigherValue,
-        lowerX: closestLowerValue,
-        xForExtrapolation: priceForEstimation,
-    })
+  const newTimeEstimate = extrapolateY({
+    higherY: estimatedTimes[closestHigherValueIndex],
+    lowerY: estimatedTimes[closestLowerValueIndex],
+    higherX: closestHigherValue,
+    lowerX: closestLowerValue,
+    xForExtrapolation: priceForEstimation,
+  })
 
-    return formatTimeEstimate(newTimeEstimate, currentGasPrice > maxGasPrice, currentGasPrice < minGasPrice)
+  return formatTimeEstimate(newTimeEstimate, currentGasPrice > maxGasPrice, currentGasPrice < minGasPrice)
 }
 
 function calcCustomGasPrice (customGasPriceInHex) {
-    return Number(hexWEIToDecGWEI(customGasPriceInHex))
+  return Number(hexWEIToDecGWEI(customGasPriceInHex))
 }
 
 function getTxParams (state, selectedTransaction = {}) {
-    const { metamask: { send } } = state
-    const { txParams } = selectedTransaction
-    return txParams || {
-        from: send.from,
-        gas: send.gasLimit || '0x5208',
-        gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-        to: send.to,
-        value: getSelectedToken(state) ? '0x0' : send.amount,
-    }
+  const { metamask: { send } } = state
+  const { txParams } = selectedTransaction
+  return txParams || {
+    from: send.from,
+    gas: send.gasLimit || '0x5208',
+    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+    to: send.to,
+    value: getSelectedToken(state) ? '0x0' : send.amount,
+  }
 }
