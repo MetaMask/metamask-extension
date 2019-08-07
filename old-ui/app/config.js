@@ -13,6 +13,17 @@ const exportAsFile = require('./util').exportAsFile
 const Modal = require('../../ui/app/components/modals/index').Modal
 const ethNetProps = require('eth-net-props')
 const { networks } = require('../../app/scripts/controllers/network/util')
+const {
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  POA,
+  DAI,
+  POA_SOKOL,
+  GOERLI_TESTNET,
+} = require('../../app/scripts/controllers/network/enums')
+const POCKET_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, POA, DAI, GOERLI_TESTNET, POA_SOKOL]
 
 class ConfigScreen extends Component {
 
@@ -20,6 +31,7 @@ class ConfigScreen extends Component {
     super(props)
     this.state = {
       loading: false,
+      dProvider: props.metamask.dProviderStore.dProvider
     }
   }
 
@@ -31,6 +43,12 @@ class ConfigScreen extends Component {
     const state = this.props
     const metamaskState = state.metamask
     const warning = state.warning
+
+    if(state.metamask.dProviderStore.dProvider != this.state.dProvider){
+      this.setState({
+        dProvider: this.props.metamask.dProviderStore.dProvider
+      })
+    }
 
     return (
       h('.flex-column.flex-grow', {
@@ -184,6 +202,32 @@ class ConfigScreen extends Component {
               },
             }),
 
+            h('p', {
+              style: {
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
+              },
+            }, [
+              'Switch to Decentralized Provider (Pocket)',
+            ]),
+
+            h('input', {
+              type:'checkbox',
+              name:'pocket-checkbox',
+              checked: this.state.dProvider,
+              onChange: (event) => {
+                event.preventDefault()
+                this.toggleProvider()
+              },
+            }),
+
+            h('hr.horizontal-line', {
+              style: {
+                marginTop: '20px',
+              },
+            }),
+
             h('div', {
               style: {
                 marginTop: '20px',
@@ -231,6 +275,26 @@ class ConfigScreen extends Component {
         ]),
       ])
     )
+  }
+
+  toggleProvider(){
+    const isPocket = POCKET_PROVIDER_TYPES.includes(this.props.metamask.provider.type)
+    if (isPocket){
+      if (!this.state.dProvider){
+        this.props.dispatch(actions.setDProvider(true))
+        this.setState({
+          dProvider: true
+        })
+      } else {
+        this.props.dispatch(actions.setDProvider(false))
+        this.setState({
+          dProvider: false
+        })
+      }
+      this.props.dispatch(actions.setProviderType(this.props.metamask.provider.type))
+    } else {
+      alert("Pocket does not support this network, using centralized provider")
+    }
   }
 
   componentWillUnmount () {
@@ -306,7 +370,6 @@ class ConfigScreen extends Component {
       }, 'Delete'),
     ])
   }
-
 }
 
 function mapStateToProps (state) {

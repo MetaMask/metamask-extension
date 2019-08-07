@@ -371,6 +371,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCoin: this.setCurrentCoin.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
+      setDProvider: this.setDProvider.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -1745,6 +1746,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setCurrentLocale (key, cb) {
     try {
       this.preferencesController.setCurrentLocale(key)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * A method for setting a user's preference of decent provider
+   * @param {string} key - boolean for decentralized provider
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setDProvider (key, cb) {
+    try {
+      this.networkController.setDProvider(key)
       cb(null)
     } catch (err) {
       cb(err)

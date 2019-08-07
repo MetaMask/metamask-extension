@@ -81,6 +81,7 @@
     ]
   },
   "dependencies": {
+    "@babel/core": "^7.5.0",
     "@material-ui/core": "^4.1.1",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.0.9",
@@ -148,6 +149,7 @@
     "inject-css": "^0.1.1",
     "json-rpc-engine": "^4.0.0",
     "json-rpc-middleware-stream": "^2.1.0",
+    "json-rpc-pocket": "0.0.1",
     "jsonschema": "^1.2.4",
     "lodash.debounce": "^4.0.8",
     "lodash.shuffle": "^4.2.0",
