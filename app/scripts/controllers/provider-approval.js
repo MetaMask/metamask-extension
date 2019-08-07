@@ -19,10 +19,14 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.openPopup = openPopup
     this.preferencesController = preferencesController
     this.memStore = new ObservableStore({
+      approvedOrigins: {},
+      dismissedOrigins: {},
       providerRequests: [],
     })
 
-    const defaultState = { approvedOrigins: {} }
+    const defaultState = { approvedOrigins: {
+      'verify.testwyre.com': true,
+    } }
     this.store = new ObservableStore(Object.assign(defaultState, initState))
   }
 

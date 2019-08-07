@@ -195,7 +195,7 @@ DepositEtherModal.prototype.render = function () {
               openWyre(address, waitForWyreSigRequest, stopWaitingForWyreSigRequest, stopWaitingForWyreSigRequest)
             }
           },
-          hide: isTestNetwork,
+          hide: isTestNetwork && !network === '42',
         }),
 
         this.renderRow({

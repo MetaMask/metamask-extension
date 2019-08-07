@@ -5,7 +5,6 @@ import classnames from 'classnames'
 import { ObjectInspector } from 'react-inspector'
 
 import Identicon from '../../../ui/identicon'
-import AccountDropdownMini from '../../../ui/account-dropdown-mini'
 import Button from '../../../ui/button'
 
 export default class SignatureRequestModal extends Component {
@@ -58,12 +57,6 @@ export default class SignatureRequestModal extends Component {
       <div className="request-signature__account-text">
         { this.context.t('account') + ':' }
       </div>
-
-      <AccountDropdownMini
-        selectedAccount={selectedAccount}
-        accounts={accounts}
-        disabled={true}
-      />
 
     </div>
   }

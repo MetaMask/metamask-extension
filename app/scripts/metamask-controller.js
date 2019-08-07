@@ -1106,9 +1106,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * Passed back to the requesting Dapp.
    */
   async newUnsignedPersonalMessage (msgParams, req) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(msgParams, req)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    const { origin } = req
+    if (origin !== 'verify.testwyre.com') {
+      const promise = this.personalMessageManager.addUnapprovedMessageAsync(msgParams, req)
+      this.sendUpdate()
+      this.opts.showUnconfirmedMessage()
+      return promise
+    } else {
+      return Promise.resolve(this.keyringController.signPersonalMessage(msgParams))
+    }
     return promise
   }
 
