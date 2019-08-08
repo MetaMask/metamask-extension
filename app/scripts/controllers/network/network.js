@@ -59,6 +59,10 @@ const defaultProviderConfig = {
   type: defaultProviderConfigType,
 }
 
+const defaultNetworkConfig = {
+  ticker: 'POA',
+}
+
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -70,6 +74,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
     this.dProviderStore = new ObservableStore({dProvider: false})
+    this.networkConfig = new ObservableStore(defaultNetworkConfig)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, dProviderStore: this.dProviderStore })
     this.on('networkDidChange', this.lookupNetwork)
     // provider and block tracker
