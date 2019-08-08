@@ -385,10 +385,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return {
       ...{ isInitialized },
       ...this.memStore.getFlatState(),
-      ...{
-        // TODO: Remove usages of lost accounts
-        lostAccounts: [],
-      },
     }
   }
 
@@ -1176,27 +1172,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * @typedef Account
    * @property string privateKey - The private key of the account.
    */
-
-  /**
-   * Probably no longer needed, related to the Version 3 migration.
-   * Imports a hash of accounts to private keys into the vault.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   * @deprecated
-   * @param  {Account[]} lostAccounts -
-   * @returns {Keyring[]} An array of the restored keyrings.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
 
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)

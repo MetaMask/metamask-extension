@@ -157,7 +157,6 @@ module.exports = {
       { id: 'shapeShiftTx2', 'time': 1575000000000 },
       { id: 'shapeShiftTx3', 'time': 1475000000000 },
     ],
-    'lostAccounts': [],
     'send': {
       'gasLimit': '0xFFFF',
       'gasPrice': '0xaa',
