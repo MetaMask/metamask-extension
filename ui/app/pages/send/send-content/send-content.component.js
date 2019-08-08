@@ -49,7 +49,7 @@ export default class SendContent extends Component {
     const { t } = this.context
     const { to, addressBook = [], ownedAccounts = [], showAddToAddressBookModal } = this.props
     const isOwnedAccount = !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase())
-    const contact = addressBook.find(({ address }) => address === to) || {}
+    const contact = addressBook.find(({ address }) => address.toLowerCase() === to.toLowerCase()) || {}
 
     if (isOwnedAccount || contact.name) {
       return

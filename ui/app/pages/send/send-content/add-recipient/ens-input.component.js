@@ -182,7 +182,7 @@ export default class EnsInput extends Component {
   renderSelected () {
     const { t } = this.context
     const { className, selectedAddress, selectedName, addressBook } = this.props
-    const contact = addressBook.filter(item => item.address === selectedAddress)[0] || {}
+    const contact = addressBook.filter(item => item.address.toLowerCase() === selectedAddress.toLowerCase())[0] || {}
     const name = contact.name || selectedName
 
 
