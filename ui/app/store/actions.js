@@ -1956,10 +1956,12 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
 
   return (dispatch, getState) => {
     const chainId = getState().metamask.network
-    const set = background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
-    if (!set) {
-      return dispatch(displayWarning('Address book failed to update'))
-    }
+    background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo, (_, set) => {
+      if (!set) {
+        return dispatch(displayWarning('Address book failed to update'))
+      }
+    })
+
   }
 }
 
