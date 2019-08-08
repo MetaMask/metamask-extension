@@ -59,10 +59,6 @@ const defaultProviderConfig = {
   type: defaultProviderConfigType,
 }
 
-const defaultNetworkConfig = {
-  ticker: 'POA',
-}
-
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -185,11 +181,11 @@ module.exports = class NetworkController extends EventEmitter {
     return this.providerStore.getState()
   }
 
-  getDProvider(){
+  getDProvider () {
     return this.dProviderStore.getState().dProvider
   }
 
-  setDProvider(key){
+  setDProvider (key) {
     this.dProviderStore.updateState({
       dProvider: key,
     })
@@ -212,13 +208,13 @@ module.exports = class NetworkController extends EventEmitter {
     // pocket type-based endpointes
     const isPocket = POCKET_PROVIDER_TYPES.includes(type)
 
-    if (!isPocket && this.dProviderStore.getState().dProvider){
+    if (!isPocket && this.dProviderStore.getState().dProvider) {
       this.dProviderStore.updateState({
-        dProvider: false
+        dProvider: false,
       })
     }
 
-    if (isPocket && this.dProviderStore.getState().dProvider){
+    if (isPocket && this.dProviderStore.getState().dProvider) {
       this._configurePocketProvider(opts)
     } else if (isInfura) {
         this._configureInfuraProvider(opts)
