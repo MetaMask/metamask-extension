@@ -232,8 +232,7 @@
       "rinkeby": "ok",
       "ropsten": "ok",
       "goerli": "ok"
-    },
-    "lostAccounts": []
+    }
   },
   "appState": {
     "shouldClose": false,

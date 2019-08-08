@@ -19,7 +19,6 @@ const mapStateToProps = state => {
   const {
     approvedOrigins,
     dismissedOrigins,
-    lostAccounts,
     suggestedTokens,
     providerRequests,
     migratedPrivacyMode,
@@ -42,7 +41,6 @@ const mapStateToProps = state => {
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
   return {
-    lostAccounts,
     forgottenPassword,
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
