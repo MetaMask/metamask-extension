@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
+import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData, getUseContractAccount, getContractAccountOwner } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -46,6 +46,8 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     metaMetricsSendCount,
   } = metamask
+  const isContractAccount = getUseContractAccount(state)
+  const contractAccountOwner = getContractAccountOwner(state)
   const {
     tokenData,
     txData,
@@ -66,7 +68,15 @@ const mapStateToProps = (state, ownProps) => {
   const assetImage = assetImages[txParamsToAddress]
 
   const { balance } = accounts[selectedAddress]
-  const { name: fromName } = identities[selectedAddress]
+
+  let fromAccountName
+  if (isContractAccount) {
+    fromAccountName = identities[contractAccountOwner]
+  } else {
+    fromAccountName = identities[selectedAddress]
+  }
+
+  const { name: fromName } = fromAccountName
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name
