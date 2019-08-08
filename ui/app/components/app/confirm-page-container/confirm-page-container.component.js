@@ -24,7 +24,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
-    toNickname: PropTypes.object,
+    toNickname: PropTypes.string,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,

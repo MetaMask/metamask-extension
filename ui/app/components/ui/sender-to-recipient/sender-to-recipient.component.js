@@ -19,7 +19,7 @@ export default class SenderToRecipient extends PureComponent {
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
-    recipientNickname: PropTypes.object,
+    recipientNickname: PropTypes.string,
     t: PropTypes.func,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
