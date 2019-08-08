@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 7.0.1 Thu Aug 08 2019
+- [#6975](https://github.com/MetaMask/metamask-extension/pull/6975): Ensure seed phrase backup notification only shows up for new users
+
 ## 7.0.0 Fri Aug 02 2019
 - [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI
 - [#6874](https://github.com/MetaMask/metamask-extension/pull/6928): Allows skipping of seed phrase challenge during onboarding, and completing it at a later time

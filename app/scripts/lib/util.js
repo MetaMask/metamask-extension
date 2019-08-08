@@ -5,6 +5,7 @@ const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
   PLATFORM_CHROME,
@@ -28,17 +29,21 @@ function getStack () {
  *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
  *  - 'responsive' refers to the main browser window
  *  - 'notification' refers to the popup that appears in its own window when taking action outside of metamask
+ *  - 'background' refers to the background page
  *
  * @returns {string} A single word label that represents the type of window through which the app is being viewed
  *
  */
 const getEnvironmentType = (url = window.location.href) => {
-  if (url.match(/popup.html(?:#.*)*$/)) {
+  const parsedUrl = new URL(url)
+  if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
-  } else if (url.match(/home.html(?:\?.+)*$/) || url.match(/home.html(?:#.*)*$/)) {
+  } else if (parsedUrl.pathname === '/home.html') {
     return ENVIRONMENT_TYPE_FULLSCREEN
-  } else {
+  } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
+  } else {
+    return ENVIRONMENT_TYPE_BACKGROUND
   }
 }
 

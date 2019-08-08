@@ -23,7 +23,7 @@ class OnboardingController {
    */
   constructor (opts = {}) {
     const initState = extend({
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: true,
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
