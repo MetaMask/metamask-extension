@@ -76,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
         : addressSlicer(checksumAddress(toAddress))
     )
 
-  const addressBookObject = R.find(R.propEq('address', checksumAddress(toAddress)))(addressBook)
+  const addressBookObject = addressBook[checksumAddress(toAddress)]
   const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
