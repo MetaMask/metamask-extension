@@ -46,12 +46,6 @@ export default class SignatureRequestModal extends Component {
   }
 
   renderAccountDropdown () {
-    const { selectedAccount } = this.state
-
-    const {
-      accounts,
-    } = this.props
-
     return <div className="request-signature__account">
 
       <div className="request-signature__account-text">
@@ -160,8 +154,8 @@ export default class SignatureRequestModal extends Component {
         >
           { this.context.t('learnMore') }
         </span>,
-    ]
-   }
+      ]
+    }
 
     return <div className="request-signature__body">
       { this.renderAccountInfo() }
@@ -172,7 +166,7 @@ export default class SignatureRequestModal extends Component {
           'request-signature__warning': type === 'eth_sign',
         })}
       >
-       { notice }
+        { notice }
       </div>
       <div className="request-signature__rows">
         {type === 'eth_signTypedData' && version === 'V3'

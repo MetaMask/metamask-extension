@@ -743,7 +743,7 @@ describe('MetaMaskController', function () {
         'data': data,
       }
 
-      const promise = metamaskController.newUnsignedPersonalMessage(msgParams)
+      const promise = metamaskController.newUnsignedPersonalMessage(msgParams, {})
       // handle the promise so it doesn't throw an unhandledRejection
       promise.then(noop).catch(noop)
 
@@ -758,7 +758,7 @@ describe('MetaMaskController', function () {
         'data': data,
       }
       try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        await metamaskController.newUnsignedPersonalMessage(msgParams, {})
         assert.fail('should have thrown')
       } catch (error) {
         assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
