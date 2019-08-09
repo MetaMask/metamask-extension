@@ -1273,8 +1273,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
     this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
     this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
-
-    this.providerApprovalController.on(`forceResolvedRequest:${originDomain}`, publicApi.forceReloadSite)
   }
 
   /**
@@ -1455,10 +1453,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const publicApi = {
       // wrap with an await remote
-      forceReloadSite: async () => {
-        const remote = await getRemote()
-        return await pify(remote.forceReloadSite)()
-      },
       getSiteMetadata: async () => {
         const remote = await getRemote()
         return await pify(remote.getSiteMetadata)()

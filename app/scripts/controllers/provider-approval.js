@@ -156,8 +156,6 @@ class ProviderApprovalController extends SafeEventEmitter {
       dismissedOrigins: _dismissedOrigins,
       providerRequests: remainingProviderRequests,
     })
-
-    this.emit(`forceResolvedRequest:${origin}`, { approved: true, forced: true })
   }
 
   /**
