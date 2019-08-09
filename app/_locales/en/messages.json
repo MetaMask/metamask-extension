@@ -6,7 +6,7 @@
     "message": "Share your address to connect to $1?"
   },
   "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
+    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default. You may need to reload the dapp for the change to take effect."
   },
   "privacyModeDefault": {
     "message": "Privacy Mode is now enabled by default"
