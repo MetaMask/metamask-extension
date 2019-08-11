@@ -180,6 +180,7 @@ class ConfigScreen extends Component {
             h('div', {
               style: {
                 display: 'table',
+                width: '100%',
               }
             }, [
               h('div', {
