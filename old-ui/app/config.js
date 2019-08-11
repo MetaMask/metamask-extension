@@ -108,10 +108,10 @@ class ConfigScreen extends Component {
                   width: 'inherit',
                   flex: '1 0 auto',
                   height: '32px',
-                  margin: '20px 20px 0 0',
                   borderRadius: '3px',
                   border: '1px solid #e2e2e2',
                   padding: '10px',
+                  marginBottom: '20px',
                 },
                 onKeyPress: (event) => {
                   if (event.key === 'Enter') {
@@ -121,44 +121,27 @@ class ConfigScreen extends Component {
                   }
                 },
               }),
-              h('button', {
-                style: {
-                  alignSelf: 'center',
-                  marginTop: '20px',
-                },
-                onClick: (event) => {
-                  event.preventDefault()
-                  const element = document.querySelector('input#new_rpc')
-                  const newRpc = element.value
-                  this.rpcValidation(newRpc, state)
-                },
-              }, 'Save'),
             ]),
+
+            h('button.btn-spread', {
+              onClick: (event) => {
+                event.preventDefault()
+                const element = document.querySelector('input#new_rpc')
+                const newRpc = element.value
+                this.rpcValidation(newRpc, state)
+              },
+            }, 'Save'),
 
             h('hr.horizontal-line'),
 
             this.currentConversionInformation(metamaskState, state),
 
-            h('hr.horizontal-line', {
-              style: {
-                marginTop: '20px',
-              },
-            }),
+            h('hr.horizontal-line'),
 
-            h('div', {
-              style: {
-                marginTop: '20px',
-              },
-            }, [
-              h('p', {
-                style: {
-                  fontFamily: 'Nunito Regular',
-                  fontSize: '14px',
-                  lineHeight: '18px',
-                },
-              }, `State logs contain your public account addresses and sent transactions.`),
-              h('br'),
-              h('button', {
+            h('div', [
+              h('p.config-title', `State logs`),
+              h('p.config-description', `State logs contain your public account addresses and sent transactions.`),
+              h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
                 },
@@ -174,18 +157,12 @@ class ConfigScreen extends Component {
               }, 'Download State Logs'),
             ]),
 
-            h('hr.horizontal-line', {
-              style: {
-                marginTop: '20px',
-              },
-            }),
+            h('hr.horizontal-line'),
 
-            h('div', {
-              style: {
-                marginTop: '20px',
-              },
-            }, [
-              h('button', {
+            h('div', [
+              h('p.config-title', `Seed words`),
+              h('p.config-description', `Reveal seed words.`),
+              h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
                 },
@@ -196,56 +173,42 @@ class ConfigScreen extends Component {
               }, 'Reveal Seed Words'),
             ]),
 
-            h('hr.horizontal-line', {
-              style: {
-                marginTop: '20px',
-              },
-            }),
+            h('hr.horizontal-line'),
 
-            h('p', {
-              style: {
-                fontFamily: 'Nunito Regular',
-                fontSize: '14px',
-                lineHeight: '18px',
-              },
-            }, [
-              'Switch to Decentralized Provider (Pocket)',
-            ]),
-
-            h('input', {
-              type:'checkbox',
-              name:'pocket-checkbox',
-              checked: this.state.dProvider,
-              onChange: (event) => {
-                event.preventDefault()
-                this.toggleProvider()
-              },
-            }),
-
-            h('hr.horizontal-line', {
-              style: {
-                marginTop: '20px',
-              },
-            }),
+            h('p.config-title', `Provider`),
 
             h('div', {
               style: {
-                marginTop: '20px',
-              },
+                display: 'table',
+              }
             }, [
-
-              h('p', {
+              h('div', {
                 style: {
-                  fontFamily: 'Nunito Regular',
-                  fontSize: '14px',
-                  lineHeight: '18px',
-                },
-              }, [
-                'Resetting is for developer use only. ',
+                display: 'table-cell',
+              }},[
+                h('p.config-description', 'Switch to Decentralized Provider (Pocket)')
               ]),
-              h('br'),
+              h('div', { style: {
+                display: 'table-cell',
+              }},[
+                h('input', {
+                  type:'checkbox',
+                  name:'pocket-checkbox',
+                  checked: this.state.dProvider,
+                  onChange: (event) => {
+                    event.preventDefault()
+                    this.toggleProvider()
+                  },
+                }),
+              ])
+            ]),
 
-              h('button', {
+            h('hr.horizontal-line'),
+
+            h('div', [
+              h('p.config-title', `Account`),
+              h('p.config-description', `Resetting is for developer use only.`),
+              h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
                 },
@@ -255,16 +218,9 @@ class ConfigScreen extends Component {
                 },
               }, 'Reset Account'),
 
-              h('hr.horizontal-line', {
-                style: {
-                  marginTop: '20px',
-                },
-              }),
+              h('p.config-description', 'Changing of password'),
 
-              h('button', {
-                style: {
-                  alignSelf: 'center',
-                },
+              h('button.btn-spread', {
                 onClick (event) {
                   event.preventDefault()
                   state.dispatch(actions.confirmChangePassword())
@@ -330,9 +286,9 @@ class ConfigScreen extends Component {
     const currentCurrency = metamaskState.currentCurrency
     const conversionDate = metamaskState.conversionDate
     return h('div', [
-      h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current Conversion'),
-      h('span', {style: { fontWeight: 'bold', paddingRight: '10px', fontSize: '13px'}}, `Updated ${Date(conversionDate)}`),
-      h('select#currentCurrency', {
+      h('div.config-title', 'Current Conversion'),
+      h('div.config-description', `Updated ${Date(conversionDate)}`),
+      h('select.config-select-currency#currentCurrency', {
         onChange (event) {
           event.preventDefault()
           const element = document.getElementById('currentCurrency')
@@ -360,9 +316,9 @@ class ConfigScreen extends Component {
     }
 
     return h('div', [
-      h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
-      h('span', value),
-      provider.type === 'rpc' && h('button', {
+      h('div.config-title', title),
+      h('div.config-description', value),
+      provider.type === 'rpc' && h('button.btn-spread', {
         onClick (event) {
           event.preventDefault()
           state.dispatch(actions.showDeleteRPC())
