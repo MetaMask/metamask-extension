@@ -11,6 +11,7 @@ const {
 } = require('../helpers/utils/conversion-util')
 import {
   addressSlicer,
+  checksumAddress,
 } from '../helpers/utils/util'
 
 const selectors = {
@@ -217,7 +218,7 @@ function getAddressBook (state) {
 
 function getAddressBookEntry (state, address) {
   const addressBook = getAddressBook(state)
-  const entry = addressBook.find(contact => contact.address.toLowerCase() === address.toLowerCase())
+  const entry = addressBook.find(contact => contact.address === checksumAddress(address))
   return entry
 }
 
