@@ -30,6 +30,7 @@ const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const OnboardingController = require('./controllers/onboarding')
 const RecentBlocksController = require('./controllers/recent-blocks')
+const IncomingTransactionsController = require('./controllers/incoming-transactions')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -135,6 +136,14 @@ module.exports = class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       provider: this.provider,
       networkController: this.networkController,
+    })
+
+    this.incomingTransactionsController = new IncomingTransactionsController({
+      blockTracker: this.blockTracker,
+      provider: this.provider,
+      networkController: this.networkController,
+      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
+      initState: initState.IncomingTransactionsController,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
@@ -270,6 +279,7 @@ module.exports = class MetamaskController extends EventEmitter {
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      IncomingTransactionsController: this.incomingTransactionsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -294,6 +304,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // ProviderApprovalController
       ProviderApprovalController: this.providerApprovalController.store,
       ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
+      IncomingTransactionsController: this.incomingTransactionsController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
