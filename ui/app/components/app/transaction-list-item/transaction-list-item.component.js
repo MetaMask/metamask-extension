@@ -36,6 +36,7 @@ export default class TransactionListItem extends PureComponent {
     rpcPrefs: PropTypes.object,
     data: PropTypes.string,
     getContractMethodData: PropTypes.func,
+    isDeposit: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -117,7 +118,7 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderPrimaryCurrency () {
-    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value } = this.props
+    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value, isDeposit } = this.props
 
     return token
       ? (
@@ -132,7 +133,7 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
           type={PRIMARY}
-          prefix="-"
+          prefix={isDeposit ? '' : '-'}
         />
       )
   }

@@ -11,12 +11,21 @@ import { selectedTokenSelector } from '../../../selectors/tokens'
 import { updateNetworkNonce } from '../../../store/actions'
 
 const mapStateToProps = state => {
+  const selectedAddress = getSelectedAddress(state)
+  const _incomingTransactions = Object.values(state.metamask.incomingTransactions)
+    .filter(({ txParams }) => txParams.to === selectedAddress)
+
   return {
     completedTransactions: nonceSortedCompletedTransactionsSelector(state),
     pendingTransactions: nonceSortedPendingTransactionsSelector(state),
     selectedToken: selectedTokenSelector(state),
-    selectedAddress: getSelectedAddress(state),
+    selectedAddress,
     assetImages: getAssetImages(state),
+    incomingTransactions: _incomingTransactions.map(incomingTx => ({
+      transactions: _incomingTransactions,
+      primaryTransaction: incomingTx,
+      initialTransaction: incomingTx,
+    })),
   }
 }
 
