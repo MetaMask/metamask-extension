@@ -64,6 +64,7 @@
     ],
     "tokens": [],
     "transactions": {},
+    "incomingTransactions": {},
     "selectedAddressTxList": [],
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
