@@ -27,12 +27,6 @@ export default class Home extends PureComponent {
   }
 
   static propTypes = {
-    activeTab: PropTypes.shape({
-      origin: PropTypes.string,
-      protocol: PropTypes.string,
-      title: PropTypes.string,
-      url: PropTypes.string,
-    }),
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
@@ -40,10 +34,7 @@ export default class Home extends PureComponent {
     providerRequests: PropTypes.array,
     showPrivacyModeNotification: PropTypes.bool.isRequired,
     unsetMigratedPrivacyMode: PropTypes.func,
-    viewingUnconnectedDapp: PropTypes.bool.isRequired,
-    forceApproveProviderRequestByOrigin: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
-    rejectProviderRequestByOrigin: PropTypes.func,
     isPopup: PropTypes.bool,
   }
 
@@ -73,16 +64,12 @@ export default class Home extends PureComponent {
   render () {
     const { t } = this.context
     const {
-      activeTab,
       forgottenPassword,
       providerRequests,
       history,
       showPrivacyModeNotification,
       unsetMigratedPrivacyMode,
-      viewingUnconnectedDapp,
-      forceApproveProviderRequestByOrigin,
       shouldShowSeedPhraseReminder,
-      rejectProviderRequestByOrigin,
       isPopup,
     } = this.props
 
@@ -118,20 +105,6 @@ export default class Home extends PureComponent {
                           unsetMigratedPrivacyMode()
                         }}
                         key="home-privacyModeDefault"
-                      />,
-                    },
-                    {
-                      shouldBeRendered: viewingUnconnectedDapp,
-                      component: <HomeNotification
-                        descriptionText={t('shareAddressToConnect', [activeTab.origin])}
-                        acceptText={t('shareAddress')}
-                        onAccept={() => {
-                          forceApproveProviderRequestByOrigin(activeTab.origin)
-                        }}
-                        ignoreText={t('dismiss')}
-                        onIgnore={() => rejectProviderRequestByOrigin(activeTab.origin)}
-                        infoText={t('shareAddressInfo', [activeTab.origin])}
-                        key="home-shareAddressToConnect"
                       />,
                     },
                     {
