@@ -49,7 +49,7 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
         submitType="secondary"
       >
         <ModalContent
-          title={`${t('dataBackupFound')}?`}
+          title={`${t('dataBackupFound')}`}
           description={t('restoreWalletPreferences')}
         />
       </Modal>
