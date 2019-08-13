@@ -204,7 +204,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:firefox
-          command: yarn build:test && yarn test:e2e:chrome
+          command: yarn build:test && yarn test:e2e:firefox
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
