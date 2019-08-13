@@ -464,7 +464,7 @@ module.exports = class MetamaskController extends EventEmitter {
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
-      setAddressBook: this.addressBookController.set.bind(this.addressBookController),
+      setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
       removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
 
       // AppStateController
