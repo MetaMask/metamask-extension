@@ -146,6 +146,23 @@ describe('TransactionStateManager', function () {
       assert.equal(result[0].id, 1, 'early txs truncted')
     })
 
+    it('should remove down to the txHistoryLimit if their are more txs then limit in history', function () {
+      const limit = txStateManager.txHistoryLimit
+      const txList = []
+      for (let i = 0; i < limit + 15; i++) {
+        const tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
+        txList.push(tx)
+      }
+      txStateManager._saveTxList(txList)
+      let result = txStateManager.getTxList()
+      assert.equal(result.length, 25, `list should be 25`)
+      txStateManager.addTx({ id: 200, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
+
+      result = txStateManager.getTxList()
+      assert.equal(result.length, 10, 'length should be 10')
+      assert.equal(result.pop().id, 200, 'last tx should be the most recent added')
+    })
+
     it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function () {
       const limit = txStateManager.txHistoryLimit
       for (let i = 0; i < limit + 1; i++) {

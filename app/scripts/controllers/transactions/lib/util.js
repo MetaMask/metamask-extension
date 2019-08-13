@@ -12,6 +12,7 @@ module.exports = {
   validateFrom,
   validateRecipient,
   getFinalStates,
+  containsFinalStates,
 }
 
 
@@ -97,3 +98,6 @@ function getFinalStates () {
   ]
 }
 
+function containsFinalStates (txs) {
+  return !!txs.find((tx) => getFinalStates().includes(tx.status))
+}

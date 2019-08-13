@@ -4,7 +4,7 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
-const { getFinalStates, normalizeTxParams } = require('./lib/util')
+const { getFinalStates, normalizeTxParams, containsFinalStates } = require('./lib/util')
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -143,7 +143,7 @@ class TransactionStateManager extends EventEmitter {
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
-    const txCount = transactions.length
+    let txCount = transactions.length
     const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
@@ -152,12 +152,15 @@ class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => {
-        return getFinalStates().includes(metaTx.status)
-      })
-      if (index !== -1) {
-        transactions.splice(index, 1)
-      }
+      do {
+        const index = transactions.findIndex((metaTx) => {
+          return getFinalStates().includes(metaTx.status)
+        })
+        if (index !== -1) {
+          transactions.splice(index, 1)
+        }
+        txCount = transactions.length
+      } while (txCount > txHistoryLimit - 1 && containsFinalStates(transactions))
     }
     transactions.push(txMeta)
     this._saveTxList(transactions)
