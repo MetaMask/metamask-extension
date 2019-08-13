@@ -42,14 +42,14 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
 
     return (
       <Modal
-        headerText={t('dataBackupFound')}
         onSubmit={this.handleConfirm}
         onCancel={this.handleCancel}
-        submitText={t('confirm')}
+        submitText={t('restore')}
         cancelText={t('noThanks')}
         submitType="secondary"
       >
         <ModalContent
+          title={`${t('dataBackupFound')}?`}
           description={t('restoreWalletPreferences')}
         />
       </Modal>
