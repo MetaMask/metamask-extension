@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import TransactionListItem from '../transaction-list-item'
 import ShapeShiftTransactionListItem from '../shift-list-item'
 import { TRANSACTION_TYPE_SHAPESHIFT } from '../../../helpers/constants/transactions'
@@ -23,11 +22,6 @@ export default class TransactionList extends PureComponent {
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
-    incomingTransactions: PropTypes.array,
-  }
-
-  state = {
-    selectedTab: 'history',
   }
 
   componentDidMount () {
@@ -57,12 +51,8 @@ export default class TransactionList extends PureComponent {
 
   renderTransactions () {
     const { t } = this.context
-    const { selectedTab } = this.state
-    const { pendingTransactions = [], completedTransactions = [], incomingTransactions = [] } = this.props
+    const { pendingTransactions = [], completedTransactions = [] } = this.props
     const pendingLength = pendingTransactions.length
-
-    const selectedTabIsIncoming = selectedTab === 'incoming'
-    const primaryTransactionsToRender = selectedTabIsIncoming ? incomingTransactions : completedTransactions
 
     return (
       <div className="transaction-list__transactions">
@@ -82,29 +72,11 @@ export default class TransactionList extends PureComponent {
         }
         <div className="transaction-list__completed-transactions">
           <div className="transaction-list__header">
-            <div className="transaction-list__header__tabs">
-              <div
-                onClick={() => this.setState({ selectedTab: 'history' })}
-                className={classnames({
-                  'transaction-list__header__tab--selected': selectedTab === 'history',
-                  'transaction-list__header__tab': selectedTab !== 'history',
-                })}>
-                { t('history') }
-              </div>
-              <div className="transaction-list__header__tab">|</div>
-              <div
-                onClick={() => this.setState({ selectedTab: 'incoming' })}
-                className={classnames({
-                  'transaction-list__header__tab--selected': selectedTabIsIncoming,
-                  'transaction-list__header__tab': selectedTab !== 'incoming',
-                })}>
-                { t('received') }
-              </div>
-            </div>
+            { t('history') }
           </div>
           {
-            primaryTransactionsToRender.length > 0
-              ? primaryTransactionsToRender.map((transactionGroup, index) => (
+            completedTransactions.length > 0
+              ? completedTransactions.map((transactionGroup, index) => (
                 this.renderTransaction(transactionGroup, index)
               ))
               : this.renderEmpty()
@@ -118,7 +90,7 @@ export default class TransactionList extends PureComponent {
     const { selectedToken, assetImages } = this.props
     const { transactions = [] } = transactionGroup
 
-    return transactions[0] && transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
+    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
       ? (
         <ShapeShiftTransactionListItem
           { ...transactions[0] }
