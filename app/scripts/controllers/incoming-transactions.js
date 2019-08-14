@@ -47,7 +47,7 @@ class IncomingTransactionsController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    const changeListener = async ({ newBlockNumberHex, networkType }) => {
+    const changeListener = async ({ newBlockNumberDec, networkType } = {}) => {
       try {
         const {
           incomingTransactions: currentIncomingTxs,
@@ -57,14 +57,11 @@ class IncomingTransactionsController {
         const address = this.getSelectedAddress()
         const network = networkType || this.getCurrentNetwork()
         const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
-        const blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberHex
-
+        const blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
         const { latestIncomingTxBlockNumber, txs } = await this.fetchAll(address, blockToFetchFrom, network)
-
-        const newLatestBlockHashByNetwork = parseInt(latestIncomingTxBlockNumber, 10) > parseInt(blockToFetchFrom, 10)
-          ? latestIncomingTxBlockNumber
-          : blockToFetchFrom
-
+        const newLatestBlockHashByNetwork = latestIncomingTxBlockNumber
+          ? parseInt(latestIncomingTxBlockNumber, 10) + 1
+          : blockToFetchFrom + 1
         const newIncomingTransactions = {
           ...currentIncomingTxs,
         }
@@ -82,10 +79,10 @@ class IncomingTransactionsController {
       }
     }
 
-    const blockListener = async (newBlockNumberHex) => {
-      changeListener({ newBlockNumberHex: parseInt(newBlockNumberHex, 16) })
+    const blockListener = (newBlockNumberHex) => {
+      changeListener({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
     }
-    const networkListener = async (newType) => {
+    const networkListener = (newType) => {
       changeListener({ networkType: newType })
     }
 
@@ -150,7 +147,7 @@ class IncomingTransactionsController {
       }
     }
     return {
-      latestIncomingTxBlockNumber: '0',
+      latestIncomingTxBlockNumber: null,
       txs: [],
     }
   }
