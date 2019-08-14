@@ -351,6 +351,7 @@ var actions = {
   rejectPermissionsRequest,
   removePermissionsFor,
   clearPermissions,
+  selectApprovedAccount,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -2645,6 +2646,21 @@ function setPendingTokens (pendingTokens) {
 }
 
 // Permissions
+
+/**
+ * @param {string} origin
+ */
+function selectApprovedAccount (origin) {
+  return (dispatch) => {
+    background.getApprovedAccounts(origin, (err, accounts) => {
+      if (err) {
+        log.error(err)
+      } else if (Array.isArray(accounts) && accounts.length > 0) {
+        dispatch(actions.setSelectedAddress(accounts[0]))
+      }
+    })
+  }
+}
 
 /**
  * Approves the permission requests with the given IDs.

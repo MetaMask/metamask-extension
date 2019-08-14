@@ -54,12 +54,14 @@ const selectors = {
   isEthereumNetwork,
   getAllPermissions,
   getPermissionsRequests,
+  getPermissionsDescriptions,
+  getSiteMetadata,
+  getActiveTab,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
-  getPermissionsDescriptions,
 }
 
 module.exports = selectors
@@ -352,6 +354,14 @@ function getPermissionsDescriptions (state) {
 
 function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests
+}
+
+function getSiteMetadata (state) {
+  return state.metamask.siteMetadata
+}
+
+function getActiveTab (state) {
+  return state.activeTab
 }
 
 function getMetaMetricState (state) {

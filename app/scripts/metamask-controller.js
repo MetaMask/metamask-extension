@@ -253,8 +253,7 @@ module.exports = class MetamaskController extends EventEmitter {
       openPopup: opts.openPopup,
       closePopup: opts.closePopup,
     },
-    // TOOD: Persist/restore state here:
-    {})
+    initState.PermissionsController)
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -269,6 +268,7 @@ module.exports = class MetamaskController extends EventEmitter {
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
+      // TODO:permissions permissionsRequests should be memStore only
       PermissionsController: this.permissionsController.permissions,
     })
 
@@ -292,6 +292,7 @@ module.exports = class MetamaskController extends EventEmitter {
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionsController: this.permissionsController.permissions,
+      SiteMetadata: this.permissionsController.memStore,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -320,7 +321,7 @@ module.exports = class MetamaskController extends EventEmitter {
         ) {
           return await this.permissionsController.getAccounts(origin)
         }
-        return []
+        return [] // changing this is a breaking change
       },
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
@@ -511,6 +512,7 @@ module.exports = class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
       removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
       clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
+      getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
     }
   }
 

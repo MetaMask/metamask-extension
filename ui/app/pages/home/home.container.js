@@ -8,11 +8,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
 const mapStateToProps = state => {
-  const { metamask, appState } = state
+  const { activeTab, metamask, appState } = state
   const {
     suggestedTokens,
-    // featureFlags: {
-    // } = {},
     seedPhraseBackedUp,
     tokens,
     permissionsRequests,

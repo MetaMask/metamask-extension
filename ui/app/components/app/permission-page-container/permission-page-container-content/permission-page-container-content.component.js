@@ -6,7 +6,8 @@ import AccountDropdownMini from '../../../ui/account-dropdown-mini'
 export default class PermissionPageContainerContent extends PureComponent {
 
   static propTypes = {
-    metadata: PropTypes.object.isRequired,
+    requestMetadata: PropTypes.object.isRequired,
+    siteMetadata: PropTypes.object.isRequired,
     selectedPermissions: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
@@ -18,26 +19,31 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
+  state = {
+    iconError: false,
+  }
+
   renderPermissionApprovalVisual = () => {
     const {
-      metadata, selectedAccount, onAccountSelect,
+      requestMetadata, siteMetadata, selectedAccount, onAccountSelect,
     } = this.props
 
     return (
       <div className="permission-approval-visual">
         <section>
-          {metadata.site.icon ? (
+          {!this.state.iconError && siteMetadata.icon ? (
             <img
               className="permission-approval-visual__identicon"
-              src={metadata.site.icon}
+              src={siteMetadata.icon}
+              onError={() => this.setState({ iconError: true })}
             />
           ) : (
             <i className="permission-approval-visual__identicon--default">
-              {metadata.site.name.charAt(0).toUpperCase()}
+              {siteMetadata.name.charAt(0).toUpperCase()}
             </i>
           )}
-          <h1>{metadata.site.name}</h1>
-          <h2>{metadata.origin}</h2>
+          <h1>{siteMetadata.name}</h1>
+          <h2>{requestMetadata.origin}</h2>
         </section>
         <span className="permission-approval-visual__check" />
         <section>
@@ -93,7 +99,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   }
 
   render () {
-    const { metadata } = this.props
+    const { siteMetadata } = this.props
     const { t } = this.context
 
     // TODO:lps change the learnMore link
@@ -103,7 +109,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           <h2>{t('permissionsRequest')}</h2>
           {this.renderPermissionApprovalVisual()}
           <section>
-            <h1>{metadata.site.name}</h1>
+            <h1>{siteMetadata.name}</h1>
             <h2>{'Would like to:'}</h2>
             {this.renderRequestedPermissions()}
             <br/>

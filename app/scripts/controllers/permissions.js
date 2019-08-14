@@ -1,13 +1,15 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
+const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
-const uuid = require('uuid/v4')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 // Methods that do not require any permissions to use:
 const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
 const METHOD_PREFIX = 'wallet_'
+const INTERNAL_METHOD_PREFIX = 'metamask_'
 
 function prefix (method) {
   return METHOD_PREFIX + method
@@ -19,6 +21,7 @@ class PermissionsController {
   constructor ({
     openPopup, closePopup, keyringController,
   } = {}, restoredState) {
+    this.memStore = new ObservableStore({ siteMetadata: {} })
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
@@ -39,69 +42,50 @@ class PermissionsController {
    * Create middleware for preprocessing permissions requests.
    */
   createRequestMiddleware () {
-    return createAsyncMiddleware(async (req, _, next) => {
+    return createAsyncMiddleware(async (req, res, next) => {
 
-      /**
-       * TODO:lps:review I believe we should centralize permissioning
-       * logic by blocking requests here. For example, the extension currently
-       * behaves differently when it receives an eth_accounts call while locked.
-       * If the calling domain has the permission, an empty array is returned
-       * by the KeyringController's locked behavior. If it does not have the
-       * permission, an auth error is thrown.
-       * Centralizing this logic here requires thoughtful design.
-       */
-      // if (
-      //   !keyring.memStore.getState().isUnlocked
-      //   && !SAFE_METHODS.includes(req.method)
-      // ) {
-      //   try {
-      //     this._openPopup()
-      //     await new Promise((resolve, reject) => {
-      //       ...
-      //     })
-      //   } catch (error) {
-      //     res.error = { code: 1, message: 'User denied access.' }
-      //     return
-      //   }
-      // }
+      if (typeof req.method !== 'string') {
+        res.error = rpcErrors.invalidRequest(null, req)
+        return // TODO:json-rpc-engine
+      }
 
-      // validate and add metadata to permissions requests
-      if (req.method === prefix('requestPermissions')) {
-
-        if (
-          !Array.isArray(req.params) ||
-          req.params.length !== 1 ||
-          typeof req.params[0] !== 'object' ||
-          Array.isArray(req.params[0])
-        ) throw new Error('Bad request.')
-
-        // add unique id and site metadata to request params, as expected by
-        // json-rpc-capabilities-middleware
-        const metadata = {
-          metadata: {
-            id: uuid(),
-            site: (
-              req._siteMetadata
-                ? req._siteMetadata
-                : { name: null, icon: null }
-            ),
-          },
+      if (req.method.startsWith(INTERNAL_METHOD_PREFIX)) {
+        switch (req.method.split(INTERNAL_METHOD_PREFIX)[1]) {
+          case 'sendSiteMetadata':
+            if (
+              req.siteMetadata &&
+              typeof req.siteMetadata.name === 'string'
+            ) {
+              this.memStore.putState({
+                siteMetadata: {
+                  ...this.memStore.getState().siteMetadata,
+                  [req.origin]: req.siteMetadata,
+                },
+              })
+            }
+            break
+          default:
+            res.error = rpcErrors.methodNotFound(null, req.method)
+            break
         }
-        req.params.push(metadata)
+        if (!res.error) res.result = true
+        return
       }
 
       return next()
     })
   }
 
-  // TODO:lps:review see initializeProvider() in metamask-controller for why this
-  // method exists
   /**
    * Returns the accounts that should be exposed for the given origin domain,
-   * if any.
+   * if any. This method exists for when a trusted context needs to know
+   * which accounts are exposed to a given domain.
+   *
+   * Do not use in untrusted contexts; just send an RPC request.
+   *
    * @param {string} origin
    */
-  async getAccounts (origin) {
+  getAccounts (origin) {
     return new Promise((resolve, _) => {
       const req = { method: 'eth_accounts' }
       const res = {}
@@ -170,6 +154,10 @@ class PermissionsController {
    * @param {string} origin = The origin string representing the domain.
    */
   _initializePermissions (restoredState) {
+
+    // TODO:permissions stop persisting permissionsDescriptions and remove this line
+    const initState = { ...restoredState, permissionsRequests: [] }
+
     this.testProfile = {
       name: 'Dan Finlay',
     }
@@ -246,7 +234,7 @@ class PermissionsController {
         // TODO: Attenuate requested permissions in approval screen.
         // Like selecting the account to display.
       },
-    }, restoredState)
+    }, initState)
   }
 
 }
