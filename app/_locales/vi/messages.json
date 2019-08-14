@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Chế độ riêng tư"
-  },
-  "privacyModeDescription": {
-    "message": "Trang web phải yêu cầu quyền truy cập để xem thông tin tài khoản của bạn."
-  },
   "exposeAccounts": {
     "message": "Hiển thị tài khoản"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
-  },
-  "approvalData": {
-    "message": "Dữ liệu phê duyệt"
-  },
-  "approvalDataDescription": {
-    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
   },
   "clearApprovalData": {
     "message": "Xóa dữ liệu phê duyệt"

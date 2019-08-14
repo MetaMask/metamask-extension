@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
 import Button from '../../../components/ui/button'
@@ -12,81 +11,13 @@ export default class SecurityTab extends PureComponent {
   }
 
   static propTypes = {
-    setPrivacyMode: PropTypes.func,
-    privacyMode: PropTypes.bool,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
-    showClearApprovalModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
     mobileSync: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     setParticipateInMetaMetrics: PropTypes.func,
-  }
-
-  renderStateLogs () {
-    const { t } = this.context
-    const { displayWarning } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('stateLogs') }</span>
-          <span className="settings-page__content-description">
-            { t('stateLogsDescription') }
-          </span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              onClick={() => {
-                window.logStateString((err, result) => {
-                  if (err) {
-                    displayWarning(t('stateLogError'))
-                  } else {
-                    exportAsFile('MetaMask State Logs.json', result)
-                  }
-                })
-              }}
-            >
-              { t('downloadStateLogs') }
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  renderClearApproval () {
-    const { t } = this.context
-    const { showClearApprovalModal } = this.props
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('approvalData') }</span>
-          <span className="settings-page__content-description">
-            { t('approvalDataDescription') }
-          </span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="warning"
-              large
-              className="settings-tab__button--orange"
-              onClick={event => {
-                event.preventDefault()
-                showClearApprovalModal()
-              }}
-            >
-              { t('clearApprovalData') }
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   renderSeedWords () {
@@ -117,32 +48,6 @@ export default class SecurityTab extends PureComponent {
             >
               { t('revealSeedWords') }
             </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  renderPrivacyOptIn () {
-    const { t } = this.context
-    const { privacyMode, setPrivacyMode } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('privacyMode') }</span>
-          <div className="settings-page__content-description">
-            { t('privacyModeDescription') }
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={privacyMode}
-              onToggle={value => setPrivacyMode(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
           </div>
         </div>
       </div>
@@ -181,8 +86,6 @@ export default class SecurityTab extends PureComponent {
     return (
       <div className="settings-page__body">
         { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderPrivacyOptIn() }
-        { this.renderClearApproval() }
         { this.renderSeedWords() }
         { this.renderMetaMetricsOptIn() }
       </div>

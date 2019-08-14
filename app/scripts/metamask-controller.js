@@ -503,7 +503,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // provider approval
       approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
       rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
-      forceApproveProviderRequestByOrigin: providerApprovalController.forceApproveProviderRequestByOrigin.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
 
       // onboarding controller

@@ -3,6 +3,7 @@ const UNLOCK_ROUTE = '/unlock'
 const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
 const GENERAL_ROUTE = '/settings/general'
+const CONNECTIONS_ROUTE = '/settings/connections'
 const ADVANCED_ROUTE = '/settings/advanced'
 const SECURITY_ROUTE = '/settings/security'
 const ABOUT_US_ROUTE = '/settings/about-us'
@@ -82,6 +83,7 @@ module.exports = {
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  CONNECTIONS_ROUTE,
   ABOUT_US_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -93,4 +95,3 @@ module.exports = {
   NETWORKS_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
 }
-

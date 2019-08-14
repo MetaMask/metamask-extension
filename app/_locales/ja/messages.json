@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "プライバシーモード"
-  },
-  "privacyModeDescription": {
-    "message": "ウェブサイトはあなたのアカウント情報を閲覧するためのアクセスを要求する必要があります。"
-  },
   "exposeAccounts": {
     "message": "アカウントを公開する"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "承認されたウェブサイトデータが正常に消去されました。"
-  },
-  "approvalData": {
-    "message": "承認データ"
-  },
-  "approvalDataDescription": {
-    "message": "承認されたウェブサイトのデータをクリアすると、すべてのサイトで承認を再度要求する必要があります"
   },
   "clearApprovalData": {
     "message": "承認データのクリア"

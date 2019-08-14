@@ -7,11 +7,6 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
  */
 class ProviderApprovalController extends SafeEventEmitter {
   /**
-   * Determines if caching is enabled
-   */
-  caching = true
-
-  /**
    * Creates a ProviderApprovalController
    *
    * @param {Object} [config] - Options to configure controller
@@ -24,7 +19,6 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.preferencesController = preferencesController
     this.store = new ObservableStore({
       approvedOrigins: {},
-      dismissedOrigins: {},
       providerRequests: [],
     })
   }
@@ -65,11 +59,17 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @param {string} siteImage - The icon of the window requesting full provider access
    */
   _handleProviderRequest (origin, siteTitle, siteImage) {
-    this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
+    const { providerRequests } = this.store.getState()
+    this.store.updateState({
+      providerRequests: [
+        ...providerRequests,
+        { origin, siteTitle, siteImage },
+      ],
+    })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    const { approvedOrigins, dismissedOrigins } = this.store.getState()
-    const originAlreadyHandled = approvedOrigins[origin] || dismissedOrigins[origin]
-    if (originAlreadyHandled && this.caching && isUnlocked) {
+    const { approvedOrigins } = this.store.getState()
+    const originAlreadyHandled = approvedOrigins[origin]
+    if (originAlreadyHandled && isUnlocked) {
       return
     }
     this.openPopup && this.openPopup()
@@ -85,21 +85,17 @@ class ProviderApprovalController extends SafeEventEmitter {
       this.closePopup()
     }
 
-    const { approvedOrigins, dismissedOrigins, providerRequests } = this.store.getState()
-
-    let _dismissedOrigins = dismissedOrigins
-    if (dismissedOrigins[origin]) {
-      _dismissedOrigins = Object.assign({}, dismissedOrigins)
-      delete _dismissedOrigins[origin]
-    }
-
+    const { approvedOrigins, providerRequests } = this.store.getState()
+    const providerRequest = providerRequests.find((request) => request.origin === origin)
     const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
     this.store.updateState({
       approvedOrigins: {
         ...approvedOrigins,
-        [origin]: true,
+        [origin]: {
+          siteTitle: providerRequest ? providerRequest.siteTitle : null,
+          siteImage: providerRequest ? providerRequest.siteImage : null,
+        },
       },
-      dismissedOrigins: _dismissedOrigins,
       providerRequests: remainingProviderRequests,
     })
     this.emit(`resolvedRequest:${origin}`, { approved: true })
@@ -115,7 +111,7 @@ class ProviderApprovalController extends SafeEventEmitter {
       this.closePopup()
     }
 
-    const { approvedOrigins, providerRequests, dismissedOrigins } = this.store.getState()
+    const { approvedOrigins, providerRequests } = this.store.getState()
     const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
 
     // We're cloning and deleting keys here because we don't want to keep unneeded keys
@@ -125,41 +121,12 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.store.putState({
       approvedOrigins: _approvedOrigins,
       providerRequests: remainingProviderRequests,
-      dismissedOrigins: {
-        ...dismissedOrigins,
-        [origin]: true,
-      },
     })
     this.emit(`resolvedRequest:${origin}`, { approved: false })
   }
 
   /**
-   * Silently approves access to a full Ethereum provider API for the origin
-   *
-   * @param {string} origin - origin of the domain that had provider access approved
-   */
-  forceApproveProviderRequestByOrigin (origin) {
-    const { approvedOrigins, dismissedOrigins, providerRequests } = this.store.getState()
-    const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
-
-    let _dismissedOrigins = dismissedOrigins
-    if (dismissedOrigins[origin]) {
-      _dismissedOrigins = Object.assign({}, dismissedOrigins)
-      delete _dismissedOrigins[origin]
-    }
-
-    this.store.updateState({
-      approvedOrigins: {
-        ...approvedOrigins,
-        [origin]: true,
-      },
-      dismissedOrigins: _dismissedOrigins,
-      providerRequests: remainingProviderRequests,
-    })
-  }
-
-  /**
-   * Clears any cached approvals for user-approved origins
+   * Clears any approvals for user-approved origins
    */
   clearApprovedOrigins () {
     this.store.updateState({

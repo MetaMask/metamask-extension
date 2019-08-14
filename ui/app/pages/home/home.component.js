@@ -21,9 +21,7 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    activeTab: {},
     unsetMigratedPrivacyMode: null,
-    forceApproveProviderRequestByOrigin: null,
   }
 
   static propTypes = {
