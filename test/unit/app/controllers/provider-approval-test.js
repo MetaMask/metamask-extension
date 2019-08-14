@@ -33,7 +33,7 @@ describe('ProviderApprovalController', () => {
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
         providerRequests: [{
           origin: 'example.com',
@@ -50,7 +50,7 @@ describe('ProviderApprovalController', () => {
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
         providerRequests: [{
           origin: 'example.com',
@@ -68,7 +68,7 @@ describe('ProviderApprovalController', () => {
 
       controller._handleProviderRequest('example1.com', 'Example 1', 'https://example1.com/logo.svg')
       controller._handleProviderRequest('example2.com', 'Example 2', 'https://example2.com/logo.svg')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
         providerRequests: [{
           origin: 'example1.com',
@@ -90,7 +90,7 @@ describe('ProviderApprovalController', () => {
 
       controller._handleProviderRequest('example1.com', 'Example 1', 'https://example1.com/logo.svg')
       controller._handleProviderRequest('example2.com', 'Example 2', 'https://example2.com/logo.svg')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
         providerRequests: [{
           origin: 'example1.com',
@@ -158,7 +158,7 @@ describe('ProviderApprovalController', () => {
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller.approveProviderRequestByOrigin('example.com')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {
           'example.com': {
@@ -178,7 +178,7 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller.approveProviderRequestByOrigin('example.com')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {
           'example.com': {
@@ -196,7 +196,7 @@ describe('ProviderApprovalController', () => {
       })
 
       controller.approveProviderRequestByOrigin('example.com')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {
           'example.com': {
@@ -218,7 +218,7 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller.approveProviderRequestByOrigin('example.com')
       controller.rejectProviderRequestByOrigin('example.com')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {},
       })
@@ -231,7 +231,7 @@ describe('ProviderApprovalController', () => {
       })
 
       controller.rejectProviderRequestByOrigin('example.com')
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {},
       })
@@ -248,7 +248,7 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller.approveProviderRequestByOrigin('example.com')
       controller.clearApprovedOrigins()
-      assert.deepEqual(controller.store.getState(), {
+      assert.deepEqual(controller._getMergedState(), {
         providerRequests: [],
         approvedOrigins: {},
       })

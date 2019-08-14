@@ -11,16 +11,18 @@ class ProviderApprovalController extends SafeEventEmitter {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, keyringController, openPopup, preferencesController } = {}) {
+  constructor ({ closePopup, initState, keyringController, openPopup, preferencesController } = {}) {
     super()
     this.closePopup = closePopup
     this.keyringController = keyringController
     this.openPopup = openPopup
     this.preferencesController = preferencesController
-    this.store = new ObservableStore({
-      approvedOrigins: {},
+    this.memStore = new ObservableStore({
       providerRequests: [],
     })
+
+    const defaultState = { approvedOrigins: {} }
+    this.store = new ObservableStore(Object.assign(defaultState, initState))
   }
 
   /**
@@ -59,8 +61,8 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @param {string} siteImage - The icon of the window requesting full provider access
    */
   _handleProviderRequest (origin, siteTitle, siteImage) {
-    const { providerRequests } = this.store.getState()
-    this.store.updateState({
+    const { providerRequests } = this.memStore.getState()
+    this.memStore.updateState({
       providerRequests: [
         ...providerRequests,
         { origin, siteTitle, siteImage },
@@ -85,7 +87,8 @@ class ProviderApprovalController extends SafeEventEmitter {
       this.closePopup()
     }
 
-    const { approvedOrigins, providerRequests } = this.store.getState()
+    const { approvedOrigins } = this.store.getState()
+    const { providerRequests } = this.memStore.getState()
     const providerRequest = providerRequests.find((request) => request.origin === origin)
     const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
     this.store.updateState({
@@ -96,8 +99,8 @@ class ProviderApprovalController extends SafeEventEmitter {
           siteImage: providerRequest ? providerRequest.siteImage : null,
         },
       },
-      providerRequests: remainingProviderRequests,
     })
+    this.memStore.updateState({ providerRequests: remainingProviderRequests })
     this.emit(`resolvedRequest:${origin}`, { approved: true })
   }
 
@@ -111,17 +114,16 @@ class ProviderApprovalController extends SafeEventEmitter {
       this.closePopup()
     }
 
-    const { approvedOrigins, providerRequests } = this.store.getState()
+    const { approvedOrigins } = this.store.getState()
+    const { providerRequests } = this.memStore.getState()
     const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
 
     // We're cloning and deleting keys here because we don't want to keep unneeded keys
     const _approvedOrigins = Object.assign({}, approvedOrigins)
     delete _approvedOrigins[origin]
 
-    this.store.putState({
-      approvedOrigins: _approvedOrigins,
-      providerRequests: remainingProviderRequests,
-    })
+    this.store.putState({ approvedOrigins: _approvedOrigins })
+    this.memStore.putState({ providerRequests: remainingProviderRequests })
     this.emit(`resolvedRequest:${origin}`, { approved: false })
   }
 
@@ -145,6 +147,14 @@ class ProviderApprovalController extends SafeEventEmitter {
     return !privacyMode || Boolean(this.store.getState().approvedOrigins[origin])
   }
 
+  /**
+   * Returns a merged state representation
+   * @return {object}
+   * @private
+   */
+  _getMergedState () {
+    return Object.assign({}, this.memStore.getState(), this.store.getState())
+  }
 }
 
 module.exports = ProviderApprovalController
