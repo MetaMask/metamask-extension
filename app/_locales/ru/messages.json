@@ -9,13 +9,13 @@
     "message": "Открыть счета"
   },
   "exposeDescription": {
-    "message": "Выводить счета на текущий веб-сайт. Полезно для старых dapps."
+    "message": "Выводить счета на текущий веб-сайт. Полезно для устаревших dApp'ов."
   },
   "confirmExpose": {
     "message": "Вы уверены, что хотите открыть свои аккаунты на текущем веб-сайте?"
   },
   "confirmClear": {
-    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
+    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?"
   },
   "clearApprovalDataSuccess": {
     "message": "Утвержденные данные веб-сайта успешно удалены."
@@ -107,7 +107,7 @@
     "message": "Недостаточный баланс для текущего объема газа"
   },
   "beta": {
-    "message": "BETA"
+    "message": "БЕТА:"
   },
   "betweenMinAndMax": {
     "message": "должно быть больше или равно $1 и меньше или равно $2.",
@@ -117,7 +117,7 @@
     "message": "Использовать Blockies Identicon"
   },
   "borrowDharma": {
-    "message": "Взять в долг на Dharma (Beta)"
+    "message": "Взять в долг на Dharma (Бета)"
   },
   "builtInCalifornia": {
     "message": "MetaMask спроектирован и разработан в Калифорнии."
