@@ -260,6 +260,11 @@ jobs:
       - run:
           name: test:coverage
           command: yarn test:coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .nyc_output
+            - coverage
   test-mozilla-lint:
     docker:
       - image: circleci/node:10.16-browsers
