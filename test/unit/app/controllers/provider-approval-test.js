@@ -18,18 +18,11 @@ const mockUnlockedKeyringController = {
   },
 }
 
-const mockPreferencesController = {
-  getFeatureFlags: () => ({
-    privacyMode: true,
-  }),
-}
-
 describe('ProviderApprovalController', () => {
   describe('#_handleProviderRequest', () => {
     it('should add a pending provider request when unlocked', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -46,7 +39,6 @@ describe('ProviderApprovalController', () => {
     it('should add a pending provider request when locked', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockLockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -63,7 +55,6 @@ describe('ProviderApprovalController', () => {
     it('should add a 2nd pending provider request when unlocked', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example1.com', 'Example 1', 'https://example1.com/logo.svg')
@@ -85,7 +76,6 @@ describe('ProviderApprovalController', () => {
     it('should add a 2nd pending provider request when locked', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockLockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example1.com', 'Example 1', 'https://example1.com/logo.svg')
@@ -109,7 +99,6 @@ describe('ProviderApprovalController', () => {
       const controller = new ProviderApprovalController({
         openPopup,
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -121,7 +110,6 @@ describe('ProviderApprovalController', () => {
       const controller = new ProviderApprovalController({
         openPopup,
         keyringController: mockLockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -133,7 +121,6 @@ describe('ProviderApprovalController', () => {
       const controller = new ProviderApprovalController({
         openPopup,
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller.store.updateState({
@@ -153,7 +140,6 @@ describe('ProviderApprovalController', () => {
     it('should mark the origin as approved and remove the provider request', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -172,7 +158,6 @@ describe('ProviderApprovalController', () => {
     it('should mark the origin as approved and multiple requests for the same domain', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -192,7 +177,6 @@ describe('ProviderApprovalController', () => {
     it('should mark the origin as approved without a provider request', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller.approveProviderRequestByOrigin('example.com')
@@ -212,7 +196,6 @@ describe('ProviderApprovalController', () => {
     it('should remove the origin from approved', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -227,7 +210,6 @@ describe('ProviderApprovalController', () => {
     it('should reject the origin even without a pending request', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller.rejectProviderRequestByOrigin('example.com')
@@ -242,7 +224,6 @@ describe('ProviderApprovalController', () => {
     it('should clear the approved origins', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -259,7 +240,6 @@ describe('ProviderApprovalController', () => {
     it('should return true for an approved origin', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
@@ -270,27 +250,11 @@ describe('ProviderApprovalController', () => {
     it('should return false for an origin not yet approved', () => {
       const controller = new ProviderApprovalController({
         keyringController: mockUnlockedKeyringController,
-        preferencesController: mockPreferencesController,
       })
 
       controller._handleProviderRequest('example.com', 'Example', 'https://example.com/logo.svg')
       controller.approveProviderRequestByOrigin('example.com')
       assert.ok(!controller.shouldExposeAccounts('bad.website'))
-    })
-
-    it('should return true for any origin when privacyMode feature flag is false', () => {
-      const controller = new ProviderApprovalController({
-        keyringController: mockUnlockedKeyringController,
-        preferencesController: {
-          getFeatureFlags: () => ({
-            privacyMode: false,
-          }),
-        },
-      })
-
-      assert.ok(controller.shouldExposeAccounts('example1.com'))
-      assert.ok(controller.shouldExposeAccounts('example2.com'))
-      assert.ok(controller.shouldExposeAccounts('example3.com'))
     })
   })
 })
