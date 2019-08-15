@@ -149,7 +149,7 @@ class SettingsPage extends PureComponent {
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
-          { content: t('contactList'), description: t('contactListDescription'), key: CONTACT_LIST_ROUTE },
+          { content: t('contacts'), description: t('contactsSettingsDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
           { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },

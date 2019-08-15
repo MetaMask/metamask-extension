@@ -27,7 +27,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
-  [CONTACT_LIST_ROUTE]: 'contactList',
+  [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
