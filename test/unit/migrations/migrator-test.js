@@ -1,3 +1,4 @@
+const fs = require('fs')
 const assert = require('assert')
 const clone = require('clone')
 const Migrator = require('../../../app/scripts/lib/migrator/')
@@ -35,6 +36,25 @@ const firstTimeState = {
   meta: { version: 0 },
   data: require('../../../app/scripts/first-time-state'),
 }
+describe('liveMigrations require list', () => {
+  it('should include all the migrations', (done) => {
+    fs.readdir('./app/scripts/migrations/', (err, fileNames) => {
+      if (err) return done(err)
+      const migrationNumbers = fileNames.reduce((agg, filename) => {
+        const name = filename.split('.')[0]
+        if (/^\d+$/.test(name)) agg.push(name)
+        return agg
+      }, []).map((num) => parseInt(num))
+
+      migrationNumbers.forEach((num) => {
+        const migration = liveMigrations.find((m) => m.version === num)
+        assert(migration, `migration should be include in the index missing migration ${num}`)
+      })
+
+      done()
+    })
+  })
+})
 
 describe('Migrator', () => {
   const migrator = new Migrator({ migrations: stubMigrations })
