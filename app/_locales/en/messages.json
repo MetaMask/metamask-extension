@@ -1,22 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default. You may need to reload the dapp for the change to take effect."
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
-  },
-  "privacyMode": {
-    "message": "Privacy Mode"
-  },
-  "privacyModeDescription": {
-    "message": "Websites must request access to view your account information."
-  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },
@@ -32,20 +14,35 @@
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
+  "connections": {
+    "message": "Connections"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Sites allowed to read your accounts"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
+  },
+  "connected": {
+    "message": "Connected"
+  },
+  "connectedDescription": {
+    "message": "The list of sites allowed access to your addresses"
+  },
+  "privacyModeDefault": {
+    "message": "Privacy Mode is now enabled by default"
+  },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
-  "approvalData": {
-    "message": "Privacy Data"
-  },
-  "approvalDataDescription": {
-    "message": "Clear privacy data so all websites must request access to view account information again."
-  },
   "clearApprovalData": {
-    "message": "Clear Privacy Data"
+    "message": "Remove all sites"
   },
   "reject": {
     "message": "Reject"

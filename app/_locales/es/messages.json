@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Modo privado"
-  },
-  "privacyModeDescription": {
-    "message": "Los sitios web deben solicitar acceso para ver la información de su cuenta."
-  },
   "exposeAccounts": {
     "message": "Exponer cuentas"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Los datos aprobados del sitio web se borraron con éxito."
-  },
-  "approvalData": {
-    "message": "Datos de aprobación"
-  },
-  "approvalDataDescription": {
-    "message": "Borrar la información privada de modo que todos los sitios deban volver a requerir acceso para acceder a los datos de la cuenta."
   },
   "clearApprovalData": {
     "message": "Borrar datos de aprobación"

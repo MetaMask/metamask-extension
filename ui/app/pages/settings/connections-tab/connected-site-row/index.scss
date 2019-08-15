@@ -1,0 +1,14 @@
+.connected-site-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &__origin {
+    font-family: monospace;
+  }
+
+  &__delete {
+    padding: 8px;
+  }
+}

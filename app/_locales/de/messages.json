@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Datenschutzmodus"
-  },
-  "privacyModeDescription": {
-    "message": "Websites müssen Zugriff anfordern, um Ihre Kontoinformationen anzuzeigen."
-  },
   "exposeAccounts": {
     "message": "Expose Konten"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
-  },
-  "approvalData": {
-    "message": "Genehmigungsdaten"
-  },
-  "approvalDataDescription": {
-    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
   },
   "clearApprovalData": {
     "message": "Genehmigungsdaten löschen"

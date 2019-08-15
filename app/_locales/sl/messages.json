@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Zasebnostni način"
-  },
-  "privacyModeDescription": {
-    "message": "Spletne strani morajo zahtevati dovoljenje za ogled podatkov o vašem računu."
-  },
   "privacyNotice": {
     "message": "Obvestilo o zasebnosti"
   },
@@ -25,12 +19,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Odobrene spletne strani uspešno počiščene."
-  },
-  "approvalData": {
-    "message": "Podatki o odobritvi"
-  },
-  "approvalDataDescription": {
-    "message": "Počistite seznam odobrenih spletnih strani, tako da bodo morale ponovno zahtevati odobritev."
   },
   "clearApprovalData": {
     "message": "Počisti podatke o odobritvi"
