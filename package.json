@@ -22,7 +22,7 @@
     "test:web3:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-web3.sh",
     "test:web3:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-web3.sh",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-all.sh",
-    "test:coverage": "nyc --reporter=text --reporter=html npm run test:unit && yarn test:coveralls-upload",
+    "test:coverage": "nyc --reporter=text --reporter=html npm run test:unit",
     "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "test:flat": "yarn test:flat:build && karma start test/flat.conf.js",
     "test:flat:build": "yarn test:flat:build:ui && yarn test:flat:build:tests && yarn test:flat:build:locales",

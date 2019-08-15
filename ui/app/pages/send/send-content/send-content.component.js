@@ -18,9 +18,10 @@ export default class SendContent extends Component {
     scanQrCode: PropTypes.func,
     showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
-    to: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
+    contact: PropTypes.object,
+    isOwnedAccount: PropTypes.bool,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
@@ -47,9 +48,7 @@ export default class SendContent extends Component {
 
   maybeRenderAddContact () {
     const { t } = this.context
-    const { to, addressBook = [], ownedAccounts = [], showAddToAddressBookModal } = this.props
-    const isOwnedAccount = !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase())
-    const contact = addressBook.find(({ address }) => address === to) || {}
+    const { isOwnedAccount, showAddToAddressBookModal, contact = {} } = this.props
 
     if (isOwnedAccount || contact.name) {
       return

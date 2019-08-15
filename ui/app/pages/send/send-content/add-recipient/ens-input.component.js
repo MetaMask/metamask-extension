@@ -30,10 +30,10 @@ export default class EnsInput extends Component {
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
-    addressBook: PropTypes.array,
     onPaste: PropTypes.func,
     onReset: PropTypes.func,
     onValidAddressTyped: PropTypes.func,
+    contact: PropTypes.object,
   }
 
   state = {
@@ -181,8 +181,7 @@ export default class EnsInput extends Component {
 
   renderSelected () {
     const { t } = this.context
-    const { className, selectedAddress, selectedName, addressBook } = this.props
-    const contact = addressBook.filter(item => item.address === selectedAddress)[0] || {}
+    const { className, selectedAddress, selectedName, contact = {} } = this.props
     const name = contact.name || selectedName
 
 
