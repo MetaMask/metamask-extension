@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import extension from 'extensionizer'
 import Button from '../../../components/ui/button'
 import MetaFoxLogo from '../../../components/ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -14,11 +16,19 @@ export default class EndOfFlowScreen extends PureComponent {
     history: PropTypes.object,
     completeOnboarding: PropTypes.func,
     completionMetaMetricsName: PropTypes.string,
+    onboardingInitiator: PropTypes.exact({
+      origin: PropTypes.string,
+      tabId: PropTypes.number,
+    }),
   }
 
   render () {
     const { t } = this.context
-    const { history, completeOnboarding, completionMetaMetricsName } = this.props
+    const { history, completeOnboarding, completionMetaMetricsName, onboardingInitiator } = this.props
+
+    const completeButtonText = onboardingInitiator ?
+      t('onboardingReturnMessage', [onboardingInitiator.origin]) :
+      t('endOfFlowMessage10')
 
     return (
       <div className="end-of-flow">
@@ -71,10 +81,15 @@ export default class EndOfFlowScreen extends PureComponent {
                 name: completionMetaMetricsName,
               },
             })
+
+            if (onboardingInitiator) {
+              extension.tabs.update(onboardingInitiator.tabId, { active: true })
+              window.close()
+            }
             history.push(DEFAULT_ROUTE)
           }}
         >
-          { t('endOfFlowMessage10') }
+          { completeButtonText }
         </Button>
       </div>
     )

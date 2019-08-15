@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import extension from 'extensionizer'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
@@ -17,6 +18,10 @@ export default class RevealSeedPhrase extends PureComponent {
     seedPhrase: PropTypes.string,
     setSeedPhraseBackedUp: PropTypes.func,
     setCompletedOnboarding: PropTypes.func,
+    onboardingInitiator: PropTypes.exact({
+      origin: PropTypes.string,
+      tabId: PropTypes.number,
+    }),
   }
 
   state = {
@@ -27,8 +32,7 @@ export default class RevealSeedPhrase extends PureComponent {
     exportAsFile('MetaMask Secret Backup Phrase', this.props.seedPhrase, 'text/plain')
   }
 
-  handleNext = event => {
-    event.preventDefault()
+  handleNext = () => {
     const { isShowingSeedPhrase } = this.state
     const { history } = this.props
 
@@ -47,9 +51,8 @@ export default class RevealSeedPhrase extends PureComponent {
     history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE)
   }
 
-  handleSkip = event => {
-    event.preventDefault()
-    const { history, setSeedPhraseBackedUp, setCompletedOnboarding } = this.props
+  handleSkip = async () => {
+    const { history, setSeedPhraseBackedUp, setCompletedOnboarding, onboardingInitiator } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -59,10 +62,13 @@ export default class RevealSeedPhrase extends PureComponent {
       },
     })
 
-    Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
-      .then(() => {
-        history.push(DEFAULT_ROUTE)
-      })
+    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
+
+    if (onboardingInitiator) {
+      extension.tabs.update(onboardingInitiator.tabId, { active: true })
+      window.close()
+    }
+    history.push(DEFAULT_ROUTE)
   }
 
   renderSecretWordsContainer () {
@@ -111,6 +117,16 @@ export default class RevealSeedPhrase extends PureComponent {
   render () {
     const { t } = this.context
     const { isShowingSeedPhrase } = this.state
+    const { onboardingInitiator } = this.props
+
+    const skipMessage = onboardingInitiator ?
+      (
+        <div>
+          <p>{ t('remindMeLater') }</p>
+          <p>{ t('onboardingReturnMessage', [onboardingInitiator.origin]) }</p>
+        </div>
+      ) :
+      t('remindMeLater')
 
     return (
       <div className="reveal-seed-phrase">
@@ -155,7 +171,7 @@ export default class RevealSeedPhrase extends PureComponent {
             className="first-time-flow__button"
             onClick={this.handleSkip}
           >
-            { t('remindMeLater') }
+            { skipMessage }
           </Button>
           <Button
             type="primary"
