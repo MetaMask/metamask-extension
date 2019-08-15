@@ -5,15 +5,17 @@ import {
   getSendTo,
 } from '../send.selectors'
 import {
-  getAddressBook,
+  getAddressBookEntry,
 } from '../../../selectors/selectors'
 import actions from '../../../store/actions'
 
 function mapStateToProps (state) {
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state)
+  const to = getSendTo(state)
   return {
-    to: getSendTo(state),
-    addressBook: getAddressBook(state),
-    ownedAccounts: accountsWithSendEtherInfoSelector(state),
+    isOwnedAccount: !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase()),
+    contact: getAddressBookEntry(state, to),
+    to,
   }
 }
 
