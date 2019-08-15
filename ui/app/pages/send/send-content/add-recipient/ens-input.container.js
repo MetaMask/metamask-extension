@@ -5,16 +5,19 @@ import {
   getSendToNickname,
 } from '../../send.selectors'
 import {
-  getAddressBook,
+  getAddressBookEntry,
 } from '../../../../selectors/selectors'
 const connect = require('react-redux').connect
 
 
 export default connect(
-  state => ({
-    network: getCurrentNetwork(state),
-    selectedAddress: getSendTo(state),
-    selectedName: getSendToNickname(state),
-    addressBook: getAddressBook(state),
-  })
+  state => {
+    const selectedAddress = getSendTo(state)
+    return {
+      network: getCurrentNetwork(state),
+      selectedAddress,
+      selectedName: getSendToNickname(state),
+      contact: getAddressBookEntry(state, selectedAddress),
+    }
+  }
 )(EnsInput)

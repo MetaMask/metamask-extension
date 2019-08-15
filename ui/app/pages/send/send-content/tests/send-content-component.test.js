@@ -52,11 +52,10 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
 
-    it('should not render the Dialog if addressBook contains "to" address', () => {
+    it('should not render the Dialog if contact has a name', () => {
       wrapper.setProps({
         showHexData: false,
-        to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
-        addressBook: [{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'dinodan' }],
+        contact: { name: 'testName' },
       })
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
       assert(PageContainerContentChild.childAt(0).is(SendAssetRow), 'row[1] should be SendAssetRow')
@@ -65,12 +64,10 @@ describe('SendContent Component', function () {
       assert.equal(PageContainerContentChild.childAt(3).exists(), false)
     })
 
-    it('should not render the Dialog if ownedAccounts contains "to" address', () => {
+    it('should not render the Dialog if it is an ownedAccount', () => {
       wrapper.setProps({
         showHexData: false,
-        to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
-        addressBook: [],
-        ownedAccounts: [{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'dinodan' }],
+        isOwnedAccount: true,
       })
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
       assert(PageContainerContentChild.childAt(0).is(SendAssetRow), 'row[1] should be SendAssetRow')
