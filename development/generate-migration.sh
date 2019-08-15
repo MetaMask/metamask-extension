@@ -1,9 +1,15 @@
 #! /bin/bash
+g-migration() {
+  [[ -z "$1" ]] && { echo "Migration version is required!" ; exit 1; }
+  local vnum=$1
+  if (($1 < 100)); then
+    vnum=0$1
+  fi
+  touch app/scripts/migrations/$vnum.js
+  cp app/scripts/migrations/template.js app/scripts/migrations/$vnum.js
 
-[[ -z "$1" ]] && { echo "Migration version is required!" ; exit 1; }
+  touch test/unit/migrations/$vnum.js
+  cp test/unit/migrations/template-test.js test/unit/migrations/$vnum-test.js
+}
 
-touch app/scripts/migrations/$1.js
-cp ls app/scripts/migrations/template.js app/scripts/migrations/$1.js
-
-touch test/unit/migrations/$1.js
-cp test/unit/migrations/template.js test/unit/migrations/$1.js
+g-migration $1

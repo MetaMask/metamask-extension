@@ -43,7 +43,8 @@
     "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "update-changelog": "./development/auto-changelog.sh",
-    "rollback": "./development/rollback.sh"
+    "rollback": "./development/rollback.sh",
+    "generate:migration": "./development/generate-migration.sh"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
