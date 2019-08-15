@@ -115,7 +115,7 @@ describe('IncomingTransactionsController', () => {
         getSelectedAddress: () => 'fakeAddress',
         initState: NON_EMPTY_INIT_STATE,
       })
-      incomingTransactionsController._fetchAll = sinon.spy()
+      incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
       await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
 
@@ -133,7 +133,7 @@ describe('IncomingTransactionsController', () => {
         getSelectedAddress: () => 'fakeAddress',
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
-      incomingTransactionsController._fetchAll = sinon.spy()
+      incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
       await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
 
@@ -151,7 +151,7 @@ describe('IncomingTransactionsController', () => {
         getSelectedAddress: () => 'fakeAddress',
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
-      incomingTransactionsController._fetchAll = sinon.spy()
+      incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
       await incomingTransactionsController._getDataForUpdate({ networkType: 'NEW_FAKE_NETWORK' })
 
@@ -169,7 +169,7 @@ describe('IncomingTransactionsController', () => {
         getSelectedAddress: () => 'fakeAddress',
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
-      incomingTransactionsController._fetchAll = sinon.spy()
+      incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
       await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
 
@@ -343,7 +343,7 @@ describe('IncomingTransactionsController', () => {
       assert.equal(mockFetch.getCall(0).args[0], `https://api-${ROPSTEN}.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1`)
     })
 
-    it('should not fetch and return undefined when passed an unsported network', async () => {
+    it('should not fetch and return an empty object when passed an unsported network', async () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -354,7 +354,7 @@ describe('IncomingTransactionsController', () => {
       const result = await incomingTransactionsController._fetchTxs('0xfakeaddress', null, 'UNSUPPORTED_NETWORK')
 
       assert(mockFetch.notCalled)
-      assert.equal(result, undefined)
+      assert.deepEqual(result, {})
     })
 
     it('should return the results from the fetch call, plus the address and currentNetworkID, when passed an address, block number and supported network', async () => {

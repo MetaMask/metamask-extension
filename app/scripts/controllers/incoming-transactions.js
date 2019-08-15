@@ -63,32 +63,28 @@ class IncomingTransactionsController {
   }
 
   async _getDataForUpdate ({ newBlockNumberDec, networkType } = {}) {
-    try {
-      const {
-        incomingTransactions: currentIncomingTxs,
-        incomingTxlastFetchedBlocksByNetwork: currentBlocksByNetwork,
-      } = this.store.getState()
+    const {
+      incomingTransactions: currentIncomingTxs,
+      incomingTxlastFetchedBlocksByNetwork: currentBlocksByNetwork,
+    } = this.store.getState()
 
-      const address = this.getSelectedAddress()
-      const network = networkType || this.getCurrentNetwork()
-      const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
-      let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
-      if (blockToFetchFrom === undefined) {
-        blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
-      }
+    const address = this.getSelectedAddress()
+    const network = networkType || this.getCurrentNetwork()
+    const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
+    let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
+    if (blockToFetchFrom === undefined) {
+      blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
+    }
 
-      const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(address, blockToFetchFrom, network)
+    const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(address, blockToFetchFrom, network)
 
-      return {
-        latestIncomingTxBlockNumber,
-        newTxs,
-        currentIncomingTxs,
-        currentBlocksByNetwork,
-        fetchedBlockNumber: blockToFetchFrom,
-        network,
-      }
-    } catch (err) {
-      log.error(err)
+    return {
+      latestIncomingTxBlockNumber,
+      newTxs,
+      currentIncomingTxs,
+      currentBlocksByNetwork,
+      fetchedBlockNumber: blockToFetchFrom,
+      network,
     }
   }
 
@@ -132,7 +128,7 @@ class IncomingTransactionsController {
     const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
     if (supportedNetworkTypes.indexOf(networkType) === -1) {
-      return
+      return {}
     }
 
     if (networkType !== 'mainnet') {
