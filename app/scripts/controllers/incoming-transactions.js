@@ -1,6 +1,5 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const EthQuery = require('eth-query')
 const log = require('loglevel')
 const BN = require('bn.js')
 const createId = require('../lib/random-id')
@@ -27,12 +26,11 @@ class IncomingTransactionsController {
   constructor (opts = {}) {
     const {
       blockTracker,
-      provider,
       networkController,
       getSelectedAddress,
     } = opts
     this.blockTracker = blockTracker
-    this.ethQuery = new EthQuery(provider)
+    this.networkController = networkController
     this.getSelectedAddress = getSelectedAddress
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
@@ -47,50 +45,88 @@ class IncomingTransactionsController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    const changeListener = async ({ newBlockNumberDec, networkType } = {}) => {
-      try {
-        const {
-          incomingTransactions: currentIncomingTxs,
-          incomingTxlastFetchedBlocksByNetwork: currentBlocksByNetwork,
-        } = this.store.getState()
-
-        const address = this.getSelectedAddress()
-        const network = networkType || this.getCurrentNetwork()
-        const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
-        const blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
-        const { latestIncomingTxBlockNumber, txs } = await this.fetchAll(address, blockToFetchFrom, network)
-        const newLatestBlockHashByNetwork = latestIncomingTxBlockNumber
-          ? parseInt(latestIncomingTxBlockNumber, 10) + 1
-          : blockToFetchFrom + 1
-        const newIncomingTransactions = {
-          ...currentIncomingTxs,
-        }
-        txs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
-
-        this.store.updateState({
-          incomingTxlastFetchedBlocksByNetwork: {
-            ...currentBlocksByNetwork,
-            [network]: newLatestBlockHashByNetwork,
-          },
-          incomingTransactions: newIncomingTransactions,
-        })
-      } catch (err) {
-        log.error(err)
-      }
-    }
-
-    const blockListener = (newBlockNumberHex) => {
-      changeListener({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
-    }
-    const networkListener = (newType) => {
-      changeListener({ networkType: newType })
-    }
-
-    networkController.on('networkDidChange', networkListener)
-    this.blockTracker.on('latest', blockListener)
+    this.networkController.on('networkDidChange', (newType) => {
+      this._update({ networkType: newType })
+    })
+    this.blockTracker.on('latest', (newBlockNumberHex) => {
+      this._update({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
+    })
   }
 
-  async fetchAll (address, fromBlock, networkType) {
+  async _update ({ newBlockNumberDec, networkType } = {}) {
+    try {
+      const dataForUpdate = await this._getDataForUpdate({ newBlockNumberDec, networkType })
+      this._updateStateWithNewTxData(dataForUpdate)
+    } catch (err) {
+      log.error(err)
+    }
+  }
+
+  async _getDataForUpdate ({ newBlockNumberDec, networkType } = {}) {
+    try {
+      const {
+        incomingTransactions: currentIncomingTxs,
+        incomingTxlastFetchedBlocksByNetwork: currentBlocksByNetwork,
+      } = this.store.getState()
+
+      const address = this.getSelectedAddress()
+      const network = networkType || this.getCurrentNetwork()
+      const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
+      let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
+      if (blockToFetchFrom === undefined) {
+        blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
+      }
+
+      const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(address, blockToFetchFrom, network)
+
+      return {
+        latestIncomingTxBlockNumber,
+        newTxs,
+        currentIncomingTxs,
+        currentBlocksByNetwork,
+        fetchedBlockNumber: blockToFetchFrom,
+        network,
+      }
+    } catch (err) {
+      log.error(err)
+    }
+  }
+
+  async _updateStateWithNewTxData ({
+    latestIncomingTxBlockNumber,
+    newTxs,
+    currentIncomingTxs,
+    currentBlocksByNetwork,
+    fetchedBlockNumber,
+    network,
+  }) {
+    const newLatestBlockHashByNetwork = latestIncomingTxBlockNumber
+      ? parseInt(latestIncomingTxBlockNumber, 10) + 1
+      : fetchedBlockNumber + 1
+    const newIncomingTransactions = {
+      ...currentIncomingTxs,
+    }
+    newTxs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
+
+    this.store.updateState({
+      incomingTxlastFetchedBlocksByNetwork: {
+        ...currentBlocksByNetwork,
+        [network]: newLatestBlockHashByNetwork,
+      },
+      incomingTransactions: newIncomingTransactions,
+    })
+  }
+
+  async _fetchAll (address, fromBlock, networkType) {
+    try {
+      const fetchedTxResponse = await this._fetchTxs(address, fromBlock, networkType)
+      return this._processTxFetchResponse(fetchedTxResponse)
+    } catch (err) {
+      log.error(err)
+    }
+  }
+
+  async _fetchTxs (address, fromBlock, networkType) {
     let etherscanSubdomain = 'api'
     const currentNetworkID = networkTypeToIdMap[networkType]
     const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
@@ -103,10 +139,6 @@ class IncomingTransactionsController {
       etherscanSubdomain = `api-${networkType}`
     }
     const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-
-    if (!apiUrl) {
-      return
-    }
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
 
     if (fromBlock) {
@@ -115,35 +147,40 @@ class IncomingTransactionsController {
     const response = await fetch(url)
     const parsedResponse = await response.json()
 
-    if (parsedResponse.status !== '0' && parsedResponse.result.length > 0) {
+    return {
+      ...parsedResponse,
+      address,
+      currentNetworkID,
+    }
+  }
+
+  _processTxFetchResponse ({ status, result, address, currentNetworkID }) {
+    if (status !== '0' && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []
-      parsedResponse.result.forEach((tx) => {
+      result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
-          remoteTxs.push(this.normalizeTxFromEtherscan(tx, currentNetworkID))
+          remoteTxs.push(this._normalizeTxFromEtherscan(tx, currentNetworkID))
           remoteTxList[tx.hash] = 1
         }
       })
 
-      const allTxs = [ ...remoteTxs ]
-      allTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
+      const incomingTxs = remoteTxs.filter(tx => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
+      incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber
-      allTxs.forEach((tx) => {
-        if (tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase()) {
-          if (
-            tx.blockNumber &&
-            (!latestIncomingTxBlockNumber ||
-              parseInt(latestIncomingTxBlockNumber, 10) < parseInt(tx.blockNumber, 10))
-          ) {
-            latestIncomingTxBlockNumber = tx.blockNumber
-          }
+      incomingTxs.forEach((tx) => {
+        if (
+          tx.blockNumber &&
+          (!latestIncomingTxBlockNumber ||
+            parseInt(latestIncomingTxBlockNumber, 10) < parseInt(tx.blockNumber, 10))
+        ) {
+          latestIncomingTxBlockNumber = tx.blockNumber
         }
       })
-      this.store.updateState({ transactions: allTxs })
       return {
         latestIncomingTxBlockNumber,
-        txs: allTxs,
+        txs: incomingTxs,
       }
     }
     return {
@@ -152,7 +189,7 @@ class IncomingTransactionsController {
     }
   }
 
-  normalizeTxFromEtherscan (txMeta, currentNetworkID) {
+  _normalizeTxFromEtherscan (txMeta, currentNetworkID) {
     const time = parseInt(txMeta.timeStamp, 10) * 1000
     const status = txMeta.isError === '0' ? 'confirmed' : 'failed'
     return {

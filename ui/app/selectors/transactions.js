@@ -166,7 +166,7 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
 /**
  * @name mergeNonNonceTransactionGroups
  * @private
- * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array 
+ * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array
  * of nonce-ordered transactionGroups by time. Shapeshift transactionGroups need to be sorted by time
  * within the list of transactions as they do not have nonces.
  * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
