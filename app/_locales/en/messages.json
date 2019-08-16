@@ -1280,9 +1280,6 @@
   "receive": {
     "message": "Receive"
   },
-  "received": {
-    "message": "Received"
-  },
   "recents": {
     "message": "Recents"
   },
