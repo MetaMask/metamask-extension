@@ -9,7 +9,7 @@ import {
   showModal,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-  setThreeBoxSyncing,
+  setThreeBoxSyncingPermission,
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
@@ -47,7 +47,7 @@ export const mapDispatchToProps = dispatch => {
     setAutoLogoutTimeLimit: value => {
       return dispatch(setAutoLogoutTimeLimit(value))
     },
-    setThreeBoxSyncing: newThreeBoxSyncingState => dispatch(setThreeBoxSyncing(newThreeBoxSyncingState)),
+    setThreeBoxSyncingPermission: newThreeBoxSyncingState => dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState)),
   }
 }
 

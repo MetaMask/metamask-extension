@@ -27,7 +27,7 @@ export default class AdvancedTab extends PureComponent {
     setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     threeBoxSyncing: PropTypes.bool.isRequired,
-    setThreeBoxSyncing: PropTypes.func.isRequired,
+    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
     threeboxSyncing: PropTypes.bool.isRequired,
   }
 
@@ -257,7 +257,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context
     const {
       threeboxSyncing,
-      setThreeBoxSyncing,
+      setThreeBoxSyncingPermission,
     } = this.props
 
     return (
@@ -272,7 +272,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={threeboxSyncing}
-              onToggle={value => setThreeBoxSyncing(!value)}
+              onToggle={value => setThreeBoxSyncingPermission(!value)}
               activeLabel=""
               inactiveLabel=""
             />
