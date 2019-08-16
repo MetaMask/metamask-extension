@@ -66,10 +66,14 @@ class ThreeBoxController {
   }
 
   async _update3Box ({ type }, newState) {
-    const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
-    if (threeBoxSyncingAllowed && threeBoxSynced) {
-      await this.space.private.set('lastUpdated', Date.now())
-      await this.space.private.set(type, JSON.stringify(newState))
+    try {
+      const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
+      if (threeBoxSyncingAllowed && threeBoxSynced) {
+        await this.space.private.set('lastUpdated', Date.now())
+        await this.space.private.set(type, JSON.stringify(newState))
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
 
