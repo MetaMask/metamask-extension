@@ -1,5 +1,4 @@
 const ObservableStore = require('obs-store')
-const extend = require('xtend')
 const log = require('loglevel')
 const BN = require('bn.js')
 const createId = require('../lib/random-id')
@@ -34,7 +33,7 @@ class IncomingTransactionsController {
     this.getSelectedAddress = getSelectedAddress
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
-    const initState = extend({
+    const initState = Object.assign({
       incomingTransactions: {},
       incomingTxLastFetchedBlocksByNetwork: {
         [ROPSTEN]: null,
