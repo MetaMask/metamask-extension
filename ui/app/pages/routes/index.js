@@ -413,7 +413,7 @@ function mapDispatchToProps (dispatch) {
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
     show3BoxRestoreConfirmModal: (lastUpdated) => dispatch(actions.showModal({ name: 'THREEBOX_RESTORE_CONFIRM', lastUpdated })),
-    turnThreeBoxSyncingOn: (threeBoxSyncingAllowed) => dispatch(actions.turnThreeBoxSyncingOn()),
+    turnThreeBoxSyncingOn: () => dispatch(actions.turnThreeBoxSyncingOn()),
     getThreeBoxLastUpdated: () => dispatch(actions.getThreeBoxLastUpdated()),
   }
 }
