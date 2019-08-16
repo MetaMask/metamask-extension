@@ -6,8 +6,7 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     restoreFromThreeBox: PropTypes.func.isRequired,
-    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
-    setRestoredFromThreeBox: PropTypes.func.isRequired,
+    turnThreeBoxSyncingOn: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
   }
 
@@ -24,15 +23,13 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
   handleConfirm = () => {
     const {
       restoreFromThreeBox,
-      setRestoredFromThreeBox,
-      setThreeBoxSyncingPermission,
+      turnThreeBoxSyncingOn,
       hideModal,
       address,
     } = this.props
     restoreFromThreeBox(address)
       .then(() => {
-        setRestoredFromThreeBox(true)
-        setThreeBoxSyncingPermission(true)
+        turnThreeBoxSyncingOn()
         hideModal()
       })
   }

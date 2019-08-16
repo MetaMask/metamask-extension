@@ -538,6 +538,7 @@ module.exports = class MetamaskController extends EventEmitter {
       restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
       setRestoredFromThreeBox: nodeify(threeBoxController.setRestoredFromThreeBox, threeBoxController),
       getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
+      turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController)
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
     }
   }
