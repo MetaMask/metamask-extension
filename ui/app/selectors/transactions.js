@@ -10,11 +10,16 @@ import {
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
-
 import { selectedTokenAddressSelector } from './tokens'
 import txHelper from '../../lib/tx-helper'
 
 export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
+
+export const incomingTxListSelector = state => {
+  const selectedAddress = state.metamask.selectedAddress
+  return Object.values(state.metamask.incomingTransactions)
+    .filter(({ txParams }) => txParams.to === selectedAddress)
+}
 export const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
 export const selectedAddressTxListSelector = state => state.metamask.selectedAddressTxList
 export const unapprovedPersonalMsgsSelector = state => state.metamask.unapprovedPersonalMsgs
@@ -55,9 +60,10 @@ export const transactionsSelector = createSelector(
   selectedTokenAddressSelector,
   unapprovedMessagesSelector,
   shapeShiftTxListSelector,
+  incomingTxListSelector,
   selectedAddressTxListSelector,
-  (selectedTokenAddress, unapprovedMessages = [], shapeShiftTxList = [], transactions = []) => {
-    const txsToRender = transactions.concat(unapprovedMessages, shapeShiftTxList)
+  (selectedTokenAddress, unapprovedMessages = [], shapeShiftTxList = [], incomingTxList = [], transactions = []) => {
+    const txsToRender = transactions.concat(unapprovedMessages, shapeShiftTxList, incomingTxList)
 
     return selectedTokenAddress
       ? txsToRender
@@ -158,17 +164,18 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
 }
 
 /**
- * @name mergeShapeshiftTransactionGroups
+ * @name mergeNonNonceTransactionGroups
  * @private
- * @description Inserts (mutates) shapeshift transactionGroups into an array of nonce-ordered
- * transactionGroups by time. Shapeshift transactionGroups need to be sorted by time within the list
- * of transactions as they do not have nonces.
+ * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array
+ * of nonce-ordered transactionGroups by time. Shapeshift transactionGroups need to be sorted by time
+ * within the list of transactions as they do not have nonces.
  * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
  * nonce.
- * @param {transactionGroup[]} shapeshiftTransactionGroups - Array of shapeshift transactionGroups
+ * @param {transactionGroup[]} nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
+ * but intended to be ordered by timestamp
  */
-const mergeShapeshiftTransactionGroups = (orderedTransactionGroups, shapeshiftTransactionGroups) => {
-  shapeshiftTransactionGroups.forEach(shapeshiftGroup => {
+const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransactionGroups) => {
+  nonNonceTransactionGroups.forEach(shapeshiftGroup => {
     insertTransactionGroupByTime(orderedTransactionGroups, shapeshiftGroup)
   })
 }
@@ -183,13 +190,14 @@ export const nonceSortedTransactionsSelector = createSelector(
   (transactions = []) => {
     const unapprovedTransactionGroups = []
     const shapeshiftTransactionGroups = []
+    const incomingTransactionGroups = []
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
     transactions.forEach(transaction => {
-      const { txParams: { nonce } = {}, status, type, time: txTime, key } = transaction
+      const { txParams: { nonce } = {}, status, type, time: txTime, key, transactionCategory } = transaction
 
-      if (typeof nonce === 'undefined') {
+      if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,
@@ -200,6 +208,8 @@ export const nonceSortedTransactionsSelector = createSelector(
 
         if (key === 'shapeshift') {
           shapeshiftTransactionGroups.push(transactionGroup)
+        } else if (transactionCategory === 'incoming') {
+          incomingTransactionGroups.push(transactionGroup)
         } else {
           insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
         }
@@ -245,7 +255,8 @@ export const nonceSortedTransactionsSelector = createSelector(
     })
 
     const orderedTransactionGroups = orderedNonces.map(nonce => nonceToTransactionsMap[nonce])
-    mergeShapeshiftTransactionGroups(orderedTransactionGroups, shapeshiftTransactionGroups)
+    mergeNonNonceTransactionGroups(orderedTransactionGroups, shapeshiftTransactionGroups)
+    mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
   }
 )

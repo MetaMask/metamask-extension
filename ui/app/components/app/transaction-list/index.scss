@@ -11,15 +11,34 @@
   }
 
   &__header {
-    flex: 0 0 auto;
-    font-size: 14px;
-    line-height: 20px;
-    color: $Grey-400;
     border-bottom: 1px solid $Grey-100;
-    padding: 8px 0 8px 20px;
 
-    @media screen and (max-width: $break-small) {
-      padding: 8px 0 8px 16px;
+    &__tabs {
+      display: flex; 
+    }
+
+    &__tab,
+    &__tab--selected {
+      flex: 0 0 auto;
+      font-size: 14px;
+      line-height: 20px;
+      color: $Grey-400;
+      padding: 8px 0 8px 20px;
+      cursor: pointer;
+
+      &:hover {
+        font-weight: bold;
+      }
+
+      @media screen and (max-width: $break-small) {
+        padding: 8px 0 8px 16px;
+      }
+    }
+
+    &__tab--selected {
+      font-weight: bold;
+      color: $Blue-400;
+      cursor: auto;
     }
   }
 
