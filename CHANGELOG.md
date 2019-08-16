@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.1.0 Fri Aug 16 2019
+
 ## 7.0.1 Thu Aug 08 2019
 - [#6975](https://github.com/MetaMask/metamask-extension/pull/6975): Ensure seed phrase backup notification only shows up for new users
 
