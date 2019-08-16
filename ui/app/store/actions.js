@@ -2833,7 +2833,7 @@ function setRestoredFromThreeBox (restored) {
   }
 }
 
-function turnThreeBoxSyncingOn {
+function turnThreeBoxSyncingOn () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.turnThreeBoxSyncingOn((err) => {

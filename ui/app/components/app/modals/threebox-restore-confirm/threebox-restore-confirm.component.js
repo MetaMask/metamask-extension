@@ -7,6 +7,7 @@ export default class ThreeBoxRestoreConfirm extends PureComponent {
     hideModal: PropTypes.func.isRequired,
     restoreFromThreeBox: PropTypes.func.isRequired,
     turnThreeBoxSyncingOn: PropTypes.func.isRequired,
+    setRestoredFromThreeBox: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
   }
 
