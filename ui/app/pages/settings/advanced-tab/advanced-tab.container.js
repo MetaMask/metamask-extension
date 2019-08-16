@@ -20,7 +20,7 @@ export const mapStateToProps = state => {
       sendHexData,
       advancedInlineGas,
     } = {},
-    threeboxSyncing,
+    threeBoxSyncingAllowed,
   } = metamask
   const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
 
@@ -30,7 +30,7 @@ export const mapStateToProps = state => {
     advancedInlineGas,
     showFiatInTestnets,
     autoLogoutTimeLimit,
-    threeboxSyncing,
+    threeBoxSyncingAllowed,
   }
 }
 
