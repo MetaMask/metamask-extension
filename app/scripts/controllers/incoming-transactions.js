@@ -45,18 +45,18 @@ class IncomingTransactionsController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    this.networkController.on('networkDidChange', (newType) => {
-      this._update({ networkType: newType })
+    this.networkController.on('networkDidChange', async (newType) => {
+      await this._update({ networkType: newType })
     })
-    this.blockTracker.on('latest', (newBlockNumberHex) => {
-      this._update({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
+    this.blockTracker.on('latest', async (newBlockNumberHex) => {
+      await this._update({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
     })
   }
 
   async _update ({ newBlockNumberDec, networkType } = {}) {
     try {
       const dataForUpdate = await this._getDataForUpdate({ newBlockNumberDec, networkType })
-      this._updateStateWithNewTxData(dataForUpdate)
+      await this._updateStateWithNewTxData(dataForUpdate)
     } catch (err) {
       log.error(err)
     }
