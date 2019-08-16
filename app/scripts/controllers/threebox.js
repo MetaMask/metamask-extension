@@ -26,10 +26,6 @@ class ThreeBoxController {
     this.addressBookController = addressBookController
     this.keyringController = keyringController
     this.provider = this._createProvider({
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
       version,
       getAccounts: async ({ origin }) => {
         if (origin !== '3Box') { return [] }
