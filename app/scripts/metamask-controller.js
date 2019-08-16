@@ -141,7 +141,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
       networkController: this.networkController,
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
+      preferencesController: this.preferencesController,
       initState: initState.IncomingTransactionsController,
     })
 

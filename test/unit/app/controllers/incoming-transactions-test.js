@@ -59,19 +59,26 @@ describe('IncomingTransactionsController', () => {
     on: sinon.spy(),
   }
 
+  const MOCK_PREFERENCES_CONTROLLER = {
+    getSelectedAddress: sinon.stub().returns('0x0101'),
+    store: {
+      subscribe: sinon.spy(),
+    },
+  }
+
   describe('constructor', () => {
     it('should set up correct store, listeners and properties in the constructor', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: 'fakeGetSelectedAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: {},
       })
       sinon.spy(incomingTransactionsController, '_update')
 
       assert.deepEqual(incomingTransactionsController.blockTracker, MOCK_BLOCKTRACKER)
       assert.deepEqual(incomingTransactionsController.networkController, MOCK_NETWORK_CONTROLLER)
-      assert.equal(incomingTransactionsController.getSelectedAddress, 'fakeGetSelectedAddress')
+      assert.equal(incomingTransactionsController.preferencesController, MOCK_PREFERENCES_CONTROLLER)
       assert.equal(incomingTransactionsController.getCurrentNetwork(), 'FAKE_NETWORK')
 
       assert.deepEqual(incomingTransactionsController.store.getState(), EMPTY_INIT_STATE)
@@ -82,7 +89,10 @@ describe('IncomingTransactionsController', () => {
       assert.equal(incomingTransactionsController._update.callCount, 0)
       networkControllerListenerCallback('testNetworkType')
       assert.equal(incomingTransactionsController._update.callCount, 1)
-      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], { networkType: 'testNetworkType' })
+      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
+        address: '0x0101',
+        networkType: 'testNetworkType',
+      })
 
       incomingTransactionsController._update.resetHistory()
 
@@ -92,14 +102,17 @@ describe('IncomingTransactionsController', () => {
       assert.equal(incomingTransactionsController._update.callCount, 0)
       blockTrackerListenerCallback('0xabc')
       assert.equal(incomingTransactionsController._update.callCount, 1)
-      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], { newBlockNumberDec: 2748 })
+      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
+        address: '0x0101',
+        newBlockNumberDec: 2748,
+      })
     })
 
     it('should set the store to a provided initial state', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: 'fakeGetSelectedAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -112,12 +125,12 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
-      await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
+      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
@@ -130,12 +143,12 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
-      await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
+      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
@@ -148,12 +161,15 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
-      await incomingTransactionsController._getDataForUpdate({ networkType: 'NEW_FAKE_NETWORK' })
+      await incomingTransactionsController._getDataForUpdate({
+        address: 'fakeAddress',
+        networkType: 'NEW_FAKE_NETWORK',
+      })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
@@ -166,12 +182,12 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({})
 
-      await incomingTransactionsController._getDataForUpdate({ newBlockNumberDec: 999 })
+      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
 
       assert(incomingTransactionsController._fetchAll.calledOnce)
 
@@ -184,7 +200,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
       })
       incomingTransactionsController._fetchAll = sinon.stub().returns({
@@ -192,7 +208,10 @@ describe('IncomingTransactionsController', () => {
         txs: [{ id: 555 }],
       })
 
-      const result = await incomingTransactionsController._getDataForUpdate({ networkType: 'FAKE_NETWORK' })
+      const result = await incomingTransactionsController._getDataForUpdate({
+        address: 'fakeAddress',
+        networkType: 'FAKE_NETWORK',
+      })
 
       assert.deepEqual(result, {
         latestIncomingTxBlockNumber: 444,
@@ -239,7 +258,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
       sinon.spy(incomingTransactionsController.store, 'updateState')
@@ -264,7 +283,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
       sinon.spy(incomingTransactionsController.store, 'updateState')
@@ -305,7 +324,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -319,7 +338,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -333,7 +352,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -347,7 +366,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -361,7 +380,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -381,7 +400,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -401,7 +420,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -421,7 +440,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -540,7 +559,7 @@ describe('IncomingTransactionsController', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 
@@ -575,14 +594,12 @@ describe('IncomingTransactionsController', () => {
         transactionCategory: 'incoming',
       })
     })
-  })
 
-  describe('_normalizeTxFromEtherscan', () => {
     it('should return the expected data when the tx is not in error', () => {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
-        getSelectedAddress: () => 'fakeAddress',
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
         initState: NON_EMPTY_INIT_STATE,
       })
 

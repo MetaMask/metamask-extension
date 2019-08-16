@@ -26,11 +26,11 @@ class IncomingTransactionsController {
     const {
       blockTracker,
       networkController,
-      getSelectedAddress,
+      preferencesController,
     } = opts
     this.blockTracker = blockTracker
     this.networkController = networkController
-    this.getSelectedAddress = getSelectedAddress
+    this.preferencesController = preferencesController
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
     const initState = Object.assign({
@@ -45,29 +45,41 @@ class IncomingTransactionsController {
     this.store = new ObservableStore(initState)
 
     this.networkController.on('networkDidChange', async (newType) => {
-      await this._update({ networkType: newType })
+      const address = this.preferencesController.getSelectedAddress()
+      await this._update({
+        address,
+        networkType: newType,
+      })
     })
     this.blockTracker.on('latest', async (newBlockNumberHex) => {
-      await this._update({ newBlockNumberDec: parseInt(newBlockNumberHex, 16) })
+      const address = this.preferencesController.getSelectedAddress()
+      await this._update({
+        address,
+        newBlockNumberDec: parseInt(newBlockNumberHex, 16),
+      })
+    })
+    this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
+      await this._update({
+        address: selectedAddress,
+      })
     })
   }
 
-  async _update ({ newBlockNumberDec, networkType } = {}) {
+  async _update ({ address, newBlockNumberDec, networkType } = {}) {
     try {
-      const dataForUpdate = await this._getDataForUpdate({ newBlockNumberDec, networkType })
+      const dataForUpdate = await this._getDataForUpdate({ address, newBlockNumberDec, networkType })
       await this._updateStateWithNewTxData(dataForUpdate)
     } catch (err) {
       log.error(err)
     }
   }
 
-  async _getDataForUpdate ({ newBlockNumberDec, networkType } = {}) {
+  async _getDataForUpdate ({ address, newBlockNumberDec, networkType } = {}) {
     const {
       incomingTransactions: currentIncomingTxs,
       incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
     } = this.store.getState()
 
-    const address = this.getSelectedAddress()
     const network = networkType || this.getCurrentNetwork()
     const lastFetchBlockByCurrentNetwork = currentBlocksByNetwork[network]
     let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
