@@ -103,7 +103,7 @@ class Routes extends Component {
       threeBoxSynced,
       show3BoxRestoreConfirmModal,
       getThreeBoxLastUpdated,
-      setThreeBoxSyncingPermission,
+      turnThreeBoxSyncingOn,
       restoredFromThreeBox,
     } = this.props
 
@@ -113,7 +113,7 @@ class Routes extends Component {
           if (lastUpdated) {
             show3BoxRestoreConfirmModal(lastUpdated)
           } else {
-            setThreeBoxSyncingPermission(true)
+            turnThreeBoxSyncingOn(true)
           }
         })
     }
@@ -368,7 +368,7 @@ Routes.propTypes = {
   threeBoxSynced: PropTypes.bool,
   show3BoxRestoreConfirmModal: PropTypes.func,
   getThreeBoxLastUpdated: PropTypes.func,
-  setThreeBoxSyncingPermission: PropTypes.func,
+  turnThreeBoxSyncingOn: PropTypes.func,
   restoredFromThreeBox: PropTypes.bool,
 
 }
@@ -417,7 +417,7 @@ function mapDispatchToProps (dispatch) {
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
     show3BoxRestoreConfirmModal: (lastUpdated) => dispatch(actions.showModal({ name: 'THREEBOX_RESTORE_CONFIRM', lastUpdated })),
-    setThreeBoxSyncingPermission: (threeBoxSyncingAllowed) => dispatch(actions.setThreeBoxSyncingPermission(threeBoxSyncingAllowed)),
+    turnThreeBoxSyncingOn: (threeBoxSyncingAllowed) => dispatch(actions.turnThreeBoxSyncingOn()),
     getThreeBoxLastUpdated: () => dispatch(actions.getThreeBoxLastUpdated()),
   }
 }
