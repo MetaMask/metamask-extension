@@ -131,7 +131,7 @@ class IncomingTransactionsController {
       return {}
     }
 
-    if (networkType !== 'mainnet') {
+    if (networkType !== MAINNET) {
       etherscanSubdomain = `api-${networkType}`
     }
     const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
