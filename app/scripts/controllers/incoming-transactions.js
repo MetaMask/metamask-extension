@@ -36,7 +36,7 @@ class IncomingTransactionsController {
 
     const initState = extend({
       incomingTransactions: {},
-      incomingTxlastFetchedBlocksByNetwork: {
+      incomingTxLastFetchedBlocksByNetwork: {
         [ROPSTEN]: null,
         [RINKEBY]: null,
         [KOVAN]: null,
@@ -65,7 +65,7 @@ class IncomingTransactionsController {
   async _getDataForUpdate ({ newBlockNumberDec, networkType } = {}) {
     const {
       incomingTransactions: currentIncomingTxs,
-      incomingTxlastFetchedBlocksByNetwork: currentBlocksByNetwork,
+      incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
     } = this.store.getState()
 
     const address = this.getSelectedAddress()
@@ -105,7 +105,7 @@ class IncomingTransactionsController {
     newTxs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
 
     this.store.updateState({
-      incomingTxlastFetchedBlocksByNetwork: {
+      incomingTxLastFetchedBlocksByNetwork: {
         ...currentBlocksByNetwork,
         [network]: newLatestBlockHashByNetwork,
       },

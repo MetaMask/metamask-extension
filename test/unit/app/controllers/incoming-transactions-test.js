@@ -15,7 +15,7 @@ const {
 describe('IncomingTransactionsController', () => {
   const EMPTY_INIT_STATE = {
     incomingTransactions: {},
-    incomingTxlastFetchedBlocksByNetwork: {
+    incomingTxLastFetchedBlocksByNetwork: {
       [ROPSTEN]: null,
       [RINKEBY]: null,
       [KOVAN]: null,
@@ -27,7 +27,7 @@ describe('IncomingTransactionsController', () => {
     incomingTransactions: {
       '0x123456': { id: 777 },
     },
-    incomingTxlastFetchedBlocksByNetwork: {
+    incomingTxLastFetchedBlocksByNetwork: {
       [ROPSTEN]: 1,
       [RINKEBY]: 2,
       [KOVAN]: 3,
@@ -39,7 +39,7 @@ describe('IncomingTransactionsController', () => {
     incomingTransactions: {
       '0x123456': { id: 777 },
     },
-    incomingTxlastFetchedBlocksByNetwork: {
+    incomingTxLastFetchedBlocksByNetwork: {
       [ROPSTEN]: 1,
       [RINKEBY]: 2,
       [KOVAN]: 3,
@@ -249,7 +249,7 @@ describe('IncomingTransactionsController', () => {
       assert(incomingTransactionsController.store.updateState.calledOnce)
 
       assert.deepEqual(incomingTransactionsController.store.updateState.getCall(0).args[0], {
-        incomingTxlastFetchedBlocksByNetwork: {
+        incomingTxLastFetchedBlocksByNetwork: {
           ...MOCK_INPUT_WITH_LASTEST.currentBlocksByNetwork,
           'FAKE_NETWORK': 445,
         },
@@ -274,7 +274,7 @@ describe('IncomingTransactionsController', () => {
       assert(incomingTransactionsController.store.updateState.calledOnce)
 
       assert.deepEqual(incomingTransactionsController.store.updateState.getCall(0).args[0], {
-        incomingTxlastFetchedBlocksByNetwork: {
+        incomingTxLastFetchedBlocksByNetwork: {
           ...MOCK_INPUT_WITH_LASTEST.currentBlocksByNetwork,
           'FAKE_NETWORK': 1112,
         },
