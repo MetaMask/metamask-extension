@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "隐私模式"
-  },
-  "privacyModeDescription": {
-    "message": "网站必须请求访问权限才能查看您的帐户信息。"
-  },
   "exposeAccounts": {
     "message": "公开账户"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "已批准的网站数据已成功清除。"
-  },
-  "approvalData": {
-    "message": "审批数据"
-  },
-  "approvalDataDescription": {
-    "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
   },
   "clearApprovalData": {
     "message": "清除批准数据"

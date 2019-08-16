@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
-  },
-  "privacyModeDescription": {
-    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
-  },
   "exposeAccounts": {
     "message": "Exposer les comptes"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Les données de site Web approuvées ont été supprimées."
-  },
-  "approvalData": {
-    "message": "Données d'approbation"
-  },
-  "approvalDataDescription": {
-    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
   },
   "clearApprovalData": {
     "message": "Effacer les données d'approbation"

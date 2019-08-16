@@ -41,7 +41,6 @@ class PreferencesController {
       // for convenient testing of pre-release features, and should never
       // perform sensitive operations.
       featureFlags: {
-        privacyMode: true,
       },
       knownMethodData: {},
       participateInMetaMetrics: null,

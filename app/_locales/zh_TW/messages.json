@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "隱私模式"
-  },
-  "privacyModeDescription": {
-    "message": "網站必須請求訪問權限才能查看您的帳戶資訊"
-  },
   "exposeAccounts": {
     "message": "公開賬戶"
   },
@@ -22,12 +16,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "已批准的網站紀錄已成功清除。"
-  },
-  "approvalData": {
-    "message": "審核紀錄"
-  },
-  "approvalDataDescription": {
-    "message": "清除之前已批准過的網站審核紀錄，所有網站都必須再次申請"
   },
   "clearApprovalData": {
     "message": "清除批准數據"

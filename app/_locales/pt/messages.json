@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Modo de privacidade"
-  },
-  "privacyModeDescription": {
-    "message": "Os sites devem solicitar acesso para visualizar as informações da sua conta."
-  },
   "exposeAccounts": {
     "message": "Expor contas"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Dados aprovados do website foram limpos com sucesso."
-  },
-  "approvalData": {
-    "message": "Dados de aprovação"
-  },
-  "approvalDataDescription": {
-    "message": "Limpe os dados aprovados do website para que todos os sites solicitem aprovação novamente."
   },
   "clearApprovalData": {
     "message": "Limpar dados de aprovação"

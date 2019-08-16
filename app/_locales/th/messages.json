@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "โหมดความเป็นส่วนตัว"
-  },
-  "privacyModeDescription": {
-    "message": "เว็บไซต์ต้องขอเข้าถึงเพื่อดูข้อมูลบัญชีของคุณ"
-  },
   "exposeAccounts": {
     "message": "เปิดเผยบัญชี"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "อนุมัติข้อมูลเว็บไซต์ที่ได้รับอนุมัติแล้ว"
-  },
-  "approvalData": {
-    "message": "ข้อมูลการอนุมัติ"
-  },
-  "approvalDataDescription": {
-    "message": "ล้างข้อมูลเว็บไซต์ที่ได้รับการอนุมัติเพื่อให้ทุกไซต์ต้องขออนุมัติอีกครั้ง"
   },
   "clearApprovalData": {
     "message": "ล้างข้อมูลการอนุมัติ"

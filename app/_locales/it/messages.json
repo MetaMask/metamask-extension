@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Modalità privacy"
-  },
-  "privacyModeDescription": {
-    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
-  },
   "exposeAccounts": {
     "message": "Esponi Accounts"
   },
@@ -25,12 +19,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
-  },
-  "approvalData": {
-    "message": "Dati di approvazione"
-  },
-  "approvalDataDescription": {
-    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
   },
   "clearApprovalData": {
     "message": "Cancella i dati di approvazione"

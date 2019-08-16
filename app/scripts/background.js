@@ -409,7 +409,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.providerApprovalController.store.on('update', updateBadge)
+  controller.providerApprovalController.memStore.on('update', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -421,7 +421,7 @@ function setupController (initState, initLangCode) {
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingProviderRequests = controller.providerApprovalController.store.getState().providerRequests.length
+    const pendingProviderRequests = controller.providerApprovalController.memStore.getState().providerRequests.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests
     if (count) {
       label = String(count)

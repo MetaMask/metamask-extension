@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Mòd Privacy"
-  },
-  "privacyModeDescription": {
-    "message": "Sou sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ou."
-  },
   "exposeAccounts": {
     "message": "Ekspoze Kont"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Done sou sit wèb apwouve yo te klarifye avèk siksè."
-  },
-  "approvalData": {
-    "message": "Done sou vi prive"
-  },
-  "approvalDataDescription": {
-    "message": "Done sou vi prive klè pou tout sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ankò."
   },
   "clearApprovalData": {
     "message": "Klè Done sou vi prive"

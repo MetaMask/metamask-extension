@@ -349,7 +349,6 @@ var actions = {
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
-  forceApproveProviderRequestByOrigin,
   clearApprovedOrigins,
 
   setFirstTimeFlowType,
@@ -2647,12 +2646,6 @@ function setPendingTokens (pendingTokens) {
 function approveProviderRequestByOrigin (origin) {
   return () => {
     background.approveProviderRequestByOrigin(origin)
-  }
-}
-
-function forceApproveProviderRequestByOrigin (origin) {
-  return () => {
-    background.forceApproveProviderRequestByOrigin(origin)
   }
 }
 

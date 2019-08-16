@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Режим конфиденциальности"
-  },
-  "privacyModeDescription": {
-    "message": "Веб-сайты должны запрашивать доступ для просмотра информации об учетной записи."
-  },
   "exposeAccounts": {
     "message": "Открыть счета"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Утвержденные данные веб-сайта успешно удалены."
-  },
-  "approvalData": {
-    "message": "Данные об утверждении"
-  },
-  "approvalDataDescription": {
-    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
   },
   "clearApprovalData": {
     "message": "Четкие данные об утверждении"

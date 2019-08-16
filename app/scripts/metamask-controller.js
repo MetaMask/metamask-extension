@@ -251,6 +251,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.providerApprovalController = new ProviderApprovalController({
       closePopup: opts.closePopup,
+      initState: initState.ProviderApprovalController,
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
       preferencesController: this.preferencesController,
@@ -268,6 +269,7 @@ module.exports = class MetamaskController extends EventEmitter {
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
+      ProviderApprovalController: this.providerApprovalController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -288,8 +290,10 @@ module.exports = class MetamaskController extends EventEmitter {
       CurrencyController: this.currencyRateController,
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
-      ProviderApprovalController: this.providerApprovalController.store,
       OnboardingController: this.onboardingController.store,
+      // ProviderApprovalController
+      ProviderApprovalController: this.providerApprovalController.store,
+      ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -503,7 +507,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // provider approval
       approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
       rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
-      forceApproveProviderRequestByOrigin: providerApprovalController.forceApproveProviderRequestByOrigin.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
 
       // onboarding controller
