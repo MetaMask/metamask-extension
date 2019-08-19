@@ -144,9 +144,7 @@ class ThreeBoxController {
   }
 
   setThreeBoxSyncingPermission (newThreeboxSyncingState) {
-    const currentState = this.store.getState()
     this.store.updateState({
-      ...currentState,
       threeBoxSyncingAllowed: newThreeboxSyncingState,
     })
 
