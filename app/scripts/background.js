@@ -72,7 +72,7 @@ let versionedData
 initialize().catch(log.error)
 
 // setup metamask mesh testing container
-setupMetamaskMeshMetrics()
+const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 
 /**
@@ -265,6 +265,11 @@ function setupController (initState, initLangCode) {
 
   const provider = controller.provider
   setupEnsIpfsResolver({ provider })
+
+  // submit rpc requests to mesh-metrics
+  controller.networkController.on('rpc-req', (data) => {
+    submitMeshMetricsEntry({ type: 'rpc', data })
+  })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
