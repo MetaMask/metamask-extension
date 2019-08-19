@@ -54,6 +54,8 @@ function setupEnsIpfsResolver ({ provider }) {
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${path}${search || ''}`
       }
+      } else if (type === 'zeronet') {
+        url = `http://127.0.0.1:43110/${hash}${path}${search || ''}`
     } catch (err) {
       console.warn(err)
     } finally {
