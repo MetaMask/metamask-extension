@@ -1657,6 +1657,9 @@
   "syncWithThreeBoxDescription": {
     "message": "Turn on to have your settings backed up with 3Box"
   },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box has been disabled due to an error during the initial sync"
+  },
   "syncWithMobile": {
     "message": "Sync with mobile"
   },
