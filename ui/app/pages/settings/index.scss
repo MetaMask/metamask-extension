@@ -168,6 +168,11 @@
     &--without-height {
       height: initial;
     }
+
+    &--disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
   }
 
   &__content-label {

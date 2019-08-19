@@ -10,6 +10,8 @@ const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
 const createOriginMiddleware = require('../lib/createOriginMiddleware')
 
+const SYNC_TIMEOUT = 60 * 1000 // one minute
+
 class ThreeBoxController {
   constructor (opts = {}) {
     const {
@@ -50,6 +52,7 @@ class ThreeBoxController {
       ...opts.initState,
       threeBoxAddress: null,
       threeBoxSynced: false,
+      threeBoxDisabled: false,
     }
     this.store = new ObservableStore(initState)
     this.registeringUpdates = false
@@ -100,15 +103,31 @@ class ThreeBoxController {
       this.store.updateState({ threeBoxSynced: false })
       this.address = address
 
+      let timedOut = false
+      const syncTimeout = setTimeout(() => {
+        log.error(`3Box sync timed out after ${SYNC_TIMEOUT} ms`)
+        timedOut = true
+        this.store.updateState({
+          threeBoxDisabled: true,
+          threeBoxSyncingAllowed: false,
+        })
+      }, SYNC_TIMEOUT)
       try {
         this.box = await Box.openBox(address, this.provider)
         await this._waitForOnSyncDone()
         this.space = await this.box.openSpace('metamask', {
           onSyncDone: async () => {
-            this.store.updateState({
+            const stateUpdate = {
               threeBoxSynced: true,
               threeBoxAddress: address,
-            })
+            }
+            if (timedOut) {
+              log.info(`3Box sync completed after timeout; no longer disabled`)
+              stateUpdate.threeBoxDisabled = false
+            }
+
+            clearTimeout(syncTimeout)
+            this.store.updateState(stateUpdate)
             log.debug('3Box space sync done')
           },
         })
@@ -144,6 +163,9 @@ class ThreeBoxController {
   }
 
   setThreeBoxSyncingPermission (newThreeboxSyncingState) {
+    if (this.store.getState().threeBoxDisabled) {
+      return
+    }
     this.store.updateState({
       threeBoxSyncingAllowed: newThreeboxSyncingState,
     })
