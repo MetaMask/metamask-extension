@@ -341,6 +341,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
     }
@@ -1141,6 +1142,9 @@ module.exports = class MetamaskController extends EventEmitter {
           case 'V3':
             signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
             break
+          case 'V4':
+            signature = sigUtil.signTypedData_v4(privKey, { data: JSON.parse(cleanMsgParams.data) })
+            break
         }
       } else {
         signature = await keyring.signTypedData(address, cleanMsgParams.data)
@@ -1797,4 +1801,3 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.keyringController.setLocked()
   }
 }
-
