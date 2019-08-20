@@ -33,6 +33,15 @@ class IncomingTransactionsController {
     this.preferencesController = preferencesController
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
+    this._onLatestBlock = async (newBlockNumberHex) => {
+      const selectedAddress = this.preferencesController.getSelectedAddress()
+      const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
+      await this._update({
+        address: selectedAddress,
+        newBlockNumberDec,
+      })
+    }
+
     const initState = Object.assign({
       incomingTransactions: {},
       incomingTxLastFetchedBlocksByNetwork: {
@@ -51,18 +60,20 @@ class IncomingTransactionsController {
         networkType: newType,
       })
     })
-    this.blockTracker.on('latest', async (newBlockNumberHex) => {
-      const address = this.preferencesController.getSelectedAddress()
-      await this._update({
-        address,
-        newBlockNumberDec: parseInt(newBlockNumberHex, 16),
-      })
-    })
     this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
       await this._update({
         address: selectedAddress,
       })
     })
+  }
+
+  start () {
+    this.blockTracker.removeListener('latest', this._onLatestBlock)
+    this.blockTracker.addListener('latest', this._onLatestBlock)
+  }
+
+  stop () {
+    this.blockTracker.removeListener('latest', this._onLatestBlock)
   }
 
   async _update ({ address, newBlockNumberDec, networkType } = {}) {
