@@ -35,7 +35,7 @@ const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
   background: [
-    '3box/dist/3box.min',
+    '3box',
   ],
   ui: [
     ...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies,
@@ -348,24 +348,15 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
-createTasksForBuildJsDeps({
-  filename: 'bg-libs',
-  key: 'background',
-  extraBundleTaskOpts: {
-    buildSourceMaps: false,
-    minifyBuild: false,
-    ignoreTransform: ['babelify', 'brfs', 'envify'],
-  },
-})
+createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' })
 createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
-function createTasksForBuildJsDeps ({ extraBundleTaskOpts = {}, key, filename }) {
+function createTasksForBuildJsDeps ({ key, filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
-
 
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
@@ -380,7 +371,7 @@ function createTasksForBuildJsDeps ({ extraBundleTaskOpts = {}, key, filename })
     destinations,
     buildLib: true,
     dependenciesToBundle: externalDependenciesMap[key],
-  }, bundleTaskOpts, extraBundleTaskOpts)))
+  }, bundleTaskOpts)))
 }
 
 
@@ -534,7 +525,6 @@ function generateBundler (opts, performBundle) {
     transform: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
-    ignoreTransform: opts.ignoreTransform,
   })
 
   const bundleName = opts.filename.split('.')[0]
@@ -561,6 +551,16 @@ function generateBundler (opts, performBundle) {
 
   let bundler = browserify(browserifyOpts)
     .transform('babelify')
+    // Transpile any dependencies using the object spread/rest operator
+    // because it is incompatible with `esprima`, which is used by `envify`
+    // See https://github.com/jquery/esprima/issues/1927
+    .transform('babelify', {
+      only: [
+        './**/node_modules/libp2p',
+      ],
+      global: true,
+      plugins: ['@babel/plugin-proposal-object-rest-spread'],
+    })
     .transform('brfs')
 
   if (opts.buildLib) {
@@ -571,20 +571,16 @@ function generateBundler (opts, performBundle) {
     bundler = bundler.external(opts.externalDependencies)
   }
 
-  if (Array.isArray(opts.ignoreTransform) && opts.ignoreTransform.includes('envify')) {
-    // Skip envify
-  } else {
-    // Inject variables into bundle
-    bundler.transform(envify({
-      METAMASK_DEBUG: opts.devMode,
-      NODE_ENV: opts.devMode ? 'development' : 'production',
-      IN_TEST: opts.testing,
-      PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
-      PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-    }), {
-      global: true,
-    })
-  }
+  // Inject variables into bundle
+  bundler.transform(envify({
+    METAMASK_DEBUG: opts.devMode,
+    NODE_ENV: opts.devMode ? 'development' : 'production',
+    IN_TEST: opts.testing,
+    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
+    PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+  }), {
+    global: true,
+  })
 
   if (opts.watch) {
     bundler = watchify(bundler)
