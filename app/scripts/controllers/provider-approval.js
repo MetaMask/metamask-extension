@@ -30,7 +30,7 @@ class ProviderApprovalController extends SafeEventEmitter {
    *
    * @param {object} opts - opts for the middleware contains the origin for the middleware
    */
-  createMiddleware ({ origin, getSiteMetadata }) {
+  createMiddleware ({ origin, getSiteMetadata, getExtensionMetadata }) {
     return createAsyncMiddleware(async (req, res, next) => {
       // only handle requestAccounts
       if (req.method !== 'eth_requestAccounts') return next()
@@ -40,8 +40,11 @@ class ProviderApprovalController extends SafeEventEmitter {
         res.result = [this.preferencesController.getSelectedAddress()]
         return
       }
+
+      // get metadata from origin if extension or site
+      const metadata = await getExtensionMetadata(origin) || await getSiteMetadata(origin)
+
       // register the provider request
-      const metadata = await getSiteMetadata(origin)
       this._handleProviderRequest(origin, metadata.name, metadata.icon)
       // wait for resolution of request
       const approved = await new Promise(resolve => this.once(`resolvedRequest:${origin}`, ({ approved }) => resolve(approved)))

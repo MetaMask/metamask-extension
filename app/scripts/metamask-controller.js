@@ -1358,9 +1358,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide over.
    * @param {string} origin - The URI of the requesting resource.
    */
-  setupProviderConnection (outStream, origin, publicApi) {
-    const getSiteMetadata = publicApi && publicApi.getSiteMetadata
-    const engine = this.setupProviderEngine(origin, getSiteMetadata)
+  setupProviderConnection (outStream, origin, publicApi = {}) {
+    const {getSiteMetadata, getExtensionMetadata} = publicApi
+    const engine = this.setupProviderEngine(origin, getSiteMetadata, getExtensionMetadata)
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1384,7 +1384,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, getSiteMetadata) {
+  setupProviderEngine (origin, getSiteMetadata, getExtensionMetadata) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1409,6 +1409,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(this.providerApprovalController.createMiddleware({
       origin,
       getSiteMetadata,
+      getExtensionMetadata,
     }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
@@ -1469,6 +1470,30 @@ module.exports = class MetamaskController extends EventEmitter {
       getSiteMetadata: async () => {
         const remote = await getRemote()
         return await pify(remote.getSiteMetadata)()
+      },
+
+      getExtensionMetadata: (extensionId) => {
+        return new Promise((resolve) => {
+          if (!window.chrome || !window.chrome.management) {
+            return resolve(null)
+          }
+
+          window.chrome.management.getAll(extensions => {
+            if (!extensions) {
+              return resolve(null)
+            }
+
+            const extension = extensions.find(({enabled, id}) => enabled && id === extensionId)
+
+            if (!extension) {
+              return resolve(null)
+            }
+
+            const icon = extension.icons.reduce((largestIcon, icon) => icon.size > largestIcon.size ? icon : largestIcon, { size: 0 })
+
+            return resolve({name: extension.name, icon: icon.url})
+          })
+        })
       },
     }
 
