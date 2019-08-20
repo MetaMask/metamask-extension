@@ -2,7 +2,7 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const BN = require('bn.js')
 const createId = require('../lib/random-id')
-const { bnToHex } = require('../lib/util')
+const { bnToHex, fetchWithTimeout } = require('../lib/util')
 const {
   MAINNET_CODE,
   ROPSTEN_CODE,
@@ -19,6 +19,9 @@ const networkTypeToIdMap = {
   [KOVAN]: String(KOVAN_CODE),
   [MAINNET]: String(MAINNET_CODE),
 }
+const fetch = fetchWithTimeout({
+  timeout: 30000,
+})
 
 class IncomingTransactionsController {
 
