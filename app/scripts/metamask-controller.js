@@ -55,6 +55,7 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
   CurrencyRateController,
@@ -62,7 +63,6 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
-
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -650,8 +650,24 @@ module.exports = class MetamaskController extends EventEmitter {
       tokens,
     } = this.preferencesController.store.getState()
 
+    // Filter ERC20 tokens
+    const filteredAccountTokens = {}
+    Object.keys(accountTokens).forEach(address => {
+      const checksummedAddress = ethUtil.toChecksumAddress(address)
+      filteredAccountTokens[checksummedAddress] = {}
+      Object.keys(accountTokens[address]).forEach(
+        networkType => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
+          accountTokens[address][networkType] :
+          accountTokens[address][networkType].filter(({ address }) => {
+            const tokenAddress = ethUtil.toChecksumAddress(address)
+            return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+          })
+        )
+      )
+    })
+
     const preferences = {
-      accountTokens,
+      accountTokens: filteredAccountTokens,
       currentLocale,
       frequentRpcList,
       identities,
