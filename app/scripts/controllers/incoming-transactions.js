@@ -2,7 +2,7 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const BN = require('bn.js')
 const createId = require('../lib/random-id')
-const { bnToHex } = require('../lib/util')
+const { bnToHex, fetchWithTimeout } = require('../lib/util')
 const {
   MAINNET_CODE,
   ROPSTEN_CODE,
@@ -14,11 +14,14 @@ const {
   MAINNET,
 } = require('./network/enums')
 const networkTypeToIdMap = {
-  [ROPSTEN]: ROPSTEN_CODE,
-  [RINKEBY]: RINKEYBY_CODE,
-  [KOVAN]: KOVAN_CODE,
-  [MAINNET]: MAINNET_CODE,
+  [ROPSTEN]: String(ROPSTEN_CODE),
+  [RINKEBY]: String(RINKEYBY_CODE),
+  [KOVAN]: String(KOVAN_CODE),
+  [MAINNET]: String(MAINNET_CODE),
 }
+const fetch = fetchWithTimeout({
+  timeout: 30000,
+})
 
 class IncomingTransactionsController {
 
@@ -32,6 +35,15 @@ class IncomingTransactionsController {
     this.networkController = networkController
     this.preferencesController = preferencesController
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
+
+    this._onLatestBlock = async (newBlockNumberHex) => {
+      const selectedAddress = this.preferencesController.getSelectedAddress()
+      const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
+      await this._update({
+        address: selectedAddress,
+        newBlockNumberDec,
+      })
+    }
 
     const initState = Object.assign({
       incomingTransactions: {},
@@ -51,18 +63,20 @@ class IncomingTransactionsController {
         networkType: newType,
       })
     })
-    this.blockTracker.on('latest', async (newBlockNumberHex) => {
-      const address = this.preferencesController.getSelectedAddress()
-      await this._update({
-        address,
-        newBlockNumberDec: parseInt(newBlockNumberHex, 16),
-      })
-    })
     this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
       await this._update({
         address: selectedAddress,
       })
     })
+  }
+
+  start () {
+    this.blockTracker.removeListener('latest', this._onLatestBlock)
+    this.blockTracker.addListener('latest', this._onLatestBlock)
+  }
+
+  stop () {
+    this.blockTracker.removeListener('latest', this._onLatestBlock)
   }
 
   async _update ({ address, newBlockNumberDec, networkType } = {}) {

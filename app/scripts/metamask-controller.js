@@ -156,8 +156,10 @@ module.exports = class MetamaskController extends EventEmitter {
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
+        this.incomingTransactionsController.start()
       } else {
         this.accountTracker.stop()
+        this.incomingTransactionsController.stop()
       }
     })
 

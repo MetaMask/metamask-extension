@@ -16,9 +16,12 @@ import txHelper from '../../lib/tx-helper'
 export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
 
 export const incomingTxListSelector = state => {
+  const network = state.metamask.network
   const selectedAddress = state.metamask.selectedAddress
   return Object.values(state.metamask.incomingTransactions)
-    .filter(({ txParams }) => txParams.to === selectedAddress)
+    .filter(({ metamaskNetworkId, txParams }) => (
+      txParams.to === selectedAddress && metamaskNetworkId === network
+    ))
 }
 export const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
 export const selectedAddressTxListSelector = state => state.metamask.selectedAddressTxList

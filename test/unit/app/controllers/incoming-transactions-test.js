@@ -49,7 +49,8 @@ describe('IncomingTransactionsController', () => {
   }
 
   const MOCK_BLOCKTRACKER = {
-    on: sinon.spy(),
+    addListener: sinon.spy(),
+    removeListener: sinon.spy(),
     testProperty: 'fakeBlockTracker',
     getCurrentBlock: () => '0xa',
   }
@@ -95,17 +96,6 @@ describe('IncomingTransactionsController', () => {
       })
 
       incomingTransactionsController._update.resetHistory()
-
-      assert(incomingTransactionsController.blockTracker.on.calledOnce)
-      assert.equal(incomingTransactionsController.blockTracker.on.getCall(0).args[0], 'latest')
-      const blockTrackerListenerCallback = incomingTransactionsController.blockTracker.on.getCall(0).args[1]
-      assert.equal(incomingTransactionsController._update.callCount, 0)
-      blockTrackerListenerCallback('0xabc')
-      assert.equal(incomingTransactionsController._update.callCount, 1)
-      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
-        address: '0x0101',
-        newBlockNumberDec: 2748,
-      })
     })
 
     it('should set the store to a provided initial state', () => {
@@ -117,6 +107,31 @@ describe('IncomingTransactionsController', () => {
       })
 
       assert.deepEqual(incomingTransactionsController.store.getState(), NON_EMPTY_INIT_STATE)
+    })
+  })
+
+  describe('#start', () => {
+    it('should set up a listener for the latest block', () => {
+      const incomingTransactionsController = new IncomingTransactionsController({
+        blockTracker: MOCK_BLOCKTRACKER,
+        networkController: MOCK_NETWORK_CONTROLLER,
+        preferencesController: MOCK_PREFERENCES_CONTROLLER,
+        initState: {},
+      })
+      sinon.spy(incomingTransactionsController, '_update')
+
+      incomingTransactionsController.start()
+
+      assert(incomingTransactionsController.blockTracker.addListener.calledOnce)
+      assert.equal(incomingTransactionsController.blockTracker.addListener.getCall(0).args[0], 'latest')
+      const blockTrackerListenerCallback = incomingTransactionsController.blockTracker.addListener.getCall(0).args[1]
+      assert.equal(incomingTransactionsController._update.callCount, 0)
+      blockTrackerListenerCallback('0xabc')
+      assert.equal(incomingTransactionsController._update.callCount, 1)
+      assert.deepEqual(incomingTransactionsController._update.getCall(0).args[0], {
+        address: '0x0101',
+        newBlockNumberDec: 2748,
+      })
     })
   })
 
