@@ -14,10 +14,10 @@ const {
   MAINNET,
 } = require('./network/enums')
 const networkTypeToIdMap = {
-  [ROPSTEN]: ROPSTEN_CODE,
-  [RINKEBY]: RINKEYBY_CODE,
-  [KOVAN]: KOVAN_CODE,
-  [MAINNET]: MAINNET_CODE,
+  [ROPSTEN]: String(ROPSTEN_CODE),
+  [RINKEBY]: String(RINKEYBY_CODE),
+  [KOVAN]: String(KOVAN_CODE),
+  [MAINNET]: String(MAINNET_CODE),
 }
 
 class IncomingTransactionsController {
