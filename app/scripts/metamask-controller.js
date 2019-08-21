@@ -206,7 +206,6 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.ThreeBoxController,
       getKeyringControllerState: this.keyringController.memStore.getState.bind(this.keyringController.memStore),
       getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
-      signPersonalMessage: this.keyringController.signPersonalMessage.bind(this.keyringController),
       version,
     })
 
@@ -573,8 +572,6 @@ module.exports = class MetamaskController extends EventEmitter {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
-        this.threeBoxController.new3Box(accounts[0])
-        this.threeBoxController.turnThreeBoxSyncingOn()
         this.selectFirstIdentity()
       }
       releaseLock()
