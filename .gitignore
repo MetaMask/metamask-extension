@@ -32,7 +32,7 @@ builds/
 builds.zip
 docs/jsdocs
 
-development/bundle.js
+development/bundle.js*
 development/states.js
 test/integration/bundle.js
 test/background.js

@@ -2117,11 +2117,6 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@types/xtend@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@types/xtend/-/xtend-4.0.2.tgz#07b60212f1f92b6635cb719c8b4a5521ef0d685c"
-  integrity sha1-B7YCEvH5K2Y1y3Gci0pVIe8NaFw=
-
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
@@ -8484,7 +8479,7 @@ eth-json-rpc-filters@^4.1.0:
     lodash.flatmap "^4.5.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-infura@^3.1.0, eth-json-rpc-infura@^3.1.2:
+eth-json-rpc-infura@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-infura/-/eth-json-rpc-infura-3.2.0.tgz#62c3f516b51351038c32a548704467cec113ca8f"
   integrity sha512-FLcpdxPRVBCUc7yoE+wHGvyYg2lATedP+/q7PsKvaSzQpJbgTG4ZjLnyrLanxDr6M1k/dSNa6V5QnILwjUKJcw==
@@ -8817,7 +8812,7 @@ ethereumjs-common@^1.1.0:
   resolved "https://registry.yarnpkg.com/ethereumjs-common/-/ethereumjs-common-1.2.1.tgz#e8bbc43f6a6ece1447cc1faebbef9122adbd153f"
   integrity sha512-VNr8MBdKHHuWgpYhRUhkp05P0mTcTH8Udb8wXcnnxUmwOWl388Sk/Lw2KL1rQNsV3gid2BB2auHT4vcfs9PFbw==
 
-ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^1.2.2, ethereumjs-tx@^1.3.3, ethereumjs-tx@^1.3.4:
+ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^1.2.2, ethereumjs-tx@^1.3.3, ethereumjs-tx@^1.3.4, ethereumjs-tx@^1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.3.7.tgz#88323a2d875b10549b8347e09f4862b546f3d89a"
   integrity sha512-wvLMxzt1RPhAQ9Yi3/HKZTn0FZYpnsmQdbKYfUUpi4j1SEIcbkd9tndVjcPrufY3V7j2IebOpC00Zp2P/Ay2kA==
@@ -12945,7 +12940,7 @@ json-rpc-middleware-stream@^2.1.1:
     readable-stream "^2.3.3"
     safe-event-emitter "^1.0.1"
 
-json-rpc-random-id@^1.0.0:
+json-rpc-random-id@^1.0.0, json-rpc-random-id@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-rpc-random-id/-/json-rpc-random-id-1.0.1.tgz#ba49d96aded1444dbb8da3d203748acbbcdec8c8"
   integrity sha1-uknZat7RRE27jaPSA3SKy7zeyMg=
@@ -22095,6 +22090,11 @@ uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
+uuid@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
+  integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
+
 v8flags@^3.0.1, v8flags@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/v8flags/-/v8flags-3.1.1.tgz#42259a1461c08397e37fe1d4f1cfb59cad85a053"
@@ -22626,12 +22626,12 @@ web3-shh@1.0.0-beta.35:
     web3-core-subscriptions "1.0.0-beta.35"
     web3-net "1.0.0-beta.35"
 
-web3-stream-provider@^3.0.1:
+web3-stream-provider@rekmarks/web3-stream-provider#id-remap:
   version "3.0.1"
-  resolved "https://registry.yarnpkg.com/web3-stream-provider/-/web3-stream-provider-3.0.1.tgz#f5a593a8eefe808f85eb5fb1f344e5838050f814"
-  integrity sha1-9aWTqO7+gI+F61+x80Tlg4BQ+BQ=
+  resolved "https://codeload.github.com/rekmarks/web3-stream-provider/tar.gz/1fd86766630d407686efba51b1d14c49de62b212"
   dependencies:
     readable-stream "^2.0.5"
+    uuid "^3.3.3"
 
 web3-utils@1.0.0-beta.35:
   version "1.0.0-beta.35"
