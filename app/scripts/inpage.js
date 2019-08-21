@@ -61,8 +61,19 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
+let warnedOfAutoRefreshDeprecation = false
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
+  if (
+    !warnedOfAutoRefreshDeprecation &&
+    inpageProvider.autoRefreshOnNetworkChange
+  ) {
+    console.warn(`MetaMask: MetaMask will soon stop reloading pages on network change.
+If you rely upon this behavior, add a 'networkChanged' event handler to trigger the reload manually: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback)
+Set 'ethereum.autoRefreshOnNetworkChange' to 'false' to silence this warning: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.autorefreshonnetworkchange'
+`)
+    warnedOfAutoRefreshDeprecation = true
+  }
   return new Promise((resolve, reject) => {
     inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
       if (error || response.error) {
