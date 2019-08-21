@@ -570,11 +570,6 @@
       left: 0;
       right: 0;
       margin: 0 auto;
-
-      [dir='rtl'] & {
-        left: 0;
-        right: auto;
-      }
     }
   }
 
@@ -930,6 +925,11 @@
       + .send-v2__to-autocomplete__qr-code {
         top: 2px;
         right: 0;
+
+        [dir='rtl'] & {
+          left: 0;
+          right: auto;
+        }
       }
     }
   }
