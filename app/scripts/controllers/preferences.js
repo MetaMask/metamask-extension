@@ -216,6 +216,7 @@ class PreferencesController {
       currentLocale: key,
       textDirection: textDirection,
     })
+    return textDirection
   }
 
   /**

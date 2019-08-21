@@ -1734,8 +1734,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setCurrentLocale (key, cb) {
     try {
-      this.preferencesController.setCurrentLocale(key)
-      cb(null)
+      const direction = this.preferencesController.setCurrentLocale(key)
+      cb(null, direction)
     } catch (err) {
       cb(err)
     }
