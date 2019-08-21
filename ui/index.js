@@ -40,9 +40,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     metamask: metamaskState,
 
     // appState represents the current tab's popup state
-    appState: {
-      languageDirection: (metamaskState.currentLocale && ['ar', 'dv', 'fa', 'he', 'ku'].indexOf(metamaskState.currentLocale) > -1) ? 'rtl' : 'auto',
-    },
+    appState: {},
 
     localeMessages: {
       current: currentLocaleMessages,
