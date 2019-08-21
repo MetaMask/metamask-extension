@@ -56,6 +56,35 @@ class IncomingTransactionsController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
+    this.preferencesController.store.subscribe(pairwise((prevState, currState) => {
+      const { featureFlags: { showIncomingTransactions: prevShowIncomingTransactions } = {} } = prevState
+      const { featureFlags: { showIncomingTransactions: currShowIncomingTransactions } = {} } = currState
+
+      if (currShowIncomingTransactions === prevShowIncomingTransactions) {
+        return
+      }
+
+      if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
+        this.stop()
+        return
+      }
+
+      this.start()
+    }))
+
+    this.preferencesController.store.subscribe(pairwise(async (prevState, currState) => {
+      const { selectedAddress: prevSelectedAddress } = prevState
+      const { selectedAddress: currSelectedAddress } = currState
+
+      if (currSelectedAddress === prevSelectedAddress) {
+        return
+      }
+
+      await this._update({
+        address: currSelectedAddress,
+      })
+    }))
+
     this.networkController.on('networkDidChange', async (newType) => {
       const address = this.preferencesController.getSelectedAddress()
       await this._update({
@@ -63,14 +92,16 @@ class IncomingTransactionsController {
         networkType: newType,
       })
     })
-    this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
-      await this._update({
-        address: selectedAddress,
-      })
-    })
   }
 
   start () {
+    const { featureFlags = {} } = this.preferencesController.store.getState()
+    const { showIncomingTransactions } = featureFlags
+
+    if (!showIncomingTransactions) {
+      return
+    }
+
     this.blockTracker.removeListener('latest', this._onLatestBlock)
     this.blockTracker.addListener('latest', this._onLatestBlock)
   }
@@ -234,3 +265,20 @@ class IncomingTransactionsController {
 }
 
 module.exports = IncomingTransactionsController
+
+function pairwise (fn) {
+  let first = true
+  let cache
+  return (value) => {
+    try {
+      if (first) {
+        first = false
+        return fn(value, value)
+      } else {
+        return fn(cache, value)
+      }
+    } finally {
+      cache = value
+    }
+  }
+}

@@ -1,4 +1,10 @@
 {
+  "showIncomingTransactions": {
+    "message": "Show Incoming Transactions"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },
