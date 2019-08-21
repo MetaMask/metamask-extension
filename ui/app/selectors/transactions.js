@@ -16,6 +16,11 @@ import txHelper from '../../lib/tx-helper'
 export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
 
 export const incomingTxListSelector = state => {
+  const { showIncomingTransactions } = state.metamask.featureFlags
+  if (!showIncomingTransactions) {
+    return []
+  }
+
   const network = state.metamask.network
   const selectedAddress = state.metamask.selectedAddress
   return Object.values(state.metamask.incomingTransactions)

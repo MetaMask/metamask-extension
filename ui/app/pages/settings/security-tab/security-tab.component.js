@@ -18,6 +18,8 @@ export default class SecurityTab extends PureComponent {
     mobileSync: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     setParticipateInMetaMetrics: PropTypes.func,
+    showIncomingTransactions: PropTypes.bool,
+    setShowIncomingTransactionsFeatureFlag: PropTypes.func,
   }
 
   renderSeedWords () {
@@ -80,6 +82,32 @@ export default class SecurityTab extends PureComponent {
     )
   }
 
+  renderIncomingTransactionsOptIn () {
+    const { t } = this.context
+    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('showIncomingTransactions') }</span>
+          <div className="settings-page__content-description">
+            { t('showIncomingTransactionsDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={showIncomingTransactions}
+              onToggle={value => setShowIncomingTransactionsFeatureFlag(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -87,6 +115,7 @@ export default class SecurityTab extends PureComponent {
       <div className="settings-page__body">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderSeedWords() }
+        { this.renderIncomingTransactionsOptIn() }
         { this.renderMetaMetricsOptIn() }
       </div>
     )

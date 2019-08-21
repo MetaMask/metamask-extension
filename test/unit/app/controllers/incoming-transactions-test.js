@@ -63,6 +63,11 @@ describe('IncomingTransactionsController', () => {
   const MOCK_PREFERENCES_CONTROLLER = {
     getSelectedAddress: sinon.stub().returns('0x0101'),
     store: {
+      getState: sinon.stub().returns({
+        featureFlags: {
+          showIncomingTransactions: true,
+        },
+      }),
       subscribe: sinon.spy(),
     },
   }
