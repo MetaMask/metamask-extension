@@ -239,10 +239,10 @@ function getRenderableBasicEstimateData (state, gasLimit) {
     gas: {
       basicEstimates: {
         safeLow,
+        average,
         fast,
-        fastest,
         safeLowWait,
-        fastestWait,
+        avgWait,
         fastWait,
       },
     },
@@ -260,21 +260,21 @@ function getRenderableBasicEstimateData (state, gasLimit) {
     },
     {
       labelKey: 'average',
+      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
+      feeInSecondaryCurrency: showFiat
+        ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
+        : '',
+      timeEstimate: avgWait && getRenderableTimeEstimate(avgWait),
+      priceInHexWei: getGasPriceInHexWei(average),
+    },
+    {
+      labelKey: 'fast',
       feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
         : '',
       timeEstimate: fastWait && getRenderableTimeEstimate(fastWait),
       priceInHexWei: getGasPriceInHexWei(fast),
-    },
-    {
-      labelKey: 'fast',
-      feeInPrimaryCurrency: getRenderableEthFee(fastest, gasLimit),
-      feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(fastest, gasLimit, currentCurrency, conversionRate)
-        : '',
-      timeEstimate: fastestWait && getRenderableTimeEstimate(fastestWait),
-      priceInHexWei: getGasPriceInHexWei(fastest),
     },
   ]
 }
@@ -294,8 +294,8 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
     gas: {
       basicEstimates: {
         safeLow,
+        average,
         fast,
-        fastest,
       },
     },
   } = state
@@ -312,18 +312,18 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
     {
       labelKey: 'average',
       feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
+        ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
         : '',
-      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
-      priceInHexWei: getGasPriceInHexWei(fast, true),
+      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
+      priceInHexWei: getGasPriceInHexWei(average, true),
     },
     {
       labelKey: 'fast',
       feeInSecondaryCurrency: showFiat
-        ? getRenderableConvertedCurrencyFee(fastest, gasLimit, currentCurrency, conversionRate)
+        ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
         : '',
-      feeInPrimaryCurrency: getRenderableEthFee(fastest, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
-      priceInHexWei: getGasPriceInHexWei(fastest, true),
+      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
+      priceInHexWei: getGasPriceInHexWei(fast, true),
     },
   ]
 }
