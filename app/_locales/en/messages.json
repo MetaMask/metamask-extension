@@ -508,6 +508,9 @@
   "dataBackupFound": {
     "message": "Data backup found"
   },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
   },
@@ -1344,7 +1347,8 @@
     "message": "Restore your Account with Seed Phrase"
   },
   "restoreWalletPreferences": {
-    "message": "Would you like to restore your wallet preferences?"
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"

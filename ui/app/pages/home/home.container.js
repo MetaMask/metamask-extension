@@ -6,6 +6,10 @@ import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-tr
 import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   unsetMigratedPrivacyMode,
+  restoreFromThreeBox,
+  turnThreeBoxSyncingOn,
+  getThreeBoxLastUpdated,
+  setRestoredFromThreeBox,
 } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
@@ -18,6 +22,9 @@ const mapStateToProps = state => {
     migratedPrivacyMode,
     seedPhraseBackedUp,
     tokens,
+    threeBoxSynced,
+    restoredFromThreeBox,
+    selectedAddress,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword } = appState
@@ -32,11 +39,18 @@ const mapStateToProps = state => {
     showPrivacyModeNotification: migratedPrivacyMode,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    threeBoxSynced,
+    restoredFromThreeBox,
+    selectedAddress,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
+  turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
+  getThreeBoxLastUpdated: () => dispatch(getThreeBoxLastUpdated()),
+  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
+  setRestoredFromThreeBox: (restored) => dispatch(setRestoredFromThreeBox(restored)),
 })
 
 export default compose(

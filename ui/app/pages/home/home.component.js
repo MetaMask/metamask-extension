@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
+import { formatDate } from '../../helpers/utils/util'
 import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
@@ -34,6 +35,17 @@ export default class Home extends PureComponent {
     unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
+    threeBoxSynced: PropTypes.bool,
+    getThreeBoxLastUpdated: PropTypes.func,
+    turnThreeBoxSyncingOn: PropTypes.func,
+    restoredFromThreeBox: PropTypes.bool,
+    selectedAddress: PropTypes.string,
+    restoreFromThreeBox: PropTypes.func,
+    setRestoredFromThreeBox: PropTypes.func,
+  }
+
+  state = {
+    threeBoxLastUpdated: null,
   }
 
   componentWillMount () {
@@ -59,6 +71,30 @@ export default class Home extends PureComponent {
     }
   }
 
+  componentDidUpdate () {
+    const {
+      threeBoxSynced,
+      getThreeBoxLastUpdated,
+      turnThreeBoxSyncingOn,
+      restoredFromThreeBox,
+      setRestoredFromThreeBox,
+    } = this.props
+    const {
+      threeBoxLastUpdated,
+    } = this.state
+    if (threeBoxSynced && restoredFromThreeBox === null && threeBoxLastUpdated === null) {
+      getThreeBoxLastUpdated()
+        .then(lastUpdated => {
+          if (lastUpdated) {
+            this.setState({ threeBoxLastUpdated: lastUpdated })
+          } else {
+            setRestoredFromThreeBox(false)
+            turnThreeBoxSyncingOn(true)
+          }
+        })
+    }
+  }
+
   render () {
     const { t } = this.context
     const {
@@ -69,8 +105,16 @@ export default class Home extends PureComponent {
       unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
       isPopup,
+      selectedAddress,
+      restoreFromThreeBox,
+      turnThreeBoxSyncingOn,
+      setRestoredFromThreeBox,
+      restoredFromThreeBox,
     } = this.props
-
+    const {
+      threeBoxLastUpdated,
+    } = this.state
+    console.log('HOME threeBoxLastUpdated', threeBoxLastUpdated)
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }
@@ -123,6 +167,25 @@ export default class Home extends PureComponent {
                         }}
                         infoText={t('backupApprovalInfo')}
                         key="home-backupApprovalNotice"
+                      />,
+                    },
+                    {
+                      shouldBeRendered: threeBoxLastUpdated && restoredFromThreeBox === null,
+                      component: <HomeNotification
+                        descriptionText={t('restoreWalletPreferences', [ formatDate(parseInt(threeBoxLastUpdated), 'M/d/y') ])}
+                        acceptText={t('restore')}
+                        ignoreText={t('noThanks')}
+                        infoText={t('dataBackupFoundInfo')}
+                        onAccept={() => {
+                          restoreFromThreeBox(selectedAddress)
+                            .then(() => {
+                              turnThreeBoxSyncingOn()
+                            })
+                        }}
+                        onIgnore={() => {
+                          setRestoredFromThreeBox(false)
+                        }}
+                        key="home-privacyModeDefault"
                       />,
                     },
                   ]}/>
