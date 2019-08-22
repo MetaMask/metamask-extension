@@ -102,7 +102,7 @@ function getNetworkIds ({ network }) {
       ticker = POA_TICK
       break
     case POA_SOKOL:
-      netId= POA_SOKOL_CODE.toString()
+      netId = POA_SOKOL_CODE.toString()
       chainId = POA_SOKOL_CHAINID
       ticker = POA_TICK
       break
@@ -110,7 +110,7 @@ function getNetworkIds ({ network }) {
       throw new Error(`createPocketClient - unknown network "${network}"`)
   }
   return {
-    chainId, netId, ticker
+    chainId, netId, ticker,
   }
 }
 
