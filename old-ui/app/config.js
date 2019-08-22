@@ -31,12 +31,13 @@ class ConfigScreen extends Component {
     super(props)
     this.state = {
       loading: false,
-      dProvider: props.metamask.dProviderStore.dProvider
+      dProvider: props.metamask.dProviderStore.dProvider,
     }
   }
 
   static propTypes = {
     dispatch: PropTypes.func,
+    metamask: PropTypes.object,
   }
 
   render () {
@@ -44,9 +45,9 @@ class ConfigScreen extends Component {
     const metamaskState = state.metamask
     const warning = state.warning
 
-    if(state.metamask.dProviderStore.dProvider != this.state.dProvider){
+    if (state.metamask.dProviderStore.dProvider !== this.state.dProvider) {
       this.setState({
-        dProvider: this.props.metamask.dProviderStore.dProvider
+        dProvider: this.props.metamask.dProviderStore.dProvider,
       })
     }
 
@@ -173,7 +174,31 @@ class ConfigScreen extends Component {
               }, 'Reveal Seed Words'),
             ]),
 
-            h('hr.horizontal-line'),
+            h('hr.horizontal-line', {
+              style: {
+                marginTop: '20px',
+              },
+            }),
+
+            h('p', {
+              style: {
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
+              },
+            }, [
+              'Switch to Decentralized Provider (Pocket)',
+            ]),
+
+            h('input', {
+              type: 'checkbox',
+              name: 'pocket-checkbox',
+              checked: this.state.dProvider,
+              onChange: (event) => {
+                event.preventDefault()
+                this.toggleProvider()
+              },
+            }),
 
             h('p.config-title', `Provider`),
 
@@ -234,23 +259,23 @@ class ConfigScreen extends Component {
     )
   }
 
-  toggleProvider(){
+  toggleProvider () {
     const isPocket = POCKET_PROVIDER_TYPES.includes(this.props.metamask.provider.type)
-    if (isPocket){
-      if (!this.state.dProvider){
+    if (isPocket) {
+      if (!this.state.dProvider) {
         this.props.dispatch(actions.setDProvider(true))
         this.setState({
-          dProvider: true
+          dProvider: true,
         })
       } else {
         this.props.dispatch(actions.setDProvider(false))
         this.setState({
-          dProvider: false
+          dProvider: false,
         })
       }
       this.props.dispatch(actions.setProviderType(this.props.metamask.provider.type))
     } else {
-      alert("Pocket does not support this network, using centralized provider")
+      alert('Pocket does not support this network, using centralized provider')
     }
   }
 
