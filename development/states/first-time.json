@@ -4,7 +4,6 @@
     "isUnlocked": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
-    "computedBalances": {},
     "frequentRpcList": [],
     "unapprovedTxs": {},
     "featureFlags": {"betaUI": false},
@@ -60,7 +59,6 @@
     }
   },
   "identities": {},
-  "computedBalances": {},
   "confirmTransaction": {
     "txData": {},
     "tokenData": {},
