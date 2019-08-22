@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 4.11.9 Thu Aug 22 2019
+
+- [#303](https://github.com/poanetwork/nifty-wallet/pull/303): (Feature) Add Pocket Network
+- [#308](https://github.com/poanetwork/nifty-wallet/pull/308): (Fix) Fix gas price calculation
+
 ## 4.11.8 Wed Jul 03 2019
 
 - [#305](https://github.com/poanetwork/nifty-wallet/pull/305): (Feature) gas price for RSK from the last block

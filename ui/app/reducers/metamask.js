@@ -352,6 +352,13 @@ function reduceMetamask (state, action) {
         welcomeScreenSeen: true,
       })
 
+    case actions.SET_DPROVIDER:
+      return extend(metamaskState, {
+        dProviderStore: {
+          dProvider: action.value,
+        },
+      })
+
     case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
         currentLocale: action.value,

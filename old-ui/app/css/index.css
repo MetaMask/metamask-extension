@@ -117,6 +117,11 @@ button, input[type="submit"] {
   /*box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);*/
 }
 
+.btn-spread {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 .btn-green, input[type="submit"].btn-green {
   background: #60db97;
 }
@@ -1194,4 +1199,24 @@ div.message-container > div:first-child {
 
 input[disabled],textarea[disabled] {
   background: #FFFADE
+}
+
+.config-title {
+  font-family: 'Nunito Semibold';
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.config-description {
+  font-family: 'Nunito Regular';
+  font-size: 14px;
+  color: #888888;
+  line-height: 18px;
+  margin-bottom: 10px;
+}
+
+.config-select-currency {
+  height: 32px;
+  width: 100%;
+  margin-bottom: 20px;
 }
