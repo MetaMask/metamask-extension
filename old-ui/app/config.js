@@ -206,27 +206,27 @@ class ConfigScreen extends Component {
               style: {
                 display: 'table',
                 width: '100%',
-              }
+              },
             }, [
               h('div', {
                 style: {
                 display: 'table-cell',
-              }},[
-                h('p.config-description', 'Switch to Decentralized Provider (Pocket)')
+              }}, [
+                h('p.config-description', 'Switch to Decentralized Provider (Pocket)'),
               ]),
               h('div', { style: {
                 display: 'table-cell',
-              }},[
+              }}, [
                 h('input', {
-                  type:'checkbox',
-                  name:'pocket-checkbox',
+                  type: 'checkbox',
+                  name: 'pocket-checkbox',
                   checked: this.state.dProvider,
                   onChange: (event) => {
                     event.preventDefault()
                     this.toggleProvider()
                   },
                 }),
-              ])
+              ]),
             ]),
 
             h('hr.horizontal-line'),
