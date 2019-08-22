@@ -14,9 +14,12 @@ const {
   normalizeNumberToWei,
   isHex,
   ifRSK,
+  ifRSKByProviderType,
   ifPOA,
   toChecksumAddress,
   isValidChecksumAddress,
+  isInfuraProvider,
+  isKnownProvider,
 } = require('../../../../old-ui/app/util')
 const ethUtil = require('ethereumjs-util')
 let ethInWei = '1'
@@ -336,30 +339,29 @@ describe('normalizing values', function () {
 
   describe('#ifRSK', function () {
     it('checks if this is RSK chain', function () {
-      var result1 = ifRSK(30)
-      assert(result1)
-      var result2 = ifRSK(31)
-      assert(result2)
-      var result3 = ifRSK(1)
-      assert(!result3)
-      var result4 = ifRSK()
-      assert(!result4)
+      assert(ifRSK(30))
+      assert(ifRSK(31))
+      assert(!ifRSK(1))
+      assert(!ifRSK())
     })
   })
 
+  describe('#ifRSKByProviderType', function () {
+    it('checks if this is RSK chain based on provider type', function () {
+      assert(ifRSKByProviderType('rsk'))
+      assert(ifRSKByProviderType('rsk_testnet'))
+      assert(!ifRSKByProviderType('mainnet'))
+      assert(!ifRSKByProviderType())
+    })
+  })
 
   describe('#ifPOA', function () {
     it('checks if this is POA chain', function () {
-      var resultSokol = ifPOA(77)
-      assert(resultSokol)
-      var resultCore = ifPOA(99)
-      assert(resultCore)
-      var resultXDai = ifPOA(100)
-      assert(resultXDai)
-      var resultMainnet = ifPOA(1)
-      assert(!resultMainnet)
-      var result4 = ifPOA()
-      assert(!result4)
+      assert(ifPOA(77))
+      assert(ifPOA(99))
+      assert(ifPOA(100))
+      assert(!ifPOA(1))
+      assert(!ifPOA())
     })
   })
 
@@ -380,12 +382,36 @@ describe('normalizing values', function () {
 
   describe('#isValidChecksumAddress', function () {
     it('checks if is valid checksum address', function () {
-      var resultMainnet = isValidChecksumAddress('30', addrRSKMainnet)
-      assert(resultMainnet)
-      var resultTestnet = isValidChecksumAddress('31', addrRSKTestnet)
-      assert(resultTestnet)
-      var resultNotRSK = isValidChecksumAddress('1', addrETHMainnet)
-      assert(resultNotRSK)
+      assert(isValidChecksumAddress('30', addrRSKMainnet))
+      assert(isValidChecksumAddress('31', addrRSKTestnet))
+      assert(isValidChecksumAddress('1', addrETHMainnet))
+    })
+  })
+
+  describe('#isInfuraProvider', function () {
+    it('checks, that the given provider is Infura provider', function () {
+      assert(isInfuraProvider('kovan'))
+      assert(isInfuraProvider('ropsten'))
+      assert(isInfuraProvider('rinkeby'))
+      assert(isInfuraProvider('mainnet'))
+      assert(!isInfuraProvider('goerli_testnet'))
+      assert(!isInfuraProvider('sokol'))
+      assert(!isInfuraProvider('classic'))
+      assert(!isInfuraProvider('rsk'))
+    })
+  })
+
+  describe('#isKnownProvider', function () {
+    it('checks, that the given provider is Infura provider', function () {
+      assert(isKnownProvider('kovan'))
+      assert(isKnownProvider('ropsten'))
+      assert(isKnownProvider('rinkeby'))
+      assert(isKnownProvider('mainnet'))
+      assert(isKnownProvider('goerli_testnet'))
+      assert(isKnownProvider('sokol'))
+      assert(isKnownProvider('classic'))
+      assert(isKnownProvider('rsk'))
+      assert(!isKnownProvider('unknown_network'))
     })
   })
 })

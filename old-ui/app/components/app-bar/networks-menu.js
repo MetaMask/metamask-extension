@@ -70,8 +70,8 @@ class NetworksMenu extends Component {
           key={'default'}
           closeMenu={() => this.props.updateNetworksMenuOpenState(!isOpen)}
           onClick={() => {
-            props.setRpcTarget('http://localhost:8545')
-            props.setProviderType(LOCALHOST)
+            props.setProviderType(LOCALHOST, LOCALHOST_RPC_URL)
+            props.setRpcTarget(LOCALHOST_RPC_URL)
           }}
           style={{
             paddingLeft: '20px',
