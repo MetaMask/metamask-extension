@@ -22626,9 +22626,10 @@ web3-shh@1.0.0-beta.35:
     web3-core-subscriptions "1.0.0-beta.35"
     web3-net "1.0.0-beta.35"
 
-web3-stream-provider@rekmarks/web3-stream-provider#id-remap:
-  version "3.0.1"
-  resolved "https://codeload.github.com/rekmarks/web3-stream-provider/tar.gz/1fd86766630d407686efba51b1d14c49de62b212"
+web3-stream-provider@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/web3-stream-provider/-/web3-stream-provider-4.0.0.tgz#a7f01cb9f7b33b6f0295f2475bf3826f6b27fa9d"
+  integrity sha512-nZrmxRPx/S/GHl1i5pHkb/IoaMPtxCcXmcKVNlDPujn3Ig64vuS0lEKq4Y+G90FxJV++C86komPcdcsAQN0s1A==
   dependencies:
     readable-stream "^2.0.5"
     uuid "^3.3.3"
