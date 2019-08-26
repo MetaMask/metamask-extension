@@ -130,7 +130,8 @@
     },
     "abi-decoder": {
       "modules": {
-        "web3": true
+        "web3-eth-abi": true,
+        "web3-utils": true
       }
     },
     "aes-js": {
@@ -728,6 +729,17 @@
         "uuid": true
       }
     },
+    "ethers": {
+      "environment": "unfrozen",
+      "globals": {
+        "console.log": true,
+        "name": true
+      },
+      "modules": {
+        "bn.js": true,
+        "js-sha3": true
+      }
+    },
     "ethjs": {
       "globals": {
         "clearInterval": true,
@@ -842,13 +854,11 @@
       "globals": {
         "addEventListener": true,
         "clearTimeout": true,
-        "document.documentElement.attachEvent": true,
-        "document.documentElement.detachEvent": true,
         "removeEventListener": true,
         "setTimeout": true
       },
       "modules": {
-        "deep-equal": true
+        "fast-deep-equal": true
       }
     },
     "fast-levenshtein": {
@@ -1172,6 +1182,12 @@
         "safe-buffer": true
       }
     },
+    "randomhex": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
     "readable-stream": {
       "modules": {
         "browser-resolve": true,
@@ -1374,6 +1390,13 @@
         "browser-resolve": true
       }
     },
+    "underscore": {
+      "environment": "unfrozen",
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
     "unorm": {
       "environment": "unfrozen"
     },
@@ -1420,7 +1443,6 @@
         "XMLHttpRequest": true,
         "clearTimeout": true,
         "console.error": true,
-        "console.warn": true,
         "setTimeout": true
       },
       "modules": {
@@ -1428,8 +1450,14 @@
         "buffer": true,
         "crypto-js": true,
         "utf8": true,
-        "xhr2": true,
         "xhr2-cookies": true
+      }
+    },
+    "web3-eth-abi": {
+      "modules": {
+        "ethers": true,
+        "underscore": true,
+        "web3-utils": true
       }
     },
     "web3-provider-engine": {
@@ -1460,6 +1488,20 @@
         "semaphore": true,
         "util": true,
         "xtend": true
+      }
+    },
+    "web3-utils": {
+      "globals": {
+        "setTimeout": true
+      },
+      "modules": {
+        "bn.js": true,
+        "eth-lib": true,
+        "ethjs-unit": true,
+        "number-to-bn": true,
+        "randomhex": true,
+        "underscore": true,
+        "utf8": true
       }
     },
     "whatwg-fetch": {
