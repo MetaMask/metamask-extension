@@ -3,13 +3,11 @@
   align-items: center;
 
   &__text {
+    /*rtl:ignore*/
+    direction: ltr;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    /*rtl:ignore*/
-    direction: ltr;
-    /*rtl:ignore*/
   }
 
   &__suffix {

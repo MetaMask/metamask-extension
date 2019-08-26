@@ -36,12 +36,10 @@
     }
 
     &__time-remaining {
-      color: #313A5E;
-      font-size: 16px;
-
       /*rtl:ignore*/
       direction: ltr;
-      /*rtl:ignore*/
+      color: #313A5E;
+      font-size: 16px;
 
       .minutes-num, .seconds-num {
         font-size: 16px;

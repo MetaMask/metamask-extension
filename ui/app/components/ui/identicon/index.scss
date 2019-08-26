@@ -1,13 +1,11 @@
 .identicon {
+  /*rtl:ignore*/
+  direction: ltr;
   display: flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
-  /*rtl:ignore*/
-  direction: ltr;
-  /*rtl:ignore*/
 
   &__address-wrapper {
     height: 40px;

@@ -73,6 +73,8 @@
   }
 
   &__textarea {
+    /*rtl:ignore*/
+    direction: ltr;
     font-size: 1rem;
     font-family: Roboto;
     height: 190px;
@@ -81,10 +83,6 @@
     background-color: #FFFFFF;
     padding: 16px;
     margin-top: 8px;
-
-    /*rtl:ignore*/
-    direction: ltr;
-    /*rtl:ignore*/
   }
 
   &__breadcrumbs {

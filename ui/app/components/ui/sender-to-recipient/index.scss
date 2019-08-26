@@ -51,11 +51,9 @@
         align-items: center;
         justify-content: center;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
           transform: rotate(180deg);
         }
-        /*rtl:ignore*/
       }
 
       &__arrow-circle {
@@ -77,17 +75,18 @@
         white-space: nowrap;
         font-size: .875rem;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
+          /*rtl:ignore*/
           direction: ltr;
+          /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+            /*rtl:ignore*/
             direction: rtl;
           }
         }
-        /*rtl:ignore*/
       }
     }
   }
@@ -121,17 +120,18 @@
         white-space: nowrap;
         font-size: .5rem;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
+          /*rtl:ignore*/
           direction: ltr;
+          /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+            /*rtl:ignore*/
             direction: rtl;
           }
         }
-        /*rtl:ignore*/
       }
 
       &__arrow-container {
@@ -139,11 +139,9 @@
         justify-content: center;
         align-items: center;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
           transform: rotate(180deg);
         }
-        /*rtl:ignore*/
       }
     }
   }
@@ -174,17 +172,18 @@
         white-space: nowrap;
         font-size: .6875rem;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
+          /*rtl:ignore*/
           direction: ltr;
+          /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+            /*rtl:ignore*/
             direction: rtl;
           }
         }
-        /*rtl:ignore*/
       }
 
       &__arrow-container {
@@ -192,11 +191,9 @@
         justify-content: center;
         align-items: center;
 
-        /*rtl:ignore*/
         [dir='rtl'] & {
           transform: rotate(180deg);
         }
-        /*rtl:ignore*/
       }
     }
   }
