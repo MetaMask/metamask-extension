@@ -1,0 +1,14 @@
+{
+   "icon": "https://assets.unlock-protocol.com/tmp/metamask.png",
+   "persistentCheckout": true,
+   "callToAction": {
+     "default": "Please support work on Metamask by purchasing a key to our Lock on Ethereum!",
+     "pending": "Thank you for your support. It means a lot to us!",
+     "confirmed": "Thank you for your support. It means a lot to us!"
+   },
+   "locks": {
+     "0x70841C98472553DF984AA033f8D3b8C261d17D82": {
+       "name": "Metamask Supporters"
+     }
+   }
+ }
