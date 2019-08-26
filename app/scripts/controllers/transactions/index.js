@@ -203,7 +203,6 @@ class TransactionController extends EventEmitter {
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
-
     // Assert the from address is the selected address
     if (normalizedTxParams.from !== this.getSelectedAddress() && !isContractAccountFlow) {
       throw new Error(`Transaction from address isn't valid for this account`)
@@ -216,7 +215,6 @@ class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       type: transactionType,
       transactionCategory,
-      type: transactionType,
       unmodifiedParams: originalTxParams,
     })
 
@@ -721,8 +719,6 @@ class TransactionController extends EventEmitter {
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     let selectedAddressTxList = []
-
-    console.log('in update memstore')
 
     if (this.preferencesStore.getState().useContractAccount){
         selectedAddressTxList = this.txStateManager.getFilteredTxList({

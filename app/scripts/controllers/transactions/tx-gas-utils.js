@@ -78,6 +78,7 @@ class TxGasUtil {
       // what is the case where it isn't categorized as simple?
       if (categorizedAsSimple) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
+
         if (txParams.data) {
           const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
           // set error key so ui can display localized error message

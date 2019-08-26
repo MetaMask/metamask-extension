@@ -209,6 +209,15 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.AccountsController,
     })
 
+    // accounts controller
+    this.accountsController = new AccountsController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      provider: this.provider,
+      keyring: this.keyringController,
+      initState: initState.AccountsController,
+    })
+
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,

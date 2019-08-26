@@ -81,7 +81,6 @@ class GnosisSafe {
         */
         let safeDataEstimate = await this.generateSafeDataFromRevert(this.instance, this.address, value, data, operation)
         let safeTxGasEstimate = await this.generateSafeTxGasEstimate(this.address, safeDataEstimate)
-
         // on mainnet and rinkeby gas estimation works, but it doesn't work on ganache because of revert (use '0')
         safeTxGas = safeTxGasEstimate.toString()
 
@@ -161,7 +160,6 @@ class GnosisSafe {
     //   revert(string(abi.encodePacked(requiredGas)));
     // }
 
-
     async generateSafeTxGasEstimate (safeAddress, estimatedData) {
         let estimate
         await this.eth.call({
@@ -177,7 +175,6 @@ class GnosisSafe {
             console.log('[gnosis safe v2] generate safe tx gas estimate: txGasEstimate', txGasEstimate)
 
             let initialEstimate = hexToBn(txGasEstimate)
-
             // Add 10k else we will fail in case of nested calls
             estimate = initialEstimate.toNumber() + 10000
 
