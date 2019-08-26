@@ -21,6 +21,9 @@ const uglify = require('gulp-uglify-es').default
 const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
+const sesify = require('sesify')
+const mkdirp = require('mkdirp')
+const fs = require('fs')
 
 const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
@@ -484,7 +487,7 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    plugin: 'browserify-derequire',
+    plugin: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
@@ -496,6 +499,46 @@ function generateBundler (opts, performBundle) {
       browserifyOpts['entries'] = [opts.filepath]
     }
   }
+
+  const activateSesify = ['background.js'].includes(opts.filename)
+  const activateAutoConfig = false
+
+  if (!activateSesify) {
+    browserifyOpts.plugin.push('browserify-derequire')
+  }
+
+  if (activateSesify) {
+    browserifyOpts.plugin.push(['deps-dump', {
+      filename: `./sesify/deps-${opts.filename}on`,
+    }])
+
+    // trackings sourcemaps via an index for now
+    let sourcemapIndex = 0
+    mkdirp.sync('./sesify')
+    browserifyOpts.plugin.push([sesify, {
+      config: './sesify/background.json',
+      configOverride: './sesify/background-override.json',
+      writeAutoConfig: activateAutoConfig && `./sesify/${opts.filename}on`,
+      // hook for writing sourcemaps
+      onSourcemap: (dep, bundle) => {
+        if (!bundle.maps) return
+        // prepare directory for sourcemaps
+        const dirPath = `dist/sourcemaps/`
+        mkdirp.sync(dirPath)
+        // create soucemap file name
+        const prefix = opts.filename.split('.')[0]
+        const filename = `${prefix}-${sourcemapIndex}.map`
+        const filePath = `${dirPath}${filename}`
+        sourcemapIndex++
+        // write sourcemap
+        const content = JSON.stringify(bundle.maps)
+        fs.writeFileSync(filePath, content)
+        // tell the bundler what to reference
+        return `./${filename}`
+      },
+    }])
+  }
+
 
   let bundler = browserify(browserifyOpts)
     .transform('babelify')

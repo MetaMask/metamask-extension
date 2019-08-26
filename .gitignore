@@ -9,6 +9,9 @@ app/bower_components
 test/bower_components
 package
 
+# sesify output
+sesify/deps-background.json
+
 # IDEs
 .idea
 .vscode
