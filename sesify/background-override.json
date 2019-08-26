@@ -15,6 +15,11 @@
       "globals": {
         "Web3": "write"
       }
+    },
+    "browser-passworder": {
+      "globals": {
+        "crypto.subtle": true
+      }
     }
   }
 }
