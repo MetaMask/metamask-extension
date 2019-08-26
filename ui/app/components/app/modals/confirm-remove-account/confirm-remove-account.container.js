@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import ConfirmRemoveAccount from './confirm-remove-account.component'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import { removeAccount } from '../../../../store/actions'
-import { getUseContractAccount } from '../../../selectors'
+import { getUseContractAccount } from '../../../../selectors/selectors'
 
 const mapStateToProps = state => {
   return {

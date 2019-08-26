@@ -191,6 +191,7 @@ class TransactionController extends EventEmitter {
     let originalTxParams = Object.assign({}, txParams)
     originalTxParams.originalData = originalTxParams.data
 
+    // betting that the transaction type gets overwritten by the determine tx category?
     if (isContractAccountFlow) {
       let modifiedTx = await this.accountsController.currentContractInstance.modifyTransactionOpts(txParams)
       transactionType = TRANSACTION_TYPE_GNOSIS
@@ -218,6 +219,9 @@ class TransactionController extends EventEmitter {
       type: transactionType,
       unmodifiedParams: originalTxParams,
     })
+
+    // why does the new Unapproved Tx event get emitted before checking the blacklist?
+    console.log('txMeta', txMeta)
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
 
@@ -251,12 +255,14 @@ class TransactionController extends EventEmitter {
   @returns {Promise<object>} resolves with txMeta
 */
   async addTxGasDefaults (txMeta, getCodeResponse) {
+    console.log('add tx gas defaults')
     const txParams = txMeta.txParams
     // ensure value
     txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice || this.preferencesStore.useContractAccount) {
+      console.log('add tx gas defaults in use contract true')
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
@@ -622,23 +628,33 @@ class TransactionController extends EventEmitter {
     let result
     let code
     if (!txParams.data) {
+      console.log('first')
       result = SEND_ETHER_ACTION_KEY
     } else if (tokenMethodName) {
+      console.log('second')
       result = tokenMethodName
     } else if (!to) {
+      console.log('third')
       result = DEPLOY_CONTRACT_ACTION_KEY
     } else {
       try {
+        console.log('fourth')
         code = await this.query.getCode(to)
       } catch (e) {
         code = null
         log.warn(e)
       }
+
+      // debugger
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
+      debugger
       result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY
     }
+
+    // code was undefined
+    console.log('result, code response:', result, code)
 
     return { transactionCategory: result, getCodeResponse: code }
   }
@@ -706,6 +722,8 @@ class TransactionController extends EventEmitter {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     let selectedAddressTxList = []
 
+    console.log('in update memstore')
+
     if (this.preferencesStore.getState().useContractAccount){
         selectedAddressTxList = this.txStateManager.getFilteredTxList({
         type: TRANSACTION_TYPE_GNOSIS,
@@ -715,6 +733,8 @@ class TransactionController extends EventEmitter {
       selectedAddressTxList = this.txStateManager.getFilteredTxList({
         from: this.getSelectedAddress(),
         metamaskNetworkId: this.getNetwork(),
+        type: TRANSACTION_TYPE_STANDARD,
+        // type: !TRANSACTION_TYPE_GNOSIS,
       })
     }
 

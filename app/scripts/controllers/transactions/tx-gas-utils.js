@@ -64,9 +64,9 @@ class TxGasUtil {
 
     // if it is, use that value, unless it's a modified tx
     if (txMeta.gasLimitSpecified && !txMeta.type === "gnosis") {
+      console.log('about to return the gas', txParams.gas)
       return txParams.gas
     }
-
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
 
@@ -75,6 +75,7 @@ class TxGasUtil {
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const categorizedAsSimple = txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
 
+      // what is the case where it isn't categorized as simple?
       if (categorizedAsSimple) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
         if (txParams.data) {
@@ -86,35 +87,31 @@ class TxGasUtil {
           err.getCodeResponse = getCodeResponse
           throw err
         }
+      }
+      else if (txMeta.type === "gnosis") {
+        console.log('tx gas utils in gnosis txtype')
+        const blockGasLimitBN = hexToBn(blockGasLimitHex)
+        const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+        txParams.gas = bnToHex(saferGasLimitBN)
+        console.log('txParams', txParams)
 
-        // removing this for gnosis testing
-        // to do: figure out a way around the above block as well
-        // if (txParams.data) {
-        //   const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
-        //   // set error key so ui can display localized error message
-        //   err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+        const gas = await this.query.estimateGas(txParams)
 
-          // set the response on the error so that we can see in logs what the actual response was
-          err.getCodeResponse = code
-          throw err
-        }
+        // to do: document this estimation for a transfer and for a simple send estimation
+        console.log('estimated gas', gas)
+        return gas
+        // return await this.query.estimateGas(txParams)
+      }
 
-        // This is a standard ether simple send, gas requirement is exactly 21k
-        txParams.gas = SIMPLE_GAS_COST
-        // prevents buffer addition
-        txMeta.simpleSend = true
-        return SIMPLE_GAS_COST
+      debugger
+
+      // This is a standard ether simple send, gas requirement is exactly 21k
+      txParams.gas = SIMPLE_GAS_COST
+      // prevents buffer addition
+      txMeta.simpleSend = true
+      return SIMPLE_GAS_COST
       }
     }
-
-    // fallback to block gasLimit
-    const blockGasLimitBN = hexToBn(blockGasLimitHex)
-    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
-    txParams.gas = bnToHex(saferGasLimitBN)
-
-    // estimate tx gas requirements
-    return await this.query.estimateGas(txParams)
-  }
 
   /**
     Writes the gas on the txParams in the txMeta

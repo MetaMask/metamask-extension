@@ -26,7 +26,7 @@ class GnosisSafe {
 
     /**
      * Extracts the data field from an ethjs-query error
-     * @param {*} err 
+     * @param {*} err
      */
     parseDataFromError (err) {
         console.log('error', err)
@@ -36,11 +36,11 @@ class GnosisSafe {
                 err.message = err.message.slice(ethjsQuerySlug.length)
                 let start = err.message.indexOf('[')
                 let end = err.message.indexOf(']')
-    
+
                 let payload = err.message.slice(start + 1, end)
                 console.log('[gnosis safe v2] parse data from error payload', payload)
-    
-                let newData = JSON.parse(payload)    
+
+                let newData = JSON.parse(payload)
                 return newData.data
             }
         return err
@@ -49,8 +49,8 @@ class GnosisSafe {
     // with controlled keyring logic, need to make the tx from the controlling account
     // gnosis to do: hand make the data field - how though?
     /**
-     * 
-     * @param {*} originalTxParams 
+     *
+     * @param {*} originalTxParams
      */
     async modifyTransactionOpts (originalTxParams) {
         let nonce = await this.instance.nonce()
@@ -59,28 +59,29 @@ class GnosisSafe {
         let data = originalTxParams.data || '0x'
 
 
-        // for now support's CALL
+        // for now, supports CALL
         let operation = Operation.CALL
 
         /*
-            In addition if also the `safeTxGas` is set to `0` all available gas will 
-            be used for the execution of the Safe transaction. 
+            In addition if also the `safeTxGas` is set to `0` all available gas will
+            be used for the execution of the Safe transaction.
             With this it is also unnecessary to estimate the gas for the Safe transaction.
         */
+
         // if gasPrice is set to 0, no refund tx will be triggered
         // TODO: add an option in the ui for setting the refunder or using default refunder (controlling account)
-        let safeTxGas = zero 
-        let dataGas = zero 
+        let safeTxGas = zero
+        let dataGas = zero
         let gasPrice = zero
 
         /*
             when metamask's gas estimation is not working, the intrinsic gas too low error gets hit
-            so should use below code to generate the safeTxGas..but don't have a good way of determining when 
+            so should use below code to generate the safeTxGas..but don't have a good way of determining when
             it will or will not work
         */
         let safeDataEstimate = await this.generateSafeDataFromRevert(this.instance, this.address, value, data, operation)
         let safeTxGasEstimate = await this.generateSafeTxGasEstimate(this.address, safeDataEstimate)
-        
+
         // on mainnet and rinkeby gas estimation works, but it doesn't work on ganache because of revert (use '0')
         safeTxGas = safeTxGasEstimate.toString()
 
@@ -90,11 +91,11 @@ class GnosisSafe {
         // to do : advanced user preferences for refunds to the tx submitter
         let refundReceiver = hexZero
 
-        // address to, uint256 value, bytes data, Enum.Operation operation, 
+        // address to, uint256 value, bytes data, Enum.Operation operation,
         // uint256 safeTxGas, uint256 dataGas, uint256 gasPrice, address gasToken,
         // address refundReceiver, uint256 _nonce
         let txHash = await this.instance.getTransactionHash(to, value, data, operation, safeTxGas, dataGas, gasPrice, gasToken, refundReceiver, nonce[0])
-        
+
         let controllingKeyring = await this.keyring.getKeyringForAccount(this.controllingAccount)
         let signedMessage = await controllingKeyring.signMessage(this.controllingAccount, txHash[0])
 
@@ -106,14 +107,14 @@ class GnosisSafe {
         try {
         console.log('[gnosis safe v2] exec transaction')
             await this.instance.execTransaction(
-                to, 
-                value, 
-                data, 
-                operation, 
-                safeTxGas, 
-                dataGas, 
-                gasPrice, 
-                gasToken, 
+                to,
+                value,
+                data,
+                operation,
+                safeTxGas,
+                dataGas,
+                gasPrice,
+                gasToken,
                 refundReceiver,
                 signedMessage)
         }
@@ -125,9 +126,9 @@ class GnosisSafe {
     }
 
     /**
-     * The user should set an appropriate `safeTxGas` to define the gas required by the Safe transaction, 
-     * to make sure that enough gas is sent by the relayer with the transaction triggering `execTransaction`. 
-     * For this it is necessary to estimate the gas costs of the Safe transaction. 
+     * The user should set an appropriate `safeTxGas` to define the gas required by the Safe transaction,
+     * to make sure that enough gas is sent by the relayer with the transaction triggering `execTransaction`.
+     * For this it is necessary to estimate the gas costs of the Safe transaction.
      */
     generateSafeDataFromRevert = async (safe, to, valueInWei, data, operation) => {
         try {
@@ -160,7 +161,7 @@ class GnosisSafe {
     //   revert(string(abi.encodePacked(requiredGas)));
     // }
 
-  
+
     async generateSafeTxGasEstimate (safeAddress, estimatedData) {
         let estimate
         await this.eth.call({
@@ -176,7 +177,7 @@ class GnosisSafe {
             console.log('[gnosis safe v2] generate safe tx gas estimate: txGasEstimate', txGasEstimate)
 
             let initialEstimate = hexToBn(txGasEstimate)
-            
+
             // Add 10k else we will fail in case of nested calls
             estimate = initialEstimate.toNumber() + 10000
 

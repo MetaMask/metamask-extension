@@ -1009,8 +1009,9 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.accountsController.getContractData()
 
     const controlledKeyring = await this.keyringController.addNewKeyring('Controlled', newContract.address)
-    const newAccounts = await controlledKeyring.getAccounts()
 
+    // if i remove these is it a problem?
+    const newAccounts = await controlledKeyring.getAccounts()
     const allAccounts = await this.keyringController.getAccounts()
 
     // gnosis to do: redo number naming
