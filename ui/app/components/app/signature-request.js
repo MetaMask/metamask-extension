@@ -215,7 +215,7 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 }
 
 // eslint-disable-next-line react/display-name
-SignatureRequest.prototype.renderTypedDataV3 = function (data) {
+SignatureRequest.prototype.renderTypedData = function (data) {
   const { domain, message } = JSON.parse(data)
   return [
     h('div.request-signature__typed-container', [
@@ -267,17 +267,18 @@ SignatureRequest.prototype.renderBody = function () {
       }),
     }, [notice]),
 
-    h('div.request-signature__rows', type === 'eth_signTypedData' && version === 'V3' ?
-      this.renderTypedDataV3(data) :
-      rows.map(({ name, value }) => {
-        if (typeof value === 'boolean') {
-          value = value.toString()
-        }
-        return h('div.request-signature__row', [
-          h('div.request-signature__row-title', [`${name}:`]),
-          h('div.request-signature__row-value', value),
-        ])
-      }),
+    h('div.request-signature__rows',
+      type === 'eth_signTypedData' && (version === 'V3' || version === 'V4') ?
+        this.renderTypedData(data) :
+        rows.map(({ name, value }) => {
+          if (typeof value === 'boolean') {
+            value = value.toString()
+          }
+          return h('div.request-signature__row', [
+            h('div.request-signature__row-title', [`${name}:`]),
+            h('div.request-signature__row-value', value),
+          ])
+        }),
     ),
   ])
 }

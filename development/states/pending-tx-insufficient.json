@@ -86,7 +86,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "seedWords": null
   },
   "appState": {

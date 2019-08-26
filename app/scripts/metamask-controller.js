@@ -30,6 +30,7 @@ const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const OnboardingController = require('./controllers/onboarding')
 const RecentBlocksController = require('./controllers/recent-blocks')
+const IncomingTransactionsController = require('./controllers/incoming-transactions')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -54,6 +55,7 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
   CurrencyRateController,
@@ -61,7 +63,6 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
-
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -137,6 +138,13 @@ module.exports = class MetamaskController extends EventEmitter {
       networkController: this.networkController,
     })
 
+    this.incomingTransactionsController = new IncomingTransactionsController({
+      blockTracker: this.blockTracker,
+      networkController: this.networkController,
+      preferencesController: this.preferencesController,
+      initState: initState.IncomingTransactionsController,
+    })
+
     // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -148,8 +156,10 @@ module.exports = class MetamaskController extends EventEmitter {
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
+        this.incomingTransactionsController.start()
       } else {
         this.accountTracker.stop()
+        this.incomingTransactionsController.stop()
       }
     })
 
@@ -251,6 +261,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.providerApprovalController = new ProviderApprovalController({
       closePopup: opts.closePopup,
+      initState: initState.ProviderApprovalController,
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
       preferencesController: this.preferencesController,
@@ -268,6 +279,8 @@ module.exports = class MetamaskController extends EventEmitter {
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
+      ProviderApprovalController: this.providerApprovalController.store,
+      IncomingTransactionsController: this.incomingTransactionsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -288,8 +301,11 @@ module.exports = class MetamaskController extends EventEmitter {
       CurrencyController: this.currencyRateController,
       ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
-      ProviderApprovalController: this.providerApprovalController.store,
       OnboardingController: this.onboardingController.store,
+      // ProviderApprovalController
+      ProviderApprovalController: this.providerApprovalController.store,
+      ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
+      IncomingTransactionsController: this.incomingTransactionsController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -325,6 +341,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
     }
@@ -385,10 +402,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return {
       ...{ isInitialized },
       ...this.memStore.getFlatState(),
-      ...{
-        // TODO: Remove usages of lost accounts
-        lostAccounts: [],
-      },
     }
   }
 
@@ -468,7 +481,7 @@ module.exports = class MetamaskController extends EventEmitter {
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
-      setAddressBook: this.addressBookController.set.bind(this.addressBookController),
+      setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
       removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
 
       // AppStateController
@@ -507,7 +520,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // provider approval
       approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
       rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
-      forceApproveProviderRequestByOrigin: providerApprovalController.forceApproveProviderRequestByOrigin.bind(providerApprovalController),
       clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
 
       // onboarding controller
@@ -639,8 +651,24 @@ module.exports = class MetamaskController extends EventEmitter {
       tokens,
     } = this.preferencesController.store.getState()
 
+    // Filter ERC20 tokens
+    const filteredAccountTokens = {}
+    Object.keys(accountTokens).forEach(address => {
+      const checksummedAddress = ethUtil.toChecksumAddress(address)
+      filteredAccountTokens[checksummedAddress] = {}
+      Object.keys(accountTokens[address]).forEach(
+        networkType => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
+          accountTokens[address][networkType] :
+          accountTokens[address][networkType].filter(({ address }) => {
+            const tokenAddress = ethUtil.toChecksumAddress(address)
+            return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+          })
+        )
+      )
+    })
+
     const preferences = {
-      accountTokens,
+      accountTokens: filteredAccountTokens,
       currentLocale,
       frequentRpcList,
       identities,
@@ -1114,6 +1142,9 @@ module.exports = class MetamaskController extends EventEmitter {
           case 'V3':
             signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
             break
+          case 'V4':
+            signature = sigUtil.signTypedData_v4(privKey, { data: JSON.parse(cleanMsgParams.data) })
+            break
         }
       } else {
         signature = await keyring.signTypedData(address, cleanMsgParams.data)
@@ -1176,27 +1207,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * @typedef Account
    * @property string privateKey - The private key of the account.
    */
-
-  /**
-   * Probably no longer needed, related to the Version 3 migration.
-   * Imports a hash of accounts to private keys into the vault.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   * @deprecated
-   * @param  {Account[]} lostAccounts -
-   * @returns {Keyring[]} An array of the restored keyrings.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
 
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
@@ -1298,8 +1308,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
     this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
     this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
-
-    this.providerApprovalController.on(`forceResolvedRequest:${originDomain}`, publicApi.forceReloadSite)
   }
 
   /**
@@ -1480,10 +1488,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const publicApi = {
       // wrap with an await remote
-      forceReloadSite: async () => {
-        const remote = await getRemote()
-        return await pify(remote.forceReloadSite)()
-      },
       getSiteMetadata: async () => {
         const remote = await getRemote()
         return await pify(remote.getSiteMetadata)()
@@ -1797,4 +1801,3 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.keyringController.setLocked()
   }
 }
-

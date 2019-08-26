@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Modalità privacy"
-  },
-  "privacyModeDescription": {
-    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
-  },
   "exposeAccounts": {
     "message": "Esponi Accounts"
   },
@@ -20,20 +14,35 @@
   "confirmClear": {
     "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },
+  "connections": {
+    "message": "Connessioni"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Siti autorizzati ad accedere ai tuoi accounts"
+  },
+  "addSite": {
+    "message": "Aggiungi Sito"
+  },
+  "addSiteDescription": {
+    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
+  },
+  "connected": {
+    "message": "Connesso"
+  },
+  "connectedDescription": {
+    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
+  },
+  "privacyModeDefault": {
+    "message": "La Modalità Privacy è attiva per impostazione predefinita"
+  },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
   "clearApprovalDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
   },
-  "approvalData": {
-    "message": "Dati di approvazione"
-  },
-  "approvalDataDescription": {
-    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
-  },
   "clearApprovalData": {
-    "message": "Cancella i dati di approvazione"
+    "message": "Rimuovi tutti i siti"
   },
   "reject": {
     "message": "Annulla"
@@ -80,11 +89,20 @@
   "activityLog": {
     "message": "log attività"
   },
+  "add": {
+    "message": "Aggiungi"
+  },
   "address": {
     "message": "Indirizzo"
   },
   "addNetwork": {
     "message": "Aggiungi Rete"
+  },
+  "addRecipient": {
+    "message": "Aggiungi Destinatario"
+  },
+  "addressBook": {
+    "message": "Rubrica"
   },
   "advanced": {
     "message": "Avanzate"
@@ -97,6 +115,18 @@
   },
   "addCustomToken": {
     "message": "Aggiungi un token personalizzato"
+  },
+  "addToAddressBook": {
+    "message": "Aggiungi alla rubrica"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "es. John D."
+  },
+  "addAlias": {
+    "message": "Aggiungi alias"
+  },
+  "addEthAddress": {
+    "message": "Aggiungi un indirizzo Ethereum"
   },
   "addToken": {
     "message": "Aggiungi Token"
@@ -172,6 +202,18 @@
   "back": {
     "message": "Indietro"
   },
+  "backToAll": {
+    "message": "Torna a Tutti"
+  },
+  "backupApprovalNotice": {
+    "message": "Per mantenere il portafoglio e i tuoi fondi sicuri fai il backup del tuo codice di recupero segreto."
+  },
+  "backupApprovalInfo": {
+    "message": "Questo codice segreto è necessario per recuperare il portafoglio in caso di smarrimento del dispositivo, si dimentichi la password, di necessità di reinstallare MetaMask, o volontà di accedere al portafoglio da un altro dispositivo."
+  },
+  "backupNow": {
+    "message": "Backup"
+  },
   "balance": {
     "message": "Bilancio:"
   },
@@ -237,8 +279,14 @@
   "bytes": {
     "message": "Bytes"
   },
+  "off": {
+    "message": "Off"
+  },
   "ok": {
     "message": "Ok"
+  },
+  "on": {
+    "message": "On"
   },
   "optionalBlockExplorerUrl": {
     "message": "URL del Block Explorer (opzionale)"
@@ -348,6 +396,12 @@
   "connectToTrezor": {
     "message": "Connettersi al Trezor"
   },
+  "contacts": {
+    "message": "Contatti"
+  },
+  "contactsSettingsDescription": {
+    "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
+  },
   "continue": {
     "message": "Continua"
   },
@@ -454,6 +508,12 @@
   "defaultNetwork": {
     "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
   },
+  "delete": {
+    "message": "Elimina"
+  },
+  "deleteAccount": {
+    "message": "Elimina Account"
+  },
   "denExplainer": {
     "message": "Il DEN è il tuo archivio crittato con password dentro MetaMask."
   },
@@ -493,6 +553,9 @@
   "directDepositEtherExplainer": {
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
   },
+  "dismiss": {
+    "message": "Scarta"
+  },
   "done": {
     "message": "Finito"
   },
@@ -519,6 +582,9 @@
   },
   "editAccountName": {
     "message": "Modifica Nome Account"
+  },
+  "editContact": {
+    "message": "Modifica Contatto"
   },
   "editingTransaction": {
     "message": "Modifica la transazione"
@@ -551,10 +617,25 @@
     "message": "Se hai delle domande o vedi delle attività sospette, manda una mail a support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask non può recuperare la tua frase seed. Impara di più."
+    "message": "MetaMask non può recuperare la tua frase seed."
+  },
+  "endOfFlowMessage9": {
+    "message": "Scopri di più."
+  },
+  "endOfFlowMessage10": {
+    "message": "Tutto fatto."
   },
   "ensNameNotFound": {
     "message": "Nome ENS non trovato"
+  },
+  "ensRegistrationError": {
+    "message": "Errore nella registrazione del nome ENS"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "Nome ENS non trovato nella rete corrente. Prova a selezionare la Rete Ethereum Principale"
+  },
+  "enterAnAlias": {
+    "message": "Inserisci un alias"
   },
   "enterPassword": {
     "message": "Inserisci password"
@@ -567,6 +648,9 @@
   },
   "eth": {
     "message": "ETH"
+  },
+  "ethereumPublicAddress": {
+    "message": "Indirizzo Pubblico Ethereum"
   },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
@@ -656,7 +740,7 @@
     "message": "Generando la frase seed..."
   },
   "gasPrice": {
-    "message": "Prezzo del Gas (GWEI)"
+    "message": "Prezzo Gas (GWEI)"
   },
   "gasPriceExtremelyLow": {
     "message": "Prezzo del gas estremamente basso"
@@ -878,6 +962,9 @@
   "loadingTokens": {
     "message": "Caricamento Tokens..."
   },
+  "loadMore": {
+    "message": "Carica altro"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -898,6 +985,9 @@
   },
   "memorizePhrase": {
     "message": "Memorizza questa frase."
+  },
+  "memo": {
+    "message": "Promemoria"
   },
   "menu": {
     "message": "Menu"
@@ -930,7 +1020,13 @@
     "message": "Per favore inserisci la password per confermare che sei te!"
   },
   "myAccounts": {
-    "message": "Miei Account"
+    "message": "I Miei Accounts"
+  },
+  "myWalletAccounts": {
+    "message": "I Miei Accounts"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Tutti i tuoi account MetaMask saranno automaticamente aggiunti in questa sezione."
   },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
@@ -964,9 +1060,15 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
+  "newAccountDetectedDialogMessage": {
+    "message": "Rilevato nuovo indirizzo! Clica qua per aggiungerlo alla rubrica."
+  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Nome predefinito per il prossimo account da creare nella schermata di creazione account"
+  },
+  "newContact": {
+    "message": "Nuovo Contatto"
   },
   "newContract": {
     "message": "Nuovo Contratto"
@@ -1178,8 +1280,14 @@
   "receive": {
     "message": "Ricevi"
   },
+  "recents": {
+    "message": "Recenti"
+  },
   "recipientAddress": {
     "message": "Indirizzo Destinatario"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Ricerca, indirizzo pubblico (0x), o ENS"
   },
   "refundAddress": {
     "message": "Indirizzo di Rimborso"
@@ -1204,6 +1312,15 @@
   },
   "resetAccountDescription": {
     "message": "Ripristinare il tuo account cancellerà lo storico delle transazioni."
+  },
+  "deleteNetwork": {
+    "message": "Elimina Rete?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Sei sicuro di voler eliminare questa rete?"
+  },
+  "remindMeLater": {
+    "message": "Più tardi"
   },
   "restoreFromSeed": {
     "message": "Ripristina da una frase seed"
@@ -1454,7 +1571,7 @@
     "message": "ci può essere solo uno spazio tra le parole"
   },
   "speedUp": {
-    "message": "velocizza"
+    "message": "Velocizza"
   },
   "speedUpTitle": {
     "message": "Velocizza Transazione"
@@ -1649,6 +1766,9 @@
   "transfer": {
     "message": "Trasferisci"
   },
+  "transferBetweenAccounts": {
+    "message": "Trasferisci tra i miei accounts"
+  },
   "transferFrom": {
     "message": "Trasferisci Da"
   },
@@ -1729,6 +1849,9 @@
   "useOldUI": {
     "message": "Use la vecchia UI"
   },
+  "userName": {
+    "message": "Username"
+  },
   "validFileImport": {
     "message": "Devi selezionare un file valido da importare."
   },
@@ -1737,6 +1860,12 @@
   },
   "viewAccount": {
     "message": "Vedi Account"
+  },
+  "viewinExplorer": {
+    "message": "Vedi in Explorer"
+  },
+  "viewContact": {
+    "message": "Visualizza Contatto"
   },
   "viewOnCustomBlockExplorer": {
     "message": "Vedi su $1"

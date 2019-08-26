@@ -758,14 +758,6 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#markAccountsFound', function () {
-    it('adds lost accounts to config manager data', function () {
-      metamaskController.markAccountsFound(noop)
-      const state = metamaskController.getState()
-      assert.deepEqual(state.lostAccounts, [])
-    })
-  })
-
   describe('#markPasswordForgotten', function () {
     it('adds and sets forgottenPassword to config data to true', function () {
       metamaskController.markPasswordForgotten(noop)

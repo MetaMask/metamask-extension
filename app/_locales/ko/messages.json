@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "개인 정보 보호 모드"
-  },
-  "privacyModeDescription": {
-    "message": "웹 사이트는 계정 정보를 볼 수있는 액세스 권한을 요청해야합니다."
-  },
   "exposeAccounts": {
     "message": "계정 노출"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
-  },
-  "approvalData": {
-    "message": "승인 데이터"
-  },
-  "approvalDataDescription": {
-    "message": "승인 된 웹 사이트 데이터를 삭제하여 모든 사이트에서 승인을 다시 요청해야합니다."
   },
   "clearApprovalData": {
     "message": "승인 데이터 삭제"

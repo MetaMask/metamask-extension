@@ -37,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     conversionRate,
     identities,
+    addressBook,
     currentCurrency,
     selectedAddress,
     selectedAddressTxList,
@@ -75,6 +76,8 @@ const mapStateToProps = (state, ownProps) => {
         : addressSlicer(checksumAddress(toAddress))
     )
 
+  const addressBookObject = addressBook[checksumAddress(toAddress)]
+  const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
 
@@ -115,6 +118,7 @@ const mapStateToProps = (state, ownProps) => {
     fromName,
     toAddress,
     toName,
+    toNickname,
     ethTransactionAmount,
     ethTransactionFee,
     ethTransactionTotal,

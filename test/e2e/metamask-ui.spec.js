@@ -1247,7 +1247,9 @@ describe('MetaMask', function () {
       const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Approve Tokens')]`))
       await transferTokens.click()
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      }
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
@@ -1341,6 +1343,10 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+
       await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 3
@@ -1354,6 +1360,12 @@ describe('MetaMask', function () {
   })
 
   describe('Tranfers a custom token from dapp when no gas value is specified', () => {
+    before(function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+    })
+
     it('transfers an already created token, without specifying gas', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
@@ -1403,6 +1415,12 @@ describe('MetaMask', function () {
   })
 
   describe('Approves a custom token from dapp when no gas value is specified', () => {
+    before(function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+    })
+
     it('approves an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]

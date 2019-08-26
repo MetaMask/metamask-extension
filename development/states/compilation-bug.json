@@ -103,8 +103,7 @@
     "keyringTypes": [
       "Simple Key Pair",
       "HD Key Tree"
-    ],
-    "lostAccounts": []
+    ]
   },
   "appState": {
     "menuOpen": false,

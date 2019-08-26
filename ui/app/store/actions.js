@@ -349,7 +349,6 @@ var actions = {
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
-  forceApproveProviderRequestByOrigin,
   clearApprovedOrigins,
 
   setFirstTimeFlowType,
@@ -1956,10 +1955,17 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
 
   return (dispatch, getState) => {
     const chainId = getState().metamask.network
-    const set = background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
-    if (!set) {
-      return dispatch(displayWarning('Address book failed to update'))
-    }
+    background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo, (err, set) => {
+      if (err) {
+        log.error(err)
+        dispatch(displayWarning('Address book failed to update'))
+        throw err
+      }
+      if (!set) {
+        return dispatch(displayWarning('Address book failed to update'))
+      }
+    })
+
   }
 }
 
@@ -2640,12 +2646,6 @@ function setPendingTokens (pendingTokens) {
 function approveProviderRequestByOrigin (origin) {
   return () => {
     background.approveProviderRequestByOrigin(origin)
-  }
-}
-
-function forceApproveProviderRequestByOrigin (origin) {
-  return () => {
-    background.forceApproveProviderRequestByOrigin(origin)
   }
 }
 

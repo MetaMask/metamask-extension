@@ -21,6 +21,7 @@ import {
   SIGNATURE_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
+  DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
 
 import log from 'loglevel'
@@ -123,6 +124,10 @@ export function isTokenMethodAction (transactionCategory) {
  */
 export function getTransactionActionKey (transaction) {
   const { msgParams, type, transactionCategory } = transaction
+
+  if (transactionCategory === 'incoming') {
+    return DEPOSIT_TRANSACTION_KEY
+  }
 
   if (type === 'cancel') {
     return CANCEL_ATTEMPT_ACTION_KEY

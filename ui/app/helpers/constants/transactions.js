@@ -20,5 +20,6 @@ export const TRANSFER_FROM_ACTION_KEY = 'transferFrom'
 export const SIGNATURE_REQUEST_KEY = 'signatureRequest'
 export const CONTRACT_INTERACTION_KEY = 'contractInteraction'
 export const CANCEL_ATTEMPT_ACTION_KEY = 'cancelAttempt'
+export const DEPOSIT_TRANSACTION_KEY = 'deposit'
 
 export const TRANSACTION_TYPE_SHAPESHIFT = 'shapeshift'

@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Privacy-modus"
-  },
-  "privacyModeDescription": {
-    "message": "Websites moeten toegang vragen om uw accountgegevens te bekijken."
-  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },
@@ -19,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Goedgekeurde websitegegevens zijn met succes gewist."
-  },
-  "approvalData": {
-    "message": "Goedkeuringsgegevens"
-  },
-  "approvalDataDescription": {
-    "message": "Goedgekeurde websitegegevens wissen zodat alle sites opnieuw goedkeuring moeten aanvragen."
   },
   "clearApprovalData": {
     "message": "Gegevens over goedkeuring wissen"
