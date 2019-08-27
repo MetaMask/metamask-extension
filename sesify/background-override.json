@@ -20,6 +20,11 @@
       "globals": {
         "crypto.subtle": true
       }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "console": true
+      }
     }
   }
 }

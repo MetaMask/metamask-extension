@@ -10,7 +10,7 @@ test/bower_components
 package
 
 # sesify output
-sesify/deps-background.json
+sesify/deps-*.json
 
 # IDEs
 .idea

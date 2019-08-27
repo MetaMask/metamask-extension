@@ -1,0 +1,30 @@
+{
+  "resources": {
+    "react-devtools-core": {
+      "globals": {
+        "WebSocket": true
+      }
+    },
+    "react-devtools": {
+      "globals": {
+        "WebSocket": true
+      }
+    },
+    "react-dom": {
+      "environment": "unfrozen"
+    },
+    "symbol-observable": {
+      "environment": "unfrozen"
+    },
+    "detectrtc": {
+      "globals": {
+        "DetectRTC": "write"
+      }
+    },
+    "react-tippy": {
+      "globals": {
+        "Element": true
+      }
+    }
+  }
+}
