@@ -501,7 +501,7 @@ function generateBundler (opts, performBundle) {
   }
 
   const activateSesify = ['background.js'].includes(opts.filename)
-  const activateAutoConfig = false
+  const activateAutoConfig = process.env.SESIFY_AUTOGEN
 
   if (!activateSesify) {
     browserifyOpts.plugin.push('browserify-derequire')
@@ -516,8 +516,8 @@ function generateBundler (opts, performBundle) {
     let sourcemapIndex = 0
     mkdirp.sync('./sesify')
     browserifyOpts.plugin.push([sesify, {
-      config: './sesify/background.json',
-      configOverride: './sesify/background-override.json',
+      config: !activateAutoConfig && './sesify/background.json',
+      configOverride: !activateAutoConfig && './sesify/background-override.json',
       writeAutoConfig: activateAutoConfig && `./sesify/${opts.filename}on`,
       // hook for writing sourcemaps
       onSourcemap: (dep, bundle) => {
