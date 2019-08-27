@@ -500,8 +500,12 @@ function generateBundler (opts, performBundle) {
     }
   }
 
-  const activateSesify = ['background.js'].includes(opts.filename)
+  const bundleName = opts.filename.split('.')[0]
+
   const activateAutoConfig = process.env.SESIFY_AUTOGEN
+  const activateSesify = ['background', 'ui', 'contentscript'].includes(bundleName)
+  const sesifyConfigPath = `./sesify/${bundleName}.json`
+  const sesifyConfigOverridePath = `./sesify/${bundleName}-override.json`
 
   if (!activateSesify) {
     browserifyOpts.plugin.push('browserify-derequire')
@@ -515,10 +519,11 @@ function generateBundler (opts, performBundle) {
     // trackings sourcemaps via an index for now
     let sourcemapIndex = 0
     mkdirp.sync('./sesify')
+
     browserifyOpts.plugin.push([sesify, {
-      config: !activateAutoConfig && './sesify/background.json',
-      configOverride: !activateAutoConfig && './sesify/background-override.json',
-      writeAutoConfig: activateAutoConfig && `./sesify/${opts.filename}on`,
+      config: !activateAutoConfig && sesifyConfigPath,
+      configOverride: !activateAutoConfig && sesifyConfigOverridePath,
+      writeAutoConfig: activateAutoConfig && sesifyConfigPath,
       // hook for writing sourcemaps
       onSourcemap: (dep, bundle) => {
         if (!bundle.maps) return
@@ -526,8 +531,7 @@ function generateBundler (opts, performBundle) {
         const dirPath = `dist/sourcemaps/`
         mkdirp.sync(dirPath)
         // create soucemap file name
-        const prefix = opts.filename.split('.')[0]
-        const filename = `${prefix}-${sourcemapIndex}.map`
+        const filename = `${bundleName}-${sourcemapIndex}.map`
         const filePath = `${dirPath}${filename}`
         sourcemapIndex++
         // write sourcemap
@@ -539,10 +543,17 @@ function generateBundler (opts, performBundle) {
     }])
   }
 
-
   let bundler = browserify(browserifyOpts)
     .transform('babelify')
     .transform('brfs')
+
+  // trigger watchify rebuilds when config changes
+  if (activateSesify && !activateAutoConfig) {
+    setTimeout(() => {
+      bundler.emit('file', sesifyConfigPath)
+      bundler.emit('file', sesifyConfigOverridePath)
+    })
+  }
 
   if (opts.buildLib) {
     bundler = bundler.require(opts.dependenciesToBundle)
