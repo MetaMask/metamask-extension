@@ -303,6 +303,9 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { to: '0xaa' }
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+      filterParams = { status: (status) => status !== 'confirmed' }
+      assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+
     })
   })
 

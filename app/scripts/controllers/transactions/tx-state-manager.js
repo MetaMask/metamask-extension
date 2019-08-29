@@ -250,9 +250,11 @@ class TransactionStateManager extends EventEmitter {
   let <code>thingsToLookFor = {<br>
     to: '0x0..',<br>
     from: '0x0..',<br>
-    status: 'signed',<br>
+    status: 'signed', \\ (status) => status !== 'rejected' give me all txs who's status is not rejected<br>
     err: undefined,<br>
   }<br></code>
+  optionally the values of the keys can be functions for situations like where
+  you want all but one status.
   @param [initialList=this.getTxList()]
   @returns a {array} of txMeta with all
   options matching
@@ -268,7 +270,7 @@ class TransactionStateManager extends EventEmitter {
 
   this is for things like filtering a the tx list
   for only tx's from 1 account
-  or for filltering for all txs from one account
+  or for filtering for all txs from one account
   and that have been 'confirmed'
   */
   getFilteredTxList (opts, initialList) {
@@ -282,17 +284,19 @@ class TransactionStateManager extends EventEmitter {
   /**
 
     @param key {string} - the key to check
-    @param value - the value your looking for
+    @param value - the value your looking for can also be a function that returns a bool
     @param [txList=this.getTxList()] {array} - the list to search. default is the txList
     from txStateManager#getTxList
     @returns {array} a list of txMetas who matches the search params
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
+    const filter = typeof value === 'function' ? value : (v) => v === value
+
     return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
-        return txMeta.txParams[key] === value
+        return filter(txMeta.txParams[key])
       } else {
-        return txMeta[key] === value
+        return filter(txMeta[key])
       }
     })
   }
