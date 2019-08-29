@@ -172,6 +172,8 @@ const multiplyCurrencies = (a, b, options = {}) => {
     ...conversionOptions
   } = options
 
+  // debugger
+  console.log('in multiply currencies')
   const bigNumberA = new BigNumber(String(a), multiplicandBase)
   const bigNumberB = new BigNumber(String(b), multiplierBase)
 

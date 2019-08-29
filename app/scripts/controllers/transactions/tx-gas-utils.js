@@ -62,12 +62,15 @@ class TxGasUtil {
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
 
+    console.log('txMeta.gasLimitSpecified', txMeta.gasLimitSpecified)
     // if it is, use that value, unless it's a modified tx
-    if (txMeta.gasLimitSpecified && !txMeta.type === "gnosis") {
+    if (txMeta.gasLimitSpecified && txMeta.type != "gnosis") {
+      console.log('txMeta.type', txMeta.type)
       console.log('about to return the gas', txParams.gas)
       return txParams.gas
     }
     const recipient = txParams.to
+    console.log('recipient', recipient)
     const hasRecipient = Boolean(recipient)
 
     // see if we can set the gas based on the recipient
@@ -78,7 +81,7 @@ class TxGasUtil {
       // what is the case where it isn't categorized as simple?
       if (categorizedAsSimple) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
-
+        console.log('in categorized as simple')
         if (txParams.data) {
           const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
           // set error key so ui can display localized error message
@@ -88,9 +91,14 @@ class TxGasUtil {
           err.getCodeResponse = getCodeResponse
           throw err
         }
+        // This is a standard ether simple send, gas requirement is exactly 21k
+        txParams.gas = SIMPLE_GAS_COST
+        // prevents buffer addition
+        txMeta.simpleSend = true
+        return SIMPLE_GAS_COST
       }
       else if (txMeta.type === "gnosis") {
-        console.log('tx gas utils in gnosis txtype')
+        console.log('tx gas utils in gnosis txType')
         const blockGasLimitBN = hexToBn(blockGasLimitHex)
         const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
         txParams.gas = bnToHex(saferGasLimitBN)
@@ -99,20 +107,21 @@ class TxGasUtil {
         const gas = await this.query.estimateGas(txParams)
 
         // to do: document this estimation for a transfer and for a simple send estimation
-        console.log('estimated gas', gas)
+        console.log('[tx-gas-utils] estimated gas', gas)
         return gas
         // return await this.query.estimateGas(txParams)
       }
-
-      debugger
-
-      // This is a standard ether simple send, gas requirement is exactly 21k
-      txParams.gas = SIMPLE_GAS_COST
-      // prevents buffer addition
-      txMeta.simpleSend = true
-      return SIMPLE_GAS_COST
-      }
     }
+    // no recipient
+    console.log('no recipient - should we even get here?')
+    // fallback to block gasLimit
+    const blockGasLimitBN = hexToBn(blockGasLimitHex)
+    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+    txParams.gas = bnToHex(saferGasLimitBN)
+
+    // estimate tx gas requirements
+    return await this.query.estimateGas(txParams)
+  }
 
   /**
     Writes the gas on the txParams in the txMeta
@@ -145,6 +154,7 @@ class TxGasUtil {
     @returns {string} the buffered gas limit as a hex string
   */
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
+    console.log('in add gas buffer')
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
     const blockGasLimitBn = hexToBn(blockGasLimitHex)
     const upperGasLimitBn = blockGasLimitBn.muln(0.9)

@@ -84,6 +84,8 @@ class GnosisSafe {
         // on mainnet and rinkeby gas estimation works, but it doesn't work on ganache because of revert (use '0')
         safeTxGas = safeTxGasEstimate.toString()
 
+        console.log('safe gas estimation in gnosis', safeTxGas)
+
         // TODO: add an option in the ui for paying gas with tokens
         let gasToken = hexZero
 

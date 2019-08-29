@@ -974,6 +974,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
 
+  // question: can i import multiple private keys? i think yes.. how does the keyring handle that?
   /**
    * Imports an account with the specified import strategy.
    * These are defined in app/scripts/account-import-strategies
@@ -1021,9 +1022,18 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // if i remove these is it a problem?
     const newAccounts = await controlledKeyring.getAccounts()
+
+    // when i add a new Controlled keyring, i think the other one goes away?
+    console.log('keyring controller', this.keyringController)
+    console.log('newAccounts', newAccounts)
     const allAccounts = await this.keyringController.getAccounts()
 
+// 0xfd1144165c42089b6EB10aafF1988219Fd380186
+// 0x815b70D21233a39909f7f886c81F3e6fDadFc1f4
+
     // gnosis to do: redo number naming
+    // why is the thing getting named as "Contract"
+    // wasn't the type gnosis safe at one point?
     this.preferencesController.setAccountLabel(newContract.address, type + ' 1')
     this.preferencesController.setSelectedAddress(newContract.address)
 

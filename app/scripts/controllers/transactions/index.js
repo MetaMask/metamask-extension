@@ -729,8 +729,7 @@ class TransactionController extends EventEmitter {
       selectedAddressTxList = this.txStateManager.getFilteredTxList({
         from: this.getSelectedAddress(),
         metamaskNetworkId: this.getNetwork(),
-        type: TRANSACTION_TYPE_STANDARD,
-        // type: !TRANSACTION_TYPE_GNOSIS,
+        type: { type: (val) => val !== TRANSACTION_TYPE_GNOSIS }
       })
     }
 

@@ -182,6 +182,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setGasPrice(newPrice))
     },
     updateConfirmTxGasAndCalculate: (gasLimit, gasPrice, updatedTx) => {
+      debugger
       updateCustomGasPrice(gasPrice)
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
       return dispatch(updateTransaction(updatedTx))
