@@ -89,7 +89,7 @@ describe('Actions', () => {
         })
     })
 
-    it('errors on submitPassword will fail', () => {
+    it('errors on submitPassword will fail', async () => {
 
       const store = mockStore({})
 
@@ -107,13 +107,15 @@ describe('Actions', () => {
         callback(new Error('error in submitPassword'))
       })
 
-      return store.dispatch(actions.tryUnlockMetamask('test'))
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.tryUnlockMetamask('test'))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
 
-    it('displays warning error and unlock failed when verifySeed fails', () => {
+    it('displays warning error and unlock failed when verifySeed fails', async () => {
       const store = mockStore({})
       const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
       const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
@@ -123,14 +125,16 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.tryUnlockMetamask('test'))
-        .catch(() => {
-          const actions = store.getActions()
-          const warning = actions.filter(action => action.type === 'DISPLAY_WARNING')
-          const unlockFailed = actions.filter(action => action.type === 'UNLOCK_FAILED')
-          assert.deepEqual(warning, displayWarningError)
-          assert.deepEqual(unlockFailed, unlockFailedError)
-        })
+      try {
+        await store.dispatch(actions.tryUnlockMetamask('test'))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        const actions = store.getActions()
+        const warning = actions.filter(action => action.type === 'DISPLAY_WARNING')
+        const unlockFailed = actions.filter(action => action.type === 'UNLOCK_FAILED')
+        assert.deepEqual(warning, displayWarningError)
+        assert.deepEqual(unlockFailed, unlockFailedError)
+      }
     })
   })
 
@@ -142,19 +146,21 @@ describe('Actions', () => {
       createNewVaultAndRestoreSpy.restore()
     })
 
-    it('restores new vault', () => {
+    it('restores new vault', async () => {
 
       const store = mockStore({})
 
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
-      return store.dispatch(actions.createNewVaultAndRestore())
-        .catch(() => {
-          assert(createNewVaultAndRestoreSpy.calledOnce)
-        })
+
+      try {
+        await store.dispatch(actions.createNewVaultAndRestore())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert(createNewVaultAndRestoreSpy.calledOnce)
+      }
     })
 
-    it('errors when callback in createNewVaultAndRestore throws', () => {
-
+    it('errors when callback in createNewVaultAndRestore throws', async () => {
       const store = mockStore({})
 
       const expectedActions = [
@@ -169,10 +175,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.createNewVaultAndRestore())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.createNewVaultAndRestore())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -190,7 +198,7 @@ describe('Actions', () => {
         })
     })
 
-    it('displays warning error message then callback in background errors', () => {
+    it('displays warning error message then callback in background errors', async () => {
       const store = mockStore()
 
       const expectedActions = [
@@ -204,10 +212,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.requestRevealSeedWords())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.requestRevealSeedWords())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
 
     })
   })
@@ -236,7 +246,7 @@ describe('Actions', () => {
         })
     })
 
-    it('displays warning error message when removeAccount callback errors', () => {
+    it('displays warning error message when removeAccount callback errors', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -248,10 +258,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
 
     })
   })
@@ -301,7 +313,7 @@ describe('Actions', () => {
       resetAccountSpy.restore()
     })
 
-    it('resets account', () => {
+    it('resets account', async () => {
 
       const store = mockStore()
 
@@ -320,7 +332,7 @@ describe('Actions', () => {
         })
     })
 
-    it('throws if resetAccount throws', () => {
+    it('throws if resetAccount throws', async () => {
       const store = mockStore()
 
       const expectedActions = [
@@ -334,10 +346,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.resetAccount())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.resetAccount())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -362,7 +376,7 @@ describe('Actions', () => {
         })
     })
 
-    it('displays warning error message when importAccount in background callback errors', () => {
+    it('displays warning error message when importAccount in background callback errors', async () => {
       const store = mockStore()
 
       const expectedActions = [
@@ -376,10 +390,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.importNewAccount())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.importNewAccount())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -471,7 +487,7 @@ describe('Actions', () => {
 
     })
 
-    it('errors when signMessage in background throws', () => {
+    it('errors when signMessage in background throws', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -485,10 +501,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.signMsg())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.signMsg())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
 
   })
@@ -526,7 +544,7 @@ describe('Actions', () => {
 
     })
 
-    it('throws if signPersonalMessage throws', () => {
+    it('throws if signPersonalMessage throws', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -540,10 +558,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.signPersonalMsg(msgParams))
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.signPersonalMsg(msgParams))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
 
   })
@@ -731,7 +751,7 @@ describe('Actions', () => {
         })
     })
 
-    it('errors when addToken in background throws', () => {
+    it('errors when addToken in background throws', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -744,10 +764,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.addToken())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.addToken())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -771,7 +793,7 @@ describe('Actions', () => {
         })
     })
 
-    it('errors when removeToken in background fails', () => {
+    it('errors when removeToken in background fails', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -784,10 +806,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      store.dispatch(actions.removeToken())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.removeToken())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -901,7 +925,7 @@ describe('Actions', () => {
         })
     })
 
-    it('returns action errors when first func callback errors', () => {
+    it('returns action errors when first func callback errors', async () => {
       const store = mockStore(devState)
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -914,13 +938,15 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
 
-    it('returns action errors when second func callback errors', () => {
+    it('returns action errors when second func callback errors', async () => {
       const store = mockStore(devState)
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -933,10 +959,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -998,7 +1026,7 @@ describe('Actions', () => {
       assert(setFeatureFlagSpy.calledOnce)
     })
 
-    it('errors when setFeatureFlag in background throws', () => {
+    it('errors when setFeatureFlag in background throws', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -1010,10 +1038,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      store.dispatch(actions.setFeatureFlag())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.setFeatureFlag())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
@@ -1053,7 +1083,7 @@ describe('Actions', () => {
         })
     })
 
-    it('errors when getTransactionCount throws', () => {
+    it('errors when getTransactionCount throws', async () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'error' },
@@ -1064,10 +1094,12 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.updateNetworkNonce())
-        .catch(() => {
-          assert.deepEqual(store.getActions(), expectedActions)
-        })
+      try {
+        await store.dispatch(actions.updateNetworkNonce())
+        assert.fail('Should have thrown error')
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions)
+      }
     })
   })
 
