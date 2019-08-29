@@ -757,7 +757,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'UPDATE_TOKENS', newTokens: undefined },
       ]
 
       addTokenSpy.callsFake((_, __, ___, ____, callback) => {
@@ -799,7 +798,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'UPDATE_TOKENS', newTokens: undefined },
       ]
 
       removeTokenSpy.callsFake((_, callback) => {

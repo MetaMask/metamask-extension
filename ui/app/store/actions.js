@@ -1196,7 +1196,7 @@ function updateAndApproveTx (txData) {
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
           log.error(err.message)
-          reject(err)
+          return reject(err)
         }
 
         resolve(txData)
@@ -1679,7 +1679,7 @@ function addToken (address, symbol, decimals, image) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1696,7 +1696,7 @@ function removeToken (address) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1786,7 +1786,7 @@ function retryTransaction (txId, gasPrice) {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1809,7 +1809,7 @@ function createCancelTransaction (txId, customGasPrice) {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1832,7 +1832,7 @@ function createSpeedUpTransaction (txId, customGasPrice) {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -2185,7 +2185,7 @@ function setAccountLabel (account, label) {
 
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         dispatch({
