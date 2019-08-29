@@ -181,7 +181,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(largeDelayMs * 2)
     })
 
-    it('', async () => {
+    it('connects to dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
@@ -198,8 +198,6 @@ describe('Using MetaMask with an existing account', function () {
 
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
-
-
     })
   })
 

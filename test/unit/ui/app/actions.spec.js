@@ -75,7 +75,7 @@ describe('Actions', () => {
       verifySeedPhraseSpy.restore()
     })
 
-    it('', async () => {
+    it('calls submitPassword and verifySeedPhrase', async () => {
 
       const store = mockStore({})
 
@@ -267,7 +267,7 @@ describe('Actions', () => {
       addNewKeyringSpy.restore()
     })
 
-    it('', () => {
+    it('calls addNewKeyring', () => {
       const privateKey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
 
       const store = mockStore()
@@ -301,7 +301,7 @@ describe('Actions', () => {
       resetAccountSpy.restore()
     })
 
-    it('', () => {
+    it('resets account', () => {
 
       const store = mockStore()
 
@@ -320,7 +320,7 @@ describe('Actions', () => {
         })
     })
 
-    it('', () => {
+    it('throws if resetAccount throws', () => {
       const store = mockStore()
 
       const expectedActions = [
@@ -391,7 +391,7 @@ describe('Actions', () => {
       addNewAccountSpy.restore()
     })
 
-    it('', () => {
+    it('Adds a new account', () => {
       const store = mockStore({ metamask: devState })
 
       addNewAccountSpy = sinon.spy(background, 'addNewAccount')
@@ -415,14 +415,14 @@ describe('Actions', () => {
       setCurrentCurrencySpy.restore()
     })
 
-    it('', () => {
+    it('calls setCurrentCurrency', () => {
       const store = mockStore()
 
       store.dispatch(actions.setCurrentCurrency('jpy'))
       assert(setCurrentCurrencySpy.calledOnce)
     })
 
-    it('', () => {
+    it('throws if setCurrentCurrency throws', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -514,7 +514,7 @@ describe('Actions', () => {
       signPersonalMessageSpy.restore()
     })
 
-    it('', () => {
+    it('calls signPersonalMessage', () => {
       const store = mockStore()
 
       signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
@@ -526,7 +526,7 @@ describe('Actions', () => {
 
     })
 
-    it('', () => {
+    it('throws if signPersonalMessage throws', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -595,7 +595,7 @@ describe('Actions', () => {
       tokenSpy.restore()
     })
 
-    it('', () => {
+    it('calls eth.contract', () => {
       const store = mockStore()
       store.dispatch(actions.signTokenTx())
       assert(tokenSpy.calledOnce)
@@ -609,7 +609,7 @@ describe('Actions', () => {
       backgroundSetLockedSpy.restore()
     })
 
-    it('', () => {
+    it('calls setLocked', () => {
       const store = mockStore()
 
       backgroundSetLockedSpy = sinon.spy(background, 'setLocked')
@@ -695,7 +695,7 @@ describe('Actions', () => {
       assert(setSelectedAddressSpy.calledOnce)
     })
 
-    it('', () => {
+    it('displays warning if setSelectedAddress throws', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -705,7 +705,6 @@ describe('Actions', () => {
       setSelectedAddressSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
-
 
       store.dispatch(actions.showAccountDetail())
       assert.deepEqual(store.getActions(), expectedActions)
@@ -805,12 +804,12 @@ describe('Actions', () => {
       setProviderTypeSpy.restore()
     })
 
-    it('', () => {
+    it('calls setProviderType', () => {
       store.dispatch(actions.setProviderType())
       assert(setProviderTypeSpy.calledOnce)
     })
 
-    it('', () => {
+    it('displays warning when setProviderType throws', () => {
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
@@ -836,13 +835,13 @@ describe('Actions', () => {
       setRpcTargetSpy.restore()
     })
 
-    it('', () => {
+    it('calls setRpcTarget', () => {
       const store = mockStore()
       store.dispatch(actions.setRpcTarget('http://localhost:8545'))
       assert(setRpcTargetSpy.calledOnce)
     })
 
-    it('', () => {
+    it('displays warning when setRpcTarget throws', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
@@ -868,7 +867,7 @@ describe('Actions', () => {
       addToAddressBookSpy.restore()
     })
 
-    it('', () => {
+    it('calls setAddressBook', () => {
       const store = mockStore({ metamask: devState })
       store.dispatch(actions.addToAddressBook('test'))
       assert(addToAddressBookSpy.calledOnce)
@@ -948,7 +947,7 @@ describe('Actions', () => {
       setAccountLabelSpy = sinon.stub(background, 'setAccountLabel')
     })
 
-    it('', () => {
+    it('calls setAccountLabel', () => {
       const store = mockStore()
       store.dispatch(actions.setAccountLabel('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', 'test'))
       assert(setAccountLabelSpy.calledOnce)
@@ -968,7 +967,7 @@ describe('Actions', () => {
         .reply(200)
     })
 
-    it('', () => {
+    it('calls expected actions', () => {
       const store = mockStore()
       // issue with dispatch action in callback not showing
       const expectedActions = [
@@ -1044,7 +1043,7 @@ describe('Actions', () => {
       getTransactionCountSpy.restore()
     })
 
-    it('', () => {
+    it('calls getTransactionCount', () => {
       const store = mockStore()
       getTransactionCountSpy = sinon.spy(global.ethQuery, 'getTransactionCount')
 
@@ -1054,7 +1053,7 @@ describe('Actions', () => {
         })
     })
 
-    it('', () => {
+    it('errors when getTransactionCount throws', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'error' },
@@ -1120,7 +1119,7 @@ describe('Actions', () => {
       fetchMock.restore()
     })
 
-    it('', () => {
+    it('calls expected actions', () => {
       const store = mockStore()
       setCurrentLocaleSpy = sinon.spy(background, 'setCurrentLocale')
 
@@ -1138,7 +1137,7 @@ describe('Actions', () => {
         })
     })
 
-    it('', () => {
+    it('calls expected actions', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -1168,7 +1167,7 @@ describe('Actions', () => {
       markPasswordForgottenSpy.restore()
     })
 
-    it('', () => {
+    it('calls markPasswordForgotten', () => {
       const store = mockStore()
       store.dispatch(actions.markPasswordForgotten())
       assert(markPasswordForgottenSpy.calledOnce)
@@ -1186,7 +1185,7 @@ describe('Actions', () => {
       unMarkPasswordForgottenSpy.restore()
     })
 
-    it('', () => {
+    it('calls unMarkPasswordForgotten', () => {
       const store = mockStore()
       store.dispatch(actions.unMarkPasswordForgotten())
       assert(unMarkPasswordForgottenSpy.calledOnce)
