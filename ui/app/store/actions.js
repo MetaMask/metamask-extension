@@ -2786,7 +2786,9 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
-        return forceUpdateMetamaskState(dispatch).then(() => resolve())
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
   }
