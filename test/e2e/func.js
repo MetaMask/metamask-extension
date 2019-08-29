@@ -53,15 +53,19 @@ class Functions {
     return { driver, extensionId, extensionUri }
   }
 
-  static async buildChromeWebDriver (extPath) {
+  static async buildChromeWebDriver (extPath, opts = {}) {
     const tmpProfile = fs.mkdtempSync(path.join(os.tmpdir(), 'mm-chrome-profile'))
+    const args = [
+      `load-extension=${extPath}`,
+      `user-data-dir=${tmpProfile}`,
+    ]
+    if (opts.responsive) {
+      args.push('--auto-open-devtools-for-tabs')
+    }
     return new webdriver.Builder()
       .withCapabilities({
         chromeOptions: {
-          args: [
-            `load-extension=${extPath}`,
-            `user-data-dir=${tmpProfile}`,
-          ],
+          args,
           binary: process.env.SELENIUM_CHROME_BINARY,
         },
       })
