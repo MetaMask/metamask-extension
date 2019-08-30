@@ -274,7 +274,6 @@ class TransactionStateManager extends EventEmitter {
   and that have been 'confirmed'
   */
   getFilteredTxList (opts, initialList) {
-    console.log('how to filter by !')
     let filteredTxList = initialList
     Object.keys(opts).forEach((key) => {
       filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
