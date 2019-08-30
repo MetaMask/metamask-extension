@@ -1,15 +1,15 @@
 import assert from 'assert'
 import nock from 'nock'
 
-import http from './fetch'
+import fetchWithTimeout from '../../../app/scripts/lib/fetch-with-timeout'
 
-describe('custom fetch fn', () => {
+describe('fetchWithTimeout', () => {
   it('fetches a url', async () => {
     nock('https://api.infura.io')
       .get('/money')
       .reply(200, '{"hodl": false}')
 
-    const fetch = http()
+    const fetch = fetchWithTimeout()
     const response = await (await fetch('https://api.infura.io/money')).json()
     assert.deepEqual(response, {
       hodl: false,
@@ -22,7 +22,7 @@ describe('custom fetch fn', () => {
       .delay(2000)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}')
 
-    const fetch = http({
+    const fetch = fetchWithTimeout({
       timeout: 123,
     })
 
@@ -40,7 +40,7 @@ describe('custom fetch fn', () => {
       .delay(2000)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}')
 
-    const fetch = http({
+    const fetch = fetchWithTimeout({
       timeout: 123,
     })
 

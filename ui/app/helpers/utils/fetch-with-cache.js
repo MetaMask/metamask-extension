@@ -2,7 +2,7 @@ import {
   loadLocalStorageData,
   saveLocalStorageData,
 } from '../../../lib/local-storage-helpers'
-import fetchWithTimeout from './fetch'
+import fetchWithTimeout from '../../../../app/scripts/lib/fetch-with-timeout'
 
 const fetchWithCache = async (url, fetchOptions = {}, { cacheRefreshTime = 360000, timeout = 30000 } = {}) => {
   if (fetchOptions.body || (fetchOptions.method && fetchOptions.method !== 'GET')) {
