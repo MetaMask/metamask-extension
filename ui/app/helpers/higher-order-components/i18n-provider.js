@@ -7,12 +7,12 @@ const t = require('../utils/i18n-helper').getMessage
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
-    const { localeMessages: { current, en } = {} } = this.props
-    return t(current, key, ...args) || t(en, key, ...args) || defaultValue
+    const { localeMessages: { current, en } = {}, currentLocale } = this.props
+    return t(currentLocale, current, key, ...args) || t(currentLocale, en, key, ...args) || defaultValue
   }
 
   getChildContext () {
-    const { localeMessages } = this.props
+    const { localeMessages, currentLocale } = this.props
     const { current, en } = localeMessages
     return {
       /**
@@ -26,7 +26,7 @@ class I18nProvider extends Component {
           return key
         }
 
-        return t(current, key, ...args) || t(en, key, ...args) || `[${key}]`
+        return t(currentLocale, current, key, ...args) || t(currentLocale, en, key, ...args) || `[${key}]`
       },
       tOrDefault: this.tOrDefault,
       tOrKey: (key, ...args) => {
@@ -42,6 +42,7 @@ class I18nProvider extends Component {
 
 I18nProvider.propTypes = {
   localeMessages: PropTypes.object,
+  currentLocale: PropTypes.string,
   children: PropTypes.object,
 }
 
@@ -52,8 +53,9 @@ I18nProvider.childContextTypes = {
 }
 
 const mapStateToProps = state => {
-  const { localeMessages } = state
+  const { localeMessages, metamask: { currentLocale } } = state
   return {
+    currentLocale,
     localeMessages,
   }
 }
