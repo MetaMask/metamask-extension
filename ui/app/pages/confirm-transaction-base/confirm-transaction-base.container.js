@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
+import { getMetaMaskAccounts, getUseNonceField, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -146,6 +146,7 @@ const mapStateToProps = (state, ownProps) => {
       gasPrice,
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
+    useNonceField: getUseNonceField(state),
     insufficientBalance,
     hideSubtitle: (!isMainnet && !showFiatInTestnets),
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),

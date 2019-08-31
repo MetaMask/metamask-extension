@@ -204,6 +204,7 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionTotal,
       hideDetails,
+      useNonceField,
       advancedInlineGasShown,
       customGas,
       insufficientBalance,
@@ -251,6 +252,10 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
+          {useNonceField ? <div>
+            {/* TODO: style things and make it visible based on nonse (also make it a component?) */}
+            nonce: <input type='text' />
+          </div> : null}
         </div>
       )
     )

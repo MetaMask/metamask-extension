@@ -45,6 +45,7 @@ const selectors = {
   getNetworkIdentifier,
   isBalanceCached,
   getAdvancedInlineGasShown,
+  getUseNonceField,
   getIsMainnet,
   getCurrentNetworkId,
   getSelectedAsset,
@@ -339,6 +340,10 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getUseNonceField (state) {
+  return Boolean(state.metamask.useNonceField)
 }
 
 function getMetaMetricState (state) {
