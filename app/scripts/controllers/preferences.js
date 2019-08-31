@@ -17,6 +17,7 @@ class PreferencesController {
    * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
+   * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
@@ -88,6 +89,16 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  /**
+   * Setter for the `useNonceField` property
+   *
+   * @param {boolean} val Whether or not the user prefers blockie indicators
+   *
+   */
+  setUseNonceField (val) {
+    this.store.updateState({ useNonceField: val })
   }
 
   /**
@@ -203,6 +214,16 @@ class PreferencesController {
    */
   getUseBlockie () {
     return this.store.getState().useBlockie
+  }
+
+  /**
+   * Getter for the `useBlockie` property
+   *
+   * @returns {boolean} this.store.useBlockie
+   *
+   */
+  getUseNonceField () {
+    return this.store.getState().useNonceField
   }
 
   /**

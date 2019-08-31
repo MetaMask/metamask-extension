@@ -33,6 +33,7 @@ export default class SettingsTab extends PureComponent {
 
   static propTypes = {
     setUseBlockie: PropTypes.func,
+    setUseNonceField: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     displayWarning: PropTypes.func,
     warning: PropTypes.string,
@@ -40,6 +41,7 @@ export default class SettingsTab extends PureComponent {
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
+    useNonceField: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
@@ -107,6 +109,7 @@ export default class SettingsTab extends PureComponent {
   renderBlockieOptIn () {
     const { t } = this.context
     const { useBlockie, setUseBlockie } = this.props
+    console.log(setUseBlockie)
 
     return (
       <div className="settings-page__content-row">
@@ -129,18 +132,22 @@ export default class SettingsTab extends PureComponent {
 
   renderUseNonceOptIn () {
     const { t } = this.context
-    const { useNonceField } = this.props
+    const { useNonceField, setUseNonceField } = this.props
+    console.log(setUseNonceField)
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{ this.context.t('nonceField') }</span>
+          <div className="settings-page__content-description">
+            { t('nonceFieldDescription') }
+          </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useNonceField}
-              onToggle={value => setUseBlockie(!value)}
+              onToggle={value => setUseNonceField(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />

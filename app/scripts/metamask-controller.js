@@ -440,6 +440,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setUseNonceField: this.setUseNonceField.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -1721,6 +1722,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+    /**
+   * Sets whether or not to use the nonce field.
+   * @param {boolean} val - True for nonce field, false for not nonce field.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setUseNonceField (val, cb) {
+    try {
+      this.preferencesController.setUseNonceField(val)
       cb(null)
     } catch (err) {
       cb(err)

@@ -298,6 +298,8 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
+  SET_USE_NONCEFIELD: 'SET_USE_NONCEFIELD',
+  setUseNonceField,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
@@ -2586,6 +2588,23 @@ function setUseBlockie (val) {
     })
     dispatch({
       type: actions.SET_USE_BLOCKIE,
+      value: val,
+    })
+  }
+}
+
+function setUseNonceField (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseNonceField`)
+    background.setUseNonceField(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_NONCEFIELD,
       value: val,
     })
   }
