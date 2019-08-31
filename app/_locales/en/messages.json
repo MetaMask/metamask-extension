@@ -195,6 +195,12 @@
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
   },
+  "nonceField": {
+    "message": "Show nonce field on confirmation screens. Only use if you understand the implications."
+  },
+  "borrowDharma": {
+    "message": "Borrow With Dharma (Beta)"
+  },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },

@@ -35,6 +35,7 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
+      useNonceField: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace

@@ -127,6 +127,29 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderUseNonceOptIn () {
+    const { t } = this.context
+    const { useNonceField } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ this.context.t('nonceField') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useNonceField}
+              onToggle={value => setUseBlockie(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
     const {
@@ -191,6 +214,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderUsePrimaryCurrencyOptions() }
         { this.renderCurrentLocale() }
         { this.renderBlockieOptIn() }
+        { this.renderUseNonceOptIn() }
       </div>
     )
   }
