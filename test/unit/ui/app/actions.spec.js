@@ -1155,9 +1155,8 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SET_CURRENT_LOCALE', value: { locale: 'en', messages: enLocale }},
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'SET_CURRENT_LOCALE', value: 'en' },
-        { type: 'SET_LOCALE_MESSAGES', value: enLocale },
       ]
 
       return store.dispatch(actions.updateCurrentLocale('en'))
