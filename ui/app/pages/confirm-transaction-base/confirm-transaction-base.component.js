@@ -394,7 +394,9 @@ export default class ConfirmTransactionBase extends Component {
   handleSubmit () {
     const { metricsEvent } = this.context
     const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, actionKey, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
-    const { submitting } = this.state
+    const { submitting, customNonceValue } = this.state
+
+    console.log(txData)
 
     if (submitting) {
       return
@@ -419,15 +421,23 @@ export default class ConfirmTransactionBase extends Component {
 
       setMetaMetricsSendCount(metaMetricsSendCount + 1)
         .then(() => {
+          // this is a tad gross, but it gives us a nonce key/value in txParams
+          const _txData = customNonceValue
+            ? Object.assign({}, txData, { txParams: {
+              ...txData.txParams,
+              nonce: customNonceValue
+            }})
+            : txData
+
           if (onSubmit) {
-            Promise.resolve(onSubmit(txData))
+            Promise.resolve(onSubmit(_txData))
               .then(() => {
                 this.setState({
                   submitting: false,
                 })
               })
           } else {
-            sendTransaction(txData)
+            sendTransaction(_txData)
               .then(() => {
                 clearConfirmTransaction()
                 this.setState({
