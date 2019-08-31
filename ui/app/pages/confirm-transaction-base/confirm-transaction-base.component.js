@@ -253,8 +253,11 @@ export default class ConfirmTransactionBase extends Component {
             />
           </div>
           {useNonceField ? <div>
-            {/* TODO: style things and make it visible based on nonse (also make it a component?) */}
-            nonce: <input type='text' />
+            {/*
+              TODO: style things (also make it a component?)
+              put placeholder text into translation file
+            */}
+            nonce: <input placeholder='Automatically calculate' type='text' />
           </div> : null}
         </div>
       )
