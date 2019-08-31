@@ -137,10 +137,10 @@ class SettingsPage extends PureComponent {
           onClick={() => initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)}
         >{subheaderText}</div>
         {breadCrumbTextKey && <div
-          className='settings-page__subheader--break'
+          className="settings-page__subheader--break"
         ><span>{' > '}</span>{t(breadCrumbTextKey)}</div>}
         {isAddressEntryPage && <div
-          className='settings-page__subheader--break'
+          className="settings-page__subheader--break"
         ><span>{' > '}</span>{addressName}</div>}
       </div>
     )
