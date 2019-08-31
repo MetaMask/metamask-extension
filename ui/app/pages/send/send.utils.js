@@ -13,6 +13,7 @@ const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
@@ -202,7 +203,7 @@ function doesAmountErrorRequireUpdate ({
 async function estimateGas ({
   selectedAddress,
   selectedToken,
-  blockGasLimit,
+  blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
   data,
@@ -242,7 +243,7 @@ async function estimateGas ({
   }
 
   // if not, fall back to block gasLimit
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit || '0x5208', 0.95, {
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',
