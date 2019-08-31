@@ -7025,6 +7025,18 @@ deep-equal@^1.0.0, deep-equal@^1.0.1, deep-equal@~1.0.1:
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
   integrity sha1-9dJgKStmDghO/0zbyfCK0yR0SLU=
 
+deep-equal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.0.tgz#3103cdf8ab6d32cf4a8df7865458f2b8d33f3745"
+  integrity sha512-ZbfWJq/wN1Z273o7mUSjILYqehAktR2NVoSrOukDkU9kg2v/Uv89yU4Cvz8seJeAmtN5oqiefKq8FPuXOboqLw==
+  dependencies:
+    is-arguments "^1.0.4"
+    is-date-object "^1.0.1"
+    is-regex "^1.0.4"
+    object-is "^1.0.1"
+    object-keys "^1.1.1"
+    regexp.prototype.flags "^1.2.0"
+
 deep-extend@^0.5.0, deep-extend@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.5.1.tgz#b894a9dd90d3023fbf1c55a394fb858eb2066f1f"
@@ -8503,17 +8515,17 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-eth-block-tracker@^1.0.7:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-1.1.3.tgz#c46a0f2bced9b49b88c7f3918856d7ec57fbdc29"
-  integrity sha512-gDIknKCbY9npDA0JmBYCMDPLBj6GUe7xHYI2YTOQVuM8et6N2FxqrS1KhtThPWAeTgFPFkvyOj4eSBaJR0Oekg==
+eth-block-tracker@4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-4.4.3.tgz#766a0a0eb4a52c867a28328e9ae21353812cf626"
+  integrity sha512-A8tG4Z4iNg4mw5tP1Vung9N9IjgMNqpiMoJ/FouSFwNCGHv2X0mmOYwtQOJzki6XN7r7Tyo01S29p7b224I4jw==
   dependencies:
-    async-eventemitter "^0.2.2"
-    babelify "^7.3.0"
+    "@babel/plugin-transform-runtime" "^7.5.5"
+    "@babel/runtime" "^7.5.5"
     eth-query "^2.1.0"
-    ethjs-util "^0.1.3"
-    pify "^2.3.0"
-    tape "^4.6.3"
+    json-rpc-random-id "^1.0.1"
+    pify "^3.0.0"
+    safe-event-emitter "^1.0.1"
 
 eth-block-tracker@^3.0.0:
   version "3.0.1"
@@ -8528,14 +8540,15 @@ eth-block-tracker@^3.0.0:
     pify "^2.3.0"
     tape "^4.6.3"
 
-eth-block-tracker@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-4.1.0.tgz#46c5c417044e68ffd2b3887f4ae80900ef071219"
-  integrity sha512-991xTy6CzYYbizkHmgRFFI9iGx1OCISve8sSLuOlt7/yD7VFH1Jd8mOmBqxaG5ywGkIXdwAR78nQ2WDReETzBg==
+eth-block-tracker@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-4.4.2.tgz#cd25f5536e3f003f677364be630b9879d3aa69c1"
+  integrity sha512-Vs6zYKhzyUQUfNgtyz8mItG+yr/e1ats9fqKkRUgSbS+nr4Jn/FHYXxkm5GFlWnMI2xn5TBSvKYcrgB0/0NkDw==
   dependencies:
-    eth-json-rpc-infura "^3.1.2"
+    "@babel/plugin-transform-runtime" "^7.5.5"
+    "@babel/runtime" "^7.5.5"
     eth-query "^2.1.0"
-    events "^3.0.0"
+    json-rpc-random-id "^1.0.1"
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
@@ -8585,7 +8598,17 @@ eth-json-rpc-filters@^3.0.4:
     lodash.flatmap "^4.5.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-infura@^3.1.0, eth-json-rpc-infura@^3.1.2, eth-json-rpc-infura@^3.2.0:
+eth-json-rpc-infura@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-infura/-/eth-json-rpc-infura-3.2.1.tgz#26702a821067862b72d979c016fd611502c6057f"
+  integrity sha512-W7zR4DZvyTn23Bxc0EWsq4XGDdD63+XPUCEhV2zQvQGavDVC4ZpFDK4k99qN7bd7/fjj37+rxmuBOBeIqCA5Mw==
+  dependencies:
+    cross-fetch "^2.1.1"
+    eth-json-rpc-middleware "^1.5.0"
+    json-rpc-engine "^3.4.0"
+    json-rpc-error "^2.0.0"
+
+eth-json-rpc-infura@^3.1.0, eth-json-rpc-infura@^3.1.2:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-infura/-/eth-json-rpc-infura-3.2.0.tgz#62c3f516b51351038c32a548704467cec113ca8f"
   integrity sha512-FLcpdxPRVBCUc7yoE+wHGvyYg2lATedP+/q7PsKvaSzQpJbgTG4ZjLnyrLanxDr6M1k/dSNa6V5QnILwjUKJcw==
@@ -8800,13 +8823,13 @@ eth-simple-keyring@^2.0.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-token-tracker@^1.1.5:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/eth-token-tracker/-/eth-token-tracker-1.1.6.tgz#0396a3a8cc2055c1223850d6c0edf1991b89fc4c"
-  integrity sha512-p3tD2v65XHeFv7DoUUxvln6xOC/MYmmocLyvvcT/s38vcnQdUJ76oNaon98vTQr3Y61qbaiy19c4bvuKaezqlA==
+eth-token-tracker@1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/eth-token-tracker/-/eth-token-tracker-1.1.11.tgz#7f6fb455591a407b08a917809438239cc7632fde"
+  integrity sha512-TyTFt4bAVMXuA1ukz+H2cjKxqqVXXO0lL09EA6i3f7IjL9yNJJj3PyFp6n6HRACJgbCTcmEM37oNT4LMoZiwlQ==
   dependencies:
-    deep-equal "^1.0.1"
-    eth-block-tracker "^1.0.7"
+    deep-equal "^1.1.0"
+    eth-block-tracker "^4.4.2"
     ethjs "^0.3.6"
     ethjs-contract "^0.2.1"
     ethjs-query "^0.3.7"
@@ -12256,6 +12279,11 @@ is-alphanumerical@^1.0.0:
     is-alphabetical "^1.0.0"
     is-decimal "^1.0.0"
 
+is-arguments@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/is-arguments/-/is-arguments-1.0.4.tgz#3faf966c7cba0ff437fb31f6250082fcf0448cf3"
+  integrity sha512-xPh0Rmt8NE65sNzvyUmWgI1tz3mKq74lGA0mL8LYZcoIzKOzDh6HmrYm3d18k60nHerC8A9Km8kYu87zfSFnLA==
+
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
@@ -13106,7 +13134,7 @@ json-rpc-middleware-stream@^2.1.1:
     readable-stream "^2.3.3"
     safe-event-emitter "^1.0.1"
 
-json-rpc-random-id@^1.0.0:
+json-rpc-random-id@^1.0.0, json-rpc-random-id@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-rpc-random-id/-/json-rpc-random-id-1.0.1.tgz#ba49d96aded1444dbb8da3d203748acbbcdec8c8"
   integrity sha1-uknZat7RRE27jaPSA3SKy7zeyMg=
@@ -15798,7 +15826,7 @@ object-keys@^1.0.11, object-keys@^1.0.6, object-keys@^1.0.8:
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
   integrity sha1-xUYBd4rVYPEULODgG8yotW0TQm0=
 
-object-keys@^1.0.12:
+object-keys@^1.0.12, object-keys@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
