@@ -101,6 +101,7 @@ export default class ConfirmTransactionBase extends Component {
   state = {
     submitting: false,
     submitError: null,
+    customNonceValue: ''
   }
 
   componentDidUpdate (prevProps) {
@@ -241,7 +242,10 @@ export default class ConfirmTransactionBase extends Component {
               : null
             }
           </div>
-          <div>
+          <div style={{
+            // TODO: put this in a style sheet
+            borderBottom: useNonceField ? '1px solid #d2d8dd' : null
+          }}>
             <ConfirmDetailRow
               label="Total"
               value={hexTransactionTotal}
@@ -253,15 +257,22 @@ export default class ConfirmTransactionBase extends Component {
             />
           </div>
           {useNonceField ? <div>
+            <div className='confirm-detail-row'>
             {/*
               TODO: style things (also make it a component?)
               put placeholder text into translation file
             */}
-            nonce: <input placeholder='Automatically calculate' type='text' />
+            nonce: <input value={this.state.customNonceValue} onChange={this.setCustomNonceValue.bind(this)} placeholder='Automatically calculate' type='text' />
+            </div>
           </div> : null}
         </div>
       )
     )
+  }
+
+  setCustomNonceValue (e) {
+    const { value } = e.target
+    this.setState({ customNonceValue: value })
   }
 
   renderData () {
@@ -556,7 +567,7 @@ export default class ConfirmTransactionBase extends Component {
       unapprovedTxCount,
       transactionCategory,
     } = this.props
-    const { submitting, submitError } = this.state
+    const { submitting, submitError, customNonceValue } = this.state
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
@@ -580,7 +591,7 @@ export default class ConfirmTransactionBase extends Component {
         detailsComponent={this.renderDetails()}
         dataComponent={this.renderData()}
         contentComponent={contentComponent}
-        nonce={nonce}
+        nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}
         assetImage={assetImage}
         identiconAddress={identiconAddress}
