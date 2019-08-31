@@ -25,18 +25,6 @@ const sesify = require('sesify')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
 
-const packageJSON = require('./package.json')
-const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
-const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
-const d3Dependencies = ['c3', 'd3']
-
-const uiDependenciesToBundle = [
-  ...materialUIDependencies,
-  ...reactDepenendencies,
-  ...d3Dependencies,
-]
-
 function gulpParallel (...args) {
   return function spawnGulpChildProcess (cb) {
     return gulpMultiProcess(args, cb, true)
@@ -315,34 +303,12 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
-createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, filename: 'libs' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
-function createTasksForBuildJsUIDeps ({ filename }) {
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
-
-
-  const bundleTaskOpts = Object.assign({
-    buildSourceMaps: true,
-    sourceMapDir: '../sourcemaps',
-    minifyBuild: true,
-    devMode: false,
-  })
-
-  gulp.task('build:extension:js:uideps', bundleTask(Object.assign({
-    label: filename,
-    filename: `${filename}.js`,
-    destinations,
-    buildLib: true,
-    dependenciesToBundle: uiDependenciesToBundle,
-  }, bundleTaskOpts)))
-}
-
-
-function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, testing, bundleTaskOpts = {} }) {
+function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
   const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
@@ -369,7 +335,6 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
-      externalDependencies: jsFile === 'ui' && !bundleTaskOpts.devMode && uiDependenciesToBundle,
       destinations,
     }, bundleTaskOpts)))
   })
@@ -437,7 +402,6 @@ gulp.task('build',
     'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:uideps',
       'build:extension:js',
       'copy'
     )
@@ -487,6 +451,7 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
+    entries: [opts.filepath],
     plugin: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
@@ -553,14 +518,6 @@ function generateBundler (opts, performBundle) {
       bundler.emit('file', sesifyConfigPath)
       bundler.emit('file', sesifyConfigOverridePath)
     })
-  }
-
-  if (opts.buildLib) {
-    bundler = bundler.require(opts.dependenciesToBundle)
-  }
-
-  if (opts.externalDependencies) {
-    bundler = bundler.external(opts.externalDependencies)
   }
 
   // inject variables into bundle
