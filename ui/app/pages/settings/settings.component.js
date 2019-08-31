@@ -139,7 +139,9 @@ class SettingsPage extends PureComponent {
         {breadCrumbTextKey && <div
           className='settings-page__subheader--break'
         ><span>{' > '}</span>{t(breadCrumbTextKey)}</div>}
-        {isAddressEntryPage && <div><span>{' > '}</span>{addressName}</div>}
+        {isAddressEntryPage && <div
+          className='settings-page__subheader--break'
+        ><span>{' > '}</span>{addressName}</div>}
       </div>
     )
   }
