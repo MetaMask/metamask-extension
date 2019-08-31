@@ -109,7 +109,6 @@ export default class SettingsTab extends PureComponent {
   renderBlockieOptIn () {
     const { t } = this.context
     const { useBlockie, setUseBlockie } = this.props
-    console.log(setUseBlockie)
 
     return (
       <div className="settings-page__content-row">
@@ -133,7 +132,6 @@ export default class SettingsTab extends PureComponent {
   renderUseNonceOptIn () {
     const { t } = this.context
     const { useNonceField, setUseNonceField } = this.props
-    console.log(setUseNonceField)
 
     return (
       <div className="settings-page__content-row">
