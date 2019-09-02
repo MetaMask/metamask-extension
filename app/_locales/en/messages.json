@@ -198,6 +198,12 @@
   "nonceField": {
     "message": "Show nonce field on confirmation screens."
   },
+  "nonceFieldPlaceholder": {
+    "message": "Automatically calculate"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Nonce Value"
+  },
   "nonceFieldDescription": {
     "message": "Only use if you understand the implications."
   },

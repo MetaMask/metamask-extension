@@ -243,10 +243,7 @@ export default class ConfirmTransactionBase extends Component {
               : null
             }
           </div>
-          <div style={{
-            // TODO: put this in a style sheet
-            borderBottom: useNonceField ? '1px solid #d2d8dd' : null
-          }}>
+          <div className={useNonceField ? 'confirm-page-container-content__gas-fee' : null}>
             <ConfirmDetailRow
               label="Total"
               value={hexTransactionTotal}
@@ -259,13 +256,16 @@ export default class ConfirmTransactionBase extends Component {
           </div>
           {useNonceField ? <div>
             <div className='confirm-detail-row'>
-            {/*
-              TODO: style things (also make it a component?)
-              put placeholder text into translation file
-            */}
-            nonce: <input value={customNonceValue} onChange={({ target: { value }}) => {
-              updateCustomNonce(value)
-            }} placeholder='Automatically calculate' type='text' />
+              <div>
+                <div className='confirm-detail-row__label'>
+                  { this.context.t('nonceFieldHeading') }
+                </div>
+                <div>
+                  <input value={customNonceValue} onChange={({ target: { value }}) => {
+                    updateCustomNonce(value)
+                  }} placeholder={ this.context.t('nonceFieldPlaceholder') } type='text' />
+                </div>
+              </div>
             </div>
           </div> : null}
         </div>
