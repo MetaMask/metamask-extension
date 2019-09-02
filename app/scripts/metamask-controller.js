@@ -1728,7 +1728,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-    /**
+  /**
    * Sets whether or not to use the nonce field.
    * @param {boolean} val - True for nonce field, false for not nonce field.
    * @param {Function} cb - A callback function called when complete.

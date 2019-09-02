@@ -51,6 +51,9 @@ export default class ConfirmTransactionBase extends Component {
     isTxReprice: PropTypes.bool,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
+    useNonceField: PropTypes.bool,
+    customNonceValue: PropTypes.string,
+    updateCustomNonce: PropTypes.func,
     assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showCustomizeGasModal: PropTypes.func,
@@ -256,9 +259,9 @@ export default class ConfirmTransactionBase extends Component {
             />
           </div>
           {useNonceField ? <div>
-            <div className='confirm-detail-row'>
+            <div className="confirm-detail-row">
               <div>
-                <div className='confirm-detail-row__label'>
+                <div className="confirm-detail-row__label">
                   { this.context.t('nonceFieldHeading') }
                 </div>
                 <div>
