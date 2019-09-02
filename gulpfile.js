@@ -214,21 +214,6 @@ gulp.task('dev:copy',
   )
 )
 
-// scss compilation and autoprefixing tasks
-
-gulp.task('build:scss', createScssBuildTask({
-  src: 'ui/app/css/index.scss',
-  dest: 'ui/app/css/output',
-  devMode: false,
-}))
-
-gulp.task('dev:scss', createScssBuildTask({
-  src: 'ui/app/css/index.scss',
-  dest: 'ui/app/css/output',
-  devMode: true,
-  pattern: 'ui/app/**/*.scss',
-}))
-
 function createScssBuildTask ({ src, dest, devMode, pattern }) {
   return function () {
     if (devMode) {
@@ -371,7 +356,6 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 gulp.task('dev',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:extension:js',
       'dev:mascara:js',
@@ -384,7 +368,6 @@ gulp.task('dev',
 gulp.task('dev:extension',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:extension:js',
       'dev:copy',
@@ -396,7 +379,6 @@ gulp.task('dev:extension',
 gulp.task('dev:mascara',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:mascara:js',
       'dev:copy',
@@ -408,7 +390,6 @@ gulp.task('dev:mascara',
 gulp.task('build',
   gulp.series(
     'clean',
-    'build:scss',
     gulpParallel(
       'build:extension:js',
       'build:mascara:js',
@@ -420,7 +401,6 @@ gulp.task('build',
 gulp.task('build:extension',
   gulp.series(
     'clean',
-    'build:scss',
     gulp.parallel(
       'build:extension:js',
       'copy'
@@ -431,7 +411,6 @@ gulp.task('build:extension',
 gulp.task('build:mascara',
   gulp.series(
     'clean',
-    'build:scss',
     gulp.parallel(
       'build:mascara:js',
       'copy'

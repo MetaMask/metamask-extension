@@ -11,24 +11,11 @@ const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
-const AccountDetailsModal = require('./account-details-modal')
 const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
-const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
-const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
-const QRScanner = require('./qr-scanner')
-
-import ConfirmRemoveAccount from './confirm-remove-account'
-import ConfirmResetAccount from './confirm-reset-account'
-import TransactionConfirmed from './transaction-confirmed'
-import ConfirmCustomizeGasModal from './customize-gas'
-import CancelTransaction from './cancel-transaction'
-import WelcomeBeta from './welcome-beta'
-import TransactionDetails from './transaction-details'
-import RejectTransactions from './reject-transactions'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -165,23 +152,9 @@ const MODALS = {
     },
   },
 
-  ACCOUNT_DETAILS: {
-    contents: [
-      h(AccountDetailsModal, {}, []),
-    ],
-    ...accountModalStyle,
-  },
-
   EXPORT_PRIVATE_KEY: {
     contents: [
       h(ExportPrivateKeyModal, {}, []),
-    ],
-    ...accountModalStyle,
-  },
-
-  SHAPESHIFT_DEPOSIT_TX: {
-    contents: [
-      h(ShapeshiftDepositTxModal),
     ],
     ...accountModalStyle,
   },
@@ -200,19 +173,6 @@ const MODALS = {
     },
   },
 
-  BETA_UI_NOTIFICATION_MODAL: {
-    contents: h(WelcomeBeta),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
   OLD_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
@@ -227,32 +187,6 @@ const MODALS = {
     laptopModalStyle: {
       width: '449px',
       top: 'calc(33% + 45px)',
-    },
-  },
-
-  CONFIRM_RESET_ACCOUNT: {
-    contents: h(ConfirmResetAccount),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_REMOVE_ACCOUNT: {
-    contents: h(ConfirmRemoveAccount),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
@@ -277,118 +211,6 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
-    },
-  },
-
-  CUSTOMIZE_GAS: {
-    contents: [
-      h(CustomizeGasModal),
-    ],
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: '720px',
-      height: '377px',
-      top: '80px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-  },
-
-  CONFIRM_CUSTOMIZE_GAS: {
-    contents: h(ConfirmCustomizeGasModal),
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: '720px',
-      height: '377px',
-      top: '80px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-  },
-
-  TRANSACTION_CONFIRMED: {
-    disableBackdropClick: true,
-    contents: h(TransactionConfirmed),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  QR_SCANNER: {
-    contents: h(QRScanner),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CANCEL_TRANSACTION: {
-    contents: h(CancelTransaction),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_DETAILS: {
-    contents: h(TransactionDetails),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  REJECT_TRANSACTIONS: {
-    contents: h(RejectTransactions),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
