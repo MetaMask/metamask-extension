@@ -15,6 +15,7 @@ import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transa
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
+import TextField from '../../components/ui/text-field'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -261,9 +262,16 @@ export default class ConfirmTransactionBase extends Component {
                   { this.context.t('nonceFieldHeading') }
                 </div>
                 <div>
-                  <input value={customNonceValue} onChange={({ target: { value }}) => {
-                    updateCustomNonce(value)
-                  }} placeholder={ this.context.t('nonceFieldPlaceholder') } type='text' />
+                  <TextField
+                    type="text"
+                    placeholder={ this.context.t('nonceFieldPlaceholder') }
+                    onChange={({ target: { value }}) => {
+                      updateCustomNonce(value)
+                    }}
+                    fullWidth
+                    margin="dense"
+                    value={customNonceValue}
+                  />
                 </div>
               </div>
             </div>
