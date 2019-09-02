@@ -1,6 +1,5 @@
 const injectCss = require('inject-css')
 const OldMetaMaskUiCss = require('../../old-ui/css')
-const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
@@ -45,25 +44,17 @@ async function start () {
     // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
     // const firstTime = Object.keys(identities).length === 0
     const { isMascara, featureFlags = {} } = store.getState().metamask
-    let betaUIState = featureFlags.betaUI
 
     // Code commented out until we begin auto adding users to NewUI
-    // const useBetaCss = isMascara || firstTime || betaUIState
-    const useBetaCss = isMascara || betaUIState
 
-    let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+    let css = OldMetaMaskUiCss()
     let deleteInjectedCss = injectCss(css)
-    let newBetaUIState
 
     store.subscribe(() => {
       const state = store.getState()
-      newBetaUIState = state.metamask.featureFlags.betaUI
-      if (newBetaUIState !== betaUIState) {
-        deleteInjectedCss()
-        betaUIState = newBetaUIState
-        css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-        deleteInjectedCss = injectCss(css)
-      }
+      deleteInjectedCss()
+      css = OldMetaMaskUiCss()
+      deleteInjectedCss = injectCss(css)
     })
   })
 
