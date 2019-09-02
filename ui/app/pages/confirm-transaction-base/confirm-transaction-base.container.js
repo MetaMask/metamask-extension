@@ -185,7 +185,6 @@ const mapDispatchToProps = dispatch => {
         ...txData,
         customNonceValue,
       } : txData
-      // console.log(_txData)
       dispatch(updateAndApproveTx(_txData))
     },
     setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
