@@ -188,7 +188,10 @@ function reduceMetamask (state, action) {
           gasLimit: action.value,
         },
       })
-
+    case actions.UPDATE_CUSTOM_NONCE:
+      return extend(metamaskState, {
+        customNonceValue: action.value
+      })
     case actions.UPDATE_GAS_PRICE:
       return extend(metamaskState, {
         send: {

@@ -300,6 +300,8 @@ var actions = {
   setUseBlockie,
   SET_USE_NONCEFIELD: 'SET_USE_NONCEFIELD',
   setUseNonceField,
+  UPDATE_CUSTOM_NONCE: 'UPDATE_CUSTOM_NONCE',
+  updateCustomNonce,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
@@ -1062,6 +1064,13 @@ function updateSendAmount (amount) {
   return {
     type: actions.UPDATE_SEND_AMOUNT,
     value: amount,
+  }
+}
+
+function updateCustomNonce (value) {
+  return {
+    type: actions.UPDATE_CUSTOM_NONCE,
+    value: value,
   }
 }
 

@@ -101,7 +101,6 @@ export default class ConfirmTransactionBase extends Component {
   state = {
     submitting: false,
     submitError: null,
-    customNonceValue: ''
   }
 
   componentDidUpdate (prevProps) {
@@ -206,6 +205,8 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionTotal,
       hideDetails,
       useNonceField,
+      customNonceValue,
+      updateCustomNonce,
       advancedInlineGasShown,
       customGas,
       insufficientBalance,
@@ -262,17 +263,14 @@ export default class ConfirmTransactionBase extends Component {
               TODO: style things (also make it a component?)
               put placeholder text into translation file
             */}
-            nonce: <input value={this.state.customNonceValue} onChange={this.setCustomNonceValue.bind(this)} placeholder='Automatically calculate' type='text' />
+            nonce: <input value={customNonceValue} onChange={({ target: { value }}) => {
+              updateCustomNonce(value)
+            }} placeholder='Automatically calculate' type='text' />
             </div>
           </div> : null}
         </div>
       )
     )
-  }
-
-  setCustomNonceValue (e) {
-    const { value } = e.target
-    this.setState({ customNonceValue: value })
   }
 
   renderData () {
@@ -394,9 +392,7 @@ export default class ConfirmTransactionBase extends Component {
   handleSubmit () {
     const { metricsEvent } = this.context
     const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, actionKey, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
-    const { submitting, customNonceValue } = this.state
-
-    console.log(txData)
+    const { submitting } = this.state
 
     if (submitting) {
       return
@@ -421,23 +417,15 @@ export default class ConfirmTransactionBase extends Component {
 
       setMetaMetricsSendCount(metaMetricsSendCount + 1)
         .then(() => {
-          // this is a tad gross, but it gives us a nonce key/value in txParams
-          const _txData = customNonceValue
-            ? Object.assign({}, txData, { txParams: {
-              ...txData.txParams,
-              nonce: customNonceValue
-            }})
-            : txData
-
           if (onSubmit) {
-            Promise.resolve(onSubmit(_txData))
+            Promise.resolve(onSubmit(txData))
               .then(() => {
                 this.setState({
                   submitting: false,
                 })
               })
           } else {
-            sendTransaction(_txData)
+            sendTransaction(txData)
               .then(() => {
                 clearConfirmTransaction()
                 this.setState({
@@ -572,12 +560,13 @@ export default class ConfirmTransactionBase extends Component {
       contentComponent,
       onEdit,
       nonce,
+      customNonceValue,
       assetImage,
       warning,
       unapprovedTxCount,
       transactionCategory,
     } = this.props
-    const { submitting, submitError, customNonceValue } = this.state
+    const { submitting, submitError } = this.state
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()

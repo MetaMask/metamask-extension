@@ -46,6 +46,7 @@ const selectors = {
   isBalanceCached,
   getAdvancedInlineGasShown,
   getUseNonceField,
+  getCustomNonceValue,
   getIsMainnet,
   getCurrentNetworkId,
   getSelectedAsset,
@@ -344,6 +345,11 @@ function getAdvancedInlineGasShown (state) {
 
 function getUseNonceField (state) {
   return Boolean(state.metamask.useNonceField)
+}
+
+function getCustomNonceValue (state) {
+  const key = 'customNonceValue'
+  return state.metamask.hasOwnProperty(key) ? String(state.metamask[key]) : ''
 }
 
 function getMetaMetricState (state) {
