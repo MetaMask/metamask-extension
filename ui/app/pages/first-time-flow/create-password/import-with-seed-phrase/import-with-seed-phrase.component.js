@@ -240,6 +240,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           label={t('newPassword')}
           type="password"
           className="first-time-flow__input"
+          dir="auto"
           value={this.state.password}
           onChange={event => this.handlePasswordChange(event.target.value)}
           error={passwordError}
@@ -252,6 +253,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           label={t('confirmPassword')}
           type="password"
           className="first-time-flow__input"
+          dir="auto"
           value={this.state.confirmPassword}
           onChange={event => this.handleConfirmPasswordChange(event.target.value)}
           error={confirmPasswordError}

@@ -20,6 +20,11 @@
     @media screen and (max-width: 575px) {
       padding: 0;
     }
+
+    input {
+      /*rtl:ignore*/
+      direction: ltr;
+    }
   }
 
   &__back-button {
@@ -38,6 +43,10 @@
       cursor: pointer;
       position: absolute;
       margin-left: 10px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -190,6 +199,10 @@
       position: absolute;
       width: 24px;
       height: 24px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 

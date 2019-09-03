@@ -74,6 +74,7 @@ export default class TokenSearch extends Component {
         id="search-tokens"
         placeholder={this.context.t('searchTokens')}
         type="text"
+        dir="auto"
         value={searchQuery}
         onChange={e => this.handleSearch(e.target.value)}
         error={error}

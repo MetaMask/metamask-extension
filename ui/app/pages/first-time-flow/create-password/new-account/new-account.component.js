@@ -172,6 +172,7 @@ export default class NewAccount extends PureComponent {
             label={t('newPassword')}
             type="password"
             className="first-time-flow__input"
+            dir="auto"
             value={password}
             onChange={event => this.handlePasswordChange(event.target.value)}
             error={passwordError}
@@ -186,6 +187,7 @@ export default class NewAccount extends PureComponent {
             label={t('confirmPassword')}
             type="password"
             className="first-time-flow__input"
+            dir="auto"
             value={confirmPassword}
             onChange={event => this.handleConfirmPasswordChange(event.target.value)}
             error={confirmPasswordError}
