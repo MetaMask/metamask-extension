@@ -211,7 +211,12 @@ class PreferencesController {
    *
    */
   setCurrentLocale (key) {
-    this.store.updateState({ currentLocale: key })
+    const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
+    this.store.updateState({
+      currentLocale: key,
+      textDirection: textDirection,
+    })
+    return textDirection
   }
 
   /**

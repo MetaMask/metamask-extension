@@ -155,6 +155,7 @@ export default class EnsInput extends Component {
           <input
             className="ens-input__wrapper__input"
             type="text"
+            dir="auto"
             placeholder={t('recipientAddressPlaceholder')}
             onChange={this.onChange}
             onPaste={this.onPaste}

@@ -10,6 +10,7 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
 const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
+import switchDirection from '../helpers/utils/switch-direction'
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
@@ -2597,11 +2598,13 @@ function updateCurrentLocale (key) {
     return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
-        background.setCurrentLocale(key, (err) => {
-          dispatch(actions.hideLoadingIndication())
+        background.setCurrentLocale(key, (err, textDirection) => {
           if (err) {
+            dispatch(actions.hideLoadingIndication())
             return dispatch(actions.displayWarning(err.message))
           }
+          switchDirection(textDirection)
+          dispatch(actions.hideLoadingIndication())
           dispatch(actions.setCurrentLocale(key))
           dispatch(actions.setLocaleMessages(localeMessages))
         })

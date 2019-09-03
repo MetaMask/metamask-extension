@@ -36,6 +36,8 @@
     }
 
     &__time-remaining {
+      /*rtl:ignore*/
+      direction: ltr;
       color: #313A5E;
       font-size: 16px;
 
@@ -137,6 +139,8 @@
     }
 
     &__input {
+      /*rtl:ignore*/
+      direction: ltr;
       border: 1px solid $dusty-gray;
       border-radius: 4px;
       color: $mid-gray;
@@ -159,6 +163,7 @@
     &__input-arrows {
       position: absolute;
       top: 7px;
+      /*rtl:ignore*/
       right: 0px;
       width: 17px;
       height: 24px;

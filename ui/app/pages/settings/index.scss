@@ -97,6 +97,10 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -242,6 +246,14 @@
           }
         }
       }
+    }
+  }
+
+  .toggle-button {
+    /*rtl:ignore*/
+    direction: ltr;
+    [dir='rtl'] & {
+      justify-content: flex-end;
     }
   }
 }
