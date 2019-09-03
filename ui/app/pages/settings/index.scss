@@ -247,5 +247,8 @@
   .toggle-button {
     /*rtl:ignore*/
     direction: ltr;
+    [dir='rtl'] & {
+      justify-content: flex-end;
+    }
   }
 }
