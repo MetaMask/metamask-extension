@@ -102,6 +102,7 @@ const TextField = props => {
 
 TextField.defaultProps = {
   error: null,
+  dir: 'auto',
 }
 
 TextField.propTypes = {
