@@ -198,22 +198,30 @@ export function fetchBasicGasEstimates () {
 }
 
 async function fetchExternalBasicGasEstimates (dispatch) {
-  const response = await fetch('https://dev.blockscale.net/api/gasexpress.json', {
+  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
     'headers': {},
-    'referrer': 'https://dev.blockscale.net/api/',
+    'referrer': 'http://ethgasstation.info/json/',
     'referrerPolicy': 'no-referrer-when-downgrade',
     'body': null,
     'method': 'GET',
-    'mode': 'cors'}
-  )
+    'mode': 'cors',
+  })
+
   const {
-    safeLow,
-    standard: average,
-    fast,
-    fastest,
+    safeLow: safeLowTimes10,
+    average: averageTimes10,
+    fast: fastTimes10,
+    fastest: fastestTimes10,
     block_time: blockTime,
     blockNum,
   } = await response.json()
+
+  const [average, fast, fastest, safeLow] = [
+    averageTimes10,
+    fastTimes10,
+    fastestTimes10,
+    safeLowTimes10,
+  ].map(price => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
     safeLow,
@@ -260,8 +268,9 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
     'referrerPolicy': 'no-referrer-when-downgrade',
     'body': null,
     'method': 'GET',
-    'mode': 'cors'}
-  )
+    'mode': 'cors',
+  })
+
   const {
     average: averageTimes10,
     avgWait,

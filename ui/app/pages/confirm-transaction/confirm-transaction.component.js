@@ -41,11 +41,6 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
   }
 
-  getParamsTransactionId () {
-    const { match: { params: { id } = {} } } = this.props
-    return id || null
-  }
-
   componentDidMount () {
     const {
       totalUnapprovedCount = 0,
@@ -70,7 +65,8 @@ export default class ConfirmTransaction extends Component {
     if (isTokenMethodAction) {
       getTokenParams(to)
     }
-    this.props.setTransactionToConfirm(transactionId || paramsTransactionId)
+    const txId = transactionId || paramsTransactionId
+    if (txId) this.props.setTransactionToConfirm(txId)
   }
 
   componentDidUpdate (prevProps) {
