@@ -477,6 +477,10 @@ function generateBundler (opts, performBundle) {
   }
 
   if (activateSesify) {
+    // add in sesify args for better globalRef usage detection
+    Object.assign(browserifyOpts, sesify.args)
+
+    // add debugging utility
     browserifyOpts.plugin.push(['deps-dump', {
       filename: `./sesify/deps-${opts.filename}on`,
     }])
