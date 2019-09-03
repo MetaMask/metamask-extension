@@ -17,8 +17,6 @@ const fs = require('fs')
 const path = require('path')
 const manifest = require('./app/manifest.json')
 const mkdirp = require('mkdirp')
-const sass = require('gulp-sass')
-const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
@@ -213,36 +211,6 @@ gulp.task('dev:copy',
     'manifest:opera'
   )
 )
-
-function createScssBuildTask ({ src, dest, devMode, pattern }) {
-  return function () {
-    if (devMode) {
-      watch(pattern, async (event) => {
-        const stream = buildScss()
-        await endOfStream(stream)
-        livereload.changed(event.path)
-      })
-      return buildScssWithSourceMaps()
-    }
-    return buildScss()
-  }
-
-  function buildScssWithSourceMaps () {
-    return gulp.src(src)
-      .pipe(sourcemaps.init())
-      .pipe(sass().on('error', sass.logError))
-      .pipe(sourcemaps.write())
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-  }
-
-  function buildScss () {
-    return gulp.src(src)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-  }
-}
 
 gulp.task('lint-scss', function () {
   return gulp

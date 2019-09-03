@@ -43,7 +43,6 @@ async function start () {
     // Code commented out until we begin auto adding users to NewUI
     // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
     // const firstTime = Object.keys(identities).length === 0
-    const { isMascara, featureFlags = {} } = store.getState().metamask
 
     // Code commented out until we begin auto adding users to NewUI
 
@@ -51,7 +50,6 @@ async function start () {
     let deleteInjectedCss = injectCss(css)
 
     store.subscribe(() => {
-      const state = store.getState()
       deleteInjectedCss()
       css = OldMetaMaskUiCss()
       deleteInjectedCss = injectCss(css)

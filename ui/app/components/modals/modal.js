@@ -17,26 +17,6 @@ const NewAccountModal = require('./new-account-modal')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 
-const modalContainerBaseStyle = {
-  transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid #CCCFD1',
-  borderRadius: '8px',
-  backgroundColor: '#FFFFFF',
-  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
-}
-
-const modalContainerLaptopStyle = {
-  ...modalContainerBaseStyle,
-  width: '344px',
-  top: '15%',
-}
-
-const modalContainerMobileStyle = {
-  ...modalContainerBaseStyle,
-  width: '309px',
-  top: '12.5%',
-}
-
 const accountModalStyle = {
   mobileModalStyle: {
     width: '95%',
