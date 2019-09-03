@@ -52,7 +52,6 @@ export default class ConnectionsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <TextField
               type="text"
-              dir="auto"
               value={this.state.input}
               onChange={e => this.setState({ input: e.target.value })}
               fullWidth
