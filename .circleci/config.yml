@@ -11,9 +11,9 @@ workflows:
     - prep-docs:
         requires:
         - prep-deps-npm
-    - prep-scss:
-        requires:
-        - prep-deps-npm
+    # - prep-scss:
+    #     requires:
+    #     - prep-deps-npm
     - test-lint:
         requires:
         - prep-deps-npm
@@ -42,11 +42,11 @@ workflows:
     - test-integration-flat-chrome:
         requires:
         - prep-deps-npm
-        - prep-scss
+        # - prep-scss
     - test-integration-flat-firefox:
         requires:
         - prep-deps-npm
-        - prep-scss
+        # - prep-scss
     - all-tests-pass:
         requires:
         - test-lint
