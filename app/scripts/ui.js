@@ -46,14 +46,8 @@ async function start () {
 
     // Code commented out until we begin auto adding users to NewUI
 
-    let css = OldMetaMaskUiCss()
-    let deleteInjectedCss = injectCss(css)
-
-    store.subscribe(() => {
-      deleteInjectedCss()
-      css = OldMetaMaskUiCss()
-      deleteInjectedCss = injectCss(css)
-    })
+    const css = OldMetaMaskUiCss()
+    injectCss(css)
   })
 
 
