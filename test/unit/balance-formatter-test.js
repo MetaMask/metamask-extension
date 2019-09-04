@@ -1,6 +1,6 @@
 const assert = require('assert')
 const currencyFormatter = require('currency-formatter')
-const infuraConversion = require('../../ui/app/infura-conversion.json')
+const infuraConversion = require('../../old-ui/app/infura-conversion.json')
 
 describe('currencyFormatting', function () {
   it('be able to format any infura currency', function (done) {

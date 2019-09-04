@@ -17,8 +17,6 @@ const fs = require('fs')
 const path = require('path')
 const manifest = require('./app/manifest.json')
 const mkdirp = require('mkdirp')
-const sass = require('gulp-sass')
-const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
@@ -214,51 +212,6 @@ gulp.task('dev:copy',
   )
 )
 
-// scss compilation and autoprefixing tasks
-
-gulp.task('build:scss', createScssBuildTask({
-  src: 'ui/app/css/index.scss',
-  dest: 'ui/app/css/output',
-  devMode: false,
-}))
-
-gulp.task('dev:scss', createScssBuildTask({
-  src: 'ui/app/css/index.scss',
-  dest: 'ui/app/css/output',
-  devMode: true,
-  pattern: 'ui/app/**/*.scss',
-}))
-
-function createScssBuildTask ({ src, dest, devMode, pattern }) {
-  return function () {
-    if (devMode) {
-      watch(pattern, async (event) => {
-        const stream = buildScss()
-        await endOfStream(stream)
-        livereload.changed(event.path)
-      })
-      return buildScssWithSourceMaps()
-    }
-    return buildScss()
-  }
-
-  function buildScssWithSourceMaps () {
-    return gulp.src(src)
-      .pipe(sourcemaps.init())
-      .pipe(sass().on('error', sass.logError))
-      .pipe(sourcemaps.write())
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-  }
-
-  function buildScss () {
-    return gulp.src(src)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-  }
-}
-
 gulp.task('lint-scss', function () {
   return gulp
     .src('ui/app/css/itcss/**/*.scss')
@@ -371,7 +324,6 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 gulp.task('dev',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:extension:js',
       'dev:mascara:js',
@@ -384,7 +336,6 @@ gulp.task('dev',
 gulp.task('dev:extension',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:extension:js',
       'dev:copy',
@@ -396,7 +347,6 @@ gulp.task('dev:extension',
 gulp.task('dev:mascara',
   gulp.series(
     'clean',
-    'dev:scss',
     gulp.parallel(
       'dev:mascara:js',
       'dev:copy',
@@ -408,7 +358,6 @@ gulp.task('dev:mascara',
 gulp.task('build',
   gulp.series(
     'clean',
-    'build:scss',
     gulpParallel(
       'build:extension:js',
       'build:mascara:js',
@@ -420,7 +369,6 @@ gulp.task('build',
 gulp.task('build:extension',
   gulp.series(
     'clean',
-    'build:scss',
     gulp.parallel(
       'build:extension:js',
       'copy'
@@ -431,7 +379,6 @@ gulp.task('build:extension',
 gulp.task('build:mascara',
   gulp.series(
     'clean',
-    'build:scss',
     gulp.parallel(
       'build:mascara:js',
       'copy'
