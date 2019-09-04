@@ -223,6 +223,25 @@ const scriptsToExcludeFromBackgroundDevBuild = {
   'bg-libs.js': true,
 }
 
+gulp.task('manifest:testing-local', function () {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+  ], {base: './dist/'})
+
+    .pipe(jsoneditor(function (json) {
+      json.background = {
+        ...json.background,
+        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+      }
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/8889']
+      return json
+    }))
+
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+
 gulp.task('manifest:dev', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
@@ -264,7 +283,7 @@ gulp.task('test:copy',
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
     'manifest:opera',
-    'manifest:testing'
+    'manifest:testing-local'
   )
 )
 
