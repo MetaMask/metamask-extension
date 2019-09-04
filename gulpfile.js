@@ -212,7 +212,7 @@ gulp.task('manifest:testing', function () {
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
-      json.permissions = [...json.permissions, 'webRequestBlocking']
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/8889']
       return json
     }))
 

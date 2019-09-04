@@ -16,10 +16,12 @@ const requestHandler = (request, response) => {
       const { key, data } = JSON.parse(body)
 
       database[key] = data
+      response.setHeader('Access-Control-Allow-Headers', '*')
       response.end('ok')
     })
   } else if (request.method === 'GET') {
     const { key } = url.parse(request.url, true).query
+    response.setHeader('Access-Control-Allow-Headers', '*')
     response.end(JSON.stringify(database[key] || ''))
   } else {
     response.end('unknown request')
