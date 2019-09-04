@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Chế độ riêng tư"
-  },
-  "privacyModeDescription": {
-    "message": "Trang web phải yêu cầu quyền truy cập để xem thông tin tài khoản của bạn."
-  },
   "exposeAccounts": {
     "message": "Hiển thị tài khoản"
   },
@@ -28,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
-  },
-  "approvalData": {
-    "message": "Dữ liệu phê duyệt"
-  },
-  "approvalDataDescription": {
-    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
   },
   "clearApprovalData": {
     "message": "Xóa dữ liệu phê duyệt"
@@ -132,12 +111,6 @@
   },
   "confirmTransaction": {
     "message": "Xác nhận giao dịch"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continueToCoinbase": {
     "message": "Tiếp tục đến Coinbase"

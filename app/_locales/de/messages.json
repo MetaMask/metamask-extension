@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Adresse teilen"
-  },
-  "shareAddressToConnect": {
-    "message": "Deine Adresse teilen, um dich mit $1 zu verbinden?"
-  },
-  "shareAddressInfo": {
-    "message": "Das Teilen Ihrer Adresse mit $1 ermöglicht es Ihnen, mit dieser dapp zu interagieren. Diese Erlaubnis dient dazu, Ihre Privatsphäre standardmäßig zu schützen."
-  },
   "privacyModeDefault": {
     "message": "Der Datenschutzmodus ist jetzt standardmäßig aktiviert"
-  },
-  "privacyMode": {
-    "message": "Datenschutzmodus"
-  },
-  "privacyModeDescription": {
-    "message": "Websites müssen Zugriff anfordern, um Ihre Kontoinformationen anzuzeigen."
   },
   "exposeAccounts": {
     "message": "Expose Konten"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
-  },
-  "approvalData": {
-    "message": "Genehmigungsdaten"
-  },
-  "approvalDataDescription": {
-    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
   },
   "clearApprovalData": {
     "message": "Genehmigungsdaten löschen"
@@ -379,12 +358,6 @@
   },
   "connectToTrezor": {
     "message": "Mit Trezor verbinden"
-  },
-  "contactList": {
-    "message": "Kontaktliste"
-  },
-  "contactListDescription": {
-    "message": "Ihre Kontakte hinzufügen, bearbeiten, entfernen und verwalten"
   },
   "continue": {
     "message": "Weiter"

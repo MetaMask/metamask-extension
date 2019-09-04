@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Dajte naslov v skupno rabo"
-  },
-  "shareAddressToConnect": {
-    "message": "Dajte svoj naslov v skupno rabo in se povežite z $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Če svoj naslov delite z  $1 , se boste lahko povezali s to aplikacijo. S tem dovoljenjem privzeto zaščitite vašo zasebnost."
-  },
   "privacyModeDefault": {
     "message": "Zasebnostni način je zdaj privzeto omogočen"
-  },
-  "privacyMode": {
-    "message": "Zasebnostni način"
-  },
-  "privacyModeDescription": {
-    "message": "Spletne strani morajo zahtevati dovoljenje za ogled podatkov o vašem računu."
   },
   "exposeAccounts": {
     "message": "Razkrij račune"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Odobrene spletne strani uspešno počiščene."
-  },
-  "approvalData": {
-    "message": "Podatki o odobritvi"
-  },
-  "approvalDataDescription": {
-    "message": "Počistite seznam odobrenih spletnih strani, tako da bodo morale ponovno zahtevati odobritev."
   },
   "clearApprovalData": {
     "message": "Počisti podatke o odobritvi"
@@ -391,12 +370,6 @@
   },
   "connectToTrezor": {
     "message": "Poveži z Trezor"
-  },
-  "contactList": {
-    "message": "Seznam stikov"
-  },
-  "contactListDescription": {
-    "message": "Dodajte, urejajte, odstranjujte in upravljajte svoje stike"
   },
   "continue": {
     "message": "Nadaljuj"

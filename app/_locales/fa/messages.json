@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "شریک سازی آدرس"
-  },
-  "shareAddressToConnect": {
-    "message": "آدرس تان را جهت اتصال به 1$1 شریک سازید؟"
-  },
-  "shareAddressInfo": {
-    "message": "شریک سازی آدرس تان با 1$1 به شما اجازه میدهد تا با این dapp تعامل داشته باشید. این اجازه برای آنست تا حریم خصوصی تان را به شکل پیش فرض حفاظت نماید."
-  },
   "privacyModeDefault": {
     "message": "وضعیت محرمیت حالا بصورت خودکار فعال است"
-  },
-  "privacyMode": {
-    "message": "وضعیت حریم خصوصی"
-  },
-  "privacyModeDescription": {
-    "message": "وبسایت ها برای مشاهده معلومات حساب تان درخواست باید بدهند."
   },
   "exposeAccounts": {
     "message": "فاش سازی حساب ها"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "اطلاعات وبسایت تصدیق شده موفقانه حذف شد."
-  },
-  "approvalData": {
-    "message": "اطلاعات حریم خصوصی"
-  },
-  "approvalDataDescription": {
-    "message": "اطلاعات حریم خصوصی را حذف کنید تا همه وبسایت ها دسترسی به مشاهده معلومات حساب را دوباره، باید درخواست دهند."
   },
   "clearApprovalData": {
     "message": "حذف اطلاعات حریم خصوصی"
@@ -391,12 +370,6 @@
   },
   "connectToTrezor": {
     "message": "اتصال به Trezor"
-  },
-  "contactList": {
-    "message": "لیست تماس"
-  },
-  "contactListDescription": {
-    "message": "تماس های تان را اضافه، ویرایش، حذف و مدیریت کنید"
   },
   "continue": {
     "message": "ادامه"

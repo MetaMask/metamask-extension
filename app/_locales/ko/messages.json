@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "주소 공유"
-  },
-  "shareAddressToConnect": {
-    "message": "$1에 연결하기 위해 주소를 공유하시겠습니까?"
-  },
-  "shareAddressInfo": {
-    "message": "$1과 주소를 공유하면 이 dapp과 소통할 수 있게 해줍니다. 이 권한은 기본 설정으로 귀하의 개인 정보를 보호하기 위함입니다."
-  },
   "privacyModeDefault": {
     "message": "이제 프라이버시 모드가 기본 설정으로 활성화됐습니다"
-  },
-  "privacyMode": {
-    "message": "개인 정보 보호 모드"
-  },
-  "privacyModeDescription": {
-    "message": "웹 사이트는 계정 정보를 볼 수있는 액세스 권한을 요청해야합니다."
   },
   "exposeAccounts": {
     "message": "계정 노출"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
-  },
-  "approvalData": {
-    "message": "승인 데이터"
-  },
-  "approvalDataDescription": {
-    "message": "승인 된 웹 사이트 데이터를 삭제하여 모든 사이트에서 승인을 다시 요청해야합니다."
   },
   "clearApprovalData": {
     "message": "승인 데이터 삭제"
@@ -389,12 +368,6 @@
   },
   "connectToTrezor": {
     "message": "Trezor 연결"
-  },
-  "contactList": {
-    "message": "연락처 목록"
-  },
-  "contactListDescription": {
-    "message": "계정을 추가, 수정, 제거 및 관리하세요"
   },
   "continue": {
     "message": "계속"

@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Mòd Privacy"
-  },
-  "privacyModeDescription": {
-    "message": "Sou sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ou."
-  },
   "exposeAccounts": {
     "message": "Ekspoze Kont"
   },
@@ -20,20 +14,8 @@
   "clearApprovalDataSuccess": {
     "message": "Done sou sit wèb apwouve yo te klarifye avèk siksè."
   },
-  "approvalData": {
-    "message": "Done sou vi prive"
-  },
-  "approvalDataDescription": {
-    "message": "Done sou vi prive klè pou tout sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ankò."
-  },
   "clearApprovalData": {
     "message": "Klè Done sou vi prive"
-  },
-  "providerAPIRequest": {
-    "message": "Ethereum API Mande"
-  },
-  "reviewProviderRequest": {
-    "message": "Tanpri revize sa API demann Ethereum."
   },
   "providerRequestInfo": {
     "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ethereum ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
@@ -279,9 +261,6 @@
   },
   "createDen": {
     "message": "Kreye"
-  },
-  "currentConversion": {
-    "message": "Konvèsyon aktyèl"
   },
   "currentLanguage": {
     "message": "Lang Aktyèl"
@@ -712,9 +691,6 @@
   },
   "newRecipient": {
     "message": "Nouvo Benefisyè"
-  },
-  "newRPC": {
-    "message": "Nouvo RPC URL"
   },
   "next": {
     "message": "Aprè sa"
@@ -1226,9 +1202,6 @@
   },
   "unknown": {
     "message": "Enkoni"
-  },
-  "unknownFunction": {
-    "message": "Fonksyon enkoni"
   },
   "unknownNetwork": {
     "message": "Rezo Prive Enkoni"

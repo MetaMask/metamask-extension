@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "分享地址"
-  },
-  "shareAddressToConnect": {
-    "message": "是否分享地址，连接 $1 ？"
-  },
-  "shareAddressInfo": {
-    "message": "向 $1 分享地址可以与 dapp 建立交互。该权限为默认设置，用于保护您的个人隐私。"
-  },
   "privacyModeDefault": {
     "message": "现已默认启用隐私模式"
-  },
-  "privacyMode": {
-    "message": "隐私模式"
-  },
-  "privacyModeDescription": {
-    "message": "网站必须请求访问权限才能查看您的帐户信息。"
   },
   "exposeAccounts": {
     "message": "公开账户"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "已批准的网站数据已成功清除。"
-  },
-  "approvalData": {
-    "message": "审批数据"
-  },
-  "approvalDataDescription": {
-    "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
   },
   "clearApprovalData": {
     "message": "清除批准数据"
@@ -388,12 +367,6 @@
   },
   "connectToTrezor": {
     "message": "连接 Trezor"
-  },
-  "contactList": {
-    "message": "联系人列表"
-  },
-  "contactListDescription": {
-    "message": "添加、编辑、删除和管理您的联系人"
   },
   "continue": {
     "message": "继续"

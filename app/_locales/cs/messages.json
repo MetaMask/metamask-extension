@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Režim súkromia"
-  },
-  "privacyModeDescription": {
-    "message": "Webové stránky musia požiadať o prístup k zobrazeniu informácií o vašom účte."
-  },
   "exposeAccounts": {
     "message": "Vystavte účty"
   },
@@ -28,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
-  },
-  "approvalData": {
-    "message": "Údaje o schválení"
-  },
-  "approvalDataDescription": {
-    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
   },
   "clearApprovalData": {
     "message": "Jasné údaje o schválení"
@@ -171,12 +150,6 @@
   },
   "connectingToUnknown": {
     "message": "Připojuji se k neznámé síti"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Pokračovat"

@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "தனியுரிமை முறை"
-  },
-  "privacyModeDescription": {
-    "message": "உங்கள் கணக்குத் தகவலை பார்வையிட வலைத்தளங்கள் அணுகலைக் கோர வேண்டும்."
-  },
   "exposeAccounts": {
     "message": "கணக்குகளை அம்பலப்படுத்துங்கள்"
   },
@@ -20,12 +14,6 @@
   "clearApprovalDataSuccess": {
     "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவு வெற்றிகரமாக அழிக்கப்பட்டது."
   },
-  "approvalData": {
-    "message": "ஒப்புதல் தரவு"
-  },
-  "approvalDataDescription": {
-    "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவை அழிக்கவும், அனைத்து தளங்களும் ஒப்புதல் மீண்டும் கோர வேண்டும்."
-  },
   "clearApprovalData": {
     "message": "ஒப்புதல் தரவை அழி"
   },
@@ -34,12 +22,6 @@
   },
   "reject": {
     "message": "நிராகரி"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API கோரிக்கை"
-  },
-  "reviewProviderRequest": {
-    "message": "இந்த வலை 3 API கோரிக்கையை மதிப்பாய்வு செய்யவும்."
   },
   "providerRequestInfo": {
     "message": "கீழே பட்டியலிடப்பட்டுள்ள டொமைன் Web3 ஏபிஐ அணுகலைக் கோருவதற்கு முயற்சிக்கிறது, எனவே இது Ethereum blockchain உடன் தொடர்பு கொள்ள முடியும். Web3 அணுகுமுறையை அங்கீகரிப்பதற்கு முன் சரியான தளத்தில் இருப்பதை எப்போதும் இருமுறை சரிபார்க்கவும்."
@@ -215,9 +197,6 @@
   "crypto": {
     "message": "கிரிப்டோ",
     "description": "பரிமாற்ற வகை (கிரிப்டோசுர்ரென்சிஸ்)"
-  },
-  "currentConversion": {
-    "message": "தற்போதைய மாற்றம்"
   },
   "currentNetwork": {
     "message": "தற்போதைய நெட்வொர்க்"
@@ -568,9 +547,6 @@
   "newRecipient": {
     "message": "புதிய பெறுநர்"
   },
-  "newRPC": {
-    "message": "புதிய RPC URL"
-  },
   "next": {
     "message": "அடுத்த"
   },
@@ -720,12 +696,6 @@
   },
   "save": {
     "message": "சேமி"
-  },
-  "reprice_title": {
-    "message": "ரெப்ரிஸ் பரிவர்த்தனை"
-  },
-  "reprice_subtitle": {
-    "message": "உங்கள் பரிவர்த்தனைகளை மேலெழுதும் முயற்சியை அதிகரிக்க உங்கள் எரிவாயு விலையை அதிகரிக்கவும்"
   },
   "saveAsFile": {
     "message": "கோப்பாக சேமிக்கவும்",

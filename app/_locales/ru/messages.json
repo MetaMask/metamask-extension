@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Режим конфиденциальности"
-  },
-  "privacyModeDescription": {
-    "message": "Веб-сайты должны запрашивать доступ для просмотра информации об учетной записи."
-  },
   "exposeAccounts": {
     "message": "Открыть счета"
   },
@@ -28,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Утвержденные данные веб-сайта успешно удалены."
-  },
-  "approvalData": {
-    "message": "Данные об утверждении"
-  },
-  "approvalDataDescription": {
-    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
   },
   "clearApprovalData": {
     "message": "Четкие данные об утверждении"
@@ -174,12 +153,6 @@
   },
   "connectingToUnknown": {
     "message": "Соединение с неизвестной сетью"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Продолжить"

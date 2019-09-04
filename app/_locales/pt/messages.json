@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Modo de privacidade"
-  },
-  "privacyModeDescription": {
-    "message": "Os sites devem solicitar acesso para visualizar as informações da sua conta."
-  },
   "exposeAccounts": {
     "message": "Expor contas"
   },
@@ -28,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Dados aprovados do website foram limpos com sucesso."
-  },
-  "approvalData": {
-    "message": "Dados de aprovação"
-  },
-  "approvalDataDescription": {
-    "message": "Limpe os dados aprovados do website para que todos os sites solicitem aprovação novamente."
   },
   "clearApprovalData": {
     "message": "Limpar dados de aprovação"
@@ -150,12 +129,6 @@
   },
   "confirmTransaction": {
     "message": "Confirmar Transação"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Continuar"

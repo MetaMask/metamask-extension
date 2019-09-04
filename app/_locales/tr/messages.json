@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Gizlilik modu"
-  },
-  "privacyModeDescription": {
-    "message": "Web siteleri, hesap bilgilerinizi görmek için erişim istemek zorundadır."
-  },
   "exposeAccounts": {
     "message": "Hesapları Açığa Çıkar"
   },
@@ -28,12 +13,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Onaylanan web sitesi verileri başarıyla temizlendi."
-  },
-  "approvalData": {
-    "message": "Onay Verileri"
-  },
-  "approvalDataDescription": {
-    "message": "Onaylanan web sitesi verilerini temizle, tüm sitelerin tekrar onay isteğinde bulunması gerekir."
   },
   "clearApprovalData": {
     "message": "Onay verilerini temizle"
@@ -174,12 +153,6 @@
   },
   "connectingToUnknown": {
     "message": "Bilinmeyen Ağa bağlanıyor"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Devam et"

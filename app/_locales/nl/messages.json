@@ -1,19 +1,4 @@
 {
-  "shareAddress": {
-    "message": "Share Address"
-  },
-  "shareAddressToConnect": {
-    "message": "Share your address to connect to $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
-  },
-  "privacyMode": {
-    "message": "Privacy-modus"
-  },
-  "privacyModeDescription": {
-    "message": "Websites moeten toegang vragen om uw accountgegevens te bekijken."
-  },
   "exposeDescription": {
     "message": "Stel accounts vrij op de huidige website. Handig voor legacy dapps."
   },
@@ -25,12 +10,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Goedgekeurde websitegegevens zijn met succes gewist."
-  },
-  "approvalData": {
-    "message": "Goedkeuringsgegevens"
-  },
-  "approvalDataDescription": {
-    "message": "Goedgekeurde websitegegevens wissen zodat alle sites opnieuw goedkeuring moeten aanvragen."
   },
   "clearApprovalData": {
     "message": "Gegevens over goedkeuring wissen"
@@ -144,12 +123,6 @@
   },
   "confirmTransaction": {
     "message": "Bevestig transactie"
-  },
-  "contactList": {
-    "message": "Contact List"
-  },
-  "contactListDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Doorgaan met"

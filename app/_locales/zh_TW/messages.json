@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "分享位址"
-  },
-  "shareAddressToConnect": {
-    "message": "分享你的位址來連接到 $1？"
-  },
-  "shareAddressInfo": {
-    "message": "和 $1 分享位址能讓你與此 dapp 互動。此許可是預設來保護你的隱私。"
-  },
   "privacyModeDefault": {
     "message": "隱私模式現已根據預設開啟"
-  },
-  "privacyMode": {
-    "message": "隱私模式"
-  },
-  "privacyModeDescription": {
-    "message": "網站必須請求訪問權限才能查看您的帳戶資訊"
   },
   "exposeAccounts": {
     "message": "公開賬戶"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "已批准的網站紀錄已成功清除。"
-  },
-  "approvalData": {
-    "message": "審核紀錄"
-  },
-  "approvalDataDescription": {
-    "message": "清除之前已批准過的網站審核紀錄，所有網站都必須再次申請"
   },
   "clearApprovalData": {
     "message": "清除批准數據"
@@ -388,12 +367,6 @@
   },
   "connectToTrezor": {
     "message": "連線到 Trezor"
-  },
-  "contactList": {
-    "message": "聯絡清單"
-  },
-  "contactListDescription": {
-    "message": "新增、編輯、移除、並管理你的聯絡資訊"
   },
   "continue": {
     "message": "繼續"

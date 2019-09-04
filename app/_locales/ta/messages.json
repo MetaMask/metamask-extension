@@ -1,0 +1,190 @@
+{
+  "reject": {
+    "message": "நிராகரி"
+  },
+  "about": {
+    "message": "அறிமுகம்"
+  },
+  "accept": {
+    "message": "ஏற்கிறேன்"
+  },
+  "account": {
+    "message": "கணக்கு"
+  },
+  "add": {
+    "message": "சேர்"
+  },
+  "address": {
+    "message": "முகவரி"
+  },
+  "advanced": {
+    "message": "மேம்பட்டவை"
+  },
+  "available": {
+    "message": "மீதமுள்ளது:"
+  },
+  "back": {
+    "message": "முந்தைய பக்கம்"
+  },
+  "basic": {
+    "message": "அடிப்படை"
+  },
+  "off": {
+    "message": "ஆஃப்"
+  },
+  "ok": {
+    "message": "சரி"
+  },
+  "on": {
+    "message": "இயக்கு"
+  },
+  "cancel": {
+    "message": "ரத்து செய்"
+  },
+  "close": {
+    "message": "மூடு"
+  },
+  "confirm": {
+    "message": "உறுதிப்படுத்து"
+  },
+  "connect": {
+    "message": "இணை"
+  },
+  "connecting": {
+    "message": "இணைக்கிறது..."
+  },
+  "continue": {
+    "message": "தொடர்க"
+  },
+  "copy": {
+    "message": "நகலெடு"
+  },
+  "copyToClipboard": {
+    "message": "கிளிப்போர்டுக்கு நகலெடு"
+  },
+  "create": {
+    "message": "உருவாக்கு"
+  },
+  "createDen": {
+    "message": "உருவாக்கு"
+  },
+  "customize": {
+    "message": "தனிப்பயனாக்கு"
+  },
+  "delete": {
+    "message": "நீக்கு"
+  },
+  "details": {
+    "message": "விவரங்கள்"
+  },
+  "dismiss": {
+    "message": "நிராகரி"
+  },
+  "done": {
+    "message": "முடிந்தது"
+  },
+  "edit": {
+    "message": "திருத்து"
+  },
+  "fast": {
+    "message": "வேகமான"
+  },
+  "fastest": {
+    "message": "அதிகபட்ச வேகம்"
+  },
+  "forgetDevice": {
+    "message": "இந்தச் சாதனத்தை அகற்று"
+  },
+  "getStarted": {
+    "message": "தொடங்குக"
+  },
+  "hide": {
+    "message": "மறை"
+  },
+  "history": {
+    "message": "வரலாறு"
+  },
+  "import": {
+    "message": "இறக்குமதி செய்",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "இறக்குமதியானது",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "ஏற்றுகிறது…"
+  },
+  "min": {
+    "message": "குறைந்தபட்சம்"
+  },
+  "next": {
+    "message": "அடுத்தது"
+  },
+  "notFound": {
+    "message": "கண்டறிய முடியவில்லை"
+  },
+  "origin": {
+    "message": "அசல்"
+  },
+  "password": {
+    "message": "கடவுச்சொல்"
+  },
+  "queue": {
+    "message": "வரிசை"
+  },
+  "reset": {
+    "message": "மீட்டமை"
+  },
+  "restore": {
+    "message": "மீட்டமை"
+  },
+  "remove": {
+    "message": "அகற்று"
+  },
+  "removeAccount": {
+    "message": "கணக்கை அகற்றுக"
+  },
+  "save": {
+    "message": "சேமி"
+  },
+  "slow": {
+    "message": "மெதுவான"
+  },
+  "search": {
+    "message": "தேடல்"
+  },
+  "select": {
+    "message": "தேர்ந்தெடு"
+  },
+  "send": {
+    "message": "அனுப்பு"
+  },
+  "settings": {
+    "message": "அமைப்புகள்"
+  },
+  "status": {
+    "message": "நிலை"
+  },
+  "submit": {
+    "message": "சமர்ப்பி"
+  },
+  "tryAgain": {
+    "message": "மீண்டும் முயல்க"
+  },
+  "unknown": {
+    "message": "தெரியவில்லை"
+  },
+  "unlock": {
+    "message": "பூட்டைத் திற"
+  },
+  "userName": {
+    "message": "பயனர்பெயர்"
+  },
+  "viewAccount": {
+    "message": "கணக்கைப் பார்"
+  },
+  "warning": {
+    "message": "எச்சரிக்கை"
+  }
+}

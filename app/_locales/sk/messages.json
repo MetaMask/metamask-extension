@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Zdieľať adresu"
-  },
-  "shareAddressToConnect": {
-    "message": "Chcete zdieľať svoju adresu a pripojiť sa k $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Zdieľanie adresy s $1 vám umožní komunikovať s touto Dapp. Toto povolenie slúži na ochranu vášho súkromia. Je prednastavené automaticky."
-  },
   "privacyModeDefault": {
     "message": "Režim súkromia je povolený. Je prednastavený automaticky"
-  },
-  "privacyMode": {
-    "message": "Režim súkromia"
-  },
-  "privacyModeDescription": {
-    "message": "Webové stránky musia požiadať o prístup k zobrazeniu informácií o vašom účte."
   },
   "exposeAccounts": {
     "message": "Vystavte účty"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
-  },
-  "approvalData": {
-    "message": "Údaje o schválení"
-  },
-  "approvalDataDescription": {
-    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
   },
   "clearApprovalData": {
     "message": "Jasné údaje o schválení"
@@ -382,12 +361,6 @@
   },
   "connectToTrezor": {
     "message": "Pripojenie k Trezoru"
-  },
-  "contactList": {
-    "message": "Zoznam kontaktov"
-  },
-  "contactListDescription": {
-    "message": "Pridať, upraviť, odstrániť a spravovať kontakty"
   },
   "continue": {
     "message": "Pokračovat"

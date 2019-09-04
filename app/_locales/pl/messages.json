@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Udostępnij adres"
-  },
-  "shareAddressToConnect": {
-    "message": "Udostępnić adres do podłączonego portfela $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Udostępnianie adresu portfelowi $1 umożliwi korzystanie z dapp. To uprawnienie ma domyślnie chronić Twoją prywatność."
-  },
   "privacyModeDefault": {
     "message": "Tryb prywatny jest domyślnie włączony"
-  },
-  "privacyMode": {
-    "message": "Tryb prywatny"
-  },
-  "privacyModeDescription": {
-    "message": "Strony internetowe muszą zażądać dostępu do informacji o Twoim koncie."
   },
   "exposeAccounts": {
     "message": "Ujawnij konta"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Usunięto dane dotyczące zatwierdzonej strony internetowej."
-  },
-  "approvalData": {
-    "message": "Dane poufne"
-  },
-  "approvalDataDescription": {
-    "message": "Usuń dane poufne, aby wszystkie strony internetowe musiały ponownie zażądać dostępu do informacji o koncie."
   },
   "clearApprovalData": {
     "message": "Usuń dane poufne"
@@ -388,12 +367,6 @@
   },
   "connectToTrezor": {
     "message": "Połącz z Trezor"
-  },
-  "contactList": {
-    "message": "Lista kontaktów"
-  },
-  "contactListDescription": {
-    "message": "Dodawaj, edytuj, usuwaj i zarządzaj swoimi kontaktami"
   },
   "continue": {
     "message": "Kontynuuj"

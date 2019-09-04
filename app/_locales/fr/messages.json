@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Partager l'adresse"
-  },
-  "shareAddressToConnect": {
-    "message": "Partager votre adresse pour vous connecter à $1 ?"
-  },
-  "shareAddressInfo": {
-    "message": "Partager votre adresse avec $1 vous permettra d'interagir avec cette application. Cette autorisation a pour but de protéger votre confidentialité par défaut."
-  },
   "privacyModeDefault": {
     "message": "Le mode conversation privée est maintenant activé par défaut"
-  },
-  "privacyMode": {
-    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
-  },
-  "privacyModeDescription": {
-    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
   },
   "exposeAccounts": {
     "message": "Exposer les comptes"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Les données de site Web approuvées ont été supprimées."
-  },
-  "approvalData": {
-    "message": "Données d'approbation"
-  },
-  "approvalDataDescription": {
-    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
   },
   "clearApprovalData": {
     "message": "Effacer les données d'approbation"
@@ -379,12 +358,6 @@
   },
   "connectToTrezor": {
     "message": "Connecter un Trezor"
-  },
-  "contactList": {
-    "message": "Liste de contacts"
-  },
-  "contactListDescription": {
-    "message": "Ajoutez, modifiez, supprimez et gérez vos contacts"
   },
   "continue": {
     "message": "Continuer"

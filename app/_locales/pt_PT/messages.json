@@ -1,0 +1,231 @@
+{
+  "reject": {
+    "message": "Rejeitar"
+  },
+  "about": {
+    "message": "Acerca de"
+  },
+  "accept": {
+    "message": "Aceitar"
+  },
+  "account": {
+    "message": "Conta"
+  },
+  "add": {
+    "message": "Adicionar"
+  },
+  "address": {
+    "message": "Endereço"
+  },
+  "advanced": {
+    "message": "Avançadas"
+  },
+  "amount": {
+    "message": "Quantia"
+  },
+  "available": {
+    "message": "Disponível"
+  },
+  "back": {
+    "message": "Anterior"
+  },
+  "basic": {
+    "message": "Básico"
+  },
+  "off": {
+    "message": "Desativado"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Ativado"
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "close": {
+    "message": "Fechar"
+  },
+  "confirm": {
+    "message": "Confirmar"
+  },
+  "connect": {
+    "message": "Ligar"
+  },
+  "connecting": {
+    "message": "A ligar..."
+  },
+  "continue": {
+    "message": "Continuar"
+  },
+  "copiedExclamation": {
+    "message": "Copiado!"
+  },
+  "copy": {
+    "message": "Copiar"
+  },
+  "copyToClipboard": {
+    "message": "Copiar para a área de transferência"
+  },
+  "create": {
+    "message": "Criar"
+  },
+  "createDen": {
+    "message": "Criar"
+  },
+  "customize": {
+    "message": "Personalizar"
+  },
+  "delete": {
+    "message": "Eliminar"
+  },
+  "deposit": {
+    "message": "Depósito"
+  },
+  "details": {
+    "message": "Detalhes"
+  },
+  "dismiss": {
+    "message": "Ignorar"
+  },
+  "done": {
+    "message": "Concluído"
+  },
+  "edit": {
+    "message": "Editar"
+  },
+  "endOfFlowMessage9": {
+    "message": "Obtenha mais informações."
+  },
+  "fast": {
+    "message": "Rápido"
+  },
+  "fastest": {
+    "message": "A mais rápida"
+  },
+  "forgetDevice": {
+    "message": "Esquecer este dispositivo"
+  },
+  "getStarted": {
+    "message": "Começar"
+  },
+  "here": {
+    "message": "aqui",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "history": {
+    "message": "Histórico"
+  },
+  "import": {
+    "message": "Importar",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "Importado",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "learnMore": {
+    "message": "Aprenda mais"
+  },
+  "loading": {
+    "message": "A carregar..."
+  },
+  "min": {
+    "message": "Mínimo"
+  },
+  "next": {
+    "message": "Seguinte"
+  },
+  "notFound": {
+    "message": "Não encontrado"
+  },
+  "origin": {
+    "message": "Origem"
+  },
+  "password": {
+    "message": "Palavra-passe"
+  },
+  "privacyMsg": {
+    "message": "Política de Privacidade"
+  },
+  "qrCode": {
+    "message": "Mostre o código QR"
+  },
+  "queue": {
+    "message": "Fila"
+  },
+  "reset": {
+    "message": "Repor"
+  },
+  "restore": {
+    "message": "Restaurar"
+  },
+  "remove": {
+    "message": "Remover"
+  },
+  "removeAccount": {
+    "message": "Remover conta"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "slow": {
+    "message": "Lento"
+  },
+  "saveAsFile": {
+    "message": "Gravar como Ficheiro",
+    "description": "Account export process"
+  },
+  "search": {
+    "message": "Pesquisar"
+  },
+  "select": {
+    "message": "Selecionar"
+  },
+  "send": {
+    "message": "Enviar"
+  },
+  "settings": {
+    "message": "Definições"
+  },
+  "showQRCode": {
+    "message": "Mostre o código QR"
+  },
+  "status": {
+    "message": "Estado"
+  },
+  "submit": {
+    "message": "Submeter"
+  },
+  "tips": {
+    "message": "Doações"
+  },
+  "tryAgain": {
+    "message": "Tentar novamente"
+  },
+  "unavailable": {
+    "message": "Indisponível"
+  },
+  "unknown": {
+    "message": "Desconhecido"
+  },
+  "unlock": {
+    "message": "Desbloquear"
+  },
+  "userName": {
+    "message": "Nome de utilizador"
+  },
+  "viewAccount": {
+    "message": "Ver Conta"
+  },
+  "warning": {
+    "message": "Aviso"
+  },
+  "welcomeBack": {
+    "message": "Bem-vindo de volta!"
+  }
+}

@@ -1,21 +1,6 @@
 {
-  "shareAddress": {
-    "message": "Condividi indirizzo"
-  },
-  "shareAddressToConnect": {
-    "message": "Condividere il tuo indirizzo per connetterti a $1?"
-  },
-  "shareAddressInfo": {
-    "message": "Condividere il tuo indirizzo con $1 ti permetterà di interagire con questo dapp. Questo permesso è per proteggere la tua privacy per impostazione predefinita."
-  },
   "privacyModeDefault": {
     "message": "La modalità privacy è ora abilitata per impostazione predefinita"
-  },
-  "privacyMode": {
-    "message": "Modalità privacy"
-  },
-  "privacyModeDescription": {
-    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
   },
   "exposeAccounts": {
     "message": "Esponi Accounts"
@@ -37,12 +22,6 @@
   },
   "clearApprovalDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
-  },
-  "approvalData": {
-    "message": "Dati di approvazione"
-  },
-  "approvalDataDescription": {
-    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
   },
   "clearApprovalData": {
     "message": "Cancella i dati di approvazione"
@@ -370,12 +349,6 @@
   },
   "connectToTrezor": {
     "message": "Connettersi al Trezor"
-  },
-  "contactList": {
-    "message": "Elenco contatti"
-  },
-  "contactListDescription": {
-    "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
   },
   "continue": {
     "message": "Continua"
