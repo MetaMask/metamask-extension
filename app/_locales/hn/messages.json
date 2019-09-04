@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "गोपनीयता मोड"
+  },
+  "privacyModeDescription": {
+    "message": "वेबसाइटों को आपकी खाता जानकारी देखने के लिए पहुंच का अनुरोध करना होगा।"
+  },
   "exposeAccounts": {
     "message": "खातों का पर्दाफाश करें"
   },
@@ -13,6 +19,12 @@
   },
   "clearApprovalDataSuccess": {
     "message": "स्वीकृत वेबसाइट डेटा सफलतापूर्वक मंजूरी दे दी।"
+  },
+  "approvalData": {
+    "message": "स्वीकृति डेटा"
+  },
+  "approvalDataDescription": {
+    "message": "अनुमोदित वेबसाइट डेटा साफ़ करें ताकि सभी साइटों को फिर से अनुमोदन का अनुरोध करना होगा।"
   },
   "clearApprovalData": {
     "message": "अनुमोदन डेटा साफ़ करें"

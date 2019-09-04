@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "தனியுரிமை முறை"
+  },
+  "privacyModeDescription": {
+    "message": "உங்கள் கணக்குத் தகவலை பார்வையிட வலைத்தளங்கள் அணுகலைக் கோர வேண்டும்."
+  },
   "exposeAccounts": {
     "message": "கணக்குகளை அம்பலப்படுத்துங்கள்"
   },
@@ -13,6 +19,12 @@
   },
   "clearApprovalDataSuccess": {
     "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவு வெற்றிகரமாக அழிக்கப்பட்டது."
+  },
+  "approvalData": {
+    "message": "ஒப்புதல் தரவு"
+  },
+  "approvalDataDescription": {
+    "message": "அங்கீகரிக்கப்பட்ட வலைத்தள தரவை அழிக்கவும், அனைத்து தளங்களும் ஒப்புதல் மீண்டும் கோர வேண்டும்."
   },
   "clearApprovalData": {
     "message": "ஒப்புதல் தரவை அழி"

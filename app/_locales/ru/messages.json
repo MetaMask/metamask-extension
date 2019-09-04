@@ -1,4 +1,19 @@
 {
+  "shareAddress": {
+    "message": "Share Address"
+  },
+  "shareAddressToConnect": {
+    "message": "Share your address to connect to $1?"
+  },
+  "shareAddressInfo": {
+    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
+  },
+  "privacyMode": {
+    "message": "Режим конфиденциальности"
+  },
+  "privacyModeDescription": {
+    "message": "Веб-сайты должны запрашивать доступ для просмотра информации об учетной записи."
+  },
   "exposeAccounts": {
     "message": "Открыть счета"
   },
@@ -14,20 +29,17 @@
   "clearApprovalDataSuccess": {
     "message": "Утвержденные данные веб-сайта успешно удалены."
   },
+  "approvalData": {
+    "message": "Данные об утверждении"
+  },
+  "approvalDataDescription": {
+    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
+  },
   "clearApprovalData": {
     "message": "Четкие данные об утверждении"
   },
-  "approve": {
-    "message": "Одобрить"
-  },
   "reject": {
     "message": "Отклонить"
-  },
-  "providerAPIRequest": {
-    "message": "Запрос API Web3"
-  },
-  "reviewProviderRequest": {
-    "message": "Просмотрите этот запрос API Ethereum."
   },
   "providerRequestInfo": {
     "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
@@ -66,9 +78,8 @@
     "message": "Расширение браузера для Ethereum",
     "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+  "approve": {
+    "message": "Одобрить"
   },
   "approved": {
     "message": "Одобрена"
@@ -93,9 +104,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Недостаточный баланс для текущего объема газа"
-  },
-  "beta": {
-    "message": "BETA"
   },
   "betweenMinAndMax": {
     "message": "должно быть больше или равно $1 и меньше или равно $2.",
@@ -152,6 +160,27 @@
   "confirmTransaction": {
     "message": "Подтвердить транзакцию"
   },
+  "connectingToKovan": {
+    "message": "Соединение с тестовой сетью Kovan"
+  },
+  "connectingToMainnet": {
+    "message": "Соединение с основной сетью Ethereum"
+  },
+  "connectingToRopsten": {
+    "message": "Соединение с тестовой сетью Ropsten"
+  },
+  "connectingToRinkeby": {
+    "message": "Соединение с тестовой сетью Rinkeby"
+  },
+  "connectingToUnknown": {
+    "message": "Соединение с неизвестной сетью"
+  },
+  "contactList": {
+    "message": "Contact List"
+  },
+  "contactListDescription": {
+    "message": "Add, edit, remove, and manage your contacts"
+  },
   "continue": {
     "message": "Продолжить"
   },
@@ -203,9 +232,6 @@
   "crypto": {
     "message": "Криптовалюта",
     "description": "Exchange type (cryptocurrencies)"
-  },
-  "currentConversion": {
-    "message": "Текущая конвертация"
   },
   "currentNetwork": {
     "message": "Текущая сеть"
@@ -416,6 +442,9 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "info": {
+    "message": "Информация"
+  },
   "infoHelp": {
     "message": "Информация и помощь"
   },
@@ -484,9 +513,6 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "localhost": {
-    "message": "Localhost 8545"
-  },
   "login": {
     "message": "Вход"
   },
@@ -547,11 +573,11 @@
   "newPassword": {
     "message": "Новый пароль (мин. 8 символов)"
   },
+  "newPassword8Chars": {
+    "message": "Новый пароль (мин. 8 символов)"
+  },
   "newRecipient": {
     "message": "Новый получатель"
-  },
-  "newRPC": {
-    "message": "Новый RPC URL"
   },
   "next": {
     "message": "Далее"
@@ -576,6 +602,9 @@
   },
   "oldUIMessage": {
     "message": "Вы вернулись к старой версии интерфейса пользователя. Вы можете переключиться на новую с помощью опции выпадающего меню в правом верхнем углу."
+  },
+  "onlySendToEtherAddress": {
+    "message": "Отправляйте ETH только на Ethereum адреса."
   },
   "or": {
     "message": "или",
@@ -660,9 +689,6 @@
   "retryWithMoreGas": {
     "message": "Повторите попытку с большей ценой за газRetry with a higher gas price here"
   },
-  "walletSeed": {
-    "message": "Ключевая фраза кошелька"
-  },
   "revealSeedWords": {
     "message": "Показать ключевую фразу"
   },
@@ -678,23 +704,8 @@
   "ropsten": {
     "message": "Тестовая сеть Ropsten"
   },
-  "currentRpc": {
-    "message": "Current RPC"
-  },
-  "connectingToMainnet": {
-    "message": "Соединение с основной сетью Ethereum"
-  },
-  "connectingToRopsten": {
-    "message": "Соединение с тестовой сетью Ropsten"
-  },
-  "connectingToKovan": {
-    "message": "Соединение с тестовой сетью Kovan"
-  },
-  "connectingToRinkeby": {
-    "message": "Соединение с тестовой сетью Rinkeby"
-  },
-  "connectingToUnknown": {
-    "message": "Соединение с неизвестной сетью"
+  "rpc": {
+    "message": "Пользовательский RPC"
   },
   "sampleAccountName": {
     "message": "Например, Мой новый счет",
@@ -715,9 +726,6 @@
   },
   "secretPhrase": {
     "message": "Введите вашу ключевую фразу из 12 слов, чтобы восстановить кошелек."
-  },
-  "newPassword8Chars": {
-    "message": "Новый пароль (мин. 8 символов)"
   },
   "seedPhraseReq": {
     "message": "ключевые фразы имеют длину 12 слов"
@@ -743,9 +751,6 @@
   "sendTokens": {
     "message": "Отправить токены"
   },
-  "onlySendToEtherAddress": {
-    "message": "Отправляйте ETH только на Ethereum адреса."
-  },
   "searchTokens": {
     "message": "Поиск токенов"
   },
@@ -754,9 +759,6 @@
   },
   "settings": {
     "message": "Настройки"
-  },
-  "info": {
-    "message": "Информация"
   },
   "shapeshiftBuy": {
     "message": "Купить через Shapeshift"
@@ -769,6 +771,9 @@
   },
   "sign": {
     "message": "Подпись"
+  },
+  "signatureRequest": {
+    "message": "Запрос подписи"
   },
   "signed": {
     "message": "Подписана"
@@ -916,6 +921,9 @@
   },
   "visitWebSite": {
     "message": "Перейти на наш сайт"
+  },
+  "walletSeed": {
+    "message": "Ключевая фраза кошелька"
   },
   "warning": {
     "message": "Предупреждение"

@@ -1,4 +1,22 @@
 {
+  "shareAddress": {
+    "message": "Condividi indirizzo"
+  },
+  "shareAddressToConnect": {
+    "message": "Condividere il tuo indirizzo per connetterti a $1?"
+  },
+  "shareAddressInfo": {
+    "message": "Condividere il tuo indirizzo con $1 ti permetterà di interagire con questo dapp. Questo permesso è per proteggere la tua privacy per impostazione predefinita."
+  },
+  "privacyModeDefault": {
+    "message": "La modalità privacy è ora abilitata per impostazione predefinita"
+  },
+  "privacyMode": {
+    "message": "Modalità privacy"
+  },
+  "privacyModeDescription": {
+    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
+  },
   "exposeAccounts": {
     "message": "Esponi Accounts"
   },
@@ -14,35 +32,20 @@
   "confirmClear": {
     "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },
-  "connections": {
-    "message": "Connessioni"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Siti autorizzati ad accedere ai tuoi accounts"
-  },
-  "addSite": {
-    "message": "Aggiungi Sito"
-  },
-  "addSiteDescription": {
-    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
-  },
-  "connected": {
-    "message": "Connesso"
-  },
-  "connectedDescription": {
-    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
-  },
-  "privacyModeDefault": {
-    "message": "La Modalità Privacy è attiva per impostazione predefinita"
-  },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
   "clearApprovalDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
   },
+  "approvalData": {
+    "message": "Dati di approvazione"
+  },
+  "approvalDataDescription": {
+    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
+  },
   "clearApprovalData": {
-    "message": "Rimuovi tutti i siti"
+    "message": "Cancella i dati di approvazione"
   },
   "reject": {
     "message": "Annulla"
@@ -71,9 +74,6 @@
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
-  "account": {
-    "message": "Account"
-  },
   "accountDetails": {
     "message": "Dettagli Account"
   },
@@ -99,7 +99,7 @@
     "message": "Aggiungi Rete"
   },
   "addRecipient": {
-    "message": "Aggiungi Destinatario"
+    "message": "Aggiungi destinatario"
   },
   "addressBook": {
     "message": "Rubrica"
@@ -120,7 +120,7 @@
     "message": "Aggiungi alla rubrica"
   },
   "addToAddressBookModalPlaceholder": {
-    "message": "es. John D."
+    "message": "Ad esempio, John D."
   },
   "addAlias": {
     "message": "Aggiungi alias"
@@ -160,20 +160,13 @@
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
-    "description": "La descrizione dell'applicazione"
-  },
-  "appName": {
-    "message": "MetaMask",
-    "description": "Il nome dell'applicazione"
+    "description": "The description of the application"
   },
   "approve": {
     "message": "Approva"
   },
   "approved": {
     "message": "Approvato"
-  },
-  "asset": {
-    "message": "Asset"
   },
   "attemptingConnect": {
     "message": "Tentativo di connessione alla blockchain."
@@ -203,16 +196,16 @@
     "message": "Indietro"
   },
   "backToAll": {
-    "message": "Torna a Tutti"
+    "message": "Torna a \"Tutti\""
   },
   "backupApprovalNotice": {
-    "message": "Per mantenere il portafoglio e i tuoi fondi sicuri fai il backup del tuo codice di recupero segreto."
+    "message": "Esegui il backup del codice di recupero segreto per mantenere il portafoglio e i fondi al sicuro."
   },
   "backupApprovalInfo": {
-    "message": "Questo codice segreto è necessario per recuperare il portafoglio in caso di smarrimento del dispositivo, si dimentichi la password, di necessità di reinstallare MetaMask, o volontà di accedere al portafoglio da un altro dispositivo."
+    "message": "Questo codice segreto è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
   },
   "backupNow": {
-    "message": "Backup"
+    "message": "Esegui il backup ora"
   },
   "balance": {
     "message": "Bilancio:"
@@ -229,15 +222,9 @@
   "basic": {
     "message": "Base"
   },
-  "beta": {
-    "message": "BETA"
-  },
   "betweenMinAndMax": {
     "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
-    "description": "aiuto per inserire un input esadecimale come decimale"
-  },
-  "blockExplorerUrl": {
-    "message": "Block Explorer"
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
@@ -276,17 +263,8 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch è la destinazione one-stop per lo scambio di oltre 300 criptovalute alla migliore tariffa."
   },
-  "bytes": {
-    "message": "Bytes"
-  },
   "off": {
-    "message": "Off"
-  },
-  "ok": {
-    "message": "Ok"
-  },
-  "on": {
-    "message": "On"
+    "message": "Spento"
   },
   "optionalBlockExplorerUrl": {
     "message": "URL del Block Explorer (opzionale)"
@@ -305,9 +283,6 @@
   },
   "cancelN": {
     "message": "Annulla tutte le transazioni relative a $1"
-  },
-  "chainId": {
-    "message": "Chain ID"
   },
   "classicInterface": {
     "message": "Usa l'interfaccia classica"
@@ -396,10 +371,10 @@
   "connectToTrezor": {
     "message": "Connettersi al Trezor"
   },
-  "contacts": {
-    "message": "Contatti"
+  "contactList": {
+    "message": "Elenco contatti"
   },
-  "contactsSettingsDescription": {
+  "contactListDescription": {
     "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
   },
   "continue": {
@@ -468,10 +443,6 @@
   "createPassword": {
     "message": "Crea Password"
   },
-  "crypto": {
-    "message": "Crypto",
-    "description": "Tipo di exchange (cryptomonete)"
-  },
   "currencyConversion": {
     "message": "Conversione Moneta"
   },
@@ -512,7 +483,7 @@
     "message": "Elimina"
   },
   "deleteAccount": {
-    "message": "Elimina Account"
+    "message": "Cancella account"
   },
   "denExplainer": {
     "message": "Il DEN è il tuo archivio crittato con password dentro MetaMask."
@@ -554,7 +525,7 @@
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
   },
   "dismiss": {
-    "message": "Scarta"
+    "message": "Ignora"
   },
   "done": {
     "message": "Finito"
@@ -584,7 +555,7 @@
     "message": "Modifica Nome Account"
   },
   "editContact": {
-    "message": "Modifica Contatto"
+    "message": "Modifica contatto"
   },
   "editingTransaction": {
     "message": "Modifica la transazione"
@@ -617,13 +588,13 @@
     "message": "Se hai delle domande o vedi delle attività sospette, manda una mail a support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask non può recuperare la tua frase seed."
+    "message": "MetaMask non può recuperare la tua frase seed. Impara di più."
   },
   "endOfFlowMessage9": {
     "message": "Scopri di più."
   },
   "endOfFlowMessage10": {
-    "message": "Tutto fatto."
+    "message": "Tutto Fatto"
   },
   "ensNameNotFound": {
     "message": "Nome ENS non trovato"
@@ -632,7 +603,7 @@
     "message": "Errore nella registrazione del nome ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS non trovato nella rete corrente. Prova a selezionare la Rete Ethereum Principale"
+    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Ethereum."
   },
   "enterAnAlias": {
     "message": "Inserisci un alias"
@@ -646,11 +617,8 @@
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
   },
-  "eth": {
-    "message": "ETH"
-  },
   "ethereumPublicAddress": {
-    "message": "Indirizzo Pubblico Ethereum"
+    "message": "Indirizzo pubblico Ethereum "
   },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
@@ -687,11 +655,11 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Tipo di scambio"
+    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Importazione file non funziona? Clicca qui!",
-    "description": "Aiuta gli utenti a importare il loro account da un file JSON"
+    "description": "Helps user import their account from a JSON file"
   },
   "followTwitter": {
     "message": "Seguici su Twitter"
@@ -710,10 +678,6 @@
   },
   "functionType": {
     "message": "Tipo della Funzione"
-  },
-  "gas": {
-    "message": "Gas",
-    "description": "Piccola indicazione del costo del gas"
   },
   "gasFee": {
     "message": "Costo Gas"
@@ -740,7 +704,7 @@
     "message": "Generando la frase seed..."
   },
   "gasPrice": {
-    "message": "Prezzo Gas (GWEI)"
+    "message": "Prezzo del Gas (GWEI)"
   },
   "gasPriceExtremelyLow": {
     "message": "Prezzo del gas estremamente basso"
@@ -771,7 +735,7 @@
   },
   "getEtherFromFaucet": {
     "message": "Ottieni Get Ether da un faucet per $1",
-    "description": "Visualizza il nome della rete per il faucet Ether"
+    "description": "Displays network name for Ether faucet"
   },
   "getHelp": {
     "message": "Aiuto."
@@ -781,13 +745,10 @@
   },
   "greaterThanMin": {
     "message": "deve essere maggiore o uguale a $1.",
-    "description": "aiuto per inserire un input esadecimale come decimale"
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Siamo contenti di vederti."
-  },
-  "hardware": {
-    "message": "hardware"
   },
   "hardwareWalletConnected": {
     "message": "Portafoglio hardware connesso"
@@ -803,7 +764,7 @@
   },
   "here": {
     "message": "qui",
-    "description": "per intendere -clicca qui- per maggiori informazioni (va con troubleTokenBalances)"
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hereList": {
     "message": "Questa è una lista!!!!"
@@ -831,7 +792,7 @@
   },
   "import": {
     "message": "Importa",
-    "description": "Tasto per importare un account da un file selezionato"
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Importa Account"
@@ -856,7 +817,7 @@
   },
   "imported": {
     "message": "Importato",
-    "description": "stato che conferma che un account è stato totalmente caricato nel portachiavi"
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "importUsingSeed": {
     "message": "Importa account con frase seed"
@@ -914,7 +875,7 @@
   },
   "jsonFile": {
     "message": "File JSON",
-    "description": "formato per importare un account"
+    "description": "format for importing an account"
   },
   "keepTrackTokens": {
     "message": "Tieni traccia dei tokens che hai acquistato con il tuo account MetaMask."
@@ -939,7 +900,7 @@
   },
   "lessThanMax": {
     "message": "deve essere minore o uguale a $1.",
-    "description": "aiuto per inserire un input esadecimale come decimale"
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Si, iniziamo!"
@@ -963,10 +924,7 @@
     "message": "Caricamento Tokens..."
   },
   "loadMore": {
-    "message": "Carica altro"
-  },
-  "localhost": {
-    "message": "Localhost 8545"
+    "message": "Carica di più"
   },
   "login": {
     "message": "Accedi"
@@ -987,10 +945,7 @@
     "message": "Memorizza questa frase."
   },
   "memo": {
-    "message": "Promemoria"
-  },
-  "menu": {
-    "message": "Menu"
+    "message": "promemoria"
   },
   "message": {
     "message": "Messaggio"
@@ -1010,9 +965,6 @@
   "missingYourTokens": {
     "message": "Non vedi i tuoi token?"
   },
-  "minutesShorthand": {
-    "message": "Min"
-  },
   "mobileSyncTitle": {
     "message": "Sincronizza account con il dispositivo mobile"
   },
@@ -1020,13 +972,13 @@
     "message": "Per favore inserisci la password per confermare che sei te!"
   },
   "myAccounts": {
-    "message": "I Miei Accounts"
+    "message": "Miei Account"
   },
   "myWalletAccounts": {
-    "message": "I Miei Accounts"
+    "message": "I miei account di portafoglio"
   },
   "myWalletAccountsDescription": {
-    "message": "Tutti i tuoi account MetaMask saranno automaticamente aggiunti in questa sezione."
+    "message": "Tutti gli account creati con MetaMask saranno automaticamente aggiunti a questa sezione."
   },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
@@ -1036,11 +988,11 @@
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
-    "description": "L'utente sta importando un account e deve aggiungere un file per continuare"
+    "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
     "message": "Dei inserire una password per il file selezionato.",
-    "description": "Password e file necessari per importare un account"
+    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "Non puoi inviare una quantità di ETH negativa."
@@ -1061,14 +1013,10 @@
     "message": "Nuovo Account"
   },
   "newAccountDetectedDialogMessage": {
-    "message": "Rilevato nuovo indirizzo! Clica qua per aggiungerlo alla rubrica."
-  },
-  "newAccountNumberName": {
-    "message": "Account $1",
-    "description": "Nome predefinito per il prossimo account da creare nella schermata di creazione account"
+    "message": "Rilevato un nuovo indirizzo! Clicca qui per aggiungerlo alla tua rubrica."
   },
   "newContact": {
-    "message": "Nuovo Contatto"
+    "message": "Nuovo contatto"
   },
   "newContract": {
     "message": "Nuovo Contratto"
@@ -1171,14 +1119,14 @@
   },
   "onlySendTokensToAccountAddress": {
     "message": "Invia solamente $1 ad un account Ethereum.",
-    "description": "mostra il simbolo del token"
+    "description": "displays token symbol"
   },
   "openInTab": {
     "message": "Apri in una scheda"
   },
   "or": {
     "message": "o",
-    "description": "scelta tra creare o importare un nuovo account"
+    "description": "choice between creating or importing a new account"
   },
   "orderOneHere": {
     "message": "Compra un Trezor o un Ledger e tieni i tuoi soldi al sicuro"
@@ -1201,9 +1149,6 @@
   "participateInMetaMetricsDescription": {
     "message": "Participa in MetaMetrics per aiutarci a rendere MetaMask migliore"
   },
-  "password": {
-    "message": "Password"
-  },
   "passwordCorrect": {
     "message": "Assicurati che la password sia corretta."
   },
@@ -1212,18 +1157,18 @@
   },
   "passwordMismatch": {
     "message": "le password non corrispondono",
-    "description": "nella creazione della password, le due password all'interno dei campi non corrispondono"
+    "description": "in password creation process, the two new password fields did not match"
   },
   "passwordNotLongEnough": {
     "message": "Password non abbastanza lunga"
   },
   "passwordShort": {
     "message": "password non sufficientemente lunga",
-    "description": "nella creazione della password, la password non è lunga abbastanza"
+    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Incolla la tua chiave privata qui:",
-    "description": "Per importare un account da una chiave privata"
+    "description": "For importing an account from a private key"
   },
   "pasteSeed": {
     "message": "Incolla la tua frase seed qui!"
@@ -1254,7 +1199,7 @@
   },
   "privateKey": {
     "message": "Chiave Privata",
-    "description": "seleziona questo tipo di file per importare un account"
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Attenzione: non dire a nessuno questa chiave! Chiunque con la tua chiave privata può rubare qualsiasi moneta contenuta nel tuo account."
@@ -1287,7 +1232,7 @@
     "message": "Indirizzo Destinatario"
   },
   "recipientAddressPlaceholder": {
-    "message": "Ricerca, indirizzo pubblico (0x), o ENS"
+    "message": "Ricerca, indirizzo pubblico (0x) o ENS"
   },
   "refundAddress": {
     "message": "Indirizzo di Rimborso"
@@ -1314,13 +1259,13 @@
     "message": "Ripristinare il tuo account cancellerà lo storico delle transazioni."
   },
   "deleteNetwork": {
-    "message": "Elimina Rete?"
+    "message": "Cancella la rete?"
   },
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
   },
   "remindMeLater": {
-    "message": "Più tardi"
+    "message": "Ricordami più tardi"
   },
   "restoreFromSeed": {
     "message": "Ripristina da una frase seed"
@@ -1387,7 +1332,7 @@
   },
   "sampleAccountName": {
     "message": "Es: Il mio nuovo account",
-    "description": "Aiuta l'utente a capire il concetto di aggiungere un nome leggibile al loro account"
+    "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
     "message": "Salva"
@@ -1403,7 +1348,7 @@
   },
   "saveAsFile": {
     "message": "Salva come File",
-    "description": "Processo per esportare un account"
+    "description": "Account export process"
   },
   "saveSeedAsFile": {
     "message": "Salva la Frase Seed come File"
@@ -1437,9 +1382,6 @@
   },
   "securitySettingsDescription": {
     "message": "Impostazioni sulla Privacy e sulla frase seed del portafoglio"
-  },
-  "secondsShorthand": {
-    "message": "Sec"
   },
   "seedPhrasePlaceholder": {
     "message": "Separa ogni parola con un singolo spazio"
@@ -1571,7 +1513,7 @@
     "message": "ci può essere solo uno spazio tra le parole"
   },
   "speedUp": {
-    "message": "Velocizza"
+    "message": "velocizza"
   },
   "speedUpTitle": {
     "message": "Velocizza Transazione"
@@ -1677,10 +1619,7 @@
   },
   "toETHviaShapeShift": {
     "message": "$1 a ETH via ShapeShift",
-    "description": "il sistema riempirà il tipo di deposito all'inizio del messaggio"
-  },
-  "token": {
-    "message": "Token"
+    "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
     "message": "Indirizzo Token"
@@ -1767,7 +1706,7 @@
     "message": "Trasferisci"
   },
   "transferBetweenAccounts": {
-    "message": "Trasferisci tra i miei accounts"
+    "message": "Trasferimento tra i miei account"
   },
   "transferFrom": {
     "message": "Trasferisci Da"
@@ -1780,7 +1719,7 @@
   },
   "troubleTokenBalances": {
     "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
-    "description": "Seguito da un link (qui) per vedere il bilancio dei token"
+    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prova di nuovo"
@@ -1841,7 +1780,7 @@
   },
   "usaOnly": {
     "message": "Solo USA",
-    "description": "Usare questo sito di scambio è possibile solo per persone residenti in USA."
+    "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
@@ -1850,7 +1789,7 @@
     "message": "Use la vecchia UI"
   },
   "userName": {
-    "message": "Username"
+    "message": "Nome utente"
   },
   "validFileImport": {
     "message": "Devi selezionare un file valido da importare."
@@ -1862,10 +1801,10 @@
     "message": "Vedi Account"
   },
   "viewinExplorer": {
-    "message": "Vedi in Explorer"
+    "message": "Vista in Explorer"
   },
   "viewContact": {
-    "message": "Visualizza Contatto"
+    "message": "Visualizza contatto"
   },
   "viewOnCustomBlockExplorer": {
     "message": "Vedi su $1"
@@ -1926,5 +1865,29 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prezzo del gas maggiore di zero"
+  },
+  "connections": {
+    "message": "Connessioni"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Siti autorizzati ad accedere ai tuoi accounts"
+  },
+  "addSite": {
+    "message": "Aggiungi Sito"
+  },
+  "addSiteDescription": {
+    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
+  },
+  "connected": {
+    "message": "Connesso"
+  },
+  "connectedDescription": {
+    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
+  },
+  "contacts": {
+    "message": "Contatti"
+  },
+  "contactsSettingsDescription": {
+    "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
   }
 }

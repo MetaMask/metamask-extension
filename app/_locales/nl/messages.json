@@ -1,6 +1,18 @@
 {
-  "exposeAccounts": {
-    "message": "Expose Accounts"
+  "shareAddress": {
+    "message": "Share Address"
+  },
+  "shareAddressToConnect": {
+    "message": "Share your address to connect to $1?"
+  },
+  "shareAddressInfo": {
+    "message": "Sharing your address with $1 will allow you to interact with this dapp. This permission is to protect your privacy by default."
+  },
+  "privacyMode": {
+    "message": "Privacy-modus"
+  },
+  "privacyModeDescription": {
+    "message": "Websites moeten toegang vragen om uw accountgegevens te bekijken."
   },
   "exposeDescription": {
     "message": "Stel accounts vrij op de huidige website. Handig voor legacy dapps."
@@ -14,29 +26,23 @@
   "clearApprovalDataSuccess": {
     "message": "Goedgekeurde websitegegevens zijn met succes gewist."
   },
+  "approvalData": {
+    "message": "Goedkeuringsgegevens"
+  },
+  "approvalDataDescription": {
+    "message": "Goedgekeurde websitegegevens wissen zodat alle sites opnieuw goedkeuring moeten aanvragen."
+  },
   "clearApprovalData": {
     "message": "Gegevens over goedkeuring wissen"
   },
-  "approve": {
-    "message": "Goedkeuren"
-  },
   "reject": {
     "message": "Afwijzen"
-  },
-  "providerAPIRequest": {
-    "message": "Web3 API-aanvraag"
-  },
-  "reviewProviderRequest": {
-    "message": "Bekijk deze Ethereum API-aanvraag."
   },
   "providerRequestInfo": {
     "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."
   },
   "accept": {
     "message": "Aanvaarden"
-  },
-  "account": {
-    "message": "Account"
   },
   "accountDetails": {
     "message": "Accountgegevens"
@@ -64,11 +70,10 @@
   },
   "appDescription": {
     "message": "Ethereum Browser-extensie",
-    "description": "De beschrijving van de applicatie"
+    "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "De naam van de applicatie"
+  "approve": {
+    "message": "Goedkeuren"
   },
   "attemptingConnect": {
     "message": "Poging om verbinding te maken met blockchain."
@@ -91,12 +96,9 @@
   "balanceIsInsufficientGas": {
     "message": "Onvoldoende saldo voor huidig ​​gastotaal"
   },
-  "beta": {
-    "message": "BETA"
-  },
   "betweenMinAndMax": {
     "message": "moet groter zijn dan of gelijk zijn aan $1 en kleiner dan of gelijk aan $2.",
-    "description": "helper voor het invoeren van hex als decimale invoer"
+    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
@@ -142,6 +144,12 @@
   },
   "confirmTransaction": {
     "message": "Bevestig transactie"
+  },
+  "contactList": {
+    "message": "Contact List"
+  },
+  "contactListDescription": {
+    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Doorgaan met"
@@ -193,10 +201,7 @@
   },
   "crypto": {
     "message": "crypto",
-    "description": "Ruiltype (cryptocurrencies)"
-  },
-  "currentConversion": {
-    "message": "Huidige conversie"
+    "description": "Exchange type (cryptocurrencies)"
   },
   "currentNetwork": {
     "message": "Huidig ​​netwerk"
@@ -245,9 +250,6 @@
   },
   "depositShapeShiftExplainer": {
     "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw MetaMask-portemonnee ruilen en storten. Geen account nodig."
-  },
-  "details": {
-    "message": "Details"
   },
   "directDeposit": {
     "message": "Directe storting"
@@ -299,11 +301,11 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Ruiltype"
+    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Bestandsimport werkt niet? Klik hier!",
-    "description": "Helpt de gebruiker om zijn account vanuit een JSON-bestand te importeren"
+    "description": "Helps user import their account from a JSON file"
   },
   "followTwitter": {
     "message": "Volg ons op Twitter"
@@ -316,10 +318,6 @@
   },
   "fromShapeShift": {
     "message": "Van ShapeShift"
-  },
-  "gas": {
-    "message": "Gas",
-    "description": "Korte indicatie van gaskosten"
   },
   "gasFee": {
     "message": "Gas vergoeding"
@@ -353,15 +351,15 @@
   },
   "getEtherFromFaucet": {
     "message": "Haal Ether uit een kraan voor de $1",
-    "description": "Geeft de netwerknaam voor Ether-kraan weer"
+    "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
     "message": "moet groter zijn dan of gelijk zijn aan $1.",
-    "description": "helper voor het invoeren van hex als decimale invoer"
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "hier",
-    "description": "zoals in -klik hier- voor meer informatie (gaat met troubleTokenBalances)"
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hereList": {
     "message": "Hier is een lijst !!!!"
@@ -383,7 +381,7 @@
   },
   "import": {
     "message": "Importeren",
-    "description": "Knop om een ​​account uit een geselecteerd bestand te importeren"
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Account importeren"
@@ -399,7 +397,7 @@
   },
   "imported": {
     "message": "geïmporteerde",
-    "description": "status die aantoont dat een account volledig in de sleutelring is geladen"
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Info en hulp"
@@ -433,7 +431,7 @@
   },
   "jsonFile": {
     "message": "JSON-bestand",
-    "description": "formaat voor het importeren van een account"
+    "description": "format for importing an account"
   },
   "kovan": {
     "message": "Kovan-testnetwerk"
@@ -443,7 +441,7 @@
   },
   "lessThanMax": {
     "message": "moet kleiner zijn dan of gelijk zijn aan $1.",
-    "description": "helper voor het invoeren van hex als decimale invoer"
+    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Wil je deze tokens toevoegen?"
@@ -456,9 +454,6 @@
   },
   "loadingTokens": {
     "message": "Tokens laden ..."
-  },
-  "localhost": {
-    "message": "Localhost 8545"
   },
   "login": {
     "message": "Log in"
@@ -481,9 +476,6 @@
   "metamaskDescription": {
     "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
   },
-  "min": {
-    "message": "Minimum"
-  },
   "myAccounts": {
     "message": "Mijn accounts"
   },
@@ -495,11 +487,11 @@
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
-    "description": "Gebruiker is belangrijk een account en moet een bestand toevoegen om door te gaan"
+    "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
     "message": "U moet een wachtwoord invoeren voor het geselecteerde bestand.",
-    "description": "Wachtwoord en bestand nodig om een ​​account te importeren"
+    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "Kan geen negatieve hoeveelheden ETH verzenden."
@@ -510,21 +502,17 @@
   "newAccount": {
     "message": "Nieuw account"
   },
-  "newAccountNumberName": {
-    "message": "Account $1",
-    "description": "Standaardnaam van de volgende account die moet worden aangemaakt op het scherm voor het maken van een account"
-  },
   "newContract": {
     "message": "Nieuw contract"
   },
   "newPassword": {
     "message": "Nieuw wachtwoord (min 8 tekens)"
   },
+  "newPassword8Chars": {
+    "message": "Nieuw wachtwoord (min 8 tekens)"
+  },
   "newRecipient": {
     "message": "Nieuwe ontvanger"
-  },
-  "newRPC": {
-    "message": "Nieuwe RPC-URL"
   },
   "next": {
     "message": "volgende"
@@ -552,22 +540,22 @@
   },
   "or": {
     "message": "of",
-    "description": "keuze tussen het maken of importeren van een nieuw account"
+    "description": "choice between creating or importing a new account"
   },
   "passwordCorrect": {
     "message": "Zorg ervoor dat uw wachtwoord correct is."
   },
   "passwordMismatch": {
     "message": "wachtwoorden komen niet overeen",
-    "description": "bij het maken van het wachtwoord kwamen de twee nieuwe wachtwoordvelden niet overeen"
+    "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
     "message": "wachtwoord niet lang genoeg",
-    "description": "bij het maken van het wachtwoord is het wachtwoord niet lang genoeg om veilig te zijn"
+    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
-    "description": "Voor het importeren van een account vanaf een privésleutel"
+    "description": "For importing an account from a private key"
   },
   "pasteSeed": {
     "message": "Plak je back-up woorden hier!"
@@ -583,7 +571,7 @@
   },
   "privateKey": {
     "message": "Prive sleutel",
-    "description": "selecteer dit type bestand om te gebruiken om een ​​account te importeren"
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
@@ -642,16 +630,19 @@
   "ropsten": {
     "message": "Ropsten testnetwerk"
   },
+  "rpc": {
+    "message": "Aangepaste RPC"
+  },
   "sampleAccountName": {
     "message": "Bijv. Mijn nieuwe account",
-    "description": "Help de gebruiker begrip te ontwikkelen van het toevoegen van een door mensen leesbare naam aan zijn of haar account"
+    "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
     "message": "Opslaan"
   },
   "saveAsFile": {
     "message": "Sla op als bestand",
-    "description": "Account export proces"
+    "description": "Account export process"
   },
   "saveSeedAsFile": {
     "message": "Bewaar back-up woorden als bestand"
@@ -704,6 +695,9 @@
   "sign": {
     "message": "Teken"
   },
+  "signatureRequest": {
+    "message": "Ondertekeningsverzoek"
+  },
   "signMessage": {
     "message": "Teken bericht"
   },
@@ -751,7 +745,7 @@
   },
   "toETHviaShapeShift": {
     "message": "$1 tot ETH via ShapeShift",
-    "description": "systeem zal het aanbetalingstype invullen bij het begin van het bericht"
+    "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
     "message": "Token-adres"
@@ -764,9 +758,6 @@
   },
   "tokenSelection": {
     "message": "Zoek naar tokens of selecteer uit onze lijst met populaire tokens."
-  },
-  "tokenSymbol": {
-    "message": "Token Symbol"
   },
   "tokenWarning1": {
     "message": "Houd de tokens bij die je hebt gekocht met je MetaMask-account. Als je tokens met een ander account hebt gekocht, worden die tokens hier niet weergegeven."
@@ -788,7 +779,7 @@
   },
   "troubleTokenBalances": {
     "message": "We hadden problemen bij het laden van uw tokenbalansen. Je kunt ze bekijken",
-    "description": "Gevolgd door een link (hier) om tegensaldi te bekijken"
+    "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
     "message": "Deze 12 woorden zijn de enige manier om uw MetaMask-accounts te herstellen.\nBewaar ze ergens veilig en geheim."
@@ -819,7 +810,7 @@
   },
   "usaOnly": {
     "message": "Alleen in de VS.",
-    "description": "Het gebruik van deze uitwisseling is beperkt tot mensen in de VS."
+    "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
