@@ -42,7 +42,7 @@ class ThreeBoxController {
       },
       processPersonalMessage: (msgParams) => {
         return Promise.resolve(keyringController.signPersonalMessage(msgParams, {
-          withAppKeyOrigin: '3box.metamask.io',
+          withAppKeyOrigin: 'wallet://3box.metamask.io',
         }))
       },
     })
@@ -102,7 +102,7 @@ class ThreeBoxController {
   async new3Box (address) {
     if (this.getThreeBoxSyncingState()) {
       this.store.updateState({ threeBoxSynced: false })
-      this.address = await this.keyringController.getAppKeyAddress(address, '3box.metamask.io')
+      this.address = await this.keyringController.getAppKeyAddress(address, 'wallet://3box.metamask.io')
 
       let timedOut = false
       const syncTimeout = setTimeout(() => {
