@@ -1,1801 +1,1801 @@
 {
-    "exposeAccounts": {
-        "message": "نمایش دادن حساب ها"
-    },
-    "exposeDescription": {
-        "message": "حساب های خود را به وب سایت فعلی نمایش دهید. برای داپ های میراثی مفید است."
-    },
-    "chartOnlyAvailableEth": {
-        "message": "جدول تنها در شبکه های اتریوم موجود است."
-    },
-    "confirmExpose": {
-        "message": "آیا مطمئن هستید که می خواهید حساب های خود را به وب سایت فعلی نمایش دهید؟"
-    },
-    "confirmClear": {
-        "message": "آیا مطمئن هستید که می خواهید وب سایت های تایید شده را پاک کنید؟"
-    },
-    "contractInteraction": {
-        "message": "تعامل قرارداد"
-    },
-    "clearApprovalDataSuccess": {
-        "message": "داده های وب سایت تایید شده با موفقیت پاک سازی شدند."
-    },
-    "clearApprovalData": {
-        "message": "پاک کردن داده های حریم خصوصی"
-    },
-    "reject": {
-        "message": "رد کردن"
-    },
-    "providerRequest": {
-        "message": "$1 می‌خواهد به حساب شما دسترسی پیدا کند."
-    },
-    "providerRequestInfo": {
-        "message": "این سایت درخواست دسترسی به آدرس حساب فعلی شما را دارد. همیشه مطمئن شوید که به سایتهایی که با آنها در تعامل هستید اعتماد دارید."
-    },
-    "about": {
-        "message": "درباره"
-    },
-    "aboutSettingsDescription": {
-        "message": "نسخه، مرکز پشتیبانی و اطلاعات تماس."
-    },
-    "aboutUs": {
-        "message": "درباره ما"
-    },
-    "accept": {
-        "message": "قبول کردن"
-    },
-    "acceleratingATransaction": {
-        "message": "* شتاب دادن به تراکنش با استفاده از قیمت گاز بالاتر شانس پردازش سریع تر توسط شبکه را افزایش می دهد، اما همیشه تضمین نمی شود."
-    },
-    "accessingYourCamera": {
-        "message": "دسترسی به دوربین شما..."
-    },
-    "account": {
-        "message": "حساب"
-    },
-    "accountDetails": {
-        "message": "جزئیات حساب"
-    },
-    "accountName": {
-        "message": "نام حساب"
-    },
-    "accountOptions": {
-        "message": "گزینه های حساب"
-    },
-    "accountSelectionRequired": {
-        "message": "باید یک حساب انتخاب کنید!"
-    },
-    "activityLog": {
-        "message": "گزارش فعالیت"
-    },
-    "address": {
-        "message": "آدرس"
-    },
-    "addNetwork": {
-        "message": "اضافه کردن شبکه"
-    },
-    "advanced": {
-        "message": "پیشرفته"
-    },
-    "advancedSettingsDescription": {
-        "message": "دسترسی به ویژگیهای توسعه دهنده، دانلود State Log، تنظیم مجدد حساب، راه اندازی تست نت و RPC سفارشی"
-    },
-    "advancedOptions": {
-        "message": "گزینه های پیشرفته"
-    },
-    "addCustomToken": {
-        "message": "اضافه کردن توکن سفارشی"
-    },
-    "addToken": {
-        "message": "اضافه کردن توکن"
-    },
-    "addTokens": {
-        "message": "اضافه کردن توکن ها"
-    },
-    "addSuggestedTokens": {
-        "message": "اضافه کردن توکن های پیشنهادی"
-    },
-    "addAcquiredTokens": {
-        "message": "اضافه کردن توکن هایی که با متامسک به دست آورده اید"
-    },
-    "agreeTermsOfService": {
-        "message": "من با شرایط خدمات موافقم."
-    },
-    "allDone": {
-        "message": "انجام شد"
-    },
-    "alreadyHaveSeedPhrase": {
-        "message": "نه، من از قبل عبارت بذر دارم."
-    },
-    "amount": {
-        "message": "مقدار"
-    },
-    "amountPlusGas": {
-        "message": "مقدار + گاز"
-    },
-    "amountPlusTxFee": {
-        "message": "مقدار + هزینه تراکنش"
-    },
-    "appDescription": {
-        "message": "یک کیف پول اتریوم در مرورگر شما",
-        "description": "توضیحات برنامه"
-    },
-    "appName": {
-        "message": "متامسک",
-        "description": "نام برنامه"
-    },
-    "approve": {
-        "message": "تایید کردن"
-    },
-    "approved": {
-        "message": "تایید شد"
-    },
-    "asset": {
-        "message": "دارایی"
-    },
-    "attemptingConnect": {
-        "message": "تلاش برای اتصال به زنجیره بستکی"
-    },
-    "attemptToCancel": {
-        "message": "تلاش برای لغو؟"
-    },
-    "attemptToCancelDescription": {
-        "message": "ارسال این تلاش تضمین کننده لغو تراکنش اصلی نخواهد بود. اگر تلاش لغو موفقیت آمیز باشد، هزینه تراکنش بالا برای شما حساب خواهد شد."
-    },
-    "attributions": {
-        "message": "تخصیصات"
-    },
-    "autoLogoutTimeLimit": {
-        "message": "تایمر خروج خودکار (دقیقه)"
-    },
-    "autoLogoutTimeLimitDescription": {
-        "message": "زمان بیکاری را بر حسب دقیقه تنظیم کنید تا متامسک به صورت خودکار از سیستم خارج شود."
-    },
-    "available": {
-        "message": "در دسترس"
-    },
-    "average": {
-        "message": "میانگین"
-    },
-    "back": {
-        "message": "عقب"
-    },
-    "balance": {
-        "message": "موجودی حساب"
-    },
-    "balanceOutdated": {
-        "message": "ممکن است موجودی حساب به روز نباشد"
-    },
-    "balances": {
-        "message": "موجودی حساب (های) توکن"
-    },
-    "balanceIsInsufficientGas": {
-        "message": "موجودی حساب برای مجموع کلی گاز فعلی کافی نیست"
-    },
-    "basic": {
-        "message": "اساسی"
-    },
-    "beta": {
-        "message": "بتا"
-    },
-    "betweenMinAndMax": {
-        "message": "باید بیشتر یا برابر با $1 و کمتر یا برابر با $2 باشد.",
-        "description": "راهنما برای وارد کردن عدد هگزا دسیمال به عنوان ورودی دهدهی"
-    },
-    "blockExplorerUrl": {
-        "message": "جستجوگر بلوک"
-    },
-    "blockExplorerView": {
-        "message": "مشاهده حساب در $1",
-        "description": "$1 جایگزین شده توسط URL برای جستجوگر بلوک سفارشی"
-    },
-    "blockiesIdenticon": {
-        "message": "استفاده از Blockies Identicon"
-    },
-    "borrowDharma": {
-        "message": "قرض گرفتن با Dharma (بتا)"
-    },
-    "browserNotSupported": {
-        "message": "مرورگر شما پشتیبانی نمی شود..."
-    },
-    "builtInCalifornia": {
-        "message": "متامسک در کالیفرنیا طراحی و ساخته شده است."
-    },
-    "buy": {
-        "message": "خرید"
-    },
-    "buyCoinbase": {
-        "message": "از Coinbase خریداری کنید"
-    },
-    "buyCoinbaseExplainer": {
-        "message": "خرید بیتکوین، اتریوم و لایت کوین از Coinbase محبوب ترین روش در دنیا است."
-    },
-    "buyWithWyre": {
-        "message": "خرید اتریوم با استفاده از Wyre"
-    },
-    "buyWithWyreDescription": {
-        "message": "Wyre به شما اجازه می دهد با استفاده از کارت اعتباری به صورت مستقیم اتریوم به حساب متامسک خود واریز کنید."
-    },
-    "buyCoinSwitch": {
-        "message": "ازCoinSwitch  خریداری کنید"
-    },
-    "buyCoinSwitchExplainer": {
-        "message": "CoinSwitch مقصد نهایی برای مبادله بیش از ۳۰۰ رمزارز با بهترین نرخ است."
-    },
-    "bytes": {
-        "message": "بایت ها"
-    },
-    "ok": {
-        "message": "باشه"
-    },
-    "optionalBlockExplorerUrl": {
-        "message": "URL جستجوگر بلوک (اختیاری)"
-    },
-    "cancel": {
-        "message": "لغو"
-    },
-    "cancelAttempt": {
-        "message": "تلاش برای لغو"
-    },
-    "cancellationGasFee": {
-        "message": "هزینه گاز برای لغو"
-    },
-    "cancelled": {
-        "message": "لغو شد"
-    },
-    "cancelN": {
-        "message": "تمام تراکنش های $1 را لغو کن"
-    },
-    "chainId": {
-        "message": "شناسه زنجیره"
-    },
-    "classicInterface": {
-        "message": "از رابط کلاسیک استفاده کن"
-    },
-    "clickCopy": {
-        "message": "برای کپی کردن کلیک کنید"
-    },
-    "clickToAdd": {
-        "message": "برای اضافه کردن $1 به حساب خود بر روی آنها کلیک کنید"
-    },
-    "clickToRevealSeed": {
-        "message": "برای افشای کلمات سری بر روی اینجا کلیک کنید"
-    },
-    "close": {
-        "message": "بستن"
-    },
-    "chromeRequiredForHardwareWallets": {
-        "message": "برای اتصال به کیف پول سخت افزاری خود می بایست متامسک را بر روی گوگل کروم استفاده کنید."
-    },
-    "company": {
-        "message": "شرکت"
-    },
-    "confirm": {
-        "message": "تایید"
-    },
-    "confirmationTime": {
-        "message": "زمان تایید (ثانیه)"
-    },
-    "confirmed": {
-        "message": "تایید شد"
-    },
-    "confirmContract": {
-        "message": "تایید قرارداد"
-    },
-    "confirmPassword": {
-        "message": "تایید گذرواژه"
-    },
-    "confirmSecretBackupPhrase": {
-        "message": "تایید عبارت پشتیبانی سری"
-    },
-    "confirmTransaction": {
-        "message": "تایید تراکنش"
-    },
-    "congratulations": {
-        "message": "تبریک"
-    },
-    "connectHardwareWallet": {
-        "message": "اتصال کیف پول سخت افزاری"
-    },
-    "connect": {
-        "message": "اتصال"
-    },
-    "connectRequest": {
-        "message": "تقاضای اتصال"
-    },
-    "connecting": {
-        "message": "در حال اتصال..."
-    },
-    "connectingTo": {
-        "message": "در حال اتصال به $1..."
-    },
-    "connectingToKovan": {
-        "message": "در حال اتصال به شبکه تست Kovan"
-    },
-    "connectingToMainnet": {
-        "message": "در حال اتصال به شبکه اصلی اتریوم"
-    },
-    "connectingToRopsten": {
-        "message": "در حال اتصال به شبکه تست Ropsten"
-    },
-    "connectingToRinkeby": {
-        "message": "در حال اتصال به شبکه تست Rinkeby"
-    },
-    "connectingToLocalhost": {
-        "message": "در حال اتصال به لوکال هاست ۸۵۴۵"
-    },
-    "connectingToGoerli": {
-        "message": "در حال اتصال به شبکه تست Goerli"
-    },
-    "connectingToUnknown": {
-        "message": "در حال اتصال به شبکه ناشناخته"
-    },
-    "connectToLedger": {
-        "message": "اتصال به Ledger"
-    },
-    "connectToTrezor": {
-        "message": "اتصال به Trezor"
-    },
-    "continue": {
-        "message": "ادامه"
-    },
-    "continueToCoinbase": {
-        "message": "ادامه به Coinbase"
-    },
-    "continueToWyre": {
-        "message": "ادامه به Wyre"
-    },
-    "continueToCoinSwitch": {
-        "message": "ادامه به CoinSwitch"
-    },
-    "contractDeployment": {
-        "message": "استقرار قرارداد"
-    },
-    "conversionProgress": {
-        "message": "تبدیل در حال پیشرفت"
-    },
-    "copiedButton": {
-        "message": "کپی شد"
-    },
-    "copiedClipboard": {
-        "message": "به کلیپ بورد کپی شد"
-    },
-    "copiedExclamation": {
-        "message": "کپی شد!"
-    },
-    "copiedSafe": {
-        "message": "به جای امنی کپی کردم"
-    },
-    "copy": {
-        "message": "کپی"
-    },
-    "copyAddress": {
-        "message": "آدرس را به کلیپ بورد کپی کن"
-    },
-    "copyTransactionId": {
-        "message": "شناسه تراکنش را کپی کن"
-    },
-    "copiedTransactionId": {
-        "message": "شناسه تراکنش کپی شد"
-    },
-    "copyToClipboard": {
-        "message": "به کلیپ بورد کپی کن"
-    },
-    "copyButton": {
-        "message": " کپی "
-    },
-    "copyPrivateKey": {
-        "message": "این کلید خصوصی شماست (برای کپی کلیک کنید)"
-    },
-    "create": {
-        "message": "ایجاد"
-    },
-    "createAccount": {
-        "message": "ایجاد حساب"
-    },
-    "createAWallet": {
-        "message": "ایجاد یک کیف پول"
-    },
-    "createDen": {
-        "message": "ایجاد"
-    },
-    "createPassword": {
-        "message": "ایجاد گذرواژه"
-    },
-    "crypto": {
-        "message": "کریپتو",
-        "description": "نوع تبادل (رمزارزها)"
-    },
-    "currencyConversion": {
-        "message": "تبدیل ارز"
-    },
-    "currentLanguage": {
-        "message": "زبان فعلی"
-    },
-    "currentNetwork": {
-        "message": "شبکه فعلی"
-    },
-    "currentRpc": {
-        "message": "RPC فعلی"
-    },
-    "customGas": {
-        "message": "سفارشی سازی گاز"
-    },
-    "customGasSubTitle": {
-        "message": "افزایش هزینه ممکن است زمان پردازش را کاهش دهد اما تضمین شده نیست."
-    },
-    "customToken": {
-        "message": "توکن سفارشی"
-    },
-    "customize": {
-        "message": "سفارشی سازی"
-    },
-    "customRPC": {
-        "message": "RPC سفارشی"
-    },
-    "decimalsMustZerotoTen": {
-        "message": "ارقام اعشار می بایست حداقل صفر باشند و بیشتر از ۳۶ نباشند"
-    },
-    "decimal": {
-        "message": "ارقام اعشار"
-    },
-    "defaultNetwork": {
-        "message": "شبکه پیش فرض برای تراکنش های ایتر شبکه اصلی است."
-    },
-    "delete": {
-        "message": "پاک کردن"
-    },
-    "denExplainer": {
-        "message": "DEN شما ذخیره سازی رمزگذاری شده شما در متامسک می باشد. "
-    },
-    "deposit": {
-        "message": "واریز کردن"
-    },
-    "depositBTC": {
-        "message": "بیتکون خود را به آدرس زیر واریز کنید: "
-    },
-    "depositEth": {
-        "message": "واریز کردن Eth"
-    },
-    "depositEther": {
-        "message": "واریز کردن اتر"
-    },
-    "depositFiat": {
-        "message": "واریز کردن بوسیله فیات"
-    },
-    "depositFromAccount": {
-        "message": "واریز کردن از حساب دیگر"
-    },
-    "depositShapeShift": {
-        "message": "واریز کردن بوسیله ShapeShift"
-    },
-    "depositShapeShiftExplainer": {
-        "message": "اگر رمزارزهای دیگری دارید می‌توانید مستقیما اتر در کیف پول متامسک خود معامله و واریز کنید. حساب دیگری لازم نیست.  "
-    },
-    "details": {
-        "message": "جزئیات"
-    },
-    "directDeposit": {
-        "message": "واریز مستقیم"
-    },
-    "directDepositEther": {
-        "message": "واریز مستقیم اتر"
-    },
-    "directDepositEtherExplainer": {
-        "message": "اگر قبلا اتر داشته باشید، سریعترین راه برای دریافت اتر در کیف پول جدید خود را با سپرده مستقیم."
-    },
-    "done": {
-        "message": "انجام شد"
-    },
-    "downloadGoogleChrome": {
-        "message": "دانلود گوگل کروم"
-    },
-    "downloadSecretBackup": {
-        "message": "این عبارت پشتیبان گیری مخفی را دانلود کنید و آن را به صورت امن  بر روی یک دیسک سخت خارجی رمزگذاری شده یا وسیله ذخیره سازی دیگری حفظ کنید."
-    },
-    "downloadStateLogs": {
-        "message": "دانلود State Logs"
-    },
-    "dontHaveAHardwareWallet": {
-        "message": "کیف پول سخت افزاری ندارید؟"
-    },
-    "dropped": {
-        "message": "رها شد"
-    },
-    "edit": {
-        "message": "ویرایش"
-    },
-    "editNetwork": {
-        "message": "ویرایش شبکه"
-    },
-    "editAccountName": {
-        "message": "ویرایش نام حساب"
-    },
-    "editingTransaction": {
-        "message": "تراکنش خود را تغییر دهید"
-    },
-    "emailUs": {
-        "message": "پست الکترونیکی به ما بفرستید!"
-    },
-    "encryptNewDen": {
-        "message": "DEN تازه خود را رمزگذاری کنید"
-    },
-    "endOfFlowMessage1": {
-        "message": "از امتحان قبول شدید - عبارت عبور خود را امن نگه دارید. از حالا مسئولیت شما است!"
-    },
-    "endOfFlowMessage2": {
-        "message": "نکاتی درباره ذخیره امن آن"
-    },
-    "endOfFlowMessage3": {
-        "message": "یک نسخه پشتیبان در چندین محل نگه داری کنید."
-    },
-    "endOfFlowMessage4": {
-        "message": "هرگز عبارت را با کسی به اشتراک نگذارید."
-    },
-    "endOfFlowMessage5": {
-        "message": "مراقب فیشینگ باشید. متامسک هرگز به خودی خود عبارت عبور را از شما نخواهد پرسید."
-    },
-    "endOfFlowMessage6": {
-        "message": "اگر نسخه پشتیبان را دوباره لازم داشتید می تواند آن را در بخش تنظیمات -> امنیت پیدا کنید."
-    },
-    "endOfFlowMessage7": {
-        "message": "هر زمان پرسش داشتید یا با مورد مشکوکی برخورد کردید بر روی آدرس support@metamask.io با ما تماس بگیرید."
-    },
-    "endOfFlowMessage8": {
-        "message": "متامسک نمی تواند عبارت عبور شما را بازیابی کند. بیشتر بدانید."
-    },
-    "ensNameNotFound": {
-        "message": "نام ENS یافت نشد."
-    },
-    "enterPassword": {
-        "message": "گذرواژه را داخل کنید"
-    },
-    "enterPasswordConfirm": {
-        "message": "گذرواژه را برای تایید داخل کنید"
-    },
-    "enterPasswordContinue": {
-        "message": "گذرواژه را برای ادامه دادن داخل کنید"
-    },
-    "eth": {
-        "message": "ETH"
-    },
-    "etherscanView": {
-        "message": "حساب را بر روی Etherscan مشاهده کنید"
-    },
-    "estimatedProcessingTimes": {
-        "message": "زمان پردازش برآورد شده"
-    },
-    "exchangeRate": {
-        "message": "نرخ مبادله"
-    },
-    "expandView": {
-        "message": "گسترش دید"
-    },
-    "exportPrivateKey": {
-        "message": "صادر کردن کلید خصوصی"
-    },
-    "exportPrivateKeyWarning": {
-        "message": "کلیدهای خصوصی را با مسئولیت خودتان صادر کنید."
-    },
-    "failed": {
-        "message": "ناموفق"
-    },
-    "fast": {
-        "message": "سریع"
-    },
-    "faster": {
-        "message": "سریعتر"
-    },
-    "fastest": {
-        "message": "سریعترین"
-    },
-    "feeChartTitle": {
-        "message": "پیش بینی زنده هزینه تراکنش"
-    },
-    "fiat": {
-        "message": "فیات",
-        "description": "نوع تبادل"
-    },
-    "fileImportFail": {
-        "message": "وارد کردن فایل کار نمی کند؟ اینجا کلیک کنید!",
-        "description": "کمک می کند تا کاربر حساب خود را از یک فایل JSON وارد کند"
-    },
-    "followTwitter": {
-        "message": "ما را در توییتر دنبال کنید"
-    },
-    "forgetDevice": {
-        "message": "این دستگاه را فراموش کن"
-    },
-    "from": {
-        "message": "از"
-    },
-    "fromToSame": {
-        "message": "از و به آدرس نمی تواند یکسان باشد"
-    },
-    "fromShapeShift": {
-        "message": "از ShapeShift"
-    },
-    "functionType": {
-        "message": "نوع عملکرد"
-    },
-    "gas": {
-        "message": "گاز",
-        "description": "نشانگر کوتاه هزینه گاز"
-    },
-    "gasFee": {
-        "message": "هزینه گاز"
-    },
-    "gasLimit": {
-        "message": "محدودیت گاز"
-    },
-    "gasLimitCalculation": {
-        "message": "ما حد پیشنهادی گاز را براساس نرخ های موفقیت شبکه محاسبه می‌کنیم."
-    },
-    "gasLimitInfoModalContent": {
-        "message": "محدودیت گاز حداکثر مقدار واحدهای گازی است که مایل به مصرف آن هستید."
-    },
-    "gasLimitRequired": {
-        "message": "حد مجاز گاز مورد نیاز است"
-    },
-    "gasLimitTooLow": {
-        "message": "حد گاز باید حداقل ۲۱۰۰۰ باشد"
-    },
-    "gasUsed": {
-        "message": "گاز استفاده شده"
-    },
-    "generatingSeed": {
-        "message": "تولید دانه..."
-    },
-    "gasPrice": {
-        "message": "قیمت گاز (GWEI)"
-    },
-    "gasPriceExtremelyLow": {
-        "message": "قیمت گاز بسیار پایین است"
-    },
-    "gasPriceInfoModalContent": {
-        "message": "قیمت گاز مشخص کننده مقدار اتری است که شما مایل به پرداخت برای هر واحد گاز هستید."
-    },
-    "gasPriceNoDenom": {
-        "message": "قیمت گاز"
-    },
-    "gasPriceCalculation": {
-        "message": "ما قیمت گاز پیشنهاد شده را بر اساس نرخ موفقیت شبکه محاسبه می کنیم."
-    },
-    "gasPriceRequired": {
-        "message": "قیمت گاز مورد نیاز است"
-    },
-    "general": {
-        "message": "عمومی"
-    },
-    "generalSettingsDescription": {
-        "message": "تبدیل ارز، ارز اصلی، زبان، blockies identicon"
-    },
-    "generatingTransaction": {
-        "message": "در حال ایجاد تراکنش"
-    },
-    "getEther": {
-        "message": "دریافت اتر"
-    },
-    "getEtherFromFaucet": {
-        "message": "اتر را از یک شیر برای $1 دریافت کنید",
-        "description": "نام شبکه را برای شیر اتر نمایش می دهد"
-    },
-    "getHelp": {
-        "message": "کمک بگیرید."
-    },
-    "getStarted": {
-        "message": "شروع کنید"
-    },
-    "greaterThanMin": {
-        "message": "باید بیشتر یا برابر با $1 باشد.",
-        "description": "راهنما برای ورودی هگزادسیمال به عنوان ورودی دهدهی"
-    },
-    "happyToSeeYou": {
-        "message": "خوشحالیم که شما را می بینیم"
-    },
-    "hardware": {
-        "message": "سخت افزار"
-    },
-    "hardwareWalletConnected": {
-        "message": "کیف پول سخت افزاری متصل شده است"
-    },
-    "hardwareWallets": {
-        "message": "یک کیف پول سخت افزاری را وصل کنید"
-    },
-    "hardwareWalletsMsg": {
-        "message": "یک کیف پول سخت افزاری که می خواهید با متامسک استفاده کنید را انتخاب کنید"
-    },
-    "havingTroubleConnecting": {
-        "message": "مشکل اتصال دارید؟"
-    },
-    "here": {
-        "message": "اینجا",
-        "description": "مانند - در اینجا کلیک کنید - برای اطلاعات بیشتر (با troubleTokenBalances می رود)"
-    },
-    "hereList": {
-        "message": "یک لیست اینجا است!!!!"
-    },
-    "hexData": {
-        "message": "داده هگزادسیمال"
-    },
-    "hide": {
-        "message": "پنهان کردن"
-    },
-    "hideToken": {
-        "message": "پنهان کردن توکن"
-    },
-    "hideTokenPrompt": {
-        "message": "پنهان کردن توکن؟"
-    },
-    "history": {
-        "message": "تاریخ"
-    },
-    "howToDeposit": {
-        "message": "چگونه می خواهید اتر را واریز؟"
-    },
-    "holdEther": {
-        "message": "این اجازه می دهد تا شما اتر و توکن نگه دارید، و به عنوان پل بین شما و برنامه های غیر متمرکز عمل می کند."
-    },
-    "import": {
-        "message": "وارد كردن",
-        "description": "دکمه برای وارد کردن یک حساب از یک پرونده انتخاب شده"
-    },
-    "importAccount": {
-        "message": "وارد کردن حساب"
-    },
-    "importAccountMsg": {
-        "message": "حساب های وارد شده به عبارت عبور حساب اصلی متامسک شما مربوط نمی شوند. درباره حسابهای وارد شده بیشتر بدانید"
-    },
-    "importAccountSeedPhrase": {
-        "message": "وارد کردن حساب  با عبارت عبور"
-    },
-    "importAnAccount": {
-        "message": "یک حساب وارد کنید"
-    },
-    "importDen": {
-        "message": "وارد کردن DEN موجود"
-    },
-    "importWallet": {
-        "message": "وارد کردن کیف پول"
-    },
-    "importYourExisting": {
-        "message": "کیف پول موجود خود را با استفاده از عبارت عبور ۱۲ کلمه ای وارد کنید"
-    },
-    "imported": {
-        "message": "وارد شد",
-        "description": "وضعیت نشان می دهد که یک حساب به طور کامل به دسته کلید بارگذاری شده است"
-    },
-    "importUsingSeed": {
-        "message": "وارد کردن با استفاده از عبارت بذر حساب"
-    },
-    "importWithSeedPhrase": {
-        "message": "وارد کردن با عبارت بذر"
-    },
-    "info": {
-        "message": "اطلاعات"
-    },
-    "infoHelp": {
-        "message": "اطلاعات و راهنما"
-    },
-    "initialTransactionConfirmed": {
-        "message": "تراکنش اولیه شما توسط شبکه تأیید شد. برای بازگشت بر روی OK کلیک کنید."
-    },
-    "insufficientBalance": {
-        "message": "موجودی حساب ناکافی"
-    },
-    "insufficientFunds": {
-        "message": "منابع مالی ناکافی"
-    },
-    "insufficientTokens": {
-        "message": "توکن ناکافی"
-    },
-    "invalidAddress": {
-        "message": "آدرس غیر معتبر"
-    },
-    "invalidAddressRecipient": {
-        "message": "آدرس گیرنده غیر معتبر است"
-    },
-    "knownAddressRecipient": {
-        "message": "آدرس قرارداد شناخته شده"
-    },
-    "invalidAddressRecipientNotEthNetwork": {
-        "message": "این شبکه ETH نیست، حروف کوچک قرار دهید"
-    },
-    "invalidGasParams": {
-        "message": "پارامترهای نامعتبر گاز"
-    },
-    "invalidInput": {
-        "message": "ورودی نامعتبر."
-    },
-    "invalidRequest": {
-        "message": "درخواست نامعتبر"
-    },
-    "invalidRPC": {
-        "message": "URL متعلق به RPC نامعتبر است"
-    },
-    "invalidSeedPhrase": {
-        "message": "عبارت بذر نامعتبر است"
-    },
-    "jsonFail": {
-        "message": "اشکالی رویداد. لطفا مطمئن شوید که فایل JSON شما به درستی فرمت شده است."
-    },
-    "jsonFile": {
-        "message": "فایل JSON",
-        "description": "فرمت برای وارد کردن یک حساب"
-    },
-    "keepTrackTokens": {
-        "message": "توکن هایی که با حساب متامسک خود خریداری کرده اید را دنبال کنید. "
-    },
-    "kovan": {
-        "message": "شبکه تست Kovan"
-    },
-    "knowledgeDataBase": {
-        "message": "به پایگاه اطلاعات ما مراجعه کنید"
-    },
-    "max": {
-        "message": "بیشینه"
-    },
-    "learnMore": {
-        "message": "بیشتر بدانید"
-    },
-    "ledgerAccountRestriction": {
-        "message": "قبل از اینکه بتوانید یک حساب جدید اضافه کنید، باید از آخرین حساب خود استفاده کنید."
-    },
-    "legal": {
-        "message": "حقوقی"
-    },
-    "lessThanMax": {
-        "message": "می‌بایست کمتر از یا برابر با $1 باشد.",
-        "description": "راهنما برای ورودی هگزادسیمال به عنوان ورودی دهدهی"
-    },
-    "letsGoSetUp": {
-        "message": "بله، تنظیم را شروع کنیم"
-    },
-    "likeToAddTokens": {
-        "message": "آیا می خواهید این توکن ها را اضافه کنید؟"
-    },
-    "links": {
-        "message": "لینک ها"
-    },
-    "limit": {
-        "message": "حد"
-    },
-    "liveGasPricePredictions": {
-        "message": "پیش بینی زنده قیمت گاز"
-    },
-    "loading": {
-        "message": "در حال بارگذاری..."
-    },
-    "loadingTokens": {
-        "message": "در حال بارگذاری توکن ها..."
-    },
-    "localhost": {
-        "message": "لوکال هاست ۸۵۴۵"
-    },
-    "login": {
-        "message": "ورود"
-    },
-    "logout": {
-        "message": "خروج"
-    },
-    "loose": {
-        "message": "سست"
-    },
-    "loweCaseWords": {
-        "message": "کلمات بذر تنها کاراکترهای حرف کوچک دارند"
-    },
-    "mainnet": {
-        "message": "شبکه اصلی اتریوم"
-    },
-    "memorizePhrase": {
-        "message": "این عبارت را حفظ کن."
-    },
-    "menu": {
-        "message": "فهرست"
-    },
-    "message": {
-        "message": "پیام"
-    },
-    "metamaskDescription": {
-        "message": "در حال اتصال شما به اتریوم  و وب غیر متمرکز."
-    },
-    "metamaskSeedWords": {
-        "message": "کلمات بذر متاماسک"
-    },
-    "metamaskVersion": {
-        "message": "نسخه متامسک"
-    },
-    "min": {
-        "message": "کمینه"
-    },
-    "missingYourTokens": {
-        "message": "توکن های خود را نمی بینید؟"
-    },
-    "minutesShorthand": {
-        "message": "کمینه"
-    },
-    "mobileSyncTitle": {
-        "message": "همگام سازی حسابها با تلفن همراه"
-    },
-    "mobileSyncText": {
-        "message": "لطفا برای تایید هویت گذرواژه خود را تایپ کنید."
-    },
-    "myAccounts": {
-        "message": "حسابهای من"
-    },
-    "mustSelectOne": {
-        "message": "باید حداقل یک توکن را انتخاب کنید."
-    },
-    "needEtherInWallet": {
-        "message": "برای ارتباط برقرار کردن با برنامه های غیر متمرکز با استفاده از متامسک، به اتر در کیف پول خود نیاز خواهید داشت."
-    },
-    "needImportFile": {
-        "message": "شما باید یک فایل را برای وارد کردن انتخاب کنید",
-        "description": "User is important an account and needs to add a file to continue"
-    },
-    "needImportPassword": {
-        "message": "شما باید یک گذرواژه برای فایل انتخاب شده وارد کنید.",
-        "description": "گذرواژه و فایل مورد نیاز برای وارد کردن یک حساب"
-    },
-    "negativeETH": {
-        "message": "نمی توان مقدار منفی ETH را ارسال کرد."
-    },
-    "networkName": {
-        "message": "نام شبکه"
-    },
-    "networks": {
-        "message": "شبکه ها"
-    },
-    "networkSettingsDescription": {
-        "message": "شبکه های RPC سفارشی را اضافه و ویرایش کنید"
-    },
-    "nevermind": {
-        "message": "مهم نیست"
-    },
-    "newAccount": {
-        "message": "حساب جدید"
-    },
-    "newAccountNumberName": {
-        "message": "حساب $1",
-        "description": "نام پیش فرض حساب بعدی که در صفحه ایجاد حساب ایجاد می شود"
-    },
-    "newContract": {
-        "message": "قرارداد جدید"
-    },
-    "newPassword": {
-        "message": "گذرواژه جدید (حداقل 8 کاراکتر)"
-    },
-    "newPassword8Chars": {
-        "message": "گذرواژه جدید (حداقل 8 کاراکتر)"
-    },
-    "newRecipient": {
-        "message": "گیرنده جدید"
-    },
-    "newNetwork": {
-        "message": "شبکه جدید"
-    },
-    "newToMetaMask": {
-        "message": "جدیدا متامسک را استفاده میکنید؟"
-    },
-    "noAlreadyHaveSeed": {
-        "message": "نه، من قبلا یک جمله بذر دارم"
-    },
-    "protectYourKeys": {
-        "message": "از کلید های خود محافظت کنید!"
-    },
-    "protectYourKeysMessage1": {
-        "message": "از اصطلاح بذرتان مراقبت کنید - وب سایت هایی که تلاش می کنند از متامسک تقلید کنند، گزارش شده اند. متامسک هرگز عبارت بذر شما را درخواست نخواهد کرد!"
-    },
-    "protectYourKeysMessage2": {
-        "message": "از عبارت بذر خود مراقبت کنید. اگر مورد مشکوکی می بینید یا در مورد یک وب سایت مطمئن نیستید، به آدرس support@metamask.io گزارش دهید."
-    },
-    "rpcUrl": {
-        "message": "URL جدید RPC"
-    },
-    "showAdvancedOptions": {
-        "message": "نمایش گزینه های پیشرفته"
-    },
-    "hideAdvancedOptions": {
-        "message": "مخفی کردن گزینه های پیشرفته"
-    },
-    "optionalChainId": {
-        "message": "ChainID (اختیاری)"
-    },
-    "optionalSymbol": {
-        "message": "نماد (اختیاری)"
-    },
-    "optionalNickname": {
-        "message": "نام مستعار (اختیاری)"
-    },
-    "newTotal": {
-        "message": "مجموع جدید"
-    },
-    "newTransactionFee": {
-        "message": "هزینه تراکنش جدید"
-    },
-    "next": {
-        "message": "بعد"
-    },
-    "noAddressForName": {
-        "message": "هیچ آدرسی برای این نام تعیین نشده است."
-    },
-    "noDeposits": {
-        "message": "هیچ سپرده ای دریافت نشده است"
-    },
-    "noConversionRateAvailable": {
-        "message": "نرخ تبدیل موجود نیست"
-    },
-    "noTransactionHistory": {
-        "message": "تاریخ معامله موجود نیست"
-    },
-    "noTransactions": {
-        "message": "شما هیچ تراکنشی ندارید"
-    },
-    "notEnoughGas": {
-        "message": "گاز کافی نیست"
-    },
-    "notFound": {
-        "message": "یافت نشد"
-    },
-    "notStarted": {
-        "message": "شروع نشده"
-    },
-    "noWebcamFoundTitle": {
-        "message": "وب کم یافت نشد"
-    },
-    "noWebcamFound": {
-        "message": "وب کم رایانه شما یافت نشد لطفا دوباره تلاش کنید."
-    },
-    "ofTextNofM": {
-        "message": "از"
-    },
-    "oldUI": {
-        "message": "رابط کاربری قدیمی"
-    },
-    "oldUIMessage": {
-        "message": "شما به رابط کاربری قدیمی بازگشته اید.می توانید با استفاده از گزینه موجود در منوی کشویی بالا سمت راست، به رابط کاربری جدید برگردید."
-    },
-    "onlySendToEtherAddress": {
-        "message": "ETH را فقط به آدرس اتریوم ارسال کنید."
-    },
-    "onlySendTokensToAccountAddress": {
-        "message": "فقط $1 به آدرس اتریوم ارسال کنید.",
-        "description": "نماد توکن را نمایش می دهد"
-    },
-    "openInTab": {
-        "message": "در تب باز کن"
-    },
-    "or": {
-        "message": "یا",
-        "description": "انتخاب بین ایجاد یا وارد کردن یک حساب جدید"
-    },
-    "orderOneHere": {
-        "message": "Trezor یا Ledger سفارش دهید و وجوه خود را در ذخیره سازی سرد حفظ کنید."
-    },
-    "origin": {
-        "message": "مبدا"
-    },
-    "outgoing": {
-        "message": "خروجی"
-    },
-    "parameters": {
-        "message": "پارامترها"
-    },
-    "originalTotal": {
-        "message": "مجموع اصلی"
-    },
-    "participateInMetaMetrics": {
-        "message": "در MetaMetrics شرکت کنید"
-    },
-    "participateInMetaMetricsDescription": {
-        "message": "در MetaMetrics شرکت کنید تا به ما کمک کنید متامسک را بهبود ببخشیم"
-    },
-    "password": {
-        "message": "گذرواژه"
-    },
-    "passwordCorrect": {
-        "message": "لطفا مطمئن شوید گذرواژه شما صحیح است"
-    },
-    "passwordsDontMatch": {
-        "message": "گذرواژه ها مطابقت ندارند"
-    },
-    "passwordMismatch": {
-        "message": "گذرواژه ها مطابقت ندارند",
-        "description": "در فرآیند ایجاد گذرواژه، دو فیلد رمز جدید مطابقت نداشتند"
-    },
-    "passwordNotLongEnough": {
-        "message": "گذرواژه به اندازه کافی طولانی نیست"
-    },
-    "passwordShort": {
-        "message": "گذرواژه به اندازه کافی طولانی نیست",
-        "description": "در فرآیند ایجاد گذرواژه، گذرواژه به اندازه کافی طولانی نیست که امن باشد"
-    },
-    "pastePrivateKey": {
-        "message": "رشته کلید خصوصی خود را در اینجا وارد کنید:",
-        "description": "برای وارد کردن حساب از یک کلید خصوصی"
-    },
-    "pasteSeed": {
-        "message": "بذر عبور خود را در اینجا بگذارید!"
-    },
-    "pending": {
-        "message": "انتظار"
-    },
-    "personalAddressDetected": {
-        "message": "آدرس شخصی شناسایی شده است. آدرس قرارداد توکن را وارد کنید"
-    },
-    "pleaseReviewTransaction": {
-        "message": "لطفا تراکنش خود را بررسی کنید"
-    },
-    "popularTokens": {
-        "message": "توکن های محبوب"
-    },
-    "prev": {
-        "message": "قبل"
-    },
-    "primaryCurrencySetting": {
-        "message": "ارز اصلی"
-    },
-    "primaryCurrencySettingDescription": {
-        "message": "گزینه بومی را انتخاب کنید تا الویت به نمایش مقادیر در ارز اصلی زنجیره (مثلا ETH) بدهید.گزینه فیات را انتخاب کنید تا الویت به نمایش مقادیر در ارز انتخابی خود بدهید."
-    },
-    "privacyMsg": {
-        "message": "سیاست حفظ حریم خصوصی"
-    },
-    "privateKey": {
-        "message": "کلید خصوصی",
-        "description": "برای وارد کردن حساب استفاده از این نوع فایل را انتخاب کنید"
-    },
-    "privateKeyWarning": {
-        "message": "هشدار: هرگز این کلید را افشا نکنید. هر شخصی با کلید خصوصی شما می تواند دارایی های موجود در حساب شما را سرقت کند."
-    },
-    "privateNetwork": {
-        "message": "شبکه خصوصی"
-    },
-    "qrCode": {
-        "message": "نمایش کد QR"
-    },
-    "queue": {
-        "message": "صف"
-    },
-    "readdToken": {
-        "message": "شما می توانید این توکن را با رفتن به «اضافه کردن توکن» در منوی تنظیمات حسابتان اضافه کنید."
-    },
-    "readMore": {
-        "message": "بیشتر بخوانید در اینجا"
-    },
-    "readMore2": {
-        "message": "بیشتر بخوانید."
-    },
-    "receive": {
-        "message": "دريافت"
-    },
-    "recipientAddress": {
-        "message": "آدرس گیرنده"
-    },
-    "refundAddress": {
-        "message": "آدرس بازپرداخت شما"
-    },
-    "rejectAll": {
-        "message": "رد کردن همه"
-    },
-    "rejectTxsN": {
-        "message": "در کردن تراکنش های $1"
-    },
-    "rejectTxsDescription": {
-        "message": "شما در آستانه رد کردن دسته ای $1 تراکنش هستید"
-    },
-    "rejected": {
-        "message": "رد شد"
-    },
-    "reset": {
-        "message": "تنظیم مجدد"
-    },
-    "resetAccount": {
-        "message": "تنظیم مجدد حساب"
-    },
-    "resetAccountDescription": {
-        "message": "تنظیم مجدد سابقه تراکنش های حساب شما را پاک می کند."
-    },
-    "deleteNetwork": {
-        "message": "حذف شبکه؟"
-    },
-    "deleteNetworkDescription": {
-        "message": "آیا مطمئن هستید که میخواهید این شبکه را حذف کنید؟"
-    },
-    "restoreFromSeed": {
-        "message": "بازگرداندن حساب؟"
-    },
-    "restoreVault": {
-        "message": "بازگرداندن مخزن"
-    },
-    "restoreAccountWithSeed": {
-        "message": "بازگرداندن حساب با عبارت بذر"
-    },
-    "requestsAwaitingAcknowledgement": {
-        "message": "درخواست ها در انتظار تایید هستند"
-    },
-    "required": {
-        "message": "مورد نیاز"
-    },
-    "retryWithMoreGas": {
-        "message": "با قیمت بالاتر گاز دوباره تلاش کنید در اینجا"
-    },
-    "restore": {
-        "message": "بازگرداندن"
-    },
-    "revealSeedWords": {
-        "message": "افشا کردن عبارت های بذر"
-    },
-    "revealSeedWordsTitle": {
-        "message": "عبارت بذر"
-    },
-    "revealSeedWordsDescription": {
-        "message": "اگر مرورگر و یا رایانه خود را تغییر دهید، برای دسترسی به حسابهایتان به این جمله های بذر نیاز خواهید داشت. آنها را در جایی امن و مخفی ذخیره کنید."
-    },
-    "revealSeedWordsWarningTitle": {
-        "message": "این عبارت را با هیچ کس به اشتراک نگذارید!"
-    },
-    "revealSeedWordsWarning": {
-        "message": "این عبارت ها می توانند برای سرقت تمام حساب های شما استفاده شوند."
-    },
-    "revert": {
-        "message": "برگرداندن"
-    },
-    "remove": {
-        "message": "حذف کردن"
-    },
-    "removeAccount": {
-        "message": "حذف حساب"
-    },
-    "removeAccountDescription": {
-        "message": "این حساب از کیف پول شما حذف خواهد شد. لطفا قبل از ادامه دادن مطمئن شوید که عبارت بذر اصلی یا کلید خصوصی این حساب وارد شده را داشته باشید. شما می توانید مجددا حساب ها را از لیست کشویی حساب وارد یا ایجاد کنید."
-    },
-    "readyToConnect": {
-        "message": "آماده برای اتصال؟"
-    },
-    "rinkeby": {
-        "message": "شبکه تست Rinkeby"
-    },
-    "ropsten": {
-        "message": "شبکه آزمایشی Ropsten"
-    },
-    "goerli": {
-        "message": "شبکه تست Goerli"
-    },
-    "rpc": {
-        "message": "RPC سفارشی"
-    },
-    "sampleAccountName": {
-        "message": "به عنوان مثال. حساب جدید من",
-        "description": "کمک به کاربر برای درک مفهوم اضافه کردن یک نام قابل خواندن توسط انسان به حساب کاربری خود"
-    },
-    "save": {
-        "message": "ذخیره"
-    },
-    "slow": {
-        "message": "آهسته"
-    },
-    "slower": {
-        "message": "آهسته تر"
-    },
-    "saveAsCsvFile": {
-        "message": "ذخیره به عنوان فایل CSV"
-    },
-    "saveAsFile": {
-        "message": "ذخیره به عنوان فایل",
-        "description": "فرآیند صادرات حساب"
-    },
-    "saveSeedAsFile": {
-        "message": "ذخیره کلمات بذر به عنوان فایل"
-    },
-    "scanInstructions": {
-        "message": "کد QR را در مقابل دوربین خود قرار دهید"
-    },
-    "scanQrCode": {
-        "message": "اسکن کد QR"
-    },
-    "search": {
-        "message": "جستجو"
-    },
-    "searchResults": {
-        "message": "نتایج جستجو"
-    },
-    "secretBackupPhrase": {
-        "message": "عبارت مخفی پشتیبان"
-    },
-    "secretBackupPhraseDescription": {
-        "message": "عبارت مخفی پشتیبانی شما، پشتیبان گیری و بازگرداندن حساب شما را آسان می کند."
-    },
-    "secretBackupPhraseWarning": {
-        "message": "هشدار: هرگز عبارت پشتیبان خود را افشا نکنید. هر کسی که با این عبارت می تواند اتر شما را برای همیشه ببرد."
-    },
-    "secretPhrase": {
-        "message": "عبارت دوازده کلمه ای مخفی خود را برای بازگرداندن مخزن در اینجا وارد کنید."
-    },
-    "securityAndPrivacy": {
-        "message": "امنیت و حریم خصوصی"
-    },
-    "securitySettingsDescription": {
-        "message": "تنظیمات حریم خصوصی و عبارت بذر کیف پول"
-    },
-    "secondsShorthand": {
-        "message": "ثانیه"
-    },
-    "seedPhrasePlaceholder": {
-        "message": "هر کلمه را با یک فضای جداگانه جدا کنید"
-    },
-    "seedPhraseReq": {
-        "message": "عبارات بذر ۱۲ حرف طول دارند"
-    },
-    "select": {
-        "message": "انتخاب"
-    },
-    "selectCurrency": {
-        "message": "انتخاب واحد پول"
-    },
-    "selectEachPhrase": {
-        "message": "لطفا هر عبارت را انتخاب کنید تا مطمئن شوید که درست است."
-    },
-    "selectLocale": {
-        "message": "انتخاب زبان"
-    },
-    "selectService": {
-        "message": "انتخاب سرویس"
-    },
-    "selectType": {
-        "message": "انتخاب نوع"
-    },
-    "send": {
-        "message": "ارسال"
-    },
-    "sendAmount": {
-        "message": "ارسال مبلغ"
-    },
-    "sendETH": {
-        "message": "ارسال ETH"
-    },
-    "sendTokens": {
-        "message": "ارسال توکن"
-    },
-    "sentEther": {
-        "message": "ارسال اتر"
-    },
-    "sentTokens": {
-        "message": "ارسال توکن ها"
-    },
-    "separateEachWord": {
-        "message": "هر کلمه را با یک فضای جداگانه جدا کنید"
-    },
-    "searchTokens": {
-        "message": "جستجو توکن ها"
-    },
-    "selectAnAddress": {
-        "message": "یک آدرس را انتخاب کنید"
-    },
-    "selectAnAccount": {
-        "message": "یک حساب را انتخاب کنید"
-    },
-    "selectAnAccountHelp": {
-        "message": "حساب کاربری برای مشاهده در متامسک را انتخاب کنید"
-    },
-    "selectAnAsset": {
-        "message": "یک دارایی را انتخاب کنید"
-    },
-    "selectAHigherGasFee": {
-        "message": "یک هزینه بالاتر گاز برای سرعت بخشیدن به پردازش تراکنش خود را انتخاب کنید. *"
-    },
-    "selectHdPath": {
-        "message": "مسیر HD را انتخاب کنید"
-    },
-    "selectPathHelp": {
-        "message": "اگر حسابهای Ledger موجود خود را در زیر نمی بینید، سعی کنید مسیرها را به \"Legacy (MEW / MyCrypto)\" تغییر دهید."
-    },
-    "sendTokensAnywhere": {
-        "message": "ارسال توکن ها به هر دارنده حساب Ethereum"
-    },
-    "settings": {
-        "message": "تنظیمات"
-    },
-    "shapeshiftBuy": {
-        "message": "خرید با Shapeshift"
-    },
-    "showAdvancedGasInline": {
-        "message": "کنترل های پیشرفته گاز"
-    },
-    "showAdvancedGasInlineDescription": {
-        "message": "برای نشان دادن قیمت گاز و محدود کردن کنترل به طور مستقیم بر روی صفحات ارسال و تایید، این گزینه را انتخاب کنید."
-    },
-    "showFiatConversionInTestnets": {
-        "message": "نمایش تبدیل در شبکه های تست"
-    },
-    "showFiatConversionInTestnetsDescription": {
-        "message": "برای نشان دادن تبدیل فیات در شبکه های تست این گزینه را انتخاب کنید"
-    },
-    "showPrivateKeys": {
-        "message": "نمایش کلیدهای خصوصی"
-    },
-    "showQRCode": {
-        "message": "نمایش کد QR"
-    },
-    "showHexData": {
-        "message": "نمایش دیتای هگزا"
-    },
-    "showHexDataDescription": {
-        "message": "برای نمایش دیتای هگزا در صفحه ارسال این گزینه را انتخاب کنید"
-    },
-    "sign": {
-        "message": "امضا کردن"
-    },
-    "signatureRequest": {
-        "message": "درخواست امضا"
-    },
-    "signed": {
-        "message": "امضا شده"
-    },
-    "signMessage": {
-        "message": "امضا پیام"
-    },
-    "signNotice": {
-        "message": "امضای این پیام می‌تواند عوارض جانبی خطرناکی داشته باشد. فقط پیامهای سایتهایی را که کاملا به آنها اطمینان دارید برای حساب خود امضا کنید. این روش خطرناک در نسخه آینده حذف خواهد شد."
-    },
-    "sigRequest": {
-        "message": "درخواست امضا"
-    },
-    "sigRequested": {
-        "message": "امضا درخواست شده"
-    },
-    "somethingWentWrong": {
-        "message": "اوه! چیزی اشتباه شد"
-    },
-    "spaceBetween": {
-        "message": "تنها یک فاصله می تواند بین کلمات وجود داشته باشد"
-    },
-    "speedUp": {
-        "message": "سرعت بخشیدن"
-    },
-    "speedUpTitle": {
-        "message": "سرعت بخشیدن به تراکنش"
-    },
-    "speedUpSubtitle": {
-        "message": " قیمت گاز خود را افزایش دهید تا تراکنش را بازنویسی کرده و سرعت آن را افزایش دهید"
-    },
-    "speedUpCancellation": {
-        "message": "سرعت این لغو را افزایش دهید"
-    },
-    "speedUpTransaction": {
-        "message": "سرعت این تراکنش را افزایش دهید"
-    },
-    "switchNetworks": {
-        "message": "تعویض شبکه"
-    },
-    "status": {
-        "message": "وضعیت"
-    },
-    "stateLogs": {
-        "message": "گزارشات وضعیت"
-    },
-    "stateLogsDescription": {
-        "message": "گزارشات وضعیت می توانند شامل آدرسهای عمومی حساب شما و تراکنش های ارسال شده باشند."
-    },
-    "stateLogError": {
-        "message": "خطا در بازیابی گزارشات وضعیت"
-    },
-    "step1HardwareWallet": {
-        "message": "۱. کیف پول سخت افزاری را وصل کنید"
-    },
-    "step1HardwareWalletMsg": {
-        "message": "کیف پول سخت افزاری خود را به طور مستقیم به کامپیوتر خود وصل کنید."
-    },
-    "step2HardwareWallet": {
-        "message": "۲. یک حساب را انتخاب کنید"
-    },
-    "step2HardwareWalletMsg": {
-        "message": "حسابی را که میخواهید مشاهده کنید انتخاب کنید. شما فقط می توانید یک حساب را در یک زمان انتخاب کنید."
-    },
-    "step3HardwareWallet": {
-        "message": "۳. شروع به استفاده از داپ و بیشتر!"
-    },
-    "step3HardwareWalletMsg": {
-        "message": "از حساب سخت افزاری خود مانند هر حساب اتریوم دیگری استفاده کنید. وارد داپ شوید، Eth ارسال کنید، توکن های ERC20 وتوکن های غیر قابل تعویض مانند CryptoKitties را خرید و ذخیره کنید."
-    },
-    "storePhrase": {
-        "message": "این عبارت در یک برنامه مدیریت گذرواژه مانند 1Password ذخیره کنید."
-    },
-    "submit": {
-        "message": "ارسال"
-    },
-    "submitted": {
-        "message": "ارسال شد"
-    },
-    "supportCenter": {
-        "message": "از مرکز پشتیبانی ما دیدن کنید"
-    },
-    "symbol": {
-        "message": "نماد"
-    },
-    "symbolBetweenZeroTwelve": {
-        "message": "نماد باید بین ۰ تا ۱۲ کاراکتر باشد."
-    },
-    "syncWithMobile": {
-        "message": "همگام سازی با تلفن همراه"
-    },
-    "syncWithMobileTitle": {
-        "message": "همگام سازی با تلفن همراه"
-    },
-    "syncWithMobileDesc": {
-        "message": "شما می توانید حساب ها و اطلاعات خود را با دستگاه تلفن همراه خود همگام سازی کنید. برنامه متامسک را بر روی تلفن همراه خود باز کنید، به «تنظیمات» بروید و روی «همگام سازی از افزونه مرورگر» کلیک کنید."
-    },
-    "syncWithMobileDescNewUsers": {
-        "message": "اگر برای اولین بار برنامه MetaMask Mobile را باز کرده اید، مراحل را در گوشی خود دنبال کنید."
-    },
-    "syncWithMobileScanThisCode": {
-        "message": "این کد را با برنامه تلفن همراه متامسک خود اسکن کنید"
-    },
-    "syncWithMobileBeCareful": {
-        "message": "هنگامیکه این کد را اسکن می کنید مطمئن شوید که هیچ کس دیگر به صفحه شما نگاه نمی کند"
-    },
-    "syncWithMobileComplete": {
-        "message": "داده های شما به صورت موفقیت آمیز همگام سازی شده اند. از برنامه تلفن همراه متامسک خود لذت ببرید!"
-    },
-    "takesTooLong": {
-        "message": "زیاد طول کشید؟"
-    },
-    "terms": {
-        "message": "شرایط استفاده"
-    },
-    "testFaucet": {
-        "message": "شیر تست"
-    },
-    "thisWillCreate": {
-        "message": "این یک کیف پول و عبارت بذر جدید ایجاد خواهد کرد"
-    },
-    "tips": {
-        "message": "نکات"
-    },
-    "to": {
-        "message": "به"
-    },
-    "toETHviaShapeShift": {
-        "message": "$1 به ETH از طریق ShapeShift",
-        "description": "سیستم نوع سپرده را در شروع پیام پر می کند"
-    },
-    "token": {
-        "message": "توکن"
-    },
-    "tokenAddress": {
-        "message": "آدرس توکن"
-    },
-    "tokenAlreadyAdded": {
-        "message": "توکن قبلا اضافه شده است."
-    },
-    "tokenBalance": {
-        "message": "موجودی توکن شما:"
-    },
-    "tokenContractAddress": {
-        "message": "آدرس قرارداد توکن"
-    },
-    "tokenSelection": {
-        "message": "جستجو برای توکن یا انتخاب از لیست توکن های محبوب ما."
-    },
-    "tokenSymbol": {
-        "message": "نماد توکن"
-    },
-    "tokenWarning1": {
-        "message": "توکن هایی که با حساب متامسک خود خریداری کرده اید را دنبال کنید. اگر با استفاده از یک حساب کاربری دیگر توکن ها را خریداری کردید، این توکن ها در اینجا ظاهر نمی شوند."
-    },
-    "total": {
-        "message": "مجموع"
-    },
-    "transaction": {
-        "message": "تراکنش"
-    },
-    "transactionConfirmed": {
-        "message": "تراکنش در $2 تایید شد"
-    },
-    "transactionCreated": {
-        "message": "تراکنش با مقدار $1 در $2 ایجاد شد."
-    },
-    "transactionWithNonce": {
-        "message": "تراکنش $1"
-    },
-    "transactionDropped": {
-        "message": "تراکنش در $2 رها شد."
-    },
-    "transactionSubmitted": {
-        "message": "تراکنش با هزینه گاز $1 در $2 ارسال شد."
-    },
-    "transactionResubmitted": {
-        "message": "تراکنش مجددا با هزینه گاز اضافه شده به $1 در $2 ارسال شد."
-    },
-    "transactionUpdated": {
-        "message": "تراکنش در $2 به روز شد"
-    },
-    "transactionUpdatedGas": {
-        "message": "تراکنش با قیمت گاز $1 در $2 به روز شد."
-    },
-    "transactionErrored": {
-        "message": "تراکنش با خطا روبرو شد."
-    },
-    "transactionCancelAttempted": {
-        "message": "تلاش برای لغو تراکنش با هزینه گاز $1 در $2"
-    },
-    "transactionCancelSuccess": {
-        "message": "تراکنش با موفقیت در $2 لغو شد"
-    },
-    "transactions": {
-        "message": "تراکنش ها"
-    },
-    "transactionError": {
-        "message": "خطای تراکنش. استثنا در کد قرارداد اعلان شد."
-    },
-    "transactionErrorNoContract": {
-        "message": "تلاش برای تماس با یک تابع در یک آدرس غیر قراردادی."
-    },
-    "transactionFee": {
-        "message": "هزینه تراکنش"
-    },
-    "transactionMemo": {
-        "message": "یادداشت تراکنش (اختیاری)"
-    },
-    "transactionNumber": {
-        "message": "شماره تراکنش"
-    },
-    "transactionTime": {
-        "message": "زمان تراکنش"
-    },
-    "transfer": {
-        "message": "انتقال"
-    },
-    "transferFrom": {
-        "message": "انتقال از"
-    },
-    "transfers": {
-        "message": "انتقال ها"
-    },
-    "trezorHardwareWallet": {
-        "message": "کیف پول سخت افزاری TREZOR"
-    },
-    "troubleTokenBalances": {
-        "message": "ما در حال بارگذاری موجودی توکن های شما دچار مشکل شدیم. شما می توانید آنها را مشاهده کنید ",
-        "description": "دنبال لینک (در اینجا) برای مشاهده موجودی توکن ها"
-    },
-    "tryAgain": {
-        "message": "دوباره امتحان کنید"
-    },
-    "twelveWords": {
-        "message": "این ۱۲ کلمه تنها راه بازگرداندن حساب های متامسک شما هستند.آنها را در جایی امن و مخفی ذخیره کنید."
-    },
-    "typePassword": {
-        "message": "گذرواژه متامسک خود را تایپ کنید"
-    },
-    "uiMigrationAnnouncement": {
-        "message": "به رابط کاربری جدید متامسک خوش آمدید. اگر در مورد رابط کاربری جدید یا درخواست های ویژگی بازخورد دارید، لطفا با تیم پشتیبانی ما یا GitHub تماس بگیرید."
-    },
-    "uiWelcome": {
-        "message": "به رابط کاربری جدید (بتا) خوش آمدید"
-    },
-    "uiWelcomeMessage": {
-        "message": "شما اکنون از رابط کاربری جدید متامسک استفاده می کنید."
-    },
-    "unapproved": {
-        "message": "تأیید نشده"
-    },
-    "unavailable": {
-        "message": "غیر قابل دسترس"
-    },
-    "units": {
-        "message": "واحد ها"
-    },
-    "unknown": {
-        "message": "ناشناس"
-    },
-    "unknownNetwork": {
-        "message": "شبکه خصوصی ناشناس"
-    },
-    "unknownNetworkId": {
-        "message": "شناسه شبکه ناشناس"
-    },
-    "unknownQrCode": {
-        "message": "خطا: ما نمی توانیم کد QR را شناسایی کنیم"
-    },
-    "unknownCameraErrorTitle": {
-        "message": "اوه! خطا روی داد..."
-    },
-    "unknownCameraError": {
-        "message": "هنگام تلاش برای دسترسی به دوربین شما، خطایی روی داد. لطفا دوباره تلاش کنید..."
-    },
-    "unlock": {
-        "message": "گشودن"
-    },
-    "unlockMessage": {
-        "message": "وب غیر متمرکز در انتظار است"
-    },
-    "updatedWithDate": {
-        "message": "$1 به روز شد"
-    },
-    "uriErrorMsg": {
-        "message": "URI ها به پیشوند مناسب HTTP / HTTPS نیاز دارند."
-    },
-    "usaOnly": {
-        "message": "فقط ایالات متحده آمریکا",
-        "description": "استفاده از این مبادله به افراد داخل آمریکا محدود است"
-    },
-    "usedByClients": {
-        "message": "توسط انواع مختلف مشتریان استفاده می شود"
-    },
-    "useOldUI": {
-        "message": "از رابط کاربری قدیمی استفاده کنید"
-    },
-    "validFileImport": {
-        "message": "شما باید یک فایل معتبر برای وارد کردن انتخاب کنید."
-    },
-    "vaultCreated": {
-        "message": "مخزن ایجاد شد"
-    },
-    "viewAccount": {
-        "message": "مشاهده حساب"
-    },
-    "viewinExplorer": {
-        "message": "مشاهده در جستجوگر"
-    },
-    "viewOnCustomBlockExplorer": {
-        "message": "مشاهده در $1"
-    },
-    "viewOnEtherscan": {
-        "message": "مشاهده در Etherscan"
-    },
-    "viewNetworkInfo": {
-        "message": "مشاهده معلومات شبکه"
-    },
-    "visitWebSite": {
-        "message": "از وبسایت ما دیدن کنید"
-    },
-    "walletSeed": {
-        "message": "بذر کیف پول"
-    },
-    "warning": {
-        "message": "هشدار"
-    },
-    "welcomeBack": {
-        "message": "خوش آمدید!"
-    },
-    "welcome": {
-        "message": "به متامسک خوش آمدید"
-    },
-    "whatsThis": {
-        "message": "این چیست؟"
-    },
-    "writePhrase": {
-        "message": "این عبارت را در یک قطعه کاغذ نوشته و در یک مکان امن ذخیره کنید. اگر میخواهید امنیت بیشتری داشته باشید، آن را روی چندین قطعه کاغذ بنویسید و هر کدام را در ۲ تا ۳ مکان مختلف ذخیره کنید."
-    },
-    "yesLetsTry": {
-        "message": "بله، بگذارید امتحان کنیم"
-    },
-    "youNeedToAllowCameraAccess": {
-        "message": "برای استفاده از این ویژگی باید اجازه دسترسی به دوربین را بدهید."
-    },
-    "yourSigRequested": {
-        "message": "امضای شما درحال درخواست است"
-    },
-    "youSign": {
-        "message": "شما در حال امضا هستید"
-    },
-    "yourPrivateSeedPhrase": {
-        "message": "عبارت بذر خصوصی شما"
-    },
-    "yourUniqueAccountImage": {
-        "message": "تصویر حساب منحصر به فرد شما"
-    },
-    "yourUniqueAccountImageDescription1": {
-        "message": "این تصویر از طریق برنامه نویسی با استفاده از شماره حساب جدید شما برای شما ساخته شده است."
-    },
-    "yourUniqueAccountImageDescription2": {
-        "message": "شما هر بار که باید یک تراکنش را تایید کنید این تصویر را خواهید دید."
-    },
-    "yourUniqueAccountImageDescription3": {
-        "message": "متامسک هرگز عبارت بذر شما را درخواست نخواهد کرد!"
-    },
-    "zeroGasPriceOnSpeedUpError": {
-        "message": "قیمت گاز صفر با سرعت بالا"
-    }
+  "exposeAccounts": {
+    "message": "نمایش دادن حساب ها"
+  },
+  "exposeDescription": {
+    "message": "حساب های خود را به وب سایت فعلی نمایش دهید. برای داپ های میراثی مفید است."
+  },
+  "chartOnlyAvailableEth": {
+    "message": "جدول تنها در شبکه های اتریوم موجود است."
+  },
+  "confirmExpose": {
+    "message": "آیا مطمئن هستید که می خواهید حساب های خود را به وب سایت فعلی نمایش دهید؟"
+  },
+  "confirmClear": {
+    "message": "آیا مطمئن هستید که می خواهید وب سایت های تایید شده را پاک کنید؟"
+  },
+  "contractInteraction": {
+    "message": "تعامل قرارداد"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "داده های وب سایت تایید شده با موفقیت پاک سازی شدند."
+  },
+  "clearApprovalData": {
+    "message": "پاک کردن داده های حریم خصوصی"
+  },
+  "reject": {
+    "message": "رد کردن"
+  },
+  "providerRequest": {
+    "message": "$1 می‌خواهد به حساب شما دسترسی پیدا کند."
+  },
+  "providerRequestInfo": {
+    "message": "این سایت درخواست دسترسی به آدرس حساب فعلی شما را دارد. همیشه مطمئن شوید که به سایتهایی که با آنها در تعامل هستید اعتماد دارید."
+  },
+  "about": {
+    "message": "درباره"
+  },
+  "aboutSettingsDescription": {
+    "message": "نسخه، مرکز پشتیبانی و اطلاعات تماس."
+  },
+  "aboutUs": {
+    "message": "درباره ما"
+  },
+  "accept": {
+    "message": "قبول کردن"
+  },
+  "acceleratingATransaction": {
+    "message": "* شتاب دادن به تراکنش با استفاده از قیمت گاز بالاتر شانس پردازش سریع تر توسط شبکه را افزایش می دهد، اما همیشه تضمین نمی شود."
+  },
+  "accessingYourCamera": {
+    "message": "دسترسی به دوربین شما..."
+  },
+  "account": {
+    "message": "حساب"
+  },
+  "accountDetails": {
+    "message": "جزئیات حساب"
+  },
+  "accountName": {
+    "message": "نام حساب"
+  },
+  "accountOptions": {
+    "message": "گزینه های حساب"
+  },
+  "accountSelectionRequired": {
+    "message": "باید یک حساب انتخاب کنید!"
+  },
+  "activityLog": {
+    "message": "گزارش فعالیت"
+  },
+  "address": {
+    "message": "آدرس"
+  },
+  "addNetwork": {
+    "message": "اضافه کردن شبکه"
+  },
+  "advanced": {
+    "message": "پیشرفته"
+  },
+  "advancedSettingsDescription": {
+    "message": "دسترسی به ویژگیهای توسعه دهنده، دانلود State Log، تنظیم مجدد حساب، راه اندازی تست نت و RPC سفارشی"
+  },
+  "advancedOptions": {
+    "message": "گزینه های پیشرفته"
+  },
+  "addCustomToken": {
+    "message": "اضافه کردن توکن سفارشی"
+  },
+  "addToken": {
+    "message": "اضافه کردن توکن"
+  },
+  "addTokens": {
+    "message": "اضافه کردن توکن ها"
+  },
+  "addSuggestedTokens": {
+    "message": "اضافه کردن توکن های پیشنهادی"
+  },
+  "addAcquiredTokens": {
+    "message": "اضافه کردن توکن هایی که با متامسک به دست آورده اید"
+  },
+  "agreeTermsOfService": {
+    "message": "من با شرایط خدمات موافقم."
+  },
+  "allDone": {
+    "message": "انجام شد"
+  },
+  "alreadyHaveSeedPhrase": {
+    "message": "نه، من از قبل عبارت بذر دارم."
+  },
+  "amount": {
+    "message": "مقدار"
+  },
+  "amountPlusGas": {
+    "message": "مقدار + گاز"
+  },
+  "amountPlusTxFee": {
+    "message": "مقدار + هزینه تراکنش"
+  },
+  "appDescription": {
+    "message": "یک کیف پول اتریوم در مرورگر شما",
+    "description": "توضیحات برنامه"
+  },
+  "appName": {
+    "message": "متامسک",
+    "description": "نام برنامه"
+  },
+  "approve": {
+    "message": "تایید کردن"
+  },
+  "approved": {
+    "message": "تایید شد"
+  },
+  "asset": {
+    "message": "دارایی"
+  },
+  "attemptingConnect": {
+    "message": "تلاش برای اتصال به زنجیره بستکی"
+  },
+  "attemptToCancel": {
+    "message": "تلاش برای لغو؟"
+  },
+  "attemptToCancelDescription": {
+    "message": "ارسال این تلاش تضمین کننده لغو تراکنش اصلی نخواهد بود. اگر تلاش لغو موفقیت آمیز باشد، هزینه تراکنش بالا برای شما حساب خواهد شد."
+  },
+  "attributions": {
+    "message": "تخصیصات"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "تایمر خروج خودکار (دقیقه)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "زمان بیکاری را بر حسب دقیقه تنظیم کنید تا متامسک به صورت خودکار از سیستم خارج شود."
+  },
+  "available": {
+    "message": "در دسترس"
+  },
+  "average": {
+    "message": "میانگین"
+  },
+  "back": {
+    "message": "عقب"
+  },
+  "balance": {
+    "message": "موجودی حساب"
+  },
+  "balanceOutdated": {
+    "message": "ممکن است موجودی حساب به روز نباشد"
+  },
+  "balances": {
+    "message": "موجودی حساب (های) توکن"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "موجودی حساب برای مجموع کلی گاز فعلی کافی نیست"
+  },
+  "basic": {
+    "message": "اساسی"
+  },
+  "beta": {
+    "message": "بتا"
+  },
+  "betweenMinAndMax": {
+    "message": "باید بیشتر یا برابر با $1 و کمتر یا برابر با $2 باشد.",
+    "description": "راهنما برای وارد کردن عدد هگزا دسیمال به عنوان ورودی دهدهی"
+  },
+  "blockExplorerUrl": {
+    "message": "جستجوگر بلوک"
+  },
+  "blockExplorerView": {
+    "message": "مشاهده حساب در $1",
+    "description": "$1 جایگزین شده توسط URL برای جستجوگر بلوک سفارشی"
+  },
+  "blockiesIdenticon": {
+    "message": "استفاده از Blockies Identicon"
+  },
+  "borrowDharma": {
+    "message": "قرض گرفتن با Dharma (بتا)"
+  },
+  "browserNotSupported": {
+    "message": "مرورگر شما پشتیبانی نمی شود..."
+  },
+  "builtInCalifornia": {
+    "message": "متامسک در کالیفرنیا طراحی و ساخته شده است."
+  },
+  "buy": {
+    "message": "خرید"
+  },
+  "buyCoinbase": {
+    "message": "از Coinbase خریداری کنید"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "خرید بیتکوین، اتریوم و لایت کوین از Coinbase محبوب ترین روش در دنیا است."
+  },
+  "buyWithWyre": {
+    "message": "خرید اتریوم با استفاده از Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre به شما اجازه می دهد با استفاده از کارت اعتباری به صورت مستقیم اتریوم به حساب متامسک خود واریز کنید."
+  },
+  "buyCoinSwitch": {
+    "message": "ازCoinSwitch  خریداری کنید"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch مقصد نهایی برای مبادله بیش از ۳۰۰ رمزارز با بهترین نرخ است."
+  },
+  "bytes": {
+    "message": "بایت ها"
+  },
+  "ok": {
+    "message": "باشه"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "URL جستجوگر بلوک (اختیاری)"
+  },
+  "cancel": {
+    "message": "لغو"
+  },
+  "cancelAttempt": {
+    "message": "تلاش برای لغو"
+  },
+  "cancellationGasFee": {
+    "message": "هزینه گاز برای لغو"
+  },
+  "cancelled": {
+    "message": "لغو شد"
+  },
+  "cancelN": {
+    "message": "تمام تراکنش های $1 را لغو کن"
+  },
+  "chainId": {
+    "message": "شناسه زنجیره"
+  },
+  "classicInterface": {
+    "message": "از رابط کلاسیک استفاده کن"
+  },
+  "clickCopy": {
+    "message": "برای کپی کردن کلیک کنید"
+  },
+  "clickToAdd": {
+    "message": "برای اضافه کردن $1 به حساب خود بر روی آنها کلیک کنید"
+  },
+  "clickToRevealSeed": {
+    "message": "برای افشای کلمات سری بر روی اینجا کلیک کنید"
+  },
+  "close": {
+    "message": "بستن"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "برای اتصال به کیف پول سخت افزاری خود می بایست متامسک را بر روی گوگل کروم استفاده کنید."
+  },
+  "company": {
+    "message": "شرکت"
+  },
+  "confirm": {
+    "message": "تایید"
+  },
+  "confirmationTime": {
+    "message": "زمان تایید (ثانیه)"
+  },
+  "confirmed": {
+    "message": "تایید شد"
+  },
+  "confirmContract": {
+    "message": "تایید قرارداد"
+  },
+  "confirmPassword": {
+    "message": "تایید گذرواژه"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "تایید عبارت پشتیبانی سری"
+  },
+  "confirmTransaction": {
+    "message": "تایید تراکنش"
+  },
+  "congratulations": {
+    "message": "تبریک"
+  },
+  "connectHardwareWallet": {
+    "message": "اتصال کیف پول سخت افزاری"
+  },
+  "connect": {
+    "message": "اتصال"
+  },
+  "connectRequest": {
+    "message": "تقاضای اتصال"
+  },
+  "connecting": {
+    "message": "در حال اتصال..."
+  },
+  "connectingTo": {
+    "message": "در حال اتصال به $1..."
+  },
+  "connectingToKovan": {
+    "message": "در حال اتصال به شبکه تست Kovan"
+  },
+  "connectingToMainnet": {
+    "message": "در حال اتصال به شبکه اصلی اتریوم"
+  },
+  "connectingToRopsten": {
+    "message": "در حال اتصال به شبکه تست Ropsten"
+  },
+  "connectingToRinkeby": {
+    "message": "در حال اتصال به شبکه تست Rinkeby"
+  },
+  "connectingToLocalhost": {
+    "message": "در حال اتصال به لوکال هاست ۸۵۴۵"
+  },
+  "connectingToGoerli": {
+    "message": "در حال اتصال به شبکه تست Goerli"
+  },
+  "connectingToUnknown": {
+    "message": "در حال اتصال به شبکه ناشناخته"
+  },
+  "connectToLedger": {
+    "message": "اتصال به Ledger"
+  },
+  "connectToTrezor": {
+    "message": "اتصال به Trezor"
+  },
+  "continue": {
+    "message": "ادامه"
+  },
+  "continueToCoinbase": {
+    "message": "ادامه به Coinbase"
+  },
+  "continueToWyre": {
+    "message": "ادامه به Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "ادامه به CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "استقرار قرارداد"
+  },
+  "conversionProgress": {
+    "message": "تبدیل در حال پیشرفت"
+  },
+  "copiedButton": {
+    "message": "کپی شد"
+  },
+  "copiedClipboard": {
+    "message": "به کلیپ بورد کپی شد"
+  },
+  "copiedExclamation": {
+    "message": "کپی شد!"
+  },
+  "copiedSafe": {
+    "message": "به جای امنی کپی کردم"
+  },
+  "copy": {
+    "message": "کپی"
+  },
+  "copyAddress": {
+    "message": "آدرس را به کلیپ بورد کپی کن"
+  },
+  "copyTransactionId": {
+    "message": "شناسه تراکنش را کپی کن"
+  },
+  "copiedTransactionId": {
+    "message": "شناسه تراکنش کپی شد"
+  },
+  "copyToClipboard": {
+    "message": "به کلیپ بورد کپی کن"
+  },
+  "copyButton": {
+    "message": " کپی "
+  },
+  "copyPrivateKey": {
+    "message": "این کلید خصوصی شماست (برای کپی کلیک کنید)"
+  },
+  "create": {
+    "message": "ایجاد"
+  },
+  "createAccount": {
+    "message": "ایجاد حساب"
+  },
+  "createAWallet": {
+    "message": "ایجاد یک کیف پول"
+  },
+  "createDen": {
+    "message": "ایجاد"
+  },
+  "createPassword": {
+    "message": "ایجاد گذرواژه"
+  },
+  "crypto": {
+    "message": "کریپتو",
+    "description": "نوع تبادل (رمزارزها)"
+  },
+  "currencyConversion": {
+    "message": "تبدیل ارز"
+  },
+  "currentLanguage": {
+    "message": "زبان فعلی"
+  },
+  "currentNetwork": {
+    "message": "شبکه فعلی"
+  },
+  "currentRpc": {
+    "message": "RPC فعلی"
+  },
+  "customGas": {
+    "message": "سفارشی سازی گاز"
+  },
+  "customGasSubTitle": {
+    "message": "افزایش هزینه ممکن است زمان پردازش را کاهش دهد اما تضمین شده نیست."
+  },
+  "customToken": {
+    "message": "توکن سفارشی"
+  },
+  "customize": {
+    "message": "سفارشی سازی"
+  },
+  "customRPC": {
+    "message": "RPC سفارشی"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "ارقام اعشار می بایست حداقل صفر باشند و بیشتر از ۳۶ نباشند"
+  },
+  "decimal": {
+    "message": "ارقام اعشار"
+  },
+  "defaultNetwork": {
+    "message": "شبکه پیش فرض برای تراکنش های ایتر شبکه اصلی است."
+  },
+  "delete": {
+    "message": "پاک کردن"
+  },
+  "denExplainer": {
+    "message": "DEN شما ذخیره سازی رمزگذاری شده شما در متامسک می باشد. "
+  },
+  "deposit": {
+    "message": "واریز کردن"
+  },
+  "depositBTC": {
+    "message": "بیتکون خود را به آدرس زیر واریز کنید: "
+  },
+  "depositEth": {
+    "message": "واریز کردن Eth"
+  },
+  "depositEther": {
+    "message": "واریز کردن اتر"
+  },
+  "depositFiat": {
+    "message": "واریز کردن بوسیله فیات"
+  },
+  "depositFromAccount": {
+    "message": "واریز کردن از حساب دیگر"
+  },
+  "depositShapeShift": {
+    "message": "واریز کردن بوسیله ShapeShift"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "اگر رمزارزهای دیگری دارید می‌توانید مستقیما اتر در کیف پول متامسک خود معامله و واریز کنید. حساب دیگری لازم نیست.  "
+  },
+  "details": {
+    "message": "جزئیات"
+  },
+  "directDeposit": {
+    "message": "واریز مستقیم"
+  },
+  "directDepositEther": {
+    "message": "واریز مستقیم اتر"
+  },
+  "directDepositEtherExplainer": {
+    "message": "اگر قبلا اتر داشته باشید، سریعترین راه برای دریافت اتر در کیف پول جدید خود را با سپرده مستقیم."
+  },
+  "done": {
+    "message": "انجام شد"
+  },
+  "downloadGoogleChrome": {
+    "message": "دانلود گوگل کروم"
+  },
+  "downloadSecretBackup": {
+    "message": "این عبارت پشتیبان گیری مخفی را دانلود کنید و آن را به صورت امن  بر روی یک دیسک سخت خارجی رمزگذاری شده یا وسیله ذخیره سازی دیگری حفظ کنید."
+  },
+  "downloadStateLogs": {
+    "message": "دانلود State Logs"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "کیف پول سخت افزاری ندارید؟"
+  },
+  "dropped": {
+    "message": "رها شد"
+  },
+  "edit": {
+    "message": "ویرایش"
+  },
+  "editNetwork": {
+    "message": "ویرایش شبکه"
+  },
+  "editAccountName": {
+    "message": "ویرایش نام حساب"
+  },
+  "editingTransaction": {
+    "message": "تراکنش خود را تغییر دهید"
+  },
+  "emailUs": {
+    "message": "پست الکترونیکی به ما بفرستید!"
+  },
+  "encryptNewDen": {
+    "message": "DEN تازه خود را رمزگذاری کنید"
+  },
+  "endOfFlowMessage1": {
+    "message": "از امتحان قبول شدید - عبارت عبور خود را امن نگه دارید. از حالا مسئولیت شما است!"
+  },
+  "endOfFlowMessage2": {
+    "message": "نکاتی درباره ذخیره امن آن"
+  },
+  "endOfFlowMessage3": {
+    "message": "یک نسخه پشتیبان در چندین محل نگه داری کنید."
+  },
+  "endOfFlowMessage4": {
+    "message": "هرگز عبارت را با کسی به اشتراک نگذارید."
+  },
+  "endOfFlowMessage5": {
+    "message": "مراقب فیشینگ باشید. متامسک هرگز به خودی خود عبارت عبور را از شما نخواهد پرسید."
+  },
+  "endOfFlowMessage6": {
+    "message": "اگر نسخه پشتیبان را دوباره لازم داشتید می تواند آن را در بخش تنظیمات -> امنیت پیدا کنید."
+  },
+  "endOfFlowMessage7": {
+    "message": "هر زمان پرسش داشتید یا با مورد مشکوکی برخورد کردید بر روی آدرس support@metamask.io با ما تماس بگیرید."
+  },
+  "endOfFlowMessage8": {
+    "message": "متامسک نمی تواند عبارت عبور شما را بازیابی کند. بیشتر بدانید."
+  },
+  "ensNameNotFound": {
+    "message": "نام ENS یافت نشد."
+  },
+  "enterPassword": {
+    "message": "گذرواژه را داخل کنید"
+  },
+  "enterPasswordConfirm": {
+    "message": "گذرواژه را برای تایید داخل کنید"
+  },
+  "enterPasswordContinue": {
+    "message": "گذرواژه را برای ادامه دادن داخل کنید"
+  },
+  "eth": {
+    "message": "ETH"
+  },
+  "etherscanView": {
+    "message": "حساب را بر روی Etherscan مشاهده کنید"
+  },
+  "estimatedProcessingTimes": {
+    "message": "زمان پردازش برآورد شده"
+  },
+  "exchangeRate": {
+    "message": "نرخ مبادله"
+  },
+  "expandView": {
+    "message": "گسترش دید"
+  },
+  "exportPrivateKey": {
+    "message": "صادر کردن کلید خصوصی"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "کلیدهای خصوصی را با مسئولیت خودتان صادر کنید."
+  },
+  "failed": {
+    "message": "ناموفق"
+  },
+  "fast": {
+    "message": "سریع"
+  },
+  "faster": {
+    "message": "سریعتر"
+  },
+  "fastest": {
+    "message": "سریعترین"
+  },
+  "feeChartTitle": {
+    "message": "پیش بینی زنده هزینه تراکنش"
+  },
+  "fiat": {
+    "message": "فیات",
+    "description": "نوع تبادل"
+  },
+  "fileImportFail": {
+    "message": "وارد کردن فایل کار نمی کند؟ اینجا کلیک کنید!",
+    "description": "کمک می کند تا کاربر حساب خود را از یک فایل JSON وارد کند"
+  },
+  "followTwitter": {
+    "message": "ما را در توییتر دنبال کنید"
+  },
+  "forgetDevice": {
+    "message": "این دستگاه را فراموش کن"
+  },
+  "from": {
+    "message": "از"
+  },
+  "fromToSame": {
+    "message": "از و به آدرس نمی تواند یکسان باشد"
+  },
+  "fromShapeShift": {
+    "message": "از ShapeShift"
+  },
+  "functionType": {
+    "message": "نوع عملکرد"
+  },
+  "gas": {
+    "message": "گاز",
+    "description": "نشانگر کوتاه هزینه گاز"
+  },
+  "gasFee": {
+    "message": "هزینه گاز"
+  },
+  "gasLimit": {
+    "message": "محدودیت گاز"
+  },
+  "gasLimitCalculation": {
+    "message": "ما حد پیشنهادی گاز را براساس نرخ های موفقیت شبکه محاسبه می‌کنیم."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "محدودیت گاز حداکثر مقدار واحدهای گازی است که مایل به مصرف آن هستید."
+  },
+  "gasLimitRequired": {
+    "message": "حد مجاز گاز مورد نیاز است"
+  },
+  "gasLimitTooLow": {
+    "message": "حد گاز باید حداقل ۲۱۰۰۰ باشد"
+  },
+  "gasUsed": {
+    "message": "گاز استفاده شده"
+  },
+  "generatingSeed": {
+    "message": "تولید دانه..."
+  },
+  "gasPrice": {
+    "message": "قیمت گاز (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "قیمت گاز بسیار پایین است"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "قیمت گاز مشخص کننده مقدار اتری است که شما مایل به پرداخت برای هر واحد گاز هستید."
+  },
+  "gasPriceNoDenom": {
+    "message": "قیمت گاز"
+  },
+  "gasPriceCalculation": {
+    "message": "ما قیمت گاز پیشنهاد شده را بر اساس نرخ موفقیت شبکه محاسبه می کنیم."
+  },
+  "gasPriceRequired": {
+    "message": "قیمت گاز مورد نیاز است"
+  },
+  "general": {
+    "message": "عمومی"
+  },
+  "generalSettingsDescription": {
+    "message": "تبدیل ارز، ارز اصلی، زبان، blockies identicon"
+  },
+  "generatingTransaction": {
+    "message": "در حال ایجاد تراکنش"
+  },
+  "getEther": {
+    "message": "دریافت اتر"
+  },
+  "getEtherFromFaucet": {
+    "message": "اتر را از یک شیر برای $1 دریافت کنید",
+    "description": "نام شبکه را برای شیر اتر نمایش می دهد"
+  },
+  "getHelp": {
+    "message": "کمک بگیرید."
+  },
+  "getStarted": {
+    "message": "شروع کنید"
+  },
+  "greaterThanMin": {
+    "message": "باید بیشتر یا برابر با $1 باشد.",
+    "description": "راهنما برای ورودی هگزادسیمال به عنوان ورودی دهدهی"
+  },
+  "happyToSeeYou": {
+    "message": "خوشحالیم که شما را می بینیم"
+  },
+  "hardware": {
+    "message": "سخت افزار"
+  },
+  "hardwareWalletConnected": {
+    "message": "کیف پول سخت افزاری متصل شده است"
+  },
+  "hardwareWallets": {
+    "message": "یک کیف پول سخت افزاری را وصل کنید"
+  },
+  "hardwareWalletsMsg": {
+    "message": "یک کیف پول سخت افزاری که می خواهید با متامسک استفاده کنید را انتخاب کنید"
+  },
+  "havingTroubleConnecting": {
+    "message": "مشکل اتصال دارید؟"
+  },
+  "here": {
+    "message": "اینجا",
+    "description": "مانند - در اینجا کلیک کنید - برای اطلاعات بیشتر (با troubleTokenBalances می رود)"
+  },
+  "hereList": {
+    "message": "یک لیست اینجا است!!!!"
+  },
+  "hexData": {
+    "message": "داده هگزادسیمال"
+  },
+  "hide": {
+    "message": "پنهان کردن"
+  },
+  "hideToken": {
+    "message": "پنهان کردن توکن"
+  },
+  "hideTokenPrompt": {
+    "message": "پنهان کردن توکن؟"
+  },
+  "history": {
+    "message": "تاریخ"
+  },
+  "howToDeposit": {
+    "message": "چگونه می خواهید اتر را واریز؟"
+  },
+  "holdEther": {
+    "message": "این اجازه می دهد تا شما اتر و توکن نگه دارید، و به عنوان پل بین شما و برنامه های غیر متمرکز عمل می کند."
+  },
+  "import": {
+    "message": "وارد كردن",
+    "description": "دکمه برای وارد کردن یک حساب از یک پرونده انتخاب شده"
+  },
+  "importAccount": {
+    "message": "وارد کردن حساب"
+  },
+  "importAccountMsg": {
+    "message": "حساب های وارد شده به عبارت عبور حساب اصلی متامسک شما مربوط نمی شوند. درباره حسابهای وارد شده بیشتر بدانید"
+  },
+  "importAccountSeedPhrase": {
+    "message": "وارد کردن حساب  با عبارت عبور"
+  },
+  "importAnAccount": {
+    "message": "یک حساب وارد کنید"
+  },
+  "importDen": {
+    "message": "وارد کردن DEN موجود"
+  },
+  "importWallet": {
+    "message": "وارد کردن کیف پول"
+  },
+  "importYourExisting": {
+    "message": "کیف پول موجود خود را با استفاده از عبارت عبور ۱۲ کلمه ای وارد کنید"
+  },
+  "imported": {
+    "message": "وارد شد",
+    "description": "وضعیت نشان می دهد که یک حساب به طور کامل به دسته کلید بارگذاری شده است"
+  },
+  "importUsingSeed": {
+    "message": "وارد کردن با استفاده از عبارت بذر حساب"
+  },
+  "importWithSeedPhrase": {
+    "message": "وارد کردن با عبارت بذر"
+  },
+  "info": {
+    "message": "اطلاعات"
+  },
+  "infoHelp": {
+    "message": "اطلاعات و راهنما"
+  },
+  "initialTransactionConfirmed": {
+    "message": "تراکنش اولیه شما توسط شبکه تأیید شد. برای بازگشت بر روی OK کلیک کنید."
+  },
+  "insufficientBalance": {
+    "message": "موجودی حساب ناکافی"
+  },
+  "insufficientFunds": {
+    "message": "منابع مالی ناکافی"
+  },
+  "insufficientTokens": {
+    "message": "توکن ناکافی"
+  },
+  "invalidAddress": {
+    "message": "آدرس غیر معتبر"
+  },
+  "invalidAddressRecipient": {
+    "message": "آدرس گیرنده غیر معتبر است"
+  },
+  "knownAddressRecipient": {
+    "message": "آدرس قرارداد شناخته شده"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "این شبکه ETH نیست، حروف کوچک قرار دهید"
+  },
+  "invalidGasParams": {
+    "message": "پارامترهای نامعتبر گاز"
+  },
+  "invalidInput": {
+    "message": "ورودی نامعتبر."
+  },
+  "invalidRequest": {
+    "message": "درخواست نامعتبر"
+  },
+  "invalidRPC": {
+    "message": "URL متعلق به RPC نامعتبر است"
+  },
+  "invalidSeedPhrase": {
+    "message": "عبارت بذر نامعتبر است"
+  },
+  "jsonFail": {
+    "message": "اشکالی رویداد. لطفا مطمئن شوید که فایل JSON شما به درستی فرمت شده است."
+  },
+  "jsonFile": {
+    "message": "فایل JSON",
+    "description": "فرمت برای وارد کردن یک حساب"
+  },
+  "keepTrackTokens": {
+    "message": "توکن هایی که با حساب متامسک خود خریداری کرده اید را دنبال کنید. "
+  },
+  "kovan": {
+    "message": "شبکه تست Kovan"
+  },
+  "knowledgeDataBase": {
+    "message": "به پایگاه اطلاعات ما مراجعه کنید"
+  },
+  "max": {
+    "message": "بیشینه"
+  },
+  "learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "ledgerAccountRestriction": {
+    "message": "قبل از اینکه بتوانید یک حساب جدید اضافه کنید، باید از آخرین حساب خود استفاده کنید."
+  },
+  "legal": {
+    "message": "حقوقی"
+  },
+  "lessThanMax": {
+    "message": "می‌بایست کمتر از یا برابر با $1 باشد.",
+    "description": "راهنما برای ورودی هگزادسیمال به عنوان ورودی دهدهی"
+  },
+  "letsGoSetUp": {
+    "message": "بله، تنظیم را شروع کنیم"
+  },
+  "likeToAddTokens": {
+    "message": "آیا می خواهید این توکن ها را اضافه کنید؟"
+  },
+  "links": {
+    "message": "لینک ها"
+  },
+  "limit": {
+    "message": "حد"
+  },
+  "liveGasPricePredictions": {
+    "message": "پیش بینی زنده قیمت گاز"
+  },
+  "loading": {
+    "message": "در حال بارگذاری..."
+  },
+  "loadingTokens": {
+    "message": "در حال بارگذاری توکن ها..."
+  },
+  "localhost": {
+    "message": "لوکال هاست ۸۵۴۵"
+  },
+  "login": {
+    "message": "ورود"
+  },
+  "logout": {
+    "message": "خروج"
+  },
+  "loose": {
+    "message": "سست"
+  },
+  "loweCaseWords": {
+    "message": "کلمات بذر تنها کاراکترهای حرف کوچک دارند"
+  },
+  "mainnet": {
+    "message": "شبکه اصلی اتریوم"
+  },
+  "memorizePhrase": {
+    "message": "این عبارت را حفظ کن."
+  },
+  "menu": {
+    "message": "فهرست"
+  },
+  "message": {
+    "message": "پیام"
+  },
+  "metamaskDescription": {
+    "message": "در حال اتصال شما به اتریوم  و وب غیر متمرکز."
+  },
+  "metamaskSeedWords": {
+    "message": "کلمات بذر متاماسک"
+  },
+  "metamaskVersion": {
+    "message": "نسخه متامسک"
+  },
+  "min": {
+    "message": "کمینه"
+  },
+  "missingYourTokens": {
+    "message": "توکن های خود را نمی بینید؟"
+  },
+  "minutesShorthand": {
+    "message": "کمینه"
+  },
+  "mobileSyncTitle": {
+    "message": "همگام سازی حسابها با تلفن همراه"
+  },
+  "mobileSyncText": {
+    "message": "لطفا برای تایید هویت گذرواژه خود را تایپ کنید."
+  },
+  "myAccounts": {
+    "message": "حسابهای من"
+  },
+  "mustSelectOne": {
+    "message": "باید حداقل یک توکن را انتخاب کنید."
+  },
+  "needEtherInWallet": {
+    "message": "برای ارتباط برقرار کردن با برنامه های غیر متمرکز با استفاده از متامسک، به اتر در کیف پول خود نیاز خواهید داشت."
+  },
+  "needImportFile": {
+    "message": "شما باید یک فایل را برای وارد کردن انتخاب کنید",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "needImportPassword": {
+    "message": "شما باید یک گذرواژه برای فایل انتخاب شده وارد کنید.",
+    "description": "گذرواژه و فایل مورد نیاز برای وارد کردن یک حساب"
+  },
+  "negativeETH": {
+    "message": "نمی توان مقدار منفی ETH را ارسال کرد."
+  },
+  "networkName": {
+    "message": "نام شبکه"
+  },
+  "networks": {
+    "message": "شبکه ها"
+  },
+  "networkSettingsDescription": {
+    "message": "شبکه های RPC سفارشی را اضافه و ویرایش کنید"
+  },
+  "nevermind": {
+    "message": "مهم نیست"
+  },
+  "newAccount": {
+    "message": "حساب جدید"
+  },
+  "newAccountNumberName": {
+    "message": "حساب $1",
+    "description": "نام پیش فرض حساب بعدی که در صفحه ایجاد حساب ایجاد می شود"
+  },
+  "newContract": {
+    "message": "قرارداد جدید"
+  },
+  "newPassword": {
+    "message": "گذرواژه جدید (حداقل 8 کاراکتر)"
+  },
+  "newPassword8Chars": {
+    "message": "گذرواژه جدید (حداقل 8 کاراکتر)"
+  },
+  "newRecipient": {
+    "message": "گیرنده جدید"
+  },
+  "newNetwork": {
+    "message": "شبکه جدید"
+  },
+  "newToMetaMask": {
+    "message": "جدیدا متامسک را استفاده میکنید؟"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "نه، من قبلا یک جمله بذر دارم"
+  },
+  "protectYourKeys": {
+    "message": "از کلید های خود محافظت کنید!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "از اصطلاح بذرتان مراقبت کنید - وب سایت هایی که تلاش می کنند از متامسک تقلید کنند، گزارش شده اند. متامسک هرگز عبارت بذر شما را درخواست نخواهد کرد!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "از عبارت بذر خود مراقبت کنید. اگر مورد مشکوکی می بینید یا در مورد یک وب سایت مطمئن نیستید، به آدرس support@metamask.io گزارش دهید."
+  },
+  "rpcUrl": {
+    "message": "URL جدید RPC"
+  },
+  "showAdvancedOptions": {
+    "message": "نمایش گزینه های پیشرفته"
+  },
+  "hideAdvancedOptions": {
+    "message": "مخفی کردن گزینه های پیشرفته"
+  },
+  "optionalChainId": {
+    "message": "ChainID (اختیاری)"
+  },
+  "optionalSymbol": {
+    "message": "نماد (اختیاری)"
+  },
+  "optionalNickname": {
+    "message": "نام مستعار (اختیاری)"
+  },
+  "newTotal": {
+    "message": "مجموع جدید"
+  },
+  "newTransactionFee": {
+    "message": "هزینه تراکنش جدید"
+  },
+  "next": {
+    "message": "بعد"
+  },
+  "noAddressForName": {
+    "message": "هیچ آدرسی برای این نام تعیین نشده است."
+  },
+  "noDeposits": {
+    "message": "هیچ سپرده ای دریافت نشده است"
+  },
+  "noConversionRateAvailable": {
+    "message": "نرخ تبدیل موجود نیست"
+  },
+  "noTransactionHistory": {
+    "message": "تاریخ معامله موجود نیست"
+  },
+  "noTransactions": {
+    "message": "شما هیچ تراکنشی ندارید"
+  },
+  "notEnoughGas": {
+    "message": "گاز کافی نیست"
+  },
+  "notFound": {
+    "message": "یافت نشد"
+  },
+  "notStarted": {
+    "message": "شروع نشده"
+  },
+  "noWebcamFoundTitle": {
+    "message": "وب کم یافت نشد"
+  },
+  "noWebcamFound": {
+    "message": "وب کم رایانه شما یافت نشد لطفا دوباره تلاش کنید."
+  },
+  "ofTextNofM": {
+    "message": "از"
+  },
+  "oldUI": {
+    "message": "رابط کاربری قدیمی"
+  },
+  "oldUIMessage": {
+    "message": "شما به رابط کاربری قدیمی بازگشته اید.می توانید با استفاده از گزینه موجود در منوی کشویی بالا سمت راست، به رابط کاربری جدید برگردید."
+  },
+  "onlySendToEtherAddress": {
+    "message": "ETH را فقط به آدرس اتریوم ارسال کنید."
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "فقط $1 به آدرس اتریوم ارسال کنید.",
+    "description": "نماد توکن را نمایش می دهد"
+  },
+  "openInTab": {
+    "message": "در تب باز کن"
+  },
+  "or": {
+    "message": "یا",
+    "description": "انتخاب بین ایجاد یا وارد کردن یک حساب جدید"
+  },
+  "orderOneHere": {
+    "message": "Trezor یا Ledger سفارش دهید و وجوه خود را در ذخیره سازی سرد حفظ کنید."
+  },
+  "origin": {
+    "message": "مبدا"
+  },
+  "outgoing": {
+    "message": "خروجی"
+  },
+  "parameters": {
+    "message": "پارامترها"
+  },
+  "originalTotal": {
+    "message": "مجموع اصلی"
+  },
+  "participateInMetaMetrics": {
+    "message": "در MetaMetrics شرکت کنید"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "در MetaMetrics شرکت کنید تا به ما کمک کنید متامسک را بهبود ببخشیم"
+  },
+  "password": {
+    "message": "گذرواژه"
+  },
+  "passwordCorrect": {
+    "message": "لطفا مطمئن شوید گذرواژه شما صحیح است"
+  },
+  "passwordsDontMatch": {
+    "message": "گذرواژه ها مطابقت ندارند"
+  },
+  "passwordMismatch": {
+    "message": "گذرواژه ها مطابقت ندارند",
+    "description": "در فرآیند ایجاد گذرواژه، دو فیلد رمز جدید مطابقت نداشتند"
+  },
+  "passwordNotLongEnough": {
+    "message": "گذرواژه به اندازه کافی طولانی نیست"
+  },
+  "passwordShort": {
+    "message": "گذرواژه به اندازه کافی طولانی نیست",
+    "description": "در فرآیند ایجاد گذرواژه، گذرواژه به اندازه کافی طولانی نیست که امن باشد"
+  },
+  "pastePrivateKey": {
+    "message": "رشته کلید خصوصی خود را در اینجا وارد کنید:",
+    "description": "برای وارد کردن حساب از یک کلید خصوصی"
+  },
+  "pasteSeed": {
+    "message": "بذر عبور خود را در اینجا بگذارید!"
+  },
+  "pending": {
+    "message": "انتظار"
+  },
+  "personalAddressDetected": {
+    "message": "آدرس شخصی شناسایی شده است. آدرس قرارداد توکن را وارد کنید"
+  },
+  "pleaseReviewTransaction": {
+    "message": "لطفا تراکنش خود را بررسی کنید"
+  },
+  "popularTokens": {
+    "message": "توکن های محبوب"
+  },
+  "prev": {
+    "message": "قبل"
+  },
+  "primaryCurrencySetting": {
+    "message": "ارز اصلی"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "گزینه بومی را انتخاب کنید تا الویت به نمایش مقادیر در ارز اصلی زنجیره (مثلا ETH) بدهید.گزینه فیات را انتخاب کنید تا الویت به نمایش مقادیر در ارز انتخابی خود بدهید."
+  },
+  "privacyMsg": {
+    "message": "سیاست حفظ حریم خصوصی"
+  },
+  "privateKey": {
+    "message": "کلید خصوصی",
+    "description": "برای وارد کردن حساب استفاده از این نوع فایل را انتخاب کنید"
+  },
+  "privateKeyWarning": {
+    "message": "هشدار: هرگز این کلید را افشا نکنید. هر شخصی با کلید خصوصی شما می تواند دارایی های موجود در حساب شما را سرقت کند."
+  },
+  "privateNetwork": {
+    "message": "شبکه خصوصی"
+  },
+  "qrCode": {
+    "message": "نمایش کد QR"
+  },
+  "queue": {
+    "message": "صف"
+  },
+  "readdToken": {
+    "message": "شما می توانید این توکن را با رفتن به «اضافه کردن توکن» در منوی تنظیمات حسابتان اضافه کنید."
+  },
+  "readMore": {
+    "message": "بیشتر بخوانید در اینجا"
+  },
+  "readMore2": {
+    "message": "بیشتر بخوانید."
+  },
+  "receive": {
+    "message": "دريافت"
+  },
+  "recipientAddress": {
+    "message": "آدرس گیرنده"
+  },
+  "refundAddress": {
+    "message": "آدرس بازپرداخت شما"
+  },
+  "rejectAll": {
+    "message": "رد کردن همه"
+  },
+  "rejectTxsN": {
+    "message": "در کردن تراکنش های $1"
+  },
+  "rejectTxsDescription": {
+    "message": "شما در آستانه رد کردن دسته ای $1 تراکنش هستید"
+  },
+  "rejected": {
+    "message": "رد شد"
+  },
+  "reset": {
+    "message": "تنظیم مجدد"
+  },
+  "resetAccount": {
+    "message": "تنظیم مجدد حساب"
+  },
+  "resetAccountDescription": {
+    "message": "تنظیم مجدد سابقه تراکنش های حساب شما را پاک می کند."
+  },
+  "deleteNetwork": {
+    "message": "حذف شبکه؟"
+  },
+  "deleteNetworkDescription": {
+    "message": "آیا مطمئن هستید که میخواهید این شبکه را حذف کنید؟"
+  },
+  "restoreFromSeed": {
+    "message": "بازگرداندن حساب؟"
+  },
+  "restoreVault": {
+    "message": "بازگرداندن مخزن"
+  },
+  "restoreAccountWithSeed": {
+    "message": "بازگرداندن حساب با عبارت بذر"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "درخواست ها در انتظار تایید هستند"
+  },
+  "required": {
+    "message": "مورد نیاز"
+  },
+  "retryWithMoreGas": {
+    "message": "با قیمت بالاتر گاز دوباره تلاش کنید در اینجا"
+  },
+  "restore": {
+    "message": "بازگرداندن"
+  },
+  "revealSeedWords": {
+    "message": "افشا کردن عبارت های بذر"
+  },
+  "revealSeedWordsTitle": {
+    "message": "عبارت بذر"
+  },
+  "revealSeedWordsDescription": {
+    "message": "اگر مرورگر و یا رایانه خود را تغییر دهید، برای دسترسی به حسابهایتان به این جمله های بذر نیاز خواهید داشت. آنها را در جایی امن و مخفی ذخیره کنید."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "این عبارت را با هیچ کس به اشتراک نگذارید!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "این عبارت ها می توانند برای سرقت تمام حساب های شما استفاده شوند."
+  },
+  "revert": {
+    "message": "برگرداندن"
+  },
+  "remove": {
+    "message": "حذف کردن"
+  },
+  "removeAccount": {
+    "message": "حذف حساب"
+  },
+  "removeAccountDescription": {
+    "message": "این حساب از کیف پول شما حذف خواهد شد. لطفا قبل از ادامه دادن مطمئن شوید که عبارت بذر اصلی یا کلید خصوصی این حساب وارد شده را داشته باشید. شما می توانید مجددا حساب ها را از لیست کشویی حساب وارد یا ایجاد کنید."
+  },
+  "readyToConnect": {
+    "message": "آماده برای اتصال؟"
+  },
+  "rinkeby": {
+    "message": "شبکه تست Rinkeby"
+  },
+  "ropsten": {
+    "message": "شبکه آزمایشی Ropsten"
+  },
+  "goerli": {
+    "message": "شبکه تست Goerli"
+  },
+  "rpc": {
+    "message": "RPC سفارشی"
+  },
+  "sampleAccountName": {
+    "message": "به عنوان مثال. حساب جدید من",
+    "description": "کمک به کاربر برای درک مفهوم اضافه کردن یک نام قابل خواندن توسط انسان به حساب کاربری خود"
+  },
+  "save": {
+    "message": "ذخیره"
+  },
+  "slow": {
+    "message": "آهسته"
+  },
+  "slower": {
+    "message": "آهسته تر"
+  },
+  "saveAsCsvFile": {
+    "message": "ذخیره به عنوان فایل CSV"
+  },
+  "saveAsFile": {
+    "message": "ذخیره به عنوان فایل",
+    "description": "فرآیند صادرات حساب"
+  },
+  "saveSeedAsFile": {
+    "message": "ذخیره کلمات بذر به عنوان فایل"
+  },
+  "scanInstructions": {
+    "message": "کد QR را در مقابل دوربین خود قرار دهید"
+  },
+  "scanQrCode": {
+    "message": "اسکن کد QR"
+  },
+  "search": {
+    "message": "جستجو"
+  },
+  "searchResults": {
+    "message": "نتایج جستجو"
+  },
+  "secretBackupPhrase": {
+    "message": "عبارت مخفی پشتیبان"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "عبارت مخفی پشتیبانی شما، پشتیبان گیری و بازگرداندن حساب شما را آسان می کند."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "هشدار: هرگز عبارت پشتیبان خود را افشا نکنید. هر کسی که با این عبارت می تواند اتر شما را برای همیشه ببرد."
+  },
+  "secretPhrase": {
+    "message": "عبارت دوازده کلمه ای مخفی خود را برای بازگرداندن مخزن در اینجا وارد کنید."
+  },
+  "securityAndPrivacy": {
+    "message": "امنیت و حریم خصوصی"
+  },
+  "securitySettingsDescription": {
+    "message": "تنظیمات حریم خصوصی و عبارت بذر کیف پول"
+  },
+  "secondsShorthand": {
+    "message": "ثانیه"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "هر کلمه را با یک فضای جداگانه جدا کنید"
+  },
+  "seedPhraseReq": {
+    "message": "عبارات بذر ۱۲ حرف طول دارند"
+  },
+  "select": {
+    "message": "انتخاب"
+  },
+  "selectCurrency": {
+    "message": "انتخاب واحد پول"
+  },
+  "selectEachPhrase": {
+    "message": "لطفا هر عبارت را انتخاب کنید تا مطمئن شوید که درست است."
+  },
+  "selectLocale": {
+    "message": "انتخاب زبان"
+  },
+  "selectService": {
+    "message": "انتخاب سرویس"
+  },
+  "selectType": {
+    "message": "انتخاب نوع"
+  },
+  "send": {
+    "message": "ارسال"
+  },
+  "sendAmount": {
+    "message": "ارسال مبلغ"
+  },
+  "sendETH": {
+    "message": "ارسال ETH"
+  },
+  "sendTokens": {
+    "message": "ارسال توکن"
+  },
+  "sentEther": {
+    "message": "ارسال اتر"
+  },
+  "sentTokens": {
+    "message": "ارسال توکن ها"
+  },
+  "separateEachWord": {
+    "message": "هر کلمه را با یک فضای جداگانه جدا کنید"
+  },
+  "searchTokens": {
+    "message": "جستجو توکن ها"
+  },
+  "selectAnAddress": {
+    "message": "یک آدرس را انتخاب کنید"
+  },
+  "selectAnAccount": {
+    "message": "یک حساب را انتخاب کنید"
+  },
+  "selectAnAccountHelp": {
+    "message": "حساب کاربری برای مشاهده در متامسک را انتخاب کنید"
+  },
+  "selectAnAsset": {
+    "message": "یک دارایی را انتخاب کنید"
+  },
+  "selectAHigherGasFee": {
+    "message": "یک هزینه بالاتر گاز برای سرعت بخشیدن به پردازش تراکنش خود را انتخاب کنید. *"
+  },
+  "selectHdPath": {
+    "message": "مسیر HD را انتخاب کنید"
+  },
+  "selectPathHelp": {
+    "message": "اگر حسابهای Ledger موجود خود را در زیر نمی بینید، سعی کنید مسیرها را به \"Legacy (MEW / MyCrypto)\" تغییر دهید."
+  },
+  "sendTokensAnywhere": {
+    "message": "ارسال توکن ها به هر دارنده حساب Ethereum"
+  },
+  "settings": {
+    "message": "تنظیمات"
+  },
+  "shapeshiftBuy": {
+    "message": "خرید با Shapeshift"
+  },
+  "showAdvancedGasInline": {
+    "message": "کنترل های پیشرفته گاز"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "برای نشان دادن قیمت گاز و محدود کردن کنترل به طور مستقیم بر روی صفحات ارسال و تایید، این گزینه را انتخاب کنید."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "نمایش تبدیل در شبکه های تست"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "برای نشان دادن تبدیل فیات در شبکه های تست این گزینه را انتخاب کنید"
+  },
+  "showPrivateKeys": {
+    "message": "نمایش کلیدهای خصوصی"
+  },
+  "showQRCode": {
+    "message": "نمایش کد QR"
+  },
+  "showHexData": {
+    "message": "نمایش دیتای هگزا"
+  },
+  "showHexDataDescription": {
+    "message": "برای نمایش دیتای هگزا در صفحه ارسال این گزینه را انتخاب کنید"
+  },
+  "sign": {
+    "message": "امضا کردن"
+  },
+  "signatureRequest": {
+    "message": "درخواست امضا"
+  },
+  "signed": {
+    "message": "امضا شده"
+  },
+  "signMessage": {
+    "message": "امضا پیام"
+  },
+  "signNotice": {
+    "message": "امضای این پیام می‌تواند عوارض جانبی خطرناکی داشته باشد. فقط پیامهای سایتهایی را که کاملا به آنها اطمینان دارید برای حساب خود امضا کنید. این روش خطرناک در نسخه آینده حذف خواهد شد."
+  },
+  "sigRequest": {
+    "message": "درخواست امضا"
+  },
+  "sigRequested": {
+    "message": "امضا درخواست شده"
+  },
+  "somethingWentWrong": {
+    "message": "اوه! چیزی اشتباه شد"
+  },
+  "spaceBetween": {
+    "message": "تنها یک فاصله می تواند بین کلمات وجود داشته باشد"
+  },
+  "speedUp": {
+    "message": "سرعت بخشیدن"
+  },
+  "speedUpTitle": {
+    "message": "سرعت بخشیدن به تراکنش"
+  },
+  "speedUpSubtitle": {
+    "message": " قیمت گاز خود را افزایش دهید تا تراکنش را بازنویسی کرده و سرعت آن را افزایش دهید"
+  },
+  "speedUpCancellation": {
+    "message": "سرعت این لغو را افزایش دهید"
+  },
+  "speedUpTransaction": {
+    "message": "سرعت این تراکنش را افزایش دهید"
+  },
+  "switchNetworks": {
+    "message": "تعویض شبکه"
+  },
+  "status": {
+    "message": "وضعیت"
+  },
+  "stateLogs": {
+    "message": "گزارشات وضعیت"
+  },
+  "stateLogsDescription": {
+    "message": "گزارشات وضعیت می توانند شامل آدرسهای عمومی حساب شما و تراکنش های ارسال شده باشند."
+  },
+  "stateLogError": {
+    "message": "خطا در بازیابی گزارشات وضعیت"
+  },
+  "step1HardwareWallet": {
+    "message": "۱. کیف پول سخت افزاری را وصل کنید"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "کیف پول سخت افزاری خود را به طور مستقیم به کامپیوتر خود وصل کنید."
+  },
+  "step2HardwareWallet": {
+    "message": "۲. یک حساب را انتخاب کنید"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "حسابی را که میخواهید مشاهده کنید انتخاب کنید. شما فقط می توانید یک حساب را در یک زمان انتخاب کنید."
+  },
+  "step3HardwareWallet": {
+    "message": "۳. شروع به استفاده از داپ و بیشتر!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "از حساب سخت افزاری خود مانند هر حساب اتریوم دیگری استفاده کنید. وارد داپ شوید، Eth ارسال کنید، توکن های ERC20 وتوکن های غیر قابل تعویض مانند CryptoKitties را خرید و ذخیره کنید."
+  },
+  "storePhrase": {
+    "message": "این عبارت در یک برنامه مدیریت گذرواژه مانند 1Password ذخیره کنید."
+  },
+  "submit": {
+    "message": "ارسال"
+  },
+  "submitted": {
+    "message": "ارسال شد"
+  },
+  "supportCenter": {
+    "message": "از مرکز پشتیبانی ما دیدن کنید"
+  },
+  "symbol": {
+    "message": "نماد"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "نماد باید بین ۰ تا ۱۲ کاراکتر باشد."
+  },
+  "syncWithMobile": {
+    "message": "همگام سازی با تلفن همراه"
+  },
+  "syncWithMobileTitle": {
+    "message": "همگام سازی با تلفن همراه"
+  },
+  "syncWithMobileDesc": {
+    "message": "شما می توانید حساب ها و اطلاعات خود را با دستگاه تلفن همراه خود همگام سازی کنید. برنامه متامسک را بر روی تلفن همراه خود باز کنید، به «تنظیمات» بروید و روی «همگام سازی از افزونه مرورگر» کلیک کنید."
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "اگر برای اولین بار برنامه MetaMask Mobile را باز کرده اید، مراحل را در گوشی خود دنبال کنید."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "این کد را با برنامه تلفن همراه متامسک خود اسکن کنید"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "هنگامیکه این کد را اسکن می کنید مطمئن شوید که هیچ کس دیگر به صفحه شما نگاه نمی کند"
+  },
+  "syncWithMobileComplete": {
+    "message": "داده های شما به صورت موفقیت آمیز همگام سازی شده اند. از برنامه تلفن همراه متامسک خود لذت ببرید!"
+  },
+  "takesTooLong": {
+    "message": "زیاد طول کشید؟"
+  },
+  "terms": {
+    "message": "شرایط استفاده"
+  },
+  "testFaucet": {
+    "message": "شیر تست"
+  },
+  "thisWillCreate": {
+    "message": "این یک کیف پول و عبارت بذر جدید ایجاد خواهد کرد"
+  },
+  "tips": {
+    "message": "نکات"
+  },
+  "to": {
+    "message": "به"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 به ETH از طریق ShapeShift",
+    "description": "سیستم نوع سپرده را در شروع پیام پر می کند"
+  },
+  "token": {
+    "message": "توکن"
+  },
+  "tokenAddress": {
+    "message": "آدرس توکن"
+  },
+  "tokenAlreadyAdded": {
+    "message": "توکن قبلا اضافه شده است."
+  },
+  "tokenBalance": {
+    "message": "موجودی توکن شما:"
+  },
+  "tokenContractAddress": {
+    "message": "آدرس قرارداد توکن"
+  },
+  "tokenSelection": {
+    "message": "جستجو برای توکن یا انتخاب از لیست توکن های محبوب ما."
+  },
+  "tokenSymbol": {
+    "message": "نماد توکن"
+  },
+  "tokenWarning1": {
+    "message": "توکن هایی که با حساب متامسک خود خریداری کرده اید را دنبال کنید. اگر با استفاده از یک حساب کاربری دیگر توکن ها را خریداری کردید، این توکن ها در اینجا ظاهر نمی شوند."
+  },
+  "total": {
+    "message": "مجموع"
+  },
+  "transaction": {
+    "message": "تراکنش"
+  },
+  "transactionConfirmed": {
+    "message": "تراکنش در $2 تایید شد"
+  },
+  "transactionCreated": {
+    "message": "تراکنش با مقدار $1 در $2 ایجاد شد."
+  },
+  "transactionWithNonce": {
+    "message": "تراکنش $1"
+  },
+  "transactionDropped": {
+    "message": "تراکنش در $2 رها شد."
+  },
+  "transactionSubmitted": {
+    "message": "تراکنش با هزینه گاز $1 در $2 ارسال شد."
+  },
+  "transactionResubmitted": {
+    "message": "تراکنش مجددا با هزینه گاز اضافه شده به $1 در $2 ارسال شد."
+  },
+  "transactionUpdated": {
+    "message": "تراکنش در $2 به روز شد"
+  },
+  "transactionUpdatedGas": {
+    "message": "تراکنش با قیمت گاز $1 در $2 به روز شد."
+  },
+  "transactionErrored": {
+    "message": "تراکنش با خطا روبرو شد."
+  },
+  "transactionCancelAttempted": {
+    "message": "تلاش برای لغو تراکنش با هزینه گاز $1 در $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "تراکنش با موفقیت در $2 لغو شد"
+  },
+  "transactions": {
+    "message": "تراکنش ها"
+  },
+  "transactionError": {
+    "message": "خطای تراکنش. استثنا در کد قرارداد اعلان شد."
+  },
+  "transactionErrorNoContract": {
+    "message": "تلاش برای تماس با یک تابع در یک آدرس غیر قراردادی."
+  },
+  "transactionFee": {
+    "message": "هزینه تراکنش"
+  },
+  "transactionMemo": {
+    "message": "یادداشت تراکنش (اختیاری)"
+  },
+  "transactionNumber": {
+    "message": "شماره تراکنش"
+  },
+  "transactionTime": {
+    "message": "زمان تراکنش"
+  },
+  "transfer": {
+    "message": "انتقال"
+  },
+  "transferFrom": {
+    "message": "انتقال از"
+  },
+  "transfers": {
+    "message": "انتقال ها"
+  },
+  "trezorHardwareWallet": {
+    "message": "کیف پول سخت افزاری TREZOR"
+  },
+  "troubleTokenBalances": {
+    "message": "ما در حال بارگذاری موجودی توکن های شما دچار مشکل شدیم. شما می توانید آنها را مشاهده کنید ",
+    "description": "دنبال لینک (در اینجا) برای مشاهده موجودی توکن ها"
+  },
+  "tryAgain": {
+    "message": "دوباره امتحان کنید"
+  },
+  "twelveWords": {
+    "message": "این ۱۲ کلمه تنها راه بازگرداندن حساب های متامسک شما هستند.آنها را در جایی امن و مخفی ذخیره کنید."
+  },
+  "typePassword": {
+    "message": "گذرواژه متامسک خود را تایپ کنید"
+  },
+  "uiMigrationAnnouncement": {
+    "message": "به رابط کاربری جدید متامسک خوش آمدید. اگر در مورد رابط کاربری جدید یا درخواست های ویژگی بازخورد دارید، لطفا با تیم پشتیبانی ما یا GitHub تماس بگیرید."
+  },
+  "uiWelcome": {
+    "message": "به رابط کاربری جدید (بتا) خوش آمدید"
+  },
+  "uiWelcomeMessage": {
+    "message": "شما اکنون از رابط کاربری جدید متامسک استفاده می کنید."
+  },
+  "unapproved": {
+    "message": "تأیید نشده"
+  },
+  "unavailable": {
+    "message": "غیر قابل دسترس"
+  },
+  "units": {
+    "message": "واحد ها"
+  },
+  "unknown": {
+    "message": "ناشناس"
+  },
+  "unknownNetwork": {
+    "message": "شبکه خصوصی ناشناس"
+  },
+  "unknownNetworkId": {
+    "message": "شناسه شبکه ناشناس"
+  },
+  "unknownQrCode": {
+    "message": "خطا: ما نمی توانیم کد QR را شناسایی کنیم"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "اوه! خطا روی داد..."
+  },
+  "unknownCameraError": {
+    "message": "هنگام تلاش برای دسترسی به دوربین شما، خطایی روی داد. لطفا دوباره تلاش کنید..."
+  },
+  "unlock": {
+    "message": "گشودن"
+  },
+  "unlockMessage": {
+    "message": "وب غیر متمرکز در انتظار است"
+  },
+  "updatedWithDate": {
+    "message": "$1 به روز شد"
+  },
+  "uriErrorMsg": {
+    "message": "URI ها به پیشوند مناسب HTTP / HTTPS نیاز دارند."
+  },
+  "usaOnly": {
+    "message": "فقط ایالات متحده آمریکا",
+    "description": "استفاده از این مبادله به افراد داخل آمریکا محدود است"
+  },
+  "usedByClients": {
+    "message": "توسط انواع مختلف مشتریان استفاده می شود"
+  },
+  "useOldUI": {
+    "message": "از رابط کاربری قدیمی استفاده کنید"
+  },
+  "validFileImport": {
+    "message": "شما باید یک فایل معتبر برای وارد کردن انتخاب کنید."
+  },
+  "vaultCreated": {
+    "message": "مخزن ایجاد شد"
+  },
+  "viewAccount": {
+    "message": "مشاهده حساب"
+  },
+  "viewinExplorer": {
+    "message": "مشاهده در جستجوگر"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "مشاهده در $1"
+  },
+  "viewOnEtherscan": {
+    "message": "مشاهده در Etherscan"
+  },
+  "viewNetworkInfo": {
+    "message": "مشاهده معلومات شبکه"
+  },
+  "visitWebSite": {
+    "message": "از وبسایت ما دیدن کنید"
+  },
+  "walletSeed": {
+    "message": "بذر کیف پول"
+  },
+  "warning": {
+    "message": "هشدار"
+  },
+  "welcomeBack": {
+    "message": "خوش آمدید!"
+  },
+  "welcome": {
+    "message": "به متامسک خوش آمدید"
+  },
+  "whatsThis": {
+    "message": "این چیست؟"
+  },
+  "writePhrase": {
+    "message": "این عبارت را در یک قطعه کاغذ نوشته و در یک مکان امن ذخیره کنید. اگر میخواهید امنیت بیشتری داشته باشید، آن را روی چندین قطعه کاغذ بنویسید و هر کدام را در ۲ تا ۳ مکان مختلف ذخیره کنید."
+  },
+  "yesLetsTry": {
+    "message": "بله، بگذارید امتحان کنیم"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "برای استفاده از این ویژگی باید اجازه دسترسی به دوربین را بدهید."
+  },
+  "yourSigRequested": {
+    "message": "امضای شما درحال درخواست است"
+  },
+  "youSign": {
+    "message": "شما در حال امضا هستید"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "عبارت بذر خصوصی شما"
+  },
+  "yourUniqueAccountImage": {
+    "message": "تصویر حساب منحصر به فرد شما"
+  },
+  "yourUniqueAccountImageDescription1": {
+    "message": "این تصویر از طریق برنامه نویسی با استفاده از شماره حساب جدید شما برای شما ساخته شده است."
+  },
+  "yourUniqueAccountImageDescription2": {
+    "message": "شما هر بار که باید یک تراکنش را تایید کنید این تصویر را خواهید دید."
+  },
+  "yourUniqueAccountImageDescription3": {
+    "message": "متامسک هرگز عبارت بذر شما را درخواست نخواهد کرد!"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "قیمت گاز صفر با سرعت بالا"
+  }
 }
