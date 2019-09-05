@@ -266,7 +266,7 @@ export default class ConfirmTransactionBase extends Component {
                 </div>
                 <div>
                   <TextField
-                    type="text"
+                    type="number"
                     placeholder={ this.context.t('nonceFieldPlaceholder') }
                     onChange={({ target: { value }}) => {
                       updateCustomNonce(value)

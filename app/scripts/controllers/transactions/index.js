@@ -377,9 +377,10 @@ class TransactionController extends EventEmitter {
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
-      log.debug('customNonceValue', txMeta.customNonceValue)
+      const { customNonceValue = null } = txMeta
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
+      const customOrNonce = customNonceValue || nonce
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
