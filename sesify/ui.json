@@ -1,7 +1,7 @@
 {
   "resources": {
     "<root>": {
-      "modules": {
+      "packages": {
         "@babel/runtime": true,
         "@material-ui/core": true,
         "@sentry/browser": true,
@@ -83,7 +83,7 @@
       }
     },
     "@babel/runtime": {
-      "modules": {
+      "packages": {
         "core-js": true,
         "regenerator-runtime": true
       }
@@ -94,7 +94,7 @@
         "console.error": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "@babel/runtime": true,
         "brcast": true,
         "classnames": true,
@@ -121,7 +121,6 @@
       }
     },
     "@sentry/browser": {
-      "environment": "unfrozen",
       "globals": {
         "DOMError": true,
         "DOMException": true,
@@ -134,19 +133,18 @@
         "document": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "@sentry/core": true,
         "process": true
       }
     },
     "@sentry/core": {
-      "environment": "unfrozen",
       "globals": {
         "clearTimeout": true,
         "console.log": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "@sentry/hub": true,
         "@sentry/minimal": true,
         "@sentry/types": true,
@@ -157,12 +155,12 @@
       "globals": {
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "@sentry/utils": true
       }
     },
     "@sentry/minimal": {
-      "modules": {
+      "packages": {
         "@sentry/hub": true
       }
     },
@@ -170,17 +168,17 @@
       "globals": {
         "console.error": true
       },
-      "modules": {
+      "packages": {
         "process": true
       }
     },
     "@zxing/library": {
-      "environment": "unfrozen",
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
         "btoa": true,
         "clearTimeout": true,
+        "define": true,
         "document.createElement": true,
         "document.createElementNS": true,
         "document.getElementById": true,
@@ -190,9 +188,14 @@
       }
     },
     "abi-decoder": {
-      "modules": {
+      "packages": {
         "web3-eth-abi": true,
         "web3-utils": true
+      }
+    },
+    "accounting": {
+      "globals": {
+        "define": true
       }
     },
     "asap": {
@@ -205,25 +208,25 @@
       }
     },
     "assert": {
-      "modules": {
+      "packages": {
         "util": true
       }
     },
     "babel-runtime": {
-      "modules": {
+      "packages": {
         "@babel/runtime": true,
         "core-js": true,
         "regenerator-runtime": true
       }
     },
     "bignumber.js": {
-      "environment": "unfrozen",
       "globals": {
-        "crypto": true
+        "crypto": true,
+        "define": true
       }
     },
     "bip39": {
-      "modules": {
+      "packages": {
         "create-hash": true,
         "pbkdf2": true,
         "randombytes": true,
@@ -232,13 +235,12 @@
       }
     },
     "bip66": {
-      "modules": {
+      "packages": {
         "safe-buffer": true
       }
     },
     "bn.js": {
-      "environment": "unfrozen",
-      "modules": {
+      "packages": {
         "browser-resolve": true
       }
     },
@@ -248,7 +250,7 @@
         "removeEventListener": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "domkit": true,
         "react": true
       }
@@ -258,63 +260,62 @@
         "crypto": true,
         "msCrypto": true
       },
-      "modules": {
+      "packages": {
         "browser-resolve": true
       }
     },
     "browser-resolve": {
-      "modules": {
+      "packages": {
         "core-js": true
       }
     },
     "browserify-sha3": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "js-sha3": true
       }
     },
     "buffer": {
-      "environment": "unfrozen",
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "base64-js": true,
         "ieee754": true
       }
     },
     "c3": {
-      "environment": "unfrozen",
       "globals": {
         "MutationObserver": true,
         "SVGPathElement.prototype": true,
-        "SVGPathSeg": true,
-        "SVGPathSegArcAbs": true,
-        "SVGPathSegArcRel": true,
-        "SVGPathSegClosePath": true,
-        "SVGPathSegCurvetoCubicAbs": true,
-        "SVGPathSegCurvetoCubicRel": true,
-        "SVGPathSegCurvetoCubicSmoothAbs": true,
-        "SVGPathSegCurvetoCubicSmoothRel": true,
-        "SVGPathSegCurvetoQuadraticAbs": true,
-        "SVGPathSegCurvetoQuadraticRel": true,
-        "SVGPathSegCurvetoQuadraticSmoothAbs": true,
-        "SVGPathSegCurvetoQuadraticSmoothRel": true,
-        "SVGPathSegLinetoAbs": true,
-        "SVGPathSegLinetoHorizontalAbs": true,
-        "SVGPathSegLinetoHorizontalRel": true,
-        "SVGPathSegLinetoRel": true,
-        "SVGPathSegLinetoVerticalAbs": true,
-        "SVGPathSegLinetoVerticalRel": true,
-        "SVGPathSegList": true,
-        "SVGPathSegMovetoAbs": true,
-        "SVGPathSegMovetoRel": true,
+        "SVGPathSeg": "write",
+        "SVGPathSegArcAbs": "write",
+        "SVGPathSegArcRel": "write",
+        "SVGPathSegClosePath": "write",
+        "SVGPathSegCurvetoCubicAbs": "write",
+        "SVGPathSegCurvetoCubicRel": "write",
+        "SVGPathSegCurvetoCubicSmoothAbs": "write",
+        "SVGPathSegCurvetoCubicSmoothRel": "write",
+        "SVGPathSegCurvetoQuadraticAbs": "write",
+        "SVGPathSegCurvetoQuadraticRel": "write",
+        "SVGPathSegCurvetoQuadraticSmoothAbs": "write",
+        "SVGPathSegCurvetoQuadraticSmoothRel": "write",
+        "SVGPathSegLinetoAbs": "write",
+        "SVGPathSegLinetoHorizontalAbs": "write",
+        "SVGPathSegLinetoHorizontalRel": "write",
+        "SVGPathSegLinetoRel": "write",
+        "SVGPathSegLinetoVerticalAbs": "write",
+        "SVGPathSegLinetoVerticalRel": "write",
+        "SVGPathSegList": "write",
+        "SVGPathSegMovetoAbs": "write",
+        "SVGPathSegMovetoRel": "write",
         "addEventListener": true,
         "attachEvent": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "d3": true,
+        "define": true,
         "detachEvent": true,
         "document.URL.split": true,
         "document.createElement": true,
@@ -323,17 +324,17 @@
         "document.hidden": true,
         "navigator.appVersion.toLowerCase": true,
         "navigator.userAgent": true,
-        "onresize": true,
+        "onresize": "write",
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "d3": true
       }
     },
     "cipher-base": {
-      "modules": {
+      "packages": {
         "inherits": true,
         "safe-buffer": true,
         "stream-browserify": true,
@@ -342,28 +343,29 @@
     },
     "classnames": {
       "globals": {
-        "classNames": true
+        "classNames": "write",
+        "define": true
       }
     },
     "clone": {
-      "modules": {
+      "packages": {
         "buffer": true
       }
     },
     "color": {
-      "modules": {
+      "packages": {
         "clone": true,
         "color-convert": true,
         "color-string": true
       }
     },
     "color-convert": {
-      "modules": {
+      "packages": {
         "color-name": true
       }
     },
     "color-string": {
-      "modules": {
+      "packages": {
         "color-name": true
       }
     },
@@ -381,28 +383,27 @@
         "navigator.userAgent": true,
         "prompt": true
       },
-      "modules": {
+      "packages": {
         "toggle-selection": true
       }
     },
     "core-js": {
-      "environment": "unfrozen",
       "globals": {
         "PromiseRejectionEvent": true,
-        "__e": true,
-        "__g": true,
+        "__e": "write",
+        "__g": "write",
         "document.createTextNode": true,
         "postMessage": true,
         "setTimeout": true
       }
     },
     "core-util-is": {
-      "modules": {
+      "packages": {
         "is-buffer": true
       }
     },
     "create-hash": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "cipher-base": true,
         "inherits": true,
@@ -412,8 +413,7 @@
       }
     },
     "create-react-class": {
-      "environment": "unfrozen",
-      "modules": {
+      "packages": {
         "fbjs": true,
         "object-assign": true
       }
@@ -424,19 +424,19 @@
         "document.documentElement": true,
         "getComputedStyle": true
       },
-      "modules": {
+      "packages": {
         "is-in-browser": true
       }
     },
     "currency-formatter": {
-      "modules": {
+      "packages": {
         "accounting": true,
         "locale-currency": true,
         "object-assign": true
       }
     },
     "d3": {
-      "modules": {
+      "packages": {
         "d3-array": true,
         "d3-axis": true,
         "d3-brush": true,
@@ -470,12 +470,23 @@
         "d3-zoom": true
       }
     },
+    "d3-array": {
+      "globals": {
+        "define": true
+      }
+    },
+    "d3-axis": {
+      "globals": {
+        "define": true
+      }
+    },
     "d3-brush": {
       "globals": {
         "clearTimeout": true,
+        "define": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "d3-dispatch": true,
         "d3-drag": true,
         "d3-interpolate": true,
@@ -484,41 +495,74 @@
       }
     },
     "d3-chord": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-array": true,
         "d3-path": true
       }
     },
+    "d3-collection": {
+      "globals": {
+        "define": true
+      }
+    },
     "d3-color": {
-      "environment": "unfrozen"
+      "globals": {
+        "define": true
+      }
     },
     "d3-contour": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-array": true
+      }
+    },
+    "d3-dispatch": {
+      "globals": {
+        "define": true
       }
     },
     "d3-drag": {
       "globals": {
         "clearTimeout": true,
+        "define": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "d3-dispatch": true,
         "d3-selection": true
+      }
+    },
+    "d3-dsv": {
+      "globals": {
+        "define": true
+      }
+    },
+    "d3-ease": {
+      "globals": {
+        "define": true
       }
     },
     "d3-fetch": {
       "globals": {
         "DOMParser": true,
         "Image": true,
+        "define": true,
         "fetch": true
       },
-      "modules": {
+      "packages": {
         "d3-dsv": true
       }
     },
     "d3-force": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-collection": true,
         "d3-dispatch": true,
         "d3-quadtree": true,
@@ -526,26 +570,60 @@
       }
     },
     "d3-format": {
-      "environment": "unfrozen"
+      "globals": {
+        "define": true
+      }
     },
     "d3-geo": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-array": true
+      }
+    },
+    "d3-hierarchy": {
+      "globals": {
+        "define": true
       }
     },
     "d3-interpolate": {
       "globals": {
+        "define": true,
         "document.createElement": true,
         "document.createElementNS": true,
         "document.defaultView": true,
         "document.documentElement": true
       },
-      "modules": {
+      "packages": {
         "d3-color": true
       }
     },
+    "d3-path": {
+      "globals": {
+        "define": true
+      }
+    },
+    "d3-polygon": {
+      "globals": {
+        "define": true
+      }
+    },
+    "d3-quadtree": {
+      "globals": {
+        "define": true
+      }
+    },
+    "d3-random": {
+      "globals": {
+        "define": true
+      }
+    },
     "d3-scale": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-array": true,
         "d3-collection": true,
         "d3-format": true,
@@ -555,24 +633,38 @@
       }
     },
     "d3-scale-chromatic": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-color": true,
         "d3-interpolate": true
       }
     },
     "d3-selection": {
       "globals": {
+        "define": true,
         "document": true
       }
     },
     "d3-shape": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-path": true
       }
     },
+    "d3-time": {
+      "globals": {
+        "define": true
+      }
+    },
     "d3-time-format": {
-      "environment": "unfrozen",
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-time": true
       }
     },
@@ -580,6 +672,7 @@
       "globals": {
         "clearInterval": true,
         "clearTimeout": true,
+        "define": true,
         "performance": true,
         "requestAnimationFrame": true,
         "setInterval": true,
@@ -587,7 +680,10 @@
       }
     },
     "d3-transition": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "d3-color": true,
         "d3-dispatch": true,
         "d3-ease": true,
@@ -596,13 +692,19 @@
         "d3-timer": true
       }
     },
+    "d3-voronoi": {
+      "globals": {
+        "define": true
+      }
+    },
     "d3-zoom": {
       "globals": {
         "SVGElement": true,
         "clearTimeout": true,
+        "define": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "d3-dispatch": true,
         "d3-drag": true,
         "d3-interpolate": true,
@@ -617,7 +719,7 @@
       }
     },
     "deep-equal": {
-      "modules": {
+      "packages": {
         "is-arguments": true,
         "is-date-object": true,
         "is-regex": true,
@@ -626,15 +728,20 @@
         "regexp.prototype.flags": true
       }
     },
+    "deepmerge": {
+      "globals": {
+        "define": true
+      }
+    },
     "define-properties": {
-      "modules": {
+      "packages": {
         "foreach": true,
         "object-keys": true
       }
     },
     "detectrtc": {
       "globals": {
-        "DetectRTC": true,
+        "DetectRTC": "write",
         "InstallTrigger": true,
         "MediaStream": true,
         "MediaStreamTrack": true,
@@ -644,6 +751,7 @@
         "WebSocket": true,
         "chrome": true,
         "clearInterval": true,
+        "define": true,
         "document": true,
         "indexedDB": true,
         "localStorage": true,
@@ -657,12 +765,12 @@
         "webkitRTCPeerConnection": true,
         "webkitRequestFileSystem": true
       },
-      "modules": {
+      "packages": {
         "process": true
       }
     },
     "dnd-core": {
-      "modules": {
+      "packages": {
         "asap": true,
         "invariant": true,
         "lodash": true,
@@ -670,7 +778,7 @@
       }
     },
     "dnode": {
-      "modules": {
+      "packages": {
         "dnode-protocol": true,
         "jsonify": true,
         "process": true,
@@ -678,7 +786,7 @@
       }
     },
     "dnode-protocol": {
-      "modules": {
+      "packages": {
         "events": true,
         "traverse": true
       }
@@ -686,9 +794,6 @@
     "dom-helpers": {
       "globals": {
         "document": true,
-        "document.body.appendChild": true,
-        "document.body.removeChild": true,
-        "document.createElement": true,
         "getComputedStyle": true,
         "setTimeout": true
       }
@@ -703,7 +808,7 @@
       }
     },
     "elliptic": {
-      "modules": {
+      "packages": {
         "bn.js": true,
         "brorand": true,
         "hash.js": true,
@@ -714,7 +819,7 @@
       }
     },
     "end-of-stream": {
-      "modules": {
+      "packages": {
         "once": true
       }
     },
@@ -724,7 +829,7 @@
         "console.error": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "eth-query": true,
         "pify": true,
         "safe-event-emitter": true
@@ -732,21 +837,21 @@
     },
     "eth-ens-namehash": {
       "globals": {
-        "name": true
+        "name": "write"
       },
-      "modules": {
+      "packages": {
         "buffer": true,
         "idna-uts46": true,
         "js-sha3": true
       }
     },
     "eth-method-registry": {
-      "modules": {
+      "packages": {
         "ethjs": true
       }
     },
     "eth-query": {
-      "modules": {
+      "packages": {
         "json-rpc-random-id": true,
         "xtend": true
       }
@@ -756,7 +861,7 @@
         "console.error": true,
         "console.warn": true
       },
-      "modules": {
+      "packages": {
         "@babel/runtime": true,
         "deep-equal": true,
         "eth-block-tracker": true,
@@ -768,14 +873,14 @@
       }
     },
     "ethereumjs-abi": {
-      "modules": {
+      "packages": {
         "bn.js": true,
         "buffer": true,
         "ethereumjs-util": true
       }
     },
     "ethereumjs-util": {
-      "modules": {
+      "packages": {
         "assert": true,
         "bn.js": true,
         "buffer": true,
@@ -787,12 +892,11 @@
       }
     },
     "ethers": {
-      "environment": "unfrozen",
       "globals": {
         "console.log": true,
         "name": true
       },
-      "modules": {
+      "packages": {
         "bn.js": true,
         "js-sha3": true
       }
@@ -802,7 +906,7 @@
         "clearInterval": true,
         "setInterval": true
       },
-      "modules": {
+      "packages": {
         "bn.js": true,
         "buffer": true,
         "ethjs-abi": true,
@@ -817,7 +921,7 @@
       }
     },
     "ethjs-abi": {
-      "modules": {
+      "packages": {
         "bn.js": true,
         "buffer": true,
         "js-sha3": true,
@@ -825,7 +929,7 @@
       }
     },
     "ethjs-contract": {
-      "modules": {
+      "packages": {
         "babel-runtime": true,
         "ethjs-abi": true,
         "ethjs-filter": true,
@@ -835,7 +939,7 @@
       }
     },
     "ethjs-ens": {
-      "modules": {
+      "packages": {
         "eth-ens-namehash": true,
         "ethereum-ens-network-map": true,
         "ethjs-contract": true,
@@ -849,7 +953,7 @@
       }
     },
     "ethjs-format": {
-      "modules": {
+      "packages": {
         "ethjs-schema": true,
         "ethjs-util": true,
         "number-to-bn": true,
@@ -857,7 +961,7 @@
       }
     },
     "ethjs-provider-http": {
-      "modules": {
+      "packages": {
         "xhr2": true
       }
     },
@@ -865,7 +969,7 @@
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "babel-runtime": true,
         "ethjs-format": true,
         "ethjs-rpc": true,
@@ -873,18 +977,18 @@
       }
     },
     "ethjs-rpc": {
-      "modules": {
+      "packages": {
         "promise-to-callback": true
       }
     },
     "ethjs-unit": {
-      "modules": {
+      "packages": {
         "bn.js": true,
         "number-to-bn": true
       }
     },
     "ethjs-util": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "is-hex-prefixed": true,
         "strip-hex-prefix": true
@@ -896,7 +1000,7 @@
       }
     },
     "extension-port-stream": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "readable-stream": true,
         "util": true
@@ -914,9 +1018,7 @@
         "addEventListener": true,
         "attachEvent": true,
         "console": true,
-        "console.error": true,
         "document": true,
-        "document.createElement": true,
         "msPerformance": true,
         "performance": true,
         "screen": true,
@@ -925,21 +1027,22 @@
     },
     "fuse.js": {
       "globals": {
-        "console": true
+        "console": true,
+        "define": true
       }
     },
     "get-params": {
       "globals": {
-        "GetParams": true
+        "GetParams": "write"
       }
     },
     "has": {
-      "modules": {
+      "packages": {
         "function-bind": true
       }
     },
     "hash-base": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "inherits": true,
         "safe-buffer": true,
@@ -947,7 +1050,7 @@
       }
     },
     "hash.js": {
-      "modules": {
+      "packages": {
         "inherits": true,
         "minimalistic-assert": true
       }
@@ -958,12 +1061,9 @@
         "document": true,
         "history": true,
         "location": true,
-        "location.hash": true,
-        "location.href": true,
-        "location.replace": true,
         "navigator.userAgent": true
       },
-      "modules": {
+      "packages": {
         "invariant": true,
         "resolve-pathname": true,
         "value-equal": true,
@@ -971,19 +1071,19 @@
       }
     },
     "hmac-drbg": {
-      "modules": {
+      "packages": {
         "hash.js": true,
         "minimalistic-assert": true,
         "minimalistic-crypto-utils": true
       }
     },
     "idna-uts46": {
-      "modules": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "punycode": true
       }
-    },
-    "inherits": {
-      "environment": "unfrozen"
     },
     "is-dom": {
       "globals": {
@@ -996,7 +1096,7 @@
       }
     },
     "is-regex": {
-      "modules": {
+      "packages": {
         "has": true
       }
     },
@@ -1004,23 +1104,21 @@
       "globals": {
         "document.createElement": true
       },
-      "modules": {
+      "packages": {
         "color": true,
         "mersenne-twister": true,
         "raphael": true
       }
     },
     "js-sha3": {
-      "environment": "unfrozen",
       "globals": {
         "navigator.userAgent.indexOf": true
       },
-      "modules": {
+      "packages": {
         "process": true
       }
     },
     "jsan": {
-      "environment": "unfrozen",
       "globals": {
         "console.warn": true
       }
@@ -1032,41 +1130,41 @@
         "document.head": true,
         "document.querySelector": true
       },
-      "modules": {
+      "packages": {
         "is-in-browser": true,
         "symbol-observable": true,
         "warning": true
       }
     },
     "jss-camel-case": {
-      "modules": {
+      "packages": {
         "hyphenate-style-name": true
       }
     },
     "jss-global": {
-      "modules": {
+      "packages": {
         "jss": true
       }
     },
     "jss-nested": {
-      "modules": {
+      "packages": {
         "warning": true
       }
     },
     "jss-vendor-prefixer": {
-      "modules": {
+      "packages": {
         "css-vendor": true
       }
     },
     "keccak": {
-      "modules": {
+      "packages": {
         "inherits": true,
         "safe-buffer": true,
         "stream-browserify": true
       }
     },
     "keccakjs": {
-      "modules": {
+      "packages": {
         "browserify-sha3": true
       }
     },
@@ -1090,16 +1188,19 @@
     "loglevel": {
       "globals": {
         "console": true,
+        "define": true,
         "document.cookie": true,
         "localStorage": true,
-        "log": true
+        "log": "write"
       }
     },
     "luxon": {
-      "environment": "unfrozen"
+      "globals": {
+        "Intl": true
+      }
     },
     "md5.js": {
-      "modules": {
+      "packages": {
         "hash-base": true,
         "inherits": true,
         "safe-buffer": true
@@ -1114,13 +1215,13 @@
         "innerWidth": true,
         "requestAnimationFrame": true
       },
-      "modules": {
+      "packages": {
         "gl-mat4": true,
         "gl-vec3": true
       }
     },
     "number-to-bn": {
-      "modules": {
+      "packages": {
         "bn.js": true,
         "strip-hex-prefix": true
       }
@@ -1129,7 +1230,7 @@
       "globals": {
         "console.warn": true
       },
-      "modules": {
+      "packages": {
         "end-of-stream": true,
         "once": true,
         "readable-stream": true
@@ -1139,17 +1240,17 @@
       "environment": "unfrozen"
     },
     "once": {
-      "modules": {
+      "packages": {
         "wrappy": true
       }
     },
     "path-to-regexp": {
-      "modules": {
+      "packages": {
         "isarray": true
       }
     },
     "pbkdf2": {
-      "modules": {
+      "packages": {
         "create-hash": true,
         "is-buffer": true,
         "process": true,
@@ -1163,6 +1264,7 @@
         "Node.DOCUMENT_POSITION_FOLLOWING": true,
         "cancelAnimationFrame": true,
         "console.warn": true,
+        "define": true,
         "document": true,
         "getComputedStyle": true,
         "innerHeight": true,
@@ -1180,12 +1282,12 @@
       }
     },
     "process-nextick-args": {
-      "modules": {
+      "packages": {
         "process": true
       }
     },
     "promise-to-callback": {
-      "modules": {
+      "packages": {
         "is-fn": true,
         "set-immediate-shim": true
       }
@@ -1194,14 +1296,13 @@
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "fbjs": true,
         "object-assign": true,
         "react-is": true
       }
     },
     "pubnub": {
-      "environment": "unfrozen",
       "globals": {
         "ActiveXObject": true,
         "XMLHttpRequest": true,
@@ -1210,6 +1311,7 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console": true,
+        "define": true,
         "localStorage.getItem": true,
         "localStorage.setItem": true,
         "location": true,
@@ -1219,18 +1321,25 @@
       }
     },
     "pump": {
-      "modules": {
+      "packages": {
         "browser-resolve": true,
         "end-of-stream": true,
         "once": true,
         "process": true
       }
     },
+    "punycode": {
+      "globals": {
+        "define": true
+      }
+    },
     "qrcode-generator": {
-      "environment": "unfrozen"
+      "globals": {
+        "define": true
+      }
     },
     "randombytes": {
-      "modules": {
+      "packages": {
         "process": true,
         "safe-buffer": true
       }
@@ -1242,14 +1351,14 @@
       }
     },
     "raphael": {
-      "environment": "unfrozen",
       "globals": {
         "ActiveXObject": true,
         "DocumentTouch": true,
-        "Raphael": true,
+        "Raphael": "write",
         "createPopup": true,
+        "define": true,
         "document": true,
-        "eve": true,
+        "eve": "write",
         "mozRequestAnimationFrame": true,
         "msRequestAnimationFrame": true,
         "oRequestAnimationFrame": true,
@@ -1259,13 +1368,10 @@
       }
     },
     "react": {
-      "environment": "unfrozen",
       "globals": {
-        "console": true,
-        "console.reactStack": true,
-        "console.reactStackEnd": true
+        "console": true
       },
-      "modules": {
+      "packages": {
         "create-react-class": true,
         "fbjs": true,
         "object-assign": true,
@@ -1275,11 +1381,10 @@
       }
     },
     "react-dnd": {
-      "environment": "unfrozen",
       "globals": {
         "console.error": true
       },
-      "modules": {
+      "packages": {
         "disposables": true,
         "dnd-core": true,
         "hoist-non-react-statics": true,
@@ -1296,14 +1401,12 @@
         "console.warn": true,
         "devicePixelRatio": true,
         "document": true,
-        "document.documentElement.contains": true,
         "navigator.userAgent": true,
         "safari": true,
         "setTimeout": true
       }
     },
     "react-dom": {
-      "environment": "unfrozen",
       "globals": {
         "MSApp": true,
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
@@ -1313,25 +1416,16 @@
         "console.timeEnd": true,
         "dispatchEvent": true,
         "document": true,
-        "document.body.appendChild": true,
-        "document.body.removeChild": true,
-        "document.createElement": true,
-        "document.createEvent": true,
-        "document.createTextNode": true,
-        "document.documentElement": true,
-        "document.documentElement.style.cssFloat": true,
-        "document.documentMode": true,
-        "document.selection": true,
         "getSelection": true,
         "location.href": true,
         "location.protocol.indexOf": true,
         "navigator": true,
-        "navigator.userAgent.indexOf": true,
         "opera": true,
         "performance": true,
+        "self": true,
         "top": true
       },
-      "modules": {
+      "packages": {
         "fbjs": true,
         "object-assign": true,
         "process": true,
@@ -1343,7 +1437,7 @@
       "globals": {
         "addEventListener": true
       },
-      "modules": {
+      "packages": {
         "babel-runtime": true,
         "fbjs": true,
         "prop-types": true,
@@ -1352,7 +1446,7 @@
       }
     },
     "react-hyperscript": {
-      "modules": {
+      "packages": {
         "react": true
       }
     },
@@ -1362,7 +1456,7 @@
         "document": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "prop-types": true,
         "react": true
       }
@@ -1372,7 +1466,7 @@
         "getComputedStyle": true,
         "navigator.userAgent": true
       },
-      "modules": {
+      "packages": {
         "prop-types": true,
         "react": true
       }
@@ -1389,7 +1483,7 @@
         "Node.PROCESSING_INSTRUCTION_NODE": true,
         "Node.TEXT_NODE": true
       },
-      "modules": {
+      "packages": {
         "babel-runtime": true,
         "is-dom": true,
         "prop-types": true,
@@ -1402,7 +1496,7 @@
       }
     },
     "react-jss": {
-      "modules": {
+      "packages": {
         "prop-types": true
       }
     },
@@ -1410,7 +1504,7 @@
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "react": true
       }
     },
@@ -1418,7 +1512,7 @@
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "hoist-non-react-statics": true,
         "invariant": true,
         "lodash": true,
@@ -1428,7 +1522,7 @@
       }
     },
     "react-router": {
-      "modules": {
+      "packages": {
         "history": true,
         "hoist-non-react-statics": true,
         "invariant": true,
@@ -1439,7 +1533,7 @@
       }
     },
     "react-router-dom": {
-      "modules": {
+      "packages": {
         "history": true,
         "invariant": true,
         "prop-types": true,
@@ -1461,7 +1555,7 @@
         "open": true,
         "scrollBy": true
       },
-      "modules": {
+      "packages": {
         "classnames": true,
         "prop-types": true,
         "react": true,
@@ -1475,7 +1569,7 @@
         "FileReader": true,
         "console.warn": true
       },
-      "modules": {
+      "packages": {
         "prop-types": true,
         "react": true
       }
@@ -1489,6 +1583,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
+        "define": true,
         "document": true,
         "getComputedStyle": true,
         "innerHeight": true,
@@ -1500,7 +1595,7 @@
         "requestAnimationFrame": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "popper.js": true,
         "react": true,
         "react-dom": true
@@ -1510,10 +1605,11 @@
       "globals": {
         "clearTimeout": true,
         "console.warn": true,
+        "define": true,
         "performance": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "react": true
       }
     },
@@ -1526,18 +1622,17 @@
         "scrollX": true,
         "scrollY": true
       },
-      "modules": {
+      "packages": {
         "react": true,
         "react-dom": true
       }
     },
     "react-transition-group": {
-      "environment": "unfrozen",
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "chain-function": true,
         "dom-helpers": true,
         "prop-types": true,
@@ -1548,7 +1643,7 @@
       }
     },
     "readable-stream": {
-      "modules": {
+      "packages": {
         "browser-resolve": true,
         "core-util-is": true,
         "events": true,
@@ -1566,7 +1661,7 @@
       "globals": {
         "console.error": true
       },
-      "modules": {
+      "packages": {
         "babel-runtime": true,
         "change-emitter": true,
         "fbjs": true,
@@ -1579,7 +1674,7 @@
       "globals": {
         "console": true
       },
-      "modules": {
+      "packages": {
         "lodash": true,
         "symbol-observable": true
       }
@@ -1587,13 +1682,11 @@
     "redux-devtools-core": {
       "globals": {
         "console": true,
-        "console.log": true,
-        "console.warn": true,
         "devToolsOptions": true,
-        "onerror": true,
+        "onerror": "write",
         "serializeState": true
       },
-      "modules": {
+      "packages": {
         "get-params": true,
         "jsan": true,
         "lodash": true,
@@ -1608,20 +1701,19 @@
         "process": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "lodash": true,
         "process": true,
         "symbol-observable": true
       }
     },
     "regenerator-runtime": {
-      "environment": "unfrozen",
       "globals": {
-        "regeneratorRuntime": true
+        "regeneratorRuntime": "write"
       }
     },
     "regexp.prototype.flags": {
-      "modules": {
+      "packages": {
         "define-properties": true
       }
     },
@@ -1632,7 +1724,7 @@
         "fetch": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "jsan": true,
         "redux-devtools-core": true,
         "redux-devtools-instrument": true,
@@ -1641,14 +1733,14 @@
       }
     },
     "ripemd160": {
-      "modules": {
+      "packages": {
         "buffer": true,
         "hash-base": true,
         "inherits": true
       }
     },
     "rlp": {
-      "modules": {
+      "packages": {
         "assert": true,
         "buffer": true
       }
@@ -1658,8 +1750,7 @@
         "__DEV__": true,
         "__fbBatchedBridge": true,
         "__fbBatchedBridgeConfig": true,
-        "console": true,
-        "require": true
+        "console": true
       }
     },
     "rtcpeerconnection-shim": {
@@ -1668,12 +1759,12 @@
         "console.warn": true,
         "document.createDocumentFragment": true
       },
-      "modules": {
+      "packages": {
         "sdp": true
       }
     },
     "safe-buffer": {
-      "modules": {
+      "packages": {
         "buffer": true
       }
     },
@@ -1681,18 +1772,18 @@
       "globals": {
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "events": true,
         "util": true
       }
     },
     "sc-channel": {
-      "modules": {
+      "packages": {
         "component-emitter": true
       }
     },
     "secp256k1": {
-      "modules": {
+      "packages": {
         "bip66": true,
         "bn.js": true,
         "create-hash": true,
@@ -1705,12 +1796,12 @@
       "globals": {
         "setTimeout.apply": true
       },
-      "modules": {
+      "packages": {
         "timers-browserify": true
       }
     },
     "sha.js": {
-      "modules": {
+      "packages": {
         "inherits": true,
         "safe-buffer": true
       }
@@ -1724,7 +1815,7 @@
         "location.protocol": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "buffer": true,
         "clone": true,
         "component-emitter": true,
@@ -1737,19 +1828,19 @@
       }
     },
     "stream-browserify": {
-      "modules": {
+      "packages": {
         "events": true,
         "inherits": true,
         "readable-stream": true
       }
     },
     "string_decoder": {
-      "modules": {
+      "packages": {
         "safe-buffer": true
       }
     },
     "strip-hex-prefix": {
-      "modules": {
+      "packages": {
         "is-hex-prefixed": true
       }
     },
@@ -1759,13 +1850,13 @@
         "document.body.removeChild": true,
         "document.createElement": true,
         "document.querySelector": true,
-        "getCaretCoordinates": true,
+        "getCaretCoordinates": "write",
         "getComputedStyle": true,
         "mozInnerScreenX": true
       }
     },
     "through2": {
-      "modules": {
+      "packages": {
         "process": true,
         "readable-stream": true,
         "util": true,
@@ -1779,7 +1870,7 @@
         "setInterval": true,
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "process": true
       }
     },
@@ -1790,17 +1881,20 @@
       }
     },
     "underscore": {
-      "environment": "unfrozen",
       "globals": {
         "clearTimeout": true,
+        "define": true,
+        "self": true,
         "setTimeout": true
       }
     },
     "unorm": {
-      "environment": "unfrozen"
+      "globals": {
+        "define": true
+      }
     },
     "url": {
-      "modules": {
+      "packages": {
         "punycode": true,
         "querystring-es3": true
       }
@@ -1811,7 +1905,7 @@
         "console.log": true,
         "console.trace": true
       },
-      "modules": {
+      "packages": {
         "inherits": true,
         "process": true
       }
@@ -1834,7 +1928,7 @@
       }
     },
     "web3-eth-abi": {
-      "modules": {
+      "packages": {
         "ethers": true,
         "underscore": true,
         "web3-utils": true
@@ -1844,7 +1938,7 @@
       "globals": {
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "readable-stream": true,
         "util": true
       }
@@ -1853,7 +1947,7 @@
       "globals": {
         "setTimeout": true
       },
-      "modules": {
+      "packages": {
         "bn.js": true,
         "eth-lib": true,
         "ethjs-unit": true,
@@ -1869,11 +1963,11 @@
         "Event": true,
         "RTCSessionDescription": true,
         "console": true,
-        "console.error": true,
-        "navigator.getDisplayMedia": true,
+        "hasOwnProperty.call": true,
+        "navigator.getDisplayMedia": "write",
         "navigator.mediaDevices.getUserMedia": true
       },
-      "modules": {
+      "packages": {
         "rtcpeerconnection-shim": true,
         "sdp": true
       }
