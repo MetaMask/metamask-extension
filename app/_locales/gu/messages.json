@@ -1,0 +1,190 @@
+{
+  "reject": {
+    "message": "નકારો"
+  },
+  "about": {
+    "message": "વિશે"
+  },
+  "accept": {
+    "message": "સ્વીકારો"
+  },
+  "account": {
+    "message": "એકાઉન્ટ"
+  },
+  "add": {
+    "message": "ઉમેરો"
+  },
+  "address": {
+    "message": "સરનામું"
+  },
+  "advanced": {
+    "message": "વિગતવાર"
+  },
+  "available": {
+    "message": "ઉપલબ્ધ"
+  },
+  "back": {
+    "message": "પાછળ"
+  },
+  "basic": {
+    "message": "મૂળભૂત"
+  },
+  "off": {
+    "message": "બંધ"
+  },
+  "ok": {
+    "message": "બરાબર, સમજાઇ ગયું"
+  },
+  "on": {
+    "message": "ચાલુ"
+  },
+  "cancel": {
+    "message": "રદ કરો"
+  },
+  "close": {
+    "message": "બંધ કરો"
+  },
+  "confirm": {
+    "message": "પુષ્ટિ કરો"
+  },
+  "connect": {
+    "message": "કનેક્ટ કરો"
+  },
+  "connecting": {
+    "message": "કનેક્ટિંગ..."
+  },
+  "continue": {
+    "message": "આગળ વધો"
+  },
+  "copy": {
+    "message": "કૉપિ કરો"
+  },
+  "copyToClipboard": {
+    "message": "ક્લિપબોર્ડ પર કૉપિ કરો"
+  },
+  "create": {
+    "message": "બનાવો"
+  },
+  "createDen": {
+    "message": "બનાવો"
+  },
+  "customize": {
+    "message": "કસ્ટમાઇઝ કરો"
+  },
+  "delete": {
+    "message": "કાઢી નાખો"
+  },
+  "details": {
+    "message": "વિગતો"
+  },
+  "dismiss": {
+    "message": "કાઢી નાખો"
+  },
+  "done": {
+    "message": "થઈ ગયું"
+  },
+  "edit": {
+    "message": "સંપાદન"
+  },
+  "fast": {
+    "message": "ઝડપી"
+  },
+  "fastest": {
+    "message": "સૌથી ઝડપી"
+  },
+  "forgetDevice": {
+    "message": "આ ઉપકરણને ભૂલી જાઓ"
+  },
+  "getStarted": {
+    "message": "પ્રારંભ કરો"
+  },
+  "hide": {
+    "message": "છુપાવો"
+  },
+  "history": {
+    "message": "ઇતિહાસ"
+  },
+  "import": {
+    "message": "આયાત કરો",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "આયાત કરેલા",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "લોડ કરી રહ્યું છે..."
+  },
+  "min": {
+    "message": "ન્યૂનતમ"
+  },
+  "next": {
+    "message": "આગલું"
+  },
+  "notFound": {
+    "message": "મળ્યું નથી"
+  },
+  "origin": {
+    "message": "મૂળ"
+  },
+  "password": {
+    "message": "પાસવર્ડ"
+  },
+  "queue": {
+    "message": "કતારમાં"
+  },
+  "reset": {
+    "message": "રીસેટ કરો"
+  },
+  "restore": {
+    "message": "પુનઃસ્થાપિત કરો"
+  },
+  "remove": {
+    "message": "દૂર કરો"
+  },
+  "removeAccount": {
+    "message": "એકાઉન્ટ દૂર કરો"
+  },
+  "save": {
+    "message": "સાચવો"
+  },
+  "slow": {
+    "message": "ધીમું"
+  },
+  "search": {
+    "message": "શોધો"
+  },
+  "select": {
+    "message": "પસંદ કરો"
+  },
+  "send": {
+    "message": "મોકલો"
+  },
+  "settings": {
+    "message": "સેટિંગ્સ"
+  },
+  "status": {
+    "message": "સ્થિતિ"
+  },
+  "submit": {
+    "message": "સબમિટ કરો"
+  },
+  "tryAgain": {
+    "message": "ફરી પ્રયાસ કરો"
+  },
+  "unknown": {
+    "message": "અજાણ"
+  },
+  "unlock": {
+    "message": "અનલોક કરો"
+  },
+  "userName": {
+    "message": "વપરાશકર્તાનામ"
+  },
+  "viewAccount": {
+    "message": "એકાઉન્ટ જુઓ"
+  },
+  "warning": {
+    "message": "ચેતવણી"
+  }
+}

@@ -17,17 +17,8 @@
   "clearApprovalData": {
     "message": "Limpar dados de aprovação"
   },
-  "approve": {
-    "message": "Aprovar"
-  },
   "reject": {
     "message": "Rejeitar"
-  },
-  "providerAPIRequest": {
-    "message": "Solicitação de API do Web3"
-  },
-  "reviewProviderRequest": {
-    "message": "Por favor, revise esta solicitação da API da Ethereum."
   },
   "providerRequestInfo": {
     "message": "O domínio listado abaixo está tentando solicitar acesso à API Ethereum para que ele possa interagir com o blockchain Ethereum. Sempre verifique se você está no site correto antes de aprovar o acesso à Ethereum."
@@ -64,11 +55,10 @@
   },
   "appDescription": {
     "message": "Extensão para o browser de Ethereum",
-    "description": "A descrição da aplicação"
+    "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "Nome da aplicação"
+  "approve": {
+    "message": "Aprovar"
   },
   "attemptingConnect": {
     "message": "A tentar ligar à blockchain."
@@ -91,12 +81,9 @@
   "balanceIsInsufficientGas": {
     "message": "Saldo insuficiente para a quantidade de gas total"
   },
-  "beta": {
-    "message": "BETA"
-  },
   "betweenMinAndMax": {
     "message": "tem de ser maior ou igual a $1 e menor ou igual a $2.",
-    "description": "ajuda para introduzir hexadecimal como decimal"
+    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
@@ -193,10 +180,7 @@
   },
   "crypto": {
     "message": "Cripto",
-    "description": "Tipo de câmbio (criptomoedas)"
-  },
-  "currentConversion": {
-    "message": "Taxa de Conversão Atual"
+    "description": "Exchange type (cryptocurrencies)"
   },
   "currentNetwork": {
     "message": "Rede Atual"
@@ -299,11 +283,11 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Tipo de câmbio"
+    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "A importação de ficheiro não está a funcionar? Carregue aqui!",
-    "description": "Ajuda usuários a importar as suas contas a partir de um ficheiro JSON"
+    "description": "Helps user import their account from a JSON file"
   },
   "followTwitter": {
     "message": "Siga-nos no Twitter"
@@ -316,10 +300,6 @@
   },
   "fromShapeShift": {
     "message": "De ShapeShift"
-  },
-  "gas": {
-    "message": "Gas",
-    "description": "Indicação breve do custo de gas"
   },
   "gasFee": {
     "message": "Taxa de Gas"
@@ -353,15 +333,15 @@
   },
   "getEtherFromFaucet": {
     "message": "Obter Ether de um faucet por $1",
-    "description": "Mostra nome da rede para faucet de Ether"
+    "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
     "message": "tem de ser maior ou igual a $1.",
-    "description": "ajuda para introduzir hexadecimal como decimal"
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "aqui",
-    "description": "como -clicar aqui- para mais informações (associado a troubleTokenBalances)"
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hereList": {
     "message": "Aqui está uma lista!!!!"
@@ -383,7 +363,7 @@
   },
   "import": {
     "message": "Importar",
-    "description": "Botão para importar uma conta de um ficheiro selecionado"
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Importar Conta"
@@ -399,7 +379,7 @@
   },
   "imported": {
     "message": "Importado",
-    "description": "estado para mostrar que uma conta foi totalmente carregada para o keyring"
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Informação & Ajuda"
@@ -433,7 +413,7 @@
   },
   "jsonFile": {
     "message": "Ficheiro JSON",
-    "description": "Formatar para importar uma conta"
+    "description": "format for importing an account"
   },
   "kovan": {
     "message": "Rede de Teste Kovan"
@@ -443,7 +423,7 @@
   },
   "lessThanMax": {
     "message": "tem de ser menor ou igual a $1.",
-    "description": "ajuda para introduzir hexadecimal como decimal"
+    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Gostaria de adicionar estes tokens?"
@@ -456,9 +436,6 @@
   },
   "loadingTokens": {
     "message": "A carregar Tokens..."
-  },
-  "localhost": {
-    "message": "Localhost 8545"
   },
   "login": {
     "message": "Entrar"
@@ -495,11 +472,11 @@
   },
   "needImportFile": {
     "message": "Deve selecionar um ficheiro para importar.",
-    "description": "O utilizador deve adicionar um ficheiro para continuar"
+    "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
     "message": "Deve introduzir uma palavra-passe para o ficheiro selecionado.",
-    "description": "Palavra-passe e ficheiro necessários para importar uma conta"
+    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "Não é possível enviar valores negativos de ETH."
@@ -512,7 +489,7 @@
   },
   "newAccountNumberName": {
     "message": "Conta $1",
-    "description": "Nome padrão da próxima conta a ser criado em Criar Conta"
+    "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
     "message": "Contrato Novo"
@@ -520,11 +497,11 @@
   "newPassword": {
     "message": "Nova Palavra-passe (min 8 caracteres)"
   },
+  "newPassword8Chars": {
+    "message": "Nova Palavra-passe (min 8 caracteres)"
+  },
   "newRecipient": {
     "message": "Recipiente Novo"
-  },
-  "newRPC": {
-    "message": "Novo RPC URL"
   },
   "next": {
     "message": "Próximo"
@@ -552,22 +529,22 @@
   },
   "or": {
     "message": "ou",
-    "description": "opção entre criar ou importar uma nova conta"
+    "description": "choice between creating or importing a new account"
   },
   "passwordCorrect": {
     "message": "Por favor confirme que a sua palavra-passe esteja correta."
   },
   "passwordMismatch": {
     "message": "as palavras-passe não coincidem",
-    "description": "no processo de criação da palavra-passe, as duas palavras-passe não coincidiram"
+    "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
     "message": "palavra-passe deve ser mais comprida",
-    "description": "no processo de criação da palavra-passe, a palavra-apasse não é longa o suficiente para ser segura"
+    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Cole aqui a sua chave privada:",
-    "description": "Para importar uma conta através da chave privada"
+    "description": "For importing an account from a private key"
   },
   "pasteSeed": {
     "message": "Cole aqui a sua frase seed!"
@@ -583,7 +560,7 @@
   },
   "privateKey": {
     "message": "Chave Privada",
-    "description": "Selecione este tipo de ficheiro para importar uma conta"
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Atenção: Nunca revele esta chave. Qualquer pessoa com acesso à sua chave privada pode roubar os bens que esta contém."
@@ -642,16 +619,19 @@
   "ropsten": {
     "message": "Rede de Teste Ropsten"
   },
+  "rpc": {
+    "message": "Customizar RPC"
+  },
   "sampleAccountName": {
     "message": "Ex. A minha conta nova",
-    "description": "Ajuda o utilizador a perceber o conceito de adicionar um  nome legível à sua conta"
+    "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
     "message": "Guardar"
   },
   "saveAsFile": {
     "message": "Guardar como Ficheiro",
-    "description": "Processo de exportação de conta"
+    "description": "Account export process"
   },
   "saveSeedAsFile": {
     "message": "Guardar Palavras Seed como um Ficheiro"
@@ -704,6 +684,9 @@
   "sign": {
     "message": "Assinar"
   },
+  "signatureRequest": {
+    "message": "Pedido de Assinatura"
+  },
   "signMessage": {
     "message": "Assinar Mensagem"
   },
@@ -751,7 +734,7 @@
   },
   "toETHviaShapeShift": {
     "message": "$1 para ETH via ShapeShift",
-    "description": "o sistema irá preencher o tipo de depósito no início da mensagem"
+    "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
     "message": "Endereço do Token"
@@ -771,9 +754,6 @@
   "tokenWarning1": {
     "message": "Registe os tokens que comprou com a sua conta MetaMask. Se comprou tokens utilizando uma conta diferente, esses tokens não irão aparecer aqui."
   },
-  "total": {
-    "message": "Total"
-  },
   "transactions": {
     "message": "transações"
   },
@@ -788,7 +768,7 @@
   },
   "troubleTokenBalances": {
     "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
-    "description": "Seguido de um link (aqui) para ver o balanço dos seus tokens"
+    "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
     "message": "Estas 12 palavras são a única forma de recuperar as suas contas na MetaMask.\nGuarde-as num local seguro e secreto."
@@ -819,7 +799,7 @@
   },
   "usaOnly": {
     "message": "Só nos EUA",
-    "description": "Usar esta taxa de câmbio está limitado a pessoas residentes nos EUA"
+    "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
     "message": "Utilizado por vários tipos de clientes"

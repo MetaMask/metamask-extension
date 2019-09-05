@@ -24,24 +24,22 @@ if (specifiedLocale) {
 } else {
   console.log('Verifying all locales:\n\n')
   localeIndex.forEach(localeMeta => {
-    verifyLocale({ localeMeta })
+    verifyLocale(localeMeta)
     console.log('\n')
   })
 }
 
 
-function verifyLocale ({ localeMeta }) {
-  const localeCode = localeMeta.code
-  const localeName = localeMeta.name
+function verifyLocale ({ code, name }) {
   let targetLocale, englishLocale
   try {
-    const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
+    const localeFilePath = path.join(process.cwd(), 'app', '_locales', code, 'messages.json')
     targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
   } catch (e) {
     if (e.code === 'ENOENT') {
       console.log('Locale file not found')
     } else {
-      console.log(`Error opening your locale ("${localeCode}") file: `, e)
+      console.log(`Error opening your locale ("${code}") file: `, e)
     }
     process.exit(1)
   }
@@ -58,32 +56,32 @@ function verifyLocale ({ localeMeta }) {
     process.exit(1)
   }
 
-  // console.log('  verifying whether all your locale ("${localeCode}") strings are contained in the english one')
+  // console.log('  verifying whether all your locale ("${code}") strings are contained in the english one')
   const extraItems = compareLocalesForMissingItems({ base: targetLocale, subject: englishLocale })
-  // console.log('\n  verifying whether your locale ("${localeCode}") contains all english strings')
+  // console.log('\n  verifying whether your locale ("${code}") contains all english strings')
   const missingItems = compareLocalesForMissingItems({ base: englishLocale, subject: targetLocale })
 
   const englishEntryCount = Object.keys(englishLocale).length
   const coveragePercent = 100 * (englishEntryCount - missingItems.length) / englishEntryCount
 
-  console.log(`Status of **${localeName} (${localeCode})** ${coveragePercent.toFixed(2)}% coverage:`)
+  console.log(`Status of **${name} (${code})** ${coveragePercent.toFixed(2)}% coverage:`)
 
   if (extraItems.length) {
-    console.log('\nMissing from english locale:')
+    console.log('\nExtra items that should not be localized:')
     extraItems.forEach(function (key) {
       console.log(`  - [ ] ${key}`)
     })
   } else {
-    // console.log(`  all ${counter} strings declared in your locale ("${localeCode}") were found in the english one`)
+    // console.log(`  all ${counter} strings declared in your locale ("${code}") were found in the english one`)
   }
 
   if (missingItems.length) {
-    console.log(`\nMissing:`)
+    console.log(`\nMissing items not present in localized file:`)
     missingItems.forEach(function (key) {
       console.log(`  - [ ] ${key}`)
     })
   } else {
-    // console.log(`  all ${counter} english strings were found in your locale ("${localeCode}")!`)
+    // console.log(`  all ${counter} english strings were found in your locale ("${code}")!`)
   }
 
   if (!extraItems.length && !missingItems.length) {

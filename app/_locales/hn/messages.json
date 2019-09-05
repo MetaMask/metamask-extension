@@ -23,12 +23,6 @@
   "reject": {
     "message": "अस्वीकार"
   },
-  "providerAPIRequest": {
-    "message": "वेब 3 एपीआई अनुरोध"
-  },
-  "reviewProviderRequest": {
-    "message": "कृपया इस वेब 3 एपीआई अनुरोध की समीक्षा करें।"
-  },
   "providerRequestInfo": {
     "message": "नीचे सूचीबद्ध डोमेन वेब 3 एपीआई तक पहुंच का अनुरोध करने का प्रयास कर रहा है ताकि यह एथेरियम ब्लॉकचेन से बातचीत कर सके। वेब 3 एक्सेस को मंजूरी देने से पहले हमेशा सही जांच करें कि आप सही साइट पर हैं।"
   },
@@ -194,9 +188,6 @@
   "crypto": {
     "message": "क्रिप्टो",
     "description": "एक्सचेंज टाइप (क्रिप्टोक्यूचरस)"
-  },
-  "currentConversion": {
-    "message": "वर्तमान रूपांतरण"
   },
   "currentNetwork": {
     "message": "वर्तमान नेटवर्क"
@@ -522,9 +513,6 @@
   },
   "newRecipient": {
     "message": "नया प्राप्तकर्ता"
-  },
-  "newRPC": {
-    "message": "नया RPC URL"
   },
   "next": {
     "message": "अगला"
