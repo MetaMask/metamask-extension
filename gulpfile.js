@@ -470,7 +470,7 @@ function generateBundler (opts, performBundle) {
   const bundleName = opts.filename.split('.')[0]
 
   const activateAutoConfig = process.env.SESIFY_AUTOGEN
-  const activateSesify = ['background', 'ui'].includes(bundleName)
+  const activateSesify = ['background'].includes(bundleName)
   const sesifyConfigPath = `./sesify/${bundleName}.json`
   const sesifyConfigOverridePath = `./sesify/${bundleName}-override.json`
 
