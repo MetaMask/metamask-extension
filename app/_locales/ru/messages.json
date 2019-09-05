@@ -677,9 +677,6 @@
   "ropsten": {
     "message": "Тестовая сеть Ropsten"
   },
-  "rpc": {
-    "message": "Пользовательский RPC"
-  },
   "sampleAccountName": {
     "message": "Например, Мой новый счет",
     "description": "Help user understand concept of adding a human-readable name to their account"
@@ -1692,9 +1689,6 @@
   },
   "showHexDataDescription": {
     "message": "Выберите это, чтобы показать шестнадцатеричное поле данных на экране отправки"
-  },
-  "signatureRequest": {
-    "message": "Запрос подписи"
   },
   "somethingWentWrong": {
     "message": "Опс! Что-то пошло не так."
