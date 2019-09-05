@@ -63,6 +63,7 @@
     "boron": "^0.2.3",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
+    "browserify-transform-tools": "^1.7.0",
     "browserify-unibabel": "^3.0.0",
     "c3": "^0.6.7",
     "classnames": "^2.2.5",

@@ -24,6 +24,7 @@ const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
+const { makeStringTransform } = require('browserify-transform-tools')
 
 function gulpParallel (...args) {
   return function spawnGulpChildProcess (cb) {
@@ -453,6 +454,7 @@ function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
     entries: [opts.filepath],
     plugin: [],
+    transform: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
@@ -515,6 +517,15 @@ function generateBundler (opts, performBundle) {
   let bundler = browserify(browserifyOpts)
     .transform('babelify')
     .transform('brfs')
+
+  if (activateSesify) {
+    // remove html comments that SES is alergic to
+    const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, transformOptions, cb) => {
+      const result = content.split('-->').join('-- >')
+      cb(null, result)
+    })
+    bundler.transform(removeHtmlComment, { global: true })
+  }
 
   // trigger watchify rebuilds when config changes
   if (activateSesify && !activateAutoConfig) {

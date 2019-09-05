@@ -2417,7 +2417,7 @@ acorn-globals@^4.0.0:
   dependencies:
     acorn "^5.0.0"
 
-acorn-globals@^4.3.0:
+acorn-globals@^4.3.3:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/acorn-globals/-/acorn-globals-4.3.3.tgz#a86f75b69680b8780d30edd21eee4e0ea170c05e"
   integrity sha512-vkR40VwS2SYO98AIeFvzWWh+xyc2qi9s7OoXSFEGIP/rOJKzjnhykaZJNnHdoq4BL2gGxI5EZOU16z896EYnOQ==
@@ -4782,6 +4782,14 @@ browserify-sign@^4.0.0:
     elliptic "^6.0.0"
     inherits "^2.0.1"
     parse-asn1 "^5.0.0"
+
+browserify-transform-tools@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/browserify-transform-tools/-/browserify-transform-tools-1.7.0.tgz#83e277221f63259bed2e7eb2a283a970a501f4c4"
+  integrity sha1-g+J3Ih9jJZvtLn6yooOpcKUB9MQ=
+  dependencies:
+    falafel "^2.0.0"
+    through "^2.3.7"
 
 browserify-unibabel@^3.0.0:
   version "3.0.0"
@@ -9622,7 +9630,7 @@ fake-merkle-patricia-tree@^1.0.1:
   dependencies:
     checkpoint-store "^1.1.0"
 
-falafel@^2.1.0:
+falafel@^2.0.0, falafel@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/falafel/-/falafel-2.1.0.tgz#96bb17761daba94f46d001738b3cedf3a67fe06c"
   integrity sha1-lrsXdh2rqU9G0AFzizzt86Z/4Gw=
@@ -19553,13 +19561,20 @@ ses@^0.5.0:
     "@agoric/make-hardener" "^0.0.6"
     esm "^3.2.25"
 
-sesify@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/sesify/-/sesify-2.1.0.tgz#fc7ec266062bdfa24a9e0973feb8bb5a8d2b0ee9"
-  integrity sha512-3dJdgcfI9J9E1F5ey0kCaQCw46ANM+UyCSZdql50v4Dg8JbuxbyzuGYA9o6MrxfKyoZPiK+Q3INzQw+UZqes7w==
+sesify-tofu@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/sesify-tofu/-/sesify-tofu-2.0.2.tgz#2cdb01304abf14a10c4e0a2a18a09fffd9e7f6bd"
+  integrity sha512-Hzr/PtGe0zFf6SNY24LqdOKU/yqyLM5zqpxszrMC0U0zQ0ouojwwIGlYJb3j4HaIiLbF8rGeB+pfZEK6ynUW6Q==
+  dependencies:
+    acorn-globals "^4.3.3"
+
+sesify@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/sesify/-/sesify-3.0.0.tgz#d089718d2aed0377de5dcf80c50b2acc2a89b44b"
+  integrity sha512-+wvI2HszlhXVoU66cxiamSDm6Eix44IbL3hN7xXxpmZqYah3M9G6nMLCZheUFa8PYliwzC0L8MNxP7zezfhLEQ==
   dependencies:
     JSONStream "^1.3.5"
-    acorn-globals "^4.3.0"
+    acorn-globals "^4.3.3"
     acorn-walk "^6.1.1"
     combine-source-map "^0.8.0"
     defined "^1.0.0"
@@ -19575,6 +19590,7 @@ sesify@^2.1.0:
     pify "^4.0.1"
     safe-buffer "^5.1.2"
     ses "^0.5.0"
+    sesify-tofu "^2.0.2"
     tape "^4.9.1"
     through2 "^3.0.0"
     umd "^3.0.3"
@@ -21605,7 +21621,7 @@ through2@~0.5.0:
     readable-stream "~1.0.17"
     xtend "~3.0.0"
 
-through@2, "through@>=2.2.7 <3", through@^2.3.6, through@^2.3.8, through@~2.3, through@~2.3.1, through@~2.3.4, through@~2.3.8:
+through@2, "through@>=2.2.7 <3", through@^2.3.6, through@^2.3.7, through@^2.3.8, through@~2.3, through@~2.3.1, through@~2.3.4, through@~2.3.8:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
