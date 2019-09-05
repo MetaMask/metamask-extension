@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@agoric/make-hardener@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.0.6.tgz#5903748a71381bc37e23d571390aaff9973c37b2"
-  integrity sha512-OpZcNx/7bhHar0iuQ6D+FKYCMMxqKvYs4aC/bB5v/ffZaSM5sNAl98DnGL1mD9NSyZLGzAZ7D5XwJpe37BMldQ==
-
 "@babel/code-frame@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
@@ -8422,11 +8417,6 @@ eslint@^6.0.1:
     table "^5.2.3"
     text-table "^0.2.0"
 
-esm@^3.2.25:
-  version "3.2.25"
-  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
-  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
-
 espree@5.0.1, espree@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/espree/-/espree-5.0.1.tgz#5d6526fa4fc7f0788a5cf75b15f30323e2f81f7a"
@@ -12187,7 +12177,7 @@ insert-css@^2.0.0:
   resolved "https://registry.yarnpkg.com/insert-css/-/insert-css-2.0.0.tgz#eb5d1097b7542f4c79ea3060d3aee07d053880f4"
   integrity sha1-610Ql7dUL0x56jBg067gfQU4gPQ=
 
-insert-module-globals@^7.0.0, insert-module-globals@^7.2.0:
+insert-module-globals@^7.0.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/insert-module-globals/-/insert-module-globals-7.2.0.tgz#ec87e5b42728479e327bd5c5c71611ddfb4752ba"
   integrity sha512-VE6NlW+WGn2/AeOMd496AHFYmE7eLKkUY6Ty31k4og5vmA3Fjuwe9v6ifH6Xx/Hz27QvdoMoviw1/pqWRB09Sw==
@@ -13603,11 +13593,6 @@ known-css-properties@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.2.0.tgz#899c94be368e55b42d7db8d5be7d73a4a4a41454"
   integrity sha512-UTCzU28rRI9wkb8qSGoZa9pgWvxr4LjP2MEhi9XHb/1XMOJy0uTnIxaxzj8My/PORG+kQG6VzAcGvRw66eIOfA==
-
-kowtow@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/kowtow/-/kowtow-1.0.6.tgz#a4ab187dda5506d33684ccdce8f5a4b7a381e032"
-  integrity sha512-ki+0UOjD84UClYg6sfIzk51FqbNZcHKqQP9ng86yFm+4B3UcugzuZy7GaRbWUARYZK1azZZMMEFTs7Efj4l3+A==
 
 labeled-stream-splicer@^2.0.0:
   version "2.0.1"
@@ -19553,25 +19538,17 @@ servify@^0.1.12:
     request "^2.79.0"
     xhr "^2.3.3"
 
-ses@^0.5.0:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.5.3.tgz#1c09a2876bd17935569179dd3e22821366f04e48"
-  integrity sha512-SoDPdw0XeWgQ7ghM1YrU4GT1u4slTnjvhus+LoT6oAq8y5/kJLTA1oBk2g12/wEwGEWFooMOoYZqUqUh9bFa7Q==
-  dependencies:
-    "@agoric/make-hardener" "^0.0.6"
-    esm "^3.2.25"
-
-sesify-tofu@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/sesify-tofu/-/sesify-tofu-2.0.2.tgz#2cdb01304abf14a10c4e0a2a18a09fffd9e7f6bd"
-  integrity sha512-Hzr/PtGe0zFf6SNY24LqdOKU/yqyLM5zqpxszrMC0U0zQ0ouojwwIGlYJb3j4HaIiLbF8rGeB+pfZEK6ynUW6Q==
+sesify-tofu@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/sesify-tofu/-/sesify-tofu-2.0.3.tgz#513c499f393dd15e89e75c85916f3ed26524f162"
+  integrity sha512-nLBw9d7RfPLjNv3QlLslGqaGMwATNTNLOtSxJN8MfS8FQpTUtl32YO0WM+H4hLrZdsGm7dkx7vS8oa5siSzWFQ==
   dependencies:
     acorn-globals "^4.3.3"
 
-sesify@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sesify/-/sesify-3.0.0.tgz#d089718d2aed0377de5dcf80c50b2acc2a89b44b"
-  integrity sha512-+wvI2HszlhXVoU66cxiamSDm6Eix44IbL3hN7xXxpmZqYah3M9G6nMLCZheUFa8PYliwzC0L8MNxP7zezfhLEQ==
+sesify@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sesify/-/sesify-4.0.0.tgz#a60a4d1e28ab7e59761f64eff40b97c8153db258"
+  integrity sha512-n1bTqhSHcKXM91J0daTb9g168h5lBcUHHVFP6JfKri7EWepXPQKzYVP29mPMoe2RPb2huafb41DblCyhSRXHdQ==
   dependencies:
     JSONStream "^1.3.5"
     acorn-globals "^4.3.3"
@@ -19579,18 +19556,13 @@ sesify@^3.0.0:
     combine-source-map "^0.8.0"
     defined "^1.0.0"
     fromentries "^1.1.0"
-    insert-module-globals "^7.2.0"
     json-stable-stringify "^1.0.1"
-    kowtow "^1.0.6"
-    lodash.flatmap "^4.5.0"
     merge-deep "^3.0.2"
-    mississippi "^3.0.0"
     module-name-from-path "git+https://git@github.com/kumavis/module-name-from-path.git"
     offset-sourcemap-lines "^1.0.1"
     pify "^4.0.1"
     safe-buffer "^5.1.2"
-    ses "^0.5.0"
-    sesify-tofu "^2.0.2"
+    sesify-tofu "^2.0.3"
     tape "^4.9.1"
     through2 "^3.0.0"
     umd "^3.0.3"
