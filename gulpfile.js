@@ -527,14 +527,6 @@ function generateBundler (opts, performBundle) {
     bundler.transform(removeHtmlComment, { global: true })
   }
 
-  // trigger watchify rebuilds when config changes
-  if (activateSesify && !activateAutoConfig) {
-    setTimeout(() => {
-      bundler.emit('file', sesifyConfigPath)
-      bundler.emit('file', sesifyConfigOverridePath)
-    })
-  }
-
   // inject variables into bundle
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
@@ -547,6 +539,14 @@ function generateBundler (opts, performBundle) {
   })
 
   if (opts.watch) {
+    // trigger watchify rebuilds when config changes
+    if (activateSesify && !activateAutoConfig) {
+      setTimeout(() => {
+        bundler.emit('file', sesifyConfigPath)
+        bundler.emit('file', sesifyConfigOverridePath)
+      })
+    }
+
     bundler = watchify(bundler)
     // on any file update, re-runs the bundler
     bundler.on('update', async (ids) => {
