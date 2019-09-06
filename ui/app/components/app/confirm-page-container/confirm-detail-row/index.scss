@@ -47,4 +47,11 @@
   .advanced-gas-inputs__gas-edit-rows {
     margin-bottom: 16px;
   }
+
+  .custom-nonce-input {
+    input {
+      min-width: 150px;
+      font-size: .75rem;
+    }
+  }
 }
