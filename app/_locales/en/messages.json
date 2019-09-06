@@ -202,7 +202,7 @@
     "message": "Automatically calculate"
   },
   "nonceFieldHeading": {
-    "message": "Custom Nonce Value"
+    "message": "Custom Nonce"
   },
   "nonceFieldDescription": {
     "message": "Only use if you understand the implications."
