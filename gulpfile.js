@@ -496,7 +496,7 @@ function generateBundler (opts, performBundle) {
       configOverride: !activateAutoConfig && sesifyConfigOverridePath,
       writeAutoConfig: activateAutoConfig && sesifyConfigPath,
       // hook for writing sourcemaps
-      onSourcemap: (dep, bundle) => {
+      onSourcemap: (_, bundle) => {
         if (!bundle.maps) return
         // prepare directory for sourcemaps
         const dirPath = `dist/sourcemaps/`
@@ -520,7 +520,7 @@ function generateBundler (opts, performBundle) {
 
   if (activateSesify) {
     // remove html comments that SES is alergic to
-    const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, transformOptions, cb) => {
+    const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, _, cb) => {
       const result = content.split('-->').join('-- >')
       cb(null, result)
     })
