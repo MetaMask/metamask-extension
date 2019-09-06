@@ -264,7 +264,7 @@
     "rimraf": "^2.6.2",
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^3.5.0",
-    "sesify": "4.0.0",
+    "sesify": "4.1.0",
     "sinon": "^5.0.0",
     "source-map": "^0.7.2",
     "static-server": "^2.2.1",
