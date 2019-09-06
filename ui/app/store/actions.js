@@ -308,10 +308,8 @@ var actions = {
 
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
-  SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
   setCurrentLocale,
   updateCurrentLocale,
-  setLocaleMessages,
   //
   // Feature Flags
   setFeatureFlag,
@@ -2604,25 +2602,20 @@ function updateCurrentLocale (key) {
             return dispatch(actions.displayWarning(err.message))
           }
           switchDirection(textDirection)
+          dispatch(actions.setCurrentLocale(key, localeMessages))
           dispatch(actions.hideLoadingIndication())
-          dispatch(actions.setCurrentLocale(key))
-          dispatch(actions.setLocaleMessages(localeMessages))
         })
       })
   }
 }
 
-function setCurrentLocale (key) {
+function setCurrentLocale (locale, messages) {
   return {
     type: actions.SET_CURRENT_LOCALE,
-    value: key,
-  }
-}
-
-function setLocaleMessages (localeMessages) {
-  return {
-    type: actions.SET_LOCALE_MESSAGES,
-    value: localeMessages,
+    value: {
+      locale,
+      messages,
+    },
   }
 }
 
