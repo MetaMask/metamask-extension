@@ -29,6 +29,10 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {})
 
 let customNonceValue = ''
+const customNonceMap = txData => customNonceValue ? ({
+  ...txData,
+  customNonceValue,
+}) : txData
 
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, match: { params = {} } } = ownProps
@@ -180,13 +184,7 @@ const mapDispatchToProps = dispatch => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: txData => {
-      const _txData = customNonceValue ? {
-        ...txData,
-        customNonceValue,
-      } : txData
-      dispatch(updateAndApproveTx(_txData))
-    },
+    sendTransaction: txData => dispatch(updateAndApproveTx(customNonceMap(txData))),
     setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
   }
 }
