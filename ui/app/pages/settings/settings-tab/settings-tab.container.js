@@ -6,7 +6,6 @@ import {
   setCurrentCurrency,
   displayWarning,
   setUseBlockie,
-  setUseNonceField,
   updateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setParticipateInMetaMetrics,
@@ -20,7 +19,6 @@ const mapStateToProps = state => {
     conversionDate,
     nativeCurrency,
     useBlockie,
-    useNonceField,
     currentLocale,
   } = metamask
   const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
@@ -32,7 +30,6 @@ const mapStateToProps = state => {
     conversionDate,
     nativeCurrency,
     useBlockie,
-    useNonceField,
     useNativeCurrencyAsPrimaryCurrency,
   }
 }
@@ -42,7 +39,6 @@ const mapDispatchToProps = dispatch => {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     setUseBlockie: value => dispatch(setUseBlockie(value)),
-    setUseNonceField: value => dispatch(setUseNonceField(value)),
     updateCurrentLocale: key => dispatch(updateCurrentLocale(key)),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))

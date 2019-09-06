@@ -33,7 +33,6 @@ export default class SettingsTab extends PureComponent {
 
   static propTypes = {
     setUseBlockie: PropTypes.func,
-    setUseNonceField: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     displayWarning: PropTypes.func,
     warning: PropTypes.string,
@@ -41,7 +40,6 @@ export default class SettingsTab extends PureComponent {
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
-    useNonceField: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
@@ -129,32 +127,6 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderUseNonceOptIn () {
-    const { t } = this.context
-    const { useNonceField, setUseNonceField } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ this.context.t('nonceField') }</span>
-          <div className="settings-page__content-description">
-            { t('nonceFieldDescription') }
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useNonceField}
-              onToggle={value => setUseNonceField(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
     const {
@@ -219,7 +191,6 @@ export default class SettingsTab extends PureComponent {
         { this.renderUsePrimaryCurrencyOptions() }
         { this.renderCurrentLocale() }
         { this.renderBlockieOptIn() }
-        { this.renderUseNonceOptIn() }
       </div>
     )
   }
