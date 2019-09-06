@@ -560,13 +560,19 @@ function generateBundler (opts, performBundle) {
 }
 
 function bundleTask (opts) {
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
+  let bundler
 
   return performBundle
 
   function performBundle () {
+    // initialize bundler if not available yet
+    // dont create bundler until task is actually run
+    if (!bundler) {
+      bundler = generateBundler(opts, performBundle)
+      // output build logs to terminal
+      bundler.on('log', gutil.log)
+    }
+
     let buildStream = bundler.bundle()
 
     // handle errors
