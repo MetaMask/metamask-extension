@@ -1,0 +1,9 @@
+{
+  "sourceCode": "({\n  run: () => {\n    console.log('Plugin123 is running')\n    ethereumProvider.onNewTx(txMeta => {\n      let state = ethereumProvider.getPluginState()\n      ethereumProvider.updatePluginState({\n        ...state,\n        [txMeta.txParams.from]: (state[txMeta.txParams.from] || 0) + 1,\n      })\n      state = ethereumProvider.getPluginState()\n      console.log('Number of transactions created by address', JSON.stringify(state, null, 2));\n      ethereumProvider.setAccountLabel(txMeta.txParams.from, `Created ${state[txMeta.txParams.from]} tx`)\n    })\n  }\n})\n",
+  "requestedPermissions": {
+    "onNewTx": {},
+    "getPluginState": {},
+    "updatePluginState": {},
+    "setAccountLabel": {}
+  }
+}

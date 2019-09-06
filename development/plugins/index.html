@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+  <head>
+    <title>Plugins Test</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+  </head>
+
+  <body>
+    <h1>Welcome to our Plugins Test Site!</h1>
+    <p id="content">
+      You'll need to log in to get started.
+    </p>
+
+    <button id="enable">Enable</button>
+    <button id="installPlugin">Install Recipient Audit Plugin</button>
+
+    <br/>
+
+  </body>
+
+  <script>
+    installPlugin.addEventListener('click', function() {
+      requestPerms(
+        { 'eth_addPlugin_plugin123': {} },
+        { sourceUrl: 'http://localhost:8081/plugin123.json' },
+      )
+    })
+    enable.addEventListener('click', function() {
+      if (!window.ethereum) throw new Error('no window.ethereum')
+      window.ethereum.enable().then(res => console.log('ethereum.enable(): ', res))
+    })
+
+    async function requestPerms (perms, config) {
+      ethereum.sendAsync({
+        method: 'wallet_requestPermissions',
+        jsonrpc: '2.0',
+        params: [perms, config],
+      }, (err, res) => {
+        console.log('requestPerms err, res', err, res)
+        if (err) return alert('error!: ' + err)
+
+        if (res.error) {
+          return showError(res)
+        }
+
+        runPlugin()
+      })
+    }
+
+    function runPlugin () {
+      ethereum.sendAsync({
+        method: 'eth_addPlugin_plugin123',
+        params: [{ sourceUrl: 'http://localhost:8081/plugin123.json' }],
+      }, (err, result) => {
+        console.log('err, result', err, result)
+        console.dir({ message: 'pluginKey callback', err, result })
+        if (err) return alert('error!: ' + err) && rej(err)
+        let message = ''
+        if (result.error) {
+          message = 'Site is unauthorized to add plugin.'
+        } else {
+          message = `${pluginKey} has been added to MetaMask` // JSON.stringify(result.result)
+        }
+        content.innerText = message
+      })
+    }
+
+    function showError (res) {
+      content.innerText = `Had a problem: ${res.error.message}`
+    }
+  </script>
+
+</html>

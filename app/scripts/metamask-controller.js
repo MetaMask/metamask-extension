@@ -19,6 +19,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -36,6 +37,7 @@ const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const { PermissionsController } = require('./controllers/permissions')
+const PluginsController = require('./controllers/plugins')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -248,12 +250,34 @@ module.exports = class MetamaskController extends EventEmitter {
       this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
     })
 
+    this.pluginsController = new PluginsController({
+      setupProvider: this.setupProvider.bind(this),
+      _onUnlock: this._onUnlock.bind({}, this.keyringController.memStore),
+      _onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
+      _subscribeToPreferencesControllerChanges: this.preferencesController.store.subscribe.bind(this.preferencesController.store),
+      _updatePreferencesControllerState: this.preferencesController.store.updateState.bind(this.preferencesController.store),
+      _signPersonalMessage: this.keyringController.signPersonalMessage.bind(this.keyringController),
+      _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
+      getApi: this.getPluginsApi.bind(this),
+    })
+
     this.permissionsController = new PermissionsController({
+      setupProvider: this.setupProvider.bind(this),
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
       closePopup: opts.closePopup,
+      pluginsController: this.pluginsController,
+      provider: this.provider,
+      pluginRestrictedMethods: {
+        updatePluginState: this.pluginsController.updatePluginState.bind(this.pluginController),
+        getPluginState: this.pluginsController.getPluginState.bind(this.pluginController),
+        onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
+        onUnlock: this._onUnlock.bind({}, this.keyringController.memStore),
+      },
+      getApi: this.getPluginsApi.bind(this),
     },
     initState.PermissionsController)
+
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -270,6 +294,7 @@ module.exports = class MetamaskController extends EventEmitter {
       IncomingTransactionsController: this.incomingTransactionsController.store,
       // TODO:permissions permissionsRequests should be memStore only
       PermissionsController: this.permissionsController.permissions,
+      PluginsController: this.pluginsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -293,6 +318,7 @@ module.exports = class MetamaskController extends EventEmitter {
       IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionsController: this.permissionsController.permissions,
       SiteMetadata: this.permissionsController.memStore,
+      PluginsController: this.pluginsController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -513,6 +539,121 @@ module.exports = class MetamaskController extends EventEmitter {
       removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
       clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
       getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
+    }
+  }
+
+  getPluginsApi () {
+    const keyringController = this.keyringController
+    const preferencesController = this.preferencesController
+    const txController = this.txController
+    const networkController = this.networkController
+    const onboardingController = this.onboardingController
+
+    return {
+      // etc
+      getState: (cb) => cb(null, this.getState()),
+      setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setUseBlockie: this.setUseBlockie.bind(this),
+      setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
+      setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
+      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
+      setCurrentLocale: this.setCurrentLocale.bind(this),
+      markAccountsFound: this.markAccountsFound.bind(this),
+      markPasswordForgotten: this.markPasswordForgotten.bind(this),
+      unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
+      getGasPrice: (cb) => cb(null, this.getGasPrice()),
+
+      // coinbase
+      buyEth: this.buyEth.bind(this),
+      // shapeshift
+      createShapeShiftTx: this.createShapeShiftTx.bind(this),
+
+      // primary HD keyring management
+      addNewAccount: nodeify(this.addNewAccount, this),
+      verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
+      resetAccount: nodeify(this.resetAccount, this),
+      removeAccount: nodeify(this.removeAccount, this),
+      importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
+
+      // hardware wallets
+      connectHardware: nodeify(this.connectHardware, this),
+      forgetDevice: nodeify(this.forgetDevice, this),
+      checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
+      unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
+
+      // mobile
+      fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
+
+      // vault management
+      submitPassword: nodeify(this.submitPassword, this),
+
+      // network management
+      setProviderType: nodeify(networkController.setProviderType, networkController),
+      setCustomRpc: nodeify(this.setCustomRpc, this),
+      updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
+      delCustomRpc: nodeify(this.delCustomRpc, this),
+
+      // PreferencesController
+      setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
+      addToken: nodeify(preferencesController.addToken, preferencesController),
+      removeToken: nodeify(preferencesController.removeToken, preferencesController),
+      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
+      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
+      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+      setPreference: nodeify(preferencesController.setPreference, preferencesController),
+      completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
+      addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
+
+      // BlacklistController
+      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
+
+      // AddressController
+      setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
+      removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
+
+      // AppStateController
+      setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
+
+      // KeyringController
+      setLocked: nodeify(this.setLocked, this),
+      createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
+      createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
+      addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
+      exportAccount: nodeify(keyringController.exportAccount, keyringController),
+
+      // txController
+      cancelTransaction: nodeify(txController.cancelTransaction, txController),
+      updateTransaction: nodeify(txController.updateTransaction, txController),
+      updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
+      retryTransaction: nodeify(this.retryTransaction, this),
+      createCancelTransaction: nodeify(this.createCancelTransaction, this),
+      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
+      getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
+      isNonceTaken: nodeify(txController.isNonceTaken, txController),
+      estimateGas: nodeify(this.estimateGas, this),
+
+      // messageManager
+      signMessage: nodeify(this.signMessage, this),
+      cancelMessage: this.cancelMessage.bind(this),
+
+      // personalMessageManager
+      signPersonalMessage: nodeify(this.signPersonalMessage, this),
+      cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
+
+      // personalMessageManager
+      signTypedMessage: nodeify(this.signTypedMessage, this),
+      cancelTypedMessage: this.cancelTypedMessage.bind(this),
+
+      // onboarding controller
+      setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+
+      // permissions
+      // approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
+      // rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
+      // removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
+      // clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
+      // getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
     }
   }
 
@@ -1390,6 +1531,12 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
+  setupProvider (origin, getSiteMetadata) {
+    const engine = this.setupProviderEngine(origin, getSiteMetadata);
+    const provider = providerFromEngine(engine);
+    return provider;
+  }
+
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
@@ -1474,6 +1621,22 @@ module.exports = class MetamaskController extends EventEmitter {
         await this.preferencesController.setSelectedAddress(address)
       }
     }
+  }
+
+  _onUnlock (keyRingControllerMemStore, cb) {
+    let { keyrings } = keyRingControllerMemStore.getState()
+    let addressesWereEmpty = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), []).length === 0
+    keyRingControllerMemStore.subscribe(state => {
+      const { isUnlocked, keyrings } = state
+      const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+      if (addressesWereEmpty && addresses.length && isUnlocked) {
+        addressesWereEmpty = false
+        console.log('!!! _onUnlock addresses[0]', addresses[0])
+        return cb(addresses[0])
+      } else {
+        addressesWereEmpty = addresses.length === 0
+      }
+    })
   }
 
   /**

@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@agoric/make-hardener@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.0.6.tgz#5903748a71381bc37e23d571390aaff9973c37b2"
+  integrity sha512-OpZcNx/7bhHar0iuQ6D+FKYCMMxqKvYs4aC/bB5v/ffZaSM5sNAl98DnGL1mD9NSyZLGzAZ7D5XwJpe37BMldQ==
+
 "@babel/code-frame@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
@@ -8304,6 +8309,11 @@ eslint@^6.0.1:
     strip-json-comments "^2.0.1"
     table "^5.2.3"
     text-table "^0.2.0"
+
+esm@^3.2.25:
+  version "3.2.25"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
 
 espree@5.0.1, espree@^5.0.1:
   version "5.0.1"
@@ -19316,6 +19326,14 @@ servify@^0.1.12:
     express "^4.14.0"
     request "^2.79.0"
     xhr "^2.3.3"
+
+ses@^0.5.0:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.5.3.tgz#1c09a2876bd17935569179dd3e22821366f04e48"
+  integrity sha512-SoDPdw0XeWgQ7ghM1YrU4GT1u4slTnjvhus+LoT6oAq8y5/kJLTA1oBk2g12/wEwGEWFooMOoYZqUqUh9bFa7Q==
+  dependencies:
+    "@agoric/make-hardener" "^0.0.6"
+    esm "^3.2.25"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"

@@ -5,11 +5,23 @@ const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
+const pluginRestrictedMethodsDescriptions = {
+  onNewTx: 'Take action whenever a new transaction is created',
+  fetch: 'Retrieve data from external sites',
+  updatePluginState: 'Store data locally',
+  onUnlock: 'Take action when you unlock your account',
+  Box: 'Backup your data to 3Box',
+  subscribeToPreferencesControllerChanges: 'Access your preferences and take action when they change',
+  updatePreferencesControllerState: 'Update/modify your preferences',
+  generateSignature: 'Sign messages with your account',
+}
+
 // Methods that do not require any permissions to use:
 const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
 const METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
+const ADD_PLUGIN_PREFIX = 'eth_plugin_'
 
 function prefix (method) {
   return METHOD_PREFIX + method
@@ -19,12 +31,16 @@ function prefix (method) {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController,
+    openPopup, closePopup, keyringController, pluginsController, setupProvider, pluginRestrictedMethods, getApi
   } = {}, restoredState) {
     this.memStore = new ObservableStore({ siteMetadata: {} })
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
+    this.pluginsController = pluginsController
+    this.setupProvider = setupProvider
+    this.pluginRestrictedMethods = pluginRestrictedMethods
+    this.getApi = getApi
     this._initializePermissions(restoredState)
   }
 
@@ -38,12 +54,13 @@ class PermissionsController {
     return asMiddleware(engine)
   }
 
+  // createInstallPlugin
+
   /**
    * Create middleware for preprocessing permissions requests.
    */
   createRequestMiddleware () {
     return createAsyncMiddleware(async (req, res, next) => {
-
       if (typeof req.method !== 'string') {
         res.error = rpcErrors.invalidRequest(null, req)
         return // TODO:json-rpc-engine
@@ -164,6 +181,20 @@ class PermissionsController {
 
     this.pendingApprovals = {}
 
+    const externalMethodsToAddToRestricted = {
+      ...this.pluginRestrictedMethods,
+      ...this.getApi(),
+    }
+    const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
+      return {
+        ...acc,
+        [methodKey]: {
+          description: pluginRestrictedMethodsDescriptions[methodKey] || methodKey,
+          method: externalMethodsToAddToRestricted[methodKey]
+        }
+      }
+    }, {})
+
     this.permissions = new RpcCap({
 
       // Supports passthrough methods:
@@ -207,6 +238,32 @@ class PermissionsController {
             return end()
           },
         },
+        'eth_addPlugin_*': {
+          description: 'Install plugin $1, which will download new functionality to MetaMask.',
+          method: async (req, res, next, end) => {
+            const pluginNameMatch = req.method.match(/eth_addPlugin_(.+)/)
+            const pluginName = pluginNameMatch && pluginNameMatch[1]
+            const sourceUrl = req.params[0].sourceUrl
+
+            const response = await this.pluginsController.add(pluginName, sourceUrl)
+            return response
+          },
+        },
+        'eth_runPlugin_*': {
+          description: 'Run plugin $1, which will be able to do the following:',
+          method: async (req, res, next, end) => {
+            const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
+            const pluginName = pluginNameMatch && pluginNameMatch[1]
+
+            const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
+
+            const response = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+
+            return res
+          },
+        },
+
+        ...pluginRestrictedMethods,
       },
 
       /**

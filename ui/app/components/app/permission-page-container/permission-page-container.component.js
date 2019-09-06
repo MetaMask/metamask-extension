@@ -128,7 +128,7 @@ export default class PermissionPageContainer extends Component {
 
   render () {
     const { requests, permissionsDescriptions, siteMetadata } = this.props
-
+    console.log('permission-page-container requests', requests)
     const requestMetadata = requests[0].metadata
 
     const targetSiteMetadata = (
