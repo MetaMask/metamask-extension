@@ -1219,6 +1219,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.updateCustomNonce(''))
         dispatch(closeCurrentNotificationWindow())
 
         return txData
@@ -2608,6 +2609,7 @@ function setUseNonceField (val) {
     log.debug(`background.setUseNonceField`)
     background.setUseNonceField(val, (err) => {
       dispatch(actions.hideLoadingIndication())
+      !val && dispatch(actions.updateCustomNonce(''))
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
