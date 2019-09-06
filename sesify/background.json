@@ -160,6 +160,9 @@
       }
     },
     "assert": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "util": true
       }
@@ -246,7 +249,11 @@
     "browser-passworder": {
       "globals": {
         "btoa": true,
-        "crypto.subtle.decrypt": true
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.importKey": true
       },
       "packages": {
         "browserify-unibabel": true
@@ -587,6 +594,7 @@
       "globals": {
         "address": "write",
         "console.error": true,
+        "fetch": true,
         "message": "write",
         "setTimeout": true
       },
@@ -1080,6 +1088,9 @@
       }
     },
     "obs-store": {
+      "globals": {
+        "localStorage": true
+      },
       "packages": {
         "events": true,
         "stream-browserify": true,
@@ -1108,6 +1119,10 @@
       }
     },
     "pbkdf2": {
+      "globals": {
+        "crypto": true,
+        "process": true
+      },
       "packages": {
         "create-hash": true,
         "is-buffer": true,
@@ -1169,12 +1184,20 @@
       }
     },
     "randombytes": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      },
       "packages": {
         "process": true,
         "safe-buffer": true
       }
     },
     "randomfill": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      },
       "packages": {
         "process": true,
         "randombytes": true,
@@ -1287,7 +1310,14 @@
     },
     "stream-http": {
       "globals": {
-        "Blob": true
+        "Blob": true,
+        "MSStreamReader": true,
+        "ReadableStream": true,
+        "VBArray": true,
+        "XDomainRequest": true,
+        "XMLHttpRequest": true,
+        "fetch": true,
+        "location.protocol.search": true
       },
       "packages": {
         "buffer": true,
@@ -1392,6 +1422,7 @@
       "globals": {
         "clearTimeout": true,
         "define": true,
+        "global": true,
         "self": true,
         "setTimeout": true
       }
@@ -1416,7 +1447,8 @@
       "globals": {
         "console.error": true,
         "console.log": true,
-        "console.trace": true
+        "console.trace": true,
+        "process": true
       },
       "packages": {
         "inherits": true,
@@ -1426,7 +1458,8 @@
     "util-deprecate": {
       "globals": {
         "console.trace": true,
-        "console.warn": true
+        "console.warn": true,
+        "localStorage": true
       }
     },
     "uuid": {
@@ -1467,6 +1500,7 @@
     },
     "web3-provider-engine": {
       "globals": {
+        "WebSocket": true,
         "console": true,
         "setInterval": true,
         "setTimeout": true

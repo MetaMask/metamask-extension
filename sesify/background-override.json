@@ -1,10 +1,5 @@
 {
   "resources": {
-    "obs-store": {
-      "globals": {
-        "localStorage": true
-      }
-    },
     "web3": {
       "globals": {
         "XMLHttpRequest": true
