@@ -70,6 +70,10 @@ describe('Using MetaMask with an existing account', function () {
     // Depending on the state of the application built into the above directory (extPath) and the value of
     // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
     // are closing any extraneous windows to reset us to a single window before continuing.
+
+    // ensure automatically opened tabs get a chance to be opened
+    await delay(largeDelayMs * 4)
+
     const [tab1] = await driver.getAllWindowHandles()
     await closeAllWindowHandlesExcept(driver, [tab1])
     await driver.switchTo().window(tab1)

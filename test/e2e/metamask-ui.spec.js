@@ -33,7 +33,6 @@ describe('MetaMask', function () {
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
-  const veryLargeDelayMs = largeDelayMs * 4
 
   this.timeout(0)
   this.bail(true)
@@ -64,7 +63,7 @@ describe('MetaMask', function () {
     // are closing any extraneous windows to reset us to a single window before continuing.
 
     // ensure automatically opened tabs get a chance to be opened
-    await delay(veryLargeDelayMs)
+    await delay(largeDelayMs * 4)
 
     const [tab1] = await driver.getAllWindowHandles()
     await closeAllWindowHandlesExcept(driver, [tab1])
