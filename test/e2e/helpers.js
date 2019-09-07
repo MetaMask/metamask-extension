@@ -1,11 +1,23 @@
 const fs = require('fs')
+const path = require('path')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-const { delay } = require('./func')
+
+const {
+  delay,
+  getExtensionIdChrome,
+  getExtensionIdFirefox,
+  buildChromeWebDriver,
+  buildFirefoxWebdriver,
+  installWebExt,
+} = require('./func')
 const { until } = require('selenium-webdriver')
 const fetchMockResponses = require('./fetch-mocks.js')
 
+const tinyDelayMs = 200
+const regularDelayMs = tinyDelayMs * 2
+const largeDelayMs = regularDelayMs * 2
 
 module.exports = {
   assertElementNotPresent,
@@ -20,26 +32,67 @@ module.exports = {
   verboseReportOnFailure,
   waitUntilXWindowHandles,
   setupFetchMocking,
+  prepareExtensionForTesting,
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+}
+
+
+async function prepareExtensionForTesting () {
+  let driver, extensionId, extensionUrl
+  const targetBrowser = process.env.SELENIUM_BROWSER
+  switch (targetBrowser) {
+    case 'chrome': {
+      const extPath = path.resolve('dist/chrome')
+      driver = buildChromeWebDriver(extPath, { responsive: true })
+      await delay(largeDelayMs)
+      extensionId = await getExtensionIdChrome(driver)
+      extensionUrl = `chrome-extension://${extensionId}/home.html`
+      break
+    }
+    case 'firefox': {
+      const extPath = path.resolve('dist/firefox')
+      driver = buildFirefoxWebdriver({ responsive: true })
+      await installWebExt(driver, extPath)
+      await delay(largeDelayMs)
+      extensionId = await getExtensionIdFirefox(driver)
+      extensionUrl = `moz-extension://${extensionId}/home.html`
+      break
+    }
+    default: {
+      throw new Error(`prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`)
+    }
+  }
+  // Depending on the state of the application built into the above directory (extPath) and the value of
+  // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
+  // are closing any extraneous windows to reset us to a single window before continuing.
+  const [tab1] = await driver.getAllWindowHandles()
+  await closeAllWindowHandlesExcept(driver, [tab1])
+  await driver.switchTo().window(tab1)
+  await driver.get(extensionUrl)
+
+  return { driver, extensionId, extensionUrl }
 }
 
 async function setupFetchMocking (driver) {
-  // define fetchMocking script, to be evaluated in the browser 
-  function fetchMocking() {
+  // define fetchMocking script, to be evaluated in the browser
+  function fetchMocking () {
     window.origFetch = window.fetch.bind(window)
     window.fetch = async (...args) => {
       const url = args[0]
-      if (url === "https://ethgasstation.info/json/ethgasAPI.json") {
-        return { json: async () => JSON.parse( fetchMockResponses.ethGasBasic ) }
-      } else if (url === "https://ethgasstation.info/json/predictTable.json") {
-        return { json: async () => JSON.parse( fetchMockResponses.ethGasPredictTable ) }
+      if (url === 'https://ethgasstation.info/json/ethgasAPI.json') {
+        return { json: async () => JSON.parse(fetchMockResponses.ethGasBasic) }
+      } else if (url === 'https://ethgasstation.info/json/predictTable.json') {
+        return { json: async () => JSON.parse(fetchMockResponses.ethGasPredictTable) }
       } else if (url.match(/chromeextensionmm/)) {
-        return { json: async () => JSON.parse( fetchMockResponses.metametrics ) }
-      } else if (url === "https://dev.blockscale.net/api/gasexpress.json") {
-        return { json: async () => JSON.parse( fetchMockResponses.gasExpress ) }
+        return { json: async () => JSON.parse(fetchMockResponses.metametrics) }
+      } else if (url === 'https://dev.blockscale.net/api/gasexpress.json') {
+        return { json: async () => JSON.parse(fetchMockResponses.gasExpress) }
       }
       return window.origFetch(...args)
     }
-    function cancelInfuraRequest(requestDetails) {
+    function cancelInfuraRequest (requestDetails) {
       console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
       return { cancel: true }
     }
