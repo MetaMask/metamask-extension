@@ -4,6 +4,8 @@ const pify = require('pify')
 const assert = require('assert')
 const { delay } = require('./func')
 const { until } = require('selenium-webdriver')
+const fetchMockResponses = require('./fetch-mocks.js')
+
 
 module.exports = {
   assertElementNotPresent,
@@ -17,6 +19,36 @@ module.exports = {
   switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  setupFetchMocking,
+}
+
+async function setupFetchMocking (driver) {
+  // define fetchMocking script, to be evaluated in the browser 
+  function fetchMocking() {
+    window.origFetch = window.fetch.bind(window)
+    window.fetch = async (...args) => {
+      const url = args[0]
+      if (url === "https://ethgasstation.info/json/ethgasAPI.json") {
+        return { json: async () => JSON.parse( fetchMockResponses.ethGasBasic ) }
+      } else if (url === "https://ethgasstation.info/json/predictTable.json") {
+        return { json: async () => JSON.parse( fetchMockResponses.ethGasPredictTable ) }
+      } else if (url.match(/chromeextensionmm/)) {
+        return { json: async () => JSON.parse( fetchMockResponses.metametrics ) }
+      } else if (url === "https://dev.blockscale.net/api/gasexpress.json") {
+        return { json: async () => JSON.parse( fetchMockResponses.gasExpress ) }
+      }
+      return window.origFetch(...args)
+    }
+    function cancelInfuraRequest(requestDetails) {
+      console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
+      return { cancel: true }
+    }
+    if (window.chrome && window.chrome.webRequest) {
+      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, {urls: ['https://*.infura.io/*']}, ['blocking'])
+    }
+  }
+  // eval the fetchMocking script in the browser
+  await driver.executeScript(`(${fetchMocking})()`)
 }
 
 async function loadExtension (driver, extensionId) {
