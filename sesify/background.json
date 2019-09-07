@@ -70,6 +70,7 @@
     },
     "@babel/runtime": {
       "packages": {
+        "babel-runtime": true,
         "regenerator-runtime": true
       }
     },
@@ -188,7 +189,6 @@
     },
     "babel-runtime": {
       "packages": {
-        "@babel/runtime": true,
         "core-js": true,
         "regenerator-runtime": true
       }
@@ -540,8 +540,6 @@
       },
       "packages": {
         "eth-query": true,
-        "ethjs-util": true,
-        "events": true,
         "pify": true,
         "safe-event-emitter": true
       }
@@ -566,16 +564,23 @@
         "events": true
       }
     },
+    "eth-json-rpc-errors": {
+      "packages": {
+        "fast-safe-stringify": true
+      }
+    },
     "eth-json-rpc-filters": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "results": "write"
       },
       "packages": {
         "await-semaphore": true,
         "eth-json-rpc-middleware": true,
-        "ethjs-query": true,
+        "eth-query": true,
         "json-rpc-engine": true,
         "lodash.flatmap": true,
+        "pify": true,
         "safe-event-emitter": true
       }
     },
@@ -585,26 +590,24 @@
       },
       "packages": {
         "cross-fetch": true,
+        "eth-json-rpc-errors": true,
         "eth-json-rpc-middleware": true,
-        "json-rpc-engine": true,
-        "json-rpc-error": true
+        "json-rpc-engine": true
       }
     },
     "eth-json-rpc-middleware": {
       "globals": {
-        "address": "write",
         "console.error": true,
         "fetch": true,
-        "message": "write",
         "setTimeout": true
       },
       "packages": {
         "btoa": true,
         "clone": true,
+        "eth-json-rpc-errors": true,
         "eth-sig-util": true,
         "fetch-ponyfill": true,
         "json-rpc-engine": true,
-        "json-rpc-error": true,
         "json-stable-stringify": true,
         "pify": true,
         "safe-event-emitter": true,
@@ -621,8 +624,7 @@
         "ethereumjs-util": true,
         "events": true,
         "loglevel": true,
-        "obs-store": true,
-        "promise-filter": true
+        "obs-store": true
       }
     },
     "eth-ledger-bridge-keyring": {
@@ -908,8 +910,7 @@
         "single-call-balance-checker-abi": true,
         "uuid": true,
         "web3": true,
-        "web3-provider-engine": true,
-        "xtend": true
+        "web3-provider-engine": true
       }
     },
     "hash-base": {
@@ -975,20 +976,13 @@
     },
     "json-rpc-engine": {
       "globals": {
-        "console.error": true,
-        "regeneratorRuntime.mark": true,
-        "regeneratorRuntime.wrap": true
+        "console.error": true
       },
       "packages": {
-        "@babel/runtime": true,
         "async": true,
+        "eth-json-rpc-errors": true,
         "promise-to-callback": true,
         "safe-event-emitter": true
-      }
-    },
-    "json-rpc-error": {
-      "packages": {
-        "inherits": true
       }
     },
     "json-rpc-middleware-stream": {
@@ -1092,7 +1086,7 @@
         "localStorage": true
       },
       "packages": {
-        "events": true,
+        "safe-event-emitter": true,
         "stream-browserify": true,
         "through2": true,
         "xtend": true
@@ -1146,12 +1140,6 @@
     "process-nextick-args": {
       "packages": {
         "process": true
-      }
-    },
-    "promise-filter": {
-      "packages": {
-        "any-promise": true,
-        "assert": true
       }
     },
     "promise-to-callback": {
@@ -1502,7 +1490,6 @@
       "globals": {
         "WebSocket": true,
         "console": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
@@ -1510,17 +1497,15 @@
         "backoff": true,
         "browser-resolve": true,
         "buffer": true,
-        "clone": true,
-        "cross-fetch": true,
         "eth-block-tracker": true,
+        "eth-json-rpc-filters": true,
         "eth-json-rpc-infura": true,
+        "eth-json-rpc-middleware": true,
         "eth-sig-util": true,
         "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "events": true,
-        "json-rpc-error": true,
         "json-stable-stringify": true,
-        "promise-to-callback": true,
         "semaphore": true,
         "util": true,
         "xtend": true
