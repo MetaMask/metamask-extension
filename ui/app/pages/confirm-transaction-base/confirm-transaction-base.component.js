@@ -264,17 +264,15 @@ export default class ConfirmTransactionBase extends Component {
                 { this.context.t('nonceFieldHeading') }
               </div>
               <div className="custom-nonce-input">
-                  <TextField
-                    type="number"
-                    min="0"
-                    placeholder={ this.context.t('nonceFieldPlaceholder') }
-                    onChange={({ target: { value }}) => {
-                      updateCustomNonce(value)
-                    }}
-                    fullWidth
-                    margin="dense"
-                    value={customNonceValue}
-                  />
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder={ this.context.t('nonceFieldPlaceholder') }
+                  onChange={({ target: { value }}) => updateCustomNonce(value)}
+                  fullWidth
+                  margin="dense"
+                  value={customNonceValue}
+                />
               </div>
             </div>
           </div> : null}
