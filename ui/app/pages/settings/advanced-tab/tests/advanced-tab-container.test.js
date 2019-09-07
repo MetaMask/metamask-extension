@@ -31,6 +31,7 @@ describe('AdvancedTab Container', () => {
       autoLogoutTimeLimit: 0,
       threeBoxSyncingAllowed: false,
       threeBoxDisabled: false,
+      useNonceField: undefined,
     }
 
     assert.deepEqual(props, expected)
