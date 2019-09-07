@@ -19462,10 +19462,10 @@ sesify-tofu@^2.0.4:
   dependencies:
     acorn-globals "^4.3.3"
 
-sesify@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/sesify/-/sesify-4.1.1.tgz#33147da9ae1d603b6bde4d0d38251bfcc688ce66"
-  integrity sha512-ZDwABEVcnmVSzzdQTXEr2TrynqnTm8Eq8hY++xl3qq/WmkgaSuEqltzGqmsfOZFtrxOLre8q/SGEPj/6EWcaSQ==
+sesify@4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/sesify/-/sesify-4.2.1.tgz#ac98d190b6403abbf90016ec6f3a6d16eef8747e"
+  integrity sha512-fbgkQCs6KhVK6IhWx+e9MW2cNIzpMSKigIbF6KdAPWGrA6U0D6lDgLErfTB7Sllhv8sYFOwTppIOec+AHdU00g==
   dependencies:
     JSONStream "^1.3.5"
     acorn-globals "^4.3.3"
