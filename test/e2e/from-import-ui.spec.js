@@ -16,9 +16,8 @@ const {
   verboseReportOnFailure,
   findElement,
   findElements,
+  setupFetchMocking,
 } = require('./helpers')
-const fetchMockResponses = require('./fetch-mocks.js')
-
 
 describe('Using MetaMask with an existing account', function () {
   let extensionId
@@ -66,31 +65,7 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   beforeEach(async function () {
-    await driver.executeScript(
-      'window.origFetch = window.fetch.bind(window);' +
-      'window.fetch = ' +
-      '(...args) => { ' +
-      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
-      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
-      '(args[0].match(/chromeextensionmm/)) { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
-      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); };' +
-      'function cancelInfuraRequest(requestDetails) {' +
-        'console.log("Canceling: " + requestDetails.url);' +
-        'return {' +
-          'cancel: true' +
-        '};' +
-     ' }' +
-      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
-        'cancelInfuraRequest,' +
-        '{urls: ["https://*.infura.io/*"]},' +
-        '["blocking"]' +
-      ');'
-    )
+    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
