@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+# Print a trace of simple commands [...] after they are expanded and before they are executed.
 set -x
+# Exit immediately if a pipeline [...] returns a non-zero status.
 set -e
+# Treat unset variables and parameters other than the special parameters ‘@’ or ‘*’ as an error when performing parameter expansion.
 set -u
+# the return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.
 set -o pipefail
 
 # Set the environment variable 'GANACHE_ARGS' to change any optional ganache flags
