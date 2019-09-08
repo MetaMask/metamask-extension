@@ -348,8 +348,7 @@ function getUseNonceField (state) {
 }
 
 function getCustomNonceValue (state) {
-  const key = 'customNonceValue'
-  return state.metamask.hasOwnProperty(key) ? String(state.metamask[key]) : ''
+  return String(state.metamask.customNonceValue)
 }
 
 function getMetaMetricState (state) {

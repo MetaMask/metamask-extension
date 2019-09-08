@@ -25,6 +25,7 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
+    customNonceValue: '',
     send: {
       gasLimit: null,
       gasPrice: null,
