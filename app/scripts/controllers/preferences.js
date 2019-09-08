@@ -94,7 +94,7 @@ class PreferencesController {
   /**
    * Setter for the `useNonceField` property
    *
-   * @param {boolean} val Whether or not the user prefers blockie indicators
+   * @param {boolean} val Whether or not the user prefers to set nonce
    *
    */
   setUseNonceField (val) {
@@ -217,9 +217,9 @@ class PreferencesController {
   }
 
   /**
-   * Getter for the `useBlockie` property
+   * Getter for the `getUseNonceField` property
    *
-   * @returns {boolean} this.store.useBlockie
+   * @returns {boolean} this.store.getUseNonceField
    *
    */
   getUseNonceField () {
