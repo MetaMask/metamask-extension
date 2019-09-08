@@ -196,7 +196,7 @@
     "message": "Use Blockies Identicon"
   },
   "nonceField": {
-    "message": "Show nonce field on confirmation screens."
+    "message": "Show Nonce Field on Confirmation Screens."
   },
   "nonceFieldPlaceholder": {
     "message": "Automatically calculate"
