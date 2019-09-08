@@ -6,6 +6,7 @@ const defaultState = {
     warning: null,
   },
   metamask: {
+    useNonceField: false,
     featureFlags: {
       sendHexData: false,
       advancedInlineGas: false,
@@ -31,7 +32,7 @@ describe('AdvancedTab Container', () => {
       autoLogoutTimeLimit: 0,
       threeBoxSyncingAllowed: false,
       threeBoxDisabled: false,
-      useNonceField: undefined,
+      useNonceField: false,
     }
 
     assert.deepEqual(props, expected)
