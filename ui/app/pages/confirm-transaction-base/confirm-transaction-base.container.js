@@ -162,9 +162,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = dispatch => {
   return {
-    updateCustomNonce: (value) => {
+    updateCustomNonce: value => {
       customNonceValue = value
       dispatch(updateCustomNonce(value))
     },

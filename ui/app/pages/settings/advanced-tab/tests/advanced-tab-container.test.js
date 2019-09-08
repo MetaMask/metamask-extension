@@ -6,7 +6,6 @@ const defaultState = {
     warning: null,
   },
   metamask: {
-    useNonceField: false,
     featureFlags: {
       sendHexData: false,
       advancedInlineGas: false,
@@ -18,6 +17,7 @@ const defaultState = {
     },
     threeBoxSyncingAllowed: false,
     threeBoxDisabled: false,
+    useNonceField: false,
   },
 }
 
@@ -48,5 +48,6 @@ describe('AdvancedTab Container', () => {
     assert.ok(typeof props.setAdvancedInlineGasFeatureFlag === 'function')
     assert.ok(typeof props.setShowFiatConversionOnTestnetsPreference === 'function')
     assert.ok(typeof props.setAutoLogoutTimeLimit === 'function')
+    assert.ok(typeof props.setUseNonceField === 'function')
   })
 })
