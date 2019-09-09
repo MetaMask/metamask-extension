@@ -1,9 +1,17 @@
+const {
+  MAINNET_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+} = require('../../lib/enums')
+
 const standardNetworkId = {
-  '1': '0x01',
-  '3': '0x03',
-  '4': '0x04',
-  '42': '0x2a',
-  '5': '0x05',
+  '1': MAINNET_CHAIN_ID,
+  '3': ROPSTEN_CHAIN_ID,
+  '4': RINKEBY_CHAIN_ID,
+  '42': KOVAN_CHAIN_ID,
+  '5': GOERLI_CHAIN_ID,
 }
 
 function selectChainId (metamaskState) {

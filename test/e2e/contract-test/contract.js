@@ -178,7 +178,7 @@ web3.currentProvider.enable().then(() => {
   })
 
   ethereum.on('chainIdChanged', (chainId) => {
-    networkDiv.innerHTML = chainId
+    chainIdDiv.innerHTML = chainId
   })
 
   ethereum.on('accountsChanged', (accounts) => {

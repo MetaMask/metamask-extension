@@ -8,6 +8,13 @@ const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/b
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const createInfuraMiddleware = require('eth-json-rpc-infura')
 const BlockTracker = require('eth-block-tracker')
+const {
+  MAINNET_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+} = require('../../lib/enums')
 
 module.exports = createInfuraClient
 
@@ -35,23 +42,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
   switch (network) {
     case 'mainnet':
       netId = '1'
-      chainId = '0x01'
+      chainId = MAINNET_CHAIN_ID
       break
     case 'ropsten':
       netId = '3'
-      chainId = '0x03'
+      chainId = ROPSTEN_CHAIN_ID
       break
     case 'rinkeby':
       netId = '4'
-      chainId = '0x04'
+      chainId = RINKEBY_CHAIN_ID
       break
     case 'kovan':
       netId = '42'
-      chainId = '0x2a'
+      chainId = KOVAN_CHAIN_ID
       break
     case 'goerli':
       netId = '5'
-      chainId = '0x05'
+      chainId = GOERLI_CHAIN_ID
       break
     default:
       throw new Error(`createInfuraClient - unknown network "${network}"`)

@@ -214,6 +214,12 @@ describe('MetaMask', function () {
       assert.equal(await networkDiv.getText(), '3')
     })
 
+    it('sets the chainId div within the dapp', async () => {
+      await driver.switchTo().window(dapp)
+      const chainIdDiv = await findElement(driver, By.css('#chainId'))
+      assert.equal(await chainIdDiv.getText(), '0x3')
+    })
+
     it('sets the account div within the dapp', async () => {
       await driver.switchTo().window(dapp)
       const accountsDiv = await findElement(driver, By.css('#accounts'))
