@@ -36,16 +36,13 @@ export default class Home extends PureComponent {
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
     threeBoxSynced: PropTypes.bool,
-    getThreeBoxLastUpdated: PropTypes.func,
+    setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
     restoredFromThreeBox: PropTypes.bool,
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
     setRestoredFromThreeBox: PropTypes.func,
-  }
-
-  state = {
-    threeBoxLastUpdated: null,
+    threeBoxLastUpdated: PropTypes.string,
   }
 
   componentWillMount () {
@@ -74,24 +71,12 @@ export default class Home extends PureComponent {
   componentDidUpdate () {
     const {
       threeBoxSynced,
-      getThreeBoxLastUpdated,
-      turnThreeBoxSyncingOn,
+      setupThreeBox,
       restoredFromThreeBox,
-      setRestoredFromThreeBox,
-    } = this.props
-    const {
       threeBoxLastUpdated,
-    } = this.state
+    } = this.props
     if (threeBoxSynced && restoredFromThreeBox === null && threeBoxLastUpdated === null) {
-      getThreeBoxLastUpdated()
-        .then(lastUpdated => {
-          if (lastUpdated) {
-            this.setState({ threeBoxLastUpdated: lastUpdated })
-          } else {
-            setRestoredFromThreeBox(false)
-            turnThreeBoxSyncingOn(true)
-          }
-        })
+      setupThreeBox()
     }
   }
 
@@ -110,11 +95,9 @@ export default class Home extends PureComponent {
       turnThreeBoxSyncingOn,
       setRestoredFromThreeBox,
       restoredFromThreeBox,
-    } = this.props
-    const {
       threeBoxLastUpdated,
-    } = this.state
-    console.log('HOME threeBoxLastUpdated', threeBoxLastUpdated)
+    } = this.props
+
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }

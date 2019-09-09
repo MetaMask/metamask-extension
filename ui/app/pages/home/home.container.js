@@ -11,6 +11,7 @@ import {
   getThreeBoxLastUpdated,
   setRestoredFromThreeBox,
 } from '../../store/actions'
+import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
@@ -27,7 +28,7 @@ const mapStateToProps = state => {
     selectedAddress,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
-  const { forgottenPassword } = appState
+  const { forgottenPassword, threeBoxLastUpdated } = appState
 
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
@@ -42,13 +43,24 @@ const mapStateToProps = state => {
     threeBoxSynced,
     restoredFromThreeBox,
     selectedAddress,
+    threeBoxLastUpdated,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
-  getThreeBoxLastUpdated: () => dispatch(getThreeBoxLastUpdated()),
+  setupThreeBox: () => {
+    dispatch(getThreeBoxLastUpdated())
+      .then(lastUpdated => {
+        if (lastUpdated) {
+          dispatch(setThreeBoxLastUpdated(lastUpdated))
+        } else {
+          dispatch(setRestoredFromThreeBox(false))
+          dispatch(turnThreeBoxSyncingOn())
+        }
+      })
+  },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setRestoredFromThreeBox: (restored) => dispatch(setRestoredFromThreeBox(restored)),
 })
