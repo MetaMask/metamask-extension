@@ -10,7 +10,6 @@ const requestHandler = (request, response) => {
     let body = ''
     request.on('data', chunk => {
       body += chunk.toString() // convert Buffer to string
-      // console.log('Mock3Box POST body', body)
     })
     request.on('end', () => {
       const { key, data } = JSON.parse(body)

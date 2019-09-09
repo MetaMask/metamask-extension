@@ -57,7 +57,7 @@ describe('MetaMask', function () {
     // are closing any extraneous windows to reset us to a single window before continuing.
     const [tab1] = await driver.getAllWindowHandles()
     await closeAllWindowHandlesExcept(driver, [tab1])
-    console.log('tab1', tab1)
+
     await driver.switchTo().window(tab1)
     await driver.get(extensionUrl)
   })

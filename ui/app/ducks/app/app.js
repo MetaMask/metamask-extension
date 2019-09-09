@@ -758,11 +758,6 @@ export default function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
-    case actions.SHOW_3BOX_MODAL_AFTER_IMPORT:
-      return extend(appState, {
-        show3BoxModalAfterImport: true,
-      })
-
     case SET_THREEBOX_LAST_UPDATED:
       return extend(appState, {
         threeBoxLastUpdated: action.value,

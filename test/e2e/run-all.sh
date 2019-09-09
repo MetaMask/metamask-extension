@@ -81,3 +81,4 @@ export GANACHE_ARGS="${BASE_GANACHE_ARGS} --deterministic --account=0x53CB0AB522
     'yarn ganache:start' \
     'yarn dapp' \
     'sleep 5 && mocha test/e2e/threebox.spec'
+    
