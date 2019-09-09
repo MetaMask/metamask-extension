@@ -9,11 +9,11 @@ const PLATFORM_EDGE = 'Edge'
 const PLATFORM_FIREFOX = 'Firefox'
 const PLATFORM_OPERA = 'Opera'
 
-const MAINNET_CHAIN_ID = '0x01'
-const ROPSTEN_CHAIN_ID = '0x03'
-const RINKEBY_CHAIN_ID = '0x04'
+const MAINNET_CHAIN_ID = '0x1'
+const ROPSTEN_CHAIN_ID = '0x3'
+const RINKEBY_CHAIN_ID = '0x4'
 const KOVAN_CHAIN_ID = '0x2a'
-const GOERLI_CHAIN_ID = '0x05'
+const GOERLI_CHAIN_ID = '0x5'
 
 module.exports = {
   ENVIRONMENT_TYPE_POPUP,
