@@ -1,3 +1,5 @@
+/*global ethereum*/
+
 /*
 The `piggybankContract` is compiled from:
 
@@ -163,5 +165,23 @@ web3.currentProvider.enable().then(() => {
         }
       })
 
+  })
+
+  ethereum.autoRefreshOnNetworkChange = false
+
+  const networkDiv = document.getElementById('network')
+  const chainIdDiv = document.getElementById('chainId')
+  const accountsDiv = document.getElementById('accounts')
+
+  ethereum.on('networkChanged', (networkId) => {
+    networkDiv.innerHTML = networkId
+  })
+
+  ethereum.on('chainIdChanged', (chainId) => {
+    networkDiv.innerHTML = chainId
+  })
+
+  ethereum.on('accountsChanged', (accounts) => {
+    accountsDiv.innerHTML = accounts
   })
 })
