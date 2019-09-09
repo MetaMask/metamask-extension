@@ -1,5 +1,5 @@
 // next version number
-const version = 36
+const version = 37
 const { getFinalStates, containsFinalStates } = require('../controllers/transactions/lib/util')
 
 /*
