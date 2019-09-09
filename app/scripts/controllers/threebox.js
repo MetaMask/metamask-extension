@@ -65,7 +65,7 @@ class ThreeBoxController {
     const accounts = await this.keyringController.getAccounts()
     this.address = accounts[0]
     if (this.address && !(this.box && this.store.getState().threeBoxSynced)) {
-      await this.new3Box(this.address)
+      await this.new3Box()
     }
   }
 
@@ -99,7 +99,10 @@ class ThreeBoxController {
     })
   }
 
-  async new3Box (address) {
+  async new3Box () {
+    const accounts = await this.keyringController.getAccounts()
+    const address = accounts[0]
+
     if (this.getThreeBoxSyncingState()) {
       this.store.updateState({ threeBoxSynced: false })
       this.address = await this.keyringController.getAppKeyAddress(address, 'wallet://3box.metamask.io')

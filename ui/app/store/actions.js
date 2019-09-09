@@ -2805,10 +2805,10 @@ function hideSeedPhraseBackupAfterOnboarding () {
   }
 }
 
-function initializeThreeBox (address) {
+function initializeThreeBox () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.initializeThreeBox(address, (err) => {
+      background.initializeThreeBox((err) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)

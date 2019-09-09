@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => {
   return {
     setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     hideSeedPhraseBackupAfterOnboarding: () => dispatch(hideSeedPhraseBackupAfterOnboarding()),
-    initializeThreeBox: (address) => dispatch(initializeThreeBox(address)),
+    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }
 }
 

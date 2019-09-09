@@ -96,7 +96,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
       setSeedPhraseBackedUp,
       showingSeedPhraseBackupAfterOnboarding,
       hideSeedPhraseBackupAfterOnboarding,
-      selectedAddress,
       initializeThreeBox,
     } = this.props
 
@@ -118,7 +117,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           hideSeedPhraseBackupAfterOnboarding()
           history.push(DEFAULT_ROUTE)
         } else {
-          initializeThreeBox(selectedAddress)
+          initializeThreeBox()
           history.push(INITIALIZE_END_OF_FLOW_ROUTE)
         }
       })

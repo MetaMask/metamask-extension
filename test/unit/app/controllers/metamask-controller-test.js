@@ -133,8 +133,6 @@ describe('MetaMaskController', function () {
       await metamaskController.submitPassword(password)
       assert(threeBoxSpies.new3Box.calledOnce)
       assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
-      const addresses = await metamaskController.keyringController.getAccounts()
-      assert.equal(threeBoxSpies.new3Box.args[0][0], addresses[0])
     })
   })
 

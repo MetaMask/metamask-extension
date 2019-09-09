@@ -8,7 +8,7 @@ import {
 const mapDispatchToProps = dispatch => {
   return {
     setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
-    initializeThreeBox: (address) => dispatch(initializeThreeBox(address)),
+    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }
 }
 

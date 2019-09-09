@@ -742,9 +742,8 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.txController.pendingTxTracker.updatePendingTxs()
 
     const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
-    const firstAccountAddress = accounts[0]
     if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-      await this.threeBoxController.new3Box(firstAccountAddress)
+      await this.threeBoxController.new3Box()
       this.threeBoxController.turnThreeBoxSyncingOn()
     } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
       this.threeBoxController.turnThreeBoxSyncingOn()
@@ -1699,8 +1698,8 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
-  async initializeThreeBox (address) {
-    await this.threeBoxController.new3Box(address, true)
+  async initializeThreeBox () {
+    await this.threeBoxController.new3Box()
   }
 
   /**
