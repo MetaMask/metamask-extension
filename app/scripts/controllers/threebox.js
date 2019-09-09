@@ -146,12 +146,8 @@ class ThreeBoxController {
     return await this.space.private.get('lastUpdated')
   }
 
-  setRestoredFromThreeBox (restored) {
-    this.store.updateState({ restoredFromThreeBox: restored })
-  }
-
   async restoreFromThreeBox () {
-    this.setRestoredFromThreeBox(true)
+    this.setRestoredFromThreeBoxToTrue()
     const backedUpPreferences = await this.space.private.get('preferences')
     backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
     const backedUpAddressBook = await this.space.private.get('addressBook')
@@ -164,6 +160,14 @@ class ThreeBoxController {
 
   turnThreeBoxSyncingOff () {
     this.box.logout()
+  }
+
+  setRestoredFromThreeBoxToTrue () {
+    this.store.updateState({ restoredFromThreeBox: true })
+  }
+
+  setRestoredFromThreeBoxToFalse () {
+    this.store.updateState({ restoredFromThreeBox: false })
   }
 
   setThreeBoxSyncingPermission (newThreeboxSyncingState) {

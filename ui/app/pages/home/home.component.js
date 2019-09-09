@@ -41,7 +41,7 @@ export default class Home extends PureComponent {
     restoredFromThreeBox: PropTypes.bool,
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
-    setRestoredFromThreeBox: PropTypes.func,
+    setRestoredFromThreeBoxToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.string,
   }
 
@@ -93,7 +93,7 @@ export default class Home extends PureComponent {
       selectedAddress,
       restoreFromThreeBox,
       turnThreeBoxSyncingOn,
-      setRestoredFromThreeBox,
+      setRestoredFromThreeBoxToFalse,
       restoredFromThreeBox,
       threeBoxLastUpdated,
     } = this.props
@@ -166,7 +166,7 @@ export default class Home extends PureComponent {
                             })
                         }}
                         onIgnore={() => {
-                          setRestoredFromThreeBox(false)
+                          setRestoredFromThreeBoxToFalse()
                         }}
                         key="home-privacyModeDefault"
                       />,
