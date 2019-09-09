@@ -22,6 +22,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
     rpcPrefs: PropTypes.object,
@@ -126,6 +127,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onCancel,
       onRetry,
       rpcPrefs: { blockExplorerUrl } = {},
+      isEarliestNonce,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash, txParams: { to, from } = {} } = transaction
@@ -209,6 +211,7 @@ export default class TransactionListItemDetails extends PureComponent {
               className="transaction-list-item-details__transaction-activity-log"
               onCancel={onCancel}
               onRetry={onRetry}
+              isEarliestNonce={isEarliestNonce}
             />
           </div>
         </div>
