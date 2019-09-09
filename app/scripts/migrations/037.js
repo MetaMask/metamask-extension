@@ -1,6 +1,7 @@
 // next version number
 const version = 37
 const { getFinalStates, containsFinalStates } = require('../controllers/transactions/lib/util')
+const { DEFAULT_TX_HISTORY_LIMIT } = require('../controllers/transactions/enums')
 
 /*
 
@@ -29,7 +30,7 @@ function transformState (state) {
     if (newState.TransactionController.transactions) {
       const transactions = newState.TransactionController.transactions
       let txCount = transactions.length
-      if (txCount > 40) {
+      if (txCount > DEFAULT_TX_HISTORY_LIMIT) {
         do {
           const index = transactions.findIndex((txMeta) => {
             return getFinalStates().includes(txMeta.status)

@@ -23,6 +23,7 @@ const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
 const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 const {
+  DEFAULT_TX_HISTORY_LIMIT,
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
   TRANSACTION_TYPE_STANDARD,
@@ -77,7 +78,7 @@ class TransactionController extends EventEmitter {
     this._mapMethods()
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
-      txHistoryLimit: opts.txHistoryLimit,
+      txHistoryLimit: opts.txHistoryLimit || DEFAULT_TX_HISTORY_LIMIT,
       getNetwork: this.getNetwork.bind(this),
     })
     this._onBootCleanUp()

@@ -86,34 +86,31 @@ do {
 
 describe('storage is migrated successfully', () => {
   it('should not fail', (done) => {
-    migrationTemplate.migrate(nullStorage)
-      .then((migratedData) => {
-        assert.equal(migratedData.meta.version, 36)
-        done()
-      }).catch(done)
+    migration37.migrate(nullStorage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 37)
+      done()
+    }).catch(done)
   })
 
 
   it('should remove down to 40 transactions if their are over 40 transactions and their are enough final transactions to remove', (done) => {
     storage.data.TransactionController.transactions = transactions60
-    migrationTemplate.migrate(storage)
-      .then((migratedData) => {
-        assert.equal(migratedData.meta.version, 36)
-        const len = migratedData.data.TransactionController.transactions.length
-        assert(len === 40, `should be 40 got ${len}`)
-        done()
-      }).catch(done)
+    migration37.migrate(storage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 37)
+      const len = migratedData.data.TransactionController.transactions.length
+      assert(len === 40, `should be 40 got ${len}`)
+      done()
+    }).catch(done)
   })
 
   it('should remove transactions but it will still be greater than 40', (done) => {
     storage.data.TransactionController.transactions = transactions160
-    migrationTemplate.migrate(storage)
-      .then((migratedData) => {
-        assert.equal(migratedData.meta.version, 36)
-        const len = migratedData.data.TransactionController.transactions.length
-        assert(len === 80, `should be 80 but got ${len}`)
-        done()
-      }).catch(done)
+    migration37.migrate(storage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 37)
+      const len = migratedData.data.TransactionController.transactions.length
+      assert(len === 80, `should be 80 but got ${len}`)
+      done()
+    }).catch(done)
   })
 })
 
