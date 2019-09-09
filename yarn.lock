@@ -8530,10 +8530,10 @@ eth-json-rpc-middleware@^1.5.0:
     promise-to-callback "^1.0.0"
     tape "^4.6.3"
 
-eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-middleware@^4.1.6:
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.1.6.tgz#c625a38888b7697fbb4fcbf06dae17251ac3b76e"
-  integrity sha512-8AdegPz5qmSRKYyFJhVdkM5Uv3L3AOqD8sIctZuQxmyCsUoZDfDwbElpcrAODAA43cei69t64leis016rR690g==
+eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-middleware@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.2.0.tgz#cfb77c5056cb8001548c6c7d54f4af5fce04d489"
+  integrity sha512-90LljqRyJhkg7fOwKunh1lu1Mr5bspXMBDitaTGyGPPNiFTbMrhtfbf9fteYlXRFCbq+aIFWwl/X+P7nkrdkLg==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
