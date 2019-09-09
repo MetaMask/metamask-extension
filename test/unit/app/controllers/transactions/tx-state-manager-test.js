@@ -146,7 +146,7 @@ describe('TransactionStateManager', function () {
       assert.equal(result[0].id, 1, 'early txs truncted')
     })
 
-    it('should remove down to the txHistoryLimit if their are more txs then limit in history', function () {
+    it('should trim to the txHistoryLimit if there are more txs than limit in history', function () {
       const limit = txStateManager.txHistoryLimit
       const txList = []
       for (let i = 0; i < limit + 15; i++) {
