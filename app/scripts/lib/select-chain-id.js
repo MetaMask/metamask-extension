@@ -4,7 +4,7 @@ const {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
-} = require('../../lib/enums')
+} = require('./enums')
 
 const standardNetworkId = {
   '1': MAINNET_CHAIN_ID,
@@ -16,7 +16,7 @@ const standardNetworkId = {
 
 function selectChainId (metamaskState) {
   const { network, provider: { chaindId } } = metamaskState
-  return standardNetworkId[network] || parseInt(chaindId, 10).toString(16)
+  return standardNetworkId[network] || `0x${parseInt(chaindId, 10).toString(16)}`
 }
 
 module.exports = selectChainId
