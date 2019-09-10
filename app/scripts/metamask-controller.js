@@ -41,6 +41,7 @@ const ProviderApprovalController = require('./controllers/provider-approval')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const selectChainId = require('./lib/select-chain-id')
 const {Mutex} = require('await-semaphore')
 const {version} = require('../manifest.json')
 const {BN} = require('ethereumjs-util')
@@ -360,7 +361,7 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore.putState(publicState)
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding }) {
+    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding, provider }) {
       const isEnabled = checkIsEnabled()
       const isReady = isUnlocked && isEnabled
       const result = {
@@ -369,6 +370,7 @@ module.exports = class MetamaskController extends EventEmitter {
         selectedAddress: isReady ? selectedAddress : undefined,
         networkVersion: network,
         onboardingcomplete: completedOnboarding,
+        chainId: selectChainId({ network, provider }),
       }
       return result
     }
