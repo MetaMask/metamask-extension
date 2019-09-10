@@ -13,6 +13,13 @@
 - [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
 - [#7037](https://github.com/MetaMask/metamask-extension/pull/7037): Remove Babel 6 from internal dependencies
 - [#7093](https://github.com/MetaMask/metamask-extension/pull/7093): Allow dismissing privacy mode notification from popup
+- [#7087](https://github.com/MetaMask/metamask-extension/pull/7087): Add breadcrumb spacing on Contacts page
+- [#7081](https://github.com/MetaMask/metamask-extension/pull/7081): Fix confirm token transaction amount display
+- [#7088](https://github.com/MetaMask/metamask-extension/pull/7088): Fix BigNumber conversion error
+- [#7072](https://github.com/MetaMask/metamask-extension/pull/7072): Right-to-left CSS (using module for conversion)
+- [#6878](https://github.com/MetaMask/metamask-extension/pull/6878): Persian translation
+- [#7012](https://github.com/MetaMask/metamask-extension/pull/7012): Added missed phrases to RU locale
+- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
 
 ## 7.1.0 Fri Aug 16 2019
 - [#7035](https://github.com/MetaMask/metamask-extension/pull/7035): Filter non-ERC-20 assets during mobile sync (#7035)
