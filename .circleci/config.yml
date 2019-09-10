@@ -92,7 +92,7 @@ jobs:
       - run:
           name: Install deps
           command: |
-           yarn --frozen-lockfile
+           yarn --frozen-lockfile --har
       - persist_to_workspace:
           root: .
           paths:
