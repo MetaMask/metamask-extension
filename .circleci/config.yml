@@ -93,10 +93,15 @@ jobs:
           name: Install deps
           command: |
            yarn --frozen-lockfile --har
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            ./circleci/scripts/collect-har-artifact.sh
       - persist_to_workspace:
           root: .
           paths:
           - node_modules
+          - build-artifacts
 
   prep-build:
     docker:
