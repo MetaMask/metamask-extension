@@ -213,6 +213,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: build:source-map-explorer
+          command: ./development/source-map-explorer.sh
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
