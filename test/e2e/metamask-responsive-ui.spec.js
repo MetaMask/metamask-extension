@@ -27,7 +27,7 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    const result = await prepareExtensionForTesting()
+    const result = await prepareExtensionForTesting({ responsive: true })
     driver = result.driver
     extensionId = result.extensionId
     await setupFetchMocking(driver)
