@@ -20,7 +20,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - master
       # - prep-docs:
       #    requires:
       #      - prep-deps
