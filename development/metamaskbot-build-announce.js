@@ -26,12 +26,14 @@ async function start () {
   // build the github comment content
 
   // links to extension builds
+  const platforms = ['chrome', 'firefox', 'opera', 'edge']
   const buildLinks = platforms.map(platform => {
     const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
     return `<a href="${url}">${platform}</a>`
   }).join(', ')
 
   // links to bundle browser builds
+  const bundles = ['background', 'ui', 'inpage', 'contentscript']
   const bundleLinks = bundles.map(bundle => {
     const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
     return `<a href="${url}">${bundle}</a>`
