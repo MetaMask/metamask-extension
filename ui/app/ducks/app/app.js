@@ -27,13 +27,6 @@ function reduceApp (state, action) {
     context: selectedAddress,
   }
 
-  // confirm seed words
-  var seedWords = state.metamask.seedWords
-  var seedConfView = {
-    name: 'createVaultComplete',
-    seedWords,
-  }
-
   // default state
   var appState = extend({
     shouldClose: false,
@@ -58,7 +51,7 @@ function reduceApp (state, action) {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
-    currentView: seedWords ? seedConfView : defaultView,
+    currentView: defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -167,7 +160,7 @@ function reduceApp (state, action) {
         transForward: false,
       })
 
-    // intialize
+      // intialize
 
     case actions.SHOW_CREATE_VAULT:
       return extend(appState, {
@@ -269,7 +262,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -277,16 +270,6 @@ function reduceApp (state, action) {
         },
         transForward: true,
         isLoading: true,
-      })
-
-    case actions.SHOW_NEW_VAULT_SEED:
-      return extend(appState, {
-        currentView: {
-          name: 'createVaultComplete',
-          seedWords: action.value,
-        },
-        transForward: true,
-        isLoading: false,
       })
 
     case actions.NEW_ACCOUNT_SCREEN:
@@ -327,7 +310,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  // unlock
+      // unlock
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
@@ -364,7 +347,7 @@ function reduceApp (state, action) {
           name: 'UnlockScreen',
         },
       })
-  // reveal seed words
+      // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
       return extend(appState, {
@@ -375,7 +358,7 @@ function reduceApp (state, action) {
         warning: null,
       })
 
-  // accounts
+      // accounts
 
     case actions.SET_SELECTED_ACCOUNT:
       return extend(appState, {
@@ -428,8 +411,7 @@ function reduceApp (state, action) {
     case actions.SHOW_ACCOUNTS_PAGE:
       return extend(appState, {
         currentView: {
-          name: seedWords ? 'createVaultComplete' : 'accounts',
-          seedWords,
+          name: 'accounts',
         },
         transForward: true,
         isLoading: false,
@@ -773,7 +755,6 @@ function reduceApp (state, action) {
       return extend(appState, {
         loadingMethodData: false,
       })
-
 
     default:
       return appState

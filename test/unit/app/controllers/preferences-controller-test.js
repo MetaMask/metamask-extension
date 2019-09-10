@@ -510,6 +510,5 @@ describe('preferences controller', function () {
       assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
     })
   })
-
 })
 

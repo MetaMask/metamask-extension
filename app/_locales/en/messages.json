@@ -1,9 +1,9 @@
 {
-  "privacyMode": {
-    "message": "Privacy Mode"
+  "showIncomingTransactions": {
+    "message": "Show Incoming Transactions"
   },
-  "privacyModeDescription": {
-    "message": "Websites must request access to view your account information."
+  "showIncomingTransactionsDescription": {
+    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
   "exposeAccounts": {
     "message": "Expose Accounts"
@@ -20,20 +20,35 @@
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
+  "connections": {
+    "message": "Connections"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Sites allowed to read your accounts"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
+  },
+  "connected": {
+    "message": "Connected"
+  },
+  "connectedDescription": {
+    "message": "The list of sites allowed access to your addresses"
+  },
+  "privacyModeDefault": {
+    "message": "Privacy Mode is now enabled by default"
+  },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
-  "approvalData": {
-    "message": "Privacy Data"
-  },
-  "approvalDataDescription": {
-    "message": "Clear privacy data so all websites must request access to view account information again."
-  },
   "clearApprovalData": {
-    "message": "Clear Privacy Data"
+    "message": "Remove all sites"
   },
   "reject": {
     "message": "Reject"
@@ -80,11 +95,20 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "address": {
     "message": "Address"
   },
   "addNetwork": {
     "message": "Add Network"
+  },
+  "addRecipient": {
+    "message": "Add Recipient"
+  },
+  "addressBook": {
+    "message": "Address Book"
   },
   "advanced": {
     "message": "Advanced"
@@ -97,6 +121,18 @@
   },
   "addCustomToken": {
     "message": "Add custom token"
+  },
+  "addToAddressBook": {
+    "message": "Add to address book"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "e.g. John D."
+  },
+  "addAlias": {
+    "message": "Add alias"
+  },
+  "addEthAddress": {
+    "message": "Add an Ethereum address"
   },
   "addToken": {
     "message": "Add Token"
@@ -171,6 +207,18 @@
   },
   "back": {
     "message": "Back"
+  },
+  "backToAll": {
+    "message": "Back to All"
+  },
+  "backupApprovalNotice": {
+    "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
+  },
+  "backupApprovalInfo": {
+    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
+  },
+  "backupNow": {
+    "message": "Backup now"
   },
   "balance": {
     "message": "Balance"
@@ -354,6 +402,12 @@
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
+  "contacts": {
+    "message": "Contacts"
+  },
+  "contactsSettingsDescription": {
+    "message": "Add, edit, remove, and manage your contacts"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -463,6 +517,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteAccount": {
+    "message": "Delete Account"
+  },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },
@@ -502,6 +559,9 @@
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
+  "dismiss": {
+    "message": "Dismiss"
+  },
   "done": {
     "message": "Done"
   },
@@ -528,6 +588,9 @@
   },
   "editAccountName": {
     "message": "Edit Account Name"
+  },
+  "editContact":{
+    "message": "Edit Contact"
   },
   "editingTransaction": {
     "message": "Make changes to your transaction"
@@ -560,7 +623,7 @@
     "message": "If you ever have questions or see something fishy, email support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask cannot recover your seedphrase. Learn more."
+    "message": "MetaMask cannot recover your seedphrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -570,6 +633,15 @@
   },
   "ensNameNotFound": {
     "message": "ENS name not found"
+  },
+  "ensRegistrationError": {
+    "message": "Error in ENS name registration"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+  },
+  "enterAnAlias": {
+    "message": "Enter an alias"
   },
   "enterPassword": {
     "message": "Enter password"
@@ -582,6 +654,9 @@
   },
   "eth": {
     "message": "ETH"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Public Address"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -893,6 +968,9 @@
   "loadingTokens": {
     "message": "Loading Tokens..."
   },
+  "loadMore": {
+    "message": "Load More"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -913,6 +991,9 @@
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
+  },
+  "memo": {
+    "message": "memo"
   },
   "menu": {
     "message": "Menu"
@@ -947,6 +1028,12 @@
   "myAccounts": {
     "message": "My Accounts"
   },
+  "myWalletAccounts": {
+    "message": "My Wallet Accounts"
+  },
+  "myWalletAccountsDescription": {
+    "message": "All of your MetaMask created accounts will automatically be added to this section."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -979,9 +1066,15 @@
   "newAccount": {
     "message": "New Account"
   },
+  "newAccountDetectedDialogMessage": {
+    "message": "New address detected! Click here to add to your address book."
+  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "New Contact"
   },
   "newContract": {
     "message": "New Contract"
@@ -1193,8 +1286,14 @@
   "receive": {
     "message": "Receive"
   },
+  "recents": {
+    "message": "Recents"
+  },
   "recipientAddress": {
     "message": "Recipient Address"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
   },
   "refundAddress": {
     "message": "Your Refund Address"
@@ -1225,6 +1324,9 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Remind me later"
   },
   "restoreFromSeed": {
     "message": "Restore account?"
@@ -1670,6 +1772,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferBetweenAccounts": {
+    "message": "Transfer between my accounts"
+  },
   "transferFrom": {
     "message": "Transfer From"
   },
@@ -1750,6 +1855,9 @@
   "useOldUI": {
     "message": "Use old UI"
   },
+  "userName":{
+    "message": "Username"
+  },
   "validFileImport": {
     "message": "You must select a valid file to import."
   },
@@ -1761,6 +1869,9 @@
   },
   "viewinExplorer": {
     "message": "View in Explorer"
+  },
+  "viewContact": {
+    "message": "View Contact"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"

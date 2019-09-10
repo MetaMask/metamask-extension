@@ -10,7 +10,7 @@ const CUSTOM_RPC = 'custom#eth:rpc'
 // chain id
 const MAINNET_CODE = 1
 const ROPSTEN_CODE = 3
-const RINKEBY_CODE = 4
+const RINKEYBY_CODE = 4
 const KOVAN_CODE = 42
 const GOERLI_CODE = 5
 
@@ -32,7 +32,7 @@ const DEFAULT_LIST = [
   {
     type: RINKEBY,
     custom: {
-      chainId: RINKEBY_CODE,
+      chainId: RINKEYBY_CODE,
       ticker: 'ETH',
     },
   },
@@ -75,7 +75,7 @@ module.exports = {
   CUSTOM_RPC,
   MAINNET_CODE,
   ROPSTEN_CODE,
-  RINKEBY_CODE,
+  RINKEYBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
   ROPSTEN_DISPLAY_NAME,

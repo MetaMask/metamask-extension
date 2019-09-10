@@ -65,13 +65,13 @@ describe('EdgeEncryptor', function () {
       edgeEncryptor.encrypt(password, data)
         .then(function (encryptedData) {
           edgeEncryptor.decrypt(password, encryptedData)
-          .then(function (decryptedData) {
-            assert.equal(decryptedData, data)
-            done()
-          })
-          .catch(function (err) {
-            done(err)
-          })
+            .then(function (decryptedData) {
+              assert.equal(decryptedData, data)
+              done()
+            })
+            .catch(function (err) {
+              done(err)
+            })
         })
         .catch(function (err) {
           done(err)
@@ -83,15 +83,15 @@ describe('EdgeEncryptor', function () {
       edgeEncryptor.encrypt(password, data)
         .then(function (encryptedData) {
           edgeEncryptor.decrypt('wrong password', encryptedData)
-          .then(function () {
-            assert.fail('could decrypt with wrong password')
-            done()
-          })
-          .catch(function (err) {
-            assert.ok(err instanceof Error)
-            assert.equal(err.message, 'Incorrect password')
-            done()
-          })
+            .then(function () {
+              assert.fail('could decrypt with wrong password')
+              done()
+            })
+            .catch(function (err) {
+              assert.ok(err instanceof Error)
+              assert.equal(err.message, 'Incorrect password')
+              done()
+            })
         })
         .catch(function (err) {
           done(err)

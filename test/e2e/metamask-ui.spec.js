@@ -1,14 +1,8 @@
-const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
 } = require('./func')
 const {
   assertElementNotPresent,
@@ -21,8 +15,9 @@ const {
   switchToWindowWithTitle,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  setupFetchMocking,
+  prepareExtensionForTesting,
 } = require('./helpers')
-const fetchMockResponses = require('./fetch-mocks.js')
 
 describe('MetaMask', function () {
   let extensionId
@@ -38,61 +33,10 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    let extensionUrl
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await delay(largeDelayMs)
-        extensionUrl = `chrome-extension://${extensionId}/home.html`
-        break
-      }
-      case 'firefox': {
-        const extPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extPath)
-        await delay(largeDelayMs)
-        extensionId = await getExtensionIdFirefox(driver)
-        extensionUrl = `moz-extension://${extensionId}/home.html`
-        break
-      }
-    }
-    // Depending on the state of the application built into the above directory (extPath) and the value of
-    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
-    // are closing any extraneous windows to reset us to a single window before continuing.
-    const [tab1] = await driver.getAllWindowHandles()
-    await closeAllWindowHandlesExcept(driver, [tab1])
-    await driver.switchTo().window(tab1)
-    await driver.get(extensionUrl)
-  })
-
-  beforeEach(async function () {
-    await driver.executeScript(
-      'window.origFetch = window.fetch.bind(window);' +
-      'window.fetch = ' +
-      '(...args) => { ' +
-      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
-      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
-      '(args[0].match(/chromeextensionmm/)) { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
-      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); };' +
-      'function cancelInfuraRequest(requestDetails) {' +
-        'console.log("Canceling: " + requestDetails.url);' +
-        'return {' +
-          'cancel: true' +
-        '};' +
-     ' }' +
-      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
-        'cancelInfuraRequest,' +
-        '{urls: ["https://*.infura.io/*"]},' +
-        '["blocking"]' +
-      ');'
-    )
+    const result = await prepareExtensionForTesting()
+    driver = result.driver
+    extensionId = result.extensionId
+    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
@@ -161,7 +105,7 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = (await findElements(driver, By.css('button.first-time-flow__button')))[1]
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -221,7 +165,7 @@ describe('MetaMask', function () {
 
   describe('Show account information', () => {
     it('shows the QR code for the account', async () => {
-      await driver.findElement(By.css('.wallet-view__details-button')).click()
+      await driver.findElement(By.css('.account-details__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -273,7 +217,7 @@ describe('MetaMask', function () {
     })
 
     it('should display correct account name', async () => {
-      const accountName = await findElement(driver, By.css('.account-name'))
+      const accountName = await findElement(driver, By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await delay(regularDelayMs)
     })
@@ -322,12 +266,40 @@ describe('MetaMask', function () {
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Search, public address (0x), or ENS"]'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      await inputAmount.sendKeys('1000')
+
+      const errorAmount = await findElement(driver, By.css('.send-v2__error-amount'))
+      assert.equal(await errorAmount.getText(), 'Insufficient funds.', 'send screen should render an insufficient fund error message')
+
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(50)
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(50)
+      await inputAmount.sendKeys(Key.BACK_SPACE)
+      await delay(tinyDelayMs)
+
+      await assertElementNotPresent(webdriver, driver, By.css('.send-v2__error-amount'))
+
+      const amountMax = await findElement(driver, By.css('.send-v2__amount-max'))
+      await amountMax.click()
+
+      assert.equal(await inputAmount.isEnabled(), false)
+
+      let inputValue = await inputAmount.getAttribute('value')
+
+      assert(Number(inputValue) > 99)
+
+      await amountMax.click()
+
+      assert.equal(await inputAmount.isEnabled(), true)
+
       await inputAmount.sendKeys('1')
 
-      const inputValue = await inputAmount.getAttribute('value')
+      inputValue = await inputAmount.getAttribute('value')
       assert.equal(inputValue, '1')
       await delay(regularDelayMs)
 
@@ -360,9 +332,10 @@ describe('MetaMask', function () {
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Search, public address (0x), or ENS"]'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
 
       const inputValue = await inputAmount.getAttribute('value')
@@ -402,9 +375,10 @@ describe('MetaMask', function () {
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Search, public address (0x), or ENS"]'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
 
       const inputValue = await inputAmount.getAttribute('value')
@@ -1005,9 +979,10 @@ describe('MetaMask', function () {
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Search, public address (0x), or ENS"]'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
 
       // Set the gas limit
@@ -1216,7 +1191,9 @@ describe('MetaMask', function () {
       const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Approve Tokens')]`))
       await transferTokens.click()
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      }
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
@@ -1310,6 +1287,10 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+
       await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 3
@@ -1323,6 +1304,12 @@ describe('MetaMask', function () {
   })
 
   describe('Tranfers a custom token from dapp when no gas value is specified', () => {
+    before(function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+    })
+
     it('transfers an already created token, without specifying gas', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
@@ -1372,6 +1359,12 @@ describe('MetaMask', function () {
   })
 
   describe('Approves a custom token from dapp when no gas value is specified', () => {
+    before(function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip()
+      }
+    })
+
     it('approves an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]

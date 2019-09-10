@@ -13,6 +13,7 @@ const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
@@ -35,6 +36,7 @@ module.exports = {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
+  ellipsify,
 }
 
 function calcGasTotal (gasLimit = '0', gasPrice = '0') {
@@ -201,7 +203,7 @@ function doesAmountErrorRequireUpdate ({
 async function estimateGas ({
   selectedAddress,
   selectedToken,
-  blockGasLimit,
+  blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
   data,
@@ -241,7 +243,7 @@ async function estimateGas ({
   }
 
   // if not, fall back to block gasLimit
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit || '0x5208', 0.95, {
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',
@@ -318,7 +320,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-  .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
@@ -329,4 +331,8 @@ function getToAddressForGasUpdate (...addresses) {
 
 function removeLeadingZeroes (str) {
   return str.replace(/^0*(?=\d)/, '')
+}
+
+function ellipsify (text, first = 6, last = 4) {
+  return `${text.slice(0, first)}...${text.slice(-last)}`
 }

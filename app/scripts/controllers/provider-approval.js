@@ -7,25 +7,22 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
  */
 class ProviderApprovalController extends SafeEventEmitter {
   /**
-   * Determines if caching is enabled
-   */
-  caching = true
-
-  /**
    * Creates a ProviderApprovalController
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, keyringController, openPopup, preferencesController } = {}) {
+  constructor ({ closePopup, initState, keyringController, openPopup, preferencesController } = {}) {
     super()
-    this.approvedOrigins = {}
     this.closePopup = closePopup
     this.keyringController = keyringController
     this.openPopup = openPopup
     this.preferencesController = preferencesController
-    this.store = new ObservableStore({
+    this.memStore = new ObservableStore({
       providerRequests: [],
     })
+
+    const defaultState = { approvedOrigins: {} }
+    this.store = new ObservableStore(Object.assign(defaultState, initState))
   }
 
   /**
@@ -45,7 +42,7 @@ class ProviderApprovalController extends SafeEventEmitter {
       }
       // register the provider request
       const metadata = await getSiteMetadata(origin)
-      this._handleProviderRequest(origin, metadata.name, metadata.icon, false, null)
+      this._handleProviderRequest(origin, metadata.name, metadata.icon)
       // wait for resolution of request
       const approved = await new Promise(resolve => this.once(`resolvedRequest:${origin}`, ({ approved }) => resolve(approved)))
       if (approved) {
@@ -63,10 +60,18 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @param {string} siteTitle - The title of the document requesting full provider access
    * @param {string} siteImage - The icon of the window requesting full provider access
    */
-  _handleProviderRequest (origin, siteTitle, siteImage, force, tabID) {
-    this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage, tabID }] })
+  _handleProviderRequest (origin, siteTitle, siteImage) {
+    const { providerRequests } = this.memStore.getState()
+    this.memStore.updateState({
+      providerRequests: [
+        ...providerRequests,
+        { origin, siteTitle, siteImage },
+      ],
+    })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
+    const { approvedOrigins } = this.store.getState()
+    const originAlreadyHandled = approvedOrigins[origin]
+    if (originAlreadyHandled && isUnlocked) {
       return
     }
     this.openPopup && this.openPopup()
@@ -78,11 +83,24 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @param {string} origin - origin of the domain that had provider access approved
    */
   approveProviderRequestByOrigin (origin) {
-    this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests
-    const providerRequests = requests.filter(request => request.origin !== origin)
-    this.store.updateState({ providerRequests })
-    this.approvedOrigins[origin] = true
+    if (this.closePopup) {
+      this.closePopup()
+    }
+
+    const { approvedOrigins } = this.store.getState()
+    const { providerRequests } = this.memStore.getState()
+    const providerRequest = providerRequests.find((request) => request.origin === origin)
+    const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
+    this.store.updateState({
+      approvedOrigins: {
+        ...approvedOrigins,
+        [origin]: {
+          siteTitle: providerRequest ? providerRequest.siteTitle : null,
+          siteImage: providerRequest ? providerRequest.siteImage : null,
+        },
+      },
+    })
+    this.memStore.updateState({ providerRequests: remainingProviderRequests })
     this.emit(`resolvedRequest:${origin}`, { approved: true })
   }
 
@@ -92,19 +110,30 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @param {string} origin - origin of the domain that had provider access approved
    */
   rejectProviderRequestByOrigin (origin) {
-    this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests
-    const providerRequests = requests.filter(request => request.origin !== origin)
-    this.store.updateState({ providerRequests })
-    delete this.approvedOrigins[origin]
+    if (this.closePopup) {
+      this.closePopup()
+    }
+
+    const { approvedOrigins } = this.store.getState()
+    const { providerRequests } = this.memStore.getState()
+    const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
+
+    // We're cloning and deleting keys here because we don't want to keep unneeded keys
+    const _approvedOrigins = Object.assign({}, approvedOrigins)
+    delete _approvedOrigins[origin]
+
+    this.store.putState({ approvedOrigins: _approvedOrigins })
+    this.memStore.putState({ providerRequests: remainingProviderRequests })
     this.emit(`resolvedRequest:${origin}`, { approved: false })
   }
 
   /**
-   * Clears any cached approvals for user-approved origins
+   * Clears any approvals for user-approved origins
    */
   clearApprovedOrigins () {
-    this.approvedOrigins = {}
+    this.store.updateState({
+      approvedOrigins: {},
+    })
   }
 
   /**
@@ -114,11 +143,17 @@ class ProviderApprovalController extends SafeEventEmitter {
    * @returns {boolean} - True if the origin has been approved
    */
   shouldExposeAccounts (origin) {
-    const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
-    const result = !privacyMode || Boolean(this.approvedOrigins[origin])
-    return result
+    return Boolean(this.store.getState().approvedOrigins[origin])
   }
 
+  /**
+   * Returns a merged state representation
+   * @return {object}
+   * @private
+   */
+  _getMergedState () {
+    return Object.assign({}, this.memStore.getState(), this.store.getState())
+  }
 }
 
 module.exports = ProviderApprovalController

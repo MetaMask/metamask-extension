@@ -210,17 +210,17 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     },
     padding: {left: 20, right: 15, top: 6, bottom: 10},
     data: {
-        x: 'x',
-        columns: [
-            ['x', ...gasPrices],
-            ['data1', ...estimatedTimes],
-        ],
-        types: {
-          data1: 'area',
-        },
-        selection: {
-          enabled: false,
-        },
+      x: 'x',
+      columns: [
+        ['x', ...gasPrices],
+        ['data1', ...estimatedTimes],
+      ],
+      types: {
+        data1: 'area',
+      },
+      selection: {
+        enabled: false,
+      },
     },
     color: {
       data1: '#259de5',
@@ -254,13 +254,13 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
       },
     },
     legend: {
-        show: false,
+      show: false,
     },
     grid: {
-        x: {},
-        lines: {
-          front: false,
-        },
+      x: {},
+      lines: {
+        front: false,
+      },
     },
     point: {
       focus: {
@@ -296,8 +296,8 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         const flipTooltip = circleY - circleWidth < chartYStart + 5
 
         d3
-        .select('.tooltip-arrow')
-        .style('margin-top', flipTooltip ? '-16px' : '4px')
+          .select('.tooltip-arrow')
+          .style('margin-top', flipTooltip ? '-16px' : '4px')
 
         return {
           top: bigNumMinus(circleY, chartYStart).minus(19).plus(flipTooltip ? circleWidth + 38 : 0).toNumber(),

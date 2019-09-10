@@ -1,1 +1,1 @@
-export { default } from './send-content.component'
+export { default } from './send-content.container'

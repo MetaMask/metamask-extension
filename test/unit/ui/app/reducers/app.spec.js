@@ -270,18 +270,6 @@ describe('App State', () => {
     assert.equal(state.isLoading, true)
   })
 
-  it('shows new vault seed', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_NEW_VAULT_SEED,
-      value: 'test seed words',
-    })
-
-    assert.equal(state.currentView.name, 'createVaultComplete')
-    assert.equal(state.currentView.seedWords, 'test seed words')
-    assert.equal(state.transForward, true)
-    assert.equal(state.isLoading, false)
-  })
-
   it('shows new account screen', () => {
     const state = reduceApp(metamaskState, {
       type: actions.NEW_ACCOUNT_SCREEN,
@@ -437,7 +425,6 @@ describe('App State', () => {
     })
 
     assert.equal(state.currentView.name, 'accounts')
-    assert.equal(state.currentView.seedWords, undefined)
     assert.equal(state.transForward, true)
     assert.equal(state.isLoading, false)
     assert.equal(state.warning, null)

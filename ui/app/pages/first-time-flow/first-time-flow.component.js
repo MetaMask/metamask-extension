@@ -18,6 +18,7 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
+  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -30,6 +31,9 @@ export default class FirstTimeFlow extends PureComponent {
     isUnlocked: PropTypes.bool,
     unlockAccount: PropTypes.func,
     nextRoute: PropTypes.string,
+    showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
+    seedPhraseBackedUp: PropTypes.bool,
+    verifySeedPhrase: PropTypes.func,
   }
 
   state = {
@@ -38,9 +42,16 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   componentDidMount () {
-    const { completedOnboarding, history, isInitialized, isUnlocked } = this.props
+    const {
+      completedOnboarding,
+      history,
+      isInitialized,
+      isUnlocked,
+      showingSeedPhraseBackupAfterOnboarding,
+      seedPhraseBackedUp,
+    } = this.props
 
-    if (completedOnboarding) {
+    if (completedOnboarding && (!showingSeedPhraseBackupAfterOnboarding || seedPhraseBackedUp)) {
       history.push(DEFAULT_ROUTE)
       return
     }
@@ -88,6 +99,7 @@ export default class FirstTimeFlow extends PureComponent {
 
   render () {
     const { seedPhrase, isImportedKeyring } = this.state
+    const { verifySeedPhrase } = this.props
 
     return (
       <div className="first-time-flow">
@@ -98,6 +110,17 @@ export default class FirstTimeFlow extends PureComponent {
               <SeedPhrase
                 { ...props }
                 seedPhrase={seedPhrase}
+                verifySeedPhrase={verifySeedPhrase}
+              />
+            )}
+          />
+          <Route
+            path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
+            render={props => (
+              <SeedPhrase
+                { ...props }
+                seedPhrase={seedPhrase}
+                verifySeedPhrase={verifySeedPhrase}
               />
             )}
           />

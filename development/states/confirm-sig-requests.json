@@ -63,6 +63,7 @@
     ],
     "tokens": [],
     "transactions": {},
+    "incomingTransactions": {},
     "selectedAddressTxList": [],
     "unapprovedTxs": {},
     "unapprovedMsgs": {
@@ -133,7 +134,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "send": {
       "gasLimit": "0xea60",
       "gasPrice": "0xba43b7400",

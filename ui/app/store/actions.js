@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('../helpers/utils/util')
+const { getTokenAddressFromTokenObject, checksumAddress } = require('../helpers/utils/util')
 const {
   calcTokenBalance,
   estimateGas,
@@ -10,6 +10,7 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
 const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
+import switchDirection from '../helpers/utils/switch-direction'
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
@@ -67,7 +68,6 @@ var actions = {
   markPasswordForgotten,
   unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
-  SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
@@ -81,7 +81,6 @@ var actions = {
   showImportPage,
   showNewAccountPage,
   setNewAccountForm,
-  createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
   createNewVaultAndGetSeedPhrase,
@@ -97,14 +96,12 @@ var actions = {
   navigateToNewAccountScreen,
   resetAccount,
   removeAccount,
-  showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   closeWelcomeScreen,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
-  requestRevealSeed: requestRevealSeed,
   requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -139,6 +136,8 @@ var actions = {
   showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
+  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
+  removeFromAddressBook: removeFromAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -198,6 +197,10 @@ var actions = {
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
+  UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
+  UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
+  updateSendEnsResolution,
+  updateSendEnsResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -217,7 +220,6 @@ var actions = {
   gasLoadingStarted,
   gasLoadingFinished,
   // app messages
-  confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
   BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
   backToAccountDetail: backToAccountDetail,
@@ -273,12 +275,12 @@ var actions = {
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
   hideSubLoadingIndication: hideSubLoadingIndication,
-// QR STUFF:
+  // QR STUFF:
   SHOW_QR: 'SHOW_QR',
   showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
-// FORGOT PASSWORD:
+  // FORGOT PASSWORD:
   BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
   goBackToInitView: goBackToInitView,
   RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
@@ -306,10 +308,8 @@ var actions = {
 
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
-  SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
   setCurrentLocale,
   updateCurrentLocale,
-  setLocaleMessages,
   //
   // Feature Flags
   setFeatureFlag,
@@ -323,6 +323,7 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
+  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -372,6 +373,10 @@ var actions = {
   LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
   loadingTokenParamsFinished,
   LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
+
+  setSeedPhraseBackedUp,
+  verifySeedPhrase,
+  SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 }
 
 module.exports = actions
@@ -444,44 +449,18 @@ function transitionBackward () {
   }
 }
 
-function confirmSeedWords () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.clearSeedWordCache`)
-    return new Promise((resolve, reject) => {
-      background.clearSeedWordCache((err, account) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.info('Seed word cache cleared. ' + account)
-        dispatch(actions.showAccountsPage())
-        resolve(account)
-      })
-    })
-  }
-}
-
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.clearSeedWordCache((err) => {
+      background.createNewVaultAndRestore(password, seed, (err) => {
         if (err) {
           return reject(err)
         }
 
-        background.createNewVaultAndRestore(password, seed, (err) => {
-          if (err) {
-            return reject(err)
-          }
-
-          resolve()
-        })
+        resolve()
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
@@ -494,36 +473,6 @@ function createNewVaultAndRestore (password, seed) {
         dispatch(actions.hideLoadingIndication())
         return Promise.reject(err)
       })
-  }
-}
-
-function createNewVaultAndKeychain (password) {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.createNewVaultAndKeychain`)
-
-    return new Promise((resolve, reject) => {
-      background.createNewVaultAndKeychain(password, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.debug(`background.placeSeedWords`)
-
-        background.placeSeedWords((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-
-          resolve()
-        })
-      })
-    })
-      .then(() => forceUpdateMetamaskState(dispatch))
-      .then(() => dispatch(actions.hideLoadingIndication()))
-      .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -614,33 +563,6 @@ function verifySeedPhrase () {
       resolve(seedWords)
     })
   })
-}
-
-function requestRevealSeed (password) {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.submitPassword`)
-    return new Promise((resolve, reject) => {
-      background.submitPassword(password, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.debug(`background.placeSeedWords`)
-        background.placeSeedWords((err, result) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-
-          dispatch(actions.showNewVaultSeed(result))
-          dispatch(actions.hideLoadingIndication())
-          resolve()
-        })
-      })
-    })
-  }
 }
 
 function requestRevealSeedWords (password) {
@@ -873,22 +795,22 @@ function showInfoPage () {
 function showQrScanner (ROUTE) {
   return (dispatch) => {
     return WebcamUtils.checkStatus()
-    .then(status => {
-      if (!status.environmentReady) {
-         // We need to switch to fullscreen mode to ask for permission
-         global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
-      } else {
+      .then(status => {
+        if (!status.environmentReady) {
+          // We need to switch to fullscreen mode to ask for permission
+          global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
+        } else {
+          dispatch(actions.showModal({
+            name: 'QR_SCANNER',
+          }))
+        }
+      }).catch(e => {
         dispatch(actions.showModal({
           name: 'QR_SCANNER',
+          error: true,
+          errorType: e.type,
         }))
-      }
-    }).catch(e => {
-      dispatch(actions.showModal({
-        name: 'QR_SCANNER',
-        error: true,
-        errorType: e.type,
-      }))
-    })
+      })
   }
 }
 
@@ -1049,17 +971,17 @@ function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-    .then(gas => {
-      dispatch(actions.setGasLimit(gas))
-      dispatch(gasDuck.setCustomGasLimit(gas))
-      dispatch(updateSendErrors({ gasLoadingError: null }))
-      dispatch(actions.gasLoadingFinished())
-    })
-    .catch(err => {
-      log.error(err)
-      dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
-      dispatch(actions.gasLoadingFinished())
-    })
+      .then(gas => {
+        dispatch(actions.setGasLimit(gas))
+        dispatch(gasDuck.setCustomGasLimit(gas))
+        dispatch(updateSendErrors({ gasLoadingError: null }))
+        dispatch(actions.gasLoadingFinished())
+      })
+      .catch(err => {
+        log.error(err)
+        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+        dispatch(actions.gasLoadingFinished())
+      })
   }
 }
 
@@ -1167,6 +1089,20 @@ function clearSend () {
   }
 }
 
+function updateSendEnsResolution (ensResolution) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION,
+    payload: ensResolution,
+  }
+}
+
+function updateSendEnsResolutionError (errorMessage) {
+  return {
+    type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
+    payload: errorMessage,
+  }
+}
+
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
@@ -1234,9 +1170,9 @@ function updateTransaction (txData) {
         resolve(txData)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => {
+      .then(() => updateMetamaskStateFromBackground())
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => {
         dispatch(actions.showConfTxPage({ id: txData.id }))
         dispatch(actions.hideLoadingIndication())
         return txData
@@ -1259,7 +1195,7 @@ function updateAndApproveTx (txData) {
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
           log.error(err.message)
-          reject(err)
+          return reject(err)
         }
 
         resolve(txData)
@@ -1531,13 +1467,6 @@ function createNewVaultInProgress () {
   }
 }
 
-function showNewVaultSeed (seed) {
-  return {
-    type: actions.SHOW_NEW_VAULT_SEED,
-    value: seed,
-  }
-}
-
 function closeWelcomeScreen () {
   return {
     type: actions.CLOSE_WELCOME_SCREEN,
@@ -1749,7 +1678,7 @@ function addToken (address, symbol, decimals, image) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1766,7 +1695,7 @@ function removeToken (address) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1786,10 +1715,10 @@ function addTokens (tokens) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
-        .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
-        ))
+          .entries(tokens)
+          .map(([_, { address, symbol, decimals }]) => (
+            dispatch(addToken(address, symbol, decimals))
+          ))
       )
     }
   }
@@ -1812,8 +1741,8 @@ function removeSuggestedTokens () {
         resolve(suggestedTokens)
       })
     })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(() => updateMetamaskStateFromBackground())
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
   }
 }
 
@@ -1856,7 +1785,7 @@ function retryTransaction (txId, gasPrice) {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1879,7 +1808,7 @@ function createCancelTransaction (txId, customGasPrice) {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1888,8 +1817,8 @@ function createCancelTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTxId)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 
@@ -1902,7 +1831,7 @@ function createSpeedUpTransaction (txId, customGasPrice) {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1910,8 +1839,8 @@ function createSpeedUpTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTx)
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
   }
 }
 
@@ -2019,17 +1948,35 @@ function delRpcTarget (oldRpc) {
   }
 }
 
-
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname = '') {
+function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
-  return (dispatch) => {
-    background.setAddressBook(recipient, nickname, (err) => {
+
+  return (dispatch, getState) => {
+    const chainId = getState().metamask.network
+    background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo, (err, set) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Address book failed to update'))
+        dispatch(displayWarning('Address book failed to update'))
+        throw err
+      }
+      if (!set) {
+        return dispatch(displayWarning('Address book failed to update'))
       }
     })
+
+  }
+}
+
+/**
+ * @description Calls the addressBookController to remove an existing address.
+ * @param {String} addressToRemove - Address of the entry to remove from the address book
+ */
+function removeFromAddressBook (addressToRemove) {
+  log.debug(`background.removeFromAddressBook`)
+
+  return () => {
+    background.removeFromAddressBook(checksumAddress(addressToRemove))
   }
 }
 
@@ -2135,10 +2082,10 @@ function showLoadingIndication (message) {
 }
 
 function setHardwareWalletDefaultHdPath ({ device, path }) {
-    return {
-      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-      value: {device, path},
-    }
+  return {
+    type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+    value: {device, path},
+  }
 }
 
 function hideLoadingIndication () {
@@ -2237,7 +2184,7 @@ function setAccountLabel (account, label) {
 
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         dispatch({
@@ -2649,29 +2596,26 @@ function updateCurrentLocale (key) {
     return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
-        background.setCurrentLocale(key, (err) => {
-          dispatch(actions.hideLoadingIndication())
+        background.setCurrentLocale(key, (err, textDirection) => {
           if (err) {
+            dispatch(actions.hideLoadingIndication())
             return dispatch(actions.displayWarning(err.message))
           }
-          dispatch(actions.setCurrentLocale(key))
-          dispatch(actions.setLocaleMessages(localeMessages))
+          switchDirection(textDirection)
+          dispatch(actions.setCurrentLocale(key, localeMessages))
+          dispatch(actions.hideLoadingIndication())
         })
       })
   }
 }
 
-function setCurrentLocale (key) {
+function setCurrentLocale (locale, messages) {
   return {
     type: actions.SET_CURRENT_LOCALE,
-    value: key,
-  }
-}
-
-function setLocaleMessages (localeMessages) {
-  return {
-    type: actions.SET_LOCALE_MESSAGES,
-    value: localeMessages,
+    value: {
+      locale,
+      messages,
+    },
   }
 }
 
@@ -2820,5 +2764,28 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
+  }
+}
+
+function unsetMigratedPrivacyMode () {
+  return () => {
+    background.unsetMigratedPrivacyMode()
+  }
+}
+
+function setSeedPhraseBackedUp (seedPhraseBackupState) {
+  return (dispatch) => {
+    log.debug(`background.setSeedPhraseBackedUp`)
+    return new Promise((resolve, reject) => {
+      background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
+      })
+    })
   }
 }

@@ -12,7 +12,7 @@ const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
 const { ObjectInspector } = require('react-inspector')
 
-import AccountDropdownMini from '../ui/account-dropdown-mini'
+import AccountListItem from '../../pages/send/account-list-item/account-list-item.component'
 
 const actions = require('../../store/actions')
 const { conversionUtil } = require('../../helpers/utils/conversion-util')
@@ -21,7 +21,6 @@ const {
   getSelectedAccount,
   getCurrentAccountWithSendEtherInfo,
   getSelectedAddress,
-  accountsWithSendEtherInfoSelector,
   conversionRateSelector,
 } = require('../../selectors/selectors.js')
 
@@ -37,7 +36,6 @@ function mapStateToProps (state) {
     selectedAddress: getSelectedAddress(state),
     requester: null,
     requesterAddress: null,
-    accounts: accountsWithSendEtherInfoSelector(state),
     conversionRate: conversionRateSelector(state),
   }
 }
@@ -76,9 +74,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    ...ownProps,
     txData,
     cancel,
     sign,
@@ -137,23 +135,19 @@ SignatureRequest.prototype.renderHeader = function () {
   ])
 }
 
-SignatureRequest.prototype.renderAccountDropdown = function () {
+SignatureRequest.prototype.renderAccount = function () {
   const { selectedAccount } = this.state
-
-  const {
-    accounts,
-  } = this.props
 
   return h('div.request-signature__account', [
 
     h('div.request-signature__account-text', [this.context.t('account') + ':']),
 
-    h(AccountDropdownMini, {
-      selectedAccount,
-      accounts,
-      disabled: true,
-    }),
-
+    h('div.request-signature__account-item', [
+      h(AccountListItem, {
+        account: selectedAccount,
+        displayBalance: false,
+      }),
+    ]),
   ])
 }
 
@@ -180,7 +174,7 @@ SignatureRequest.prototype.renderBalance = function () {
 SignatureRequest.prototype.renderAccountInfo = function () {
   return h('div.request-signature__account-info', [
 
-    this.renderAccountDropdown(),
+    this.renderAccount(),
 
     this.renderRequestIcon(),
 
@@ -221,7 +215,7 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 }
 
 // eslint-disable-next-line react/display-name
-SignatureRequest.prototype.renderTypedDataV3 = function (data) {
+SignatureRequest.prototype.renderTypedData = function (data) {
   const { domain, message } = JSON.parse(data)
   return [
     h('div.request-signature__typed-container', [
@@ -257,7 +251,7 @@ SignatureRequest.prototype.renderBody = function () {
             url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
           })
         },
-    }, this.context.t('learnMore'))]
+      }, this.context.t('learnMore'))]
   }
 
   return h('div.request-signature__body', {}, [
@@ -273,17 +267,18 @@ SignatureRequest.prototype.renderBody = function () {
       }),
     }, [notice]),
 
-    h('div.request-signature__rows', type === 'eth_signTypedData' && version === 'V3' ?
-      this.renderTypedDataV3(data) :
-      rows.map(({ name, value }) => {
-        if (typeof value === 'boolean') {
-          value = value.toString()
-        }
-        return h('div.request-signature__row', [
-          h('div.request-signature__row-title', [`${name}:`]),
-          h('div.request-signature__row-value', value),
-        ])
-      }),
+    h('div.request-signature__rows',
+      type === 'eth_signTypedData' && (version === 'V3' || version === 'V4') ?
+        this.renderTypedData(data) :
+        rows.map(({ name, value }) => {
+          if (typeof value === 'boolean') {
+            value = value.toString()
+          }
+          return h('div.request-signature__row', [
+            h('div.request-signature__row-title', [`${name}:`]),
+            h('div.request-signature__row-value', value),
+          ])
+        }),
     ),
   ])
 }

@@ -10,11 +10,13 @@ export default class TransactionList extends PureComponent {
   }
 
   static defaultProps = {
+    children: null,
     pendingTransactions: [],
     completedTransactions: [],
   }
 
   static propTypes = {
+    children: PropTypes.node,
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
     selectedToken: PropTypes.object,
@@ -75,8 +77,8 @@ export default class TransactionList extends PureComponent {
           {
             completedTransactions.length > 0
               ? completedTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index)
-                ))
+                this.renderTransaction(transactionGroup, index)
+              ))
               : this.renderEmpty()
           }
         </div>
@@ -100,6 +102,7 @@ export default class TransactionList extends PureComponent {
           key={`${transactionGroup.nonce}:${index}`}
           showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
           showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
+          isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}
           assetImages={assetImages}
         />
@@ -120,6 +123,7 @@ export default class TransactionList extends PureComponent {
     return (
       <div className="transaction-list">
         { this.renderTransactions() }
+        { this.props.children }
       </div>
     )
   }

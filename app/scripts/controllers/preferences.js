@@ -39,7 +39,7 @@ class PreferencesController {
       // for convenient testing of pre-release features, and should never
       // perform sensitive operations.
       featureFlags: {
-        privacyMode: true,
+        showIncomingTransactions: true,
       },
       knownMethodData: {},
       participateInMetaMetrics: null,
@@ -47,12 +47,12 @@ class PreferencesController {
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
-      seedWords: null,
       forgottenPassword: false,
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
+      migratedPrivacyMode: false,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
@@ -67,7 +67,7 @@ class PreferencesController {
       return this.setFeatureFlag(key, value)
     }
   }
-// PUBLIC METHODS
+  // PUBLIC METHODS
 
   /**
    * Sets the {@code forgottenPassword} state property
@@ -75,14 +75,6 @@ class PreferencesController {
    */
   setPasswordForgotten (forgottenPassword) {
     this.store.updateState({ forgottenPassword })
-  }
-
-  /**
-   * Sets the {@code seedWords} seed words
-   * @param {string|null} seedWords the seed words
-   */
-  setSeedWords (seedWords) {
-    this.store.updateState({ seedWords })
   }
 
   /**
@@ -136,9 +128,9 @@ class PreferencesController {
    * @param {String} type Indicates the type of first time flow - create or import - the user wishes to follow
    *
    */
-   setFirstTimeFlowType (type) {
-     this.store.updateState({ firstTimeFlowType: type })
-   }
+  setFirstTimeFlowType (type) {
+    this.store.updateState({ firstTimeFlowType: type })
+  }
 
 
   getSuggestedTokens () {
@@ -217,7 +209,12 @@ class PreferencesController {
    *
    */
   setCurrentLocale (key) {
-    this.store.updateState({ currentLocale: key })
+    const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
+    this.store.updateState({
+      currentLocale: key,
+      textDirection: textDirection,
+    })
+    return textDirection
   }
 
   /**
@@ -528,6 +525,13 @@ class PreferencesController {
   completeOnboarding () {
     this.store.updateState({ completedOnboarding: true })
     return Promise.resolve(true)
+  }
+
+  unsetMigratedPrivacyMode () {
+    this.store.updateState({
+      migratedPrivacyMode: false,
+    })
+    return Promise.resolve()
   }
 
   //

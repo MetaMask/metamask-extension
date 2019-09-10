@@ -21,6 +21,7 @@ import {
   SIGNATURE_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
+  DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
 
 import log from 'loglevel'
@@ -40,10 +41,8 @@ async function getMethodFrom4Byte (fourBytePrefix) {
     mode: 'cors',
   }))
 
-  const fourByteJSON = await fourByteResponse.json()
-
-  if (fourByteJSON.count === 1) {
-    return fourByteJSON.results[0].text_signature
+  if (fourByteResponse.count === 1) {
+    return fourByteResponse.results[0].text_signature
   } else {
     return null
   }
@@ -123,6 +122,10 @@ export function isTokenMethodAction (transactionCategory) {
  */
 export function getTransactionActionKey (transaction) {
   const { msgParams, type, transactionCategory } = transaction
+
+  if (transactionCategory === 'incoming') {
+    return DEPOSIT_TRANSACTION_KEY
+  }
 
   if (type === 'cancel') {
     return CANCEL_ATTEMPT_ACTION_KEY

@@ -19,6 +19,7 @@ export default class SenderToRecipient extends PureComponent {
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
+    recipientNickname: PropTypes.string,
     t: PropTypes.func,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
@@ -64,10 +65,11 @@ export default class SenderToRecipient extends PureComponent {
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => this.setState({ senderAddressCopied: false })}
       >
-      <div className="sender-to-recipient__name">
-        { addressOnly ? `${t('from')}: ${checksummedSenderAddress}` : senderName }
-      </div>
-    </Tooltip>
+        <div className="sender-to-recipient__name">
+          <span>{ addressOnly ? `${t('from')}: ` : '' }</span>
+          { addressOnly ? checksummedSenderAddress : senderName }
+        </div>
+      </Tooltip>
     )
   }
 
@@ -88,7 +90,7 @@ export default class SenderToRecipient extends PureComponent {
 
   renderRecipientWithAddress () {
     const { t } = this.context
-    const { recipientName, recipientAddress, addressOnly, onRecipientClick } = this.props
+    const { recipientName, recipientAddress, recipientNickname, addressOnly, onRecipientClick } = this.props
     const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
@@ -111,10 +113,11 @@ export default class SenderToRecipient extends PureComponent {
           onHidden={() => this.setState({ recipientAddressCopied: false })}
         >
           <div className="sender-to-recipient__name">
+            <span>{ addressOnly ? `${t('to')}: ` : '' }</span>
             {
               addressOnly
-                ? `${t('to')}: ${checksummedRecipientAddress}`
-                : (recipientName || this.context.t('newContract'))
+                ? checksummedRecipientAddress
+                : (recipientNickname || recipientName || this.context.t('newContract'))
             }
           </div>
         </Tooltip>

@@ -74,6 +74,36 @@ $send-card-z-index: 20;
 $sidebar-z-index: 26;
 $sidebar-overlay-z-index: 25;
 
+// Flex
+%row-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+%col-nowrap {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+// Background Image Sizing
+%bg-contain {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+%ellipsify {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+%modal {
+  background-color: $white;
+  border-radius: 10px;
+  box-shadow: 0px 5px 16px rgba($black, 0.25);;
+}
+
 /*
   Z Indicies - Current
   app - 11
@@ -94,23 +124,72 @@ $break-large: 576px;
 $primary-font-type: Roboto;
 
 $Blue-000: #eaf6ff;
+$Blue-100: #a7d9fe;
+$Blue-200: #75c4fd;
+$Blue-300: #43aefc;
 $Blue-400: #1098fc;
 $Blue-500: #037DD6;
 $Blue-600: #0260a4;
+$Blue-700: #024272;
+$Blue-800: #01253f;
+$Blue-900: #00080d;
 
 $Grey-000: #f2f3f4;
 $Grey-100: #D6D9DC;
 $Grey-200: #bbc0c5;
+$Grey-300: #9fa6ae;
 $Grey-400: #848c96;
+$Grey-200: #bbc0c5;
 $Grey-500: #6A737D;
+$Grey-600: #535a61;
 $Grey-800: #24272a;
 
 $Red-000: #fcf2f3;
+$Red-100: #f7d5d8;
+$Red-200: #f1b9be;
+$Red-300: #e88f97;
+$Red-400: #e06470;
 $Red-500: #D73A49;
 $Red-600: #b92534;
+$Red-700: #8e1d28;
+$Red-800: #64141c;
+$Red-900: #3a0c10;
 
 $Orange-000: #fef5ef;
+$Orange-300: #faa66c;
+$Orange-600: #c65507;
 $Orange-500: #F66A0A;
+
+// Font Sizes
+%h3 {
+  font-size: 1.5rem;
+  line-height: 2.125rem;
+  font-weight: 400;
+}
+
+%h4 {
+  font-size: 1.125rem;
+  line-height: 1.3125rem;
+  font-weight: 400;
+}
+
+%h5 {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+}
+
+%h6 {
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+}
+
+%h8 {
+  font-size: .75rem;
+  line-height: 1.0625rem;
+  font-weight: 400;
+}
 
 
 /*
@@ -127,3 +206,24 @@ $xlarge-spacing: 48px;
 $xxlarge-spacing: 64px;
 
 
+%input {
+  background: $white;
+  border: 1px solid $Grey-100;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: .625rem .75rem;
+  font-size: 1.25rem;
+}
+// Input mixin
+
+%input-2 {
+  border: 2px solid $Grey-200;
+  border-radius: 6px;
+  color: $Grey-800;
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+
+  &:focus-within {
+    border-color: $Blue-500;
+  }
+}

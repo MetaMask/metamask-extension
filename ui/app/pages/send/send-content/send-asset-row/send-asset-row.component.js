@@ -59,7 +59,7 @@ export default class SendAssetRow extends Component {
       <SendRowWrapper label={`${t('asset')}:`}>
         <div className="send-v2__asset-dropdown">
           { this.renderSelectedToken() }
-          { this.renderAssetDropdown() }
+          { this.props.tokens.length > 0 ? this.renderAssetDropdown() : null }
         </div>
       </SendRowWrapper>
     )
@@ -101,7 +101,7 @@ export default class SendAssetRow extends Component {
 
     return (
       <div
-        className="send-v2__asset-dropdown__asset"
+        className={ this.props.tokens.length > 0 ? 'send-v2__asset-dropdown__asset' : 'send-v2__asset-dropdown__single-asset' }
         onClick={() => this.selectToken()}
       >
         <div className="send-v2__asset-dropdown__asset-icon">

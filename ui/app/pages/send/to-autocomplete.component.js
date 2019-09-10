@@ -27,10 +27,10 @@ export default class ToAutoComplete extends Component {
   getListItemIcon (listItemAddress, toAddress) {
     return toAddress && listItemAddress === toAddress
       ? <i className={'fa fa-check fa-lg'}
-          style={{
-            color: '#02c9b1',
-          }}
-        />
+        style={{
+          color: '#02c9b1',
+        }}
+      />
       : null
   }
 
@@ -121,8 +121,8 @@ export default class ToAutoComplete extends Component {
         />
         {
           to
-          ? null
-          : <i className={'fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret'}
+            ? null
+            : <i className={'fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret'}
               onClick={() => this.handleInputEvent()}
               style={{
                 style: {color: '#dedede'},
@@ -131,8 +131,8 @@ export default class ToAutoComplete extends Component {
         }
         {
           dropdownOpen
-          ? this.renderDropdown()
-          : null
+            ? this.renderDropdown()
+            : null
         }
       </div>
     )

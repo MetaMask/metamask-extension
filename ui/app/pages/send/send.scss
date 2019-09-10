@@ -1,0 +1,237 @@
+.send {
+  &__header {
+    position: relative;
+    background-color: $Grey-000;
+    border-bottom: none;
+    padding: 14px 0 3px 0;
+
+    .page-container__title {
+      @extend %h4;
+      text-align: center;
+    }
+
+    .page-container__header-close-text {
+      @extend %link;
+      font-size: 1rem;
+      line-height: 1.1875rem;
+      position: absolute;
+      right: 1rem;
+    }
+  }
+
+  &__dialog {
+    margin: 1rem;
+    cursor: pointer;
+  }
+
+  &__error-dialog {
+    margin: 1rem;
+  }
+
+  &__to-row {
+    margin: 0;
+    padding: .5rem;
+    flex: 0 0 auto;
+    background-color: $Grey-000;
+    border-bottom: 1px solid $alto;
+  }
+
+  &__select-recipient-wrapper {
+    @extend %col-nowrap;
+    flex: 1 1 auto;
+    height: 0;
+
+    &__list {
+      overflow-y: auto;
+
+      &__link {
+        @extend %link;
+        @extend %row-nowrap;
+        padding: 1rem;
+        font-size: 1rem;
+        border-bottom: 1px solid $alto;
+        align-items: center;
+      }
+
+      &__back-caret {
+        @extend %bg-contain;
+        display: block;
+        background-image: url('/images/caret-left.svg');
+        width: 18px;
+        height: 18px;
+        margin-right: .5rem;
+
+        [dir='rtl'] & {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    &__recent-group-wrapper {
+      @extend %col-nowrap;
+
+      &__load-more {
+        @extend %link;
+        font-size: .75rem;
+        line-height: 1.0625rem;
+        padding: .5rem;
+        text-align: center;
+        border-bottom: 1px solid $alto;
+      }
+    }
+
+    &__group {
+      @extend %col-nowrap;
+    }
+
+    &__group-label {
+      @extend %h8;
+      background-color: $Grey-000;
+      color: $Grey-600;
+      line-height: .875rem;
+      padding: .5rem 1rem;
+      border-bottom: 1px solid $alto;
+
+      &:first-of-type {
+        border-top: 1px solid $alto;
+      }
+    }
+
+    &__group-item, &__group-item--selected {
+      @extend %row-nowrap;
+      padding: .75rem 1rem;
+      align-items: center;
+      border-bottom: 1px solid $alto;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
+
+      .identicon {
+        margin-right: 1rem;
+        flex: 0 0 auto;
+      }
+
+      &__content {
+        @extend %col-nowrap;
+        flex: 1 1 auto;
+        width: 0;
+      }
+
+      &__title {
+        font-size: .875rem;
+        line-height: 1.25rem;
+        color: $black;
+      }
+
+      &__subtitle {
+        @extend %h8;
+        color: $Grey-500;
+      }
+    }
+
+    &__group-item--selected {
+      border: 2px solid #2b7cd6;
+      border-radius: 8px;
+    }
+  }
+}
+
+.ens-input {
+  @extend %row-nowrap;
+
+  &__wrapper {
+    @extend %row-nowrap;
+    flex: 1 1 auto;
+    width: 0;
+    align-items: center;
+    background: $white;
+    border-radius: .5rem;
+    padding: .75rem .5rem;
+    border: 1px solid $Grey-100;
+    transition: border-color 150ms ease-in-out;
+
+    &:focus-within {
+      border-color: $Grey-500;
+    }
+
+    &__status-icon {
+      @extend %bg-contain;
+      background-image: url("/images/search-black.svg");
+      width: 1.125rem;
+      height: 1.125rem;
+      margin: .25rem .5rem .25rem .25rem;
+
+      &--error {
+
+      }
+
+      &--valid {
+        background-image: url("/images/check-green-solid.svg");
+      }
+    }
+
+    &__input {
+      @extend %h6;
+      flex: 1 1 auto;
+      width: 0;
+      border: 0;
+      outline: none;
+
+      &::placeholder {
+        color: $Grey-200;
+      }
+    }
+
+    &__action-icon {
+      @extend %bg-contain;
+      cursor: pointer;
+
+      &--erase {
+        background-image: url("/images/close-gray.svg");
+        width: .75rem;
+        height: .75rem;
+        margin: 0 .25rem;
+      }
+
+      &--qrcode {
+        background-image: url("/images/qr-blue.svg");
+        width: 1.5rem;
+        height: 1.5rem;
+        margin: 0 .25rem;
+      }
+    }
+
+    &--valid {
+      border-color: $Blue-500;
+
+      .ens-input__wrapper {
+        &__status-icon {
+          background-image: url("/images/check-green-solid.svg");
+        }
+
+        &__input {
+          @extend %col-nowrap;
+          font-size: .75rem;
+          line-height: .75rem;
+          font-weight: 400;
+          color: $Blue-500;
+        }
+      }
+    }
+  }
+
+  &__selected-input {
+    &__title {
+      @extend %ellipsify;
+      font-size: .875rem;
+    }
+
+    &__subtitle {
+      font-size: 0.75rem;
+      color: $Grey-500;
+      margin-top: .25rem;
+    }
+  }
+}

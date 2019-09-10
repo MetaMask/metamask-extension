@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Chế độ riêng tư"
-  },
-  "privacyModeDescription": {
-    "message": "Trang web phải yêu cầu quyền truy cập để xem thông tin tài khoản của bạn."
-  },
   "exposeAccounts": {
     "message": "Hiển thị tài khoản"
   },
@@ -20,26 +14,11 @@
   "clearApprovalDataSuccess": {
     "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
   },
-  "approvalData": {
-    "message": "Dữ liệu phê duyệt"
-  },
-  "approvalDataDescription": {
-    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
-  },
   "clearApprovalData": {
     "message": "Xóa dữ liệu phê duyệt"
   },
-  "approve": {
-    "message": "Phê duyệt"
-  },
   "reject": {
     "message": "Từ chối"
-  },
-  "providerAPIRequest": {
-    "message": "Yêu cầu API Web3"
-  },
-  "reviewProviderRequest": {
-    "message": "Vui lòng xem lại yêu cầu API Ethereum này."
   },
   "providerRequestInfo": {
     "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
@@ -56,11 +35,11 @@
   "accountName": {
     "message": "Tên tài khoản"
   },
-  "addToken": {
-    "message": "Thêm mã Token"
-  },
   "address": {
     "message": "Địa chỉ"
+  },
+  "addToken": {
+    "message": "Thêm mã Token"
   },
   "amount": {
     "message": "Số lượng"
@@ -69,12 +48,11 @@
     "message": "Số lượng + Gas"
   },
   "appDescription": {
-    "description": "Mô tả phần mềm",
-    "message": "Tính năng Ethereum cho trình duyệt"
+    "message": "Tính năng Ethereum cho trình duyệt",
+    "description": "The description of the application"
   },
-  "appName": {
-    "description": "Tên phần mềm",
-    "message": "MetaMask"
+  "approve": {
+    "message": "Phê duyệt"
   },
   "attemptingConnect": {
     "message": "Đang kết nối đến blockchain."
@@ -95,8 +73,8 @@
     "message": "Bản thử nghiệm Beta"
   },
   "betweenMinAndMax": {
-    "description": "trợ giúp để nhập hex dưới dạng số thập phân",
-    "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2."
+    "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "borrowDharma": {
     "message": "Vay Dharma (thử nghiệm)"
@@ -158,14 +136,14 @@
   "copy": {
     "message": "Sao chép"
   },
+  "copyToClipboard": {
+    "message": "Đã sao chép vào clipboard"
+  },
   "copyButton": {
     "message": "Sao chép"
   },
   "copyPrivateKey": {
     "message": "Đây là Khoá Bí Mật của bạn (nhấp vào để sao chép)"
-  },
-  "copyToClipboard": {
-    "message": "Đã sao chép vào clipboard"
   },
   "create": {
     "message": "Tạo"
@@ -177,17 +155,17 @@
     "message": "Tạo"
   },
   "crypto": {
-    "description": "Hình thức giao dịch (tiền điện tử)",
-    "message": "Tiền điện tử"
+    "message": "Tiền điện tử",
+    "description": "Exchange type (cryptocurrencies)"
   },
   "customGas": {
     "message": "Tùy chỉnh gas"
   },
-  "customRPC": {
-    "message": "Tùy chỉnh RPC"
-  },
   "customize": {
     "message": "Tùy chỉnh"
+  },
+  "customRPC": {
+    "message": "Tùy chỉnh RPC"
   },
   "defaultNetwork": {
     "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
@@ -262,12 +240,12 @@
     "message": "Không thành công"
   },
   "fiat": {
-    "description": "Hình thức giao dịch",
-    "message": "FIAT"
+    "message": "FIAT",
+    "description": "Exchange type"
   },
   "fileImportFail": {
-    "description": "Giúp người dùng nhập tài khoản từ tập tin JSON",
-    "message": "Tập tin đã nhập không hoạt động? Nhấp vào đây!"
+    "message": "Tập tin đã nhập không hoạt động? Nhấp vào đây!",
+    "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "Từ"
@@ -276,8 +254,8 @@
     "message": "Từ ShapeShift"
   },
   "gas": {
-    "description": "Viết tắt của giá ga",
-    "message": "Ga"
+    "message": "Ga",
+    "description": "Short indication of gas cost"
   },
   "gasFee": {
     "message": "Tiền ga"
@@ -307,16 +285,16 @@
     "message": "Lấy Ether"
   },
   "getEtherFromFaucet": {
-    "description": "Hiển thị tên mạng cho vòi Ether",
-    "message": "Lấy Ether từ vòi với giá $1"
+    "message": "Lấy Ether từ vòi với giá $1",
+    "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
-    "description": "trợ giúp để nhập hex dưới dạng số thập phân",
-    "message": "phải nhiều hơn hoặc bằng $1"
+    "message": "phải nhiều hơn hoặc bằng $1",
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
-    "description": "như trong -Nhấp vào đây để xem thêm thông tin- (dùng với các số dư token có vấn đề)",
-    "message": "tại đây"
+    "message": "tại đây",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "Ẩn"
@@ -331,8 +309,8 @@
     "message": "Bạn muốn ký gửi Ether bằng cách nào?"
   },
   "import": {
-    "description": "Nút để nhập tài khoản từ một tập tin đã chọn",
-    "message": "Nhập"
+    "message": "Nhập",
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Nhập tài khoản"
@@ -344,8 +322,8 @@
     "message": "Nhập mã DEN hiện hành"
   },
   "imported": {
-    "description": "Trạng thái hiển thị cho một tài khoản đã được tải toàn bộ vào chùm chìa khóa",
-    "message": "Đã nhập"
+    "message": "Đã nhập",
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Thông tin & Trợ giúp"
@@ -363,15 +341,15 @@
     "message": "Yêu cầu không hợp lệ"
   },
   "jsonFile": {
-    "description": "định dạng để nhập tài khoản",
-    "message": "Tập tin JSON"
+    "message": "Tập tin JSON",
+    "description": "format for importing an account"
   },
   "kovan": {
     "message": "Mạng thử nghiệm Kovan"
   },
   "lessThanMax": {
-    "description": "trợ giúp để nhập hex dưới dạng số thập phân",
-    "message": "phải ít hơn hoặc bằng $1."
+    "message": "phải ít hơn hoặc bằng $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "limit": {
     "message": "Giới hạn"
@@ -381,9 +359,6 @@
   },
   "loadingTokens": {
     "message": "Đang tải mã token..."
-  },
-  "localhost": {
-    "message": "Localhost 8545"
   },
   "logout": {
     "message": "Thoát"
@@ -407,12 +382,12 @@
     "message": "Để tương tác với các ứng dụng phân tán bằng MetaMask, bạn sẽ phải cần có Ether trong ví của bạn."
   },
   "needImportFile": {
-    "description": "Người dùng đang nhập một tài khoản và cần thêm tập tin để tiếp tục",
-    "message": "Bạn phải chọn một tập tin để nhập."
+    "message": "Bạn phải chọn một tập tin để nhập.",
+    "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
-    "description": "Mật khẩu và tập tin cần thiết để nhập một tài khoản",
-    "message": "Bạn phải điền mật khẩu cho tập tin đã chọn."
+    "message": "Bạn phải điền mật khẩu cho tập tin đã chọn.",
+    "description": "Password and file needed to import an account"
   },
   "networks": {
     "message": "Các mạng lưới"
@@ -421,13 +396,16 @@
     "message": "Tài khoản mới"
   },
   "newAccountNumberName": {
-    "description": "Tên mặc định của tài khoản tiếp theo để tạo trên màn hình tài khoản",
-    "message": "Tài khoản $1"
+    "message": "Tài khoản $1",
+    "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
     "message": "Hợp đồng mới"
   },
   "newPassword": {
+    "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
+  },
+  "newPassword8Chars": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
   },
   "newRecipient": {
@@ -458,20 +436,20 @@
     "message": "Bạn vừa quay về giao diện cũ. Bạn có thể chuyển đổi sang giao diện mới bằng tùy chọn trong menu ở góc phải trên cùng."
   },
   "or": {
-    "description": "lựa chọn giữa tạo hay nhập một tài khoản mới",
-    "message": "hoặc"
+    "message": "hoặc",
+    "description": "choice between creating or importing a new account"
   },
   "passwordMismatch": {
-    "description": "trong quá trình tạo mật khẩu, hai trường mật khẩu mới không khớp",
-    "message": "mật khẩu không khớp"
+    "message": "mật khẩu không khớp",
+    "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
-    "description": "trong quá trình tạo mật khẩu, mật khẩu không đủ dài để đảm bảo an toàn",
-    "message": "mật khẩu không đủ dài"
+    "message": "mật khẩu không đủ dài",
+    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
-    "description": "Dùng cho việc nhập tài khoản từ một khóa cá nhân",
-    "message": "Dán dãy khóa cá nhân của bạn tại đây:"
+    "message": "Dán dãy khóa cá nhân của bạn tại đây:",
+    "description": "For importing an account from a private key"
   },
   "pasteSeed": {
     "message": "Dán Mật Khẩu Sinh Khoá (seed phrase) của bạn tại đây!"
@@ -480,8 +458,8 @@
     "message": "Vui lòng xem lại giao dịch của bạn."
   },
   "privateKey": {
-    "description": "chọn định dạng tập tin này để nhập một tài khoản",
-    "message": "Khóa Bí Mật"
+    "message": "Khóa Bí Mật",
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Cảnh báo: Không bao giờ được tiết lộ khóa này. Bất kỳ ai có Khóa Bí Mật của bạn đều có thể đánh cắp tài sản được giữ trong tài khoản của bạn."
@@ -492,11 +470,11 @@
   "qrCode": {
     "message": "Hiển thị mã QR"
   },
-  "readMore": {
-    "message": "Đọc thêm tại đây."
-  },
   "readdToken": {
     "message": "Bạn có thể thêm trở lại mã token này bằng cách nhấn \"Thêm mã token\" trong menu tùy chọn trong tài khoản của bạn."
+  },
+  "readMore": {
+    "message": "Đọc thêm tại đây."
   },
   "receive": {
     "message": "Nhận"
@@ -525,16 +503,19 @@
   "ropsten": {
     "message": "Mạng thử nghiệm Ropsten"
   },
+  "rpc": {
+    "message": "Tùy chỉnh RPC"
+  },
   "sampleAccountName": {
-    "description": "Giúp người dùng hiểu khái niệm thêm một cái tên có thể đọc được vào tài khoản của họ",
-    "message": "Ví dụ, Tài khoản mới của tôi"
+    "message": "Ví dụ, Tài khoản mới của tôi",
+    "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
     "message": "Lưu"
   },
   "saveAsFile": {
-    "description": "Quá trình xuất tài khoản",
-    "message": "Lưu lại dưới dạng tập tin"
+    "message": "Lưu lại dưới dạng tập tin",
+    "description": "Account export process"
   },
   "selectService": {
     "message": "Chọn dịch vụ"
@@ -560,20 +541,23 @@
   "showQRCode": {
     "message": "Hiển thị mã QR"
   },
-  "sigRequest": {
-    "message": "Yêu cầu chữ ký"
-  },
-  "sigRequested": {
-    "message": "Đã yêu cầu chữ ký"
-  },
   "sign": {
     "message": "Ký nhận"
+  },
+  "signatureRequest": {
+    "message": "Yêu cầu chữ ký"
   },
   "signMessage": {
     "message": "Ký nhận tin nhắn"
   },
   "signNotice": {
     "message": "Ký nhận vào tin nhắn này có thể gây nguy hiểm. Chỉ nên ký nhận tin nhắn từ những nguồn bạn hoàn toàn tin tưởng có thể dùng với tài khoản của bạn. Cách thức nguy hiểm này sẽ bị xóa trong phiên bản sắp tới."
+  },
+  "sigRequest": {
+    "message": "Yêu cầu chữ ký"
+  },
+  "sigRequested": {
+    "message": "Đã yêu cầu chữ ký"
   },
   "status": {
     "message": "Trạng thái"
@@ -591,8 +575,8 @@
     "message": "Đến"
   },
   "toETHviaShapeShift": {
-    "description": "hệ thống sẽ điền vào loại tiền gửi khi bắt đầu tin nhắn",
-    "message": "$1 thành ETH qua ShapeShift"
+    "message": "$1 thành ETH qua ShapeShift",
+    "description": "system will fill in deposit type in start of message"
   },
   "tokenBalance": {
     "message": "Số dư token của bạn là:"
@@ -610,8 +594,11 @@
     "message": "Các giao dịch"
   },
   "troubleTokenBalances": {
-    "description": "Kèm theo một đường link (tại đây) để xem số dư token.",
-    "message": "Chúng tôi gặp sự cố khi tải số dư token của bạn. Xin vui lòng xem lại"
+    "message": "Chúng tôi gặp sự cố khi tải số dư token của bạn. Xin vui lòng xem lại",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "twelveWords": {
+    "message": "These 12 words are the only way to restore your MetaMask accounts. Save them somewhere safe and secret."
   },
   "typePassword": {
     "message": "Điền mật khẩu của bạn"
@@ -635,8 +622,8 @@
     "message": "ID không xác định"
   },
   "usaOnly": {
-    "description": "Việc sử dụng hệ thống giao dịch này chỉ giới hạn cho người dùng ở Mỹ",
-    "message": "Chỉ áp dụng cho người dùng ở Mỹ"
+    "message": "Chỉ áp dụng cho người dùng ở Mỹ",
+    "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
     "message": "Được sử dụng bởi nhiều khách hàng khác nhau"
@@ -650,10 +637,10 @@
   "whatsThis": {
     "message": "Đây là gì?"
   },
-  "youSign": {
-    "message": "Bạn đang ký nhận"
-  },
   "yourSigRequested": {
     "message": "Chữ ký của bạn đang được yêu cầu"
+  },
+  "youSign": {
+    "message": "Bạn đang ký nhận"
   }
 }

@@ -1,5 +1,3 @@
-@import './time-remaining/index';
-
 .advanced-tab {
   display: flex;
   flex-flow: column;
@@ -35,6 +33,26 @@
     &__fee {
       font-size: 16px;
       color: #313A5E;
+    }
+
+    &__time-remaining {
+      /*rtl:ignore*/
+      direction: ltr;
+      color: #313A5E;
+      font-size: 16px;
+
+      .minutes-num, .seconds-num {
+        font-size: 16px;
+      }
+
+      .seconds-num {
+        margin-left: 7px;
+        font-size: 16px;
+      }
+
+      .minutes-label, .seconds-label {
+        font-size: 16px;
+      }
     }
   }
 
@@ -94,7 +112,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      
+
       .fa-info-circle {
         color: $silver;
         margin-left: 10px;
@@ -121,6 +139,8 @@
     }
 
     &__input {
+      /*rtl:ignore*/
+      direction: ltr;
       border: 1px solid $dusty-gray;
       border-radius: 4px;
       color: $mid-gray;
@@ -143,6 +163,7 @@
     &__input-arrows {
       position: absolute;
       top: 7px;
+      /*rtl:ignore*/
       right: 0px;
       width: 17px;
       height: 24px;

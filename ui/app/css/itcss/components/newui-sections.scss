@@ -57,6 +57,13 @@ $wallet-view-bg: $alabaster;
   z-index: 200;
   position: relative;
 
+  [dir='rtl'] & i.fa.fa-clipboard {
+    /*rtl:ignore*/
+    margin-left: 0 !important;
+    /*rtl:ignore*/
+    margin-right: 8px !important;
+  }
+
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
     overflow-x: hidden;
@@ -64,72 +71,6 @@ $wallet-view-bg: $alabaster;
 
   @media #{$sub-mid-size-breakpoint-range} {
     min-width: 160px;
-  }
-
-  .wallet-view-account-details {
-    flex: 0 0 auto;
-  }
-
-  &__name-container {
-    flex: 0 0 auto;
-    cursor: pointer;
-    width: 100%;
-  }
-
-  &__keyring-label {
-    height: 50px;
-    color: $dusty-gray;
-    font-family: Roboto;
-    font-size: 10px;
-    text-align: right;
-    padding: 17px 20px 0;
-    box-sizing: border-box;
-  }
-
-  &__details-button {
-    font-size: 10px;
-    border-radius: 17px;
-    background-color: transparent;
-    margin: 0 auto;
-    padding: 4px 12px;
-    flex: 0 0 auto;
-  }
-
-  &__tooltip {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 24px;
-  }
-
-  &__address {
-    border-radius: 3px;
-    background-color: $alto;
-    color: $scorpion;
-    font-size: 14px;
-    line-height: 12px;
-    padding: 4px 12px;
-    cursor: pointer;
-    flex: 0 0 auto;
-
-    &__pressed {
-      background-color: $manatee,
-    }
-  }
-
-  &__sidebar-close {
-
-    @media screen and (max-width: 575px) {
-      &::after {
-        content: '\00D7';
-        font-size: 40px;
-        color: $tundora;
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        cursor: pointer;
-      }
-    }
   }
 }
 
@@ -169,6 +110,11 @@ $wallet-view-bg: $alabaster;
   box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
   height: calc(100% - 56px);
+
+  [dir='rtl'] & {
+    /* rtl:ignore */
+    left: 15%;
+  }
 }
 
 // main-container media queries
@@ -226,20 +172,6 @@ $wallet-view-bg: $alabaster;
   .main-container-wrapper {
     flex: 1;
   }
-}
-
-// wallet view
-.account-name {
-  font-size: 24px;
-  color: $black;
-  margin-top: 8px;
-  margin-bottom: .9rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-  padding: 0 8px;
-  text-align: center;
 }
 
 // account options dropdown

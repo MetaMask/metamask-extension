@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Mode ng Privacy"
-  },
-  "privacyModeDescription": {
-    "message": "Dapat humiling ng access ang mga website upang tingnan ang impormasyon ng iyong account."
-  },
   "exposeAccounts": {
     "message": "Ilantad ang Mga Account"
   },
@@ -20,12 +14,6 @@
   "clearApprovalDataSuccess": {
     "message": "Matagumpay na na-clear ang data ng aprubadong website."
   },
-  "approvalData": {
-    "message": "Data ng Pag-apruba"
-  },
-  "approvalDataDescription": {
-    "message": "I-clear ang naaprubahang data ng website upang ang lahat ng site ay dapat humiling muli ng pag-apruba"
-  },
   "clearApprovalData": {
     "message": "Tanggalin ang data ng pag-apruba"
   },
@@ -35,29 +23,17 @@
   "reject": {
     "message": "Tanggihan"
   },
-  "providerAPIRequest": {
-    "message": "Kahilingan sa Web3 API"
-  },
-  "reviewProviderRequest": {
-    "message": "Mangyaring suriin ang kahilingan sa Ethereum API na ito."
-  },
   "providerRequestInfo": {
     "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ethereum API upang maaari itong makipag-ugnayan sa Ethereum blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ethereum access."
   },
   "accept": {
     "message": "Tanggapin"
   },
-  "account": {
-    "message": "Account"
-  },
   "accountDetails": {
     "message": "Detalye ng Account"
   },
   "accountName": {
     "message": "Pangalan ng Account"
-  },
-  "address": {
-    "message": "Address"
   },
   "addToken": {
     "message": "Magdagdag ng Token"
@@ -71,10 +47,6 @@
   "appDescription": {
     "message": "Ethereum Browser Extension",
     "description": "Ang deskripsyon ng application"
-  },
-  "appName": {
-    "message": "MetaMask",
-    "description": "Ang pangalan ng application"
   },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
@@ -90,9 +62,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Kulang ang balanse para sa kasalukuyang gas total"
-  },
-  "beta": {
-    "message": "BETA"
   },
   "betweenMinAndMax": {
     "message": "dapat mas malaki o katumbas ng $1 at mas mababa o katumbas ng $2.",
@@ -176,18 +145,11 @@
   "createDen": {
     "message": "Gumawa"
   },
-  "crypto": {
-    "message": "Crypto",
-    "description": "Type ng exchange (cryptocurrencies)"
-  },
   "customGas": {
     "message": "I-customize ang Gas"
   },
   "customize": {
     "message": "I-customize"
-  },
-  "customRPC": {
-    "message": "Custom RPC"
   },
   "defaultNetwork": {
     "message": "Ang default network para sa Ether transactions ay ang Main Net."
@@ -249,9 +211,6 @@
   "etherscanView": {
     "message": "Tingnan ang account sa Etherscan"
   },
-  "exchangeRate": {
-    "message": "Exchange Rate"
-  },
   "exportPrivateKey": {
     "message": "I-export ang Private Key"
   },
@@ -275,16 +234,6 @@
   "fromShapeShift": {
     "message": "Mula sa ShapeShift"
   },
-  "gas": {
-    "message": "Gas",
-    "description": "Maikling indikasyon ng gas cost"
-  },
-  "gasFee": {
-    "message": "Gas Fee"
-  },
-  "gasLimit": {
-    "message": "Gas Limit"
-  },
   "gasLimitCalculation": {
     "message": "Kinalkula namin ang iminungkahing gas limit base sa network success rates."
   },
@@ -293,9 +242,6 @@
   },
   "gasLimitTooLow": {
     "message": "Ang gas limit ay hindi dabat bababa sa 21000"
-  },
-  "gasPrice": {
-    "message": "Gas Price (GWEI)"
   },
   "gasPriceCalculation": {
     "message": "Kinalkula namin ang iminungkahing gas prices base sa network success rates."
@@ -362,13 +308,6 @@
   "invalidRequest": {
     "message": "Invalid ang Request"
   },
-  "jsonFile": {
-    "message": "JSON File",
-    "description": "format para sa pag-import ng account"
-  },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "lessThanMax": {
     "message": "dapat mas mababa o katumbas ng $1.",
     "description": "helper para sa pag-input ng hex bilang decimal input"
@@ -382,23 +321,8 @@
   "loadingTokens": {
     "message": "Naglo-load ang Tokens..."
   },
-  "localhost": {
-    "message": "Localhost 8545"
-  },
-  "logout": {
-    "message": "Log out"
-  },
-  "loose": {
-    "message": "Loose"
-  },
-  "mainnet": {
-    "message": "Main Ethereum Network"
-  },
   "message": {
     "message": "Mensahe"
-  },
-  "min": {
-    "message": "Minimum"
   },
   "myAccounts": {
     "message": "Aking mga Account"
@@ -414,15 +338,8 @@
     "message": "Dapat mong i-enter ang password para sa napiling file.",
     "description": "Password at file na kailangan upang ma-import ang account"
   },
-  "networks": {
-    "message": "Networks"
-  },
   "newAccount": {
     "message": "Bagong Account"
-  },
-  "newAccountNumberName": {
-    "message": "Account $1",
-    "description": "Ang default na pangalan ng susunod na account na gagawin sa create account screen"
   },
   "newContract": {
     "message": "Bagong Contract"
@@ -479,10 +396,6 @@
   "pleaseReviewTransaction": {
     "message": "Mangyaring suriin ang iyong transaksyon."
   },
-  "privateKey": {
-    "message": "Private Key",
-    "description": "Piliin ang ganitong type ng file upang gamitin sa pag-import ng account"
-  },
   "privateKeyWarning": {
     "message": "Babala: Huwag sabihin sa kahit na sino ang key na ito. Maaring makuha at manakaw ng sinumang nakakaalam ng iyong private key ang mga assets sa iyong account."
   },
@@ -518,12 +431,6 @@
   },
   "revert": {
     "message": "Ibalik"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
   },
   "sampleAccountName": {
     "message": "Halimbawa: Ang aking bagong account",
@@ -583,12 +490,6 @@
   },
   "takesTooLong": {
     "message": "Masyadong matagal?"
-  },
-  "testFaucet": {
-    "message": "Test Faucet"
-  },
-  "to": {
-    "message": "To"
   },
   "toETHviaShapeShift": {
     "message": "$1 sa ETH sa pamamagitan ng ShapeShift",

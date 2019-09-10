@@ -687,7 +687,6 @@
         ]
       }
     ],
-    "computedBalances": {},
     "currentAccountTab": "history",
     "tokens": [
       {
@@ -707,8 +706,7 @@
       "rinkeby": "ok",
       "goerli": "ok"
     },
-    "shapeShiftTxList": [],
-    "lostAccounts": []
+    "shapeShiftTxList": []
   },
   "appState": {
     "shouldClose": true,

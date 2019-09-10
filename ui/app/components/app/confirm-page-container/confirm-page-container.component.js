@@ -24,6 +24,7 @@ export default class ConfirmPageContainer extends Component {
     fromName: PropTypes.string,
     toAddress: PropTypes.string,
     toName: PropTypes.string,
+    toNickname: PropTypes.string,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -68,6 +69,7 @@ export default class ConfirmPageContainer extends Component {
       fromName,
       fromAddress,
       toName,
+      toNickname,
       toAddress,
       disabled,
       errorKey,
@@ -106,16 +108,16 @@ export default class ConfirmPageContainer extends Component {
     return (
       <div className="page-container">
         <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
+          totalTx={totalTx}
+          positionOfCurrentTx={positionOfCurrentTx}
+          nextTxId={nextTxId}
+          prevTxId={prevTxId}
+          showNavigation={showNavigation}
+          onNextTx={(txId) => onNextTx(txId)}
+          firstTx={firstTx}
+          lastTx={lastTx}
+          ofText={ofText}
+          requestsWaitingText={requestsWaitingText}
         />
         <ConfirmPageContainerHeader
           showEdit={showEdit}
@@ -126,6 +128,7 @@ export default class ConfirmPageContainer extends Component {
             senderAddress={fromAddress}
             recipientName={toName}
             recipientAddress={toAddress}
+            recipientNickname={toNickname}
             assetImage={renderAssetImage ? assetImage : undefined}
           />
         </ConfirmPageContainerHeader>

@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Mòd Privacy"
-  },
-  "privacyModeDescription": {
-    "message": "Sou sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ou."
-  },
   "exposeAccounts": {
     "message": "Ekspoze Kont"
   },
@@ -20,20 +14,8 @@
   "clearApprovalDataSuccess": {
     "message": "Done sou sit wèb apwouve yo te klarifye avèk siksè."
   },
-  "approvalData": {
-    "message": "Done sou vi prive"
-  },
-  "approvalDataDescription": {
-    "message": "Done sou vi prive klè pou tout sit entènèt yo dwe mande aksè pou wè enfòmasyon kont ankò."
-  },
   "clearApprovalData": {
     "message": "Klè Done sou vi prive"
-  },
-  "providerAPIRequest": {
-    "message": "Ethereum API Mande"
-  },
-  "reviewProviderRequest": {
-    "message": "Tanpri revize sa API demann Ethereum."
   },
   "providerRequestInfo": {
     "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ethereum ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
@@ -90,10 +72,6 @@
     "message": "Ekstansyon Navigatè Ethereum",
     "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
   "approve": {
     "message": "Apwouve"
   },
@@ -127,9 +105,6 @@
   "balanceIsInsufficientGas": {
     "message": "Ensifizan balans pou total gaz aktyèl la"
   },
-  "beta": {
-    "message": "BETA"
-  },
   "betweenMinAndMax": {
     "message": "dwe plis pase oswa egal a $ 1 mwens ke oswa egal a $ 2.",
     "description": "helper for inputting hex as decimal input"
@@ -160,9 +135,6 @@
   },
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch se destinasyon nan yon sèl-Stop nan echanj plis pase 300 kriptoksèr nan pousantaj la pi byen."
-  },
-  "bytes": {
-    "message": "Bytes"
   },
   "ok": {
     "message": "Oke"
@@ -290,13 +262,6 @@
   "createDen": {
     "message": "Kreye"
   },
-  "crypto": {
-    "message": "Crypto",
-    "description": "Exchange type (cryptocurrencies)"
-  },
-  "currentConversion": {
-    "message": "Konvèsyon aktyèl"
-  },
   "currentLanguage": {
     "message": "Lang Aktyèl"
   },
@@ -407,9 +372,6 @@
   },
   "enterPasswordContinue": {
     "message": "Mete modpas pou kontinye"
-  },
-  "eth": {
-    "message": "ETH"
   },
   "etherscanView": {
     "message": "Gade kont sou Etherscan"
@@ -527,9 +489,6 @@
   },
   "hereList": {
     "message": "Isit la nan yon lis !!!!"
-  },
-  "hexData": {
-    "message": "Hex Data"
   },
   "hide": {
     "message": "Kache"
@@ -652,9 +611,6 @@
   "loadingTokens": {
     "message": "Telechaje Tokens..."
   },
-  "localhost": {
-    "message": "Localhost 8545"
-  },
   "login": {
     "message": "Ouvri"
   },
@@ -735,9 +691,6 @@
   },
   "newRecipient": {
     "message": "Nouvo Benefisyè"
-  },
-  "newRPC": {
-    "message": "Nouvo RPC URL"
   },
   "next": {
     "message": "Aprè sa"
@@ -864,9 +817,6 @@
   },
   "qrCode": {
     "message": "Montre QR Kòd"
-  },
-  "queue": {
-    "message": "Queue"
   },
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
@@ -1110,9 +1060,6 @@
   "status": {
     "message": "Kondisyon"
   },
-  "stateLogs": {
-    "message": "State Logs"
-  },
   "stateLogsDescription": {
     "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
   },
@@ -1165,9 +1112,6 @@
     "message": "$1 pou ETH pa ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
-  "token": {
-    "message": "Token"
-  },
   "tokenAddress": {
     "message": "Adrès Token"
   },
@@ -1185,9 +1129,6 @@
   },
   "tokenWarning1": {
     "message": "Kenbe tras token yo ou te achte ak kont MetaMask ou. Si ou te achte tokens pandan wap itilize yon kont diferan tokens sa yo pa pral parèt la."
-  },
-  "total": {
-    "message": "Total"
   },
   "transaction": {
     "message": "tranzaksyon yo"
@@ -1213,9 +1154,6 @@
   "transactionUpdatedGas": {
     "message": "Tranzaksyon ou te aktyalize avèk on pri gaz de $1 a $2."
   },
-  "transactions": {
-    "message": "transactions"
-  },
   "transactionError": {
     "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
   },
@@ -1227,9 +1165,6 @@
   },
   "transfer": {
     "message": "Transfè"
-  },
-  "transferFrom": {
-    "message": "Transfer From"
   },
   "transfers": {
     "message": "Transfè yo"
@@ -1267,9 +1202,6 @@
   },
   "unknown": {
     "message": "Enkoni"
-  },
-  "unknownFunction": {
-    "message": "Fonksyon enkoni"
   },
   "unknownNetwork": {
     "message": "Rezo Prive Enkoni"

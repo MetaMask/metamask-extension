@@ -1,8 +1,47 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 7.1.1 Tue Aug 27 2019
+- [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
+- [#7037](https://github.com/MetaMask/metamask-extension/pull/7037): Remove Babel 6 from internal dependencies
+- [#7093](https://github.com/MetaMask/metamask-extension/pull/7093): Allow dismissing privacy mode notification from popup
+- [#7087](https://github.com/MetaMask/metamask-extension/pull/7087): Add breadcrumb spacing on Contacts page
+- [#7081](https://github.com/MetaMask/metamask-extension/pull/7081): Fix confirm token transaction amount display
+- [#7088](https://github.com/MetaMask/metamask-extension/pull/7088): Fix BigNumber conversion error
+- [#7072](https://github.com/MetaMask/metamask-extension/pull/7072): Right-to-left CSS (using module for conversion)
+- [#6878](https://github.com/MetaMask/metamask-extension/pull/6878): Persian translation
+- [#7012](https://github.com/MetaMask/metamask-extension/pull/7012): Added missed phrases to RU locale
+- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
+
+## 7.1.0 Fri Aug 16 2019
+- [#7035](https://github.com/MetaMask/metamask-extension/pull/7035): Filter non-ERC-20 assets during mobile sync (#7035)
+- [#7021](https://github.com/MetaMask/metamask-extension/pull/7021): Using translated string for end of flow messaging (#7021)
+- [#7018](https://github.com/MetaMask/metamask-extension/pull/7018): Rename Contacts List settings tab to Contacts (#7018)
+- [#7013](https://github.com/MetaMask/metamask-extension/pull/7013): Connections settings tab (#7013)
+- [#6996](https://github.com/MetaMask/metamask-extension/pull/6996): Fetch & display received transactions (#6996)
+- [#6991](https://github.com/MetaMask/metamask-extension/pull/6991): Remove reload from Share Address button (#6991)
+- [#6978](https://github.com/MetaMask/metamask-extension/pull/6978): Address book fixes (#6978)
+- [#6944](https://github.com/MetaMask/metamask-extension/pull/6944): Show recipient alias in confirm header if exists (#6944)
+- [#6930](https://github.com/MetaMask/metamask-extension/pull/6930): Add support for eth_signTypedData_v4 (#6930)
+- [#7046](https://github.com/MetaMask/metamask-extension/pull/7046): Update Italian translation (#7046)
+- [#7047](https://github.com/MetaMask/metamask-extension/pull/7047): Add warning about reload on network change
+
+## 7.0.1 Thu Aug 08 2019
+- [#6975](https://github.com/MetaMask/metamask-extension/pull/6975): Ensure seed phrase backup notification only shows up for new users
+
+## 7.0.0 Fri Aug 02 2019
 - [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI
-- [#6833](https://github.com/MetaMask/metamask-extension/pull/6833): Fix "npm install" failing due to pinned sub-dependency
+- [#6874](https://github.com/MetaMask/metamask-extension/pull/6928): Allows skipping of seed phrase challenge during onboarding, and completing it at a later time
+- [#6900](https://github.com/MetaMask/metamask-extension/pull/6900): Prevent opening of asset dropdown if no tokens in account
+- [#6904](https://github.com/MetaMask/metamask-extension/pull/6904): Set privacy mode as default
+- [#6914](https://github.com/MetaMask/metamask-extension/pull/6914): Adds Address Book feature
+- [#6928](https://github.com/MetaMask/metamask-extension/pull/6928): Disable Copy Tx ID and block explorer link for transactions without hash
+- [#6967](https://github.com/MetaMask/metamask-extension/pull/6967): Fix mobile sync
+
+## 6.7.3 Thu Jul 18 2019
+
+- [#6888](https://github.com/MetaMask/metamask-extension/pull/6888): Fix bug with resubmitting unsigned transactions.
 
 ## 6.7.2 Mon Jul 01 2019
 

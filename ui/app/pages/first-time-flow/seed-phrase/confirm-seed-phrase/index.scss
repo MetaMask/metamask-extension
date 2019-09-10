@@ -64,6 +64,8 @@
   }
 
   &__selected-seed-words {
+    /*rtl:ignore*/
+    direction: ltr;
     display: flex;
     flex-flow: row wrap;
     min-height: 161px;

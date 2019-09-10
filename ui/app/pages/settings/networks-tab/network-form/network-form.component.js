@@ -222,6 +222,17 @@ export default class NetworkForm extends PureComponent {
     }
   }
 
+  validateBlockExplorerUrl = (url, stateKey) => {
+    if (url === '' || validUrl.isWebUri(url)) {
+      this.setErrorTo(stateKey, '')
+    } else {
+      const appendedRpc = `http://${url}`
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
+    }
+  }
+
   render () {
     const { t } = this.context
     const {
@@ -272,7 +283,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'blockExplorerUrl',
           'block-explorer-url',
-          this.setStateWithValue('blockExplorerUrl', this.validateUrl),
+          this.setStateWithValue('blockExplorerUrl', this.validateBlockExplorerUrl),
           blockExplorerUrl,
           'optionalBlockExplorerUrl',
         )}

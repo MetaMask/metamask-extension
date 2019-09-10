@@ -4,6 +4,10 @@
 
 @import 'settings-tab/index';
 
+@import 'connections-tab/index';
+
+@import 'contact-list-tab/index';
+
 .settings-page {
   position: relative;
   background: $white;
@@ -23,7 +27,7 @@
     }
   }
 
-  &__subheader {
+  &__subheader, &__subheader--link {
     padding: 16px 4px;
     font-size: 20px;
     border-bottom: 1px solid $alto;
@@ -36,6 +40,21 @@
     @media screen and (max-width: 575px) {
       display: none;
     }
+  }
+
+  &__subheader--link {
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  &__subheader--link:hover {
+    cursor: pointer;
+    color: #037DD6;
+  }
+
+  &__subheader--break {
+    margin-right: 4px;
+    padding-right: 4px;
   }
 
   &__sub-header {
@@ -78,6 +97,10 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -116,6 +139,8 @@
     &__modules {
       overflow-y: auto;
       flex: 1 1 auto;
+      display: flex;
+      flex-flow: column;
 
       @media screen and (max-width: 575px) {
         display: none;
@@ -175,6 +200,37 @@
     }
   }
 
+  &__copyable-address {
+    display: flex;
+  }
+
+  &__copy-icon {
+    padding-left: 4px;
+  }
+
+  &__button-group {
+    display:flex;
+    margin-left: auto;
+  }
+
+  &__address-book-button {
+      //align-self: flex-end;
+      //padding: 5px;
+      //text-transform: uppercase;
+      //cursor: pointer;
+      //width: 25%;
+      //min-width: 80px;
+      //height: 33px;
+    font-size: 1rem;
+    line-height: 1.1875rem;
+    padding: 0;
+
+  }
+
+  &__address-book-button + &__address-book-button {
+    margin-left: 1.875rem;
+  }
+
   &--selected {
     .settings-page {
       &__content {
@@ -190,6 +246,14 @@
           }
         }
       }
+    }
+  }
+
+  .toggle-button {
+    /*rtl:ignore*/
+    direction: ltr;
+    [dir='rtl'] & {
+      justify-content: flex-end;
     }
   }
 }

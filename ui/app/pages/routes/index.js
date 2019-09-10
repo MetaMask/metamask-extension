@@ -6,7 +6,7 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
@@ -170,6 +170,7 @@ class Routes extends Component {
     const {
       isLoading,
       alertMessage,
+      textDirection,
       loadingMessage,
       network,
       provider,
@@ -194,20 +195,21 @@ class Routes extends Component {
     const { transaction: sidebarTransaction } = props || {}
 
     const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-    ? () => {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
-          action: 'Wallet Sidebar',
-          name: 'Closed Sidebare Via Overlay',
-        },
-      })
-    }
-    : null
+      ? () => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Wallet Sidebar',
+            name: 'Closed Sidebare Via Overlay',
+          },
+        })
+      }
+      : null
 
     return (
       <div
         className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
           if (e.keyCode === 9) {
@@ -259,7 +261,7 @@ class Routes extends Component {
       passwordBox.focus()
     } else {
       // currently active: deactivate
-      this.props.dispatch(actions.lockMetamask(false))
+      this.props.lockMetaMask()
     }
   }
 
@@ -323,6 +325,7 @@ Routes.propTypes = {
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
   alertMessage: PropTypes.string,
+  textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcListDetail: PropTypes.array,
@@ -330,32 +333,14 @@ Routes.propTypes = {
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
-  isOnboarding: PropTypes.bool,
   isUnlocked: PropTypes.bool,
-  networkDropdownOpen: PropTypes.bool,
-  showNetworkDropdown: PropTypes.func,
-  hideNetworkDropdown: PropTypes.func,
   setLastActiveTime: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
-  toggleAccountMenu: PropTypes.func,
-  selectedAddress: PropTypes.string,
-  lostAccounts: PropTypes.array,
-  isInitialized: PropTypes.bool,
-  forgottenPassword: PropTypes.bool,
-  activeAddress: PropTypes.string,
-  unapprovedTxs: PropTypes.object,
-  seedWords: PropTypes.string,
+  lockMetaMask: PropTypes.func,
   submittedPendingTransactions: PropTypes.array,
-  unapprovedMsgCount: PropTypes.number,
-  unapprovedPersonalMsgCount: PropTypes.number,
-  unapprovedTypedMessagesCount: PropTypes.number,
-  welcomeScreenSeen: PropTypes.bool,
-  isPopup: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
-  t: PropTypes.func,
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
@@ -364,7 +349,6 @@ Routes.propTypes = {
 function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
-    networkDropdownOpen,
     sidebar,
     alertOpen,
     alertMessage,
@@ -372,77 +356,35 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
 
-  const accounts = getMetaMaskAccounts(state)
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
-
-  const {
-    identities,
-    address,
-    keyrings,
-    isInitialized,
-    seedWords,
-    unapprovedTxs,
-    lostAccounts,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    providerRequests,
-  } = metamask
-  const selected = address || Object.keys(accounts)[0]
 
   return {
     // state from plugin
-    networkDropdownOpen,
     sidebar,
     alertOpen,
     alertMessage,
+    textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
-    isInitialized,
     isUnlocked: state.metamask.isUnlocked,
-    selectedAddress: state.metamask.selectedAddress,
     currentView: state.appState.currentView,
-    activeAddress: state.appState.activeAddress,
-    transForward: state.appState.transForward,
-    isOnboarding: Boolean(seedWords || !isInitialized),
-    isPopup: state.metamask.isPopup,
-    seedWords: state.metamask.seedWords,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
-    unapprovedTxs,
-    unapprovedMsgs: state.metamask.unapprovedMsgs,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
-    lostAccounts,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
-    Qr: state.appState.Qr,
-    welcomeScreenSeen: state.metamask.welcomeScreenSeen,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-
-    // state needed to get account dropdown temporarily rendering from app bar
-    identities,
-    selected,
-    keyrings,
-    providerRequests,
+    providerRequests: metamask.providerRequests,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    dispatch,
+    lockMetaMask: () => dispatch(actions.lockMetamask(false)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
-    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }

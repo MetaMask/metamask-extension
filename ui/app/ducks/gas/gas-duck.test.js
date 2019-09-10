@@ -321,10 +321,10 @@ describe('Gas Duck', () => {
       assert.deepEqual(
         global.fetch.getCall(0).args,
         [
-          'https://dev.blockscale.net/api/gasexpress.json',
+          'https://ethgasstation.info/json/ethgasAPI.json',
           {
             'headers': {},
-            'referrer': 'https://dev.blockscale.net/api/',
+            'referrer': 'http://ethgasstation.info/json/',
             'referrerPolicy': 'no-referrer-when-downgrade',
             'body': null,
             'method': 'GET',
@@ -341,12 +341,12 @@ describe('Gas Duck', () => {
         [{
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 20,
+            average: 2,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
-            fast: 30,
-            fastest: 40,
-            safeLow: 10,
+            fast: 3,
+            fastest: 4,
+            safeLow: 1,
           },
         }]
       )
@@ -420,10 +420,10 @@ describe('Gas Duck', () => {
       assert.deepEqual(
         global.fetch.getCall(0).args,
         [
-          'https://dev.blockscale.net/api/gasexpress.json',
+          'https://ethgasstation.info/json/ethgasAPI.json',
           {
             'headers': {},
-            'referrer': 'https://dev.blockscale.net/api/',
+            'referrer': 'http://ethgasstation.info/json/',
             'referrerPolicy': 'no-referrer-when-downgrade',
             'body': null,
             'method': 'GET',
@@ -440,12 +440,12 @@ describe('Gas Duck', () => {
         [{
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 20,
+            average: 2,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
-            fast: 30,
-            fastest: 40,
-            safeLow: 10,
+            fast: 3,
+            fastest: 4,
+            safeLow: 1,
           },
         }]
       )
@@ -465,7 +465,7 @@ describe('Gas Duck', () => {
         initState,
         { basicPriceAndTimeEstimatesLastRetrieved: 1000000 }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -542,7 +542,7 @@ describe('Gas Duck', () => {
         initState,
         {}
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -586,7 +586,7 @@ describe('Gas Duck', () => {
         initState,
         {}
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -647,7 +647,7 @@ describe('Gas Duck', () => {
         initState,
         { priceAndTimeEstimatesLastRetrieved: 1000000 }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
@@ -701,7 +701,7 @@ describe('Gas Duck', () => {
           }],
         }
       ),
-        metamask: { provider: { type: 'ropsten' } },
+      metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,

@@ -128,7 +128,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "send": {
       "gasLimit": "0xea60",
       "gasPrice": "0xba43b7400",
@@ -182,7 +181,9 @@
     "warnings": {}
   },
   "confirmTransaction": {
-    "txData": {},
+    "txData": {
+      "id": 4768706228115573
+    },
     "tokenData": {},
     "methodData": {},
     "tokenProps": {

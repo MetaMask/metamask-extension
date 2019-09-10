@@ -17,8 +17,10 @@ const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
-const uglify = require('gulp-uglify-es').default
+const terser = require('gulp-terser-js')
 const pify = require('pify')
+const rtlcss = require('gulp-rtlcss')
+const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
@@ -84,6 +86,10 @@ createCopyTasks('fonts', {
 createCopyTasks('vendor', {
   source: './app/vendor/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
+})
+createCopyTasks('css', {
+  source: './ui/app/css/output/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
 })
 createCopyTasks('reload', {
   devOnly: true,
@@ -151,27 +157,27 @@ function copyTask (taskName, opts) {
 
 gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    delete json.applications
-    json.minimum_chrome_version = '58'
-    return json
-  }))
-  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      delete json.applications
+      json.minimum_chrome_version = '58'
+      return json
+    }))
+    .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
 gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [
-      'storage',
-      'tabs',
-      'clipboardWrite',
-      'clipboardRead',
-      'http://localhost:8545/',
-    ]
-    return json
-  }))
-  .pipe(gulp.dest('./dist/opera', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [
+        'storage',
+        'tabs',
+        'clipboardWrite',
+        'clipboardRead',
+        'http://localhost:8545/',
+      ]
+      return json
+    }))
+    .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
 gulp.task('manifest:production', function () {
@@ -184,14 +190,14 @@ gulp.task('manifest:production', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.background.scripts = json.background.scripts.filter((script) => {
-      return !script.includes('chromereload')
-    })
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.background.scripts = json.background.scripts.filter((script) => {
+        return !script.includes('chromereload')
+      })
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('manifest:testing', function () {
@@ -201,12 +207,12 @@ gulp.task('manifest:testing', function () {
   ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function (json) {
-    json.permissions = [...json.permissions, 'webRequestBlocking']
-    return json
-  }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [...json.permissions, 'webRequestBlocking']
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('copy',
@@ -270,12 +276,19 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
       .pipe(sourcemaps.write())
       .pipe(autoprefixer())
       .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dest))
   }
 
   function buildScss () {
     return gulp.src(src)
       .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
       .pipe(gulp.dest(dest))
   }
 }
@@ -473,8 +486,8 @@ gulp.task('dist',
 function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'))
+      .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+      .pipe(gulp.dest('builds'))
   }
 }
 
@@ -530,13 +543,19 @@ function generateBundler (opts, performBundle) {
 }
 
 function bundleTask (opts) {
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
+  let bundler
 
   return performBundle
 
   function performBundle () {
+    // initialize bundler if not available yet
+    // dont create bundler until task is actually run
+    if (!bundler) {
+      bundler = generateBundler(opts, performBundle)
+      // output build logs to terminal
+      bundler.on('log', gutil.log)
+    }
+
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -566,11 +585,11 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-      .pipe(uglify({
-        mangle: {
-          reserved: [ 'MetamaskInpageProvider' ],
-        },
-      }))
+        .pipe(terser({
+          mangle: {
+            reserved: [ 'MetamaskInpageProvider' ],
+          },
+        }))
     }
 
     // Finalize Source Maps

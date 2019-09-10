@@ -1,0 +1,190 @@
+{
+  "reject": {
+    "message": "తిరస్కరించు"
+  },
+  "about": {
+    "message": "గురించి"
+  },
+  "accept": {
+    "message": "ఆమోదించు"
+  },
+  "account": {
+    "message": "ఖాతా"
+  },
+  "add": {
+    "message": "జోడించు"
+  },
+  "address": {
+    "message": "చిరునామా"
+  },
+  "advanced": {
+    "message": "ఆధునిక"
+  },
+  "available": {
+    "message": "అందుబాటులో ఉంది"
+  },
+  "back": {
+    "message": "వెనుకకు"
+  },
+  "basic": {
+    "message": "ప్రాథమికం"
+  },
+  "off": {
+    "message": "ఆఫ్ అయ్యింది"
+  },
+  "ok": {
+    "message": "సరే"
+  },
+  "on": {
+    "message": "ఆన్ చేయి"
+  },
+  "cancel": {
+    "message": "రద్దు చెయ్యి"
+  },
+  "close": {
+    "message": "మూసివేయి"
+  },
+  "confirm": {
+    "message": "నిర్ధారించు"
+  },
+  "connect": {
+    "message": "కనెక్ట్ చేయండి"
+  },
+  "connecting": {
+    "message": "కనెక్ట్ అవుతోంది..."
+  },
+  "continue": {
+    "message": "కొనసాగించు"
+  },
+  "copy": {
+    "message": "కాపీ చెయ్యి"
+  },
+  "copyToClipboard": {
+    "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయి"
+  },
+  "create": {
+    "message": "సృష్టించు"
+  },
+  "createDen": {
+    "message": "సృష్టించు"
+  },
+  "customize": {
+    "message": "అనుకూలీకరించు"
+  },
+  "delete": {
+    "message": "తొలగించు"
+  },
+  "details": {
+    "message": "వివరాలు"
+  },
+  "dismiss": {
+    "message": "తొలగించు"
+  },
+  "done": {
+    "message": "పూర్తయింది"
+  },
+  "edit": {
+    "message": "సవరించు"
+  },
+  "fast": {
+    "message": "వేగంగా"
+  },
+  "fastest": {
+    "message": "అత్యంత వేగవంతం"
+  },
+  "forgetDevice": {
+    "message": "ఈ పరికరాన్ని విస్మరించు"
+  },
+  "getStarted": {
+    "message": "ప్రారంభించండి"
+  },
+  "hide": {
+    "message": "దాచిపెట్టు"
+  },
+  "history": {
+    "message": "చరిత్ర"
+  },
+  "import": {
+    "message": "దిగుమతి చెయ్యి",
+    "description": "Button to import an account from a selected file"
+  },
+  "imported": {
+    "message": "దిగుమతి అయ్యింది",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "loading": {
+    "message": "లోడ్ అవుతోంది..."
+  },
+  "min": {
+    "message": "కనిష్టం"
+  },
+  "next": {
+    "message": "తదుపరి"
+  },
+  "notFound": {
+    "message": "దొరకలేదు"
+  },
+  "origin": {
+    "message": "మూలం"
+  },
+  "password": {
+    "message": "పాస్‌వర్డ్"
+  },
+  "queue": {
+    "message": "క్రమ వరుస"
+  },
+  "reset": {
+    "message": "రీసెట్ చేయి"
+  },
+  "restore": {
+    "message": "పునరుద్ధరించు"
+  },
+  "remove": {
+    "message": "తీసివేయి"
+  },
+  "removeAccount": {
+    "message": "ఖాతాను తీసివేయి"
+  },
+  "save": {
+    "message": "సేవ్ చేయి"
+  },
+  "slow": {
+    "message": "నెమ్మదిగా"
+  },
+  "search": {
+    "message": "శోధించు"
+  },
+  "select": {
+    "message": "ఎంచుకోండి"
+  },
+  "send": {
+    "message": "పంపు"
+  },
+  "settings": {
+    "message": "సెట్టింగ్‌లు"
+  },
+  "status": {
+    "message": "స్థితి"
+  },
+  "submit": {
+    "message": "సమర్పించు"
+  },
+  "tryAgain": {
+    "message": "మళ్లీ ప్రయత్నించు"
+  },
+  "unknown": {
+    "message": "తెలియదు"
+  },
+  "unlock": {
+    "message": "అన్‌లాక్ చెయ్యి"
+  },
+  "userName": {
+    "message": "యూజర్‌పేరు"
+  },
+  "viewAccount": {
+    "message": "ఖాతాను వీక్షించండి"
+  },
+  "warning": {
+    "message": "హెచ్చరిక"
+  }
+}

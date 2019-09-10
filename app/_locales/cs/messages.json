@@ -1,10 +1,4 @@
 {
-  "privacyMode": {
-    "message": "Režim súkromia"
-  },
-  "privacyModeDescription": {
-    "message": "Webové stránky musia požiadať o prístup k zobrazeniu informácií o vašom účte."
-  },
   "exposeAccounts": {
     "message": "Vystavte účty"
   },
@@ -20,26 +14,11 @@
   "clearApprovalDataSuccess": {
     "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
   },
-  "approvalData": {
-    "message": "Údaje o schválení"
-  },
-  "approvalDataDescription": {
-    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
-  },
   "clearApprovalData": {
     "message": "Jasné údaje o schválení"
   },
-  "approve": {
-    "message": "Schválit"
-  },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerAPIRequest": {
-    "message": "Požadavek API Ethereum"
-  },
-  "reviewProviderRequest": {
-    "message": "Přečtěte si prosím tuto žádost API Ethereum."
   },
   "providerRequestInfo": {
     "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
@@ -78,9 +57,8 @@
     "message": "Ethereum rozšíření prohlížeče",
     "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+  "approve": {
+    "message": "Schválit"
   },
   "approved": {
     "message": "Schváleno"
@@ -105,9 +83,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
-  "beta": {
-    "message": "BETA"
   },
   "betweenMinAndMax": {
     "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
@@ -137,9 +112,6 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch je jediným místem, kde můžete vyměňovat více než 300 kryptocurrencí za nejlepší cenu."
   },
-  "ok": {
-    "message": "Ok"
-  },
   "cancel": {
     "message": "Zrušit"
   },
@@ -163,6 +135,21 @@
   },
   "confirmTransaction": {
     "message": "Potvrdit transakci"
+  },
+  "connectingToKovan": {
+    "message": "Připojuji se k Kovan Test Network"
+  },
+  "connectingToMainnet": {
+    "message": "Připojuji se k Main Ethereum Network"
+  },
+  "connectingToRopsten": {
+    "message": "Připojuji se k Ropsten Test Network"
+  },
+  "connectingToRinkeby": {
+    "message": "Připojuji se k Rinkeby Test Network"
+  },
+  "connectingToUnknown": {
+    "message": "Připojuji se k neznámé síti"
   },
   "continue": {
     "message": "Pokračovat"
@@ -216,11 +203,11 @@
     "message": "Krypto",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currentConversion": {
-    "message": "Aktuální převod"
-  },
   "currentNetwork": {
     "message": "Aktuální síť"
+  },
+  "currentRpc": {
+    "message": "Současné RPC"
   },
   "customGas": {
     "message": "Nastavit palivo"
@@ -308,12 +295,6 @@
   },
   "enterPasswordConfirm": {
     "message": "Zadejte heslo k potvrzení"
-  },
-  "passwordNotLongEnough": {
-    "message": "Heslo není dost dlouhé"
-  },
-  "passwordsDontMatch": {
-    "message": "Hesla nejsou stejná"
   },
   "etherscanView": {
     "message": "Prohlédněte si účet na Etherscan"
@@ -414,10 +395,6 @@
   "holdEther": {
     "message": "Dovoluje vám držet ether a tokeny a slouží jako most k decentralizovaným aplikacím."
   },
-  "import": {
-    "message": "Import",
-    "description": "Button to import an account from a selected file"
-  },
   "importAccount": {
     "message": "Import účtu"
   },
@@ -433,6 +410,9 @@
   "imported": {
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "info": {
+    "message": "Informace"
   },
   "infoHelp": {
     "message": "Informace a nápověda"
@@ -471,14 +451,8 @@
   "keepTrackTokens": {
     "message": "Udržujte si záznamy o tokenech, které jste koupili s účtem v MetaMasku."
   },
-  "kovan": {
-    "message": "Kovan Test Network"
-  },
   "knowledgeDataBase": {
     "message": "Navštivte naši Knowledge Base"
-  },
-  "max": {
-    "message": "Max"
   },
   "learnMore": {
     "message": "Zjistěte více."
@@ -493,17 +467,11 @@
   "links": {
     "message": "Odkazy"
   },
-  "limit": {
-    "message": "Limit"
-  },
   "loading": {
     "message": "Načítám..."
   },
   "loadingTokens": {
     "message": "Načítám tokeny..."
-  },
-  "localhost": {
-    "message": "Localhost 8545"
   },
   "login": {
     "message": "Přihlásit"
@@ -517,17 +485,11 @@
   "loweCaseWords": {
     "message": "slova klíčové fráze mají pouze malá písmena"
   },
-  "mainnet": {
-    "message": "Main Ethereum Network"
-  },
   "message": {
     "message": "Zpráva"
   },
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
-  },
-  "min": {
-    "message": "Minimum"
   },
   "myAccounts": {
     "message": "Moje účty"
@@ -565,11 +527,11 @@
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },
+  "newPassword8Chars": {
+    "message": "Nové heslo (min 8 znaků)"
+  },
   "newRecipient": {
     "message": "Nový příjemce"
-  },
-  "newRPC": {
-    "message": "Nová RPC URL"
   },
   "next": {
     "message": "Další"
@@ -595,6 +557,9 @@
   "oldUIMessage": {
     "message": "Vrátili jste se ke starému rozhraní. Můžete přepnout na nové rozhraní v nastavení v pravém horním menu."
   },
+  "onlySendToEtherAddress": {
+    "message": "Posílejte jen ETH na Ethereum adresu."
+  },
   "or": {
     "message": "nebo",
     "description": "choice between creating or importing a new account"
@@ -602,9 +567,15 @@
   "passwordCorrect": {
     "message": "Ujistěte se, že je vaše heslo správně."
   },
+  "passwordsDontMatch": {
+    "message": "Hesla nejsou stejná"
+  },
   "passwordMismatch": {
     "message": "hesla nesouhlasí",
     "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Heslo není dost dlouhé"
   },
   "passwordShort": {
     "message": "heslo je krátké",
@@ -678,9 +649,6 @@
   "retryWithMoreGas": {
     "message": "Opakujte s vyšší cenou paliva"
   },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -690,29 +658,8 @@
   "revert": {
     "message": "Zvrátit"
   },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
-  },
-  "currentRpc": {
-    "message": "Současné RPC"
-  },
-  "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
-  },
-  "connectingToRopsten": {
-    "message": "Připojuji se k Ropsten Test Network"
-  },
-  "connectingToKovan": {
-    "message": "Připojuji se k Kovan Test Network"
-  },
-  "connectingToRinkeby": {
-    "message": "Připojuji se k Rinkeby Test Network"
-  },
-  "connectingToUnknown": {
-    "message": "Připojuji se k neznámé síti"
+  "rpc": {
+    "message": "Vlastní RPC"
   },
   "sampleAccountName": {
     "message": "Např. můj nový účet",
@@ -720,12 +667,6 @@
   },
   "save": {
     "message": "Uložit"
-  },
-  "reprice_title": {
-    "message": "Změnit cenu transakce"
-  },
-  "reprice_subtitle": {
-    "message": "Navyšte cenu paliva ve snaze k přepsání a urychlení vyší transakce"
   },
   "saveAsFile": {
     "message": "Uložit do souboru",
@@ -739,9 +680,6 @@
   },
   "secretPhrase": {
     "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
-  },
-  "newPassword8Chars": {
-    "message": "Nové heslo (min 8 znaků)"
   },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
@@ -767,9 +705,6 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "onlySendToEtherAddress": {
-    "message": "Posílejte jen ETH na Ethereum adresu."
-  },
   "searchTokens": {
     "message": "Hledat tokeny"
   },
@@ -778,9 +713,6 @@
   },
   "settings": {
     "message": "Nastavení"
-  },
-  "info": {
-    "message": "Informace"
   },
   "shapeshiftBuy": {
     "message": "Nakoupit na ShapeShift"
@@ -793,6 +725,9 @@
   },
   "sign": {
     "message": "Podepsat"
+  },
+  "signatureRequest": {
+    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"
@@ -943,6 +878,9 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
+  },
+  "walletSeed": {
+    "message": "Klíčová fráze peněženky"
   },
   "warning": {
     "message": "Varování"
