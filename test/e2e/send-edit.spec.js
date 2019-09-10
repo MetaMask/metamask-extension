@@ -27,9 +27,6 @@ describe('Using MetaMask with an existing account', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-  })
-
-  beforeEach(async function () {
     await setupFetchMocking(driver)
   })
 
