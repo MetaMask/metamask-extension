@@ -14,6 +14,51 @@ const pluginRestrictedMethodsDescriptions = {
   subscribeToPreferencesControllerChanges: 'Access your preferences and take action when they change',
   updatePreferencesControllerState: 'Update/modify your preferences',
   generateSignature: 'Sign messages with your account',
+
+  // MetaMaskController#getApi
+  addKnownMethodData: 'Update and store data about a known contract method',
+  addNewAccount: 'Adds a new account to the default (first) HD seed phrase Keyring',
+  addNewKeyring: 'Create a new keyring',
+  addToken: 'Add a new token to be tracked',
+  buyEth: 'Forwards the user to the easiest way to obtain ether for the currently-selected network',
+  checkHardwareStatus: 'Check if the hardware device is unlocked',
+  connectHardware: 'Fetch account list from a Trezor device',
+  createShapeShiftTx: 'Triggers a ShapeShift currency transfer',
+  delCustomRpc: 'Delete a selected custom URL',
+  estimateGas: 'Estimate the gas required for a transaction',
+  fetchInfoToSync: 'Collects all the information for mobile syncing',
+  forgetDevice: 'Clear all connected devices',
+  getApprovedAccounts: 'Get a list of all approved accounts',
+  getFilteredTxList: 'Get a list of filtered transactions',
+  getGasPrice: 'Estimates a good gas price at recent prices',
+  getState: 'Get a JSON representation of MetaMask data, including sensitive data. This is only for testing purposes and will NOT be included in production.',
+  importAccountWithStrategy: 'Imports an account with the specified import strategy',
+  isNonceTaken: 'Check if a given nonce is available for use',
+  removeAccount: 'Removes an account from state / storage',
+  removeFromAddressBook: 'Remove an entry from the address book',
+  removePermissionsFor: 'Remove account access for a given domain',
+  removeSuggestedTokens: 'Remove a token  from the list of suggested tokens',
+  removeToken: 'Remove a token from the list of tracked tokens',
+  resetAccount: 'Clears the transaction history, to allow users to force-reset their nonces',
+  setAccountLabel: 'Set the label for the currently-selected account',
+  setAddressBook: 'Add or update an entry in the address book',
+  setCurrentAccountTab: 'Set the active tab for the currently-selected account',
+  setCurrentCurrency: 'Set the currently-selected currency',
+  setCurrentLocale: 'Set the current locale, affecting the language rendered',
+  setCustomRpc: 'Select a custom URL for an Ethereum RPC provider',
+  setFeatureFlag: 'Enable or disable a given feature-flag',
+  setParticipateInMetaMetrics: 'Toggle usage data tracking with MetaMetrics',
+  setPreference: 'Update a given user preference',
+  setProviderType: 'Update the current provider type',
+  setSeedPhraseBackedUp: 'Mark a seed phrase as backed up',
+  setSelectedAddress: 'Set the currently-selected address',
+  setUseBlockie: 'Toggle the Blockie identicon format',
+  submitPassword: 'Submits the user password and attempts to unlock the vault. This will not be included in production.',
+  unMarkPasswordForgotten: 'Allows a user to end the seed phrase recovery process',
+  unlockHardwareWalletAccount: 'Imports an account from a Trezor device',
+  updateAndSetCustomRpc: 'Select a custom URL for an Ethereum RPC provider and updating it',
+  verifySeedPhrase: 'Verifies the validity of the current vault seed phrase',
+  whitelistPhishingDomain: 'Mark a malicious-looking domain as safe'
 }
 
 // Methods that do not require any permissions to use:
@@ -180,12 +225,21 @@ class PermissionsController {
     }
 
     this.pendingApprovals = {}
+    const api = this.getApi();
+    const translatedApi = {};
+    Object.keys(api).forEach(methodKey => {
+      translatedApi[`metamask_${methodKey}`] = api[methodKey];
+    });
 
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
-      ...this.getApi(),
+      ...translatedApi,
     }
     const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
+      const hasDescription = externalMethodsToAddToRestricted[methodKey];
+      if (!hasDescription) {
+        return acc;
+      }
       return {
         ...acc,
         [methodKey]: {
