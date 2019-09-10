@@ -30,9 +30,6 @@ describe('MetaMask', function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
     extensionId = result.extensionId
-  })
-
-  beforeEach(async function () {
     await setupFetchMocking(driver)
   })
 
