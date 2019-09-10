@@ -17,7 +17,7 @@ const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
-const uglify = require('gulp-uglify-es').default
+const terser = require('gulp-terser-js')
 const pify = require('pify')
 const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
@@ -585,7 +585,7 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-        .pipe(uglify({
+        .pipe(terser({
           mangle: {
             reserved: [ 'MetamaskInpageProvider' ],
           },
