@@ -1,18 +1,11 @@
-const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
 } = require('./func')
 const {
   checkBrowserForConsoleErrors,
-  closeAllWindowHandlesExcept,
   findElement,
   findElements,
   openNewPage,
@@ -24,7 +17,6 @@ const {
 } = require('./helpers')
 
 describe('MetaMask', function () {
-  let extensionId
   let driver
   let publicAddress
 
@@ -38,7 +30,6 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    extensionId = result.extensionId
     await setupFetchMocking(driver)
   })
 
