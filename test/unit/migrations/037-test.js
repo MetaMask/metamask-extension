@@ -23,7 +23,7 @@ let status = [
 ]
 const nets = [ 1, 2, 3, 4, 5]
 let currentStatus = status.pop()
-let nid = 0
+let netIdIndex = 0
 
 const transactions160 = []
 const transactions60 = []
@@ -31,23 +31,23 @@ const transactions60 = []
 do {
   ++id
   if (counts[currentStatus] === 20) currentStatus = status.pop()
-  transactions160.push(generateTxMeta(id, nets[nid], currentStatus))
+  transactions160.push(generateTxMeta(id, nets[netIdIndex], currentStatus))
 
   if (!counts[currentStatus]) counts[currentStatus] = 1
   else counts[currentStatus] += 1
 
   if (id % 5 === 0) {
-    if (nid === 4) {
-      nid = 0
+    if (netIdIndex === 4) {
+      netIdIndex = 0
     } else {
-      ++nid
+      ++netIdIndex
     }
   }
 
 } while (id < 160)
 
 id = 0
-nid = 0
+netIdIndex = 0
 const counts60 = {}
 status = [
   'unapproved',
@@ -70,15 +70,15 @@ do {
   if (counts60[currentStatus] === 4 && currentStatus === 'submitted') currentStatus = status.pop()
   if (counts60[currentStatus] === 6 && currentStatus === 'failed') currentStatus = status.pop()
 
-  transactions60.push(generateTxMeta(id, nets[nid], currentStatus))
+  transactions60.push(generateTxMeta(id, nets[netIdIndex], currentStatus))
   if (!counts60[currentStatus]) counts60[currentStatus] = 1
   else counts60[currentStatus] += 1
 
   if (id % 5 === 0) {
-    if (nid === 4) {
-      nid = 0
+    if (netIdIndex === 4) {
+      netIdIndex = 0
     } else {
-      ++nid
+      ++netIdIndex
     }
   }
 
