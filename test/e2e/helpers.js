@@ -39,7 +39,7 @@ module.exports = {
 }
 
 
-async function prepareExtensionForTesting ({ responsive }={}) {
+async function prepareExtensionForTesting ({ responsive } = {}) {
   let driver, extensionId, extensionUrl
   const targetBrowser = process.env.SELENIUM_BROWSER
   switch (targetBrowser) {
