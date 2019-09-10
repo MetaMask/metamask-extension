@@ -7,7 +7,7 @@ const GOERLI = 'goerli'
 
 const MAINNET_CODE = 1
 const ROPSTEN_CODE = 3
-const RINKEYBY_CODE = 4
+const RINKEBY_CODE = 4
 const KOVAN_CODE = 42
 const GOERLI_CODE = 5
 
@@ -26,7 +26,7 @@ module.exports = {
   GOERLI,
   MAINNET_CODE,
   ROPSTEN_CODE,
-  RINKEYBY_CODE,
+  RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
   ROPSTEN_DISPLAY_NAME,
