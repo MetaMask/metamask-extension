@@ -39,13 +39,13 @@ module.exports = {
 }
 
 
-async function prepareExtensionForTesting () {
+async function prepareExtensionForTesting ({ responsive }={}) {
   let driver, extensionId, extensionUrl
   const targetBrowser = process.env.SELENIUM_BROWSER
   switch (targetBrowser) {
     case 'chrome': {
       const extPath = path.resolve('dist/chrome')
-      driver = buildChromeWebDriver(extPath, { responsive: true })
+      driver = buildChromeWebDriver(extPath, { responsive })
       await delay(largeDelayMs)
       extensionId = await getExtensionIdChrome(driver)
       extensionUrl = `chrome-extension://${extensionId}/home.html`
@@ -53,7 +53,7 @@ async function prepareExtensionForTesting () {
     }
     case 'firefox': {
       const extPath = path.resolve('dist/firefox')
-      driver = buildFirefoxWebdriver({ responsive: true })
+      driver = buildFirefoxWebdriver({ responsive })
       await installWebExt(driver, extPath)
       await delay(largeDelayMs)
       extensionId = await getExtensionIdFirefox(driver)
