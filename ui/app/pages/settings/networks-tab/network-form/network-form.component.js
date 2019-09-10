@@ -212,7 +212,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   validateUrl = (url, stateKey) => {
-    if (validUrl.isWebUri(url)) {
+    if (url === '' || validUrl.isWebUri(url)) {
       this.setErrorTo(stateKey, '')
     } else {
       const appendedRpc = `http://${url}`
