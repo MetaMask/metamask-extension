@@ -13,7 +13,7 @@ const {
   installWebExt,
 } = require('./func')
 const { until } = require('selenium-webdriver')
-const fetchMockResponses = require('./fetch-mocks.js')
+const fetchMockResponses = require('./fetch-mocks.json')
 
 const tinyDelayMs = 200
 const regularDelayMs = tinyDelayMs * 2
@@ -81,31 +81,36 @@ async function prepareExtensionForTesting () {
 
 async function setupFetchMocking (driver) {
   // define fetchMocking script, to be evaluated in the browser
-  function fetchMocking () {
+  function fetchMocking (fetchMockResponses) {
     window.origFetch = window.fetch.bind(window)
     window.fetch = async (...args) => {
       const url = args[0]
       if (url === 'https://ethgasstation.info/json/ethgasAPI.json') {
-        return { json: async () => JSON.parse(fetchMockResponses.ethGasBasic) }
+        return { json: async () => clone(fetchMockResponses.ethGasBasic) }
       } else if (url === 'https://ethgasstation.info/json/predictTable.json') {
-        return { json: async () => JSON.parse(fetchMockResponses.ethGasPredictTable) }
+        return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
       } else if (url.match(/chromeextensionmm/)) {
-        return { json: async () => JSON.parse(fetchMockResponses.metametrics) }
+        return { json: async () => clone(fetchMockResponses.metametrics) }
       } else if (url === 'https://dev.blockscale.net/api/gasexpress.json') {
-        return { json: async () => JSON.parse(fetchMockResponses.gasExpress) }
+        return { json: async () => clone(fetchMockResponses.gasExpress) }
       }
       return window.origFetch(...args)
+    }
+    if (window.chrome && window.chrome.webRequest) {
+      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, {urls: ['https://*.infura.io/*']}, ['blocking'])
     }
     function cancelInfuraRequest (requestDetails) {
       console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
       return { cancel: true }
     }
-    if (window.chrome && window.chrome.webRequest) {
-      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, {urls: ['https://*.infura.io/*']}, ['blocking'])
+    function clone (obj) {
+      return JSON.parse(JSON.stringify(obj))
     }
   }
+  // fetchMockResponses are parsed last minute to ensure that objects are uniquely instantiated
+  const fetchMockResponsesJson = JSON.stringify(fetchMockResponses)
   // eval the fetchMocking script in the browser
-  await driver.executeScript(`(${fetchMocking})()`)
+  await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
 }
 
 async function loadExtension (driver, extensionId) {
