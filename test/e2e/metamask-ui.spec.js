@@ -30,7 +30,7 @@ describe('MetaMask', function () {
   const largeDelayMs = regularDelayMs * 2
 
   this.timeout(0)
-  // this.bail(true)
+  this.bail(true)
 
   before(async function () {
     const result = await prepareExtensionForTesting()
