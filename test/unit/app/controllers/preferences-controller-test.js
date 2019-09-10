@@ -495,20 +495,5 @@ describe('preferences controller', function () {
       assert.equal(preferencesController.store.getState().forgottenPassword, true)
     })
   })
-
-  describe('setSeedWords', function () {
-    it('should default to null', function () {
-      const state = preferencesController.store.getState()
-      assert.equal(state.seedWords, null)
-    })
-
-    it('should set the seedWords property in state', function () {
-      assert.equal(preferencesController.store.getState().seedWords, null)
-
-      preferencesController.setSeedWords('foo bar baz')
-
-      assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
-    })
-  })
 })
 
