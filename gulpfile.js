@@ -1,4 +1,3 @@
-const fs = require('fs')
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
