@@ -28,7 +28,7 @@ function install_github_cli ()
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
-if [[ $current_commit_msg =~ Version[-[:space:]]v([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]
+if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]
 then
     tag="${BASH_REMATCH[1]}"
 
