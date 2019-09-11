@@ -229,6 +229,13 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate sesify viz AFTER uploading builds as artifacts
+      - run:
+          name: build:sesify-viz
+          command: ./.circleci/scripts/create-sesify-viz
+      - store_artifacts:
+          path: build-artifacts
+          destination: build-artifacts
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js

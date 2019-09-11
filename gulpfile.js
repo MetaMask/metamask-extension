@@ -1,3 +1,4 @@
+const fs = require('fs')
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
@@ -23,6 +24,9 @@ const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
+const sesify = require('sesify')
+const mkdirp = require('mkdirp')
+const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
@@ -493,10 +497,25 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    plugin: 'browserify-derequire',
+    plugin: [],
+    transform: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
+
+  const bundleName = opts.filename.split('.')[0]
+
+  // activate sesify
+  const activateAutoConfig = Boolean(process.env.SESIFY_AUTOGEN)
+  // const activateSesify = activateAutoConfig
+  const activateSesify = activateAutoConfig && ['background'].includes(bundleName)
+  if (activateSesify) {
+    configureBundleForSesify({ browserifyOpts, bundleName })
+  }
+
+  if (!activateSesify) {
+    browserifyOpts.plugin.push('browserify-derequire')
+  }
 
   if (!opts.buildLib) {
     if (opts.devMode && opts.filename === 'ui.js') {
@@ -613,6 +632,37 @@ function bundleTask (opts) {
     return buildStream
 
   }
+}
+
+function configureBundleForSesify ({
+  browserifyOpts,
+  bundleName,
+}) {
+  // add in sesify args for better globalRef usage detection
+  Object.assign(browserifyOpts, sesify.args)
+
+  // ensure browserify uses full paths
+  browserifyOpts.fullPaths = true
+
+  // record dependencies used in bundle
+  mkdirp.sync('./sesify')
+  browserifyOpts.plugin.push(['deps-dump', {
+    filename: `./sesify/deps-${bundleName}.json`,
+  }])
+
+  const sesifyConfigPath = `./sesify/${bundleName}.json`
+
+  // add sesify plugin
+  browserifyOpts.plugin.push([sesify, {
+    writeAutoConfig: sesifyConfigPath,
+  }])
+
+  // remove html comments that SES is alergic to
+  const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, _, cb) => {
+    const result = content.split('-->').join('-- >')
+    cb(null, result)
+  })
+  browserifyOpts.transform.push([removeHtmlComment, { global: true }])
 }
 
 function beep () {
