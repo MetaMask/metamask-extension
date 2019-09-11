@@ -30,6 +30,7 @@ export default class AdvancedTab extends PureComponent {
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
     threeBoxDisabled: PropTypes.bool.isRequired,
+    threeBoxFeatureFlag: PropTypes.bool.isRequired,
   }
 
   state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
@@ -300,7 +301,7 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderContent () {
-    const { warning } = this.props
+    const { warning, threeBoxFeatureFlag } = this.props
 
     return (
       <div className="settings-page__body">
@@ -312,7 +313,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
         { this.renderAutoLogoutTimeLimit() }
-        { this.renderThreeBoxControl() }
+        { threeBoxFeatureFlag ? this.renderThreeBoxControl() : null }
       </div>
     )
   }

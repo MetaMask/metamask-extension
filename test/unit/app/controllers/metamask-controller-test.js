@@ -129,7 +129,14 @@ describe('MetaMaskController', function () {
       })
     })
 
-    it('gets the address from threebox and creates a new 3box instance', async () => {
+    it('gets does not instantiate 3box if the feature flag is false', async () => {
+      await metamaskController.submitPassword(password)
+      assert(threeBoxSpies.new3Box.notCalled)
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.notCalled)
+    })
+
+    it('gets the address from threebox and creates a new 3box instance if the feature flag is true', async () => {
+      metamaskController.preferencesController.setFeatureFlag('threeBox', true)
       await metamaskController.submitPassword(password)
       assert(threeBoxSpies.new3Box.calledOnce)
       assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)

@@ -42,6 +42,7 @@ class PreferencesController {
       // perform sensitive operations.
       featureFlags: {
         showIncomingTransactions: true,
+        threeBox: false,
       },
       knownMethodData: {},
       participateInMetaMetrics: null,
