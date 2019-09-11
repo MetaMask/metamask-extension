@@ -100,7 +100,7 @@ jobs:
       - run:
           name: Archive deps
           command: |
-           mkdir -p ./deps-archive/ && cp -R $(yarn cache dir)/* ./deps-archive/
+           mkdir -p ./deps-archive/ && tar -czvf ./deps-archive/yarn-cache.tar.gz $(yarn cache dir)/*
       - store_artifacts:
           path: deps-archive
           destination: deps-archive
