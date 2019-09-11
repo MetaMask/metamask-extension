@@ -85,6 +85,9 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     setProviderType: (type) => {
       store.dispatch(actions.setProviderType(type))
     },
+    setFeatureFlag: (key, value) => {
+      store.dispatch(actions.setFeatureFlag(key, value))
+    },
   }
 
   // start app
