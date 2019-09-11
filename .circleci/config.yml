@@ -90,13 +90,21 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install deps
+          name: Download deps
           command: |
            yarn --frozen-lockfile --ignore-scripts --har
       - run:
           name: Collect yarn install HAR logs
           command: |
             .circleci/scripts/collect-har-artifact.sh
+      - run:
+          name: Archive deps
+          command: |
+           echo "TODO - create uncorruptable report showing the unmodified dependency inputs at "$(yarn cache dir)""
+      - run:
+          name: Install deps
+          command: |
+           yarn --frozen-lockfile --offline
       - persist_to_workspace:
           root: .
           paths:
