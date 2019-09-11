@@ -100,7 +100,10 @@ jobs:
       - run:
           name: Archive deps
           command: |
-           echo "TODO - create uncorruptable report showing the unmodified dependency inputs at "$(yarn cache dir)""
+           mkdir -p ./deps-archive/ && cp -R $(yarn cache dir) ./deps-archive/
+      - store_artifacts:
+          path: deps-archive
+          destination: deps-archive
       - run:
           name: Clean for proper install
           command: |
