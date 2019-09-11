@@ -11,16 +11,16 @@
   "contractInteraction": {
     "message": "계약 상호 작용"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "승인 데이터"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "승인 된 웹 사이트 데이터를 삭제하여 모든 사이트에서 승인을 다시 요청해야합니다."
   },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "승인 데이터 삭제"
   },
   "reject": {

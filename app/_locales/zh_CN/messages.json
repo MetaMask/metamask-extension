@@ -11,16 +11,16 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "已批准的网站数据已成功清除。"
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "审批数据"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
   },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "清除批准数据"
   },
   "reject": {

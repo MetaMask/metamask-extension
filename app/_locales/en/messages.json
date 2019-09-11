@@ -5,7 +5,7 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
-  "caveat:filterParams": {
+  "caveat_filterParams": {
     "message": "Only with: "
   },
   "caveat_filterResponse": {
@@ -41,26 +41,56 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "Permissions cleared successfully."
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "Manage Permissions"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "All currently granted permissions, by dapp/website. Deselect permissions and click \"Update Permissions\" to remove them."
   },
-  "permissionsDataEmpty": {
+  "permissionsEmpty": {
     "message": "No permissions found."
   },
-  "clearPermissionsDataDescription": {
-    "message": "Clear permissions so that all dapps/websites must request access again."
-  },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "Clear Permissions"
   },
-  "updatePermissionsData": {
+  "clearPermissionsDescription": {
+    "message": "Clear permissions so that all dapps/websites must request access again."
+  },
+  "updatePermissions": {
     "message": "Update Permissions"
+  },
+  "permissionsActivitySettings": {
+    "message": "Permissions Activity"
+  },
+  "permissionsActivityDescription": {
+    "message": "A log of the most recent permissions activity, including restricted method calls."
+  },
+  "permissionsActivityEmpty": {
+    "message": "No permissions activity found."
+  },
+  "clearPermissionsActivity": {
+    "message": "Clear Permissions Activity"
+  },
+  "clearPermissionsActivityDescription": {
+    "message": "Clear the permissions activity log."
+  },
+  "permissionsHistorySettings": {
+    "message": "Permissions History"
+  },
+  "permissionsHistoryDescription": {
+    "message": "A list of dapps/domains and all permissions they've ever had."
+  },
+  "permissionsHistoryEmpty": {
+    "message": "No permissions history found."
+  },
+  "clearPermissionsHistory": {
+    "message": "Clear Permissions History"
+  },
+  "clearPermissionsHistoryDescription": {
+    "message": "Clear the permissions history."
   },
   "reject": {
     "message": "Reject"

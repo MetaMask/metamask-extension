@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Modal, { ModalContent } from '../../modal'
 
-export default class ClearPermissions extends PureComponent {
+export default class ClearPermissionsActivity extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    clearPermissions: PropTypes.func.isRequired,
+    clearPermissionsLog: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -13,8 +13,8 @@ export default class ClearPermissions extends PureComponent {
   }
 
   handleClear = () => {
-    const { clearPermissions, hideModal } = this.props
-    clearPermissions()
+    const { clearPermissionsLog, hideModal } = this.props
+    clearPermissionsLog()
     hideModal()
   }
 
@@ -30,7 +30,7 @@ export default class ClearPermissions extends PureComponent {
         submitType="secondary"
       >
         <ModalContent
-          title={t('clearPermissions')}
+          title={t('clearPermissionsActivity')}
           description={t('confirmClear')}
         />
       </Modal>

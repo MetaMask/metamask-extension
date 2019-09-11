@@ -2,16 +2,16 @@
   "confirmClear": {
     "message": "Weet je zeker dat je goedgekeurde websites wilt wissen?"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "Goedgekeurde websitegegevens zijn met succes gewist."
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "Goedkeuringsgegevens"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "Goedgekeurde websitegegevens wissen zodat alle sites opnieuw goedkeuring moeten aanvragen."
   },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "Gegevens over goedkeuring wissen"
   },
   "reject": {

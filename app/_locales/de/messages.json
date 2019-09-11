@@ -11,16 +11,16 @@
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "Genehmigungsdaten"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
   },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "Genehmigungsdaten löschen"
   },
   "reject": {
