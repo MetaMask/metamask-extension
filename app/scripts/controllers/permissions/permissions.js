@@ -1,81 +1,63 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+
+const getRestrictedMethods = require('./restrictedMethods')
+const createRequestMiddleware = require('./requestMiddleware')
+const createLoggerMiddleware = require('./loggerMiddleware')
 
 // Methods that do not require any permissions to use:
-const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
+const SAFE_METHODS = require('./permissions-safe-methods.json')
 
-const METHOD_PREFIX = 'wallet_'
+const METADATA_STORE_KEY = 'siteMetadata'
+const LOG_STORE_KEY = 'permissionsLog'
+const HISTORY_STORE_KEY = 'permissionsHistory'
+const WALLET_METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
 
 function prefix (method) {
-  return METHOD_PREFIX + method
+  return WALLET_METHOD_PREFIX + method
 }
 
 // class PermissionsController extends SafeEventEmitter {
 class PermissionsController {
 
-  constructor ({
-    openPopup, closePopup, keyringController,
-  } = {}, restoredPermissions = {}, restoredState = { siteMetadata: {} }) {
+  constructor (
+    { openPopup, closePopup, keyringController} = {},
+    restoredPermissions = {},
+    restoredState = {}) {
     this.store = new ObservableStore({
-      siteMetadata: { ...restoredState.siteMetadata },
+      [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
+      [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
+      [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
+    this._restrictedMethods = getRestrictedMethods(this)
     this._initializePermissions(restoredPermissions)
   }
 
   createMiddleware (options) {
     const { origin } = options
     const engine = new JsonRpcEngine()
-    engine.push(this.createRequestMiddleware(options))
+    engine.push(createRequestMiddleware({
+      internalPrefix: INTERNAL_METHOD_PREFIX,
+      store: this.store,
+      storeKey: METADATA_STORE_KEY,
+    }))
+    engine.push(createLoggerMiddleware({
+      walletPrefix: WALLET_METHOD_PREFIX,
+      restrictedMethods: Object.keys(this._restrictedMethods),
+      store: this.store,
+      logStoreKey: LOG_STORE_KEY,
+      historyStoreKey: HISTORY_STORE_KEY,
+    }))
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
     return asMiddleware(engine)
-  }
-
-  /**
-   * Create middleware for preprocessing permissions requests.
-   */
-  createRequestMiddleware () {
-    return createAsyncMiddleware(async (req, res, next) => {
-
-      if (typeof req.method !== 'string') {
-        res.error = rpcErrors.invalidRequest(null, req)
-        return // TODO:json-rpc-engine
-      }
-
-      if (req.method.startsWith(INTERNAL_METHOD_PREFIX)) {
-        switch (req.method.split(INTERNAL_METHOD_PREFIX)[1]) {
-          case 'sendSiteMetadata':
-            if (
-              req.siteMetadata &&
-              typeof req.siteMetadata.name === 'string'
-            ) {
-              this.store.putState({
-                siteMetadata: {
-                  ...this.store.getState().siteMetadata,
-                  [req.origin]: req.siteMetadata,
-                },
-              })
-            }
-            break
-          default:
-            res.error = rpcErrors.methodNotFound(null, req.method)
-            break
-        }
-        if (!res.error) res.result = true
-        return
-      }
-
-      return next()
-    })
   }
 
   /**
@@ -122,6 +104,24 @@ class PermissionsController {
    */
   clearPermissions () {
     this.permissions.clearDomains()
+  }
+
+  /**
+   * Clears the permissions log.
+   */
+  clearLog () {
+    this.store.updateState({
+      [LOG_STORE_KEY]: [],
+    })
+  }
+
+  /**
+   * Clears the permissions history.
+   */
+  clearHistory () {
+    this.store.updateState({
+      [HISTORY_STORE_KEY]: {},
+    })
   }
 
   /**
@@ -172,44 +172,9 @@ class PermissionsController {
       safeMethods: SAFE_METHODS,
 
       // optional prefix for internal methods
-      methodPrefix: METHOD_PREFIX,
+      methodPrefix: WALLET_METHOD_PREFIX,
 
-      restrictedMethods: {
-
-        'eth_accounts': {
-          description: 'View Ethereum accounts',
-          method: (_, res, __, end) => {
-            this.keyringController.getAccounts()
-              .then((accounts) => {
-                res.result = accounts
-                end()
-              })
-              .catch((reason) => {
-                res.error = reason
-                end(reason)
-              })
-          },
-        },
-
-        // Restricted methods themselves are defined as
-        // json-rpc-engine middleware functions.
-        'readYourProfile': {
-          description: 'Read from your profile',
-          method: (_req, res, _next, end) => {
-            res.result = this.testProfile
-            end()
-          },
-        },
-        'writeToYourProfile': {
-          description: 'Write to your profile.',
-          method: (req, res, _next, end) => {
-            const [ key, value ] = req.params
-            this.testProfile[key] = value
-            res.result = this.testProfile
-            return end()
-          },
-        },
-      },
+      restrictedMethods: this._restrictedMethods,
 
       /**
        * A promise-returning callback used to determine whether to approve
@@ -229,12 +194,7 @@ class PermissionsController {
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }
-        },
-        // TODO: This should be persisted/restored state.
-        {})
-
-        // TODO: Attenuate requested permissions in approval screen.
-        // Like selecting the account to display.
+        })
       },
     }, initState)
   }

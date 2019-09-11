@@ -167,6 +167,7 @@
     "request-promise": "^4.2.1",
     "reselect": "^3.0.1",
     "safe-event-emitter": "^1.0.1",
+    "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
     "string.prototype.matchall": "^3.0.1",
     "swappable-obj-proxy": "^1.1.0",

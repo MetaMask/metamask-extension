@@ -11,16 +11,16 @@
   "contractInteraction": {
     "message": "Interacción con contrato"
   },
-  "clearPermissionsDataSuccess": {
+  "clearPermissionsSuccess": {
     "message": "Los datos aprobados del sitio web se borraron con éxito."
   },
-  "permissionsData": {
+  "permissionsSettings": {
     "message": "Datos de aprobación"
   },
-  "permissionsDataDescription": {
+  "permissionsDescription": {
     "message": "Borrar la información privada de modo que todos los sitios deban volver a requerir acceso para acceder a los datos de la cuenta."
   },
-  "clearPermissionsData": {
+  "clearPermissions": {
     "message": "Borrar datos de aprobación"
   },
   "reject": {
