@@ -102,7 +102,11 @@ jobs:
           command: |
            echo "TODO - create uncorruptable report showing the unmodified dependency inputs at "$(yarn cache dir)""
       - run:
-          name: Install deps
+          name: Clean for proper install
+          command: |
+           rm -rf node_modules
+      - run:
+          name: Install deps from cache
           command: |
            yarn --frozen-lockfile --offline
       - persist_to_workspace:
