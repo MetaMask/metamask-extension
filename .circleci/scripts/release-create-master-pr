@@ -31,8 +31,7 @@ function install_github_cli ()
     popd
 }
 
-version="${CIRCLE_BRANCH/Version-v/}"
-base_branch='master'
+base_branch='develop'
 
 if [[ -n "${CI_PULL_REQUEST:-}" ]]
 then
@@ -42,11 +41,11 @@ fi
 
 install_github_cli
 
-printf '%s\n' "Creating a Pull Request for $version on GitHub"
+printf '%s\n' "Creating a Pull Request to sync 'master' with 'develop'"
 
 if ! hub pull-request \
     --reviewer '@MetaMask/extension-release-team' \
-    --message "${CIRCLE_BRANCH/-/ } RC" --message ':package: :rocket:' \
+    --message "Master => develop" --message 'Merge latest release back into develop' \
     --base "$CIRCLE_PROJECT_USERNAME:$base_branch" \
     --head "$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH";
 then

@@ -14,13 +14,6 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - create_github_release:
-          requires:
-            - prep-build
-          filters:
-            branches:
-              only:
-                - develop
       # - prep-docs:
       #    requires:
       #      - prep-deps
@@ -243,6 +236,13 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: yarn sentry:publish
+      - run:
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release
+      - run:
+          name: Create GitHub Pull Request to sync master with develop
+          command: .circleci/scripts/release-create-master-pr
       # - run:
       #    name: github gh-pages docs publish
       #    command: >
@@ -321,15 +321,3 @@ jobs:
       - run:
           name: Coveralls upload
           command: yarn test:coveralls-upload
-
-  create_github_release:
-    docker:
-      - image: circleci/node:8.15.1-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Create GitHub release
-          command: |
-            .circleci/scripts/release-create-gh-release
