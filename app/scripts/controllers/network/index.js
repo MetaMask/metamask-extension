@@ -185,13 +185,7 @@ module.exports = class NetworkController extends EventEmitter {
 
 
   async setNetwork ({rpcUrl, type}) {
-    const network = this.networks.find((network) => {
-      if (rpcUrl) {
-        return network.providerConfig.rpcUrl === rpcUrl
-      } else {
-        return network.providerConfig.type === type
-      }
-    }) || {}
+    const network = this.networks[rpcUrl || type] || {}
     const { provider, blockTracker } = network
     if (!network.initialized) {
       network.initializeProvider(this._baseOpts)
@@ -203,6 +197,7 @@ module.exports = class NetworkController extends EventEmitter {
     }
     this.selectedNetwork = network
     this.selectedNetworkConfig = network.providerConfig
+    this.store.updateState({provider: network.providerConfig})
   }
 
 
@@ -223,7 +218,15 @@ module.exports = class NetworkController extends EventEmitter {
     })
     if (index > -1) {
       const config = this.networkConfigs[index]
-      this.networkConfigs[index] = extend(config, newRpcConfig)
+      this.networkConfigs[index] = {
+        ...config,
+        ...newRpcConfig,
+        custom: {
+          ...config.custom,
+          ...newRpcConfig.custom,
+        },
+      }
+
       this.store.updateState({ networkConfigs: this.networkConfigs })
     } else {
       this.addNetwork(newRpcConfig)
@@ -233,7 +236,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   resetConnection () {
-    // this.F = this.getProviderConfig()
+    this.selectedNetworkConfig = this.getProviderConfig()
   }
   //
   // Private

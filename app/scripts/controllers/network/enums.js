@@ -32,7 +32,7 @@ const DEFAULT_LIST = [
   {
     type: RINKEBY,
     custom: {
-      chainId: RINKEYBY_CODE,
+      chainId: RINKEBY_CODE,
       ticker: 'ETH',
     },
   },

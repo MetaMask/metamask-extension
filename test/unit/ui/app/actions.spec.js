@@ -25,7 +25,7 @@ const devState = require('../../../data/2-state.json')
 const middleware = [thunk]
 const mockStore = configureStore(middleware)
 
-describe('Actions', () => {
+describe.only('Actions', () => {
 
   const noop = () => {}
 
@@ -82,11 +82,9 @@ describe('Actions', () => {
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
       verifySeedPhraseSpy = sinon.spy(background, 'verifySeedPhrase')
 
-      return store.dispatch(actions.tryUnlockMetamask())
-        .then(() => {
-          assert(submitPasswordSpy.calledOnce)
-          assert(verifySeedPhraseSpy.calledOnce)
-        })
+      await store.dispatch(actions.tryUnlockMetamask())
+      assert(submitPasswordSpy.calledOnce)
+      assert(verifySeedPhraseSpy.calledOnce)
     })
 
     it('errors on submitPassword will fail', async () => {

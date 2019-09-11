@@ -452,8 +452,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
-      setCustomRpc: nodeify(this.setCustomRpc, this),
-      updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
+      setCustomRpc: this.setCustomRpc.bind(this),
+      updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
@@ -1645,15 +1645,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  setCustomRpc (opts) {
+  async setCustomRpc (opts) {
     const config = this.networkController.networkConfigs.find((net) => net.rpcUrl === opts.rpcUrl)
 
-    if (config) {
-      this.networkController.setNetwork(config)
-    } else {
+    if (!config) {
       this.networkController.addNetwork(opts)
-      this.networkController.setNetwork(opts)
     }
+    await this.networkController.setNetwork(opts)
     return opts.rpcUrl
   }
 

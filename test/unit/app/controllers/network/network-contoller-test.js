@@ -117,6 +117,6 @@ describe('Network utils', () => {
       },
     ]
 
-    tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
+    tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected, `expected: ${expected} for ${input}, got: ${getNetworkDisplayName(input)}`))
   })
 })
