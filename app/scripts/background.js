@@ -233,11 +233,13 @@ function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
+  const { ABTestController = {} } = initState
+  const { abTests = {} } = ABTestController
 
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
-    showUnapprovedTx: triggerUi,
+    showUnapprovedTx: abTests.fullScreenVsPopup === 'fullScreen' ? triggerUiInNewTab : triggerUi,
     openPopup: openPopup,
     closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
@@ -432,6 +434,18 @@ function triggerUi () {
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
       notificationIsOpen = true
+    }
+  })
+}
+
+/**
+ * Opens a new browser tab for user confirmation
+ */
+function triggerUiInNewTab () {
+  extension.tabs.query({ active: true }, tabs => {
+    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+    if (!currentlyActiveMetamaskTab) {
+      platform.openExtensionInBrowser()
     }
   })
 }

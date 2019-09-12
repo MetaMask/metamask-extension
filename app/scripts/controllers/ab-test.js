@@ -24,7 +24,7 @@ class ABTestController {
     this.store = new ObservableStore(extend({
       abTests: {
         fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
-      }
+      },
     }, initState))
   }
 
