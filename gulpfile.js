@@ -212,7 +212,7 @@ gulp.task('manifest:testing', function () {
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
-      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/8889']
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
       return json
     }))
 
@@ -234,7 +234,7 @@ gulp.task('manifest:testing-local', function () {
         ...json.background,
         scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
       }
-      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/8889']
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
       return json
     }))
 
