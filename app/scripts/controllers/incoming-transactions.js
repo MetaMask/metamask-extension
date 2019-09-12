@@ -171,12 +171,8 @@ class IncomingTransactionsController {
   }
 
   async _fetchAll (address, fromBlock, networkType) {
-    try {
-      const fetchedTxResponse = await this._fetchTxs(address, fromBlock, networkType)
-      return this._processTxFetchResponse(fetchedTxResponse)
-    } catch (err) {
-      log.error(err)
-    }
+    const fetchedTxResponse = await this._fetchTxs(address, fromBlock, networkType)
+    return this._processTxFetchResponse(fetchedTxResponse)
   }
 
   async _fetchTxs (address, fromBlock, networkType) {
