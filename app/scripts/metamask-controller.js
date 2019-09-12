@@ -39,6 +39,7 @@ const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const ProviderApprovalController = require('./controllers/provider-approval')
+const ABTestController = require('./controllers/ab-test')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -270,6 +271,10 @@ module.exports = class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
     })
 
+    this.abTestController = new ABTestController({
+      initState: initState.ABTestController,
+    })
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
@@ -285,6 +290,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ProviderApprovalController: this.providerApprovalController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      ABTestController: this.abTestController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -311,6 +317,7 @@ module.exports = class MetamaskController extends EventEmitter {
       IncomingTransactionsController: this.incomingTransactionsController.store,
       // ThreeBoxController
       ThreeBoxController: this.threeBoxController.store,
+      ABTestController: this.abTestController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -426,6 +433,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const providerApprovalController = this.providerApprovalController
     const onboardingController = this.onboardingController
     const threeBoxController = this.threeBoxController
+    const abTestController = this.abTestController
 
     return {
       // etc
@@ -539,6 +547,9 @@ module.exports = class MetamaskController extends EventEmitter {
       getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
       turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
+
+      // a/b test controller
+      getAssignedABTestGroupName: nodeify(abTestController.getAssignedABTestGroupName, abTestController),
     }
   }
 
