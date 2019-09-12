@@ -1,3 +1,6 @@
+// polyfills
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
 const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } = require('./lib/enums')
