@@ -19,16 +19,19 @@ module.exports = {
 
 function transformState (state) {
   const { ABTestController: ABTestControllerState = {} } = state
+  const { abTests = {} } = ABTestControllerState
 
-  if (!ABTestControllerState.fullScreenVsPopup) {
+  if (!abTests.fullScreenVsPopup) {
     state = {
       ...state,
       ABTestController: {
         ...ABTestControllerState,
-        fullScreenVsPopup: getRandomArrayItem(ABTestController.abTestGroupNames.fullScreenVsPopup),
+        abTests: {
+          ...abTests,
+          fullScreenVsPopup: getRandomArrayItem(ABTestController.abTestGroupNames.fullScreenVsPopup),
+        },
       },
     }
   }
-
   return state
 }

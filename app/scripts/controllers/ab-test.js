@@ -21,9 +21,10 @@ class ABTestController {
    */
   constructor (opts = {}) {
     const { initState } = opts
-
     this.store = new ObservableStore(extend({
-      fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
+      abTests: {
+        fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
+      }
     }, initState))
   }
 
@@ -33,7 +34,7 @@ class ABTestController {
    * @return {string} the name of the assigned test group
    */
   getAssignedABTestGroupName (abTestKey) {
-    return this.store.getState()[abTestKey]
+    return this.store.getState().abTests[abTestKey]
   }
 
   /**

@@ -34,7 +34,9 @@ describe('migration #38', () => {
           })
         } catch (e) {
           assert.deepEqual(newStorage.data.ABTestController, {
-            'fullScreenVsPopup': 'fullScreen',
+            abTests: {
+              'fullScreenVsPopup': 'fullScreen',
+            },
           })
         }
         done()
@@ -47,7 +49,9 @@ describe('migration #38', () => {
       'meta': {},
       'data': {
         'ABTestController': {
-          'fullScreenVsPopup': 'fullScreen',
+          abTests: {
+            'fullScreenVsPopup': 'fullScreen',
+          },
         },
       },
     }
@@ -55,7 +59,9 @@ describe('migration #38', () => {
     migration38.migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data.ABTestController, {
-          'fullScreenVsPopup': 'fullScreen',
+          abTests: {
+            'fullScreenVsPopup': 'fullScreen',
+          },
         })
         done()
       })
