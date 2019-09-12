@@ -349,19 +349,19 @@ export default class ConfirmTransactionBase extends Component {
     const { metricsEvent } = this.context
     const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, actionKey, txData: { origin }, methodData = {} } = this.props
 
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'Cancel',
+      },
+      customVariables: {
+        recipientKnown: null,
+        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
+        origin,
+      },
+    })
     if (onCancel) {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Confirm Screen',
-          name: 'Cancel',
-        },
-        customVariables: {
-          recipientKnown: null,
-          functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
-          origin,
-        },
-      })
       onCancel(txData)
     } else {
       cancelTransaction(txData)
