@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
+const { getRandomArrayItem } = require('../lib/util')
 
 /**
  * a/b test descriptions:
@@ -12,9 +13,6 @@ const extend = require('xtend')
  *     - fullScreen: this is the only test group, which will cause users to be shown tx confirmations in a full screen
  *     browser tab
  */
-const abTestGroupNames = {
-  fullScreenVsPopup: ['control', 'fullScreen'],
-}
 
 class ABTestController {
   /**
@@ -45,10 +43,13 @@ class ABTestController {
    * @private
    */
   _getRandomizedTestGroupName (abTestKey) {
-    const nameArray = abTestGroupNames[abTestKey]
-    const randomIndex = Math.floor((Math.random() * nameArray.length))
-    return nameArray[randomIndex]
+    const nameArray = ABTestController.abTestGroupNames[abTestKey]
+    return getRandomArrayItem(nameArray)
   }
+}
+
+ABTestController.abTestGroupNames = {
+  fullScreenVsPopup: ['control', 'fullScreen'],
 }
 
 module.exports = ABTestController
