@@ -443,8 +443,12 @@ function triggerUi () {
  */
 function triggerUiInNewTab () {
   extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    if (!currentlyActiveMetamaskTab) {
+    const tabIdsArray = Object.keys(openMetamaskTabsIDs)
+    if (tabIdsArray.length) {
+      extension.tabs.update(parseInt(tabIdsArray[0], 10), { 'active': true }, () => {
+        extension.tabs.reload(parseInt(tabIdsArray[0], 10))
+      })
+    } else {
       platform.openExtensionInBrowser()
     }
   })
