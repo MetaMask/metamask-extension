@@ -43,6 +43,7 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setRestoredFromThreeBoxToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.string,
+    threeBoxFeatureFlagIsTrue: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -96,6 +97,7 @@ export default class Home extends PureComponent {
       setRestoredFromThreeBoxToFalse,
       restoredFromThreeBox,
       threeBoxLastUpdated,
+      threeBoxFeatureFlagIsTrue,
     } = this.props
 
     if (forgottenPassword) {
@@ -153,7 +155,7 @@ export default class Home extends PureComponent {
                       />,
                     },
                     {
-                      shouldBeRendered: threeBoxLastUpdated && restoredFromThreeBox === null,
+                      shouldBeRendered: threeBoxFeatureFlagIsTrue && threeBoxLastUpdated && restoredFromThreeBox === null,
                       component: <HomeNotification
                         descriptionText={t('restoreWalletPreferences', [ formatDate(parseInt(threeBoxLastUpdated), 'M/d/y') ])}
                         acceptText={t('restore')}
