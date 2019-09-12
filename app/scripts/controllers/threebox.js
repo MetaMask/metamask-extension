@@ -58,7 +58,11 @@ class ThreeBoxController {
     this.store = new ObservableStore(initState)
     this.registeringUpdates = false
 
-    this.init()
+    const threeBoxFeatureFlagTurnedOn = this.preferencesController.getFeatureFlags().threeBox
+
+    if (threeBoxFeatureFlagTurnedOn) {
+      this.init()
+    }
   }
 
   async init () {
