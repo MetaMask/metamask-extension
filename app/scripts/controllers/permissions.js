@@ -243,15 +243,11 @@ class PermissionsController {
     }
 
     this.pendingApprovals = {}
-    const api = this.getApi();
-    const translatedApi = {};
-    Object.keys(api).forEach(methodKey => {
-      translatedApi[`metamask_${methodKey}`] = api[methodKey];
-    });
+    const api = this.getApi()
 
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
-      ...translatedApi,
+      ...api,
       removePermissionsFor: this.removePermissionsFor.bind(this),
       getApprovedAccounts: this.getAccounts.bind(this),
     }
@@ -263,9 +259,9 @@ class PermissionsController {
       }
       return {
         ...acc,
-        [methodKey]: {
+        ['metamask_' + methodKey]: {
           description: pluginRestrictedMethodsDescriptions[methodKey] || methodKey,
-          method: externalMethodsToAddToRestricted[methodKey]
+          method: 'metamask_' + externalMethodsToAddToRestricted[methodKey],
         }
       }
     }, {})
