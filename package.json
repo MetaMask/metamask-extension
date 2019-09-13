@@ -115,7 +115,7 @@
     "lodash.shuffle": "^4.2.0",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
-    "metamask-inpage-provider": "^2.1.0",
+    "metamask-inpage-provider": "^3.0.0",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
     "multihashes": "^0.4.12",
