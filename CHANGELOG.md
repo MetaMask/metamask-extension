@@ -8,6 +8,10 @@
 - [#7110](https://github.com/MetaMask/metamask-extension/pull/7110): Adds `chaindIdChanged` event to the ethereum provider
 - [#7091](https://github.com/MetaMask/metamask-extension/pull/7091): Improve browser performance issues caused by missing locale errors
 - [#7085](https://github.com/MetaMask/metamask-extension/pull/7085): Prevent ineffectual speed ups of pending transactions that don't have the lowest nonce
+- [#7156](https://github.com/MetaMask/metamask-extension/pull/7156): Set minimum Firefox version to v56.2 to support Waterfox
+- [#7157](https://github.com/MetaMask/metamask-extension/pull/7157): Add polyfill for AbortController
+- [#7161](https://github.com/MetaMask/metamask-extension/pull/7161): Replace `undefined` selectedAddress with `null`
+- [#7171](https://github.com/MetaMask/metamask-extension/pull/7171): Fix recipient field of approve screen
 
 ## 7.1.1 Tue Aug 27 2019
 - [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
