@@ -1531,8 +1531,8 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  setupProvider (origin, getSiteMetadata) {
-    const engine = this.setupProviderEngine(origin, getSiteMetadata);
+  setupProvider (origin, getSiteMetadata, isPlugin) {
+    const engine = this.setupProviderEngine(origin, getSiteMetadata, isPlugin);
     const provider = providerFromEngine(engine);
     return provider;
   }
@@ -1540,7 +1540,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin) {
+  setupProviderEngine (origin, _, isPlugin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1561,7 +1561,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
     // permissions
-    engine.push(this.permissionsController.createMiddleware({ origin }))
+    engine.push(this.permissionsController.createMiddleware({ origin, isPlugin }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
 

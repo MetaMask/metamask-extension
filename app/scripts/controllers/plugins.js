@@ -78,7 +78,7 @@ class PluginsController extends EventEmitter {
       })
     }
 
-    const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } })
+    const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
     return ethereumProvider.sendAsync({
       method: 'wallet_requestPermissions',
