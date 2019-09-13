@@ -367,7 +367,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const result = {
         isUnlocked,
         isEnabled,
-        selectedAddress: isReady ? selectedAddress : undefined,
+        selectedAddress: isReady ? selectedAddress : null,
         networkVersion: network,
         onboardingcomplete: completedOnboarding,
         chainId: selectChainId({ network, provider }),

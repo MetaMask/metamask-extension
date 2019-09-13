@@ -14593,10 +14593,10 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-2.1.0.tgz#69e23d63893a5e2bb7a09a6ec96c6f1500588673"
-  integrity sha512-1+m8Mp8/RM9JMTvDHAMt6a7aqwigRMLvU/VKKmHQFi7AZaagG8Fe4wBe8HdAMysRF3NHV/qOMw0UwP3w9m1Vaw==
+metamask-inpage-provider@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-3.0.0.tgz#3b9d4bae6f67962b6a7b1a9ee1efaf424f67b6f4"
+  integrity sha512-44bBCbQwcFF/XGaXSweCWHJaslKhJEFgvcHdxZf9Fm1QfK7VN4U3iAI0BVOLAIkRg0xV3w7xYGLpx2cM1BU7Qw==
   dependencies:
     json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
