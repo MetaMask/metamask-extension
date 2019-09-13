@@ -252,7 +252,10 @@ class PermissionsController {
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
       ...translatedApi,
+      removePermissionsFor: this.removePermissionsFor.bind(this),
+      getApprovedAccounts: this.getAccounts.bind(this),
     }
+
     const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
       const hasDescription = externalMethodsToAddToRestricted[methodKey];
       if (!hasDescription) {

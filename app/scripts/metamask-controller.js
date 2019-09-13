@@ -647,13 +647,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
-
-      // permissions
-      // approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
-      // rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
-      // removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
-      // clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
-      // getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
     }
   }
 
