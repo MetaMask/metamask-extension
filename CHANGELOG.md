@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
 
 ## 7.1.1 Tue Aug 27 2019
 - [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
