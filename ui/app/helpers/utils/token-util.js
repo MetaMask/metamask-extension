@@ -135,5 +135,5 @@ export function getTokenValue (tokenParams = []) {
 
 export function getTokenToAddress (tokenParams = []) {
   const toAddressData = tokenParams.find(param => param.name === '_to')
-  return toAddressData && toAddressData.value
+  return toAddressData ? toAddressData.value : tokenParams[0].value
 }
