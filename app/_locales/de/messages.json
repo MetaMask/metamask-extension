@@ -33,7 +33,7 @@
     "message": "$1 möchte sich mit deinem Account verbinden"
   },
   "providerRequestInfo": {
-    "message": "Die unten aufgeführte Domäne versucht, Zugriff auf die Ethereum-API anzufordern, damit sie mit der Ethereum-Blockchain interagieren kann. Überprüfen Sie immer, dass Sie sich auf der richtigen Website befinden, bevor Sie den Web3-Zugriff genehmigen."
+    "message": "Diese Website fordert Zugriff auf Ihre aktuelle Kontoadresse. Stellen Sie immer sicher, dass Sie den Websites vertrauen, mit denen Sie interagieren."
   },
   "about": {
     "message": "Über"
