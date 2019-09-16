@@ -9,7 +9,7 @@ module.exports = class ExtensionStore {
    * @constructor
    */
   constructor () {
-    this.isSupported = !!(extension.storage.local)
+    this.isSupported = Boolean(extension.storage && extension.storage.local)
     if (!this.isSupported) {
       log.error('Storage local API not available.')
     }
@@ -41,6 +41,13 @@ module.exports = class ExtensionStore {
   }
 
   /**
+   * Clears local state
+   * @return {Promise<void>}
+   */
+  async clear () {
+    return this._clear()
+  }
+  /**
    * Returns all of the keys currently saved
    * @private
    * @return {object} the key-value map from local storage
@@ -70,6 +77,25 @@ module.exports = class ExtensionStore {
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
         const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  /**
+   * Clears local state
+   * @return {Promise<void>}
+   * @private
+   */
+  _clear () {
+    const local = extension.storage.local
+    return new Promise((resolve, reject) => {
+      local.clear(() => {
+        const err = extension.runtime.lastError
         if (err) {
           reject(err)
         } else {

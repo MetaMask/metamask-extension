@@ -58,6 +58,7 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const contractMap = require('eth-contract-metadata')
+const LocalStore = require('./lib/local-store')
 const {
   AddressBookController,
   CurrencyRateController,
@@ -65,6 +66,8 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
+
+const localStore = new LocalStore()
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -631,6 +634,16 @@ module.exports = class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
+
+      // clear local store
+      if (localStore.isSupported) {
+        try {
+          await localStore.clear()
+        } catch (error) {
+          log.error('Error clearing local store: ', error)
+        }
+      }
+
       releaseLock()
       return vault
     } catch (err) {
