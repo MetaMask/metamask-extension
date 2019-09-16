@@ -49,7 +49,7 @@ class ProviderApprovalController extends SafeEventEmitter {
       if (approved) {
         res.result = [this.preferencesController.getSelectedAddress()]
       } else {
-        throw rpcErrors.eth.userRejectedRequest('User denied account authorization.')
+        throw rpcErrors.eth.userRejectedRequest('User denied account authorization')
       }
     })
   }
