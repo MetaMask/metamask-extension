@@ -14,7 +14,6 @@ const pump = require('pump')
 const debounce = require('debounce-stream')
 const log = require('loglevel')
 const extension = require('extensionizer')
-const LocalStorageStore = require('obs-store/lib/localStorage')
 const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
@@ -43,7 +42,6 @@ const {
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
-const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -67,7 +65,6 @@ let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
 
 // state persistence
-const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 const localStore = new LocalStore()
 let versionedData
 
@@ -180,7 +177,6 @@ async function loadStateFromPersistence () {
   // read from disk
   // first from preferred, async API:
   versionedData = (await localStore.get()) ||
-                  diskStore.getState() ||
                   migrator.generateInitialState(firstTimeState)
 
   // check if somehow state is empty
@@ -188,21 +184,9 @@ async function loadStateFromPersistence () {
   // for a small number of users
   // https://github.com/metamask/metamask-extension/issues/3919
   if (versionedData && !versionedData.data) {
-    // try to recover from diskStore incase only localStore is bad
-    const diskStoreState = diskStore.getState()
-    if (diskStoreState && diskStoreState.data) {
-      // we were able to recover (though it might be old)
-      versionedData = diskStoreState
-      const vaultStructure = getObjStructure(versionedData)
-      sentry.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
-        // "extra" key is required by Sentry
-        extra: { vaultStructure },
-      })
-    } else {
-      // unable to recover, clear state
-      versionedData = migrator.generateInitialState(firstTimeState)
-      sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
-    }
+    // unable to recover, clear state
+    versionedData = migrator.generateInitialState(firstTimeState)
+    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
   }
 
   // report migration errors to sentry
