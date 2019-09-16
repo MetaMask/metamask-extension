@@ -1727,9 +1727,9 @@
     "@hapi/joi" "15.x.x"
 
 "@hapi/subtext@6.x.x":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@hapi/subtext/-/subtext-6.1.1.tgz#3b63b4175a7bd06cd0d21f13912c7d81de90e6d2"
-  integrity sha512-Y7NjKFRPwlzKRw5IdwRou42hR4IBQZolT+/DlvfSr/CBjGyu38n5+9LKfNKzqB/0AVEk+xynCijsx1o1UVWX8A==
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@hapi/subtext/-/subtext-6.1.2.tgz#87754f0c25b4e2676575a3686541e5b555b0c717"
+  integrity sha512-G1kqD1E2QdxpvpL26WieIyo3z0qCa/sAGSa2TJI/PYPWCR9rL0rqFvhWY774xPZ4uK1PV3TIaJcx8AruAvxclg==
   dependencies:
     "@hapi/boom" "7.x.x"
     "@hapi/bourne" "1.x.x"
