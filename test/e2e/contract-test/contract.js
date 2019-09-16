@@ -129,10 +129,10 @@ web3.currentProvider.enable().then(() => {
           })
 
           approveTokens.addEventListener('click', function () {
-            contract.approve('0x2f318C334780961FB129D2a6c30D0763d9a5C970', '70000', {
+            contract.approve('0x9bc5baF874d2DA8D216aE9f137804184EE5AfEF4', '70000', {
               from: web3.eth.accounts[0],
               to: contract.address,
-              data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
+              data: '0x095ea7b30000000000000000000000009bc5baF874d2DA8D216aE9f137804184EE5AfEF40000000000000000000000000000000000000000000000000000000000000005',
               gas: 60000,
               gasPrice: '20000000000',
             }, function (result) {
