@@ -3,6 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
@@ -166,11 +167,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(cleanErrorStack(new Error('MetaMask Tx Signature: User denied transaction signature.')))
+            return reject(cleanErrorStack(rpcErrors.eth.userRejectedRequest('MetaMask Tx Signature: User denied transaction signature.')))
           case 'failed':
-            return reject(cleanErrorStack(new Error(finishedTxMeta.err.message)))
+            return reject(cleanErrorStack(rpcErrors.internal(finishedTxMeta.err.message)))
           default:
-            return reject(cleanErrorStack(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
+            return reject(cleanErrorStack(rpcErrors.internal(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })
