@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from '../../../components/ui/toggle-button'
 import TextField from '../../../components/ui/text-field'
@@ -26,6 +27,10 @@ export default class AdvancedTab extends PureComponent {
     autoLogoutTimeLimit: PropTypes.number,
     setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
+    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
+    threeBoxDisabled: PropTypes.bool.isRequired,
+    threeBoxFeatureFlag: PropTypes.bool.isRequired,
   }
 
   state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
@@ -250,8 +255,53 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderThreeBoxControl () {
+    const { t } = this.context
+    const {
+      threeBoxSyncingAllowed,
+      setThreeBoxSyncingPermission,
+      threeBoxDisabled,
+    } = this.props
+
+    let allowed = threeBoxSyncingAllowed
+    let description = t('syncWithThreeBoxDescription')
+
+    if (threeBoxDisabled) {
+      allowed = false
+      description = t('syncWithThreeBoxDisabled')
+    }
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithThreeBox') }</span>
+          <div className="settings-page__content-description">
+            { description }
+          </div>
+        </div>
+        <div
+          className={classnames('settings-page__content-item', {
+            'settings-page__content-item--disabled': threeBoxDisabled,
+          })}
+        >
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={allowed}
+              onToggle={value => {
+                if (!threeBoxDisabled) {
+                  setThreeBoxSyncingPermission(!value)
+                }
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
-    const { warning } = this.props
+    const { warning, threeBoxFeatureFlag } = this.props
 
     return (
       <div className="settings-page__body">
@@ -263,6 +313,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
         { this.renderAutoLogoutTimeLimit() }
+        { threeBoxFeatureFlag ? this.renderThreeBoxControl() : null }
       </div>
     )
   }
