@@ -24,6 +24,9 @@ const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token'
 const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
+const CONNECT_TRUSTVAULT_ROUTE = '/new-account/trustvault/connect'
+const TRUSTVAULT_EMAIL_ROUTE = '/new-account/trustvault/email'
+const TRUSTVAULT_PIN_ROUTE = '/new-account/trustvault/pin'
 const SEND_ROUTE = '/send'
 
 const INITIALIZE_ROUTE = '/initialize'
@@ -61,6 +64,9 @@ module.exports = {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONNECT_TRUSTVAULT_ROUTE,
+  TRUSTVAULT_EMAIL_ROUTE,
+  TRUSTVAULT_PIN_ROUTE,
   SEND_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_WELCOME_ROUTE,

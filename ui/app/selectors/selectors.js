@@ -93,6 +93,8 @@ function getAccountType (state) {
     case 'Trezor Hardware':
     case 'Ledger Hardware':
       return 'hardware'
+    case 'TrustVault':
+      return 'trustvault'
     case 'Simple Key Pair':
       return 'imported'
     default:

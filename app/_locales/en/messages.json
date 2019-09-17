@@ -363,11 +363,17 @@
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
+  "connectTrustVault": {
+    "message": "Connect TrustVault"
+  },
   "connect": {
     "message": "Connect"
   },
   "connectRequest": {
     "message": "Connect Request"
+  },
+  "connectSoftware": {
+    "message": "Connect Software"
   },
   "connecting": {
     "message": "Connecting..."
@@ -401,6 +407,9 @@
   },
   "connectToTrezor": {
     "message": "Connect to Trezor"
+  },
+  "connectToTrustVault": {
+    "message": "Connect to TrustVault"
   },
   "contacts": {
     "message": "Contacts"
@@ -594,6 +603,9 @@
   },
   "editingTransaction": {
     "message": "Make changes to your transaction"
+  },
+  "emailAddress": {
+    "message": "Email address"
   },
   "emailUs": {
     "message": "Email us!"
@@ -794,6 +806,9 @@
   },
   "hardware": {
     "message": "hardware"
+  },
+  "trustvault": {
+    "message": "trustvault"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -1094,6 +1109,9 @@
   "newToMetaMask": {
     "message": "New to MetaMask?"
   },
+  "next": {
+    "message": "Next"
+  },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
@@ -1154,7 +1172,10 @@
   "notFound": {
     "message": "Not Found"
   },
-  "notStarted": {
+  "not": {
+    "message": "Not"
+  },
+  "notUserEmail": {
     "message": "Not Started"
   },
   "noWebcamFoundTitle": {
@@ -1573,6 +1594,9 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
+  "softwareWalletConnected": {
+    "message": "Software wallet successfully connected"
+  },
   "spaceBetween": {
     "message": "there can only be a space between words"
   },
@@ -1783,6 +1807,18 @@
   },
   "trezorHardwareWallet": {
     "message": "TREZOR Hardware Wallet"
+  },
+  "trustVaultWelcome": {
+    "message": "Welcome to TrustVault"
+  },
+  "trustVaultEnterEmail": {
+    "message": "Please enter your email to continue"
+  },
+  "trustVaultEnterPin": {
+    "message": "Please enter the following characters of your PIN"
+  },
+  "trustVaultIncorrectPin": {
+    "message": "Invalid PIN. Please try again"
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
