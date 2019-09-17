@@ -17,6 +17,10 @@
   "clearApprovalData": {
     "message": "Tanggalin ang data ng pag-apruba"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Aprubahan"
   },

@@ -144,6 +144,10 @@
     "message": "En Ethereum-pung i din browser",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Godkend"
   },

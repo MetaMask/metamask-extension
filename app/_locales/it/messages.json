@@ -141,6 +141,10 @@
     "message": "Ethereum Browser Extension",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Approva"
   },

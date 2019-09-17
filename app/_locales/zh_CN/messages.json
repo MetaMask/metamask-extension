@@ -144,6 +144,10 @@
     "message": "以太坊浏览器插件",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "批准"
   },

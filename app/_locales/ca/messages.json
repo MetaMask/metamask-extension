@@ -144,6 +144,10 @@
     "message": "Un Moneder Ethereum al teu Navegador",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Aprovar"
   },

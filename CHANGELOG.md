@@ -2,7 +2,11 @@
 
 ## Current Develop Branch
 
+## 7.2.1 Tue Sep 17 2019
+- [#7180](https://github.com/MetaMask/metamask-extension/pull/7180): Add `appName` message to each locale
+
 ## 7.2.0 Mon Sep 8, 2019
+- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
 - [#7137](https://github.com/MetaMask/metamask-extension/pull/7137): Fix validation of empty block explorer url's in custom network form
 - [#7128](https://github.com/MetaMask/metamask-extension/pull/7128): Support for eth_signTypedData_v4
 - [#7110](https://github.com/MetaMask/metamask-extension/pull/7110): Adds `chaindIdChanged` event to the ethereum provider
@@ -23,7 +27,6 @@
 - [#7072](https://github.com/MetaMask/metamask-extension/pull/7072): Right-to-left CSS (using module for conversion)
 - [#6878](https://github.com/MetaMask/metamask-extension/pull/6878): Persian translation
 - [#7012](https://github.com/MetaMask/metamask-extension/pull/7012): Added missed phrases to RU locale
-- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
 
 ## 7.1.0 Fri Aug 16 2019
 - [#7035](https://github.com/MetaMask/metamask-extension/pull/7035): Filter non-ERC-20 assets during mobile sync (#7035)

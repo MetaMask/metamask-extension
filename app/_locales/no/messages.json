@@ -144,6 +144,10 @@
     "message": "En Ethereum-lommebok i nettleseren din",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Godkjenn"
   },
