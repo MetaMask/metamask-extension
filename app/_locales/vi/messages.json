@@ -51,6 +51,10 @@
     "message": "Tính năng Ethereum cho trình duyệt",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Phê duyệt"
   },

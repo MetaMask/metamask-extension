@@ -72,6 +72,10 @@
     "message": "Ekstansyon Navigatè Ethereum",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Apwouve"
   },
