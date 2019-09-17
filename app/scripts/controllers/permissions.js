@@ -327,10 +327,9 @@ class PermissionsController {
             const pluginName = pluginNameMatch && pluginNameMatch[1]
 
             const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
-
-            const response = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
-
-            return res
+            const result = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+            res.result = result
+            return end()
           },
         },
 
