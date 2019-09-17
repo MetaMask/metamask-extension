@@ -15,7 +15,6 @@ class TrustvaultKeyring extends EventEmitter {
     super()
     this.type = type
     this.unlockedAccount = 0
-    this.paths = {}
     this.deserialize(opts)
     this.client = new GraphQLClient(trustVaultBridgeUrl)
     this.client.setHeader('x-api-key', apiKey)
@@ -30,12 +29,8 @@ class TrustvaultKeyring extends EventEmitter {
       hdPath: this.hdPath,
       accounts: this.accounts,
       addressNameMap: this.addressNameMap,
-      page: this.page,
-      paths: this.paths,
-      perPage: this.perPage,
       auth: this.auth,
       unlockedAccount: this.unlockedAccount,
-      dateAccountsWereLastFetched: this.dateAccountsWereLastFetched
     })
   }
 
@@ -44,7 +39,6 @@ class TrustvaultKeyring extends EventEmitter {
     this.auth = opts.auth
     this.accounts = opts.accounts || []
     this.addressNameMap = opts.addressNameMap || []
-    this.dateAccountsWereLastFetched = opts.dateAccountsWereLastFetched
     return Promise.resolve()
   }
 
