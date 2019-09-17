@@ -104,7 +104,12 @@ class PluginsController extends EventEmitter {
   }
 
   _generateApisToProvide (requestedPermissions, pluginName) {
-    const apiList = requestedPermissions
+    const apiList = requestedPermissions.map(requestedPermission => {
+      const metamaskMethod = requestedPermission.match(/metamask_(.+)/)
+      return metamaskMethod
+        ? metamaskMethod[1]
+        : requestedPermission
+    })
     const updatePluginState = this.updatePluginState.bind(this, pluginName)
     const getPluginState = this.getPluginState.bind(this, pluginName)
     const possibleApis = {
