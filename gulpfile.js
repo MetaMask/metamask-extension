@@ -25,6 +25,7 @@ const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
 const mkdirp = require('mkdirp')
+const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
@@ -260,6 +261,12 @@ gulp.task('manifest:dev', function () {
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
+gulp.task('optimize:images', function () {
+  return gulp.src('./dist/**/images/**', {base: './dist/'})
+    .pipe(imagemin())
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
 gulp.task('copy',
   gulp.series(
     gulp.parallel(...copyTaskNames),
@@ -492,7 +499,8 @@ gulp.task('build',
       'build:extension:js:deps:ui',
       'build:extension:js',
       'copy'
-    )
+    ),
+    'optimize:images'
   )
 )
 
@@ -506,6 +514,7 @@ gulp.task('build:test',
       'build:test:extension:js',
       'copy'
     ),
+    'optimize:images',
     'manifest:testing'
   )
 )
@@ -517,7 +526,8 @@ gulp.task('build:extension',
     gulp.parallel(
       'build:extension:js',
       'copy'
-    )
+    ),
+    'optimize:images'
   )
 )
 
