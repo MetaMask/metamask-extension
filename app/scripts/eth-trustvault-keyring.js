@@ -184,7 +184,7 @@ class TrustvaultKeyring extends EventEmitter {
       return response
     } catch (e) {
       log.error(e)
-      if (e.message.substring(0, 13) === 'INVALID_TOKEN') {
+      if (e.message.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
         try {
           const query = this._refreshAuthTokensQuery(this.auth)
           const tokens = await this.client.request(query)
