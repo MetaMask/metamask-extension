@@ -3,6 +3,21 @@
 ## Current Develop Branch
 - [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
 
+## 7.2.1 Tue Sep 17 2019
+- [#7180](https://github.com/MetaMask/metamask-extension/pull/7180): Add `appName` message to each locale
+
+## 7.2.0 Mon Sep 8, 2019
+- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
+- [#7137](https://github.com/MetaMask/metamask-extension/pull/7137): Fix validation of empty block explorer url's in custom network form
+- [#7128](https://github.com/MetaMask/metamask-extension/pull/7128): Support for eth_signTypedData_v4
+- [#7110](https://github.com/MetaMask/metamask-extension/pull/7110): Adds `chaindIdChanged` event to the ethereum provider
+- [#7091](https://github.com/MetaMask/metamask-extension/pull/7091): Improve browser performance issues caused by missing locale errors
+- [#7085](https://github.com/MetaMask/metamask-extension/pull/7085): Prevent ineffectual speed ups of pending transactions that don't have the lowest nonce
+- [#7156](https://github.com/MetaMask/metamask-extension/pull/7156): Set minimum Firefox version to v56.2 to support Waterfox
+- [#7157](https://github.com/MetaMask/metamask-extension/pull/7157): Add polyfill for AbortController
+- [#7161](https://github.com/MetaMask/metamask-extension/pull/7161): Replace `undefined` selectedAddress with `null`
+- [#7171](https://github.com/MetaMask/metamask-extension/pull/7171): Fix recipient field of approve screen
+
 ## 7.1.1 Tue Aug 27 2019
 - [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
 - [#7037](https://github.com/MetaMask/metamask-extension/pull/7037): Remove Babel 6 from internal dependencies
@@ -13,7 +28,6 @@
 - [#7072](https://github.com/MetaMask/metamask-extension/pull/7072): Right-to-left CSS (using module for conversion)
 - [#6878](https://github.com/MetaMask/metamask-extension/pull/6878): Persian translation
 - [#7012](https://github.com/MetaMask/metamask-extension/pull/7012): Added missed phrases to RU locale
-- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
 
 ## 7.1.0 Fri Aug 16 2019
 - [#7035](https://github.com/MetaMask/metamask-extension/pull/7035): Filter non-ERC-20 assets during mobile sync (#7035)
