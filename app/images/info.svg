@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
-    <title>info</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Extension-(mobile-form-factor)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="info" fill="#FFFFFF">
-            <path d="M13.2142857,0.642857143 L13.2142857,0.5 L0.5,0.5 L0.5,13.2142857 L0.642857143,13.2142857 L0.642857143,0.642857143 L13.2142857,0.642857143 Z" id="Combined-Shape" stroke="#FFFFFF"></path>
-            <path d="M3.42857143,3.42857143 L3.42857143,14.8571429 L14.8571429,14.8571429 L14.8571429,3.42857143 L3.42857143,3.42857143 Z M2.28571429,2.28571429 L16,2.28571429 L16,16 L2.28571429,16 L2.28571429,2.28571429 Z" id="Rectangle-18-Copy" fill-rule="nonzero"></path>
-            <g id="Group-44" transform="translate(8.000000, 5.000000)">
-                <rect id="Rectangle-39" x="0" y="3" width="2" height="5" rx="1"></rect>
-                <rect id="Rectangle-39-Copy" x="0" y="0" width="2" height="2" rx="1"></rect>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><g fill="#fff" fill-rule="evenodd"><path d="m13.2142857.64285714v-.14285714h-12.7142857v12.7142857h.14285714v-12.57142856z" stroke="#fff"/><path d="m3.42857143 3.42857143v11.42857147h11.42857147v-11.42857147zm-1.14285714-1.14285714h13.71428571v13.71428571h-13.71428571z" fill-rule="nonzero"/><rect height="5" rx="1" width="2" x="8" y="8"/><rect height="2" rx="1" width="2" x="8" y="5"/></g></svg>
