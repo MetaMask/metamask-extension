@@ -23734,10 +23734,10 @@ sesify-tofu@^2.0.4:
   dependencies:
     acorn-globals "^4.3.3"
 
-sesify-viz@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/sesify-viz/-/sesify-viz-3.0.4.tgz#59c0be5d08392401f7175471c222baea15f6a739"
-  integrity sha512-89xAiRn32JR4vFZyWWq3AdqDbRmFDjs8U0ED1KKeTGnaTLEgbU1Dx9DqiVKoq8qkFkcwqGHrp3//ZPFaJmeFmA==
+sesify-viz@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/sesify-viz/-/sesify-viz-3.0.5.tgz#00640860c3adc9b4d3194ea7eb95337b8d314ee9"
+  integrity sha512-niq+b3FRpr6V0oJfqB+OohBu9WxAz9dKGdA0WWEWDm0gvfx5eHDiy75YGlnzzT4NkU2RAR8NqJHoKvltdDHL1g==
   dependencies:
     ncp "^2.0.0"
     pify "^4.0.1"
