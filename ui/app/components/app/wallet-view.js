@@ -142,6 +142,8 @@ WalletView.prototype.render = function () {
     if (type !== 'HD Key Tree') {
       if (type.toLowerCase().search('hardware') !== -1) {
         label = this.context.t('hardware')
+      } else if (type.toLowerCase().search('trustvault') !== -1) {
+        label = this.context.t('trustvault')
       } else {
         label = this.context.t('imported')
       }

@@ -8,11 +8,13 @@ const { getCurrentViewContext } = require('../../selectors/selectors')
 const classnames = require('classnames')
 const NewAccountCreateForm = require('./new-account')
 const NewAccountImportForm = require('./import-account')
-const ConnectHardwareForm = require('./connect-hardware')
+// const ConnectHardwareForm = require('./connect-hardware')
+const ConnectTrustVaultForm = require('./connect-software/trustvault')
 const {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONNECT_TRUSTVAULT_ROUTE,
 } = require('../../helpers/constants/routes')
 
 class CreateAccountPage extends Component {
@@ -26,7 +28,7 @@ class CreateAccountPage extends Component {
             path: NEW_ACCOUNT_ROUTE, exact: true,
           }),
         }),
-        onClick: () => history.push(NEW_ACCOUNT_ROUTE),
+        onClick: () => history.push(NEW_ACCOUNT_ROUTE)
       }, [
         this.context.t('create'),
       ]),
@@ -37,23 +39,33 @@ class CreateAccountPage extends Component {
             path: IMPORT_ACCOUNT_ROUTE, exact: true,
           }),
         }),
-        onClick: () => history.push(IMPORT_ACCOUNT_ROUTE),
+        onClick: () => history.push(IMPORT_ACCOUNT_ROUTE)
       }, [
         this.context.t('import'),
       ]),
-      h(
-        'div.new-account__tabs__tab',
-        {
-          className: classnames('new-account__tabs__tab', {
-            'new-account__tabs__selected': matchPath(location.pathname, {
-              path: CONNECT_HARDWARE_ROUTE,
-              exact: true,
-            }),
+      // h(
+      //   'div.new-account__tabs__tab',
+      //   {
+      //     className: classnames('new-account__tabs__tab', {
+      //       'new-account__tabs__selected': matchPath(location.pathname, {
+      //         path: CONNECT_HARDWARE_ROUTE,
+      //         exact: true,
+      //       }),
+      //     }),
+      //     onClick: () => history.push(CONNECT_HARDWARE_ROUTE),
+      //   },
+      //   this.context.t('connect')
+      // ),
+      h('div.new-account__tabs__tab', {
+        className: classnames('new-account__tabs__tab', {
+          'new-account__tabs__selected': matchPath(location.pathname, {
+            path: CONNECT_TRUSTVAULT_ROUTE, exact: true,
           }),
-          onClick: () => history.push(CONNECT_HARDWARE_ROUTE),
-        },
-        this.context.t('connect')
-      ),
+        }),
+        onClick: () => history.push(CONNECT_TRUSTVAULT_ROUTE)
+      }, [
+        this.context.t('connect'),
+      ]),
     ])
   }
 
@@ -61,7 +73,7 @@ class CreateAccountPage extends Component {
     return h('div.new-account', {}, [
       h('div.new-account__header', [
         h('div.new-account__title', this.context.t('newAccount')),
-        this.renderTabs(),
+        this.renderTabs()
       ]),
       h('div.new-account__form', [
         h(Switch, [
@@ -75,13 +87,18 @@ class CreateAccountPage extends Component {
             path: IMPORT_ACCOUNT_ROUTE,
             component: NewAccountImportForm,
           }),
+          // h(Route, {
+          //   exact: true,
+          //   path: CONNECT_HARDWARE_ROUTE,
+          //   component: ConnectHardwareForm
+          // }),
           h(Route, {
             exact: true,
-            path: CONNECT_HARDWARE_ROUTE,
-            component: ConnectHardwareForm,
-          }),
-        ]),
-      ]),
+            path: CONNECT_TRUSTVAULT_ROUTE,
+            component: ConnectTrustVaultForm,
+          })
+        ])
+      ])
     ])
   }
 }
