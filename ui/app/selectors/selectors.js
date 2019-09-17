@@ -58,6 +58,7 @@ const selectors = {
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
+  getFeatureFlags,
 }
 
 module.exports = selectors
@@ -368,4 +369,8 @@ function getKnownMethodData (state, data) {
   const { knownMethodData } = state.metamask
 
   return knownMethodData && knownMethodData[fourBytePrefix]
+}
+
+function getFeatureFlags (state) {
+  return state.metamask.featureFlags
 }

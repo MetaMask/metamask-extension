@@ -1,30 +1,22 @@
-const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
 } = require('./func')
 const {
   checkBrowserForConsoleErrors,
-  closeAllWindowHandlesExcept,
   findElement,
   findElements,
   openNewPage,
   switchToWindowWithTitle,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  setupFetchMocking,
+  prepareExtensionForTesting,
 } = require('./helpers')
-const fetchMockResponses = require('./fetch-mocks.js')
-
 
 describe('Using MetaMask with an existing account', function () {
-  let extensionId
   let driver
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
@@ -47,61 +39,9 @@ describe('Using MetaMask with an existing account', function () {
   this.bail(true)
 
   before(async function () {
-    let extensionUrl
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extensionPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extensionPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await delay(regularDelayMs)
-        extensionUrl = `chrome-extension://${extensionId}/home.html`
-        break
-      }
-      case 'firefox': {
-        const extensionPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extensionPath)
-        await delay(regularDelayMs)
-        extensionId = await getExtensionIdFirefox(driver)
-        extensionUrl = `moz-extension://${extensionId}/home.html`
-        break
-      }
-    }
-    // Depending on the state of the application built into the above directory (extPath) and the value of
-    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
-    // are closing any extraneous windows to reset us to a single window before continuing.
-    const [tab1] = await driver.getAllWindowHandles()
-    await closeAllWindowHandlesExcept(driver, [tab1])
-    await driver.switchTo().window(tab1)
-    await driver.get(extensionUrl)
-  })
-
-  beforeEach(async function () {
-    await driver.executeScript(
-      'window.origFetch = window.fetch.bind(window);' +
-      'window.fetch = ' +
-      '(...args) => { ' +
-      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
-      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
-      '(args[0].match(/chromeextensionmm/)) { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
-      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); };' +
-      'function cancelInfuraRequest(requestDetails) {' +
-        'console.log("Canceling: " + requestDetails.url);' +
-        'return {' +
-          'cancel: true' +
-        '};' +
-     ' }' +
-      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
-        'cancelInfuraRequest,' +
-        '{urls: ["https://*.infura.io/*"]},' +
-        '["blocking"]' +
-      ');'
-    )
+    const result = await prepareExtensionForTesting()
+    driver = result.driver
+    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {

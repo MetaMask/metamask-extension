@@ -7,7 +7,7 @@ import fetchWithTimeout from '../lib/fetch-with-timeout'
 const {
   MAINNET_CODE,
   ROPSTEN_CODE,
-  RINKEYBY_CODE,
+  RINKEBY_CODE,
   KOVAN_CODE,
   ROPSTEN,
   RINKEBY,
@@ -16,7 +16,7 @@ const {
 } = require('./network/enums')
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
-  [RINKEBY]: String(RINKEYBY_CODE),
+  [RINKEBY]: String(RINKEBY_CODE),
   [KOVAN]: String(KOVAN_CODE),
   [MAINNET]: String(MAINNET_CODE),
 }
@@ -171,12 +171,8 @@ class IncomingTransactionsController {
   }
 
   async _fetchAll (address, fromBlock, networkType) {
-    try {
-      const fetchedTxResponse = await this._fetchTxs(address, fromBlock, networkType)
-      return this._processTxFetchResponse(fetchedTxResponse)
-    } catch (err) {
-      log.error(err)
-    }
+    const fetchedTxResponse = await this._fetchTxs(address, fromBlock, networkType)
+    return this._processTxFetchResponse(fetchedTxResponse)
   }
 
   async _fetchTxs (address, fromBlock, networkType) {

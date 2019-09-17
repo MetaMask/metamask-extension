@@ -33,7 +33,7 @@
     "message": "$1 möchte sich mit deinem Account verbinden"
   },
   "providerRequestInfo": {
-    "message": "Die unten aufgeführte Domäne versucht, Zugriff auf die Ethereum-API anzufordern, damit sie mit der Ethereum-Blockchain interagieren kann. Überprüfen Sie immer, dass Sie sich auf der richtigen Website befinden, bevor Sie den Web3-Zugriff genehmigen."
+    "message": "Diese Website fordert Zugriff auf Ihre aktuelle Kontoadresse. Stellen Sie immer sicher, dass Sie den Websites vertrauen, mit denen Sie interagieren."
   },
   "about": {
     "message": "Über"
@@ -434,7 +434,7 @@
     "description": "Exchange type (cryptocurrencies)"
   },
   "currencyConversion": {
-    "message": "Währungsumrechung"
+    "message": "Währungsumrechnung"
   },
   "currentLanguage": {
     "message": "Aktuelle Sprache"
@@ -788,7 +788,7 @@
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
@@ -994,7 +994,7 @@
     "message": "Neue Adresse erkannt! Klicken Sie hier, um sie zu Ihrem Adressbuch hinzuzufügen."
   },
   "newAccountNumberName": {
-    "message": "Account  $1",
+    "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
@@ -1651,7 +1651,7 @@
     "message": "Transaktionsstornierung versucht mit Gasgebühr von $1 bei $2"
   },
   "transactionCancelSuccess": {
-    "message": "Transaktion bei  $2 erfolgreich storniert"
+    "message": "Transaktion bei $2 erfolgreich storniert"
   },
   "transactions": {
     "message": "Transaktionen"
@@ -1703,7 +1703,7 @@
     "message": "Willkommen zur neuen Oberfläche (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Du verwendest  nun die neue MetaMask Oberfläche. Schau dich um, teste die neuen Features wie z.B. das Senden von Token und lass es uns wissen falls du irgendwelche Probleme hast."
+    "message": "Du verwendest nun die neue MetaMask Oberfläche. Schau dich um, teste die neuen Features wie z.B. das Senden von Token und lass es uns wissen falls du irgendwelche Probleme hast."
   },
   "unapproved": {
     "message": "Nicht genehmigt"

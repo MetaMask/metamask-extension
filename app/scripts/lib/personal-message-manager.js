@@ -228,7 +228,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('PersonalMessageManager - Message not found for id: "${msgId}".')
+    if (!msg) throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
