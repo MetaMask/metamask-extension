@@ -98,7 +98,7 @@ class EmailScreen extends PureComponent {
       [
         h('img.sw-connect__btn__img', {
           src: 'images/trustvault-logo.png',
-          style: { width: 87, height: 100 }
+          style: { width: 100, height: 100 }
         })
       ]
     );
