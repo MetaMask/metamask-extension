@@ -26,6 +26,10 @@
   "clearApprovalData": {
     "message": "Rensa personlig data"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "reject": {
     "message": "Avvisa"
   },

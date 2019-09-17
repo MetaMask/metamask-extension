@@ -26,6 +26,10 @@
   "clearApprovalData": {
     "message": "Futa Data za Faragha"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "reject": {
     "message": "Kataa"
   },

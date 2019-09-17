@@ -63,6 +63,10 @@
     "message": "ส่วนขยายเบราว์เซอร์สำหรับอีเธอเรียม",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "อนุมัติ"
   },
