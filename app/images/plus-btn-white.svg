@@ -1,1 +1,6 @@
-<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><g fill="#fff" fill-rule="evenodd"><path d="m7.384615 0h1.230769v16h-1.230769z"/><path d="m7.384615 0h1.230769v16h-1.230769z" transform="matrix(0 -1 1 0 0 16)"/></g></svg>
+<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
+    <g fill="#fff" fill-rule="evenodd">
+        <path d="M7.385 0h1.23v16h-1.23z"/>
+        <path d="M0 8.615v-1.23h16v1.23z"/>
+    </g>
+</svg>
