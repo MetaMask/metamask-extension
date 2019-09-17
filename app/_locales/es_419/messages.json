@@ -144,6 +144,10 @@
     "message": "Una billetera de Ethereum en tu navegador",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Aprobar"
   },

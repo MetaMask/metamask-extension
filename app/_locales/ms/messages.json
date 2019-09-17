@@ -144,6 +144,10 @@
     "message": "Dompat Ethereum di Pelayar anda",
     "description": "The description of the application"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "approve": {
     "message": "Luluskan"
   },

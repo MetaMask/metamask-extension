@@ -26,6 +26,10 @@
   "clearApprovalData": {
     "message": "ಗೌಪ್ಯತೆ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "reject": {
     "message": "ತಿರಸ್ಕರಿಸಿ"
   },

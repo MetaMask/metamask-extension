@@ -26,6 +26,10 @@
   "clearApprovalData": {
     "message": "Limpar Dados de Privacidade"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "reject": {
     "message": "Rejeitar"
   },
