@@ -392,6 +392,8 @@ var actions = {
   setShowRestorePromptToFalse,
   turnThreeBoxSyncingOn,
   turnThreeBoxSyncingOnAndInitialize,
+
+  tryReverseResolveAddress,
 }
 
 module.exports = actions
@@ -596,6 +598,19 @@ function requestRevealSeedWords (password) {
       dispatch(actions.displayWarning(error.message))
       throw new Error(error.message)
     }
+  }
+}
+
+function tryReverseResolveAddress (address) {
+  return () => {
+    return new Promise((resolve) => {
+      background.tryReverseResolveAddress(address, (err) => {
+        if (err) {
+          log.error(err)
+        }
+        resolve()
+      })
+    })
   }
 }
 

@@ -116,7 +116,7 @@ export default class SenderToRecipient extends PureComponent {
             <span>{ addressOnly ? `${t('to')}: ` : '' }</span>
             {
               addressOnly
-                ? checksummedRecipientAddress
+                ? (recipientNickname || checksummedRecipientAddress)
                 : (recipientNickname || recipientName || this.context.t('newContract'))
             }
           </div>

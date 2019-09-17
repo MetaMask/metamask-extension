@@ -103,6 +103,7 @@ export default class ConfirmTransactionBase extends Component {
     transactionCategory: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
+    tryReverseResolveAddress: PropTypes.func.isRequired,
   }
 
   state = {
@@ -567,7 +568,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentDidMount () {
-    const { txData: { origin, id } = {}, cancelTransaction, getNextNonce } = this.props
+    const { toAddress, txData: { origin, id } = {}, cancelTransaction, getNextNonce, tryReverseResolveAddress } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -598,6 +599,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     getNextNonce()
+    tryReverseResolveAddress(toAddress)
   }
 
   componentWillUnmount () {
