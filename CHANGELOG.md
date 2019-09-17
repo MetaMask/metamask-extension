@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.2.1 Tue Sep 17 2019
+
 ## 7.2.0 Mon Sep 8, 2019
 - [#7137](https://github.com/MetaMask/metamask-extension/pull/7137): Fix validation of empty block explorer url's in custom network form
 - [#7128](https://github.com/MetaMask/metamask-extension/pull/7128): Support for eth_signTypedData_v4
