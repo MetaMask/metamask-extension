@@ -33,7 +33,7 @@
     "message": "கீழே பட்டியலிடப்பட்டுள்ள டொமைன் Web3 ஏபிஐ அணுகலைக் கோருவதற்கு முயற்சிக்கிறது, எனவே இது Ethereum blockchain உடன் தொடர்பு கொள்ள முடியும். Web3 அணுகுமுறையை அங்கீகரிப்பதற்கு முன் சரியான தளத்தில் இருப்பதை எப்போதும் இருமுறை சரிபார்க்கவும்."
   },
   "accept": {
-    "message": "ஏற்கவும்"
+    "message": "ஏற்கிறேன்"
   },
   "account": {
     "message": "கணக்கு"
@@ -80,10 +80,10 @@
     "message": "பண்புகளும்"
   },
   "available": {
-    "message": "கிடைக்கும்"
+    "message": "மீதமுள்ளது:"
   },
   "back": {
-    "message": "மீண்டும்"
+    "message": "முந்தைய பக்கம்"
   },
   "balance": {
     "message": "இருப்பு:"
@@ -129,7 +129,7 @@
     "message": "சரி"
   },
   "cancel": {
-    "message": "ரத்து"
+    "message": "ரத்து செய்"
   },
   "classicInterface": {
     "message": "கிளாசிக் இடைமுகத்தைப் பயன்படுத்தவும்"
@@ -138,7 +138,7 @@
     "message": "நகலெடுக்க கிளிக் செய்யவும்"
   },
   "confirm": {
-    "message": "உறுதிப்படுத்தவும்"
+    "message": "உறுதிப்படுத்து"
   },
   "confirmed": {
     "message": "உறுதி"
@@ -153,7 +153,7 @@
     "message": "பரிவர்த்தனை உறுதிபடுத்தவும்"
   },
   "continue": {
-    "message": "தொடர்ந்து"
+    "message": "தொடர்க"
   },
   "continueToCoinbase": {
     "message": "கோஇன்பசே ஐத் தொடரவும்"
@@ -180,10 +180,10 @@
     "message": "நான் எங்காவது பாதுகாப்பாக நகலெடுத்திருக்கிறேன்"
   },
   "copy": {
-    "message": "நகல்"
+    "message": "நகலெடு"
   },
   "copyToClipboard": {
-    "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
+    "message": "கிளிப்போர்டுக்கு நகலெடு"
   },
   "copyButton": {
     "message": " நகல் "
@@ -192,13 +192,13 @@
     "message": "இது உங்கள் தனிப்பட்ட விசை (நகலெடுக்க கிளிக் செய்யவும்)"
   },
   "create": {
-    "message": "உருவாக்கவும்"
+    "message": "உருவாக்கு"
   },
   "createAccount": {
     "message": "உங்கள் கணக்கை துவங்குங்கள்"
   },
   "createDen": {
-    "message": "உருவாக்கவும்"
+    "message": "உருவாக்கு"
   },
   "crypto": {
     "message": "கிரிப்டோ",
@@ -217,7 +217,7 @@
     "message": "தனிப்பயன் டோக்கன்"
   },
   "customize": {
-    "message": "தனிப்பயனாக்கலாம்"
+    "message": "தனிப்பயனாக்கு"
   },
   "customRPC": {
     "message": "விருப்ப RPC ஐ"
@@ -280,7 +280,7 @@
     "message": "நீக்கப்பட்டார்"
   },
   "edit": {
-    "message": "தொகு"
+    "message": "திருத்து"
   },
   "editAccountName": {
     "message": "கணக்கு பெயரை மாற்றுக"
@@ -403,8 +403,8 @@
     "message": "இது நீங்கள் ஈத்தர் மற்றும் டோக்கன்களை வைத்திருக்க உதவுகிறது, மற்றும் பரவலாக்கப்பட்ட பயன்பாடுகளுக்கு உங்கள் பாலமாக செயல்படுகிறது."
   },
   "import": {
-    "message": "இறக்குமதி",
-    "description": "தேர்ந்தெடுக்கப்பட்ட கோப்பிலிருந்து ஒரு கணக்கை இறக்குமதி செய்ய பொத்தானை அழுத்தவும்"
+    "message": "இறக்குமதி செய்",
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "கணக்கை இறக்குமதி செய்க"
@@ -419,8 +419,8 @@
     "message": "இறக்குமதி DEN இறக்குமதி"
   },
   "imported": {
-    "message": "இறக்குமதி",
-    "description": "ஒரு கணக்கு முழுமையாக விசைப்பலகையில் ஏற்றப்பட்டதைக் காட்டுகிறது"
+    "message": "இறக்குமதியானது",
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "தகவல் மற்றும் உதவி"
@@ -485,7 +485,7 @@
     "message": "அளவு"
   },
   "loading": {
-    "message": "ஏற்றுதல் ..."
+    "message": "ஏற்றுகிறது…"
   },
   "loadingTokens": {
     "message": "டோக்கன்களை ஏற்றுகிறது ..."
@@ -515,7 +515,7 @@
     "message": "மேடமஸ்க் என்பது ஒரு பாதுகாப்பான அடையாள வால்ட் எதெரியும்"
   },
   "min": {
-    "message": "குறைந்தபட்ச"
+    "message": "குறைந்தபட்சம்"
   },
   "myAccounts": {
     "message": "எனது கணக்குகள்"
@@ -560,7 +560,7 @@
     "message": "புதிய RPC URL"
   },
   "next": {
-    "message": "அடுத்த"
+    "message": "அடுத்தது"
   },
   "noAddressForName": {
     "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
@@ -735,7 +735,7 @@
     "message": "விதை வாக்கியங்கள் 12 வார்த்தைகள் நீண்டவை"
   },
   "select": {
-    "message": "தேர்வு"
+    "message": "தேர்ந்தெடு"
   },
   "selectCurrency": {
     "message": "நாணயத்தைத் தேர்ந்தெடு"
@@ -801,7 +801,7 @@
     "message": "வார்த்தைகள் இடையே இடைவெளி மட்டுமே இருக்க முடியும்"
   },
   "status": {
-    "message": "நிலைமை"
+    "message": "நிலை"
   },
   "stateLogs": {
     "message": "மாநில பதிவுகள்"
@@ -899,7 +899,7 @@
     "message": "கிடைக்கவில்லை"
   },
   "unknown": {
-    "message": "தெரியாத"
+    "message": "தெரியவில்லை"
   },
   "unknownNetwork": {
     "message": "அறியப்படாத தனியார் நெட்வொர்க்"
@@ -927,7 +927,7 @@
     "message": "வால்ட் உருவாக்கப்பட்டது"
   },
   "viewAccount": {
-    "message": "கணக்கைக் காட்டு"
+    "message": "கணக்கைப் பார்"
   },
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
@@ -946,5 +946,89 @@
   },
   "youSign": {
     "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"
+  },
+  "about": {
+    "message": "அறிமுகம்"
+  },
+  "add": {
+    "message": "சேர்"
+  },
+  "advanced": {
+    "message": "மேம்பட்டவை"
+  },
+  "basic": {
+    "message": "அடிப்படை"
+  },
+  "off": {
+    "message": "ஆஃப்"
+  },
+  "on": {
+    "message": "இயக்கு"
+  },
+  "close": {
+    "message": "மூடு"
+  },
+  "connect": {
+    "message": "இணை"
+  },
+  "connecting": {
+    "message": "இணைக்கிறது..."
+  },
+  "delete": {
+    "message": "நீக்கு"
+  },
+  "dismiss": {
+    "message": "நிராகரி"
+  },
+  "fast": {
+    "message": "வேகமான"
+  },
+  "fastest": {
+    "message": "அதிகபட்ச வேகம்"
+  },
+  "forgetDevice": {
+    "message": "இந்தச் சாதனத்தை அகற்று"
+  },
+  "getStarted": {
+    "message": "தொடங்குக"
+  },
+  "history": {
+    "message": "வரலாறு"
+  },
+  "notFound": {
+    "message": "கண்டறிய முடியவில்லை"
+  },
+  "origin": {
+    "message": "அசல்"
+  },
+  "password": {
+    "message": "கடவுச்சொல்"
+  },
+  "queue": {
+    "message": "வரிசை"
+  },
+  "reset": {
+    "message": "மீட்டமை"
+  },
+  "restore": {
+    "message": "மீட்டமை"
+  },
+  "remove": {
+    "message": "அகற்று"
+  },
+  "removeAccount": {
+    "message": "கணக்கை அகற்றுக"
+  },
+  "slow": {
+    "message": "மெதுவான"
+  },
+  "tryAgain": {
+    "message": "மீண்டும் முயல்க"
+  },
+  "unlock": {
+    "message": "பூட்டைத் திற"
+  },
+  "userName": {
+    "message": "பயனர்பெயர்"
   }
 }

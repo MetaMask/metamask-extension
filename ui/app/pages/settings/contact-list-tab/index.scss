@@ -197,6 +197,10 @@
       width: 30px;
       opacity: .5;
       background-repeat: no-repeat;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 }

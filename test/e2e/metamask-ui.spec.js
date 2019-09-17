@@ -1276,7 +1276,7 @@ describe('MetaMask', function () {
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+      assert(confirmDataText.match(/0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
@@ -1334,6 +1334,12 @@ describe('MetaMask', function () {
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
       assert.equal(await gasFeeInputs[0].getText(), '0.0006')
+    })
+
+    it('shows the correct recipient', async function () {
+      const senderToRecipientDivs = await findElements(driver, By.css('.sender-to-recipient__name'))
+      const recipientDiv = senderToRecipientDivs[1]
+      assert.equal(await recipientDiv.getText(), '0x9bc5...fEF4')
     })
 
     it('submits the transaction', async function () {
@@ -1448,6 +1454,12 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
       await txListItem.click()
       await delay(regularDelayMs)
+    })
+
+    it('shows the correct recipient', async function () {
+      const senderToRecipientDivs = await findElements(driver, By.css('.sender-to-recipient__name'))
+      const recipientDiv = senderToRecipientDivs[1]
+      assert.equal(await recipientDiv.getText(), 'Account 2')
     })
 
     it('submits the transaction', async function () {

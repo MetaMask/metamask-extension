@@ -5,6 +5,9 @@
 // this needs to run before anything else
 require('./lib/setupFetchDebugging')()
 
+// polyfills
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')

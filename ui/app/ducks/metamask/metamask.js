@@ -377,7 +377,7 @@ function reduceMetamask (state, action) {
 
     case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
-        currentLocale: action.value,
+        currentLocale: action.value.locale,
       })
 
     case actions.SET_PENDING_TOKENS:

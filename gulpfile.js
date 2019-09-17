@@ -17,8 +17,10 @@ const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
-const uglify = require('gulp-uglify-es').default
+const terser = require('gulp-terser-js')
 const pify = require('pify')
+const rtlcss = require('gulp-rtlcss')
+const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
@@ -274,12 +276,19 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
       .pipe(sourcemaps.write())
       .pipe(autoprefixer())
       .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dest))
   }
 
   function buildScss () {
     return gulp.src(src)
       .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
       .pipe(gulp.dest(dest))
   }
 }
@@ -534,13 +543,19 @@ function generateBundler (opts, performBundle) {
 }
 
 function bundleTask (opts) {
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
+  let bundler
 
   return performBundle
 
   function performBundle () {
+    // initialize bundler if not available yet
+    // dont create bundler until task is actually run
+    if (!bundler) {
+      bundler = generateBundler(opts, performBundle)
+      // output build logs to terminal
+      bundler.on('log', gutil.log)
+    }
+
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -570,7 +585,7 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-        .pipe(uglify({
+        .pipe(terser({
           mangle: {
             reserved: [ 'MetamaskInpageProvider' ],
           },

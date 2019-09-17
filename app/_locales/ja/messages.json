@@ -1,9 +1,15 @@
 {
+  "privacyModeDefault": {
+    "message": "プライバシーモードがデフォルトで有効になりました"
+  },
   "exposeAccounts": {
     "message": "アカウントを公開する"
   },
   "exposeDescription": {
     "message": "アカウントを現在のウェブサイトに公開する。従来のdappsに役立ちます。"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "チャートはEthereumネットワークでのみ利用可能です。"
   },
   "confirmExpose": {
     "message": "現在のウェブサイトにアカウントを公開してもよろしいですか？"
@@ -11,29 +17,35 @@
   "confirmClear": {
     "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
   },
+  "contractInteraction": {
+    "message": "コントラクトへのアクセス"
+  },
   "clearApprovalDataSuccess": {
     "message": "承認されたウェブサイトデータが正常に消去されました。"
   },
   "clearApprovalData": {
     "message": "承認データのクリア"
   },
-  "approve": {
-    "message": "承認する"
-  },
   "reject": {
     "message": "拒否"
   },
-  "providerAPIRequest": {
-    "message": "Web3 APIリクエスト"
-  },
-  "reviewProviderRequest": {
-    "message": "このEthereum APIリクエストを確認してください。"
+  "providerRequest": {
+    "message": "$1 はあなたのアカウントにアクセスしようとしています。"
   },
   "providerRequestInfo": {
     "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
   },
+  "aboutSettingsDescription": {
+    "message": "バージョンやサポート、問合せ先など"
+  },
   "accept": {
     "message": "承認"
+  },
+  "acceleratingATransaction": {
+    "message": "*より高いガス価格を使用すると、ネットワークでより速く処理され、トランザクションを高速化できる可能性が高くなりますが、常に保証されるとは限りません。"
+  },
+  "accessingYourCamera": {
+    "message": "カメラにアクセスしています..."
   },
   "account": {
     "message": "アカウント"
@@ -44,17 +56,74 @@
   "accountName": {
     "message": "アカウント名"
   },
+  "accountOptions": {
+    "message": "アカウント設定"
+  },
+  "accountSelectionRequired": {
+    "message": "アカウントを選択してください。"
+  },
+  "activityLog": {
+    "message": "アクティビティログ"
+  },
+  "add": {
+    "message": "追加"
+  },
   "address": {
     "message": "アドレス"
   },
+  "addNetwork": {
+    "message": "ネットワーク追加"
+  },
+  "addRecipient": {
+    "message": "受取人追加"
+  },
+  "addressBook": {
+    "message": "アドレス帳"
+  },
+  "advanced": {
+    "message": "詳細"
+  },
+  "advancedSettingsDescription": {
+    "message": "開発者向け機能では、状態ログのダウンロード、アカウントリセットし、テストネットやカスタムRPCの設定が可能です。"
+  },
+  "advancedOptions": {
+    "message": "詳細設定"
+  },
   "addCustomToken": {
     "message": "カスタムトークンを追加"
+  },
+  "addToAddressBook": {
+    "message": "アドレス帳に追加"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "例: John D"
+  },
+  "addAlias": {
+    "message": "エイリアスを追加"
+  },
+  "addEthAddress": {
+    "message": "Ethereumアドレスを追加"
   },
   "addToken": {
     "message": "トークンを追加"
   },
   "addTokens": {
     "message": "トークンを追加"
+  },
+  "addSuggestedTokens": {
+    "message": "推奨トークンを追加"
+  },
+  "addAcquiredTokens": {
+    "message": "Metamaskで獲得したトークンを追加する"
+  },
+  "agreeTermsOfService": {
+    "message": "利用規約に同意する"
+  },
+  "allDone": {
+    "message": "全て完了"
+  },
+  "alreadyHaveSeedPhrase": {
+    "message": "すでにシードを持っています"
   },
   "amount": {
     "message": "金額"
@@ -66,15 +135,38 @@
     "message": "Ethereumのブラウザ・エクステンション",
     "description": "The description of the application"
   },
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+  "approve": {
+    "message": "承認する"
+  },
+  "approved": {
+    "message": "承認済み"
+  },
+  "asset": {
+    "message": "アセット"
   },
   "attemptingConnect": {
     "message": "ブロックチェーンに接続中"
   },
+  "attemptToCancel": {
+    "message": "キャンセルを試みますか？"
+  },
+  "attemptToCancelDescription": {
+    "message": "このキャンセルを送信しても、元のトランザクションがキャンセルされることは保証されません。キャンセルが成功した場合、上記の取引手数料が請求されます。"
+  },
+  "attributions": {
+    "message": "属性"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "自動ログアウト(分)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "MetaMaskが自動的にログアウトするまでのアイドル時間を分単位で設定します。"
+  },
   "available": {
     "message": "有効"
+  },
+  "average": {
+    "message": "平均"
   },
   "back": {
     "message": "戻る"
@@ -186,9 +278,6 @@
     "message": "暗号通貨",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currentConversion": {
-    "message": "基軸通貨"
-  },
   "customGas": {
     "message": "ガスのカスタマイズ"
   },
@@ -257,6 +346,9 @@
   },
   "encryptNewDen": {
     "message": "新しいDENを暗号化する"
+  },
+  "endOfFlowMessage10": {
+    "message": "全て完了"
   },
   "enterPassword": {
     "message": "パスワードを入力"
@@ -365,6 +457,9 @@
     "message": "インポート完了",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "info": {
+    "message": "情報"
+  },
   "infoHelp": {
     "message": "情報とヘルプ"
   },
@@ -393,6 +488,9 @@
   "kovan": {
     "message": "Kovanテストネットワーク"
   },
+  "max": {
+    "message": "最大"
+  },
   "learnMore": {
     "message": "詳細"
   },
@@ -415,9 +513,6 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "localhost": {
-    "message": "Localhost 8545"
-  },
   "login": {
     "message": "ログイン"
   },
@@ -426,9 +521,6 @@
   },
   "loose": {
     "message": "外部秘密鍵"
-  },
-  "max": {
-    "message": "最大"
   },
   "mainnet": {
     "message": "Ethereumメインネットワーク"
@@ -475,11 +567,14 @@
   "newPassword": {
     "message": "新規パスワード(最低8文字)"
   },
+  "newPassword8Chars": {
+    "message": "新しいパスワード (8桁以上)"
+  },
   "newRecipient": {
     "message": "新規受取人"
   },
-  "newRPC": {
-    "message": "新しいRPCのURLを追加"
+  "noAlreadyHaveSeed": {
+    "message": "すでにシードを持っています"
   },
   "next": {
     "message": "次へ"
@@ -504,6 +599,13 @@
   },
   "oldUIMessage": {
     "message": "旧UIを表示しています。右上のドロップダウンメニューのオプションより、新UIへ切り替えが可能です。"
+  },
+  "onlySendToEtherAddress": {
+    "message": "ETH はイーサリウムアカウントのみに送信できます。"
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "$1 はイーサリアムアカウントのみに送信できます。",
+    "description": "displays token symbol"
   },
   "openInTab": {
     "message": "タブを開く"
@@ -585,9 +687,6 @@
   "retryWithMoreGas": {
     "message": "より高いガスプライスで再度試して下さい。"
   },
-  "walletSeed": {
-    "message": "ウォレットのパスフレーズ"
-  },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
   },
@@ -599,6 +698,9 @@
   },
   "ropsten": {
     "message": "Ropstenテストネットワーク"
+  },
+  "rpc": {
+    "message": "カスタムRPC"
   },
   "sampleAccountName": {
     "message": "例.新しいマイアカウント",
@@ -616,9 +718,6 @@
   },
   "searchResults": {
     "message": "検索結果"
-  },
-  "newPassword8Chars": {
-    "message": "新しいパスワード (8桁以上)"
   },
   "select": {
     "message": "選択"
@@ -641,13 +740,6 @@
   "sendTokens": {
     "message": "トークンを送信"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH はイーサリウムアカウントのみに送信できます。"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "$1 はイーサリアムアカウントのみに送信できます。",
-    "description": "displays token symbol"
-  },
   "searchTokens": {
     "message": "トークンの検索"
   },
@@ -656,9 +748,6 @@
   },
   "settings": {
     "message": "設定"
-  },
-  "info": {
-    "message": "情報"
   },
   "shapeshiftBuy": {
     "message": "Shapeshiftで交換"
@@ -671,6 +760,9 @@
   },
   "sign": {
     "message": "署名"
+  },
+  "signatureRequest": {
+    "message": "署名リクエスト"
   },
   "signMessage": {
     "message": "メッセージに署名"
@@ -779,6 +871,9 @@
   },
   "viewOnEtherscan": {
     "message": "Etherscan で見る"
+  },
+  "walletSeed": {
+    "message": "ウォレットのパスフレーズ"
   },
   "warning": {
     "message": "警告"

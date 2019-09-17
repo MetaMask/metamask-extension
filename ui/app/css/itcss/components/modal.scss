@@ -18,6 +18,8 @@
 }
 
 .qr-ellip-address, .ellip-address {
+  /*rtl:ignore*/
+  direction: ltr;
   width: 247px;
   border: none;
   font-family: Roboto;

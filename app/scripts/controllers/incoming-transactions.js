@@ -2,7 +2,8 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const BN = require('bn.js')
 const createId = require('../lib/random-id')
-const { bnToHex, fetchWithTimeout } = require('../lib/util')
+const { bnToHex } = require('../lib/util')
+import fetchWithTimeout from '../lib/fetch-with-timeout'
 const {
   MAINNET_CODE,
   ROPSTEN_CODE,

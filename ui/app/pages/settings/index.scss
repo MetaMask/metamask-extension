@@ -52,6 +52,11 @@
     color: #037DD6;
   }
 
+  &__subheader--break {
+    margin-right: 4px;
+    padding-right: 4px;
+  }
+
   &__sub-header {
     height: 72px;
     border-bottom: 1px solid #D8D8D8;
@@ -92,6 +97,10 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -237,6 +246,14 @@
           }
         }
       }
+    }
+  }
+
+  .toggle-button {
+    /*rtl:ignore*/
+    direction: ltr;
+    [dir='rtl'] & {
+      justify-content: flex-end;
     }
   }
 }

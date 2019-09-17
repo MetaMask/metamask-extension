@@ -41,6 +41,7 @@ const ProviderApprovalController = require('./controllers/provider-approval')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const selectChainId = require('./lib/select-chain-id')
 const {Mutex} = require('await-semaphore')
 const {version} = require('../manifest.json')
 const {BN} = require('ethereumjs-util')
@@ -360,15 +361,16 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore.putState(publicState)
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding }) {
+    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding, provider }) {
       const isEnabled = checkIsEnabled()
       const isReady = isUnlocked && isEnabled
       const result = {
         isUnlocked,
         isEnabled,
-        selectedAddress: isReady ? selectedAddress : undefined,
+        selectedAddress: isReady ? selectedAddress : null,
         networkVersion: network,
         onboardingcomplete: completedOnboarding,
+        chainId: selectChainId({ network, provider }),
       }
       return result
     }
@@ -1723,8 +1725,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setCurrentLocale (key, cb) {
     try {
-      this.preferencesController.setCurrentLocale(key)
-      cb(null)
+      const direction = this.preferencesController.setCurrentLocale(key)
+      cb(null, direction)
     } catch (err) {
       cb(err)
     }
