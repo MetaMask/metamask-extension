@@ -273,7 +273,7 @@
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^3.5.0",
     "sesify": "^4.2.1",
-    "sesify-viz": "3.0.2",
+    "sesify-viz": "3.0.4",
     "sinon": "^5.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.0.1",
