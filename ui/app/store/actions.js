@@ -88,6 +88,7 @@ var actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
+  connectSoftware,
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
@@ -250,6 +251,10 @@ var actions = {
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
   updateProviderType,
+  // Software Wallet 
+  getTrustVaultPinChallenge,
+  submitTrustVaultPinChallenge,
+  TRUSTVAULT_PIN_CHALLENGE: 'TRUSTVAULT_PIN_CHALLENGE',
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -747,6 +752,27 @@ function forgetDevice (deviceName) {
   }
 }
 
+function connectSoftware(deviceName, auth) {
+  log.debug('background.connectSoftware', deviceName, auth)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.connectSoftware('trustvault', auth, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(accounts)
+      })
+    })
+  }
+}
+
 function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return (dispatch) => {
@@ -1196,7 +1222,7 @@ function updateAndApproveTx (txData) {
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
           log.error(err.message)
-          reject(err)
+          return reject(err)
         }
 
         resolve(txData)
@@ -1679,7 +1705,7 @@ function addToken (address, symbol, decimals, image) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1696,7 +1722,7 @@ function removeToken (address) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1786,7 +1812,7 @@ function retryTransaction (txId, gasPrice) {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1809,7 +1835,7 @@ function createCancelTransaction (txId, customGasPrice) {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1832,7 +1858,7 @@ function createSpeedUpTransaction (txId, customGasPrice) {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1863,6 +1889,57 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
+  }
+}
+
+
+function getTrustVaultPinChallenge (email) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.getPartialPinChallenge(email, (err, response) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning('Had a problem getting pin challenge'))
+          return reject(err)
+        }
+        const { pinChallenge, error } = response
+        dispatch(setTrustVaultPartialPinChallenge(pinChallenge))
+        dispatch(actions.hideLoadingIndication())
+        return resolve({ pinChallenge, error })
+      })
+    })
+  }
+}
+
+function submitTrustVaultPinChallenge (firstPinDigit, secondPinDigit) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.submitPartialPinChallenge(firstPinDigit, secondPinDigit, (err, response) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning('Had a problem authenticating'))
+          return reject(err)
+        }
+        const { auth, pinChallenge, error } = response
+        if (!auth && pinChallenge) {
+          dispatch(setTrustVaultPartialPinChallenge(pinChallenge))
+          dispatch(actions.displayWarning('Invalid PIN, please try again'))
+        }
+
+        dispatch(actions.hideLoadingIndication())
+        resolve({ auth, pinChallenge, error })
+      })
+    })
+  }
+}
+
+
+function setTrustVaultPartialPinChallenge (pinChallenge) {
+  return {
+    type: actions.TRUSTVAULT_PIN_CHALLENGE,
+    value: pinChallenge,
   }
 }
 
@@ -2185,7 +2262,7 @@ function setAccountLabel (account, label) {
 
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         dispatch({
@@ -2786,7 +2863,9 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
-        return forceUpdateMetamaskState(dispatch).then(() => resolve())
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
   }
