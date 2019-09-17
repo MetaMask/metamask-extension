@@ -310,7 +310,7 @@ class PermissionsController {
           },
         },
         'eth_addPlugin_*': {
-          description: 'Install plugin $1, which will download new functionality to MetaMask.',
+          description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
           method: async (req, res, next, end) => {
             const pluginNameMatch = req.method.match(/eth_addPlugin_(.+)/)
             const pluginName = pluginNameMatch && pluginNameMatch[1]

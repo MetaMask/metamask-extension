@@ -22,8 +22,16 @@
   <script>
     installPlugin.addEventListener('click', function() {
       requestPerms(
-        { 'eth_addPlugin_plugin123': {} },
-        { sourceUrl: 'http://localhost:8081/plugin123.json' },
+        {
+          'eth_addPlugin_plugin123': {
+            caveats: [
+              {
+                type: 'forceParams',
+                value: [{ sourceUrl: 'http://localhost:8080/example1.json' }],
+              }
+            ],
+          },
+        }
       )
     })
     enable.addEventListener('click', function() {
@@ -51,7 +59,7 @@
     function runPlugin () {
       ethereum.sendAsync({
         method: 'eth_addPlugin_plugin123',
-        params: [{ sourceUrl: 'http://localhost:8081/plugin123.json' }],
+        params: [],
       }, (err, result) => {
         console.log('err, result', err, result)
         console.dir({ message: 'pluginKey callback', err, result })
