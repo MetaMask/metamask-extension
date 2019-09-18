@@ -90,8 +90,9 @@ class PermissionsController {
   }
 
   createMiddleware (options) {
-    const { origin } = options
+    const { origin, isPlugin } = options
     const engine = new JsonRpcEngine()
+    engine.push(this.createPluginMethodRestrictionMiddleware(isPlugin))
     engine.push(this.createRequestMiddleware(options))
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
@@ -99,7 +100,24 @@ class PermissionsController {
     return asMiddleware(engine)
   }
 
-  // createInstallPlugin
+  /**
+   * Create middleware for prevent non-plugins from accessing methods only available to plugins
+   */
+  createPluginMethodRestrictionMiddleware (isPlugin) {
+    return createAsyncMiddleware(async (req, res, next) => {
+      if (typeof req.method !== 'string') {
+        res.error = rpcErrors.invalidRequest(null, req)
+        return // TODO:json-rpc-engine
+      }
+
+      if (pluginRestrictedMethodsDescriptions[req.method] && !isPlugin) {
+        res.error = rpcErrors.methodNotFound(null, req.method)
+        return
+      }
+
+      return next()
+    })
+  }
 
   /**
    * Create middleware for preprocessing permissions requests.
@@ -225,16 +243,15 @@ class PermissionsController {
     }
 
     this.pendingApprovals = {}
-    const api = this.getApi();
-    const translatedApi = {};
-    Object.keys(api).forEach(methodKey => {
-      translatedApi[`metamask_${methodKey}`] = api[methodKey];
-    });
+    const api = this.getApi()
 
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
-      ...translatedApi,
+      ...api,
+      removePermissionsFor: this.removePermissionsFor.bind(this),
+      getApprovedAccounts: this.getAccounts.bind(this),
     }
+
     const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
       const hasDescription = externalMethodsToAddToRestricted[methodKey];
       if (!hasDescription) {
@@ -242,9 +259,9 @@ class PermissionsController {
       }
       return {
         ...acc,
-        [methodKey]: {
+        ['metamask_' + methodKey]: {
           description: pluginRestrictedMethodsDescriptions[methodKey] || methodKey,
-          method: externalMethodsToAddToRestricted[methodKey]
+          method: 'metamask_' + externalMethodsToAddToRestricted[methodKey],
         }
       }
     }, {})
@@ -293,7 +310,7 @@ class PermissionsController {
           },
         },
         'eth_addPlugin_*': {
-          description: 'Install plugin $1, which will download new functionality to MetaMask.',
+          description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
           method: async (req, res, next, end) => {
             const pluginNameMatch = req.method.match(/eth_addPlugin_(.+)/)
             const pluginName = pluginNameMatch && pluginNameMatch[1]
@@ -310,10 +327,9 @@ class PermissionsController {
             const pluginName = pluginNameMatch && pluginNameMatch[1]
 
             const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
-
-            const response = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
-
-            return res
+            const result = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+            res.result = result
+            return end()
           },
         },
 

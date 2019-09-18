@@ -56,6 +56,7 @@ class PluginsController extends EventEmitter {
     } else {
       plugin = await fetch(sourceUrl)
         .then(pluginRes => pluginRes.json())
+        .catch(err => console.log('add plugin error:', err))
     }
 
     const { sourceCode, requestedPermissions } = plugin
@@ -78,7 +79,7 @@ class PluginsController extends EventEmitter {
       })
     }
 
-    const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } })
+    const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
     return ethereumProvider.sendAsync({
       method: 'wallet_requestPermissions',
@@ -99,11 +100,16 @@ class PluginsController extends EventEmitter {
   }
 
   async run (pluginName, requestedPermissions, sourceCode, ethereumProvider) {
-    this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+    return this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
   }
 
   _generateApisToProvide (requestedPermissions, pluginName) {
-    const apiList = requestedPermissions
+    const apiList = requestedPermissions.map(requestedPermission => {
+      const metamaskMethod = requestedPermission.match(/metamask_(.+)/)
+      return metamaskMethod
+        ? metamaskMethod[1]
+        : requestedPermission
+    })
     const updatePluginState = this.updatePluginState.bind(this, pluginName)
     const getPluginState = this.getPluginState.bind(this, pluginName)
     const possibleApis = {
@@ -129,6 +135,7 @@ class PluginsController extends EventEmitter {
     })
     sessedPlugin.run()
     this._setPluginToActive(pluginName)
+    return true
   }
 
   async _setPluginToActive (pluginName) {
