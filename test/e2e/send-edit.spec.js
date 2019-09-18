@@ -113,7 +113,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
@@ -130,6 +130,8 @@ describe('Using MetaMask with an existing account', function () {
       await delay(50)
 
       await gasLimitInput.sendKeys('25000')
+
+      await delay(1000)
 
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
@@ -170,7 +172,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
@@ -186,6 +188,8 @@ describe('Using MetaMask with an existing account', function () {
       await delay(50)
 
       await gasLimitInput.sendKeys('100000')
+
+      await delay(1000)
 
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()

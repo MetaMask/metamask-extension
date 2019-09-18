@@ -56,7 +56,6 @@ import {
   addHexWEIsToDec,
   subtractHexWEIsToDec,
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
-  decGWEIToHexWEI,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util'
 import {
@@ -175,8 +174,7 @@ const mapDispatchToProps = dispatch => {
     },
     hideModal: () => dispatch(hideModal()),
     updateCustomGasPrice,
-    convertThenUpdateCustomGasPrice: newPrice => updateCustomGasPrice(decGWEIToHexWEI(newPrice)),
-    convertThenUpdateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit.toString(16)))),
+    updateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
     setGasData: (newLimit, newPrice) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
@@ -219,7 +217,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     transaction,
   } = stateProps
   const {
-    updateCustomGasPrice: dispatchUpdateCustomGasPrice,
     hideGasButtonGroup: dispatchHideGasButtonGroup,
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
@@ -267,7 +264,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
-      handleGasPriceSelection: dispatchUpdateCustomGasPrice,
+      handleGasPriceSelection: otherDispatchProps.updateCustomGasPrice,
     },
     cancelAndClose: () => {
       dispatchCancelAndClose()
