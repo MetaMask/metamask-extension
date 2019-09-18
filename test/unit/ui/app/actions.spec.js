@@ -36,8 +36,6 @@ describe('Actions', () => {
   const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
   beforeEach(async () => {
-
-
     metamaskController = new MetaMaskController({
       provider,
       keyringController: new KeyringController({}),
@@ -59,6 +57,7 @@ describe('Actions', () => {
       new3Box: sinon.spy(),
       getThreeBoxAddress: sinon.spy(),
       getThreeBoxSyncingState: sinon.spy(),
+      reset: sinon.spy(),
     }
 
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)

@@ -14,7 +14,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     completedOnboarding: PropTypes.bool,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
-    optInMetaMetrics: PropTypes.bool,
+    firstTimeFlowType: PropTypes.string,
   }
 
   render () {
@@ -22,14 +22,14 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       completedOnboarding,
       isInitialized,
       isUnlocked,
-      optInMetaMetrics,
+      firstTimeFlowType,
     } = this.props
 
     if (completedOnboarding) {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
     }
 
-    if (isUnlocked) {
+    if (isUnlocked && firstTimeFlowType !== 'restore') {
       return <Redirect to={{ pathname: LOCK_ROUTE }} />
     }
 
@@ -41,7 +41,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />
     }
 
-    if (optInMetaMetrics === null) {
+    if (!firstTimeFlowType) {
       return <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />
     }
 

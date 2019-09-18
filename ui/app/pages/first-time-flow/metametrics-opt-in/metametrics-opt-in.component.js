@@ -5,9 +5,11 @@ import PageContainerFooter from '../../../components/ui/page-container/page-cont
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
+    completeOnboarding: PropTypes.func,
     history: PropTypes.object,
     setParticipateInMetaMetrics: PropTypes.func,
     nextRoute: PropTypes.string,
+    firstTimeFlowType: PropTypes.string,
     firstTimeSelectionMetaMetricsName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool,
   }
@@ -19,9 +21,11 @@ export default class MetaMetricsOptIn extends Component {
   render () {
     const { metricsEvent } = this.context
     const {
+      completeOnboarding,
       nextRoute,
       history,
       setParticipateInMetaMetrics,
+      firstTimeFlowType,
       firstTimeSelectionMetaMetricsName,
       participateInMetaMetrics,
     } = this.props
@@ -84,58 +88,55 @@ export default class MetaMetricsOptIn extends Component {
           </div>
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
-              onCancel={() => {
-                setParticipateInMetaMetrics(false)
-                  .then(() => {
-                    const promise = participateInMetaMetrics !== false
-                      ? metricsEvent({
-                        eventOpts: {
-                          category: 'Onboarding',
-                          action: 'Metrics Option',
-                          name: 'Metrics Opt Out',
-                        },
-                        isOptIn: true,
-                      })
-                      : Promise.resolve()
+              onCancel={async () => {
+                await setParticipateInMetaMetrics(false)
 
-                    promise
-                      .then(() => {
-                        history.push(nextRoute)
-                      })
+                if (participateInMetaMetrics !== false) {
+                  await metricsEvent({
+                    eventOpts: {
+                      category: 'Onboarding',
+                      action: 'Metrics Option',
+                      name: 'Metrics Opt Out',
+                    },
+                    isOptIn: true,
                   })
+                }
+
+                if (firstTimeFlowType === 'restore') {
+                  await completeOnboarding()
+                }
+
+                history.push(nextRoute)
               }}
               cancelText={'No Thanks'}
               hideCancel={false}
-              onSubmit={() => {
-                setParticipateInMetaMetrics(true)
-                  .then(([_, metaMetricsId]) => {
-                    const promise = participateInMetaMetrics !== true
-                      ? metricsEvent({
-                        eventOpts: {
-                          category: 'Onboarding',
-                          action: 'Metrics Option',
-                          name: 'Metrics Opt In',
-                        },
-                        isOptIn: true,
-                      })
-                      : Promise.resolve()
-
-                    promise
-                      .then(() => {
-                        return metricsEvent({
-                          eventOpts: {
-                            category: 'Onboarding',
-                            action: 'Import or Create',
-                            name: firstTimeSelectionMetaMetricsName,
-                          },
-                          isOptIn: true,
-                          metaMetricsId,
-                        })
-                      })
-                      .then(() => {
-                        history.push(nextRoute)
-                      })
+              onSubmit={async () => {
+                const [, metaMetricsId] = await setParticipateInMetaMetrics(true)
+                if (participateInMetaMetrics !== true) {
+                  await metricsEvent({
+                    eventOpts: {
+                      category: 'Onboarding',
+                      action: 'Metrics Option',
+                      name: 'Metrics Opt In',
+                    },
+                    isOptIn: true,
                   })
+                }
+
+                await metricsEvent({
+                  eventOpts: {
+                    category: 'Onboarding',
+                    action: 'Import or Create',
+                    name: firstTimeSelectionMetaMetricsName,
+                  },
+                  isOptIn: true,
+                  metaMetricsId,
+                })
+
+                if (firstTimeFlowType === 'restore') {
+                  await completeOnboarding()
+                }
+                history.push(nextRoute)
               }}
               submitText={'I agree'}
               submitButtonType={'primary'}

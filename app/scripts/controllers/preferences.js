@@ -2,7 +2,41 @@ const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
 const extend = require('xtend')
+const clone = require('clone')
+const getFirstPreferredLangCode = require('../lib/get-first-preferred-lang-code')
 
+const defaultState = {
+  frequentRpcListDetail: [],
+  currentAccountTab: 'history',
+  accountTokens: {},
+  assetImages: {},
+  tokens: [],
+  suggestedTokens: {},
+  useBlockie: false,
+  useNonceField: false,
+
+  // WARNING: Do not use feature flags for security-sensitive things.
+  // Feature flag toggling is available in the global namespace
+  // for convenient testing of pre-release features, and should never
+  // perform sensitive operations.
+  featureFlags: {
+    showIncomingTransactions: true,
+  },
+  knownMethodData: {},
+  participateInMetaMetrics: null,
+  firstTimeFlowType: null,
+  identities: {},
+  primaryVaultAddress: null,
+  lostIdentities: {},
+  forgottenPassword: false,
+  preferences: {
+    useNativeCurrencyAsPrimaryCurrency: true,
+  },
+  completedOnboarding: false,
+  migratedPrivacyMode: false,
+  metaMetricsId: null,
+  metaMetricsSendCount: 0,
+}
 
 class PreferencesController {
 
@@ -28,38 +62,7 @@ class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = extend({
-      frequentRpcListDetail: [],
-      currentAccountTab: 'history',
-      accountTokens: {},
-      assetImages: {},
-      tokens: [],
-      suggestedTokens: {},
-      useBlockie: false,
-      useNonceField: false,
-
-      // WARNING: Do not use feature flags for security-sensitive things.
-      // Feature flag toggling is available in the global namespace
-      // for convenient testing of pre-release features, and should never
-      // perform sensitive operations.
-      featureFlags: {
-        showIncomingTransactions: true,
-      },
-      knownMethodData: {},
-      participateInMetaMetrics: null,
-      firstTimeFlowType: null,
-      currentLocale: opts.initLangCode,
-      identities: {},
-      lostIdentities: {},
-      forgottenPassword: false,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
-      completedOnboarding: false,
-      migratedPrivacyMode: false,
-      metaMetricsId: null,
-      metaMetricsSendCount: 0,
-    }, opts.initState)
+    const initState = extend(clone(defaultState), { currentLocale: opts.initLangCode }, opts.initState)
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
@@ -249,8 +252,17 @@ class PreferencesController {
    *
    */
   setAddresses (addresses) {
-    const oldIdentities = this.store.getState().identities
-    const oldAccountTokens = this.store.getState().accountTokens
+    const {
+      identities: oldIdentities,
+      accountTokens: oldAccountTokens,
+    } = this.store.getState()
+
+    const primaryVaultAddress = (
+      Object.keys(oldIdentities).length === 0 &&
+      addresses.length > 0
+    ) ?
+      addresses[0] :
+      null
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
@@ -262,7 +274,13 @@ class PreferencesController {
       tokens[address] = oldTokens
       return tokens
     }, {})
-    this.store.updateState({ identities, accountTokens })
+
+    const newState = { identities, accountTokens }
+    if (primaryVaultAddress) {
+      newState.primaryVaultAddress = primaryVaultAddress
+    }
+
+    this.store.updateState(newState)
   }
 
   /**
@@ -272,14 +290,22 @@ class PreferencesController {
    * @returns {string} the address that was removed
    */
   removeAddress (address) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const {
+      identities,
+      accountTokens,
+      primaryVaultAddress,
+    } = this.store.getState()
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
     delete identities[address]
     delete accountTokens[address]
-    this.store.updateState({ identities, accountTokens })
+
+    const newState = { identities, accountTokens }
+    if (primaryVaultAddress === address) {
+      newState.primaryVaultAddress = null
+    }
+    this.store.updateState(newState)
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -298,8 +324,18 @@ class PreferencesController {
    *
    */
   addAddresses (addresses) {
-    const identities = this.store.getState().identities
-    const accountTokens = this.store.getState().accountTokens
+    const {
+      identities,
+      accountTokens,
+    } = this.store.getState()
+
+    const primaryVaultAddress = (
+      Object.keys(identities).length === 0 &&
+      addresses.length > 0
+    ) ?
+      addresses[0] :
+      null
+
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
@@ -309,7 +345,13 @@ class PreferencesController {
       accountTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities, accountTokens })
+
+    const newState = { identities, accountTokens }
+    if (primaryVaultAddress) {
+      newState.primaryVaultAddress = primaryVaultAddress
+    }
+
+    this.store.updateState(newState)
   }
 
   /*
@@ -342,7 +384,7 @@ class PreferencesController {
       }
     }
 
-    this.store.updateState({ identities, lostIdentities })
+    this.store.updateState({ identities, lostIdentities, primaryVaultAddress: addresses[0] })
     this.addAddresses(addresses)
 
     // If the selected account is no longer valid,
@@ -386,6 +428,15 @@ class PreferencesController {
    */
   getSelectedAddress () {
     return this.store.getState().selectedAddress
+  }
+
+  /**
+   * Getter for the `primaryVaultAddress` property
+   *
+   * @returns {string} The primary vault address
+   */
+  getPrimaryVaultAddress () {
+    return this.store.getState().primaryVaultAddress
   }
 
   /**
@@ -465,9 +516,23 @@ class PreferencesController {
     if (!account) throw new Error('setAccountLabel requires a valid address, got ' + String(account))
     const address = normalizeAddress(account)
     const {identities} = this.store.getState()
+
+    const primaryVaultAddress = (
+      Object.keys(identities).length === 0 &&
+      address
+    ) ?
+      address :
+      null
+
     identities[address] = identities[address] || {}
     identities[address].name = label
-    this.store.updateState({ identities })
+
+    const newState = { identities }
+    if (primaryVaultAddress) {
+      newState.primaryVaultAddress = primaryVaultAddress
+    }
+
+    this.store.updateState(newState)
     return Promise.resolve(label)
   }
 
@@ -636,6 +701,16 @@ class PreferencesController {
       migratedPrivacyMode: false,
     })
     return Promise.resolve()
+  }
+
+  /**
+   * Reset the controller with default state
+   * @returns {Promise<void>} Promise resolves with undefined
+   */
+  async reset () {
+    const currentLocale = await getFirstPreferredLangCode()
+    const newState = Object.assign(clone(defaultState), { currentLocale, firstTimeFlowType: 'restore' })
+    this.store.putState(newState)
   }
 
   //

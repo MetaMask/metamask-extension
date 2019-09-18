@@ -1,6 +1,10 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
+const clone = require('clone')
 
+const defaultState = {
+  seedPhraseBackedUp: true,
+}
 /**
  * @typedef {Object} InitState
  * @property {Boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
@@ -22,9 +26,7 @@ class OnboardingController {
    * @param {OnboardingOptions} [opts] Controller configuration parameters
    */
   constructor (opts = {}) {
-    const initState = extend({
-      seedPhraseBackedUp: true,
-    }, opts.initState)
+    const initState = extend(clone(defaultState), opts.initState)
     this.store = new ObservableStore(initState)
   }
 
@@ -38,6 +40,13 @@ class OnboardingController {
     return this.store.getState().seedPhraseBackedUp
   }
 
+  /**
+   * Reset the controller with default state
+   * @returns {Promise<void>} Promise resolves with undefined
+   */
+  async reset () {
+    this.store.putState(clone(defaultState))
+  }
 }
 
 module.exports = OnboardingController

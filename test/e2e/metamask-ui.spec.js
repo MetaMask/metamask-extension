@@ -253,6 +253,12 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      const optOutButton = await findElement(driver, By.css('.btn-default'))
+      optOutButton.click()
+      await delay(largeDelayMs)
+    })
+
     it('balance renders', async () => {
       const balance = await findElement(driver, By.css('.balance-display .token-amount'))
       await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))

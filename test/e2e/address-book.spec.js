@@ -8,14 +8,12 @@ const {
   checkBrowserForConsoleErrors,
   findElement,
   findElements,
-  loadExtension,
   verboseReportOnFailure,
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
 
 describe('MetaMask', function () {
-  let extensionId
   let driver
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
@@ -29,7 +27,6 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    extensionId = result.extensionId
     await setupFetchMocking(driver)
   })
 
@@ -59,8 +56,8 @@ describe('MetaMask', function () {
       await delay(largeDelayMs)
     })
 
-    it('clicks the "Create New Wallet" option', async () => {
-      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
+    it('clicks the "Import Wallet" option', async () => {
+      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       customRpcButton.click()
       await delay(largeDelayMs)
     })
@@ -71,109 +68,7 @@ describe('MetaMask', function () {
       await delay(largeDelayMs)
     })
 
-    it('accepts a secure password', async () => {
-      const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
-      const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
-      const button = await findElement(driver, By.css('.first-time-flow__form button'))
-
-      await passwordBox.sendKeys('correct horse battery staple')
-      await passwordBoxConfirm.sendKeys('correct horse battery staple')
-
-      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
-      await tosCheckBox.click()
-
-      await button.click()
-      await delay(regularDelayMs)
-    })
-
-    let seedPhrase
-
-    it('reveals the seed phrase', async () => {
-      const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
-      await driver.wait(until.elementLocated(byRevealButton, 10000))
-      const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
-      await revealSeedPhraseButton.click()
-      await delay(regularDelayMs)
-
-      seedPhrase = await driver.findElement(By.css('.reveal-seed-phrase__secret-words')).getText()
-      assert.equal(seedPhrase.split(' ').length, 12)
-      await delay(regularDelayMs)
-
-      const nextScreen = (await findElements(driver, By.css('button.first-time-flow__button')))[1]
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
-    async function clickWordAndWait (word) {
-      const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
-      const word0 = await findElement(driver, By.xpath(xpath), 10000)
-
-      await word0.click()
-      await delay(tinyDelayMs)
-    }
-
-    async function retypeSeedPhrase (words, wasReloaded, count = 0) {
-      try {
-        if (wasReloaded) {
-          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
-          await driver.wait(until.elementLocated(byRevealButton, 10000))
-          const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
-          await revealSeedPhraseButton.click()
-          await delay(regularDelayMs)
-
-          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-          await nextScreen.click()
-          await delay(regularDelayMs)
-        }
-
-        for (let i = 0; i < 12; i++) {
-          await clickWordAndWait(words[i])
-        }
-      } catch (e) {
-        if (count > 2) {
-          throw e
-        } else {
-          await loadExtension(driver, extensionId)
-          await retypeSeedPhrase(words, true, count + 1)
-        }
-      }
-    }
-
-    it('can retype the seed phrase', async () => {
-      const words = seedPhrase.split(' ')
-
-      await retypeSeedPhrase(words)
-
-      const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirm.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the success screen', async () => {
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
-      await doneButton.click()
-      await delay(regularDelayMs)
-    })
-  })
-
-  describe('Import seed phrase', () => {
-    it('logs out of the vault', async () => {
-      await driver.findElement(By.css('.account-menu__icon')).click()
-      await delay(regularDelayMs)
-
-      const logoutButton = await findElement(driver, By.css('.account-menu__logout-button'))
-      assert.equal(await logoutButton.getText(), 'Log out')
-      await logoutButton.click()
-      await delay(regularDelayMs)
-    })
-
     it('imports seed phrase', async () => {
-      const restoreSeedLink = await findElement(driver, By.css('.unlock-page__link--import'))
-      assert.equal(await restoreSeedLink.getText(), 'Import using account seed phrase')
-      await restoreSeedLink.click()
-      await delay(regularDelayMs)
-
       const seedTextArea = await findElement(driver, By.css('textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
@@ -183,7 +78,18 @@ describe('MetaMask', function () {
 
       await passwordInputs[0].sendKeys('correct horse battery staple')
       await passwordInputs[1].sendKeys('correct horse battery staple')
+
+      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
+      await tosCheckBox.click()
+
       await driver.findElement(By.css('.first-time-flow__button')).click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the success screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
+      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      await doneButton.click()
       await delay(regularDelayMs)
     })
 

@@ -66,8 +66,8 @@ describe('MetaMask', function () {
     })
 
     it('clicks the "I agree" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await findElement(driver, By.css('.btn-primary'))
-      optOutButton.click()
+      const optInButton = await findElement(driver, By.css('.btn-primary'))
+      optInButton.click()
       await delay(largeDelayMs)
     })
 
@@ -194,6 +194,12 @@ describe('MetaMask', function () {
       await passwordInputs[1].sendKeys('correct horse battery staple')
       await driver.findElement(By.css('.first-time-flow__button')).click()
       await delay(regularDelayMs)
+    })
+
+    it('clicks the "I agree" option on the metametrics opt-in screen', async () => {
+      const optInButton = await findElement(driver, By.css('.btn-primary'))
+      optInButton.click()
+      await delay(largeDelayMs)
     })
 
     it('switches to localhost', async () => {

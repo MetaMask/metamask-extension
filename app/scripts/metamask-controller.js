@@ -608,16 +608,32 @@ module.exports = class MetamaskController extends EventEmitter {
     try {
       let accounts, lastBalance
 
+      const oldPrimaryVaultAddress = this.preferencesController.getPrimaryVaultAddress()
       const keyringController = this.keyringController
 
-      // clear known identities
-      this.preferencesController.setAddresses([])
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
       const ethQuery = new EthQuery(this.provider)
       accounts = await keyringController.getAccounts()
       lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
+      const newPrimaryVaultAddress = accounts[0]
+
+      if (oldPrimaryVaultAddress && newPrimaryVaultAddress !== oldPrimaryVaultAddress) {
+        // clear known identities
+        this.preferencesController.setAddresses([])
+
+        // clear persisted state
+        if (localStore.isSupported) {
+          try {
+            await localStore.clear()
+          } catch (error) {
+            log.error('Error clearing local store: ', error)
+          }
+        }
+        // clear in-memory state
+        await this.resetControllerState()
+      }
 
       const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
       if (!primaryKeyring) {
@@ -631,18 +647,9 @@ module.exports = class MetamaskController extends EventEmitter {
         lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
       }
 
-      // set new identities
-      this.preferencesController.setAddresses(accounts)
+      // add new identities
+      this.preferencesController.addAddresses(accounts)
       this.selectFirstIdentity()
-
-      // clear local store
-      if (localStore.isSupported) {
-        try {
-          await localStore.clear()
-        } catch (error) {
-          log.error('Error clearing local store: ', error)
-        }
-      }
 
       releaseLock()
       return vault
@@ -964,6 +971,17 @@ module.exports = class MetamaskController extends EventEmitter {
       log.error(err.message)
       throw err
     }
+  }
+
+  /**
+   * Resets all controllers with default state
+   * @returns {Promise<void>} Promise resolves with undefined
+   */
+  async resetControllerState () {
+    await this.preferencesController.reset()
+    await this.onboardingController.reset()
+    await this.threeBoxController.reset()
+    await this.providerApprovalController.reset()
   }
 
   /**

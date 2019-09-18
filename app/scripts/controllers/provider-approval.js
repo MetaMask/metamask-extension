@@ -2,6 +2,14 @@ const ObservableStore = require('obs-store')
 const SafeEventEmitter = require('safe-event-emitter')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const clone = require('clone')
+const defaultMemState = {
+  providerRequests: [],
+}
+
+const defaultState = {
+  approvedOrigins: {},
+}
 
 /**
  * A controller that services user-approved requests for a full Ethereum provider API
@@ -18,12 +26,8 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.keyringController = keyringController
     this.openPopup = openPopup
     this.preferencesController = preferencesController
-    this.memStore = new ObservableStore({
-      providerRequests: [],
-    })
-
-    const defaultState = { approvedOrigins: {} }
-    this.store = new ObservableStore(Object.assign(defaultState, initState))
+    this.memStore = new ObservableStore(clone(defaultMemState))
+    this.store = new ObservableStore(Object.assign(clone(defaultState), initState))
   }
 
   /**
@@ -154,6 +158,15 @@ class ProviderApprovalController extends SafeEventEmitter {
    */
   _getMergedState () {
     return Object.assign({}, this.memStore.getState(), this.store.getState())
+  }
+
+  /**
+   * Reset the controller with default state
+   * @returns {Promise<void>} Promise resolves with undefined
+   */
+  async reset () {
+    this.memStore.putState(clone(defaultMemState))
+    this.store.putState(clone(defaultState))
   }
 }
 

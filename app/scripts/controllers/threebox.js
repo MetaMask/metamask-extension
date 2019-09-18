@@ -5,6 +5,8 @@ const Box = process.env.IN_TEST
 const log = require('loglevel')
 const migrations = require('../migrations/')
 const Migrator = require('../lib/migrator')
+const clone = require('clone')
+
 const JsonRpcEngine = require('json-rpc-engine')
 const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
@@ -12,16 +14,33 @@ const createOriginMiddleware = require('../lib/createOriginMiddleware')
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
+const defaultState = {
+  threeBoxSyncingAllowed: false,
+  showRestorePrompt: true,
+  threeBoxLastUpdated: 0,
+  threeBoxAddress: null,
+  threeBoxSynced: false,
+  threeBoxDisabled: false,
+}
+
 class ThreeBoxController {
   constructor (opts = {}) {
     const {
       preferencesController,
       keyringController,
       addressBookController,
+      initState = {},
       version,
       getKeyringControllerState,
       getSelectedAddress,
     } = opts
+
+    // We don't want to persist these properties
+    // Deleting them here was easier than creating a separate `memStore` to
+    // prevent them from being persisted in the first place
+    delete initState.threeBoxAddress
+    delete initState.threeBoxSynced
+    delete initState.threeBoxDisabled
 
     this.preferencesController = preferencesController
     this.addressBookController = addressBookController
@@ -47,16 +66,7 @@ class ThreeBoxController {
       },
     })
 
-    const initState = {
-      threeBoxSyncingAllowed: false,
-      showRestorePrompt: true,
-      threeBoxLastUpdated: 0,
-      ...opts.initState,
-      threeBoxAddress: null,
-      threeBoxSynced: false,
-      threeBoxDisabled: false,
-    }
-    this.store = new ObservableStore(initState)
+    this.store = new ObservableStore(Object.assign(clone(defaultState), initState))
     this.registeringUpdates = false
     this.lastMigration = migrations.sort((a, b) => a.version - b.version).slice(-1)[0]
 
@@ -71,6 +81,21 @@ class ThreeBoxController {
     if (this.address && !(this.box && this.store.getState().threeBoxSynced)) {
       await this.new3Box()
     }
+  }
+
+  /**
+   * Reset the controller with default state
+   * @returns {Promise<void>} Promise resolves with undefined
+   */
+  async reset () {
+    if (this.box) {
+      this.box.logout()
+    }
+    this._deregisterUpdates()
+
+    this.store.putState(clone(defaultState))
+
+    this.init()
   }
 
   async _update3Box () {
@@ -202,6 +227,7 @@ class ThreeBoxController {
 
   turnThreeBoxSyncingOff () {
     this.box.logout()
+    this._deregisterUpdates()
   }
 
   setShowRestorePromptToFalse () {
@@ -235,11 +261,21 @@ class ThreeBoxController {
 
   _registerUpdates () {
     if (!this.registeringUpdates) {
-      const updatePreferences = this._update3Box.bind(this)
-      this.preferencesController.store.subscribe(updatePreferences)
-      const updateAddressBook = this._update3Box.bind(this)
-      this.addressBookController.subscribe(updateAddressBook)
+      this._handlePreferencesControllerUpdate = this._update3Box.bind(this)
+      this.preferencesController.store.subscribe(this._handlePreferencesControllerUpdate)
+      this._handleAddressBookUpdate = this._update3Box.bind(this)
+      this.addressBookController.subscribe(this._handleAddressBookUpdate)
       this.registeringUpdates = true
+    }
+  }
+
+  _deregisterUpdates () {
+    if (this.registeringUpdates) {
+      this.preferencesController.store.unsubscribe(this._handlePreferencesControllerUpdate)
+      delete this.this._handlePreferencesControllerUpdate
+      this.addressBookController.unsubscribe(this._handleAddressBookUpdate)
+      delete this._handleAddressBookUpdate
+      this.registeringUpdates = false
     }
   }
 }

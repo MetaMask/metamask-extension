@@ -180,8 +180,11 @@ describe('MetaMaskController', function () {
   describe('#createNewVaultAndRestore', function () {
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what'
-      sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      sandbox
+        .stub(metamaskController, 'getBalance')
+        .callsFake(async () => '0x0')
+      sandbox.stub(metamaskController, 'resetControllerState')
+        .callsFake(async () => undefined)
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch(() => null)
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
@@ -190,8 +193,11 @@ describe('MetaMaskController', function () {
     })
 
     it('should clear previous identities after vault restoration', async () => {
-      sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      sandbox
+        .stub(metamaskController, 'getBalance')
+        .callsFake(async () => '0x0')
+      sandbox.stub(metamaskController, 'resetControllerState')
+        .callsFake(async () => undefined)
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       assert.deepEqual(metamaskController.getState().identities, {
@@ -210,16 +216,18 @@ describe('MetaMaskController', function () {
     })
 
     it('should restore any consecutive accounts with balances', async () => {
+      sandbox.stub(metamaskController, 'resetControllerState')
+        .callsFake(async () => undefined)
       sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
-        return Promise.resolve('0x14ced5122ce0a000')
-      })
-      metamaskController.getBalance.withArgs(TEST_ADDRESS_2).callsFake(() => {
-        return Promise.resolve('0x0')
-      })
-      metamaskController.getBalance.withArgs(TEST_ADDRESS_3).callsFake(() => {
-        return Promise.resolve('0x14ced5122ce0a000')
-      })
+      metamaskController.getBalance
+        .withArgs(TEST_ADDRESS)
+        .callsFake(async () => '0x14ced5122ce0a000')
+      metamaskController.getBalance
+        .withArgs(TEST_ADDRESS_2)
+        .callsFake(async () => '0x0')
+      metamaskController.getBalance
+        .withArgs(TEST_ADDRESS_3)
+        .callsFake(async () => '0x14ced5122ce0a000')
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       assert.deepEqual(metamaskController.getState().identities, {
@@ -629,8 +637,11 @@ describe('MetaMaskController', function () {
     const data = '0x43727970746f6b697474696573'
 
     beforeEach(async () => {
-      sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      sandbox
+        .stub(metamaskController, 'getBalance')
+        .callsFake(async () => '0x0')
+      sandbox.stub(metamaskController, 'resetControllerState')
+        .callsFake(async () => undefined)
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
@@ -687,8 +698,11 @@ describe('MetaMaskController', function () {
     const data = '0x43727970746f6b697474696573'
 
     beforeEach(async function () {
-      sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      sandbox
+        .stub(metamaskController, 'getBalance')
+        .callsFake(async () => '0x0')
+      sandbox.stub(metamaskController, 'resetControllerState')
+        .callsFake(async () => undefined)
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 

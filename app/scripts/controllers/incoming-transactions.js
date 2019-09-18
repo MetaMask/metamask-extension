@@ -61,33 +61,33 @@ class IncomingTransactionsController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    this.preferencesController.store.subscribe(pairwise((prevState, currState) => {
-      const { featureFlags: { showIncomingTransactions: prevShowIncomingTransactions } = {} } = prevState
-      const { featureFlags: { showIncomingTransactions: currShowIncomingTransactions } = {} } = currState
-
-      if (currShowIncomingTransactions === prevShowIncomingTransactions) {
-        return
-      }
-
-      if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
-        this.stop()
-        return
-      }
-
-      this.start()
-    }))
-
     this.preferencesController.store.subscribe(pairwise(async (prevState, currState) => {
-      const { selectedAddress: prevSelectedAddress } = prevState
-      const { selectedAddress: currSelectedAddress } = currState
+      const {
+        featureFlags: {
+          showIncomingTransactions: prevShowIncomingTransactions,
+        } = {},
+        selectedAddress: prevSelectedAddress,
+      } = prevState
+      const {
+        featureFlags: {
+          showIncomingTransactions: currShowIncomingTransactions,
+        } = {},
+        selectedAddress: currSelectedAddress,
+      } = currState
 
-      if (currSelectedAddress === prevSelectedAddress) {
-        return
+      if (currShowIncomingTransactions !== prevShowIncomingTransactions) {
+        if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
+          this.stop()
+        } else {
+          this.start()
+        }
       }
 
-      await this._update({
-        address: currSelectedAddress,
-      })
+      if (currSelectedAddress !== prevSelectedAddress) {
+        return this._update({
+          address: currSelectedAddress,
+        })
+      }
     }))
 
     this.networkController.on('networkDidChange', async (newType) => {
