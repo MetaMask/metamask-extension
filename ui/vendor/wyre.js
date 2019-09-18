@@ -33,8 +33,8 @@ function createWyreWidget () {
 function openWyre(address, atTimeOfOpen, onClose, onComplete) {
   const Wyre = createWyreWidget()
   const widget = new Wyre.Widget({
-    env: 'test',
-    accountId: 'AC_YGBPJGZCJ3Z',
+    env: 'prod',
+    accountId: 'AC_JZEXERQV3PU',
     auth: { type: 'metamask' },
     operation: {
       type: 'debitcard',

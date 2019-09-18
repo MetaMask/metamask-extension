@@ -1107,7 +1107,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async newUnsignedPersonalMessage (msgParams, req) {
     const { origin } = req
-    if (origin !== 'verify.testwyre.com') {
+    if (origin !== 'verify.sendwyre.com') {
       const promise = this.personalMessageManager.addUnapprovedMessageAsync(msgParams, req)
       this.sendUpdate()
       this.opts.showUnconfirmedMessage()

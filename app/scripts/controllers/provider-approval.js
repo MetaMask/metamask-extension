@@ -25,9 +25,16 @@ class ProviderApprovalController extends SafeEventEmitter {
     })
 
     const defaultState = { approvedOrigins: {
-      'verify.testwyre.com': true,
+      'verify.sendwyre.com': true,
     } }
-    this.store = new ObservableStore(Object.assign(defaultState, initState))
+    this.store = new ObservableStore({
+      ...defaultState,
+      ...initState,
+      approvedOrigins: {
+        ...defaultState.approvedOrigins,
+        ...initState.approvedOrigins,
+      },
+    })
   }
 
   /**
