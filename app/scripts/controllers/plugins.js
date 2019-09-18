@@ -51,7 +51,7 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
 
     let plugin
-    if (false && plugins[pluginName]) {
+    if (plugins[pluginName]) {
       plugin = plugins[pluginName]
     } else {
       plugin = await fetch(sourceUrl)
