@@ -2,26 +2,14 @@
   "privacyModeDefault": {
     "message": "Hali ya Faragha sasa imewezeshwa kwa chaguomsingi"
   },
-  "exposeAccounts": {
-    "message": "Onyesha Akaunti"
-  },
-  "exposeDescription": {
-    "message": "Onyesha akaunti kwenye tovuti ya sasa. Inafaa kwa dApps za legacy."
-  },
   "chartOnlyAvailableEth": {
     "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
-  },
-  "confirmExpose": {
-    "message": "Una uhakika unataka kuonyesha akaunti zako kwenye tovuti ya sasa?"
   },
   "confirmClear": {
     "message": "Una uhakika unataka kufuta tovuti zilizodihinishwa?"
   },
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Data za tovuti iliyoidhinishwa zimefanikiwa kufutwa."
   },
   "clearApprovalData": {
     "message": "Futa Data za Faragha"
@@ -44,12 +32,6 @@
   },
   "aboutSettingsDescription": {
     "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano."
-  },
-  "aboutUs": {
-    "message": "Kuhusu Sisi"
-  },
-  "accept": {
-    "message": "Kubali"
   },
   "acceleratingATransaction": {
     "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
@@ -99,9 +81,6 @@
   "advancedOptions": {
     "message": "Machaguo ya Juu"
   },
-  "addCustomToken": {
-    "message": "Ongeza kianzio maalumu"
-  },
   "addToAddressBook": {
     "message": "Ongeza kwenye kitabu cha anwani"
   },
@@ -110,9 +89,6 @@
   },
   "addAlias": {
     "message": "Ongeza jina jingine"
-  },
-  "addEthAddress": {
-    "message": "Ongeza anwani ya Ethereum"
   },
   "addToken": {
     "message": "Ongeza Kianzio"
@@ -126,23 +102,8 @@
   "addAcquiredTokens": {
     "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
   },
-  "agreeTermsOfService": {
-    "message": "Ninakubaliana na Masharti ya Huduma"
-  },
-  "allDone": {
-    "message": "Yote Imekamilika"
-  },
-  "alreadyHaveSeedPhrase": {
-    "message": "Hapana, tayari nini kirai cha kuanzia"
-  },
   "amount": {
     "message": "Kiasi"
-  },
-  "amountPlusGas": {
-    "message": "Kiwango + Gesi"
-  },
-  "amountPlusTxFee": {
-    "message": "Kiwango + Ada ya TX"
   },
   "appDescription": {
     "message": "Waleti ya Ethereum kwenye Kivinjari chako",
@@ -175,9 +136,6 @@
   "autoLogoutTimeLimitDescription": {
     "message": "Weka muda katika dakika kabla MetaMask haijaondoa kwenye akaunti kiotomatiki."
   },
-  "available": {
-    "message": "Inapatikana"
-  },
   "average": {
     "message": "Wastani"
   },
@@ -202,9 +160,6 @@
   "balanceOutdated": {
     "message": "Salio linaweza kuwa limepitwa na wakati"
   },
-  "balances": {
-    "message": "Salio la kianzio"
-  },
   "balanceIsInsufficientGas": {
     "message": "Salio halitoshi kwa jumla ya sasa ya gesi"
   },
@@ -222,23 +177,11 @@
   "blockiesIdenticon": {
     "message": "Tumia Blockies Identicon"
   },
-  "borrowDharma": {
-    "message": "Kupa Kupitia Dharma (Beta)"
-  },
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
   "builtInCalifornia": {
     "message": "MetaMask imeundwa na kutengenezwa California."
-  },
-  "buy": {
-    "message": "Nunua"
-  },
-  "buyCoinbase": {
-    "message": "Nunua kwenye Coinbase"
-  },
-  "buyCoinbaseExplainer": {
-    "message": "Coinbase ni nia maarufu sana duniani ya kununu na kuuza Bitcoin, Ethereum, na Litecoin."
   },
   "buyWithWyre": {
     "message": "Nunua ETH kwa kutumia Wyre"
@@ -276,17 +219,8 @@
   "cancelled": {
     "message": "Imebatilishwa"
   },
-  "cancelN": {
-    "message": "Batilisha $1 miamala yote"
-  },
   "chainId": {
     "message": "Utambulisho wa Mnyororo"
-  },
-  "classicInterface": {
-    "message": "Tumia kiolesura cha zamani"
-  },
-  "clickCopy": {
-    "message": "Bofya ili unakili"
   },
   "clickToAdd": {
     "message": "Bofya kwenye $1 ili kuongeza kwenye akaunti yako"
@@ -300,29 +234,17 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
   },
-  "company": {
-    "message": "Kampuni"
-  },
   "confirm": {
     "message": "Thibitisha"
   },
-  "confirmationTime": {
-    "message": "Muda wa uthibitishaji (sek.)"
-  },
   "confirmed": {
     "message": "Imethibitishwa"
-  },
-  "confirmContract": {
-    "message": "Thibitisha Mkataba"
   },
   "confirmPassword": {
     "message": "Thibitisha Nenosiri"
   },
   "confirmSecretBackupPhrase": {
     "message": "Thibitisha Kirai chako cha Siri cha Kuhifadhi Data"
-  },
-  "confirmTransaction": {
-    "message": "Thabiatisha Muamala"
   },
   "congratulations": {
     "message": "Hongera"
@@ -335,9 +257,6 @@
   },
   "connectRequest": {
     "message": "Unganisha Ombi"
-  },
-  "connecting": {
-    "message": "Inaunganisha..."
   },
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"
@@ -360,21 +279,6 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToUnknown": {
-    "message": "Inaunganisha kwenye Mtandao Usiojulikana"
-  },
-  "connectToLedger": {
-    "message": "Unganisha kwenye Leja"
-  },
-  "connectToTrezor": {
-    "message": "Unganisha kwenye Trezor"
-  },
-  "continue": {
-    "message": "Endelea"
-  },
-  "continueToCoinbase": {
-    "message": "Endelea kwenye Coinbase"
-  },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"
   },
@@ -390,14 +294,8 @@
   "copiedButton": {
     "message": "Imenakiliwa"
   },
-  "copiedClipboard": {
-    "message": "Imenakiliwa kwenye ubao wa kunakilia"
-  },
   "copiedExclamation": {
     "message": "Imenakiliwa!"
-  },
-  "copiedSafe": {
-    "message": "Nimeinakili kwenye sehemu fulani salama"
   },
   "copy": {
     "message": "Nakili"
@@ -429,27 +327,14 @@
   "createAWallet": {
     "message": "Fungua Waleti"
   },
-  "createDen": {
-    "message": "Unda"
-  },
   "createPassword": {
     "message": "Unda Nenosiri"
-  },
-  "crypto": {
-    "message": "Fedha ya kidijitali",
-    "description": "Exchange type (cryptocurrencies)"
   },
   "currencyConversion": {
     "message": "Ubadilishaji Fedha"
   },
   "currentLanguage": {
     "message": "Lugha ya Sasa"
-  },
-  "currentNetwork": {
-    "message": "Mtandao wa Sasa"
-  },
-  "currentRpc": {
-    "message": "RPC ya Sasa"
   },
   "customGas": {
     "message": "Weka Mipangilio ya Gesi Upendavyo"
@@ -459,9 +344,6 @@
   },
   "customToken": {
     "message": "Kianzio Maalumu"
-  },
-  "customize": {
-    "message": "Binafsisha"
   },
   "customRPC": {
     "message": "RPC Maalumu"
@@ -481,38 +363,14 @@
   "deleteAccount": {
     "message": "Futa Akaunti"
   },
-  "denExplainer": {
-    "message": "DEN yako ni hifadhi yenye nenosiri lililofichwa ndani ya MetaMask."
-  },
   "deposit": {
     "message": "Fedha zilizopo kwenye akaunti"
-  },
-  "depositBTC": {
-    "message": "Weka BTC yako kwenye anwani hapa chini:"
-  },
-  "depositEth": {
-    "message": "Weka Eth"
   },
   "depositEther": {
     "message": "Weka Ether"
   },
-  "depositFiat": {
-    "message": "Weka kwa kutumia Fiat"
-  },
-  "depositFromAccount": {
-    "message": "Weka kutoka akaunti nyingine"
-  },
-  "depositShapeShift": {
-    "message": "Weka kwa kutumia ShapeShift"
-  },
-  "depositShapeShiftExplainer": {
-    "message": "Ikiwa unamiliki fedha nyingine za kidijitali, unaweza kucheza na kuweka Ether moja kwa moja kwenye waleti yako ya MetaMask. Akaunti Haihitajiki."
-  },
   "details": {
     "message": "Maelezo"
-  },
-  "directDeposit": {
-    "message": "Kuweka Moja kwa Moja"
   },
   "directDepositEther": {
     "message": "Weka Ether Moja kwa Moja"
@@ -544,12 +402,6 @@
   "edit": {
     "message": "Badilisha"
   },
-  "editNetwork": {
-    "message": "Hariri Mtandao"
-  },
-  "editAccountName": {
-    "message": "Hariri Jina la Akaunti"
-  },
   "editContact": {
     "message": "Hariri Mawasiliano"
   },
@@ -558,9 +410,6 @@
   },
   "emailUs": {
     "message": "Tutumie barua pepe!"
-  },
-  "encryptNewDen": {
-    "message": "Weka nenosiri kwenye DEN yako mpya"
   },
   "endOfFlowMessage1": {
     "message": "Umefaulu jaribio - weka kirai chako cha kuanzia mahali salama, ni wajibu wako!"
@@ -592,9 +441,6 @@
   "endOfFlowMessage10": {
     "message": "Yote Imekamilika"
   },
-  "ensNameNotFound": {
-    "message": "Jina la ENS halipatikani"
-  },
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
@@ -606,9 +452,6 @@
   },
   "enterPassword": {
     "message": "Ingiza nenosiri"
-  },
-  "enterPasswordConfirm": {
-    "message": "Ingiza nenosiri lako kuthibitisha"
   },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
@@ -622,17 +465,11 @@
   "estimatedProcessingTimes": {
     "message": "Muda wa Kuchakata Uliokadiriwa"
   },
-  "exchangeRate": {
-    "message": "Kiwango cha Ubadilishaji"
-  },
   "expandView": {
     "message": "Panua Mwonekano"
   },
   "exportPrivateKey": {
     "message": "Panua Mwonekano"
-  },
-  "exportPrivateKeyWarning": {
-    "message": "Hamisha funguo binafsi kwa hatari yako mwenyewe"
   },
   "failed": {
     "message": "Imeshindwa"
@@ -643,27 +480,15 @@
   "faster": {
     "message": "Ingiza"
   },
-  "fastest": {
-    "message": "Kasi zaidi"
-  },
-  "feeChartTitle": {
-    "message": "Utabiri wa Ada ya Miamala ya Moja kwa Moja "
-  },
   "fileImportFail": {
     "message": "Kuhamisha faili hakufanyi kazi? Bofya hapa!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "followTwitter": {
-    "message": "Tufuatilie kwenye Twitter"
   },
   "forgetDevice": {
     "message": "Ondoa kifaa hiki"
   },
   "from": {
     "message": "Kutoka"
-  },
-  "fromToSame": {
-    "message": "Anwani ya Kutoka na Kwenda haiwezi kufanana"
   },
   "fromShapeShift": {
     "message": "Kutoka ShapeShift"
@@ -687,17 +512,11 @@
   "gasLimitInfoModalContent": {
     "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
   },
-  "gasLimitRequired": {
-    "message": "Kikomo cha Gesi Kinahitajika"
-  },
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
-  },
-  "generatingSeed": {
-    "message": "Inazalisha Kianzio..."
   },
   "gasPrice": {
     "message": "Pata Bei (GWEI)"
@@ -714,17 +533,11 @@
   "gasPriceCalculation": {
     "message": "Tunakokotoa bei za gesi zilizopendekzwa kulingana na viwango vya kufanikiwa mtandao."
   },
-  "gasPriceRequired": {
-    "message": "Pata Bei Inayohitajika"
-  },
   "general": {
     "message": "Jumla"
   },
   "generalSettingsDescription": {
     "message": "Ubadilishaji wa fedha, sarafu ya msingi, lugha, blockies identicon"
-  },
-  "generatingTransaction": {
-    "message": "Kuzalisha muamala"
   },
   "getEther": {
     "message": "Pata Ether"
@@ -765,9 +578,6 @@
     "message": "hapa",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
-  "hereList": {
-    "message": "Orodha hii hapa!!!!"
-  },
   "hide": {
     "message": "Ficha"
   },
@@ -779,12 +589,6 @@
   },
   "history": {
     "message": "Historia"
-  },
-  "howToDeposit": {
-    "message": "Je, ungependa kuweka Ether kwa namna gani?"
-  },
-  "holdEther": {
-    "message": "Inakuwezesha kushikilia ether na vianzio, na hufanya kazi kama daraja lako kwenye programu za mahali husika."
   },
   "import": {
     "message": "Ingiza",
@@ -799,12 +603,6 @@
   "importAccountSeedPhrase": {
     "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
   },
-  "importAnAccount": {
-    "message": "Hamisha Akaunti"
-  },
-  "importDen": {
-    "message": "Hamisha DEN iliyopo"
-  },
   "importWallet": {
     "message": "Hamisha Waleti"
   },
@@ -817,9 +615,6 @@
   },
   "importUsingSeed": {
     "message": "Hamisha kwa kutumia kirai kianzio cha akaunti"
-  },
-  "importWithSeedPhrase": {
-    "message": "Hamisha kwa kutumia kirai kianzio"
   },
   "info": {
     "message": "Taarifa"
@@ -851,14 +646,8 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Kwa mtandao wa ETH, weka herufi ndogo"
   },
-  "invalidGasParams": {
-    "message": "Vigezo Batili vya Gesi"
-  },
   "invalidInput": {
     "message": "Maandii si sahihi."
-  },
-  "invalidRequest": {
-    "message": "Ombi Batili"
   },
   "invalidRPC": {
     "message": "RPC URL batili"
@@ -869,30 +658,18 @@
   "invalidSeedPhrase": {
     "message": "Kirai kianzio batili"
   },
-  "jsonFail": {
-    "message": "Hitilafu imetokea. Tafadhali hakikisha faili lako la JSON limepangiliwa vizuri."
-  },
   "jsonFile": {
     "message": "Faili la JSON",
     "description": "format for importing an account"
   },
-  "keepTrackTokens": {
-    "message": "Endelea kufuatilia vianzio ulivyonunua kwa kutumia akaunti yako ya MetaMask."
-  },
   "kovan": {
     "message": "Mtandao wa Majaribio wa Kovan"
-  },
-  "knowledgeDataBase": {
-    "message": "Tembelea Kituo chetu cha Maarifa"
   },
   "learnMore": {
     "message": "Jifunze zaidi"
   },
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
-  },
-  "legal": {
-    "message": "Kisheria"
   },
   "lessThanMax": {
     "message": "inapaswa kuwa ndogo kuliko au sawa na $1. ",
@@ -906,9 +683,6 @@
   },
   "links": {
     "message": "Viungo"
-  },
-  "limit": {
-    "message": "Kikomo"
   },
   "liveGasPricePredictions": {
     "message": "Utabiri wa moja kwa moja wa Bei ya Gesi"
@@ -927,12 +701,6 @@
   },
   "logout": {
     "message": "Toka kwenye akaunti"
-  },
-  "loose": {
-    "message": "Maneno"
-  },
-  "loweCaseWords": {
-    "message": "ya kianzio yaliyojitenga pekee ndiyo yana herufi ndogo"
   },
   "mainnet": {
     "message": "Mtandao Mkuu wa Ethereum"
@@ -955,17 +723,8 @@
   "metamaskVersion": {
     "message": "Toleo la MetaMask"
   },
-  "min": {
-    "message": "Kiwango cha chini"
-  },
   "missingYourTokens": {
     "message": "Je, huoni vianzio vyako?"
-  },
-  "minutesShorthand": {
-    "message": "Kiwango cha Chini"
-  },
-  "mobileSyncTitle": {
-    "message": "Sawazisha akaunti kwa kutumia simu ya mkomkononi"
   },
   "mobileSyncText": {
     "message": "Tafadhali ingiza nenosiri lako ili kuthibitisha kuwa ni wewe!"
@@ -988,10 +747,6 @@
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "needImportPassword": {
-    "message": "Unapaswa kuingiza nenosiri kwa faili lililochaguliwa.",
-    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "Haiwezi kutuma viwango hasi vya ETH."
@@ -1027,12 +782,6 @@
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },
-  "newPassword8Chars": {
-    "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
-  },
-  "newRecipient": {
-    "message": "Mpokeaji Mpya"
-  },
   "newNetwork": {
     "message": "Mtandao Mpya"
   },
@@ -1054,20 +803,11 @@
   "rpcUrl": {
     "message": "RPC URL mpya"
   },
-  "showAdvancedOptions": {
-    "message": "Onyesha Machaguo ya Juu"
-  },
-  "hideAdvancedOptions": {
-    "message": "Ficha Machaguo ya Juu"
-  },
   "optionalChainId": {
     "message": "Utambulisho wa Mnyororo (hiari)"
   },
   "optionalSymbol": {
     "message": "Ishara (hiari)"
-  },
-  "optionalNickname": {
-    "message": "Lakabu (hiari)"
   },
   "newTotal": {
     "message": "Jumla Mpya"
@@ -1087,20 +827,11 @@
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
   },
-  "noTransactionHistory": {
-    "message": "Hakuna historia ya muamala."
-  },
   "noTransactions": {
     "message": "Huna miamala."
   },
   "notEnoughGas": {
     "message": "Hakuna Gesi ya Kutosha"
-  },
-  "notFound": {
-    "message": "Haikupatikana"
-  },
-  "notStarted": {
-    "message": "Haijaanza"
   },
   "noWebcamFoundTitle": {
     "message": "Kamera haipatikanai"
@@ -1111,12 +842,6 @@
   "ofTextNofM": {
     "message": "ya"
   },
-  "oldUI": {
-    "message": "Kiolesura cha zamani cha Mtumiaji"
-  },
-  "oldUIMessage": {
-    "message": "Umerudi kwenye Kiolesura cha zamani. Unaweza kurudi tena kwenye Kiolesura Kipya kupitia chaguo kwenye menyu ya juu kulia."
-  },
   "onlySendToEtherAddress": {
     "message": "Tuma tu ETH kwenya anwani za Ethereum."
   },
@@ -1124,27 +849,14 @@
     "message": "Tuma $1 kwenye anwani ya akaunti ya Ethereum.",
     "description": "displays token symbol"
   },
-  "openInTab": {
-    "message": "Fungua kwenye kichupo"
-  },
-  "or": {
-    "message": "au",
-    "description": "choice between creating or importing a new account"
-  },
   "orderOneHere": {
     "message": "Agiza Trezor au Leja na weka fedha zako kwenye ifadhi ya baridi"
   },
   "origin": {
     "message": "Asili"
   },
-  "outgoing": {
-    "message": "Zinazotoka"
-  },
   "parameters": {
     "message": "Vigezo"
-  },
-  "originalTotal": {
-    "message": "Jumla Halisi"
   },
   "participateInMetaMetrics": {
     "message": "Shiriki katika MetaMetrics"
@@ -1155,22 +867,11 @@
   "password": {
     "message": "Nenosiri"
   },
-  "passwordCorrect": {
-    "message": "Tafadhali hakikisha nenosiri lako ni sahihi."
-  },
   "passwordsDontMatch": {
     "message": "Manenosiri hayawiani"
   },
-  "passwordMismatch": {
-    "message": "manenosiri haywawiani",
-    "description": "in password creation process, the two new password fields did not match"
-  },
   "passwordNotLongEnough": {
     "message": "Nenosiri si refu vya kutosha"
-  },
-  "passwordShort": {
-    "message": "nenosiri si refu vya kutosha",
-    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Bandika uzi wako wa ufunguo binafsi hapa:",
@@ -1184,12 +885,6 @@
   },
   "personalAddressDetected": {
     "message": "Anwani binafsi imegunduliwa. Weka anwani ya mkataba ya kianzio."
-  },
-  "pleaseReviewTransaction": {
-    "message": "Tafadhali pitia muamala wako."
-  },
-  "popularTokens": {
-    "message": "Vianzio Maarufu"
   },
   "prev": {
     "message": "Hakiki"
@@ -1222,15 +917,6 @@
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
   },
-  "readMore": {
-    "message": "Soma hapa zaidi."
-  },
-  "readMore2": {
-    "message": "Soma zidi."
-  },
-  "receive": {
-    "message": "Pokea"
-  },
   "recents": {
     "message": "Za hivi karibuni"
   },
@@ -1239,9 +925,6 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Tafuta, anwani za umma (0x), au ENS"
-  },
-  "refundAddress": {
-    "message": "Anwani yako yaKurejeshewa Fedha"
   },
   "rejectAll": {
     "message": "Kataa Zote"
@@ -1288,9 +971,6 @@
   "required": {
     "message": "Inahitajika"
   },
-  "retryWithMoreGas": {
-    "message": "Jaribu tena hapa ukiwa na bei ya gesi ya juu"
-  },
   "restore": {
     "message": "Rejesha"
   },
@@ -1336,10 +1016,6 @@
   "rpc": {
     "message": "RPC Maalumu"
   },
-  "sampleAccountName": {
-    "message": "K.m Akaunti yangu mpya",
-    "description": "Help user understand concept of adding a human-readable name to their account"
-  },
   "save": {
     "message": "Hifadhi"
   },
@@ -1351,13 +1027,6 @@
   },
   "saveAsCsvFile": {
     "message": "Hifadhi kama Faili la CSV"
-  },
-  "saveAsFile": {
-    "message": "Hifadhi Faili kama",
-    "description": "Account export process"
-  },
-  "saveSeedAsFile": {
-    "message": "Hifadhi Maneno ya Kianzio kama Faili"
   },
   "scanInstructions": {
     "message": "Weka msimbo wa QR mbele ya kamera yako"
@@ -1389,17 +1058,11 @@
   "securitySettingsDescription": {
     "message": "Mipangilio ya Faragha na kirai kianzio cha waleti"
   },
-  "secondsShorthand": {
-    "message": "Sek."
-  },
   "seedPhrasePlaceholder": {
     "message": "Tenganisha kila neno kwa nafasi moja"
   },
   "seedPhraseReq": {
     "message": "Virai vianzio vina urefu wa maneno 12"
-  },
-  "select": {
-    "message": "Chagua"
   },
   "selectCurrency": {
     "message": "Chagua Sarafu"
@@ -1409,9 +1072,6 @@
   },
   "selectLocale": {
     "message": "Chagua Lugha"
-  },
-  "selectService": {
-    "message": "Chagua Huduma"
   },
   "selectType": {
     "message": "Chagua Aina"
@@ -1440,17 +1100,11 @@
   "searchTokens": {
     "message": "Tafuta Vianzio"
   },
-  "selectAnAddress": {
-    "message": "Chagua Anwani"
-  },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
   },
   "selectAnAccountHelp": {
     "message": "Chagua akaunti kuangalia kwenye MetaMask"
-  },
-  "selectAnAsset": {
-    "message": "Chagua rasilimali"
   },
   "selectAHigherGasFee": {
     "message": "Chagua ada ya juu ya gesi ili kuharakisha uchakataji wa muamala wako.*"
@@ -1461,14 +1115,8 @@
   "selectPathHelp": {
     "message": "Ikiwa huoni akaunti zako za Leja za sasa hapa chini, charibu kubadilisha njia kwenda \"Legacy (MEW / MyCrypto)\"  "
   },
-  "sendTokensAnywhere": {
-    "message": "Tuma Vianzio kwa mtu yeyote mwenye akaunti ya Ethereum"
-  },
   "settings": {
     "message": "Mipangilio"
-  },
-  "shapeshiftBuy": {
-    "message": "Nunua kwa kutumia Shapeshift"
   },
   "showAdvancedGasInline": {
     "message": "Udhibiti wa juu wa gesi"
@@ -1485,9 +1133,6 @@
   "showPrivateKeys": {
     "message": "Onyesha Fungo Binafsi"
   },
-  "showQRCode": {
-    "message": "Onyesha Msimbo wa QR"
-  },
   "showHexData": {
     "message": "Onyesha Data za Hex"
   },
@@ -1503,32 +1148,17 @@
   "signed": {
     "message": "Imesainiwa"
   },
-  "signMessage": {
-    "message": "Tuma ujumbe"
-  },
   "signNotice": {
     "message": "Kusaini ujumbe huu kunaweza kuwa \nmadhara hatari. Saini ujumbe kutoka kwenye\ntovuti unazoziamini kabisa na akaunti yako yote tu.\nNjia hii ya hatari itaondolewa kwenye toleo la baadaye."
   },
   "sigRequest": {
     "message": "Ombi la Saini"
   },
-  "sigRequested": {
-    "message": "Saini imeombwa"
-  },
   "somethingWentWrong": {
     "message": "Ayaa! Hitilafu fulani imetokea."
   },
-  "spaceBetween": {
-    "message": "inatakiwa ime sehemu moja tu baina ya maneno"
-  },
   "speedUp": {
     "message": "Ongeza Kasi"
-  },
-  "speedUpTitle": {
-    "message": "Ongeza Kasi ya Muamala"
-  },
-  "speedUpSubtitle": {
-    "message": "Ongeza bei yako ya gesi ili kujaribu kuandika na kuongeza kasi ya muamala wako"
   },
   "speedUpCancellation": {
     "message": "Ongeza kasi ya ubatilishaji huu"
@@ -1608,9 +1238,6 @@
   "syncWithMobileComplete": {
     "message": "Umefanikiwa kuoanisha data yako. Furahia programu yako ya simu ya MetaMask!"
   },
-  "takesTooLong": {
-    "message": "Inachukua muda mrefu?"
-  },
   "terms": {
     "message": "Masharti ya Matumizi"
   },
@@ -1633,9 +1260,6 @@
   "token": {
     "message": "Kianzio"
   },
-  "tokenAddress": {
-    "message": "Anwani ya Kianzio"
-  },
   "tokenAlreadyAdded": {
     "message": "Kianzio kimeongezwa tyari"
   },
@@ -1645,14 +1269,8 @@
   "tokenContractAddress": {
     "message": "Anwani ya Mkataba ya Kianzio"
   },
-  "tokenSelection": {
-    "message": "Tafuta vianzio au chagua kutoka kwenye orodha yetu ya vianzio maarufu."
-  },
   "tokenSymbol": {
     "message": "Ishara ya Kianzio"
-  },
-  "tokenWarning1": {
-    "message": "Fuatilia vianzio ulivyonunua kupitia akaunti ya MetaMask. Ikiwa umenunua vianzio kwa kutumia akaunti tofuati, vianzio hivyo havitaonekana hapa."
   },
   "total": {
     "message": "Jumla"
@@ -1666,9 +1284,6 @@
   "transactionCreated": {
     "message": "Muamala umeanzishwa kwa thamani ya $1 mnamo$2."
   },
-  "transactionWithNonce": {
-    "message": "Muamala $1"
-  },
   "transactionDropped": {
     "message": "Muamala umedondoswa mnamo $2."
   },
@@ -1680,9 +1295,6 @@
   },
   "transactionUpdated": {
     "message": "Muamala umesasishwa mnamo $2."
-  },
-  "transactionUpdatedGas": {
-    "message": "Muamala umesasishwa ukiwa na ada ya gesi ya $1 mnamo $2."
   },
   "transactionErrored": {
     "message": "Muamala umepata hitilafu."
@@ -1705,12 +1317,6 @@
   "transactionFee": {
     "message": "Ada ya Muamala"
   },
-  "transactionMemo": {
-    "message": "Memo ya Muamala (hiari)"
-  },
-  "transactionNumber": {
-    "message": "Namba ya Muamala"
-  },
   "transactionTime": {
     "message": "Muda wa Muamala"
   },
@@ -1723,12 +1329,6 @@
   "transferFrom": {
     "message": "Tuma Kutoka"
   },
-  "transfers": {
-    "message": "Zilizotumwa"
-  },
-  "trezorHardwareWallet": {
-    "message": "Waleti ya Programu Maunzi ya TREZOR"
-  },
   "troubleTokenBalances": {
     "message": "Tulipata shida kupakia salio lako la kianzio. Unaweza kuliona",
     "description": "Followed by a link (here) to view token balances"
@@ -1736,26 +1336,11 @@
   "tryAgain": {
     "message": "Jaribu tena"
   },
-  "twelveWords": {
-    "message": "Maneno haya 12 ni njia pekee ya kurejesha akaunti zako za MetaMask. \nYahifadhi mahali salama na pa siri."
-  },
   "typePassword": {
     "message": "Andika nenosiri lako la MetaMask"
   },
-  "uiMigrationAnnouncement": {
-    "message": "Karibu kwenye Kiolesura kipya cha Mtumiaji. Ikiwa una mrejesho kuhusu Kiolesura cha Mtumiaji au maombi ya kipengele, tafadhali wasiliana na timu yetu ya usaidizi au kwenye GitHub."
-  },
-  "uiWelcome": {
-    "message": "Karibu kwenye Kiolesura Kipya cha Mtumiaji (Beta)"
-  },
-  "uiWelcomeMessage": {
-    "message": "Sasa unatumia Kiolesura kipya cha Mtumiaji."
-  },
   "unapproved": {
     "message": "Haijaidhinishwa"
-  },
-  "unavailable": {
-    "message": "Haipatikani"
   },
   "units": {
     "message": "vizio"
@@ -1765,9 +1350,6 @@
   },
   "unknownNetwork": {
     "message": "Mtandao Binafsi Usiojulikana"
-  },
-  "unknownNetworkId": {
-    "message": "Utambulisho wa Mtandao Usiojulikana"
   },
   "unknownQrCode": {
     "message": "Hitilafu: Hatukuweza kubainisha msimbo huo wa QR"
@@ -1790,24 +1372,14 @@
   "uriErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
-  "usaOnly": {
-    "message": "Marekani pekee",
-    "description": "Using this exchange is limited to people inside the USA"
-  },
   "usedByClients": {
     "message": "Hutumiwa na wateja mbalimbali"
-  },
-  "useOldUI": {
-    "message": "Tumia Kiolesura cha Mtumiaji cha zamani"
   },
   "userName": {
     "message": "Jina la mtumiaji"
   },
   "validFileImport": {
     "message": "Ni lazima uchague faili halali ili uhamishe."
-  },
-  "vaultCreated": {
-    "message": "Vault Imeundwa"
   },
   "viewAccount": {
     "message": "Angalia Akaunti"
@@ -1824,9 +1396,6 @@
   "viewOnEtherscan": {
     "message": "Tazama kwenye Etherscan"
   },
-  "viewNetworkInfo": {
-    "message": "Tazama Taarifa za Mtandao"
-  },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
   },
@@ -1841,9 +1410,6 @@
   },
   "welcome": {
     "message": "Karibu kwenye MetaMask"
-  },
-  "whatsThis": {
-    "message": "Hiki ni nini?"
   },
   "writePhrase": {
     "message": "Andika kirai hiki kwenye karatasi na kihifadhi kwenye sehemu salama. Ikiwa unahitaji usalama zaidi, andika kwenye vipande kadhaa vya karatasi na tunza kila kimoja kwenye maeneo tofauti 2-3. "
@@ -1862,18 +1428,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
-  },
-  "yourUniqueAccountImage": {
-    "message": "Picha yako ya akaunti ya kitofuati"
-  },
-  "yourUniqueAccountImageDescription1": {
-    "message": "Picha hii imetengenezwa na kompyuta kwa ajili yako kwa namba yako mpya ya akaunti."
-  },
-  "yourUniqueAccountImageDescription2": {
-    "message": "Utaiona hii picha kila wakati utakapohitaji kuthibitisha muamala huu."
-  },
-  "yourUniqueAccountImageDescription3": {
-    "message": "MetaMask kamwe haitakuomba kirai chako kianzio!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Bei ya gesi sifuri kwenye kuongeza kasi"

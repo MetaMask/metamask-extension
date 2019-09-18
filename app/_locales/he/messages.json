@@ -2,26 +2,14 @@
   "privacyModeDefault": {
     "message": "מצב פרטיות זמין עכשיו כברירת מחדל"
   },
-  "exposeAccounts": {
-    "message": "גילוי חשבונות"
-  },
-  "exposeDescription": {
-    "message": "חשוף חשבונות לאתר האינטרנט הנוכחי. זה שימושי עבור  אפליקציות מבוזרות (dapps) מדור קודם."
-  },
   "chartOnlyAvailableEth": {
     "message": "טבלה זמינה רק ברשתות אתריום."
-  },
-  "confirmExpose": {
-    "message": "הנך בטוח/ה שברצונך לחשוף את חשבונותיך לאתר האינטרנט הנוכחי?"
   },
   "confirmClear": {
     "message": "הנך בטוח/ה כי ברצונך למחוק אתרים שאושרו?"
   },
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "נתוני האתר שאושר נוקו בהצלחה."
   },
   "clearApprovalData": {
     "message": "נקה נתוני פרטיות"
@@ -40,12 +28,6 @@
   },
   "aboutSettingsDescription": {
     "message": "גרסה, מרכז תמיכה ופרטי יצירת קשר."
-  },
-  "aboutUs": {
-    "message": "על אודותינו"
-  },
-  "accept": {
-    "message": "אשר"
   },
   "acceleratingATransaction": {
     "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
@@ -95,9 +77,6 @@
   "advancedOptions": {
     "message": "אפשרויות מתקדמות"
   },
-  "addCustomToken": {
-    "message": "הוסף טוקן מותאם אישית"
-  },
   "addToAddressBook": {
     "message": "הוסף לפנקס הכתובות"
   },
@@ -106,9 +85,6 @@
   },
   "addAlias": {
     "message": "הוסף כינוי"
-  },
-  "addEthAddress": {
-    "message": "הוסף כתובת אתריום"
   },
   "addToken": {
     "message": "הוסף/י אסימון"
@@ -122,23 +98,8 @@
   "addAcquiredTokens": {
     "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
   },
-  "agreeTermsOfService": {
-    "message": "אני מסכימ/ה לתנאי השימוש"
-  },
-  "allDone": {
-    "message": "הכל בוצע"
-  },
-  "alreadyHaveSeedPhrase": {
-    "message": "לא, יש לי כבר seed phrase"
-  },
   "amount": {
     "message": "כמות"
-  },
-  "amountPlusGas": {
-    "message": "סכום + גז"
-  },
-  "amountPlusTxFee": {
-    "message": "סכום + עמלת TX"
   },
   "appDescription": {
     "message": "ארנק אתריום בדפדפן שלך",
@@ -175,9 +136,6 @@
   "autoLogoutTimeLimitDescription": {
     "message": "הגדר/י את זמן היעדר הפעילות בדקות לפני ש-MetaMask יתנתק אוטומטית."
   },
-  "available": {
-    "message": "פנוי"
-  },
   "average": {
     "message": "ממוצע"
   },
@@ -202,17 +160,11 @@
   "balanceOutdated": {
     "message": "ייתכן כי היתרה אינה מעודכנת"
   },
-  "balances": {
-    "message": "יתר(ו)ת טוקנים"
-  },
   "balanceIsInsufficientGas": {
     "message": "יתרה לא מספיקה עבור סך דלק נוכחי"
   },
   "basic": {
     "message": "בסיסי"
-  },
-  "beta": {
-    "message": "בטא"
   },
   "betweenMinAndMax": {
     "message": "חייב להיות גדול או שווה ל-$1 ופחות או שווה ל-$2.",
@@ -228,23 +180,11 @@
   "blockiesIdenticon": {
     "message": "השתמש ב- Blockies Identicon"
   },
-  "borrowDharma": {
-    "message": "הלוואה באמצעות Dharma (בטא)"
-  },
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
   "builtInCalifornia": {
     "message": "MetaMask תוכנן ונבנה בקליפורניה."
-  },
-  "buy": {
-    "message": "רכישה"
-  },
-  "buyCoinbase": {
-    "message": "קנה/י ב-Coinbase"
-  },
-  "buyCoinbaseExplainer": {
-    "message": "Coinbase היא הדרך הפופולרית ביותר בעולם לקנות ולמכור ביטקוין, אתריום וליטקוין."
   },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
@@ -285,17 +225,8 @@
   "cancelled": {
     "message": "מבוטל"
   },
-  "cancelN": {
-    "message": "בטל את כל עסקאות $1"
-  },
   "chainId": {
     "message": "מזהה שרשרת"
-  },
-  "classicInterface": {
-    "message": "השתמש בממשק קלאסי"
-  },
-  "clickCopy": {
-    "message": "לחצ/י כדי להעתיק"
   },
   "clickToAdd": {
     "message": "לחצ/י על $1 כדי להוסיף אותם לחשבונך"
@@ -309,29 +240,17 @@
   "chromeRequiredForHardwareWallets": {
     "message": "עליך להשתמש ב-MetaMask בגוגל כרום כדי להתחבר לארנק החומרה שלך."
   },
-  "company": {
-    "message": "חברה"
-  },
   "confirm": {
     "message": "אישור"
   },
-  "confirmationTime": {
-    "message": "זמן אישור (שניות)"
-  },
   "confirmed": {
     "message": "אושר"
-  },
-  "confirmContract": {
-    "message": "אישור החוזה"
   },
   "confirmPassword": {
     "message": "נא לאשר סיסמה"
   },
   "confirmSecretBackupPhrase": {
     "message": "אשר/י את צירוף הגיבוי הסודי שלך"
-  },
-  "confirmTransaction": {
-    "message": "אישור העסקה"
   },
   "congratulations": {
     "message": "מזל טוב"
@@ -344,9 +263,6 @@
   },
   "connectRequest": {
     "message": "חבר/י בקשה"
-  },
-  "connecting": {
-    "message": "מתחבר..."
   },
   "connectingTo": {
     "message": "מתחבר ל- $1 "
@@ -369,21 +285,6 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToUnknown": {
-    "message": "מתחבר לרשת לא ידועה"
-  },
-  "connectToLedger": {
-    "message": "התחבר ל-Ledger"
-  },
-  "connectToTrezor": {
-    "message": "התחבר/י ל-Trezor"
-  },
-  "continue": {
-    "message": "המשך"
-  },
-  "continueToCoinbase": {
-    "message": "המשך אל Coinbase"
-  },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
   },
@@ -399,14 +300,8 @@
   "copiedButton": {
     "message": "הועתק"
   },
-  "copiedClipboard": {
-    "message": "הועתק ללוח"
-  },
   "copiedExclamation": {
     "message": "הועתק!"
-  },
-  "copiedSafe": {
-    "message": "העתקתי זאת למקום מאובטח"
   },
   "copy": {
     "message": "העתק"
@@ -438,27 +333,14 @@
   "createAWallet": {
     "message": "צור ארנק"
   },
-  "createDen": {
-    "message": "צור"
-  },
   "createPassword": {
     "message": "יצירת ססמה"
-  },
-  "crypto": {
-    "message": "קריפטו",
-    "description": "Exchange type (cryptocurrencies)"
   },
   "currencyConversion": {
     "message": "המרת מטבע"
   },
   "currentLanguage": {
     "message": "שפה נוכחית"
-  },
-  "currentNetwork": {
-    "message": "רשת נוכחית"
-  },
-  "currentRpc": {
-    "message": "RPC נוכחי"
   },
   "customGas": {
     "message": "התאמה אישית של דלק"
@@ -468,9 +350,6 @@
   },
   "customToken": {
     "message": "אסימון מותאם אישית"
-  },
-  "customize": {
-    "message": "התאם אישית"
   },
   "customRPC": {
     "message": "RPC מותאם אישית"
@@ -490,38 +369,14 @@
   "deleteAccount": {
     "message": "מחק חשבון"
   },
-  "denExplainer": {
-    "message": "ה-DEN שלך הוא האחסון שלך המוצפן באמצעות סיסמה בתוך MetaMask."
-  },
   "deposit": {
     "message": "הפקדה"
-  },
-  "depositBTC": {
-    "message": "הפקד/י את ה-BTC שלך לכתובת שלהלן:"
-  },
-  "depositEth": {
-    "message": "הפקדת את'ר"
   },
   "depositEther": {
     "message": "הפקדת את'ר"
   },
-  "depositFiat": {
-    "message": "הפקדה באמצעות פיאט"
-  },
-  "depositFromAccount": {
-    "message": "ביצוע הפקדה מחשבון אחר"
-  },
-  "depositShapeShift": {
-    "message": "הפקדה באמצעות ShapeShift"
-  },
-  "depositShapeShiftExplainer": {
-    "message": "אם יש בבעלותך מטבעות מבוזרים, תוכל/י לסחור ולהפקיד Ether ישירות בארנק MetaMask שלך. אין צורך בחשבון."
-  },
   "details": {
     "message": "פרטים"
-  },
-  "directDeposit": {
-    "message": "הפקדה ישירה"
   },
   "directDepositEther": {
     "message": "הפקד את'ר ישירות"
@@ -553,12 +408,6 @@
   "edit": {
     "message": "ערוך"
   },
-  "editNetwork": {
-    "message": "עריכת רשת"
-  },
-  "editAccountName": {
-    "message": "ערוך את שם החשבון"
-  },
   "editContact": {
     "message": "ערוך איש קשר"
   },
@@ -567,9 +416,6 @@
   },
   "emailUs": {
     "message": "שלח/י לנו מייל!"
-  },
-  "encryptNewDen": {
-    "message": "הצפנת ה-DEN החדש שלך"
   },
   "endOfFlowMessage1": {
     "message": "עברת את הבחינה - יש לשמור את ה-seedphrase שלך במקום בטוח, זה באחריותך!"
@@ -601,9 +447,6 @@
   "endOfFlowMessage10": {
     "message": "הכל בוצע"
   },
-  "ensNameNotFound": {
-    "message": "שם ENS לא נמצא"
-  },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
@@ -615,9 +458,6 @@
   },
   "enterPassword": {
     "message": "יש להזין ססמה"
-  },
-  "enterPasswordConfirm": {
-    "message": "יש להזין את הססמה שלך כדי לאשר"
   },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
@@ -631,17 +471,11 @@
   "estimatedProcessingTimes": {
     "message": "זמני עיבוד משוערים"
   },
-  "exchangeRate": {
-    "message": "שער חליפין"
-  },
   "expandView": {
     "message": "הרחב תצוגה"
   },
   "exportPrivateKey": {
     "message": "יצא/י מפתח פרטי"
-  },
-  "exportPrivateKeyWarning": {
-    "message": "יצא מפתחות פרטיים על אחריותך בלבד."
   },
   "failed": {
     "message": "נכשל"
@@ -652,12 +486,6 @@
   "faster": {
     "message": "מהר יותר"
   },
-  "fastest": {
-    "message": "הכי מהיר"
-  },
-  "feeChartTitle": {
-    "message": "תחזיות עמלת עסקה בלייב"
-  },
   "fiat": {
     "message": "פיאט",
     "description": "Exchange type"
@@ -666,17 +494,11 @@
     "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
     "description": "Helps user import their account from a JSON file"
   },
-  "followTwitter": {
-    "message": "עקב/י אחרינו בטוויטר"
-  },
   "forgetDevice": {
     "message": "מחיקת המכשיר הזה"
   },
   "from": {
     "message": "מאת"
-  },
-  "fromToSame": {
-    "message": "כתובת המוען וכתובת הנמען לא יכולות להיות זהות"
   },
   "fromShapeShift": {
     "message": "מ-ShapeShift"
@@ -700,17 +522,11 @@
   "gasLimitInfoModalContent": {
     "message": "הגבלת דלק היא המספר המרבי של יחידות דלק שהנך מוכנ/ה להוציא."
   },
-  "gasLimitRequired": {
-    "message": "נדרשת הגבלת דלק"
-  },
   "gasLimitTooLow": {
     "message": "הגבלת הדלק חייבת להיות לפחות 21000"
   },
   "gasUsed": {
     "message": "דלק שנעשה בו שימוש"
-  },
-  "generatingSeed": {
-    "message": "מחולל Seed"
   },
   "gasPrice": {
     "message": "מחיר גז (GWEI)"
@@ -727,17 +543,11 @@
   "gasPriceCalculation": {
     "message": "אנו מחשבים את מחירי הדלק המוצעים על בסיס שיעורי ההצלחה של הרשת."
   },
-  "gasPriceRequired": {
-    "message": "דרוש מחיר גז"
-  },
   "general": {
     "message": "כללי"
   },
   "generalSettingsDescription": {
     "message": "המרת מטבע, מטבע עיקרי, שפה, blockies identicon"
-  },
-  "generatingTransaction": {
-    "message": "יוצר עסקה"
   },
   "getEther": {
     "message": "השג/י את'ר"
@@ -778,9 +588,6 @@
     "message": "כאן",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
-  "hereList": {
-    "message": "הנה רשימה!!!!"
-  },
   "hexData": {
     "message": "מידע הקסדצימלי (Hex)"
   },
@@ -796,12 +603,6 @@
   "history": {
     "message": "היסטוריה"
   },
-  "howToDeposit": {
-    "message": "כיצד ברצונך להפקיד את'ר?"
-  },
-  "holdEther": {
-    "message": "זה מאפשר לך להחזיק את'ר וטוקנים, ומשמש כגשר שלך לאפליקציות מבוזרות."
-  },
   "import": {
     "message": "ייבוא",
     "description": "Button to import an account from a selected file"
@@ -815,12 +616,6 @@
   "importAccountSeedPhrase": {
     "message": "יבא חשבון באמצעות Seed Phrase"
   },
-  "importAnAccount": {
-    "message": "ייבא חשבון"
-  },
-  "importDen": {
-    "message": "ייבא DEN קיים"
-  },
   "importWallet": {
     "message": "ייבא ארנק"
   },
@@ -833,9 +628,6 @@
   },
   "importUsingSeed": {
     "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
-  "importWithSeedPhrase": {
-    "message": "ייבא עם צירוף גרעין"
   },
   "info": {
     "message": "מידע"
@@ -867,14 +659,8 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "לא רשת ETH, מוגדר במצב אותיות קטנות"
   },
-  "invalidGasParams": {
-    "message": "פרמטרי דלק לא חוקיים"
-  },
   "invalidInput": {
     "message": "קלט לא תקין."
-  },
-  "invalidRequest": {
-    "message": "בקשה לא חוקית"
   },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
@@ -885,21 +671,12 @@
   "invalidSeedPhrase": {
     "message": "seed phrase לא חוקי"
   },
-  "jsonFail": {
-    "message": "משהו השתבש. נא לוודא כי קובץ ה-JSON שלך בפורמט הנכון."
-  },
   "jsonFile": {
     "message": "קובץ JSON",
     "description": "format for importing an account"
   },
-  "keepTrackTokens": {
-    "message": "עקוב/עקבי אחרי האסימונים שקנית באמצעות חשבון MetaMask שלך."
-  },
   "kovan": {
     "message": "רשת בדיקה Kovan "
-  },
-  "knowledgeDataBase": {
-    "message": "בקר/י בבסיס הידע שלנו"
   },
   "max": {
     "message": "מקסימום"
@@ -909,9 +686,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
-  },
-  "legal": {
-    "message": "משפטי"
   },
   "lessThanMax": {
     "message": "חייב להיות פחות או שווה ל- $1.",
@@ -925,9 +699,6 @@
   },
   "links": {
     "message": "קישורים"
-  },
-  "limit": {
-    "message": "הגבלה (limit)"
   },
   "liveGasPricePredictions": {
     "message": "תחזיות מחירי גז בשידור חי"
@@ -946,12 +717,6 @@
   },
   "logout": {
     "message": "התנתקות"
-  },
-  "loose": {
-    "message": "מפורד (Loose)"
-  },
-  "loweCaseWords": {
-    "message": "מילות גרעין מכילות רק אותיות קטנות"
   },
   "mainnet": {
     "message": "רשת אתריום ראשית"
@@ -977,17 +742,8 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "min": {
-    "message": "מינימום"
-  },
   "missingYourTokens": {
     "message": "אין באפשרותך לראות את הטוקנים שלך?"
-  },
-  "minutesShorthand": {
-    "message": "מינימום"
-  },
-  "mobileSyncTitle": {
-    "message": "סנכרן חשבונות עם הנייד"
   },
   "mobileSyncText": {
     "message": "נא להזין את הססמה שלך כדי לאשר שזה/זו אכן את/ה!"
@@ -1010,10 +766,6 @@
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "needImportPassword": {
-    "message": "עליך להזין ססמה עבור הקובץ שנבחר.",
-    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "לא ניתן לשלוח סכומים שליליים של ETH."
@@ -1049,12 +801,6 @@
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
   },
-  "newPassword8Chars": {
-    "message": "ססמה חדשה (לפחות 8 תווים)"
-  },
-  "newRecipient": {
-    "message": "נמען חדש"
-  },
   "newNetwork": {
     "message": "רשת חדשה"
   },
@@ -1076,20 +822,11 @@
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
-  "showAdvancedOptions": {
-    "message": "הצג אפשרויות מתקדמות"
-  },
-  "hideAdvancedOptions": {
-    "message": "הסתר אפשויות מתקדמות"
-  },
   "optionalChainId": {
     "message": "ChainID (אופציונלי)"
   },
   "optionalSymbol": {
     "message": "סמל (אופציונלי)"
-  },
-  "optionalNickname": {
-    "message": "כינוי (אופציונלי)"
   },
   "newTotal": {
     "message": "סכום כולל חדש"
@@ -1109,20 +846,11 @@
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
   },
-  "noTransactionHistory": {
-    "message": "אין היסטוריית עסקאות."
-  },
   "noTransactions": {
     "message": "אין לך עסקאות"
   },
   "notEnoughGas": {
     "message": "אין מספיק דלק"
-  },
-  "notFound": {
-    "message": "לא נמצא"
-  },
-  "notStarted": {
-    "message": "לא התחיל"
   },
   "noWebcamFoundTitle": {
     "message": "מצלמת הרשת לא נמצאה"
@@ -1133,12 +861,6 @@
   "ofTextNofM": {
     "message": "של"
   },
-  "oldUI": {
-    "message": "ממשק משתמש ישן"
-  },
-  "oldUIMessage": {
-    "message": "חזרת לממשק המשתמש הישן. באפשרותך לחזור לממשק החדש דרך האפשרות בתפריט הנפתח מימין למעלה."
-  },
   "onlySendToEtherAddress": {
     "message": "שלח ETH רק לכתובת אתריום."
   },
@@ -1146,27 +868,14 @@
     "message": "שלח $1 רק לכתובת חשבון אתריום.",
     "description": "displays token symbol"
   },
-  "openInTab": {
-    "message": "פתח בכרטיסייה"
-  },
-  "or": {
-    "message": "או",
-    "description": "choice between creating or importing a new account"
-  },
   "orderOneHere": {
     "message": "הזמנ/י Trezor או Ledger ושמר/י את הכספים שלך באחסון קר"
   },
   "origin": {
     "message": "מקור"
   },
-  "outgoing": {
-    "message": "יוצא"
-  },
   "parameters": {
     "message": "פרמטרים"
-  },
-  "originalTotal": {
-    "message": "סה\"כ מקורי"
   },
   "participateInMetaMetrics": {
     "message": "קח/י חלק ב- MetaMetrics"
@@ -1177,22 +886,11 @@
   "password": {
     "message": "סיסמה"
   },
-  "passwordCorrect": {
-    "message": "נא לוודא שהסיסמה שלך נכונה."
-  },
   "passwordsDontMatch": {
     "message": "ססמאות אינן תואמות"
   },
-  "passwordMismatch": {
-    "message": "הססמאות אינן תואמות",
-    "description": "in password creation process, the two new password fields did not match"
-  },
   "passwordNotLongEnough": {
     "message": "הססמה אינה ארוכה מספיק"
-  },
-  "passwordShort": {
-    "message": "הססמה אינה ארוכה מספיק",
-    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
@@ -1206,12 +904,6 @@
   },
   "personalAddressDetected": {
     "message": "זוהתה כתובת אישית. יש להזין את כתובת חוזה הטוקן."
-  },
-  "pleaseReviewTransaction": {
-    "message": "נא לעבור על פרטי העסקה."
-  },
-  "popularTokens": {
-    "message": "טוקנים פופולריים"
   },
   "prev": {
     "message": "הקודם"
@@ -1244,15 +936,6 @@
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
   },
-  "readMore": {
-    "message": "קרא/י עוד כאן."
-  },
-  "readMore2": {
-    "message": "קרא/י עוד."
-  },
-  "receive": {
-    "message": "קבל"
-  },
   "recents": {
     "message": "אחרונים"
   },
@@ -1261,9 +944,6 @@
   },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
-  },
-  "refundAddress": {
-    "message": "הכתובת שלך להחזר"
   },
   "rejectAll": {
     "message": "דחה הכל"
@@ -1310,9 +990,6 @@
   "required": {
     "message": "נדרש"
   },
-  "retryWithMoreGas": {
-    "message": "נסה/י שוב עם מחיר דלק גבוה יותר כאן"
-  },
   "restore": {
     "message": "שחזר"
   },
@@ -1355,10 +1032,6 @@
   "rpc": {
     "message": "RPC מותאם אישית"
   },
-  "sampleAccountName": {
-    "message": "לדוגמא, החשבון החדש שלי",
-    "description": "Help user understand concept of adding a human-readable name to their account"
-  },
   "save": {
     "message": "שמור"
   },
@@ -1370,13 +1043,6 @@
   },
   "saveAsCsvFile": {
     "message": "שמירה כקובץ CSV"
-  },
-  "saveAsFile": {
-    "message": "שמירה כקובץ",
-    "description": "Account export process"
-  },
-  "saveSeedAsFile": {
-    "message": "שמור מילות גרעין כקובץ"
   },
   "scanInstructions": {
     "message": "הצב/י את קוד ה-QR שלך מול המצלמה"
@@ -1408,17 +1074,11 @@
   "securitySettingsDescription": {
     "message": "הגדרות פרטיות וצירוף הגרעין של הארנק"
   },
-  "secondsShorthand": {
-    "message": "שניות"
-  },
   "seedPhrasePlaceholder": {
     "message": "הפרד/י בין המילים ברווח אחד"
   },
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
-  },
-  "select": {
-    "message": "בחר"
   },
   "selectCurrency": {
     "message": "בחר מטבע"
@@ -1428,9 +1088,6 @@
   },
   "selectLocale": {
     "message": "בחר/י מיקום"
-  },
-  "selectService": {
-    "message": "בחר/י שירות"
   },
   "selectType": {
     "message": "בחר/י סוג"
@@ -1459,17 +1116,11 @@
   "searchTokens": {
     "message": "חיפוש טוקנים"
   },
-  "selectAnAddress": {
-    "message": "בחר כתובת"
-  },
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
   "selectAnAccountHelp": {
     "message": "בחר את החשבון לצפייה ב- MetaMask"
-  },
-  "selectAnAsset": {
-    "message": "בחר/י נכס"
   },
   "selectAHigherGasFee": {
     "message": "בחר/י בעמלת דלק גבוהה יותר כדי להאיץ את עיבוד העסקה שלך. *"
@@ -1480,14 +1131,8 @@
   "selectPathHelp": {
     "message": "אם אינך רואה את חשבונות ה-Ledger הקיימים שלך בהמשך, נסה/י להחליף נתיב ל-Legacy (MEW / MyCrypto)"
   },
-  "sendTokensAnywhere": {
-    "message": "שלח/י טוקנים לכל מי שברשותו חשבון אתריום"
-  },
   "settings": {
     "message": "הגדרות"
-  },
-  "shapeshiftBuy": {
-    "message": "רכישה באמצעות Shapeshift"
   },
   "showAdvancedGasInline": {
     "message": "אמצעי שליטה מתקדמים בדלק"
@@ -1504,9 +1149,6 @@
   "showPrivateKeys": {
     "message": "הצג מפתחות פרטיים"
   },
-  "showQRCode": {
-    "message": "הצג קוד QR"
-  },
   "showHexData": {
     "message": "הצג מידע הקסדצימלי (Hex)"
   },
@@ -1522,32 +1164,17 @@
   "signed": {
     "message": "חתום"
   },
-  "signMessage": {
-    "message": "חתימה על הודעה"
-  },
   "signNotice": {
     "message": "לחתימה על הודעה זו יכולות להיות תוצאות לוואי מסוכנות. מומלץ לחתום רק הודעות מאתרים שיש לך אמון מלא בהם והפקדת את כל החשבון שלך בידיהם. השיטה המסוכנת תוסר בגרסה עתידית."
   },
   "sigRequest": {
     "message": "בקשת חתימה"
   },
-  "sigRequested": {
-    "message": "נדרשת חתימה"
-  },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."
   },
-  "spaceBetween": {
-    "message": "יכול להיות רק רווח אחד בין מילים"
-  },
   "speedUp": {
     "message": "האצה"
-  },
-  "speedUpTitle": {
-    "message": "האצת העסקה"
-  },
-  "speedUpSubtitle": {
-    "message": "העלה/י את מחיר הגז שלך כדי לנסות לבטל ולהאיץ את העסקה שלך"
   },
   "speedUpCancellation": {
     "message": "האצת ביטול זה"
@@ -1627,9 +1254,6 @@
   "syncWithMobileComplete": {
     "message": "הנתונים שלך סונכרנו בהצלחה. תיהנה/י מאפליקציית MetaMask לטלפונים ניידים! "
   },
-  "takesTooLong": {
-    "message": "לוקח יותר מדי זמן?"
-  },
   "terms": {
     "message": "תנאי שימוש"
   },
@@ -1652,9 +1276,6 @@
   "token": {
     "message": "טוקן"
   },
-  "tokenAddress": {
-    "message": "כתובת טוקן"
-  },
   "tokenAlreadyAdded": {
     "message": "הוסף כבר אסימון."
   },
@@ -1664,14 +1285,8 @@
   "tokenContractAddress": {
     "message": "כתובת חוזה טוקן"
   },
-  "tokenSelection": {
-    "message": "חפש/י אסימונים או בחר/י מרשימת האסימונים הפופולריים שלנו."
-  },
   "tokenSymbol": {
     "message": "סמל טוקן"
-  },
-  "tokenWarning1": {
-    "message": "עקב/י אחר הטוקנים שרכשת באמצעות חשבון MetaMask שלך. אם רכשת טוקנים באמצעות חשבון אחר, טוקנים אלה לא יופיעו כאן."
   },
   "total": {
     "message": "סך הכל"
@@ -1685,9 +1300,6 @@
   "transactionCreated": {
     "message": "עסקה נוצרה עם ערך של $1 ב-$2."
   },
-  "transactionWithNonce": {
-    "message": "עסקה $1"
-  },
   "transactionDropped": {
     "message": "העסקה ירדה ב-$2."
   },
@@ -1699,9 +1311,6 @@
   },
   "transactionUpdated": {
     "message": "העסקה עודכנה ב- $2."
-  },
-  "transactionUpdatedGas": {
-    "message": "העסקה עודכנה עם עמלת דלק של $1 ב-$2."
   },
   "transactionErrored": {
     "message": "העסקה נתקלה בשגיאה."
@@ -1724,12 +1333,6 @@
   "transactionFee": {
     "message": "עמלת עסקה"
   },
-  "transactionMemo": {
-    "message": "תזכיר עסקה (אופציונלי)"
-  },
-  "transactionNumber": {
-    "message": "מספר עסקה"
-  },
   "transactionTime": {
     "message": "זמן העסקה"
   },
@@ -1742,12 +1345,6 @@
   "transferFrom": {
     "message": "העברה מ-"
   },
-  "transfers": {
-    "message": "העברות"
-  },
-  "trezorHardwareWallet": {
-    "message": "ארנק חומרה TREZOR "
-  },
   "troubleTokenBalances": {
     "message": "לא הצלחנו לטעון את יתרות הטוקנים שלך. באפשרותך להציג אותן",
     "description": "Followed by a link (here) to view token balances"
@@ -1755,26 +1352,11 @@
   "tryAgain": {
     "message": "ניסיון חוזר"
   },
-  "twelveWords": {
-    "message": "12 מילים אלו הן הדרך היחידה לשחזר את חשבונות ה-MetaMask שלך.\nיש לשמור אותן במקום בטוח וסודי."
-  },
   "typePassword": {
     "message": "נא להקליד את סיסמת MetaMask שלך"
   },
-  "uiMigrationAnnouncement": {
-    "message": "ברוכים הבאים לממשק המשתמש החדש של MetaMask. אם יש לך משוב לגבי ממשק המשתמש או בקשות לפי'צרים, אנא פנה/י לצוות התמיכה שלנו או ב-GitHub."
-  },
-  "uiWelcome": {
-    "message": "ברוכים הבאים לממשק המשתמש החדש (בטא)"
-  },
-  "uiWelcomeMessage": {
-    "message": "הנך משתמש/ת כעת בממשק המשתמש החדש של MetaMask."
-  },
   "unapproved": {
     "message": "לא אושר"
-  },
-  "unavailable": {
-    "message": "לא זמין"
   },
   "units": {
     "message": "יחידות"
@@ -1784,9 +1366,6 @@
   },
   "unknownNetwork": {
     "message": "רשת פרטית לא ידועה"
-  },
-  "unknownNetworkId": {
-    "message": "מזהה רשת לא ידוע"
   },
   "unknownQrCode": {
     "message": "שגיאה: לא הצלחנו לזהות את קוד ה- QR הזה"
@@ -1809,24 +1388,14 @@
   "uriErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
   },
-  "usaOnly": {
-    "message": "ארה\"ב בלבד",
-    "description": "Using this exchange is limited to people inside the USA"
-  },
   "usedByClients": {
     "message": "בשימוש על ידי מגוון לקוחות שונים"
-  },
-  "useOldUI": {
-    "message": "השתמש בממשק המשתמש הישן"
   },
   "userName": {
     "message": "שם משתמש"
   },
   "validFileImport": {
     "message": "עליך לבחור קובץ חוקי לייבוא."
-  },
-  "vaultCreated": {
-    "message": "נוצרה כספת "
   },
   "viewAccount": {
     "message": "הצג חשבון"
@@ -1843,9 +1412,6 @@
   "viewOnEtherscan": {
     "message": "הצג ב-Etherscan"
   },
-  "viewNetworkInfo": {
-    "message": "הצג מידע על רשת"
-  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
   },
@@ -1860,9 +1426,6 @@
   },
   "welcome": {
     "message": "ברוכים הבאים ל- MetaMask"
-  },
-  "whatsThis": {
-    "message": "מה זה?"
   },
   "writePhrase": {
     "message": "יש לכתוב צירוף זה על פיסת נייר ולשמור במקום מאובטח. אם הנך מעוניינ/ת ביותר אבטחה, רשמ/י אותו על גבי מספר פיסות נייר ואחסני כל אחת מהן ב- 2-3 מקומות שונים."
@@ -1881,18 +1444,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
-  },
-  "yourUniqueAccountImage": {
-    "message": "תמונת החשבון הייחודית שלך"
-  },
-  "yourUniqueAccountImageDescription1": {
-    "message": "תמונה זו נוצרה עבורך על ידי תוכנה על פי מספר החשבון החדש שלך."
-  },
-  "yourUniqueAccountImageDescription2": {
-    "message": "תראה/י תמונה זו בכל פעם שתצטרכ/י לאשר עסקה."
-  },
-  "yourUniqueAccountImageDescription3": {
-    "message": "MetaMask לעולם לא יבקש ממך את ה-seed phrase שלך!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "מחיר גז אפס על האצה"

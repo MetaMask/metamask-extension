@@ -2,26 +2,14 @@
   "privacyModeDefault": {
     "message": "Dabar privatumo režimas suaktyvintas pagal numatytąją nuostatą"
   },
-  "exposeAccounts": {
-    "message": "Rodyti paskyras"
-  },
-  "exposeDescription": {
-    "message": "Rodyti paskyras dabartinei svetainei. Tai naudinga esant senesnėms decentralizuotoms  programoms."
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagramos yra tik „Ethereum“ tinkluose."
-  },
-  "confirmExpose": {
-    "message": "Ar tikrai norite parodyti savo sąskaitas dabartinei svetainei?"
   },
   "confirmClear": {
     "message": "Ar tikrai norite panaikinti patvirtintas svetaines?"
   },
   "contractInteraction": {
     "message": "Sutartinė sąveika"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Patvirtintų svetainių duomenys sėkmingai panaikinti."
   },
   "clearApprovalData": {
     "message": "Išvalyti asmeninius duomenis"
@@ -40,12 +28,6 @@
   },
   "aboutSettingsDescription": {
     "message": "Versija, palaikymo centras ir kontaktinė informacija."
-  },
-  "aboutUs": {
-    "message": "Apie mus"
-  },
-  "accept": {
-    "message": "Priimti"
   },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
@@ -95,9 +77,6 @@
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
   },
-  "addCustomToken": {
-    "message": "Pridėti pritaikytą žetoną"
-  },
   "addToAddressBook": {
     "message": "Pridėti į adresų knygelę"
   },
@@ -106,9 +85,6 @@
   },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
-  },
-  "addEthAddress": {
-    "message": "Pridėti „Ethereum“ adresą"
   },
   "addToken": {
     "message": "Pridėti žetoną"
@@ -122,23 +98,8 @@
   "addAcquiredTokens": {
     "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
   },
-  "agreeTermsOfService": {
-    "message": "Aš sutinku su paslaugų teikimo sąlygomis"
-  },
-  "allDone": {
-    "message": "Viskas atlikta"
-  },
-  "alreadyHaveSeedPhrase": {
-    "message": "Ne, jau turiu atkūrimo frazę."
-  },
   "amount": {
     "message": "Suma"
-  },
-  "amountPlusGas": {
-    "message": "Suma + dujos"
-  },
-  "amountPlusTxFee": {
-    "message": "Suma+ TX mokestis"
   },
   "appDescription": {
     "message": "„Ethereum“ piniginė jūsų naršyklėje",
@@ -175,9 +136,6 @@
   "autoLogoutTimeLimitDescription": {
     "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
   },
-  "available": {
-    "message": "Galima"
-  },
   "average": {
     "message": "Vidurkis"
   },
@@ -202,17 +160,11 @@
   "balanceOutdated": {
     "message": "Likutis gali būti pasenęs"
   },
-  "balances": {
-    "message": "Žetonų likutis"
-  },
   "balanceIsInsufficientGas": {
     "message": "Nepakankamas dabartinio bendro dujų kiekio likutis"
   },
   "basic": {
     "message": "Bendrieji"
-  },
-  "beta": {
-    "message": "BETA versija"
   },
   "betweenMinAndMax": {
     "message": "turi būti ne mažiau kaip $1 ir ne daugiau kaip $2.",
@@ -228,23 +180,11 @@
   "blockiesIdenticon": {
     "message": "„Blockies Identicon“ naudojimas"
   },
-  "borrowDharma": {
-    "message": "Skolinkitės su „Dharma“ (beta versija)"
-  },
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "builtInCalifornia": {
     "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
-  },
-  "buy": {
-    "message": "Pirkti"
-  },
-  "buyCoinbase": {
-    "message": "Pirkti „Coinbase“"
-  },
-  "buyCoinbaseExplainer": {
-    "message": "„Coinbase“ yra pasaulyje populiariausias būdas pirkti ir parduoti „Bitcoin“, „Ethereum“ ir „Litecoin“."
   },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
@@ -285,17 +225,8 @@
   "cancelled": {
     "message": "Atšaukta"
   },
-  "cancelN": {
-    "message": "Atšaukti visas $1 operacijas"
-  },
   "chainId": {
     "message": "Grandinės ID"
-  },
-  "classicInterface": {
-    "message": "Naudoti klasikinę sąsają"
-  },
-  "clickCopy": {
-    "message": "Spustelėkite, norėdami kopijuoti"
   },
   "clickToAdd": {
     "message": "Spustelėkite $1, kad juos pridėtumėte prie paskyros"
@@ -309,29 +240,17 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Norėdami prisijungti prie aparatinės įrangos slaptažodinės, „MetaMask“ naudokitės „Google Chrome“ naršyklėje."
   },
-  "company": {
-    "message": "Įmonė"
-  },
   "confirm": {
     "message": "Patvirtinti"
   },
-  "confirmationTime": {
-    "message": "Patvirtinimo trukmė (s)"
-  },
   "confirmed": {
     "message": "Patvirtinta"
-  },
-  "confirmContract": {
-    "message": "Patvirtinti sutartį"
   },
   "confirmPassword": {
     "message": "Patvirtinkite slaptažodį"
   },
   "confirmSecretBackupPhrase": {
     "message": "Patvirtinkite savo slaptą atsarginę frazę"
-  },
-  "confirmTransaction": {
-    "message": "Patvirtinti operaciją"
   },
   "congratulations": {
     "message": "Sveikiname"
@@ -344,9 +263,6 @@
   },
   "connectRequest": {
     "message": "Prijungimo užklausa"
-  },
-  "connecting": {
-    "message": "Jungiamasi..."
   },
   "connectingTo": {
     "message": "Jungiamasi prie $1"
@@ -369,21 +285,6 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToUnknown": {
-    "message": "Jungiamasi prie nežinomo tinklo"
-  },
-  "connectToLedger": {
-    "message": "Prisijunkite prie sąskaitų knygos"
-  },
-  "connectToTrezor": {
-    "message": "Jungtis prie „Trezor“"
-  },
-  "continue": {
-    "message": "Tęsti"
-  },
-  "continueToCoinbase": {
-    "message": "Tęsti su „Coinbase“"
-  },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
   },
@@ -399,14 +300,8 @@
   "copiedButton": {
     "message": "Nukopijuota"
   },
-  "copiedClipboard": {
-    "message": "Nukopijuota į iškarpinę"
-  },
   "copiedExclamation": {
     "message": "Nukopijuota!"
-  },
-  "copiedSafe": {
-    "message": "Aš ją nukopijavau kažkur į saugią vietą"
   },
   "copy": {
     "message": "Kopijuoti"
@@ -438,27 +333,14 @@
   "createAWallet": {
     "message": "Sukurti slaptažodinę"
   },
-  "createDen": {
-    "message": "Sukurti"
-  },
   "createPassword": {
     "message": "Sukurti slaptažodį"
-  },
-  "crypto": {
-    "message": "Kriptovaliuta",
-    "description": "Exchange type (cryptocurrencies)"
   },
   "currencyConversion": {
     "message": "Valiutos keitimas"
   },
   "currentLanguage": {
     "message": "Dabartinė kalba"
-  },
-  "currentNetwork": {
-    "message": "Dabartinis tinklas"
-  },
-  "currentRpc": {
-    "message": "Dabartinis RPC"
   },
   "customGas": {
     "message": "Pritaikyti dujas"
@@ -468,9 +350,6 @@
   },
   "customToken": {
     "message": "Pritaikytas žetonas"
-  },
-  "customize": {
-    "message": "Tinkinti"
   },
   "customRPC": {
     "message": "Pritaikytas RPC"
@@ -490,38 +369,14 @@
   "deleteAccount": {
     "message": "Šalinti paskyrą"
   },
-  "denExplainer": {
-    "message": "Jūsų DEN yra slaptažodžiu užšifruota laikmena, esanti „MetaMask“."
-  },
   "deposit": {
     "message": "Indėlis"
-  },
-  "depositBTC": {
-    "message": "Padėkite BTC depozitą toliau nurodytu adresu:"
-  },
-  "depositEth": {
-    "message": "Įnešti et."
   },
   "depositEther": {
     "message": "Įnešti eterių"
   },
-  "depositFiat": {
-    "message": "Įnašas standartine valiuta"
-  },
-  "depositFromAccount": {
-    "message": "Įnašas iš kitos paskyros"
-  },
-  "depositShapeShift": {
-    "message": "Įnašas su „ShapeShift“"
-  },
-  "depositShapeShiftExplainer": {
-    "message": "Jeigu turite kitų kriptovaliutų, galite prekiauti ir įnešti eterius tiesiai į savo „MetaMask“ piniginę. Sąskaitos nereikia."
-  },
   "details": {
     "message": "Išsami informacija"
-  },
-  "directDeposit": {
-    "message": "Tiesioginis įnašas"
   },
   "directDepositEther": {
     "message": "Tiesiogiai įnešti eteriai"
@@ -553,12 +408,6 @@
   "edit": {
     "message": "Redaguoti"
   },
-  "editNetwork": {
-    "message": "Taisyti tinklą"
-  },
-  "editAccountName": {
-    "message": "Taisyti paskyros pavadinimą"
-  },
   "editContact": {
     "message": "Taisyti kontaktą"
   },
@@ -567,9 +416,6 @@
   },
   "emailUs": {
     "message": "Rašykite mums el. paštu!"
-  },
-  "encryptNewDen": {
-    "message": "Šifruoti jūsų naują DEN"
   },
   "endOfFlowMessage1": {
     "message": "Jūs perėjote testą – laikykite saugiai savo atkūrimo frazę, tai jūsų atsakomybė!"
@@ -601,9 +447,6 @@
   "endOfFlowMessage10": {
     "message": "Viskas atlikta"
   },
-  "ensNameNotFound": {
-    "message": "ENS vardas nerastas"
-  },
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
@@ -615,9 +458,6 @@
   },
   "enterPassword": {
     "message": "Įveskite slaptažodį"
-  },
-  "enterPasswordConfirm": {
-    "message": "Įveskite savo slaptažodį, kad patvirtintumėte"
   },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
@@ -631,17 +471,11 @@
   "estimatedProcessingTimes": {
     "message": "Numatomos apdorojimo trukmės"
   },
-  "exchangeRate": {
-    "message": "Keitimo kursas"
-  },
   "expandView": {
     "message": "Išskleisti rodinį"
   },
   "exportPrivateKey": {
     "message": "Eksportuoti asmeninį raktą"
-  },
-  "exportPrivateKeyWarning": {
-    "message": "Eksportuokite asmeninius raktus prisiimdami riziką."
   },
   "failed": {
     "message": "Nepavyko"
@@ -652,12 +486,6 @@
   "faster": {
     "message": "Greičiau"
   },
-  "fastest": {
-    "message": "Greičiausias"
-  },
-  "feeChartTitle": {
-    "message": "Tiesioginiai operacijos mokesčio spėjimai"
-  },
   "fiat": {
     "message": "Standartinė valiuta",
     "description": "Exchange type"
@@ -666,17 +494,11 @@
     "message": "Failo importavimas neveikia? Spustelėkite čia!",
     "description": "Helps user import their account from a JSON file"
   },
-  "followTwitter": {
-    "message": "Sekite mus „Twitter“"
-  },
   "forgetDevice": {
     "message": "Pamiršti šį įrenginį"
   },
   "from": {
     "message": "Nuo"
-  },
-  "fromToSame": {
-    "message": "Adresai „Nuo“ ir „Kam“ negali sutapti"
   },
   "fromShapeShift": {
     "message": "Iš „ShapeShift“"
@@ -700,17 +522,11 @@
   "gasLimitInfoModalContent": {
     "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
   },
-  "gasLimitRequired": {
-    "message": "Reikalingas dujų apribojimas"
-  },
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
-  },
-  "generatingSeed": {
-    "message": "Generuojamas skleidimas..."
   },
   "gasPrice": {
     "message": "Dujų kaina (GWEI)"
@@ -727,17 +543,11 @@
   "gasPriceCalculation": {
     "message": "Siūlomas dujų kainas apskaičiuojame remdamiesi tinklo sėkmės rezultatais."
   },
-  "gasPriceRequired": {
-    "message": "Reikalinga dujų kaina"
-  },
   "general": {
     "message": "Bendra"
   },
   "generalSettingsDescription": {
     "message": "Valiutos keitimas, pagrindinė valiuta, kalba, „blockies identicon“"
-  },
-  "generatingTransaction": {
-    "message": "Generuojama operacija"
   },
   "getEther": {
     "message": "Gauti eterių"
@@ -778,9 +588,6 @@
     "message": "čia",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
-  "hereList": {
-    "message": "Čia pateikiamas sąrašas!!!"
-  },
   "hexData": {
     "message": "Šešioliktainiai duomenys"
   },
@@ -796,12 +603,6 @@
   "history": {
     "message": "Istorija"
   },
-  "howToDeposit": {
-    "message": "Kaip pageidaujate įnešti eterius?"
-  },
-  "holdEther": {
-    "message": "Leidžia laikyti eterius ir žetonus bei veikia kaip jūsų tiltas į decentralizuotas programas."
-  },
   "import": {
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
@@ -815,12 +616,6 @@
   "importAccountSeedPhrase": {
     "message": "Importuoti paskyrą su atkūrimo fraze"
   },
-  "importAnAccount": {
-    "message": "Importuoti paskyrą"
-  },
-  "importDen": {
-    "message": "Importuoti esamą DEN"
-  },
   "importWallet": {
     "message": "Importuoti slaptažodinę"
   },
@@ -833,9 +628,6 @@
   },
   "importUsingSeed": {
     "message": "Importuoti naudojant paskyros atkūrimo frazę"
-  },
-  "importWithSeedPhrase": {
-    "message": "Importuoti su atkūrimo fraze"
   },
   "info": {
     "message": "Informacija"
@@ -867,14 +659,8 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ne ETH tinklas, nustatykite į mažąsias raides"
   },
-  "invalidGasParams": {
-    "message": "Netinkami dujų parametrai"
-  },
   "invalidInput": {
     "message": "Netinkama įvestis."
-  },
-  "invalidRequest": {
-    "message": "Netinkama užklausa"
   },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
@@ -885,21 +671,12 @@
   "invalidSeedPhrase": {
     "message": "Netinkama atkūrimo frazė"
   },
-  "jsonFail": {
-    "message": "Kažkas nutiko. Įsitikinkite, kad jūsų JSON failas tinkamai suformatuotas."
-  },
   "jsonFile": {
     "message": "JSON failas",
     "description": "format for importing an account"
   },
-  "keepTrackTokens": {
-    "message": "Stebėkite žetonus, įsigytus naudojant „MetaMask“ paskyrą."
-  },
   "kovan": {
     "message": "„Kovan“ bandomasis tinklas"
-  },
-  "knowledgeDataBase": {
-    "message": "Apsilankykite mūsų žinių bazėje"
   },
   "max": {
     "message": "Maks."
@@ -909,9 +686,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Prieš įtraukdami naują, turite pasinaudoti paskutine paskyra."
-  },
-  "legal": {
-    "message": "Teisė"
   },
   "lessThanMax": {
     "message": "turi būti mažiau arba lygu $1.",
@@ -925,9 +699,6 @@
   },
   "links": {
     "message": "Nuorodos"
-  },
-  "limit": {
-    "message": "Apribojimas"
   },
   "liveGasPricePredictions": {
     "message": "Tiesioginiai dujų kainos spėjimai"
@@ -949,12 +720,6 @@
   },
   "logout": {
     "message": "Atsijungti"
-  },
-  "loose": {
-    "message": "Palaidas"
-  },
-  "loweCaseWords": {
-    "message": "atkūrimo žodžiai turi susidėti tik iš mažųjų raidžių"
   },
   "mainnet": {
     "message": "Pagrindinis „Ethereum“ tinklas"
@@ -980,17 +745,8 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "min": {
-    "message": "Minimalus"
-  },
   "missingYourTokens": {
     "message": "Nematote savo žetonų?"
-  },
-  "minutesShorthand": {
-    "message": "Min."
-  },
-  "mobileSyncTitle": {
-    "message": "Susieti paskyras su mobiliuoju įrenginiu"
   },
   "mobileSyncText": {
     "message": "Įveskite savo slaptažodį, kad patvirtintumėte, jog tai tikrai jūs!"
@@ -1013,10 +769,6 @@
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "needImportPassword": {
-    "message": "Turite įvesti pasirinkto failo slaptažodį.",
-    "description": "Password and file needed to import an account"
   },
   "negativeETH": {
     "message": "Neigiamų ETH sumų siųsti negalima."
@@ -1052,12 +804,6 @@
   "newPassword": {
     "message": "Naujas slaptažodis (bent 8 ženklai)"
   },
-  "newPassword8Chars": {
-    "message": "Naujas slaptažodis (bent 8 ženklai)"
-  },
-  "newRecipient": {
-    "message": "Naujas gavėjas"
-  },
   "newNetwork": {
     "message": "Naujas tinklas"
   },
@@ -1079,20 +825,11 @@
   "rpcUrl": {
     "message": "Naujas RPC URL"
   },
-  "showAdvancedOptions": {
-    "message": "Rodyti išplėstines parinktis"
-  },
-  "hideAdvancedOptions": {
-    "message": "Slėpti išplėstines parinktis"
-  },
   "optionalChainId": {
     "message": "Grandinės ID (nebūtinas)"
   },
   "optionalSymbol": {
     "message": "Simbolis (nebūtinas)"
-  },
-  "optionalNickname": {
-    "message": "Slapyvardis (nebūtinas)"
   },
   "newTotal": {
     "message": "Nauja bendra suma"
@@ -1112,20 +849,11 @@
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
   },
-  "noTransactionHistory": {
-    "message": "Nėra operacijų istorijos."
-  },
   "noTransactions": {
     "message": "Neturite jokių operacijų"
   },
   "notEnoughGas": {
     "message": "Nepakanka dujų"
-  },
-  "notFound": {
-    "message": "Nerasta"
-  },
-  "notStarted": {
-    "message": "Nepradėta"
   },
   "noWebcamFoundTitle": {
     "message": "Internetinė vaizdo kamera nerasta"
@@ -1136,12 +864,6 @@
   "ofTextNofM": {
     "message": "nuo"
   },
-  "oldUI": {
-    "message": "Senoji naudotojo sąsaja"
-  },
-  "oldUIMessage": {
-    "message": "Grįžote prie senosios naudotojo sąsajos. Prie naujosios naudotojo sąsajos galite pereiti pasirinkę išskleidžiamojo meniu viršuje, dešinėje pusėje esančią parinktį."
-  },
   "onlySendToEtherAddress": {
     "message": "„Ethereum“ adresu siųsti tik ETH."
   },
@@ -1149,27 +871,14 @@
     "message": "Į „Ethereum“ paskyrą siųsti tik $1.",
     "description": "displays token symbol"
   },
-  "openInTab": {
-    "message": "Atidaryti skirtuko lape"
-  },
-  "or": {
-    "message": "arba",
-    "description": "choice between creating or importing a new account"
-  },
   "orderOneHere": {
     "message": "Užsisakykite „Trezor“ arba „Ledger“ ir laikykite savo lėšas šaltojoje saugykloje"
   },
   "origin": {
     "message": "Kilmė"
   },
-  "outgoing": {
-    "message": "Išlaidos"
-  },
   "parameters": {
     "message": "Parametrai"
-  },
-  "originalTotal": {
-    "message": "Pradinė bendra suma"
   },
   "participateInMetaMetrics": {
     "message": "Dalyvaukite „MetaMetrics“"
@@ -1180,22 +889,11 @@
   "password": {
     "message": "Slaptažodis"
   },
-  "passwordCorrect": {
-    "message": "Įsitikinkite, kad jūsų slaptažodis teisingas."
-  },
   "passwordsDontMatch": {
     "message": "Slaptažodžiai nesutampa"
   },
-  "passwordMismatch": {
-    "message": "slaptažodžiai nesutampa",
-    "description": "in password creation process, the two new password fields did not match"
-  },
   "passwordNotLongEnough": {
     "message": "Slaptažodis per trumpas"
-  },
-  "passwordShort": {
-    "message": "slaptažodis per trumpas",
-    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Čia įklijuokite asmeninio rakto eilutę:",
@@ -1209,12 +907,6 @@
   },
   "personalAddressDetected": {
     "message": "Aptiktas asmeninis adresas. Įveskite žetono sutarties adresą."
-  },
-  "pleaseReviewTransaction": {
-    "message": "Peržiūrėkite savo operaciją."
-  },
-  "popularTokens": {
-    "message": "Populiarūs žetonai"
   },
   "prev": {
     "message": "Peržiūra"
@@ -1247,15 +939,6 @@
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
   },
-  "readMore": {
-    "message": "Daugiau skaitykite čia."
-  },
-  "readMore2": {
-    "message": "Skaityti daugiau."
-  },
-  "receive": {
-    "message": "Gauti"
-  },
   "recents": {
     "message": "Naujausi"
   },
@@ -1264,9 +947,6 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Ieška, viešieji adresai (0x) arba ENS"
-  },
-  "refundAddress": {
-    "message": "Jūsų adresas pinigams grąžinti"
   },
   "rejectAll": {
     "message": "Atmesti viską"
@@ -1313,9 +993,6 @@
   "required": {
     "message": "Reikalaujama"
   },
-  "retryWithMoreGas": {
-    "message": "Čia bandykite naudodami didesnę dujų kainą"
-  },
   "restore": {
     "message": "Atkurti"
   },
@@ -1361,10 +1038,6 @@
   "rpc": {
     "message": "Pritaikytas RPC"
   },
-  "sampleAccountName": {
-    "message": "Pvz., mano nauja paskyra",
-    "description": "Help user understand concept of adding a human-readable name to their account"
-  },
   "save": {
     "message": "Išsaugoti"
   },
@@ -1376,13 +1049,6 @@
   },
   "saveAsCsvFile": {
     "message": "Įrašyti kaip CSV failą"
-  },
-  "saveAsFile": {
-    "message": "Įrašyti kaip failą",
-    "description": "Account export process"
-  },
-  "saveSeedAsFile": {
-    "message": "Įrašyti atkūrimo žodžius kaip failą"
   },
   "scanInstructions": {
     "message": "Laikykite QR kodą priešais kamerą"
@@ -1414,17 +1080,11 @@
   "securitySettingsDescription": {
     "message": "Privatumo nuostatos ir slaptažodinės atkūrimo frazė"
   },
-  "secondsShorthand": {
-    "message": "s"
-  },
   "seedPhrasePlaceholder": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
-  },
-  "select": {
-    "message": "Pasirinkti"
   },
   "selectCurrency": {
     "message": "Pasirinkite valiutą"
@@ -1434,9 +1094,6 @@
   },
   "selectLocale": {
     "message": "Pasirinkite lokalę"
-  },
-  "selectService": {
-    "message": "Pasirinkite paslaugą"
   },
   "selectType": {
     "message": "Pasirinkti tipą"
@@ -1465,17 +1122,11 @@
   "searchTokens": {
     "message": "Ieškoti žetonų"
   },
-  "selectAnAddress": {
-    "message": "Pasirinkite adresą"
-  },
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
   },
   "selectAnAccountHelp": {
     "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
-  },
-  "selectAnAsset": {
-    "message": "Pasirinkite turtą"
   },
   "selectAHigherGasFee": {
     "message": "Pasirinkite didesnį dujų mokestį, kad paspartintumėte savo operacijos apdorojimą.*"
@@ -1486,14 +1137,8 @@
   "selectPathHelp": {
     "message": "Jeigu toliau nematote savo esamų operacijų sąskaitų, mėginkite pakeisti kelius į „Legacy (MEW / MyCrypto)“"
   },
-  "sendTokensAnywhere": {
-    "message": "Siųsti žetonus bet kam su „Ethereum“ paskyra"
-  },
   "settings": {
     "message": "Nustatymai"
-  },
-  "shapeshiftBuy": {
-    "message": "Pirkti su „Shapeshift“"
   },
   "showAdvancedGasInline": {
     "message": "Išplėstiniai dujų valdikliai"
@@ -1510,9 +1155,6 @@
   "showPrivateKeys": {
     "message": "Rodyti asmeninius raktus"
   },
-  "showQRCode": {
-    "message": "Rodyti QR kodą"
-  },
   "showHexData": {
     "message": "Rodyti šešioliktainius duomenis"
   },
@@ -1528,32 +1170,17 @@
   "signed": {
     "message": "Pasirašyta"
   },
-  "signMessage": {
-    "message": "Pasirašyti pranešimą"
-  },
   "signNotice": {
     "message": "Pasirašant šį pranešimą gali būti \npavojingų šalutinių efektų. Pasirašykite tik pranešimus iš vietų,\nkuriomis visiškai pasitikite su visomis savo paskyromis.\nŠis pavojingas būdas bus pašalintas ateities versijoje. "
   },
   "sigRequest": {
     "message": "Parašo užklausa"
   },
-  "sigRequested": {
-    "message": "Parašas užsakytas"
-  },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."
   },
-  "spaceBetween": {
-    "message": "tarp žodžių gali būti tik tarpas"
-  },
   "speedUp": {
     "message": "Paspartinti"
-  },
-  "speedUpTitle": {
-    "message": "Paspartinti operaciją"
-  },
-  "speedUpSubtitle": {
-    "message": "Didinkite savo dujų kainą, mėgindami perrašyti, ir paspartinkite savo operaciją"
   },
   "speedUpCancellation": {
     "message": "Pagreitinti šį atšaukimą"
@@ -1633,9 +1260,6 @@
   "syncWithMobileComplete": {
     "message": "Jūsų duomenys sėkmingai sinchronizuoti. Mėgaukitės „MetaMask“ mobiliąja programa! "
   },
-  "takesTooLong": {
-    "message": "Trunka pernelyg ilgai?"
-  },
   "terms": {
     "message": "Naudojimo sąlygos"
   },
@@ -1658,9 +1282,6 @@
   "token": {
     "message": "Žetonas"
   },
-  "tokenAddress": {
-    "message": "Žetono adresas"
-  },
   "tokenAlreadyAdded": {
     "message": "Žetonas jau pridėtas."
   },
@@ -1670,14 +1291,8 @@
   "tokenContractAddress": {
     "message": "Žetono kontaktinis adresas"
   },
-  "tokenSelection": {
-    "message": "Ieškokite žetonų arba juos rinkitės iš mūsų populiarių raktų sąrašų."
-  },
   "tokenSymbol": {
     "message": "Žetono ženklas"
-  },
-  "tokenWarning1": {
-    "message": "Stebėkite žetonus, įsigytus naudojantis „MetaMask“ paskyra. Jeigu žetonus įsigijote naudodamiesi kita paskyra, tokie žetonai nebus čia rodomi."
   },
   "total": {
     "message": "Iš viso"
@@ -1691,9 +1306,6 @@
   "transactionCreated": {
     "message": "Operacija sukurta $2 su $1 verte."
   },
-  "transactionWithNonce": {
-    "message": "Operacija $1"
-  },
   "transactionDropped": {
     "message": "Operacija numesta prie$2."
   },
@@ -1705,9 +1317,6 @@
   },
   "transactionUpdated": {
     "message": "Operacija atnaujinta$2."
-  },
-  "transactionUpdatedGas": {
-    "message": "Operacija atnaujinta $2 su $1 dujų mokesčiu."
   },
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
@@ -1730,12 +1339,6 @@
   "transactionFee": {
     "message": "Operacijos mokestis"
   },
-  "transactionMemo": {
-    "message": "Operacijos užrašinė (pasirinktinė)"
-  },
-  "transactionNumber": {
-    "message": "Operacijos numeris"
-  },
   "transactionTime": {
     "message": "Operacijos laikas"
   },
@@ -1748,12 +1351,6 @@
   "transferFrom": {
     "message": "Pervedimas iš"
   },
-  "transfers": {
-    "message": "Pervedimai"
-  },
-  "trezorHardwareWallet": {
-    "message": "TREZOR aparatinės įrangos slaptažodinė"
-  },
   "troubleTokenBalances": {
     "message": "Susidurta su sunkumais įkeliant jūsų žetonų likučius. Galite juos peržiūrėti ",
     "description": "Followed by a link (here) to view token balances"
@@ -1761,26 +1358,11 @@
   "tryAgain": {
     "message": "Bandyti dar kartą"
   },
-  "twelveWords": {
-    "message": "Šie 12 žodžių yra vienintelis būdas atkurti jūsų „MetaMask“ paskyrą.\nSaugokite juos saugioje ir slaptoje vietoje."
-  },
   "typePassword": {
     "message": "Įveskite savo „MetaMask“ slaptažodį"
   },
-  "uiMigrationAnnouncement": {
-    "message": "Sveikiname jus naujoje „MetaMask“ naudotojo sąsajoje. Jeigu turite pastabų apie naudotojo sąsają arba klausimų dėl funkcijų, susisiekite su mūsų palaikymo komanda arba per „GitHub“."
-  },
-  "uiWelcome": {
-    "message": "Sveikiname jus naujoje naudotojo sąsajoje (beta versija)"
-  },
-  "uiWelcomeMessage": {
-    "message": "Dabar naudojatės naująja „MetaMask“ naudotojo sąsaja. "
-  },
   "unapproved": {
     "message": "Nepatvirtinta"
-  },
-  "unavailable": {
-    "message": "Nepasiekiama"
   },
   "units": {
     "message": "vienetai"
@@ -1790,9 +1372,6 @@
   },
   "unknownNetwork": {
     "message": "Nežinomas privatusis tinklas"
-  },
-  "unknownNetworkId": {
-    "message": "Nežinomas tinklo ID"
   },
   "unknownQrCode": {
     "message": "Klaida: negalime identifikuoti šio QR kodo"
@@ -1815,24 +1394,14 @@
   "uriErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
   },
-  "usaOnly": {
-    "message": "Tik JAV",
-    "description": "Using this exchange is limited to people inside the USA"
-  },
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
-  },
-  "useOldUI": {
-    "message": "Naudoti seną naudotojo sąsają"
   },
   "userName": {
     "message": "Vartotojo vardas"
   },
   "validFileImport": {
     "message": "Turite pasirinkti galiojantį failą, kurį pageidaujate importuoti."
-  },
-  "vaultCreated": {
-    "message": "Saugykla sukurta"
   },
   "viewAccount": {
     "message": "Žiūrėti paskyrą"
@@ -1849,9 +1418,6 @@
   "viewOnEtherscan": {
     "message": "Peržiūrėti „Etherscan“"
   },
-  "viewNetworkInfo": {
-    "message": "Peržiūrėti tinklo informaciją"
-  },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
   },
@@ -1866,9 +1432,6 @@
   },
   "welcome": {
     "message": "Sveiki, tai „MetaMask“"
-  },
-  "whatsThis": {
-    "message": "Kas tai?"
   },
   "writePhrase": {
     "message": "Užrašykite šią frazę ant lapelio ir laikykite ją saugioje vietoje. Jeigu pageidaujate dar daugiau saugos, užrašykite ją ant kelių lapelių ir 2 ar 3 skirtingose vietose."
@@ -1887,18 +1450,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "yourUniqueAccountImage": {
-    "message": "Jūsų unikalusis paskyros vaizdas"
-  },
-  "yourUniqueAccountImageDescription1": {
-    "message": "Šis vaizdas buvo programiškai sugeneruotas jums pagal jūsų naują sąskaitos numerį."
-  },
-  "yourUniqueAccountImageDescription2": {
-    "message": "Šį vaizdą matysite kaskart, kai reikės patvirtinti operaciją."
-  },
-  "yourUniqueAccountImageDescription3": {
-    "message": "„MetaMask“ niekada neklaus jūsų atkūrimo frazės!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nustatykite nulinę dujų kainą greitėjant"

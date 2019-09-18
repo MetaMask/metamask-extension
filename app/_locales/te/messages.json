@@ -9,9 +9,6 @@
   "about": {
     "message": "గురించి"
   },
-  "accept": {
-    "message": "ఆమోదించు"
-  },
   "account": {
     "message": "ఖాతా"
   },
@@ -23,9 +20,6 @@
   },
   "advanced": {
     "message": "ఆధునిక"
-  },
-  "available": {
-    "message": "అందుబాటులో ఉంది"
   },
   "back": {
     "message": "వెనుకకు"
@@ -54,12 +48,6 @@
   "connect": {
     "message": "కనెక్ట్ చేయండి"
   },
-  "connecting": {
-    "message": "కనెక్ట్ అవుతోంది..."
-  },
-  "continue": {
-    "message": "కొనసాగించు"
-  },
   "copy": {
     "message": "కాపీ చెయ్యి"
   },
@@ -68,12 +56,6 @@
   },
   "create": {
     "message": "సృష్టించు"
-  },
-  "createDen": {
-    "message": "సృష్టించు"
-  },
-  "customize": {
-    "message": "అనుకూలీకరించు"
   },
   "delete": {
     "message": "తొలగించు"
@@ -92,9 +74,6 @@
   },
   "fast": {
     "message": "వేగంగా"
-  },
-  "fastest": {
-    "message": "అత్యంత వేగవంతం"
   },
   "forgetDevice": {
     "message": "ఈ పరికరాన్ని విస్మరించు"
@@ -119,14 +98,8 @@
   "loading": {
     "message": "లోడ్ అవుతోంది..."
   },
-  "min": {
-    "message": "కనిష్టం"
-  },
   "next": {
     "message": "తదుపరి"
-  },
-  "notFound": {
-    "message": "దొరకలేదు"
   },
   "origin": {
     "message": "మూలం"
@@ -157,9 +130,6 @@
   },
   "search": {
     "message": "శోధించు"
-  },
-  "select": {
-    "message": "ఎంచుకోండి"
   },
   "send": {
     "message": "పంపు"

@@ -51,11 +51,11 @@
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12"
   },
   "dependencies": {
+    "3box": "^1.10.2",
     "@babel/runtime": "^7.5.5",
     "@material-ui/core": "1.0.0",
     "@sentry/browser": "^4.1.1",
     "@zxing/library": "^0.8.0",
-    "3box": "^1.10.2",
     "abi-decoder": "^1.2.0",
     "abortcontroller-polyfill": "^1.3.0",
     "asmcrypto.js": "^2.3.2",
@@ -165,6 +165,7 @@
     "reselect": "^3.0.1",
     "safe-event-emitter": "^1.0.1",
     "single-call-balance-checker-abi": "^1.0.0",
+    "string.prototype.matchall": "^3.0.1",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
     "valid-url": "^1.0.9",

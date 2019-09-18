@@ -1,18 +1,6 @@
 {
-  "exposeAccounts": {
-    "message": "Hiển thị tài khoản"
-  },
-  "exposeDescription": {
-    "message": "Hiển thị tài khoản cho trang web hiện tại. Hữu ích cho các ứng dụng cũ."
-  },
-  "confirmExpose": {
-    "message": "Bạn có chắc chắn muốn hiển thị tài khoản của mình cho trang web hiện tại không?"
-  },
   "confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
   },
   "clearApprovalData": {
     "message": "Xóa dữ liệu phê duyệt"
@@ -22,9 +10,6 @@
   },
   "providerRequestInfo": {
     "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
-  },
-  "accept": {
-    "message": "Chấp nhận"
   },
   "account": {
     "message": "Tài khoản"
@@ -44,9 +29,6 @@
   "amount": {
     "message": "Số lượng"
   },
-  "amountPlusGas": {
-    "message": "Số lượng + Gas"
-  },
   "appDescription": {
     "message": "Tính năng Ethereum cho trình duyệt",
     "description": "The description of the application"
@@ -61,9 +43,6 @@
   "attemptingConnect": {
     "message": "Đang kết nối đến blockchain."
   },
-  "available": {
-    "message": "Có sẵn"
-  },
   "back": {
     "message": "Quay lại"
   },
@@ -73,24 +52,9 @@
   "balanceIsInsufficientGas": {
     "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
   },
-  "beta": {
-    "message": "Bản thử nghiệm Beta"
-  },
   "betweenMinAndMax": {
     "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
     "description": "helper for inputting hex as decimal input"
-  },
-  "borrowDharma": {
-    "message": "Vay Dharma (thử nghiệm)"
-  },
-  "buy": {
-    "message": "Mua"
-  },
-  "buyCoinbase": {
-    "message": "Mua trên Coinbase"
-  },
-  "buyCoinbaseExplainer": {
-    "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Ethereum, và Litecoin"
   },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
@@ -101,23 +65,11 @@
   "cancel": {
     "message": "Hủy"
   },
-  "clickCopy": {
-    "message": "Nhấp vào để sao chép"
-  },
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmContract": {
-    "message": "Xác nhận hợp đồng"
-  },
   "confirmPassword": {
     "message": "Xác nhận mật khẩu"
-  },
-  "confirmTransaction": {
-    "message": "Xác nhận giao dịch"
-  },
-  "continueToCoinbase": {
-    "message": "Tiếp tục đến Coinbase"
   },
   "continueToCoinSwitch": {
     "message": "Tiếp tục đến CoinSwitch"
@@ -130,9 +82,6 @@
   },
   "copiedButton": {
     "message": "Đã sao chép"
-  },
-  "copiedClipboard": {
-    "message": "Đã sao chép vào bộ nhớ Clipboard"
   },
   "copiedExclamation": {
     "message": "Đã sao chép!"
@@ -155,18 +104,8 @@
   "createAccount": {
     "message": "Tạo tài khoản"
   },
-  "createDen": {
-    "message": "Tạo"
-  },
-  "crypto": {
-    "message": "Tiền điện tử",
-    "description": "Exchange type (cryptocurrencies)"
-  },
   "customGas": {
     "message": "Tùy chỉnh gas"
-  },
-  "customize": {
-    "message": "Tùy chỉnh"
   },
   "customRPC": {
     "message": "Tùy chỉnh RPC"
@@ -174,38 +113,14 @@
   "defaultNetwork": {
     "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
   },
-  "denExplainer": {
-    "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong MetaMask"
-  },
   "deposit": {
     "message": "Ký gửi/nạp tiền"
-  },
-  "depositBTC": {
-    "message": "Ký gửi BTC đến địa chỉ sau:"
-  },
-  "depositEth": {
-    "message": "Ký gửi Eth"
   },
   "depositEther": {
     "message": "Ký gửi Ether"
   },
-  "depositFiat": {
-    "message": "Ký gửi bằng tiền Fiat (USD, GBP, ...)"
-  },
-  "depositFromAccount": {
-    "message": "Ký gửi từ một tài khoản khác"
-  },
-  "depositShapeShift": {
-    "message": "Ký gửi với ShapeShift"
-  },
-  "depositShapeShiftExplainer": {
-    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi Ether trực tiếp vào ví MetaMask của bạn. Không cần tạo thêm tài khoản."
-  },
   "details": {
     "message": "Chi tiết"
-  },
-  "directDeposit": {
-    "message": "Ký gửi trực tiếp"
   },
   "directDepositEther": {
     "message": "Ký gửi Ether trực tiếp"
@@ -219,26 +134,14 @@
   "edit": {
     "message": "Chỉnh sửa"
   },
-  "editAccountName": {
-    "message": "Chỉnh sửa tên tài khoản"
-  },
-  "encryptNewDen": {
-    "message": "Mã hóa số DEN mới của bạn"
-  },
   "enterPassword": {
     "message": "Nhập mật khẩu"
   },
   "etherscanView": {
     "message": "Xem tài khoản trên Etherscan"
   },
-  "exchangeRate": {
-    "message": "Tỷ giá"
-  },
   "exportPrivateKey": {
     "message": "Xuất mã khóa cá nhân"
-  },
-  "exportPrivateKeyWarning": {
-    "message": "Xuất mã khóa cá nhân theo rủi ro tự chịu"
   },
   "failed": {
     "message": "Không thành công"
@@ -270,9 +173,6 @@
   "gasLimitCalculation": {
     "message": "Chúng tôi tính toán và gợi ý một hạn mức ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
-  "gasLimitRequired": {
-    "message": "Hạn mức ga được yêu cầu"
-  },
   "gasLimitTooLow": {
     "message": "Hạn mức ga phải đạt tối thiểu 21000"
   },
@@ -281,9 +181,6 @@
   },
   "gasPriceCalculation": {
     "message": "Chúng tôi tính toán và gợi ý một giá ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
-  },
-  "gasPriceRequired": {
-    "message": "Giá ga được yêu cầu"
   },
   "getEther": {
     "message": "Lấy Ether"
@@ -309,21 +206,12 @@
   "hideTokenPrompt": {
     "message": "Ẩn mã token?"
   },
-  "howToDeposit": {
-    "message": "Bạn muốn ký gửi Ether bằng cách nào?"
-  },
   "import": {
     "message": "Nhập",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Nhập tài khoản"
-  },
-  "importAnAccount": {
-    "message": "Nhập một tài khoản"
-  },
-  "importDen": {
-    "message": "Nhập mã DEN hiện hành"
   },
   "imported": {
     "message": "Đã nhập",
@@ -335,14 +223,8 @@
   "invalidAddress": {
     "message": "Địa chỉ không hợp lệ"
   },
-  "invalidGasParams": {
-    "message": "Thông số ga không hợp lệ"
-  },
   "invalidInput": {
     "message": "Thông tin nhập vào không hợp lệ"
-  },
-  "invalidRequest": {
-    "message": "Yêu cầu không hợp lệ"
   },
   "jsonFile": {
     "message": "Tập tin JSON",
@@ -355,9 +237,6 @@
     "message": "phải ít hơn hoặc bằng $1.",
     "description": "helper for inputting hex as decimal input"
   },
-  "limit": {
-    "message": "Giới hạn"
-  },
   "loading": {
     "message": "Đang tải..."
   },
@@ -367,17 +246,11 @@
   "logout": {
     "message": "Thoát"
   },
-  "loose": {
-    "message": "Nới lỏng"
-  },
   "mainnet": {
     "message": "Mạng Ethereum MainNet (tiền ETH thật)"
   },
   "message": {
     "message": "Tin nhắn"
-  },
-  "min": {
-    "message": "Tối thiểu"
   },
   "myAccounts": {
     "message": "Tài khoản của tôi"
@@ -388,10 +261,6 @@
   "needImportFile": {
     "message": "Bạn phải chọn một tập tin để nhập.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "needImportPassword": {
-    "message": "Bạn phải điền mật khẩu cho tập tin đã chọn.",
-    "description": "Password and file needed to import an account"
   },
   "networks": {
     "message": "Các mạng lưới"
@@ -409,12 +278,6 @@
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
   },
-  "newPassword8Chars": {
-    "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
-  },
-  "newRecipient": {
-    "message": "Người nhận mới"
-  },
   "next": {
     "message": "Kế tiếp"
   },
@@ -424,32 +287,8 @@
   "noDeposits": {
     "message": "Không có tiền ký gửi nào được nhận"
   },
-  "noTransactionHistory": {
-    "message": "Không có lịch sử giao dịch"
-  },
   "noTransactions": {
     "message": "Không có giao dịch"
-  },
-  "notStarted": {
-    "message": "Chưa bắt đầu"
-  },
-  "oldUI": {
-    "message": "Giao diện cũ"
-  },
-  "oldUIMessage": {
-    "message": "Bạn vừa quay về giao diện cũ. Bạn có thể chuyển đổi sang giao diện mới bằng tùy chọn trong menu ở góc phải trên cùng."
-  },
-  "or": {
-    "message": "hoặc",
-    "description": "choice between creating or importing a new account"
-  },
-  "passwordMismatch": {
-    "message": "mật khẩu không khớp",
-    "description": "in password creation process, the two new password fields did not match"
-  },
-  "passwordShort": {
-    "message": "mật khẩu không đủ dài",
-    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
     "message": "Dán dãy khóa cá nhân của bạn tại đây:",
@@ -457,9 +296,6 @@
   },
   "pasteSeed": {
     "message": "Dán Mật Khẩu Sinh Khoá (seed phrase) của bạn tại đây!"
-  },
-  "pleaseReviewTransaction": {
-    "message": "Vui lòng xem lại giao dịch của bạn."
   },
   "privateKey": {
     "message": "Khóa Bí Mật",
@@ -477,26 +313,14 @@
   "readdToken": {
     "message": "Bạn có thể thêm trở lại mã token này bằng cách nhấn \"Thêm mã token\" trong menu tùy chọn trong tài khoản của bạn."
   },
-  "readMore": {
-    "message": "Đọc thêm tại đây."
-  },
-  "receive": {
-    "message": "Nhận"
-  },
   "recipientAddress": {
     "message": "Địa chỉ người nhận"
-  },
-  "refundAddress": {
-    "message": "Địa chỉ hoàn trả lại của bạn"
   },
   "rejected": {
     "message": "Không chấp thuận/Bị từ chối"
   },
   "required": {
     "message": "Yêu cầu"
-  },
-  "retryWithMoreGas": {
-    "message": "Thử lại với một giá ga cao hơn tại đây"
   },
   "revert": {
     "message": "Chuyển lại"
@@ -510,19 +334,8 @@
   "rpc": {
     "message": "Tùy chỉnh RPC"
   },
-  "sampleAccountName": {
-    "message": "Ví dụ, Tài khoản mới của tôi",
-    "description": "Help user understand concept of adding a human-readable name to their account"
-  },
   "save": {
     "message": "Lưu"
-  },
-  "saveAsFile": {
-    "message": "Lưu lại dưới dạng tập tin",
-    "description": "Account export process"
-  },
-  "selectService": {
-    "message": "Chọn dịch vụ"
   },
   "send": {
     "message": "Gửi"
@@ -530,20 +343,11 @@
   "sendTokens": {
     "message": "Gửi mã token"
   },
-  "sendTokensAnywhere": {
-    "message": "Gửi mã token đến bất kỳ ai có tài khoản Ethereum"
-  },
   "settings": {
     "message": "Cài đặt"
   },
-  "shapeshiftBuy": {
-    "message": "Mua với ShapeShift"
-  },
   "showPrivateKeys": {
     "message": "Hiển thị khóa cá nhân"
-  },
-  "showQRCode": {
-    "message": "Hiển thị mã QR"
   },
   "sign": {
     "message": "Ký nhận"
@@ -551,26 +355,17 @@
   "signatureRequest": {
     "message": "Yêu cầu chữ ký"
   },
-  "signMessage": {
-    "message": "Ký nhận tin nhắn"
-  },
   "signNotice": {
     "message": "Ký nhận vào tin nhắn này có thể gây nguy hiểm. Chỉ nên ký nhận tin nhắn từ những nguồn bạn hoàn toàn tin tưởng có thể dùng với tài khoản của bạn. Cách thức nguy hiểm này sẽ bị xóa trong phiên bản sắp tới."
   },
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
   },
-  "sigRequested": {
-    "message": "Đã yêu cầu chữ ký"
-  },
   "status": {
     "message": "Trạng thái"
   },
   "submit": {
     "message": "Gửi đi"
-  },
-  "takesTooLong": {
-    "message": "Chờ quá lâu?"
   },
   "testFaucet": {
     "message": "Vòi nhận tiền ETH ảo để thử nghiệm"
@@ -588,46 +383,18 @@
   "total": {
     "message": "Tổng cộng"
   },
-  "transactionMemo": {
-    "message": "Ghi nhớ giao dịch (tùy chọn)"
-  },
-  "transactionNumber": {
-    "message": "Số thứ tự giao dịch"
-  },
-  "transfers": {
-    "message": "Các giao dịch"
-  },
   "troubleTokenBalances": {
     "message": "Chúng tôi gặp sự cố khi tải số dư token của bạn. Xin vui lòng xem lại",
     "description": "Followed by a link (here) to view token balances"
   },
-  "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts. Save them somewhere safe and secret."
-  },
   "typePassword": {
     "message": "Điền mật khẩu của bạn"
-  },
-  "uiWelcome": {
-    "message": "Chào mừng bạn đến với giao diện mới (Beta)"
-  },
-  "uiWelcomeMessage": {
-    "message": "Bạn đang sử dụng giao diện mới của MetaMask. Chúng tôi khuyến khích bạn thử nghiệm và khám phá các tính năng mới như gửi token, và nếu bạn có gặp phải vấn đề gì khó khăn, xin hãy liên hệ ngay để chúng tôi có thể giúp đỡ bạn."
-  },
-  "unavailable": {
-    "message": "Không có sẵn"
   },
   "unknown": {
     "message": "Không xác định"
   },
   "unknownNetwork": {
     "message": "Mạng lưới riêng không xác định"
-  },
-  "unknownNetworkId": {
-    "message": "ID không xác định"
-  },
-  "usaOnly": {
-    "message": "Chỉ áp dụng cho người dùng ở Mỹ",
-    "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
     "message": "Được sử dụng bởi nhiều khách hàng khác nhau"
@@ -637,9 +404,6 @@
   },
   "warning": {
     "message": "Cảnh báo"
-  },
-  "whatsThis": {
-    "message": "Đây là gì?"
   },
   "yourSigRequested": {
     "message": "Chữ ký của bạn đang được yêu cầu"
