@@ -866,6 +866,9 @@
   "invalidRPC": {
     "message": "無效的 RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "無效的 Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "無效的助憶詞"
   },

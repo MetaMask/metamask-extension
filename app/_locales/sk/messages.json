@@ -860,6 +860,9 @@
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Neplatné Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "Neplatná seed fráza"
   },

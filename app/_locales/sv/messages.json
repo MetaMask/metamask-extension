@@ -863,6 +863,9 @@
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Ogiltig Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Ogiltig"
   },

@@ -854,6 +854,9 @@
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Neveljaven Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Neveljavna seed phrase"
   },

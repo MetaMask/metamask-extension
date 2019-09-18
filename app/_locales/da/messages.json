@@ -866,6 +866,9 @@
   "invalidRPC": {
     "message": "Ugyldig RPC-webadresse"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Ugyldig Block Explorer-webadresse"
+  },
   "invalidSeedPhrase": {
     "message": "Ugyldig backupsætning"
   },

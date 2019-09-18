@@ -879,6 +879,9 @@
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Netinkamas Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Netinkama atkūrimo frazė"
   },

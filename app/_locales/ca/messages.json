@@ -855,6 +855,9 @@
   "invalidRPC": {
     "message": "URL de RPC"
   },
+  "invalidBlockExplorerURL": {
+    "message": "URL de Block Explorer"
+  },
   "invalidSeedPhrase": {
     "message": "Frase de recuperació no vàlida"
   },

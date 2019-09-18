@@ -445,6 +445,9 @@
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Neplatné Block Explorer URI"
+  },
   "jsonFail": {
     "message": "Něco se pokazilo. Prosím, ujistěte se, že váš JSON soubor má správný formát."
   },

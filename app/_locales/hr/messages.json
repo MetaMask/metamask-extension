@@ -872,6 +872,9 @@
   "invalidRPC": {
     "message": "Nevaljani URL RPC-a"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Nevaljani URL Block Explorer-a"
+  },
   "invalidSeedPhrase": {
     "message": "Nevaljana početna rečenica"
   },

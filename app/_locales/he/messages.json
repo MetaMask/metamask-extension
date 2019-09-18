@@ -879,6 +879,9 @@
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
   },
+  "invalidBlockExplorerURL": {
+    "message": "כתובת URL לא חוקית של Block Explorer"
+  },
   "invalidSeedPhrase": {
     "message": "seed phrase לא חוקי"
   },

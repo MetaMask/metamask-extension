@@ -518,6 +518,9 @@
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI ไม่ถูกต้อง"
+  },
   "jsonFail": {
     "message": "เกิดบางอย่างผิดพลาด โปรดตรวจสอบว่าไฟล์ JSON ของคุณมีรูปแบบที่ถูกต้อง."
   },

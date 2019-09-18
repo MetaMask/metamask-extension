@@ -419,6 +419,9 @@
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "अमान्य Block Explorer कै URI"
+  },
   "jsonFail": {
     "message": "कुछ गलत हो गया। कृपया सुनिश्चित करें कि आपकी JSON फ़ाइल ठीक से फ़ॉर्मेट की गई है।"
   },

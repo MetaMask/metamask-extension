@@ -875,6 +875,9 @@
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Vale Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Vigane seemnefraas"
   },

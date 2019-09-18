@@ -863,6 +863,9 @@
   "invalidRPC": {
     "message": "RPC URL batili"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URL batili"
+  },
   "invalidSeedPhrase": {
     "message": "Kirai kianzio batili"
   },

@@ -849,6 +849,9 @@
   "invalidRPC": {
     "message": "URL RPC tidak sah"
   },
+  "invalidBlockExplorerURL": {
+    "message": "URL Block Explorer tidak sah"
+  },
   "invalidSeedPhrase": {
     "message": "Ungkapan benih tidak sah"
   },

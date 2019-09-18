@@ -873,6 +873,9 @@
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Virheellinen Block Explorer URL-osoite"
+  },
   "invalidSeedPhrase": {
     "message": "Virheellinen salausteksti"
   },

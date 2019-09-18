@@ -853,6 +853,9 @@
   "invalidRPC": {
     "message": "URL RPC Tidak Sah"
   },
+  "invalidBlockExplorerURL": {
+    "message": "URL Block Explorer Tidak Sah"
+  },
   "invalidSeedPhrase": {
     "message": "Frasa benih tidak valid"
   },

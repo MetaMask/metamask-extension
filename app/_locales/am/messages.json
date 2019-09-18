@@ -876,6 +876,9 @@
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
   },
+  "invalidBlockExplorerURL": {
+    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
+  },
   "invalidSeedPhrase": {
     "message": "የተሳሳተ የዘር ሐረግ"
   },

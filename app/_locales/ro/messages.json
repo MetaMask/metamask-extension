@@ -859,6 +859,9 @@
   "invalidRPC": {
     "message": "URL RPC nevalid"
   },
+  "invalidBlockExplorerURL": {
+    "message": "URL Block Explorer nevalid"
+  },
   "invalidSeedPhrase": {
     "message": "Expresie sursă nevalidă"
   },

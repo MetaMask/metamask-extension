@@ -873,6 +873,9 @@
   "invalidRPC": {
     "message": "Μη έγκυρο RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Μη έγκυρο Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Μη έγκυρη φράση φύτρου"
   },

@@ -449,6 +449,9 @@
   "invalidRPC": {
     "message": "தவறான RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "தவறான Block Explorer URI"
+  },
   "jsonFail": {
     "message": "ஏதோ தவறு நடந்துவிட்டது. உங்கள் JSON கோப்பு ஒழுங்காக வடிவமைக்கப்பட்டுள்ளது என்பதை உறுதிப்படுத்தவும்"
   },

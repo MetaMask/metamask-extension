@@ -864,6 +864,9 @@
   "invalidRPC": {
     "message": "올바르지 않은 RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "올바르지 않은 Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "잘못된 시드 구문"
   },

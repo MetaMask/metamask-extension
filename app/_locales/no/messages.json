@@ -866,6 +866,9 @@
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Ugyldig Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Ugyldig mnemonisk gjenopprettingsfrase"
   },
