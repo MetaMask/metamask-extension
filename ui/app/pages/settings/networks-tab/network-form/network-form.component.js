@@ -212,24 +212,15 @@ export default class NetworkForm extends PureComponent {
   }
 
   validateUrl = (url, stateKey) => {
-    if (validUrl.isWebUri(url)) {
+    let invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
+
+    if (validUrl.isWebUri(url) || (stateKey === 'blockExplorerUrl' && url === '')) {
       this.setErrorTo(stateKey, '')
     } else {
       const appendedRpc = `http://${url}`
       const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
 
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
-    }
-  }
-
-  validateBlockExplorerUrl = (url, stateKey) => {
-    if (url === '' || validUrl.isWebUri(url)) {
-      this.setErrorTo(stateKey, '')
-    } else {
-      const appendedRpc = `http://${url}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
-
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : invalidUrlErrorMsg))
     }
   }
 
@@ -283,7 +274,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'blockExplorerUrl',
           'block-explorer-url',
-          this.setStateWithValue('blockExplorerUrl', this.validateBlockExplorerUrl),
+          this.setStateWithValue('blockExplorerUrl', this.validateUrl),
           blockExplorerUrl,
           'optionalBlockExplorerUrl',
         )}
