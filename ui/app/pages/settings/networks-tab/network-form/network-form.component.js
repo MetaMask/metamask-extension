@@ -212,7 +212,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   validateUrl = (url, stateKey) => {
-    let invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
+    const invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
 
     if (validUrl.isWebUri(url) || (stateKey === 'blockExplorerUrl' && url === '')) {
       this.setErrorTo(stateKey, '')
