@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "የእንቅስቃሴ ምዝግብ ማስታወሻ"
   },
-  "add": {
-    "message": "አክል"
-  },
-  "address": {
-    "message": "አድራሻ"
-  },
   "addNetwork": {
     "message": "አውታረ መረብ አክል"
   },
   "addRecipient": {
     "message": "ተቀባይ አክል"
-  },
-  "addressBook": {
-    "message": "የአድራሻ መዝገብ"
   },
   "advanced": {
     "message": "የላቀ"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "editingTransaction": {
-    "message": "በግብይትዎ ላይ ለውጦችን ያድርጉ"
-  },
   "emailUs": {
     "message": "ኢሜይል ያድርጉልን!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "የተግባር ዓይነት"
-  },
-  "gas": {
-    "message": "ነዳጅ",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "የነዳጅ ክፍያ"
   },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
-  "info": {
-    "message": "መረጃ"
   },
   "infoHelp": {
     "message": "መረጃ እና እገዛ "
@@ -861,13 +839,6 @@
   "ofTextNofM": {
     "message": "ከ"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH ወደ Ethereum አድራሻዎች ብቻ ላክ።"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "ወደ Ethereum መለያ አድራሻ $1ብቻ ይላኩ።",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "ትሬዞር ወይም ሌጀር በማዘዝ ገንዘብዎን በቀዝቃዛ ማስቀመጫ ውስጥ ያቆዩ"
   },
@@ -978,9 +949,6 @@
   "restoreFromSeed": {
     "message": "መለያው ወደነበረበት ይመለስ?"
   },
-  "restoreVault": {
-    "message": "ካዝናን ወደነበረበት መልስ"
-  },
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
   },
@@ -1031,9 +999,6 @@
   },
   "goerli": {
     "message": "የ Goerli የሙከራ አውታረ መረብ"
-  },
-  "rpc": {
-    "message": "ብጁ RPC"
   },
   "save": {
     "message": "አስቀምጥ"
@@ -1188,9 +1153,6 @@
   "switchNetworks": {
     "message": "አውታረ መረቦችን ቀያይር"
   },
-  "status": {
-    "message": "ሁኔታ"
-  },
   "stateLogs": {
     "message": "የስቴት መዛግብት"
   },
@@ -1282,9 +1244,6 @@
   "tokenAlreadyAdded": {
     "message": "ተለዋጭ ስም ቀደም ሲል ታክሏል።"
   },
-  "tokenBalance": {
-    "message": "የተለዋጭ ስምዎ ቀሪ ሂሳብ፡"
-  },
   "tokenContractAddress": {
     "message": "የተለዋጭ ስም የግንኙነት አድራሻ"
   },
@@ -1323,9 +1282,6 @@
   },
   "transactionCancelSuccess": {
     "message": "ግብይቱ በ$2ላይ በሚገባ ተሰርዟል"
-  },
-  "transactions": {
-    "message": "ግብይቶች"
   },
   "transactionError": {
     "message": "የግብይት ስህተት። በኮንትራት ኮድ የሚላኩ ልዩ ሁኔታዎች አሉ።"
@@ -1420,9 +1376,6 @@
   },
   "walletSeed": {
     "message": "የቋት ዘር"
-  },
-  "warning": {
-    "message": "ማስጠንቀቂያ"
   },
   "welcomeBack": {
     "message": "እንኳን በደህና ተመለሱ"

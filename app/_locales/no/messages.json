@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "aktivitetshistorikk"
   },
-  "add": {
-    "message": "Legg til"
-  },
-  "address": {
-    "message": "Adresse"
-  },
   "addNetwork": {
     "message": "Legg til nettverk"
   },
   "addRecipient": {
     "message": "Legg til mottaker "
-  },
-  "addressBook": {
-    "message": "Adressebok"
   },
   "advanced": {
     "message": "Avansert"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "Rediger kontakt"
   },
-  "editingTransaction": {
-    "message": "Gjør endringer i transaksjonen din"
-  },
   "emailUs": {
     "message": "Send oss en e-post!"
   },
@@ -498,13 +486,6 @@
   },
   "functionType": {
     "message": "Funksjonstype "
-  },
-  "gas": {
-    "message": "Datakraft",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Datakraftsavgift "
   },
   "gasLimit": {
     "message": "Datakraftsgrense "
@@ -851,13 +832,6 @@
   "ofTextNofM": {
     "message": "av"
   },
-  "onlySendToEtherAddress": {
-    "message": "Send kun ETH med en Ethereum-adresse. "
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Send kun $1 med en Ethereum-kontoadresse. ",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Bestill en Trezor eller Ledger og oppbevar midlene dine i kjølerom"
   },
@@ -968,9 +942,6 @@
   "restoreFromSeed": {
     "message": "Gjennopprett konto? "
   },
-  "restoreVault": {
-    "message": "Gjenopprett hvelv"
-  },
   "restoreAccountWithSeed": {
     "message": "Gjenopprett konto med frøfrase"
   },
@@ -1015,9 +986,6 @@
   },
   "rinkeby": {
     "message": "Rinkeby testnettverk"
-  },
-  "rpc": {
-    "message": "Tilpasset RPC"
   },
   "save": {
     "message": "Lagre"
@@ -1251,9 +1219,6 @@
   "tokenAlreadyAdded": {
     "message": "Tokenet har allerede blitt lagt til."
   },
-  "tokenBalance": {
-    "message": "Din sjetongbalanse er:"
-  },
   "tokenContractAddress": {
     "message": "Token-kontraktadresse "
   },
@@ -1292,9 +1257,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaksjon vellykket avbrutt på $2 "
-  },
-  "transactions": {
-    "message": "transaksjoner"
   },
   "transactionError": {
     "message": "Transaksjonsfeil. Unntak kastet i kontraktskode."
@@ -1389,9 +1351,6 @@
   },
   "walletSeed": {
     "message": "Lommebok med mnemonisk gjenopprettingsfrase"
-  },
-  "warning": {
-    "message": "Advarsel"
   },
   "welcomeBack": {
     "message": "Velkommen tilbake!"

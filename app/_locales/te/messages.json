@@ -12,12 +12,6 @@
   "account": {
     "message": "ఖాతా"
   },
-  "add": {
-    "message": "జోడించు"
-  },
-  "address": {
-    "message": "చిరునామా"
-  },
   "advanced": {
     "message": "ఆధునిక"
   },
@@ -137,9 +131,6 @@
   "settings": {
     "message": "సెట్టింగ్‌లు"
   },
-  "status": {
-    "message": "స్థితి"
-  },
   "submit": {
     "message": "సమర్పించు"
   },
@@ -157,8 +148,5 @@
   },
   "viewAccount": {
     "message": "ఖాతాను వీక్షించండి"
-  },
-  "warning": {
-    "message": "హెచ్చరిక"
   }
 }

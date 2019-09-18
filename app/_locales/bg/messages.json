@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "Дневник на дейността"
   },
-  "add": {
-    "message": "Добавяне"
-  },
-  "address": {
-    "message": "Адрес"
-  },
   "addNetwork": {
     "message": "Добавяне на мрежа"
   },
   "addRecipient": {
     "message": "Добавете получател"
-  },
-  "addressBook": {
-    "message": "Адресна книга"
   },
   "advanced": {
     "message": "Разширени"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Редактиране на контакт"
   },
-  "editingTransaction": {
-    "message": "Направете промени в транзакцията си"
-  },
   "emailUs": {
     "message": "Изпратете ни имейл!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "Тип функция"
-  },
-  "gas": {
-    "message": "Газ",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Такса за газ"
   },
   "gasLimit": {
     "message": "Ограничение на газ"
@@ -624,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "Импортиране с помощта на фразата зародиш на профила"
-  },
-  "info": {
-    "message": "Информация"
   },
   "infoHelp": {
     "message": "Информация и помощ"
@@ -860,13 +838,6 @@
   "ofTextNofM": {
     "message": "на"
   },
-  "onlySendToEtherAddress": {
-    "message": "Изпращайте само ETH на адрес на Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Изпращайте само $1 на адрес на акаунт в Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Поръчайте Trezor или Ledger и запазете средствата си "
   },
@@ -977,9 +948,6 @@
   "restoreFromSeed": {
     "message": "Да се възстанови ли акаунта?"
   },
-  "restoreVault": {
-    "message": "Възстановяване на портфейла"
-  },
   "restoreAccountWithSeed": {
     "message": "Възстановете акаунта си с фраза зародиш"
   },
@@ -1030,9 +998,6 @@
   },
   "goerli": {
     "message": "Тестова мрежа на Goerli"
-  },
-  "rpc": {
-    "message": "Персонализиран RPC"
   },
   "save": {
     "message": "Запазване"
@@ -1187,9 +1152,6 @@
   "switchNetworks": {
     "message": "Превключване на мрежи"
   },
-  "status": {
-    "message": "Състояние"
-  },
   "stateLogs": {
     "message": "Държавни дневници"
   },
@@ -1281,9 +1243,6 @@
   "tokenAlreadyAdded": {
     "message": "Жетонът вече е добавен."
   },
-  "tokenBalance": {
-    "message": "Вашият баланс на жетони е:"
-  },
   "tokenContractAddress": {
     "message": "Адрес на договор за жетони"
   },
@@ -1322,9 +1281,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Транзакцията беше успешно отменена при $2"
-  },
-  "transactions": {
-    "message": "транзакции"
   },
   "transactionError": {
     "message": "Грешка при транзакцията. Беше върнато изключение в кода на договора."
@@ -1419,9 +1375,6 @@
   },
   "walletSeed": {
     "message": "Начална фраза за портфейл "
-  },
-  "warning": {
-    "message": "Предупреждение"
   },
   "welcomeBack": {
     "message": "Добре дошли отново!"

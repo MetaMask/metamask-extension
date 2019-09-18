@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "registro de actividades"
   },
-  "add": {
-    "message": "Añadir"
-  },
-  "address": {
-    "message": "Dirección"
-  },
   "addNetwork": {
     "message": "Añadir Red"
   },
   "addRecipient": {
     "message": "Añadir destinatario"
-  },
-  "addressBook": {
-    "message": "Libro de Direcciones"
   },
   "advanced": {
     "message": "Avanzado"
@@ -365,9 +356,6 @@
   "editContact": {
     "message": "Editar Contacto"
   },
-  "editingTransaction": {
-    "message": "Hacer cambios a tu transacción"
-  },
   "emailUs": {
     "message": "¡Envíanos un correo!"
   },
@@ -423,9 +411,6 @@
   },
   "functionType": {
     "message": "Tipo de función"
-  },
-  "gasFee": {
-    "message": "Comisión de gas"
   },
   "gasLimit": {
     "message": "Límite de gas"
@@ -518,9 +503,6 @@
   },
   "importUsingSeed": {
     "message": "Importar usando la frase semilla de la cuenta"
-  },
-  "info": {
-    "message": "Información"
   },
   "infoHelp": {
     "message": "Informacion y ayuda"
@@ -697,13 +679,6 @@
   "ofTextNofM": {
     "message": "de"
   },
-  "onlySendToEtherAddress": {
-    "message": "Sólo envía a una dirección de Ethereum"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Mandar solamente $1 a la dirección de una cuenta de Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Comprate un Trezor o Ledger y guarda tus fondos en almacenamiento frío"
   },
@@ -793,9 +768,6 @@
   "restoreFromSeed": {
     "message": "Restaurar desde semilla"
   },
-  "restoreVault": {
-    "message": "Restaurar bóveda"
-  },
   "restoreAccountWithSeed": {
     "message": "Restaurar tu Cuenta con Frase Semilla"
   },
@@ -843,9 +815,6 @@
   },
   "ropsten": {
     "message": "Red privada Ropsten"
-  },
-  "rpc": {
-    "message": "RPC Personalizado"
   },
   "save": {
     "message": "Guardar"
@@ -970,9 +939,6 @@
   "switchNetworks": {
     "message": "Cambiar de Red"
   },
-  "status": {
-    "message": "Estado"
-  },
   "stateLogs": {
     "message": "Logs de estado"
   },
@@ -1034,9 +1000,6 @@
   "tokenAlreadyAdded": {
     "message": "El token está actualmente agregado"
   },
-  "tokenBalance": {
-    "message": "Tu balance de tokens es:"
-  },
   "tokenSymbol": {
     "message": "Símbolo del token"
   },
@@ -1069,9 +1032,6 @@
   },
   "transactionCancelSuccess": {
     "message": "La transacción se canceló con éxito en $2"
-  },
-  "transactions": {
-    "message": "Transacciones"
   },
   "transactionError": {
     "message": "Error en transacción. Se produjo una excepción en el código del contrato."
@@ -1151,9 +1111,6 @@
   },
   "walletSeed": {
     "message": "Semilla de la billetera"
-  },
-  "warning": {
-    "message": "Advertencia"
   },
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"

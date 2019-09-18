@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "dziennik aktywności"
   },
-  "add": {
-    "message": "Dodaj"
-  },
-  "address": {
-    "message": "Adres"
-  },
   "addNetwork": {
     "message": "Dodaj sieć"
   },
   "addRecipient": {
     "message": "Dodaj odbiorcę"
-  },
-  "addressBook": {
-    "message": "Książka adresowa"
   },
   "advanced": {
     "message": "Zaawansowane"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "Edytuj kontakt"
   },
-  "editingTransaction": {
-    "message": "Dokonaj zmian w swojej transakcji"
-  },
   "emailUs": {
     "message": "Napisz do nas!"
   },
@@ -502,13 +490,6 @@
   },
   "functionType": {
     "message": "Typ funkcji"
-  },
-  "gas": {
-    "message": "Gaz",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Opłata za gaz"
   },
   "gasLimit": {
     "message": "Limit gazu"
@@ -852,13 +833,6 @@
   "ofTextNofM": {
     "message": "z"
   },
-  "onlySendToEtherAddress": {
-    "message": "Na adres Ethereum wysyłaj tylko ETH."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Wyślij tylko $1 na adres konta Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Zamów Trezor lub Ledger i trzymaj swoje środki w portfelu sprzętowym."
   },
@@ -969,9 +943,6 @@
   "restoreFromSeed": {
     "message": "Przywrócić konto?"
   },
-  "restoreVault": {
-    "message": "Przywróć schowek"
-  },
   "restoreAccountWithSeed": {
     "message": "Przywróć konto frazą seed"
   },
@@ -1022,9 +993,6 @@
   },
   "goerli": {
     "message": "Sieć testowa Goerli"
-  },
-  "rpc": {
-    "message": "Indywidualne RPC"
   },
   "save": {
     "message": "Zapisz"
@@ -1264,9 +1232,6 @@
   "tokenAlreadyAdded": {
     "message": "Token jest już dodany."
   },
-  "tokenBalance": {
-    "message": "Liczba Twoich tokenów:"
-  },
   "tokenContractAddress": {
     "message": "Adres kontraktu tokena"
   },
@@ -1305,9 +1270,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transakcja została anulowana pomyślnie – $2"
-  },
-  "transactions": {
-    "message": "transakcje"
   },
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
@@ -1402,9 +1364,6 @@
   },
   "walletSeed": {
     "message": "Seed portfela"
-  },
-  "warning": {
-    "message": "Uwaga"
   },
   "welcomeBack": {
     "message": "Witaj z powrotem!"

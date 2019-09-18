@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "गतिविधि लॉग"
   },
-  "add": {
-    "message": "जोड़ें"
-  },
-  "address": {
-    "message": "पता"
-  },
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
   "addRecipient": {
     "message": "प्राप्तकर्ता को जोड़ें"
-  },
-  "addressBook": {
-    "message": "पता पुस्तिका"
   },
   "advanced": {
     "message": "उन्नत"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "संपर्क संपादित करें"
   },
-  "editingTransaction": {
-    "message": "अपने ट्रांज़ैक्शन में बदलाव करें"
-  },
   "emailUs": {
     "message": "हमें ईमेल करें!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "कार्यप्रणाली प्रकार"
-  },
-  "gas": {
-    "message": "गैस",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "गैस शुल्क"
   },
   "gasLimit": {
     "message": "गैस की सीमा"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "खाता बीज वाक्यांश का उपयोग कर आयात करें"
-  },
-  "info": {
-    "message": "जानकारी"
   },
   "infoHelp": {
     "message": "जानकारी और सहायता"
@@ -861,13 +839,6 @@
   "ofTextNofM": {
     "message": "का"
   },
-  "onlySendToEtherAddress": {
-    "message": "Ethereum पते पर केवल ETH भेजें।"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "एक Ethereum खाते के पते पर केवल $1भेजें।",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Trezor या Ledger ऑर्डर करें और अपने फंड को स्थगित करें"
   },
@@ -978,9 +949,6 @@
   "restoreFromSeed": {
     "message": "खाता पुनर्स्थापित करें?"
   },
-  "restoreVault": {
-    "message": "वॉल्ट रिस्टोर करें"
-  },
   "restoreAccountWithSeed": {
     "message": "सीड फ़्रेज़ से अपने खाते को रिस्टोर करें"
   },
@@ -1031,9 +999,6 @@
   },
   "goerli": {
     "message": "गोएर्ली टेस्ट नेटवर्क"
-  },
-  "rpc": {
-    "message": "कस्टम आरपीसी"
   },
   "save": {
     "message": "सहेजें"
@@ -1185,9 +1150,6 @@
   "switchNetworks": {
     "message": "नेटवर्क स्विच करें"
   },
-  "status": {
-    "message": "स्थिति"
-  },
   "stateLogs": {
     "message": "स्टेट लॉग"
   },
@@ -1279,9 +1241,6 @@
   "tokenAlreadyAdded": {
     "message": "टोकन को पहले ही जोड़ा जा चुका है।"
   },
-  "tokenBalance": {
-    "message": "आपका बकाया टोकन है:"
-  },
   "tokenContractAddress": {
     "message": "टोकन संपर्क पता"
   },
@@ -1320,9 +1279,6 @@
   },
   "transactionCancelSuccess": {
     "message": "अंतरण सफलतापूर्वक $2 पर रद्द कर दिया गया"
-  },
-  "transactions": {
-    "message": "अंतरण"
   },
   "transactionError": {
     "message": "ट्रांज़ैक्शन में त्रुटि। गलतियों को कॉन्ट्रैक्ट कोड में दर्शया गया है।"
@@ -1417,9 +1373,6 @@
   },
   "walletSeed": {
     "message": "वॉलेट सीड"
-  },
-  "warning": {
-    "message": "चेतावनी"
   },
   "welcomeBack": {
     "message": "वापस आने पर स्वागत है!"

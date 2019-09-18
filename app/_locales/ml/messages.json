@@ -12,12 +12,6 @@
   "account": {
     "message": "അക്കൗണ്ട്"
   },
-  "add": {
-    "message": "ചേര്‍ക്കൂ"
-  },
-  "address": {
-    "message": "വിലാസം"
-  },
   "advanced": {
     "message": "നൂതനം"
   },
@@ -137,9 +131,6 @@
   "settings": {
     "message": "ക്രമീകരണങ്ങള്‍"
   },
-  "status": {
-    "message": "നില"
-  },
   "submit": {
     "message": "സമര്‍പ്പിക്കൂ"
   },
@@ -157,8 +148,5 @@
   },
   "viewAccount": {
     "message": "അക്കൗണ്ട് കാണുക"
-  },
-  "warning": {
-    "message": "മുന്നറിയിപ്പ്"
   }
 }

@@ -23,9 +23,6 @@
   "accountName": {
     "message": "खाते का नाम"
   },
-  "address": {
-    "message": "खाते का पता"
-  },
   "addToken": {
     "message": "टोकन जोड़ें"
   },
@@ -183,13 +180,6 @@
   },
   "fromShapeShift": {
     "message": "सेशशशफ्ट का"
-  },
-  "gas": {
-    "message": "गैस की लागत",
-    "description": "गैस की लागत का संक्षिप्त संकेत"
-  },
-  "gasFee": {
-    "message": "गैस शुल्क"
   },
   "gasLimit": {
     "message": "गैस सीमा"
@@ -451,9 +441,6 @@
   "sigRequest": {
     "message": "हस्ताक्षर अनुरोध"
   },
-  "status": {
-    "message": "स्थिति"
-  },
   "stateLogs": {
     "message": "स्थिति संदेश"
   },
@@ -485,17 +472,11 @@
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"
   },
-  "tokenBalance": {
-    "message": "आपका टोकन बैलेंस है:"
-  },
   "tokenSymbol": {
     "message": "टोकन प्रतीक"
   },
   "total": {
     "message": "कुल"
-  },
-  "transactions": {
-    "message": "लेनदेन"
   },
   "troubleTokenBalances": {
     "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
@@ -524,9 +505,6 @@
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  },
-  "warning": {
-    "message": "चेतावनी"
   },
   "welcome": {
     "message": "मेटामास्क बीटा में आपका स्वागत है"

@@ -20,9 +20,6 @@
   "accountName": {
     "message": "Název účtu"
   },
-  "address": {
-    "message": "Adresa"
-  },
   "addToken": {
     "message": "Přidat token"
   },
@@ -208,13 +205,6 @@
   "fromShapeShift": {
     "message": "Z ShapeShift"
   },
-  "gas": {
-    "message": "Palivo",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Poplatek za palivo"
-  },
   "gasLimit": {
     "message": "Limit paliva"
   },
@@ -263,9 +253,6 @@
   "imported": {
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "info": {
-    "message": "Informace"
   },
   "infoHelp": {
     "message": "Informace a nápověda"
@@ -370,9 +357,6 @@
   "noTransactions": {
     "message": "Žádné transakce"
   },
-  "onlySendToEtherAddress": {
-    "message": "Posílejte jen ETH na Ethereum adresu."
-  },
   "passwordsDontMatch": {
     "message": "Hesla nejsou stejná"
   },
@@ -420,9 +404,6 @@
   "restoreFromSeed": {
     "message": "Obnovit z seed fráze"
   },
-  "restoreVault": {
-    "message": "Obnovit trezor"
-  },
   "required": {
     "message": "Povinné"
   },
@@ -434,9 +415,6 @@
   },
   "revert": {
     "message": "Zvrátit"
-  },
-  "rpc": {
-    "message": "Vlastní RPC"
   },
   "save": {
     "message": "Uložit"
@@ -489,9 +467,6 @@
   "sigRequest": {
     "message": "Požadavek podpisu"
   },
-  "status": {
-    "message": "Stav"
-  },
   "stateLogs": {
     "message": "Stavové protokoly"
   },
@@ -529,17 +504,11 @@
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."
   },
-  "tokenBalance": {
-    "message": "Váš zůstatek tokenu je:"
-  },
   "tokenSymbol": {
     "message": "Symbol tokenu"
   },
   "total": {
     "message": "Celkem"
-  },
-  "transactions": {
-    "message": "transakce"
   },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
@@ -577,9 +546,6 @@
   },
   "walletSeed": {
     "message": "Klíčová fráze peněženky"
-  },
-  "warning": {
-    "message": "Varování"
   },
   "welcome": {
     "message": "Vítejte v MetaMask"

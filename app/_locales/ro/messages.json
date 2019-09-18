@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "jurnal activitate"
   },
-  "add": {
-    "message": "Adaugă"
-  },
-  "address": {
-    "message": "Adresă"
-  },
   "addNetwork": {
     "message": "Adăugați rețea"
   },
   "addRecipient": {
     "message": "Adăugați destinatarul"
-  },
-  "addressBook": {
-    "message": "Adresa"
   },
   "advanced": {
     "message": "Avansate"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Editați contact"
   },
-  "editingTransaction": {
-    "message": "Modificați tranzacția dvs."
-  },
   "emailUs": {
     "message": "Trimiteți-ne un email!"
   },
@@ -501,9 +489,6 @@
   },
   "functionType": {
     "message": "Tip funcție"
-  },
-  "gasFee": {
-    "message": "Taxă gas"
   },
   "gasLimit": {
     "message": "Limită gas"
@@ -614,9 +599,6 @@
   },
   "importUsingSeed": {
     "message": "Importare folosind fraza inițială a contului"
-  },
-  "info": {
-    "message": "Informații"
   },
   "infoHelp": {
     "message": "Informații și ajutor"
@@ -847,13 +829,6 @@
   "ofTextNofM": {
     "message": "din"
   },
-  "onlySendToEtherAddress": {
-    "message": "Trimite ETH doar la adrese Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Trimite $1 doar la o adresă de cont Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Comandați Trezor sau Ledger și țineți-vă fondurile la rece"
   },
@@ -964,9 +939,6 @@
   "restoreFromSeed": {
     "message": "Restabiliți contul?"
   },
-  "restoreVault": {
-    "message": "Restabiliți seiful"
-  },
   "restoreAccountWithSeed": {
     "message": "Restaurați-vă contul folosind fraza inițială"
   },
@@ -1017,9 +989,6 @@
   },
   "goerli": {
     "message": "Rețea de test Goerli"
-  },
-  "rpc": {
-    "message": "RPC personalizat"
   },
   "save": {
     "message": "Salvează"
@@ -1174,9 +1143,6 @@
   "switchNetworks": {
     "message": "Schimbați rețelele"
   },
-  "status": {
-    "message": "Stare"
-  },
   "stateLogs": {
     "message": "Jurnale de stare"
   },
@@ -1268,9 +1234,6 @@
   "tokenAlreadyAdded": {
     "message": "Token-ul a fost adăugat deja."
   },
-  "tokenBalance": {
-    "message": "Soldul de token este:"
-  },
   "tokenContractAddress": {
     "message": "Adresa din contractul de token"
   },
@@ -1306,9 +1269,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Tranzacția a fost anulată cu succes la $2"
-  },
-  "transactions": {
-    "message": "tranzacții"
   },
   "transactionError": {
     "message": "Eroare de tranzacție. Excepție lansată în codul contractului."
@@ -1400,9 +1360,6 @@
   },
   "walletSeed": {
     "message": "Sursă portofel"
-  },
-  "warning": {
-    "message": "Avertisment"
   },
   "welcomeBack": {
     "message": "Bine ai revenit!"

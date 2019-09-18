@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "журнал активності"
   },
-  "add": {
-    "message": "Додати"
-  },
-  "address": {
-    "message": "Адреса"
-  },
   "addNetwork": {
     "message": "Додати мережу"
   },
   "addRecipient": {
     "message": "Додати отримувача"
-  },
-  "addressBook": {
-    "message": "Адресна книга"
   },
   "advanced": {
     "message": "Розширені"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "editingTransaction": {
-    "message": "Внесіть зміни в транзакцію"
-  },
   "emailUs": {
     "message": "Напишіть нам!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "Тип функції"
-  },
-  "gas": {
-    "message": "Пальне",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Комісія за газ"
   },
   "gasLimit": {
     "message": "Ліміт газу"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "Імпортувати, використовуючи початкову фразу облікового запису"
-  },
-  "info": {
-    "message": "Інформація"
   },
   "infoHelp": {
     "message": "Інформація та допомога"
@@ -864,13 +842,6 @@
   "ofTextNofM": {
     "message": "з"
   },
-  "onlySendToEtherAddress": {
-    "message": "Надсилайте ETH тільки на адресу Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Надіслати лише $1 на адресу облікового запису Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Замовте Trezor або Ledger та зберігайте ваші кошти у холодному сховищі"
   },
@@ -981,9 +952,6 @@
   "restoreFromSeed": {
     "message": "Відновити обліковий запис?"
   },
-  "restoreVault": {
-    "message": "Відновити сховище"
-  },
   "restoreAccountWithSeed": {
     "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
   },
@@ -1034,9 +1002,6 @@
   },
   "goerli": {
     "message": "Тестова мережа Goerli "
-  },
-  "rpc": {
-    "message": "Власна мережа RPC"
   },
   "save": {
     "message": "Зберегти"
@@ -1191,9 +1156,6 @@
   "switchNetworks": {
     "message": "Переключити мережі"
   },
-  "status": {
-    "message": "Статус"
-  },
   "stateLogs": {
     "message": "Логи стану"
   },
@@ -1285,9 +1247,6 @@
   "tokenAlreadyAdded": {
     "message": "Токен вже був доданий."
   },
-  "tokenBalance": {
-    "message": "Ваш залишок токенів:"
-  },
   "tokenContractAddress": {
     "message": "Контрактна адреса токену"
   },
@@ -1326,9 +1285,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Транзакцію успішно скасовано на $2"
-  },
-  "transactions": {
-    "message": "транзакції"
   },
   "transactionError": {
     "message": "Помилка транзакції. В контрактному коді виданий виняток"
@@ -1423,9 +1379,6 @@
   },
   "walletSeed": {
     "message": "Seed гаманця"
-  },
-  "warning": {
-    "message": "Застереження"
   },
   "welcomeBack": {
     "message": "З поверненням!"

@@ -20,9 +20,6 @@
   "accountName": {
     "message": "Tên tài khoản"
   },
-  "address": {
-    "message": "Địa chỉ"
-  },
   "addToken": {
     "message": "Thêm mã Token"
   },
@@ -159,13 +156,6 @@
   },
   "fromShapeShift": {
     "message": "Từ ShapeShift"
-  },
-  "gas": {
-    "message": "Ga",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Tiền ga"
   },
   "gasLimit": {
     "message": "Hạn mức ga"
@@ -331,9 +321,6 @@
   "ropsten": {
     "message": "Mạng thử nghiệm Ropsten"
   },
-  "rpc": {
-    "message": "Tùy chỉnh RPC"
-  },
   "save": {
     "message": "Lưu"
   },
@@ -361,9 +348,6 @@
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
   },
-  "status": {
-    "message": "Trạng thái"
-  },
   "submit": {
     "message": "Gửi đi"
   },
@@ -376,9 +360,6 @@
   "toETHviaShapeShift": {
     "message": "$1 thành ETH qua ShapeShift",
     "description": "system will fill in deposit type in start of message"
-  },
-  "tokenBalance": {
-    "message": "Số dư token của bạn là:"
   },
   "total": {
     "message": "Tổng cộng"
@@ -401,9 +382,6 @@
   },
   "viewAccount": {
     "message": "Xem tài khoản"
-  },
-  "warning": {
-    "message": "Cảnh báo"
   },
   "yourSigRequested": {
     "message": "Chữ ký của bạn đang được yêu cầu"

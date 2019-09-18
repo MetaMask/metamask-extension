@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "kumbukumbu ya shughuli"
   },
-  "add": {
-    "message": "Ongeza"
-  },
-  "address": {
-    "message": "Anwani"
-  },
   "addNetwork": {
     "message": "Ongeza Mtandao"
   },
   "addRecipient": {
     "message": "Ongeza Mpokeaji"
-  },
-  "addressBook": {
-    "message": "Kitabu cha Anwani"
   },
   "advanced": {
     "message": "Mipangilio ya kina"
@@ -405,9 +396,6 @@
   "editContact": {
     "message": "Hariri Mawasiliano"
   },
-  "editingTransaction": {
-    "message": "Fanya mabadiliko kwenye muamala wako"
-  },
   "emailUs": {
     "message": "Tutumie barua pepe!"
   },
@@ -495,13 +483,6 @@
   },
   "functionType": {
     "message": "Aina ya Shughuli"
-  },
-  "gas": {
-    "message": "Gesi",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Ada ya Gesi"
   },
   "gasLimit": {
     "message": "Kikomo cha Gesi"
@@ -615,9 +596,6 @@
   },
   "importUsingSeed": {
     "message": "Hamisha kwa kutumia kirai kianzio cha akaunti"
-  },
-  "info": {
-    "message": "Taarifa"
   },
   "infoHelp": {
     "message": "Taarifa & Msaada"
@@ -842,13 +820,6 @@
   "ofTextNofM": {
     "message": "ya"
   },
-  "onlySendToEtherAddress": {
-    "message": "Tuma tu ETH kwenya anwani za Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Tuma $1 kwenye anwani ya akaunti ya Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Agiza Trezor au Leja na weka fedha zako kwenye ifadhi ya baridi"
   },
@@ -959,9 +930,6 @@
   "restoreFromSeed": {
     "message": "Rejesha akaunti?"
   },
-  "restoreVault": {
-    "message": "Rejesha Vault"
-  },
   "restoreAccountWithSeed": {
     "message": "Rejesha Akaunti yako kwa kutumia Kirai Kianzio."
   },
@@ -1012,9 +980,6 @@
   },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
-  },
-  "rpc": {
-    "message": "RPC Maalumu"
   },
   "save": {
     "message": "Hifadhi"
@@ -1169,9 +1134,6 @@
   "switchNetworks": {
     "message": "Badilisha mitandao"
   },
-  "status": {
-    "message": "Hali"
-  },
   "stateLogs": {
     "message": "Kumbukumbu za Hali"
   },
@@ -1263,9 +1225,6 @@
   "tokenAlreadyAdded": {
     "message": "Kianzio kimeongezwa tyari"
   },
-  "tokenBalance": {
-    "message": "Salio lako la Kianzio ni:"
-  },
   "tokenContractAddress": {
     "message": "Anwani ya Mkataba ya Kianzio"
   },
@@ -1304,9 +1263,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Muamala umefanikiwa kubatilishwa mnamo $2"
-  },
-  "transactions": {
-    "message": "miamala"
   },
   "transactionError": {
     "message": "Hitilafu ya muamala. Kighairi kimerushwa kwenye msimbo wa mkataba."
@@ -1401,9 +1357,6 @@
   },
   "walletSeed": {
     "message": "Kianzio cha Waleti"
-  },
-  "warning": {
-    "message": "Ilani"
   },
   "welcomeBack": {
     "message": "Karibu Tena!"

@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "registro de atividade"
   },
-  "add": {
-    "message": "Adicionar"
-  },
-  "address": {
-    "message": "Endereço"
-  },
   "addNetwork": {
     "message": "Adicionar Rede"
   },
   "addRecipient": {
     "message": "Adicionar Destinatário"
-  },
-  "addressBook": {
-    "message": "Lista de Endereços"
   },
   "advanced": {
     "message": "Avançado"
@@ -405,9 +396,6 @@
   "editContact": {
     "message": "Editar Contato"
   },
-  "editingTransaction": {
-    "message": "Faça mudanças na sua transação"
-  },
   "emailUs": {
     "message": "Escreva para nós!"
   },
@@ -499,13 +487,6 @@
   },
   "functionType": {
     "message": "Tipo de Função"
-  },
-  "gas": {
-    "message": "Gás",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Taxa de Gás"
   },
   "gasLimit": {
     "message": "Limite de Gás"
@@ -622,9 +603,6 @@
   },
   "importUsingSeed": {
     "message": "Importe usando a seed phrase da conta"
-  },
-  "info": {
-    "message": "Informações"
   },
   "infoHelp": {
     "message": "Informações e ajuda"
@@ -849,13 +827,6 @@
   "ofTextNofM": {
     "message": "de"
   },
-  "onlySendToEtherAddress": {
-    "message": "Somente envie ETH para um endereço Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Apenas envie $1 para um endereço de conta Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Peça uma Trezor ou Ledger e guarde seus fundos off-line"
   },
@@ -966,9 +937,6 @@
   "restoreFromSeed": {
     "message": "Restaurar conta?"
   },
-  "restoreVault": {
-    "message": "Restaurar Cofre"
-  },
   "restoreAccountWithSeed": {
     "message": "Restaurar sua conta com a frase semente"
   },
@@ -1019,9 +987,6 @@
   },
   "goerli": {
     "message": "Rede de teste Goerli"
-  },
-  "rpc": {
-    "message": "RPC Personalizado"
   },
   "save": {
     "message": "Salvar"
@@ -1264,9 +1229,6 @@
   "tokenAlreadyAdded": {
     "message": "O token já foi adicionado."
   },
-  "tokenBalance": {
-    "message": "O saldo de seu token é:"
-  },
   "tokenContractAddress": {
     "message": "Endereço do Contrato do Token"
   },
@@ -1302,9 +1264,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transação cancelada com sucesso em $2"
-  },
-  "transactions": {
-    "message": "transações"
   },
   "transactionError": {
     "message": "Erro de Transação. Exceção lançada no código do contrato."
@@ -1399,9 +1358,6 @@
   },
   "walletSeed": {
     "message": "Semente da Carteira"
-  },
-  "warning": {
-    "message": "Aviso"
   },
   "welcomeBack": {
     "message": "Bem-vindo de volta!"

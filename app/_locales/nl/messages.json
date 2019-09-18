@@ -17,9 +17,6 @@
   "accountName": {
     "message": "Accountnaam"
   },
-  "address": {
-    "message": "Adres"
-  },
   "addToken": {
     "message": "Voeg token toe"
   },
@@ -177,9 +174,6 @@
   },
   "fromShapeShift": {
     "message": "Van ShapeShift"
-  },
-  "gasFee": {
-    "message": "Gas vergoeding"
   },
   "gasLimit": {
     "message": "Gaslimiet"
@@ -392,9 +386,6 @@
   "ropsten": {
     "message": "Ropsten testnetwerk"
   },
-  "rpc": {
-    "message": "Aangepaste RPC"
-  },
   "save": {
     "message": "Opslaan"
   },
@@ -440,9 +431,6 @@
   "sigRequest": {
     "message": "Ondertekeningsverzoek"
   },
-  "status": {
-    "message": "staat"
-  },
   "stateLogs": {
     "message": "Staatslogboeken"
   },
@@ -474,14 +462,8 @@
   "tokenAlreadyAdded": {
     "message": "Token is al toegevoegd."
   },
-  "tokenBalance": {
-    "message": "Uw tokensaldo is:"
-  },
   "total": {
     "message": "Totaal"
-  },
-  "transactions": {
-    "message": "transacties"
   },
   "troubleTokenBalances": {
     "message": "We hadden problemen bij het laden van uw tokenbalansen. Je kunt ze bekijken",
@@ -510,9 +492,6 @@
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
-  },
-  "warning": {
-    "message": "Waarschuwing"
   },
   "welcome": {
     "message": "Welkom bij MetaMask"

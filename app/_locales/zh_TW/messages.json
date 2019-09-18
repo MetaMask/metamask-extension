@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "活動紀錄"
   },
-  "add": {
-    "message": "新增"
-  },
-  "address": {
-    "message": "帳戶位址"
-  },
   "addNetwork": {
     "message": "新增網路"
   },
   "addRecipient": {
     "message": "新增接收人"
-  },
-  "addressBook": {
-    "message": "位址簿"
   },
   "advanced": {
     "message": "進階"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "編輯聯絡資訊"
   },
-  "editingTransaction": {
-    "message": "修改交易"
-  },
   "emailUs": {
     "message": "寄 Email 給我們!"
   },
@@ -502,9 +490,6 @@
   },
   "functionType": {
     "message": "功能類型"
-  },
-  "gasFee": {
-    "message": "Gas 費用"
   },
   "gasLimit": {
     "message": "Gas 上限"
@@ -621,9 +606,6 @@
   },
   "importUsingSeed": {
     "message": "利用助憶詞匯入帳戶"
-  },
-  "info": {
-    "message": "資訊"
   },
   "infoHelp": {
     "message": "說明 & 資訊"
@@ -848,13 +830,6 @@
   "noWebcamFound": {
     "message": "無法搜尋到攝影鏡頭裝置。請再試一次"
   },
-  "onlySendToEtherAddress": {
-    "message": "只能發送到乙太坊位址"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "只能發送 $1 到乙太坊位址",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "訂購 Trezor 或 Ledger 讓資產保存於硬體裝置。"
   },
@@ -962,9 +937,6 @@
   "restoreFromSeed": {
     "message": "還原帳戶？"
   },
-  "restoreVault": {
-    "message": "還原金庫"
-  },
   "restoreAccountWithSeed": {
     "message": "透過助憶詞還原您的帳戶"
   },
@@ -1012,9 +984,6 @@
   },
   "goerli": {
     "message": "Goerli 測試網路"
-  },
-  "rpc": {
-    "message": "自訂 RPC"
   },
   "save": {
     "message": "儲存"
@@ -1163,9 +1132,6 @@
   "switchNetworks": {
     "message": "切換網路"
   },
-  "status": {
-    "message": "狀態"
-  },
   "stateLogs": {
     "message": "狀態紀錄"
   },
@@ -1257,9 +1223,6 @@
   "tokenAlreadyAdded": {
     "message": "已加入過此代幣。"
   },
-  "tokenBalance": {
-    "message": "代幣餘額："
-  },
   "tokenContractAddress": {
     "message": "代幣合同位址"
   },
@@ -1298,9 +1261,6 @@
   },
   "transactionCancelSuccess": {
     "message": "交易取消成功 $2"
-  },
-  "transactions": {
-    "message": "交易紀錄"
   },
   "transactionError": {
     "message": "交易失敗。合約代碼拋出錯誤資訊"
@@ -1392,9 +1352,6 @@
   },
   "walletSeed": {
     "message": "助憶詞"
-  },
-  "warning": {
-    "message": "警告"
   },
   "welcomeBack": {
     "message": "歡迎回來!"

@@ -50,9 +50,6 @@
   "activityLog": {
     "message": "log ng aktibidad"
   },
-  "add": {
-    "message": "Magdagdag"
-  },
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
@@ -372,9 +369,6 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
-  "editingTransaction": {
-    "message": "Gumawa ng mga pagbabago sa iyong transaksyon"
-  },
   "emailUs": {
     "message": "Mag-email sa amin!"
   },
@@ -566,9 +560,6 @@
   },
   "importUsingSeed": {
     "message": "Mag-import gamit ang seed phrase ng account"
-  },
-  "info": {
-    "message": "Impormasyon"
   },
   "infoHelp": {
     "message": "Impormasyon at Tulong"
@@ -776,13 +767,6 @@
   "ofTextNofM": {
     "message": "sa"
   },
-  "onlySendToEtherAddress": {
-    "message": "Magpadala lang ng ETH sa isang Ethereum address."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Magpadala lang ng $1 sa isang Ethereum account address.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Mag-order ng Trezor o Ledger para itago sa cold storage ang iyong pondo"
   },
@@ -885,9 +869,6 @@
   },
   "restoreFromSeed": {
     "message": "I-restore ang account?"
-  },
-  "restoreVault": {
-    "message": "I-restore ang Vault"
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
@@ -1072,9 +1053,6 @@
   "switchNetworks": {
     "message": "Lumipat ng Network"
   },
-  "status": {
-    "message": "Katayuan"
-  },
   "stateLogs": {
     "message": "Mga State Log"
   },
@@ -1160,9 +1138,6 @@
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."
   },
-  "tokenBalance": {
-    "message": "Ang iyong Token Balance ay:"
-  },
   "tokenSymbol": {
     "message": "Simbolo ng Token"
   },
@@ -1198,9 +1173,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Nakansela ang transaksyon sa ganap na $2"
-  },
-  "transactions": {
-    "message": "mga transaksyon"
   },
   "transactionError": {
     "message": "May Error sa Transaksyon. May exception sa contract code."
@@ -1289,9 +1261,6 @@
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"
-  },
-  "warning": {
-    "message": "Babala"
   },
   "welcomeBack": {
     "message": "Welcome Ulit!"

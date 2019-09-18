@@ -20,9 +20,6 @@
   "accountName": {
     "message": "Nome da Conta"
   },
-  "address": {
-    "message": "Endereço"
-  },
   "addToken": {
     "message": "Adicionar Token"
   },
@@ -183,9 +180,6 @@
   },
   "fromShapeShift": {
     "message": "De ShapeShift"
-  },
-  "gasFee": {
-    "message": "Taxa de Gas"
   },
   "gasLimit": {
     "message": "Limite de Gas"
@@ -402,9 +396,6 @@
   "ropsten": {
     "message": "Rede de Teste Ropsten"
   },
-  "rpc": {
-    "message": "Customizar RPC"
-  },
   "save": {
     "message": "Guardar"
   },
@@ -450,9 +441,6 @@
   "sigRequest": {
     "message": "Pedido de Assinatura"
   },
-  "status": {
-    "message": "Estado"
-  },
   "stateLogs": {
     "message": "Registos de Estado"
   },
@@ -484,14 +472,8 @@
   "tokenAlreadyAdded": {
     "message": "Token já foi adicionado."
   },
-  "tokenBalance": {
-    "message": "O seu balanço é:"
-  },
   "tokenSymbol": {
     "message": "Símbolo do Token"
-  },
-  "transactions": {
-    "message": "transações"
   },
   "troubleTokenBalances": {
     "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
@@ -520,9 +502,6 @@
   },
   "visitWebSite": {
     "message": "Visite o nosso site"
-  },
-  "warning": {
-    "message": "Aviso"
   },
   "welcome": {
     "message": "Bem-vindo ao MetaMask"

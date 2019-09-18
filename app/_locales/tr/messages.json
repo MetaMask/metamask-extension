@@ -20,9 +20,6 @@
   "accountName": {
     "message": "Hesap İsmi"
   },
-  "address": {
-    "message": "Adres"
-  },
   "addToken": {
     "message": "Jeton ekle"
   },
@@ -211,9 +208,6 @@
   "fromShapeShift": {
     "message": "ShapeShift'den"
   },
-  "gasFee": {
-    "message": "Gas Ücreti"
-  },
   "gasLimit": {
     "message": "Gas Limiti"
   },
@@ -262,9 +256,6 @@
   "imported": {
     "message": "Alındı",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "info": {
-    "message": "Bilgi"
   },
   "infoHelp": {
     "message": "Bilgi ve yardım"
@@ -378,9 +369,6 @@
   "noTransactions": {
     "message": "İşlem yok"
   },
-  "onlySendToEtherAddress": {
-    "message": "Ethereum adresine sadece ETH gönder."
-  },
   "passwordsDontMatch": {
     "message": "Parolalar eşleşmiyor"
   },
@@ -428,9 +416,6 @@
   "restoreFromSeed": {
     "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
   },
-  "restoreVault": {
-    "message": "Kasayı geri getir"
-  },
   "required": {
     "message": "Gerekli"
   },
@@ -448,9 +433,6 @@
   },
   "ropsten": {
     "message": "Ropsten Test Ağı"
-  },
-  "rpc": {
-    "message": "Özel RPC"
   },
   "save": {
     "message": "Kaydet"
@@ -503,9 +485,6 @@
   "sigRequest": {
     "message": "İmza isteği"
   },
-  "status": {
-    "message": "Durum"
-  },
   "stateLogs": {
     "message": "Durum Kayıtları"
   },
@@ -543,17 +522,11 @@
   "tokenAlreadyAdded": {
     "message": "Jeton çoktan eklenmiş."
   },
-  "tokenBalance": {
-    "message": "Jeton bakiyeniz:"
-  },
   "tokenSymbol": {
     "message": "Jeton Sembolü"
   },
   "total": {
     "message": "Toplam"
-  },
-  "transactions": {
-    "message": "işlemler"
   },
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan kural dışı durum fırlatıldı."
@@ -591,9 +564,6 @@
   },
   "walletSeed": {
     "message": "Cüzdan Kaynağı"
-  },
-  "warning": {
-    "message": "Uyarı"
   },
   "welcome": {
     "message": "MetaMask'ya Hoşgeldiniz"

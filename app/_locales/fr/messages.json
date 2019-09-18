@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "Log d'activité"
   },
-  "add": {
-    "message": "Ajouter"
-  },
-  "address": {
-    "message": "Adresse"
-  },
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
   "addRecipient": {
     "message": "Ajouter destinataire"
-  },
-  "addressBook": {
-    "message": "Carnet d'adresses"
   },
   "advanced": {
     "message": "Paramètres avancés"
@@ -399,9 +390,6 @@
   "editContact": {
     "message": "Modifier le contact"
   },
-  "editingTransaction": {
-    "message": "Modifier votre transaction"
-  },
   "emailUs": {
     "message": "Envoyez-nous un email !"
   },
@@ -493,9 +481,6 @@
   },
   "functionType": {
     "message": "Type de fonction"
-  },
-  "gasFee": {
-    "message": "Coût en gaz"
   },
   "gasLimit": {
     "message": "Quantité max. de gaz"
@@ -824,13 +809,6 @@
   "ofTextNofM": {
     "message": "de"
   },
-  "onlySendToEtherAddress": {
-    "message": "N'envoyez de l'Ether que sur une adresse Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "N'envoyez des $1 que sur une adresse Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Commander un Trezor ou un Ledger et conserver vos fonds en \"cold storage\""
   },
@@ -941,9 +919,6 @@
   "restoreFromSeed": {
     "message": "Restaurer le compte ?"
   },
-  "restoreVault": {
-    "message": "Restaurer le Coffre"
-  },
   "restoreAccountWithSeed": {
     "message": "Restaurer votre compte avec une phrase Seed."
   },
@@ -994,9 +969,6 @@
   },
   "goerli": {
     "message": "Réseau de test Goerli"
-  },
-  "rpc": {
-    "message": "RPC Personnalisé"
   },
   "save": {
     "message": "Enregistrer"
@@ -1151,9 +1123,6 @@
   "switchNetworks": {
     "message": "Changer de réseau"
   },
-  "status": {
-    "message": "Statut"
-  },
   "stateLogs": {
     "message": "Logs d'Etat"
   },
@@ -1244,9 +1213,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Ce Jeton a déjà été ajouté."
-  },
-  "tokenBalance": {
-    "message": "Votre solde de jeton est :"
   },
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
@@ -1374,9 +1340,6 @@
   },
   "walletSeed": {
     "message": "Seed du portefeuille"
-  },
-  "warning": {
-    "message": "Avertissement"
   },
   "welcomeBack": {
     "message": "Bienvenue à nouveau !"

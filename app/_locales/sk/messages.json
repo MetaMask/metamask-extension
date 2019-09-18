@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "protokol aktivity"
   },
-  "add": {
-    "message": "Pridať"
-  },
-  "address": {
-    "message": "Adresa"
-  },
   "addNetwork": {
     "message": "Pridať sieť"
   },
   "addRecipient": {
     "message": "Pridať príjemcu"
-  },
-  "addressBook": {
-    "message": "Adresár"
   },
   "advanced": {
     "message": "Rozšírené"
@@ -402,9 +393,6 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "editingTransaction": {
-    "message": "Vykonajte zmeny vo svojej transakcii"
-  },
   "emailUs": {
     "message": "Napište nám e-mail!"
   },
@@ -496,13 +484,6 @@
   },
   "functionType": {
     "message": "Typ funkcie"
-  },
-  "gas": {
-    "message": "Palivo",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Poplatek za palivo"
   },
   "gasLimit": {
     "message": "Limit paliva"
@@ -612,9 +593,6 @@
   },
   "importUsingSeed": {
     "message": "Importovať pomocou seed frázy účtu"
-  },
-  "info": {
-    "message": "Informace"
   },
   "infoHelp": {
     "message": "Informace a nápověda"
@@ -830,13 +808,6 @@
   "ofTextNofM": {
     "message": "z"
   },
-  "onlySendToEtherAddress": {
-    "message": "Posílejte jen ETH na Ethereum adresu."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Pošlite iba $1 na adresu účtu Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Objednajte si Trezor alebo Hlavnú knihu a uschovajte svoje prostriedky v sklade"
   },
@@ -947,9 +918,6 @@
   "restoreFromSeed": {
     "message": "Obnovit z seed fráze"
   },
-  "restoreVault": {
-    "message": "Obnovit trezor"
-  },
   "restoreAccountWithSeed": {
     "message": "Obnoviť účet pomocou seed frázy"
   },
@@ -994,9 +962,6 @@
   },
   "goerli": {
     "message": "Testovacia sieť Goerli"
-  },
-  "rpc": {
-    "message": "Vlastní RPC"
   },
   "save": {
     "message": "Uložit"
@@ -1151,9 +1116,6 @@
   "switchNetworks": {
     "message": "Prepnúť siete"
   },
-  "status": {
-    "message": "Stav"
-  },
   "stateLogs": {
     "message": "Stavové protokoly"
   },
@@ -1239,9 +1201,6 @@
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."
   },
-  "tokenBalance": {
-    "message": "Váš zůstatek tokenu je:"
-  },
   "tokenContractAddress": {
     "message": "Kontaktná adresa tokenu"
   },
@@ -1280,9 +1239,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transakcia bola úspešne zrušená na $2"
-  },
-  "transactions": {
-    "message": "transakce"
   },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
@@ -1377,9 +1333,6 @@
   },
   "walletSeed": {
     "message": "Klíčová fráze peněženky"
-  },
-  "warning": {
-    "message": "Varování"
   },
   "welcomeBack": {
     "message": "Vitajte späť!"

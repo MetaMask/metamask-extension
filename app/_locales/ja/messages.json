@@ -50,20 +50,11 @@
   "activityLog": {
     "message": "アクティビティログ"
   },
-  "add": {
-    "message": "追加"
-  },
-  "address": {
-    "message": "アドレス"
-  },
   "addNetwork": {
     "message": "ネットワーク追加"
   },
   "addRecipient": {
     "message": "受取人追加"
-  },
-  "addressBook": {
-    "message": "アドレス帳"
   },
   "advanced": {
     "message": "詳細"
@@ -265,13 +256,6 @@
   "fromShapeShift": {
     "message": "ShapeShiftから"
   },
-  "gas": {
-    "message": "ガス",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "ガス料金"
-  },
   "gasLimit": {
     "message": "ガスリミット"
   },
@@ -324,9 +308,6 @@
   "imported": {
     "message": "インポート完了",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "info": {
-    "message": "情報"
   },
   "infoHelp": {
     "message": "情報とヘルプ"
@@ -428,13 +409,6 @@
   "noTransactions": {
     "message": "トランザクションがありません。"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH はイーサリウムアカウントのみに送信できます。"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "$1 はイーサリアムアカウントのみに送信できます。",
-    "description": "displays token symbol"
-  },
   "password": {
     "message": "パスワード"
   },
@@ -476,9 +450,6 @@
   "restoreFromSeed": {
     "message": "パスフレーズから復元する"
   },
-  "restoreVault": {
-    "message": "ウォレットを復元する"
-  },
   "required": {
     "message": "必要です。"
   },
@@ -493,9 +464,6 @@
   },
   "ropsten": {
     "message": "Ropstenテストネットワーク"
-  },
-  "rpc": {
-    "message": "カスタムRPC"
   },
   "save": {
     "message": "保存"
@@ -542,9 +510,6 @@
   "sigRequest": {
     "message": "署名リクエスト"
   },
-  "status": {
-    "message": "ステータス"
-  },
   "submit": {
     "message": "送信"
   },
@@ -564,17 +529,11 @@
   "token": {
     "message": "トークン"
   },
-  "tokenBalance": {
-    "message": "あなたのトークン残高:"
-  },
   "tokenSymbol": {
     "message": "トークンシンボル"
   },
   "total": {
     "message": "合計"
-  },
-  "transactions": {
-    "message": "トランザクション"
   },
   "troubleTokenBalances": {
     "message": "トークン残高を取得できません。こちらでご確認ください。",
@@ -600,9 +559,6 @@
   },
   "walletSeed": {
     "message": "ウォレットのパスフレーズ"
-  },
-  "warning": {
-    "message": "警告"
   },
   "welcomeBack": {
     "message": "おかえりなさい!"

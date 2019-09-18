@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "toimintaloki"
   },
-  "add": {
-    "message": "Lisää"
-  },
-  "address": {
-    "message": "Osoite"
-  },
   "addNetwork": {
     "message": "Lisää verkko"
   },
   "addRecipient": {
     "message": "Lisää vastaanottaja"
-  },
-  "addressBook": {
-    "message": "Osoitekirja"
   },
   "advanced": {
     "message": "Lisäasetukset"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "Muokkaa yhteystietoa"
   },
-  "editingTransaction": {
-    "message": "Tee muutoksia maksusiirtoihisi"
-  },
   "emailUs": {
     "message": "Lähetä meille sähköpostia!"
   },
@@ -502,13 +490,6 @@
   },
   "functionType": {
     "message": "Funktion tyyppi"
-  },
-  "gas": {
-    "message": "Polttoaine",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Gas-maksu"
   },
   "gasLimit": {
     "message": "Gas-raja"
@@ -625,9 +606,6 @@
   },
   "importUsingSeed": {
     "message": "Tuo käyttäen tilin siemenlausetta"
-  },
-  "info": {
-    "message": "Tiedot"
   },
   "infoHelp": {
     "message": "Tietoja ja ohje"
@@ -861,13 +839,6 @@
   "ofTextNofM": {
     "message": "/"
   },
-  "onlySendToEtherAddress": {
-    "message": "Lähetä ETH:ita vain Ethereum-osoitteeseen"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Lähetä vain $1 Ethereum-tiliosoitteeseen.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Tilaa Trezor tai Ledger ja pidä varasi vakaassa tallennustilassa"
   },
@@ -978,9 +949,6 @@
   "restoreFromSeed": {
     "message": "Palautetaanko tili?"
   },
-  "restoreVault": {
-    "message": "Palauta holvi"
-  },
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
   },
@@ -1031,9 +999,6 @@
   },
   "goerli": {
     "message": "Goerli-testiverkko"
-  },
-  "rpc": {
-    "message": "Mukautettu RPC"
   },
   "save": {
     "message": "Tallenna"
@@ -1188,9 +1153,6 @@
   "switchNetworks": {
     "message": "Vaihda verkostoa"
   },
-  "status": {
-    "message": "Tila"
-  },
   "stateLogs": {
     "message": "Tilaloki"
   },
@@ -1282,9 +1244,6 @@
   "tokenAlreadyAdded": {
     "message": "Poletti on jo lisätty."
   },
-  "tokenBalance": {
-    "message": "Käyttötunnussaldosi on:"
-  },
   "tokenContractAddress": {
     "message": "Käyttötunnuksen yhteysosoite"
   },
@@ -1323,9 +1282,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Tapahtuman peruutus onnistui – $2"
-  },
-  "transactions": {
-    "message": "tapahtumat"
   },
   "transactionError": {
     "message": "Tapahtumavirhe. Poikkeus havaittu sopimuskoodissa."
@@ -1420,9 +1376,6 @@
   },
   "walletSeed": {
     "message": "Lompakon siemen"
-  },
-  "warning": {
-    "message": "Varoitus"
   },
   "welcomeBack": {
     "message": "Tervetuloa takaisin!"

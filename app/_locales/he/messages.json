@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "יומן פעילות"
   },
-  "add": {
-    "message": "הוסף"
-  },
-  "address": {
-    "message": "כתובת"
-  },
   "addNetwork": {
     "message": "הוסף/י רשת"
   },
   "addRecipient": {
     "message": "הוסף נמען"
-  },
-  "addressBook": {
-    "message": "פנקס כתובות"
   },
   "advanced": {
     "message": "מתקדם"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "editingTransaction": {
-    "message": "בצע/י שינויים בעסקה שלך"
-  },
   "emailUs": {
     "message": "שלח/י לנו מייל!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "סוג פונקציה"
-  },
-  "gas": {
-    "message": "גז",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "תשלום גז"
   },
   "gasLimit": {
     "message": "הגבלת דלק"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
-  "info": {
-    "message": "מידע"
   },
   "infoHelp": {
     "message": "מידע ועזרה"
@@ -861,13 +839,6 @@
   "ofTextNofM": {
     "message": "של"
   },
-  "onlySendToEtherAddress": {
-    "message": "שלח ETH רק לכתובת אתריום."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "שלח $1 רק לכתובת חשבון אתריום.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "הזמנ/י Trezor או Ledger ושמר/י את הכספים שלך באחסון קר"
   },
@@ -978,9 +949,6 @@
   "restoreFromSeed": {
     "message": "לשחזר את החשבון?"
   },
-  "restoreVault": {
-    "message": "שחזור הכספת"
-  },
   "restoreAccountWithSeed": {
     "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
   },
@@ -1028,9 +996,6 @@
   },
   "goerli": {
     "message": "רשת בדיקה Goerli "
-  },
-  "rpc": {
-    "message": "RPC מותאם אישית"
   },
   "save": {
     "message": "שמור"
@@ -1185,9 +1150,6 @@
   "switchNetworks": {
     "message": "החלף רשתות"
   },
-  "status": {
-    "message": "סטטוס"
-  },
   "stateLogs": {
     "message": "יומני מצב"
   },
@@ -1279,9 +1241,6 @@
   "tokenAlreadyAdded": {
     "message": "הוסף כבר אסימון."
   },
-  "tokenBalance": {
-    "message": "יתרת הטוקנים שלך היא:"
-  },
   "tokenContractAddress": {
     "message": "כתובת חוזה טוקן"
   },
@@ -1320,9 +1279,6 @@
   },
   "transactionCancelSuccess": {
     "message": "העסקה בוטלה בהצלחה ב-$2"
-  },
-  "transactions": {
-    "message": "עסקאות"
   },
   "transactionError": {
     "message": "תקלה בעסקה. שגיאה אירעה בקוד החוזה."
@@ -1417,9 +1373,6 @@
   },
   "walletSeed": {
     "message": "גרעין (Seed) ארנק"
-  },
-  "warning": {
-    "message": "אזהרה"
   },
   "welcomeBack": {
     "message": "ברוך שובך!"

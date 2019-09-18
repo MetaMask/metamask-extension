@@ -50,20 +50,11 @@
   "activityLog": {
     "message": "Aktivitätsprotokoll"
   },
-  "add": {
-    "message": "Hinzufügen"
-  },
-  "address": {
-    "message": "Adresse"
-  },
   "addNetwork": {
     "message": "Netzwerk hinzufügen"
   },
   "addRecipient": {
     "message": "Empfänger hinzufügen"
-  },
-  "addressBook": {
-    "message": "Adressbuch"
   },
   "advanced": {
     "message": "Erweitert"
@@ -396,9 +387,6 @@
   "editContact": {
     "message": "Kontakt bearbeiten"
   },
-  "editingTransaction": {
-    "message": "Änderungen an Ihrer Transaktion vornehmen"
-  },
   "emailUs": {
     "message": "Schreib uns eine Mail!"
   },
@@ -490,9 +478,6 @@
   },
   "functionType": {
     "message": "Funktionstyp"
-  },
-  "gasFee": {
-    "message": "Gasgebühren"
   },
   "gasLimit": {
     "message": "Gaslimit"
@@ -827,13 +812,6 @@
   "ofTextNofM": {
     "message": "von"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH unbedingt nur zu einer Ethereum Adresse senden."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Nur $1 an eine Ethereum-Konto-Adresse senden.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Bestellen Sie ein Trezor oder Ledger und legen Sie Ihr Geld auf Eis"
   },
@@ -940,9 +918,6 @@
   "restoreFromSeed": {
     "message": "Mit Hilfe der Seed-Wörterfolge wiederherstellen."
   },
-  "restoreVault": {
-    "message": "Vault wiederherstellen"
-  },
   "restoreAccountWithSeed": {
     "message": "Ihr Konto mit mnemonischer Phrase wiederherstellen"
   },
@@ -993,9 +968,6 @@
   },
   "goerli": {
     "message": "Goerli Testnetzwerk"
-  },
-  "rpc": {
-    "message": "Spezieller RPC"
   },
   "save": {
     "message": "Speichern"
@@ -1235,9 +1207,6 @@
   "tokenAlreadyAdded": {
     "message": "Der Token wurde bereits hinzugefügt."
   },
-  "tokenBalance": {
-    "message": "Dein Tokenguthaben beträgt:"
-  },
   "tokenContractAddress": {
     "message": "Token-Vertragsadresse"
   },
@@ -1276,9 +1245,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaktion bei $2 erfolgreich storniert"
-  },
-  "transactions": {
-    "message": "Transaktionen"
   },
   "transactionError": {
     "message": "Transaktionsfehler. Fehler in Vertragscode eingefügt."
@@ -1367,9 +1333,6 @@
   },
   "visitWebSite": {
     "message": "Gehe zu unserer Webseite"
-  },
-  "warning": {
-    "message": "Warnung"
   },
   "welcomeBack": {
     "message": "Willkommen zurück!"

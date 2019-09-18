@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "ಚಟುವಟಿಕೆ ಲಾಗ್"
   },
-  "add": {
-    "message": "ಸೇರಿಸು"
-  },
-  "address": {
-    "message": "ವಿಳಾಸ"
-  },
   "addNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಸೇರಿಸಿ"
   },
   "addRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರನ್ನು ಸೇರಿಸಿ"
-  },
-  "addressBook": {
-    "message": "ವಿಳಾಸ ಪುಸ್ತಕ"
   },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ಸಂಪಾದಿಸಿ"
   },
-  "editingTransaction": {
-    "message": "ನಿಮ್ಮ ವಹಿವಾಟಿಗೆ ಬದಲಾವಣೆಗಳನ್ನು ಮಾಡಿ"
-  },
   "emailUs": {
     "message": "ನಮಗೆ ಇಮೇಲ್ ಮಾಡಿ!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
-  },
-  "gas": {
-    "message": "ಗ್ಯಾಸ್",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "ಗ್ಯಾಸ್ ಶುಲ್ಕ"
   },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ ಖಾತೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಆಮದು ಮಾಡಿ"
-  },
-  "info": {
-    "message": "ಮಾಹಿತಿ"
   },
   "infoHelp": {
     "message": "ಮಾಹಿತಿ & ಸಹಾಯ"
@@ -864,13 +842,6 @@
   "ofTextNofM": {
     "message": "ರಲ್ಲಿ"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH ಅನ್ನು ಎಥೆರಿಯಮ್ ವಿಳಾಸಕ್ಕೆ ಮಾತ್ರ ಕಳುಹಿಸಿ."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "ಎಥೆರಿಯಮ್ ಖಾತೆ ವಿಳಾಸಕ್ಕೆ ಮಾತ್ರ $1 ಅನ್ನು ಕಳುಹಿಸಿ.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "ಟ್ರೆಜರ್ ಅಥವಾ ಲೆಡ್ಜರ್ ಅನ್ನು ಆರ್ಡರ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ನಿಧಿಗಳನ್ನು ಕೋಲ್ಡ್ ಸ್ಟೋರೇಜ್‌ನಲ್ಲಿರಿಸಿ"
   },
@@ -981,9 +952,6 @@
   "restoreFromSeed": {
     "message": "ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸುವುದೇ?"
   },
-  "restoreVault": {
-    "message": "ವಾಲ್ಟ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
   "restoreAccountWithSeed": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
   },
@@ -1034,9 +1002,6 @@
   },
   "goerli": {
     "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "rpc": {
-    "message": "ಕಸ್ಟಮ್ RPC"
   },
   "save": {
     "message": "ಉಳಿಸು"
@@ -1191,9 +1156,6 @@
   "switchNetworks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"
   },
-  "status": {
-    "message": "ಸ್ಥಿತಿ"
-  },
   "stateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು"
   },
@@ -1285,9 +1247,6 @@
   "tokenAlreadyAdded": {
     "message": "ಟೋಕನ್ ಅನ್ನು ಈಗಾಗಲೇ ಸೇರಿಸಲಾಗಿದೆ."
   },
-  "tokenBalance": {
-    "message": "ನಿಮ್ಮ ಟೋಕನ್ ಮೊತ್ತ:"
-  },
   "tokenContractAddress": {
     "message": "ಟೋಕನ್ ಒಪ್ಪಂದದ ವಿಳಾಸ"
   },
@@ -1326,9 +1285,6 @@
   },
   "transactionCancelSuccess": {
     "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಮಾಡಲಾಗಿದೆ"
-  },
-  "transactions": {
-    "message": "ವಹಿವಾಟುಗಳು"
   },
   "transactionError": {
     "message": "ವಹಿವಾಟಿನ ದೋಷ. ಒಪ್ಪಂದದ ಕೋಡ್‌ನಲ್ಲಿ ವಿನಾಯಿತಿಯನ್ನು ನೀಡಲಾಗಿದೆ."
@@ -1423,9 +1379,6 @@
   },
   "walletSeed": {
     "message": "ವ್ಯಾಲೆಟ್ ಸೀಡ್"
-  },
-  "warning": {
-    "message": "ಎಚ್ಚರಿಕೆ"
   },
   "welcomeBack": {
     "message": "ಮರಳಿ ಸ್ವಾಗತ!"

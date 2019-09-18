@@ -26,9 +26,6 @@
   "accountName": {
     "message": "ชื่อบัญชี"
   },
-  "address": {
-    "message": "แอดเดรส"
-  },
   "addToken": {
     "message": "เพิ่มโทเค็น"
   },
@@ -262,13 +259,6 @@
   "fromShapeShift": {
     "message": "จาก ShapeShift"
   },
-  "gas": {
-    "message": "แก็ส",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "ค่าแก๊ส"
-  },
   "gasLimit": {
     "message": "วงเงินแก็ส"
   },
@@ -324,9 +314,6 @@
   "imported": {
     "message": "นำเข้าเรียบร้อย",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "info": {
-    "message": "ข้อมูล"
   },
   "infoHelp": {
     "message": "ข้อมูลและความช่วยเหลือ"
@@ -449,9 +436,6 @@
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
   },
-  "onlySendToEtherAddress": {
-    "message": "ส่ง ETH ไปยังที่อยู่ Ethereum เท่านั้น"
-  },
   "participateInMetaMetricsDescription": {
     "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
   },
@@ -520,9 +504,6 @@
   "ropsten": {
     "message": "เครือข่ายทดสอบ Ropsten"
   },
-  "rpc": {
-    "message": "กำหนดค่า RPC เอง"
-  },
   "save": {
     "message": "บันทึก"
   },
@@ -589,9 +570,6 @@
   "switchNetworks": {
     "message": "เปลี่ยนเครือข่าย"
   },
-  "status": {
-    "message": "สถานะ"
-  },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
   },
@@ -644,9 +622,6 @@
   "tokenAlreadyAdded": {
     "message": "โทเคนได้ถูกเพิ่มไปแล้ว"
   },
-  "tokenBalance": {
-    "message": "ยอดโทเค็นคงเหลือของคุณคือ:"
-  },
   "tokenSymbol": {
     "message": "สัญลักษณ์ประจำตัว"
   },
@@ -658,9 +633,6 @@
   },
   "transactionCancelSuccess": {
     "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
-  },
-  "transactions": {
-    "message": "ธุรกรรม"
   },
   "transferBetweenAccounts": {
     "message": "โอนระหว่างบัญชีของฉัน"
@@ -698,9 +670,6 @@
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
-  },
-  "warning": {
-    "message": "คำเตือน"
   },
   "welcome": {
     "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"

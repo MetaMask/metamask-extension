@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "tegevuste logi"
   },
-  "add": {
-    "message": "Lisa"
-  },
-  "address": {
-    "message": "Aadress"
-  },
   "addNetwork": {
     "message": "Lisage võrk"
   },
   "addRecipient": {
     "message": "Lisa saaja"
-  },
-  "addressBook": {
-    "message": "Aadressiraamat"
   },
   "advanced": {
     "message": "Täpsemad"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Muuda kontakti"
   },
-  "editingTransaction": {
-    "message": "Muutke oma tehingut"
-  },
   "emailUs": {
     "message": "Saatke meile e-kiri!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "Funktsiooni tüüp"
-  },
-  "gas": {
-    "message": "Gaas",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Gaasi hind"
   },
   "gasLimit": {
     "message": "Gaasi ülemmäär"
@@ -624,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "Impordi konto seemnefraasi abil"
-  },
-  "info": {
-    "message": "Teave"
   },
   "infoHelp": {
     "message": "Teave ja abi"
@@ -854,13 +832,6 @@
   "ofTextNofM": {
     "message": "/"
   },
-  "onlySendToEtherAddress": {
-    "message": "Saatke ETHe ainult Ethereumi aadressile."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Saatke Ethereumi kontoaadressile ainult $1.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Tellige Trezor või Ledger ja hoidke oma varasid külmruumis"
   },
@@ -971,9 +942,6 @@
   "restoreFromSeed": {
     "message": "Taastada konto?"
   },
-  "restoreVault": {
-    "message": "Taasta hoidla"
-  },
   "restoreAccountWithSeed": {
     "message": "Taastage konto seemnefraasi abil"
   },
@@ -1024,9 +992,6 @@
   },
   "goerli": {
     "message": "Goerli testvõrk"
-  },
-  "rpc": {
-    "message": "Kohandatud RPC"
   },
   "save": {
     "message": "Salvesta"
@@ -1181,9 +1146,6 @@
   "switchNetworks": {
     "message": "Vaheta võrku"
   },
-  "status": {
-    "message": "Olek"
-  },
   "stateLogs": {
     "message": "Olekulogid"
   },
@@ -1275,9 +1237,6 @@
   "tokenAlreadyAdded": {
     "message": "Luba on juba lisatud."
   },
-  "tokenBalance": {
-    "message": "Teie tokeni saldo on:"
-  },
   "tokenContractAddress": {
     "message": "Loa lepinguaadress"
   },
@@ -1316,9 +1275,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Tehing edukalt tühistatud $2"
-  },
-  "transactions": {
-    "message": "tehingud"
   },
   "transactionError": {
     "message": "Tehingu tõrge. Lepingukoodis ilmnes erand."
@@ -1413,9 +1369,6 @@
   },
   "walletSeed": {
     "message": "Rahakoti seeme"
-  },
-  "warning": {
-    "message": "Hoiatus"
   },
   "welcomeBack": {
     "message": "Tere tulemast tagasi!"

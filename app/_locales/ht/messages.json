@@ -29,9 +29,6 @@
   "activityLog": {
     "message": "aktivite ki fèt"
   },
-  "address": {
-    "message": "Adrès"
-  },
   "addToken": {
     "message": "Ajoute Token"
   },
@@ -239,9 +236,6 @@
   "edit": {
     "message": "Korije"
   },
-  "editingTransaction": {
-    "message": "Fè chanjman nan tranzaksyon ou"
-  },
   "emailUs": {
     "message": "Imèl nou!"
   },
@@ -282,13 +276,6 @@
   },
   "functionType": {
     "message": "Kalite Fonksyon"
-  },
-  "gas": {
-    "message": "Gaz",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Frè gaz"
   },
   "gasLimit": {
     "message": "Limit gaz"
@@ -369,9 +356,6 @@
   },
   "importUsingSeed": {
     "message": "Pòte lè sèvi avèk seed fraz"
-  },
-  "info": {
-    "message": "Enfo"
   },
   "infoHelp": {
     "message": "Enfo & Èd"
@@ -518,13 +502,6 @@
   "noWebcamFound": {
     "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
   },
-  "onlySendToEtherAddress": {
-    "message": "Sèlman voye ETH nan yon adrès Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Sèlman voye $ 1 nan yon adrès kont Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Mete nan lòd on Trezor oswa Ledger epi kenbe lajan ou nan yon stòk frèt."
   },
@@ -614,9 +591,6 @@
   "restoreFromSeed": {
     "message": "Restore kont?"
   },
-  "restoreVault": {
-    "message": "Retabli kazye"
-  },
   "restoreAccountWithSeed": {
     "message": "Retabli kont ou avèk yo Seed Fraz"
   },
@@ -661,9 +635,6 @@
   },
   "ropsten": {
     "message": "Ropsten Tès Rezo"
-  },
-  "rpc": {
-    "message": "Koutim RPC"
   },
   "save": {
     "message": "Sove"
@@ -761,9 +732,6 @@
   "speedUp": {
     "message": "pi vit"
   },
-  "status": {
-    "message": "Kondisyon"
-  },
   "stateLogsDescription": {
     "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
   },
@@ -815,9 +783,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Ou te deja ajoute token."
-  },
-  "tokenBalance": {
-    "message": "Balans Token ou se:"
   },
   "tokenSymbol": {
     "message": "Token Senbòl"
@@ -906,9 +871,6 @@
   },
   "walletSeed": {
     "message": "Bous Seed"
-  },
-  "warning": {
-    "message": "Avètisman"
   },
   "welcomeBack": {
     "message": "Bon Retou!"

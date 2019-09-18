@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "কার্যকলাপের লগ"
   },
-  "add": {
-    "message": "জুড়ুন"
-  },
-  "address": {
-    "message": "ঠিকানা"
-  },
   "addNetwork": {
     "message": "নেটওয়ার্ক যোগ করুন"
   },
   "addRecipient": {
     "message": "প্রাপক যোগ করুন"
-  },
-  "addressBook": {
-    "message": "অ্যাড্রেস বুক"
   },
   "advanced": {
     "message": "উন্নত"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "পরিচিতি সম্পাদনা করুন"
   },
-  "editingTransaction": {
-    "message": "আপনার লেনদেনে পরিবর্তনগুলি করুন"
-  },
   "emailUs": {
     "message": "আমাদের ইমেল করুন!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "কার্যকারিতার ধরণ"
-  },
-  "gas": {
-    "message": "গ্যাস",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "গ্যাস ফী"
   },
   "gasLimit": {
     "message": "গ্যাসের সীমা"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "অ্যাকাউন্ট সীড ফ্রেজ ব্যবহার করে আমদানি করুন"
-  },
-  "info": {
-    "message": "তথ্য"
   },
   "infoHelp": {
     "message": "তথ্য ও সহায়তা"
@@ -864,13 +842,6 @@
   "ofTextNofM": {
     "message": "এর"
   },
-  "onlySendToEtherAddress": {
-    "message": "একটি Ethereum ঠিকানায় শুধুমাত্র ETH পাঠান।"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "শুধুমাত্র একটি Ethereum অ্যাকাউন্ট ঠিকানায় $1 পাঠান।",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "একটি Trezor বা লেজার অর্ডার করুন এবং আপনার তহবিলগুলি হীম ঘরে রাখুন"
   },
@@ -981,9 +952,6 @@
   "restoreFromSeed": {
     "message": "অ্যাকাউন্ট রিস্টোর করবেন?"
   },
-  "restoreVault": {
-    "message": "ভল্ট রিস্টোর করুন"
-  },
   "restoreAccountWithSeed": {
     "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
   },
@@ -1034,9 +1002,6 @@
   },
   "goerli": {
     "message": "গোয়েরলি টেস্ট নেটওয়ার্ক"
-  },
-  "rpc": {
-    "message": "কাস্টম RPC"
   },
   "save": {
     "message": "সেভ করুন"
@@ -1191,9 +1156,6 @@
   "switchNetworks": {
     "message": "নেটওয়ার্কগুলি বদলান"
   },
-  "status": {
-    "message": "স্থিতি"
-  },
   "stateLogs": {
     "message": "স্টেট লগসমূহ"
   },
@@ -1285,9 +1247,6 @@
   "tokenAlreadyAdded": {
     "message": "টোকেন ইতিমিধ্যে যোগ করা হয়েছে।"
   },
-  "tokenBalance": {
-    "message": "আপনার টোকেন ব্যালেন্স হল:"
-  },
   "tokenContractAddress": {
     "message": "টোকেন কন্ট্র্যাক্ট অ্যাড্রেস"
   },
@@ -1326,9 +1285,6 @@
   },
   "transactionCancelSuccess": {
     "message": "$2 এ লেনদেন সফলভাবে বাতিল হয়েছে"
-  },
-  "transactions": {
-    "message": "লেনদেনসমূহ"
   },
   "transactionError": {
     "message": "লেনদেনের ত্রুটি। কন্ট্র্যাক্ট কোডে ব্যতিক্রম দেখাচ্ছে।"
@@ -1423,9 +1379,6 @@
   },
   "walletSeed": {
     "message": "ওয়ালেট সীড"
-  },
-  "warning": {
-    "message": "সতর্কতা"
   },
   "welcomeBack": {
     "message": "পুনরায় স্বাগত!"

@@ -50,20 +50,11 @@
   "activityLog": {
     "message": "log attività"
   },
-  "add": {
-    "message": "Aggiungi"
-  },
-  "address": {
-    "message": "Indirizzo"
-  },
   "addNetwork": {
     "message": "Aggiungi Rete"
   },
   "addRecipient": {
     "message": "Aggiungi destinatario"
-  },
-  "addressBook": {
-    "message": "Rubrica"
   },
   "advanced": {
     "message": "Avanzate"
@@ -390,9 +381,6 @@
   "editContact": {
     "message": "Modifica contatto"
   },
-  "editingTransaction": {
-    "message": "Modifica la transazione"
-  },
   "emailUs": {
     "message": "Mandaci una mail!"
   },
@@ -484,9 +472,6 @@
   },
   "functionType": {
     "message": "Tipo della Funzione"
-  },
-  "gasFee": {
-    "message": "Costo Gas"
   },
   "gasLimit": {
     "message": "Gas Limite"
@@ -600,9 +585,6 @@
   },
   "importUsingSeed": {
     "message": "Importa account con frase seed"
-  },
-  "info": {
-    "message": "Informazioni"
   },
   "infoHelp": {
     "message": "Informazioni & Aiuto"
@@ -826,13 +808,6 @@
   "ofTextNofM": {
     "message": "di"
   },
-  "onlySendToEtherAddress": {
-    "message": "Invia ETH solamente ad un account Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Invia solamente $1 ad un account Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Compra un Trezor o un Ledger e tieni i tuoi soldi al sicuro"
   },
@@ -940,9 +915,6 @@
   "restoreFromSeed": {
     "message": "Ripristina da una frase seed"
   },
-  "restoreVault": {
-    "message": "Ripristina Cassaforte"
-  },
   "restoreAccountWithSeed": {
     "message": "Ripristina Account con la Frase Seed"
   },
@@ -993,9 +965,6 @@
   },
   "goerli": {
     "message": "Rete di test Goerli"
-  },
-  "rpc": {
-    "message": "RPC Personalizzata"
   },
   "save": {
     "message": "Salva"
@@ -1150,9 +1119,6 @@
   "switchNetworks": {
     "message": "Cambia Reti"
   },
-  "status": {
-    "message": "Stato"
-  },
   "stateLogs": {
     "message": "Log di Stato"
   },
@@ -1241,9 +1207,6 @@
   "tokenAlreadyAdded": {
     "message": "Il token è già stato aggiunto."
   },
-  "tokenBalance": {
-    "message": "Bilancio Token:"
-  },
   "tokenContractAddress": {
     "message": "Indirizzo Contratto Token"
   },
@@ -1282,9 +1245,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transazione cancellata alle $2"
-  },
-  "transactions": {
-    "message": "transazioni"
   },
   "transactionError": {
     "message": "Errore Transazione. Eccceziona generata nel codice del contratto."
@@ -1379,9 +1339,6 @@
   },
   "walletSeed": {
     "message": "Seed del Portafoglio"
-  },
-  "warning": {
-    "message": "Attenzione"
   },
   "welcomeBack": {
     "message": "Bentornato!"

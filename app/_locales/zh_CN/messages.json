@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "活动日志"
   },
-  "add": {
-    "message": "添加"
-  },
-  "address": {
-    "message": "地址"
-  },
   "addNetwork": {
     "message": "添加网络"
   },
   "addRecipient": {
     "message": "添加收件人"
-  },
-  "addressBook": {
-    "message": "地址簿"
   },
   "advanced": {
     "message": "高级"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "编辑联系人"
   },
-  "editingTransaction": {
-    "message": "交易变更"
-  },
   "emailUs": {
     "message": "联系我们"
   },
@@ -505,9 +493,6 @@
   },
   "functionType": {
     "message": "功能类型"
-  },
-  "gasFee": {
-    "message": "Gas 费用"
   },
   "gasLimitCalculation": {
     "message": "我们根据网络成功率计算建议的 Gas Limit。"
@@ -615,9 +600,6 @@
   },
   "importUsingSeed": {
     "message": "使用帐号种子密语导入"
-  },
-  "info": {
-    "message": "信息"
   },
   "infoHelp": {
     "message": "信息 & 帮助"
@@ -842,13 +824,6 @@
   "ofTextNofM": {
     "message": "/"
   },
-  "onlySendToEtherAddress": {
-    "message": "只发送 ETH 给一个以太坊地址"
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "仅向以太坊账户地址发送 $1。",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "订购 Trezor 或 Ledger ，将个人资金进行冷存储"
   },
@@ -959,9 +934,6 @@
   "restoreFromSeed": {
     "message": "从助记词还原"
   },
-  "restoreVault": {
-    "message": "还原保险柜"
-  },
   "restoreAccountWithSeed": {
     "message": "使用种子密语恢复个人账户"
   },
@@ -1012,9 +984,6 @@
   },
   "goerli": {
     "message": "Goerli 测试网络"
-  },
-  "rpc": {
-    "message": "自定义 RPC"
   },
   "save": {
     "message": "保存"
@@ -1169,9 +1138,6 @@
   "switchNetworks": {
     "message": "切换网络"
   },
-  "status": {
-    "message": "状态"
-  },
   "stateLogs": {
     "message": "状态日志"
   },
@@ -1263,9 +1229,6 @@
   "tokenAlreadyAdded": {
     "message": "代币已经被添加."
   },
-  "tokenBalance": {
-    "message": "代币余额："
-  },
   "tokenContractAddress": {
     "message": "代币联系人地址"
   },
@@ -1304,9 +1267,6 @@
   },
   "transactionCancelSuccess": {
     "message": "成功在 $2 取消交易单"
-  },
-  "transactions": {
-    "message": "交易"
   },
   "transactionError": {
     "message": "交易出错. 合约代码执行异常."
@@ -1398,9 +1358,6 @@
   },
   "walletSeed": {
     "message": "钱包助记词"
-  },
-  "warning": {
-    "message": "警告"
   },
   "welcomeBack": {
     "message": "欢迎回来！"

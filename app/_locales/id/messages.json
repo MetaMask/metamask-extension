@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "log aktivitas"
   },
-  "add": {
-    "message": "Tambahkan"
-  },
-  "address": {
-    "message": "Alamat"
-  },
   "addNetwork": {
     "message": "Tambah Jaringan"
   },
   "addRecipient": {
     "message": "Tambah Penerima"
-  },
-  "addressBook": {
-    "message": "Buku Alamat"
   },
   "advanced": {
     "message": "Lanjutan"
@@ -402,9 +393,6 @@
   "editContact": {
     "message": "Sunting Kontak"
   },
-  "editingTransaction": {
-    "message": "Buat perubahan pada transaksi Anda"
-  },
   "emailUs": {
     "message": "Kirimkan kami email!"
   },
@@ -492,9 +480,6 @@
   },
   "functionType": {
     "message": "Jenis Fungsi"
-  },
-  "gasFee": {
-    "message": "Biaya Gas"
   },
   "gasLimit": {
     "message": "Batas Gas"
@@ -835,13 +820,6 @@
   "ofTextNofM": {
     "message": "dari"
   },
-  "onlySendToEtherAddress": {
-    "message": "Hanya kirim ETH ke alamat Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Hanya kirim $1 ke alamat akun Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Pesanlah Trezor atau Ledger dan simpan dana Anda di penyimpanan dingin"
   },
@@ -952,9 +930,6 @@
   "restoreFromSeed": {
     "message": "Pulihkan Akun?"
   },
-  "restoreVault": {
-    "message": "Pulihkan Lemari Besi"
-  },
   "restoreAccountWithSeed": {
     "message": "Pulihkan Akun Anda dengan Frasa Benih"
   },
@@ -1005,9 +980,6 @@
   },
   "goerli": {
     "message": "Jaringan Uji Goerli"
-  },
-  "rpc": {
-    "message": "RPC Kustom"
   },
   "save": {
     "message": "Simpan"
@@ -1250,9 +1222,6 @@
   "tokenAlreadyAdded": {
     "message": "Token sudah ditambahkan."
   },
-  "tokenBalance": {
-    "message": "Saldo Token Anda:"
-  },
   "tokenContractAddress": {
     "message": "Alamat Kontrak Token"
   },
@@ -1288,9 +1257,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaksi berhasil dibatalkan di $2."
-  },
-  "transactions": {
-    "message": "transaksi"
   },
   "transactionError": {
     "message": "Eror Transaksi. Pengecualian dimasukkan ke dalam kode kontrak."
@@ -1382,9 +1348,6 @@
   },
   "walletSeed": {
     "message": "Benih Dompet"
-  },
-  "warning": {
-    "message": "Peringatan"
   },
   "welcomeBack": {
     "message": "Selamat Datang Kembali!"

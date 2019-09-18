@@ -77,20 +77,11 @@
   "activityLog": {
     "message": "activity log"
   },
-  "add": {
-    "message": "Add"
-  },
-  "address": {
-    "message": "Address"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
   "addRecipient": {
     "message": "Add Recipient"
-  },
-  "addressBook": {
-    "message": "Address Book"
   },
   "advanced": {
     "message": "Advanced"
@@ -444,9 +435,6 @@
   "editContact": {
     "message": "Edit Contact"
   },
-  "editingTransaction": {
-    "message": "Make changes to your transaction"
-  },
   "emailUs": {
     "message": "Email us!"
   },
@@ -538,13 +526,6 @@
   },
   "functionType": {
     "message": "Function Type"
-  },
-  "gas": {
-    "message": "Gas",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Gas Fee"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -661,9 +642,6 @@
   },
   "importUsingSeed": {
     "message": "Import using account seed phrase"
-  },
-  "info": {
-    "message": "Info"
   },
   "infoHelp": {
     "message": "Info & Help"
@@ -900,13 +878,6 @@
   "ofTextNofM": {
     "message": "of"
   },
-  "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Only send $1 to an Ethereum account address.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
@@ -1017,9 +988,6 @@
   "restoreFromSeed": {
     "message": "Restore account?"
   },
-  "restoreVault": {
-    "message": "Restore Vault"
-  },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
   },
@@ -1074,9 +1042,6 @@
   },
   "goerli": {
     "message": "Goerli Test Network"
-  },
-  "rpc": {
-    "message": "Custom RPC"
   },
   "save": {
     "message": "Save"
@@ -1231,9 +1196,6 @@
   "switchNetworks": {
     "message": "Switch Networks"
   },
-  "status": {
-    "message": "Status"
-  },
   "stateLogs": {
     "message": "State Logs"
   },
@@ -1334,9 +1296,6 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
-  "tokenBalance": {
-    "message": "Your Token Balance is:"
-  },
   "tokenContractAddress": {
     "message": "Token Contract Address"
   },
@@ -1375,9 +1334,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaction successfully cancelled at $2"
-  },
-  "transactions": {
-    "message": "transactions"
   },
   "transactionError": {
     "message": "Transaction Error. Exception thrown in contract code."
@@ -1472,9 +1428,6 @@
   },
   "walletSeed": {
     "message": "Wallet Seed"
-  },
-  "warning": {
-    "message": "Warning"
   },
   "welcomeBack": {
     "message": "Welcome Back!"

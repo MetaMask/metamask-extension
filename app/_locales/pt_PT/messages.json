@@ -12,12 +12,6 @@
   "account": {
     "message": "Conta"
   },
-  "add": {
-    "message": "Adicionar"
-  },
-  "address": {
-    "message": "Endereço"
-  },
   "advanced": {
     "message": "Avançadas"
   },
@@ -162,9 +156,6 @@
   "settings": {
     "message": "Definições"
   },
-  "status": {
-    "message": "Estado"
-  },
   "submit": {
     "message": "Submeter"
   },
@@ -185,9 +176,6 @@
   },
   "viewAccount": {
     "message": "Ver Conta"
-  },
-  "warning": {
-    "message": "Aviso"
   },
   "welcomeBack": {
     "message": "Bem-vindo de volta!"

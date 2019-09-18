@@ -12,12 +12,6 @@
   "account": {
     "message": "खाते"
   },
-  "add": {
-    "message": "जोडा"
-  },
-  "address": {
-    "message": "पत्ता"
-  },
   "advanced": {
     "message": "प्रगत"
   },
@@ -137,9 +131,6 @@
   "settings": {
     "message": "सेटिंग्ज"
   },
-  "status": {
-    "message": "स्थिती"
-  },
   "submit": {
     "message": "सबमिट करा"
   },
@@ -157,8 +148,5 @@
   },
   "viewAccount": {
     "message": "खाते पहा"
-  },
-  "warning": {
-    "message": "चेतावणी"
   }
 }

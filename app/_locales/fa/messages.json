@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "دفترچه فعالیت"
   },
-  "add": {
-    "message": "افزودن"
-  },
-  "address": {
-    "message": "آدرس"
-  },
   "addNetwork": {
     "message": "اضافه شبکه"
   },
   "addRecipient": {
     "message": "اضافه کردن دریافت کننده"
-  },
-  "addressBook": {
-    "message": "کتابچه آدرسها"
   },
   "advanced": {
     "message": "پیشرفته"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "ویرایش تماس"
   },
-  "editingTransaction": {
-    "message": "در معاملات تان تغییرات ایجاد کنید"
-  },
   "emailUs": {
     "message": "به ما ایمیل کنید!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "نوعیت عملکرد"
-  },
-  "gas": {
-    "message": "گاز",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "فیس گاز"
   },
   "gasLimit": {
     "message": "محدوده گاز"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "وارد کردن با استفاده از عبارت بازیاب حساب"
-  },
-  "info": {
-    "message": "معلومات"
   },
   "infoHelp": {
     "message": "معلومات و کمک"
@@ -864,13 +842,6 @@
   "ofTextNofM": {
     "message": "به"
   },
-  "onlySendToEtherAddress": {
-    "message": "تنها ارسال ETH به یک آدرس ایتریم."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "تنها 1$1 را به یک آدرس حساب ایتریم بفرستید.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "یک Trezor یا Ledger را سفارش داده و پول های تان را در ذخیره سرد نگهدارید"
   },
@@ -981,9 +952,6 @@
   "restoreFromSeed": {
     "message": "بازگرداندن حساب؟"
   },
-  "restoreVault": {
-    "message": "خزانه را بازیابی کنید"
-  },
   "restoreAccountWithSeed": {
     "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
   },
@@ -1034,9 +1002,6 @@
   },
   "goerli": {
     "message": "شبکه آزمایشی Goerli"
-  },
-  "rpc": {
-    "message": " RPC رایج"
   },
   "save": {
     "message": "ذخیره"
@@ -1191,9 +1156,6 @@
   "switchNetworks": {
     "message": "تغییر شبکه ها"
   },
-  "status": {
-    "message": "وضعیت"
-  },
   "stateLogs": {
     "message": "دفترچه وضعیت"
   },
@@ -1285,9 +1247,6 @@
   "tokenAlreadyAdded": {
     "message": "رمزیاب از قبل اضافه شده است."
   },
-  "tokenBalance": {
-    "message": "صورت حساب رمز یاب شما:"
-  },
   "tokenContractAddress": {
     "message": "آدرس قرارداد رمزیاب"
   },
@@ -1326,9 +1285,6 @@
   },
   "transactionCancelSuccess": {
     "message": "معامله به 1$2 موفقانه لغو شد"
-  },
-  "transactions": {
-    "message": "معاملات"
   },
   "transactionError": {
     "message": "خطا معامله. استثناء در کود قرارداد گذاشته شده است."
@@ -1423,9 +1379,6 @@
   },
   "walletSeed": {
     "message": "بازیاب کیف"
-  },
-  "warning": {
-    "message": "اخطار"
   },
   "welcomeBack": {
     "message": "بازگشت شما را خوش‌آمد می‌گوییم!"

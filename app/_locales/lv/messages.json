@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "darbību žurnāls"
   },
-  "add": {
-    "message": "Pievienot"
-  },
-  "address": {
-    "message": "Adrese"
-  },
   "addNetwork": {
     "message": "Pievienot tīklu"
   },
   "addRecipient": {
     "message": "Pievienot saņēmēju"
-  },
-  "addressBook": {
-    "message": "Adrešu grāmatiņa"
   },
   "advanced": {
     "message": "Papildu"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "editingTransaction": {
-    "message": "Veikt izmaiņas darījumā"
-  },
   "emailUs": {
     "message": "Raksiet mums e-pastu!"
   },
@@ -501,9 +489,6 @@
   },
   "functionType": {
     "message": "Funkcijas veids"
-  },
-  "gasFee": {
-    "message": "Maksa par Gas"
   },
   "gasLimit": {
     "message": "Gas robežvērtība"
@@ -620,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "Importēt, izmantojot konta atkopšanas frāzi"
-  },
-  "info": {
-    "message": "Informācija"
   },
   "infoHelp": {
     "message": "Informācija un palīdzība"
@@ -856,13 +838,6 @@
   "ofTextNofM": {
     "message": "no"
   },
-  "onlySendToEtherAddress": {
-    "message": "Sūtiet ETH tikai uz Ethereum adresi."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Nosūtiet tikai $1 uz Ethereum konta adresi.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Pasūtiet Trezor vai Ledger un glabājiet savus līdzekļus aukstajā krātuvē"
   },
@@ -973,9 +948,6 @@
   "restoreFromSeed": {
     "message": "Atjaunot kontu?"
   },
-  "restoreVault": {
-    "message": "Atjaunot seifu"
-  },
   "restoreAccountWithSeed": {
     "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
   },
@@ -1026,9 +998,6 @@
   },
   "goerli": {
     "message": "Goerli testa tīkls"
-  },
-  "rpc": {
-    "message": "Pielāgots RPC izsaukums"
   },
   "save": {
     "message": "Saglabāt"
@@ -1183,9 +1152,6 @@
   "switchNetworks": {
     "message": "Mainīt tīklus"
   },
-  "status": {
-    "message": "Statuss"
-  },
   "stateLogs": {
     "message": "Statusu žurnāli"
   },
@@ -1277,9 +1243,6 @@
   "tokenAlreadyAdded": {
     "message": "Žetons jau pievienots."
   },
-  "tokenBalance": {
-    "message": "Jūsu žetonu bilance ir:"
-  },
   "tokenContractAddress": {
     "message": "Marķiera līguma adrese"
   },
@@ -1318,9 +1281,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Darījums veiksmīgi atcelts $2"
-  },
-  "transactions": {
-    "message": "darījumi"
   },
   "transactionError": {
     "message": "Darījuma kļūda. Līguma kodā uzrādās izņēmums."
@@ -1415,9 +1375,6 @@
   },
   "walletSeed": {
     "message": "Maka atkopšanas frāze"
-  },
-  "warning": {
-    "message": "Brīdinājums"
   },
   "welcomeBack": {
     "message": "Ar atgriešanos!"

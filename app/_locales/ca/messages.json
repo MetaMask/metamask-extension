@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "registre d'activitat"
   },
-  "add": {
-    "message": "Afegeix"
-  },
-  "address": {
-    "message": "Adreça"
-  },
   "addNetwork": {
     "message": "Afegir Xarxa"
   },
   "addRecipient": {
     "message": "Afegeix un recipient"
-  },
-  "addressBook": {
-    "message": "Agenda"
   },
   "advanced": {
     "message": "Configuració avançada"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "editingTransaction": {
-    "message": "Fes canvis a la teva transacció"
-  },
   "emailUs": {
     "message": "Envia'ns un correu!"
   },
@@ -498,9 +486,6 @@
   },
   "functionType": {
     "message": "Tipus de Funció"
-  },
-  "gasFee": {
-    "message": "Preu del gas"
   },
   "gasLimit": {
     "message": "Límit de gas"
@@ -611,9 +596,6 @@
   },
   "importUsingSeed": {
     "message": "Importa utilitzant la frase de seeds del compte"
-  },
-  "info": {
-    "message": "Informació"
   },
   "infoHelp": {
     "message": "Informació i Ajuda"
@@ -844,13 +826,6 @@
   "ofTextNofM": {
     "message": "de"
   },
-  "onlySendToEtherAddress": {
-    "message": "Enviar només ETH a una adreça Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Només enviar $1 a una adreça de compte Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Demana un Trezor o un Ledger i congela les teves inversions"
   },
@@ -955,9 +930,6 @@
   "restoreFromSeed": {
     "message": "Restaurar compte?"
   },
-  "restoreVault": {
-    "message": "Restaurar Caixa Forta"
-  },
   "restoreAccountWithSeed": {
     "message": "Restaura el teu compte amb Frase de Recuperació"
   },
@@ -1008,9 +980,6 @@
   },
   "goerli": {
     "message": "Xarxa de test Goerli"
-  },
-  "rpc": {
-    "message": "Customitza RPC"
   },
   "save": {
     "message": "Desa"
@@ -1165,9 +1134,6 @@
   "switchNetworks": {
     "message": "Intercanviar Xarxes"
   },
-  "status": {
-    "message": "Estat"
-  },
   "stateLogs": {
     "message": "Registres d'estat"
   },
@@ -1253,9 +1219,6 @@
   "tokenAlreadyAdded": {
     "message": "El token ja s'ha afegit."
   },
-  "tokenBalance": {
-    "message": "El teu saldo de fitxes és:"
-  },
   "tokenContractAddress": {
     "message": "Adreça del contracte del token"
   },
@@ -1291,9 +1254,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transacció cancel·lada amb èxit per $2"
-  },
-  "transactions": {
-    "message": "transaccions"
   },
   "transactionError": {
     "message": "Error de Transacció. Excepció llançada en el codi de contracte."
@@ -1388,9 +1348,6 @@
   },
   "walletSeed": {
     "message": "Cartera de seeds"
-  },
-  "warning": {
-    "message": "Advertiment"
   },
   "welcomeBack": {
     "message": "Benvingut de nou!"

@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "dnevnik dejavnosti"
   },
-  "add": {
-    "message": "Dodaj"
-  },
-  "address": {
-    "message": "Naslov"
-  },
   "addNetwork": {
     "message": "Dodaj omrežje"
   },
   "addRecipient": {
     "message": "Dodaj prejemnika"
-  },
-  "addressBook": {
-    "message": "Imenik"
   },
   "advanced": {
     "message": "Napredno"
@@ -410,9 +401,6 @@
   },
   "editContact": {
     "message": "Uredi stik"
-  },
-  "editingTransaction": {
-    "message": "Uredite transakcijo"
   },
   "emailUs": {
     "message": "Pišite nam!"
@@ -839,13 +827,6 @@
   "ofTextNofM": {
     "message": "od"
   },
-  "onlySendToEtherAddress": {
-    "message": "Na Ethereum naslov pošljute samo ETH."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Na Ethereum naslov pošljute samo $1.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Naročite Trezor ali Ledger i n zavarujte svoje premoženje s strojno denarnico"
   },
@@ -956,9 +937,6 @@
   "restoreFromSeed": {
     "message": "Obnovim račun?"
   },
-  "restoreVault": {
-    "message": "Obnovi shrambo"
-  },
   "restoreAccountWithSeed": {
     "message": "Obnovi račun z seed phrase"
   },
@@ -1006,9 +984,6 @@
   },
   "goerli": {
     "message": "Testno omrežje Goerli"
-  },
-  "rpc": {
-    "message": "RPC po meri"
   },
   "save": {
     "message": "Shrani"
@@ -1254,9 +1229,6 @@
   "tokenAlreadyAdded": {
     "message": "Žeton je bil že dodan."
   },
-  "tokenBalance": {
-    "message": "Vaš znesek žetonov je:"
-  },
   "tokenContractAddress": {
     "message": "Naslov pogodbe žetona"
   },
@@ -1295,9 +1267,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transakcija je bila uspešno preklicana na $2"
-  },
-  "transactions": {
-    "message": "transakcije"
   },
   "transactionError": {
     "message": "Napaka pri transakciji. Izjema sprožena v kodi pogodbe."
@@ -1389,9 +1358,6 @@
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"
-  },
-  "warning": {
-    "message": "Opozorilo"
   },
   "welcomeBack": {
     "message": "Dobrodošli nazaj!"

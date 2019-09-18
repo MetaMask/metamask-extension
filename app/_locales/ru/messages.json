@@ -20,9 +20,6 @@
   "accountName": {
     "message": "Название счета"
   },
-  "address": {
-    "message": "Адрес"
-  },
   "addToken": {
     "message": "Добавить токен"
   },
@@ -211,13 +208,6 @@
   "fromShapeShift": {
     "message": "Из ShapeShift"
   },
-  "gas": {
-    "message": "Газ",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Комиссия за газ"
-  },
   "gasLimit": {
     "message": "Лимит газа"
   },
@@ -270,9 +260,6 @@
   "imported": {
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "info": {
-    "message": "Информация"
   },
   "infoHelp": {
     "message": "Информация и помощь"
@@ -386,9 +373,6 @@
   "noTransactions": {
     "message": "Нет транзакций"
   },
-  "onlySendToEtherAddress": {
-    "message": "Отправляйте ETH только на Ethereum адреса."
-  },
   "pastePrivateKey": {
     "message": "Вставьте ваш закрытый ключ тут:",
     "description": "For importing an account from a private key"
@@ -429,9 +413,6 @@
   },
   "restoreFromSeed": {
     "message": "Восстановить из ключевой фразы"
-  },
-  "restoreVault": {
-    "message": "Восстановить кошелек"
   },
   "required": {
     "message": "Обязательное поле"
@@ -502,9 +483,6 @@
   "sigRequest": {
     "message": "Запрос подписи"
   },
-  "status": {
-    "message": "Статус"
-  },
   "stateLogs": {
     "message": "Журнал состояния"
   },
@@ -542,17 +520,11 @@
   "tokenAlreadyAdded": {
     "message": "Токен уже был добавлен."
   },
-  "tokenBalance": {
-    "message": "Баланс ваших токенов:"
-  },
   "tokenSymbol": {
     "message": "Символ токена"
   },
   "total": {
     "message": "Всего"
-  },
-  "transactions": {
-    "message": "транзакции"
   },
   "troubleTokenBalances": {
     "message": "Возникли проблемы при загрузке балансов токенов. Вы можете посмотреть их ",
@@ -587,9 +559,6 @@
   },
   "walletSeed": {
     "message": "Ключевая фраза кошелька"
-  },
-  "warning": {
-    "message": "Предупреждение"
   },
   "welcome": {
     "message": "Добро пожаловать в MetaMask"
@@ -633,17 +602,11 @@
   "activityLog": {
     "message": "Журнал событий"
   },
-  "add": {
-    "message": "Добавить"
-  },
   "addNetwork": {
     "message": "Добавить сеть"
   },
   "addRecipient": {
     "message": "Добавить получателя"
-  },
-  "addressBook": {
-    "message": "Адресная книга"
   },
   "advanced": {
     "message": "Продвинутый"
@@ -827,9 +790,6 @@
   },
   "editContact": {
     "message": "Изменить контакт"
-  },
-  "editingTransaction": {
-    "message": "Внесите изменения в вашу транзакцию"
   },
   "endOfFlowMessage1": {
     "message": "Вы прошли тестирование - сохраняйте свою исходную фразу в безопасности, это ваша ответственность!"
@@ -1074,9 +1034,6 @@
   "ofTextNofM": {
     "message": "из"
   },
-  "onlySendTokensToAccountAddress": {
-    "message": "Отправляйте $1 на адрес учетной записи Ethereum."
-  },
   "orderOneHere": {
     "message": "Закажите Trezor или Ledger и храните свои средства в холодном кошельке"
   },
@@ -1178,9 +1135,6 @@
   },
   "goerli": {
     "message": "Тестовая сеть Goerli"
-  },
-  "rpc": {
-    "message": "Пользовательский RPC"
   },
   "slow": {
     "message": "Медленно"

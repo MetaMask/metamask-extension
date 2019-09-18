@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "سجل النشاط"
   },
-  "add": {
-    "message": "إضافة"
-  },
-  "address": {
-    "message": "العنوان"
-  },
   "addNetwork": {
     "message": "أضف شبكة"
   },
   "addRecipient": {
     "message": "إضافة مستلم"
-  },
-  "addressBook": {
-    "message": "دليل العناوين"
   },
   "advanced": {
     "message": "إعدادات متقدمة"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "تعديل جهة الاتصال"
   },
-  "editingTransaction": {
-    "message": "قم بإجراء تغييرات على معاملتك"
-  },
   "emailUs": {
     "message": "راسلنا عبر البريد الإلكتروني!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "نوع الوظيفة"
-  },
-  "gas": {
-    "message": "الغاز",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "رسوم الجاس"
   },
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
@@ -624,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "استيراد باستخدام عبارة أمان الحساب"
-  },
-  "info": {
-    "message": "معلومات"
   },
   "infoHelp": {
     "message": "المعلومات والمساعدة"
@@ -857,13 +835,6 @@
   "ofTextNofM": {
     "message": "من"
   },
-  "onlySendToEtherAddress": {
-    "message": "إرسال ETH إلى عنوان إيثيريوم فقط."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "فقط أرسل $1 إلى عنوان حساب إيثيريوم.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "اطلب Trezor أو Ledger وحافظ على أموالك في مخزن حصين"
   },
@@ -974,9 +945,6 @@
   "restoreFromSeed": {
     "message": "هل تريد استعادة الحساب؟"
   },
-  "restoreVault": {
-    "message": "استعادة الخزانة"
-  },
   "restoreAccountWithSeed": {
     "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
   },
@@ -1027,9 +995,6 @@
   },
   "goerli": {
     "message": "شبكة اختبار Goerli "
-  },
-  "rpc": {
-    "message": "تخصيص استدعاء الإجراء عن بعد (RPC)"
   },
   "save": {
     "message": "حفظ"
@@ -1184,9 +1149,6 @@
   "switchNetworks": {
     "message": "تبديل الشبكات"
   },
-  "status": {
-    "message": "الحالة"
-  },
   "stateLogs": {
     "message": "سجلات الحالة"
   },
@@ -1278,9 +1240,6 @@
   "tokenAlreadyAdded": {
     "message": "تمت إضافة العملة الرمزية بالفعل."
   },
-  "tokenBalance": {
-    "message": "رصيدك من العملات الرمزية هو:"
-  },
   "tokenContractAddress": {
     "message": "عنوان عقد العملة الرمزية"
   },
@@ -1319,9 +1278,6 @@
   },
   "transactionCancelSuccess": {
     "message": "تم إلغاء المعاملة بنجاح عند $2"
-  },
-  "transactions": {
-    "message": "المعاملات"
   },
   "transactionError": {
     "message": "خطأ في المعاملة. استثناء تم طرحه في التعليمات البرمجية للعقد."
@@ -1416,9 +1372,6 @@
   },
   "walletSeed": {
     "message": "بذرة المحفظة"
-  },
-  "warning": {
-    "message": "تحذير"
   },
   "welcomeBack": {
     "message": "نرحب بعودتك!"

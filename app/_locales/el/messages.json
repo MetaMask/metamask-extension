@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "αρχείο καταγραφής δραστηριότητας"
   },
-  "add": {
-    "message": "Προσθήκη"
-  },
-  "address": {
-    "message": "Διεύθυνση"
-  },
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
   "addRecipient": {
     "message": "Προσθήκη Παραλήπτη"
-  },
-  "addressBook": {
-    "message": "Βιβλίο Διευθύνσεων"
   },
   "advanced": {
     "message": "Σύνθετες"
@@ -408,9 +399,6 @@
   "editContact": {
     "message": "Επεξεργασία Επαφής"
   },
-  "editingTransaction": {
-    "message": "Κάντε αλλαγές στη συναλλαγή σας"
-  },
   "emailUs": {
     "message": "Στείλτε μας email!"
   },
@@ -502,13 +490,6 @@
   },
   "functionType": {
     "message": "Τύπος Λειτουργίας"
-  },
-  "gas": {
-    "message": "Καύσιμο",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Χρέωση Αερίου"
   },
   "gasLimit": {
     "message": "Όριο Καυσίμου"
@@ -625,9 +606,6 @@
   },
   "importUsingSeed": {
     "message": "Εισαγωγή με χρήση φάσης σπόρου λογαριασμού"
-  },
-  "info": {
-    "message": "Πληροφορίες"
   },
   "infoHelp": {
     "message": "Πληροφορίες & Βοήθεια"
@@ -861,13 +839,6 @@
   "ofTextNofM": {
     "message": "από"
   },
-  "onlySendToEtherAddress": {
-    "message": "Στείλτε ETH μόνο σε μια διεύθυνση Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Στείλτε μόνο $1 σε μια διεύθυνση λογαριασμού Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Παραγγείλετε ένα Trezor ή Ledger και κρατήστε τα χρήματά σας σε παγωμένη αποθήκευση"
   },
@@ -978,9 +949,6 @@
   "restoreFromSeed": {
     "message": "Επαναφορά λογαριασμού;"
   },
-  "restoreVault": {
-    "message": "Επαναφορά Vault"
-  },
   "restoreAccountWithSeed": {
     "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
   },
@@ -1031,9 +999,6 @@
   },
   "goerli": {
     "message": "Δοκιμαστικό Δίκτυο Goerli"
-  },
-  "rpc": {
-    "message": "Προσαρμοσμένο RPC"
   },
   "save": {
     "message": "Αποθήκευση"
@@ -1188,9 +1153,6 @@
   "switchNetworks": {
     "message": "Αλλαγή Δικτύων"
   },
-  "status": {
-    "message": "Κατάσταση"
-  },
   "stateLogs": {
     "message": "Αρχεία Καταγραφής Κατάστασης"
   },
@@ -1279,9 +1241,6 @@
   "tokenAlreadyAdded": {
     "message": "Το διακριτικό έχει ήδη προστεθεί."
   },
-  "tokenBalance": {
-    "message": "Το Υπόλοιπο Token σας είναι:"
-  },
   "tokenContractAddress": {
     "message": "Διεύθυνση Συμβολαίου Token"
   },
@@ -1320,9 +1279,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Η συναλλαγή ακυρώθηκε με επιτυχία στα $2"
-  },
-  "transactions": {
-    "message": "συναλλαγές"
   },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό της σύμβασης."
@@ -1417,9 +1373,6 @@
   },
   "walletSeed": {
     "message": "Σπόρος Πορτοφολιού"
-  },
-  "warning": {
-    "message": "Προειδοποίηση"
   },
   "welcomeBack": {
     "message": "Καλώς Ήλθατε και Πάλι!"

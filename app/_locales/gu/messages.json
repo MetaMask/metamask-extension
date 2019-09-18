@@ -12,12 +12,6 @@
   "account": {
     "message": "એકાઉન્ટ"
   },
-  "add": {
-    "message": "ઉમેરો"
-  },
-  "address": {
-    "message": "સરનામું"
-  },
   "advanced": {
     "message": "વિગતવાર"
   },
@@ -137,9 +131,6 @@
   "settings": {
     "message": "સેટિંગ્સ"
   },
-  "status": {
-    "message": "સ્થિતિ"
-  },
   "submit": {
     "message": "સબમિટ કરો"
   },
@@ -157,8 +148,5 @@
   },
   "viewAccount": {
     "message": "એકાઉન્ટ જુઓ"
-  },
-  "warning": {
-    "message": "ચેતવણી"
   }
 }

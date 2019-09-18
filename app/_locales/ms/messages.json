@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "log aktiviti"
   },
-  "add": {
-    "message": "Tambah"
-  },
-  "address": {
-    "message": "Alamat"
-  },
   "addNetwork": {
     "message": "Tambah Rangkaian"
   },
   "addRecipient": {
     "message": "Tambah Penerima"
-  },
-  "addressBook": {
-    "message": "Buku Alamat"
   },
   "advanced": {
     "message": "Lanjutan"
@@ -399,9 +390,6 @@
   "editContact": {
     "message": "Edit Kenalan"
   },
-  "editingTransaction": {
-    "message": "Buat perubahan kepada transaksi anda"
-  },
   "emailUs": {
     "message": "Hantarkan e-mel kepada kami!"
   },
@@ -489,9 +477,6 @@
   },
   "functionType": {
     "message": "Jenis Fungsi"
-  },
-  "gasFee": {
-    "message": "Fi Gas"
   },
   "gasLimit": {
     "message": "Had Gas"
@@ -604,9 +589,6 @@
   },
   "importUsingSeed": {
     "message": "Import menggunakan frasa benih akaun"
-  },
-  "info": {
-    "message": "Maklumat"
   },
   "infoHelp": {
     "message": "Info & Bantuan"
@@ -831,13 +813,6 @@
   "ofTextNofM": {
     "message": "daripada"
   },
-  "onlySendToEtherAddress": {
-    "message": "Hantar ETH hanya kepada alamat Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Hanya hantar $1 ke alamat akaun Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Pesan Trezor atau Ledger dan simpan dana anda di dalam storan sejuk"
   },
@@ -948,9 +923,6 @@
   "restoreFromSeed": {
     "message": "Pulihkan akaun?"
   },
-  "restoreVault": {
-    "message": "Pulihkan Kekubah"
-  },
   "restoreAccountWithSeed": {
     "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
   },
@@ -1001,9 +973,6 @@
   },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
-  },
-  "rpc": {
-    "message": "RPC Tersuai"
   },
   "save": {
     "message": "Simpan"
@@ -1246,9 +1215,6 @@
   "tokenAlreadyAdded": {
     "message": "Token telah pun ditambah."
   },
-  "tokenBalance": {
-    "message": "Baki Token anda ialah:"
-  },
   "tokenContractAddress": {
     "message": "Alamat Kontrak Token"
   },
@@ -1287,9 +1253,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaksi berjaya dibatalkan pada $2"
-  },
-  "transactions": {
-    "message": "transaksi"
   },
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
@@ -1384,9 +1347,6 @@
   },
   "walletSeed": {
     "message": "Benih Dompet"
-  },
-  "warning": {
-    "message": "Amaran"
   },
   "welcomeBack": {
     "message": "Selamat Kembali!"

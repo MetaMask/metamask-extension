@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "aktivitetslog"
   },
-  "add": {
-    "message": "Tilføj"
-  },
-  "address": {
-    "message": "Adresse"
-  },
   "addNetwork": {
     "message": "Tilføj netværk"
   },
   "addRecipient": {
     "message": "Tilføj modtager"
-  },
-  "addressBook": {
-    "message": "Adressebog"
   },
   "advanced": {
     "message": "Avanceret"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Redigér Kontakt"
   },
-  "editingTransaction": {
-    "message": "Foretag ændringer i din transaktion"
-  },
   "emailUs": {
     "message": "Send os en email!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "Funktionstype"
-  },
-  "gas": {
-    "message": "Brændstof",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Brændstofgebyr"
   },
   "gasLimit": {
     "message": "Gas-grænse"
@@ -842,13 +823,6 @@
   "ofTextNofM": {
     "message": "af"
   },
-  "onlySendToEtherAddress": {
-    "message": "Send kun ETH til en Ethereum-adresse."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Send kun $1 til en Ethereum-kontoadresse.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Bestil en Trezor eller Ledger og frys dine midler ned"
   },
@@ -956,9 +930,6 @@
   "restoreFromSeed": {
     "message": "Genopret konto?"
   },
-  "restoreVault": {
-    "message": "Gendan Boks"
-  },
   "restoreAccountWithSeed": {
     "message": "Gendan din konto med Seed-sætning"
   },
@@ -1009,9 +980,6 @@
   },
   "goerli": {
     "message": "Goerli-testnetværk"
-  },
-  "rpc": {
-    "message": "Brugerdefineret RPC"
   },
   "save": {
     "message": "Gem"
@@ -1248,9 +1216,6 @@
   "tokenAlreadyAdded": {
     "message": "Token er allerede blevet tilføjet."
   },
-  "tokenBalance": {
-    "message": "Din Poletbalance er:"
-  },
   "tokenContractAddress": {
     "message": "Polet Kontrakt Adresse"
   },
@@ -1286,9 +1251,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transaktionen blev annulleret ved $2"
-  },
-  "transactions": {
-    "message": "transaktioner"
   },
   "transactionError": {
     "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
@@ -1383,9 +1345,6 @@
   },
   "walletSeed": {
     "message": "Tegnebogs-seed"
-  },
-  "warning": {
-    "message": "Advarsel"
   },
   "welcomeBack": {
     "message": "Velkommen tilbage!"

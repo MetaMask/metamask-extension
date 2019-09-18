@@ -303,18 +303,12 @@
   "sigRequest": {
     "message": "Hiling na Signature"
   },
-  "status": {
-    "message": "Istado"
-  },
   "submit": {
     "message": "I-submit"
   },
   "toETHviaShapeShift": {
     "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
     "description": "Pupunan ng system ang deposit type sa simula ng mensahe"
-  },
-  "tokenBalance": {
-    "message": "Ang iyong Token Balance ay:"
   },
   "total": {
     "message": "Kabuuan"
@@ -337,9 +331,6 @@
   },
   "viewAccount": {
     "message": "Tingnan ang Account"
-  },
-  "warning": {
-    "message": "Babala"
   },
   "yourSigRequested": {
     "message": "Hinihiling ang iyong signature"

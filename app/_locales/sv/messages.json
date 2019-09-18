@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "aktivitetslogg"
   },
-  "add": {
-    "message": "Lägg till"
-  },
-  "address": {
-    "message": "Adress"
-  },
   "addNetwork": {
     "message": "Lägg till nätverk"
   },
   "addRecipient": {
     "message": "Lägg till mottagare"
-  },
-  "addressBook": {
-    "message": "Adressbok"
   },
   "advanced": {
     "message": "Avancerat"
@@ -405,9 +396,6 @@
   "editContact": {
     "message": "Redigera kontakt"
   },
-  "editingTransaction": {
-    "message": "Gör ändringar i din överföring"
-  },
   "emailUs": {
     "message": "Mejla oss!"
   },
@@ -495,13 +483,6 @@
   },
   "functionType": {
     "message": "Funktionstyp"
-  },
-  "gas": {
-    "message": "Bränsle",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Gasavgift"
   },
   "gasLimit": {
     "message": "Gasgräns"
@@ -845,13 +826,6 @@
   "ofTextNofM": {
     "message": "av"
   },
-  "onlySendToEtherAddress": {
-    "message": "Skicka endast ETH till en Ethereum-adress."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Sänd endast $1 till en Ethereum-kontoadress.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Beställ en Trezor eller Ledger och håll dina medel på is"
   },
@@ -962,9 +936,6 @@
   "restoreFromSeed": {
     "message": "Återställ konto?"
   },
-  "restoreVault": {
-    "message": "Återställ valv"
-  },
   "restoreAccountWithSeed": {
     "message": "Återställ ditt konto med seedphrase"
   },
@@ -1015,9 +986,6 @@
   },
   "goerli": {
     "message": "Goerli testnätverk"
-  },
-  "rpc": {
-    "message": "Skräddarsydd RPC"
   },
   "save": {
     "message": "Spara"
@@ -1257,9 +1225,6 @@
   "tokenAlreadyAdded": {
     "message": "Token har redan lagts till."
   },
-  "tokenBalance": {
-    "message": "Ditt token-saldo är"
-  },
   "tokenContractAddress": {
     "message": "Kontraktsadress för token"
   },
@@ -1295,9 +1260,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Överföringen avbröts vid $2"
-  },
-  "transactions": {
-    "message": "transaktioner"
   },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
@@ -1392,9 +1354,6 @@
   },
   "walletSeed": {
     "message": "Plånboksseed"
-  },
-  "warning": {
-    "message": "Varning"
   },
   "welcomeBack": {
     "message": "Välkommen tillbaka!"

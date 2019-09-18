@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "tevékenységi napló"
   },
-  "add": {
-    "message": "Hozzáadás"
-  },
-  "address": {
-    "message": "Cím"
-  },
   "addNetwork": {
     "message": "Hálózat hozzáadása"
   },
   "addRecipient": {
     "message": "Címzett hozzáadása"
-  },
-  "addressBook": {
-    "message": "Címjegyzék"
   },
   "advanced": {
     "message": "Speciális"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
   },
-  "editingTransaction": {
-    "message": "Változtasson tranzakcióin"
-  },
   "emailUs": {
     "message": "Írjon nekünk!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "Függvénytípus"
-  },
-  "gas": {
-    "message": "Gáz",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Gáz ára"
   },
   "gasLimit": {
     "message": "Gáz határértéke"
@@ -624,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "Importálás a fiók seed mondatának használatával"
-  },
-  "info": {
-    "message": "Információ"
   },
   "infoHelp": {
     "message": "Információk és súgó"
@@ -857,13 +835,6 @@
   "ofTextNofM": {
     "message": "ból"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH-t csak Ethereum-címre küldjön."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "$1 csak Ethereum fiókcímre küldhető.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Rendeljen trezort vagy főkönyvet, és tárolja pénzeszközeit hideg tárcában"
   },
@@ -974,9 +945,6 @@
   "restoreFromSeed": {
     "message": "Visszaállítja a fiókot? "
   },
-  "restoreVault": {
-    "message": "Tároló helyreállítása"
-  },
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
   },
@@ -1027,9 +995,6 @@
   },
   "goerli": {
     "message": "Goerli teszthálózat"
-  },
-  "rpc": {
-    "message": "Egyedi RPC"
   },
   "save": {
     "message": "Mentés"
@@ -1184,9 +1149,6 @@
   "switchNetworks": {
     "message": "Hálózátváltás"
   },
-  "status": {
-    "message": "Állapot"
-  },
   "stateLogs": {
     "message": "Állapotnapló"
   },
@@ -1275,9 +1237,6 @@
   "tokenAlreadyAdded": {
     "message": "A tokent már hozzáadtuk. "
   },
-  "tokenBalance": {
-    "message": "Tokenegyenleged:"
-  },
   "tokenContractAddress": {
     "message": "Token szerződéscím"
   },
@@ -1316,9 +1275,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Tranzakció sikeresen törölve $2-nál"
-  },
-  "transactions": {
-    "message": "tranzakciók"
   },
   "transactionError": {
     "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
@@ -1413,9 +1369,6 @@
   },
   "walletSeed": {
     "message": "Pénztárca kulcsszólánca"
-  },
-  "warning": {
-    "message": "Figyelmeztetés"
   },
   "welcomeBack": {
     "message": "Üdvözöljük újra!"

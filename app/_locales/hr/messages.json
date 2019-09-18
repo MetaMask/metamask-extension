@@ -57,20 +57,11 @@
   "activityLog": {
     "message": "zapisnik aktivnosti"
   },
-  "add": {
-    "message": "Dodaj"
-  },
-  "address": {
-    "message": "Adresa"
-  },
   "addNetwork": {
     "message": "Dodaj mrežu"
   },
   "addRecipient": {
     "message": "Dodaj primatelja"
-  },
-  "addressBook": {
-    "message": "Imenik"
   },
   "advanced": {
     "message": "Napredno"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Uredi kontakt"
   },
-  "editingTransaction": {
-    "message": "Napravite promjene na svojoj transakciji"
-  },
   "emailUs": {
     "message": "Pošaljite nam elektroničku poruku!"
   },
@@ -501,13 +489,6 @@
   },
   "functionType": {
     "message": "Vrsta funkcije"
-  },
-  "gas": {
-    "message": "Gorivo",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Naknada za gorivo"
   },
   "gasLimit": {
     "message": "Ograničenje goriva"
@@ -624,9 +605,6 @@
   },
   "importUsingSeed": {
     "message": "Uvezi početnom rečenicom za račun"
-  },
-  "info": {
-    "message": "Informacije"
   },
   "infoHelp": {
     "message": "Informacije i pomoć"
@@ -857,13 +835,6 @@
   "ofTextNofM": {
     "message": "od"
   },
-  "onlySendToEtherAddress": {
-    "message": "Šalji samo ETH na adresu Ethereum."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Šalji samo $1 na adresu za račun Ethereum.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Naručite Trezor ili Ledger te čuvajte svoja sredstva u hladnoj pohrani"
   },
@@ -974,9 +945,6 @@
   "restoreFromSeed": {
     "message": "Obnoviti račun?"
   },
-  "restoreVault": {
-    "message": "Obnovi trezor"
-  },
   "restoreAccountWithSeed": {
     "message": "Obnovite svoj račun početnom rečenicom"
   },
@@ -1027,9 +995,6 @@
   },
   "goerli": {
     "message": "Testna mreža Goerli"
-  },
-  "rpc": {
-    "message": "Prilagođeni RPC"
   },
   "save": {
     "message": "Spremi"
@@ -1272,9 +1237,6 @@
   "tokenAlreadyAdded": {
     "message": "Token je već dodan."
   },
-  "tokenBalance": {
-    "message": "Vaše je raspoloživo stanje tokena: "
-  },
   "tokenContractAddress": {
     "message": "Ugovorna adresa tokena"
   },
@@ -1313,9 +1275,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Transakcija je uspješno otkazana u $2"
-  },
-  "transactions": {
-    "message": "transakcije"
   },
   "transactionError": {
     "message": "Greška transakcije. Iznimka u kôdu ugovora."
@@ -1410,9 +1369,6 @@
   },
   "walletSeed": {
     "message": "Početni novčanik"
-  },
-  "warning": {
-    "message": "Upozorenje"
   },
   "welcomeBack": {
     "message": "Dobro došli natrag!"

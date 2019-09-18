@@ -53,20 +53,11 @@
   "activityLog": {
     "message": "veiklos žurnalas"
   },
-  "add": {
-    "message": "Pridėti"
-  },
-  "address": {
-    "message": "Adresas"
-  },
   "addNetwork": {
     "message": "Pridėti tinklą"
   },
   "addRecipient": {
     "message": "Pridėti gavėją"
-  },
-  "addressBook": {
-    "message": "Adresų knyga"
   },
   "advanced": {
     "message": "Išplėstiniai"
@@ -411,9 +402,6 @@
   "editContact": {
     "message": "Taisyti kontaktą"
   },
-  "editingTransaction": {
-    "message": "Atlikite savo operacijos pakeitimus"
-  },
   "emailUs": {
     "message": "Rašykite mums el. paštu!"
   },
@@ -505,13 +493,6 @@
   },
   "functionType": {
     "message": "Funkcijos tipas"
-  },
-  "gas": {
-    "message": "Dujos",
-    "description": "Short indication of gas cost"
-  },
-  "gasFee": {
-    "message": "Dujų mokestis"
   },
   "gasLimit": {
     "message": "Dujų apribojimas"
@@ -628,9 +609,6 @@
   },
   "importUsingSeed": {
     "message": "Importuoti naudojant paskyros atkūrimo frazę"
-  },
-  "info": {
-    "message": "Informacija"
   },
   "infoHelp": {
     "message": "Informacija ir žinynas"
@@ -864,13 +842,6 @@
   "ofTextNofM": {
     "message": "nuo"
   },
-  "onlySendToEtherAddress": {
-    "message": "„Ethereum“ adresu siųsti tik ETH."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Į „Ethereum“ paskyrą siųsti tik $1.",
-    "description": "displays token symbol"
-  },
   "orderOneHere": {
     "message": "Užsisakykite „Trezor“ arba „Ledger“ ir laikykite savo lėšas šaltojoje saugykloje"
   },
@@ -981,9 +952,6 @@
   "restoreFromSeed": {
     "message": "Atkurti paskyrą?"
   },
-  "restoreVault": {
-    "message": "Atkurti saugyklą"
-  },
   "restoreAccountWithSeed": {
     "message": "Atkurti paskyrą naudojant atkūrimo frazę"
   },
@@ -1034,9 +1002,6 @@
   },
   "goerli": {
     "message": "„Goerli“ bandomasis tinklas"
-  },
-  "rpc": {
-    "message": "Pritaikytas RPC"
   },
   "save": {
     "message": "Išsaugoti"
@@ -1191,9 +1156,6 @@
   "switchNetworks": {
     "message": "Perjungti tinklus"
   },
-  "status": {
-    "message": "Būsena"
-  },
   "stateLogs": {
     "message": "Būsenos žurnalai"
   },
@@ -1285,9 +1247,6 @@
   "tokenAlreadyAdded": {
     "message": "Žetonas jau pridėtas."
   },
-  "tokenBalance": {
-    "message": "Jūsų žetonų likutis yra:"
-  },
   "tokenContractAddress": {
     "message": "Žetono kontaktinis adresas"
   },
@@ -1326,9 +1285,6 @@
   },
   "transactionCancelSuccess": {
     "message": "Operacija sėkmingai atšaukta $2"
-  },
-  "transactions": {
-    "message": "operacijos"
   },
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
@@ -1423,9 +1379,6 @@
   },
   "walletSeed": {
     "message": "Slaptažodinės atkūrimo frazė"
-  },
-  "warning": {
-    "message": "Įspėjimas"
   },
   "welcomeBack": {
     "message": "Sveiki sugrįžę!"

@@ -23,9 +23,6 @@
   "accountName": {
     "message": "கணக்கின் பெயர்"
   },
-  "address": {
-    "message": "முகவரி"
-  },
   "addToken": {
     "message": "டோக்கனைச் சேர்"
   },
@@ -204,13 +201,6 @@
   },
   "fromShapeShift": {
     "message": "ShapeShift இலிருந்து"
-  },
-  "gas": {
-    "message": "எரிவாயு",
-    "description": "எரிவாயு விலை குறையும்"
-  },
-  "gasFee": {
-    "message": "எரிவாயு கட்டணம்"
   },
   "gasLimit": {
     "message": "எரிவாயு வரம்பு"
@@ -421,9 +411,6 @@
   "restoreFromSeed": {
     "message": "விதை வாக்கியத்திலிருந்து மீட்கவும்"
   },
-  "restoreVault": {
-    "message": "வால்ட் மீட்கவும்"
-  },
   "required": {
     "message": "தேவையான"
   },
@@ -484,17 +471,11 @@
   "sendTokens": {
     "message": "டோக்கன்களை அனுப்பவும்"
   },
-  "onlySendToEtherAddress": {
-    "message": "ETH ஐ ஒரு எதரியும் முகவரிக்கு மட்டும் அனுப்பவும்."
-  },
   "searchTokens": {
     "message": "தேடல் டோக்கன்ஸ்"
   },
   "settings": {
     "message": "அமைப்புகள்"
-  },
-  "info": {
-    "message": "தகவல்"
   },
   "showPrivateKeys": {
     "message": "தனிப்பட்ட விசைகளைக் காண்பி"
@@ -510,9 +491,6 @@
   },
   "sigRequest": {
     "message": "கையொப்பம் கோரிக்கை"
-  },
-  "status": {
-    "message": "நிலை"
   },
   "stateLogs": {
     "message": "மாநில பதிவுகள்"
@@ -551,17 +529,11 @@
   "tokenAlreadyAdded": {
     "message": "டோக்கன் ஏற்கனவே சேர்க்கப்பட்டது."
   },
-  "tokenBalance": {
-    "message": "உங்கள் டோக்கன் இருப்பு:"
-  },
   "tokenSymbol": {
     "message": "டோக்கன் சின்னம்"
   },
   "total": {
     "message": "மொத்த"
-  },
-  "transactions": {
-    "message": "பரிவர்த்தனைகள்"
   },
   "transactionError": {
     "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
@@ -597,9 +569,6 @@
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
   },
-  "warning": {
-    "message": "எச்சரிக்கை"
-  },
   "welcome": {
     "message": "மெட்டாமாஸ்க் பீட்டாவுக்கு வருக"
   },
@@ -611,9 +580,6 @@
   },
   "about": {
     "message": "அறிமுகம்"
-  },
-  "add": {
-    "message": "சேர்"
   },
   "advanced": {
     "message": "மேம்பட்டவை"
