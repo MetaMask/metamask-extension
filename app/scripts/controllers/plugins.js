@@ -23,6 +23,14 @@ class PluginsController extends EventEmitter {
     this.getApi = opts.getApi
   }
 
+ runExistingPlugins () {
+    const plugins = this.store.getState().plugins
+    Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
+      const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+      this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+    })
+  }
+
   get (pluginName) {
     return this.store.getState().plugins[pluginName]
   }
@@ -51,7 +59,7 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
 
     let plugin
-    if (false && plugins[pluginName]) {
+    if (plugins[pluginName]) {
       plugin = plugins[pluginName]
     } else {
       plugin = await fetch(sourceUrl)
@@ -61,23 +69,6 @@ class PluginsController extends EventEmitter {
 
     const { sourceCode, requestedPermissions } = plugin
 
-    if (!plugins[pluginName]) {
-      const newPlugin = {
-        handleRpcRequest: async (result) => {
-          return Promise.resolve(result)
-        },
-        pluginName,
-        sourceCode,
-        requestedPermissions,
-        pluginState: {},
-      }
-
-      const newPlugins = {...plugins, [pluginName]: newPlugin}
-
-      this.store.updateState({
-        plugins: newPlugins,
-      })
-    }
 
     const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
@@ -89,7 +80,25 @@ class PluginsController extends EventEmitter {
       if (err1) return err1
 
       const capabilities = res1.result.map(cap => cap.parentCapability).filter(cap => !cap.startsWith('eth_runPlugin_'))
-      
+  
+      if (!plugins[pluginName]) {
+        const newPlugin = {
+          handleRpcRequest: async (result) => {
+            return Promise.resolve(result)
+          },
+          pluginName,
+          sourceCode,
+          requestedPermissions: capabilities,
+          pluginState: {},
+        }
+
+        const newPlugins = {...plugins, [pluginName]: newPlugin}
+
+        this.store.updateState({
+          plugins: newPlugins,
+        })
+      }
+
       ethereumProvider.sendAsync({
         method: 'eth_runPlugin_' + pluginName,
         params: [{ requestedPermissions: capabilities, sourceCode, ethereumProvider }],

@@ -259,6 +259,7 @@ module.exports = class MetamaskController extends EventEmitter {
       _signPersonalMessage: this.keyringController.signPersonalMessage.bind(this.keyringController),
       _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
       getApi: this.getPluginsApi.bind(this),
+      initState: initState.PluginsController,
     })
 
     this.permissionsController = new PermissionsController({
@@ -278,6 +279,7 @@ module.exports = class MetamaskController extends EventEmitter {
     },
     initState.PermissionsController)
 
+    this.pluginsController.runExistingPlugins()
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
