@@ -9,15 +9,18 @@ const {
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
+  GOERLI_CODE,
   ROPSTEN,
   RINKEBY,
   KOVAN,
+  GOERLI,
   MAINNET,
 } = require('./network/enums')
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
   [RINKEBY]: String(RINKEBY_CODE),
   [KOVAN]: String(KOVAN_CODE),
+  [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
 }
 const fetch = fetchWithTimeout({
@@ -52,6 +55,7 @@ class IncomingTransactionsController {
         [ROPSTEN]: null,
         [RINKEBY]: null,
         [KOVAN]: null,
+        [GOERLI]: null,
         [MAINNET]: null,
       },
     }, opts.initState)
@@ -178,7 +182,7 @@ class IncomingTransactionsController {
   async _fetchTxs (address, fromBlock, networkType) {
     let etherscanSubdomain = 'api'
     const currentNetworkID = networkTypeToIdMap[networkType]
-    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET]
 
     if (supportedNetworkTypes.indexOf(networkType) === -1) {
       return {}
