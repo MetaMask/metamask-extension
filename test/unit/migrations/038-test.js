@@ -28,17 +28,7 @@ describe('migration #38', () => {
 
     migration38.migrate(oldStorage)
       .then((newStorage) => {
-        try {
-          assert.deepEqual(newStorage.data.ABTestController, {
-            'fullScreenVsPopup': 'control',
-          })
-        } catch (e) {
-          assert.deepEqual(newStorage.data.ABTestController, {
-            abTests: {
-              'fullScreenVsPopup': 'fullScreen',
-            },
-          })
-        }
+        assert(newStorage.data.ABTestController.abTests.fullScreenVsPopup.match(/control|fullScreen/))
         done()
       })
       .catch(done)

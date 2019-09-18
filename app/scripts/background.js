@@ -442,7 +442,7 @@ function triggerUi () {
  * Opens a new browser tab for user confirmation
  */
 function triggerUiInNewTab () {
-  extension.tabs.query({ active: true }, tabs => {
+  extension.tabs.query({ active: true }, () => {
     const tabIdsArray = Object.keys(openMetamaskTabsIDs)
     if (tabIdsArray.length) {
       extension.tabs.update(parseInt(tabIdsArray[0], 10), { 'active': true }, () => {
