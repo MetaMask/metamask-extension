@@ -857,6 +857,9 @@
   "invalidRPC": {
     "message": "无效 RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "无效 Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "无效种子密语"
   },

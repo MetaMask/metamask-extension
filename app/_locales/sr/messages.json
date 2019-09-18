@@ -869,6 +869,9 @@
   "invalidRPC": {
     "message": "Nevažeći RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Nevažeći Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Nevažeća seed fraza"
   },

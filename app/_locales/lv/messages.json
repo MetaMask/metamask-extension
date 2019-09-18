@@ -868,6 +868,9 @@
   "invalidRPC": {
     "message": "Nederīgs RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Nederīgs Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Nederīga atkopšanas frāze"
   },

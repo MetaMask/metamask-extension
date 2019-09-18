@@ -872,6 +872,9 @@
   "invalidRPC": {
     "message": "Helytelen RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Helytelen Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Érvénytelen seed mondat"
   },

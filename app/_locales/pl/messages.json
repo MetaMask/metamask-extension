@@ -870,6 +870,9 @@
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Nieprawidłowe Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "Nieprawidłowa fraza seed"
   },

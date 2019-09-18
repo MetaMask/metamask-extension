@@ -444,6 +444,9 @@
   "invalidRPC": {
     "message": "Geçersiz RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Geçersiz Block Explorer URI"
+  },
   "jsonFail": {
     "message": "Birşeyler yanlış gitti. JSON dosyanızın düzgün derlendiğinden emin olun."
   },

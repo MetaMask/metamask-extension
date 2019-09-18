@@ -879,6 +879,9 @@
   "invalidRPC": {
     "message": "অবৈধ RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "অবৈধ Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "অবৈধ সীড ফ্রেজ"
   },

@@ -844,6 +844,9 @@
   "invalidRPC": {
     "message": "URI RPC invalido"
   },
+  "invalidBlockExplorerURL": {
+    "message": "URI Block Explorer invalido"
+  },
   "invalidSeedPhrase": {
     "message": "Frase seed non valida"
   },

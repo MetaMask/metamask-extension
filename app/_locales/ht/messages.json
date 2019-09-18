@@ -568,6 +568,9 @@
   "invalidRPC": {
     "message": "RPC URI pa valab"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI pa valab"
+  },
   "invalidSeedPhrase": {
     "message": "Seed fraz pa valab"
   },

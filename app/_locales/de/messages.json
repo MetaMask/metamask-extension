@@ -854,6 +854,9 @@
   "invalidRPC": {
     "message": "Ungültige RPC URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Ungültige Block Explorer URI"
+  },
   "invalidSeedPhrase": {
     "message": "Ungültiger Seedschlüssel"
   },

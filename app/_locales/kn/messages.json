@@ -879,6 +879,9 @@
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "ಅಮಾನ್ಯವಾದ ಸೀಡ್ ಫ್ರೇಸ್"
   },

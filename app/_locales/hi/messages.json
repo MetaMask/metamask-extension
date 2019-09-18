@@ -882,6 +882,9 @@
   "invalidRPC": {
     "message": "अमान्य RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "अमान्य Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "अमान्य बीज वाक्यांश"
   },

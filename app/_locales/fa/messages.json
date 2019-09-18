@@ -876,6 +876,9 @@
   "invalidRPC": {
     "message": "RPC URL نا معتبر"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URL نا معتبر"
+  },
   "invalidSeedPhrase": {
     "message": "عبارت بازیابی نا معتبر"
   },

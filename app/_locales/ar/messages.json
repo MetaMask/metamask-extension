@@ -878,6 +878,9 @@
   "invalidRPC": {
     "message": "رابط آر بي سي غير صحيح"
   },
+  "invalidBlockExplorerURL": {
+    "message": "غير صحيح Block Explorer رابط"
+  },
   "invalidSeedPhrase": {
     "message": "عبارة أمان غير صحيحة"
   },

@@ -915,6 +915,9 @@
   "invalidRPC": {
     "message": "Invalid RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Invalid Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
   },

@@ -863,6 +863,9 @@
   "invalidRPC": {
     "message": "RPC de URL no válido"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer de URL no válido"
+  },
   "invalidSeedPhrase": {
     "message": "Frase de inicialización no válida"
   },

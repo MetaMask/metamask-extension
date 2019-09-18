@@ -875,6 +875,9 @@
   "invalidRPC": {
     "message": "Невалиден RPC URL адрес"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Невалиден Block Explorer URL адрес"
+  },
   "invalidSeedPhrase": {
     "message": "Невалидна фраза зародиш"
   },

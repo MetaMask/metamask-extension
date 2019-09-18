@@ -412,6 +412,9 @@
   "invalidRPC": {
     "message": "RPC URI Inválido"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Block Explorer URI Inválido"
+  },
   "jsonFail": {
     "message": "Ocorreu um erro. Por favor confirme que o seu ficheiro JSON está devidamente formatado."
   },

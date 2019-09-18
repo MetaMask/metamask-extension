@@ -403,6 +403,9 @@
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Ongeldige Block Explorer URI"
+  },
   "jsonFail": {
     "message": "Er is iets fout gegaan. Zorg ervoor dat uw JSON-bestand correct is opgemaakt."
   },

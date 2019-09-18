@@ -807,6 +807,9 @@
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"
   },
+  "invalidBlockExplorerURL": {
+    "message": "Hindi valid ang Block Explorer URL"
+  },
   "invalidSeedPhrase": {
     "message": "Hindi valid ang seed phrase"
   },
