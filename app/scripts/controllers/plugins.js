@@ -23,6 +23,14 @@ class PluginsController extends EventEmitter {
     this.getApi = opts.getApi
   }
 
+ runExistingPlugins () {
+    const plugins = this.store.getState().plugins
+    Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
+      const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+      this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+    })
+  }
+
   get (pluginName) {
     return this.store.getState().plugins[pluginName]
   }

@@ -279,6 +279,7 @@ module.exports = class MetamaskController extends EventEmitter {
     },
     initState.PermissionsController)
 
+    this.pluginsController.runExistingPlugins()
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
