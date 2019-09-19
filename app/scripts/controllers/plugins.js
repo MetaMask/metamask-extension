@@ -164,7 +164,7 @@ class PluginsController extends EventEmitter {
       ...this.getApi(),
     }
     const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
-    const apisToProvide = { onMetaMaskEvent }
+    const apisToProvide = { onMetaMaskEvent, registerRpcMessageHandler }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
     })
