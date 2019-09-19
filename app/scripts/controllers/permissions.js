@@ -66,7 +66,6 @@ const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
 const METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
-const ADD_PLUGIN_PREFIX = 'eth_plugin_'
 
 function prefix (method) {
   return METHOD_PREFIX + method
@@ -309,6 +308,29 @@ class PermissionsController {
             return end()
           },
         },
+
+        'wallet_plugin_': {
+          description: 'Connect to plugin $1, and install it if not available yet.',
+          method: async (req, res, next, end) => {
+            try {
+
+            const sourceUrl = req.method.substr(14)
+
+            let prior = this.pluginsController.get(sourceUrl)
+            if (!prior) {
+              await this.pluginsController.add(sourceUrl, sourceUrl)
+              prior = this.pluginsController.get(sourceUrl)
+            }
+
+            // Here is where we would invoke the message on that plugin iff possible.
+
+            } catch (err) {
+              res.error = err;
+              return end(err)
+            }
+          }
+        },
+
         'eth_addPlugin_*': {
           description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
           method: async (req, res, next, end) => {
