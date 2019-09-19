@@ -14,11 +14,9 @@ class PluginsController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     this.setupProvider = opts.setupProvider
-    this._onUnlock = opts._onUnlock
-    this._onNewTx = opts._onNewTx
-    this._subscribeToPreferencesControllerChanges = opts._subscribeToPreferencesControllerChanges
-    this._updatePreferencesControllerState = opts._updatePreferencesControllerState
-    this._signPersonalMessage = opts._signPersonalMessage
+    this._txController = opts._txController
+    this._networkController = opts._networkController
+    this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
     this.getApi = opts.getApi
   }
@@ -112,32 +110,63 @@ class PluginsController extends EventEmitter {
     return this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
   }
 
-  _generateApisToProvide (requestedPermissions, pluginName) {
-    const apiList = requestedPermissions.map(requestedPermission => {
-      const metamaskMethod = requestedPermission.match(/metamask_(.+)/)
+  _eventEmitterToListenerMap (eventEmitter) {
+    return eventEmitter.eventNames().map(eventName => {
+      return {
+        [eventName]: eventEmitter.on.bind(eventEmitter, eventName),
+      }
+    })
+  }
+
+  generateMetaMaskListenerMethodsMap () {
+    return [
+      ...this._eventEmitterToListenerMap(this._txController),
+      ...this._eventEmitterToListenerMap(this._networkController),
+      ...this._eventEmitterToListenerMap(this._blockTracker),
+    ].reduce((acc, methodMap) => ({ ...acc, ...methodMap }))
+  }
+
+  _createMetaMaskEventListener (approvedPermissions) {
+    const listenerMethodsMap = this.generateMetaMaskListenerMethodsMap()
+    const approvedListenerMethodsMap = {}
+    approvedPermissions.forEach(approvedPermission => {
+      if (listenerMethodsMap[approvedPermission]) {
+        approvedListenerMethodsMap[approvedPermission] = listenerMethodsMap[approvedPermission]
+      }
+    })
+
+    return (eventName, cb) => {
+      approvedListenerMethodsMap[eventName](cb)
+    }
+  }
+
+  _generateApisToProvide (approvedPermissions, pluginName) {
+    const apiList = approvedPermissions.map(approvedPermission => {
+      const metamaskMethod = approvedPermission.match(/metamask_(.+)/)
       return metamaskMethod
         ? metamaskMethod[1]
-        : requestedPermission
+        : approvedPermission
     })
-    const updatePluginState = this.updatePluginState.bind(this, pluginName)
-    const getPluginState = this.getPluginState.bind(this, pluginName)
+
+    const onMetaMaskEvent = this._createMetaMaskEventListener(apiList)
+
     const possibleApis = {
-      updatePluginState,
-      getPluginState,
-      onNewTx: this._onNewTx,
+      updatePluginState: this.updatePluginState.bind(this, pluginName),
+      getPluginState: this.getPluginState.bind(this, pluginName),
+      onNewTx: () => {},
       onUnlock: this._onUnlock,
       ...this.getApi(),
     }
-    const apisToProvide = {}
+    const apisToProvide = { onMetaMaskEvent }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
     })
     return apisToProvide
   }
 
-  _startPlugin (pluginName, requestedPermissions, sourceCode, ethereumProvider) {
+  _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
     const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
-    const apisToProvide = this._generateApisToProvide(requestedPermissions, pluginName)
+    const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
     const sessedPlugin = s.evaluate(sourceCode, {
       ethereumProvider,

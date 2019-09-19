@@ -58,7 +58,13 @@ const pluginRestrictedMethodsDescriptions = {
   unlockHardwareWalletAccount: 'Imports an account from a Trezor device',
   updateAndSetCustomRpc: 'Select a custom URL for an Ethereum RPC provider and updating it',
   verifySeedPhrase: 'Verifies the validity of the current vault seed phrase',
-  whitelistPhishingDomain: 'Mark a malicious-looking domain as safe'
+  whitelistPhishingDomain: 'Mark a malicious-looking domain as safe',
+
+  // Listening to events from the block tracker, transaction controller and network controller
+  'tx:status-update': 'Be notified when the status of your transactions changes',
+  latest: 'Be notified when the new blocks are added to the blockchain',
+  networkDidChange: 'Be notified when your selected network changes',
+  newUnapprovedTx: 'Be notified with details of your new transactions',
 }
 
 // Methods that do not require any permissions to use:
@@ -76,7 +82,7 @@ function prefix (method) {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, pluginsController, setupProvider, pluginRestrictedMethods, getApi
+    openPopup, closePopup, keyringController, pluginsController, setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods
   } = {}, restoredState) {
     this.memStore = new ObservableStore({ siteMetadata: {} })
     this._openPopup = openPopup
@@ -86,6 +92,7 @@ class PermissionsController {
     this.setupProvider = setupProvider
     this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
+    this.metamaskEventMethods = metamaskEventMethods
     this._initializePermissions(restoredState)
   }
 
@@ -248,6 +255,7 @@ class PermissionsController {
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
       ...api,
+      ...this.metamaskEventMethods,
       removePermissionsFor: this.removePermissionsFor.bind(this),
       getApprovedAccounts: this.getAccounts.bind(this),
     }

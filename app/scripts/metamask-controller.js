@@ -252,11 +252,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.pluginsController = new PluginsController({
       setupProvider: this.setupProvider.bind(this),
-      _onUnlock: this._onUnlock.bind({}, this.keyringController.memStore),
-      _onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
-      _subscribeToPreferencesControllerChanges: this.preferencesController.store.subscribe.bind(this.preferencesController.store),
-      _updatePreferencesControllerState: this.preferencesController.store.updateState.bind(this.preferencesController.store),
-      _signPersonalMessage: this.keyringController.signPersonalMessage.bind(this.keyringController),
+      _txController: this.txController,
+      _networkController: this.networkController,
+      _blockTracker: this.blockTracker,
       _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
       getApi: this.getPluginsApi.bind(this),
       initState: initState.PluginsController,
@@ -273,9 +271,9 @@ module.exports = class MetamaskController extends EventEmitter {
         updatePluginState: this.pluginsController.updatePluginState.bind(this.pluginController),
         getPluginState: this.pluginsController.getPluginState.bind(this.pluginController),
         onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
-        onUnlock: this._onUnlock.bind({}, this.keyringController.memStore),
       },
       getApi: this.getPluginsApi.bind(this),
+      metamaskEventMethods: this.pluginsController.generateMetaMaskListenerMethodsMap(),
     },
     initState.PermissionsController)
 
