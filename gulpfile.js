@@ -514,7 +514,6 @@ gulp.task('build:test',
       'build:test:extension:js',
       'copy'
     ),
-    'optimize:images',
     'manifest:testing'
   )
 )
@@ -527,7 +526,6 @@ gulp.task('build:extension',
       'build:extension:js',
       'copy'
     ),
-    'optimize:images'
   )
 )
 
