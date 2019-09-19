@@ -1,4 +1,6 @@
 .identicon {
+  /*rtl:ignore*/
+  direction: ltr;
   display: flex;
   flex-shrink: 0;
   align-items: center;

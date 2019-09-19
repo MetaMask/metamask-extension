@@ -170,6 +170,7 @@ class Routes extends Component {
     const {
       isLoading,
       alertMessage,
+      textDirection,
       loadingMessage,
       network,
       provider,
@@ -208,6 +209,7 @@ class Routes extends Component {
     return (
       <div
         className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
           if (e.keyCode === 9) {
@@ -323,6 +325,7 @@ Routes.propTypes = {
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
   alertMessage: PropTypes.string,
+  textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcListDetail: PropTypes.array,
@@ -364,6 +367,7 @@ function mapStateToProps (state) {
     sidebar,
     alertOpen,
     alertMessage,
+    textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,

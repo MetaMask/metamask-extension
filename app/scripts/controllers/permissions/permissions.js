@@ -5,101 +5,71 @@ const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
-const pluginRestrictedMethodsDescriptions = {
-  onNewTx: 'Take action whenever a new transaction is created',
-  fetch: 'Retrieve data from external sites',
-  updatePluginState: 'Store data locally',
-  onUnlock: 'Take action when you unlock your account',
-  Box: 'Backup your data to 3Box',
-  subscribeToPreferencesControllerChanges: 'Access your preferences and take action when they change',
-  updatePreferencesControllerState: 'Update/modify your preferences',
-  generateSignature: 'Sign messages with your account',
-
-  // MetaMaskController#getApi
-  addKnownMethodData: 'Update and store data about a known contract method',
-  addNewAccount: 'Adds a new account to the default (first) HD seed phrase Keyring',
-  addNewKeyring: 'Create a new keyring',
-  addToken: 'Add a new token to be tracked',
-  buyEth: 'Forwards the user to the easiest way to obtain ether for the currently-selected network',
-  checkHardwareStatus: 'Check if the hardware device is unlocked',
-  connectHardware: 'Fetch account list from a Trezor device',
-  createShapeShiftTx: 'Triggers a ShapeShift currency transfer',
-  delCustomRpc: 'Delete a selected custom URL',
-  estimateGas: 'Estimate the gas required for a transaction',
-  fetchInfoToSync: 'Collects all the information for mobile syncing',
-  forgetDevice: 'Clear all connected devices',
-  getApprovedAccounts: 'Get a list of all approved accounts',
-  getFilteredTxList: 'Get a list of filtered transactions',
-  getGasPrice: 'Estimates a good gas price at recent prices',
-  getState: 'Get a JSON representation of MetaMask data, including sensitive data. This is only for testing purposes and will NOT be included in production.',
-  importAccountWithStrategy: 'Imports an account with the specified import strategy',
-  isNonceTaken: 'Check if a given nonce is available for use',
-  removeAccount: 'Removes an account from state / storage',
-  removeFromAddressBook: 'Remove an entry from the address book',
-  removePermissionsFor: 'Remove account access for a given domain',
-  removeSuggestedTokens: 'Remove a token  from the list of suggested tokens',
-  removeToken: 'Remove a token from the list of tracked tokens',
-  resetAccount: 'Clears the transaction history, to allow users to force-reset their nonces',
-  setAccountLabel: 'Set the label for the currently-selected account',
-  setAddressBook: 'Add or update an entry in the address book',
-  setCurrentAccountTab: 'Set the active tab for the currently-selected account',
-  setCurrentCurrency: 'Set the currently-selected currency',
-  setCurrentLocale: 'Set the current locale, affecting the language rendered',
-  setCustomRpc: 'Select a custom URL for an Ethereum RPC provider',
-  setFeatureFlag: 'Enable or disable a given feature-flag',
-  setParticipateInMetaMetrics: 'Toggle usage data tracking with MetaMetrics',
-  setPreference: 'Update a given user preference',
-  setProviderType: 'Update the current provider type',
-  setSeedPhraseBackedUp: 'Mark a seed phrase as backed up',
-  setSelectedAddress: 'Set the currently-selected address',
-  setUseBlockie: 'Toggle the Blockie identicon format',
-  submitPassword: 'Submits the user password and attempts to unlock the vault. This will not be included in production.',
-  unMarkPasswordForgotten: 'Allows a user to end the seed phrase recovery process',
-  unlockHardwareWalletAccount: 'Imports an account from a Trezor device',
-  updateAndSetCustomRpc: 'Select a custom URL for an Ethereum RPC provider and updating it',
-  verifySeedPhrase: 'Verifies the validity of the current vault seed phrase',
-  whitelistPhishingDomain: 'Mark a malicious-looking domain as safe',
-
-  // Listening to events from the block tracker, transaction controller and network controller
-  'tx:status-update': 'Be notified when the status of your transactions changes',
-  latest: 'Be notified when the new blocks are added to the blockchain',
-  networkDidChange: 'Be notified when your selected network changes',
-  newUnapprovedTx: 'Be notified with details of your new transactions',
-}
+const {
+  getExternalRestrictedMethods,
+  pluginRestrictedMethodDescriptions,
+} = require('./restrictedMethods')
+const createRequestMiddleware = require('./requestMiddleware')
+const createLoggerMiddleware = require('./loggerMiddleware')
 
 // Methods that do not require any permissions to use:
-const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
+const SAFE_METHODS = require('./permissions-safe-methods.json')
 
-const METHOD_PREFIX = 'wallet_'
+const METADATA_STORE_KEY = 'siteMetadata'
+const LOG_STORE_KEY = 'permissionsLog'
+const HISTORY_STORE_KEY = 'permissionsHistory'
+const WALLET_METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
 
 function prefix (method) {
-  return METHOD_PREFIX + method
+  return WALLET_METHOD_PREFIX + method
 }
 
 // class PermissionsController extends SafeEventEmitter {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, pluginsController, setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods
-  } = {}, restoredState) {
-    this.memStore = new ObservableStore({ siteMetadata: {} })
+    openPopup, closePopup, keyringController, pluginsController,
+    setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
+  } = {},
+  restoredPermissions = {}, restoredState = {}
+  ) {
+    this.store = new ObservableStore({
+      [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
+      [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
+      [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
+    })
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
     this.pluginsController = pluginsController
     this.setupProvider = setupProvider
+    this.externalRestrictedMethods = getExternalRestrictedMethods(this)
     this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
     this.metamaskEventMethods = metamaskEventMethods
-    this._initializePermissions(restoredState)
+    this._initializePermissions(restoredPermissions)
   }
 
   createMiddleware (options) {
     const { origin, isPlugin } = options
     const engine = new JsonRpcEngine()
     engine.push(this.createPluginMethodRestrictionMiddleware(isPlugin))
-    engine.push(this.createRequestMiddleware(options))
+    engine.push(createRequestMiddleware({
+      internalPrefix: INTERNAL_METHOD_PREFIX,
+      store: this.store,
+      storeKey: METADATA_STORE_KEY,
+    }))
+    engine.push(createLoggerMiddleware({
+      walletPrefix: WALLET_METHOD_PREFIX,
+      restrictedMethods: (
+        Object.keys(this.externalRestrictedMethods)
+          .concat(Object.keys(this.pluginRestrictedMethods))
+      ),
+      store: this.store,
+      logStoreKey: LOG_STORE_KEY,
+      historyStoreKey: HISTORY_STORE_KEY,
+    }))
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
@@ -116,45 +86,8 @@ class PermissionsController {
         return // TODO:json-rpc-engine
       }
 
-      if (pluginRestrictedMethodsDescriptions[req.method] && !isPlugin) {
+      if (pluginRestrictedMethodDescriptions[req.method] && !isPlugin) {
         res.error = rpcErrors.methodNotFound(null, req.method)
-        return
-      }
-
-      return next()
-    })
-  }
-
-  /**
-   * Create middleware for preprocessing permissions requests.
-   */
-  createRequestMiddleware () {
-    return createAsyncMiddleware(async (req, res, next) => {
-      if (typeof req.method !== 'string') {
-        res.error = rpcErrors.invalidRequest(null, req)
-        return // TODO:json-rpc-engine
-      }
-
-      if (req.method.startsWith(INTERNAL_METHOD_PREFIX)) {
-        switch (req.method.split(INTERNAL_METHOD_PREFIX)[1]) {
-          case 'sendSiteMetadata':
-            if (
-              req.siteMetadata &&
-              typeof req.siteMetadata.name === 'string'
-            ) {
-              this.memStore.putState({
-                siteMetadata: {
-                  ...this.memStore.getState().siteMetadata,
-                  [req.origin]: req.siteMetadata,
-                },
-              })
-            }
-            break
-          default:
-            res.error = rpcErrors.methodNotFound(null, req.method)
-            break
-        }
-        if (!res.error) res.result = true
         return
       }
 
@@ -209,6 +142,24 @@ class PermissionsController {
   }
 
   /**
+   * Clears the permissions log.
+   */
+  clearLog () {
+    this.store.updateState({
+      [LOG_STORE_KEY]: [],
+    })
+  }
+
+  /**
+   * Clears the permissions history.
+   */
+  clearHistory () {
+    this.store.updateState({
+      [HISTORY_STORE_KEY]: {},
+    })
+  }
+
+  /**
    * User approval callback.
    * @param {object} approved the approved request object
    */
@@ -249,6 +200,7 @@ class PermissionsController {
     }
 
     this.pendingApprovals = {}
+
     const api = this.getApi()
 
     const externalMethodsToAddToRestricted = {
@@ -260,16 +212,16 @@ class PermissionsController {
     }
 
     const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
-      const hasDescription = externalMethodsToAddToRestricted[methodKey];
+      const hasDescription = externalMethodsToAddToRestricted[methodKey]
       if (!hasDescription) {
-        return acc;
+        return acc
       }
       return {
         ...acc,
         ['metamask_' + methodKey]: {
-          description: pluginRestrictedMethodsDescriptions[methodKey] || methodKey,
+          description: pluginRestrictedMethodDescriptions[methodKey] || methodKey,
           method: 'metamask_' + externalMethodsToAddToRestricted[methodKey],
-        }
+        },
       }
     }, {})
 
@@ -279,101 +231,10 @@ class PermissionsController {
       safeMethods: SAFE_METHODS,
 
       // optional prefix for internal methods
-      methodPrefix: METHOD_PREFIX,
+      methodPrefix: WALLET_METHOD_PREFIX,
 
       restrictedMethods: {
-
-        'eth_accounts': {
-          description: 'View Ethereum accounts',
-          method: (_, res, __, end) => {
-            this.keyringController.getAccounts()
-              .then((accounts) => {
-                res.result = accounts
-                end()
-              })
-              .catch((reason) => {
-                res.error = reason
-                end(reason)
-              })
-          },
-        },
-
-        // Restricted methods themselves are defined as
-        // json-rpc-engine middleware functions.
-        'readYourProfile': {
-          description: 'Read from your profile',
-          method: (_req, res, _next, end) => {
-            res.result = this.testProfile
-            end()
-          },
-        },
-        'writeToYourProfile': {
-          description: 'Write to your profile.',
-          method: (req, res, _next, end) => {
-            const [ key, value ] = req.params
-            this.testProfile[key] = value
-            res.result = this.testProfile
-            return end()
-          },
-        },
-
-        'wallet_plugin_': {
-          description: 'Connect to plugin $1, and install it if not available yet.',
-          method: async (req, res, next, end, engine) => {
-            try {
-              const origin = req.method.substr(14)
-
-              let prior = this.pluginsController.get(origin)
-              if (!prior) {
-                await this.pluginsController.add(origin)
-              }
-
-              // Here is where we would invoke the message on that plugin iff possible.
-              const handler = this.pluginsController.rpcMessageHandlers.get(origin)
-              if (!handler) {
-                res.error = rpcErrors.methodNotFound(null, req.method)
-                return end(res.error)
-              }
-
-              const requestor = engine.domain
-
-              // Handler is an async function that takes an origin string and a request object.
-              // It should return the result it would like returned to the reqeustor as part of response.result
-              res.result = await handler(requestor, req)
-              return end()
-
-            } catch (err) {
-              res.error = err;
-              return end(err)
-            }
-          }
-        },
-
-        'eth_addPlugin_*': {
-          description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
-          method: async (req, res, next, end) => {
-            const pluginNameMatch = req.method.match(/eth_addPlugin_(.+)/)
-            const pluginName = pluginNameMatch && pluginNameMatch[1]
-            const sourceUrl = req.params[0].sourceUrl
-
-            const response = await this.pluginsController.add(pluginName, sourceUrl)
-            return response
-          },
-        },
-        'eth_runPlugin_*': {
-          description: 'Run plugin $1, which will be able to do the following:',
-          method: async (req, res, next, end) => {
-            const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
-            const pluginName = pluginNameMatch && pluginNameMatch[1]
-
-            const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
-            const result = await this.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
-            res.result = result
-            return end()
-          },
-        },
-
-        ...pluginRestrictedMethods,
+        ...this.externalRestrictedMethods, ...pluginRestrictedMethods,
       },
 
       /**
@@ -394,12 +255,7 @@ class PermissionsController {
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }
-        },
-        // TODO: This should be persisted/restored state.
-        {})
-
-        // TODO: Attenuate requested permissions in approval screen.
-        // Like selecting the account to display.
+        })
       },
     }, initState)
   }

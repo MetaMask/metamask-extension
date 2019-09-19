@@ -10,12 +10,9 @@ const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
 
 // Modal Components
-const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
 import AccountDetailsModal from './account-details-modal'
-const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
-const NewAccountModal = require('./new-account-modal')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
@@ -28,6 +25,8 @@ import CancelTransaction from './cancel-transaction'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearPermissions from './clear-permissions'
+import ClearPermissionsActivity from './clear-permissions-activity'
+import ClearPermissionsHistory from './clear-permissions-history'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
@@ -81,32 +80,6 @@ const accountModalStyle = {
 }
 
 const MODALS = {
-  BUY: {
-    contents: [
-      h(BuyOptions, {}, []),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      top: '10%',
-    },
-    laptopModalStyle: {
-      width: '66%',
-      maxWidth: '550px',
-      top: 'calc(10% + 10px)',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      transform: 'none',
-    },
-  },
-
   DEPOSIT_ETHER: {
     contents: [
       h(DepositEtherModal, {}, []),
@@ -139,32 +112,6 @@ const MODALS = {
     contentStyle: {
       borderRadius: '7px',
       height: '100%',
-    },
-  },
-
-  EDIT_ACCOUNT_NAME: {
-    contents: [
-      h(EditAccountNameModal, {}, []),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      // top: 'calc(30% + 10px)',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
     },
   },
 
@@ -238,6 +185,32 @@ const MODALS = {
     },
   },
 
+  CLEAR_PERMISSIONS_ACTIVITY: {
+    contents: h(ClearPermissionsActivity),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CLEAR_PERMISSIONS_HISTORY: {
+    contents: h(ClearPermissionsHistory),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   METAMETRICS_OPT_IN_MODAL: {
     contents: h(MetaMetricsOptInModal),
     mobileModalStyle: {
@@ -252,23 +225,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  OLD_UI_NOTIFICATION_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'oldUI',
-        message: 'oldUIMessage',
-      }),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
     },
   },
 
@@ -342,30 +298,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  NEW_ACCOUNT: {
-    contents: [
-      h(NewAccountModal, {}, []),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-      top: '10%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      // top: 'calc(33% + 45px)',
-      top: '10%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
     },
   },
 

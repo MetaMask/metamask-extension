@@ -5,6 +5,7 @@ const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
 const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
+import switchDirection from './app/helpers/utils/switch-direction'
 const log = require('loglevel')
 
 module.exports = launchMetamaskUi
@@ -32,6 +33,10 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     ? await fetchLocale(metamaskState.currentLocale)
     : {}
   const enLocaleMessages = await fetchLocale('en')
+
+  if (metamaskState.textDirection === 'rtl') {
+    await switchDirection('rtl')
+  }
 
   const store = configureStore({
     activeTab: opts.activeTab,
@@ -62,6 +67,14 @@ async function startApp (metamaskState, backgroundConnection, opts) {
 
   backgroundConnection.on('update', function (metamaskState) {
     console.log('metamaskState', metamaskState)
+    const currentState = store.getState()
+    const { currentLocale } = currentState.metamask
+    const { currentLocale: newLocale } = metamaskState
+
+    if (currentLocale && newLocale && currentLocale !== newLocale) {
+      store.dispatch(actions.updateCurrentLocale(newLocale))
+    }
+
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
@@ -72,6 +85,9 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     },
     setProviderType: (type) => {
       store.dispatch(actions.setProviderType(type))
+    },
+    setFeatureFlag: (key, value) => {
+      store.dispatch(actions.setFeatureFlag(key, value))
     },
   }
 

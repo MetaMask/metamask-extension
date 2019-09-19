@@ -1,7 +1,7 @@
 const assert = require('assert')
 const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
 
-describe('', function () {
+describe('buy-eth-url', function () {
   const mainnet = {
     network: '1',
     amount: 5,

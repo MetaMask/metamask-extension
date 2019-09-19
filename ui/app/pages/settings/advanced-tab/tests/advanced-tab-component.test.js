@@ -6,7 +6,7 @@ import AdvancedTab from '../advanced-tab.component'
 import TextField from '../../../../components/ui/text-field'
 
 describe('AdvancedTab Component', () => {
-  it('should render correctly', () => {
+  it('should render correctly when threeBoxFeatureFlag is false', () => {
     const root = shallow(
       <AdvancedTab />,
       {
@@ -17,6 +17,19 @@ describe('AdvancedTab Component', () => {
     )
 
     assert.equal(root.find('.settings-page__content-row').length, 7)
+  })
+
+  it('should render correctly threeBoxFeatureFlag is true', () => {
+    const root = shallow(
+      <AdvancedTab threeBoxFeatureFlag={true} />,
+      {
+        context: {
+          t: s => `_${s}`,
+        },
+      }
+    )
+
+    assert.equal(root.find('.settings-page__content-row').length, 8)
   })
 
   it('should update autoLogoutTimeLimit', () => {
@@ -32,7 +45,7 @@ describe('AdvancedTab Component', () => {
       }
     )
 
-    const autoTimeout = root.find('.settings-page__content-row').last()
+    const autoTimeout = root.find('.settings-page__content-row').at(6)
     const textField = autoTimeout.find(TextField)
 
     textField.props().onChange({ target: { value: 1440 } })

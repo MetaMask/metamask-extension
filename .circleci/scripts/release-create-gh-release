@@ -28,24 +28,24 @@ function install_github_cli ()
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
-if grep --quiet '^Version v' <<< "$current_commit_msg"
+if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]
 then
+    tag="${BASH_REMATCH[1]}"
+
     install_github_cli
 
     printf '%s\n' 'Creating GitHub Release'
-    read -ra commit_words <<< "$current_commit_msg"
-    tag="${commit_words[1]}"
     release_body="$(awk -v version="${tag##v}" -f .circleci/scripts/show-changelog.awk CHANGELOG.md)"
     pushd builds
         hub release create \
             --attach metamask-chrome-*.zip \
             --attach metamask-firefox-*.zip \
-            --message "${commit_words[0]} ${commit_words[1]#v}" \
+            --message "Version ${tag##v}" \
             --message "$release_body" \
             --commitish "$CIRCLE_SHA1" \
             "$tag"
     popd
 else
-    printf '%s\n' 'Skipping GitHub Release'
+    printf '%s\n' 'Version not found in commit message; skipping GitHub Release'
     exit 0
 fi

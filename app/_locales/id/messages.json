@@ -1,0 +1,1379 @@
+{
+  "privacyModeDefault": {
+    "message": "Modus Privasi kini aktif secara default"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Grafik hanya tersedia pada jaringan Ethereum."
+  },
+  "confirmClear": {
+    "message": "Yakin ingin mengosongkan website yang disetujui?"
+  },
+  "contractInteraction": {
+    "message": "Interaksi Kontrak"
+  },
+  "clearApprovalData": {
+    "message": "Bersihkan Data Privasi"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "reject": {
+    "message": "Tolak"
+  },
+  "providerRequest": {
+    "message": "$1 ingin menghubungkan ke akun Anda"
+  },
+  "providerRequestInfo": {
+    "message": "Situs ini meminta akses untuk melihat alamat akun Anda saat ini. Selalu pastikan bahwa Anda bisa mempercayai situs yang berinteraksi dengan Anda."
+  },
+  "about": {
+    "message": "Tentang"
+  },
+  "aboutSettingsDescription": {
+    "message": "Versi, pusat dukungan, dan informasi kontak."
+  },
+  "acceleratingATransaction": {
+    "message": "* Mempercepat transaksi dengan menggunakan harga gas yang lebih tinggi meningkatkan peluangnya untuk lebih cepat diproses oleh jaringan, tetapi tak selalu terjamin pasti cepat."
+  },
+  "accessingYourCamera": {
+    "message": "Mengakses kamera Anda..."
+  },
+  "account": {
+    "message": "Akun"
+  },
+  "accountDetails": {
+    "message": "Rincian Akun"
+  },
+  "accountName": {
+    "message": "Nama Akun"
+  },
+  "accountOptions": {
+    "message": "Opsi Akun"
+  },
+  "accountSelectionRequired": {
+    "message": "Anda perlu memilih akun!"
+  },
+  "activityLog": {
+    "message": "log aktivitas"
+  },
+  "addNetwork": {
+    "message": "Tambah Jaringan"
+  },
+  "addRecipient": {
+    "message": "Tambah Penerima"
+  },
+  "advanced": {
+    "message": "Lanjutan"
+  },
+  "advancedSettingsDescription": {
+    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom."
+  },
+  "advancedOptions": {
+    "message": "Opsi Lanjutan"
+  },
+  "addToAddressBook": {
+    "message": "Tambahkan ke buku alamat "
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "cth: John D."
+  },
+  "addAlias": {
+    "message": "Tambah alias"
+  },
+  "addToken": {
+    "message": "Tambah Token"
+  },
+  "addTokens": {
+    "message": "Tambah Token"
+  },
+  "addSuggestedTokens": {
+    "message": "Tambah Token yang Disarankan"
+  },
+  "addAcquiredTokens": {
+    "message": "Tambahkan token yang sudah Anda peroleh menggunakan MetaMask"
+  },
+  "amount": {
+    "message": "Jumlah"
+  },
+  "appDescription": {
+    "message": "Sebuah Dompet Ethereum di Peramban Anda",
+    "description": "The description of the application"
+  },
+  "approve": {
+    "message": "Setujui"
+  },
+  "approved": {
+    "message": "Disetujui"
+  },
+  "asset": {
+    "message": "Aset"
+  },
+  "attemptingConnect": {
+    "message": "Mencoba menghubungkan ke blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Coba Batalkan?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Mengirimkan upaya ini tidak menjamin transaksi asli Anda akan dibatalkan. Jika upaya pembatalan berhasil, Anda akan dikenakan biaya transaksi di atas."
+  },
+  "attributions": {
+    "message": "Atribusi"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Jangka Waktu Keluar-Otomatis (menit)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Atur waktu diam dalam menit sebelum MetaMask mengeluarkan Anda secara otomatis"
+  },
+  "average": {
+    "message": "Rata-rata"
+  },
+  "back": {
+    "message": "Mundur"
+  },
+  "backToAll": {
+    "message": "Kembali ke Semua"
+  },
+  "backupApprovalNotice": {
+    "message": "Cadangkan kode Pemulihan Rahasia guna mengamankan dompet dan dana Anda."
+  },
+  "backupApprovalInfo": {
+    "message": "Kode rahasia Anda diperlukan untuk memulihkan dompet jika perangkat hilang, lupa sandi, harus menginstal ulang MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
+  },
+  "backupNow": {
+    "message": "Cadangkan sekarang"
+  },
+  "balance": {
+    "message": "Saldo"
+  },
+  "balanceOutdated": {
+    "message": "Saldo mungkin kedaluwarsa"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Saldo tidak cukup untuk total bensin saat ini"
+  },
+  "basic": {
+    "message": "Dasar"
+  },
+  "betweenMinAndMax": {
+    "message": "harus lebih dari atau sama dengan $1 dan kurang dari atau sama dengan $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blokir Penjelajah"
+  },
+  "blockExplorerView": {
+    "message": "Lihat akun di $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Gunakan Blockies Identicon"
+  },
+  "browserNotSupported": {
+    "message": "Peramban Anda tidak didukung..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask dirancang dan dibangun di California."
+  },
+  "buyWithWyre": {
+    "message": "Membeli ETH dengan Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre mengizinkan Anda menggunakan kartu kredit untuk mendepositkan ETH langsung ke akun  MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Beli di CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch adalah destinasi serba-ada untuk pertukaran lebih dari 300 mata uang kripto dengan kurs terbaik."
+  },
+  "bytes": {
+    "message": "Byte"
+  },
+  "off": {
+    "message": "Mati"
+  },
+  "ok": {
+    "message": "Oke"
+  },
+  "on": {
+    "message": "Aktif"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Blokir URL Penjelajah (opsional)"
+  },
+  "cancel": {
+    "message": "Batal"
+  },
+  "cancelAttempt": {
+    "message": "Batalkan Percobaan"
+  },
+  "cancellationGasFee": {
+    "message": "Pembatalan Biaya Gas"
+  },
+  "cancelled": {
+    "message": "Dibatalkan"
+  },
+  "chainId": {
+    "message": "ID Rantai"
+  },
+  "clickToAdd": {
+    "message": "Klik $1 untuk menambahkannya ke akun Anda"
+  },
+  "clickToRevealSeed": {
+    "message": "Klik di sini untuk mengungkapkan kata-kata rahasia"
+  },
+  "close": {
+    "message": "Tutup"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Anda harus menggunakan MetaMask di Google Chrome untuk menyambung ke dompet Perangkat Keras Anda."
+  },
+  "confirm": {
+    "message": "Konfirmasi"
+  },
+  "confirmed": {
+    "message": "Dikonfirmasi"
+  },
+  "confirmPassword": {
+    "message": "Konfirmasi Sandi"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Konfirmasikan Frasa Cadangan Rahasia Anda"
+  },
+  "congratulations": {
+    "message": "Selamat"
+  },
+  "connectHardwareWallet": {
+    "message": "Hubungkan Dompet Peranti Keras"
+  },
+  "connect": {
+    "message": "Sambungkan"
+  },
+  "connectRequest": {
+    "message": "Permintaan Sambungan"
+  },
+  "connectingTo": {
+    "message": "Menghubungkan ke $1"
+  },
+  "connectingToKovan": {
+    "message": "Menyambung ke Jaringan Tes Kovan"
+  },
+  "connectingToMainnet": {
+    "message": "Menghubungkan ke Jaringan Ethereum Utama"
+  },
+  "connectingToRopsten": {
+    "message": "Menghubungkan ke Jaringan Uji Coba Ropsten "
+  },
+  "connectingToRinkeby": {
+    "message": "Menghubungkan ke Jaringan Uji Coba Rinkeby  "
+  },
+  "connectingToLocalhost": {
+    "message": "Menghubungkan ke Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Menghubungkan ke Jaringan Uji Coba Goerli"
+  },
+  "continueToWyre": {
+    "message": "Lanjutkan ke Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Lanjut ke CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Penerapan Kontrak"
+  },
+  "conversionProgress": {
+    "message": "Konversi sedang berlangsung"
+  },
+  "copiedButton": {
+    "message": "Tersalin"
+  },
+  "copiedExclamation": {
+    "message": "Disalin!"
+  },
+  "copy": {
+    "message": "Salin"
+  },
+  "copyAddress": {
+    "message": "Salin alamat ke clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Salin ID Transaksi"
+  },
+  "copiedTransactionId": {
+    "message": "ID Transaksi Tersalin"
+  },
+  "copyToClipboard": {
+    "message": "Salin ke papan klip"
+  },
+  "copyButton": {
+    "message": "Salin"
+  },
+  "copyPrivateKey": {
+    "message": "Ini adalah kunci pribadi Anda (klik untuk menyalin)"
+  },
+  "create": {
+    "message": "Buat"
+  },
+  "createAccount": {
+    "message": "Buat Akun"
+  },
+  "createAWallet": {
+    "message": "Buat Dompet"
+  },
+  "createPassword": {
+    "message": "Buat Sandi"
+  },
+  "currencyConversion": {
+    "message": "Konversi Mata Uang"
+  },
+  "currentLanguage": {
+    "message": "Bahasa Saat Ini"
+  },
+  "customGas": {
+    "message": "Kustomisasi Bensin"
+  },
+  "customGasSubTitle": {
+    "message": "Meningkatkan harga dapat mengurangi waktu pemrosesan, tetapi ini tidak dijamin."
+  },
+  "customToken": {
+    "message": "Token Kustom"
+  },
+  "customRPC": {
+    "message": "RPC Kustom"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desimal harus sekurang-kurangnya 0, dan tidak lebih dari 36."
+  },
+  "decimal": {
+    "message": "Ketelitian Desimal"
+  },
+  "defaultNetwork": {
+    "message": "Jaringan default untuk transaksi Ether adalah Main Net."
+  },
+  "delete": {
+    "message": "Hapus"
+  },
+  "deleteAccount": {
+    "message": "Hapus Akun"
+  },
+  "details": {
+    "message": "Detail"
+  },
+  "directDepositEther": {
+    "message": "Deposit Ether Langsung"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Jika Anda sudah memiliki Ether, cara tercepat mendapatkan Ether di dompet baru lewat deposit langsung."
+  },
+  "dismiss": {
+    "message": "Tutup"
+  },
+  "done": {
+    "message": "Selesai"
+  },
+  "downloadGoogleChrome": {
+    "message": "Unduh Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Unduh Frasa Cadangan Rahasia ini dan simpanlah dengan aman di hard drive eksternal atau media penyimpanan terenkripsi."
+  },
+  "downloadStateLogs": {
+    "message": "Unduh Log Kondisi"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Tidak punya dompet perangkat keras?"
+  },
+  "dropped": {
+    "message": "Jatuh"
+  },
+  "editContact": {
+    "message": "Sunting Kontak"
+  },
+  "emailUs": {
+    "message": "Kirimkan kami email!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Anda lulus tes - jagalah agar frasa benih Anda aman, itu tanggung jawab Anda!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips menyimpan secara aman"
+  },
+  "endOfFlowMessage3": {
+    "message": "Simpanlah cadangan di beberapa tempat."
+  },
+  "endOfFlowMessage4": {
+    "message": "Jangan pernah bagikan frasa dengan siapa pun."
+  },
+  "endOfFlowMessage5": {
+    "message": "Hati-hati terhadap phishing! MetaMask tidak akan pernah meminta frasa benih Anda secara spontan."
+  },
+  "endOfFlowMessage6": {
+    "message": "Jika Anda perlu mencadangkan frase seed lagi, Anda dapat menemukannya dalam Pengaturan -> Keamanan."
+  },
+  "endOfFlowMessage7": {
+    "message": "Jika Anda punya pertanyaan atau melihat sesuatu yang ganjil, kirimkan email ke support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask tidak dapat memulihkan frasa seed Anda. Pelajari lebih lanjut."
+  },
+  "endOfFlowMessage9": {
+    "message": "Pelajari lebih lanjut."
+  },
+  "endOfFlowMessage10": {
+    "message": "Selesai"
+  },
+  "ensRegistrationError": {
+    "message": "Terjadi kesalahan dalam pendaftaran nama ENS"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "Nama ENS tidak ditemukan pada jaringan saat ini. Cobalah beralih ke jaringan Ethereum utama."
+  },
+  "enterAnAlias": {
+    "message": "Masukkan alias"
+  },
+  "enterPassword": {
+    "message": "Masukkan sandi"
+  },
+  "enterPasswordContinue": {
+    "message": "Masukkan sandi untuk melanjutkan"
+  },
+  "ethereumPublicAddress": {
+    "message": "Alamat Publik Ethereum "
+  },
+  "etherscanView": {
+    "message": "Lihat akun di Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Estimasi Waktu Pemrosesan"
+  },
+  "expandView": {
+    "message": "Bentangkan Tampilan"
+  },
+  "exportPrivateKey": {
+    "message": "Ekspor Kunci Privat"
+  },
+  "failed": {
+    "message": "Gagal"
+  },
+  "fast": {
+    "message": "Cepat"
+  },
+  "faster": {
+    "message": "Lebih Cepat"
+  },
+  "fileImportFail": {
+    "message": "Impor berkas tidak tersedia? Klik di sini!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Lupakan perangkat ini"
+  },
+  "from": {
+    "message": "Dari"
+  },
+  "fromShapeShift": {
+    "message": "Dari ShapeShift"
+  },
+  "functionType": {
+    "message": "Jenis Fungsi"
+  },
+  "gasLimit": {
+    "message": "Batas Gas"
+  },
+  "gasLimitCalculation": {
+    "message": "Kami menghitung batas gas yang disarankan berdasarkan tingkat kesuksesan jaringan."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Limit Bensin adalah jumlah maksimal satuan bensin yang Anda bersedia gunakan."
+  },
+  "gasLimitTooLow": {
+    "message": "Batas Gas harus paling tidak 21000"
+  },
+  "gasUsed": {
+    "message": "Gas yang Digunakan"
+  },
+  "gasPrice": {
+    "message": "Harga Bensin (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Harga Bensin Amat Rendah"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Harga gas menentukan jumlah Ether yang bersedia Anda bayarkan untuk setiap unit gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Harga Bensin"
+  },
+  "gasPriceCalculation": {
+    "message": "Kami menghitung harga bensin yang disarankan berdasarkan tingkat keberhasilan jaringan."
+  },
+  "general": {
+    "message": "Umum"
+  },
+  "generalSettingsDescription": {
+    "message": "Konversi mata uang, mata uang utama, bahasa, blockies identicon"
+  },
+  "getEther": {
+    "message": "Dapatkan Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Dapatkan Ether dari keran untuk $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Dapatkan Bantuan."
+  },
+  "getStarted": {
+    "message": "Mulai"
+  },
+  "greaterThanMin": {
+    "message": "harus lebih besar atau sama dengan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Kami senang bertemu dengan Anda."
+  },
+  "hardware": {
+    "message": "perangkat keras"
+  },
+  "hardwareWalletConnected": {
+    "message": "Dompet peranti keras terhubung"
+  },
+  "hardwareWallets": {
+    "message": "Hubungkan dompet peranti keras"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Pilih dompet hardware yang ingin Anda pakai dengan MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Kesulitan menghubungkan?"
+  },
+  "here": {
+    "message": "di sini",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Data Hex"
+  },
+  "hide": {
+    "message": "Sembunyikan"
+  },
+  "hideToken": {
+    "message": "Sembunyikan Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Sembunyikan Token?"
+  },
+  "history": {
+    "message": "Histori"
+  },
+  "import": {
+    "message": "Impor",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Impor Akun"
+  },
+  "importAccountMsg": {
+    "message": "Akun impor tidak akan dihubungkan dengan frasa benih akun MetaMask yang diciptakan pertama kali. Pelajari lebih lanjut tentang akun impor"
+  },
+  "importAccountSeedPhrase": {
+    "message": "Impor Akun dengan Frasa Benih"
+  },
+  "importWallet": {
+    "message": "Impor Dompet"
+  },
+  "importYourExisting": {
+    "message": "Impor dompet Anda yang ada menggunakan frasa 12 benih kata"
+  },
+  "imported": {
+    "message": "Diimpor",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Impor menggunakan frasa benih akun"
+  },
+  "infoHelp": {
+    "message": "Info & Bantuan"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Transaksi awal Anda telah dikonfirmasi oleh jaringan. Klik OK untuk kembali."
+  },
+  "insufficientBalance": {
+    "message": "Saldo tidak mencukupi."
+  },
+  "insufficientFunds": {
+    "message": "Dana tidak cukup."
+  },
+  "insufficientTokens": {
+    "message": "Token tak mencukupi."
+  },
+  "invalidAddress": {
+    "message": "Alamat tidak sah"
+  },
+  "invalidAddressRecipient": {
+    "message": "Alamat penerima tidak valid"
+  },
+  "knownAddressRecipient": {
+    "message": "Alamat kontrak dikenal."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Bukan jaringan ETH, tetapkan ke huruf kecil"
+  },
+  "invalidInput": {
+    "message": "Input tidak sah."
+  },
+  "invalidRPC": {
+    "message": "URL RPC Tidak Sah"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "URL Block Explorer Tidak Sah"
+  },
+  "invalidSeedPhrase": {
+    "message": "Frasa benih tidak valid"
+  },
+  "jsonFile": {
+    "message": "Berkas JSON",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Jaringan Uji Coba Kovan"
+  },
+  "max": {
+    "message": "Maks"
+  },
+  "learnMore": {
+    "message": "Pelajari lebih lanjut"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Anda perlu menggunakan akun terakhir sebelum dapat menambahkan akun baru."
+  },
+  "lessThanMax": {
+    "message": "harus kurang dari atau setara $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ya, ayo tata!"
+  },
+  "likeToAddTokens": {
+    "message": "Apakah Anda ingin menambahkan token-token ini?"
+  },
+  "links": {
+    "message": "Tautan"
+  },
+  "liveGasPricePredictions": {
+    "message": "Prediksi Harga Gas Langsung"
+  },
+  "loading": {
+    "message": "Memuat..."
+  },
+  "loadingTokens": {
+    "message": "Memuat Token..."
+  },
+  "loadMore": {
+    "message": "Muat Lainnya"
+  },
+  "login": {
+    "message": "Masuk"
+  },
+  "logout": {
+    "message": "Keluar"
+  },
+  "mainnet": {
+    "message": "Jaringan Ethereum Utama"
+  },
+  "memorizePhrase": {
+    "message": "Ingatlah frasa ini."
+  },
+  "message": {
+    "message": "Pesan"
+  },
+  "metamaskDescription": {
+    "message": "Menghubungkan Anda ke Ethereum dan Web Terdesentralisasi."
+  },
+  "metamaskSeedWords": {
+    "message": "Kata Benih MetaMask"
+  },
+  "metamaskVersion": {
+    "message": "Versi MetaMask"
+  },
+  "missingYourTokens": {
+    "message": "Tidak melihat token Anda?"
+  },
+  "mobileSyncText": {
+    "message": "Harap masukkan sandi untuk mengonfirmasi ini memang Anda!"
+  },
+  "myAccounts": {
+    "message": "Akun Saya"
+  },
+  "myWalletAccounts": {
+    "message": "Akun Dompet Saya"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Semua akun Anda yang dibuat oleh MetaMask otomatis akan ditambahkan ke bagian ini."
+  },
+  "mustSelectOne": {
+    "message": "Harus memilih setidaknya 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Untuk berinteraksi dengan aplikasi terdesentralisasi menggunakan MetaMask, Anda memerlukan adanya Ether di dompet Anda."
+  },
+  "needImportFile": {
+    "message": "Anda harus memilih berkas untuk diimpor.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Tidak dapat mengirim nominal negatif ETH."
+  },
+  "networkName": {
+    "message": "Nama Jaringan"
+  },
+  "networks": {
+    "message": "Jaringan"
+  },
+  "networkSettingsDescription": {
+    "message": "Tambah dan edit jaringan RPC kustom"
+  },
+  "nevermind": {
+    "message": "Abaikan"
+  },
+  "newAccount": {
+    "message": "Akun Baru"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Alamat baru terdeteksi! Klik di sini untuk menambahkannya ke buku alamat."
+  },
+  "newAccountNumberName": {
+    "message": "Akun $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Kontak Baru"
+  },
+  "newContract": {
+    "message": "Kontrak Baru"
+  },
+  "newPassword": {
+    "message": "Kata Sandi Baru (min 8 karakter)"
+  },
+  "newNetwork": {
+    "message": "Jaringan Baru"
+  },
+  "newToMetaMask": {
+    "message": "Baru di MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Tidak, saya sudah memiliki frasa seed"
+  },
+  "protectYourKeys": {
+    "message": "Lindungi Kunci Anda!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Berhati-hatilah dengan frasa seed Anda — terdapat laporan tentang website yang coba mengimitasi MetaMask. MetaMask tidak akan pernah meminta frasa seed Anda!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Jaga keamanan frasa Anda. Jika Anda menemukan sesuatu yang mencurigakan, atau ragu dengan sebuah situs web, kirim surel ke support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "URL RPC Baru"
+  },
+  "optionalChainId": {
+    "message": "ID Rantai (opsional)"
+  },
+  "optionalSymbol": {
+    "message": "Simbol (opsional)"
+  },
+  "newTotal": {
+    "message": "Total Baru"
+  },
+  "newTransactionFee": {
+    "message": "Biaya Transaksi Baru"
+  },
+  "next": {
+    "message": "Berikutnya"
+  },
+  "noAddressForName": {
+    "message": "Belum ada alamat yang dipasang untuk nama ini."
+  },
+  "noDeposits": {
+    "message": "Belum ada setoran yang diterima"
+  },
+  "noConversionRateAvailable": {
+    "message": "Kurs Konversi Tidak Tersedia"
+  },
+  "noTransactions": {
+    "message": "Anda tidak memiliki transaksi"
+  },
+  "notEnoughGas": {
+    "message": "Bensin Tidak Cukup"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam tidak ditemukan"
+  },
+  "noWebcamFound": {
+    "message": "Webcam komputer Anda tidak ditemukan. Harap coba kembali."
+  },
+  "ofTextNofM": {
+    "message": "dari"
+  },
+  "orderOneHere": {
+    "message": "Pesanlah Trezor atau Ledger dan simpan dana Anda di penyimpanan dingin"
+  },
+  "origin": {
+    "message": "Asal"
+  },
+  "parameters": {
+    "message": "Parameter"
+  },
+  "participateInMetaMetrics": {
+    "message": "Berpartisipasilah di MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Berpartisipasilah dalam MetaMetrics guna membantu kami menjadikan MetaMask lebih baik"
+  },
+  "password": {
+    "message": "Sandi"
+  },
+  "passwordsDontMatch": {
+    "message": "Sandi Tidak Sama"
+  },
+  "passwordNotLongEnough": {
+    "message": "Sandi kurang panjang"
+  },
+  "pastePrivateKey": {
+    "message": "Tempelkan string kunci privat di sini:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Tempel frasa benih Anda di sini!"
+  },
+  "pending": {
+    "message": "tertunda"
+  },
+  "personalAddressDetected": {
+    "message": "Alamat personal terdeteksi. Masukkan alamat kontrak token."
+  },
+  "prev": {
+    "message": "Sebelumnya"
+  },
+  "primaryCurrencySetting": {
+    "message": "Mata Uang Utama"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Pilih asli untuk memprioritaskan menampilkan nilai dalam mata uang asli dari rantai (cth: ETH). Pilih Fiat untuk memprioritaskan menampilkan nilai dalam mata uang fiat pilihan Anda."
+  },
+  "privacyMsg": {
+    "message": "Kebijakan Privasi"
+  },
+  "privateKey": {
+    "message": "Kunci Pribadi",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "PERINGATAN: Jangan pernah mengungkap kunci ini. Siapa saja dapat mencuri aset yang tersimpan di akun Anda dengan kunci pribadi Anda."
+  },
+  "privateNetwork": {
+    "message": "Jaringan Privat"
+  },
+  "qrCode": {
+    "message": "Tampilkan Kode QR"
+  },
+  "queue": {
+    "message": "Antrean"
+  },
+  "readdToken": {
+    "message": "Anda dapat menambahkan token ini kembali di masa mendatang dengan memilih opsi \"Tambah Token\" di menu opsi akun Anda."
+  },
+  "recents": {
+    "message": "Terkini"
+  },
+  "recipientAddress": {
+    "message": "Alamat Penerima"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Pencarian, alamat publik  (0x), atau ENS"
+  },
+  "rejectAll": {
+    "message": "Tolak Semua"
+  },
+  "rejectTxsN": {
+    "message": "Tolak transaksi $1"
+  },
+  "rejectTxsDescription": {
+    "message": "Anda akan menolak tumpak $1 transaksi."
+  },
+  "rejected": {
+    "message": "Ditolak"
+  },
+  "reset": {
+    "message": "Setel ulang"
+  },
+  "resetAccount": {
+    "message": "Reset Akun"
+  },
+  "resetAccountDescription": {
+    "message": "Mengatur ulang akun akan membersihkan riwayat transaksi Anda."
+  },
+  "deleteNetwork": {
+    "message": "Hapus Jaringan?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Apakah Anda yakin ingin menghapus jaringan ini?"
+  },
+  "remindMeLater": {
+    "message": "Ingatkan saya nanti."
+  },
+  "restoreFromSeed": {
+    "message": "Pulihkan Akun?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Pulihkan Akun Anda dengan Frasa Benih"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "permintaan menunggu untuk dibenarkan"
+  },
+  "required": {
+    "message": "Dibutuhkan"
+  },
+  "restore": {
+    "message": "Pulihkan"
+  },
+  "revealSeedWords": {
+    "message": "Singkap Kata-Kata Benih"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Frasa Seed"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Jika mengganti peramban atau memindahkan komputer, Anda akan memerlukan frasa seed ini untuk mengakses akun. Simpanlah di tempat aman dan rahasia."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "JANGAN sebarkan frasa ini ke siapa pun!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
+  },
+  "revert": {
+    "message": "Urungkan"
+  },
+  "remove": {
+    "message": "Hapus"
+  },
+  "removeAccount": {
+    "message": "Hapus akun"
+  },
+  "removeAccountDescription": {
+    "message": "Akun ini akan dihapus dari dompet. Pastikan Anda memiliki frasa seed asli atau kunci privat untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari menu drop-down akun."
+  },
+  "readyToConnect": {
+    "message": "Siap untuk Menyambung?"
+  },
+  "rinkeby": {
+    "message": "Jaringan Uji Rinkeby"
+  },
+  "ropsten": {
+    "message": "Jaringan Tes Ropsten"
+  },
+  "goerli": {
+    "message": "Jaringan Uji Goerli"
+  },
+  "save": {
+    "message": "Simpan"
+  },
+  "slow": {
+    "message": "Lambat"
+  },
+  "slower": {
+    "message": "Lebih Lambat"
+  },
+  "saveAsCsvFile": {
+    "message": "Simpan sebagai Berkas CSV"
+  },
+  "scanInstructions": {
+    "message": "Tempatkan kode QR di depan kamera Anda"
+  },
+  "scanQrCode": {
+    "message": "Pindai Kode QR"
+  },
+  "search": {
+    "message": "Telusuri"
+  },
+  "searchResults": {
+    "message": "Hasil Pencarian"
+  },
+  "secretBackupPhrase": {
+    "message": "Frasa Cadangan Rahasia"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Frasa cadangan rahasia Anda akan memudahkan untuk membuat cadangan dan memulihkan akun Anda."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "PERINGATAN: Jangan pernah mengungkap frasa cadangan Anda. Siapa saja dapat mengambil Ether Anda selamanya dengan frasa ini."
+  },
+  "secretPhrase": {
+    "message": "Masukkan frasa dua belas kata rahasia Anda di sini untuk memulihkan lemari besi Anda."
+  },
+  "securityAndPrivacy": {
+    "message": "Keamanan & Privasi"
+  },
+  "securitySettingsDescription": {
+    "message": "Pengaturan privasi dan frasa seed dompet"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Pisahkan setiap kata dengan spasi tunggal"
+  },
+  "seedPhraseReq": {
+    "message": "Frasa seed terdiri atas 12 kata"
+  },
+  "selectCurrency": {
+    "message": "Pilih Mata Uang"
+  },
+  "selectEachPhrase": {
+    "message": "Silakan pilih setiap frasa untuk memastikan bahwa ini benar."
+  },
+  "selectLocale": {
+    "message": "Pilih Lokal"
+  },
+  "selectType": {
+    "message": "Pilih Jenis"
+  },
+  "send": {
+    "message": "Kirim"
+  },
+  "sendAmount": {
+    "message": "Nominal Kirim"
+  },
+  "sendETH": {
+    "message": "Kirim ETH"
+  },
+  "sendTokens": {
+    "message": "Kirim Token"
+  },
+  "sentEther": {
+    "message": "kirim ether"
+  },
+  "sentTokens": {
+    "message": "token terkirim"
+  },
+  "separateEachWord": {
+    "message": "Pisahkan setiap kata dengan spasi tunggal"
+  },
+  "searchTokens": {
+    "message": "Cari Token"
+  },
+  "selectAnAccount": {
+    "message": "Pilih Akun"
+  },
+  "selectAnAccountHelp": {
+    "message": "Pilih akun untuk dilihat di MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Pilih biaya gas yang lebih tinggi untuk mempercepat proses transaksi Anda.*"
+  },
+  "selectHdPath": {
+    "message": "Pilih HD Path"
+  },
+  "selectPathHelp": {
+    "message": "Jika tidak melihat akun Buku Besar Anda saat ini di bawah, cobalah beralih jalur ke \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Setelan"
+  },
+  "showAdvancedGasInline": {
+    "message": "Kendali gas tingkat lanjut"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Pilih ini untuk menampilkan harga gas dan batasi kontrol langsung pada layar pengiriman dan konfirmasi."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Tampilkan Konversi di Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Pilih ini untuk menampilkan konversi fiat di Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Tampilkan Kunci Pribadi"
+  },
+  "showHexData": {
+    "message": "Tampilkan Data Hex"
+  },
+  "showHexDataDescription": {
+    "message": "Pilih ini untuk menampilkan larik data heksadesimal pada layar pengiriman"
+  },
+  "sign": {
+    "message": "Tanda tangani"
+  },
+  "signatureRequest": {
+    "message": "Permintaan Tanda Tangan"
+  },
+  "signed": {
+    "message": "Ditandatangani"
+  },
+  "signNotice": {
+    "message": "Menandatangani pesan ini dapat memberi efek samping yang berbahaya. Hanya tanda tangani pesan dari situs yang benar-benar Anda percayakan dengan seluruh akun Anda.\nMetode berbahaya ini akan dihapus di versi mendatang."
+  },
+  "sigRequest": {
+    "message": "Permintaan Tanda Tangan"
+  },
+  "somethingWentWrong": {
+    "message": "Ups! Terjadi sesuatu."
+  },
+  "speedUp": {
+    "message": "Percepat"
+  },
+  "speedUpCancellation": {
+    "message": "Percepat pembatalan ini"
+  },
+  "speedUpTransaction": {
+    "message": "Percepat transaksi ini"
+  },
+  "switchNetworks": {
+    "message": "Ganti Jaringan"
+  },
+  "stateLogs": {
+    "message": "Log Kondisi"
+  },
+  "stateLogsDescription": {
+    "message": "Log status mengandung alamat akun publik dan transaksi terkirim Anda."
+  },
+  "stateLogError": {
+    "message": "Kesalahan dalam mengambil log kondisi."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Hubungkan Dompet Peranti Keras"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Hubungkan dompet perangkat keras Anda langsung ke komputer Anda."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Pilih Akun"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Pilih akun yang ingin Anda tinjau. Anda hanya dapat memilih satu akun pada satu waktu."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Mulai gunakan dApps dan lainnya!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Gunakan akun peranti keras Anda seperti layaknya akun Ethereum. Masuklah ke dApps, kirim Eth, beli dan simpan token ERC20 dan token Non-Fungible seperti CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Simpan frasa ini dalam manajer sandi seperti 1Password."
+  },
+  "submit": {
+    "message": "Kirim"
+  },
+  "submitted": {
+    "message": "Terkirim"
+  },
+  "supportCenter": {
+    "message": "Kunjungi Pusat Bantuan kami"
+  },
+  "symbol": {
+    "message": "Simbol"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbol harus antara 0 sampai 12 karakter."
+  },
+  "syncWithMobile": {
+    "message": "Sinkronkan dengan ponsel"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sinkronkan dengan seluler"
+  },
+  "syncWithMobileDesc": {
+    "message": "Anda dapat menyinkronkan akun dan informasi Anda dengan perangkat seluler. Buka aplikasi seluler MetaMask, pilih \"Pengaturan\" lalu ketuk \"Sinkronkan dari Ekstensi Peramban\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Jika Anda baru saja membuka aplikasi MetaMask Mobile untuk pertama kali, ikuti langkah-langkah pada ponsel Anda."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Pindai kode ini dengan aplikasi ponsel MetaMask "
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Pastikan tidak ada yang melihat ke layar ketika kode ini Anda pindai"
+  },
+  "syncWithMobileComplete": {
+    "message": "Data Anda telah berhasil disinkronkan. Nikmati aplikasi mobile MetaMask!"
+  },
+  "terms": {
+    "message": "Syarat Penggunaan"
+  },
+  "testFaucet": {
+    "message": "Tes Keran"
+  },
+  "thisWillCreate": {
+    "message": "Ini akan membuat dompet dan frasa seed baru"
+  },
+  "tips": {
+    "message": "Tip"
+  },
+  "to": {
+    "message": "Ke"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 ke ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token sudah ditambahkan."
+  },
+  "tokenContractAddress": {
+    "message": "Alamat Kontrak Token"
+  },
+  "tokenSymbol": {
+    "message": "Simbol Token"
+  },
+  "transaction": {
+    "message": "transaksi"
+  },
+  "transactionConfirmed": {
+    "message": "Transaksi dikonfirmasi di $2."
+  },
+  "transactionCreated": {
+    "message": "Transaksi dibuat dengan nilai $1 di $2."
+  },
+  "transactionDropped": {
+    "message": "Transaksi dibatalkan di $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaksi diajukan dengan biaya gas sebesar $1 di $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaksi dikirim ulang dengan biaya gas meningkat menjadi $1 di $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaksi diperbarui di $2."
+  },
+  "transactionErrored": {
+    "message": "Transaksi mengalami eror."
+  },
+  "transactionCancelAttempted": {
+    "message": "Pembatalan transaksi dicoba dengan biaya gas sebesar $1 di $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaksi berhasil dibatalkan di $2."
+  },
+  "transactionError": {
+    "message": "Eror Transaksi. Pengecualian dimasukkan ke dalam kode kontrak."
+  },
+  "transactionErrorNoContract": {
+    "message": "Mencoba memanggil fungsi pada alamat non-kontrak."
+  },
+  "transactionFee": {
+    "message": "Biaya Transaksi"
+  },
+  "transactionTime": {
+    "message": "Waktu Transaksi"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transfer antar akun saya"
+  },
+  "transferFrom": {
+    "message": "Transfer Dari"
+  },
+  "troubleTokenBalances": {
+    "message": "Kami menemui masalah dalam memuat saldo token. Anda dapat melihatnya",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Coba lagi"
+  },
+  "typePassword": {
+    "message": "Ketik kata sandi MetaMask Anda"
+  },
+  "unapproved": {
+    "message": "Tak disetujui"
+  },
+  "units": {
+    "message": "unit"
+  },
+  "unknown": {
+    "message": "Tidak dikenal"
+  },
+  "unknownNetwork": {
+    "message": "Jaringan Pribadi Tak Dikenal"
+  },
+  "unknownQrCode": {
+    "message": "Kesalahan: Kami tidak dapat mengidentifikasi kode QR itu"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ups! Terjadi sesuatu..."
+  },
+  "unknownCameraError": {
+    "message": "Terjadi eror saat mencoba mengakses kamera. Harap coba ulang..."
+  },
+  "unlock": {
+    "message": "Buka kunci"
+  },
+  "unlockMessage": {
+    "message": "Web terdesentralisasi menanti"
+  },
+  "updatedWithDate": {
+    "message": "Diperbarui $1"
+  },
+  "uriErrorMsg": {
+    "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
+  },
+  "usedByClients": {
+    "message": "Digunakan oleh berbagai klien"
+  },
+  "userName": {
+    "message": "Nama Pengguna"
+  },
+  "validFileImport": {
+    "message": "Anda harus memilih berkas yang sah untuk diimpor."
+  },
+  "viewAccount": {
+    "message": "Lihat Akun"
+  },
+  "viewinExplorer": {
+    "message": "Lihat di Explorer"
+  },
+  "viewContact": {
+    "message": "Lihat Kontak"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "Lihat di $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Lihat di Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Kunjungi website kami"
+  },
+  "walletSeed": {
+    "message": "Benih Dompet"
+  },
+  "welcomeBack": {
+    "message": "Selamat Datang Kembali!"
+  },
+  "welcome": {
+    "message": "Selamat Datang di MetaMask"
+  },
+  "writePhrase": {
+    "message": "Tuliskan frasa ini di selembar kertas dan simpan di tempat aman. Jika ingin lebih aman, tulislah di beberapa lembar kertas dan simpan masing-masing kertas di 2 - 3 lokasi berbeda."
+  },
+  "yesLetsTry": {
+    "message": "Ya, ayo kita coba"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Anda perlu mengizinkan akses kamera untuk menggunakan fitur ini."
+  },
+  "yourSigRequested": {
+    "message": "Tanda tangan Anda sedang diminta"
+  },
+  "youSign": {
+    "message": "Anda menandatangani"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Frase benih pribadi Anda"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Harga gas nol saat mempercepat"
+  }
+}

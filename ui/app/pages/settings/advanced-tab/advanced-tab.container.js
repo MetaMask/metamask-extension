@@ -9,6 +9,7 @@ import {
   showModal,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
+  setThreeBoxSyncingPermission,
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
@@ -18,7 +19,10 @@ export const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       advancedInlineGas,
+      threeBox,
     } = {},
+    threeBoxSyncingAllowed,
+    threeBoxDisabled,
   } = metamask
   const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
 
@@ -28,6 +32,9 @@ export const mapStateToProps = state => {
     advancedInlineGas,
     showFiatInTestnets,
     autoLogoutTimeLimit,
+    threeBoxSyncingAllowed,
+    threeBoxDisabled,
+    threeBoxFeatureFlag: threeBox,
   }
 }
 
@@ -44,6 +51,7 @@ export const mapDispatchToProps = dispatch => {
     setAutoLogoutTimeLimit: value => {
       return dispatch(setAutoLogoutTimeLimit(value))
     },
+    setThreeBoxSyncingPermission: newThreeBoxSyncingState => dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState)),
   }
 }
 
