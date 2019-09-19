@@ -319,18 +319,28 @@ class PermissionsController {
 
         'wallet_plugin_': {
           description: 'Connect to plugin $1, and install it if not available yet.',
-          method: async (req, res, next, end) => {
+          method: async (req, res, next, end, engine) => {
             try {
+              const origin = req.method.substr(14)
 
-            const sourceUrl = req.method.substr(14)
+              let prior = this.pluginsController.get(origin)
+              if (!prior) {
+                await this.pluginsController.add(origin)
+              }
 
-            let prior = this.pluginsController.get(sourceUrl)
-            if (!prior) {
-              await this.pluginsController.add(sourceUrl, sourceUrl)
-              prior = this.pluginsController.get(sourceUrl)
-            }
+              // Here is where we would invoke the message on that plugin iff possible.
+              const handler = this.pluginsController.rpcMessageHandlers.get(origin)
+              if (!handler) {
+                res.error = rpcErrors.methodNotFound(null, req.method)
+                return end(res.error)
+              }
 
-            // Here is where we would invoke the message on that plugin iff possible.
+              const requestor = engine.domain
+
+              // Handler is an async function that takes an origin string and a request object.
+              // It should return the result it would like returned to the reqeustor as part of response.result
+              const res.result = await handler(requestor, req)
+              return end()
 
             } catch (err) {
               res.error = err;
