@@ -19,6 +19,8 @@ class PluginsController extends EventEmitter {
     this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
     this.getApi = opts.getApi
+
+    this.rpcMessageHandlers = new Map()
   }
 
  runExistingPlugins () {
@@ -54,6 +56,10 @@ class PluginsController extends EventEmitter {
   }
 
   async add(pluginName, sourceUrl) {
+    if (!sourceUrl) {
+      sourceUrl = pluginName
+    }
+
     const plugins = this.store.getState().plugins
 
     let plugin
@@ -78,7 +84,7 @@ class PluginsController extends EventEmitter {
       if (err1) return err1
 
       const capabilities = res1.result.map(cap => cap.parentCapability).filter(cap => !cap.startsWith('eth_runPlugin_'))
-  
+
       if (!plugins[pluginName]) {
         const newPlugin = {
           handleRpcRequest: async (result) => {
@@ -157,11 +163,16 @@ class PluginsController extends EventEmitter {
       onUnlock: this._onUnlock,
       ...this.getApi(),
     }
+    const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
     const apisToProvide = { onMetaMaskEvent }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
     })
     return apisToProvide
+  }
+
+  _registerRpcMessageHandler(pluginName, handler) {
+    this.rpcMessageHandlers.set(pluginName, handler)
   }
 
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
