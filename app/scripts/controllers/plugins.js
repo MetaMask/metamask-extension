@@ -180,7 +180,8 @@ class PluginsController extends EventEmitter {
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
     const sessedPlugin = s.evaluate(sourceCode, {
-      ethereumProvider,
+      wallet: ethereumProvider,
+      console, // Adding console for now for logging purposes.
     })
     sessedPlugin.run()
     this._setPluginToActive(pluginName)
