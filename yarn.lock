@@ -9573,6 +9573,13 @@ eth-json-rpc-errors@^1.0.1:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
+eth-json-rpc-errors@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-1.1.0.tgz#2a4291fb20c0483c99b53286a814ed14ca4efb2e"
+  integrity sha512-AAA76BmwwSR5Mws+ivZUYxoDwMygDuMWxSTEmqDXhRPTExSWe5wuJLT/rSfvPSy9+owSudy67JmyRQ02RAOOYQ==
+  dependencies:
+    fast-safe-stringify "^2.0.6"
+
 eth-json-rpc-filters@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.1.0.tgz#e7357a38983cde29858818dc55d394b9cf47c0f0"
