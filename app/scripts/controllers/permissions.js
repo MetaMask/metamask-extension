@@ -339,7 +339,7 @@ class PermissionsController {
 
               // Handler is an async function that takes an origin string and a request object.
               // It should return the result it would like returned to the reqeustor as part of response.result
-              const res.result = await handler(requestor, req)
+              res.result = await handler(requestor, req)
               return end()
 
             } catch (err) {
