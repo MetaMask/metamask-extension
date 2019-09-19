@@ -14,13 +14,19 @@ class PluginsController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     this.setupProvider = opts.setupProvider
-    this._onUnlock = opts._onUnlock
-    this._onNewTx = opts._onNewTx
-    this._subscribeToPreferencesControllerChanges = opts._subscribeToPreferencesControllerChanges
-    this._updatePreferencesControllerState = opts._updatePreferencesControllerState
-    this._signPersonalMessage = opts._signPersonalMessage
+    this._txController = opts._txController
+    this._networkController = opts._networkController
+    this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
     this.getApi = opts.getApi
+  }
+
+ runExistingPlugins () {
+    const plugins = this.store.getState().plugins
+    Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
+      const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+      this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+    })
   }
 
   get (pluginName) {
@@ -51,7 +57,7 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
 
     let plugin
-    if (false && plugins[pluginName]) {
+    if (plugins[pluginName]) {
       plugin = plugins[pluginName]
     } else {
       plugin = await fetch(sourceUrl)
@@ -61,23 +67,6 @@ class PluginsController extends EventEmitter {
 
     const { sourceCode, requestedPermissions } = plugin
 
-    if (!plugins[pluginName]) {
-      const newPlugin = {
-        handleRpcRequest: async (result) => {
-          return Promise.resolve(result)
-        },
-        pluginName,
-        sourceCode,
-        requestedPermissions,
-        pluginState: {},
-      }
-
-      const newPlugins = {...plugins, [pluginName]: newPlugin}
-
-      this.store.updateState({
-        plugins: newPlugins,
-      })
-    }
 
     const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
@@ -89,7 +78,25 @@ class PluginsController extends EventEmitter {
       if (err1) return err1
 
       const capabilities = res1.result.map(cap => cap.parentCapability).filter(cap => !cap.startsWith('eth_runPlugin_'))
-      
+  
+      if (!plugins[pluginName]) {
+        const newPlugin = {
+          handleRpcRequest: async (result) => {
+            return Promise.resolve(result)
+          },
+          pluginName,
+          sourceCode,
+          requestedPermissions: capabilities,
+          pluginState: {},
+        }
+
+        const newPlugins = {...plugins, [pluginName]: newPlugin}
+
+        this.store.updateState({
+          plugins: newPlugins,
+        })
+      }
+
       ethereumProvider.sendAsync({
         method: 'eth_runPlugin_' + pluginName,
         params: [{ requestedPermissions: capabilities, sourceCode, ethereumProvider }],
@@ -103,32 +110,63 @@ class PluginsController extends EventEmitter {
     return this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
   }
 
-  _generateApisToProvide (requestedPermissions, pluginName) {
-    const apiList = requestedPermissions.map(requestedPermission => {
-      const metamaskMethod = requestedPermission.match(/metamask_(.+)/)
+  _eventEmitterToListenerMap (eventEmitter) {
+    return eventEmitter.eventNames().map(eventName => {
+      return {
+        [eventName]: eventEmitter.on.bind(eventEmitter, eventName),
+      }
+    })
+  }
+
+  generateMetaMaskListenerMethodsMap () {
+    return [
+      ...this._eventEmitterToListenerMap(this._txController),
+      ...this._eventEmitterToListenerMap(this._networkController),
+      ...this._eventEmitterToListenerMap(this._blockTracker),
+    ].reduce((acc, methodMap) => ({ ...acc, ...methodMap }))
+  }
+
+  _createMetaMaskEventListener (approvedPermissions) {
+    const listenerMethodsMap = this.generateMetaMaskListenerMethodsMap()
+    const approvedListenerMethodsMap = {}
+    approvedPermissions.forEach(approvedPermission => {
+      if (listenerMethodsMap[approvedPermission]) {
+        approvedListenerMethodsMap[approvedPermission] = listenerMethodsMap[approvedPermission]
+      }
+    })
+
+    return (eventName, cb) => {
+      approvedListenerMethodsMap[eventName](cb)
+    }
+  }
+
+  _generateApisToProvide (approvedPermissions, pluginName) {
+    const apiList = approvedPermissions.map(approvedPermission => {
+      const metamaskMethod = approvedPermission.match(/metamask_(.+)/)
       return metamaskMethod
         ? metamaskMethod[1]
-        : requestedPermission
+        : approvedPermission
     })
-    const updatePluginState = this.updatePluginState.bind(this, pluginName)
-    const getPluginState = this.getPluginState.bind(this, pluginName)
+
+    const onMetaMaskEvent = this._createMetaMaskEventListener(apiList)
+
     const possibleApis = {
-      updatePluginState,
-      getPluginState,
-      onNewTx: this._onNewTx,
+      updatePluginState: this.updatePluginState.bind(this, pluginName),
+      getPluginState: this.getPluginState.bind(this, pluginName),
+      onNewTx: () => {},
       onUnlock: this._onUnlock,
       ...this.getApi(),
     }
-    const apisToProvide = {}
+    const apisToProvide = { onMetaMaskEvent }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
     })
     return apisToProvide
   }
 
-  _startPlugin (pluginName, requestedPermissions, sourceCode, ethereumProvider) {
+  _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
     const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
-    const apisToProvide = this._generateApisToProvide(requestedPermissions, pluginName)
+    const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
     const sessedPlugin = s.evaluate(sourceCode, {
       ethereumProvider,
