@@ -135,10 +135,13 @@ jobs:
       - run:
           name: Build extension for testing
           command: yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test
       - persist_to_workspace:
           root: .
           paths:
-            - dist
+            - dist-test
 
   prep-docs:
     docker:
@@ -204,6 +207,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
           name: test:e2e:chrome
           command: yarn test:e2e:chrome
           no_output_timeout: 20m
@@ -221,6 +227,9 @@ jobs:
           command: ./.circleci/scripts/firefox-install
       - attach_workspace:
           at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
       - run:
           name: test:e2e:firefox
           command: yarn test:e2e:firefox
