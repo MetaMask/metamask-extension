@@ -330,7 +330,9 @@ module.exports = class MetamaskController extends EventEmitter {
          * methods using accounts in the Ethereum provider.
          * We should consider centralizing this logic in the near future.
          */
-        if (
+        if (origin === 'MetaMask') {
+          return this.preferencesController.getSelectedAddress()
+        } else if (
           this.keyringController.memStore.getState().isUnlocked
         ) {
           return await this.permissionsController.getAccounts(origin)
