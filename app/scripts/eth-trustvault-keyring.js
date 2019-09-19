@@ -9,6 +9,7 @@ const apiKey = 'da2-mfgyzj7ltjhdne7mohvjskqizm'
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
+const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account. TrustVault does currently not support this transaction, please choose another account to proceed.";
 
 class TrustvaultKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -107,14 +108,17 @@ class TrustvaultKeyring extends EventEmitter {
 
   signMessage (withAccount, data) {
     log.log('sign message', withAccount, data)
+    alert(UNSUPPORTED_SIGNING_METHOD)
   }
 
   signPersonalMessage (withAccount, mshHex) {
     log.log('sign message', withAccount, mshHex)
+    alert(UNSUPPORTED_SIGNING_METHOD)
   }
 
   signTypedData (withAccount, typedDate) {
     log.log('signTypedData', withAccount, typedDate)
+    alert(UNSUPPORTED_SIGNING_METHOD)
   }
 
   getAccountNames(){
