@@ -72,7 +72,6 @@ const SAFE_METHODS = require('../lib/permissions-safe-methods.json')
 
 const METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
-const ADD_PLUGIN_PREFIX = 'eth_plugin_'
 
 function prefix (method) {
   return METHOD_PREFIX + method
@@ -317,6 +316,39 @@ class PermissionsController {
             return end()
           },
         },
+
+        'wallet_plugin_': {
+          description: 'Connect to plugin $1, and install it if not available yet.',
+          method: async (req, res, next, end, engine) => {
+            try {
+              const origin = req.method.substr(14)
+
+              let prior = this.pluginsController.get(origin)
+              if (!prior) {
+                await this.pluginsController.add(origin)
+              }
+
+              // Here is where we would invoke the message on that plugin iff possible.
+              const handler = this.pluginsController.rpcMessageHandlers.get(origin)
+              if (!handler) {
+                res.error = rpcErrors.methodNotFound(null, req.method)
+                return end(res.error)
+              }
+
+              const requestor = engine.domain
+
+              // Handler is an async function that takes an origin string and a request object.
+              // It should return the result it would like returned to the reqeustor as part of response.result
+              const res.result = await handler(requestor, req)
+              return end()
+
+            } catch (err) {
+              res.error = err;
+              return end(err)
+            }
+          }
+        },
+
         'eth_addPlugin_*': {
           description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
           method: async (req, res, next, end) => {
