@@ -1,7 +1,10 @@
 // cross-browser connection to extension i18n API
 const log = require('loglevel')
+const Sentry = require('@sentry/browser')
 
 const warned = {}
+const missingMessageErrors = {}
+
 /**
  * Returns a localized message for the given key
  * @param {string} localeCode The code for the current locale
@@ -10,12 +13,21 @@ const warned = {}
  * @param {string[]} substitutions A list of message substitution replacements
  * @return {null|string} The localized message
  */
-const getMessage = (localeCode, localeMessages, key, substitutions) => {
+export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {
     return null
   }
   if (!localeMessages[key]) {
-    if (!warned[localeCode] || !warned[localeCode][key]) {
+    if (localeCode === 'en') {
+      if (!missingMessageErrors[key]) {
+        missingMessageErrors[key] = new Error(`Unable to find value of key "${key}" for locale "${localeCode}"`)
+        Sentry.captureException(missingMessageErrors[key])
+        log.error(missingMessageErrors[key])
+        if (process.env.IN_TEST === 'true') {
+          throw missingMessageErrors[key]
+        }
+      }
+    } else if (!warned[localeCode] || !warned[localeCode][key]) {
       if (!warned[localeCode]) {
         warned[localeCode] = {}
       }
@@ -36,7 +48,7 @@ const getMessage = (localeCode, localeMessages, key, substitutions) => {
   return phrase
 }
 
-async function fetchLocale (localeCode) {
+export async function fetchLocale (localeCode) {
   try {
     const response = await fetch(`./_locales/${localeCode}/messages.json`)
     return await response.json()
@@ -46,7 +58,3 @@ async function fetchLocale (localeCode) {
   }
 }
 
-module.exports = {
-  getMessage,
-  fetchLocale,
-}
