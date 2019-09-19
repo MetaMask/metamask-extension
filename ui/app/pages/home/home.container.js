@@ -22,6 +22,7 @@ const mapStateToProps = state => {
     tokens,
     threeBoxSynced,
     restoredFromThreeBox,
+    selectedAddress,
     featureFlags,
     permissionsRequests,
   } = metamask
@@ -39,6 +40,7 @@ const mapStateToProps = state => {
     isPopup,
     threeBoxSynced,
     restoredFromThreeBox,
+    selectedAddress,
     threeBoxLastUpdated,
     threeBoxFeatureFlagIsTrue: featureFlags.threeBox,
     permissionsRequests,
