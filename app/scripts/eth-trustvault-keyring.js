@@ -9,7 +9,7 @@ const apiKey = 'da2-mfgyzj7ltjhdne7mohvjskqizm'
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
-const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account. TrustVault does currently not support this transaction, please choose another account to proceed.";
+const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction,\nplease choose another account to proceed.";
 
 class TrustvaultKeyring extends EventEmitter {
   constructor (opts = {}) {
