@@ -178,6 +178,7 @@ export default class Home extends PureComponent {
                     margin="normal"
                   />
                   <Button onClick={() => this.props.deletePlugin(this.state.pluginToDelete)} >{ 'Delete Plugin' }</Button>
+                  <Button onClick={() => this.props.clearPluginState()} >{ 'Clear All Plugin State' }</Button>
                 </div>
               </TransactionView>
             )
