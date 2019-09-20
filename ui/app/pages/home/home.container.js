@@ -10,6 +10,7 @@ import {
   getThreeBoxLastUpdated,
   setRestoredFromThreeBoxToFalse,
   deletePlugin,
+  clearPluginState,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
