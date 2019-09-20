@@ -826,6 +826,9 @@
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
+  "FAQ": {
+    "message": "FAQ"
+  },
   "hereList": {
     "message": "Here's a list!!!!"
   },
@@ -1819,6 +1822,12 @@
   },
   "trustVaultIncorrectPin": {
     "message": "Invalid PIN. Please try again"
+  },
+  "trustVaultGetStarted": {
+    "message": "Not a TrustVault user? Get started "
+  },
+  "trustVaultLearnMore": {
+    "message": "Learn more "
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
