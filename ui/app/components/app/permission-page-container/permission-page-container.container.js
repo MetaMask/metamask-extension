@@ -13,8 +13,7 @@ const mapStateToProps = (state) => {
   const requestedPermissionsKeys = Object.keys(requestedPermissions)
   const permissionsDescriptions = getPermissionsDescriptions(state)
   const requestedPermissionsDescriptions = requestedPermissionsKeys.reduce((acc, requestedPermissionKey) => {
-    const isWildCardPermission = requestedPermissionKey.match(/([A-z0-9]+_[A-z0-9]+_)([A-z0-9]+)/)
-
+    const isWildCardPermission = requestedPermissionKey.match(/([A-z0-9]+_[A-z0-9]+_)([A-z0-9\:\/\.]+)/)
 
     let permissionDescription
 
