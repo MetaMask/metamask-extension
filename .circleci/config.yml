@@ -14,13 +14,6 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - create_github_release:
-          requires:
-            - prep-build
-          filters:
-            branches:
-              only:
-                - develop
       # - prep-docs:
       #    requires:
       #      - prep-deps
@@ -99,11 +92,16 @@ jobs:
       - run:
           name: Install deps
           command: |
-           yarn --frozen-lockfile
+           yarn --frozen-lockfile --har
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - persist_to_workspace:
           root: .
           paths:
           - node_modules
+          - build-artifacts
 
   prep-build:
     docker:
@@ -220,6 +218,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: build:source-map-explorer
+          command: ./development/source-map-explorer.sh
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
@@ -229,6 +230,13 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate sesify viz AFTER uploading builds as artifacts
+      - run:
+          name: build:sesify-viz
+          command: ./.circleci/scripts/create-sesify-viz
+      - store_artifacts:
+          path: build-artifacts
+          destination: build-artifacts
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
@@ -243,6 +251,13 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: yarn sentry:publish
+      - run:
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release
+      - run:
+          name: Create GitHub Pull Request to sync master with develop
+          command: .circleci/scripts/release-create-master-pr
       # - run:
       #    name: github gh-pages docs publish
       #    command: >
@@ -321,15 +336,3 @@ jobs:
       - run:
           name: Coveralls upload
           command: yarn test:coveralls-upload
-
-  create_github_release:
-    docker:
-      - image: circleci/node:8.15.1-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Create GitHub release
-          command: |
-            .circleci/scripts/release-create-gh-release

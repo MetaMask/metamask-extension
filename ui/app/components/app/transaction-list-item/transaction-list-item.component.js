@@ -25,6 +25,7 @@ export default class TransactionListItem extends PureComponent {
     showCancel: PropTypes.bool,
     hasEnoughCancelGas: PropTypes.bool,
     showRetry: PropTypes.bool,
+    isEarliestNonce: PropTypes.bool,
     showFiat: PropTypes.bool,
     token: PropTypes.object,
     tokenData: PropTypes.object,
@@ -172,6 +173,7 @@ export default class TransactionListItem extends PureComponent {
       tokenData,
       transactionGroup,
       rpcPrefs,
+      isEarliestNonce,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -224,6 +226,7 @@ export default class TransactionListItem extends PureComponent {
                   transactionGroup={transactionGroup}
                   onRetry={this.handleRetry}
                   showRetry={showRetry}
+                  isEarliestNonce={isEarliestNonce}
                   onCancel={this.handleCancel}
                   showCancel={showCancel}
                   cancelDisabled={!hasEnoughCancelGas}

@@ -24,7 +24,6 @@ describe('SendHeader Component', function () {
       clearSend={propsMethodSpies.clearSend}
       history={historySpies}
       titleKey={'mockTitleKey'}
-      subtitleParams={[ 'mockSubtitleKey', 'mockVal']}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 

@@ -55,6 +55,8 @@ const selectors = {
   getAllPermissions,
   getPermissionsRequests,
   getPermissionsDescriptions,
+  getPermissionsHistory,
+  getPermissionsLog,
   getSiteMetadata,
   getActiveTab,
   getMetaMetricState,
@@ -62,6 +64,7 @@ const selectors = {
   getKnownMethodData,
   getAddressBookEntry,
   getAddressBookEntryName,
+  getFeatureFlags,
 }
 
 module.exports = selectors
@@ -356,6 +359,14 @@ function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests
 }
 
+function getPermissionsHistory (state) {
+  return state.metamask.permissionsHistory
+}
+
+function getPermissionsLog (state) {
+  return state.metamask.permissionsLog
+}
+
 function getSiteMetadata (state) {
   return state.metamask.siteMetadata
 }
@@ -392,4 +403,8 @@ function getKnownMethodData (state, data) {
   const { knownMethodData } = state.metamask
 
   return knownMethodData && knownMethodData[fourBytePrefix]
+}
+
+function getFeatureFlags (state) {
+  return state.metamask.featureFlags
 }

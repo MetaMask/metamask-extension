@@ -28,6 +28,7 @@ const AppStateController = require('./controllers/app-state')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const OnboardingController = require('./controllers/onboarding')
+const ThreeBoxController = require('./controllers/threebox')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const IncomingTransactionsController = require('./controllers/incoming-transactions')
 const MessageManager = require('./lib/message-manager')
@@ -41,6 +42,7 @@ const PluginsController = require('./controllers/plugins')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const selectChainId = require('./lib/select-chain-id')
 const {Mutex} = require('await-semaphore')
 const {version} = require('../manifest.json')
 const {BN} = require('ethereumjs-util')
@@ -197,6 +199,16 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
+    this.threeBoxController = new ThreeBoxController({
+      preferencesController: this.preferencesController,
+      addressBookController: this.addressBookController,
+      keyringController: this.keyringController,
+      initState: initState.ThreeBoxController,
+      getKeyringControllerState: this.keyringController.memStore.getState.bind(this.keyringController.memStore),
+      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
+      version,
+    })
+
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
@@ -275,7 +287,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getApi: this.getPluginsApi.bind(this),
       metamaskEventMethods: this.pluginsController.generateMetaMaskListenerMethodsMap(),
     },
-    initState.PermissionsController)
+    initState.PermissionsController, initState.PermissionsMetadata)
 
     this.pluginsController.runExistingPlugins()
 
@@ -294,7 +306,9 @@ module.exports = class MetamaskController extends EventEmitter {
       IncomingTransactionsController: this.incomingTransactionsController.store,
       // TODO:permissions permissionsRequests should be memStore only
       PermissionsController: this.permissionsController.permissions,
+      PermissionsMetadata: this.permissionsController.store,
       PluginsController: this.pluginsController.store,
+      ThreeBoxController: this.threeBoxController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -317,8 +331,9 @@ module.exports = class MetamaskController extends EventEmitter {
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionsController: this.permissionsController.permissions,
-      SiteMetadata: this.permissionsController.memStore,
+      PermissionsMetadata: this.permissionsController.store,
       PluginsController: this.pluginsController.store,
+      ThreeBoxController: this.threeBoxController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -335,14 +350,10 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        /**
-         * TODO:lps:review this is called all over eth-json-rpc-middleware.
-         * By implementing this method using the permissionsController, we
-         * effectively enforce eth_accounts permissions by origin for all
-         * methods using accounts in the Ethereum provider.
-         * We should consider centralizing this logic in the near future.
-         */
-        if (
+        // TODO: is this safe?
+        if (origin === 'MetaMask') {
+          return [this.preferencesController.getSelectedAddress()]
+        } else if (
           this.keyringController.memStore.getState().isUnlocked
         ) {
           return await this.permissionsController.getAccounts(origin)
@@ -380,21 +391,15 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     function updatePublicConfigStore (memState) {
-      selectPublicState(memState).then(publicState => {
-        publicConfigStore.putState(publicState)
-      })
+      publicConfigStore.putState(selectPublicState(memState))
     }
 
-    async function selectPublicState ({
-      isUnlocked, completedOnboarding, network,
-      // network
-    }) {
+    function selectPublicState ({ isUnlocked, network, completedOnboarding, provider }) {
       const result = {
         isUnlocked,
-        onboardingcomplete: completedOnboarding,
         networkVersion: network,
-        // TODO:synchronous re-implement
-        // selectedAddress: isUnlocked && isEnabled ? selectedAddress : undefined,
+        onboardingcomplete: completedOnboarding,
+        chainId: selectChainId({ network, provider }),
       }
       return result
     }
@@ -433,6 +438,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const txController = this.txController
     const networkController = this.networkController
     const onboardingController = this.onboardingController
+    const threeBoxController = this.threeBoxController
 
     return {
       // etc
@@ -533,12 +539,22 @@ module.exports = class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
 
+      // 3Box
+      setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
+      restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
+      setRestoredFromThreeBoxToFalse: nodeify(threeBoxController.setRestoredFromThreeBoxToFalse, threeBoxController),
+      getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
+      turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
+      initializeThreeBox: nodeify(this.initializeThreeBox, this),
+
       // permissions
       approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
+      clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
+      clearPermissionsHistory: this.permissionsController.clearHistory.bind(this.permissionsController),
+      clearPermissionsLog: this.permissionsController.clearLog.bind(this.permissionsController),
+      getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
       rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
       removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
-      clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
-      getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
     }
   }
 
@@ -848,6 +864,19 @@ module.exports = class MetamaskController extends EventEmitter {
 
     await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
+
+    const threeBoxFeatureFlagTurnedOn = this.preferencesController.getFeatureFlags().threeBox
+
+    if (threeBoxFeatureFlagTurnedOn) {
+      const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
+      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+        await this.threeBoxController.new3Box()
+        this.threeBoxController.turnThreeBoxSyncingOn()
+      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+        this.threeBoxController.turnThreeBoxSyncingOn()
+      }
+    }
+
     return this.keyringController.fullUpdate()
   }
 
@@ -1525,9 +1554,9 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProvider (origin, getSiteMetadata, isPlugin) {
-    const engine = this.setupProviderEngine(origin, getSiteMetadata, isPlugin);
-    const provider = providerFromEngine(engine);
-    return provider;
+    const engine = this.setupProviderEngine(origin, getSiteMetadata, isPlugin)
+    const provider = providerFromEngine(engine)
+    return provider
   }
 
   /**
@@ -1617,7 +1646,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   _onUnlock (keyRingControllerMemStore, cb) {
-    let { keyrings } = keyRingControllerMemStore.getState()
+    const { keyrings } = keyRingControllerMemStore.getState()
     let addressesWereEmpty = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), []).length === 0
     keyRingControllerMemStore.subscribe(state => {
       const { isUnlocked, keyrings } = state
@@ -1782,6 +1811,10 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
+  async initializeThreeBox () {
+    await this.threeBoxController.new3Box()
+  }
+
   /**
    * Sets whether or not to use the blockie identicon format.
    * @param {boolean} val - True for bockie, false for jazzicon.
@@ -1841,8 +1874,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setCurrentLocale (key, cb) {
     try {
-      this.preferencesController.setCurrentLocale(key)
-      cb(null)
+      const direction = this.preferencesController.setCurrentLocale(key)
+      cb(null, direction)
     } catch (err) {
       cb(err)
     }

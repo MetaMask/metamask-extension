@@ -23,7 +23,7 @@ class PluginsController extends EventEmitter {
     this.rpcMessageHandlers = new Map()
   }
 
- runExistingPlugins () {
+  runExistingPlugins () {
     const plugins = this.store.getState().plugins
     Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
@@ -36,7 +36,7 @@ class PluginsController extends EventEmitter {
   }
 
   // When a plugin is first created, where should it be executed?
-    // And how do we ensure that the same plugin is never executed twice?
+  // And how do we ensure that the same plugin is never executed twice?
 
   updatePluginState (pluginName, newPluginState) {
     const plugins = this.store.getState().plugins
@@ -55,7 +55,7 @@ class PluginsController extends EventEmitter {
     return plugin ? plugin.pluginState : null
   }
 
-  async add(pluginName, sourceUrl) {
+  async add (pluginName, sourceUrl) {
     if (!sourceUrl) {
       sourceUrl = pluginName
     }
@@ -171,7 +171,7 @@ class PluginsController extends EventEmitter {
     return apisToProvide
   }
 
-  _registerRpcMessageHandler(pluginName, handler) {
+  _registerRpcMessageHandler (pluginName, handler) {
     this.rpcMessageHandlers.set(pluginName, handler)
   }
 

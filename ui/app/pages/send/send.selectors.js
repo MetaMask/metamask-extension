@@ -13,7 +13,7 @@ const {
   calcGasTotal,
 } = require('./send.utils')
 import {
-  getFastPriceEstimateInHexWEI,
+  getAveragePriceEstimateInHexWEI,
 } from '../../selectors/custom-gas'
 
 const selectors = {
@@ -53,7 +53,6 @@ const selectors = {
   getSendTo,
   getSendToAccounts,
   getSendToNickname,
-  getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
@@ -120,7 +119,7 @@ function getGasLimit (state) {
 }
 
 function getGasPrice (state) {
-  return state.metamask.send.gasPrice || getFastPriceEstimateInHexWEI(state)
+  return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
 
 function getGasPriceFromRecentBlocks (state) {
@@ -244,11 +243,6 @@ function getSendToAccounts (state) {
   const addressBookAccounts = getAddressBook(state)
   return [...fromAccounts, ...addressBookAccounts]
 }
-
-function getSendWarnings (state) {
-  return state.send.warnings
-}
-
 function getTokenBalance (state) {
   return state.metamask.send.tokenBalance
 }

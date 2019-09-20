@@ -9,12 +9,15 @@ const defaultState = {
     featureFlags: {
       sendHexData: false,
       advancedInlineGas: false,
+      threeBox: false,
     },
     preferences: {
       autoLogoutTimeLimit: 0,
       showFiatInTestnets: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    threeBoxSyncingAllowed: false,
+    threeBoxDisabled: false,
   },
 }
 
@@ -27,6 +30,9 @@ describe('AdvancedTab Container', () => {
       advancedInlineGas: false,
       showFiatInTestnets: false,
       autoLogoutTimeLimit: 0,
+      threeBoxSyncingAllowed: false,
+      threeBoxDisabled: false,
+      threeBoxFeatureFlag: false,
     }
 
     assert.deepEqual(props, expected)

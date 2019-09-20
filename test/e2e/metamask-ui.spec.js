@@ -1,14 +1,8 @@
-const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
 } = require('./func')
 const {
   assertElementNotPresent,
@@ -21,8 +15,9 @@ const {
   switchToWindowWithTitle,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  setupFetchMocking,
+  prepareExtensionForTesting,
 } = require('./helpers')
-const fetchMockResponses = require('./fetch-mocks.js')
 
 describe('MetaMask', function () {
   let extensionId
@@ -38,61 +33,10 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    let extensionUrl
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await delay(largeDelayMs)
-        extensionUrl = `chrome-extension://${extensionId}/home.html`
-        break
-      }
-      case 'firefox': {
-        const extPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extPath)
-        await delay(largeDelayMs)
-        extensionId = await getExtensionIdFirefox(driver)
-        extensionUrl = `moz-extension://${extensionId}/home.html`
-        break
-      }
-    }
-    // Depending on the state of the application built into the above directory (extPath) and the value of
-    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
-    // are closing any extraneous windows to reset us to a single window before continuing.
-    const [tab1] = await driver.getAllWindowHandles()
-    await closeAllWindowHandlesExcept(driver, [tab1])
-    await driver.switchTo().window(tab1)
-    await driver.get(extensionUrl)
-  })
-
-  beforeEach(async function () {
-    await driver.executeScript(
-      'window.origFetch = window.fetch.bind(window);' +
-      'window.fetch = ' +
-      '(...args) => { ' +
-      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
-      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
-      '(args[0].match(/chromeextensionmm/)) { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
-      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.origFetch(...args); };' +
-      'function cancelInfuraRequest(requestDetails) {' +
-        'console.log("Canceling: " + requestDetails.url);' +
-        'return {' +
-          'cancel: true' +
-        '};' +
-     ' }' +
-      'window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeRequest.addListener(' +
-        'cancelInfuraRequest,' +
-        '{urls: ["https://*.infura.io/*"]},' +
-        '["blocking"]' +
-      ');'
-    )
+    const result = await prepareExtensionForTesting()
+    driver = result.driver
+    extensionId = result.extensionId
+    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
@@ -1276,7 +1220,7 @@ describe('MetaMask', function () {
 
       const confirmDataDiv = await findElement(driver, By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert(confirmDataText.match(/0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
+      assert(confirmDataText.match(/0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
@@ -1334,6 +1278,12 @@ describe('MetaMask', function () {
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
       assert.equal(await gasFeeInputs[0].getText(), '0.0006')
+    })
+
+    it('shows the correct recipient', async function () {
+      const senderToRecipientDivs = await findElements(driver, By.css('.sender-to-recipient__name'))
+      const recipientDiv = senderToRecipientDivs[1]
+      assert.equal(await recipientDiv.getText(), '0x9bc5...fEF4')
     })
 
     it('submits the transaction', async function () {
@@ -1448,6 +1398,12 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
       await txListItem.click()
       await delay(regularDelayMs)
+    })
+
+    it('shows the correct recipient', async function () {
+      const senderToRecipientDivs = await findElements(driver, By.css('.sender-to-recipient__name'))
+      const recipientDiv = senderToRecipientDivs[1]
+      assert.equal(await recipientDiv.getText(), 'Account 2')
     })
 
     it('submits the transaction', async function () {

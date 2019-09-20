@@ -9,7 +9,6 @@ export default class SendHeader extends Component {
     clearSend: PropTypes.func,
     history: PropTypes.object,
     titleKey: PropTypes.string,
-    subtitleParams: PropTypes.array,
   };
 
   static contextTypes = {

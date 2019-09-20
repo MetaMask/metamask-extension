@@ -212,13 +212,15 @@ export default class NetworkForm extends PureComponent {
   }
 
   validateUrl = (url, stateKey) => {
-    if (validUrl.isWebUri(url)) {
+    const invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
+
+    if (validUrl.isWebUri(url) || (stateKey === 'blockExplorerUrl' && url === '')) {
       this.setErrorTo(stateKey, '')
     } else {
       const appendedRpc = `http://${url}`
       const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
 
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : 'invalidRPC'))
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : invalidUrlErrorMsg))
     }
   }
 

@@ -41,10 +41,8 @@ async function getMethodFrom4Byte (fourBytePrefix) {
     mode: 'cors',
   }))
 
-  const fourByteJSON = await fourByteResponse.json()
-
-  if (fourByteJSON.count === 1) {
-    return fourByteJSON.results[0].text_signature
+  if (fourByteResponse.count === 1) {
+    return fourByteResponse.results[0].text_signature
   } else {
     return null
   }

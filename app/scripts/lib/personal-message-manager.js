@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
 const log = require('loglevel')
@@ -88,7 +89,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+            return reject(rpcErrors.eth.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
           default:
             return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
@@ -228,7 +229,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('PersonalMessageManager - Message not found for id: "${msgId}".')
+    if (!msg) throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)

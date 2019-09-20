@@ -6,7 +6,6 @@ const {
 
 const selectors = {
   getTitleKey,
-  getSubtitleParams,
 }
 
 module.exports = selectors
@@ -25,18 +24,5 @@ function getTitleKey (state) {
     return 'sendTokens'
   } else {
     return 'sendETH'
-  }
-}
-
-function getSubtitleParams (state) {
-  const isEditing = Boolean(getSendEditingTransactionId(state))
-  const token = getSelectedToken(state)
-
-  if (isEditing) {
-    return [ 'editingTransaction' ]
-  } else if (token) {
-    return [ 'onlySendTokensToAccountAddress', [ token.symbol ] ]
-  } else {
-    return [ 'onlySendToEtherAddress' ]
   }
 }
