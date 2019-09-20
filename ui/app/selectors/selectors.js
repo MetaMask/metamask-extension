@@ -211,15 +211,10 @@ function conversionRateSelector (state) {
 
 function getAddressBook (state) {
   const network = state.metamask.network
-  let addressBookEntries = []
-  addressBookEntries = Object.keys(state.metamask.addressBook)
-    .filter(entry => entry && entry === network)
-  if (addressBookEntries.length !== 0) {
-
-    addressBookEntries = Object.values(addressBookEntries)
-    return Object.values(state.metamask.addressBook[addressBookEntries])
+  if (!state.metamask.addressBook[network]) {
+    return []
   }
-  return addressBookEntries
+  return Object.values(state.metamask.addressBook[network])
 }
 
 function getAddressBookEntry (state, address) {
