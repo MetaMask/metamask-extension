@@ -19,6 +19,7 @@ class PluginsController extends EventEmitter {
     this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
     this.getApi = opts.getApi
+    this.getAppKeyForDomain = opts.getAppKeyForDomain
 
     this.rpcMessageHandlers = new Map()
   }
@@ -164,7 +165,11 @@ class PluginsController extends EventEmitter {
       ...this.getApi(),
     }
     const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
-    const apisToProvide = { onMetaMaskEvent, registerRpcMessageHandler }
+    const apisToProvide = {
+      onMetaMaskEvent,
+      registerRpcMessageHandler,
+      getAppKey: () => this.getAppKeyForDomain(pluginName),
+    }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
     })
