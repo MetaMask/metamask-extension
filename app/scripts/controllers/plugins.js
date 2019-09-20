@@ -13,6 +13,7 @@ class PluginsController extends EventEmitter {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
+    // TODO:SECURITY disable errorStackMode for production
     this.rootRealm = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
 
     this.setupProvider = opts.setupProvider
