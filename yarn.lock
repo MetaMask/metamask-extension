@@ -11832,7 +11832,7 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
-gaba@1.7.0:
+gaba@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.7.0.tgz#10e3dc25401a46f7e7ee3261159ca908667ce08a"
   integrity sha512-LFXrP3fexIvg+YQuRIg7DT+2duMohWETGvVuPNaaAzqCxDl7EsVe7uJSSc3yb1X/qk9pJVh4Zuu1C7safjkDIg==
