@@ -39,20 +39,18 @@ class PluginsController extends EventEmitter {
   // And how do we ensure that the same plugin is never executed twice?
 
   updatePluginState (pluginName, newPluginState) {
-    const plugins = this.store.getState().plugins
-    const plugin = plugins[pluginName]
-    const updatedPlugin = { ...plugin, pluginState: newPluginState }
+    const state = this.store.getState()
 
-    const newPlugins = {...plugins, [pluginName]: updatedPlugin}
+    const newPluginStates = { ...state.pluginStates, [pluginName]: newPluginState }
 
     this.store.updateState({
-      plugins: newPlugins,
+      ...state,
+      pluginStates: newPluginStates,
     })
   }
 
   getPluginState (pluginName) {
-    const plugin = this.store.getState().plugins[pluginName]
-    return plugin ? plugin.pluginState : null
+    return this.store.getState().pluginStates[pluginName]
   }
 
   async add (pluginName, sourceUrl) {
@@ -93,7 +91,6 @@ class PluginsController extends EventEmitter {
           pluginName,
           sourceCode,
           requestedPermissions: capabilities,
-          pluginState: {},
         }
 
         const newPlugins = {...plugins, [pluginName]: newPlugin}
