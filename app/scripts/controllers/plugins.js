@@ -75,7 +75,8 @@ class PluginsController extends EventEmitter {
         })
         .then(({ web3Wallet: { bundle, requestedPermissions } }) => {
            _requestedPermissions = requestedPermissions
-          return fetch(bundleUrl)
+          // bundle is an object with: { local: string, url: string }
+          return fetch(bundle.url) // TODO: validate params?
         })
         .then(bundleRes => bundleRes.text())
         .then(sourceCode => {
