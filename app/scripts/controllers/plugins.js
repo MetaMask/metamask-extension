@@ -57,6 +57,18 @@ class PluginsController extends EventEmitter {
     return this.store.getState().pluginStates[pluginName]
   }
 
+  deletePlugin (pluginName) {
+    const state = this.store.getState()
+
+    const newPlugins = { ...state.plugins }
+    delete newPlugins[pluginName]
+
+    this.store.updateState({
+      ...state,
+      plugins: newPlugins,
+    })
+  }
+
   async add (pluginName, sourceUrl) {
     if (!sourceUrl) {
       sourceUrl = pluginName
@@ -65,7 +77,7 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
 
     let plugin
-    if (false && plugins[pluginName]) {
+    if (plugins[pluginName]) {
       plugin = plugins[pluginName]
     } else {
       let _requestedPermissions

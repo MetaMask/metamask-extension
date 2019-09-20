@@ -388,6 +388,8 @@ var actions = {
   setThreeBoxSyncingPermission,
   setRestoredFromThreeBoxToFalse,
   turnThreeBoxSyncingOn,
+
+  deletePlugin,
 }
 
 module.exports = actions
@@ -2966,3 +2968,13 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
     }
   }
 }
+
+
+function deletePlugin (pluginName) {
+  return dispatch => {
+    background.deletePlugin(pluginName)
+  }
+}
+
+window.deletePlugin = deletePlugin
+

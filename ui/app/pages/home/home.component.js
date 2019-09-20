@@ -8,6 +8,8 @@ import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
 import PermissionApproval from '../permission-approval'
+import TextField from '../../components/ui/text-field'
+import Button from '../../components/ui/button'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -48,6 +50,10 @@ export default class Home extends PureComponent {
     threeBoxLastUpdated: PropTypes.string,
     threeBoxFeatureFlagIsTrue: PropTypes.bool,
     permissionsRequests: PropTypes.array,
+  }
+
+  state = {
+    pluginToDelete: '',
   }
 
   componentWillMount () {
@@ -161,6 +167,18 @@ export default class Home extends PureComponent {
                       />,
                     },
                   ]}/>
+                <div>
+                  <TextField
+                    id="delete-plugin"
+                    label={'Delete Plugin'}
+                    type="text"
+                    value={this.state.pluginToDelete}
+                    onChange={e => this.setState({ pluginToDelete: e.target.value })}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Button onClick={() => this.props.deletePlugin(this.state.pluginToDelete)} >{ 'Delete Plugin' }</Button>
+                </div>
               </TransactionView>
             )
             : null }
