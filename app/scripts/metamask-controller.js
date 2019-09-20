@@ -270,6 +270,7 @@ module.exports = class MetamaskController extends EventEmitter {
       _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
       getApi: this.getPluginsApi.bind(this),
       initState: initState.PluginsController,
+      getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
     })
 
     this.permissionsController = new PermissionsController({
@@ -1319,6 +1320,14 @@ module.exports = class MetamaskController extends EventEmitter {
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
     }
+  }
+
+  async getAppKeyForDomain (domain) {
+    const keyringController = this.keyringController
+    const accounts = await keyringController.getAccounts()
+    const firstAccount = accounts[0]
+    const privateAppKey = await keyringController.exportAppKeyForAddress(firstAccount, domain)
+    return privateAppKey
   }
 
   // ---------------------------------------------------------------------------
