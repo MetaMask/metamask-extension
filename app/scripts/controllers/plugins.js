@@ -208,6 +208,7 @@ class PluginsController extends EventEmitter {
       BigInt,
       window: {
         crypto,
+        SubtleCrypto,
       },
     })
     sessedPlugin()
