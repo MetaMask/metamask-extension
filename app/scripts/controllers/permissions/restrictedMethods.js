@@ -105,7 +105,7 @@ function getExternalRestrictedMethods (permissionsController) {
           const origin = req.method.substr(14)
 
           const prior = permissionsController.pluginsController.get(origin)
-          if (!prior) {
+          if (false && !prior) {
             await permissionsController.pluginsController.add(origin)
           }
 
