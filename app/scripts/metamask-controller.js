@@ -559,6 +559,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       //plugins
       deletePlugin: this.pluginsController.deletePlugin.bind(this.pluginsController),
+      clearPluginState: this.pluginsController.clearPluginState.bind(this.pluginsController),
     }
   }
 

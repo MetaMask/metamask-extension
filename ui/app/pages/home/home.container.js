@@ -64,6 +64,7 @@ const mapDispatchToProps = (dispatch) => ({
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setRestoredFromThreeBoxToFalse: () => dispatch(setRestoredFromThreeBoxToFalse()),
   deletePlugin: (pluginName) => dispatch(deletePlugin(pluginName)),
+  clearPluginState: () => dispatch(clearPluginState()),
 })
 
 export default compose(

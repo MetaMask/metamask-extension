@@ -57,6 +57,13 @@ class PluginsController extends EventEmitter {
     return this.store.getState().pluginStates[pluginName]
   }
 
+  clearPluginState () {
+    this.store.updateState({
+      plugins: {},
+      pluginStates: {},
+    })
+  }
+
   deletePlugin (pluginName) {
     const state = this.store.getState()
 

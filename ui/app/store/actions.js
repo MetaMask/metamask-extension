@@ -390,6 +390,7 @@ var actions = {
   turnThreeBoxSyncingOn,
 
   deletePlugin,
+  clearPluginState,
 }
 
 module.exports = actions
@@ -2973,6 +2974,12 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
 function deletePlugin (pluginName) {
   return dispatch => {
     background.deletePlugin(pluginName)
+  }
+}
+
+function clearPluginState () {
+  return () => {
+    background.clearPluginState()
   }
 }
 
