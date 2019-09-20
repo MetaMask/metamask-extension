@@ -1569,6 +1569,16 @@ module.exports = class MetamaskController extends EventEmitter {
   setupProvider (origin, getSiteMetadata, isPlugin) {
     const engine = this.setupProviderEngine(origin, getSiteMetadata, isPlugin)
     const provider = providerFromEngine(engine)
+    provider.send = async (payload) => {
+      return new Promise((res, rej) => {
+        provider.sendAsync(payload, (err, response) => {
+          if (err) {
+            return rej(err)
+          }
+          res(response)
+        })
+      })
+    }
     return provider
   }
 
