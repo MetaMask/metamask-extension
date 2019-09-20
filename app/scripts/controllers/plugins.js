@@ -57,6 +57,18 @@ class PluginsController extends EventEmitter {
     return this.store.getState().pluginStates[pluginName]
   }
 
+  deletePlugin (pluginName) {
+    const state = this.store.getState()
+
+    const newPlugins = { ...state.plugins }
+    delete newPlugins[pluginName]
+
+    this.store.updateState({
+      ...state,
+      plugins: newPlugins,
+    })
+  }
+
   async add (pluginName, sourceUrl) {
     if (!sourceUrl) {
       sourceUrl = pluginName

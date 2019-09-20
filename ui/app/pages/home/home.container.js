@@ -9,6 +9,7 @@ import {
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
   setRestoredFromThreeBoxToFalse,
+  deletePlugin,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -62,6 +63,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setRestoredFromThreeBoxToFalse: () => dispatch(setRestoredFromThreeBoxToFalse()),
+  deletePlugin: (pluginName) => dispatch(deletePlugin(pluginName)),
 })
 
 export default compose(
