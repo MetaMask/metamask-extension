@@ -13,6 +13,9 @@ class PluginsController extends EventEmitter {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
+    // TODO:SECURITY disable errorStackMode for production
+    this.rootRealm = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
+
     this.setupProvider = opts.setupProvider
     this._txController = opts._txController
     this._networkController = opts._networkController
@@ -178,10 +181,9 @@ class PluginsController extends EventEmitter {
   }
 
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
-    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
-    const sessedPlugin = s.evaluate(sourceCode, {
+    const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
       wallet: ethereumProvider,
       console, // Adding console for now for logging purposes.
     })
