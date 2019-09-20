@@ -98,6 +98,24 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
+    'alert': {
+      description: 'Show alerts over the current page.',
+      method: (req, res, _next, end) => {
+        const requestor = engine.domain
+        alert(`MetaMask Notice:\n${requestor} States:\n${req.params[0]}`)
+        end()
+      },
+    },
+
+    'confirm': {
+      description: 'Display confirmations for user action.',
+      method: (req, res, _next, end, engine) => {
+        const requestor = engine.domain
+        res.result = confirm (`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        end()
+      },
+    },
+
     'wallet_plugin_': {
       description: 'Connect to plugin $1, and install it if not available yet.',
       method: async (req, res, _next, end, engine) => {
