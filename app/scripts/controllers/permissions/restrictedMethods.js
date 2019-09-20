@@ -98,14 +98,14 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
-    'wallet_plugin_': {
+    'wallet_plugin_*': {
       description: 'Connect to plugin $1, and install it if not available yet.',
       method: async (req, res, _next, end, engine) => {
         try {
           const origin = req.method.substr(14)
 
           const prior = permissionsController.pluginsController.get(origin)
-          if (false && !prior) {
+          if (!prior) {
             await permissionsController.pluginsController.add(origin)
           }
 
@@ -120,7 +120,7 @@ function getExternalRestrictedMethods (permissionsController) {
 
           // Handler is an async function that takes an origin string and a request object.
           // It should return the result it would like returned to the reqeustor as part of response.result
-          res.result = await handler(requestor, req)
+          res.result = await handler(requestor, req.params[0])
           return end()
 
         } catch (err) {
