@@ -237,15 +237,6 @@ class PluginsController extends EventEmitter {
       plugins: newPlugins,
     })
   }
-
-  // Here is where we need to load requested script via ENS using EIP1577 (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1577.md),
-  // example usage here: https://github.com/MetaMask/metamask-extension/pull/6402.
-
-  async _getPluginConfig (pluginName) {
-    const res = await fetch(`http://localhost:8081/${pluginName}.json`)
-    const json = await res.json()
-    return json
-  }
 }
 
 module.exports = PluginsController
