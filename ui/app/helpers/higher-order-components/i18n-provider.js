@@ -3,12 +3,15 @@ const connect = require('react-redux').connect
 const PropTypes = require('prop-types')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const t = require('../utils/i18n-helper').getMessage
+const { getMessage } = require('../utils/i18n-helper')
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
+    if (!key) {
+      return defaultValue
+    }
     const { localeMessages: { current, en } = {}, currentLocale } = this.props
-    return t(currentLocale, current, key, ...args) || t(currentLocale, en, key, ...args) || defaultValue
+    return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || defaultValue
   }
 
   getChildContext () {
@@ -22,11 +25,7 @@ class I18nProvider extends Component {
        * @return {string|undefined|null} The localized message if available
        */
       t (key, ...args) {
-        if (key === undefined || key === null) {
-          return key
-        }
-
-        return t(currentLocale, current, key, ...args) || t(currentLocale, en, key, ...args) || `[${key}]`
+        return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`
       },
       tOrDefault: this.tOrDefault,
       tOrKey: (key, ...args) => {
