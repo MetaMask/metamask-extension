@@ -120,13 +120,17 @@
     "currentCurrency": "usd",
     "nativeCurrency": "ETH",
     "conversionRate": 556.12,
-    "addressBook": [
-      {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "name": "",
-        "chainId": 4
+    "addressBook": {
+      "4": {
+        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "chainId": "4",
+          "isEns": false,
+          "memo": "",
+          "name": ""
+        }
       }
-    ],
+    },
     "selectedTokenAddress": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,

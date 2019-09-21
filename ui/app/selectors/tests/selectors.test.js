@@ -13,9 +13,11 @@ describe('selectors', () => {
         getAddressBook(mockState),
         [
           {
-            address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
-            name: 'Address Book Account 1',
-            chainId: '3',
+            'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
+            'chainId': '3',
+            'isEns': false,
+            'memo': '',
+            'name': 'Address Book Account 1',
           },
         ],
       )
