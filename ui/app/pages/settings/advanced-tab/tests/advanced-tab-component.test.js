@@ -16,7 +16,7 @@ describe('AdvancedTab Component', () => {
       }
     )
 
-    assert.equal(root.find('.settings-page__content-row').length, 8)
+    assert.equal(root.find('.settings-page__content-row').length, 9)
   })
 
   it('should update autoLogoutTimeLimit', () => {
@@ -32,7 +32,7 @@ describe('AdvancedTab Component', () => {
       }
     )
 
-    const autoTimeout = root.find('.settings-page__content-row').at(6)
+    const autoTimeout = root.find('.settings-page__content-row').at(7)
     const textField = autoTimeout.find(TextField)
 
     textField.props().onChange({ target: { value: 1440 } })
