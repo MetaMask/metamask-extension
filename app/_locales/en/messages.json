@@ -205,7 +205,7 @@
     "message": "Custom Nonce"
   },
   "nonceFieldDescription": {
-    "message": "Only use if you understand the implications."
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
   },
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
