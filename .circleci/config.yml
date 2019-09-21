@@ -164,8 +164,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Test
+          name: Lint
           command: yarn lint
+      - run:
+          name: Verify locales
+          command: yarn verify-locales --quiet
 
   test-deps:
     docker:

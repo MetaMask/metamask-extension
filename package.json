@@ -36,6 +36,7 @@
     "lint:fix": "eslint . --ext js,json --fix",
     "lint:changed": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint",
     "lint:changed:fix": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint --fix",
+    "verify-locales": "node ./development/verify-locale-strings.js",
     "mozilla-lint": "addons-linter dist/firefox",
     "watch": "cross-env METAMASK_ENV=test mocha --watch --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "devtools:react": "react-devtools",
