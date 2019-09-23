@@ -11,7 +11,7 @@ readInstalled('./', { dev: true }, function (err, data) {
   Object.entries(deps).forEach(([packageName, packageData]) => {
     const packageScripts = packageData.scripts || {}
     const scriptKeys = Reflect.ownKeys(packageScripts)
-    
+
     const hasInstallScript = installScripts.some(installKey => scriptKeys.includes(installKey))
     if (!hasInstallScript) return
 
@@ -22,7 +22,7 @@ readInstalled('./', { dev: true }, function (err, data) {
     const scriptNames = Reflect.ownKeys(matchingScripts)
 
     const relativePath = path.relative(process.cwd(), packageData.path)
-    
+
     console.log(`${packageName}: ${relativePath} ${scriptNames}`)
   })
 })
