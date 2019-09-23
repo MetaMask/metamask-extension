@@ -158,6 +158,7 @@
     "react-transition-group": "^1.2.1",
     "react-trigger-change": "^1.0.2",
     "reactify": "^1.1.1",
+    "read-installed": "^4.0.3",
     "readable-stream": "^2.3.3",
     "recompose": "^0.25.0",
     "redux": "^3.0.5",
