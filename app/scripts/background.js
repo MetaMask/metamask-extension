@@ -8,7 +8,6 @@ require('./lib/setupFetchDebugging')()
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
 const debounce = require('debounce-stream')
@@ -345,7 +344,10 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      controller.setupTrustedCommunication(portStream, 'MetaMask')
+      // construct fake URL for identifying internal messages
+      const metamaskUrl = new URL(window.location)
+      metamaskUrl.hostname = 'metamask'
+      controller.setupTrustedCommunication(portStream, metamaskUrl)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -381,9 +383,10 @@ function setupController (initState, initLangCode) {
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const originDomain = urlUtil.parse(remotePort.sender.url).hostname
+    const senderUrl = new URL(remotePort.sender.url)
+    const extensionId = remotePort.sender.id
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, originDomain)
+    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
   }
 
   //

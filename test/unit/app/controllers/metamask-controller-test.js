@@ -758,7 +758,7 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = 'myethereumwalletntw.com'
+    const phishingUrl = new URL('http://myethereumwalletntw.com')
 
     afterEach(function () {
       streamTest.end()
@@ -771,7 +771,7 @@ describe('MetaMaskController', function () {
 
       streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.name !== 'phishing') return cb()
-        assert.equal(chunk.data.hostname, phishingUrl)
+        assert.equal(chunk.data.hostname, phishingUrl.hostname)
         resolve()
         cb()
       })
