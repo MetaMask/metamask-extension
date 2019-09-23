@@ -115,7 +115,8 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn dist
+          command: |
+            .circleci/scripts/build-dist.sh
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
