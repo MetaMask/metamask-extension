@@ -97,5 +97,8 @@ function isEmpty (obj) {
 function checkForError () {
   const lastError = extension.runtime.lastError
   if (!lastError) return
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) return lastError
+  // repair incomplete error object (eg chromium v77)
   return new Error(lastError.message)
 }
