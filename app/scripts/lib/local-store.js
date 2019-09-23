@@ -97,5 +97,5 @@ function isEmpty (obj) {
 function checkForError () {
   const lastError = extension.runtime.lastError
   if (!lastError) return
-  return new Error(lastError.message) 
+  return new Error(lastError.message)
 }
