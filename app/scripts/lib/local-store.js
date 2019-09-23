@@ -49,7 +49,7 @@ module.exports = class ExtensionStore {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.get(null, (/** @type {any} */ result) => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {
@@ -69,7 +69,7 @@ module.exports = class ExtensionStore {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {
@@ -87,4 +87,15 @@ module.exports = class ExtensionStore {
  */
 function isEmpty (obj) {
   return Object.keys(obj).length === 0
+}
+
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) return
+  return new Error(lastError.message) 
 }
