@@ -51,12 +51,6 @@ describe('MetaMask', function () {
   describe('set up data to be restored by 3box', () => {
 
     describe('First time flow starting from an existing seed phrase', () => {
-      it('turns on the threebox feature flag', async () => {
-        await delay(largeDelayMs)
-        await driver.executeScript('window.metamask.setFeatureFlag("threeBox", true)')
-        await delay(largeDelayMs)
-      })
-
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver, By.css('.welcome-page__header'))
         const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
@@ -163,12 +157,6 @@ describe('MetaMask', function () {
     })
 
     describe('First time flow starting from an existing seed phrase', () => {
-      it('turns on the threebox feature flag', async () => {
-        await delay(largeDelayMs)
-        await driver2.executeScript('window.metamask.setFeatureFlag("threeBox", true)')
-        await delay(largeDelayMs)
-      })
-
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver2, By.css('.welcome-page__header'))
         const welcomeScreenBtn = await findElement(driver2, By.css('.first-time-flow__button'))

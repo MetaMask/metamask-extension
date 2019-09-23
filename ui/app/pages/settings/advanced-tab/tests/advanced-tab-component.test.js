@@ -6,22 +6,9 @@ import AdvancedTab from '../advanced-tab.component'
 import TextField from '../../../../components/ui/text-field'
 
 describe('AdvancedTab Component', () => {
-  it('should render correctly when threeBoxFeatureFlag is false', () => {
+  it('should render correctly when threeBoxFeatureFlag', () => {
     const root = shallow(
       <AdvancedTab />,
-      {
-        context: {
-          t: s => `_${s}`,
-        },
-      }
-    )
-
-    assert.equal(root.find('.settings-page__content-row').length, 7)
-  })
-
-  it('should render correctly threeBoxFeatureFlag is true', () => {
-    const root = shallow(
-      <AdvancedTab threeBoxFeatureFlag={true} />,
       {
         context: {
           t: s => `_${s}`,

@@ -60,11 +60,7 @@ class ThreeBoxController {
     this.registeringUpdates = false
     this.lastMigration = migrations.sort((a, b) => a.version - b.version).slice(-1)[0]
 
-    const threeBoxFeatureFlagTurnedOn = this.preferencesController.getFeatureFlags().threeBox
-
-    if (threeBoxFeatureFlagTurnedOn) {
-      this.init()
-    }
+    this.init()
   }
 
   async init () {

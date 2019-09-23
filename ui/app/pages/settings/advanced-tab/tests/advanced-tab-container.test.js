@@ -9,7 +9,6 @@ const defaultState = {
     featureFlags: {
       sendHexData: false,
       advancedInlineGas: false,
-      threeBox: false,
     },
     preferences: {
       autoLogoutTimeLimit: 0,
@@ -32,7 +31,6 @@ describe('AdvancedTab Container', () => {
       autoLogoutTimeLimit: 0,
       threeBoxSyncingAllowed: false,
       threeBoxDisabled: false,
-      threeBoxFeatureFlag: false,
     }
 
     assert.deepEqual(props, expected)

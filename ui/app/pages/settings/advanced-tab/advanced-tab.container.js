@@ -19,7 +19,6 @@ export const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       advancedInlineGas,
-      threeBox,
     } = {},
     threeBoxSyncingAllowed,
     threeBoxDisabled,
@@ -34,7 +33,6 @@ export const mapStateToProps = state => {
     autoLogoutTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
-    threeBoxFeatureFlag: threeBox,
   }
 }
 
