@@ -3,7 +3,8 @@ const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
 const log = require('loglevel')
-
+const migrations = require('../migrations/')
+const Migrator = require('../lib/migrator')
 const JsonRpcEngine = require('json-rpc-engine')
 const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
@@ -49,6 +50,7 @@ class ThreeBoxController {
     const initState = {
       threeBoxSyncingAllowed: true,
       restoredFromThreeBox: null,
+      threeBoxLastUpdated: 0,
       ...opts.initState,
       threeBoxAddress: null,
       threeBoxSynced: false,
@@ -56,6 +58,7 @@ class ThreeBoxController {
     }
     this.store = new ObservableStore(initState)
     this.registeringUpdates = false
+    this.lastMigration = migrations.sort((a, b) => a.version - b.version).slice(-1)[0]
 
     const threeBoxFeatureFlagTurnedOn = this.preferencesController.getFeatureFlags().threeBox
 
@@ -72,12 +75,19 @@ class ThreeBoxController {
     }
   }
 
-  async _update3Box ({ type }, newState) {
+  async _update3Box ({ type }, newTypeState) {
     try {
       const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
       if (threeBoxSyncingAllowed && threeBoxSynced) {
-        await this.space.private.set('lastUpdated', Date.now())
-        await this.space.private.set(type, JSON.stringify(newState))
+        const newState = {
+          preferences: this.preferencesController.store.getState(),
+          addressBook: this.addressBookController.state,
+          lastUpdated: Date.now(),
+          lastMigration: this.lastMigration,
+        }
+        newState[type] = newTypeState
+
+        await this.space.private.set('metamaskBackup', JSON.stringify(newState))
       }
     } catch (error) {
       console.error(error)
@@ -146,15 +156,34 @@ class ThreeBoxController {
   }
 
   async getLastUpdated () {
-    return await this.space.private.get('lastUpdated')
+    return await this.space.private.get('metamaskBackup').lastUpdated
+  }
+
+  async migrateBackedUpState (backedUpState) {
+    const migrator = new Migrator({ migrations })
+
+    const formattedStateBackup = {
+      PreferencesController: backedUpState.preferences,
+      AddressBookController: backedUpState.addressBook,
+    }
+    const initialMigrationState = migrator.generateInitialState(formattedStateBackup)
+    const migratedState = await migrator.migrateData(initialMigrationState)
+    return {
+      preferences: migratedState.PreferencesController,
+      addressBook: migratedState.AddressBookController,
+    }
   }
 
   async restoreFromThreeBox () {
+    const backedUpState = await this.space.private.get('metamaskBackup')
+    const {
+      preferences,
+      addressBook,
+    } = await this.migrateBackedUpState(backedUpState)
+    this.store.updateState({ threeBoxLastUpdated: backedUpState.lastUpdated })
+    preferences && this.preferencesController.store.updateState(JSON.parse(preferences))
+    addressBook && this.addressBookController.update(JSON.parse(addressBook), true)
     this.setRestoredFromThreeBoxToTrue()
-    const backedUpPreferences = await this.space.private.get('preferences')
-    backedUpPreferences && this.preferencesController.store.updateState(JSON.parse(backedUpPreferences))
-    const backedUpAddressBook = await this.space.private.get('addressBook')
-    backedUpAddressBook && this.addressBookController.update(JSON.parse(backedUpAddressBook), true)
   }
 
   turnThreeBoxSyncingOn () {
