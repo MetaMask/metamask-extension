@@ -67,7 +67,7 @@ const customDimensionsNameIdMap = {
 }
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
-  const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'MetaMask'
+  const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'metamask'
   return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(previousPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}`
 }
 

@@ -23,6 +23,8 @@ export default class ProviderApproval extends Component {
         tabID={providerRequest.tabID}
         siteImage={providerRequest.siteImage}
         siteTitle={providerRequest.siteTitle}
+        hostname={providerRequest.hostname}
+        extensionId={providerRequest.extensionId}
       />
     )
   }
