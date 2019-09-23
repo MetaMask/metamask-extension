@@ -2,7 +2,6 @@ const ObservableStore = require('obs-store')
 const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
-// const Box = require(process.env.IN_TEST ? '../lib/mock-3box' : '3box/dist/3box.min')
 const log = require('loglevel')
 
 const JsonRpcEngine = require('json-rpc-engine')
