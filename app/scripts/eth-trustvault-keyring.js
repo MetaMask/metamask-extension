@@ -4,8 +4,9 @@ const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
-const trustVaultBridgeUrl = 'https://nssykwnfn5eyffdizlucp6oifi.appsync-api.eu-west-1.amazonaws.com/graphql'
-const apiKey = 'da2-mfgyzj7ltjhdne7mohvjskqizm'
+const request = require('request-promise')
+const walletBridgeUrl= "https://d3qxrgqb1j.execute-api.eu-west-1.amazonaws.com/dev/graphql"
+const walletBridgeApiKey = "BDKmsF76dZ7poX6xN7LqL9j3X1bp7E7J4f4lKkyv"
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
@@ -17,8 +18,6 @@ class TrustvaultKeyring extends EventEmitter {
     this.type = type
     this.unlockedAccount = 0
     this.deserialize(opts)
-    this.client = new GraphQLClient(trustVaultBridgeUrl)
-    this.client.setHeader('x-api-key', apiKey)
     this.pinChallenge = {
       email: null,
       sessionToken: null
@@ -148,14 +147,23 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
-    const { getPartialPinChallenge, error } = await this.client.request(query).catch(this.handleGraphQlError);
-
-    // Set pinChallenge details
-    this.pinChallenge.email = email
-    if (getPartialPinChallenge) {
-      this.pinChallenge.sessionToken = getPartialPinChallenge.sessionToken
+    let error = {};
+    let getPartialPinChallenge = null
+    const result =  await this.walletBridgeRequest({ type: "getPartialPinChallenge", grapqlQuery: query}).catch(e => {
+      throw e
+    })
+    if(result.errorResponse) {
+      error.message = result.errorResponse.errorMessage
+      error.code = result.errorResponse.code
     }
-
+    
+    if(result){
+      getPartialPinChallenge = result.getPartialPinChallenge
+      this.pinChallenge.email = email
+      if (getPartialPinChallenge) {
+        this.pinChallenge.sessionToken = getPartialPinChallenge.sessionToken
+      }
+    }
     return {
       pinChallenge: getPartialPinChallenge,
       error,
@@ -164,51 +172,78 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
-    const { getAuthenticationTokens, error } = await this.client.request(query).catch(this.handleGraphQlError);
-    const { authentication: auth, pinChallenge } = getAuthenticationTokens
-
-    if (pinChallenge && pinChallenge.sessionToken) {
+    let error = {};
+    let auth = null
+    let pinChallenge = null
+    const result = await  this.walletBridgeRequest({ type: "getAuthenticationTokens", grapqlQuery: query}).catch( e=> { throw e; })
+      if(result.errorResponse){
+        pinChallenge = result.errorResponse.data.getAuthenticationTokens.pinChallenge
+        error.message = result.errorResponse.errorMessage
+        error.code = result.errorResponse.code
+      }
+      if (result.getAuthenticationTokens ) {
+       auth= result.getAuthenticationTokens.authentication
+       pinChallenge= result.getAuthenticationTokens.pinChallenge
+    }
+    if ( pinChallenge && pinChallenge.sessionToken ) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
-
     return { auth, pinChallenge, error }
   }
 
   async _getAccounts () {
-    const accounts = (await this._request(this._getAccountsQuery, {})).userWallet.getAccounts
+    const accounts = (await this._request(this._getAccountsQuery, {}, "getAccounts")).userWallet.getAccounts
     this.addressNameMap = accounts.map(account => { return { name: account.accountName, address: account.address } })
     return accounts.map(account => account.address.toLowerCase())
   }
 
-  async _request (constructQuery, queryContext) {
+  async _request (constructQuery, queryContext, endPointName) {
     try {
       const query = constructQuery(this.auth, queryContext)
-      const response = await this.client.request(query)
+      const response = await this.walletBridgeRequest({ type: endPointName, grapqlQuery: query})
       log.info(response)
+      if( response.errorResponse && response.errorResponse.errorMessage === 'INVALID_SESSION_TOKEN'){
+        try {
+            const query = this._refreshAuthTokensQuery(this.auth)
+            const tokens = await this.walletBridgeRequest({ type: "refreshAuthenticationToken", grapqlQuery: query})
+            this.auth = tokens.refreshAuthenticationTokens
+            return await this._request(constructQuery, queryContext, endPointName)
+          } catch (error) {
+            log.warn('TrustVault session has expired. Connect to TrustVault again', error)
+            this.accounts = []
+            this.auth = null
+            throw new Error('TrustVault session has expired. Connect to TrustVault again')
+          }
+      }
       return response
     } catch (e) {
       log.error(e)
-      if (e.message.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
-        try {
-          const query = this._refreshAuthTokensQuery(this.auth)
-          const tokens = await this.client.request(query)
-          this.auth = tokens.refreshAuthenticationTokens
-          return await this._request(constructQuery, queryContext)
-        } catch (error) {
-          log.warn('TrustVault session has expired. Connect to TrustVault again', error)
-          this.accounts = []
-          this.auth = null
-          throw new Error('TrustVault session has expired. Connect to TrustVault again')
-        }
-      }
       throw e
     }
   }
 
+  async walletBridgeRequest ( body) {
+    const url = walletBridgeUrl;
+    const options = {
+      uri: url,
+      method: "POST",
+      headers: {
+        "x-api-key": walletBridgeApiKey,
+      }, 
+    };
+    let response 
+    options.body = JSON.stringify(body);
+    console.log('options POST', options)
+    response = await request.post(options);
+    console.log('response', JSON.parse(response))
+    return JSON.parse(response);
+}
+
+
   async _signTransaction (address, tx, transactionDigest) {
     let transactionId
     try {
-      const data = await this._request(this._getSignTransactionMutation, { tx, transactionDigest, address })
+      const data = await this._request(this._getSignTransactionMutation, { tx, transactionDigest, address }, "requestSignature" )
       transactionId = data.requestSignature.transactionId
       log.info('transactionId', transactionId)
     } catch (err) {
@@ -245,7 +280,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _pollTransaction (transactionId, retryCount = 0, errorCount=0) {
     try {
-      const result = await this._request(this._getTransactionInfoQuery, { transactionId })
+      const result = await this._request(this._getTransactionInfoQuery, { transactionId }, "getTransactionInfo")
       const { status, signedTransaction } = result.userWallet.getTransactionInfo
       if (status === 'SIGNED') {
         return signedTransaction
@@ -432,3 +467,5 @@ class TrustvaultKeyring extends EventEmitter {
 
 TrustvaultKeyring.type = type
 module.exports = TrustvaultKeyring
+
+
