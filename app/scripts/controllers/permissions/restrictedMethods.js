@@ -2,7 +2,6 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 const pluginRestrictedMethodDescriptions = {
-  onNewTx: 'Take action whenever a new transaction is created',
   fetch: 'Retrieve data from external sites',
   updatePluginState: 'Store data locally',
   onUnlock: 'Take action when you unlock your account',

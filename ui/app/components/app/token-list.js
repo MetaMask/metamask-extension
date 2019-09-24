@@ -75,10 +75,19 @@ TokenList.prototype.render = function () {
   }
 
   return h('div', tokens.map((tokenData) => {
+    console.log('a tokenData is', tokenData)
     tokenData.image = assetImages[tokenData.address]
+    if (tokenData.customViewUrl) {
+      tokenData.onClick = this.showPluginToken(tokenData)
+    }
     return h(TokenCell, tokenData)
   }))
 
+}
+
+TokenList.prototype.showPluginToken = function (tokenData) {
+  const url = tokenData.customViewUrl
+  global.platform.openWindow({ url })
 }
 
 TokenList.prototype.message = function (body) {

@@ -25,7 +25,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+    setSelectedToken: identifier => dispatch(actions.setSelectedToken(identifier)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -62,10 +62,13 @@ TokenCell.prototype.render = function () {
     currentCurrency,
     // userAddress,
     image,
+    onClick,
   } = props
   let currentTokenToFiatRate
   let currentTokenInFiat
   let formattedFiat = ''
+
+  const identifier = `${network}:${address}`
 
   if (contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
@@ -88,11 +91,10 @@ TokenCell.prototype.render = function () {
 
   return (
     h('div.token-list-item', {
-      className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,
+      className: `token-list-item ${selectedTokenAddress === dentifier ? 'token-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
-        setSelectedToken(address)
         this.context.metricsEvent({
           eventOpts: {
             category: 'Navigation',
@@ -100,7 +102,12 @@ TokenCell.prototype.render = function () {
             name: 'Clicked Token',
           },
         })
-        selectedTokenAddress !== address && sidebarOpen && hideSidebar()
+
+        if (!onClick) {
+          return onClick();
+        }
+        setSelectedToken(identifier)
+        selectedTokenAddress !== identifier && sidebarOpen && hideSidebar()
       },
     }, [
 
