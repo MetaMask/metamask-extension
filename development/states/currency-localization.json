@@ -23,6 +23,9 @@
         "name": "Send Account 4"
       }
     },
+    "abTests": {
+      "fullScreenVsPopup": "control"
+    },
     "cachedBalances": {},
     "unapprovedTxs": {},
     "conversionRate": 19855,
