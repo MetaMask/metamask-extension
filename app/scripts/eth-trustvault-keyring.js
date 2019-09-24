@@ -1,12 +1,11 @@
 const { EventEmitter } = require('events')
-const { GraphQLClient } = require('graphql-request')
 const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
 const request = require('request-promise')
-const walletBridgeUrl= "https://d3qxrgqb1j.execute-api.eu-west-1.amazonaws.com/dev/graphql"
-const walletBridgeApiKey = "BDKmsF76dZ7poX6xN7LqL9j3X1bp7E7J4f4lKkyv"
+const walletBridgeUrl= "https://0ygzdz99uk.execute-api.eu-west-1.amazonaws.com/dev/graphql"
+const walletBridgeApiKey = "YD8cvnBPDNaGvFoEgViQG7cnkZEiFbZI1568dYtA"
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
@@ -176,13 +175,13 @@ class TrustvaultKeyring extends EventEmitter {
     let pinChallenge = null
     const { errorResponse, getAuthenticationTokens} = await  this.walletBridgeRequest({ query: query})
     if(errorResponse){
-      pinChallenge = result.errorResponse.data.getAuthenticationTokens.pinChallenge
-      error.message = result.errorResponse.errorMessage
-      error.code = result.errorResponse.code
+      pinChallenge = errorResponse.data.getAuthenticationTokens.pinChallenge
+      error.message = errorResponse.errorMessage
+      error.code = errorResponse.code
     }
     if (getAuthenticationTokens ) {
-      auth= result.getAuthenticationTokens.authentication
-      pinChallenge= result.getAuthenticationTokens.pinChallenge
+      auth= getAuthenticationTokens.authentication
+      pinChallenge= getAuthenticationTokens.pinChallenge
     }
     if ( pinChallenge && pinChallenge.sessionToken ) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
