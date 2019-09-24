@@ -71,7 +71,7 @@ class ThreeBoxController {
     }
   }
 
-  async _update3Box ({ type }, newTypeState) {
+  async _update3Box (newTypeState) {
     try {
       const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
       if (threeBoxSyncingAllowed && threeBoxSynced) {
@@ -81,7 +81,6 @@ class ThreeBoxController {
           lastUpdated: Date.now(),
           lastMigration: this.lastMigration,
         }
-        newState[type] = newTypeState
 
         await this.space.private.set('metamaskBackup', JSON.stringify(newState))
       }
@@ -225,9 +224,9 @@ class ThreeBoxController {
 
   _registerUpdates () {
     if (!this.registeringUpdates) {
-      const updatePreferences = this._update3Box.bind(this, { type: 'preferences' })
+      const updatePreferences = this._update3Box.bind(this)
       this.preferencesController.store.subscribe(updatePreferences)
-      const updateAddressBook = this._update3Box.bind(this, { type: 'addressBook' })
+      const updateAddressBook = this._update3Box.bind(this)
       this.addressBookController.subscribe(updateAddressBook)
       this.registeringUpdates = true
     }
