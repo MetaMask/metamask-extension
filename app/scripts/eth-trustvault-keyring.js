@@ -149,7 +149,7 @@ class TrustvaultKeyring extends EventEmitter {
     const query = this._getPartialPinChallengeQuery(email)
     let error = {};
     let getPartialPinChallenge = null
-    const result =  await this.walletBridgeRequest({ type: "getPartialPinChallenge", grapqlQuery: query}).catch(e => {
+    const result =  await this.walletBridgeRequest({ query: query}).catch(e => {
       throw e
     })
     if(result.errorResponse) {
@@ -175,7 +175,7 @@ class TrustvaultKeyring extends EventEmitter {
     let error = {};
     let auth = null
     let pinChallenge = null
-    const result = await  this.walletBridgeRequest({ type: "getAuthenticationTokens", grapqlQuery: query}).catch( e=> { throw e; })
+    const result = await  this.walletBridgeRequest({ query: query}).catch( e=> { throw e; })
       if(result.errorResponse){
         pinChallenge = result.errorResponse.data.getAuthenticationTokens.pinChallenge
         error.message = result.errorResponse.errorMessage
@@ -192,22 +192,22 @@ class TrustvaultKeyring extends EventEmitter {
   }
 
   async _getAccounts () {
-    const accounts = (await this._request(this._getAccountsQuery, {}, "getAccounts")).userWallet.getAccounts
+    const accounts = (await this._request(this._getAccountsQuery, {})).userWallet.getAccounts
     this.addressNameMap = accounts.map(account => { return { name: account.accountName, address: account.address } })
     return accounts.map(account => account.address.toLowerCase())
   }
 
-  async _request (constructQuery, queryContext, endPointName) {
+  async _request (constructQuery, queryContext) {
     try {
       const query = constructQuery(this.auth, queryContext)
-      const response = await this.walletBridgeRequest({ type: endPointName, grapqlQuery: query})
+      const response = await this.walletBridgeRequest({ query: query})
       log.info(response)
       if( response.errorResponse && response.errorResponse.errorMessage === 'INVALID_SESSION_TOKEN'){
         try {
             const query = this._refreshAuthTokensQuery(this.auth)
-            const tokens = await this.walletBridgeRequest({ type: "refreshAuthenticationToken", grapqlQuery: query})
+            const tokens = await this.walletBridgeRequest({ query: query})
             this.auth = tokens.refreshAuthenticationTokens
-            return await this._request(constructQuery, queryContext, endPointName)
+            return await this._request(constructQuery, queryContext)
           } catch (error) {
             log.warn('TrustVault session has expired. Connect to TrustVault again', error)
             this.accounts = []
@@ -243,7 +243,7 @@ class TrustvaultKeyring extends EventEmitter {
   async _signTransaction (address, tx, transactionDigest) {
     let transactionId
     try {
-      const data = await this._request(this._getSignTransactionMutation, { tx, transactionDigest, address }, "requestSignature" )
+      const data = await this._request(this._getSignTransactionMutation, { tx, transactionDigest, address })
       transactionId = data.requestSignature.transactionId
       log.info('transactionId', transactionId)
     } catch (err) {
@@ -280,7 +280,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _pollTransaction (transactionId, retryCount = 0, errorCount=0) {
     try {
-      const result = await this._request(this._getTransactionInfoQuery, { transactionId }, "getTransactionInfo")
+      const result = await this._request(this._getTransactionInfoQuery, { transactionId })
       const { status, signedTransaction } = result.userWallet.getTransactionInfo
       if (status === 'SIGNED') {
         return signedTransaction
