@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.2.2 Tue Sep 24 2019
+
 ## 7.2.1 Tue Sep 17 2019
 - [#7180](https://github.com/MetaMask/metamask-extension/pull/7180): Add `appName` message to each locale
 
