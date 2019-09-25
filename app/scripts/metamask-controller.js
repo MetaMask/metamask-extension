@@ -1695,10 +1695,20 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
 
-  async updateAndSetCustomRpc (networkConfig) {
-    await this.networkController.updateRpc(networkConfig)
-    this.networkController.setNetwork(networkConfig)
-    return networkConfig.rpcUrl
+  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+    const config = {
+      rpcUrl,
+      custom: {
+        name: nickname,
+        chainId,
+        ticker,
+        ...rpcPrefs,
+      },
+    }
+
+    await this.networkController.updateRpc(config)
+    this.networkController.setNetwork(config)
+    return config.rpcUrl
   }
 
 
@@ -1710,7 +1720,17 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (opts) {
+  async setCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+    const opts = {
+      rpcUrl,
+      custom: {
+        name: nickname,
+        chainId,
+        ticker,
+        ...rpcPrefs,
+      },
+    }
+
     const config = this.networkController.networkConfigs.find((net) => net.rpcUrl === opts.rpcUrl)
 
     if (!config) {

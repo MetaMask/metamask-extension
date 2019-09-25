@@ -463,7 +463,7 @@ describe('MetaMaskController', function () {
     let rpcTarget
 
     beforeEach(async function () {
-      rpcTarget = metamaskController.setCustomRpc({ rpcUrl: CUSTOM_RPC_URL })
+      rpcTarget = metamaskController.setCustomRpc(CUSTOM_RPC_URL)
     })
 
     it('returns custom RPC that when called', async function () {
