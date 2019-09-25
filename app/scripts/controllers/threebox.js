@@ -71,7 +71,7 @@ class ThreeBoxController {
     }
   }
 
-  async _update3Box (newTypeState) {
+  async _update3Box () {
     try {
       const { threeBoxSyncingAllowed, threeBoxSynced } = this.store.getState()
       if (threeBoxSyncingAllowed && threeBoxSynced) {
@@ -151,7 +151,9 @@ class ThreeBoxController {
   }
 
   async getLastUpdated () {
-    return await this.space.private.get('metamaskBackup').lastUpdated
+    const res = await this.space.private.get('metamaskBackup')
+    const parsedRes = JSON.parse(res || '{}')
+    return parsedRes.lastUpdated
   }
 
   async migrateBackedUpState (backedUpState) {
