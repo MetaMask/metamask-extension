@@ -230,10 +230,12 @@ class PluginsController extends EventEmitter {
         crypto,
         SubtleCrypto,
         fetch,
+        WebSocket,
       },
       crypto,
       SubtleCrypto,
       fetch,
+      WebSocket,
     })
     sessedPlugin()
     this._setPluginToActive(pluginName)
