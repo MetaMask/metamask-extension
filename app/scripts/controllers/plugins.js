@@ -3,6 +3,8 @@ const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
 const SES = require('ses')
 
+const pluginAssetRequiredFields = ['symbol', 'balance', 'identifier', 'decimals', 'customViewUrl']
+
 class PluginsController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -10,6 +12,13 @@ class PluginsController extends EventEmitter {
     const initState = extend({
       plugins: {},
       pluginStates: {},
+      pluginAssets: [{
+        symbol: 'TEST_ASSET',
+        balance: '200000',
+        identifier: 'test:asset',
+        decimals: 5,
+        customViewUrl: 'https://metamask.io',
+      }],
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
@@ -24,6 +33,7 @@ class PluginsController extends EventEmitter {
     this.getApi = opts.getApi
     this.getAppKeyForDomain = opts.getAppKeyForDomain
 
+    this.pluginAssets = []
     this.rpcMessageHandlers = new Map()
   }
 
@@ -208,6 +218,11 @@ class PluginsController extends EventEmitter {
       onMetaMaskEvent,
       registerRpcMessageHandler,
       getAppKey: () => this.getAppKeyForDomain(pluginName),
+
+      // Asset management:
+      registerAsset: this.addPluginAsset.bind(this, pluginName),
+      updateAsset: this.updatePluginAsset.bind(this, pluginName),
+      removeAsset: this.removePluginAsset.bind(this, pluginName),
     }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
@@ -257,6 +272,50 @@ class PluginsController extends EventEmitter {
       plugins: newPlugins,
     })
   }
+
+  // Asset management
+  get pluginAssets () {
+    return this.store.getState().pluginAssets
+  }
+
+  set pluginAssets (pluginAssets) {
+    this.store.updateState({
+      pluginAssets,
+    })
+  }
+
+  addPluginAsset (fromDomain, opts) {
+    this.validateAsset(fromDomain, opts)
+    const asset = {
+      ...opts,
+      fromDomain,
+    }
+    this.pluginAssets.push(asset)
+  }
+
+  validateAsset (fromDomain, opts) {
+    pluginAssetRequiredFields.forEach((requiredField) => {
+      if (!(requiredField in opts)) {
+        throw new Error(`Asset from ${fromDomain} missing required field: ${requiredField}`)
+      }
+    })
+  }
+  updatePluginAsset (fromDomain, asset) {
+    this.validateAsset(fromDomain, asset)
+    this.pluginAssets.forEach((asset, index) => {
+      if (asset.fromDomain === fromDomain && asset.identifier === identifier) {
+        this.pluginAssets[index] = asset
+      }
+    })
+  }
+
+  removePluginAsset (fromDomain, asset) {
+    this.pluginAssets = this.pluginAssets.filter((asset, index) => {
+      const requested = asset.fromDomain === fromDomain && asset.identifier === identifier
+      return !requested
+    })
+  }
+
 }
 
 module.exports = PluginsController
