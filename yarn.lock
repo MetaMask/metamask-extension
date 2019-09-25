@@ -6942,13 +6942,13 @@ content-disposition@0.5.3, content-disposition@^0.5.2:
   dependencies:
     safe-buffer "5.1.2"
 
-content-hash@^2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.4.3.tgz#89e6d295bbf2c53fb69b3d8fb43ae572ac7b6096"
-  integrity sha512-QBfQRlBBCJP94fV8zcUMChGMKzQMAZX6rn36yldc2A16C47tWdOTYjPosyZ7/AfdyW/xB5cP3RgZIAomnUDGIA==
+content-hash@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.4.4.tgz#4bec87caecfcff8cf1a37645301cbef4728a083f"
+  integrity sha512-3FaUsqt7VR725pVxe0vIScGI5efmpryIXdVSeXafQ63fb5gRGparAQlAGxTSOiv0yRg7YeliseXuB20ByD1duQ==
   dependencies:
     cids "^0.6.0"
-    multicodec "^0.5.4"
+    multicodec "^0.5.5"
     multihashes "^0.4.15"
 
 content-type-parser@^1.0.1:
@@ -18381,17 +18381,17 @@ multicast-dns@^7.2.0:
     dns-packet "^4.0.0"
     thunky "^1.0.2"
 
-multicodec@^0.5.4, multicodec@~0.5.0:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.4.tgz#ab2afb0cd00cd853c5a2eecb0dd1404dc7745388"
-  integrity sha512-0lPLiZ58b2jyXylx2qgda9/6N0YCNIpBxRsZ8sxYayVjEKh58XyNN74VTTQOR/ZCQFgbj0CsqfyRpEDPPlOMkw==
-  dependencies:
-    varint "^5.0.0"
-
-multicodec@~0.5.1, multicodec@~0.5.3:
+multicodec@^0.5.5, multicodec@~0.5.1, multicodec@~0.5.3:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.5.tgz#55c2535b44eca9ea40a13771420153fe075bb36d"
   integrity sha512-1kOifvwAqp9IdiiTKmpK2tS+LY6GHZdKpk3S2EvW4T32vlwDyA3hJoZtGauzqdedUPVNGChnTksEotVOCVlC+Q==
+  dependencies:
+    varint "^5.0.0"
+
+multicodec@~0.5.0:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.4.tgz#ab2afb0cd00cd853c5a2eecb0dd1404dc7745388"
+  integrity sha512-0lPLiZ58b2jyXylx2qgda9/6N0YCNIpBxRsZ8sxYayVjEKh58XyNN74VTTQOR/ZCQFgbj0CsqfyRpEDPPlOMkw==
   dependencies:
     varint "^5.0.0"
 
