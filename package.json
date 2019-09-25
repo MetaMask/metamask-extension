@@ -202,6 +202,7 @@
     "css-loader": "^2.1.1",
     "deep-freeze-strict": "^1.1.1",
     "del": "^3.0.0",
+    "read-installed": "^4.0.3",
     "deps-dump": "^1.1.0",
     "envify": "^4.0.0",
     "enzyme": "^3.4.4",
