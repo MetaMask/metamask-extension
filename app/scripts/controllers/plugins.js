@@ -3,8 +3,6 @@ const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
 const SES = require('ses')
 
-const pluginAssetRequiredFields = ['symbol', 'balance', 'identifier', 'decimals', 'customViewUrl']
-
 class PluginsController extends EventEmitter {
 
   constructor (opts = {}) {
