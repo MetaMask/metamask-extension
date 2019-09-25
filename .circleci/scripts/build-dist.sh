@@ -8,7 +8,7 @@ sudo apt-get install acl
 sudo useradd buildtask
 
 # set file perms for the project dir
-setfacl -R -m u:buildtask:r ~/.nvmrc
+mkdir -p builds dist ui/app/css/output
 setfacl -R -m u:buildtask:rw ui/app/css/output
 setfacl -R -m u:buildtask:rw builds
 setfacl -R -m u:buildtask:rw dist
