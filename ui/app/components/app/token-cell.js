@@ -91,7 +91,7 @@ TokenCell.prototype.render = function () {
 
   return (
     h('div.token-list-item', {
-      className: `token-list-item ${selectedTokenAddress === dentifier ? 'token-list-item--active' : ''}`,
+      className: `token-list-item ${selectedTokenAddress === identifier ? 'token-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
