@@ -543,7 +543,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
       restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
-      setRestoredFromThreeBoxToFalse: nodeify(threeBoxController.setRestoredFromThreeBoxToFalse, threeBoxController),
+      setShowRestorePromptToFalse: nodeify(threeBoxController.setShowRestorePromptToFalse, threeBoxController),
       getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
       turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
@@ -752,16 +752,12 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
 
-    const threeBoxFeatureFlagTurnedOn = this.preferencesController.getFeatureFlags().threeBox
-
-    if (threeBoxFeatureFlagTurnedOn) {
-      const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
-      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-        await this.threeBoxController.new3Box()
-        this.threeBoxController.turnThreeBoxSyncingOn()
-      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
-        this.threeBoxController.turnThreeBoxSyncingOn()
-      }
+    const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
+    if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+      await this.threeBoxController.new3Box()
+      this.threeBoxController.turnThreeBoxSyncingOn()
+    } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+      this.threeBoxController.turnThreeBoxSyncingOn()
     }
 
     return this.keyringController.fullUpdate()
@@ -1714,7 +1710,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   async initializeThreeBox () {
-    await this.threeBoxController.new3Box()
+    await this.threeBoxController.init()
   }
 
   /**

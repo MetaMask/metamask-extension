@@ -16,7 +16,6 @@ const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enum
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
 const gasDuck = require('../ducks/gas/gas.duck')
 const WebcamUtils = require('../../lib/webcam-utils')
-const { getFeatureFlags } = require('../selectors/selectors')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -382,8 +381,9 @@ var actions = {
   restoreFromThreeBox,
   getThreeBoxLastUpdated,
   setThreeBoxSyncingPermission,
-  setRestoredFromThreeBoxToFalse,
+  setShowRestorePromptToFalse,
   turnThreeBoxSyncingOn,
+  turnThreeBoxSyncingOnAndInitialize,
 }
 
 module.exports = actions
@@ -2798,116 +2798,93 @@ function hideSeedPhraseBackupAfterOnboarding () {
 }
 
 function initializeThreeBox () {
-  return (dispatch, getState) => {
-    const state = getState()
-
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.initializeThreeBox((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve()
-        })
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.initializeThreeBox((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
   }
 }
 
-function setRestoredFromThreeBoxToFalse () {
-  return (dispatch, getState) => {
-    const state = getState()
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.setRestoredFromThreeBoxToFalse((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve()
-        })
+function setShowRestorePromptToFalse () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setShowRestorePromptToFalse((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
   }
 }
 
 function turnThreeBoxSyncingOn () {
-  return (dispatch, getState) => {
-    const state = getState()
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.turnThreeBoxSyncingOn((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve()
-        })
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.turnThreeBoxSyncingOn((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
   }
 }
 
 function restoreFromThreeBox (accountAddress) {
-  return (dispatch, getState) => {
-    const state = getState()
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.restoreFromThreeBox(accountAddress, (err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve()
-        })
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.restoreFromThreeBox(accountAddress, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
   }
 }
 
 function getThreeBoxLastUpdated () {
-  return (dispatch, getState) => {
-    const state = getState()
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.getThreeBoxLastUpdated((err, lastUpdated) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve(lastUpdated)
-        })
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.getThreeBoxLastUpdated((err, lastUpdated) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve(lastUpdated)
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
   }
 }
 
 function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
-  return (dispatch, getState) => {
-    const state = getState()
-    if (getFeatureFlags(state).threeBox) {
-      return new Promise((resolve, reject) => {
-        background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          resolve()
-        })
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
       })
-    } else {
-      return Promise.resolve()
-    }
+    })
+  }
+}
+
+function turnThreeBoxSyncingOnAndInitialize () {
+  return async (dispatch) => {
+    await dispatch(setThreeBoxSyncingPermission(true))
+    await dispatch(turnThreeBoxSyncingOn())
+    await dispatch(initializeThreeBox(true))
   }
 }
