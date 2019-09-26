@@ -48,9 +48,51 @@ class EmailScreen extends PureComponent {
               this.props.getTrustVaultPinChallenge(this.state.email)
             }
           }
-        })
+        }),
+        h('span', {style: {
+          fontSize: '10px',
+          color: 'grey',
+
+        }}, this.context.t('trustVaultGetStarted')),
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            fontSize: '10px',
+            textDecoration: 'underline',
+            color: 'grey',
+          },
+          onClick: () => {
+            global.platform.openWindow({
+              url: 'https://trustology.io/get-started/',
+            })
+          },
+        }, this.context.t('here'))
       ]
     )
+  }
+
+  renderLearnMoreLink () {
+    return h(
+      'div.lear-more-link', {}, [
+        h('span', {style: {
+          fontSize: '10px',
+          color: 'grey',
+
+        }}, this.context.t('trustVaultLearnMore')),
+        h('span', {
+          style: {
+            cursor: 'pointer',  
+            textDecoration: 'underline',
+            fontSize: '10px',
+            color: 'grey',
+          },
+          onClick: () => {
+            global.platform.openWindow({
+              url: 'https://app.intercom.io/a/apps/jbjnxu3c/articles/articles/3350608/show',
+            })
+          },
+        }, this.context.t('FAQ'))
+      ])
   }
 
   renderUnsupportedBrowser () {
@@ -109,7 +151,10 @@ class EmailScreen extends PureComponent {
       this.renderTrustVaultLogo(),
       this.renderHeader(),
       this.renderEmailInputBox(),
-      this.renderNextButton()
+      this.renderNextButton(),
+      this.renderLearnMoreLink()
+      
+      
     ])
   }
 
