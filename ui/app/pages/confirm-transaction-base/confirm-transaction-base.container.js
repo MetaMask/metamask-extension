@@ -8,7 +8,17 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
-import { updateCustomNonce, clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount, updateTransaction } from '../../store/actions'
+import {
+  updateCustomNonce,
+  clearSend,
+  cancelTx,
+  cancelTxs,
+  updateAndApproveTx,
+  showModal,
+  setMetaMetricsSendCount,
+  updateTransaction,
+  getNextNonce,
+} from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -51,6 +61,7 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     metaMetricsSendCount,
+    nextNonce,
   } = metamask
   const {
     tokenData,
@@ -159,6 +170,7 @@ const mapStateToProps = (state, ownProps) => {
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
     metaMetricsSendCount,
     transactionCategory,
+    nextNonce,
   }
 }
 
@@ -186,6 +198,7 @@ export const mapDispatchToProps = dispatch => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: txData => dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
+    getNextNonce: () => dispatch(getNextNonce()),
   }
 }
 

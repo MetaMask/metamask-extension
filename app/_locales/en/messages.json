@@ -863,6 +863,9 @@
   "next": {
     "message": "Next"
   },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than MetaMask's suggested nonce"
+  },
   "noAddressForName": {
     "message": "No address has been set for this name."
   },

@@ -58,6 +58,7 @@ function reduceMetamask (state, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
+    nextNonce: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -413,6 +414,13 @@ function reduceMetamask (state, action) {
     case actions.SET_FIRST_TIME_FLOW_TYPE: {
       return extend(metamaskState, {
         firstTimeFlowType: action.value,
+      })
+    }
+
+    case actions.SET_NEXT_NONCE: {
+      console.log('action.value', action.value)
+      return extend(metamaskState, {
+        nextNonce: action.value,
       })
     }
 

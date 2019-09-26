@@ -520,6 +520,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
+      getPendingNonce: nodeify(this.getPendingNonce, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),

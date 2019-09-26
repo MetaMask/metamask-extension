@@ -382,7 +382,7 @@ class TransactionController extends EventEmitter {
       const customOrNonce = customNonceValue || nonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails,
+      txMeta.nonceDetails = nonceLock.nonceDetails
       if (customNonceValue) {
         txMeta.nonceDetails.customNonceValue = customNonceValue
       }

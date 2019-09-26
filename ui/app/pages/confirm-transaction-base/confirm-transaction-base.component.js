@@ -100,11 +100,14 @@ export default class ConfirmTransactionBase extends Component {
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
     transactionCategory: PropTypes.string,
+    getNextNonce: PropTypes.func,
+    nextNonce: PropTypes.number,
   }
 
   state = {
     submitting: false,
     submitError: null,
+    submitWarning: '',
   }
 
   componentDidUpdate (prevProps) {
@@ -216,6 +219,8 @@ export default class ConfirmTransactionBase extends Component {
       insufficientBalance,
       updateGasAndCalculate,
       hideFiatConversion,
+      nextNonce,
+      getNextNonce,
     } = this.props
 
     if (hideDetails) {
@@ -272,7 +277,14 @@ export default class ConfirmTransactionBase extends Component {
                     if (!value.length || Number(value) < 0) {
                       updateCustomNonce('')
                     } else {
-                      updateCustomNonce(String(Math.floor(value)))
+                      const newCustomNonce = Math.floor(value)
+                      if (newCustomNonce > nextNonce) {
+                        this.setState({ submitWarning: this.context.t('nextNonceWarning') })
+                      } else {
+                        this.setState({ submitWarning: '' })
+                      }
+                      updateCustomNonce(String(newCustomNonce))
+                      getNextNonce()
                     }
                   }}
                   fullWidth
@@ -524,7 +536,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentDidMount () {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props
+    const { txData: { origin, id } = {}, cancelTransaction, getNextNonce } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -552,6 +564,8 @@ export default class ConfirmTransactionBase extends Component {
         cancelTransaction({ id })
       }
     }
+
+    getNextNonce()
   }
 
   render () {
@@ -580,7 +594,7 @@ export default class ConfirmTransactionBase extends Component {
       unapprovedTxCount,
       transactionCategory,
     } = this.props
-    const { submitting, submitError } = this.state
+    const { submitting, submitError, submitWarning } = this.state
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
@@ -610,7 +624,7 @@ export default class ConfirmTransactionBase extends Component {
         identiconAddress={identiconAddress}
         errorMessage={errorMessage || submitError}
         errorKey={propsErrorKey || errorKey}
-        warning={warning}
+        warning={warning || submitWarning}
         totalTx={totalTx}
         positionOfCurrentTx={positionOfCurrentTx}
         nextTxId={nextTxId}

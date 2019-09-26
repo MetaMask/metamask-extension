@@ -178,6 +178,9 @@ var actions = {
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
+  setNextNonce,
+  SET_NEXT_NONCE: 'SET_NEXT_NONCE',
+  getNextNonce,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
@@ -2915,5 +2918,28 @@ function turnThreeBoxSyncingOnAndInitialize () {
     await dispatch(setThreeBoxSyncingPermission(true))
     await dispatch(turnThreeBoxSyncingOn())
     await dispatch(initializeThreeBox(true))
+  }
+}
+
+function setNextNonce (nextNonce) {
+  return {
+    type: actions.SET_NEXT_NONCE,
+    value: nextNonce,
+  }
+}
+
+function getNextNonce () {
+  return (dispatch, getState) => {
+    const address = getState().metamask.selectedAddress
+    return new Promise((resolve, reject) => {
+      background.getPendingNonce(address, (err, pendingNonce) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(setNextNonce(pendingNonce))
+        resolve(pendingNonce)
+      })
+    })
   }
 }
