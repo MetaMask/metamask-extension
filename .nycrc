@@ -1,0 +1,11 @@
+{
+  "include": [
+    "ui/app/**/*.js",
+    "app/scripts/**/*.js"
+  ],
+  "exclude": [
+    "**/*.spec.js",
+    "**/*.test.js"
+  ],
+  "all": true
+}

@@ -1,6 +1,7 @@
 var assert = require('assert')
 var sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 
 var path = require('path')
 var util = require(path.join(__dirname, '..', '..', 'ui', 'app', 'helpers', 'utils', 'util.js'))
@@ -64,7 +65,7 @@ describe('util', function () {
       assert.ok(result)
     })
 
-    it('should allow 42-char non-prefixed hex', function () {
+    it('should allow 42-char prefixed hex', function () {
       var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
       var result = util.isValidAddress(address)
       assert.ok(result)
@@ -100,6 +101,12 @@ describe('util', function () {
       const hashed = ethUtil.toChecksumAddress(address.toLowerCase())
       assert.equal(hashed, address, 'example is hashed correctly')
       assert.ok(result, 'is valid by our check')
+    })
+
+    it('returns false for unrecoverable address', () => {
+      const address = '0x0000000000000000000000000000000000000000'
+      const result = util.isValidAddress(address)
+      assert.equal(result, false)
     })
   })
 
@@ -233,6 +240,7 @@ describe('util', function () {
         assert.equal(result.toString(10), '1111000000000000000', 'accepts decimals')
       })
     })
+
     describe('#isHex', function () {
       it('should return true when given a hex string', function () {
         var result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
@@ -254,5 +262,79 @@ describe('util', function () {
         assert(result)
       })
     })
+
+    describe('#miniAddressSummary', () => {
+      it('returns empty string when address is not defined', () => {
+        const result = util.miniAddressSummary()
+        assert.equal(result, '')
+      })
+
+      it('returns first and last 4 strings for checksum address', () => {
+        const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+        const result = util.miniAddressSummary(address)
+        assert.equal(result, '0xFD...b825')
+      })
+    })
+
+    describe('#isValidENSAddress', () => {
+      it('returns array with ENS matches', () => {
+        const ENSAddress = 'longstring.eth'
+        const result = util.isValidENSAddress(ENSAddress)
+        assert.equal(result[0], ENSAddress)
+      })
+    })
+
+    describe('#isInvalidChecksumAddress', () => {
+      it('returns false for unrecoverable address', () => {
+        const address = '0x0000000000000000000000000000000000000000'
+        const result = util.isInvalidChecksumAddress(address)
+        assert.equal(result, false)
+      })
+
+      it('returns false for 31 byte string', () => {
+        const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108'
+        const result = util.isInvalidChecksumAddress(address)
+        assert.equal(result, false)
+      })
+
+    })
+
+    describe('#dataSize', () => {
+      it('returns bytes size for data string', () => {
+        const data = '0x608060405234801561001057600080fd5b5060df8061001f6000396000f3006080604052600436106049576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b114604e5780636d4ce63c146078575b600080fd5b348015605957600080fd5b5060766004803603810190808035906020019092919050505060a0565b005b348015608357600080fd5b50608a60aa565b6040518082815260200191505060405180910390f35b8060008190555050565b600080549050905600a165627a7a723058203dbaed52da8059a841ed6d7b484bf6fa6f61a7e975a803fdedf076a121a8c4010029'
+        const result = util.dataSize(data)
+        assert.equal(result, '508 bytes')
+      })
+    })
+
+    describe('#readableDate', () => {
+      it('returns a readabble date from time integer', () => {
+        const ms = 1528291650465
+        const result = util.readableDate(ms)
+        assert(result)
+      })
+    })
+
+    describe('#bnMultiplyByFraction', () => {
+      it('returns big nubmer that takes bn times numerator divided by denominator', () => {
+        // 21000
+        const hex = 6721975
+        const bn = hexToBn(hex)
+        const result = util.bnMultiplyByFraction(bn, 99, 100)
+        assert.equal(result.toString(10), 6654755)
+      })
+    })
+
+    describe('#getTxFeeBn', () => {
+      it('returns unhexed prefix, base 16, string with gas times gas price', () => {
+        // 21000
+        const gas = 0x5208
+        // 1000000000 wei (1 gwei)
+        const gasPrice = 0x3b9aca00
+        const result = util.getTxFeeBn(gas, gasPrice)
+        assert.equal(result, '1319718a5000')
+      })
+    })
+
   })
 })
