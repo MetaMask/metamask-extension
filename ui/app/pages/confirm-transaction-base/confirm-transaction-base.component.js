@@ -292,7 +292,7 @@ export default class ConfirmTransactionBase extends Component {
                   }}
                   fullWidth
                   margin="dense"
-                  value={customNonceValue}
+                  value={customNonceValue || nextNonce || ''}
                 />
               </div>
             </div>
