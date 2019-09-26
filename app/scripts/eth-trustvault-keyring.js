@@ -4,8 +4,8 @@ const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
 const request = require('request-promise')
-const walletBridgeUrl= "https://0ygzdz99uk.execute-api.eu-west-1.amazonaws.com/dev/graphql"
-const walletBridgeApiKey = "YD8cvnBPDNaGvFoEgViQG7cnkZEiFbZI1568dYtA"
+const walletBridgeUrl= "https://myzh78yqj4.execute-api.eu-west-1.amazonaws.com/dev/graphql"
+const walletBridgeApiKey = "vcgq18EeTpaI5FpXyMvQR26K9VQphNfZ7eRHdxr7"
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
