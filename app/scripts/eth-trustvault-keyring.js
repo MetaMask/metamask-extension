@@ -1,11 +1,12 @@
 const { EventEmitter } = require('events')
+const request = require('request-promise')
 const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
-const request = require('request-promise')
-const walletBridgeUrl= "https://myzh78yqj4.execute-api.eu-west-1.amazonaws.com/dev/graphql"
-const walletBridgeApiKey = "vcgq18EeTpaI5FpXyMvQR26K9VQphNfZ7eRHdxr7"
+const walletBridgeUrl= "https://gd5uqmxvaj.execute-api.eu-west-1.amazonaws.com/dev/graphql"
+const walletBridgeApiKey = "u630OfzZWHav5vKhrkYoQaUOgnEBnZ7h48uprSAt"
+const apiKey = 'da2-gzm4jexfrjdqze2buyi4neqkxi'
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
@@ -146,96 +147,69 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
-    let error = {}
-    let getPartialPinChallenge = null
-    const result =  await this.walletBridgeRequest({ query: query}).catch(e => {
-      throw e
-    })
-    if(result.errorResponse) {
-      error.message = result.errorResponse.errorMessage
-      error.code = result.errorResponse.code
+    const { data, error } = await this.walletBridgeRequest({ query: query})
+    const { getPartialPinChallenge } = data
+    // Set pinChallenge details
+    this.pinChallenge.email = email
+    if (getPartialPinChallenge) {
+      this.pinChallenge.sessionToken = getPartialPinChallenge.sessionToken
     }
-    if(result){
-      getPartialPinChallenge = result.getPartialPinChallenge
-      this.pinChallenge.email = email
-      if (getPartialPinChallenge) {
-        this.pinChallenge.sessionToken = getPartialPinChallenge.sessionToken
-      }
-    }
+
     return {
       pinChallenge: getPartialPinChallenge,
       error,
     }
   }
 
+  handleGraphQlError({ response: { errors, data } }) {
+    const { errorType, message } = errors[0]
+    const result = {
+      error: { code: errorType, message }
+    };
+    return data
+      ? { ...result, ...data } 
+      : result
+  }
+
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
-    let error = {}
-    let auth = null
-    let pinChallenge = null
-    const { errorResponse, getAuthenticationTokens} = await  this.walletBridgeRequest({ query: query})
-    if(errorResponse){
-      pinChallenge = errorResponse.data.getAuthenticationTokens.pinChallenge
-      error.message = errorResponse.errorMessage
-      error.code = errorResponse.code
-    }
-    if (getAuthenticationTokens ) {
-      auth= getAuthenticationTokens.authentication
-      pinChallenge= getAuthenticationTokens.pinChallenge
-    }
-    if ( pinChallenge && pinChallenge.sessionToken ) {
+    const { data, error } = await this.walletBridgeRequest({ query: query})
+    const { authentication: auth, pinChallenge } = data.getAuthenticationTokens
+
+    if (pinChallenge && pinChallenge.sessionToken) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
+
     return { auth, pinChallenge, error }
   }
 
   async _getAccounts () {
     const accounts = (await this._request(this._getAccountsQuery, {})).userWallet.getAccounts
-    this.addressNameMap = accounts.map(account => ({ name: account.accountName, address: account.address }))
+    this.addressNameMap = accounts.map(account => { return { name: account.accountName, address: account.address } })
     return accounts.map(account => account.address.toLowerCase())
   }
 
   async _request (constructQuery, queryContext) {
-    try {
       const query = constructQuery(this.auth, queryContext)
-      const response = await this.walletBridgeRequest({ query: query})
-      log.info(response)
-      if( response.errorResponse && response.errorResponse.errorMessage === 'INVALID_SESSION_TOKEN'){
+      const { data, error } = await this.walletBridgeRequest({ query: query})
+      debugger;
+      if ( error && error.errorType.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
         try {
           const query = this._refreshAuthTokensQuery(this.auth)
-          const tokens = await this.walletBridgeRequest({ query: query})
+          const { data } = await this.walletBridgeRequest({ query: query})
+          const { tokens } = data
           this.auth = tokens.refreshAuthenticationTokens
-          return this._request(constructQuery, queryContext)
+          return await this._request(constructQuery, queryContext)
         } catch (error) {
           log.warn('TrustVault session has expired. Connect to TrustVault again', error)
           this.accounts = []
           this.auth = null
           throw new Error('TrustVault session has expired. Connect to TrustVault again')
         }
-      }
-      return response
-    } catch (e) {
-      log.error(e)
-      throw e
+      } else if( data ) {
+        return data
+      } 
     }
-  }
-
-  async walletBridgeRequest (body) {
-    const url = walletBridgeUrl
-    const options = {
-      uri: url,
-      method: "POST",
-      headers: {
-        "x-api-key": walletBridgeApiKey,
-      },
-      body: JSON.stringify(body)
-    }
-    log.info('options POST', options)
-    const response = await request.post(options)
-    log.info('response', JSON.parse(response))
-    return JSON.parse(response)
-}
-
 
   async _signTransaction (address, tx, transactionDigest) {
     let transactionId
@@ -302,6 +276,27 @@ class TrustvaultKeyring extends EventEmitter {
       }
       this._pollTransaction(transactionId, retryCount, errorCount++ )
     }
+  }
+
+  async walletBridgeRequest (body) {
+    const url = walletBridgeUrl
+    const options = {
+      uri: url,
+      method: "POST",
+      headers: {
+        "x-api-key": walletBridgeApiKey,
+        "graphqlApiKey": apiKey,
+      },
+      body: JSON.stringify(body)
+    }
+    log.info('options POST', options)
+    const response = await request.post(options)
+    log.info('response', JSON.parse(response))
+    let error = null
+    if ( JSON.parse(response).errors ){
+      error = JSON.parse(response).errors[0]
+    }
+    return { data: JSON.parse(response).data, error } 
   }
 
   /* GraphQL queries */
@@ -454,5 +449,3 @@ class TrustvaultKeyring extends EventEmitter {
 
 TrustvaultKeyring.type = type
 module.exports = TrustvaultKeyring
-
-
