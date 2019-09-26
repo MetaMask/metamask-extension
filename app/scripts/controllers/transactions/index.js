@@ -373,18 +373,18 @@ class TransactionController extends EventEmitter {
       const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
-      if (!txMeta.txParams.nonce) {
+      const { customNonceValue = null } = txMeta
+      if (!customNonceValue) {
         nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       }
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
-      const { customNonceValue = null } = txMeta
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       const customOrNonce = customNonceValue || nonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
-      txMeta.nonceDetails = txMeta.txParams.nonce
+      txMeta.nonceDetails = customNonceValue
         ? { isCustomNonce: true }
         : nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
@@ -392,7 +392,9 @@ class TransactionController extends EventEmitter {
       const rawTx = await this.signTransaction(txId)
       await this.publishTransaction(txId, rawTx)
       // must set transaction to submitted/failed before releasing lock
-      nonceLock.releaseLock()
+      if (!customNonceValue) {
+        nonceLock.releaseLock()
+      }
     } catch (err) {
       // this is try-catch wrapped so that we can guarantee that the nonceLock is released
       try {
