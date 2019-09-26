@@ -268,8 +268,12 @@ export default class ConfirmTransactionBase extends Component {
                   type="number"
                   min="0"
                   placeholder={ this.context.t('nonceFieldPlaceholder') }
-                  onChange={({ target: { value }}) => {
-                    updateCustomNonce(String(value < 0 ? 0 : Math.floor(value)))
+                  onChange={({ target: { value } }) => {
+                    if (!value.length || Number(value) < 0) {
+                      updateCustomNonce('')
+                    } else {
+                      updateCustomNonce(String(Math.floor(value)))
+                    }
                   }}
                   fullWidth
                   margin="dense"
