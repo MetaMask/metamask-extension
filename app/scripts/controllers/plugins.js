@@ -2,6 +2,7 @@ const ObservableStore = require('obs-store')
 const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
 const SES = require('ses')
+const requiredFields = ['symbol', 'balance', 'identifier', 'decimals', 'customViewUrl']
 
 class PluginsController extends EventEmitter {
 
@@ -101,7 +102,7 @@ class PluginsController extends EventEmitter {
           return pluginRes.json()
         })
         .then(({ web3Wallet: { bundle, requestedPermissions } }) => {
-           _requestedPermissions = requestedPermissions
+          _requestedPermissions = requestedPermissions
           // bundle is an object with: { local: string, url: string }
           return fetch(bundle.url) // TODO: validate params?
         })
@@ -120,7 +121,7 @@ class PluginsController extends EventEmitter {
 
     const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       ethereumProvider.sendAsync({
         method: 'wallet_requestPermissions',
         jsonrpc: '2.0',
@@ -292,7 +293,7 @@ class PluginsController extends EventEmitter {
   }
 
   validateAsset (fromDomain, opts) {
-    pluginAssetRequiredFields.forEach((requiredField) => {
+    requiredFields.forEach((requiredField) => {
       if (!(requiredField in opts)) {
         throw new Error(`Asset from ${fromDomain} missing required field: ${requiredField}`)
       }
@@ -300,16 +301,16 @@ class PluginsController extends EventEmitter {
   }
   updatePluginAsset (fromDomain, asset) {
     this.validateAsset(fromDomain, asset)
-    this.pluginAssets.forEach((asset, index) => {
-      if (asset.fromDomain === fromDomain && asset.identifier === identifier) {
+    this.pluginAssets.forEach((asset2, index) => {
+      if (asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier) {
         this.pluginAssets[index] = asset
       }
     })
   }
 
   removePluginAsset (fromDomain, asset) {
-    this.pluginAssets = this.pluginAssets.filter((asset, index) => {
-      const requested = asset.fromDomain === fromDomain && asset.identifier === identifier
+    this.pluginAssets = this.pluginAssets.filter((asset2) => {
+      const requested = asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier
       return !requested
     })
   }

@@ -565,7 +565,7 @@ module.exports = class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
       removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
 
-      //plugins
+      // plugins
       deletePlugin: this.pluginsController.deletePlugin.bind(this.pluginsController),
       clearPluginState: this.pluginsController.clearPluginState.bind(this.pluginsController),
     }

@@ -111,11 +111,9 @@ function getExternalRestrictedMethods (permissionsController) {
             case 'addAsset':
               res.result = assetsController.addAsset(requestor, opts)
               return end()
-              break
             case 'updateAsset':
               res.result = assetsController.updateAsset(requestor, opts)
               return end()
-              break
             case 'removeAsset':
               res.result = assetsController.removeAsset(requestor, opts)
               return end()
@@ -132,7 +130,7 @@ function getExternalRestrictedMethods (permissionsController) {
 
     'alert': {
       description: 'Show alerts over the current page.',
-      method: (req, res, _next, end) => {
+      method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
         alert(`MetaMask Notice:\n${requestor} States:\n${req.params[0]}`)
         end()
@@ -143,7 +141,7 @@ function getExternalRestrictedMethods (permissionsController) {
       description: 'Display confirmations for user action.',
       method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
-        res.result = confirm (`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        res.result = confirm(`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
         end()
       },
     },

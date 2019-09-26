@@ -104,7 +104,7 @@ TokenCell.prototype.render = function () {
         })
 
         if (!onClick) {
-          return onClick();
+          return onClick()
         }
         setSelectedToken(identifier)
         selectedTokenAddress !== identifier && sidebarOpen && hideSidebar()

@@ -2972,7 +2972,7 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
 
 
 function deletePlugin (pluginName) {
-  return dispatch => {
+  return () => {
     background.deletePlugin(pluginName)
   }
 }

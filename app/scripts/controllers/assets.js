@@ -47,7 +47,7 @@ class AssetsController extends EventEmitter {
       }
     })
   }
-  updateAsset(fromDomain, asset) {
+  updateAsset (fromDomain, asset) {
     this.validateAsset(fromDomain, asset)
     this.assets.forEach((asset2, index) => {
       if (asset.fromDomain === fromDomain && asset.identifier === asset2.identifier) {
@@ -56,10 +56,10 @@ class AssetsController extends EventEmitter {
     })
   }
 
-  removeAsset(fromDomain, asset) {
+  removeAsset (fromDomain, asset) {
     console.log('attempting to remove ', asset)
     console.log('from', this.assets)
-    this.assets = this.assets.filter((asset2, index) => {
+    this.assets = this.assets.filter((asset2) => {
       const requested = asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier
       return !requested
     })

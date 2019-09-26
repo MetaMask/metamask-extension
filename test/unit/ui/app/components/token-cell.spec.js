@@ -83,9 +83,10 @@ describe('Token Cell', () => {
         </Provider>
       )
 
-      wrapper.click()
+      // TODO: Actually test click:
+      // wrapper.click()
 
-      function registerClick() {
+      function registerClick () {
         assert.ok('click received.')
       }
     })
