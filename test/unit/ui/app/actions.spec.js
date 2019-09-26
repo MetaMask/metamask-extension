@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Used to inspect long objects
 // util.inspect({JSON}, false, null))
 // const util = require('util')
@@ -29,6 +30,8 @@ describe('Actions', () => {
 
   const noop = () => {}
 
+  const currentNetworkId = 42
+
   let background, metamaskController
 
   const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
@@ -36,7 +39,6 @@ describe('Actions', () => {
   const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
   beforeEach(async () => {
-
 
     metamaskController = new MetaMaskController({
       provider,
@@ -407,21 +409,180 @@ describe('Actions', () => {
 
   describe('#addNewAccount', () => {
 
-    let addNewAccountSpy
-
-    afterEach(() => {
-      addNewAccountSpy.restore()
-    })
-
     it('Adds a new account', () => {
       const store = mockStore({ metamask: devState })
 
-      addNewAccountSpy = sinon.spy(background, 'addNewAccount')
+      const addNewAccountSpy = sinon.spy(background, 'addNewAccount')
 
       return store.dispatch(actions.addNewAccount())
         .then(() => {
           assert(addNewAccountSpy.calledOnce)
         })
+    })
+
+  })
+
+  describe('#checkHardwareStatus', () => {
+
+    let checkHardwareStatusSpy
+
+    beforeEach(() => {
+      checkHardwareStatusSpy = sinon.stub(background, 'checkHardwareStatus')
+    })
+
+    afterEach(() => {
+      checkHardwareStatusSpy.restore()
+    })
+
+    it('calls checkHardwareStatus in background', (done) => {
+
+      const store = mockStore()
+
+      store.dispatch(actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`))
+      assert.equal(checkHardwareStatusSpy.calledOnce, true)
+      done()
+    })
+
+    it('shows loading indicator and displays error', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      checkHardwareStatusSpy.callsFake((deviceName, hdPath, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.checkHardwareStatus())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+
+    })
+  })
+
+  describe('#forgetDevice', () => {
+
+    let forgetDeviceSpy
+
+    beforeEach(() => {
+      forgetDeviceSpy = sinon.stub(background, 'forgetDevice')
+    })
+
+    afterEach(() => {
+      forgetDeviceSpy.restore()
+    })
+
+    it('calls forgetDevice in background', () => {
+
+      const store = mockStore()
+
+      store.dispatch(actions.forgetDevice('ledger'))
+      assert.equal(forgetDeviceSpy.calledOnce, true)
+
+    })
+
+    it('shows loading indicator and displays error', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      forgetDeviceSpy.callsFake((deviceName, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.forgetDevice())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+
+    })
+  })
+
+  describe('#connectHardware', () => {
+
+    let connectHardwareSpy
+
+    beforeEach(() => {
+      connectHardwareSpy = sinon.stub(background, 'connectHardware')
+    })
+
+    afterEach(() => {
+      connectHardwareSpy.restore()
+    })
+
+    it('calls connectHardware in background', () => {
+
+      const store = mockStore()
+
+      store.dispatch(actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`))
+      assert.equal(connectHardwareSpy.calledOnce, true)
+
+    })
+
+    it('shows loading indicator and displays error', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      connectHardwareSpy.callsFake((deviceName, page, hdPath, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.connectHardware())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+
+    })
+  })
+
+  describe('#unlockHardwareWalletAccount', () => {
+
+    let unlockHardwareWalletAccountSpy
+
+    beforeEach(() => {
+      unlockHardwareWalletAccountSpy = sinon.stub(background, 'unlockHardwareWalletAccount')
+    })
+
+    afterEach(() => {
+      unlockHardwareWalletAccountSpy.restore()
+    })
+
+    it('calls unlockHardwareWalletAccount in background', () => {
+
+      const store = mockStore()
+
+      store.dispatch(actions.unlockHardwareWalletAccount('ledger', 0, `m/44'/60'/0'/0`))
+      assert.equal(unlockHardwareWalletAccountSpy.calledOnce, true)
+
+    })
+
+    it('shows loading indicator and displays error', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      unlockHardwareWalletAccountSpy.callsFake((deviceName, page, hdPath, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.unlockHardwareWalletAccount())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+
     })
   })
 
@@ -574,12 +735,100 @@ describe('Actions', () => {
 
   })
 
+  describe('#signTypedMsg', () => {
+    let signTypedMsgSpy, messages, typedMessages, msgId
+
+    const msgParamsV3 = {
+      from: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+      data: JSON.stringify({
+        'types': {
+          'EIP712Domain': [
+            {'name': 'name', 'type': 'string'},
+            {'name': 'version', 'type': 'string'},
+            {'name': 'chainId', 'type': 'uint256'},
+            {'name': 'verifyingContract', 'type': 'address'},
+          ],
+          'Person': [
+            {'name': 'name', 'type': 'string'},
+            {'name': 'wallet', 'type': 'address'},
+          ],
+          'Mail': [
+            {'name': 'from', 'type': 'Person'},
+            {'name': 'to', 'type': 'Person'},
+            {'name': 'contents', 'type': 'string'},
+          ],
+        },
+        'primaryType': 'Mail',
+        'domain': {
+          'name': 'Ether Mainl',
+          'version': '1',
+          'chainId': 1,
+          'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        'message': {
+          'from': {
+            'name': 'Cow',
+            'wallet': '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          },
+          'to': {
+            'name': 'Bob',
+            'wallet': '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+          },
+          'contents': 'Hello, Bob!',
+        },
+      }),
+    }
+
+    beforeEach(() => {
+      metamaskController.newUnsignedTypedMessage(msgParamsV3, 'V3')
+      messages = metamaskController.typedMessageManager.getUnapprovedMsgs()
+      typedMessages = metamaskController.typedMessageManager.messages
+      msgId = Object.keys(messages)[0]
+      typedMessages[0].msgParams.metamaskId = parseInt(msgId)
+    })
+
+    afterEach(() => {
+      signTypedMsgSpy.restore()
+    })
+
+    it('calls signTypedMsg in background with no error', () => {
+      const store = mockStore()
+      signTypedMsgSpy = sinon.spy(background, 'signTypedMessage')
+
+      return store.dispatch(actions.signTypedMsg(msgParamsV3))
+        .then(() => {
+          assert(signTypedMsgSpy.calledOnce)
+        })
+    })
+
+    it('returns expected actions with error', (done) => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'UPDATE_METAMASK_STATE', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
+      signTypedMsgSpy.callsFake((_, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.signTypedMsg())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+          done()
+        })
+    })
+
+  })
+
   describe('#signTx', () => {
 
     let sendTransactionSpy
 
-    beforeEach(() => {
-      global.ethQuery = new EthQuery(provider)
+    beforeEach(async () => {
       sendTransactionSpy = sinon.stub(global.ethQuery, 'sendTransaction')
     })
 
@@ -608,6 +857,71 @@ describe('Actions', () => {
     })
   })
 
+  describe('#updatedGasData', () => {
+    it('errors when get code does not return', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'GAS_LOADING_STARTED' },
+        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: 'gasLoadingError' } },
+        { type: 'GAS_LOADING_FINISHED' },
+      ]
+
+      const mockData = {
+        gasPrice: '0x3b9aca00', //
+        blockGasLimit: '0x6ad79a', // 7002010
+        selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+        to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
+        value: '0xde0b6b3a7640000', // 1000000000000000000
+      }
+
+      store.dispatch(actions.updateGasData(mockData))
+        .then(() => {
+          assert.equal(store.getActions(), expectedActions)
+        })
+    })
+  })
+
+  describe('#updatedGasData', () => {
+
+    const stub = sinon.stub().returns('0x')
+
+    const mockData = {
+      gasPrice: '0x3b9aca00', //
+      blockGasLimit: '0x6ad79a', // 7002010
+      selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+      to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
+      value: '0xde0b6b3a7640000', // 1000000000000000000
+    }
+
+    beforeEach(() => {
+      global.eth = {
+        getCode: stub,
+      }
+    })
+
+    afterEach(() => {
+      stub.reset()
+    })
+
+    it('returns default gas limit for basic eth transaction', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'GAS_LOADING_STARTED' },
+        { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
+        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
+        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null } },
+        { type: 'GAS_LOADING_FINISHED' },
+      ]
+
+      store.dispatch(actions.updateGasData(mockData))
+        .then(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+    })
+  })
+
   describe('#signTokenTx', () => {
 
     let tokenSpy
@@ -625,6 +939,61 @@ describe('Actions', () => {
       const store = mockStore()
       store.dispatch(actions.signTokenTx())
       assert(tokenSpy.calledOnce)
+    })
+  })
+
+  describe('#updateTransaction', () => {
+
+    let updateTransactionSpy, updateTransactionParamsSpy
+
+    const txParams = {
+      'from': '0x1',
+      'gas': '0x5208',
+      'gasPrice': '0x3b9aca00',
+      'to': '0x2',
+      'value': '0x0',
+    }
+
+    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: txParams }
+
+    beforeEach( async () => {
+      await metamaskController.txController.txStateManager.addTx(txData)
+    })
+
+    afterEach(() => {
+      updateTransactionSpy.restore()
+      updateTransactionParamsSpy.restore()
+    })
+
+    it('updates transaction', () => {
+      const store = mockStore()
+
+      updateTransactionSpy = sinon.spy(background, 'updateTransaction')
+      updateTransactionParamsSpy = sinon.spy(actions, 'updateTransactionParams')
+
+      const result = [ txData.id, txParams ]
+
+      return store.dispatch(actions.updateTransaction(txData))
+        .then(() => {
+          assert(updateTransactionSpy.calledOnce)
+          assert(updateTransactionParamsSpy.calledOnce)
+
+          assert.deepEqual(updateTransactionParamsSpy.args[0], result)
+        })
+    })
+
+    it('rejects with error message', () => {
+      const store = mockStore()
+
+      updateTransactionSpy = sinon.stub(background, 'updateTransaction')
+      updateTransactionSpy.callsFake((res, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.updateTransaction(txData))
+      .catch((error) => {
+        assert.equal(error.message, 'error')
+      })
     })
   })
 
@@ -1192,40 +1561,49 @@ describe('Actions', () => {
   })
 
   describe('#markPasswordForgotten', () => {
-    let markPasswordForgottenSpy
+    let markPasswordForgottenSpy, forgotPasswordSpy
 
     beforeEach(() => {
-      markPasswordForgottenSpy = sinon.stub(background, 'markPasswordForgotten')
+      markPasswordForgottenSpy = sinon.spy(background, 'markPasswordForgotten')
+      forgotPasswordSpy = sinon.spy(actions, 'forgotPassword')
     })
 
     afterEach(() => {
       markPasswordForgottenSpy.restore()
+      forgotPasswordSpy.restore()
     })
 
     it('calls markPasswordForgotten', () => {
       const store = mockStore()
       store.dispatch(actions.markPasswordForgotten())
+      assert(forgotPasswordSpy.calledOnce)
       assert(markPasswordForgottenSpy.calledOnce)
     })
   })
 
   describe('#unMarkPasswordForgotten', () => {
-    let unMarkPasswordForgottenSpy
+    let unMarkPasswordForgottenSpy, forgotPasswordSpy
 
     beforeEach(() => {
       unMarkPasswordForgottenSpy = sinon.stub(background, 'unMarkPasswordForgotten')
+      forgotPasswordSpy = sinon.spy(actions, 'forgotPassword')
     })
 
     afterEach(() => {
       unMarkPasswordForgottenSpy.restore()
+      forgotPasswordSpy.restore()
     })
 
     it('calls unMarkPasswordForgotten', () => {
       const store = mockStore()
       store.dispatch(actions.unMarkPasswordForgotten())
-      assert(unMarkPasswordForgottenSpy.calledOnce)
+        .then((done) => {
+          assert(forgotPasswordSpy.calledOnce)
+          assert(forgotPasswordSpy.calledWith(false))
+          assert(unMarkPasswordForgottenSpy.calledOnce)
+          done()
+        })
     })
   })
-
 
 })
