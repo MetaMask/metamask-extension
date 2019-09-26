@@ -18,10 +18,9 @@ Simply follow the steps in [the publishing guide](./publishing.md).
 
 ### Prepare Rollback Release
 
-1. Be on the new risky version branch.
-2. Run `npm run rollback $ROLLBACK_TARGET_VERSION`.
+Follow the steps in [the publishing guide](./publishing.md) with a different context:
 
-The rollback version will now be a branch and tag on the origin.
+Instead of creating a version branch off of the main branch, create a version branch off of the latest release. It is customary that this release increments the patch version number.
 
 ### Roll the normal release out
 

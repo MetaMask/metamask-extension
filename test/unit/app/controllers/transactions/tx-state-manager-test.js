@@ -43,7 +43,7 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#setTxStatusRejected', function () {
-     it('sets the tx status to rejected and removes it from history', function () {
+    it('sets the tx status to rejected and removes it from history', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       txStateManager.setTxStatusRejected(1)
@@ -56,11 +56,11 @@ describe('TransactionStateManager', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = function (err) {
-          if (err) {
-            console.log('Error: ', err)
-          }
-          assert(true, 'event listener has been triggered and noop executed')
-          done()
+        if (err) {
+          console.log('Error: ', err)
+        }
+        assert(true, 'event listener has been triggered and noop executed')
+        done()
       }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)
@@ -91,6 +91,37 @@ describe('TransactionStateManager', function () {
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].id, 1)
+    })
+
+    it('throws error and does not add tx if txParams are invalid', function () {
+      const validTxParams = {
+        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        to: '0x0039f22efb07a647557c7c5d17854cfd6d489ef3',
+        nonce: '0x3',
+        gas: '0x77359400',
+        gasPrice: '0x77359400',
+        value: '0x0',
+        data: '0x0',
+      }
+      const invalidValues = [1, true, {}, Symbol('1')]
+
+      for (const key in validTxParams) {
+        for (const value of invalidValues) {
+          const tx = {
+            id: 1,
+            status: 'unapproved',
+            metamaskNetworkId: currentNetworkId,
+            txParams: {
+              ...validTxParams,
+              [key]: value,
+            },
+          }
+          assert.throws(txStateManager.addTx.bind(txStateManager, tx), 'addTx should throw error')
+          const result = txStateManager.getTxList()
+          assert.ok(Array.isArray(result), 'txList should be an array')
+          assert.equal(result.length, 0, 'txList should be empty')
+        }
+      }
     })
 
     it('does not override txs from other networks', function () {
@@ -151,6 +182,37 @@ describe('TransactionStateManager', function () {
       txStateManager.updateTx(txMeta)
       const result = txStateManager.getTx('1')
       assert.equal(result.hash, 'foo')
+    })
+
+    it('throws error and does not update tx if txParams are invalid', function () {
+      const validTxParams = {
+        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        to: '0x0039f22efb07a647557c7c5d17854cfd6d489ef3',
+        nonce: '0x3',
+        gas: '0x77359400',
+        gasPrice: '0x77359400',
+        value: '0x0',
+        data: '0x0',
+      }
+      const invalidValues = [1, true, {}, Symbol('1')]
+
+      txStateManager.addTx({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: validTxParams })
+
+      for (const key in validTxParams) {
+        for (const value of invalidValues) {
+          const originalTx = txStateManager.getTx(1)
+          const newTx = {
+            ...originalTx,
+            txParams: {
+              ...originalTx.txParams,
+              [key]: value,
+            },
+          }
+          assert.throws(txStateManager.updateTx.bind(txStateManager, newTx), 'updateTx should throw an error')
+          const result = txStateManager.getTx(1)
+          assert.deepEqual(result, originalTx, 'tx should not be updated')
+        }
+      }
     })
 
     it('updates gas price and adds history items', function () {
@@ -241,6 +303,9 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { to: '0xaa' }
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+      filterParams = { status: (status) => status !== 'confirmed' }
+      assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+
     })
   })
 

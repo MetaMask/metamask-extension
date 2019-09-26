@@ -84,7 +84,7 @@ export default class ConfirmAddSuggestedToken extends Component {
                         </div>
                       </div>
                     )
-                })
+                  })
               }
             </div>
           </div>

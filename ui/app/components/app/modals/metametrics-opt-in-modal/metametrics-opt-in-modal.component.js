@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import MetaFoxLogo from '../../../ui/metafox-logo'
 import PageContainerFooter from '../../../ui/page-container/page-container-footer'
 
 export default class MetaMetricsOptInModal extends Component {
@@ -20,19 +21,7 @@ export default class MetaMetricsOptInModal extends Component {
       <div className="metametrics-opt-in metametrics-opt-in-modal">
         <div className="metametrics-opt-in__main">
           <div className="metametrics-opt-in__content">
-            <div className="app-header__logo-container">
-              <img
-                className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-                src="/images/logo/metamask-logo-horizontal.svg"
-                height={30}
-              />
-              <img
-                className="app-header__metafox-logo app-header__metafox-logo--icon"
-                src="/images/logo/metamask-fox.svg"
-                height={42}
-                width={42}
-              />
-            </div>
+            <MetaFoxLogo />
             <div className="metametrics-opt-in__body-graphic">
               <img src="images/metrics-chart.svg" />
             </div>

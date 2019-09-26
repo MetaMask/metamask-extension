@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>E2E Test Dapp</title>
+</head>
+<body>
+  <div style="display: flex; flex-flow: column;">
+    <div style="display: flex; font-size: 1.25rem;">Contract</div>
+    <div style="display: flex;">
+      <button id="deployButton">Deploy Contract</button>
+      <button id="depositButton">Deposit</button>
+      <button id="withdrawButton">Withdraw</button>
+    </div>
+    <div id="contractStatus" style="display: flex; font-size: 1rem;">
+      Not clicked
+    </div>
+  </div>
+  <div style="display: flex; flex-flow: column;">
+    <div style="display: flex; font-size: 1.25rem;">Send eth</div>
+    <div style="display: flex;">
+      <button id="sendButton">Send</button>
+    </div>
+  </div>
+  <div style="display: flex; flex-flow: column;">
+    <div style="display: flex; font-size: 1.25rem;">Send tokens</div>
+    <div id="tokenAddress"></div>
+    <div style="display: flex;">
+      <button id="createToken">Create Token</button>
+      <button id="transferTokens">Transfer Tokens</button>
+      <button id="approveTokens">Approve Tokens</button>
+      <button id="transferTokensWithoutGas">Transfer Tokens Without Gas</button>
+      <button id="approveTokensWithoutGas">Approve Tokens Without Gas</button>
+    </div>
+  </div>
+  <div style="display: flex; flex-flow: column;">
+    <div>Network: <div id="network"></div></div>
+    <div>ChainId: <div id="chainId"></div></div>
+    <div>Accounts: <div id="accounts"></div></div>
+    <div style="display: flex;">
+  </div>
+
+<script src="contract.js"></script>
+</body>
+
+</html>

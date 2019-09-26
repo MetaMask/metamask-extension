@@ -56,12 +56,15 @@ module.exports = {
         'address': '0xd85a4b6a394794842887b8284293d69163007bbb',
       },
     },
-    'addressBook': [
-      {
-        'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
-        'name': 'Address Book Account 1',
+    'addressBook': {
+      '3': {
+        '0x06195827297c7a80a443b6894d3bdb8824b43896': {
+          'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
+          'name': 'Address Book Account 1',
+          'chainId': '3',
+        },
       },
-    ],
+    },
     'tokens': [
       {
         'address': '0x1a195821297c7a80a433b6894d3bdb8824b43896',
@@ -156,7 +159,6 @@ module.exports = {
       { id: 'shapeShiftTx2', 'time': 1575000000000 },
       { id: 'shapeShiftTx3', 'time': 1475000000000 },
     ],
-    'lostAccounts': [],
     'send': {
       'gasLimit': '0xFFFF',
       'gasPrice': '0xaa',

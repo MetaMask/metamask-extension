@@ -4,10 +4,36 @@ const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
-const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
 const EthQuery = require('eth-query')
+
+const threeBoxSpies = {
+  new3Box: sinon.spy(),
+  getThreeBoxAddress: sinon.spy(),
+  getThreeBoxSyncingState: sinon.stub().returns(true),
+  turnThreeBoxSyncingOn: sinon.spy(),
+  _registerUpdates: sinon.spy(),
+}
+const proxyquire = require('proxyquire')
+
+class ThreeBoxControllerMock {
+  constructor () {
+    this.store = {
+      subscribe: () => {},
+      getState: () => ({}),
+    }
+    this.new3Box = threeBoxSpies.new3Box
+    this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
+    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
+    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
+    this._registerUpdates = threeBoxSpies._registerUpdates
+  }
+}
+
+const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
+  './controllers/threebox': ThreeBoxControllerMock,
+})
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'
@@ -45,6 +71,11 @@ describe('MetaMaskController', function () {
       .get(/.*/)
       .reply(200)
 
+    nock('https://min-api.cryptocompare.com')
+      .persist()
+      .get(/.*/)
+      .reply(200, '{"JPY":12415.9}')
+
     metamaskController = new MetaMaskController({
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
@@ -77,6 +108,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
+      threeBoxSpies.new3Box.reset()
+      threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -94,6 +127,12 @@ describe('MetaMaskController', function () {
       addresses.forEach((address) => {
         assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
       })
+    })
+
+    it('gets the address from threebox and creates a new 3box instance', async () => {
+      await metamaskController.submitPassword(password)
+      assert(threeBoxSpies.new3Box.calledOnce)
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
     })
   })
 
@@ -441,7 +480,7 @@ describe('MetaMaskController', function () {
     let defaultMetaMaskCurrency
 
     beforeEach(function () {
-      defaultMetaMaskCurrency = metamaskController.currencyController.getCurrentCurrency()
+      defaultMetaMaskCurrency = metamaskController.currencyRateController.state.currentCurrency
     })
 
     it('defaults to usd', function () {
@@ -450,7 +489,7 @@ describe('MetaMaskController', function () {
 
     it('sets currency to JPY', function () {
       metamaskController.setCurrentCurrency('JPY', noop)
-      assert.equal(metamaskController.currencyController.getCurrentCurrency(), 'JPY')
+      assert.equal(metamaskController.currencyRateController.state.currentCurrency, 'JPY')
     })
   })
 
@@ -492,8 +531,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#verifyseedPhrase', function () {
-    let seedPhrase, getConfigSeed
-
     it('errors when no keying is provided', async function () {
       try {
         await metamaskController.verifySeedPhrase()
@@ -504,21 +541,6 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain('password')
-      seedPhrase = await metamaskController.verifySeedPhrase()
-    })
-
-    it('#placeSeedWords should match the initially created vault seed', function () {
-
-      metamaskController.placeSeedWords((err, result) => {
-        if (err) {
-         console.log(err)
-        } else {
-          getConfigSeed = metamaskController.configManager.getSeedWords()
-          assert.equal(result, seedPhrase)
-          assert.equal(result, getConfigSeed)
-        }
-      })
-      assert.equal(getConfigSeed, undefined)
     })
 
     it('#addNewAccount', async function () {
@@ -581,21 +603,6 @@ describe('MetaMaskController', function () {
     })
     it('should return address', async function () {
       assert.equal(ret, '0x1')
-    })
-  })
-
-  describe('#clearSeedWordCache', function () {
-    it('should set seed words to null', function (done) {
-      sandbox.stub(metamaskController.preferencesController, 'setSeedWords')
-      metamaskController.clearSeedWordCache((err) => {
-        if (err) {
-          done(err)
-        }
-
-        assert.ok(metamaskController.preferencesController.setSeedWords.calledOnce)
-        assert.deepEqual(metamaskController.preferencesController.setSeedWords.args, [[null]])
-        done()
-      })
     })
   })
 
@@ -674,19 +681,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#newUnsignedPersonalMessage', function () {
-
-    it('errors with no from in msgParams', async () => {
-      const msgParams = {
-        'data': data,
-      }
-      try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
-        assert.fail('should have thrown')
-      } catch (error) {
-        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
-      }
-    })
-
     let msgParams, metamaskPersonalMsgs, personalMessages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
@@ -711,6 +705,18 @@ describe('MetaMaskController', function () {
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
       personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+    })
+
+    it('errors with no from in msgParams', async () => {
+      const msgParams = {
+        'data': data,
+      }
+      try {
+        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        assert.fail('should have thrown')
+      } catch (error) {
+        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+      }
     })
 
     it('persists address from msg params', function () {
@@ -783,14 +789,6 @@ describe('MetaMaskController', function () {
       })
 
       metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
-    })
-  })
-
-  describe('#markAccountsFound', function () {
-    it('adds lost accounts to config manager data', function () {
-      metamaskController.markAccountsFound(noop)
-      const state = metamaskController.getState()
-      assert.deepEqual(state.lostAccounts, [])
     })
   })
 

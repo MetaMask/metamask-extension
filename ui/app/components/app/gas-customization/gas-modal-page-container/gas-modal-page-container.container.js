@@ -9,6 +9,7 @@ import {
   hideSidebar,
   updateSendAmount,
   setGasTotal,
+  updateTransaction,
 } from '../../../../store/actions'
 import {
   setCustomGasPrice,
@@ -22,9 +23,6 @@ import {
   hideGasButtonGroup,
   updateSendErrors,
 } from '../../../../ducks/send/send.duck'
-import {
-  updateGasAndCalculate,
-} from '../../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
   conversionRateSelector as getConversionRate,
   getCurrentCurrency,
@@ -52,9 +50,6 @@ import {
   getTokenBalance,
 } from '../../../../pages/send/send.selectors'
 import {
-  submittedPendingTransactionsSelector,
-} from '../../../../selectors/transactions'
-import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'
 import {
@@ -77,11 +72,16 @@ import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-ro
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
+  const { selectedAddressTxList } = state.metamask
+  const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
+  const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
+  const selectedTransaction = selectedAddressTxList.find(({ id }) => id === (transaction.id || txData.id))
+
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
 
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, selectedTransaction)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
@@ -118,6 +118,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -151,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount,
     },
+    transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
     txId: transaction.id,
     insufficientBalance,
@@ -179,10 +181,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
     },
-    updateConfirmTxGasAndCalculate: (gasLimit, gasPrice) => {
+    updateConfirmTxGasAndCalculate: (gasLimit, gasPrice, updatedTx) => {
       updateCustomGasPrice(gasPrice)
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
-      return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
+      return dispatch(updateTransaction(updatedTx))
     },
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
@@ -214,6 +216,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     selectedToken,
     tokenBalance,
     customGasLimit,
+    transaction,
   } = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
@@ -234,7 +237,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
       if (isConfirm) {
-        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
+        const updatedTx = {
+          ...transaction,
+          txParams: {
+            ...transaction.txParams,
+            gas: gasLimit,
+            gasPrice,
+          },
+        }
+        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice, updatedTx)
         dispatchHideModal()
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)
@@ -282,12 +293,10 @@ function calcCustomGasLimit (customGasLimitInHex) {
   return parseInt(customGasLimitInHex, 16)
 }
 
-function getTxParams (state, transactionId) {
-  const { confirmTransaction: { txData }, metamask: { send } } = state
-  const pendingTransactions = submittedPendingTransactionsSelector(state)
-  const pendingTransaction = pendingTransactions.find(({ id }) => id === transactionId)
-  const { txParams: pendingTxParams } = pendingTransaction || {}
-  return txData.txParams || pendingTxParams || {
+function getTxParams (state, selectedTransaction = {}) {
+  const { metamask: { send } } = state
+  const { txParams } = selectedTransaction
+  return txParams || {
     from: send.from,
     gas: send.gasLimit || '0x5208',
     gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),

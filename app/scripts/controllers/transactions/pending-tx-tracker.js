@@ -186,7 +186,7 @@ class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:warning', txMeta, err)
     }
   }
-    /**
+  /**
     checks to see if if the tx's nonce has been used by another transaction
     @param txMeta {Object} - txMeta object
     @emits tx:dropped
@@ -198,7 +198,7 @@ class PendingTransactionTracker extends EventEmitter {
     const nextNonce = await this.query.getTransactionCount(from)
     const { blockNumber } = await this.query.getTransactionByHash(hash) || {}
     if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
-        return true
+      return true
     }
     return false
   }

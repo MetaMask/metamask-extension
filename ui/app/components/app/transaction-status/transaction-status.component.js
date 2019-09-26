@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Tooltip from '../../ui/tooltip-v2'
+import Spinner from '../../ui/spinner'
+
 import {
   UNAPPROVED_STATUS,
   REJECTED_STATUS,
@@ -51,6 +53,7 @@ export default class TransactionStatus extends PureComponent {
 
     return (
       <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
+        { statusToTextHash[statusKey] === 'pending' ? <Spinner className="transaction-status__pending-spinner" /> : null }
         <Tooltip
           position="top"
           title={title}

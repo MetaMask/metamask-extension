@@ -27,6 +27,7 @@ global.log = log
 
 // fetch
 global.fetch = require('isomorphic-fetch')
+require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 
 // dom
 require('jsdom-global')()

@@ -10,13 +10,9 @@ const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
 
 // Modal Components
-const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
-const AccountDetailsModal = require('./account-details-modal')
-const EditAccountNameModal = require('./edit-account-name-modal')
+import AccountDetailsModal from './account-details-modal'
 const ExportPrivateKeyModal = require('./export-private-key-modal')
-const NewAccountModal = require('./new-account-modal')
-const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
@@ -30,6 +26,8 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ConfirmDeleteNetwork from './confirm-delete-network'
+import AddToAddressBookModal from './add-to-addressbook-modal'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -80,32 +78,6 @@ const accountModalStyle = {
 }
 
 const MODALS = {
-  BUY: {
-    contents: [
-      h(BuyOptions, {}, []),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      top: '10%',
-    },
-    laptopModalStyle: {
-      width: '66%',
-      maxWidth: '550px',
-      top: 'calc(10% + 10px)',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      transform: 'none',
-    },
-  },
-
   DEPOSIT_ETHER: {
     contents: [
       h(DepositEtherModal, {}, []),
@@ -141,29 +113,32 @@ const MODALS = {
     },
   },
 
-  EDIT_ACCOUNT_NAME: {
+  ADD_TO_ADDRESSBOOK: {
     contents: [
-      h(EditAccountNameModal, {}, []),
+      h(AddToAddressBookModal, {}, []),
     ],
     mobileModalStyle: {
       width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
       top: '10%',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
       left: '0',
       right: '0',
       margin: '0 auto',
+      borderRadius: '10px',
     },
     laptopModalStyle: {
       width: '375px',
-      // top: 'calc(30% + 10px)',
       top: '10%',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
       left: '0',
       right: '0',
       margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
     },
   },
 
@@ -177,13 +152,6 @@ const MODALS = {
   EXPORT_PRIVATE_KEY: {
     contents: [
       h(ExportPrivateKeyModal, {}, []),
-    ],
-    ...accountModalStyle,
-  },
-
-  SHAPESHIFT_DEPOSIT_TX: {
-    contents: [
-      h(ShapeshiftDepositTxModal),
     ],
     ...accountModalStyle,
   },
@@ -229,23 +197,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  OLD_UI_NOTIFICATION_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'oldUI',
-        message: 'oldUIMessage',
-      }),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
     },
   },
 
@@ -309,27 +260,16 @@ const MODALS = {
     },
   },
 
-  NEW_ACCOUNT: {
-    contents: [
-      h(NewAccountModal, {}, []),
-    ],
+  CONFIRM_DELETE_NETWORK: {
+    contents: h(ConfirmDeleteNetwork),
     mobileModalStyle: {
-      width: '95%',
-      // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-      top: '10%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '449px',
-      // top: 'calc(33% + 45px)',
-      top: '10%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -460,7 +400,6 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
-
   const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}

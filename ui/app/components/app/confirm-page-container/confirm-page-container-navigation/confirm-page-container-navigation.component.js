@@ -6,9 +6,9 @@ const ConfirmPageContainerNavigation = props => {
 
   return (
     <div className="confirm-page-container-navigation"
-        style={{
-          display: showNavigation ? 'flex' : 'none',
-        }}
+      style={{
+        display: showNavigation ? 'flex' : 'none',
+      }}
     >
       <div className="confirm-page-container-navigation__container"
         style={{

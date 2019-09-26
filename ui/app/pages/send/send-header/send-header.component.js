@@ -9,7 +9,6 @@ export default class SendHeader extends Component {
     clearSend: PropTypes.func,
     history: PropTypes.object,
     titleKey: PropTypes.string,
-    subtitleParams: PropTypes.array,
   };
 
   static contextTypes = {
@@ -24,8 +23,10 @@ export default class SendHeader extends Component {
   render () {
     return (
       <PageContainerHeader
+        className="send__header"
         onClose={() => this.onClose()}
         title={this.context.t(this.props.titleKey)}
+        headerCloseText={this.context.t('cancel')}
       />
     )
   }

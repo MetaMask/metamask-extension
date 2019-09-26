@@ -58,6 +58,8 @@
   }
 
   &__token-name {
+    /*rtl:ignore*/
+    direction: ltr;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

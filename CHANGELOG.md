@@ -1,6 +1,107 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
+
+## 7.2.1 Tue Sep 17 2019
+- [#7180](https://github.com/MetaMask/metamask-extension/pull/7180): Add `appName` message to each locale
+
+## 7.2.0 Mon Sep 8, 2019
+- [#7099](https://github.com/MetaMask/metamask-extension/pull/7099): Update localization from Transifex Brave
+- [#7137](https://github.com/MetaMask/metamask-extension/pull/7137): Fix validation of empty block explorer url's in custom network form
+- [#7128](https://github.com/MetaMask/metamask-extension/pull/7128): Support for eth_signTypedData_v4
+- [#7110](https://github.com/MetaMask/metamask-extension/pull/7110): Adds `chaindIdChanged` event to the ethereum provider
+- [#7091](https://github.com/MetaMask/metamask-extension/pull/7091): Improve browser performance issues caused by missing locale errors
+- [#7085](https://github.com/MetaMask/metamask-extension/pull/7085): Prevent ineffectual speed ups of pending transactions that don't have the lowest nonce
+- [#7156](https://github.com/MetaMask/metamask-extension/pull/7156): Set minimum Firefox version to v56.2 to support Waterfox
+- [#7157](https://github.com/MetaMask/metamask-extension/pull/7157): Add polyfill for AbortController
+- [#7161](https://github.com/MetaMask/metamask-extension/pull/7161): Replace `undefined` selectedAddress with `null`
+- [#7171](https://github.com/MetaMask/metamask-extension/pull/7171): Fix recipient field of approve screen
+
+## 7.1.1 Tue Aug 27 2019
+- [#7059](https://github.com/MetaMask/metamask-extension/pull/7059): Remove blockscale, replace with ethgasstation
+- [#7037](https://github.com/MetaMask/metamask-extension/pull/7037): Remove Babel 6 from internal dependencies
+- [#7093](https://github.com/MetaMask/metamask-extension/pull/7093): Allow dismissing privacy mode notification from popup
+- [#7087](https://github.com/MetaMask/metamask-extension/pull/7087): Add breadcrumb spacing on Contacts page
+- [#7081](https://github.com/MetaMask/metamask-extension/pull/7081): Fix confirm token transaction amount display
+- [#7088](https://github.com/MetaMask/metamask-extension/pull/7088): Fix BigNumber conversion error
+- [#7072](https://github.com/MetaMask/metamask-extension/pull/7072): Right-to-left CSS (using module for conversion)
+- [#6878](https://github.com/MetaMask/metamask-extension/pull/6878): Persian translation
+- [#7012](https://github.com/MetaMask/metamask-extension/pull/7012): Added missed phrases to RU locale
+
+## 7.1.0 Fri Aug 16 2019
+- [#7035](https://github.com/MetaMask/metamask-extension/pull/7035): Filter non-ERC-20 assets during mobile sync (#7035)
+- [#7021](https://github.com/MetaMask/metamask-extension/pull/7021): Using translated string for end of flow messaging (#7021)
+- [#7018](https://github.com/MetaMask/metamask-extension/pull/7018): Rename Contacts List settings tab to Contacts (#7018)
+- [#7013](https://github.com/MetaMask/metamask-extension/pull/7013): Connections settings tab (#7013)
+- [#6996](https://github.com/MetaMask/metamask-extension/pull/6996): Fetch & display received transactions (#6996)
+- [#6991](https://github.com/MetaMask/metamask-extension/pull/6991): Remove reload from Share Address button (#6991)
+- [#6978](https://github.com/MetaMask/metamask-extension/pull/6978): Address book fixes (#6978)
+- [#6944](https://github.com/MetaMask/metamask-extension/pull/6944): Show recipient alias in confirm header if exists (#6944)
+- [#6930](https://github.com/MetaMask/metamask-extension/pull/6930): Add support for eth_signTypedData_v4 (#6930)
+- [#7046](https://github.com/MetaMask/metamask-extension/pull/7046): Update Italian translation (#7046)
+- [#7047](https://github.com/MetaMask/metamask-extension/pull/7047): Add warning about reload on network change
+
+## 7.0.1 Thu Aug 08 2019
+- [#6975](https://github.com/MetaMask/metamask-extension/pull/6975): Ensure seed phrase backup notification only shows up for new users
+
+## 7.0.0 Fri Aug 02 2019
+- [#6828](https://github.com/MetaMask/metamask-extension/pull/6828): Capitalized speed up label to match rest of UI
+- [#6874](https://github.com/MetaMask/metamask-extension/pull/6928): Allows skipping of seed phrase challenge during onboarding, and completing it at a later time
+- [#6900](https://github.com/MetaMask/metamask-extension/pull/6900): Prevent opening of asset dropdown if no tokens in account
+- [#6904](https://github.com/MetaMask/metamask-extension/pull/6904): Set privacy mode as default
+- [#6914](https://github.com/MetaMask/metamask-extension/pull/6914): Adds Address Book feature
+- [#6928](https://github.com/MetaMask/metamask-extension/pull/6928): Disable Copy Tx ID and block explorer link for transactions without hash
+- [#6967](https://github.com/MetaMask/metamask-extension/pull/6967): Fix mobile sync
+
+## 6.7.3 Thu Jul 18 2019
+
+- [#6888](https://github.com/MetaMask/metamask-extension/pull/6888): Fix bug with resubmitting unsigned transactions.
+
+## 6.7.2 Mon Jul 01 2019
+
+- [#6713](https://github.com/MetaMask/metamask-extension/pull/6713): * Normalize and Validate txParams in TransactionStateManager.addTx too
+- [#6759](https://github.com/MetaMask/metamask-extension/pull/6759): Update to Node.js v10
+- [#6694](https://github.com/MetaMask/metamask-extension/pull/6694): Fixes #6694
+- [#6743](https://github.com/MetaMask/metamask-extension/pull/6743): * Add tests for ImportWithSeedPhrase#parseSeedPhrase
+- [#6740](https://github.com/MetaMask/metamask-extension/pull/6740): Fixes #6740
+- [#6741](https://github.com/MetaMask/metamask-extension/pull/6741): Fixes #6741
+- [#6761](https://github.com/MetaMask/metamask-extension/pull/6761): Fixes #6760, correct PropTypes for nextRoute
+- [#6754](https://github.com/MetaMask/metamask-extension/pull/6754): Use inline source maps in development
+- [#6589](https://github.com/MetaMask/metamask-extension/pull/6589): Document hotfix protocol
+- [#6738](https://github.com/MetaMask/metamask-extension/pull/6738): Add codeowner for package-lock-old.json package-lock.json package.json packagelock-old.json files
+- [#6648](https://github.com/MetaMask/metamask-extension/pull/6648): Add loading view to notification.html
+- [#6731](https://github.com/MetaMask/metamask-extension/pull/6731): Add brave as a platform type for MetaMask
+
+## 6.7.1 Fri Jun 28 2019
+- [#6764](https://github.com/MetaMask/metamask-extension/pull/6764): Fix display of token amount on confirm transaction screen
+
+## 6.7.0 Tue Jun 18 2019
+
+- [#6623](https://github.com/MetaMask/metamask-extension/pull/6623): Improve contract method data fetching (#6623)
+- [#6551](https://github.com/MetaMask/metamask-extension/pull/6551): Adds 4byte registry fallback to getMethodData() (#6435)
+- [#6718](https://github.com/MetaMask/metamask-extension/pull/6718): Add delete to custom RPC form
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+- [#6714](https://github.com/MetaMask/metamask-extension/pull/6714): Wrap smaller custom block explorer url text
+- [#6706](https://github.com/MetaMask/metamask-extension/pull/6706): Pin ethereumjs-tx
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+- [#6775](https://github.com/MetaMask/metamask-extension/pull/6775): Started adding visual documentation of MetaMask plugin components with the account menu component first
+
+## 6.6.2 Fri Jun 07 2019
+
+- [#6690](https://github.com/MetaMask/metamask-extension/pull/6690): Update dependencies, re-enable npm audit CI job
+- [#6700](https://github.com/MetaMask/metamask-extension/pull/6700): Fix styles on 'import account' page, update help link
+
+## 6.6.1 Thu Jun 06 2019
+
+- [#6691](https://github.com/MetaMask/metamask-extension/pull/6691): Revert "Improve ENS Address Input" to fix bugs on input field on non-main networks.
+
+## 6.6.0 Mon Jun 03 2019
+
+- [#6659](https://github.com/MetaMask/metamask-extension/pull/6659): Enable Ledger hardware wallet support on Firefox
+- [#6671](https://github.com/MetaMask/metamask-extension/pull/6671): bugfix: reject enable promise on user rejection
+- [#6625](https://github.com/MetaMask/metamask-extension/pull/6625): Ensures that transactions cannot be confirmed if gas limit is below 21000.
+- [#6633](https://github.com/MetaMask/metamask-extension/pull/6633): Fix grammatical error in i18n endOfFlowMessage6
 
 ## 6.5.3 Thu May 16 2019
 

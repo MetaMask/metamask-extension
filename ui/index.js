@@ -5,6 +5,7 @@ const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
 const txHelper = require('./lib/tx-helper')
 const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
+import switchDirection from './app/helpers/utils/switch-direction'
 const log = require('loglevel')
 
 module.exports = launchMetamaskUi
@@ -12,19 +13,19 @@ module.exports = launchMetamaskUi
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {
-  var accountManager = opts.accountManager
-  actions._setBackgroundConnection(accountManager)
+  var {backgroundConnection} = opts
+  actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
-  accountManager.getState(function (err, metamaskState) {
+  backgroundConnection.getState(function (err, metamaskState) {
     if (err) return cb(err)
-    startApp(metamaskState, accountManager, opts)
+    startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
         cb(null, store)
       })
   })
 }
 
-async function startApp (metamaskState, accountManager, opts) {
+async function startApp (metamaskState, backgroundConnection, opts) {
   // parse opts
   if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
 
@@ -33,7 +34,12 @@ async function startApp (metamaskState, accountManager, opts) {
     : {}
   const enLocaleMessages = await fetchLocale('en')
 
+  if (metamaskState.textDirection === 'rtl') {
+    await switchDirection('rtl')
+  }
+
   const store = configureStore({
+    activeTab: opts.activeTab,
 
     // metamaskState represents the cross-tab state
     metamask: metamaskState,
@@ -59,7 +65,15 @@ async function startApp (metamaskState, accountManager, opts) {
     }))
   }
 
-  accountManager.on('update', function (metamaskState) {
+  backgroundConnection.on('update', function (metamaskState) {
+    const currentState = store.getState()
+    const { currentLocale } = currentState.metamask
+    const { currentLocale: newLocale } = metamaskState
+
+    if (currentLocale && newLocale && currentLocale !== newLocale) {
+      store.dispatch(actions.updateCurrentLocale(newLocale))
+    }
+
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
@@ -71,6 +85,9 @@ async function startApp (metamaskState, accountManager, opts) {
     setProviderType: (type) => {
       store.dispatch(actions.setProviderType(type))
     },
+    setFeatureFlag: (key, value) => {
+      store.dispatch(actions.setFeatureFlag(key, value))
+    },
   }
 
   // start app
@@ -79,7 +96,7 @@ async function startApp (metamaskState, accountManager, opts) {
       // inject initial state
       store: store,
     }
-  ), opts.container)
+    ), opts.container)
 
   return store
 }

@@ -32,7 +32,7 @@ function transformState (state) {
       txMeta.status === 'unapproved' &&
       txMeta.txParams &&
       txMeta.txParams.from
-      ) {
+    ) {
       txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
     }
     return txMeta

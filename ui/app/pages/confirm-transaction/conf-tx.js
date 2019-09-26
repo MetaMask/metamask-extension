@@ -12,7 +12,6 @@ const R = require('ramda')
 const SignatureRequest = require('../../components/app/signature-request')
 const Loading = require('../../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../../selectors/selectors')
 
 module.exports = compose(
   withRouter,
@@ -29,8 +28,6 @@ function mapStateToProps (state) {
 
   return {
     identities: state.metamask.identities,
-    accounts: getMetaMaskAccounts(state),
-    selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
@@ -39,10 +36,8 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
-    computedBalances: state.metamask.computedBalances,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
@@ -146,7 +141,6 @@ ConfirmTxScreen.prototype.render = function () {
   const props = this.props
   const {
     currentCurrency,
-    conversionRate,
     blockGasLimit,
   } = props
 
@@ -159,10 +153,7 @@ ConfirmTxScreen.prototype.render = function () {
       // Properties
       txData: txData,
       key: txData.id,
-      selectedAddress: props.selectedAddress,
-      accounts: props.accounts,
       identities: props.identities,
-      conversionRate,
       currentCurrency,
       blockGasLimit,
       // Actions

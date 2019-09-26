@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 const createId = require('./random-id')
 
 /**
@@ -61,7 +62,7 @@ module.exports = class MessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages.filter(msg => msg.status === 'unapproved')
-    .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
   }
 
   /**
@@ -82,7 +83,7 @@ module.exports = class MessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+            return reject(rpcErrors.eth.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
           default:
             return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }

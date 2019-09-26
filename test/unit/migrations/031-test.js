@@ -1,7 +1,7 @@
 const assert = require('assert')
 const migration31 = require('../../../app/scripts/migrations/031')
 
- describe('migration #31', () => {
+describe('migration #31', () => {
   it('should set completedOnboarding to true if vault exists', done => {
     const oldStorage = {
       'meta': {},
@@ -23,7 +23,7 @@ const migration31 = require('../../../app/scripts/migrations/031')
       },
     }
 
-     migration31.migrate(oldStorage)
+    migration31.migrate(oldStorage)
       .then(newStorage => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, true)
         done()
@@ -31,7 +31,7 @@ const migration31 = require('../../../app/scripts/migrations/031')
       .catch(done)
   })
 
-   it('should set completedOnboarding to false if vault does not exist', done => {
+  it('should set completedOnboarding to false if vault does not exist', done => {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -46,7 +46,7 @@ const migration31 = require('../../../app/scripts/migrations/031')
       },
     }
 
-     migration31.migrate(oldStorage)
+    migration31.migrate(oldStorage)
       .then(newStorage => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, false)
         done()

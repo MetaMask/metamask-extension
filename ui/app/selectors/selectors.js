@@ -1,5 +1,6 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
-import { stripHexPrefix } from 'ethereumjs-util'
+import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+
 
 const abi = require('human-standard-token-abi')
 import {
@@ -8,6 +9,10 @@ import {
 const {
   multiplyCurrencies,
 } = require('../helpers/utils/conversion-util')
+import {
+  addressSlicer,
+  checksumAddress,
+} from '../helpers/utils/util'
 
 const selectors = {
   getSelectedAddress,
@@ -50,6 +55,10 @@ const selectors = {
   isEthereumNetwork,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
+  getKnownMethodData,
+  getAddressBookEntry,
+  getAddressBookEntryName,
+  getFeatureFlags,
 }
 
 module.exports = selectors
@@ -201,7 +210,22 @@ function conversionRateSelector (state) {
 }
 
 function getAddressBook (state) {
-  return state.metamask.addressBook
+  const network = state.metamask.network
+  if (!state.metamask.addressBook[network]) {
+    return []
+  }
+  return Object.values(state.metamask.addressBook[network])
+}
+
+function getAddressBookEntry (state, address) {
+  const addressBook = getAddressBook(state)
+  const entry = addressBook.find(contact => contact.address === checksumAddress(address))
+  return entry
+}
+
+function getAddressBookEntryName (state, address) {
+  const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
+  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
 }
 
 function accountsWithSendEtherInfoSelector (state) {
@@ -334,4 +358,19 @@ function getRpcPrefsForCurrentProvider (state) {
   const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
+}
+
+function getKnownMethodData (state, data) {
+  if (!data) {
+    return null
+  }
+  const prefixedData = addHexPrefix(data)
+  const fourBytePrefix = prefixedData.slice(0, 10)
+  const { knownMethodData } = state.metamask
+
+  return knownMethodData && knownMethodData[fourBytePrefix]
+}
+
+function getFeatureFlags (state) {
+  return state.metamask.featureFlags
 }

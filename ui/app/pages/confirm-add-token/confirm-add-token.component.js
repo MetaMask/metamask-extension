@@ -80,7 +80,7 @@ export default class ConfirmAddToken extends Component {
                         </div>
                       </div>
                     )
-                })
+                  })
               }
             </div>
           </div>

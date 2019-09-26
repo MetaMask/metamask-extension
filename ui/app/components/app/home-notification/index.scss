@@ -1,0 +1,118 @@
+.tippy-tooltip.info-theme {
+  background: rgba(36, 41, 46, 0.9);
+  color: $white;
+  border-radius: 8px;
+}
+
+.home-notification {
+  background: rgba(36, 41, 46, 0.9);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  height: 116px;
+  padding: 16px;
+
+  @media screen and (min-width: 576px) {
+    min-width: 472px;
+  }
+
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+
+  &__header-container {
+    display: flex;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__text {
+    font-family: Roboto, 'sans-serif';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: $white;
+    margin-left: 10px;
+    margin-right: 8px;
+  }
+
+  .fa-info-circle {
+    color: #6A737D;
+  }
+
+  &__ignore-button {
+    border: 2px solid #6A737D;
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: $white;
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+
+    @media screen and (max-width: 575px) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6A737D;
+      background-color: #6A737D;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
+  }
+
+  &__accept-button {
+    border: 2px solid #6A737D;
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: $white;
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+    margin-left: 4px;
+
+    @media screen and (max-width: 575px) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6A737D;
+      background-color: #6A737D;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+  }
+}
+
+.home-notification-tooltip {
+  &__tooltip-container {
+    display: flex;
+  }
+
+  &__content {
+    font-family: Roboto, 'sans-serif';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: $white;
+    text-align: left;
+    display: inline-block;
+    width: 200px;
+  }
+}

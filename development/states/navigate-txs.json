@@ -170,7 +170,6 @@
     },
     "currentBlockGasLimit": "0x731e25",
     "selectedAddressTxList": [],
-    "computedBalances": {},
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
@@ -232,8 +231,7 @@
       "rinkeby": "ok",
       "ropsten": "ok",
       "goerli": "ok"
-    },
-    "lostAccounts": []
+    }
   },
   "appState": {
     "shouldClose": false,

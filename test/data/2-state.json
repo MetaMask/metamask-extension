@@ -14,7 +14,6 @@
   "currentBlockGasLimit": "",
   "unapprovedTxs": {},
   "selectedAddressTxList": [],
-  "computedBalances": {},
   "unapprovedMsgs": {},
   "unapprovedMsgCount": 0,
   "unapprovedPersonalMsgs": {},
@@ -64,7 +63,6 @@
   "noActiveNotices": true,
   "shapeShiftTxList": [],
   "infuraNetworkStatus": {},
-  "lostAccounts": [],
   "seedWords": "debris dizzy just program just float decrease vacant alarm reduce speak stadium",
   "forgottenPassword": null
 }

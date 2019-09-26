@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import infuraCurrencies from '../../../helpers/constants/infura-conversion.json'
 import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
-import ToggleButton from 'react-toggle-button'
+import ToggleButton from '../../../components/ui/toggle-button'
 import locales from '../../../../../app/_locales/index.json'
 
 const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -105,6 +105,7 @@ export default class SettingsTab extends PureComponent {
 
 
   renderBlockieOptIn () {
+    const { t } = this.context
     const { useBlockie, setUseBlockie } = this.props
 
     return (
@@ -117,8 +118,8 @@ export default class SettingsTab extends PureComponent {
             <ToggleButton
               value={useBlockie}
               onToggle={value => setUseBlockie(!value)}
-              activeLabel=""
-              inactiveLabel=""
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>

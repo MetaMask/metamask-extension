@@ -1,11 +1,10 @@
 const extend = require('xtend')
 const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
 const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
-const { getFinalStates } = require('./lib/util')
+const { getFinalStates, normalizeTxParams } = require('./lib/util')
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -35,7 +34,7 @@ class TransactionStateManager extends EventEmitter {
     this.store = new ObservableStore(
       extend({
         transactions: [],
-    }, initState))
+      }, initState))
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -126,6 +125,11 @@ class TransactionStateManager extends EventEmitter {
     @returns {object} the txMeta
   */
   addTx (txMeta) {
+    // normalize and validate txParams if present
+    if (txMeta.txParams) {
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
+    }
+
     this.once(`${txMeta.id}:signed`, function () {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
@@ -175,13 +179,9 @@ class TransactionStateManager extends EventEmitter {
     @param [note] {string} - a note about the update for history
   */
   updateTx (txMeta, note) {
-    // validate txParams
+    // normalize and validate txParams if present
     if (txMeta.txParams) {
-      if (typeof txMeta.txParams.data === 'undefined') {
-        delete txMeta.txParams.data
-      }
-
-      this.validateTxParams(txMeta.txParams)
+      txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -214,6 +214,19 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * normalize and validate txParams members
+   * @param txParams {object} - txParams
+   */
+  normalizeAndValidateTxParams (txParams) {
+    if (typeof txParams.data === 'undefined') {
+      delete txParams.data
+    }
+    txParams = normalizeTxParams(txParams, false)
+    this.validateTxParams(txParams)
+    return txParams
+  }
+
+  /**
     validates txParams members by type
     @param txParams {object} - txParams to validate
   */
@@ -227,20 +240,21 @@ class TransactionStateManager extends EventEmitter {
           break
         default:
           if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
-          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
           break
       }
     })
   }
 
-/**
+  /**
   @param opts {object} -  an object of fields to search for eg:<br>
   let <code>thingsToLookFor = {<br>
     to: '0x0..',<br>
     from: '0x0..',<br>
-    status: 'signed',<br>
+    status: 'signed', \\ (status) => status !== 'rejected' give me all txs who's status is not rejected<br>
     err: undefined,<br>
   }<br></code>
+  optionally the values of the keys can be functions for situations like where
+  you want all but one status.
   @param [initialList=this.getTxList()]
   @returns a {array} of txMeta with all
   options matching
@@ -256,7 +270,7 @@ class TransactionStateManager extends EventEmitter {
 
   this is for things like filtering a the tx list
   for only tx's from 1 account
-  or for filltering for all txs from one account
+  or for filtering for all txs from one account
   and that have been 'confirmed'
   */
   getFilteredTxList (opts, initialList) {
@@ -269,17 +283,19 @@ class TransactionStateManager extends EventEmitter {
   /**
 
     @param key {string} - the key to check
-    @param value - the value your looking for
+    @param value - the value your looking for can also be a function that returns a bool
     @param [txList=this.getTxList()] {array} - the list to search. default is the txList
     from txStateManager#getTxList
     @returns {array} a list of txMetas who matches the search params
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
+    const filter = typeof value === 'function' ? value : (v) => v === value
+
     return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
-        return txMeta.txParams[key] === value
+        return filter(txMeta.txParams[key])
       } else {
-        return txMeta[key] === value
+        return filter(txMeta[key])
       }
     })
   }
@@ -391,9 +407,9 @@ class TransactionStateManager extends EventEmitter {
     // Update state
     this._saveTxList(otherAccountTxs)
   }
-//
-//           PRIVATE METHODS
-//
+  //
+  //           PRIVATE METHODS
+  //
 
   // STATUS METHODS
   // statuses:

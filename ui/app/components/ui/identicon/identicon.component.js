@@ -16,6 +16,7 @@ const getStyles = diameter => (
 
 export default class Identicon extends PureComponent {
   static propTypes = {
+    addBorder: PropTypes.bool,
     address: PropTypes.string,
     className: PropTypes.string,
     diameter: PropTypes.number,
@@ -70,7 +71,7 @@ export default class Identicon extends PureComponent {
   }
 
   render () {
-    const { className, address, image, diameter, useBlockie } = this.props
+    const { className, address, image, diameter, useBlockie, addBorder } = this.props
 
     if (image) {
       return this.renderImage()
@@ -83,9 +84,11 @@ export default class Identicon extends PureComponent {
         return this.renderJazzicon()
       }
 
-      return useBlockie
-        ? this.renderBlockie()
-        : this.renderJazzicon()
+      return (
+        <div className={classnames({ 'identicon__address-wrapper': addBorder })}>
+          { useBlockie ? this.renderBlockie() : this.renderJazzicon() }
+        </div>
+      )
     }
 
     return (

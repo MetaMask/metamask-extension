@@ -15,11 +15,11 @@ function backEndMetaMetricsEvent (metaMaskState, eventData) {
   const stateEventData = getMetaMetricState({ metamask: metaMaskState })
 
   if (stateEventData.participateInMetaMetrics) {
-      sendMetaMetricsEvent({
-        ...stateEventData,
-        ...eventData,
-        url: METAMETRICS_TRACKING_URL + '/backend',
-      })
+    sendMetaMetricsEvent({
+      ...stateEventData,
+      ...eventData,
+      url: METAMETRICS_TRACKING_URL + '/backend',
+    })
   }
 }
 

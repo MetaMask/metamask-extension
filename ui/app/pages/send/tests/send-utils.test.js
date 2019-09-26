@@ -72,9 +72,9 @@ describe('send utils', () => {
         call_,
         [12, 15, {
           toNumericBase: 'hex',
-           multiplicandBase: 16,
-           multiplierBase: 16,
-         } ]
+          multiplicandBase: 16,
+          multiplierBase: 16,
+        } ]
       )
     })
   })

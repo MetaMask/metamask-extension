@@ -7,15 +7,21 @@
 
   &__name {
     max-width: 200px;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 19px;
+    color: $black;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
+    margin-bottom: 4px;
   }
 
   &__address {
     font-size: .75rem;
-    color: $silver-chalice;
+    line-height: .75rem;
+    color: #989a9b;
   }
 
   &__clickable {
@@ -23,7 +29,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 5px 15px;
+    margin: 4px 0;
+    padding: 6px 15px;
     border-radius: 10px;
     cursor: pointer;
 

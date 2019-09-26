@@ -61,10 +61,13 @@ const styles = {
     ...inputLabelBase,
     fontSize: '.75rem',
   },
+  inputMultiline: {
+    lineHeight: 'initial !important',
+  },
 }
 
 const TextField = props => {
-  const { error, classes, material, startAdornment, largeLabel, ...textFieldProps } = props
+  const { error, classes, material, startAdornment, largeLabel, dir, ...textFieldProps } = props
 
   return (
     <MaterialTextField
@@ -88,6 +91,9 @@ const TextField = props => {
           underline: material ? classes.materialUnderline : '',
           focused: material ? '' : classes.inputFocused,
         },
+        inputProps: {
+          dir,
+        },
       }}
       {...textFieldProps}
     />
@@ -96,11 +102,13 @@ const TextField = props => {
 
 TextField.defaultProps = {
   error: null,
+  dir: 'auto',
 }
 
 TextField.propTypes = {
   error: PropTypes.string,
   classes: PropTypes.object,
+  dir: PropTypes.string,
   material: PropTypes.bool,
   startAdornment: PropTypes.element,
   largeLabel: PropTypes.bool,

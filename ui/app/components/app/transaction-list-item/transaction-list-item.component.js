@@ -25,6 +25,7 @@ export default class TransactionListItem extends PureComponent {
     showCancel: PropTypes.bool,
     hasEnoughCancelGas: PropTypes.bool,
     showRetry: PropTypes.bool,
+    isEarliestNonce: PropTypes.bool,
     showFiat: PropTypes.bool,
     token: PropTypes.object,
     tokenData: PropTypes.object,
@@ -34,6 +35,9 @@ export default class TransactionListItem extends PureComponent {
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
     rpcPrefs: PropTypes.object,
+    data: PropTypes.string,
+    getContractMethodData: PropTypes.func,
+    isDeposit: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -115,7 +119,7 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderPrimaryCurrency () {
-    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value } = this.props
+    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value, isDeposit } = this.props
 
     return token
       ? (
@@ -130,7 +134,7 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
           type={PRIMARY}
-          prefix="-"
+          prefix={isDeposit ? '' : '-'}
         />
       )
   }
@@ -150,6 +154,12 @@ export default class TransactionListItem extends PureComponent {
       )
   }
 
+  componentDidMount () {
+    if (this.props.data) {
+      this.props.getContractMethodData(this.props.data)
+    }
+  }
+
   render () {
     const {
       assetImages,
@@ -163,6 +173,7 @@ export default class TransactionListItem extends PureComponent {
       tokenData,
       transactionGroup,
       rpcPrefs,
+      isEarliestNonce,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -179,7 +190,7 @@ export default class TransactionListItem extends PureComponent {
           <Identicon
             className="transaction-list-item__identicon"
             address={toAddress}
-            diameter={34}
+            diameter={36}
             image={assetImages[toAddress]}
           />
           <TransactionAction
@@ -214,7 +225,8 @@ export default class TransactionListItem extends PureComponent {
                 <TransactionListItemDetails
                   transactionGroup={transactionGroup}
                   onRetry={this.handleRetry}
-                  showRetry={showRetry && methodData.done}
+                  showRetry={showRetry}
+                  isEarliestNonce={isEarliestNonce}
                   onCancel={this.handleCancel}
                   showCancel={showCancel}
                   cancelDisabled={!hasEnoughCancelGas}

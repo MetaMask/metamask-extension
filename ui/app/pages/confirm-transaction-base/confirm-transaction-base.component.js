@@ -59,6 +59,7 @@ export default class ConfirmTransactionBase extends Component {
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
+    toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
@@ -94,6 +95,7 @@ export default class ConfirmTransactionBase extends Component {
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
+    transactionCategory: PropTypes.string,
   }
 
   state = {
@@ -268,6 +270,7 @@ export default class ConfirmTransactionBase extends Component {
       } = {},
       hideData,
       dataComponent,
+      transactionCategory,
     } = this.props
 
     if (hideData) {
@@ -279,7 +282,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__data-box-label">
           {`${t('functionType')}:`}
           <span className="confirm-page-container-content__function-type">
-            { name || t('notFound') }
+            { getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction') }
           </span>
         </div>
         {
@@ -346,19 +349,19 @@ export default class ConfirmTransactionBase extends Component {
     const { metricsEvent } = this.context
     const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, actionKey, txData: { origin }, methodData = {} } = this.props
 
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'Cancel',
+      },
+      customVariables: {
+        recipientKnown: null,
+        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
+        origin,
+      },
+    })
     if (onCancel) {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Confirm Screen',
-          name: 'Cancel',
-        },
-        customVariables: {
-          recipientKnown: null,
-          functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
-          origin,
-        },
-      })
       onCancel(txData)
     } else {
       cancelTransaction(txData)
@@ -464,6 +467,7 @@ export default class ConfirmTransactionBase extends Component {
 
   handleNextTx (txId) {
     const { history, clearConfirmTransaction } = this.props
+
     if (txId) {
       clearConfirmTransaction()
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`)
@@ -473,7 +477,7 @@ export default class ConfirmTransactionBase extends Component {
   getNavigateTxData () {
     const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
     const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs).reverse()
-    const currentPosition = enumUnapprovedTxs.indexOf(id.toString())
+    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
 
     return {
       totalTx: enumUnapprovedTxs.length,
@@ -526,11 +530,11 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
+      toNickname,
       methodData,
       valid: propsValid = true,
       errorMessage,
       errorKey: propsErrorKey,
-      actionKey,
       title,
       subtitle,
       hideSubtitle,
@@ -542,22 +546,23 @@ export default class ConfirmTransactionBase extends Component {
       assetImage,
       warning,
       unapprovedTxCount,
+      transactionCategory,
     } = this.props
     const { submitting, submitError } = this.state
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
     const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
-
     return (
       <ConfirmPageContainer
         fromName={fromName}
         fromAddress={fromAddress}
         toName={toName}
         toAddress={toAddress}
+        toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
-        action={this.context.tOrKey(actionKey) || getMethodName(name) || this.context.t('contractInteraction')}
+        action={getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}

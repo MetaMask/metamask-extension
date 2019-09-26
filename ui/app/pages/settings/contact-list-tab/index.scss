@@ -1,0 +1,238 @@
+.address-book-wrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.address-book {
+  flex: 0.4 1 40%;
+  max-width: 40%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1;
+    max-width: 100%;
+  }
+
+  &__entry {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #dedede;
+
+    &:hover {
+      border: 1px solid #037DD6;
+      cursor: pointer;
+    }
+  }
+
+  &__name {
+    padding: 3px;
+  }
+
+  &__header, &__header--edit {
+    &__name {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 24px;
+      line-height: 34px;
+      margin-left: 24px;
+    }
+  }
+
+  &__header--edit {
+    display: flex;
+    justify-content: space-between;
+
+    .button {
+      justify-content: flex-end;
+      color: #D73A49;
+      font-size: 14px;
+    }
+  }
+
+  &__input {
+    @extend %input-2;
+    margin-top: .25rem;
+
+    &--address {
+      font-size: 0.875rem;
+    }
+  }
+
+  &__view-contact {
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__group {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 1.5rem 1.5rem 0 1.5rem;
+
+      &__label, &__label--capitalized {
+        font-size: .75rem;
+        color: $Grey-500;
+        margin-bottom: .25rem;
+      }
+
+      &__label--capitalized {
+        text-transform: capitalize;
+      }
+
+      &__value, &__static-address {
+        display: flex;
+        flex-flow: row nowrap;
+        font-size: 1.125rem;
+        color: $Grey-800;
+        word-break: break-word;
+
+        &--address {
+          font-size: 0.875rem;
+        }
+
+        &--copy-icon {
+          padding-left: 4px;
+        }
+      }
+
+      &__static-address {
+        font-size: 0.875rem;
+        &--copy-icon {
+          cursor: pointer;
+
+          &:hover {
+            color: black;
+          }
+        }
+      }
+
+      .unit-input__input {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  &__edit-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+
+      > div {
+        padding-top: 0;
+      }
+
+    }
+
+    .page-container__footer {
+      border-top: none;
+    }
+  }
+
+  &__add-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+      height: 100%;
+    }
+
+    &__error {
+      font-size: 12px;
+      line-height: 12px;
+      left: 8px;
+      color: $red;
+    }
+  }
+
+  &__my-accounts-button {
+    display: flex;
+    flex-flow: column;
+    cursor: pointer;
+    padding: 15px;
+
+    &:hover {
+      background-color: rgba(222, 222, 222, 0.2);
+    }
+
+    &__header {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 25px;
+      color: #000000;
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__text {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      color: #6A737D;
+    }
+
+    &__caret {
+      display: block;
+      background-image: url(/images/caret-right.svg);
+      width: 30px;
+      opacity: .5;
+      background-repeat: no-repeat;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.address-book-add-button {
+  &__button {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    height: 56px;
+    width: 56px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border-width: 2px;
+    background: #037DD6;
+    margin-right: 5px;
+    cursor: pointer;
+    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.address-book--hidden {
+  display: none;
+}
+
+.address-book-contact-content {
+  flex: 0.4 1 40%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1
+  }
+}

@@ -76,7 +76,7 @@ function constructUpdatedTx ({
 
 function addressIsNew (toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase()
-  const foundMatching = toAccounts.some(({ address }) => address === newAddressNormalized)
+  const foundMatching = toAccounts.some(({ address }) => address.toLowerCase() === newAddressNormalized)
   return !foundMatching
 }
 

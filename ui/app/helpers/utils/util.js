@@ -61,6 +61,7 @@ module.exports = {
   checksumAddress,
   addressSlicer,
   isEthNetwork,
+  isValidAddressHead,
 }
 
 function isEthNetwork (netId) {
@@ -322,4 +323,11 @@ function addressSlicer (address = '') {
   }
 
   return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+function isValidAddressHead (address) {
+  const addressLengthIsLessThanFull = address.length < 42
+  const addressIsHex = isHex(address)
+
+  return addressLengthIsLessThanFull && addressIsHex
 }

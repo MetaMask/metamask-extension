@@ -124,7 +124,7 @@ describe('AdvancedTabContent Component', function () {
       const dataNode = dataSummary.children().at(1)
       assert(dataNode.hasClass('advanced-tab__transaction-data-summary__container'))
       assert.equal(dataNode.children().at(0).text(), 'mockTotalFee')
-      assert(dataNode.children().at(1).hasClass('time-remaining'))
+      assert(dataNode.children().at(1).hasClass('advanced-tab__transaction-data-summary__time-remaining'))
       assert.equal(dataNode.children().at(1).text(), 'mockMsRemaining')
     })
   })

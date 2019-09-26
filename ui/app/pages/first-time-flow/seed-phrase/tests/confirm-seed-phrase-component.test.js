@@ -131,14 +131,17 @@ describe('ConfirmSeedPhrase Component', () => {
     assert.deepEqual(root.state().pendingSeedIndices, [2, 0, 1])
   })
 
-  it('should submit correctly', () => {
+  it('should submit correctly', async () => {
     const originalSeed = ['鼠', '牛', '虎', '兔', '龍', '蛇', '馬', '羊', '猴', '雞', '狗', '豬']
     const metricsEventSpy = sinon.spy()
     const pushSpy = sinon.spy()
+    const initialize3BoxSpy = sinon.spy()
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
         history: { push: pushSpy },
+        setSeedPhraseBackedUp: () => Promise.resolve(),
+        initializeThreeBox: initialize3BoxSpy,
       },
       {
         metricsEvent: metricsEventSpy,
@@ -157,6 +160,9 @@ describe('ConfirmSeedPhrase Component', () => {
     root.update()
 
     root.find('.first-time-flow__button').simulate('click')
+
+    await (new Promise(resolve => setTimeout(resolve, 100)))
+
     assert.deepEqual(metricsEventSpy.args[0][0], {
       eventOpts: {
         category: 'Onboarding',
@@ -164,6 +170,7 @@ describe('ConfirmSeedPhrase Component', () => {
         name: 'Verify Complete',
       },
     })
+    assert(initialize3BoxSpy.calledOnce)
     assert.equal(pushSpy.args[0][0], '/initialize/end-of-flow')
   })
 })

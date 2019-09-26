@@ -5,7 +5,7 @@ echo "Rolling back to version $1"
 
 # Checkout branch to increment version
 git checkout -b version-increment-$1
-npm run version:bump patch
+yarn version:bump patch
 
 # Store the new version name
 NEW_VERSION=$(cat app/manifest.json | jq -r .version)

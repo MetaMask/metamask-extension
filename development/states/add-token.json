@@ -93,7 +93,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "send": {
       "gasLimit": null,
       "gasPrice": null,
@@ -104,7 +103,7 @@
       "amount": "0x0",
       "memo": "",
       "errors": {},
-      "warnings": {},      
+      "warnings": {},
       "maxModeOn": false,
       "editingTransactionId": null
     },

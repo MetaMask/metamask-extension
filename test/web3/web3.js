@@ -27,8 +27,8 @@ web3.currentProvider.enable().then(() => {
         })
       })
 
-      })
-
     })
+
   })
+})
 

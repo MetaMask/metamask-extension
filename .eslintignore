@@ -17,3 +17,5 @@ ui/lib/blockies.js
 test/integration/bundle.js
 test/integration/jquery-3.1.0.min.js
 test/integration/helpers.js
+
+package-lock.json

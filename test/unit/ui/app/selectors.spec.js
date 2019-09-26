@@ -152,16 +152,10 @@ describe('Selectors', function () {
     assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 
-  describe('#getSelectedTokenContract', () => {
-
-    beforeEach(() => {
-      global.eth = new Eth(provider)
-    })
-
-    it('', () => {
-      const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
-      assert(selectedTokenContract.abi)
-    })
+  it('#getSelectedTokenContract', () => {
+    global.eth = new Eth(provider)
+    const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
+    assert(selectedTokenContract.abi)
   })
 
   it('#getCurrentViewContext', () => {

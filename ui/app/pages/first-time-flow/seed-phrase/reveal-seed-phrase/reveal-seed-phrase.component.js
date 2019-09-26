@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
-import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../../helpers/constants/routes'
+import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 
 export default class RevealSeedPhrase extends PureComponent {
@@ -15,6 +15,8 @@ export default class RevealSeedPhrase extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
+    setSeedPhraseBackedUp: PropTypes.func,
+    setCompletedOnboarding: PropTypes.func,
   }
 
   state = {
@@ -43,6 +45,24 @@ export default class RevealSeedPhrase extends PureComponent {
     }
 
     history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE)
+  }
+
+  handleSkip = event => {
+    event.preventDefault()
+    const { history, setSeedPhraseBackedUp, setCompletedOnboarding } = this.props
+
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Seed Phrase Setup',
+        name: 'Remind me later',
+      },
+    })
+
+    Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
+      .then(() => {
+        history.push(DEFAULT_ROUTE)
+      })
   }
 
   renderSecretWordsContainer () {
@@ -129,14 +149,23 @@ export default class RevealSeedPhrase extends PureComponent {
             </div>
           </div>
         </div>
-        <Button
-          type="primary"
-          className="first-time-flow__button"
-          onClick={this.handleNext}
-          disabled={!isShowingSeedPhrase}
-        >
-          { t('next') }
-        </Button>
+        <div className="reveal-seed-phrase__buttons">
+          <Button
+            type="secondary"
+            className="first-time-flow__button"
+            onClick={this.handleSkip}
+          >
+            { t('remindMeLater') }
+          </Button>
+          <Button
+            type="primary"
+            className="first-time-flow__button"
+            onClick={this.handleNext}
+            disabled={!isShowingSeedPhrase}
+          >
+            { t('next') }
+          </Button>
+        </div>
       </div>
     )
   }

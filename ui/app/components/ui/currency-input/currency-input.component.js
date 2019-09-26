@@ -141,22 +141,22 @@ export default class CurrencyInput extends PureComponent {
     const { decimalValue } = this.state
 
     return (
-        <UnitInput
-          {...restProps}
-          suffix={this.shouldUseFiat() ? fiatSuffix : nativeSuffix}
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
-          value={decimalValue}
-          maxModeOn={maxModeOn}
-          actionComponent={(
-            <div
-              className="currency-input__swap-component"
-              onClick={this.swap}
-            />
-          )}
-        >
-          { this.renderConversionComponent() }
-        </UnitInput>
+      <UnitInput
+        {...restProps}
+        suffix={this.shouldUseFiat() ? fiatSuffix : nativeSuffix}
+        onChange={this.handleChange}
+        onBlur={this.handleBlur}
+        value={decimalValue}
+        maxModeOn={maxModeOn}
+        actionComponent={(
+          <div
+            className="currency-input__swap-component"
+            onClick={this.swap}
+          />
+        )}
+      >
+        { this.renderConversionComponent() }
+      </UnitInput>
     )
   }
 }

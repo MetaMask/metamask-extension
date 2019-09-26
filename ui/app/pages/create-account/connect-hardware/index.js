@@ -8,8 +8,6 @@ const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { formatBalance } = require('../../../helpers/utils/util')
-const { getPlatform } = require('../../../../../app/scripts/lib/util')
-const { PLATFORM_FIREFOX } = require('../../../../../app/scripts/lib/enums')
 
 class ConnectHardwareForm extends Component {
   constructor (props) {
@@ -51,12 +49,6 @@ class ConnectHardwareForm extends Component {
   }
 
   connectToHardwareWallet = (device) => {
-    // Ledger hardware wallets are not supported on firefox
-    if (getPlatform() === PLATFORM_FIREFOX && device === 'ledger') {
-      this.setState({ browserSupported: false, error: null})
-      return null
-    }
-
     if (this.state.accounts.length) {
       return null
     }
@@ -134,16 +126,16 @@ class ConnectHardwareForm extends Component {
 
   onForgetDevice = (device) => {
     this.props.forgetDevice(device)
-    .then(_ => {
-      this.setState({
-        error: null,
-        selectedAccount: null,
-        accounts: [],
-        unlocked: false,
+      .then(_ => {
+        this.setState({
+          error: null,
+          selectedAccount: null,
+          accounts: [],
+          unlocked: false,
+        })
+      }).catch(e => {
+        this.setState({ error: e.toString() })
       })
-    }).catch(e => {
-      this.setState({ error: e.toString() })
-    })
   }
 
   onUnlockAccount = (device) => {
@@ -153,28 +145,28 @@ class ConnectHardwareForm extends Component {
     }
 
     this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
-    .then(_ => {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Accounts',
-          action: 'Connected Hardware Wallet',
-          name: 'Connected Account with: ' + device,
-        },
+      .then(_ => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Connected Hardware Wallet',
+            name: 'Connected Account with: ' + device,
+          },
+        })
+        this.props.history.push(DEFAULT_ROUTE)
+      }).catch(e => {
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Accounts',
+            action: 'Connected Hardware Wallet',
+            name: 'Error connecting hardware wallet',
+          },
+          customVariables: {
+            error: e.toString(),
+          },
+        })
+        this.setState({ error: e.toString() })
       })
-      this.props.history.push(DEFAULT_ROUTE)
-    }).catch(e => {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Accounts',
-          action: 'Connected Hardware Wallet',
-          name: 'Error connecting hardware wallet',
-        },
-        customVariables: {
-          error: e.toString(),
-        },
-      })
-      this.setState({ error: e.toString() })
-    })
   }
 
   onCancel = () => {

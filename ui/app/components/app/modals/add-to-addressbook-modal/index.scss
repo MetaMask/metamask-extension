@@ -1,0 +1,37 @@
+.add-to-address-book-modal {
+  @extend %col-nowrap;
+  @extend %modal;
+
+  &__content {
+    @extend %col-nowrap;
+    padding: 1.5rem;
+    border-bottom: 1px solid $Grey-100;
+
+    &__header {
+      @extend %h3;
+    }
+  }
+
+  &__input-label {
+    color: $Grey-600;
+    margin-top: 1.25rem;
+  }
+
+  &__input {
+    @extend %input;
+    margin-top: 0.75rem;
+
+    &::placeholder {
+      color: $Grey-300;
+    }
+  }
+
+  &__footer {
+    @extend %row-nowrap;
+    padding: 1rem;
+
+    button + button {
+      margin-left: 1rem;
+    }
+  }
+}

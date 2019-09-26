@@ -8,8 +8,6 @@
  *
  * This is a convenient way to develop and test the plugin
  * without having to re-open the plugin or even re-build it.
- *
- * To use, run `npm run mock`.
  */
 
 const render = require('react-dom').render
@@ -59,20 +57,12 @@ function updateQueryParams (newView) {
 }
 
 //
-// CSS
-//
-
-const MetaMaskUiCss = require('../ui/css')
-const injectCss = require('inject-css')
-
-//
 // MetaMask Controller
 //
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
-  unlockAccountMessage: noop,
   showUnapprovedTx: noop,
   platform: {},
   // initial state
@@ -100,9 +90,6 @@ function modifyBackgroundConnection (backgroundConnectionModifier) {
   const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
   actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
-
-var css = MetaMaskUiCss()
-injectCss(css)
 
 // parse opts
 var store = configureStore(firstState)
@@ -147,10 +134,10 @@ function startApp () {
         },
       }, [
         h(Root, {
-         store: store,
+          store: store,
         }),
       ]),
 
     ]
-  ), container)
+    ), container)
 }

@@ -26,6 +26,10 @@
 
     .app-header__metafox-logo {
       margin-bottom: 40px;
+
+      @media screen and (max-width: $break-small) {
+        margin-bottom: 0px;
+      }
     }
   }
 
@@ -69,6 +73,8 @@
   }
 
   &__textarea {
+    /*rtl:ignore*/
+    direction: ltr;
     font-size: 1rem;
     font-family: Roboto;
     height: 190px;

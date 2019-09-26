@@ -17,10 +17,10 @@ function migrateFromSnapshotsToDiffs (longHistory) {
   return (
     longHistory
     // convert non-initial history entries into diffs
-    .map((entry, index) => {
-      if (index === 0) return entry
-      return generateHistoryEntry(longHistory[index - 1], entry)
-    })
+      .map((entry, index) => {
+        if (index === 0) return entry
+        return generateHistoryEntry(longHistory[index - 1], entry)
+      })
   )
 }
 

@@ -104,8 +104,8 @@ export default class AdvancedTabContent extends Component {
         </div>
         { isInError
           ? <div className={`advanced-tab__gas-edit-row__${errorType}-text`}>
-              { errorText }
-            </div>
+            { errorText }
+          </div>
           : null }
       </div>
     )
@@ -126,7 +126,7 @@ export default class AdvancedTabContent extends Component {
           <div className="advanced-tab__transaction-data-summary__fee">
             {transactionFee}
           </div>
-          <div className="time-remaining">{timeRemaining}</div>
+          <div className="advanced-tab__transaction-data-summary__time-remaining">{timeRemaining}</div>
         </div>
       </div>
     )

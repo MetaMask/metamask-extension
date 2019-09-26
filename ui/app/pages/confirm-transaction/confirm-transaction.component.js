@@ -23,6 +23,10 @@ import {
 } from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
+  static contextTypes = {
+    metricsEvent: PropTypes.func,
+  }
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -33,11 +37,14 @@ export default class ConfirmTransaction extends Component {
     confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
-  }
-
-  getParamsTransactionId () {
-    const { match: { params: { id } = {} } } = this.props
-    return id || null
+    transaction: PropTypes.object,
+    getContractMethodData: PropTypes.func,
+    transactionId: PropTypes.string,
+    paramsTransactionId: PropTypes.string,
+    getTokenParams: PropTypes.func,
+    isTokenMethodAction: PropTypes.bool,
+    fullScreenVsPopupTestGroup: PropTypes.string,
+    trackABTest: PropTypes.bool,
   }
 
   componentDidMount () {
@@ -45,8 +52,15 @@ export default class ConfirmTransaction extends Component {
       totalUnapprovedCount = 0,
       send = {},
       history,
-      confirmTransaction: { txData: { id: transactionId } = {} },
+      transaction: { txParams: { data, to } = {} } = {},
       fetchBasicGasAndTimeEstimates,
+      getContractMethodData,
+      transactionId,
+      paramsTransactionId,
+      getTokenParams,
+      isTokenMethodAction,
+      fullScreenVsPopupTestGroup,
+      trackABTest,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -54,67 +68,58 @@ export default class ConfirmTransaction extends Component {
       return
     }
 
-    if (!transactionId) {
-      fetchBasicGasAndTimeEstimates()
-      this.setTransactionToConfirm()
+    fetchBasicGasAndTimeEstimates()
+    getContractMethodData(data)
+    if (isTokenMethodAction) {
+      getTokenParams(to)
+    }
+    const txId = transactionId || paramsTransactionId
+    if (txId) this.props.setTransactionToConfirm(txId)
+
+    if (trackABTest) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'abtesting',
+          action: 'fullScreenVsPopup',
+          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
+        },
+      })
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps) {
     const {
       setTransactionToConfirm,
-      confirmTransaction: { txData: { id: transactionId } = {} },
+      transaction: { txData: { txParams: { data } = {} } = {} },
       clearConfirmTransaction,
+      getContractMethodData,
+      paramsTransactionId,
+      transactionId,
+      history,
+      totalUnapprovedCount,
     } = this.props
-    const paramsTransactionId = this.getParamsTransactionId()
 
-    if (paramsTransactionId && transactionId && paramsTransactionId !== transactionId + '') {
+    if (paramsTransactionId && transactionId && prevProps.paramsTransactionId !== paramsTransactionId) {
       clearConfirmTransaction()
+      getContractMethodData(data)
       setTransactionToConfirm(paramsTransactionId)
       return
-    }
-
-    if (!transactionId) {
-      this.setTransactionToConfirm()
-    }
-  }
-
-  setTransactionToConfirm () {
-    const {
-      history,
-      unconfirmedTransactions,
-      setTransactionToConfirm,
-    } = this.props
-    const paramsTransactionId = this.getParamsTransactionId()
-
-    if (paramsTransactionId) {
-      // Check to make sure params ID is valid
-      const tx = unconfirmedTransactions.find(({ id }) => id + '' === paramsTransactionId)
-
-      if (!tx) {
-        history.replace(DEFAULT_ROUTE)
-      } else {
-        setTransactionToConfirm(paramsTransactionId)
-      }
-    } else if (unconfirmedTransactions.length) {
-      const totalUnconfirmed = unconfirmedTransactions.length
-      const transaction = unconfirmedTransactions[totalUnconfirmed - 1]
-      const { id: transactionId, loadingDefaults } = transaction
-
-      if (!loadingDefaults) {
-        setTransactionToConfirm(transactionId)
-      }
+    } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
+      history.replace(DEFAULT_ROUTE)
+      return
+    } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
+      history.replace(DEFAULT_ROUTE)
+      return
     }
   }
 
   render () {
-    const { confirmTransaction: { txData: { id } } = {} } = this.props
-    const paramsTransactionId = this.getParamsTransactionId()
-
+    const { transactionId, paramsTransactionId } = this.props
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    return id && (!paramsTransactionId || paramsTransactionId === id + '')
+
+    return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>
           <Route

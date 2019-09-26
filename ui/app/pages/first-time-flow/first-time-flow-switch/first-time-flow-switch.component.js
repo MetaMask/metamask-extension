@@ -6,7 +6,6 @@ import {
   LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
-  INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../helpers/constants/routes'
 
@@ -15,7 +14,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     completedOnboarding: PropTypes.bool,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
-    seedPhrase: PropTypes.string,
     optInMetaMetrics: PropTypes.bool,
   }
 
@@ -24,7 +22,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       completedOnboarding,
       isInitialized,
       isUnlocked,
-      seedPhrase,
       optInMetaMetrics,
     } = this.props
 
@@ -32,7 +29,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
     }
 
-    if (isUnlocked && !seedPhrase) {
+    if (isUnlocked) {
       return <Redirect to={{ pathname: LOCK_ROUTE }} />
     }
 
@@ -42,10 +39,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
 
     if (!isUnlocked) {
       return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />
-    }
-
-    if (seedPhrase) {
-      return <Redirect to={{ pathname: INITIALIZE_SEED_PHRASE_ROUTE }} />
     }
 
     if (optInMetaMetrics === null) {

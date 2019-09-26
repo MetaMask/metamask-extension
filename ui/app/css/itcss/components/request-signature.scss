@@ -101,6 +101,30 @@
     font-size: 14px;
   }
 
+  &__account-item {
+    height: 22px;
+    background-color: $white;
+    font-family: Roboto;
+    line-height: 16px;
+    font-size: 12px;
+    width: 124px;
+
+    .account-list-item {
+      margin-top: 6px;
+    }
+
+    .account-list-item__account-name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .account-list-item__top-row {
+      margin: 0;
+    }
+  }
+
   &__balance {
     color: $dusty-gray;
     margin-right: 17px;

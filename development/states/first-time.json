@@ -4,10 +4,8 @@
     "isUnlocked": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
-    "computedBalances": {},
     "frequentRpcList": [],
     "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "featureFlags": {"betaUI": false},
     "conversionRate": 12.7527416,
     "conversionDate": 1487624341,
@@ -35,7 +33,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "tokens": [],
     "currentLocale": "en",
     "preferences": {
@@ -62,7 +59,6 @@
     }
   },
   "identities": {},
-  "computedBalances": {},
   "confirmTransaction": {
     "txData": {},
     "tokenData": {},

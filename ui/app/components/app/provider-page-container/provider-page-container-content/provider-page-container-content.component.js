@@ -5,7 +5,7 @@ import Identicon from '../../../ui/identicon'
 export default class ProviderPageContainerContent extends PureComponent {
   static propTypes = {
     origin: PropTypes.string.isRequired,
-    selectedIdentity: PropTypes.string.isRequired,
+    selectedIdentity: PropTypes.object.isRequired,
     siteImage: PropTypes.string,
     siteTitle: PropTypes.string.isRequired,
   }

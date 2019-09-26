@@ -23,9 +23,10 @@
         "name": "Send Account 4"
       }
     },
+    "abTests": {
+      "fullScreenVsPopup": "control"
+    },
     "cachedBalances": {},
-    "unapprovedTxs": {},
-    "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,
     "noActiveNotices": true,
@@ -65,6 +66,7 @@
     ],
     "tokens": [],
     "transactions": {},
+    "incomingTransactions": {},
     "selectedAddressTxList": [],
     "unapprovedTxs": {},
     "unapprovedMsgs": {
@@ -135,7 +137,6 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": [],
     "send": {
       "gasLimit": "0xea60",
       "gasPrice": "0xba43b7400",
@@ -157,7 +158,6 @@
     "preferences": {
       "useNativeCurrencyAsPrimaryCurrency": true
     },
-    "completedUiMigration": true,
     "frequentRpcListDetail": []
   },
   "appState": {
@@ -229,7 +229,6 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
-    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",

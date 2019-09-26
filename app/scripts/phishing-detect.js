@@ -37,11 +37,11 @@ function start () {
 
 function setupControllerConnection (connectionStream, cb) {
   const eventEmitter = new EventEmitter()
-  const accountManagerDnode = dnode({
+  const metaMaskControllerDnode = dnode({
     sendUpdate (state) {
       eventEmitter.emit('update', state)
     },
   })
-  connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
-  accountManagerDnode.once('remote', (accountManager) => cb(null, accountManager))
+  connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
+  metaMaskControllerDnode.once('remote', (backgroundConnection) => cb(null, backgroundConnection))
 }

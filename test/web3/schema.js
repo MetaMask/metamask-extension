@@ -173,7 +173,7 @@ var methods = {
 
     eth_getUncleByBlockNumberAndIndex: [
       'eth_getUncleByBlockNumberAndIndex',
-        params.uncleByBlockNumberAndIndexParams,
+      params.uncleByBlockNumberAndIndexParams,
       params.block,
       2,
     ],

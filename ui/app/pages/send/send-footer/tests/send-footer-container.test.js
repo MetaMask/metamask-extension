@@ -38,6 +38,7 @@ proxyquire('../send-footer.container.js', {
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFromObject:${s}`,
     getSendTo: (s) => `mockTo:${s}`,
+    getSendToNickname: (s) => `mockToNickname:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendHexData: (s) => `mockHexData:${s}`,

@@ -5,12 +5,8 @@ const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const inherits = require('util').inherits
-const classnames = require('classnames')
 const { checksumAddress } = require('../../helpers/utils/util')
-import Identicon from '../ui/identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
-const Tooltip = require('../ui/tooltip-v2.js').default
-const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../../store/actions')
 import BalanceComponent from '../ui/balance'
 const TokenList = require('./token-list')
@@ -18,6 +14,7 @@ const selectors = require('../../selectors/selectors')
 const { ADD_TOKEN_ROUTE } = require('../../helpers/constants/routes')
 
 import AddTokenButton from './add-token-button'
+import AccountDetails from './account-details'
 
 module.exports = compose(
   withRouter,
@@ -52,9 +49,6 @@ function mapDispatchToProps (dispatch) {
     showSendPage: () => dispatch(actions.showSendPage()),
     hideSidebar: () => dispatch(actions.hideSidebar()),
     unsetSelectedToken: () => dispatch(actions.setSelectedToken()),
-    showAccountDetailModal: () => {
-      dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
-    },
     showAddTokenPage: () => dispatch(actions.showAddTokenPage()),
   }
 }
@@ -62,10 +56,6 @@ function mapDispatchToProps (dispatch) {
 inherits(WalletView, Component)
 function WalletView () {
   Component.call(this)
-  this.state = {
-    hasCopied: false,
-    copyToClipboardPressed: false,
-  }
 }
 
 WalletView.prototype.renderWalletBalance = function () {
@@ -130,8 +120,6 @@ WalletView.prototype.render = function () {
     responsiveDisplayClassname,
     selectedAddress,
     keyrings,
-    showAccountDetailModal,
-    hideSidebar,
     identities,
     network,
   } = this.props
@@ -165,67 +153,11 @@ WalletView.prototype.render = function () {
     className: responsiveDisplayClassname,
   }, [
 
-    // TODO: Separate component: wallet account details
-    h('div.flex-column.wallet-view-account-details', {
-      style: {},
-    }, [
-      h('div.wallet-view__sidebar-close', {
-        onClick: hideSidebar,
-      }),
-
-      h('div.wallet-view__keyring-label.allcaps', label),
-
-      h('div.flex-column.flex-center.wallet-view__name-container', {
-        style: { margin: '0 auto' },
-        onClick: showAccountDetailModal,
-      }, [
-        h(Identicon, {
-          diameter: 54,
-          address: checksummedAddress,
-        }),
-
-        h('span.account-name', {
-          style: {},
-        }, [
-          identities[selectedAddress].name,
-        ]),
-
-        h('button.btn-secondary.wallet-view__details-button', this.context.t('details')),
-      ]),
-    ]),
-
-    h(Tooltip, {
-      position: 'bottom',
-      title: this.state.hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard'),
-      wrapperClassName: 'wallet-view__tooltip',
-    }, [
-      h('button.wallet-view__address', {
-        className: classnames({
-          'wallet-view__address__pressed': this.state.copyToClipboardPressed,
-        }),
-        onClick: () => {
-          copyToClipboard(checksummedAddress)
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Home',
-              name: 'Copied Address',
-            },
-          })
-          this.setState({ hasCopied: true })
-          setTimeout(() => this.setState({ hasCopied: false }), 3000)
-        },
-        onMouseDown: () => {
-          this.setState({ copyToClipboardPressed: true })
-        },
-        onMouseUp: () => {
-          this.setState({ copyToClipboardPressed: false })
-        },
-      }, [
-        `${checksummedAddress.slice(0, 6)}...${checksummedAddress.slice(-4)}`,
-        h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
-      ]),
-    ]),
+    h(AccountDetails, {
+      label,
+      checksummedAddress,
+      name: identities[selectedAddress].name,
+    }),
 
     this.renderWalletBalance(),
 

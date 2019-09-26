@@ -10,12 +10,12 @@
  */
 const initialState = {
   config: {},
-    NetworkController: {
-      provider: {
-        type: 'rpc',
-        rpcTarget: 'http://localhost:8545',
-      },
+  NetworkController: {
+    provider: {
+      type: 'rpc',
+      rpcTarget: 'http://localhost:8545',
     },
+  },
 }
 
 module.exports = initialState

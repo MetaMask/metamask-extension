@@ -37,13 +37,6 @@ const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
 const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 const BIG_NUMBER_ETH_MULTIPLIER = new BigNumber('1')
 
-// Individual Setters
-const convert = R.invoker(1, 'times')
-const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
-const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
-const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
-const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
-
 // Setter Maps
 const toBigNumber = {
   hex: n => new BigNumber(stripHexPrefix(n), 16),
@@ -65,6 +58,13 @@ const baseChange = {
   dec: n => (new BigNumber(n)).toString(10),
   BN: n => new BN(n.toString(16)),
 }
+
+// Individual Setters
+const convert = R.invoker(1, 'times')
+const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
+const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
+const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
+const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
 
 // Predicates
 const fromAndToCurrencyPropsNotEqual = R.compose(

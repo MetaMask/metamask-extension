@@ -496,21 +496,6 @@ describe('preferences controller', function () {
     })
   })
 
-  describe('setSeedWords', function () {
-    it('should default to null', function () {
-      const state = preferencesController.store.getState()
-      assert.equal(state.seedWords, null)
-    })
-
-    it('should set the seedWords property in state', function () {
-      assert.equal(preferencesController.store.getState().seedWords, null)
-
-      preferencesController.setSeedWords('foo bar baz')
-
-      assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
-    })
-  })
-
   describe('#updateRpc', function () {
     it('should update the rpcDetails properly', () => {
       preferencesController.store.updateState({frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}]})

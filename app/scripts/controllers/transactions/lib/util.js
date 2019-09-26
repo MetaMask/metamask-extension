@@ -17,8 +17,8 @@ module.exports = {
 
 // functions that handle normalizing of that key in txParams
 const normalizers = {
-  from: from => addHexPrefix(from).toLowerCase(),
-  to: to => addHexPrefix(to).toLowerCase(),
+  from: (from, LowerCase = true) => LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from),
+  to: (to, LowerCase = true) => LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
   nonce: nonce => addHexPrefix(nonce),
   value: value => addHexPrefix(value),
   data: data => addHexPrefix(data),
@@ -26,21 +26,21 @@ const normalizers = {
   gasPrice: gasPrice => addHexPrefix(gasPrice),
 }
 
- /**
+/**
   normalizes txParams
   @param txParams {object}
   @returns {object} normalized txParams
  */
-function normalizeTxParams (txParams) {
+function normalizeTxParams (txParams, LowerCase) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
   for (const key in normalizers) {
-    if (txParams[key]) normalizedTxParams[key] = normalizers[key](txParams[key])
+    if (txParams[key]) normalizedTxParams[key] = normalizers[key](txParams[key], LowerCase)
   }
   return normalizedTxParams
 }
 
- /**
+/**
   validates txParams
   @param txParams {object}
  */
@@ -59,7 +59,7 @@ function validateTxParams (txParams) {
   }
 }
 
- /**
+/**
   validates the from field in  txParams
   @param txParams {object}
  */
@@ -68,7 +68,7 @@ function validateFrom (txParams) {
   if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
 }
 
- /**
+/**
   validates the to field in  txParams
   @param txParams {object}
  */
@@ -85,7 +85,7 @@ function validateRecipient (txParams) {
   return txParams
 }
 
-  /**
+/**
     @returns an {array} of states that can be considered final
   */
 function getFinalStates () {

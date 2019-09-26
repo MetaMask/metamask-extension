@@ -1,7 +1,17 @@
 import { createSelector } from 'reselect'
 import txHelper from '../../lib/tx-helper'
 import { calcTokenAmount } from '../helpers/utils/token-util'
-import { roundExponential } from '../helpers/utils/confirm-tx.util'
+import {
+  roundExponential,
+  getValueFromWeiHex,
+  getHexGasTotal,
+  getTransactionFee,
+  addFiat,
+  addEth,
+} from '../helpers/utils/confirm-tx.util'
+import {
+  sumHexes,
+} from '../helpers/utils/transactions.util'
 
 const unapprovedTxsSelector = state => state.metamask.unapprovedTxs
 const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
@@ -207,3 +217,51 @@ export const contractExchangeRateSelector = createSelector(
   tokenAddressSelector,
   (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress]
 )
+
+export const transactionFeeSelector = function (state, txData) {
+  const currentCurrency = currentCurrencySelector(state)
+  const conversionRate = conversionRateSelector(state)
+  const nativeCurrency = getNativeCurrency(state)
+
+  const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
+
+  const fiatTransactionAmount = getValueFromWeiHex({
+    value, fromCurrency: nativeCurrency, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
+  })
+  const ethTransactionAmount = getValueFromWeiHex({
+    value, fromCurrency: nativeCurrency, toCurrency: nativeCurrency, conversionRate, numberOfDecimals: 6,
+  })
+
+  const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice })
+
+  const fiatTransactionFee = getTransactionFee({
+    value: hexTransactionFee,
+    fromCurrency: nativeCurrency,
+    toCurrency: currentCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+  const ethTransactionFee = getTransactionFee({
+    value: hexTransactionFee,
+    fromCurrency: nativeCurrency,
+    toCurrency: nativeCurrency,
+    numberOfDecimals: 6,
+    conversionRate,
+  })
+
+  const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
+  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
+  const hexTransactionTotal = sumHexes(value, hexTransactionFee)
+
+  return {
+    hexTransactionAmount: value,
+    fiatTransactionAmount,
+    ethTransactionAmount,
+    hexTransactionFee,
+    fiatTransactionFee,
+    ethTransactionFee,
+    fiatTransactionTotal,
+    ethTransactionTotal,
+    hexTransactionTotal,
+  }
+}
