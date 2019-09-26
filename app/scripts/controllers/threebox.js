@@ -110,10 +110,6 @@ class ThreeBoxController {
     })
   }
 
-  async _checkThreeBoxBackupExistance () {
-
-  }
-
   async new3Box () {
     const accounts = await this.keyringController.getAccounts()
     this.address = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
