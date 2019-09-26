@@ -381,7 +381,7 @@ var actions = {
   restoreFromThreeBox,
   getThreeBoxLastUpdated,
   setThreeBoxSyncingPermission,
-  setRestoredFromThreeBoxToFalse,
+  setShowRestorePromptToFalse,
   turnThreeBoxSyncingOn,
   turnThreeBoxSyncingOnAndInitialize,
 }
@@ -2811,10 +2811,10 @@ function initializeThreeBox () {
   }
 }
 
-function setRestoredFromThreeBoxToFalse () {
+function setShowRestorePromptToFalse () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.setRestoredFromThreeBoxToFalse((err) => {
+      background.setShowRestorePromptToFalse((err) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)

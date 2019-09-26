@@ -38,10 +38,10 @@ export default class Home extends PureComponent {
     threeBoxSynced: PropTypes.bool,
     setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
-    restoredFromThreeBox: PropTypes.bool,
+    showRestorePrompt: PropTypes.bool,
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
-    setRestoredFromThreeBoxToFalse: PropTypes.func,
+    setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.string,
   }
 
@@ -72,10 +72,10 @@ export default class Home extends PureComponent {
     const {
       threeBoxSynced,
       setupThreeBox,
-      restoredFromThreeBox,
+      showRestorePrompt,
       threeBoxLastUpdated,
     } = this.props
-    if (threeBoxSynced && restoredFromThreeBox === null && threeBoxLastUpdated === null) {
+    if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox()
     }
   }
@@ -93,8 +93,8 @@ export default class Home extends PureComponent {
       selectedAddress,
       restoreFromThreeBox,
       turnThreeBoxSyncingOn,
-      setRestoredFromThreeBoxToFalse,
-      restoredFromThreeBox,
+      setShowRestorePromptToFalse,
+      showRestorePrompt,
       threeBoxLastUpdated,
     } = this.props
 
@@ -153,7 +153,7 @@ export default class Home extends PureComponent {
                       />,
                     },
                     {
-                      shouldBeRendered: threeBoxLastUpdated && restoredFromThreeBox === null,
+                      shouldBeRendered: threeBoxLastUpdated && showRestorePrompt,
                       component: <HomeNotification
                         descriptionText={t('restoreWalletPreferences', [ formatDate(parseInt(threeBoxLastUpdated), 'M/d/y') ])}
                         acceptText={t('restore')}
@@ -166,7 +166,7 @@ export default class Home extends PureComponent {
                             })
                         }}
                         onIgnore={() => {
-                          setRestoredFromThreeBoxToFalse()
+                          setShowRestorePromptToFalse()
                         }}
                         key="home-privacyModeDefault"
                       />,

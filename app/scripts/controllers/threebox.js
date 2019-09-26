@@ -49,7 +49,7 @@ class ThreeBoxController {
 
     const initState = {
       threeBoxSyncingAllowed: false,
-      restoredFromThreeBox: null,
+      showRestorePrompt: true,
       threeBoxLastUpdated: 0,
       ...opts.initState,
       threeBoxAddress: null,
@@ -85,7 +85,7 @@ class ThreeBoxController {
         }
 
         await this.space.private.set('metamaskBackup', JSON.stringify(newState))
-        await this.setRestoredFromThreeBoxToFalse()
+        await this.setShowRestorePromptToFalse()
       }
     } catch (error) {
       console.error(error)
@@ -153,6 +153,7 @@ class ThreeBoxController {
 
             clearTimeout(syncTimeout)
             this.store.updateState(stateUpdate)
+
             log.debug('3Box space sync done')
           },
         })
@@ -193,7 +194,7 @@ class ThreeBoxController {
     this.store.updateState({ threeBoxLastUpdated: backedUpState.lastUpdated })
     preferences && this.preferencesController.store.updateState(JSON.parse(preferences))
     addressBook && this.addressBookController.update(JSON.parse(addressBook), true)
-    this.setRestoredFromThreeBoxToTrue()
+    this.setShowRestorePromptToFalse()
   }
 
   turnThreeBoxSyncingOn () {
@@ -204,12 +205,8 @@ class ThreeBoxController {
     this.box.logout()
   }
 
-  setRestoredFromThreeBoxToTrue () {
-    this.store.updateState({ restoredFromThreeBox: true })
-  }
-
-  setRestoredFromThreeBoxToFalse () {
-    this.store.updateState({ restoredFromThreeBox: false })
+  setShowRestorePromptToFalse () {
+    this.store.updateState({ showRestorePrompt: false })
   }
 
   setThreeBoxSyncingPermission (newThreeboxSyncingState) {

@@ -9,7 +9,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
-  setRestoredFromThreeBoxToFalse,
+  setShowRestorePromptToFalse,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -24,7 +24,7 @@ const mapStateToProps = state => {
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
-    restoredFromThreeBox,
+    showRestorePrompt,
     selectedAddress,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
@@ -41,7 +41,7 @@ const mapStateToProps = state => {
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     threeBoxSynced,
-    restoredFromThreeBox,
+    showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
   }
@@ -56,13 +56,13 @@ const mapDispatchToProps = (dispatch) => ({
         if (lastUpdated) {
           dispatch(setThreeBoxLastUpdated(lastUpdated))
         } else {
-          dispatch(setRestoredFromThreeBoxToFalse())
+          dispatch(setShowRestorePromptToFalse())
           dispatch(turnThreeBoxSyncingOn())
         }
       })
   },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
-  setRestoredFromThreeBoxToFalse: () => dispatch(setRestoredFromThreeBoxToFalse()),
+  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })
 
 export default compose(
