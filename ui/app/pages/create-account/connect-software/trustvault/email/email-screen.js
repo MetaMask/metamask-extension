@@ -50,16 +50,16 @@ class EmailScreen extends PureComponent {
           }
         }),
         h('span', {style: {
-          fontSize: '12px',
-          color: 'red',
+          fontSize: '10px',
+          color: 'grey',
 
         }}, this.context.t('trustVaultGetStarted')),
         h('span', {
           style: {
             cursor: 'pointer',
-            fontSize: '12px',
+            fontSize: '10px',
             textDecoration: 'underline',
-            color: 'red',
+            color: 'grey',
           },
           onClick: () => {
             global.platform.openWindow({
@@ -75,16 +75,16 @@ class EmailScreen extends PureComponent {
     return h(
       'div.lear-more-link', {}, [
         h('span', {style: {
-          fontSize: '12px',
-          color: 'red',
+          fontSize: '10px',
+          color: 'grey',
 
         }}, this.context.t('trustVaultLearnMore')),
         h('span', {
           style: {
             cursor: 'pointer',  
             textDecoration: 'underline',
-            fontSize: '12px',
-            color: 'red',
+            fontSize: '10px',
+            color: 'grey',
           },
           onClick: () => {
             global.platform.openWindow({
