@@ -49,16 +49,16 @@ class AssetsController extends EventEmitter {
   }
   updateAsset(fromDomain, asset) {
     this.validateAsset(fromDomain, asset)
-    this.assets.forEach((asset, index) => {
-      if (asset.fromDomain === fromDomain && asset.identifier === identifier) {
+    this.assets.forEach((asset2, index) => {
+      if (asset.fromDomain === fromDomain && asset.identifier === asset2.identifier) {
         this.assets[index] = asset
       }
     })
   }
 
   removeAsset(fromDomain, asset) {
-    this.assets = this.assets.filter((asset, index) => {
-      const requested = asset.fromDomain === fromDomain && asset.identifier === identifier
+    this.assets = this.assets.filter((asset2, index) => {
+      const requested = asset.fromDomain === fromDomain && asset.identifier === asset2.identifier
       return !requested
     })
   }
