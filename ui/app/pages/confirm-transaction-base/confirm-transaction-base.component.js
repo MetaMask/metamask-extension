@@ -116,10 +116,20 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
+      nextNonce,
+      customNonceValue,
     } = this.props
     const { transactionStatus: prevTxStatus } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
+
+    if (nextNonce !== prevProps.nextNonce || customNonceValue !== prevProps.customNonceValue) {
+      if (customNonceValue > nextNonce) {
+        this.setState({ submitWarning: this.context.t('nextNonceWarning', [nextNonce]) })
+      } else {
+        this.setState({ submitWarning: '' })
+      }
+    }
 
     if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
@@ -277,14 +287,7 @@ export default class ConfirmTransactionBase extends Component {
                     if (!value.length || Number(value) < 0) {
                       updateCustomNonce('')
                     } else {
-                      const newCustomNonce = Math.floor(value)
-                      if (newCustomNonce > nextNonce) {
-                        this.setState({ submitWarning: this.context.t('nextNonceWarning') })
-                      } else {
-                        this.setState({ submitWarning: '' })
-                      }
-                      updateCustomNonce(String(newCustomNonce))
-                      getNextNonce()
+                      updateCustomNonce(String(Math.floor(value)))
                     }
                   }}
                   fullWidth
