@@ -365,7 +365,7 @@ class TransactionController extends EventEmitter {
       return
     }
     this.inProcessOfSigning.add(txId)
-    let nonceLock
+    let nonceLock = {}
     try {
       // approve
       this.txStateManager.setTxStatusApproved(txId)
