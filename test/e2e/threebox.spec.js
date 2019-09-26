@@ -102,13 +102,30 @@ describe('MetaMask', function () {
       })
     })
 
-    describe('updates settings and address book', () => {
+    describe('turns on threebox syncing', () => {
       it('goes to the settings screen', async () => {
         await driver.findElement(By.css('.account-menu__icon')).click()
         await delay(regularDelayMs)
 
         const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
         settingsButton.click()
+      })
+
+      it('turns on threebox syncing', async () => {
+        const advancedButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Advanced')]`))
+        await advancedButton.click()
+
+        const threeBoxToggle = await findElements(driver, By.css('.toggle-button'))
+        const threeBoxToggleButton = await threeBoxToggle[3].findElement(By.css('div'))
+        await threeBoxToggleButton.click()
+      })
+
+    })
+
+    describe('updates settings and address book', () => {
+      it('adds an address to the contact list', async () => {
+        const generalButton = await findElement(driver, By.xpath(`//div[contains(text(), 'General')]`))
+        await generalButton.click()
       })
 
       it('turns on use of blockies', async () => {

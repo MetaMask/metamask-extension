@@ -55,6 +55,13 @@ class Mock3Box {
       logout: () => {},
     })
   }
+
+  static async getConfig (address) {
+    const backup = await loadFromMock3Box(`${address}-metamask-metamaskBackup`)
+    return backup
+      ? { spaces: { metamask: {} } }
+      : {}
+  }
 }
 
 module.exports = Mock3Box

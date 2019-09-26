@@ -383,6 +383,7 @@ var actions = {
   setThreeBoxSyncingPermission,
   setRestoredFromThreeBoxToFalse,
   turnThreeBoxSyncingOn,
+  turnThreeBoxSyncingOnAndInitialize,
 }
 
 module.exports = actions
@@ -2877,5 +2878,13 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
         resolve()
       })
     })
+  }
+}
+
+function turnThreeBoxSyncingOnAndInitialize () {
+  return async (dispatch) => {
+    await dispatch(setThreeBoxSyncingPermission(true))
+    await dispatch(turnThreeBoxSyncingOn())
+    await dispatch(initializeThreeBox(true))
   }
 }

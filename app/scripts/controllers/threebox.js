@@ -48,7 +48,7 @@ class ThreeBoxController {
     })
 
     const initState = {
-      threeBoxSyncingAllowed: true,
+      threeBoxSyncingAllowed: false,
       restoredFromThreeBox: null,
       threeBoxLastUpdated: 0,
       ...opts.initState,
@@ -60,7 +60,9 @@ class ThreeBoxController {
     this.registeringUpdates = false
     this.lastMigration = migrations.sort((a, b) => a.version - b.version).slice(-1)[0]
 
-    this.init()
+    if (initState.threeBoxSyncingAllowed) {
+      this.init()
+    }
   }
 
   async init () {
@@ -83,6 +85,7 @@ class ThreeBoxController {
         }
 
         await this.space.private.set('metamaskBackup', JSON.stringify(newState))
+        await this.setRestoredFromThreeBoxToFalse()
       }
     } catch (error) {
       console.error(error)
@@ -107,13 +110,23 @@ class ThreeBoxController {
     })
   }
 
+  async _checkThreeBoxBackupExistance () {
+
+  }
+
   async new3Box () {
     const accounts = await this.keyringController.getAccounts()
-    const address = accounts[0]
-
-    if (this.getThreeBoxSyncingState()) {
+    this.address = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
+    let backupExists
+    try {
+      const threeBoxConfig = await Box.getConfig(this.address)
+      backupExists = threeBoxConfig.spaces && threeBoxConfig.spaces.metamask
+    } catch (e) {
+      log.error(e)
+      backupExists = false
+    }
+    if (this.getThreeBoxSyncingState() || backupExists) {
       this.store.updateState({ threeBoxSynced: false })
-      this.address = await this.keyringController.getAppKeyAddress(address, 'wallet://3box.metamask.io')
 
       let timedOut = false
       const syncTimeout = setTimeout(() => {
@@ -125,13 +138,13 @@ class ThreeBoxController {
         })
       }, SYNC_TIMEOUT)
       try {
-        this.box = await Box.openBox(address, this.provider)
+        this.box = await Box.openBox(this.address, this.provider)
         await this._waitForOnSyncDone()
         this.space = await this.box.openSpace('metamask', {
           onSyncDone: async () => {
             const stateUpdate = {
               threeBoxSynced: true,
-              threeBoxAddress: address,
+              threeBoxAddress: this.address,
             }
             if (timedOut) {
               log.info(`3Box sync completed after timeout; no longer disabled`)

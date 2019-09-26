@@ -1699,7 +1699,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   async initializeThreeBox () {
-    await this.threeBoxController.new3Box()
+    await this.threeBoxController.init()
   }
 
   /**

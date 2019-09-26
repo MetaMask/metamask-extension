@@ -10,6 +10,7 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
   setThreeBoxSyncingPermission,
+  turnThreeBoxSyncingOnAndInitialize,
 } from '../../../store/actions'
 import {preferencesSelector} from '../../../selectors/selectors'
 
@@ -49,7 +50,13 @@ export const mapDispatchToProps = dispatch => {
     setAutoLogoutTimeLimit: value => {
       return dispatch(setAutoLogoutTimeLimit(value))
     },
-    setThreeBoxSyncingPermission: newThreeBoxSyncingState => dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState)),
+    setThreeBoxSyncingPermission: newThreeBoxSyncingState => {
+      if (newThreeBoxSyncingState) {
+        dispatch(turnThreeBoxSyncingOnAndInitialize())
+      } else {
+        dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState))
+      }
+    },
   }
 }
 
