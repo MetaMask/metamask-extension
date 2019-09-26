@@ -393,7 +393,17 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCancel () {
     const { metricsEvent } = this.context
-    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, actionKey, txData: { origin }, methodData = {} } = this.props
+    const {
+      onCancel,
+      txData,
+      cancelTransaction,
+      history,
+      clearConfirmTransaction,
+      actionKey,
+      txData: { origin },
+      methodData = {},
+      updateCustomNonce,
+    } = this.props
 
     metricsEvent({
       eventOpts: {
@@ -407,6 +417,7 @@ export default class ConfirmTransactionBase extends Component {
         origin,
       },
     })
+    updateCustomNonce('')
     if (onCancel) {
       onCancel(txData)
     } else {
@@ -420,7 +431,19 @@ export default class ConfirmTransactionBase extends Component {
 
   handleSubmit () {
     const { metricsEvent } = this.context
-    const { txData: { origin }, sendTransaction, clearConfirmTransaction, txData, history, onSubmit, actionKey, metaMetricsSendCount = 0, setMetaMetricsSendCount, methodData = {} } = this.props
+    const {
+      txData: { origin },
+      sendTransaction,
+      clearConfirmTransaction,
+      txData,
+      history,
+      onSubmit,
+      actionKey,
+      metaMetricsSendCount = 0,
+      setMetaMetricsSendCount,
+      methodData = {},
+      updateCustomNonce,
+    } = this.props
     const { submitting } = this.state
 
     if (submitting) {
@@ -444,6 +467,7 @@ export default class ConfirmTransactionBase extends Component {
         },
       })
 
+      updateCustomNonce('')
       setMetaMetricsSendCount(metaMetricsSendCount + 1)
         .then(() => {
           if (onSubmit) {
