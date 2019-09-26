@@ -22,21 +22,25 @@ describe('AssetsController', () => {
     assets.addAsset(domain, sampleAsset)
     const result = assets.assets[assetCount]
     Object.keys(result).forEach((key) => {
-      assert.equal(ressult[key], sampleAsset[key], `${key} should be same`)
+      if (key === 'fromDomain') return
+      assert.equal(result[key], sampleAsset[key], `${key} should be same`)
     })
   })
 
  it('should allow updating an asset', () => {
-    assets.addAsset(domain, sampleAsset)
     const assetCount = assets.assets.length
+    assets.addAsset(domain, sampleAsset)
+    console.dir(assets.assets)
     const result = assets.assets[assetCount]
     result.balance = '200'
+    assets.updateAsset(domain, result)
 
     Object.keys(result).forEach((key) => {
+      if (key === 'fromDomain') return
       if (key === 'balance') {
-        assert.notEqual(ressult[key], sampleAsset[key], `${key} should be updated`)
+        assert.notEqual(result[key], sampleAsset[key], `${key} should be updated`)
       } else {
-        assert.equal(ressult[key], sampleAsset[key], `${key} should be same`)
+        assert.equal(result[key], sampleAsset[key], `${key} should be same`)
       }
     })
   })
@@ -47,5 +51,4 @@ describe('AssetsController', () => {
     assets.removeAsset(domain, sampleAsset)
     assert.equal(assets.assets.length, assetCount, 'only stock asset remains')
   })
-
 })

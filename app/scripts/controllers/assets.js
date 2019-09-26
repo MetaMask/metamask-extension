@@ -57,8 +57,10 @@ class AssetsController extends EventEmitter {
   }
 
   removeAsset(fromDomain, asset) {
+    console.log('attempting to remove ', asset)
+    console.log('from', this.assets)
     this.assets = this.assets.filter((asset2, index) => {
-      const requested = asset.fromDomain === fromDomain && asset.identifier === asset2.identifier
+      const requested = asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier
       return !requested
     })
   }
