@@ -53,6 +53,7 @@ TokenCell.prototype.render = function () {
     symbol,
     string,
     network,
+    fromDomain,
     setSelectedToken,
     selectedTokenAddress,
     contractExchangeRates,
@@ -69,6 +70,7 @@ TokenCell.prototype.render = function () {
   let formattedFiat = ''
 
   const identifier = this.props.identifier || `${network}:${address}`
+  const pluginIconSeed = `${fromDomain}:${identifier}`
 
   if (contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
@@ -114,7 +116,7 @@ TokenCell.prototype.render = function () {
       h(Identicon, {
         className: 'token-list-item__identicon',
         diameter: 50,
-        address: address || identifier,
+        address: address || pluginIconSeed,
         network,
         image,
       }),

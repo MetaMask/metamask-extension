@@ -15,6 +15,7 @@ class AssetsController extends EventEmitter {
         identifier: 'test:asset',
         decimals: 5,
         customViewUrl: 'https://metamask.io',
+        fromDomain: 'https://mytest.edu',
       }],
     }, opts.initState)
     this.store = new ObservableStore(initState)
