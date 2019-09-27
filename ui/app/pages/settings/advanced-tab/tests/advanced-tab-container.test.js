@@ -17,6 +17,7 @@ const defaultState = {
     },
     threeBoxSyncingAllowed: false,
     threeBoxDisabled: false,
+    useNonceField: false,
   },
 }
 
@@ -31,6 +32,7 @@ describe('AdvancedTab Container', () => {
       autoLogoutTimeLimit: 0,
       threeBoxSyncingAllowed: false,
       threeBoxDisabled: false,
+      useNonceField: false,
     }
 
     assert.deepEqual(props, expected)
@@ -46,5 +48,6 @@ describe('AdvancedTab Container', () => {
     assert.ok(typeof props.setAdvancedInlineGasFeatureFlag === 'function')
     assert.ok(typeof props.setShowFiatConversionOnTestnetsPreference === 'function')
     assert.ok(typeof props.setAutoLogoutTimeLimit === 'function')
+    assert.ok(typeof props.setUseNonceField === 'function')
   })
 })

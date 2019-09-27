@@ -116,7 +116,7 @@ describe('MetaMask', function () {
         await advancedButton.click()
 
         const threeBoxToggle = await findElements(driver, By.css('.toggle-button'))
-        const threeBoxToggleButton = await threeBoxToggle[3].findElement(By.css('div'))
+        const threeBoxToggleButton = await threeBoxToggle[4].findElement(By.css('div'))
         await threeBoxToggleButton.click()
       })
 

@@ -21,10 +21,10 @@ const mapStateToProps = (state, ownProps) => {
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
-  const { txParams: { gas: gasLimit, gasPrice, data, to } = {} } = primaryTransaction
+  const { txParams: { gas: gasLimit, gasPrice, data } = {}, transactionCategory } = primaryTransaction
   const selectedAddress = getSelectedAddress(state)
   const selectedAccountBalance = accounts[selectedAddress].balance
-  const isDeposit = selectedAddress === to
+  const isDeposit = transactionCategory === 'incoming'
   const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs } = selectRpcInfo || {}
 

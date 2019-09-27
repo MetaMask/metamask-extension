@@ -178,6 +178,9 @@ var actions = {
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
+  setNextNonce,
+  SET_NEXT_NONCE: 'SET_NEXT_NONCE',
+  getNextNonce,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
@@ -298,6 +301,10 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
+  SET_USE_NONCEFIELD: 'SET_USE_NONCEFIELD',
+  setUseNonceField,
+  UPDATE_CUSTOM_NONCE: 'UPDATE_CUSTOM_NONCE',
+  updateCustomNonce,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
@@ -1063,6 +1070,13 @@ function updateSendAmount (amount) {
   }
 }
 
+function updateCustomNonce (value) {
+  return {
+    type: actions.UPDATE_CUSTOM_NONCE,
+    value: value,
+  }
+}
+
 function updateSendMemo (memo) {
   return {
     type: actions.UPDATE_SEND_MEMO,
@@ -1208,6 +1222,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.updateCustomNonce(''))
         dispatch(closeCurrentNotificationWindow())
 
         return txData
@@ -2591,6 +2606,23 @@ function setUseBlockie (val) {
   }
 }
 
+function setUseNonceField (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseNonceField`)
+    background.setUseNonceField(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_NONCEFIELD,
+      value: val,
+    })
+  }
+}
+
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -2886,5 +2918,28 @@ function turnThreeBoxSyncingOnAndInitialize () {
     await dispatch(setThreeBoxSyncingPermission(true))
     await dispatch(turnThreeBoxSyncingOn())
     await dispatch(initializeThreeBox(true))
+  }
+}
+
+function setNextNonce (nextNonce) {
+  return {
+    type: actions.SET_NEXT_NONCE,
+    value: nextNonce,
+  }
+}
+
+function getNextNonce () {
+  return (dispatch, getState) => {
+    const address = getState().metamask.selectedAddress
+    return new Promise((resolve, reject) => {
+      background.getPendingNonce(address, (err, pendingNonce) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(setNextNonce(pendingNonce))
+        resolve(pendingNonce)
+      })
+    })
   }
 }

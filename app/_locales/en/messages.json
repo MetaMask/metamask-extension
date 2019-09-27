@@ -195,6 +195,18 @@
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
   },
+  "nonceField": {
+    "message": "Customize transaction nonce"
+  },
+  "nonceFieldPlaceholder": {
+    "message": "Automatically calculate"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },
@@ -850,6 +862,10 @@
   },
   "next": {
     "message": "Next"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
