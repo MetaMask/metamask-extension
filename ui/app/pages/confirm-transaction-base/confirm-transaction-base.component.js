@@ -230,6 +230,7 @@ export default class ConfirmTransactionBase extends Component {
       updateGasAndCalculate,
       hideFiatConversion,
       nextNonce,
+      getNextNonce,
     } = this.props
 
     if (hideDetails) {
@@ -288,6 +289,7 @@ export default class ConfirmTransactionBase extends Component {
                     } else {
                       updateCustomNonce(String(Math.floor(value)))
                     }
+                    getNextNonce()
                   }}
                   fullWidth
                   margin="dense"
