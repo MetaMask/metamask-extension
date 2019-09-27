@@ -68,7 +68,7 @@ TokenCell.prototype.render = function () {
   let currentTokenInFiat
   let formattedFiat = ''
 
-  const identifier = `${network}:${address}`
+  const identifier = this.props.identifier || `${network}:${address}`
 
   if (contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
@@ -94,7 +94,7 @@ TokenCell.prototype.render = function () {
       className: `token-list-item ${selectedTokenAddress === identifier ? 'token-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
-      onClick: () => {
+      onClick: (event) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Navigation',
@@ -103,7 +103,7 @@ TokenCell.prototype.render = function () {
           },
         })
 
-        if (!onClick) {
+        if (onClick) {
           return onClick()
         }
         setSelectedToken(identifier)

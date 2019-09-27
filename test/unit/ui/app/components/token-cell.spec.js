@@ -8,7 +8,7 @@ import { mount } from 'enzyme'
 import TokenCell from '../../../../../ui/app/components/app/token-cell'
 import Identicon from '../../../../../ui/app/components/ui/identicon'
 
-describe('Token Cell', () => {
+describe.only('Token Cell', () => {
   let wrapper
 
   const state = {
@@ -83,8 +83,7 @@ describe('Token Cell', () => {
         </Provider>
       )
 
-      // TODO: Actually test click:
-      // wrapper.click()
+      wrapper.simulate('click')
 
       function registerClick () {
         assert.ok('click received.')

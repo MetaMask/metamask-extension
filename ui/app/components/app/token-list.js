@@ -9,9 +9,13 @@ const selectors = require('../../selectors/selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
+  const ethTokens = state.metamask.tokens
+  const pluginTokens = state.metamask.assets
+
   return {
     network: state.metamask.network,
-    tokens: state.metamask.tokens,
+    tokens: ethTokens,
+    pluginTokens,
     userAddress: selectors.getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
   }
@@ -45,7 +49,7 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
-  const { userAddress, assetImages } = this.props
+  const { userAddress, pluginTokens, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
   if (isLoading) {
@@ -74,11 +78,10 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  return h('div', tokens.map((tokenData) => {
-    console.log('a tokenData is', tokenData)
+  return h('div', tokens.concat(pluginTokens).map((tokenData) => {
     tokenData.image = assetImages[tokenData.address]
     if (tokenData.customViewUrl) {
-      tokenData.onClick = this.showPluginToken(tokenData)
+      tokenData.onClick = this.showPluginToken.bind(this, tokenData)
     }
     return h(TokenCell, tokenData)
   }))
