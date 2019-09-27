@@ -4,9 +4,8 @@ const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
-const walletBridgeUrl= "https://gd5uqmxvaj.execute-api.eu-west-1.amazonaws.com/dev/graphql"
-const walletBridgeApiKey = "u630OfzZWHav5vKhrkYoQaUOgnEBnZ7h48uprSAt"
-const apiKey = 'da2-gzm4jexfrjdqze2buyi4neqkxi'
+const walletBridgeUrl= "https://la9h3y9y3l.execute-api.eu-west-1.amazonaws.com/dev/graphql"
+const apiKey = 'da2-fvehtsmp7rcshjanlkkvvuvuxe'
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
@@ -284,8 +283,7 @@ class TrustvaultKeyring extends EventEmitter {
       uri: url,
       method: "POST",
       headers: {
-        "x-api-key": walletBridgeApiKey,
-        "graphqlApiKey": apiKey,
+        "x-api-key": apiKey,
       },
       body: JSON.stringify(body)
     }
