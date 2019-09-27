@@ -180,21 +180,24 @@ class TrustvaultKeyring extends EventEmitter {
   async _request (constructQuery, queryContext) {
       const query = constructQuery(this.auth, queryContext)
       const { data, error } = await this.walletBridgeRequest({ query })
-      if (error && error.errorType.includes('INVALID_SESSION_TOKEN')) {
-        try {
-          const query = this._refreshAuthTokensQuery(this.auth)
-          const { data } = await this.walletBridgeRequest({ query })
-          this.auth = data.tokens.refreshAuthenticationTokens
-          return this._request(constructQuery, queryContext)
-        } catch (error) {
-          log.warn('TrustVault session has expired. Connect to TrustVault again', error)
-          this.accounts = []
-          this.auth = null
-          throw new Error('TrustVault session has expired. Connect to TrustVault again')
+      if (error) {
+        if (error.errorType.includes('INVALID_SESSION_TOKEN')) {
+          try {
+            const query = this._refreshAuthTokensQuery(this.auth)
+            const { data } = await this.walletBridgeRequest({ query })
+            this.auth = data.tokens.refreshAuthenticationTokens
+            return this._request(constructQuery, queryContext)
+          } catch (error) {
+            log.warn('TrustVault session has expired. Connect to TrustVault again', error)
+            this.accounts = []
+            this.auth = null
+            throw new Error('TrustVault session has expired. Connect to TrustVault again')
+          }
+        } else {
+          throw new Error(error.message)
         }
-      } else if (data) {
-        return data
-      } 
+      }
+      return data
     }
 
   async _signTransaction (address, tx, transactionDigest) {
