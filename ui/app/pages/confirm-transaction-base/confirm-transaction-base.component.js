@@ -230,7 +230,6 @@ export default class ConfirmTransactionBase extends Component {
       updateGasAndCalculate,
       hideFiatConversion,
       nextNonce,
-      getNextNonce,
     } = this.props
 
     if (hideDetails) {
