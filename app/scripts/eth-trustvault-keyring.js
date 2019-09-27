@@ -9,7 +9,7 @@ const apiKey = 'da2-fvehtsmp7rcshjanlkkvvuvuxe'
 import BigNumber from 'bignumber.js'
 // seconds x milliseconds
 const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
-const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.";
+const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed."
 
 class TrustvaultKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -160,16 +160,6 @@ class TrustvaultKeyring extends EventEmitter {
     }
   }
 
-  handleGraphQlError({ response: { errors, data } }) {
-    const { errorType, message } = errors[0]
-    const result = {
-      error: { code: errorType, message }
-    };
-    return data
-      ? { ...result, ...data } 
-      : result
-  }
-
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
     const { data, error } = await this.walletBridgeRequest({ query: query})
@@ -178,7 +168,6 @@ class TrustvaultKeyring extends EventEmitter {
     if (pinChallenge && pinChallenge.sessionToken) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
-
     return { auth, pinChallenge, error }
   }
 
@@ -191,8 +180,7 @@ class TrustvaultKeyring extends EventEmitter {
   async _request (constructQuery, queryContext) {
       const query = constructQuery(this.auth, queryContext)
       const { data, error } = await this.walletBridgeRequest({ query: query})
-      debugger;
-      if ( error && error.errorType.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
+      if (error && error.errorType.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
         try {
           const query = this._refreshAuthTokensQuery(this.auth)
           const { data } = await this.walletBridgeRequest({ query: query})
@@ -205,7 +193,7 @@ class TrustvaultKeyring extends EventEmitter {
           this.auth = null
           throw new Error('TrustVault session has expired. Connect to TrustVault again')
         }
-      } else if( data ) {
+      } else if(data) {
         return data
       } 
     }
@@ -291,7 +279,7 @@ class TrustvaultKeyring extends EventEmitter {
     const response = await request.post(options)
     log.info('response', JSON.parse(response))
     let error = null
-    if ( JSON.parse(response).errors ){
+    if (JSON.parse(response).errors){
       error = JSON.parse(response).errors[0]
     }
     return { data: JSON.parse(response).data, error } 
