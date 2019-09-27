@@ -14,6 +14,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
+      - prep-build-test:
+          requires:
+            - prep-deps
       # - prep-docs:
       #    requires:
       #      - prep-deps
@@ -25,10 +28,10 @@ workflows:
             - prep-deps
       - test-e2e-chrome:
           requires:
-            - prep-deps
+            - prep-build-test
       - test-e2e-firefox:
           requires:
-            - prep-deps
+            - prep-build-test
       - test-unit:
           requires:
             - prep-deps
@@ -92,11 +95,16 @@ jobs:
       - run:
           name: Install deps
           command: |
-           yarn --frozen-lockfile
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - persist_to_workspace:
           root: .
           paths:
           - node_modules
+          - build-artifacts
 
   prep-build:
     docker:
@@ -116,6 +124,24 @@ jobs:
           paths:
             - dist
             - builds
+
+  prep-build-test:
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test
 
   prep-docs:
     docker:
@@ -159,8 +185,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Test
+          name: Lint
           command: yarn lint
+      - run:
+          name: Verify locales
+          command: yarn verify-locales --quiet
 
   test-deps:
     docker:
@@ -181,8 +210,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
           name: test:e2e:chrome
-          command: yarn build:test && yarn test:e2e:chrome
+          command: yarn test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -199,8 +231,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
           name: test:e2e:firefox
-          command: yarn build:test && yarn test:e2e:firefox
+          command: yarn test:e2e:firefox
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -213,6 +248,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: build:source-map-explorer
+          command: ./development/source-map-explorer.sh
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
@@ -222,6 +260,13 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate sesify viz AFTER uploading builds as artifacts
+      - run:
+          name: build:sesify-viz
+          command: ./.circleci/scripts/create-sesify-viz
+      - store_artifacts:
+          path: build-artifacts
+          destination: build-artifacts
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js

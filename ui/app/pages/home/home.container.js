@@ -6,7 +6,12 @@ import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-tr
 import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   unsetMigratedPrivacyMode,
+  restoreFromThreeBox,
+  turnThreeBoxSyncingOn,
+  getThreeBoxLastUpdated,
+  setShowRestorePromptToFalse,
 } from '../../store/actions'
+import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
@@ -18,9 +23,12 @@ const mapStateToProps = state => {
     migratedPrivacyMode,
     seedPhraseBackedUp,
     tokens,
+    threeBoxSynced,
+    showRestorePrompt,
+    selectedAddress,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
-  const { forgottenPassword } = appState
+  const { forgottenPassword, threeBoxLastUpdated } = appState
 
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
@@ -32,11 +40,29 @@ const mapStateToProps = state => {
     showPrivacyModeNotification: migratedPrivacyMode,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    threeBoxSynced,
+    showRestorePrompt,
+    selectedAddress,
+    threeBoxLastUpdated,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
+  turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
+  setupThreeBox: () => {
+    dispatch(getThreeBoxLastUpdated())
+      .then(lastUpdated => {
+        if (lastUpdated) {
+          dispatch(setThreeBoxLastUpdated(lastUpdated))
+        } else {
+          dispatch(setShowRestorePromptToFalse())
+          dispatch(turnThreeBoxSyncingOn())
+        }
+      })
+  },
+  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
+  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })
 
 export default compose(

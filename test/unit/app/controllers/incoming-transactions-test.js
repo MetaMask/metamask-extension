@@ -9,6 +9,7 @@ const {
   ROPSTEN,
   RINKEBY,
   KOVAN,
+  GOERLI,
   MAINNET,
 } = require('../../../../app/scripts/controllers/network/enums')
 
@@ -19,6 +20,7 @@ describe('IncomingTransactionsController', () => {
       [ROPSTEN]: null,
       [RINKEBY]: null,
       [KOVAN]: null,
+      [GOERLI]: null,
       [MAINNET]: null,
     },
   }
@@ -31,6 +33,7 @@ describe('IncomingTransactionsController', () => {
       [ROPSTEN]: 1,
       [RINKEBY]: 2,
       [KOVAN]: 3,
+      [GOERLI]: 5,
       [MAINNET]: 4,
     },
   }
@@ -43,6 +46,7 @@ describe('IncomingTransactionsController', () => {
       [ROPSTEN]: 1,
       [RINKEBY]: 2,
       [KOVAN]: 3,
+      [GOERLI]: 5,
       [MAINNET]: 4,
       FAKE_NETWORK: 1111,
     },
@@ -243,6 +247,7 @@ describe('IncomingTransactionsController', () => {
           [ROPSTEN]: 1,
           [RINKEBY]: 2,
           [KOVAN]: 3,
+          [GOERLI]: 5,
           [MAINNET]: 4,
           FAKE_NETWORK: 1111,
         },
@@ -262,6 +267,7 @@ describe('IncomingTransactionsController', () => {
         [ROPSTEN]: 1,
         [RINKEBY]: 2,
         [KOVAN]: 3,
+        [GOERLI]: 5,
         [MAINNET]: 4,
         FAKE_NETWORK: 1111,
       },

@@ -9,23 +9,11 @@
   "about": {
     "message": "વિશે"
   },
-  "accept": {
-    "message": "સ્વીકારો"
-  },
   "account": {
     "message": "એકાઉન્ટ"
   },
-  "add": {
-    "message": "ઉમેરો"
-  },
-  "address": {
-    "message": "સરનામું"
-  },
   "advanced": {
     "message": "વિગતવાર"
-  },
-  "available": {
-    "message": "ઉપલબ્ધ"
   },
   "back": {
     "message": "પાછળ"
@@ -54,12 +42,6 @@
   "connect": {
     "message": "કનેક્ટ કરો"
   },
-  "connecting": {
-    "message": "કનેક્ટિંગ..."
-  },
-  "continue": {
-    "message": "આગળ વધો"
-  },
   "copy": {
     "message": "કૉપિ કરો"
   },
@@ -68,12 +50,6 @@
   },
   "create": {
     "message": "બનાવો"
-  },
-  "createDen": {
-    "message": "બનાવો"
-  },
-  "customize": {
-    "message": "કસ્ટમાઇઝ કરો"
   },
   "delete": {
     "message": "કાઢી નાખો"
@@ -92,9 +68,6 @@
   },
   "fast": {
     "message": "ઝડપી"
-  },
-  "fastest": {
-    "message": "સૌથી ઝડપી"
   },
   "forgetDevice": {
     "message": "આ ઉપકરણને ભૂલી જાઓ"
@@ -119,14 +92,8 @@
   "loading": {
     "message": "લોડ કરી રહ્યું છે..."
   },
-  "min": {
-    "message": "ન્યૂનતમ"
-  },
   "next": {
     "message": "આગલું"
-  },
-  "notFound": {
-    "message": "મળ્યું નથી"
   },
   "origin": {
     "message": "મૂળ"
@@ -158,17 +125,11 @@
   "search": {
     "message": "શોધો"
   },
-  "select": {
-    "message": "પસંદ કરો"
-  },
   "send": {
     "message": "મોકલો"
   },
   "settings": {
     "message": "સેટિંગ્સ"
-  },
-  "status": {
-    "message": "સ્થિતિ"
   },
   "submit": {
     "message": "સબમિટ કરો"
@@ -187,8 +148,5 @@
   },
   "viewAccount": {
     "message": "એકાઉન્ટ જુઓ"
-  },
-  "warning": {
-    "message": "ચેતવણી"
   }
 }

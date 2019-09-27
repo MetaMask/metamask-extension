@@ -29,6 +29,7 @@ const AppStateController = require('./controllers/app-state')
 const InfuraController = require('./controllers/infura')
 const CachedBalancesController = require('./controllers/cached-balances')
 const OnboardingController = require('./controllers/onboarding')
+const ThreeBoxController = require('./controllers/threebox')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const IncomingTransactionsController = require('./controllers/incoming-transactions')
 const MessageManager = require('./lib/message-manager')
@@ -38,6 +39,7 @@ const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const ProviderApprovalController = require('./controllers/provider-approval')
+const ABTestController = require('./controllers/ab-test')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -198,6 +200,16 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
+    this.threeBoxController = new ThreeBoxController({
+      preferencesController: this.preferencesController,
+      addressBookController: this.addressBookController,
+      keyringController: this.keyringController,
+      initState: initState.ThreeBoxController,
+      getKeyringControllerState: this.keyringController.memStore.getState.bind(this.keyringController.memStore),
+      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
+      version,
+    })
+
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
@@ -259,6 +271,10 @@ module.exports = class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
     })
 
+    this.abTestController = new ABTestController({
+      initState: initState.ABTestController,
+    })
+
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
       TransactionController: this.txController.store,
@@ -273,6 +289,8 @@ module.exports = class MetamaskController extends EventEmitter {
       OnboardingController: this.onboardingController.store,
       ProviderApprovalController: this.providerApprovalController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
+      ThreeBoxController: this.threeBoxController.store,
+      ABTestController: this.abTestController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -297,6 +315,9 @@ module.exports = class MetamaskController extends EventEmitter {
       ProviderApprovalController: this.providerApprovalController.store,
       ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
       IncomingTransactionsController: this.incomingTransactionsController.store,
+      // ThreeBoxController
+      ThreeBoxController: this.threeBoxController.store,
+      ABTestController: this.abTestController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -411,12 +432,15 @@ module.exports = class MetamaskController extends EventEmitter {
     const networkController = this.networkController
     const providerApprovalController = this.providerApprovalController
     const onboardingController = this.onboardingController
+    const threeBoxController = this.threeBoxController
+    const abTestController = this.abTestController
 
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setUseNonceField: this.setUseNonceField.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -496,6 +520,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
+      getPendingNonce: nodeify(this.getPendingNonce, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -516,6 +541,17 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+
+      // 3Box
+      setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
+      restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
+      setShowRestorePromptToFalse: nodeify(threeBoxController.setShowRestorePromptToFalse, threeBoxController),
+      getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
+      turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
+      initializeThreeBox: nodeify(this.initializeThreeBox, this),
+
+      // a/b test controller
+      getAssignedABTestGroupName: nodeify(abTestController.getAssignedABTestGroupName, abTestController),
     }
   }
 
@@ -717,6 +753,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
+
+    const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
+    if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+      await this.threeBoxController.new3Box()
+      this.threeBoxController.turnThreeBoxSyncingOn()
+    } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+      this.threeBoxController.turnThreeBoxSyncingOn()
+    }
+
     return this.keyringController.fullUpdate()
   }
 
@@ -1666,6 +1711,10 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
+  async initializeThreeBox () {
+    await this.threeBoxController.init()
+  }
+
   /**
    * Sets whether or not to use the blockie identicon format.
    * @param {boolean} val - True for bockie, false for jazzicon.
@@ -1674,6 +1723,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets whether or not to use the nonce field.
+   * @param {boolean} val - True for nonce field, false for not nonce field.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setUseNonceField (val, cb) {
+    try {
+      this.preferencesController.setUseNonceField(val)
       cb(null)
     } catch (err) {
       cb(err)

@@ -77,8 +77,9 @@ export default class FirstTimeFlow extends PureComponent {
     const { createNewAccountFromSeed } = this.props
 
     try {
-      await createNewAccountFromSeed(password, seedPhrase)
+      const vault = await createNewAccountFromSeed(password, seedPhrase)
       this.setState({ isImportedKeyring: true })
+      return vault
     } catch (error) {
       throw new Error(error.message)
     }

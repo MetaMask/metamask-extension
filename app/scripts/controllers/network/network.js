@@ -190,7 +190,10 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({ network: type })
+    const networkClient = createInfuraClient({
+      network: type,
+      onRequest: (req) => this.emit('rpc-req', { network: type, req }),
+    })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {
