@@ -146,7 +146,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
-    const { data, error } = await this.walletBridgeRequest({ query: query})
+    const { data, error } = await this.walletBridgeRequest({ qquery})
     const { getPartialPinChallenge } = data
     // Set pinChallenge details
     this.pinChallenge.email = email
@@ -162,7 +162,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
-    const { data, error } = await this.walletBridgeRequest({ query: query})
+    const { data, error } = await this.walletBridgeRequest({ query })
     const { authentication: auth, pinChallenge } = data.getAuthenticationTokens
 
     if (pinChallenge && pinChallenge.sessionToken) {
@@ -179,11 +179,11 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _request (constructQuery, queryContext) {
       const query = constructQuery(this.auth, queryContext)
-      const { data, error } = await this.walletBridgeRequest({ query: query})
+      const { data, error } = await this.walletBridgeRequest({ query })
       if (error && error.errorType.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
         try {
           const query = this._refreshAuthTokensQuery(this.auth)
-          const { data } = await this.walletBridgeRequest({ query: query})
+          const { data } = await this.walletBridgeRequest({ query })
           const { tokens } = data
           this.auth = tokens.refreshAuthenticationTokens
           return await this._request(constructQuery, queryContext)
@@ -193,7 +193,7 @@ class TrustvaultKeyring extends EventEmitter {
           this.auth = null
           throw new Error('TrustVault session has expired. Connect to TrustVault again')
         }
-      } else if(data) {
+      } else if (data) {
         return data
       } 
     }
@@ -273,16 +273,20 @@ class TrustvaultKeyring extends EventEmitter {
       headers: {
         "x-api-key": apiKey,
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     }
     log.info('options POST', options)
     const response = await request.post(options)
     log.info('response', JSON.parse(response))
     let error = null
+    const { data, errors } =json.parse(response)
     if (JSON.parse(response).errors){
       error = JSON.parse(response).errors[0]
     }
-    return { data: JSON.parse(response).data, error } 
+    return {
+      data,
+      error: errors && errors[0]
+    }
   }
 
   /* GraphQL queries */
