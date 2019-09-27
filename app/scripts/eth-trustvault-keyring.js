@@ -146,7 +146,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
-    const { data, error } = await this.walletBridgeRequest({ qquery})
+    const { data, error } = await this.walletBridgeRequest({ query })
     const { getPartialPinChallenge } = data
     // Set pinChallenge details
     this.pinChallenge.email = email
@@ -180,13 +180,12 @@ class TrustvaultKeyring extends EventEmitter {
   async _request (constructQuery, queryContext) {
       const query = constructQuery(this.auth, queryContext)
       const { data, error } = await this.walletBridgeRequest({ query })
-      if (error && error.errorType.substring(0, 21) === 'INVALID_SESSION_TOKEN') {
+      if (error && error.errorType.includes('INVALID_SESSION_TOKEN')) {
         try {
           const query = this._refreshAuthTokensQuery(this.auth)
           const { data } = await this.walletBridgeRequest({ query })
-          const { tokens } = data
-          this.auth = tokens.refreshAuthenticationTokens
-          return await this._request(constructQuery, queryContext)
+          this.auth = data.tokens.refreshAuthenticationTokens
+          return this._request(constructQuery, queryContext)
         } catch (error) {
           log.warn('TrustVault session has expired. Connect to TrustVault again', error)
           this.accounts = []
@@ -277,12 +276,8 @@ class TrustvaultKeyring extends EventEmitter {
     }
     log.info('options POST', options)
     const response = await request.post(options)
-    log.info('response', JSON.parse(response))
-    let error = null
-    const { data, errors } =json.parse(response)
-    if (JSON.parse(response).errors){
-      error = JSON.parse(response).errors[0]
-    }
+    log.info('response', response)
+    const { data, errors } = JSON.parse(response)
     return {
       data,
       error: errors && errors[0]
