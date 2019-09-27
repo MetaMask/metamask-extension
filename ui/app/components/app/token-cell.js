@@ -114,7 +114,7 @@ TokenCell.prototype.render = function () {
       h(Identicon, {
         className: 'token-list-item__identicon',
         diameter: 50,
-        address,
+        address: address || identifier,
         network,
         image,
       }),
