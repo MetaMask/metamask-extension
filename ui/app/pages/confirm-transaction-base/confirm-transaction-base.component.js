@@ -467,7 +467,6 @@ export default class ConfirmTransactionBase extends Component {
         },
       })
 
-      updateCustomNonce('')
       setMetaMetricsSendCount(metaMetricsSendCount + 1)
         .then(() => {
           if (onSubmit) {
@@ -476,6 +475,7 @@ export default class ConfirmTransactionBase extends Component {
                 this.setState({
                   submitting: false,
                 })
+                updateCustomNonce('')
               })
           } else {
             sendTransaction(txData)
@@ -485,6 +485,7 @@ export default class ConfirmTransactionBase extends Component {
                   submitting: false,
                 }, () => {
                   history.push(DEFAULT_ROUTE)
+                  updateCustomNonce('')
                 })
               })
               .catch(error => {
