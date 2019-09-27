@@ -38,7 +38,8 @@ module.exports = class Network {
       this.provider = provider
       this.blockTracker = blockTracker
       this.initialized = true
-      this._ready({ provider, blockTracker })
+      debugger
+      this._ready({ provider, blockTracker, chainId: this.providerConfig.chainId})
       this.lookupNetwork()
     } catch (e) {
       this._setfaliureState(e)
@@ -74,24 +75,20 @@ module.exports = class Network {
     return this.getNetworkState() === 'loading'
   }
 
-  lookupNetwork () {
+  async lookupNetwork () {
     // Prevent firing when provider is not defined.
-    if (!this._provider) {
-      return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
-    }
+    await this.ready
     if (this.getNetworkState() !== 'loading') return
     const { type } = this.providerConfig
-    const ethQuery = new EthQuery(this._provider)
-    const initialNetwork = this.getNetworkState()
+    const ethQuery = new EthQuery(this.provider)
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      const currentNetwork = this.getNetworkState()
-      if (initialNetwork === currentNetwork) {
-        if (err) {
-          return this.setNetworkState('loading')
-        }
-        log.info('web3.getNetwork returned ' + network)
-        this.setNetworkState(network, type)
+      debugger
+      if (err) {
+        return this.setNetworkState('loading')
       }
+      debugger
+      log.info('web3.getNetwork returned ' + network)
+      this.setNetworkState(network, type)
     })
   }
 

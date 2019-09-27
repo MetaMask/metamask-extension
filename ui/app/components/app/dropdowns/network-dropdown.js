@@ -11,6 +11,15 @@ const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 const R = require('ramda')
 const { NETWORKS_ROUTE } = require('../../../helpers/constants/routes')
+const {
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  LOCALHOST,
+  GOERLI,
+  CUSTOM_RPC,
+} = require('../../../helpers/constants/network-types')
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -116,110 +125,110 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
-        key: 'main',
+        key: MAINNET,
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('mainnet'),
+        onClick: () => this.handleClick(MAINNET),
         style: { ...dropdownMenuItemStyle, borderColor: '#038789' },
       },
       [
-        providerType === 'mainnet' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === MAINNET ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#29B6AF', // $java
-          isSelected: providerType === 'mainnet',
+          isSelected: providerType === MAINNET,
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
+            color: providerType === MAINNET ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('mainnet')),
+        }, this.context.t(MAINNET)),
       ]
     ),
 
     h(
       DropdownMenuItem,
       {
-        key: 'ropsten',
+        key: ROPSTEN,
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('ropsten'),
+        onClick: () => this.handleClick(ROPSTEN),
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'ropsten' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === ROPSTEN ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#ff4a8d', // $wild-strawberry
-          isSelected: providerType === 'ropsten',
+          isSelected: providerType === ROPSTEN,
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
+            color: providerType === ROPSTEN ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('ropsten')),
+        }, this.context.t(ROPSTEN)),
       ]
     ),
 
     h(
       DropdownMenuItem,
       {
-        key: 'kovan',
+        key: KOVAN,
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('kovan'),
+        onClick: () => this.handleClick(KOVAN),
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'kovan' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === KOVAN ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#7057ff', // $cornflower-blue
-          isSelected: providerType === 'kovan',
+          isSelected: providerType === KOVAN,
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
+            color: providerType === KOVAN ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('kovan')),
+        }, this.context.t(KOVAN)),
       ]
     ),
 
     h(
       DropdownMenuItem,
       {
-        key: 'rinkeby',
+        key: RINKEBY,
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('rinkeby'),
+        onClick: () => this.handleClick(RINKEBY),
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'rinkeby' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === RINKEBY ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#f6c343', // $saffron
-          isSelected: providerType === 'rinkeby',
+          isSelected: providerType === RINKEBY,
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
+            color: providerType === RINKEBY ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('rinkeby')),
+        }, this.context.t(RINKEBY)),
       ]
     ),
 
     h(
       DropdownMenuItem,
       {
-        key: 'goerli',
+        key: GOERLI,
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('goerli'),
+        onClick: () => this.handleClick(GOERLI),
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'goerli' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === GOERLI ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#3099f2', // $dodger-blue
-          isSelected: providerType === 'goerli',
+          isSelected: providerType === GOERLI,
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'goerli' ? '#ffffff' : '#9b9b9b',
+            color: providerType === GOERLI ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('goerli')),
+        }, this.context.t(GOERLI)),
       ]
     ),
 
@@ -228,20 +237,20 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.handleClick('localhost'),
+        onClick: () => this.handleClick(LOCALHOST),
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'localhost' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        providerType === LOCALHOST ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
-          isSelected: providerType === 'localhost',
+          isSelected: providerType === LOCALHOST,
           innerBorder: '1px solid #9b9b9b',
         }),
         h('span.network-name-item', {
           style: {
-            color: providerType === 'localhost' ? '#ffffff' : '#9b9b9b',
+            color: providerType === LOCALHOST ? '#ffffff' : '#9b9b9b',
           },
-        }, this.context.t('localhost')),
+        }, this.context.t(LOCALHOST)),
       ]
     ),
 
@@ -299,20 +308,20 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
   let name
 
-  if (providerName === 'mainnet') {
-    name = this.context.t('mainnet')
-  } else if (providerName === 'ropsten') {
-    name = this.context.t('ropsten')
-  } else if (providerName === 'kovan') {
-    name = this.context.t('kovan')
-  } else if (providerName === 'rinkeby') {
-    name = this.context.t('rinkeby')
-  } else if (providerName === 'localhost') {
-    name = this.context.t('localhost')
-  } else if (providerName === 'goerli') {
-    name = this.context.t('goerli')
+  if (providerName === MAINNET) {
+    name = this.context.t(MAINNET)
+  } else if (providerName === ROPSTEN) {
+    name = this.context.t(ROPSTEN)
+  } else if (providerName === KOVAN) {
+    name = this.context.t(KOVAN)
+  } else if (providerName === RINKEBY) {
+    name = this.context.t(RINKEBY)
+  } else if (providerName === LOCALHOST) {
+    name = this.context.t(LOCALHOST)
+  } else if (providerName === GOERLI) {
+    name = this.context.t(GOERLI)
   } else {
-    name = provider.nickname || this.context.t('unknownNetwork')
+    name = provider.custom.name || this.context.t('unknownNetwork')
   }
 
   return name
