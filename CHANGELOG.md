@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 7.3.0 Fri Sep 27 2019
 - [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
 
 ## 7.2.3 Fri Oct 04 2019
