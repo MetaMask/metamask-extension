@@ -31,7 +31,12 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
     Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
-      this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+      const success = this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+
+      // Clean up failed plugins:
+      if (!success) {
+        this.deletePlugin(pluginName)
+      }
     })
   }
 
