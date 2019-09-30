@@ -31,7 +31,12 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
     Object.values(plugins).forEach(({ pluginName, initialPermissions, sourceCode }) => {
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
-      this._startPlugin(pluginName, initialPermissions, sourceCode, ethereumProvider)
+      try {
+        this._startPlugin(pluginName, initialPermissions, sourceCode, ethereumProvider)
+      } catch (err) {
+        // Clean up failed plugins:
+        this.deletePlugin(pluginName)
+      }
     })
   }
 
@@ -222,20 +227,25 @@ class PluginsController extends EventEmitter {
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
-    const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
-      wallet: ethereumProvider,
-      console, // Adding console for now for logging purposes.
-      BigInt,
-      window: {
+    try {
+      const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
+        wallet: ethereumProvider,
+        console, // Adding console for now for logging purposes.
+        BigInt,
+        window: {
+          crypto,
+          SubtleCrypto,
+          fetch,
+        },
         crypto,
         SubtleCrypto,
         fetch,
-      },
-      crypto,
-      SubtleCrypto,
-      fetch,
-    })
-    sessedPlugin()
+      })
+      sessedPlugin()
+    } catch (err) {
+      this.deletePlugin(pluginName)
+      throw err
+    }
     this._setPluginToActive(pluginName)
     return true
   }
