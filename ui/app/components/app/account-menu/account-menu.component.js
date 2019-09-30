@@ -268,7 +268,8 @@ export default class AccountMenu extends PureComponent {
           icon={
             <img
               className="account-menu__item-icon"
-              src="images/connect-icon.svg"
+              src="images/logo/trustvault-logo-white.png"
+              style={{ height: "17px", width: "15.5px" }}
             />
           }
           text={t("connectTrustVault")}
