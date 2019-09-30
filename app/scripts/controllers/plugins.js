@@ -65,6 +65,7 @@ class PluginsController extends EventEmitter {
   }
 
   clearPluginState () {
+    this.rpcMessageHandlers.clear()
     this.store.updateState({
       plugins: {},
       pluginStates: {},
