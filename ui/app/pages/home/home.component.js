@@ -168,17 +168,7 @@ export default class Home extends PureComponent {
                     },
                   ]}/>
                 <div>
-                  <TextField
-                    id="delete-plugin"
-                    label={'Delete Plugin'}
-                    type="text"
-                    value={this.state.pluginToDelete}
-                    onChange={e => this.setState({ pluginToDelete: e.target.value })}
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Button onClick={() => this.props.deletePlugin(this.state.pluginToDelete)} >{ 'Delete Plugin' }</Button>
-                  <Button onClick={() => this.props.clearPluginState()} >{ 'Clear All Plugin State' }</Button>
+                  <Button onClick={() => this.props.clearPluginState()} >{ 'Delete All Plugins.' }</Button>
                 </div>
               </TransactionView>
             )

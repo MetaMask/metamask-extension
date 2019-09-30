@@ -105,7 +105,6 @@ function getExternalRestrictedMethods (permissionsController) {
       method: (req, res, _next, end, engine) => {
         const [method, opts] = req.params
         const requestor = engine.domain
-
         try {
           switch (method) {
             case 'addAsset':

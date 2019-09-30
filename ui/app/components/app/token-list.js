@@ -78,6 +78,10 @@ TokenList.prototype.render = function () {
     ])
   }
 
+  pluginTokens.forEach((pluginToken) => {
+    // TODO: Proper decimal encoding:
+    pluginToken.string = pluginToken.balance
+  })
   return h('div', tokens.concat(pluginTokens).map((tokenData) => {
     tokenData.image = assetImages[tokenData.address]
     if (tokenData.customViewUrl) {
@@ -198,3 +202,4 @@ TokenList.prototype.componentWillUnmount = function () {
 //   })
 //   return result
 // }
+//
