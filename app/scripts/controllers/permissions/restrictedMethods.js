@@ -64,6 +64,8 @@ const pluginRestrictedMethodDescriptions = {
 }
 
 function getExternalRestrictedMethods (permissionsController) {
+  const { assetsController } = permissionsController
+
   return {
     'eth_accounts': {
       description: 'View Ethereum accounts',
@@ -98,9 +100,37 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
+    'wallet_manageAssets': {
+      description: 'Display custom assets in your wallet.',
+      method: (req, res, _next, end, engine) => {
+        const [method, opts] = req.params
+        const requestor = engine.domain
+
+        try {
+          switch (method) {
+            case 'addAsset':
+              res.result = assetsController.addAsset(requestor, opts)
+              return end()
+            case 'updateAsset':
+              res.result = assetsController.updateAsset(requestor, opts)
+              return end()
+            case 'removeAsset':
+              res.result = assetsController.removeAsset(requestor, opts)
+              return end()
+            default:
+              res.error = rpcErrors.methodNotFound(null, `${req.method}:${method}`)
+              end(res.error)
+          }
+        } catch (err) {
+          res.error = err
+          end(err)
+        }
+      }
+    },
+
     'alert': {
       description: 'Show alerts over the current page.',
-      method: (req, res, _next, end) => {
+      method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
         alert(`MetaMask Notice:\n${requestor} States:\n${req.params[0]}`)
         end()

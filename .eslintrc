@@ -36,6 +36,7 @@
   "globals": {
     "document": false,
     "navigator": false,
+    "BigInt": true,
     "web3": true,
     "window": false,
     "$": false,

@@ -29,7 +29,7 @@ function prefix (method) {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, pluginsController,
+    openPopup, closePopup, keyringController, pluginsController, assetsController,
     setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
   } = {},
   restoredPermissions = {}, restoredState = {}
@@ -43,6 +43,7 @@ class PermissionsController {
     this._closePopup = closePopup
     this.keyringController = keyringController
     this.pluginsController = pluginsController
+    this.assetsController = assetsController
     this.setupProvider = setupProvider
     this.externalRestrictedMethods = getExternalRestrictedMethods(this)
     this.pluginRestrictedMethods = pluginRestrictedMethods

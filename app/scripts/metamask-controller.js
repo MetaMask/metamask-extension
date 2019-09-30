@@ -39,6 +39,7 @@ const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const { PermissionsController } = require('./controllers/permissions')
 const PluginsController = require('./controllers/plugins')
+const AssetsController = require('./controllers/assets')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -273,9 +274,15 @@ module.exports = class MetamaskController extends EventEmitter {
       getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
     })
 
+    this.assetsController = new AssetsController({
+      // TODO: Persist asset state?
+      // For now handled by plugin persistence.
+    })
+
     this.permissionsController = new PermissionsController({
       setupProvider: this.setupProvider.bind(this),
       keyringController: this.keyringController,
+      assetsController: this.assetsController,
       openPopup: opts.openPopup,
       closePopup: opts.closePopup,
       pluginsController: this.pluginsController,
@@ -334,6 +341,7 @@ module.exports = class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       PluginsController: this.pluginsController.store,
+      AssetsController: this.assetsController.store,
       ThreeBoxController: this.threeBoxController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
