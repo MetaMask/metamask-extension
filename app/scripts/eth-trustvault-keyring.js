@@ -4,12 +4,11 @@ const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
-const walletBridgeUrl= "https://nuhs2nigx5.execute-api.eu-west-1.amazonaws.com/staging/graphql"
-const apiKey = 'da2-5hryxm6y3bbrfolg7o3yxybbdq'
+const walletBridgeUrl= 'https://2np91sujsf.execute-api.eu-west-1.amazonaws.com/production/'
+const apiKey = 'da2-7nohbmx75fcdhk7hg3hafr2k4m'
 import BigNumber from 'bignumber.js'
-// seconds x milliseconds
-const FIVE_MINUTES_IN_MILLISECONDS = 300 * 1000
-const UNSUPPORTED_SIGNING_METHOD = "You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed."
+const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
+const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
 class TrustvaultKeyring extends EventEmitter {
   constructor (opts = {}) {
