@@ -111,7 +111,7 @@ function getExternalRestrictedMethods (permissionsController) {
       description: 'Display confirmations for user action.',
       method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
-        res.result = confirm (`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        res.result = confirm(`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
         end()
       },
     },
@@ -166,9 +166,9 @@ function getExternalRestrictedMethods (permissionsController) {
         const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
         const pluginName = pluginNameMatch && pluginNameMatch[1]
 
-        const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
+        const { initialPermissions, sourceCode, ethereumProvider } = req.params[0]
         try {
-          const result = await permissionsController.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+          const result = await permissionsController.pluginsController.run(pluginName, initialPermissions, sourceCode, ethereumProvider)
           res.result = result
           return end()
         } catch (err) {
