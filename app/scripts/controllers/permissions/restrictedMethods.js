@@ -196,10 +196,15 @@ function getExternalRestrictedMethods (permissionsController) {
         const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
         const pluginName = pluginNameMatch && pluginNameMatch[1]
 
-        const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
-        const result = await permissionsController.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
-        res.result = result
-        return end()
+        const { initialPermissions, sourceCode, ethereumProvider } = req.params[0]
+        try {
+          const result = await permissionsController.pluginsController.run(pluginName, initialPermissions, sourceCode, ethereumProvider)
+          res.result = result
+          return end()
+        } catch (err) {
+          res.error = err
+          end(err)
+        }
       },
     },
   }
