@@ -418,7 +418,6 @@ function reduceMetamask (state, action) {
     }
 
     case actions.SET_NEXT_NONCE: {
-      console.log('action.value', action.value)
       return extend(metamaskState, {
         nextNonce: action.value,
       })
