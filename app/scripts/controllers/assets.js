@@ -36,8 +36,8 @@ class AssetsController extends EventEmitter {
     this.validateAsset(fromDomain, opts)
     const asset = {
       ...opts,
-      fromDomain,
     }
+    asset.fromDomain = fromDomain
     this.assets.push(asset)
   }
 
