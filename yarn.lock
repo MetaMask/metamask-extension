@@ -23778,7 +23778,7 @@ servify@^0.1.12:
     request "^2.79.0"
     xhr "^2.3.3"
 
-ses@^0.6.3:
+ses@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/ses/-/ses-0.6.2.tgz#07d5409cdd13927a727998b5e12ffc064f3f5f1f"
   integrity sha512-QkgoXaql3Md+P1ZzDjVyZRoj2+/DkuVXFlPgrhXTuhOA09USZAqnlQJwI0R2qRA40H0hzkbVhfoAEEUZvqeCIA==
