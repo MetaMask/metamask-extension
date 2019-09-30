@@ -4,9 +4,9 @@ const hdPathString = `m/44'/60'/0'/0`
 const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
-const walletBridgeUrl= 'https://2np91sujsf.execute-api.eu-west-1.amazonaws.com/production/'
+const BigNumber = require('bignumber.js')
+const walletBridgeUrl = ' https://2np91sujsf.execute-api.eu-west-1.amazonaws.com/production/graphql'
 const apiKey = 'da2-7nohbmx75fcdhk7hg3hafr2k4m'
-import BigNumber from 'bignumber.js'
 const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
@@ -46,7 +46,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   unlock () {
     if (!this.auth) {
-    return Promise.reject({ message: 'TrustVault tokens have expired. Connect to TrustVault again.'})
+      return Promise.reject({ message: 'TrustVault tokens have expired. Connect to TrustVault again.'})
     }
     return Promise.resolve('already unlocked')
   }
@@ -172,7 +172,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getAccounts () {
     const accounts = (await this._request(this._getAccountsQuery, {})).userWallet.getAccounts
-    this.addressNameMap = accounts.map(account => { return { name: account.accountName, address: account.address } })
+    this.addressNameMap = accounts.map(account => ({ name: account.accountName, address: account.address }))
     return accounts.map(account => account.address.toLowerCase())
   }
 
@@ -258,18 +258,17 @@ class TrustvaultKeyring extends EventEmitter {
       }
     } catch (e) {
       await this._timeout(5000)
-      log.error(`Polling errored with `,e)
+      log.error(`Polling errored with `, e)
       if(errorCount > 3) {
         return Promise.reject(e)
       }
-      this._pollTransaction(transactionId, retryCount, errorCount++ )
+      this._pollTransaction(transactionId, retryCount, errorCount++)
     }
   }
 
   async walletBridgeRequest (body) {
-    const url = walletBridgeUrl
     const options = {
-      uri: url,
+      uri: walletBridgeUrl,
       method: "POST",
       headers: {
         "x-api-key": apiKey,
