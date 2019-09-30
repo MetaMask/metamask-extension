@@ -171,6 +171,25 @@ class PermissionsController {
     resolve(approved.permissions)
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
+
+    const plugins = this.pluginsFromPerms(approved.permissions)
+    console.log('produced plugins ', plugins)
+    plugins.forEach((plugin) => {
+      console.log('attempting to add plugin ' + plugin)
+      this.pluginsController.add(plugin)
+      .catch((reason) => {
+        console.error(`Problem adding plugin ${plugin}:`, reason)
+      })
+    })
+  }
+
+  pluginsFromPerms (permissions) {
+    console.log('pluginsFromPerms', permissions)
+    const permStrings = Object.keys(permissions)
+    return permStrings.filter((perm) => {
+      return perm.indexOf('wallet_plugin_') === 0
+    })
+    .map(perm => perm.substr(14))
   }
 
   /**

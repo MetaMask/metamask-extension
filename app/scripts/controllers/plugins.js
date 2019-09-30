@@ -25,10 +25,12 @@ class PluginsController extends EventEmitter {
     this.getAppKeyForDomain = opts.getAppKeyForDomain
 
     this.rpcMessageHandlers = new Map()
+    this.adding = {}
   }
 
   runExistingPlugins () {
     const plugins = this.store.getState().plugins
+    console.log('running existing plugins')
     Object.values(plugins).forEach(({ pluginName, initialPermissions, sourceCode }) => {
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
       try {
@@ -67,6 +69,7 @@ class PluginsController extends EventEmitter {
       plugins: {},
       pluginStates: {},
     })
+    alert('Plugin state cleared.')
   }
 
   deletePlugin (pluginName) {
@@ -81,11 +84,27 @@ class PluginsController extends EventEmitter {
     })
   }
 
-  async add (pluginName, sourceUrl) {
+  /**
+   * Returns a promise representing the complete installation of the requested plugin.
+   * If the plugin is already being installed, the previously pending promise will be returned.
+   */
+  add (pluginName, sourceUrl) {
     if (!sourceUrl) {
       sourceUrl = pluginName
     }
 
+    // Deduplicate multiple add requests:
+    if (!(pluginName in this.adding)) {
+      this.adding[pluginName] = this._add(pluginName)
+    }
+
+    return this.adding[pluginName]
+  }
+
+  async _add (pluginName, sourceUrl) {
+    if (!sourceUrl) {
+      sourceUrl = pluginName
+    }
     const plugins = this.store.getState().plugins
 
     let plugin
@@ -112,6 +131,7 @@ class PluginsController extends EventEmitter {
         .catch(err => console.log('add plugin error:', err))
     }
 
+    console.log('running add plugin with ', plugin)
     const { sourceCode, initialPermissions } = plugin
 
 
