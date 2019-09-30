@@ -754,12 +754,16 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
 
-    const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
-    if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-      await this.threeBoxController.new3Box()
-      this.threeBoxController.turnThreeBoxSyncingOn()
-    } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
-      this.threeBoxController.turnThreeBoxSyncingOn()
+    try {
+      const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
+      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
+        await this.threeBoxController.new3Box()
+        this.threeBoxController.turnThreeBoxSyncingOn()
+      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
+        this.threeBoxController.turnThreeBoxSyncingOn()
+      }
+    } catch (error) {
+      log.error(error)
     }
 
     return this.keyringController.fullUpdate()
