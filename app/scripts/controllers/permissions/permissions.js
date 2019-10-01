@@ -29,7 +29,7 @@ function prefix (method) {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, pluginsController,
+    openPopup, closePopup, keyringController, pluginsController, assetsController,
     setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
   } = {},
   restoredPermissions = {}, restoredState = {}
@@ -43,6 +43,7 @@ class PermissionsController {
     this._closePopup = closePopup
     this.keyringController = keyringController
     this.pluginsController = pluginsController
+    this.assetsController = assetsController
     this.setupProvider = setupProvider
     this.externalRestrictedMethods = getExternalRestrictedMethods(this)
     this.pluginRestrictedMethods = pluginRestrictedMethods
@@ -170,6 +171,22 @@ class PermissionsController {
     resolve(approved.permissions)
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
+
+    const plugins = this.pluginsFromPerms(approved.permissions)
+    plugins.forEach((plugin) => {
+      this.pluginsController.add(plugin)
+        .catch((err) => {
+          console.error(err)
+        })
+    })
+  }
+
+  pluginsFromPerms (permissions) {
+    const permStrings = Object.keys(permissions)
+    return permStrings.filter((perm) => {
+      return perm.indexOf('wallet_plugin_') === 0
+    })
+      .map(perm => perm.substr(14))
   }
 
   /**

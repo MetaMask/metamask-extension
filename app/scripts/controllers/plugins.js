@@ -1,7 +1,21 @@
 const ObservableStore = require('obs-store')
 const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
-const SES = require('ses')
+
+const isTest = process.env.IN_TEST === 'true' || process.env.METAMASK_ENV === 'test'
+const SES = (
+  isTest
+    ? {
+      makeSESRootRealm: () => {
+        return {
+          evaluate: () => {
+            return () => true
+          },
+        }
+      },
+    }
+    : require('ses')
+)
 
 class PluginsController extends EventEmitter {
 
@@ -25,13 +39,20 @@ class PluginsController extends EventEmitter {
     this.getAppKeyForDomain = opts.getAppKeyForDomain
 
     this.rpcMessageHandlers = new Map()
+    this.adding = {}
   }
 
   runExistingPlugins () {
     const plugins = this.store.getState().plugins
-    Object.values(plugins).forEach(({ pluginName, requestedPermissions, sourceCode }) => {
+    console.log('running existing plugins')
+    Object.values(plugins).forEach(({ pluginName, initialPermissions, sourceCode }) => {
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
-      this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+      try {
+        this._startPlugin(pluginName, initialPermissions, sourceCode, ethereumProvider)
+      } catch (err) {
+        // Clean up failed plugins:
+        this.deletePlugin(pluginName)
+      }
     })
   }
 
@@ -58,10 +79,12 @@ class PluginsController extends EventEmitter {
   }
 
   clearPluginState () {
+    this.rpcMessageHandlers.clear()
     this.store.updateState({
       plugins: {},
       pluginStates: {},
     })
+    alert('Plugin state cleared.')
   }
 
   deletePlugin (pluginName) {
@@ -76,24 +99,40 @@ class PluginsController extends EventEmitter {
     })
   }
 
-  async add (pluginName, sourceUrl) {
+  /**
+   * Returns a promise representing the complete installation of the requested plugin.
+   * If the plugin is already being installed, the previously pending promise will be returned.
+   */
+  add (pluginName, sourceUrl) {
     if (!sourceUrl) {
       sourceUrl = pluginName
     }
 
+    // Deduplicate multiple add requests:
+    if (!(pluginName in this.adding)) {
+      this.adding[pluginName] = this._add(pluginName)
+    }
+
+    return this.adding[pluginName]
+  }
+
+  async _add (pluginName, sourceUrl) {
+    if (!sourceUrl) {
+      sourceUrl = pluginName
+    }
     const plugins = this.store.getState().plugins
 
     let plugin
     if (plugins[pluginName]) {
       plugin = plugins[pluginName]
     } else {
-      let _requestedPermissions
+      let _initialPermissions
       plugin = await fetch(sourceUrl)
         .then(pluginRes => {
           return pluginRes.json()
         })
-        .then(({ web3Wallet: { bundle, requestedPermissions } }) => {
-           _requestedPermissions = requestedPermissions
+        .then(({ web3Wallet: { bundle, initialPermissions } }) => {
+          _initialPermissions = initialPermissions
           // bundle is an object with: { local: string, url: string }
           return fetch(bundle.url) // TODO: validate params?
         })
@@ -101,22 +140,23 @@ class PluginsController extends EventEmitter {
         .then(sourceCode => {
           return {
             sourceCode,
-            requestedPermissions: _requestedPermissions,
+            initialPermissions: _initialPermissions,
           }
         })
         .catch(err => console.log('add plugin error:', err))
     }
 
-    const { sourceCode, requestedPermissions } = plugin
+    console.log('running add plugin with ', plugin)
+    const { sourceCode, initialPermissions } = plugin
 
 
     const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       ethereumProvider.sendAsync({
         method: 'wallet_requestPermissions',
         jsonrpc: '2.0',
-        params: [{ ['eth_runPlugin_' + pluginName]: {}, ...requestedPermissions }, { sourceCode, ethereumProvider }],
+        params: [{ ['eth_runPlugin_' + pluginName]: {}, ...initialPermissions }, { sourceCode, ethereumProvider }],
       }, (err1, res1) => {
         console.log('err1, res1', err1, res1)
         if (err1) reject(err1)
@@ -130,7 +170,7 @@ class PluginsController extends EventEmitter {
             },
             pluginName,
             sourceCode,
-            requestedPermissions: capabilities,
+            initialPermissions: capabilities,
           }
 
           const newPlugins = {...plugins, [pluginName]: newPlugin}
@@ -142,7 +182,7 @@ class PluginsController extends EventEmitter {
 
         ethereumProvider.sendAsync({
           method: 'eth_runPlugin_' + pluginName,
-          params: [{ requestedPermissions: capabilities, sourceCode, ethereumProvider }],
+          params: [{ initialPermissions: capabilities, sourceCode, ethereumProvider }],
         }, (err2, res2) => {
           console.log('plugin.add err2, res2', err2, res2)
           if (err2) reject(err2)
@@ -152,8 +192,8 @@ class PluginsController extends EventEmitter {
     })
   }
 
-  async run (pluginName, requestedPermissions, sourceCode, ethereumProvider) {
-    return this._startPlugin(pluginName, requestedPermissions, sourceCode, ethereumProvider)
+  async run (pluginName, initialPermissions, sourceCode, ethereumProvider) {
+    return this._startPlugin(pluginName, initialPermissions, sourceCode, ethereumProvider)
   }
 
   _eventEmitterToListenerMap (eventEmitter) {
@@ -222,22 +262,29 @@ class PluginsController extends EventEmitter {
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
-    const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
-      wallet: ethereumProvider,
-      console, // Adding console for now for logging purposes.
-      BigInt,
-      window: {
+    try {
+      const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
+        wallet: ethereumProvider,
+        console, // Adding console for now for logging purposes.
+        BigInt,
+        window: {
+          crypto,
+          SubtleCrypto,
+          fetch,
+          XMLHttpRequest,
+          WebSocket,
+        },
         crypto,
         SubtleCrypto,
         fetch,
+        XMLHttpRequest,
         WebSocket,
-      },
-      crypto,
-      SubtleCrypto,
-      fetch,
-      WebSocket,
-    })
-    sessedPlugin()
+      })
+      sessedPlugin()
+    } catch (err) {
+      this.deletePlugin(pluginName)
+      throw err
+    }
     this._setPluginToActive(pluginName)
     return true
   }

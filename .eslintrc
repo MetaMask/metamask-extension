@@ -14,7 +14,7 @@
       "templateStrings": true,
       "classes": true,
       "jsx": true
-    },
+    }
   },
 
   "extends": ["plugin:react/recommended"],
@@ -34,12 +34,13 @@
   ],
 
   "globals": {
-    "document": false,
-    "navigator": false,
-    "web3": true,
-    "window": false,
     "$": false,
-    "QUnit": false
+    "document": false,
+    "BigInt": true,
+    "navigator": false,
+    "QUnit": false,
+    "web3": true,
+    "window": false
   },
 
   "rules": {

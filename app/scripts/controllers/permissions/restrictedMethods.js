@@ -64,6 +64,8 @@ const pluginRestrictedMethodDescriptions = {
 }
 
 function getExternalRestrictedMethods (permissionsController) {
+  const { assetsController } = permissionsController
+
   return {
     'eth_accounts': {
       description: 'View Ethereum accounts',
@@ -98,9 +100,36 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
+    'wallet_manageAssets': {
+      description: 'Display custom assets in your wallet.',
+      method: (req, res, _next, end, engine) => {
+        const [method, opts] = req.params
+        const requestor = engine.domain
+        try {
+          switch (method) {
+            case 'addAsset':
+              res.result = assetsController.addAsset(requestor, opts)
+              return end()
+            case 'updateAsset':
+              res.result = assetsController.updateAsset(requestor, opts)
+              return end()
+            case 'removeAsset':
+              res.result = assetsController.removeAsset(requestor, opts)
+              return end()
+            default:
+              res.error = rpcErrors.methodNotFound(null, `${req.method}:${method}`)
+              end(res.error)
+          }
+        } catch (err) {
+          res.error = err
+          end(err)
+        }
+      },
+    },
+
     'alert': {
       description: 'Show alerts over the current page.',
-      method: (req, res, _next, end) => {
+      method: (req, _res, _next, end, engine) => {
         const requestor = engine.domain
         alert(`MetaMask Notice:\n${requestor} States:\n${req.params[0]}`)
         end()
@@ -111,7 +140,7 @@ function getExternalRestrictedMethods (permissionsController) {
       description: 'Display confirmations for user action.',
       method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
-        res.result = confirm (`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        res.result = confirm(`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
         end()
       },
     },
@@ -166,10 +195,15 @@ function getExternalRestrictedMethods (permissionsController) {
         const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
         const pluginName = pluginNameMatch && pluginNameMatch[1]
 
-        const { requestedPermissions, sourceCode, ethereumProvider } = req.params[0]
-        const result = await permissionsController.pluginsController.run(pluginName, requestedPermissions, sourceCode, ethereumProvider)
-        res.result = result
-        return end()
+        const { initialPermissions, sourceCode, ethereumProvider } = req.params[0]
+        try {
+          const result = await permissionsController.pluginsController.run(pluginName, initialPermissions, sourceCode, ethereumProvider)
+          res.result = result
+          return end()
+        } catch (err) {
+          res.error = err
+          end(err)
+        }
       },
     },
   }
