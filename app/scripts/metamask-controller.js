@@ -206,7 +206,6 @@ module.exports = class MetamaskController extends EventEmitter {
       keyringController: this.keyringController,
       initState: initState.ThreeBoxController,
       getKeyringControllerState: this.keyringController.memStore.getState.bind(this.keyringController.memStore),
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
       version,
     })
 

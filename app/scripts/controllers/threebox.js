@@ -20,7 +20,6 @@ class ThreeBoxController {
       addressBookController,
       version,
       getKeyringControllerState,
-      getSelectedAddress,
     } = opts
 
     this.preferencesController = preferencesController
@@ -43,9 +42,9 @@ class ThreeBoxController {
       },
       processPersonalMessage: async (msgParams) => {
         const accounts = await this.keyringController.getAccounts()
-        return Promise.resolve(keyringController.signPersonalMessage({ ...msgParams, from: accounts[0] }, {
+        return keyringController.signPersonalMessage({ ...msgParams, from: accounts[0] }, {
           withAppKeyOrigin: 'wallet://3box.metamask.io',
-        }))
+        })
       },
     })
 
