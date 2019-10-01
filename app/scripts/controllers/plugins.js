@@ -149,7 +149,6 @@ class PluginsController extends EventEmitter {
     console.log('running add plugin with ', plugin)
     const { sourceCode, initialPermissions } = plugin
 
-
     const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
 
     return new Promise((resolve, reject) => {

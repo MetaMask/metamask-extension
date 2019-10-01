@@ -209,8 +209,17 @@ class PermissionsController {
    */
   _initializePermissions (restoredState) {
 
-    // TODO:permissions stop persisting permissionsDescriptions and remove this line
-    const initState = { ...restoredState, permissionsRequests: [] }
+    const initState = Object.keys(restoredState)
+      .filter(k => {
+        return ![
+          'permissionsDescriptions',
+          'permissionsRequests',
+        ].includes(k)
+      })
+      .reduce((acc, k) => {
+        acc[k] = restoredState[k]
+        return acc
+      }, {})
 
     this.testProfile = {
       name: 'Dan Finlay',
