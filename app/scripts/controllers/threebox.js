@@ -20,7 +20,6 @@ class ThreeBoxController {
       addressBookController,
       version,
       getKeyringControllerState,
-      getSelectedAddress,
     } = opts
 
     this.preferencesController = preferencesController
@@ -32,18 +31,20 @@ class ThreeBoxController {
         if (origin !== '3Box') { return [] }
         const isUnlocked = getKeyringControllerState().isUnlocked
 
-        const selectedAddress = getSelectedAddress()
+        const accounts = await this.keyringController.getAccounts()
 
-        if (isUnlocked && selectedAddress) {
-          return [selectedAddress]
+        if (isUnlocked && accounts[0]) {
+          const appKeyAddress = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
+          return [appKeyAddress]
         } else {
           return []
         }
       },
-      processPersonalMessage: (msgParams) => {
-        return Promise.resolve(keyringController.signPersonalMessage(msgParams, {
+      processPersonalMessage: async (msgParams) => {
+        const accounts = await this.keyringController.getAccounts()
+        return keyringController.signPersonalMessage({ ...msgParams, from: accounts[0] }, {
           withAppKeyOrigin: 'wallet://3box.metamask.io',
-        }))
+        })
       },
     })
 
