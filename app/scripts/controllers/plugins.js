@@ -271,10 +271,12 @@ class PluginsController extends EventEmitter {
           crypto,
           SubtleCrypto,
           fetch,
+          XMLHttpRequest,
         },
         crypto,
         SubtleCrypto,
         fetch,
+        XMLHttpRequest,
       })
       sessedPlugin()
     } catch (err) {
