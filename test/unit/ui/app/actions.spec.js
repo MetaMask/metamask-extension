@@ -37,7 +37,6 @@ describe('Actions', () => {
 
   beforeEach(async () => {
 
-
     metamaskController = new MetaMaskController({
       provider,
       keyringController: new KeyringController({}),

@@ -47,7 +47,7 @@ class AssetsController extends EventEmitter {
   }
 
   getPriorAssets (fromDomain, asset) {
-    return this.assets.filter((asset2, index) => {
+    return this.assets.filter((asset2) => {
       return asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier
     })
   }
@@ -62,7 +62,7 @@ class AssetsController extends EventEmitter {
 
   updateAsset (fromDomain, asset) {
     this.validateAsset(fromDomain, asset)
-    this.assets = this.assets.map((asset2, index) => {
+    this.assets = this.assets.map((asset2) => {
       if (asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier) {
         return asset
       } else {

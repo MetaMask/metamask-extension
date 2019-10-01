@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import assert from 'assert'
 import thunk from 'redux-thunk'
+import sinon from 'sinon'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
@@ -8,7 +10,16 @@ import { mount } from 'enzyme'
 import TokenCell from '../../../../../ui/app/components/app/token-cell'
 import Identicon from '../../../../../ui/app/components/ui/identicon'
 
-describe.only('Token Cell', () => {
+const mountOptions = {
+  context: {
+    metricsEvent: sinon.spy(),
+  },
+  childContextTypes: {
+    metricsEvent: PropTypes.func.isRequired,
+  },
+}
+
+describe('Token Cell', () => {
   let wrapper
 
   const state = {
@@ -80,7 +91,8 @@ describe.only('Token Cell', () => {
             image={'./test-image'}
             onClick={registerClick}
           />
-        </Provider>
+        </Provider>,
+        mountOptions
       )
 
       wrapper.simulate('click')
@@ -90,5 +102,4 @@ describe.only('Token Cell', () => {
       }
     })
   })
-
 })

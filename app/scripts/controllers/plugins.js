@@ -1,7 +1,21 @@
 const ObservableStore = require('obs-store')
 const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
-const SES = require('ses')
+
+const isTest = process.env.IN_TEST === 'true' || process.env.METAMASK_ENV === 'test'
+const SES = (
+  isTest
+    ? {
+      makeSESRootRealm: () => {
+        return {
+          evaluate: () => {
+            return () => true
+          },
+        }
+      },
+    }
+    : require('ses')
+)
 
 class PluginsController extends EventEmitter {
 

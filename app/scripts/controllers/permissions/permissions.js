@@ -175,8 +175,9 @@ class PermissionsController {
     const plugins = this.pluginsFromPerms(approved.permissions)
     plugins.forEach((plugin) => {
       this.pluginsController.add(plugin)
-      .catch((reason) => {
-      })
+        .catch((err) => {
+          console.error(err)
+        })
     })
   }
 
@@ -185,7 +186,7 @@ class PermissionsController {
     return permStrings.filter((perm) => {
       return perm.indexOf('wallet_plugin_') === 0
     })
-    .map(perm => perm.substr(14))
+      .map(perm => perm.substr(14))
   }
 
   /**
