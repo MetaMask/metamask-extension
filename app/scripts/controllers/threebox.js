@@ -118,7 +118,7 @@ class ThreeBoxController {
       const threeBoxConfig = await Box.getConfig(this.address)
       backupExists = threeBoxConfig.spaces && threeBoxConfig.spaces.metamask
     } catch (e) {
-      if (e.message.match(/^Error: Invalid response (404)/)) {
+      if (e.message.match(/^Error: Invalid response \(404\)/)) {
         backupExists = false
       } else {
         throw e
