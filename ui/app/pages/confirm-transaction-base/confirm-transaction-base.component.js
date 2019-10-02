@@ -282,7 +282,7 @@ export default class ConfirmTransactionBase extends Component {
                 <TextField
                   type="number"
                   min="0"
-                  placeholder={ this.context.t('nonceFieldPlaceholder') }
+                  placeholder={ nextNonce }
                   onChange={({ target: { value } }) => {
                     if (!value.length || Number(value) < 0) {
                       updateCustomNonce('')
@@ -293,7 +293,7 @@ export default class ConfirmTransactionBase extends Component {
                   }}
                   fullWidth
                   margin="dense"
-                  value={customNonceValue || nextNonce || ''}
+                  value={ customNonceValue || '' }
                 />
               </div>
             </div>
@@ -494,6 +494,7 @@ export default class ConfirmTransactionBase extends Component {
                   submitting: false,
                   submitError: error.message,
                 })
+                updateCustomNonce('')
               })
           }
         })

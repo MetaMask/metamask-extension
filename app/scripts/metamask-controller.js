@@ -520,6 +520,7 @@ module.exports = class MetamaskController extends EventEmitter {
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
+      getNextNonce: nodeify(this.getNextNonce, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -1612,11 +1613,26 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns Promise<number>
    */
   async getPendingNonce (address) {
-    const { nonceDetails, releaseLock} = await this.txController.nonceTracker.getNonceLock(address)
+    const { nonceDetails, releaseLock } = await this.txController.nonceTracker.getNonceLock(address)
     const pendingNonce = nonceDetails.params.highestSuggested
 
     releaseLock()
     return pendingNonce
+  }
+
+  /**
+   * Returns the next nonce according to the nonce-tracker
+   * @param address {string} - The hex string address for the transaction
+   * @returns Promise<number>
+   */
+  async getNextNonce (address) {
+    let nonceLock
+    try {
+      nonceLock = await this.txController.nonceTracker.getNonceLock(address)
+    } finally {
+      nonceLock.releaseLock()
+    }
+    return nonceLock.nextNonce
   }
 
   //=============================================================================
