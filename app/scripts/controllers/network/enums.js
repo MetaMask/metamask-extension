@@ -1,10 +1,11 @@
 // types
-const ROPSTEN = 'default#eth:ropsten'
-const RINKEBY = 'default#eth:rinkeby'
-const KOVAN = 'default#eth:kovan'
-const MAINNET = 'default#eth:mainnet'
+// provider#protocall:network-name/transport
+const ROPSTEN = 'infura#eth:ropsten'
+const RINKEBY = 'infura#eth:rinkeby'
+const KOVAN = 'infura#eth:kovan'
+const MAINNET = 'infura#eth:mainnet'
 const LOCALHOST = 'default#eth:localhost'
-const GOERLI = 'default#eth:goerli'
+const GOERLI = 'infura#eth:goerli'
 const CUSTOM_RPC = 'custom#eth:rpc'
 
 // chain id

@@ -38,7 +38,6 @@ module.exports = class Network {
       this.provider = provider
       this.blockTracker = blockTracker
       this.initialized = true
-      debugger
       this._ready({ provider, blockTracker, chainId: this.providerConfig.chainId})
       this.lookupNetwork()
     } catch (e) {
@@ -82,11 +81,9 @@ module.exports = class Network {
     const { type } = this.providerConfig
     const ethQuery = new EthQuery(this.provider)
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      debugger
       if (err) {
         return this.setNetworkState('loading')
       }
-      debugger
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network, type)
     })
