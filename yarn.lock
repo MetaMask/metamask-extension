@@ -22403,10 +22403,10 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-realms-shim@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/realms-shim/-/realms-shim-1.1.2.tgz#3a6f438e38a31e9189fbb22f83226e0ab064d237"
-  integrity sha512-FadHiwVXkVGyGGGtdn6vWsmVMFEBci/vVocIfx2Gb9v6Ha8tux2H4z8vZH85YIpAL9azGuDPlSAyvRxWbydmUQ==
+realms-shim@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/realms-shim/-/realms-shim-1.2.0.tgz#455b5ecac711f8907cdd1e7a2bc6cb173f3a3f09"
+  integrity sha512-eVet6pLh6+Fk7eHCrGh1gnli7LByI2snWI+vcpF+3neVs0dRnmDW+msA+sVr+EOpVPnrAqXcwoIDP/pr9Wn6cw==
 
 recast@^0.11.17:
   version "0.11.23"
@@ -23778,14 +23778,14 @@ servify@^0.1.12:
     request "^2.79.0"
     xhr "^2.3.3"
 
-ses@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.6.2.tgz#07d5409cdd13927a727998b5e12ffc064f3f5f1f"
-  integrity sha512-QkgoXaql3Md+P1ZzDjVyZRoj2+/DkuVXFlPgrhXTuhOA09USZAqnlQJwI0R2qRA40H0hzkbVhfoAEEUZvqeCIA==
+ses@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.6.3.tgz#43504a46c7e1ce7d127d08530ded0c2398f20e42"
+  integrity sha512-etMuM3neb78a8olb5Ngi2UkRPYUzwKSd8jrDcArR2gNMLYHR2sdzxkcE+tiKZ0aTW+1XG+JPHly9flFHzFjSTQ==
   dependencies:
     "@agoric/make-hardener" "^0.0.6"
     esm "^3.2.25"
-    realms-shim "^1.1.2"
+    realms-shim "^1.2.0"
 
 sesify-tofu@^2.0.4:
   version "2.0.4"
