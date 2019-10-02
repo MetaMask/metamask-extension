@@ -757,7 +757,8 @@ module.exports = class MetamaskController extends EventEmitter {
     try {
       const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
       if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-        await this.threeBoxController.new3Box()
+        // 'await' intentionally omitted to avoid waiting for initialization
+        this.threeBoxController.init()
         this.threeBoxController.turnThreeBoxSyncingOn()
       } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
         this.threeBoxController.turnThreeBoxSyncingOn()
