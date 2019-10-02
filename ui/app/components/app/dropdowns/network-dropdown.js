@@ -18,7 +18,6 @@ const {
   MAINNET,
   LOCALHOST,
   GOERLI,
-  CUSTOM_RPC,
 } = require('../../../helpers/constants/network-types')
 
 // classes from nodes of the toggle element.

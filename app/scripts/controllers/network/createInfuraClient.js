@@ -13,7 +13,6 @@ module.exports = createInfuraClient
 
 function createInfuraClient ({ network, onRequest }) {
   const net = network.split(':')[1]
-  debugger
   const infuraMiddleware = mergeMiddleware([
     createRequestHookMiddleware(onRequest),
     createInfuraMiddleware({ net, maxAttempts: 5, source: 'metamask' }),

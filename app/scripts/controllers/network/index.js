@@ -154,7 +154,6 @@ module.exports = class NetworkController extends EventEmitter {
   setProviderType (type) {
     this.setNetworkState('loading')
     const network = this.networks[type]
-    debugger
     if (!network) throw new Error('NetworkController - network does not exist')
     const { provider, blockTracker } = network
     if (!network.initialized) {
