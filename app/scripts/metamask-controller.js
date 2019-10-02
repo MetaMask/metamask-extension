@@ -1629,8 +1629,6 @@ module.exports = class MetamaskController extends EventEmitter {
     let nonceLock
     try {
       nonceLock = await this.txController.nonceTracker.getNonceLock(address)
-    } catch (e) {
-      throw new Error('Error getting nonce lock: ', e.message)
     } finally {
       nonceLock.releaseLock()
     }
