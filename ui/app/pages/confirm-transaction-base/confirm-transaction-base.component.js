@@ -131,6 +131,7 @@ export default class ConfirmTransactionBase extends Component {
       } else {
         this.setState({ submitWarning: '' })
       }
+
     }
 
     if (useNonceField && prevProps.nextNonce === null && nextNonce !== null && customNonceValue === '') {
@@ -500,6 +501,7 @@ export default class ConfirmTransactionBase extends Component {
                   submitting: false,
                   submitError: error.message,
                 })
+                updateCustomNonce('')
               })
           }
         })
