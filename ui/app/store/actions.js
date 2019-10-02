@@ -2932,13 +2932,13 @@ function getNextNonce () {
   return (dispatch, getState) => {
     const address = getState().metamask.selectedAddress
     return new Promise((resolve, reject) => {
-      background.getPendingNonce(address, (err, pendingNonce) => {
+      background.getNextNonce(address, (err, nextNonce) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
-        dispatch(setNextNonce(pendingNonce))
-        resolve(pendingNonce)
+        dispatch(setNextNonce(nextNonce))
+        resolve(nextNonce)
       })
     })
   }
