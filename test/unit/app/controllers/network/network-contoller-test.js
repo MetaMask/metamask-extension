@@ -56,12 +56,12 @@ describe('# Network Controller', function () {
 
     describe('#setProviderType', function () {
       it('should update provider.type', function () {
-        networkController.setProviderType('default#eth:mainnet')
+        networkController.setProviderType('infura#eth:mainnet')
         const type = networkController.getProviderConfig().type
-        assert.equal(type, 'default#eth:mainnet', 'provider type is updated')
+        assert.equal(type, 'infura#eth:mainnet', 'provider type is updated')
       })
       it('should set the network to loading', function () {
-        networkController.setProviderType('default#eth:mainnet')
+        networkController.setProviderType('infura#eth:mainnet')
         const loading = networkController.isNetworkLoading()
         assert.ok(loading, 'network is loading')
       })
@@ -100,19 +100,19 @@ describe('Network utils', () => {
         input: 42,
         expected: 'Kovan',
       }, {
-        input: 'default#eth:ropsten',
+        input: 'infura#eth:ropsten',
         expected: 'Ropsten',
       }, {
-        input: 'default#eth:rinkeby',
+        input: 'infura#eth:rinkeby',
         expected: 'Rinkeby',
       }, {
-        input: 'default#eth:kovan',
+        input: 'infura#eth:kovan',
         expected: 'Kovan',
       }, {
-        input: 'default#eth:mainnet',
+        input: 'infura#eth:mainnet',
         expected: 'Main Ethereum Network',
       }, {
-        input: 'default#eth:goerli',
+        input: 'infura#eth:goerli',
         expected: 'Goerli',
       },
     ]

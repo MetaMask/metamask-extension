@@ -38,23 +38,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
   let netId
 
   switch (network) {
-    case 'default#eth:mainnet':
+    case 'infura#eth:mainnet':
       netId = '1'
       chainId = '0x01'
       break
-    case 'default#eth:ropsten':
+    case 'infura#eth:ropsten':
       netId = '3'
       chainId = '0x03'
       break
-    case 'default#eth:rinkeby':
+    case 'infura#eth:rinkeby':
       netId = '4'
       chainId = '0x04'
       break
-    case 'default#eth:kovan':
+    case 'infura#eth:kovan':
       netId = '42'
       chainId = '0x2a'
       break
-    case 'default#eth:goerli':
+    case 'infura#eth:goerli':
       netId = '5'
       chainId = '0x05'
       break

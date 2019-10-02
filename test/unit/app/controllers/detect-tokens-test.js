@@ -48,7 +48,7 @@ describe('DetectTokensController', () => {
     clock = sandbox.useFakeTimers()
     const network = new NetworkController()
     network.initializeProvider(networkControllerProviderConfig)
-    network.setProviderType('default#eth:mainnet')
+    network.setProviderType('infura#eth:mainnet')
     const preferences = new PreferencesController({ network })
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
