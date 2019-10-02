@@ -1626,9 +1626,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns Promise<number>
    */
   async getNextNonce (address) {
-    const { nonceDetails, releaseLock} = await this.txController.nonceTracker.getNonceLock(address)
-    const nextNonce = nonceDetails.nextNonce
-
+    const { nextNonce, releaseLock } = await this.txController.nonceTracker.getNonceLock(address)
     releaseLock()
     return nextNonce
   }
