@@ -1613,7 +1613,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns Promise<number>
    */
   async getPendingNonce (address) {
-    const { nonceDetails, releaseLock} = await this.txController.nonceTracker.getNonceLock(address)
+    const { nonceDetails, releaseLock } = await this.txController.nonceTracker.getNonceLock(address)
     const pendingNonce = nonceDetails.params.highestSuggested
 
     releaseLock()
