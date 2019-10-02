@@ -118,6 +118,8 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
       nextNonce,
       customNonceValue,
+      updateCustomNonce,
+      useNonceField,
     } = this.props
     const { transactionStatus: prevTxStatus } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
@@ -129,6 +131,10 @@ export default class ConfirmTransactionBase extends Component {
       } else {
         this.setState({ submitWarning: '' })
       }
+    }
+
+    if (useNonceField && prevProps.nextNonce === null && nextNonce !== null && customNonceValue === '') {
+      updateCustomNonce(String(nextNonce))
     }
 
     if (statusUpdated && txDroppedOrConfirmed) {
