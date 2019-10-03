@@ -9507,7 +9507,7 @@ env-paths@^1.0.0:
   resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-1.0.0.tgz#4168133b42bb05c38a35b1ae4397c8298ab369e0"
   integrity sha1-QWgTO0K7BcOKNbGuQ5fIKYqzaeA=
 
-envify@^4.0.0:
+envify@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/envify/-/envify-4.1.0.tgz#f39ad3db9d6801b4e6b478b61028d3f0b6819f7e"
   integrity sha512-IKRVVoAYr4pIx4yIWNsz9mOsboxlNXiu7TNBnem/K/uTHdkyzXWDzHCK7UTolqBbgaBz0tQHsD3YNls0uIIjiw==
@@ -10265,13 +10265,26 @@ eth-ens-namehash@^1.0.2:
     js-sha3 "^0.5.7"
 
 eth-hd-keyring@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.4.0.tgz#288e73041f2b3f047b4151fb4b5ab5ad5710b9a6"
-  integrity sha512-MMKSSwDWuEfItEM/826LHrs2HVjy57qQQfcgSxIYOCJY0vykw++LH8d6QJOBrGFe+xu/gtbHBRMURrFGdqfevw==
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.4.1.tgz#c1b34b29bae57d90525dd1b7d3f349a30e0cee8a"
+  integrity sha512-oigRNw9lGRHvhkxZuREV147euMX9GH+0icc/MT0oaU+8hu6KCArg2fm78+uXcIvJvK66DZUS46/+hieXCXqwjw==
   dependencies:
     bip39 "^2.2.0"
     eth-sig-util "^2.4.4"
     eth-simple-keyring "^3.4.0"
+    ethereumjs-abi "^0.6.5"
+    ethereumjs-util "^5.1.1"
+    ethereumjs-wallet "^0.6.0"
+    events "^1.1.1"
+    xtend "^4.0.1"
+
+"eth-hd-keyring@https://github.com/logvik/eth-hd-keyring":
+  version "3.5.1"
+  resolved "https://github.com/logvik/eth-hd-keyring#0a8ba3351a53e03ad7362714d71287a154f19e47"
+  dependencies:
+    bip39 "^2.2.0"
+    eth-sig-util "^2.4.4"
+    eth-simple-keyring "^3.5.0"
     ethereumjs-abi "^0.6.5"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
@@ -10292,13 +10305,12 @@ eth-json-rpc-errors@^2.0.0:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
-eth-json-rpc-filters@^4.1.1:
+eth-json-rpc-filters@^4.1.1, "eth-json-rpc-filters@https://github.com/logvik/eth-json-rpc-filters":
   version "4.1.1"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.1.1.tgz#15277c66790236d85f798f4d7dc6bab99a798cd2"
-  integrity sha512-GkXb2h6STznD+AmMzblwXgm1JMvjdK9PTIXG7BvIkTlXQ9g0QOxuU1iQRYHoslF9S30BYBSoLSisAYPdLggW+A==
+  resolved "https://github.com/logvik/eth-json-rpc-filters#027447b83452a6f8b3e29bfa4b142657786f4d43"
   dependencies:
     await-semaphore "^0.1.3"
-    eth-json-rpc-middleware "^4.1.4"
+    eth-json-rpc-middleware "https://github.com/MetaMask/eth-json-rpc-middleware"
     eth-query "^2.1.2"
     json-rpc-engine "^5.1.3"
     lodash.flatmap "^4.5.0"
@@ -10326,6 +10338,15 @@ eth-json-rpc-infura@^4.0.1:
     json-rpc-engine "^5.1.3"
     tape "^4.8.0"
 
+"eth-json-rpc-infura@https://github.com/logvik/eth-json-rpc-infura":
+  version "4.0.2"
+  resolved "https://github.com/logvik/eth-json-rpc-infura#cd0443a59b50c1259dfa11c4b32cb974f2267967"
+  dependencies:
+    cross-fetch "^2.1.1"
+    eth-json-rpc-errors "^1.0.1"
+    eth-json-rpc-middleware "https://github.com/MetaMask/eth-json-rpc-middleware"
+    json-rpc-engine "^5.1.3"
+
 eth-json-rpc-middleware@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-1.6.0.tgz#5c9d4c28f745ccb01630f0300ba945f4bef9593f"
@@ -10345,10 +10366,29 @@ eth-json-rpc-middleware@^1.5.0:
     promise-to-callback "^1.0.0"
     tape "^4.6.3"
 
-eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-middleware@^4.2.0:
+eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.2.0.tgz#cfb77c5056cb8001548c6c7d54f4af5fce04d489"
   integrity sha512-90LljqRyJhkg7fOwKunh1lu1Mr5bspXMBDitaTGyGPPNiFTbMrhtfbf9fteYlXRFCbq+aIFWwl/X+P7nkrdkLg==
+  dependencies:
+    btoa "^1.2.1"
+    clone "^2.1.1"
+    eth-json-rpc-errors "^1.0.1"
+    eth-query "^2.1.2"
+    eth-sig-util "^1.4.2"
+    ethereumjs-block "^1.6.0"
+    ethereumjs-tx "^1.3.7"
+    ethereumjs-util "^5.1.2"
+    ethereumjs-vm "^2.6.0"
+    fetch-ponyfill "^4.0.0"
+    json-rpc-engine "^5.1.3"
+    json-stable-stringify "^1.0.1"
+    pify "^3.0.0"
+    safe-event-emitter "^1.0.1"
+
+"eth-json-rpc-middleware@https://github.com/MetaMask/eth-json-rpc-middleware":
+  version "4.3.0"
+  resolved "https://github.com/MetaMask/eth-json-rpc-middleware#8e7f0584affe78a009fdca8089edd12b9510215d"
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
@@ -10376,6 +10416,20 @@ eth-keyring-controller@^5.3.0:
     eth-hd-keyring "^3.4.0"
     eth-sig-util "^1.4.0"
     eth-simple-keyring "^3.4.0"
+    ethereumjs-util "^5.1.2"
+    loglevel "^1.5.0"
+    obs-store "^4.0.3"
+
+"eth-keyring-controller@https://github.com/logvik/KeyringController":
+  version "5.3.1"
+  resolved "https://github.com/logvik/KeyringController#f0cec5b88e0b8955cef917bbf9bc45a0826570d0"
+  dependencies:
+    bip39 "^2.4.0"
+    bluebird "^3.5.0"
+    browser-passworder "^2.0.3"
+    eth-hd-keyring "https://github.com/logvik/eth-hd-keyring"
+    eth-sig-util "^1.4.0"
+    eth-simple-keyring "^3.5.0"
     ethereumjs-util "^5.1.2"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
@@ -10485,6 +10539,18 @@ eth-simple-keyring@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.4.0.tgz#01464234b070af42a343a3c451dd58b00ae1a042"
   integrity sha512-g/ObWqWaTHikrhhm7fNinpkkpEPqBRz02oBXcH81mc3VFkOLb3pjfvNg1Da6Jh+A4wA0kBE4vkiiG7BUwF1zNg==
+  dependencies:
+    eth-sig-util "^2.5.0"
+    ethereumjs-abi "^0.6.5"
+    ethereumjs-util "^5.1.1"
+    ethereumjs-wallet "^0.6.0"
+    events "^1.1.1"
+    xtend "^4.0.1"
+
+eth-simple-keyring@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.5.0.tgz#c7fa285ca58d31ef44bc7db678b689f9ffd7b453"
+  integrity sha512-z9IPt9aoMWAw5Zc3Jk/HKbWPJNc7ivZ5ECNtl3ZoQUGRnwoWO71W5+liVPJtXFNacGOOGsBfqTqrXL9C4EnYYQ==
   dependencies:
     eth-sig-util "^2.5.0"
     ethereumjs-abi "^0.6.5"
@@ -12384,10 +12450,37 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
-gaba@^1.6.0, gaba@^1.9.0:
+gaba@^1.6.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.0.tgz#ccd9f99c56687b5acd39f9e3ceb435b2a59b6aa1"
   integrity sha512-HoVreAdZssL0jNHuzZ7WP+YKZ0riu44jVDWxhQ9hsgPuzxbVEsz9fO/HDxqAdNZS1Cswayq6+ciZ3HSCFWMKbQ==
+  dependencies:
+    await-semaphore "^0.1.3"
+    eth-contract-metadata "^1.11.0"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-infura "^4.0.1"
+    eth-keyring-controller "^5.3.0"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-sig-util "^2.3.0"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "0.6.0"
+    ethjs-query "^0.3.8"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    isomorphic-fetch "^2.2.1"
+    jsonschema "^1.2.4"
+    percentile "^1.2.1"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^15.0.4"
+
+gaba@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.1.tgz#2e096889aca74eb5946b55a3922427314b5dca22"
+  integrity sha512-YsKG4+Ql3D6v4cnMgH7P8c9JqQb74y6gkIhySLd1BYwFZQTXn27u16cYfoxPtqeGfTFhus9h4CpxAr8s8bsvCA==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.11.0"
@@ -13402,7 +13495,7 @@ gulp-zip@^4.0.0:
     vinyl "^2.1.0"
     yazl "^2.1.0"
 
-gulp@^4.0.0, gulp@^4.0.2:
+gulp@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/gulp/-/gulp-4.0.2.tgz#543651070fd0f6ab0a0650c6a3e6ff5a7cb09caa"
   integrity sha512-dvEs27SCZt2ibF29xYgmnwwCYZxdxhQ/+LFWlbAW8y7jt68L/65402Lz3+CKy0Ov4rOs+NERmDq7YlZaDqUIfA==

@@ -35,6 +35,8 @@ const RecentBlocksController = require('./controllers/recent-blocks')
 const IncomingTransactionsController = require('./controllers/incoming-transactions')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
+const DecryptMessageManager = require('./lib/decrypt-message-manager')
+const EncryptionPublicKeyManager = require('./lib/encryption-public-key-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
@@ -275,6 +277,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
+    this.decryptMessageManager = new DecryptMessageManager()
+    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -310,6 +314,8 @@ module.exports = class MetamaskController extends EventEmitter {
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
+      DecryptMessageManager: this.decryptMessageManager.memStore,
+      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
@@ -360,6 +366,8 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processDecryptMessage: this.newRequestDecryptMessage.bind(this),
+      processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) => this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
     }
@@ -533,6 +541,15 @@ module.exports = class MetamaskController extends EventEmitter {
       // personalMessageManager
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
+
+      // decryptMessageManager
+      decryptMessage: nodeify(this.decryptMessage, this),
+      decryptMessageInline: nodeify(this.decryptMessageInline, this),
+      cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
+
+      // EncryptionPublicKeyManager
+      encryptionPublicKey: nodeify(this.encryptionPublicKey, this),
+      cancelEncryptionPublicKey: this.cancelEncryptionPublicKey.bind(this),
 
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
@@ -1140,6 +1157,148 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  // eth_decryptMessage methods
+
+  /**
+  * Called when a dapp uses the eth_decryptMessage method.
+  *
+  * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
+  * @param {Function} cb - The callback function called with the signature.
+  * Passed back to the requesting Dapp.
+  */
+  async newRequestDecryptMessage (msgParams, req) {
+    const promise = this.decryptMessageManager.addUnapprovedMessageAsync(msgParams, req)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    return promise
+  }
+
+  /**
+  * Only decypt message and don't touch transaction state
+  *
+  * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
+  * @returns {Promise<Object>} - A full state update.
+  */
+  decryptMessageInline (msgParams) {
+    log.info('MetaMaskController - decryptMessageInline')
+    const msgId = msgParams.metamaskId
+    const stripped = ethUtil.stripHexPrefix(msgParams.data)
+    const buff = Buffer.from(stripped, 'hex')
+    msgParams.data = JSON.parse(buff.toString('utf8'))
+    // decrypt the message inline
+    return this.keyringController.decryptMessage(msgParams).then((rawData) => {
+      const msg = this.decryptMessageManager.getMsg(msgId)
+      msg.rawData = rawData
+      this.decryptMessageManager._updateMsg(msg)
+      return this.getState()
+    })
+  }
+
+  /**
+  * Signifies a user's approval to decrypt a message in queue.
+  * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
+  *
+  * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
+  * @returns {Promise<Object>} - A full state update.
+  */
+  decryptMessage (msgParams) {
+    log.info('MetaMaskController - decryptMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for decryption
+    try {
+      return this.decryptMessageManager.approveMessage(msgParams)
+        .then((cleanMsgParams) => {
+          const stripped = ethUtil.stripHexPrefix(cleanMsgParams.data)
+          const buff = Buffer.from(stripped, 'hex')
+          cleanMsgParams.data = JSON.parse(buff.toString('utf8'))
+          // decrypt the message
+          return this.keyringController.decryptMessage(cleanMsgParams)
+        })
+        .then((rawMess) => {
+        // tells the listener that the message has been decrypted
+        // and can be returned to the dapp
+          this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess)
+          return this.getState()
+        })
+    } catch (error) {
+      log.info('MetaMaskController - eth_decryptMessage failed.', error)
+      this.decryptMessageManager.errorMessage(msgId, error)
+    }
+  }
+
+  /**
+   * Used to cancel a eth_decryptMessage type message.
+   * @param {string} msgId - The ID of the message to cancel.
+   * @param {Function} cb - The callback function called with a full state update.
+   */
+  cancelDecryptMessage (msgId, cb) {
+    const messageManager = this.decryptMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  // encryption_public_key methods
+
+  /**
+  * Called when a dapp uses the encryption_public_key method.
+  *
+  * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
+  * @param {Function} cb - The callback function called with the signature.
+  * Passed back to the requesting Dapp.
+  */
+  async newRequestEncryptionPublicKey (msgParams, req) {
+    const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(msgParams, req)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    return promise
+  }
+
+  /**
+  * Signifies a user's approval to receiving encryption public key in queue.
+  * Triggers receiving, and the callback function from newUnsignedEncryptionPublicKey.
+  *
+  * @param {Object} msgParams - The params of the message to receive & return to the Dapp.
+  * @returns {Promise<Object>} - A full state update.
+  */
+  encryptionPublicKey (msgParams) {
+    log.info('MetaMaskController - encryptionPublicKey')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for decryption
+    try {
+      return this.encryptionPublicKeyManager.approveMessage(msgParams)
+        .then((params) => {
+          // EncryptionPublicKey message
+          return this.keyringController.getEncryptionPublicKey(params.data)
+        })
+        .then((publicKey) => {
+          // tells the listener that the message has been processed
+          // and can be returned to the dapp
+          this.encryptionPublicKeyManager.setMsgStatusReceived(msgId, publicKey)
+          return this.getState()
+        })
+    } catch (error) {
+      log.info('MetaMaskController - encryption_public_key failed.', error)
+      this.encryptionPublicKeyManager.errorMessage(msgId, error)
+    }
+  }
+
+  /**
+   * Used to cancel a encryption_public_key type message.
+   * @param {string} msgId - The ID of the message to cancel.
+   * @param {Function} cb - The callback function called with a full state update.
+   */
+  cancelEncryptionPublicKey (msgId, cb) {
+    const messageManager = this.encryptionPublicKeyManager
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())

@@ -13,6 +13,8 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processTypedMessageV4,
   processPersonalMessage,
+  processDecryptMessage,
+  processEncryptionPublicKey,
   getPendingNonce,
   getPendingTransactionByHash,
 }) {
@@ -30,6 +32,8 @@ function createMetamaskMiddleware ({
       processTypedMessageV3,
       processTypedMessageV4,
       processPersonalMessage,
+      processDecryptMessage,
+      processEncryptionPublicKey,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
