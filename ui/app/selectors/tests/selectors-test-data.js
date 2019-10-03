@@ -132,6 +132,8 @@ module.exports = {
     'unapprovedMsgCount': 0,
     'unapprovedPersonalMsgs': {},
     'unapprovedPersonalMsgCount': 0,
+    'unapprovedDecryptMsgs': {},
+    'unapprovedDecryptMsgCount': 0,
     'keyringTypes': [
       'Simple Key Pair',
       'HD Key Tree',

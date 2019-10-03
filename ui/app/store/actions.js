@@ -159,7 +159,9 @@ var actions = {
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
+  decryptMsg,
   cancelPersonalMsg,
+  cancelDecryptMsg,
   signTypedMsg,
   cancelTypedMsg,
   sendTx: sendTx,
@@ -899,6 +901,37 @@ function signPersonalMsg (msgData) {
   }
 }
 
+function decryptMsg (msgData) {console.log(msgData);
+  log.debug('action - decryptMsg')
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    window.onbeforeunload = null
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessage`)
+      background.decryptMessage(msgData, (err, newState) => {
+        log.debug('decryptMsg called back')
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.completedTx(msgData.metamaskId))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
@@ -1271,6 +1304,29 @@ function cancelPersonalMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(actions.completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
+function cancelDecryptMsg (msgData) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    window.onbeforeunload = null
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelDecryptMessage(id, (err, newState) => {
         dispatch(actions.updateMetamaskState(newState))
         dispatch(actions.hideLoadingIndication())
 

@@ -1399,5 +1399,17 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
+  },
+  "decryptRequest" : {
+    "message": "Запрос расшифровки"
+  },
+  "yourDecryptRequest" : {
+    "message": "Данные для расшифровки"
+  },
+  "decrypt" : {
+    "message": "Расшифровать"
+  },
+  "youDecrypt": {
+    "message": "Вы расшифровываете"
   }
 }

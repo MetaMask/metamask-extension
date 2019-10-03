@@ -50,8 +50,10 @@ function mapDispatchToProps (dispatch) {
 function mergeProps (stateProps, dispatchProps, ownProps) {
   const {
     signPersonalMessage,
+    decryptMessage,
     signTypedMessage,
     cancelPersonalMessage,
+    cancelDecryptMessage,
     cancelTypedMessage,
     signMessage,
     cancelMessage,
@@ -65,6 +67,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   if (type === 'personal_sign') {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
+  } else if (type === 'eth_decryptMessage') {
+    cancel = cancelDecryptMessage
+    sign = decryptMessage
   } else if (type === 'eth_signTypedData') {
     cancel = cancelTypedMessage
     sign = signTypedMessage
@@ -122,11 +127,13 @@ SignatureRequest.prototype.componentDidMount = function () {
 }
 
 SignatureRequest.prototype.renderHeader = function () {
+  const { txData } = this.props
+  const { type } = txData
   return h('div.request-signature__header', [
 
     h('div.request-signature__header-background'),
 
-    h('div.request-signature__header__text', this.context.t('sigRequest')),
+    h('div.request-signature__header__text', (type === 'eth_decryptMessage' ? this.context.t('decryptRequest') : this.context.t('sigRequest'))),
 
     h('div.request-signature__header__tip-container', [
       h('div.request-signature__header__tip'),
@@ -195,10 +202,13 @@ SignatureRequest.prototype.renderRequestIcon = function () {
 }
 
 SignatureRequest.prototype.renderRequestInfo = function () {
+  const { txData } = this.props
+  const { type } = txData
+  
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
-      this.context.t('yourSigRequested'),
+      (type === 'eth_decryptMessage' ? this.context.t('yourDecryptRequest') : this.context.t('yourSigRequested')),
     ]),
 
   ])
@@ -233,12 +243,15 @@ SignatureRequest.prototype.renderTypedData = function (data) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = this.context.t('youSign') + ':'
-
+  
   const { txData } = this.props
   const { type, msgParams: { data, version } } = txData
 
+  let notice = (type === 'eth_decryptMessage' ? this.context.t('youDecrypt') : this.context.t('youSign')) + ':'
+   
   if (type === 'personal_sign') {
+    rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
+  } else if (type === 'eth_decryptMessage') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
   } else if (type === 'eth_signTypedData') {
     rows = data
@@ -262,7 +275,7 @@ SignatureRequest.prototype.renderBody = function () {
 
     h('div.request-signature__notice', {
       className: classnames({
-        'request-signature__notice': type === 'personal_sign' || type === 'eth_signTypedData',
+        'request-signature__notice': type === 'personal_sign' || type === 'eth_signTypedData' || type === 'eth_decryptMessage',
         'request-signature__warning': type === 'eth_sign',
       }),
     }, [notice]),
@@ -284,8 +297,9 @@ SignatureRequest.prototype.renderBody = function () {
 }
 
 SignatureRequest.prototype.renderFooter = function () {
-  const { cancel, sign } = this.props
-
+  const { cancel, sign, txData } = this.props
+  const { type } = txData
+  
   return h('div.request-signature__footer', [
     h(Button, {
       type: 'default',
@@ -322,7 +336,7 @@ SignatureRequest.prototype.renderFooter = function () {
           this.props.history.push(DEFAULT_ROUTE)
         })
       },
-    }, this.context.t('sign')),
+    }, (type === 'eth_decryptMessage' ? this.context.t('decrypt') : this.context.t('sign')) ),
   ])
 }
 

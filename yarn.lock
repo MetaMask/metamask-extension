@@ -9025,7 +9025,7 @@ entities@^1.1.1, entities@~1.1.1:
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
   integrity sha1-blwtClYhtdra7O+AuQ7ftc13cvA=
 
-envify@^4.0.0:
+envify@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/envify/-/envify-4.1.0.tgz#f39ad3db9d6801b4e6b478b61028d3f0b6819f7e"
   integrity sha512-IKRVVoAYr4pIx4yIWNsz9mOsboxlNXiu7TNBnem/K/uTHdkyzXWDzHCK7UTolqBbgaBz0tQHsD3YNls0uIIjiw==
@@ -9717,13 +9717,14 @@ eth-hd-keyring@^2.0.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-hd-keyring@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-2.1.0.tgz#da93224f791fb1d9220598f7c96f04181dff6ace"
-  integrity sha512-1ZcPmj4h18tmwG7RIturC2lpeimuiAyUGW9Ic5ztCFNeRAcfiQ3ic7sENWhzqbSgth9xkAMIHqM8IY31VJviZg==
+eth-hd-keyring@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.1.0.tgz#9c7f5e5df6588cd0ffad39feb861e241db69a6be"
+  integrity sha512-nVLurn1eC97/IRtLATMXTGU3J4VmgREGl5WPhcHy+YehGoUImYxxeuUVBMMozFapHNY3JFfNgA06N4LHl5rWbQ==
   dependencies:
     bip39 "^2.2.0"
-    eth-sig-util "^2.0.1"
+    eth-sig-util "^2.4.4"
+    eth-simple-keyring "^3.1.0"
     ethereumjs-abi "^0.6.5"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
@@ -9826,17 +9827,17 @@ eth-keyring-controller@^5.0.1:
     obs-store "^4.0.3"
     promise-filter "^1.1.0"
 
-eth-keyring-controller@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.1.0.tgz#1dbe539f6ca483d6f2fa16b33b00d66eeb2de974"
-  integrity sha512-NCXzYIBHJo5o8XoyPdGRLRLTi2pitJKlZPcDO+Un4wbt3djrvWH8adopLH+kNw9zUfk2C5OQqUQ4/UibSvanxA==
+eth-keyring-controller@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.2.0.tgz#be292fb92a9b92beb45feb77e7d38639e3b5ded9"
+  integrity sha512-Dr/foUCwr8ZTETkMRBlZffu4FwTWubf3YQ8SyseCZd0VtUXTNAxum76HTuLpcXVseIwK2mwtiiN4Cmt/taL4jQ==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    eth-hd-keyring "^2.1.0"
+    eth-hd-keyring "^3.1.0"
     eth-sig-util "^1.4.0"
-    eth-simple-keyring "^2.1.0"
+    eth-simple-keyring "^3.3.0"
     ethereumjs-util "^5.1.2"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
@@ -9930,7 +9931,7 @@ eth-sig-util@^1.4.0, eth-sig-util@^1.4.2:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
-eth-sig-util@^2.1.0:
+eth-sig-util@^2.1.0, eth-sig-util@^2.4.3, eth-sig-util@^2.4.4:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.4.4.tgz#8804ead83de8648bcf81eadbfac1e3ccdd360aea"
   integrity sha512-iWGqEJwsUMgtk8AqQQqIDTjMz+pW8s2Sq8gN640dh9U9HoEFQJO3m6ro96DgV6hMB2LYu8F5812LQyynOgCbEw==
@@ -9954,12 +9955,12 @@ eth-simple-keyring@^2.0.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-simple-keyring@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-2.1.0.tgz#bfff8f7c438a9b5164e995db1cccbbdb9e27752f"
-  integrity sha512-31emUxGHOVhYzlPoEGyfrn1Usi2ZI9qDqMnDHwG0R0HdIuF/I10qlf401MkiD9lcMDuvgJkLpqqAvGxrKrFCwA==
+eth-simple-keyring@^3.1.0, eth-simple-keyring@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.3.0.tgz#a62ce779d35768e0ac01ed0b38ffbdbbd874ac79"
+  integrity sha512-CBUtcBPxZkS+qKZyuJ0lBj1ACnn1RJH6aOfGvgHo38glkQ6dHN0LRYxdzwh9uzfLMX+XzEGwJTDz4Srxcr8+iA==
   dependencies:
-    eth-sig-util "^2.0.1"
+    eth-sig-util "^2.4.3"
     ethereumjs-abi "^0.6.5"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
@@ -12878,7 +12879,7 @@ gulp-zip@^4.0.0:
     vinyl "^2.1.0"
     yazl "^2.1.0"
 
-gulp@^4.0.0, gulp@^4.0.2:
+gulp@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/gulp/-/gulp-4.0.2.tgz#543651070fd0f6ab0a0650c6a3e6ff5a7cb09caa"
   integrity sha512-dvEs27SCZt2ibF29xYgmnwwCYZxdxhQ/+LFWlbAW8y7jt68L/65402Lz3+CKy0Ov4rOs+NERmDq7YlZaDqUIfA==

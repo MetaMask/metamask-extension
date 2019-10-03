@@ -23,6 +23,7 @@ function mapStateToProps (state) {
   const {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedDecryptMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
 
@@ -31,6 +32,7 @@ function mapStateToProps (state) {
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
+    unapprovedDecryptMsgs: state.metamask.unapprovedDecryptMsgs,
     unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
@@ -40,6 +42,7 @@ function mapStateToProps (state) {
     blockGasLimit: state.metamask.currentBlockGasLimit,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedDecryptMsgCount,
     unapprovedTypedMessagesCount,
     send: state.metamask.send,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
@@ -55,10 +58,11 @@ ConfirmTxScreen.prototype.getUnapprovedMessagesTotal = function () {
   const {
     unapprovedMsgCount = 0,
     unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
   } = this.props
 
-  return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount
+  return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount
 }
 
 ConfirmTxScreen.prototype.componentDidMount = function () {
@@ -118,6 +122,7 @@ ConfirmTxScreen.prototype.getTxData = function () {
     unapprovedTxs,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
+    unapprovedDecryptMsgs,
     unapprovedTypedMessages,
     match: { params: { id: transactionId } = {} },
   } = this.props
@@ -126,6 +131,7 @@ ConfirmTxScreen.prototype.getTxData = function () {
     unapprovedTxs,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
+    unapprovedDecryptMsgs,
     unapprovedTypedMessages,
     network
   )
@@ -159,9 +165,11 @@ ConfirmTxScreen.prototype.render = function () {
       // Actions
       signMessage: this.signMessage.bind(this, txData),
       signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+      decryptMessage: this.decryptMessage.bind(this, txData),
       signTypedMessage: this.signTypedMessage.bind(this, txData),
       cancelMessage: this.cancelMessage.bind(this, txData),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+      cancelDecryptMessage: this.cancelDecryptMessage.bind(this, txData),
       cancelTypedMessage: this.cancelTypedMessage.bind(this, txData),
     })
     : h(Loading)
@@ -189,6 +197,14 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   return this.props.dispatch(actions.signPersonalMsg(params))
 }
 
+ConfirmTxScreen.prototype.decryptMessage = function (msgData, event) {
+  log.info('conf-tx.js: decryption message')
+  var params = msgData.msgParams
+  params.metamaskId = msgData.id
+  this.stopPropagation(event)
+  return this.props.dispatch(actions.decryptMsg(params))
+}
+
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   log.info('conf-tx.js: signing typed message')
   var params = msgData.msgParams
@@ -207,6 +223,12 @@ ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
   log.info('canceling personal message')
   this.stopPropagation(event)
   return this.props.dispatch(actions.cancelPersonalMsg(msgData))
+}
+
+ConfirmTxScreen.prototype.cancelDecryptMessage = function (msgData, event) {
+  log.info('canceling decrypt message')
+  this.stopPropagation(event)
+  return this.props.dispatch(actions.cancelDecryptMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelTypedMessage = function (msgData, event) {

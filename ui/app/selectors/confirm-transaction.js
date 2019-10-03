@@ -16,6 +16,7 @@ import {
 const unapprovedTxsSelector = state => state.metamask.unapprovedTxs
 const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
 const unapprovedPersonalMsgsSelector = state => state.metamask.unapprovedPersonalMsgs
+const unapprovedDecryptMsgsSelector = state => state.metamask.unapprovedDecryptMsgs
 const unapprovedTypedMessagesSelector = state => state.metamask.unapprovedTypedMessages
 const networkSelector = state => state.metamask.network
 
@@ -23,18 +24,21 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,
   unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
   unapprovedTypedMessagesSelector,
   networkSelector,
   (
     unapprovedTxs = {},
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
     unapprovedTypedMessages = {},
     network
   ) => txHelper(
     unapprovedTxs,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
+    unapprovedDecryptMsgs,
     unapprovedTypedMessages,
     network
   ) || []
@@ -44,12 +48,14 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedTxsSelector,
   unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
   unapprovedTypedMessagesSelector,
   networkSelector,
   (
     unapprovedTxs = {},
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
     unapprovedTypedMessages = {},
     network
   ) => {
@@ -68,6 +74,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       ...filteredUnapprovedTxs,
       ...unapprovedMsgs,
       ...unapprovedPersonalMsgs,
+      ...unapprovedDecryptMsgs,
       ...unapprovedTypedMessages,
     }
   }
@@ -75,18 +82,21 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 
 const unapprovedMsgCountSelector = state => state.metamask.unapprovedMsgCount
 const unapprovedPersonalMsgCountSelector = state => state.metamask.unapprovedPersonalMsgCount
+const unapprovedDecryptMsgCountSelector = state => state.metamask.unapprovedDecryptMsgCount
 const unapprovedTypedMessagesCountSelector = state => state.metamask.unapprovedTypedMessagesCount
 
 export const unconfirmedTransactionsCountSelector = createSelector(
   unapprovedTxsSelector,
   unapprovedMsgCountSelector,
   unapprovedPersonalMsgCountSelector,
+  unapprovedDecryptMsgCountSelector,
   unapprovedTypedMessagesCountSelector,
   networkSelector,
   (
     unapprovedTxs = {},
     unapprovedMsgCount = 0,
     unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
     network
   ) => {
@@ -96,7 +106,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     })
 
     return filteredUnapprovedTxIds.length + unapprovedTypedMessagesCount + unapprovedMsgCount +
-      unapprovedPersonalMsgCount
+      unapprovedPersonalMsgCount + unapprovedDecryptMsgCount
   }
 )
 

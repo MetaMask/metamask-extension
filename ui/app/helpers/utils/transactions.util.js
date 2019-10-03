@@ -19,6 +19,7 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
+  DECRYPT_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
@@ -132,7 +133,11 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    return SIGNATURE_REQUEST_KEY
+    if (type === "eth_decryptMessage") {
+      return DECRYPT_REQUEST_KEY;
+    } else {
+      return SIGNATURE_REQUEST_KEY;
+    }
   }
 
   if (isConfirmDeployContract(transaction)) {

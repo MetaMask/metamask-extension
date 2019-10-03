@@ -31,23 +31,27 @@ export const incomingTxListSelector = state => {
 export const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
 export const selectedAddressTxListSelector = state => state.metamask.selectedAddressTxList
 export const unapprovedPersonalMsgsSelector = state => state.metamask.unapprovedPersonalMsgs
+export const unapprovedDecryptMsgsSelector = state => state.metamask.unapprovedDecryptMsgs
 export const unapprovedTypedMessagesSelector = state => state.metamask.unapprovedTypedMessages
 export const networkSelector = state => state.metamask.network
 
 export const unapprovedMessagesSelector = createSelector(
   unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
   unapprovedTypedMessagesSelector,
   networkSelector,
   (
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
     unapprovedTypedMessages = {},
     network
   ) => txHelper(
     {},
     unapprovedMsgs,
     unapprovedPersonalMsgs,
+    unapprovedDecryptMsgs,
     unapprovedTypedMessages,
     network
   ) || []

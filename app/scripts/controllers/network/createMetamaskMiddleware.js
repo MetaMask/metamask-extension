@@ -14,6 +14,7 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processTypedMessageV4,
   processPersonalMessage,
+  processDecryptMessage,
   getPendingNonce,
 }) {
   const metamaskMiddleware = mergeMiddleware([
@@ -30,6 +31,7 @@ function createMetamaskMiddleware ({
       processTypedMessageV3,
       processTypedMessageV4,
       processPersonalMessage,
+      processDecryptMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
   ])
