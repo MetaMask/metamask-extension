@@ -144,6 +144,10 @@ function removeListeners (listeners, emitter) {
   })
 }
 
+function getRandomArrayItem (array) {
+  return array[Math.floor((Math.random() * array.length))]
+}
+
 module.exports = {
   removeListeners,
   applyListeners,
@@ -154,4 +158,5 @@ module.exports = {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
+  getRandomArrayItem,
 }

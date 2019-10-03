@@ -72,7 +72,7 @@ let versionedData
 initialize().catch(log.error)
 
 // setup metamask mesh testing container
-setupMetamaskMeshMetrics()
+const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 
 /**
@@ -233,11 +233,13 @@ function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
+  const { ABTestController = {} } = initState
+  const { abTests = {} } = ABTestController
 
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
-    showUnapprovedTx: triggerUi,
+    showUnapprovedTx: abTests.fullScreenVsPopup === 'fullScreen' ? triggerUiInNewTab : triggerUi,
     openPopup: openPopup,
     closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
@@ -251,6 +253,11 @@ function setupController (initState, initLangCode) {
 
   const provider = controller.provider
   setupEnsIpfsResolver({ provider })
+
+  // submit rpc requests to mesh-metrics
+  controller.networkController.on('rpc-req', (data) => {
+    submitMeshMetricsEntry({ type: 'rpc', data })
+  })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
@@ -434,6 +441,20 @@ function triggerUi () {
       notificationIsOpen = true
     }
   })
+}
+
+/**
+ * Opens a new browser tab for user confirmation
+ */
+function triggerUiInNewTab () {
+  const tabIdsArray = Object.keys(openMetamaskTabsIDs)
+  if (tabIdsArray.length) {
+    extension.tabs.update(parseInt(tabIdsArray[0], 10), { 'active': true }, () => {
+      extension.tabs.reload(parseInt(tabIdsArray[0], 10))
+    })
+  } else {
+    platform.openExtensionInBrowser()
+  }
 }
 
 /**

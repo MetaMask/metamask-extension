@@ -9,7 +9,7 @@ const createTxMeta = require('../../../lib/createTxMeta')
 const EthQuery = require('eth-query')
 
 const threeBoxSpies = {
-  new3Box: sinon.spy(),
+  init: sinon.spy(),
   getThreeBoxAddress: sinon.spy(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
   turnThreeBoxSyncingOn: sinon.spy(),
@@ -23,7 +23,7 @@ class ThreeBoxControllerMock {
       subscribe: () => {},
       getState: () => ({}),
     }
-    this.new3Box = threeBoxSpies.new3Box
+    this.init = threeBoxSpies.init
     this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
     this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
     this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
@@ -108,7 +108,7 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
-      threeBoxSpies.new3Box.reset()
+      threeBoxSpies.init.reset()
       threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
@@ -129,16 +129,9 @@ describe('MetaMaskController', function () {
       })
     })
 
-    it('gets does not instantiate 3box if the feature flag is false', async () => {
+    it('gets the address from threebox and creates a new 3box instance', async () => {
       await metamaskController.submitPassword(password)
-      assert(threeBoxSpies.new3Box.notCalled)
-      assert(threeBoxSpies.turnThreeBoxSyncingOn.notCalled)
-    })
-
-    it('gets the address from threebox and creates a new 3box instance if the feature flag is true', async () => {
-      metamaskController.preferencesController.setFeatureFlag('threeBox', true)
-      await metamaskController.submitPassword(password)
-      assert(threeBoxSpies.new3Box.calledOnce)
+      assert(threeBoxSpies.init.calledOnce)
       assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
     })
   })

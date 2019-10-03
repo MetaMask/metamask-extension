@@ -95,7 +95,7 @@ jobs:
       - run:
           name: Install deps
           command: |
-           yarn --frozen-lockfile --har
+            .circleci/scripts/deps-install.sh
       - run:
           name: Collect yarn install HAR logs
           command: |
