@@ -129,9 +129,10 @@ function getExternalRestrictedMethods (permissionsController) {
 
     'alert': {
       description: 'Show alerts over the current page.',
-      method: (req, _res, _next, end, engine) => {
+      method: (req, res, _next, end, engine) => {
         const requestor = engine.domain
         alert(`MetaMask Notice:\n${requestor} States:\n${req.params[0]}`)
+        res.result = true // JsonRpcEngine throws if no result or error
         end()
       },
     },
@@ -166,7 +167,7 @@ function getExternalRestrictedMethods (permissionsController) {
           const requestor = engine.domain
 
           // Handler is an async function that takes an origin string and a request object.
-          // It should return the result it would like returned to the reqeustor as part of response.result
+          // It should return the result it would like returned to the requestor as part of response.result
           res.result = await handler(requestor, req.params[0])
           return end()
 
@@ -177,27 +178,17 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
-    'eth_addPlugin_*': {
-      description: 'Install plugin $1, which will download new functionality to MetaMask from $2.',
-      method: async (req, _res, _next, _end) => {
-        const pluginNameMatch = req.method.match(/eth_addPlugin_(.+)/)
-        const pluginName = pluginNameMatch && pluginNameMatch[1]
-        const sourceUrl = req.params[0].sourceUrl
-
-        const response = await permissionsController.pluginsController.add(pluginName, sourceUrl)
-        return response
-      },
-    },
-
-    'eth_runPlugin_*': {
+    'wallet_runPlugin_*': {
       description: 'Run plugin $1, which will be able to do the following:',
       method: async (req, res, _next, end) => {
-        const pluginNameMatch = req.method.match(/eth_runPlugin_(.+)/)
+        const pluginNameMatch = req.method.match(/wallet_runPlugin_(.+)/)
         const pluginName = pluginNameMatch && pluginNameMatch[1]
 
         const { initialPermissions, sourceCode, ethereumProvider } = req.params[0]
         try {
-          const result = await permissionsController.pluginsController.run(pluginName, initialPermissions, sourceCode, ethereumProvider)
+          const result = await permissionsController.pluginsController.run(
+            pluginName, initialPermissions, sourceCode, ethereumProvider
+          )
           res.result = result
           return end()
         } catch (err) {

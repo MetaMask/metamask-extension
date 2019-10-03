@@ -101,7 +101,7 @@ export default class PermissionsActivity extends Component {
       } else {
         return (
           <li className="settings-page__content-list-item">
-            {stringify(e.response.result)}
+            {stringify(e.response.result || e.response)}
           </li>
         )
       }
@@ -122,7 +122,7 @@ export default class PermissionsActivity extends Component {
       } else {
         return (
           <li className="settings-page__content-list-item">
-            {stringify(e.response.result)}
+            {stringify(e.response.result || e.response)}
           </li>
         )
       }

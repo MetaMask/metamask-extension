@@ -25,14 +25,6 @@ const mapStateToProps = (state) => {
       const wildCardPermissionDescription = permissionsDescriptions[wildCardPermissionType + '*']
       permissionDescription = wildCardPermissionDescription
         .replace('$1', wildCardPermissionName)
-
-      if (wildCardPermissionType === 'eth_addPlugin_') {
-        const { caveats } = requestedPermissions[requestedPermissionKey]
-        const forceParamsCaveat = caveats.find(caveat => caveat.type === 'forceParams')
-        const { sourceUrl } = forceParamsCaveat && forceParamsCaveat.value[0] || {}
-
-        permissionDescription = permissionDescription.replace('$2', sourceUrl)
-      }
     }
 
     return {

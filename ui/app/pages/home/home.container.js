@@ -11,6 +11,8 @@ import {
   setRestoredFromThreeBoxToFalse,
   deletePlugin,
   clearPluginState,
+  clearPermissions,
+  clearPermissionsHistory,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -66,6 +68,8 @@ const mapDispatchToProps = (dispatch) => ({
   setRestoredFromThreeBoxToFalse: () => dispatch(setRestoredFromThreeBoxToFalse()),
   deletePlugin: (pluginName) => dispatch(deletePlugin(pluginName)),
   clearPluginState: () => dispatch(clearPluginState()),
+  clearPermissions: () => dispatch(clearPermissions()),
+  clearPermissionsHistory: () => dispatch(clearPermissionsHistory()),
 })
 
 export default compose(

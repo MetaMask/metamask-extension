@@ -9,14 +9,7 @@ class AssetsController extends EventEmitter {
   constructor (opts = {}) {
     super()
     const initState = extend({
-      assets: [{
-        symbol: 'TEST_ASSET',
-        balance: '200000',
-        identifier: 'test:asset',
-        decimals: 5,
-        customViewUrl: 'https://metamask.io',
-        fromDomain: 'https://mytest.edu',
-      }],
+      assets: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -44,6 +37,7 @@ class AssetsController extends EventEmitter {
     }
     asset.fromDomain = fromDomain
     this.assets.push(asset)
+    return asset
   }
 
   getPriorAssets (fromDomain, asset) {
@@ -69,13 +63,17 @@ class AssetsController extends EventEmitter {
         return asset2
       }
     })
+    return asset
   }
 
   removeAsset (fromDomain, asset) {
+    let deleted
     this.assets = this.assets.filter((asset2) => {
       const requested = asset2.fromDomain === fromDomain && asset.identifier === asset2.identifier
+      deleted = requested
       return !requested
     })
+    return deleted
   }
 
 }

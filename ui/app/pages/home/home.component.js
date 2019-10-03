@@ -51,6 +51,8 @@ export default class Home extends PureComponent {
     permissionsRequests: PropTypes.array,
     deletePlugin: PropTypes.func,
     clearPluginState: PropTypes.func,
+    clearPermissions: PropTypes.func,
+    clearPermissionsHistory: PropTypes.func,
   }
 
   state = {
@@ -169,7 +171,12 @@ export default class Home extends PureComponent {
                     },
                   ]}/>
                 <div>
-                  <Button onClick={() => this.props.clearPluginState()} >{ 'Delete All Plugins.' }</Button>
+                  <Button onClick={() => this.props.clearPluginState()} >{ 'Delete All Plugins' }</Button>
+                  <Button onClick={() => {
+                    this.props.clearPermissions()
+                    this.props.clearPermissionsHistory()
+                    alert('Permissions state cleared.')
+                  }} >{ 'Delete All Permissions' }</Button>
                 </div>
               </TransactionView>
             )

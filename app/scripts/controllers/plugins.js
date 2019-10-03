@@ -46,10 +46,12 @@ class PluginsController extends EventEmitter {
     const plugins = this.store.getState().plugins
     console.log('running existing plugins')
     Object.values(plugins).forEach(({ pluginName, initialPermissions, sourceCode }) => {
+      console.log(`running: ${pluginName}`)
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
       try {
         this._startPlugin(pluginName, initialPermissions, sourceCode, ethereumProvider)
       } catch (err) {
+        console.warn(`failed to start '${pluginName}', deleting it`)
         // Clean up failed plugins:
         this.deletePlugin(pluginName)
       }
@@ -120,31 +122,37 @@ class PluginsController extends EventEmitter {
     if (!sourceUrl) {
       sourceUrl = pluginName
     }
-    const plugins = this.store.getState().plugins
+    const pluginState = this.store.getState().plugins
 
-    let plugin
-    if (plugins[pluginName]) {
-      plugin = plugins[pluginName]
-    } else {
-      let _initialPermissions
-      plugin = await fetch(sourceUrl)
-        .then(pluginRes => {
-          return pluginRes.json()
-        })
-        .then(({ web3Wallet: { bundle, initialPermissions } }) => {
-          _initialPermissions = initialPermissions
-          // bundle is an object with: { local: string, url: string }
-          return fetch(bundle.url) // TODO: validate params?
-        })
-        .then(bundleRes => bundleRes.text())
-        .then(sourceCode => {
-          return {
-            sourceCode,
-            initialPermissions: _initialPermissions,
-          }
-        })
-        .catch(err => console.log('add plugin error:', err))
+    if (!pluginName || typeof pluginName !== 'string') {
+      throw new Error(`Invalid plugin name: ${pluginName}`)
     }
+
+    let _initialPermissions
+    let plugin = await fetch(sourceUrl)
+      .then(pluginRes => {
+        return pluginRes.json()
+      })
+      .then(({ web3Wallet: { bundle, initialPermissions } }) => {
+        _initialPermissions = initialPermissions
+        // bundle is an object with: { local: string, url: string }
+        return fetch(bundle.url) // TODO: validate params?
+      })
+      // TODO: parse bundle here and throw if it's no good?
+      .then(bundleRes => bundleRes.text())
+      .then(sourceCode => {
+        return {
+          sourceCode,
+          initialPermissions: _initialPermissions,
+        }
+      })
+      .catch(err => console.log('add plugin error:', err))
+
+    // restore relevant plugin state if it exists
+    if (pluginState[pluginName]) {
+      plugin = { ...pluginState[pluginName], ...plugin }
+    }
+    plugin.pluginName = pluginName
 
     console.log('running add plugin with ', plugin)
     const { sourceCode, initialPermissions } = plugin
@@ -155,33 +163,32 @@ class PluginsController extends EventEmitter {
       ethereumProvider.sendAsync({
         method: 'wallet_requestPermissions',
         jsonrpc: '2.0',
-        params: [{ ['eth_runPlugin_' + pluginName]: {}, ...initialPermissions }, { sourceCode, ethereumProvider }],
+        params: [{ ['wallet_runPlugin_' + pluginName]: {}, ...initialPermissions }, { sourceCode, ethereumProvider }],
       }, (err1, res1) => {
         console.log('err1, res1', err1, res1)
         if (err1) reject(err1)
 
-        const capabilities = res1.result.map(cap => cap.parentCapability).filter(cap => !cap.startsWith('eth_runPlugin_'))
+        const approvedPermissions = res1.result.map(perm => perm.parentCapability)
+          .filter(perm => !perm.startsWith('wallet_runPlugin_'))
 
-        if (!plugins[pluginName]) {
-          const newPlugin = {
-            handleRpcRequest: async (result) => {
-              return Promise.resolve(result)
-            },
-            pluginName,
-            sourceCode,
-            initialPermissions: capabilities,
-          }
+        // the stored initial permissions are the permissions approved
+        // by the user
+        plugin.initialPermissions = approvedPermissions
 
-          const newPlugins = {...plugins, [pluginName]: newPlugin}
-
-          this.store.updateState({
-            plugins: newPlugins,
-          })
-        }
+        this.store.updateState({
+          plugins: {
+            ...pluginState,
+            [pluginName]: plugin,
+          },
+        })
 
         ethereumProvider.sendAsync({
-          method: 'eth_runPlugin_' + pluginName,
-          params: [{ initialPermissions: capabilities, sourceCode, ethereumProvider }],
+          method: 'wallet_runPlugin_' + pluginName,
+          params: [{
+            initialPermissions: approvedPermissions,
+            sourceCode,
+            ethereumProvider,
+          }],
         }, (err2, res2) => {
           console.log('plugin.add err2, res2', err2, res2)
           if (err2) reject(err2)
@@ -189,6 +196,9 @@ class PluginsController extends EventEmitter {
         })
       })
     })
+      .finally(() => {
+        delete this.adding[pluginName]
+      })
   }
 
   async run (pluginName, initialPermissions, sourceCode, ethereumProvider) {
@@ -226,11 +236,11 @@ class PluginsController extends EventEmitter {
   }
 
   _generateApisToProvide (approvedPermissions, pluginName) {
-    const apiList = approvedPermissions.map(approvedPermission => {
-      const metamaskMethod = approvedPermission.match(/metamask_(.+)/)
+    const apiList = approvedPermissions.map(perm => {
+      const metamaskMethod = perm.match(/metamask_(.+)/)
       return metamaskMethod
         ? metamaskMethod[1]
-        : approvedPermission
+        : perm
     })
 
     const onMetaMaskEvent = this._createMetaMaskEventListener(apiList)

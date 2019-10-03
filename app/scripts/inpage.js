@@ -1,7 +1,7 @@
 /*global Web3*/
 
 // TODO:permissions:launch remove this
-console.warn('MetaMask: You are using the ocap permissions beta. All synchronous methods are disabled.') // add details link
+console.warn('MetaMask: You are using the experimental plugin version of MetaMask.')
 
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
