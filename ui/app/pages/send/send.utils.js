@@ -245,11 +245,7 @@ async function estimateGas ({
 
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
-    try {
-      blockGasLimit = await this.query.getBlockByNumber('latest', false)
-    } catch (e) {
-      blockGasLimit = ARBITRARY_HIGH_BLOCK_GAS_LIMIT
-    }
+    blockGasLimit = ARBITRARY_HIGH_BLOCK_GAS_LIMIT
   }
 
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
