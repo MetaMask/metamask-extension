@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.2.3 Fri Oct 04 2019
+
 ## 7.2.2 Tue Sep 24 2019
 - [#7213](https://github.com/MetaMask/metamask-extension/pull/7213): Update minimum Firefox verison to 56.0
 
