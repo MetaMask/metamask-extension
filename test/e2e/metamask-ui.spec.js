@@ -567,18 +567,18 @@ describe('MetaMask', function () {
 
       const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
       await send3eth.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       const contractDeployment = await findElement(driver, By.xpath(`//button[contains(text(), 'Deploy Contract')]`), 10000)
       await contractDeployment.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       await send3eth.click()
       await contractDeployment.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
+      await delay(largeDelayMs * 2)
 
       let transactions = await findElements(driver, By.css('.transaction-list-item'))
       await transactions[3].click()
