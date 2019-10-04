@@ -178,25 +178,6 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
-    'wallet_runPlugin_*': {
-      description: 'Run plugin $1, which will be able to do the following:',
-      method: async (req, res, _next, end) => {
-        const pluginNameMatch = req.method.match(/wallet_runPlugin_(.+)/)
-        const pluginName = pluginNameMatch && pluginNameMatch[1]
-
-        const { initialPermissions, sourceCode, ethereumProvider } = req.params[0]
-        try {
-          const result = await permissionsController.pluginsController.run(
-            pluginName, initialPermissions, sourceCode, ethereumProvider
-          )
-          res.result = result
-          return end()
-        } catch (err) {
-          res.error = err
-          end(err)
-        }
-      },
-    },
   }
 }
 

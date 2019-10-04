@@ -167,18 +167,37 @@ class PermissionsController {
   async approvePermissionsRequest (approved) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
-    const resolve = approval.resolve
-    resolve(approved.permissions)
     this._closePopup && this._closePopup()
-    delete this.pendingApprovals[id]
 
-    const plugins = this.pluginsFromPerms(approved.permissions)
-    plugins.forEach((plugin) => {
-      this.pluginsController.add(plugin)
-        .catch((err) => {
-          console.error(err)
+    // Load any requested plugins first:
+    const pluginNames = this.pluginsFromPerms(approved.permissions)
+    try {
+      await Promise.all(pluginNames.map((plugin) => {
+        return this.pluginsController.add(plugin)
+      }))
+
+      const resolve = approval.resolve
+      resolve(approved.permissions)
+      delete this.pendingApprovals[id]
+
+      // Once we've approved the initial app permissions,
+      // we are free to prompt for the plugin permissions:
+      Promise.all(pluginNames.map(async (pluginName) => {
+        const plugin = await this.pluginsController.authorize(pluginName)
+        const { sourceCode, approvedPermissions } = plugin
+        const ethereumProvider = this.pluginsController.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+        await this.pluginsController.run(pluginName, approvedPermissions, sourceCode, ethereumProvider)
+      }))
+        .catch((reason) => {
+          // We swallow this error, we don't want the plugin permissions prompt to block the resolution
+          // Of the main dapp's permissions prompt.
+          console.error(`Plugin had its permissions rejected: ${reason.message}`)
         })
-    })
+
+    } catch (reason) {
+      const { reject } = approval
+      reject(reason)
+    }
   }
 
   pluginsFromPerms (permissions) {
