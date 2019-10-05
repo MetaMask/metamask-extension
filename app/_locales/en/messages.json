@@ -741,6 +741,9 @@
   "logout": {
     "message": "Log out"
   },
+  "logoutTimeTooGreat": {
+    "message": "Logout time is too great"
+  },
   "mainnet": {
     "message": "Main Ethereum Network"
   },
