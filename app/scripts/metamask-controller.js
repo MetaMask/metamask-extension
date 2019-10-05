@@ -256,7 +256,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
-    this.decryptMessageManager =  new DecryptMessageManager()
+    this.decryptMessageManager = new DecryptMessageManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -1147,16 +1147,16 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(null, this.getState())
     }
   }
-  
+
   // eth_decryptMessage methods
-  
-   /**
-   * Called when a dapp uses the eth_decryptMessage method.
-   *
-   * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {Function} cb - The callback function called with the signature.
-   * Passed back to the requesting Dapp.
-   */
+
+  /**
+  * Called when a dapp uses the eth_decryptMessage method.
+  *
+  * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
+  * @param {Function} cb - The callback function called with the signature.
+  * Passed back to the requesting Dapp.
+  */
   async newRequestDecryptMessage (msgParams, req) {
     const promise = this.decryptMessageManager.addUnapprovedMessageAsync(msgParams, req)
     this.sendUpdate()
@@ -1164,20 +1164,20 @@ module.exports = class MetamaskController extends EventEmitter {
     return promise
   }
 
-   /**
-   * Signifies a user's approval to decrypt a message in queue.
-   * Triggers decrypt, and the callback function from newUnsignedPersonalMessage.
-   *
-   * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
-   * @returns {Promise<Object>} - A full state update.
-   */
-   decryptMessage (msgParams) {
+  /**
+  * Signifies a user's approval to decrypt a message in queue.
+  * Triggers decrypt, and the callback function from newUnsignedPersonalMessage.
+  *
+  * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
+  * @returns {Promise<Object>} - A full state update.
+  */
+  decryptMessage (msgParams) {
     log.info('MetaMaskController - decryptMessage')
     const msgId = msgParams.metamaskId
     // sets the status op the message to 'approved'
     // and removes the metamaskId for decryption
     try {
-        return this.decryptMessageManager.approveMessage(msgParams)
+      return this.decryptMessageManager.approveMessage(msgParams)
         .then((cleanMsgParams) => {
           const stripped = ethUtil.stripHexPrefix(cleanMsgParams.data)
           const buff = Buffer.from(stripped, 'hex')
@@ -1186,8 +1186,8 @@ module.exports = class MetamaskController extends EventEmitter {
           return this.keyringController.decryptMessage(cleanMsgParams)
         })
         .then((rawMess) => {
-          // tells the listener that the message has been decrypted
-          // and can be returned to the dapp
+        // tells the listener that the message has been decrypted
+        // and can be returned to the dapp
           this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess)
           return this.getState()
         })

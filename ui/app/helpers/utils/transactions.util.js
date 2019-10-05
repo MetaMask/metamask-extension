@@ -133,10 +133,10 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    if (type === "eth_decryptMessage") {
-      return DECRYPT_REQUEST_KEY;
+    if (type === 'eth_decryptMessage') {
+      return DECRYPT_REQUEST_KEY
     } else {
-      return SIGNATURE_REQUEST_KEY;
+      return SIGNATURE_REQUEST_KEY
     }
   }
 

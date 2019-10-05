@@ -1,7 +1,6 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
 const log = require('loglevel')
@@ -65,7 +64,7 @@ module.exports = class DecryptMessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages.filter(msg => msg.status === 'unapproved')
-    .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
   }
 
   /**
@@ -87,13 +86,10 @@ module.exports = class DecryptMessageManager extends EventEmitter {
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'decrypted':
-		  console.log('decrypted - ')
-		  console.log(data);
             return resolve(data.rawData)
           case 'rejected':
             return reject(new Error('MetaMask Message for Decryption: User denied message decryption.'))
           default:
-			console.log(data.status);
             return reject(new Error(`MetaMask Message for Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
       })

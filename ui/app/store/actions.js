@@ -908,7 +908,7 @@ function signPersonalMsg (msgData) {
   }
 }
 
-function decryptMsg (msgData) {console.log(msgData);
+function decryptMsg (msgData) {
   log.debug('action - decryptMsg')
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
