@@ -293,7 +293,7 @@ export default class AdvancedTab extends PureComponent {
             />
             <Button
               type="primary"
-              className="button btn-primary settings-tab__rpc-save-button"
+              className="settings-tab__rpc-save-button"
               disabled={logoutTimeError !== ''}
               onClick={() => {
                 setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
