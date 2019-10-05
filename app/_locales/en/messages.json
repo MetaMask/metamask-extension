@@ -1209,6 +1209,9 @@
   "switchNetworks": {
     "message": "Switch Networks"
   },
+  "stateLogFileName": {
+    "message": "MetaMask State Logs"
+  },
   "stateLogs": {
     "message": "State Logs"
   },
