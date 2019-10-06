@@ -20,7 +20,6 @@ proxyquire('../send-header.container.js', {
   '../../../store/actions': actionSpies,
   './send-header.selectors': {
     getTitleKey: (s) => `mockTitleKey:${s}`,
-    getSubtitleParams: (s) => `mockSubtitleParams:${s}`,
   },
 })
 
@@ -31,7 +30,6 @@ describe('send-header container', () => {
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         titleKey: 'mockTitleKey:mockState',
-        subtitleParams: 'mockSubtitleParams:mockState',
       })
     })
 

@@ -77,8 +77,8 @@ class ConnectScreen extends Component {
     renderHeader () {
       return (
         h('div.hw-connect__header', {}, [
-          h('h3.hw-connect__header__title', {}, this.context.t(`hardwareWallets`)),
-          h('p.hw-connect__header__msg', {}, this.context.t(`hardwareWalletsMsg`)),
+          h('h3.hw-connect__header__title', {}, this.context.t('hardwareWallets')),
+          h('p.hw-connect__header__msg', {}, this.context.t('hardwareWalletsMsg')),
         ])
       )
     }
@@ -97,7 +97,7 @@ class ConnectScreen extends Component {
 
     renderTrezorAffiliateLink () {
       return h('div.hw-connect__get-hw', {}, [
-        h('p.hw-connect__get-hw__msg', {}, this.context.t(`dontHaveAHardwareWallet`)),
+        h('p.hw-connect__get-hw__msg', {}, this.context.t('dontHaveAHardwareWallet')),
         this.getAffiliateLinks(),
       ])
     }
@@ -123,24 +123,30 @@ class ConnectScreen extends Component {
         {
           asset: 'hardware-wallet-step-1',
           dimensions: {width: '225px', height: '75px'},
+          title: this.context.t('step1HardwareWallet'),
+          message: this.context.t('step1HardwareWalletMsg'),
         },
         {
           asset: 'hardware-wallet-step-2',
           dimensions: {width: '300px', height: '100px'},
+          title: this.context.t('step2HardwareWallet'),
+          message: this.context.t('step2HardwareWalletMsg'),
         },
         {
           asset: 'hardware-wallet-step-3',
           dimensions: {width: '120px', height: '90px'},
+          title: this.context.t('step3HardwareWallet'),
+          message: this.context.t('step3HardwareWalletMsg'),
         },
       ]
 
       return h('.hw-tutorial', {
         ref: node => { this.referenceNode = node },
       },
-      steps.map((step, i) => (
+      steps.map((step) => (
         h('div.hw-connect', {}, [
-          h('h3.hw-connect__title', {}, this.context.t(`step${i + 1}HardwareWallet`)),
-          h('p.hw-connect__msg', {}, this.context.t(`step${i + 1}HardwareWalletMsg`)),
+          h('h3.hw-connect__title', {}, step.title),
+          h('p.hw-connect__msg', {}, step.message),
           h('img.hw-connect__step-asset', { src: `images/${step.asset}.svg`, ...step.dimensions }),
         ])
       ))
@@ -150,10 +156,10 @@ class ConnectScreen extends Component {
     renderFooter () {
       return (
         h('div.hw-connect__footer', {}, [
-          h('h3.hw-connect__footer__title', {}, this.context.t(`readyToConnect`)),
+          h('h3.hw-connect__footer__title', {}, this.context.t('readyToConnect')),
           this.renderButtons(),
           h('p.hw-connect__footer__msg', {}, [
-            this.context.t(`havingTroubleConnecting`),
+            this.context.t('havingTroubleConnecting'),
             h('a.hw-connect__footer__link', {
               href: 'https://support.metamask.io/',
               target: '_blank',

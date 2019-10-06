@@ -9,23 +9,11 @@
   "about": {
     "message": "വിവരം"
   },
-  "accept": {
-    "message": "സ്വീകരിക്കുക"
-  },
   "account": {
     "message": "അക്കൗണ്ട്"
   },
-  "add": {
-    "message": "ചേര്‍ക്കൂ"
-  },
-  "address": {
-    "message": "വിലാസം"
-  },
   "advanced": {
     "message": "നൂതനം"
-  },
-  "available": {
-    "message": "ലഭ്യമാണ്"
   },
   "back": {
     "message": "പിന്നോട്ട്"
@@ -54,12 +42,6 @@
   "connect": {
     "message": "കണക്‌റ്റുചെയ്യുക"
   },
-  "connecting": {
-    "message": "കണക്റ്റുചെയ്യുന്നു..."
-  },
-  "continue": {
-    "message": "തുടരുക"
-  },
   "copy": {
     "message": "പകര്‍ത്തുക"
   },
@@ -68,12 +50,6 @@
   },
   "create": {
     "message": "സൃഷ്‌ടിക്കുക"
-  },
-  "createDen": {
-    "message": "സൃഷ്‌ടിക്കുക"
-  },
-  "customize": {
-    "message": "ഇച്ഛാനുസൃതമാക്കുക"
   },
   "delete": {
     "message": "ഇല്ലാതാക്കുക"
@@ -92,9 +68,6 @@
   },
   "fast": {
     "message": "വേഗത"
-  },
-  "fastest": {
-    "message": "ഏറ്റവും വേഗതയുള്ളത്"
   },
   "forgetDevice": {
     "message": "ഈ ഉപകരണം മറക്കുക"
@@ -119,14 +92,8 @@
   "loading": {
     "message": "ലോഡ്ചെയ്യുന്നു..."
   },
-  "min": {
-    "message": "കുറഞ്ഞത്"
-  },
   "next": {
     "message": "അടുത്തത്"
-  },
-  "notFound": {
-    "message": "കണ്ടെത്തിയില്ല"
   },
   "origin": {
     "message": "ഉറവിടം"
@@ -158,17 +125,11 @@
   "search": {
     "message": "തിരയൂ"
   },
-  "select": {
-    "message": "തിരഞ്ഞെടുക്കുക"
-  },
   "send": {
     "message": "അയയ്‌ക്കുക"
   },
   "settings": {
     "message": "ക്രമീകരണങ്ങള്‍"
-  },
-  "status": {
-    "message": "നില"
   },
   "submit": {
     "message": "സമര്‍പ്പിക്കൂ"
@@ -187,8 +148,5 @@
   },
   "viewAccount": {
     "message": "അക്കൗണ്ട് കാണുക"
-  },
-  "warning": {
-    "message": "മുന്നറിയിപ്പ്"
   }
 }

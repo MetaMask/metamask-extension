@@ -45,6 +45,8 @@ const selectors = {
   getNetworkIdentifier,
   isBalanceCached,
   getAdvancedInlineGasShown,
+  getUseNonceField,
+  getCustomNonceValue,
   getIsMainnet,
   getCurrentNetworkId,
   getSelectedAsset,
@@ -211,10 +213,10 @@ function conversionRateSelector (state) {
 
 function getAddressBook (state) {
   const network = state.metamask.network
-  const addressBookEntries = Object.values(state.metamask.addressBook)
-    .filter(entry => entry.chainId && entry.chainId.toString() === network)
-
-  return addressBookEntries
+  if (!state.metamask.addressBook[network]) {
+    return []
+  }
+  return Object.values(state.metamask.addressBook[network])
 }
 
 function getAddressBookEntry (state, address) {
@@ -339,6 +341,14 @@ function preferencesSelector ({ metamask }) {
 
 function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
+}
+
+function getUseNonceField (state) {
+  return Boolean(state.metamask.useNonceField)
+}
+
+function getCustomNonceValue (state) {
+  return String(state.metamask.customNonceValue)
 }
 
 function getMetaMetricState (state) {

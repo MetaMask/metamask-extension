@@ -14,6 +14,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   static propTypes = {
+    setUseNonceField: PropTypes.func,
+    useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
     setRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
@@ -30,7 +32,6 @@ export default class AdvancedTab extends PureComponent {
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
     threeBoxDisabled: PropTypes.bool.isRequired,
-    threeBoxFeatureFlag: PropTypes.bool.isRequired,
   }
 
   state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
@@ -213,6 +214,32 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderUseNonceOptIn () {
+    const { t } = this.context
+    const { useNonceField, setUseNonceField } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ this.context.t('nonceField') }</span>
+          <div className="settings-page__content-description">
+            { t('nonceFieldDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useNonceField}
+              onToggle={value => setUseNonceField(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderAutoLogoutTimeLimit () {
     const { t } = this.context
     const {
@@ -301,7 +328,7 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderContent () {
-    const { warning, threeBoxFeatureFlag } = this.props
+    const { warning } = this.props
 
     return (
       <div className="settings-page__body">
@@ -312,8 +339,9 @@ export default class AdvancedTab extends PureComponent {
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
+        { this.renderUseNonceOptIn() }
         { this.renderAutoLogoutTimeLimit() }
-        { threeBoxFeatureFlag ? this.renderThreeBoxControl() : null }
+        { this.renderThreeBoxControl() }
       </div>
     )
   }

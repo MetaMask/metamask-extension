@@ -1,18 +1,6 @@
 {
-  "exposeAccounts": {
-    "message": "खातों का पर्दाफाश करें"
-  },
-  "exposeDescription": {
-    "message": "मौजूदा वेबसाइट पर खातों का पर्दाफाश करें। विरासत डैप्स के लिए उपयोगी।"
-  },
-  "confirmExpose": {
-    "message": "क्या आप वाकई अपने खातों को वर्तमान वेबसाइट पर बेनकाब करना चाहते हैं?"
-  },
   "confirmClear": {
     "message": "क्या आप वाकई अनुमोदित वेबसाइटों को साफ़ करना चाहते हैं?"
-  },
-  "clearApprovalDataSuccess": {
-    "message": "स्वीकृत वेबसाइट डेटा सफलतापूर्वक मंजूरी दे दी।"
   },
   "clearApprovalData": {
     "message": "अनुमोदन डेटा साफ़ करें"
@@ -26,9 +14,6 @@
   "providerRequestInfo": {
     "message": "नीचे सूचीबद्ध डोमेन वेब 3 एपीआई तक पहुंच का अनुरोध करने का प्रयास कर रहा है ताकि यह एथेरियम ब्लॉकचेन से बातचीत कर सके। वेब 3 एक्सेस को मंजूरी देने से पहले हमेशा सही जांच करें कि आप सही साइट पर हैं।"
   },
-  "accept": {
-    "message": "स्वीकार करें"
-  },
   "account": {
     "message": "खाता"
   },
@@ -38,12 +23,6 @@
   "accountName": {
     "message": "खाते का नाम"
   },
-  "address": {
-    "message": "खाते का पता"
-  },
-  "addCustomToken": {
-    "message": "कस्टम टोकन जोड़ें"
-  },
   "addToken": {
     "message": "टोकन जोड़ें"
   },
@@ -52,9 +31,6 @@
   },
   "amount": {
     "message": "राशि"
-  },
-  "amountPlusGas": {
-    "message": "राशि + गैस"
   },
   "appDescription": {
     "message": "इथीरियम ब्राउज़र एक्सटेंशन",
@@ -70,23 +46,14 @@
   "attributions": {
     "message": "एट्रिब्यूशन"
   },
-  "available": {
-    "message": "एट्रिब्यूशन उपलब्ध ह्ने"
-  },
   "back": {
     "message": "वापस"
   },
   "balance": {
     "message": "उपलब्ध बैलेंस।"
   },
-  "balances": {
-    "message": "आपके उपलब्ध बैलेंस"
-  },
   "balanceIsInsufficientGas": {
     "message": "वर्तमान गैस कुल के लिए अपर्याप्त शेष"
-  },
-  "beta": {
-    "message": "BETA/बीटा"
   },
   "betweenMinAndMax": {
     "message": "$1 के बराबर या ज्यदा या, $2 के बराबर या कम होना चाहिए।",
@@ -95,20 +62,8 @@
   "blockiesIdenticon": {
     "message": "ब्लॉकीज पहचान का उपयोग करें"
   },
-  "borrowDharma": {
-    "message": "धर्मा (बीटा) से / के साथ उधार लें"
-  },
   "builtInCalifornia": {
     "message": "मेटामास्क कैलिफ़ोर्निया में डिज़ाइन और बनाया गया है।"
-  },
-  "buy": {
-    "message": "खरीदें"
-  },
-  "buyCoinbase": {
-    "message": "कॉइनबेस पर खरीदें"
-  },
-  "buyCoinbaseExplainer": {
-    "message": "बिल्टकोइन, इथीरियम और लाइटकोइन खरीदने और बेचने के लिए दुनिया का सबसे लोकप्रिय तरीका कॉइनबेस है।"
   },
   "buyCoinSwitch": {
     "message": "कॉइनस्विच पर खरीदें"
@@ -119,29 +74,11 @@
   "cancel": {
     "message": "रद्द करें"
   },
-  "classicInterface": {
-    "message": "क्लासिक इंटरफ़ेस का उपयोग क"
-  },
-  "clickCopy": {
-    "message": "कॉपी करने के लिए क्लिक करें"
-  },
   "confirm": {
     "message": "पुष्टि करें"
   },
-  "confirmContract": {
-    "message": "अनुबंध की पुष्टि करें"
-  },
   "confirmPassword": {
     "message": "पासवर्ड की पुष्टि करें"
-  },
-  "confirmTransaction": {
-    "message": "लेनदेन की पुष्टि करें"
-  },
-  "continue": {
-    "message": "जारी रखें"
-  },
-  "continueToCoinbase": {
-    "message": "कॉइनबेस को ब्हेजना जारी रखें"
   },
   "continueToCoinSwitch": {
     "message": "कॉइनस्विच को ब्हेजना जारी रखें"
@@ -155,14 +92,8 @@
   "copiedButton": {
     "message": "कॉपी किया गया"
   },
-  "copiedClipboard": {
-    "message": "क्लिपबोर्ड पर कॉपी किया गया"
-  },
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
-  },
-  "copiedSafe": {
-    "message": "मैंने इसे कहीं सुरक्षित कॉपी कर दिया है"
   },
   "copy": {
     "message": "कॉपी / प्रतिलिपि कर्रे"
@@ -182,21 +113,8 @@
   "createAccount": {
     "message": "खाता बनाएं"
   },
-  "createDen": {
-    "message": "डेन बनाएं"
-  },
-  "crypto": {
-    "message": "क्रिप्टो",
-    "description": "एक्सचेंज टाइप (क्रिप्टोक्यूचरस)"
-  },
-  "currentNetwork": {
-    "message": "वर्तमान नेटवर्क"
-  },
   "customGas": {
     "message": "अनुकूलित करें गैस"
-  },
-  "customize": {
-    "message": "अनुकूलित करें"
   },
   "customRPC": {
     "message": "कस्टम RPC"
@@ -210,38 +128,14 @@
   "defaultNetwork": {
     "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
   },
-  "denExplainer": {
-    "message": "आपका डेन मेटामास्क के भीतर आपका पासवर्ड-एन्क्रिप्टेड स्टोरेज है।"
-  },
   "deposit": {
     "message": "जमा"
-  },
-  "depositBTC": {
-    "message": "नीचे दिए गए पते पर अपना बीटीसी जमा करें:"
-  },
-  "depositEth": {
-    "message": "Eth जमाआर्थ"
   },
   "depositEther": {
     "message": "जमा - Ether"
   },
-  "depositFiat": {
-    "message": "फिएट के साथ जमा हो"
-  },
-  "depositFromAccount": {
-    "message": "दूसरे खाते से जमा करें"
-  },
-  "depositShapeShift": {
-    "message": "शेपशिप के साथ जमा करें"
-  },
-  "depositShapeShiftExplainer": {
-    "message": "यदि आप अन्य क्रिप्टोकाउंटरज रखते हैं, तो आप सीधे मेटामास्क वॉलेट में ईथर को व्यापार और जमा कर सकते हैं। कोई खाता आवश्यक नहीं है।"
-  },
   "details": {
     "message": "संदेश विवरण"
-  },
-  "directDeposit": {
-    "message": "प्रत्यक्ष जमा"
   },
   "directDepositEther": {
     "message": "सीधे ईथर जमा करें"
@@ -258,32 +152,17 @@
   "edit": {
     "message": "संपादित करें"
   },
-  "editAccountName": {
-    "message": "खाता नाम संपादित करें"
-  },
   "emailUs": {
     "message": "हमें ईमेल करें!"
-  },
-  "encryptNewDen": {
-    "message": "अपना नया डेन एन्क्रिप्ट करें"
   },
   "enterPassword": {
     "message": "पासवर्ड दर्ज करें"
   },
-  "enterPasswordConfirm": {
-    "message": "पुष्टि करने के लिए अपना पासवर्ड दर्ज करें"
-  },
   "etherscanView": {
     "message": "ईथरस्कैन पर खाता देखें"
   },
-  "exchangeRate": {
-    "message": "विनिमय दरै"
-  },
   "exportPrivateKey": {
     "message": "निजी कुंजी निर्यात करें"
-  },
-  "exportPrivateKeyWarning": {
-    "message": "अपने जोखिम पर निजी कुंजी निर्यात करें।"
   },
   "failed": {
     "message": "विफल"
@@ -296,24 +175,11 @@
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "यूजर को अपने खाते को जे.एस.ौ.एन फ़ाइल से आयात करने में मदद करता है"
   },
-  "followTwitter": {
-    "message": "हमें ट्विटर पर अनुसरण करें"
-  },
   "from": {
     "message": "की तरफ से - संदेश"
   },
-  "fromToSame": {
-    "message": "से और पता करने के लिए समान नहीं हो सकता"
-  },
   "fromShapeShift": {
     "message": "सेशशशफ्ट का"
-  },
-  "gas": {
-    "message": "गैस की लागत",
-    "description": "गैस की लागत का संक्षिप्त संकेत"
-  },
-  "gasFee": {
-    "message": "गैस शुल्क"
   },
   "gasLimit": {
     "message": "गैस सीमा"
@@ -321,23 +187,14 @@
   "gasLimitCalculation": {
     "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाई गई गैस सीमा की गणना करते हैं।"
   },
-  "gasLimitRequired": {
-    "message": "गैस सीमा आवश्यक"
-  },
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
-  },
-  "generatingSeed": {
-    "message": "सृजन  बीज उत्पन्न ... उत्पन्न ...उत्पन्न..."
   },
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
   },
   "gasPriceCalculation": {
     "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाए गए गैस की कीमतों की गणना करते हैं।"
-  },
-  "gasPriceRequired": {
-    "message": "गैस की कीमत आवश्यक है"
   },
   "getEther": {
     "message": "ईथर प्राप्त करें"
@@ -354,9 +211,6 @@
     "message": "यहां",
     "description": "अधिक जानकारी के लिए यहां क्लिक करें- (परेशानी के साथ जाता है टोकनबैलेंस) (troubleTokenBalances)"
   },
-  "hereList": {
-    "message": "यहां एक सूची है !!!!"
-  },
   "hide": {
     "message": "छुपाएं"
   },
@@ -365,12 +219,6 @@
   },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएंn?"
-  },
-  "howToDeposit": {
-    "message": "आप ईथर जमा कैसे करना चाहेंगे?"
-  },
-  "holdEther": {
-    "message": "यह आपको आकाश और टोकन रखने की अनुमति देता है, और विकेंद्रीकृत अनुप्रयोगों के लिए आपके पुल के रूप में कार्य करता है।"
   },
   "import": {
     "message": "आयात",
@@ -381,12 +229,6 @@
   },
   "importAccountMsg": {
     "message": "आयात किए गए खाते आपके मूल रूप से बनाए गए मेटामास्क अकाउंट सीडफ्रेज से संबद्ध नहीं होंगे। आयात किए गए खातों के बारे में और जानें"
-  },
-  "importAnAccount": {
-    "message": "खाता आयात करैॉ"
-  },
-  "importDen": {
-    "message": "मौजूदा डेन आयात करें - DEN"
   },
   "imported": {
     "message": "आयातित",
@@ -407,23 +249,14 @@
   "invalidAddressRecipient": {
     "message": "प्राप्तकर्ता का पता अमान्य है"
   },
-  "invalidGasParams": {
-    "message": "अमान्य गैस पैरामीटर"
-  },
   "invalidInput": {
     "message": "अमान्य इनपुट।"
-  },
-  "invalidRequest": {
-    "message": "अमान्य अनुरोध"
   },
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },
   "invalidBlockExplorerURL": {
     "message": "अमान्य Block Explorer कै URI"
-  },
-  "jsonFail": {
-    "message": "कुछ गलत हो गया। कृपया सुनिश्चित करें कि आपकी JSON फ़ाइल ठीक से फ़ॉर्मेट की गई है।"
   },
   "jsonFile": {
     "message": "JSON फ़ाइल",
@@ -432,18 +265,12 @@
   "kovan": {
     "message": "कोवान टेस्ट नेटवर्क"
   },
-  "knowledgeDataBase": {
-    "message": "हमारे नॉलेज बेस पर जाएं"
-  },
   "lessThanMax": {
     "message": "$1 से कम या बराबर होना चाहिए।",
     "description": "हेक्स इनपुट के लिए दशमलव इनपुट के रूप में सहायक"
   },
   "likeToAddTokens": {
     "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
-  },
-  "limit": {
-    "message": "सीमा"
   },
   "loading": {
     "message": "लोड हो रहा है ....."
@@ -460,12 +287,6 @@
   "logout": {
     "message": "लॉग आउट करें"
   },
-  "loose": {
-    "message": "ढीला"
-  },
-  "loweCaseWords": {
-    "message": "बीज शब्द में केवल लोअरकेस वर्ण होते हैं"
-  },
   "mainnet": {
     "message": "मुख्य इथीरियम नेटवर्क"
   },
@@ -474,9 +295,6 @@
   },
   "metamaskDescription": {
     "message": "मेटामास्क इथीरियम के लिए एक सुरक्षित पहचान वॉल्ट है।"
-  },
-  "min": {
-    "message": "न्यूनतम"
   },
   "myAccounts": {
     "message": "मेरे खाते"
@@ -490,10 +308,6 @@
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
     "description": "प्रयोक्ता महत्वपूर्ण खाता है और उसे जारी रखने के लिए एक फ़ाइल जोड़ने की आवश्यकता है"
-  },
-  "needImportPassword": {
-    "message": "चयनित फ़ाइल के लिए आपको एक पासवर्ड दर्ज करना होगा।",
-    "description": "पासवर्ड और फाइल को एक खाते आयात करने के लिए आवश्यक है"
   },
   "negativeETH": {
     "message": "ईटीएच की नकारात्मक मात्रा नहीं भेज सकते हैं।."
@@ -514,9 +328,6 @@
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
   },
-  "newRecipient": {
-    "message": "नया प्राप्तकर्ता"
-  },
   "next": {
     "message": "अगला"
   },
@@ -526,35 +337,8 @@
   "noDeposits": {
     "message": "कोई जमा प्राप्त नहीं हुई"
   },
-  "noTransactionHistory": {
-    "message": "कोई लेनदेन इतिहास नहीं ..."
-  },
   "noTransactions": {
     "message": "कोई लेन-देन नहीं"
-  },
-  "notStarted": {
-    "message": "प्रारंभ नहीं किया गया"
-  },
-  "oldUI": {
-    "message": "पुराना UI"
-  },
-  "oldUIMessage": {
-    "message": "आप पुराने UI पर वापस आ गए हैं। आप ऊपर दाईं ओर ड्रॉपडाउन मेनू में विकल्प के माध्यम से नए UI पर वापस स्विच कर सकते हैं।"
-  },
-  "or": {
-    "message": "या",
-    "description": "एक नया खाता बनाने या आयात करने के बीच की पसंद"
-  },
-  "passwordCorrect": {
-    "message": "कृपया सुनिश्चित करें कि आपका पासवर्ड सही है।"
-  },
-  "passwordMismatch": {
-    "message": "पासवर्ड मेल नहीं खाते",
-    "description": "पासवर्ड निर्माण प्रक्रिया में, दो नए पासवर्ड फ़ील्ड मेल नहीं खाते"
-  },
-  "passwordShort": {
-    "message": "पासवर्ड पर्याप्त लंबा नहीं",
-    "description": "पासवर्ड बनाने की प्रक्रिया में, पासवर्ड सुरक्षित होने के लिए पर्याप्त नहीं है"
   },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",
@@ -565,9 +349,6 @@
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत पता मिला। टोकन अनुबंध का पता इनपुट।"
-  },
-  "pleaseReviewTransaction": {
-    "message": "कृपया अपने लेनदेन की समीक्षा करें।"
   },
   "privacyMsg": {
     "message": "गोपनीयता नीति"
@@ -588,20 +369,8 @@
   "readdToken": {
     "message": "आप अपने खाता विकल्प मेनू में .टोकन जोड़ें. पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
   },
-  "readMore": {
-    "message": "यहां और पढ़ें।"
-  },
-  "readMore2": {
-    "message": "हां - और पढ़ें।"
-  },
-  "receive": {
-    "message": "प्राप्त करें"
-  },
   "recipientAddress": {
     "message": "प्राप्तकर्ता पता"
-  },
-  "refundAddress": {
-    "message": "आपका रिफंड पता"
   },
   "rejected": {
     "message": "अस्वीकृत"
@@ -614,9 +383,6 @@
   },
   "required": {
     "message": "आवश्यक"
-  },
-  "retryWithMoreGas": {
-    "message": "यहां एक उच्च गैस कीमत के साथ पुन: प्रयास करें"
   },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
@@ -633,19 +399,8 @@
   "ropsten": {
     "message": "रॉप्स्टेन टेस्ट नेटवर्क"
   },
-  "sampleAccountName": {
-    "message": "उदाहरण के लिए मेरा नया खाता",
-    "description": "उपयोगकर्ता को अपने खाते में मानव-पठनीय नाम जोड़ने की अवधारणा को समझें."
-  },
   "save": {
     "message": "सहेजें"
-  },
-  "saveAsFile": {
-    "message": "फ़ाइल के रूप में सहेजें",
-    "description": "खाता निर्यात प्रक्रिया"
-  },
-  "saveSeedAsFile": {
-    "message": "सेड वर्ड्स - फाईल्स सेव करें"
   },
   "search": {
     "message": "खोज करें"
@@ -656,14 +411,8 @@
   "seedPhraseReq": {
     "message": "बीज वाक्यांश 12 शब्द लंबा हैं"
   },
-  "select": {
-    "message": "चुनें"
-  },
   "selectCurrency": {
     "message": "मुद्रा चुनें"
-  },
-  "selectService": {
-    "message": "सेवा चुनें"
   },
   "selectType": {
     "message": "प्रकार चुनें"
@@ -677,41 +426,20 @@
   "sendTokens": {
     "message": "भेजें टोकन"
   },
-  "sendTokensAnywhere": {
-    "message": "इथीरियम खाते वाले किसी को भी टोकन भेजें"
-  },
   "settings": {
     "message": "सेटिंग्स"
-  },
-  "shapeshiftBuy": {
-    "message": "शेपेशिस्ट के साथ खरीदें"
   },
   "showPrivateKeys": {
     "message": "निजी कुंजी दिखाएँ"
   },
-  "showQRCode": {
-    "message": "QR कोड दिखाएं"
-  },
   "sign": {
     "message": "हस्ताक्षर"
-  },
-  "signMessage": {
-    "message": "हस्ताक्षर संदेश"
   },
   "signNotice": {
     "message": "इस संदेश पर हस्ताक्षर करने से \n साइड इफेक्ट हो सकते हैं। \n केवल अपने पूरे खाते के साथ पूरी तरह से भरोसेमंद \n साइटों से संदेश पर हस्ताक्षर करें। \n यह खतरनाक विधि भविष्य के संस्करण में निकाल दी जाएगी।"
   },
   "sigRequest": {
     "message": "हस्ताक्षर अनुरोध"
-  },
-  "sigRequested": {
-    "message": "हस्ताक्षर अनुरोधित"
-  },
-  "spaceBetween": {
-    "message": "केवल शब्दों के बीच एक स्थान हो सकता है"
-  },
-  "status": {
-    "message": "स्थिति"
   },
   "stateLogs": {
     "message": "स्थिति संदेश"
@@ -728,9 +456,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 0 और 12 अक्षरों के बीच होना चाहिए"
   },
-  "takesTooLong": {
-    "message": "बहुत समय ले रहा है?"
-  },
   "terms": {
     "message": "उपयोग की शर्तें"
   },
@@ -744,57 +469,21 @@
     "message": "शैपशैफ्ट द्वारा $1 से ETH में जमा",
     "description": "संदेश की शुरुआत में जमा प्रकार भर जाएगा"
   },
-  "tokenAddress": {
-    "message": "टोकन पता"
-  },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"
-  },
-  "tokenBalance": {
-    "message": "आपका टोकन बैलेंस है:"
-  },
-  "tokenSelection": {
-    "message": "टोकन के लिए खोजें या हमारी लोकप्रिय टॉकेन्स की सूची से चुनें।"
   },
   "tokenSymbol": {
     "message": "टोकन प्रतीक"
   },
-  "tokenWarning1": {
-    "message": "अपने मेटामास्क अकाउंट से खरीदे गए टोकनों का नज़र रखें। अगर आप किसी अलग खाते का उपयोग कर टोकन खरीदे हैं, तो ये टोकन यहां दिखाई नहीं देंगे।"
-  },
   "total": {
     "message": "कुल"
-  },
-  "transactions": {
-    "message": "लेनदेन"
-  },
-  "transactionMemo": {
-    "message": "लेनदेन मेमो (वैकल्पिक)"
-  },
-  "transactionNumber": {
-    "message": "लेनदेन संख्या"
-  },
-  "transfers": {
-    "message": "स्थानांतरण"
   },
   "troubleTokenBalances": {
     "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
     "description": "टोकन शेष देखने के लिए एक लिंक ... (यहां)"
   },
-  "twelveWords": {
-    "message": "ये 12 शब्द आपके मेटामास्क खातों को पुनर्स्थापित करने का एकमात्र तरीका है। \n उन्हें कहीं सुरक्षित और गुप्त रूप से सहेजें।"
-  },
   "typePassword": {
     "message": "अपना पासवर्ड टाइप करें"
-  },
-  "uiWelcome": {
-    "message": "नया यूआई (बीटा) में आपका स्वागत है"
-  },
-  "uiWelcomeMessage": {
-    "message": "आप अब नए मेटामास्क UI का उपयोग कर रहे हैं। चारों ओर एक नज़र डालें, टोकन भेजने की तरह नई सुविधाएं देखें, और हमें बताएं कि आपके पास कोई समस्या है।"
-  },
-  "unavailable": {
-    "message": "अनुपलब्ध"
   },
   "unknown": {
     "message": "अज्ञात नेटवर्क"
@@ -802,27 +491,14 @@
   "unknownNetwork": {
     "message": "अज्ञात निजी नेटवर्क"
   },
-  "unknownNetworkId": {
-    "message": "अज्ञात नेटवर्क आईडी.य़"
-  },
   "uriErrorMsg": {
     "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
-  },
-  "usaOnly": {
-    "message": "केवल यूएसए - USA",
-    "description": "इस एक्सचेंज का उपयोग करना संयुक्त राज्य अमेरिका के अंदर ही सीमित है"
   },
   "usedByClients": {
     "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
-  "useOldUI": {
-    "message": "पुराने UI का उपयोग करें"
-  },
   "validFileImport": {
     "message": "आयात करने के लिए आपको एक वैध फ़ाइल चुननी होगी।"
-  },
-  "vaultCreated": {
-    "message": "वॉल्ट बनाया गया"
   },
   "viewAccount": {
     "message": "खाता देखें"
@@ -830,14 +506,8 @@
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
   },
-  "warning": {
-    "message": "चेतावनी"
-  },
   "welcome": {
     "message": "मेटामास्क बीटा में आपका स्वागत है"
-  },
-  "whatsThis": {
-    "message": "यह क्या है?"
   },
   "yourSigRequested": {
     "message": "आपका हस्ताक्षर अनुरोध किया जा रहा है"
