@@ -867,6 +867,15 @@
   "noAddressForName": {
     "message": "No address has been set for this name."
   },
+  "noOwnerForName": {
+    "message": "This domain has no owner"
+  },
+  "invalidDomain": {
+    "message": "Invalid domain"
+  },
+  "noNetworkSupport":{
+    "message": "Network doesn't support ENS"
+  },
   "noDeposits": {
     "message": "No deposits received"
   },

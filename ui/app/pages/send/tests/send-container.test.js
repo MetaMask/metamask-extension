@@ -91,7 +91,7 @@ describe('send container', () => {
         tokenToFiatRate: 'mockTokenToFiatRate:mockState',
         qrCodeData: 'mockQrCodeData:mockState',
         tokens: 'mockTokens:mockState',
-        ensResolution: 'mockSendEnsResolution:mockState',
+        namingResolution: 'mockSendEnsResolution:mockState',
         ensResolutionError: 'mockSendEnsResolutionError:mockState',
         toNickname: 'mockToNickname:mockState',
         addressBook: 'mockAddressBook:mockState',

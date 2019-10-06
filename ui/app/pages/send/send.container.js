@@ -5,7 +5,7 @@ import { compose } from 'recompose'
 const {
   getSelectedAddress,
 } = require('../../selectors/selectors')
-
+import Namicorn from 'namicorn'
 import {
   getAmountConversionRate,
   getBlockGasLimit,
@@ -54,9 +54,6 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
-import {
-  isValidENSAddress,
-} from '../../helpers/utils/util'
 
 import {
   SEND_ROUTE,
@@ -67,7 +64,10 @@ module.exports = compose(
   connect(mapStateToProps, mapDispatchToProps)
 )(SendEther)
 
+let namicorn
+
 function mapStateToProps (state) {
+  namicorn = new Namicorn({blockchain: {ens: {network: parseInt(getCurrentNetwork(state))}, zns: true}})
   return {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
@@ -84,7 +84,7 @@ function mapStateToProps (state) {
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
-    ensResolution: getSendEnsResolution(state),
+    namingResolution: getSendEnsResolution(state),
     ensResolutionError: getSendEnsResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
@@ -98,6 +98,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
+
   return {
     updateAndSetGasLimit: ({
       blockGasLimit,
@@ -128,10 +129,10 @@ function mapDispatchToProps (dispatch) {
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
-    updateSendEnsResolution: (ensResolution) => dispatch(updateSendEnsResolution(ensResolution)),
+    updateSendEnsResolution: (namingResolution) => dispatch(updateSendEnsResolution(namingResolution)),
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
-      if (isValidENSAddress(toNickname)) {
+      if (namicorn.isSupportedDomain(toNickname)) {
         const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
         if (!addressBookEntry.name !== toNickname) {
           dispatch(updateSendTo(to, addressBookEntry.name || ''))

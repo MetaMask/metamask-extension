@@ -2,6 +2,7 @@ const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 import { DateTime } from 'luxon'
+// import Namicorn from 'namicorn'
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
@@ -36,7 +37,6 @@ module.exports = {
   miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
-  isValidENSAddress,
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
@@ -97,10 +97,6 @@ function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
-}
-
-function isValidENSAddress (address) {
-  return address.match(/^.{7,}\.(eth|test)$/)
 }
 
 function isInvalidChecksumAddress (address) {

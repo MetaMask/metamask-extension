@@ -248,7 +248,7 @@ function getTokenBalance (state) {
 }
 
 function getSendEnsResolution (state) {
-  return state.metamask.send.ensResolution
+  return state.metamask.send.namingResolution
 }
 
 function getSendEnsResolutionError (state) {

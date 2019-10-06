@@ -1104,10 +1104,10 @@ function clearSend () {
   }
 }
 
-function updateSendEnsResolution (ensResolution) {
+function updateSendEnsResolution (namingResolution) {
   return {
     type: actions.UPDATE_SEND_ENS_RESOLUTION,
-    payload: ensResolution,
+    payload: namingResolution,
   }
 }
 
