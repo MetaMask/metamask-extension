@@ -143,6 +143,9 @@
   "customRPC": {
     "message": "Пользовательский RPC"
   },
+  "dataBackupFoundInfo": {
+    "message": "Некоторые данные вашей учетной записи были экспортированы во время предыдущей установки MetaMask. Это может включать ваши настройки, контакты и токены. Вы хотите импортировать эти данные сейчас?"
+  },
   "decimalsMustZerotoTen": {
     "message": "Количество десятичных разрядов должно быть минимум 0 и максимум 36."
   },
@@ -313,6 +316,9 @@
   },
   "loadingTokens": {
     "message": "Загрузка токенов..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
   },
   "login": {
     "message": "Вход"
@@ -1022,8 +1028,11 @@
   "noConversionRateAvailable": {
     "message": "Курсы валют недоступны"
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "notEnoughGas": {
-    "message": "Нехватает газа"
+    "message": "Не хватает газа"
   },
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
@@ -1105,6 +1114,10 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой аккаунт с помощью секретной фразы"
+  },
+  "restoreWalletPreferences": {
+    "message": "Были найдены данные экспортированные от $1. Вы желаете восстановить настройки вашего кошелька?",
+    "description": "$1 это дата в которую данные были экспортированы"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
