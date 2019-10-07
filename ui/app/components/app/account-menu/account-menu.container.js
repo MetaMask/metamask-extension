@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose, withProps } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import {
   toggleAccountMenu,
@@ -13,23 +13,28 @@ import {
 } from '../../../store/actions'
 import {
   getAddressConnectedDomainMap,
-  getMetaMaskAccounts,
+  getMetaMaskAccountsOrdered,
+  getMetaMaskKeyrings,
   getOriginOfCurrentTab,
+  getSelectedAddress,
 } from '../../../selectors/selectors'
-
 import AccountMenu from './account-menu.component'
 
+/**
+ * The min amount of accounts to show search field
+ */
+const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5
+
 function mapStateToProps (state) {
-  const { metamask: { selectedAddress, isAccountMenuOpen, keyrings, identities } } = state
+  const { metamask: { isAccountMenuOpen } } = state
 
   return {
-    selectedAddress,
     isAccountMenuOpen,
-    keyrings,
-    identities,
-    accounts: getMetaMaskAccounts(state),
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
     originOfCurrentTab: getOriginOfCurrentTab(state),
+    selectedAddress: getSelectedAddress(state),
+    keyrings: getMetaMaskKeyrings(state),
+    accounts: getMetaMaskAccountsOrdered(state),
   }
 }
 
@@ -65,5 +70,6 @@ function mapDispatchToProps (dispatch) {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  withProps(({ accounts }) => ({ shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT}))
 )(AccountMenu)

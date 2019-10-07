@@ -1,6 +1,8 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
+import Fuse from 'fuse.js'
+
 import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
@@ -17,17 +19,18 @@ import {
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
+import TextField from '../../ui/text-field'
 
-export default class AccountMenu extends PureComponent {
+export default class AccountMenu extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
-    accounts: PropTypes.object,
+    shouldShowAccountsSearch: PropTypes.bool,
+    accounts: PropTypes.array,
     history: PropTypes.object,
-    identities: PropTypes.object,
     isAccountMenuOpen: PropTypes.bool,
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
@@ -39,9 +42,25 @@ export default class AccountMenu extends PureComponent {
     originOfCurrentTab: PropTypes.string,
   }
 
+  accountsRef;
+
   state = {
     atAccountListBottom: false,
+    searchQuery: '',
   }
+
+  addressFuse = new Fuse([], {
+    shouldSort: false,
+    threshold: 0.45,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: [
+      { name: 'name', weight: 0.5 },
+      { name: 'address', weight: 0.5 },
+    ],
+  })
 
   componentDidUpdate (prevProps) {
     const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps
@@ -49,12 +68,28 @@ export default class AccountMenu extends PureComponent {
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {
       this.setAtAccountListBottom()
+      this.resetSearchQuery()
     }
+  }
+
+  renderAccountsSearch () {
+    return [
+      <TextField
+        key="search-text-field"
+        id="search-accounts"
+        placeholder={this.context.t('searchAccounts')}
+        type="text"
+        value={this.state.searchQuery}
+        onChange={e => this.setSearchQuery(e.target.value)}
+        fullWidth
+        theme="material-white-padded"
+      />,
+      <Divider key="search-divider" />,
+    ]
   }
 
   renderAccounts () {
     const {
-      identities,
       accounts,
       selectedAddress,
       keyrings,
@@ -62,14 +97,21 @@ export default class AccountMenu extends PureComponent {
       addressConnectedDomainMap,
       originOfCurrentTab,
     } = this.props
+    const { searchQuery } = this.state
 
-    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+    let filteredIdentities = accounts
+    if (searchQuery) {
+      this.addressFuse.setCollection(accounts)
+      filteredIdentities = this.addressFuse.search(searchQuery)
+    }
 
-    return accountOrder.filter(address => !!identities[address]).map(address => {
-      const identity = identities[address]
+    if (filteredIdentities.length === 0) {
+      return <p className="account-menu__no-accounts">{this.context.t('noAccountsFound')}</p>
+    }
+
+    return filteredIdentities.map(identity => {
       const isSelected = identity.address === selectedAddress
 
-      const balanceValue = accounts[address] ? accounts[address].balance : ''
       const simpleAddress = identity.address.substring(2).toLowerCase()
 
       const keyring = keyrings.find(kr => {
@@ -106,7 +148,7 @@ export default class AccountMenu extends PureComponent {
             </div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
-              value={balanceValue}
+              value={identity.balance}
               type={PRIMARY}
             />
           </div>
@@ -181,9 +223,16 @@ export default class AccountMenu extends PureComponent {
     )
   }
 
+  resetSearchQuery () {
+    this.setSearchQuery('')
+  }
+
+  setSearchQuery (searchQuery) {
+    this.setState({ searchQuery })
+  }
+
   setAtAccountListBottom = () => {
-    const target = document.querySelector('.account-menu__accounts')
-    const { scrollTop, offsetHeight, scrollHeight } = target
+    const { scrollTop, offsetHeight, scrollHeight } = this.accountsRef
     const atAccountListBottom = scrollTop + offsetHeight >= scrollHeight
     this.setState({ atAccountListBottom })
   }
@@ -192,9 +241,8 @@ export default class AccountMenu extends PureComponent {
 
   handleScrollDown = e => {
     e.stopPropagation()
-    const target = document.querySelector('.account-menu__accounts')
-    const { scrollHeight } = target
-    target.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' })
+    const { scrollHeight } = this.accountsRef
+    this.accountsRef.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' })
     this.setAtAccountListBottom()
   }
 
@@ -217,14 +265,14 @@ export default class AccountMenu extends PureComponent {
   }
 
   render () {
-    const { t } = this.context
+    const { t, metricsEvent } = this.context
     const {
+      shouldShowAccountsSearch,
       isAccountMenuOpen,
       toggleAccountMenu,
       lockMetamask,
       history,
     } = this.props
-    const { metricsEvent } = this.context
 
     return (
       <Menu
@@ -246,9 +294,13 @@ export default class AccountMenu extends PureComponent {
         </Item>
         <Divider />
         <div className="account-menu__accounts-container">
+          {shouldShowAccountsSearch ? this.renderAccountsSearch() : null}
           <div
             className="account-menu__accounts"
             onScroll={this.onScroll}
+            ref={ref => {
+              this.accountsRef = ref
+            }}
           >
             { this.renderAccounts() }
           </div>

@@ -33,14 +33,14 @@ storiesOf('TextField', module)
     <TextField
       label="Text"
       type="text"
-      material
+      theme="material"
     />
   ))
   .add('Material password', () => (
     <TextField
       label="Password"
       type="password"
-      material
+      theme="material"
     />
   ))
   .add('Material error', () => (
@@ -48,6 +48,6 @@ storiesOf('TextField', module)
       type="text"
       label="Name"
       error="Invalid value"
-      material
+      theme="material"
     />
   ))

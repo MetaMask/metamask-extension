@@ -28,6 +28,13 @@ const styles = {
     },
   },
   materialError: {},
+  materialWhitePaddedInputRoot: {
+    color: '#fff',
+  },
+  materialWhitePaddedInput: {
+    paddingLeft: '8px',
+    paddingRight: '8px',
+  },
   // Non-material styles
   formLabel: {
     '&$formLabelFocused': {
@@ -66,35 +73,92 @@ const styles = {
   },
 }
 
+const getMaterialThemeInputProps = ({
+  dir,
+  classes: { materialLabel, materialFocused, materialError, materialUnderline },
+  startAdornment,
+}) => ({
+  InputLabelProps: {
+    FormLabelClasses: {
+      root: materialLabel,
+      focused: materialFocused,
+      error: materialError,
+    },
+  },
+  InputProps: {
+    startAdornment,
+    classes: {
+      underline: materialUnderline,
+    },
+    inputProps: {
+      dir,
+    },
+  },
+})
+
+const getMaterialWhitePaddedThemeInputProps = ({
+  dir,
+  classes: { materialWhitePaddedInputRoot, materialWhitePaddedInput, materialUnderline },
+  startAdornment,
+}) => ({
+  InputProps: {
+    startAdornment,
+    classes: {
+      root: materialWhitePaddedInputRoot,
+      input: materialWhitePaddedInput,
+      underline: materialUnderline,
+    },
+    inputProps: {
+      dir,
+    },
+  },
+})
+
+const getBorderedThemeInputProps = ({
+  dir,
+  classes: { formLabel, formLabelFocused, materialError, largeInputLabel, inputLabel, inputRoot, input, inputFocused },
+  largeLabel,
+  startAdornment,
+}) => ({
+  InputLabelProps: {
+    shrink: true,
+    className: largeLabel ? largeInputLabel : inputLabel,
+    FormLabelClasses: {
+      root: formLabel,
+      focused: formLabelFocused,
+      error: materialError,
+    },
+  },
+  InputProps: {
+    startAdornment,
+    disableUnderline: true,
+    classes: {
+      root: inputRoot,
+      input: input,
+      focused: inputFocused,
+    },
+    inputProps: {
+      dir,
+    },
+  },
+})
+
+const themeToInputProps = {
+  'material': getMaterialThemeInputProps,
+  'bordered': getBorderedThemeInputProps,
+  'material-white-padded': getMaterialWhitePaddedThemeInputProps,
+}
+
 const TextField = props => {
-  const { error, classes, material, startAdornment, largeLabel, dir, ...textFieldProps } = props
+  const { error, theme, ...textFieldProps } = props
+
+  const inputProps = themeToInputProps[theme](props)
 
   return (
     <MaterialTextField
       error={Boolean(error)}
       helperText={error}
-      InputLabelProps={{
-        shrink: material ? undefined : true,
-        className: material ? '' : (largeLabel ? classes.largeInputLabel : classes.inputLabel),
-        FormLabelClasses: {
-          root: material ? classes.materialLabel : classes.formLabel,
-          focused: material ? classes.materialFocused : classes.formLabelFocused,
-          error: classes.materialError,
-        },
-      }}
-      InputProps={{
-        startAdornment: startAdornment || undefined,
-        disableUnderline: !material,
-        classes: {
-          root: material ? '' : classes.inputRoot,
-          input: material ? '' : classes.input,
-          underline: material ? classes.materialUnderline : '',
-          focused: material ? '' : classes.inputFocused,
-        },
-        inputProps: {
-          dir,
-        },
-      }}
+      {...inputProps}
       {...textFieldProps}
     />
   )
@@ -103,13 +167,14 @@ const TextField = props => {
 TextField.defaultProps = {
   error: null,
   dir: 'auto',
+  theme: 'bordered',
 }
 
 TextField.propTypes = {
   error: PropTypes.string,
   classes: PropTypes.object,
   dir: PropTypes.string,
-  material: PropTypes.bool,
+  theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
   largeLabel: PropTypes.bool,
 }
