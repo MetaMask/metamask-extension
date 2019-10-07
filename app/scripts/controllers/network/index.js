@@ -160,18 +160,18 @@ module.exports = class NetworkController extends EventEmitter {
       network.initializeProvider(this._baseOpts)
       network.ready.then(({provider, blockTracker}) => {
         this._setProviderAndBlockTracker({ provider, blockTracker })
-        this.setNetworkState(network.getNetworkState())
       })
     } else {
       this._setProviderAndBlockTracker({ provider, blockTracker })
-      this.setNetworkState(network.getNetworkState())
-
     }
+    this.setNetworkState(network.getNetworkState())
     this.selectedNetwork = network
     this.selectedNetworkConfig = network.providerConfig
+    this.store.updateState({settings: network.providerConfig})
   }
 
   setNetworkState (netId) {
+    this.store.updateState({network: netId})
     return this.networkStore.putState(netId)
   }
 
