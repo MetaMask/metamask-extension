@@ -149,10 +149,16 @@ const themeToInputProps = {
   'material-white-padded': getMaterialWhitePaddedThemeInputProps,
 }
 
-const TextField = props => {
-  const { error, theme, ...textFieldProps } = props
-
-  const inputProps = themeToInputProps[theme](props)
+const TextField = ({
+  error,
+  classes,
+  theme,
+  startAdornment,
+  largeLabel,
+  dir,
+  ...textFieldProps
+}) => {
+  const inputProps = themeToInputProps[theme]({ classes, startAdornment, largeLabel, dir })
 
   return (
     <MaterialTextField
