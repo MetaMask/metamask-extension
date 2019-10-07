@@ -5,7 +5,7 @@ const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
 const BigNumber = require('bignumber.js')
-const walletBridgeUrl = ' https://2np91sujsf.execute-api.eu-west-1.amazonaws.com/production/graphql'
+const trustVaultBridgeUrl = 'https://2np91sujsf.execute-api.eu-west-1.amazonaws.com/production/graphql'
 const apiKey = 'da2-7nohbmx75fcdhk7hg3hafr2k4m'
 const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
@@ -84,7 +84,7 @@ class TrustvaultKeyring extends EventEmitter {
     } catch (err) {
       log.error('Error getting accounts', err)
       return []
-ˆ    }
+ˆ   }
 
     return this.accounts
   }
@@ -135,7 +135,7 @@ class TrustvaultKeyring extends EventEmitter {
   getPartialPinChallenge (email) {
     try {
       return this._getPartialPinChallenge(email)
-    } catch (err) { 
+    } catch (err) {
       log.error(err)
       throw err
     }
@@ -145,7 +145,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
-    const { data, error } = await this.walletBridgeRequest({ query })
+    const { data, error } = await this.trustVaultBridgeRequest({ query })
     if (error) {
       // TODO: read code and convert code to a message key that can be translated
       throw new Error(error.message);
@@ -169,7 +169,7 @@ class TrustvaultKeyring extends EventEmitter {
    */
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
-    const { data, error } = await this.walletBridgeRequest({ query })
+    const { data, error } = await this.trustVaultBridgeRequest({ query })
     const { authentication, pinChallenge } = data.getAuthenticationTokens
     if (pinChallenge && pinChallenge.sessionToken) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
@@ -181,7 +181,6 @@ class TrustvaultKeyring extends EventEmitter {
       throw err
     }
     return { authentication }
-
   }
 
   async _getAccounts () {
@@ -192,12 +191,12 @@ class TrustvaultKeyring extends EventEmitter {
 
   async _request (constructQuery, queryContext) {
       const query = constructQuery(this.auth, queryContext)
-      const { data, error } = await this.walletBridgeRequest({ query })
+      const { data, error } = await this.trustVaultBridgeRequest({ query })
       if (error) {
         if (error.errorType.includes('INVALID_SESSION_TOKEN')) {
           try {
             const query = this._refreshAuthTokensQuery(this.auth)
-            const { data } = await this.walletBridgeRequest({ query })
+            const { data } = await this.trustVaultBridgeRequest({ query })
             this.auth = data.tokens.refreshAuthenticationTokens
             return this._request(constructQuery, queryContext)
           } catch (error) {
@@ -280,9 +279,9 @@ class TrustvaultKeyring extends EventEmitter {
     }
   }
 
-  async walletBridgeRequest (body) {
+  async trustVaultBridgeRequest (body) {
     const options = {
-      uri: walletBridgeUrl,
+      uri: trustVaultBridgeUrl,
       method: "POST",
       headers: {
         "x-api-key": apiKey,

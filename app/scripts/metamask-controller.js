@@ -1569,7 +1569,7 @@ module.exports = class MetamaskController extends EventEmitter {
       return
     }
     let map = {}
-    const trustvaultKeyring = this.keyringController.getKeyringsByType('TrustVault')[0]
+    const [trustvaultKeyring] = this.keyringController.getKeyringsByType('TrustVault')
     if (trustvaultKeyring) {
       map = trustvaultKeyring.getAccountNames()
     }

@@ -4,7 +4,6 @@ const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../../../store/actions')
 const EmailScreen = require('./email-screen')
-const ConnectTrustVaultPinForm = require('../pin')
 
 class ConnectTrustVaultEmailForm extends PureComponent {
   constructor (props) {

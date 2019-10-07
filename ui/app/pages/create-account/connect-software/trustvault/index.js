@@ -27,10 +27,14 @@ class ConnectTrustVaultForm extends PureComponent {
   getTrustVaultPinChallenge = async email => {
     try {
       const pinChallenge = await this.props.getTrustVaultPinChallenge(email)
-      this.setState({ pinChallenge, email })
+      this.setState({
+        pinChallenge,
+        email,
+        error: pinChallenge ? null : this.state.error,
+      })
     } catch (e) {
       this.setState({ pinChallenge: null, email, error: e.message })
-  }
+    }
   }
 
   goToHomePage () {
