@@ -25,13 +25,12 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 
   getTrustVaultPinChallenge = async email => {
-    // TODO: email not found error
-    const { pinChallenge, error } = await this.props.getTrustVaultPinChallenge(email)
-    this.setState({
-      pinChallenge,
-      email,
-      error: error && error.message
-    })
+    try {
+      const pinChallenge = await this.props.getTrustVaultPinChallenge(email)
+      this.setState({ pinChallenge, email })
+    } catch (e) {
+      this.setState({ pinChallenge: null, email, error: e.message })
+  }
   }
 
   goToHomePage () {
@@ -78,6 +77,7 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 
   renderPinForm = () => {
+    // Remove the error message
     return h(ConnectTrustVaultPinForm, {
       browserSupported: this.state.browserSupported,
       history: this.props.history,

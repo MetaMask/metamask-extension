@@ -26,20 +26,18 @@ class ConnectTrustVaultPinForm extends PureComponent {
   }
 
   submitTrustVaultPinChallenge = async (firstPin, secondPin) => {
-    let errorMessage = null
     const deviceName = 'TrustVault'
-
-    const { auth, pinChallenge, error } = await this.props.submitTrustVaultPinChallenge(firstPin, secondPin)
-    if (auth) {
+    try {
+      const auth = await this.props.submitTrustVaultPinChallenge(firstPin, secondPin)
       const accounts = await this.props.connectSoftware(deviceName, auth)
       this.showWalletConnectedAlert()
       return accounts
+    } catch (err) {
+      const { message, data } = err
+      const errorMessage = message || this.context.t('trustVaultIncorrectPin')
+      this.props.onNewPinChallenge(data && data.pinChallenge, errorMessage)
+      throw err
     }
-    if (error) {
-      errorMessage = (error && error.message) || this.context.t('trustVaultIncorrectPin')
-    }
-    this.props.onNewPinChallenge(pinChallenge, errorMessage)
-    return { auth, pinChallenge, error: errorMessage }
   }
 
   renderError () {

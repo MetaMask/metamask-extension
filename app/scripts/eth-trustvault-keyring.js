@@ -135,7 +135,7 @@ class TrustvaultKeyring extends EventEmitter {
   getPartialPinChallenge (email) {
     try {
       return this._getPartialPinChallenge(email)
-    } catch (err) {
+    } catch (err) { 
       log.error(err)
       throw err
     }
@@ -146,28 +146,42 @@ class TrustvaultKeyring extends EventEmitter {
   async _getPartialPinChallenge (email) {
     const query = this._getPartialPinChallengeQuery(email)
     const { data, error } = await this.walletBridgeRequest({ query })
-    const { getPartialPinChallenge } = data
+    if (error) {
+      // TODO: read code and convert code to a message key that can be translated
+      throw new Error(error.message);
+    }
+    const pinChallenge = data && data.getPartialPinChallenge
     // Set pinChallenge details
     this.pinChallenge.email = email
-    if (getPartialPinChallenge) {
-      this.pinChallenge.sessionToken = getPartialPinChallenge.sessionToken
+    if (pinChallenge) {
+      this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
 
-    return {
-      pinChallenge: getPartialPinChallenge,
-      error,
-    }
+    return { pinChallenge }
   }
 
+  /**
+   * If the pinChallenge fails, an error as well as a new pinChallenge is returned
+   * @param {*} email 
+   * @param {*} firstPinDigit 
+   * @param {*} secondPinDigit 
+   * @param {*} sessionToken 
+   */
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
     const { data, error } = await this.walletBridgeRequest({ query })
-    const { authentication: auth, pinChallenge } = data.getAuthenticationTokens
-
+    const { authentication, pinChallenge } = data.getAuthenticationTokens
     if (pinChallenge && pinChallenge.sessionToken) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
-    return { auth, pinChallenge, error }
+    if (error) {
+      // TODO: read code and convert code to a message key that can be translated
+      const err = new Error(error.message)
+      err.data = pinChallenge && { pinChallenge }
+      throw err
+    }
+    return { authentication }
+
   }
 
   async _getAccounts () {

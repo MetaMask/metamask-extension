@@ -168,10 +168,15 @@ class PinScreen extends PureComponent {
   }
 
   submitPinChallenge = async () => {
-     const { auth, pinChallenge } = await this.props.submitTrustVaultPinChallenge(this.state.firstPin, this.state.secondPin)
-     if (!auth && pinChallenge) {
-       this.setState({ firstPin: null, secondPin: null })
-     }
+    try {
+      await this.props.submitTrustVaultPinChallenge(this.state.firstPin, this.state.secondPin)
+    } catch (e) {
+      debugger
+      if (e && e.data && e.data.pinChallenge) {
+        // Remove previous entry if there is a new pin challenge
+        this.setState({ firstPin: null, secondPin: null })
+      }
+    }
   }
 
   renderConnectToTrustVaultButton() {

@@ -1903,10 +1903,10 @@ function getTrustVaultPinChallenge (email) {
           dispatch(actions.displayWarning('Had a problem getting pin challenge'))
           return reject(err)
         }
-        const { pinChallenge, error } = response
+        const { pinChallenge } = response
         dispatch(setTrustVaultPartialPinChallenge(pinChallenge))
         dispatch(actions.hideLoadingIndication())
-        return resolve({ pinChallenge, error })
+        return resolve(pinChallenge)
       })
     })
   }
@@ -1919,17 +1919,16 @@ function submitTrustVaultPinChallenge (firstPinDigit, secondPinDigit) {
       background.submitPartialPinChallenge(firstPinDigit, secondPinDigit, (err, response) => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning('Had a problem authenticating'))
+          if (err.data && err.data.pinChallenge) {
+            dispatch(setTrustVaultPartialPinChallenge(err.data.pinChallenge))
+            dispatch(actions.displayWarning('Invalid PIN, please try again'))
+          } else {
+            dispatch(actions.displayWarning('Had a problem authenticating'))
+          }
           return reject(err)
         }
-        const { auth, pinChallenge, error } = response
-        if (!auth && pinChallenge) {
-          dispatch(setTrustVaultPartialPinChallenge(pinChallenge))
-          dispatch(actions.displayWarning('Invalid PIN, please try again'))
-        }
-
         dispatch(actions.hideLoadingIndication())
-        resolve({ auth, pinChallenge, error })
+        resolve(response.authentication)
       })
     })
   }
