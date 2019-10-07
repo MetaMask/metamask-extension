@@ -46,7 +46,7 @@ const customNonceMerge = txData => customNonceValue ? ({
 }) : txData
 
 const mapStateToProps = (state, ownProps) => {
-  const { toAddress: propsToAddress, match: { params = {} } } = ownProps
+  const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
@@ -133,6 +133,17 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {}
 
+  let fullTxData = { ...txData, ...transaction }
+  if (customTxParamsData) {
+    fullTxData = {
+      ...fullTxData,
+      txParams: {
+        ...fullTxData.txParams,
+        data: customTxParamsData,
+      },
+    }
+  }
+
   return {
     balance,
     fromAddress,
@@ -150,7 +161,7 @@ const mapStateToProps = (state, ownProps) => {
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
-    txData: { ...txData, ...transaction },
+    txData: fullTxData,
     tokenData,
     methodData,
     tokenProps,
