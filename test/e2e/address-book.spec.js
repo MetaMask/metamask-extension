@@ -207,11 +207,11 @@ describe('MetaMask', function () {
       const addToAddressBookButton = await findElement(driver, By.css('.dialog.send__dialog.dialog--message'))
       await addToAddressBookButton.click()
 
-      const addressBookAddModal = await driver.findElement(By.css('span .modal'))
       await findElement(driver, By.css('.add-to-address-book-modal'))
       const addressBookInput = await findElement(driver, By.css('.add-to-address-book-modal__input'))
       await addressBookInput.sendKeys('Test Name 1')
       await delay(tinyDelayMs)
+      const addressBookAddModal = await driver.findElement(By.css('span .modal'))
       const addressBookSaveButton = await findElement(driver, By.css('.add-to-address-book-modal__footer .btn-primary'))
       await addressBookSaveButton.click()
 

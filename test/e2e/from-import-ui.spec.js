@@ -113,9 +113,9 @@ describe('Using MetaMask with an existing account', function () {
     it('shows a QR code for the account', async () => {
       await driver.findElement(By.css('.account-details__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
-      const detailModal = await driver.findElement(By.css('span .modal'))
       await delay(regularDelayMs)
 
+      const detailModal = await driver.findElement(By.css('span .modal'))
       await driver.executeScript("document.querySelector('.account-modal-close').click()")
       await driver.wait(until.stalenessOf(detailModal))
       await delay(regularDelayMs)

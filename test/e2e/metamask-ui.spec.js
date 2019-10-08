@@ -785,7 +785,6 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
-      const gasModal = await findElement(driver, By.css('span .modal'))
       await delay(regularDelayMs)
       const modalTabs = await findElements(driver, By.css('.page-container__tab'))
       await modalTabs[1].click()
@@ -820,6 +819,7 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
       await delay(50)
 
+      const gasModal = await findElement(driver, By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await delay(regularDelayMs)
@@ -973,7 +973,6 @@ describe('MetaMask', function () {
   })
 
   describe('Send token from inside MetaMask', () => {
-    let gasModal
     it('starts to send a transaction', async function () {
       const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
       await sendButton.click()
@@ -988,22 +987,19 @@ describe('MetaMask', function () {
       // Set the gas limit
       const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
       await configureGas.click()
-      await delay(regularDelayMs)
-
-      gasModal = await driver.findElement(By.css('span .modal'))
-      await delay(regularDelayMs)
+      await driver.findElement(By.css('span .modal'))
     })
 
     it('opens customize gas modal', async () => {
       await driver.wait(until.elementLocated(By.css('.page-container__title')))
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
     })
 
     it('transitions to the confirm screen', async () => {
-      await driver.wait(until.stalenessOf(gasModal))
-
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
@@ -1063,7 +1059,6 @@ describe('MetaMask', function () {
   })
 
   describe('Send a custom token from dapp', () => {
-    let gasModal
     it('sends an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
@@ -1092,9 +1087,7 @@ describe('MetaMask', function () {
       // Set the gas limit
       const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')), 10000)
       await configureGas.click()
-      await delay(regularDelayMs)
-
-      gasModal = await driver.findElement(By.css('span .modal'))
+      await driver.findElement(By.css('span .modal'))
     })
 
     it('customizes gas', async () => {
@@ -1129,6 +1122,7 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
       await delay(50)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
@@ -1177,7 +1171,6 @@ describe('MetaMask', function () {
   })
 
   describe('Approves a custom token from dapp', () => {
-    let gasModal
     it('approves an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
@@ -1235,9 +1228,7 @@ describe('MetaMask', function () {
     it('opens the gas edit modal', async () => {
       const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')))
       await configureGas.click()
-      await delay(regularDelayMs)
-
-      gasModal = await driver.findElement(By.css('span .modal'))
+      await driver.findElement(By.css('span .modal'))
     })
 
     it('customizes gas', async () => {
@@ -1272,6 +1263,7 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
       await delay(50)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
