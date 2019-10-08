@@ -116,6 +116,7 @@ class PluginsController extends EventEmitter {
     if (!sourceUrl) {
       sourceUrl = pluginName
     }
+    console.log(`Adding ${sourceUrl}`)
 
     // Deduplicate multiple add requests:
     if (!(pluginName in this.adding)) {
@@ -137,11 +138,15 @@ class PluginsController extends EventEmitter {
 
     let plugin
     try {
+      console.log(`Fetching ${sourceUrl}`)
       const pluginSource = await fetch(sourceUrl)
       const pluginJson = await pluginSource.json()
+      console.log(`Destructuring ${pluginJson}`)
       const { web3Wallet: { bundle, initialPermissions } } = pluginJson
+      console.log(`Fetching bundle ${bundle.url}`)
       const pluginBundle = await fetch(bundle.url)
       const sourceCode = await pluginBundle.text()
+      console.log(`Constructing plugin`)
       plugin = {
         sourceCode,
         initialPermissions,
@@ -166,6 +171,7 @@ class PluginsController extends EventEmitter {
   }
 
   async authorize (pluginName) {
+    console.log(`authorizing ${pluginName}`)
     const pluginState = this.store.getState().plugins
     const plugin = pluginState[pluginName]
     const { sourceCode, initialPermissions } = plugin
@@ -275,6 +281,7 @@ class PluginsController extends EventEmitter {
   }
 
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
+    console.log(`starting plugin ${pluginName}`)
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
     try {
