@@ -247,10 +247,16 @@ export default class AccountMenu extends Component {
   }
 
   renderScrollButton () {
-    const { accounts } = this.props
     const { atAccountListBottom } = this.state
+    const accountsRef = this.accountsRef
 
-    return !atAccountListBottom && Object.keys(accounts).length > 3 && (
+    if (!accountsRef) {
+      return null
+    }
+
+    const isAccountsScrollable = accountsRef.scrollHeight > accountsRef.offsetHeight
+
+    return !atAccountListBottom && isAccountsScrollable && (
       <div
         className="account-menu__scroll-button"
         onClick={this.handleScrollDown}
