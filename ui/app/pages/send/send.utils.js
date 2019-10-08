@@ -18,7 +18,6 @@ const {
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-  ARBITRARY_HIGH_BLOCK_GAS_LIMIT,
 } = require('./send.constants')
 const abi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
@@ -245,7 +244,7 @@ async function estimateGas ({
 
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
-    blockGasLimit = ARBITRARY_HIGH_BLOCK_GAS_LIMIT
+    blockGasLimit = MIN_GAS_LIMIT_HEX
   }
 
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
