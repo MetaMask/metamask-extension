@@ -243,12 +243,17 @@ async function estimateGas ({
   }
 
   // if not, fall back to block gasLimit
+  if (!blockGasLimit) {
+    blockGasLimit = MIN_GAS_LIMIT_HEX
+  }
+
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',
     toNumericBase: 'hex',
   }))
+
   // run tx
   return new Promise((resolve, reject) => {
     return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {

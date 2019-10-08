@@ -622,6 +622,36 @@ describe('Transaction Controller', function () {
       })
       assert.deepEqual(result, { transactionCategory: CONTRACT_INTERACTION_KEY, getCodeResponse: '0x0a' })
     })
+
+    it('should return a contract interaction transactionCategory with the correct getCodeResponse when to is a contract address and data is falsey', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0xa',
+      }
+      const _provider = createTestProviderTools({ scaffold: _providerResultStub }).provider
+      const _fromAccount = getTestAccounts()[0]
+      const _blockTrackerStub = new EventEmitter()
+      _blockTrackerStub.getCurrentBlock = noop
+      _blockTrackerStub.getLatestBlock = noop
+      const _txController = new TransactionController({
+        provider: _provider,
+        getGasPrice: function () { return '0xee6b2800' },
+        networkStore: new ObservableStore(currentNetworkId),
+        txHistoryLimit: 10,
+        blockTracker: _blockTrackerStub,
+        signTransaction: (ethTx) => new Promise((resolve) => {
+          ethTx.sign(_fromAccount.key)
+          resolve()
+        }),
+      })
+      const result = await _txController._determineTransactionCategory({
+        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+        data: '',
+      })
+      assert.deepEqual(result, { transactionCategory: CONTRACT_INTERACTION_KEY, getCodeResponse: '0x0a' })
+    })
   })
 
   describe('#getPendingTransactions', function () {

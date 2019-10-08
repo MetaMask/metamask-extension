@@ -12,7 +12,7 @@ class ExportTextContainer extends Component {
     return (
       h('.export-text-container', [
         h('.export-text-container__text-container', [
-          h('.export-text-container__text', text),
+          h('.export-text-container__text.notranslate', text),
         ]),
         h('.export-text-container__buttons-container', [
           h('.export-text-container__button.export-text-container__button--copy', {
