@@ -420,12 +420,6 @@
   "endOfFlowMessage10": {
     "message": "Alles erledigt"
   },
-  "ensRegistrationError": {
-    "message": "Fehler bei der ENS-Namensregistrierung"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-Name wurde im aktuellen Netzwerk nicht gefunden. Versuchen Sie, zum Main Ethereum Network zu wechseln."
-  },
   "enterAnAlias": {
     "message": "Ein Alias eingeben"
   },

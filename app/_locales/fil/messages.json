@@ -402,12 +402,6 @@
   "endOfFlowMessage10": {
     "message": "Tapos na Lahat"
   },
-  "ensRegistrationError": {
-    "message": "May error sa pagrerehistro ng ENS name"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Main Ethereum Network."
-  },
   "enterAnAlias": {
     "message": "Maglagay ng alias"
   },

@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "都完成了"
   },
-  "ensRegistrationError": {
-    "message": "ENS 名稱註冊錯誤"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要以太坊網路。"
-  },
   "enterAnAlias": {
     "message": "輸入化名"
   },

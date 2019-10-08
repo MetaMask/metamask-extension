@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Gata"
   },
-  "ensRegistrationError": {
-    "message": "Eroare la înregistrarea numelui ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Numele ENS nu s-a găsit pe rețeaua curentă. Încercați să comutați la Rețeaua Ethereum principală."
-  },
   "enterAnAlias": {
     "message": "Introduceți un alias"
   },

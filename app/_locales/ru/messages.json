@@ -821,12 +821,6 @@
   "endOfFlowMessage10": {
     "message": "Завершено"
   },
-  "ensRegistrationError": {
-    "message": "Ошибка в регистрации имени ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на основную сеть Ethereum"
-  },
   "enterAnAlias": {
     "message": "Введите алиас"
   },

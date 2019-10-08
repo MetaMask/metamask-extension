@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Viskas atlikta"
   },
-  "ensRegistrationError": {
-    "message": "ENS pavadinimo registracijos klaida"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS pavadinimas dabartiniame tinkle nerastas. Mėginkite perjungti į pagrindinį „Ethereum“ tinklą."
-  },
   "enterAnAlias": {
     "message": "Įveskite alternatyvųjį vardą"
   },

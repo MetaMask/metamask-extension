@@ -426,12 +426,6 @@
   "endOfFlowMessage10": {
     "message": "Selesai"
   },
-  "ensRegistrationError": {
-    "message": "Terjadi kesalahan dalam pendaftaran nama ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemukan pada jaringan saat ini. Cobalah beralih ke jaringan Ethereum utama."
-  },
   "enterAnAlias": {
     "message": "Masukkan alias"
   },

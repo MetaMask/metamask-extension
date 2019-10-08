@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "ಎಲ್ಲಾ ಮುಗಿದಿದೆ"
   },
-  "ensRegistrationError": {
-    "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ಪ್ರಸ್ತುತ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ENS ಹೆಸರು ಕಂಡುಬಂದಿಲ್ಲ. ಮುಖ್ಯವಾಗಿರುವ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
-  },
   "enterAnAlias": {
     "message": "ಆಲಿಯಾಸ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },

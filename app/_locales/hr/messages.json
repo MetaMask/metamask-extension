@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Sve završeno"
   },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji naziva ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Naziv ENS nije pronađen na trenutačnoj mreži. Pokušajte prebaciti na glavnu mrežu Ethereum."
-  },
   "enterAnAlias": {
     "message": "Upiši pseudonim"
   },

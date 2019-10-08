@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "كل شيء تم بنجاح"
   },
-  "ensRegistrationError": {
-    "message": "خطأ في تسجيل اسم ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "لم يتم العثور على اسم ENS على الشبكة الحالية. حاول التبديل إلى شبكة الإيثيريوم الرئيسية."
-  },
   "enterAnAlias": {
     "message": "أدخل اسمًا مستعارًا"
   },

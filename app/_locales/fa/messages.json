@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "همه انجام شد"
   },
-  "ensRegistrationError": {
-    "message": "خطا در ثبت نام ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "نام ENS در شبکه کنونی دریافت نشد. به تبدیل آن به شبکه اصلی ایتریم تلاش نمایید."
-  },
   "enterAnAlias": {
     "message": "یک نام مستعار را وارد کنید"
   },

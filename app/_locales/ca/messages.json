@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "Tot fet"
   },
-  "ensRegistrationError": {
-    "message": "Error al registre de nom ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
-  },
   "enterAnAlias": {
     "message": "Introdueix Àlies"
   },

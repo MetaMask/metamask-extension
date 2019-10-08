@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "全部完成"
   },
-  "ensRegistrationError": {
-    "message": "ENS 名称登记错误"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至主以太坊网络。"
-  },
   "enterAnAlias": {
     "message": "输入别名"
   },

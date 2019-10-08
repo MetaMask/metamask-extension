@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "Όλα Έτοιμα"
   },
-  "ensRegistrationError": {
-    "message": "Σφάλμα στην καταχώριση ονόματος ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Κύριο Δίκτυο Ethereum."
-  },
   "enterAnAlias": {
     "message": "Δώστε ένα ψευδώνυμο"
   },

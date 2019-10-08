@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Minden kész"
   },
-  "ensRegistrationError": {
-    "message": "Hiba történt az ENS név regisztrációjakor"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS név nem található a jelenlegi hálózaton. Próbálj váltani Ethereum főhálózatra."
-  },
   "enterAnAlias": {
     "message": "Adjon meg álnevet"
   },

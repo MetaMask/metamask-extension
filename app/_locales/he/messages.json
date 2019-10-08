@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "הכל בוצע"
   },
-  "ensRegistrationError": {
-    "message": "שגיאה ברישום שם ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "שם ENS לא נמצא ברשת הנוכחית. נסה/י לעבור לרשת אתריום הראשית."
-  },
   "enterAnAlias": {
     "message": "יש להזין כינוי"
   },

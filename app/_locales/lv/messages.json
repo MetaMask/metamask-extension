@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Pabeigts"
   },
-  "ensRegistrationError": {
-    "message": "Kļūda ENS vārda reģistrācijā"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Ethereum tīklu."
-  },
   "enterAnAlias": {
     "message": "Ievadiet segvārdu"
   },

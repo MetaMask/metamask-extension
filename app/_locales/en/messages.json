@@ -477,12 +477,6 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
-  "ensRegistrationError": {
-    "message": "Error in ENS name registration"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
-  },
   "enterAnAlias": {
     "message": "Enter an alias"
   },
@@ -873,7 +867,7 @@
   "invalidDomain": {
     "message": "Invalid domain"
   },
-  "noNetworkSupport":{
+  "noNetworkSupport": {
     "message": "Network doesn't support ENS"
   },
   "noDeposits": {

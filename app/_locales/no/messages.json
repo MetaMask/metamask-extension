@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "Ferdig"
   },
-  "ensRegistrationError": {
-    "message": "Feil i ENS-navneregistrering"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-navn ikke funnet i det gjeldende nettverket. Prøv å bytte til hovednettverket for Ethereum."
-  },
   "enterAnAlias": {
     "message": "Oppgi et alias"
   },

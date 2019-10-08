@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Valmis"
   },
-  "ensRegistrationError": {
-    "message": "Tõrge ENS-i nime registreerimisel"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Ethereumi võrgule."
-  },
   "enterAnAlias": {
     "message": "Sisestage alias"
   },

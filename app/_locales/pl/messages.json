@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "Wszystko gotowe"
   },
-  "ensRegistrationError": {
-    "message": "Błąd w rejestracji nazwy ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nazwa ENS nie została znaleziona w bieżącej sieci. Spróbuj przełączyć się na Główną sieć Ethereum."
-  },
   "enterAnAlias": {
     "message": "Wpisz alias"
   },

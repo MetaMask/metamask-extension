@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Всичко е готово"
   },
-  "ensRegistrationError": {
-    "message": "Грешка при регистрацията на име на ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Името на ENS не е намерено в текущата мрежа. Опитайте да преминете към основната мрежа на етереум."
-  },
   "enterAnAlias": {
     "message": "Въведете псевдоним"
   },

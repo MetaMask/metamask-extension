@@ -432,12 +432,6 @@
   "endOfFlowMessage10": {
     "message": "모두 완료"
   },
-  "ensRegistrationError": {
-    "message": "ENS 이름 등록 오류"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "현재 네트워크에서 ENS 이름을 찾을 수 없습니다. 주요 이더리움 네트워크로 전환해 보세요."
-  },
   "enterAnAlias": {
     "message": "가명을 입력하세요"
   },

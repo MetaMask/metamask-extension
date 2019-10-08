@@ -426,12 +426,6 @@
   "endOfFlowMessage10": {
     "message": "Všetko vykonané"
   },
-  "ensRegistrationError": {
-    "message": "Chyba pri registrácii názvu ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Názov ENS sa nenašiel v aktuálnej sieti. Skúste sa prepnúť na hlavnú sieť Ethereum."
-  },
   "enterAnAlias": {
     "message": "Zadať alias"
   },

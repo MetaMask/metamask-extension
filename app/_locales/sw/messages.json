@@ -429,12 +429,6 @@
   "endOfFlowMessage10": {
     "message": "Yote Imekamilika"
   },
-  "ensRegistrationError": {
-    "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Ethereum."
-  },
   "enterAnAlias": {
     "message": "Ingiza majina mengine"
   },

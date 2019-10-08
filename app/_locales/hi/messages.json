@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "सब हो गया"
   },
-  "ensRegistrationError": {
-    "message": "ईएनएस नाम पंजीकरण में त्रुटि"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "वर्तमान नेटवर्क पर ENS नाम नहीं मिला। मुख्य Ethereum नेटवर्क पर स्विच करने का प्रयास करें।"
-  },
   "enterAnAlias": {
     "message": "एक उपनाम दर्ज करें"
   },

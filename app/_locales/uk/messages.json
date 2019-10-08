@@ -435,12 +435,6 @@
   "endOfFlowMessage10": {
     "message": "Усе готово"
   },
-  "ensRegistrationError": {
-    "message": "Помилка у реєстрації ENS ім'я"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Main Ethereum Network."
-  },
   "enterAnAlias": {
     "message": "Введіть псевдонім"
   },
