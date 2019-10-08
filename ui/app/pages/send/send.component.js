@@ -155,7 +155,7 @@ export default class SendTransactionScreen extends PersistentForm {
           tokenContract,
           address,
         })
-        updateToNicknameIfNecessary(to, toNickname, addressBook)
+        updateToNicknameIfNecessary(to, toNickname, addressBook, network)
         this.updateGas()
       }
     }

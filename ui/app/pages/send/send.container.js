@@ -64,10 +64,8 @@ module.exports = compose(
   connect(mapStateToProps, mapDispatchToProps)
 )(SendEther)
 
-let namicorn
 
 function mapStateToProps (state) {
-  namicorn = new Namicorn({blockchain: {ens: {network: parseInt(getCurrentNetwork(state))}, zns: true}})
   return {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
@@ -131,7 +129,8 @@ function mapDispatchToProps (dispatch) {
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     updateSendEnsResolution: (namingResolution) => dispatch(updateSendEnsResolution(namingResolution)),
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
-    updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
+    updateToNicknameIfNecessary: (to, toNickname, addressBook, network) => {
+      const namicorn = new Namicorn({blockchain: {ens: {network}, zns: true}})
       if (namicorn.isSupportedDomain(toNickname)) {
         const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
         if (!addressBookEntry.name !== toNickname) {
