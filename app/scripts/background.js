@@ -415,7 +415,7 @@ function setupController (initState, initLangCode) {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedDecryptMsgCount = controller.personalDecryptManager.unapprovedDecryptMsgCount
+    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
     const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingProviderRequests = controller.providerApprovalController.memStore.getState().providerRequests.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount +
