@@ -603,21 +603,21 @@ class TransactionController extends EventEmitter {
     ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
 
     let result
-    let code
-    if (!txParams.data) {
-      result = SEND_ETHER_ACTION_KEY
-    } else if (tokenMethodName) {
+    if (txParams.data && tokenMethodName) {
       result = tokenMethodName
-    } else if (!to) {
+    } else if (txParams.data && !to) {
       result = DEPLOY_CONTRACT_ACTION_KEY
-    } else {
+    }
+
+    let code
+    if (!result) {
       try {
         code = await this.query.getCode(to)
       } catch (e) {
         code = null
         log.warn(e)
       }
-      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
       result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY

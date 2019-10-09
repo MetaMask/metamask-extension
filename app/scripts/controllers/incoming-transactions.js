@@ -207,7 +207,7 @@ class IncomingTransactionsController {
     }
   }
 
-  _processTxFetchResponse ({ status, result, address, currentNetworkID }) {
+  _processTxFetchResponse ({ status, result = [], address, currentNetworkID }) {
     if (status !== '0' && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []

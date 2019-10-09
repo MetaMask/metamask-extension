@@ -73,7 +73,7 @@ export default class RevealSeedPhrase extends PureComponent {
     return (
       <div className="reveal-seed-phrase__secret">
         <div className={classnames(
-          'reveal-seed-phrase__secret-words',
+          'reveal-seed-phrase__secret-words notranslate',
           { 'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase }
         )}>
           { seedPhrase }
