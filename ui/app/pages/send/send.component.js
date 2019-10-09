@@ -302,7 +302,7 @@ export default class SendTransactionScreen extends PersistentForm {
           })
           this.props.scanQrCode()
         }}
-          onChange={this.onRecipientInputChange}
+        onChange={this.onRecipientInputChange}
         onPaste={text => this.props.updateSendTo(text)}
         onReset={() => this.props.updateSendTo('', '')}
         updateNamingResolution={this.props.updateSendEnsResolution}
