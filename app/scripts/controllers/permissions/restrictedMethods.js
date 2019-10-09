@@ -5,6 +5,7 @@ const pluginRestrictedMethodDescriptions = {
   onNewTx: 'Take action whenever a new transaction is created',
   fetch: 'Retrieve data from external sites',
   updatePluginState: 'Store data locally',
+  getPluginState: 'Get data stored locally',
   onUnlock: 'Take action when you unlock your account',
   Box: 'Backup your data to 3Box',
   subscribeToPreferencesControllerChanges: 'Access your preferences and take action when they change',
