@@ -1,6 +1,9 @@
 const ObservableStore = require('obs-store')
 const EventEmitter = require('safe-event-emitter')
 const extend = require('xtend')
+const {
+  pluginRestrictedMethodDescriptions,
+} = require('./permissions/restrictedMethods')
 
 const isTest = process.env.IN_TEST === 'true' || process.env.METAMASK_ENV === 'test'
 const SES = (
@@ -146,10 +149,21 @@ class PluginsController extends EventEmitter {
       console.log(`Fetching bundle ${bundle.url}`)
       const pluginBundle = await fetch(bundle.url)
       const sourceCode = await pluginBundle.text()
+
+      // map permissions to metamask_ namespaced permissions if necessary
+      // remove if and when we stop supporting 'metamask_' permissions
+      const namespacedInitialPermissions = initialPermissions
+      for (const permission in initialPermissions) {
+        if (pluginRestrictedMethodDescriptions[permission]) {
+          namespacedInitialPermissions['metamask_' + permission] = initialPermissions[permission]
+          delete namespacedInitialPermissions[permission]
+        }
+      }
+
       console.log(`Constructing plugin`)
       plugin = {
         sourceCode,
-        initialPermissions,
+        initialPermissions: namespacedInitialPermissions,
       }
     } catch (err) {
       throw new Error(`Problem loading plugin ${pluginName}: ${err.message}`)
