@@ -291,6 +291,7 @@ module.exports = class MetamaskController extends EventEmitter {
         updatePluginState: this.pluginsController.updatePluginState.bind(this.pluginController),
         getPluginState: this.pluginsController.getPluginState.bind(this.pluginController),
         onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
+        getTxById: this.txController.txStateManager.getTx.bind(this.txController.txStateManager),
       },
       getApi: this.getPluginsApi.bind(this),
       metamaskEventMethods: this.pluginsController.generateMetaMaskListenerMethodsMap(),
@@ -661,6 +662,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
+      getTxById: this.txController.txStateManager.getTx.bind(this.txController.txStateManager),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
