@@ -28,6 +28,7 @@ const pluginRestrictedMethodDescriptions = {
   getApprovedAccounts: 'Get a list of all approved accounts',
   getFilteredTxList: 'Get a list of filtered transactions',
   getGasPrice: 'Estimates a good gas price at recent prices',
+  getTxById: 'Get full data of a transaction with a given metamask tx id',
   getState: 'Get a JSON representation of MetaMask data, including sensitive data. This is only for testing purposes and will NOT be included in production.',
   importAccountWithStrategy: 'Imports an account with the specified import strategy',
   isNonceTaken: 'Check if a given nonce is available for use',
