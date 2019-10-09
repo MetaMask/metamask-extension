@@ -1,9 +1,9 @@
 const valuesFor = require('../app/helpers/utils/util').valuesFor
 const log = require('loglevel')
 
-module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, typedMessages, network) {
+module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, decryptMsgs, typedMessages, network) {
   log.debug('tx-helper called with params:')
-  log.debug({ unapprovedTxs, unapprovedMsgs, personalMsgs, typedMessages, network })
+  log.debug({ unapprovedTxs, unapprovedMsgs, personalMsgs, decryptMsgs, typedMessages, network })
 
   const txValues = network ? valuesFor(unapprovedTxs).filter(txMeta => txMeta.metamaskNetworkId === network) : valuesFor(unapprovedTxs)
   log.debug(`tx helper found ${txValues.length} unapproved txs`)
@@ -16,6 +16,10 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, typedMes
   log.debug(`tx helper found ${personalValues.length} unsigned personal messages`)
   allValues = allValues.concat(personalValues)
 
+  const decryptValues = valuesFor(decryptMsgs)
+  log.debug(`tx helper found ${decryptValues.length} decrypt requests`)
+  allValues = allValues.concat(decryptValues)
+  
   const typedValues = valuesFor(typedMessages)
   log.debug(`tx helper found ${typedValues.length} unsigned typed messages`)
   allValues = allValues.concat(typedValues)

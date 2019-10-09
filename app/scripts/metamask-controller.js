@@ -538,7 +538,7 @@ module.exports = class MetamaskController extends EventEmitter {
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
-      // DecryptMessageManager
+      // decryptMessageManager
       decryptMessage: nodeify(this.decryptMessage, this),
       cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
 
