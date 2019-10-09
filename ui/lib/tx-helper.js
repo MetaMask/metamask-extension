@@ -19,7 +19,7 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, decryptM
   const decryptValues = valuesFor(decryptMsgs)
   log.debug(`tx helper found ${decryptValues.length} decrypt requests`)
   allValues = allValues.concat(decryptValues)
-  
+
   const typedValues = valuesFor(typedMessages)
   log.debug(`tx helper found ${typedValues.length} unsigned typed messages`)
   allValues = allValues.concat(typedValues)
