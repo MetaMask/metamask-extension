@@ -35,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {
+    addressAudits,
     conversionRate,
     identities,
     addressBook,
@@ -75,6 +76,9 @@ const mapStateToProps = (state, ownProps) => {
         ? casedContractMap[toAddress].name
         : addressSlicer(checksumAddress(toAddress))
     )
+
+  const recipientAudits = addressAudits[txParamsToAddress] || {}
+  const mostRecentAudit = Object.values(recipientAudits).sort((a, b) => a.timestamp > b.timestamp).find(audit => audit)
 
   const addressBookObject = addressBook[checksumAddress(toAddress)]
   const toNickname = addressBookObject ? addressBookObject.name : ''
@@ -151,6 +155,7 @@ const mapStateToProps = (state, ownProps) => {
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
     metaMetricsSendCount,
     transactionCategory,
+    recipientAudit: mostRecentAudit,
   }
 }
 

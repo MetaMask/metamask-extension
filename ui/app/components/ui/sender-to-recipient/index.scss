@@ -8,7 +8,7 @@
 
   &--default {
     border-bottom: 1px solid $geyser;
-    height: 42px;
+    min-height: 42px;
 
     .sender-to-recipient {
       &__tooltip-wrapper {
@@ -17,6 +17,25 @@
 
       &__tooltip-container {
         max-width: 100%;
+      }
+
+      &__audit--warn,
+      &__audit--approve {
+        display: flex;
+        font-size: 12px;
+        width: 180px;
+        white-space: normal;
+        color: red;
+      }
+
+      &__audit--approve {
+        color: green;
+      }
+
+      &__party-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
       }
 
       &__party {
@@ -42,6 +61,11 @@
             cursor: pointer;
           }
         }
+      }
+
+      &__party--audit {
+        flex-direction: column;
+        align-items: flex-start;
       }
 
       &__arrow-container {

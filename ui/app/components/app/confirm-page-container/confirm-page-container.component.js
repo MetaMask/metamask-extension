@@ -25,6 +25,7 @@ export default class ConfirmPageContainer extends Component {
     toAddress: PropTypes.string,
     toName: PropTypes.string,
     toNickname: PropTypes.string,
+    recipientAudit: PropTypes.object,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -102,6 +103,7 @@ export default class ConfirmPageContainer extends Component {
       lastTx,
       ofText,
       requestsWaitingText,
+      recipientAudit,
     } = this.props
     const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
@@ -130,6 +132,7 @@ export default class ConfirmPageContainer extends Component {
             recipientAddress={toAddress}
             recipientNickname={toNickname}
             assetImage={renderAssetImage ? assetImage : undefined}
+            audit={recipientAudit}
           />
         </ConfirmPageContainerHeader>
         {

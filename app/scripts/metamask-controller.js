@@ -40,6 +40,7 @@ const DetectTokensController = require('./controllers/detect-tokens')
 const { PermissionsController } = require('./controllers/permissions')
 const PluginsController = require('./controllers/plugins')
 const AssetsController = require('./controllers/assets')
+const AddressAuditController = require('./controllers/address-audit')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -263,6 +264,10 @@ module.exports = class MetamaskController extends EventEmitter {
       this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
     })
 
+    this.addressAuditController = new AddressAuditController({
+      initState: initState.AddressAuditController,
+    })
+
     this.pluginsController = new PluginsController({
       setupProvider: this.setupProvider.bind(this),
       _txController: this.txController,
@@ -318,6 +323,7 @@ module.exports = class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       PluginsController: this.pluginsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      AddressAuditController: this.addressAuditController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -343,6 +349,7 @@ module.exports = class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       PluginsController: this.pluginsController.store,
       AssetsController: this.assetsController.store,
+      AddressAuditController: this.addressAuditController.store,
       ThreeBoxController: this.threeBoxController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
@@ -678,6 +685,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+
+      // addressAudit controller
+      addAddressAudit: this.addressAuditController.add.bind(this.addressAuditController),
     }
   }
 
