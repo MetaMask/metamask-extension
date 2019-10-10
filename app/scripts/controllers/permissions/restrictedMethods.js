@@ -13,6 +13,7 @@ const pluginRestrictedMethodDescriptions = {
   generateSignature: 'Sign messages with your account',
 
   // MetaMaskController#getApi
+  addAddressAudit: 'Check the recipients of your transaction and show you warnings if they are untrustworthy',
   addKnownMethodData: 'Update and store data about a known contract method',
   addNewAccount: 'Adds a new account to the default (first) HD seed phrase Keyring',
   addNewKeyring: 'Create a new keyring',

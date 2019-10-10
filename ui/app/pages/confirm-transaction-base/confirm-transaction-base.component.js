@@ -96,6 +96,7 @@ export default class ConfirmTransactionBase extends Component {
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
     transactionCategory: PropTypes.string,
+    recipientAudit: PropTypes.object,
   }
 
   state = {
@@ -547,6 +548,7 @@ export default class ConfirmTransactionBase extends Component {
       warning,
       unapprovedTxCount,
       transactionCategory,
+      recipientAudit,
     } = this.props
     const { submitting, submitError } = this.state
 
@@ -594,6 +596,7 @@ export default class ConfirmTransactionBase extends Component {
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
+        recipientAudit={recipientAudit}
       />
     )
   }
