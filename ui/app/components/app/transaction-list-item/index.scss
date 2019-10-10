@@ -14,17 +14,12 @@
     padding: 16px 20px;
     display: grid;
     grid-template-columns: 45px 1fr 1fr 1fr;
-    grid-template-areas:
-      "identicon action status primary-amount"
-      "identicon nonce status secondary-amount";
+    grid-template-areas: "identicon action-and-nonce status amounts";
 
     @media screen and (max-width: $break-small) {
       padding: .5rem 1rem;
-      grid-template-columns: 45px 5fr 3fr;
-      grid-template-areas:
-        "nonce nonce nonce"
-        "identicon action primary-amount"
-        "identicon status secondary-amount";
+      grid-template-columns: 45px 145px 3fr;
+      grid-template-areas: "identicon action-and-nonce status amounts";
     }
 
     &:hover {
@@ -42,13 +37,18 @@
     }
   }
 
+  &__action-and-nonce {
+    display: flex;
+    flex-direction: column;
+    grid-area: action-and-nonce;
+  }
+
   &__action {
     text-transform: capitalize;
     padding: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    grid-area: action;
     color: $Grey-800;
     line-height: 20px;
   }
@@ -59,7 +59,10 @@
     align-self: center;
 
     @media screen and (max-width: $break-small) {
-      grid-row: 3;
+      align-self: flex-start;
+      grid-row: 1;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -69,12 +72,24 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    grid-area: nonce;
     align-self: start;
 
     @media screen and (max-width: $break-small) {
       padding-bottom: 8px;
       line-height: 12px;
+    }
+  }
+
+  &__amounts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    grid-area: amounts;
+
+    @media screen and (max-width: $break-small) {
+      .currency-display-component__text {
+        font-size: 15px;
+      }
     }
   }
 
@@ -86,15 +101,9 @@
     max-width: 100%;
 
     &--primary {
-      text-align: end;
-      grid-area: primary-amount;
-      align-self: end;
-      justify-self: end;
       line-height: 20px;
 
       @media screen and (max-width: $break-small) {
-        padding-bottom: 4px;
-        height: 100%;
         color: $Grey-800;
       }
     }
@@ -102,8 +111,6 @@
     &--secondary {
       text-align: end;
       font-size: .75rem;
-      grid-area: secondary-amount;
-      align-self: start;
       justify-self: end;
       color: $Grey-500;
     }

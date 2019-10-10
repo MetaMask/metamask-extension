@@ -201,16 +201,18 @@ export default class TransactionListItem extends PureComponent {
             diameter={36}
             image={assetImages[toAddress]}
           />
-          <TransactionAction
-            transaction={transaction}
-            methodData={methodData}
-            className="transaction-list-item__action"
-          />
-          <div
-            className="transaction-list-item__nonce"
-            title={nonceAndDate}
-          >
-            { nonceAndDate }
+          <div className="transaction-list-item____action-and-nonce">
+            <TransactionAction
+              transaction={transaction}
+              methodData={methodData}
+              className="transaction-list-item__action"
+            />
+            <div
+              className="transaction-list-item__nonce"
+              title={nonceAndDate}
+            >
+              { nonceAndDate }
+            </div>
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
@@ -221,8 +223,10 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
-          { this.renderPrimaryCurrency() }
-          { this.renderSecondaryCurrency() }
+          <div className="transaction-list-item__amounts">
+            { this.renderPrimaryCurrency() }
+            { this.renderSecondaryCurrency() }
+          </div>
         </div>
         <div className={classnames('transaction-list-item__expander', {
           'transaction-list-item__expander--show': showTransactionDetails,
