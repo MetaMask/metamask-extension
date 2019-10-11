@@ -8,6 +8,7 @@ import BasicTabContent from './basic-tab-content'
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -162,6 +163,7 @@ export default class GasModalPageContainer extends Component {
       customModalGasPriceInHex,
       customModalGasLimitInHex,
       disableSave,
+      isSpeedUp,
       ...tabProps
     } = this.props
 
@@ -175,6 +177,15 @@ export default class GasModalPageContainer extends Component {
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}
           onSubmit={() => {
+            if (isSpeedUp) {
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Navigation',
+                  action: 'Activity Log',
+                  name: 'Saved "Speed Up"',
+                },
+              })
+            }
             onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
           }}
           submitText={this.context.t('save')}

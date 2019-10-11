@@ -113,6 +113,14 @@ export default class TransactionListItem extends PureComponent {
 
     const retryId = id || initialTransactionId
 
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Navigation',
+        action: 'Activity Log',
+        name: 'Clicked "Speed Up"',
+      },
+    })
+
     return fetchBasicGasAndTimeEstimates()
       .then(basicEstimates => fetchGasEstimates(basicEstimates.blockTime))
       .then(retryTransaction(retryId, gasPrice))
