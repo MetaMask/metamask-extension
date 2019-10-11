@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import c3 from 'c3'
 import BigNumber from 'bignumber.js'
 
-const newBigSigDig = n => (new BigNumber(n.toPrecision(15)))
+const newBigSigDig = n => new BigNumber((new BigNumber(n)).toPrecision(15))
 const createOp = (a, b, op) => (newBigSigDig(a))[op](newBigSigDig(b))
 const bigNumMinus = (a = 0, b = 0) => createOp(a, b, 'minus')
 const bigNumDiv = (a = 0, b = 1) => createOp(a, b, 'div')
