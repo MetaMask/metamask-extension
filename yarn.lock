@@ -5631,6 +5631,11 @@ bowser@^1.7.3:
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.9.3.tgz#6643ae4d783f31683f6d23156976b74183862162"
   integrity sha512-/gp96UlcFw5DbV2KQPCqTqi0Mb9gZRyDAHiDsGEH+4B/KOQjeoE5lM1PxlVX8DQDvfEfitmC1rW2Oy8fk/XBDg==
 
+bowser@^2.5.4:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.7.0.tgz#96eab1fa07fab08c1ec4c75977a7c8ddf8e0fe1f"
+  integrity sha512-aIlMvstvu8x+34KEiOHD3AsBgdrzg6sxALYiukOWhFvGMbQI6TRP/iY0LMhUrHs56aD6P1G0Z7h45PUJaa5m9w==
+
 boxen@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/boxen/-/boxen-1.3.0.tgz#55c6c39a8ba58d9c61ad22cd877532deb665a20b"
@@ -18216,6 +18221,13 @@ metamask-logo@^2.1.4:
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
+
+metamask-onboarding@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/metamask-onboarding/-/metamask-onboarding-0.1.0.tgz#6710bdeb50400aef8bf2e1f87b73a117205921f2"
+  integrity sha512-skURP3S3bH+o60q9r6jw6gvYmyU9CXw+NtReI3UE/XUAy3FT2Xzyr7+z4jUGyZdOkAxDPaSwIEg0qe6LH2wWgA==
+  dependencies:
+    bowser "^2.5.4"
 
 methods@^1.1.1, methods@~1.1.2:
   version "1.1.2"
