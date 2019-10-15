@@ -1,8 +1,9 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../lib/shallow-with-context'
+import React from 'react'
 import { spy } from 'sinon'
+
 import AccountMenu from '../account-menu.component'
+import shallow from '../../../../../lib/shallow-with-context'
 import TextField from '../../../ui/text-field'
 
 describe('AccountDetails', () => {
