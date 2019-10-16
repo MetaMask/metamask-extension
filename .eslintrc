@@ -14,7 +14,7 @@
       "templateStrings": true,
       "classes": true,
       "jsx": true
-    },
+    }
   },
 
   "extends": ["plugin:react/recommended"],
