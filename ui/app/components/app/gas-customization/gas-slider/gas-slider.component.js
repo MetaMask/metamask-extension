@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-export default class AdvancedTabContent extends Component {
+export default class GasSlider extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     lowLabel: PropTypes.string,
