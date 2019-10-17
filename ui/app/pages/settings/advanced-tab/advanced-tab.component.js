@@ -34,7 +34,10 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
   }
 
-  state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
+  state = {
+    autoLogoutTimeLimit: this.props.autoLogoutTimeLimit,
+    logoutTimeError: '',
+  }
 
   renderMobileSync () {
     const { t } = this.context
@@ -240,8 +243,27 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  handleLogoutChange (time) {
+    const { t } = this.context
+    const autoLogoutTimeLimit = Math.max(Number(time), 0)
+
+    this.setState(() => {
+      let logoutTimeError = ''
+
+      if (autoLogoutTimeLimit > 10080) {
+        logoutTimeError = t('logoutTimeTooGreat')
+      }
+
+      return {
+        autoLogoutTimeLimit,
+        logoutTimeError,
+      }
+    })
+  }
+
   renderAutoLogoutTimeLimit () {
     const { t } = this.context
+    const { logoutTimeError } = this.state
     const {
       autoLogoutTimeLimit,
       setAutoLogoutTimeLimit,
@@ -263,19 +285,22 @@ export default class AdvancedTab extends PureComponent {
               placeholder="5"
               value={this.state.autoLogoutTimeLimit}
               defaultValue={autoLogoutTimeLimit}
-              onChange={e => this.setState({ autoLogoutTimeLimit: Math.max(Number(e.target.value), 0) })}
+              onChange={e => this.handleLogoutChange(e.target.value)}
+              error={logoutTimeError}
               fullWidth
               margin="dense"
               min={0}
             />
-            <button
-              className="button btn-primary settings-tab__rpc-save-button"
+            <Button
+              type="primary"
+              className="settings-tab__rpc-save-button"
+              disabled={logoutTimeError !== ''}
               onClick={() => {
                 setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
               }}
             >
               { t('save') }
-            </button>
+            </Button>
           </div>
         </div>
       </div>
