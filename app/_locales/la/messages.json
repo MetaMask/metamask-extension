@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Ostende Advenientis Rebus"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Aliquam et hoc, uti Etherscan ostendere advenientis geruntur in rebus album"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Chart tantum available in Ethereum ligula."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Nexus"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Loca liceat legere rationibus"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Tincidunt add site patitur obvius ut vestri ratio, utile senior dapps"
+  },
+  "connected": {
+    "message": "Coniuncta"
+  },
+  "connectedDescription": {
+    "message": "List of sites licet obvius ut vestri oratio"
+  },
+  "privacyModeDefault": {
+    "message": "Secretum Modus est nunc per default"
+  },
+  "contractInteraction": {
+    "message": "Contractus Interaction"
+  },
+  "clearApprovalData": {
+    "message": "Remove sites"
+  },
+  "reject": {
+    "message": "Rejiciunt"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Hoc site est rogantes aditum ad visum vestri current propter oratio. Semper planto certus vos confidere in loca te penitus."
+  },
+  "about": {
+    "message": "De"
+  },
+  "aboutSettingsDescription": {
+    "message": "Version, support center, et contactus info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Accessu camera..."
+  },
+  "account": {
+    "message": "Propter"
+  },
+  "accountDetails": {
+    "message": "Propter Details"
+  },
+  "accountName": {
+    "message": "Propter Nomen"
+  },
+  "accountOptions": {
+    "message": "Propter Bene"
+  },
+  "accountSelectionRequired": {
+    "message": "Vos postulo ut lego rationem!"
+  },
+  "activityLog": {
+    "message": "actio log"
+  },
+  "addNetwork": {
+    "message": "Adde Network"
+  },
+  "addRecipient": {
+    "message": "Adde Recipiens"
+  },
+  "advanced": {
+    "message": "Proficiebat"
+  },
+  "advancedSettingsDescription": {
+    "message": "Obvius elit dolor, download Statu Acta, Reset Rationem, habeat testnets et consuetudinem RPC."
+  },
+  "advancedOptions": {
+    "message": "Praesent Tincidunt"
+  },
+  "addToAddressBook": {
+    "message": "Adde liber"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "e.g. John D."
+  },
+  "addAlias": {
+    "message": "Adde alias"
+  },
+  "addToken": {
+    "message": "Adde Signum"
+  },
+  "addTokens": {
+    "message": "Adde Signa"
+  },
+  "addSuggestedTokens": {
+    "message": "Adde Suggessit Signa"
+  },
+  "addAcquiredTokens": {
+    "message": "Adde signa tu mihi acquisita uti MetaMask"
+  },
+  "amount": {
+    "message": "Quantum"
+  },
+  "appDescription": {
+    "message": "An Ethereum Peram in vestri Pasco",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Approbare"
+  },
+  "approved": {
+    "message": "Probatus"
+  },
+  "asset": {
+    "message": "Dignissim"
+  },
+  "attemptingConnect": {
+    "message": "Conatus ad coniungere ad blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Exhibenda hoc attentare non promittere tua originale negotio erit cassari. Si nouarum conatus est, prospere, erit tibi praecepit adhibe feodo supra."
+  },
+  "attributions": {
+    "message": "Graecis ad praedicationes"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Set otiosum tempus in minutes ante MetaMask ipso ex log"
+  },
+  "average": {
+    "message": "Mediocris"
+  },
+  "back": {
+    "message": "Retro"
+  },
+  "backToAll": {
+    "message": "Ad Omnes"
+  },
+  "backupApprovalNotice": {
+    "message": "Tergum vestri Secretum Recuperatio mauris ut servo vestri peram et pecuniam securus."
+  },
+  "backupApprovalInfo": {
+    "message": "Hoc secretum codice requiritur ad recuperabit vestri pera in casu amittere ratio, obliviscar tui signum, ad re-install MetaMask, vel volo ut obvius vestri pera in alia fabrica."
+  },
+  "backupNow": {
+    "message": "Tergum nunc"
+  },
+  "balance": {
+    "message": "Statera"
+  },
+  "balanceOutdated": {
+    "message": "Statera sit outdated"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Insufficiens libra pro current gas summa"
+  },
+  "basic": {
+    "message": "Basic"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Scandalum Rimor"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Uti Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Mos negotio nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Lorem Ipsum Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Vestri Pasco est non sustinetur..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask est intentio, et aedificavit in California."
+  },
+  "buyWithWyre": {
+    "message": "Buy ETH cum Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre lets vos utor a credit card deposit ETH iure in tuo MetaMask propter."
+  },
+  "buyCoinSwitch": {
+    "message": "Buy in CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch est unum-statur destinatum ad commutationem plus quam 300 cryptocurrencies ad optimum rate."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "In"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Aliquam"
+  },
+  "cancelAttempt": {
+    "message": "Aliquam Conatus"
+  },
+  "cancellationGasFee": {
+    "message": "Nouarum Gas Feodo"
+  },
+  "cancelled": {
+    "message": "Cassari"
+  },
+  "chainId": {
+    "message": "Posuere ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Click hic ad revelare secretum verba"
+  },
+  "close": {
+    "message": "Prope"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Vos postulo utor MetaMask in Chrome Google, in ordine ad coniungere ad Ferramentis Peram."
+  },
+  "confirm": {
+    "message": "Confirmare"
+  },
+  "confirmed": {
+    "message": "Confirmatur"
+  },
+  "confirmPassword": {
+    "message": "Confirm Password"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Confirmetis in Occulto Tergum Phrase"
+  },
+  "congratulations": {
+    "message": "Gratulor"
+  },
+  "connectHardwareWallet": {
+    "message": "Coniungere Hardware Wallet"
+  },
+  "connect": {
+    "message": "Coniungere"
+  },
+  "connectRequest": {
+    "message": "Coniungere Preces"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Iunctis ad Kovan Test Network"
+  },
+  "connectingToMainnet": {
+    "message": "Ipsam ut Consectetur Ethereum Network"
+  },
+  "connectingToRopsten": {
+    "message": "Iunctis ad Ropsten Test Network"
+  },
+  "connectingToRinkeby": {
+    "message": "Iunctis ad Rinkeby Test Network"
+  },
+  "connectingToLocalhost": {
+    "message": "Iunctis ad Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Iunctis ad Goerli Test Network"
+  },
+  "contacts": {
+    "message": "Contactus"
+  },
+  "contactsSettingsDescription": {
+    "message": "Adde, edit, aufero, et curo vestra contactibus"
+  },
+  "continueToWyre": {
+    "message": "Continue Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continue CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Contractus Instruere"
+  },
+  "conversionProgress": {
+    "message": "Conversio in progressus"
+  },
+  "copiedButton": {
+    "message": "Exscriptus"
+  },
+  "copiedExclamation": {
+    "message": "Exscriptus!"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "copyAddress": {
+    "message": "Copy oratio ad clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Exemplum Negotio, ID"
+  },
+  "copiedTransactionId": {
+    "message": "Exemplis Rem ID"
+  },
+  "copyToClipboard": {
+    "message": "Copy to clipboard"
+  },
+  "copyButton": {
+    "message": " Copy "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Mauris"
+  },
+  "createAccount": {
+    "message": "Create Account"
+  },
+  "createAWallet": {
+    "message": "Mauris Wallet"
+  },
+  "createPassword": {
+    "message": "Mauris Tortor"
+  },
+  "currencyConversion": {
+    "message": "Nummus Conversionem"
+  },
+  "currentLanguage": {
+    "message": "Current Lingua"
+  },
+  "customGas": {
+    "message": "Mos Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Crescente feodo minui processus temporum, sed non est, praestatur."
+  },
+  "customToken": {
+    "message": "Lorem Ipsum Signum"
+  },
+  "customRPC": {
+    "message": "Lorem ipsum RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimales debet esse saltem 0, et non super 36."
+  },
+  "decimal": {
+    "message": "Decimales ex Praecisione"
+  },
+  "defaultNetwork": {
+    "message": "Default network pro Aethere in rebus Summa est Rete."
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "deleteAccount": {
+    "message": "Delete Propter"
+  },
+  "deposit": {
+    "message": "Depositum"
+  },
+  "depositEther": {
+    "message": "Depositum Aether"
+  },
+  "details": {
+    "message": "Details"
+  },
+  "directDepositEther": {
+    "message": "Directe Depositum Aether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Si vos iam have nonnullus Aether, celerrime ad Aether in nova peram a se mutuo."
+  },
+  "dismiss": {
+    "message": "Dimittis"
+  },
+  "done": {
+    "message": "Factum"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Chrome Google"
+  },
+  "downloadSecretBackup": {
+    "message": "Lorem Occulto Tergum Phrase, et custodiunt illud condita tuto in externum encrypted ferreus coegi vel adipiscing medium."
+  },
+  "downloadStateLogs": {
+    "message": "Download Statu Acta"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Omissa"
+  },
+  "edit": {
+    "message": "Recensere / fontem recensere"
+  },
+  "editContact": {
+    "message": "Edit Contactus"
+  },
+  "emailUs": {
+    "message": "Email us!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Te transierunt test - tuum seedphrase tutum, tuum est officium!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips in thesaurizantes tuto"
+  },
+  "endOfFlowMessage3": {
+    "message": "Nisi a tergum in pluribus locis."
+  },
+  "endOfFlowMessage4": {
+    "message": "Numquam communicare dicitur cum quis."
+  },
+  "endOfFlowMessage5": {
+    "message": "Cave phishing! MetaMask numquam sponte petere tuum semen dicitur."
+  },
+  "endOfFlowMessage6": {
+    "message": "Si vos postulo ut tergum sursum vestri semen dicitur apud eundem,, vos can reperio in Occasus -> Securitatem."
+  },
+  "endOfFlowMessage7": {
+    "message": "Si vos umquam quaestiones videre vel aliquid piscosos, email support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask non recuperabit vestri seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Discere magis."
+  },
+  "endOfFlowMessage10": {
+    "message": "Omnia Fieri"
+  },
+  "ensRegistrationError": {
+    "message": "Error in ENS nomen registration"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS nomen non invenitur in current network. Capto switching ad Principale Ethereum Network."
+  },
+  "enterAnAlias": {
+    "message": "Intra alias"
+  },
+  "enterPassword": {
+    "message": "Penetro password"
+  },
+  "enterPasswordContinue": {
+    "message": "Penetro password to continue"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Publica Oratio"
+  },
+  "etherscanView": {
+    "message": "Visum propter in Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Extimationis Processus Temporibus"
+  },
+  "expandView": {
+    "message": "Expand Visum"
+  },
+  "exportPrivateKey": {
+    "message": "Integer Privata Key"
+  },
+  "failed": {
+    "message": "Defecit"
+  },
+  "fast": {
+    "message": "Ieiunium"
+  },
+  "faster": {
+    "message": "Velocius"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Oblivisci hoc artificio"
+  },
+  "from": {
+    "message": "Ex"
+  },
+  "fromShapeShift": {
+    "message": "Ex ShapeShift"
+  },
+  "functionType": {
+    "message": "Muneris Genus"
+  },
+  "gasLimit": {
+    "message": "Vestibulum Terminum"
+  },
+  "gasLimitCalculation": {
+    "message": "Nos computare id vestibulum terminum fundatur in ipsum successu elit."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Vestibulum terminum est maximum amount of unitates gas volunt consumere."
+  },
+  "gasLimitTooLow": {
+    "message": "Vestibulum terminum oportet esse ad minus 21000"
+  },
+  "gasUsed": {
+    "message": "Vestibulum Usus"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Vestibulum Pretium Perquam Humilis"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Vestibulum pretium determinat quantum Aether te sunt velle reddere quisque aliquet felis."
+  },
+  "gasPriceNoDenom": {
+    "message": "Vestibulum Pretium"
+  },
+  "gasPriceCalculation": {
+    "message": "Nos computare id gas prices fundatur in ipsum successu elit."
+  },
+  "general": {
+    "message": "Generalis"
+  },
+  "generalSettingsDescription": {
+    "message": "Nummus conversionem, prima monetæ, lingua, blockies identicon"
+  },
+  "getEther": {
+    "message": "Ut Aethere"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Adepto Auxilium."
+  },
+  "getStarted": {
+    "message": "Adepto Coepi"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Nos es gauisus ut vos videre."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware peram coniuncta"
+  },
+  "hardwareWallets": {
+    "message": "Coniungere hardware wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Aliquam a odio peram velis uti, cum MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "hic",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Data"
+  },
+  "hide": {
+    "message": "Abscondere"
+  },
+  "hideToken": {
+    "message": "Abscondere Signum"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Historia"
+  },
+  "import": {
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Important Rationem"
+  },
+  "importAccountMsg": {
+    "message": " Arcessita rationibus non coniungitur cum primitus creavit MetaMask propter seedphrase. Discere magis de communibus rationibus "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Important Rationem cum Semine Phrase"
+  },
+  "importWallet": {
+    "message": "Important Wallet"
+  },
+  "importYourExisting": {
+    "message": "Importat existens peram usura a 12 verbum semen phrase"
+  },
+  "imported": {
+    "message": "Importari",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Important usura propter semen phrase"
+  },
+  "infoHelp": {
+    "message": "Info & Auxilium"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Initialis negotio confirmatum est a network. Click OK ire."
+  },
+  "insufficientBalance": {
+    "message": "Insufficiens statera."
+  },
+  "insufficientFunds": {
+    "message": "Insufficiens pecunia."
+  },
+  "insufficientTokens": {
+    "message": "Insufficiens signa."
+  },
+  "invalidAddress": {
+    "message": "Irritum oratio"
+  },
+  "invalidAddressRecipient": {
+    "message": "Recipiens oratio est, irritum"
+  },
+  "knownAddressRecipient": {
+    "message": "Notum contractus oratio."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Non ETH ipsum, posuere lowercase"
+  },
+  "invalidInput": {
+    "message": "Suspendisse potenti."
+  },
+  "invalidRPC": {
+    "message": "Irritum RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Nullum Scandalum Rimor URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Nullum semen phrase"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Network"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Learn more"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Vos postulo facio utor vestri ultimum, propter ante vos can adaugeo unum novum."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Sic, lets ' adepto posuit!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Links"
+  },
+  "liveGasPricePredictions": {
+    "message": "Vivamus Vestibulum Pretium Praedicta"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Signa..."
+  },
+  "loadMore": {
+    "message": "Dignissim Magis"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Log In"
+  },
+  "logout": {
+    "message": "Ex Log"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout tempus etiam magna"
+  },
+  "mainnet": {
+    "message": "Main Ethereum Network"
+  },
+  "memorizePhrase": {
+    "message": "Memoria hoc verbo."
+  },
+  "memo": {
+    "message": "monumentum"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Nuntius"
+  },
+  "metamaskDescription": {
+    "message": "Ipsam vobis ad Ethereum et Decentralized Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Semen Verba"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Suscipit lobortis nisl ut confirmet illud tibi!"
+  },
+  "myAccounts": {
+    "message": "Mea Rationibus"
+  },
+  "myWalletAccounts": {
+    "message": "Mihi Peram Rationibus"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Omnes tui MetaMask creata rationibus ipso addi hac parte."
+  },
+  "mustSelectOne": {
+    "message": "Must select at least 1 signum."
+  },
+  "needEtherInWallet": {
+    "message": "Ad penitus cum decentralized applications usura MetaMask, youll ' postulo Aethere in peram."
+  },
+  "needImportFile": {
+    "message": "Oportet eligere file importat.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Non potest mittere negative amounts of ETH."
+  },
+  "networkName": {
+    "message": "Ipsum Nomen"
+  },
+  "networks": {
+    "message": "Retiacula"
+  },
+  "networkSettingsDescription": {
+    "message": "Adde et edit consuetudinem RPC ligula"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "New Account"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Novum oratio deprehendi! Click here to add to vestri oratio libri."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "New Contactus"
+  },
+  "newContract": {
+    "message": "Novum Contractum"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Novum Network"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Non, ego iam semen phrase"
+  },
+  "protectYourKeys": {
+    "message": "Tueri Claves!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Cave cum semine phrase — ibi fuisse tradit websites quod conantur imitari MetaMask. MetaMask nunquam petere semen tuum phrase!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Servo vestri phrase tutum. Si video aliquid piscosos, aut vestri ' incerta de website, email support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "New RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "New Total"
+  },
+  "newTransactionFee": {
+    "message": "New Negotio Feodo"
+  },
+  "next": {
+    "message": "Deinde"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "No oratio fuit, set pro hoc nomen."
+  },
+  "noDeposits": {
+    "message": "In deposits accepit"
+  },
+  "noConversionRateAvailable": {
+    "message": "Nulla Conversionem Rate Amet"
+  },
+  "noTransactions": {
+    "message": "Non habetis in rebus"
+  },
+  "noThanks": {
+    "message": "Nulla Gratias"
+  },
+  "notEnoughGas": {
+    "message": "Non Satis Vestibulum"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam non invenit"
+  },
+  "noWebcamFound": {
+    "message": "Ornare webcam non invenit. Quaeso, iterum conare."
+  },
+  "ofTextNofM": {
+    "message": "de"
+  },
+  "orderOneHere": {
+    "message": "Ut a Trezor vel Ledger, et mandata tua pecunia in frigus repono"
+  },
+  "origin": {
+    "message": "Origo"
+  },
+  "parameters": {
+    "message": "Urna"
+  },
+  "participateInMetaMetrics": {
+    "message": "Participant in MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Participant in MetaMetrics ad auxilium facere nobis MetaMask melius"
+  },
+  "password": {
+    "message": "Signum"
+  },
+  "passwordsDontMatch": {
+    "message": "Tesserae non Par"
+  },
+  "passwordNotLongEnough": {
+    "message": "Signum, non satis diu"
+  },
+  "pastePrivateKey": {
+    "message": "Crustulum privata key chorda hic:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Crustulum semen tuum phrase hic!"
+  },
+  "pending": {
+    "message": "pendente"
+  },
+  "personalAddressDetected": {
+    "message": "Alio oratio deprehendi. Input signum contractus oratio."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Prima Monetæ"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Privacy Policy"
+  },
+  "privateKey": {
+    "message": "Privata Key",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Monitum: Non revelabit hoc key. Quis cum privatis claves potest furtum aliqua bona tenuit in rationem vestram."
+  },
+  "privateNetwork": {
+    "message": "Privata Network"
+  },
+  "qrCode": {
+    "message": "Ostende QR Code"
+  },
+  "queue": {
+    "message": "Queue"
+  },
+  "readdToken": {
+    "message": "Te potest addere hoc signum retro in futuro per iens ut \"Adde signum\" in rationibus bene menu."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Recipiens Oratio"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Repudiare"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Reprobari"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Reset Propter"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting tua propter morbi eu historia."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Reduc me in memoriam, post"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Restituo vestri Ratio cum Semine Phrase"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "petit, expectans, ut agnoscatur"
+  },
+  "required": {
+    "message": "Requiritur"
+  },
+  "restore": {
+    "message": "Restituo"
+  },
+  "revealSeedWords": {
+    "message": "Revelare Semen Verba"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Semen Phrase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Si vos umquam pasco mutare aut movere computers, vos mos postulo hoc semen phrase ut obvius vestri ratio. Nisi eos alicubi tutus, et abscondita,."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NON participant hoc verbo cum quis!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Haec verba, potest fieri, ut furtum omnibus rationibus."
+  },
+  "revert": {
+    "message": "Reverti"
+  },
+  "remove": {
+    "message": "Tollere"
+  },
+  "removeAccount": {
+    "message": "Aufero propter"
+  },
+  "removeAccountDescription": {
+    "message": "Propter hoc tolletur a peram. Commodo planto certus vos habere originale semen verbo vel clave hoc importari propter jugis. Pertinent important, vos can partum, aut rationibus iterum propter occumbo-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Network"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Network"
+  },
+  "goerli": {
+    "message": "Goerli Test Network"
+  },
+  "save": {
+    "message": "Nisi"
+  },
+  "slow": {
+    "message": "Tardus"
+  },
+  "slower": {
+    "message": "Tardius"
+  },
+  "saveAsCsvFile": {
+    "message": "Nisi ut CSV Lima"
+  },
+  "scanInstructions": {
+    "message": "Loco QR code in fronte camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "search": {
+    "message": "Quaero"
+  },
+  "searchResults": {
+    "message": "Search Results"
+  },
+  "secretBackupPhrase": {
+    "message": "Occulto Tergum Phrase"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Vestri secretum tergum phrase facit facile ad tergum sursum, et redde rationem vestram."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "MONITUM: Non revelabit vestri tergum dicitur. Qui cum hoc verbo potest, tolle quod tuum est, Aethere in aeternum."
+  },
+  "secretPhrase": {
+    "message": "Ingreditur vestri secretum duodecim verbum hic dicitur restituere crypta."
+  },
+  "securityAndPrivacy": {
+    "message": "Securitatem & Secretum"
+  },
+  "securitySettingsDescription": {
+    "message": "Secretum occasus et peram semen phrase"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Singulas verbum cum uno spatio"
+  },
+  "seedPhraseReq": {
+    "message": "Semen phrases sunt 12 verba diu"
+  },
+  "selectCurrency": {
+    "message": "Lego Monetæ"
+  },
+  "selectEachPhrase": {
+    "message": "Commodo lego singulis verbis, in ordine ad planto certus est recte."
+  },
+  "selectLocale": {
+    "message": "Lego Locus"
+  },
+  "selectType": {
+    "message": "Lego Typus"
+  },
+  "send": {
+    "message": "Mittere"
+  },
+  "sendAmount": {
+    "message": "Mittere, Quantum"
+  },
+  "sendETH": {
+    "message": "Mittere ETH"
+  },
+  "sendTokens": {
+    "message": "Mittere Signa"
+  },
+  "sentEther": {
+    "message": "misit aether"
+  },
+  "sentTokens": {
+    "message": "misit signa"
+  },
+  "separateEachWord": {
+    "message": "Singulas verbum cum uno spatio"
+  },
+  "searchTokens": {
+    "message": "Quaerere Signa"
+  },
+  "selectAnAccount": {
+    "message": "Lego Rationem"
+  },
+  "selectAnAccountHelp": {
+    "message": "Lego propter visum, in MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Aliquam a superioribus gas feodo ad accelerari processus de tuo negotio.*"
+  },
+  "selectHdPath": {
+    "message": "Lego HD Viam"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Occasus"
+  },
+  "showAdvancedGasInline": {
+    "message": "Proficiebat gas imperium"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Aliquam et hoc ad ostendendum gas pretium et finire imperium in se mittere et confirmare screens."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Ostende Conversionem in Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Aliquam et hoc ad ostendendum fiat conversio in Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Ostende Privata Claves"
+  },
+  "showHexData": {
+    "message": "Ostende Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Aliquam et hoc ad ostendendum hex notitia agro in screen mittere"
+  },
+  "sign": {
+    "message": "Signum"
+  },
+  "signatureRequest": {
+    "message": "Signature Petitionem"
+  },
+  "signed": {
+    "message": "Signati"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Signature Petitionem"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Aliquid abiit iniuriam."
+  },
+  "speedUp": {
+    "message": "Accelerare"
+  },
+  "speedUpCancellation": {
+    "message": "Accelerare hoc nouarum"
+  },
+  "speedUpTransaction": {
+    "message": "Accelerare hoc negotio"
+  },
+  "switchNetworks": {
+    "message": "Cie Ligula"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Statu Acta"
+  },
+  "stateLogs": {
+    "message": "Status Acta"
+  },
+  "stateLogsDescription": {
+    "message": "Status acta continent publicum propter oratio, et misit in rebus."
+  },
+  "stateLogError": {
+    "message": "Error in retrahere statu acta."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Coniungere Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Annecto vestri hardware peram directe ad vestri computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Lego Rationem"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Lego propter vos volo ut visum. Vos can sumo tantum unum tempus."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Satus usura dApps et!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Utor vestri hardware ratione similis esset, cum aliquo Ethereum propter. Stipes in ad dApps, mittere Eth, emere et copia ERC20 signa, et Non-Fungible signa, sicut CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Copia, dictum in tortor volutpat, sicut 1Password."
+  },
+  "submit": {
+    "message": "Submittere"
+  },
+  "submitted": {
+    "message": "Submisit"
+  },
+  "supportCenter": {
+    "message": "Visit our Support Center"
+  },
+  "symbol": {
+    "message": "Signum"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Signum oportet esse inter 0 et 12 characters."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Vicissim in ad venenatis certioribus 3Box. Hoc pluma est currenty experimentalis; uti tuo periculo."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box fuerit debiles propter errorem in primis sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync cum mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync cum mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Si vos iustus patefacio MetaMask Mobile app pro prima tempore, ita sequi vestigia in vestri phone."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan hoc codice cum MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Fac ut nemo aliud est vultus in vestri screen cum scan hoc codice"
+  },
+  "syncWithMobileComplete": {
+    "message": "Data fuerit synced succesfully. Frui MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Terms of Use"
+  },
+  "testFaucet": {
+    "message": "Test Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Hoc erit partum a novus peram et semen phrase"
+  },
+  "tips": {
+    "message": "Tips"
+  },
+  "to": {
+    "message": "Ad"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Signum"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Signum iam addidit."
+  },
+  "tokenContractAddress": {
+    "message": "Signum Contractus Oratio"
+  },
+  "tokenSymbol": {
+    "message": "Signum Signum"
+  },
+  "total": {
+    "message": "Summa"
+  },
+  "transaction": {
+    "message": "adhibe"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Adhibe incidit errorem."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Rem Error. Exceptio mittitur in contractu mauris."
+  },
+  "transactionErrorNoContract": {
+    "message": "Trying ut vocant, munus in a non-contractus oratio."
+  },
+  "transactionFee": {
+    "message": "Adhibe Feodo"
+  },
+  "transactionTime": {
+    "message": "Negotio Tempus"
+  },
+  "transfer": {
+    "message": "Translatio"
+  },
+  "transferBetweenAccounts": {
+    "message": "Translatio inter rationibus meis"
+  },
+  "transferFrom": {
+    "message": "Translatio A"
+  },
+  "troubleTokenBalances": {
+    "message": "Nos autem tribulatione loading tua signum librat. Vos can visum eorum ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Rursum"
+  },
+  "typePassword": {
+    "message": "Type your MetaMask signum"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "unitates"
+  },
+  "unknown": {
+    "message": "Ignotum"
+  },
+  "unknownNetwork": {
+    "message": "Ignota Privata Network"
+  },
+  "unknownQrCode": {
+    "message": "Error: Nos non cognoscere, quod QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Aliquid abiit iniuriam...."
+  },
+  "unknownCameraError": {
+    "message": "Erat error, dum trying ut obvius vestri camera. Quaeso, iterum conare..."
+  },
+  "unlock": {
+    "message": "Resera"
+  },
+  "unlockMessage": {
+    "message": "In decentralized textus manet"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs requirit vindico HTTP/HTTPS praepositione."
+  },
+  "usedByClients": {
+    "message": "Usus per a varietate diversis clientibus"
+  },
+  "userName": {
+    "message": "Username"
+  },
+  "validFileImport": {
+    "message": "Oportet eligere valet ad important lima."
+  },
+  "viewAccount": {
+    "message": "Visum Propter"
+  },
+  "viewinExplorer": {
+    "message": "Visum in Rimor"
+  },
+  "viewContact": {
+    "message": "Contact View"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Visum Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Visit our web site"
+  },
+  "walletSeed": {
+    "message": "Peram Semen"
+  },
+  "welcomeBack": {
+    "message": "Recipiet!"
+  },
+  "welcome": {
+    "message": "Lorem MetaMask"
+  },
+  "writePhrase": {
+    "message": "Scribe hoc verbo super charta, et copia in locum tutum. Si vis magis etiam securitatem, scribere in multiple pieces of paper et copia singuli in 2 - 3 diversis locis."
+  },
+  "yesLetsTry": {
+    "message": "Etiam, sit scriptor experiri"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Vos postulo ut sino camera obvius ad uti hoc pluma,."
+  },
+  "yourSigRequested": {
+    "message": "Tuum signature rogatus"
+  },
+  "youSign": {
+    "message": "Te volo"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Privatum semen phrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nulla vestibulum pretium in acceleraretur"
+  }
+}

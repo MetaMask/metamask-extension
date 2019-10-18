@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Көрсөтүү Транзакция Кириш"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Тандагыла бул параметр үчүн пайдаланууга бири мыкты, деп көрсөтүлөт кирген транзакция тизмесинде бүтүмдөрдү"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Графиги жеткиликтүү гана тармагын Эфириума."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Кошундулары"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Сайттар уруксат берилиши биз сиздин аккаунты"
+  },
+  "addSite": {
+    "message": "Кошулсун Сайты"
+  },
+  "addSiteDescription": {
+    "message": "Кол кошулсун сайт берүү үчүн, ага жетүү сиздердин эсептер, полезна үчүн улгайган dapps"
+  },
+  "connected": {
+    "message": "Подключен"
+  },
+  "connectedDescription": {
+    "message": "Тизмеси сайттардын, аларга уруксат кирүү сиздердин даректер"
+  },
+  "privacyModeDefault": {
+    "message": "Корголгон режими эми кирсе боюнча алдынала тандалган"
+  },
+  "contractInteraction": {
+    "message": "Өз Ара Келишим "
+  },
+  "clearApprovalData": {
+    "message": "Өчүрүү үчүн бардык сайттар"
+  },
+  "reject": {
+    "message": "Четке кагылсын"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Бул сайт сурайт кирүү кароо үчүн учурдагы дарегин жазуу. Ар дайым ийне-мандренанын венага Сиз доверяете сайттар сиз взаимодействуете."
+  },
+  "about": {
+    "message": "Жөнүндө"
+  },
+  "aboutSettingsDescription": {
+    "message": "Версиясы, колдоо Борбору жана байланыш маалыматтары."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Кирүү камерада..."
+  },
+  "account": {
+    "message": "Эсеп -"
+  },
+  "accountDetails": {
+    "message": "Реквизиттери "
+  },
+  "accountName": {
+    "message": "Аты Эсептик Жазуу "
+  },
+  "accountOptions": {
+    "message": "Параметрлерин Эсептик Жазуу "
+  },
+  "accountSelectionRequired": {
+    "message": "Сизге керек тандоого эсептик жазуу!"
+  },
+  "activityLog": {
+    "message": "журнал операцияларды "
+  },
+  "addNetwork": {
+    "message": "Кошулсун Тармагы"
+  },
+  "addRecipient": {
+    "message": "Кошулсун Алуучунун"
+  },
+  "advanced": {
+    "message": "Кошумча"
+  },
+  "advancedSettingsDescription": {
+    "message": "Өзгөчөлүктөрү кирүү иштеп чыгуучу, скачать Мамлекеттик журналдар, агызып эсеп testnets жөнгө салуу жана пайдалануучулук ЭКП."
+  },
+  "advancedOptions": {
+    "message": "Кошумча Опции"
+  },
+  "addToAddressBook": {
+    "message": "Кошулсун нарын даректүү китебине"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "мисалы, Жон Д."
+  },
+  "addAlias": {
+    "message": "Кошулсун атты"
+  },
+  "addToken": {
+    "message": "Кошулсун Маркер"
+  },
+  "addTokens": {
+    "message": "Кошулсун Маркерлер"
+  },
+  "addSuggestedTokens": {
+    "message": "Кошулсун Сунуштады Жетондор"
+  },
+  "addAcquiredTokens": {
+    "message": "Кошулсун маркерлер жардамы менен алынган MetaMask"
+  },
+  "amount": {
+    "message": "Суммасы"
+  },
+  "appDescription": {
+    "message": "Бумажника Эфириума сиздин браузере",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Бекитилсин"
+  },
+  "approved": {
+    "message": "Бекитилди"
+  },
+  "asset": {
+    "message": "Актив"
+  },
+  "attemptingConnect": {
+    "message": "Пытаюсь кошулуу карата блокчейн."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Токтотуу тууралу төмөнкүдөй бул өтүүсүнө эмес кепилдик берет, сиздердин баштапкы бүтүмүнүн болот жоюлган. Эгерде аракети жокко чыгарылган ийгиликтүү, акы алынат бүтүмгө жогору."
+  },
+  "attributions": {
+    "message": "Атрибуции"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Белгиленсин күтүү убактысы минута алдында MetaMask автоматтык түрдө выйдете"
+  },
+  "average": {
+    "message": "Орточо"
+  },
+  "back": {
+    "message": "Мурун"
+  },
+  "backToAll": {
+    "message": "Бардыгы үчүн"
+  },
+  "backupApprovalNotice": {
+    "message": "Резервдик көчүрүү сиздин жашыруун коду калыбына келтирүү, сактап калуу үчүн сиздин капчык жана каражаттары коопсуздук."
+  },
+  "backupApprovalInfo": {
+    "message": "Бул жашыруун коду зарыл калыбына келтирүү үчүн сиздин кошелька эгерде сиз потеряете сиздин түзүлүш, ачкыч сөздү унутуп калдынызбы туура келет кайрадан белгилөөгө MetaMask, же кааласаңыз, ачуу өзүнүн капчык, башка түзүлүш."
+  },
+  "backupNow": {
+    "message": "Резервдик көчүрмөсүн азыр"
+  },
+  "balance": {
+    "message": "Баланс"
+  },
+  "balanceOutdated": {
+    "message": "Баланс болушу мүмкүн эскирген"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Жетишсиз баланс үчүн учурдагы газдын жалпы"
+  },
+  "basic": {
+    "message": "Негизги"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Блок Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Пайдаланууга Болгон Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Настроить транзакция коду "
+  },
+  "nonceFieldHeading": {
+    "message": "Пайдалануу Коду"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Сиздин браузер кармалбаса..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask долбоорлонгон жана кесе кара-Калифорнии."
+  },
+  "buyWithWyre": {
+    "message": "Сатып алуу ЕТН менен Вайр"
+  },
+  "buyWithWyreDescription": {
+    "message": "Вайр пайдаланууга мүмкүндүк кредиттик картка үчүн депозит даж өзүнүн аккаунт MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Сатып алуу CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch болуп идеальным жер алмашуу үчүн 300 криптовалюты боюнча эң мыкты курсу."
+  },
+  "bytes": {
+    "message": "Байт"
+  },
+  "off": {
+    "message": "Көз"
+  },
+  "ok": {
+    "message": "ЖИК"
+  },
+  "on": {
+    "message": "Бул"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Жокко чыгаруу"
+  },
+  "cancelAttempt": {
+    "message": "Жокко Чыгарууга Аракет"
+  },
+  "cancellationGasFee": {
+    "message": "Жокко Чыгаруу Газ Алымдарынын"
+  },
+  "cancelled": {
+    "message": "Жокко чыгарылышы"
+  },
+  "chainId": {
+    "message": "Чынжыр ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Төмөнкүлөрдү баскыла үчүн сырды ачып деген сөздөр"
+  },
+  "close": {
+    "message": "Бир катар"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Сизге пайдалануу керек MetaMask карата, Google Chrome үчүн кошулуу карата сиздин жабдууларга капчык."
+  },
+  "confirm": {
+    "message": "Ырастоого"
+  },
+  "confirmed": {
+    "message": "Экендигин тастыктады"
+  },
+  "confirmPassword": {
+    "message": "Ырастоо Үчүн Келет"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Подтвердите өзүнүн жашыруун резервдик көчүрүү фразалар"
+  },
+  "congratulations": {
+    "message": "Куттуктайбыз"
+  },
+  "connectHardwareWallet": {
+    "message": "Кошуу Аппараттык Капчык"
+  },
+  "connect": {
+    "message": "Кошуу"
+  },
+  "connectRequest": {
+    "message": "Подключите Суроо-Талап"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Кошууга Кован тесттик тармагын"
+  },
+  "connectingToMainnet": {
+    "message": "Кошууга негизги тармагынын Эфириума "
+  },
+  "connectingToRopsten": {
+    "message": "Кошууга Ropsten тесттик тармагын"
+  },
+  "connectingToRinkeby": {
+    "message": "Кошууга Rinkeby тесттик тармагын"
+  },
+  "connectingToLocalhost": {
+    "message": "Кошууга localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Кошууга Goerli тесттик тармагын"
+  },
+  "contacts": {
+    "message": "Байланыштар"
+  },
+  "contactsSettingsDescription": {
+    "message": "Добавлять, редактировать, удалять жана башкарууга сиздин байланыштар"
+  },
+  "continueToWyre": {
+    "message": "Улантууга Вайр"
+  },
+  "continueToCoinSwitch": {
+    "message": "Улантууга CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Кеңири Жайылтуу Контракт "
+  },
+  "conversionProgress": {
+    "message": "Өзгөртүп прогресс"
+  },
+  "copiedButton": {
+    "message": "Скопировал"
+  },
+  "copiedExclamation": {
+    "message": "Скопировано!"
+  },
+  "copy": {
+    "message": "Көчүрмөсү"
+  },
+  "copyAddress": {
+    "message": "Көчүрүүгө дареги жалал-буфер алмашуу"
+  },
+  "copyTransactionId": {
+    "message": "Бүтүм скопировать id"
+  },
+  "copiedTransactionId": {
+    "message": "Скопированный ID транзакция "
+  },
+  "copyToClipboard": {
+    "message": "Көчүрүүгө жалал-буфер алмашуу"
+  },
+  "copyButton": {
+    "message": " Көчүрмөсү "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Түзүү"
+  },
+  "createAccount": {
+    "message": "Түзүү Эсептик Жазуу"
+  },
+  "createAWallet": {
+    "message": "Түзүү капчык"
+  },
+  "createPassword": {
+    "message": "Түзүү Пароль"
+  },
+  "currencyConversion": {
+    "message": "Валютаны Конвертациялоо "
+  },
+  "currentLanguage": {
+    "message": "Учурдагы Тили"
+  },
+  "customGas": {
+    "message": "Ырастоо Газ"
+  },
+  "customGasSubTitle": {
+    "message": "Жогорулатуу алым алат кыскартууга убакыт иштеп, бирок бул кепилденет."
+  },
+  "customToken": {
+    "message": "Пайдалануу Маркер"
+  },
+  "customRPC": {
+    "message": "Пайдалануучулук ЭКП"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Ондук белги кем болбошу керек 0 жана ашык эмес: 36."
+  },
+  "decimal": {
+    "message": "Ондук белги тактык"
+  },
+  "defaultNetwork": {
+    "message": "Тармагы боюнча алдынала тандалган үчүн эфирдин бүтүмдөрдүн негизги көлөмү."
+  },
+  "delete": {
+    "message": "Таштоо"
+  },
+  "deleteAccount": {
+    "message": "Таштоо Эсептик Жазуу"
+  },
+  "deposit": {
+    "message": "Депозитке"
+  },
+  "depositEther": {
+    "message": "Депозит Эфирдин"
+  },
+  "details": {
+    "message": "Деталдар"
+  },
+  "directDepositEther": {
+    "message": "Түздөн-Түз Депозити Эфирдин"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Эгерде сизде азыр бар айрым эфир, эң тез ыкмасы алууга эфир сиздин жаңы капчык аркылуу түз депозиттин."
+  },
+  "dismiss": {
+    "message": "Бошотулсун"
+  },
+  "done": {
+    "message": "Жасалышы"
+  },
+  "downloadGoogleChrome": {
+    "message": "Скачать Гугл Хром"
+  },
+  "downloadSecretBackup": {
+    "message": "Скачать бул жашырын резервдик көчүрүү фразалар жана держите анын коопсуз сактоого карата тышкы зашифрованный катуу диск же алып жүрүүчү."
+  },
+  "downloadStateLogs": {
+    "message": "Скачать Мамлекеттик Журналдар"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Үчүн"
+  },
+  "edit": {
+    "message": "Редактировать"
+  },
+  "editContact": {
+    "message": "Редактировать Контактную"
+  },
+  "emailUs": {
+    "message": "Напишите нам!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Сиз спорт тест - держите seedphrase коопсуз, бул сиздин жоопкерчилик!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Кеңештер сактоо боюнча коопсуз"
+  },
+  "endOfFlowMessage3": {
+    "message": "Сактоо резервдик көчүрмөлөрүн бир нече жерде."
+  },
+  "endOfFlowMessage4": {
+    "message": "Эч качан бөлүшүү фразой Менен кимдир."
+  },
+  "endOfFlowMessage5": {
+    "message": "Будьте осторожны, фишинг! MetaMask эмес, спонтанно суроо берүү үчүн үрөн фразу."
+  },
+  "endOfFlowMessage6": {
+    "message": "Эгер сизге керек алууга, кайра өзүнүн уругу фразалар, сиз көрсө, аны Түзөтүүнүн -> Коопсуздукту сактоо."
+  },
+  "endOfFlowMessage7": {
+    "message": "Эгер сизде суроолор же көрүүгө нерсени нечисто, электрондук почта support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask мүмкүн эмес калыбына келтирүүгө өзүнүн seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Көбүрөөк билүү."
+  },
+  "endOfFlowMessage10": {
+    "message": "Бардык Жасалышы"
+  },
+  "ensRegistrationError": {
+    "message": "Ката нарын ENS каттоо"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС аты нерсе табылган жок учурдагы тармагынын. Байкап көргүлө өтүүгө башкы тармагы Эфириума."
+  },
+  "enterAnAlias": {
+    "message": "Атты жазыңыз"
+  },
+  "enterPassword": {
+    "message": "Паролду жазыңыз"
+  },
+  "enterPasswordContinue": {
+    "message": "Жазыңыз улантуу үчүн пароль"
+  },
+  "ethereumPublicAddress": {
+    "message": "Коомдук Эфириума Дареги"
+  },
+  "etherscanView": {
+    "message": "Түрү эсеп-бир мыкты"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Эсептөө Учурда Иштеп Чыгуу "
+  },
+  "expandView": {
+    "message": "Развернуть"
+  },
+  "exportPrivateKey": {
+    "message": "Экспорт Жабык Ачкычынын"
+  },
+  "failed": {
+    "message": "Жок, мүмкүн болду"
+  },
+  "fast": {
+    "message": "Тез"
+  },
+  "faster": {
+    "message": "Тезирээк"
+  },
+  "fiat": {
+    "message": "Фиат",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Забыть бул түзүлүш"
+  },
+  "from": {
+    "message": "Көз"
+  },
+  "fromShapeShift": {
+    "message": "Бири Друидских"
+  },
+  "functionType": {
+    "message": "Тиби Функциялары "
+  },
+  "gasLimit": {
+    "message": "Лимит Газ"
+  },
+  "gasLimitCalculation": {
+    "message": "Биз рассчитываем сунуштады лимит газ негизинде ийгиликтүү тармагынын."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Газ лимити-бул максималдуу саны, бирдик газ, ага, сиз даяр потратить."
+  },
+  "gasLimitTooLow": {
+    "message": "Лимитин газды кем болбоого тийиш 21000"
+  },
+  "gasUsed": {
+    "message": "Газы Колдонулган"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Баасы Газ Абдан Төмөн"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Баасы газ санын аныктайт эфирдин, аны сиз үчүн төлөөгө даяр ар бир бирдигине газ."
+  },
+  "gasPriceNoDenom": {
+    "message": "Газ Баасы "
+  },
+  "gasPriceCalculation": {
+    "message": "Биз рассчитываем сунуштаган газдын жараша ийгиликтүү тармагынын."
+  },
+  "general": {
+    "message": "Жалпы"
+  },
+  "generalSettingsDescription": {
+    "message": "Валютаны конвертациялоо, негизги валюта, тили, аны blockies identicon"
+  },
+  "getEther": {
+    "message": "Сизге Эфирдин"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Сиздерге Жардам Берүү."
+  },
+  "getStarted": {
+    "message": "Баштайлы"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Биз рады көрө сизди."
+  },
+  "hardware": {
+    "message": "жабдуулар"
+  },
+  "hardwareWalletConnected": {
+    "message": "Аппараттык капчык подключен"
+  },
+  "hardwareWallets": {
+    "message": "Подключите аппараттык капчык"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Тандагыла аппараттык кошелька, алгыңыз пайдаланууга менен MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "бул жерде",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Шестнадцатеричных Маалыматтар"
+  },
+  "hide": {
+    "message": "Жаап-жашыруу"
+  },
+  "hideToken": {
+    "message": "Жашырып Маркер"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Тарыхы"
+  },
+  "import": {
+    "message": "Импорт",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Импорт Эсепке Алуу Жазмасынын"
+  },
+  "importAccountMsg": {
+    "message": " Импортированы аккаунты алынбайт менен байланышкан сиздердин башында түзүлгөн MetaMask seedphrase эсеп. Жөнүндө көбүрөөк маалымат импорттолгон эсепке алуу жазмасынын "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Импорт аккаунт менен үрөн фраза"
+  },
+  "importWallet": {
+    "message": "Импорт Капчык"
+  },
+  "importYourExisting": {
+    "message": "Импорттоо өзүнүн капчык жардамы менен 12 деген фраза үрөндөрдүн"
+  },
+  "imported": {
+    "message": "Импорттук",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Импорт пайдаланып аккаунт үрөн фраза"
+  },
+  "infoHelp": {
+    "message": "Маалымат Жана Жардам"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Сиздин баштапкы бүтүм энтузиаст тармагынын. Ушул жерди басыңыз баскыч ЖИК үчүн вернуться."
+  },
+  "insufficientBalance": {
+    "message": "Жетишсиз баланс."
+  },
+  "insufficientFunds": {
+    "message": "Жетишсиз."
+  },
+  "insufficientTokens": {
+    "message": "Жетишсиз жетонов."
+  },
+  "invalidAddress": {
+    "message": "Туура эмес дарек"
+  },
+  "invalidAddressRecipient": {
+    "message": "Алуучунун дарегине жараксыз"
+  },
+  "knownAddressRecipient": {
+    "message": "Акыркы белгилүү дареги келишим."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Эт эмес, тармагы, топтому, анын төмөнкү регистри"
+  },
+  "invalidInput": {
+    "message": "Туура эмес ишке киргизүү."
+  },
+  "invalidRPC": {
+    "message": "Недопустимый URL-дареги ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Недопустимый блок Обозревателе URL-дареги"
+  },
+  "invalidSeedPhrase": {
+    "message": "Туура эмес үрөн фраза"
+  },
+  "jsonFile": {
+    "message": "JSON-файл ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Тест Тармагынын Кован "
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "learnMore": {
+    "message": "Көбүрөөк билүү"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Сиз пайдаланууга тийиш сиздин акыркы эсебинен, биринчи кезекте караганда сиз кошулсун жаңы."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ооба, барабыз!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Шилтемелер"
+  },
+  "liveGasPricePredictions": {
+    "message": "Болжолдоолорун Баалардын Газ "
+  },
+  "loading": {
+    "message": "Салуу..."
+  },
+  "loadingTokens": {
+    "message": "Маркерлер Салуу..."
+  },
+  "loadMore": {
+    "message": "Жүгү Көп"
+  },
+  "localhost": {
+    "message": "Локалдуу 8545"
+  },
+  "login": {
+    "message": "Кирүү"
+  },
+  "logout": {
+    "message": "Чыга"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Чыгуу убактысы абдан эле чоң болушу"
+  },
+  "mainnet": {
+    "message": "Главная Тармагы Эфириума "
+  },
+  "memorizePhrase": {
+    "message": "Запомните бул фразу."
+  },
+  "memo": {
+    "message": "эскерткич"
+  },
+  "menu": {
+    "message": "Меню"
+  },
+  "message": {
+    "message": "Билдирүү"
+  },
+  "metamaskDescription": {
+    "message": "Түйүнгө кошулуу Ethereum жана борбордон интернет."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Үрөн Деген Сөздөр"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Версиясы"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Мейли, Сиздин пароль үчүн тастыктоого, бул сиз!"
+  },
+  "myAccounts": {
+    "message": "Менин Эсеп"
+  },
+  "myWalletAccounts": {
+    "message": "Менин Капчык Эсеп"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Сиздердин бардык MetaMask түзүлгөн эсептик жазуулар болот автоматтык түрдө кошумчаланышы бул бөлүк."
+  },
+  "mustSelectOne": {
+    "message": "Керек тандоого жок дегенде 1 белгиси."
+  },
+  "needEtherInWallet": {
+    "message": "Менен өз ара аракеттенүүгө децентрализованными-тиркемелер менен пайдаланып, MetaMask, сизге зарыл эфирдин сиздин капчык."
+  },
+  "needImportFile": {
+    "message": "Тандап алуу зарыл файл үчүн импорттун.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Албайм жөнөтүү терс суммасын ичинен Швейцария жогорку техникалык мектеп."
+  },
+  "networkName": {
+    "message": "Аты Тармагын "
+  },
+  "networks": {
+    "message": "Тармактарды"
+  },
+  "networkSettingsDescription": {
+    "message": "Кошумчалоо жана редакциялоо пользовательских тармактарын ЭКП "
+  },
+  "nevermind": {
+    "message": "Фигу"
+  },
+  "newAccount": {
+    "message": "Новый Аккаунт"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Жаңы дареги табылган! Төмөнкүлөрдү баскыла үчүн кошулсун нарын даректүү китебине."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Жаңы Байланыш"
+  },
+  "newContract": {
+    "message": "Жаңы Контракт"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Жаңы Тармак"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Жок, менде мурда эле бар үрөн фраза"
+  },
+  "protectYourKeys": {
+    "message": "Коргоого Сиздин Ачкычтар!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Будьте осторожны менен үрөн фраза — болдуңуз жөнүндө билдирүү сайттарда, алар аракет жасашууда подражать MetaMask. MetaMask эч качан жок болот сурана үчүн сиздин уруктарын фраза!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Сактай сиздин фразу коопсуз. Эгерде сиз көрөсүз нерсени подозрительное, же сиз эмес четтөөлөрсүз жалал-сайтында, электрондук почта боюнча support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Жаңы URL-дареги ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Жаңы Жыйынтыгы"
+  },
+  "newTransactionFee": {
+    "message": "Жаңы Акысы Бүтүмдү "
+  },
+  "next": {
+    "message": "Мындан ары"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Жок дарегине бул үчүн атын."
+  },
+  "noDeposits": {
+    "message": "Эч кандай депозиттери алынган"
+  },
+  "noConversionRateAvailable": {
+    "message": "Жок Конвертациялоо Курсу Жеткиликтүү"
+  },
+  "noTransactions": {
+    "message": "Сизде жок бүтүмдөрдү"
+  },
+  "noThanks": {
+    "message": "Жок, Рахмат"
+  },
+  "notEnoughGas": {
+    "message": "Газ Жетишпейт"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Веб-камера эмес найдена"
+  },
+  "noWebcamFound": {
+    "message": "Веб-камералар сиздин компьютердин нерсе табылган жок. Мейли, байкап көргүлө кайра."
+  },
+  "ofTextNofM": {
+    "message": "бири"
+  },
+  "orderOneHere": {
+    "message": "Заказ бериши Трезор же китебин жана сактап калууга сиздин каражатты муздаткычта "
+  },
+  "origin": {
+    "message": "Теги"
+  },
+  "parameters": {
+    "message": "Параметрлери"
+  },
+  "participateInMetaMetrics": {
+    "message": "Катышуу MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Катышууга MetaMetrics жардам берүү үчүн, бизге керек MetaMask жакшы"
+  },
+  "password": {
+    "message": "Пароль"
+  },
+  "passwordsDontMatch": {
+    "message": "Паролдор дал келбесе"
+  },
+  "passwordNotLongEnough": {
+    "message": "Пароль жетишсиз длинный "
+  },
+  "pastePrivateKey": {
+    "message": "Коюу сиздин жеке ачкыч саптар бул жерде:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Вставьте үрөн фраза бул жерде!"
+  },
+  "pending": {
+    "message": "в ожидании"
+  },
+  "personalAddressDetected": {
+    "message": "Жеке дарегине табылган. Киргизүү келишимдин маркер дарегин."
+  },
+  "prev": {
+    "message": "Ко'"
+  },
+  "primaryCurrencySetting": {
+    "message": "Алгачкы Валютасы"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Купуялуулук Саясаты "
+  },
+  "privateKey": {
+    "message": "Жабык Ачкыч",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Эскертүү: эч качан ачууга бул ачкыч. Кимге-анда өздөрүнүн жеке ачкычтарын алышат украсть ар кандай активдери турган сиздин эсепте."
+  },
+  "privateNetwork": {
+    "message": "Частная Сеть"
+  },
+  "qrCode": {
+    "message": "Көрсөтүү QR-код"
+  },
+  "queue": {
+    "message": "Кезек"
+  },
+  "readdToken": {
+    "message": "Сиз кошулсун бул белги келечекте Перейдя карата \"Кошулсун маркер\" менюда опции эсептик жазуу."
+  },
+  "recents": {
+    "message": "Курууга"
+  },
+  "recipientAddress": {
+    "message": "Алуучунун Дареги "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Бардык Четке Кагылсын"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Четтетилет"
+  },
+  "reset": {
+    "message": "Агызып"
+  },
+  "resetAccount": {
+    "message": "Сбросить Эсептик Жазуу "
+  },
+  "resetAccountDescription": {
+    "message": "Таштоого сиздин эсеп болот очистить тарыхына транзакциялардын."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Напомните мага кийинчерээк"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Калыбына келтирүүгө өзүнүн эсептик жазуу менен үрөн фраза"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "суроо-талаптарын, ожидающих тапкан"
+  },
+  "required": {
+    "message": "Талап кылынат"
+  },
+  "restore": {
+    "message": "Калыбына келтирүү"
+  },
+  "revealSeedWords": {
+    "message": "Ачып Үрөн Деген Сөздөр"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Үрөн Фраза"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Эгерде сиз качандыр бир өзгөртүүгө браузеры же которууга компьютерлер болосуңар нуждаться бул уруктарын фразалар алууга жеткиликтүү сиздердин эсептер. Сактап, алардын кайда кандайдыр бир коопсуз жана жашыруун."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Эмес бөлүштүргөн мындай фразу ким менен!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Бул сөздөр колдонулушу мүмкүн үчүн украсть баары сиздин эсептик жазуу."
+  },
+  "revert": {
+    "message": "Вернуться"
+  },
+  "remove": {
+    "message": "Таштоо"
+  },
+  "removeAccount": {
+    "message": "Таштоо аккаунт"
+  },
+  "removeAccountDescription": {
+    "message": "Бул эсеп жазуусу болот удалена менен сиздин кошелька. Мейли, ийне-мандренанын венага сизде өзгөчө уругу фразалар же жабык ачкыч бул үчүн импорттук эсеп, биринчи кезекте караганда улантуу. Сиз импорттоо же кайрадан түзүү эсептик жазуулар выпадающего эсеп. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Тармагы Rinkeby Тест "
+  },
+  "ropsten": {
+    "message": "Тармагы Ropsten Тест "
+  },
+  "goerli": {
+    "message": "Тест Тармагынын Goerli "
+  },
+  "save": {
+    "message": "Сактап"
+  },
+  "slow": {
+    "message": "Жай"
+  },
+  "slower": {
+    "message": "Жай"
+  },
+  "saveAsCsvFile": {
+    "message": "Сактап кантип CSV файл"
+  },
+  "scanInstructions": {
+    "message": "Разместите QR-код алдыңкы бөлүгүндө камералар"
+  },
+  "scanQrCode": {
+    "message": "Кодун сканерлөө QR "
+  },
+  "search": {
+    "message": "Издөө"
+  },
+  "searchResults": {
+    "message": "Издөө Жыйынтыктары "
+  },
+  "secretBackupPhrase": {
+    "message": "Жашыруун Резервдик Көчүрүү Фразалар"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Сиздин жашырын резервдик көчүрүү фраза жасап, анын оңой үчүн резервдик көчүрүү жана калыбына келтирүү сиздин аккаунта."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Эскертүү: эч качан ачууга өзүнүн резервдик фразалар. Ким ушул фразой аласыз алышы сиздин эфир түбөлүккө."
+  },
+  "secretPhrase": {
+    "message": "Сиздин жашыруун он эки деген сөздөрдөн фразалар бул жерде үчүн калыбына келтирүүгө сактоочу жай."
+  },
+  "securityAndPrivacy": {
+    "message": "Коопсуздугун Жана Купуялуулугун"
+  },
+  "securitySettingsDescription": {
+    "message": "Түзөтүүнүн жана конфиденциалдуулугун бумажник үрөн фраза"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Отделите ар бир сөз менен пробелом"
+  },
+  "seedPhraseReq": {
+    "message": "Үрөн фраз 12 деген сөздөрдөн"
+  },
+  "selectCurrency": {
+    "message": "Валютаны Тандагыла"
+  },
+  "selectEachPhrase": {
+    "message": "Мейли, тандагыла ар бир фраза келе тургандыгына ынануу үчүн, бул туура."
+  },
+  "selectLocale": {
+    "message": "Тандагыла Тили"
+  },
+  "selectType": {
+    "message": "Тандагыла Тиби"
+  },
+  "send": {
+    "message": "Жөнөтүү"
+  },
+  "sendAmount": {
+    "message": "Жөнөтүү Суммасын"
+  },
+  "sendETH": {
+    "message": "Жөнөтүү ЕТН"
+  },
+  "sendTokens": {
+    "message": "Жөнөтүү"
+  },
+  "sentEther": {
+    "message": "жөнөтүлдү эфирдин"
+  },
+  "sentTokens": {
+    "message": "жөнөттүм жетондор"
+  },
+  "separateEachWord": {
+    "message": "Отделите ар бир сөз менен пробелом"
+  },
+  "searchTokens": {
+    "message": "Токены Издөө "
+  },
+  "selectAnAccount": {
+    "message": "Тандагыла эсептик жазуу"
+  },
+  "selectAnAccountHelp": {
+    "message": "Тандагыла эсептик жазуу кароо үчүн жалал-MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Тандагыла кыйла жогорку газ акысын тездетүү үчүн иштеп сиздин кылбайт.*"
+  },
+  "selectHdPath": {
+    "message": "Тандагыла жолу "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Параметрлери"
+  },
+  "showAdvancedGasInline": {
+    "message": "Кошумча элементтер башкаруу газ "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Тандагыла бул параметр үчүн көрсөтүлөт газдын жана чектөөгө элементтеринин башкаруу түздөн түз Жөнөтүүгө жана тастыктоого экрандар."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Көрсөтүү өзгөртүп карата Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Тандагыла бул параметр үчүн көрсөтүлөт өзгөртүп фиат карата Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Көрсөтүү Жабык Ачкычтарды"
+  },
+  "showHexData": {
+    "message": "Көрсөтүү Шестнадцатеричный Маалыматтар"
+  },
+  "showHexDataDescription": {
+    "message": "Тандагыла бул параметр үчүн көрсөтүлөт тилке hex маалыматтарды экран"
+  },
+  "sign": {
+    "message": "Белги"
+  },
+  "signatureRequest": {
+    "message": "Суроо-Кол "
+  },
+  "signed": {
+    "message": "Колу"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Суроо-Кол "
+  },
+  "somethingWentWrong": {
+    "message": "Упс! Бул болсо, өзүнөн өзү кете берди эмес да."
+  },
+  "speedUp": {
+    "message": "Тездетүү"
+  },
+  "speedUpCancellation": {
+    "message": "Тездетүү бул жокко чыгаруу"
+  },
+  "speedUpTransaction": {
+    "message": "Тездетүү бул операцияны"
+  },
+  "switchNetworks": {
+    "message": "Которгуч Тармактарын"
+  },
+  "stateLogFileName": {
+    "message": "Абалы MetaMask Журналдар"
+  },
+  "stateLogs": {
+    "message": "Абалы Журналдардын"
+  },
+  "stateLogsDescription": {
+    "message": "Мамлекеттик журналдарды камтыйт дарегин жекече эсептик жазууну падыша бүтүмдөрдүн."
+  },
+  "stateLogError": {
+    "message": "Ката алууда абалын бревна."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Кошуу Аппараттык Капчык"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Подключите аппараттык капчык түздөн түз компьютер."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Тандагыла эсептик жазуу"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Тандагыла аккаунт, ал кааласаңыз, просмотреть. Сиз тандап алуу үчүн бир гана жолу."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Баштоо пайдаланууга dApps жана башка көп нерселер!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Пайдалануу аппараттык эсептик жазуу, силер эле эл менен ар кандай жазууңуз Эфириума. Войдите нарын dApps, Эт жөнөтүү, сатып алууга жана сактоого ERC20 жетондор жана незаменяемые маркерлер катары CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Сактоого бул фразу Жалал-менеджер паролдорду кантип 1Password."
+  },
+  "submit": {
+    "message": "Берсин"
+  },
+  "submitted": {
+    "message": "Берилген"
+  },
+  "supportCenter": {
+    "message": "Посетите биздин колдоо Борбору "
+  },
+  "symbol": {
+    "message": "Символ"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Символ болушу керек ортосундагы 0 жана 12 символ."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Барбы резервдик көчүрүү менен 3box. в. Мындай функция болуп саналат эксперименттик валютаны; колдонгула өз коркуу жана тобокелдик."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box жалал-жылы өчүрүлүшү үчүн каталар учурунда баштапкы синхрондоштуруу"
+  },
+  "syncWithMobile": {
+    "message": "Синхрондоштуруу с мобилдүү"
+  },
+  "syncWithMobileTitle": {
+    "message": "Синхрондоштуруу с мобилдүү"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Эгерде сиз жөн гана открываете MetaMask уюлдук тиркемелер биринчи жолу, жөн гана следуйте нускамаларга карата сиздин телефоне."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Сканировать бул код менен MetaMask мобилдик тиркеме"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Ийне-мандренанын венага эч ким м болгон экран, сиз сканируете бул код"
+  },
+  "syncWithMobileComplete": {
+    "message": "Сиздин бул ийгиликтүү аяктады синхронизированы. Наслаждайтесь MetaMask мобилдик тиркеме!"
+  },
+  "terms": {
+    "message": "Пайдалануунун шарттары"
+  },
+  "testFaucet": {
+    "message": "Сыноо Кран"
+  },
+  "thisWillCreate": {
+    "message": "Бул түзүүгө мүмкүндүк берет жаңы капчык жана үрөн фраза"
+  },
+  "tips": {
+    "message": "Кеңештер"
+  },
+  "to": {
+    "message": "Үчүн"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Маркер"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Маркер азыр жылы добавлен."
+  },
+  "tokenContractAddress": {
+    "message": "Маркер Дарегин Келишим "
+  },
+  "tokenSymbol": {
+    "message": "Символ Маркера "
+  },
+  "total": {
+    "message": "Жалпы"
+  },
+  "transaction": {
+    "message": "бүтүм"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Транзакция болду ката."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Ката Кылбайт. Чыгаруу келишимде коду."
+  },
+  "transactionErrorNoContract": {
+    "message": "Пытаюсь кылышы функцияны контракттык дареги."
+  },
+  "transactionFee": {
+    "message": "Үчүн Акы Бүтүмдү "
+  },
+  "transactionTime": {
+    "message": "Бүтүмдүн Убактысы "
+  },
+  "transfer": {
+    "message": "Которуу"
+  },
+  "transferBetweenAccounts": {
+    "message": "Которуу ортосундагы моими эсептер"
+  },
+  "transferFrom": {
+    "message": "Трансфер Турат"
+  },
+  "troubleTokenBalances": {
+    "message": "Бизде мелис көйгөйлөр менен загрузкой калдыктары маркера. Сиз алардын просмотреть ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Байкап көргүлө кайра "
+  },
+  "typePassword": {
+    "message": "Жазыңыз пароль MetaMask "
+  },
+  "unapproved": {
+    "message": "Неутвержденные"
+  },
+  "units": {
+    "message": "бирдиктери"
+  },
+  "unknown": {
+    "message": "Белгисиз"
+  },
+  "unknownNetwork": {
+    "message": "Неизвестный Жеке Тармагын"
+  },
+  "unknownQrCode": {
+    "message": "Ката: биз албай тургандыгы аныкталсын QR коду"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Упс! Бул болсо, өзүнөн өзү кете берди эмес да...."
+  },
+  "unknownCameraError": {
+    "message": "Мушташтын ката аракет жасаган учурунда алууга жетүү сиздин камералар. Мейли, байкап көргүлө кайра..."
+  },
+  "unlock": {
+    "message": "Разблокировка"
+  },
+  "unlockMessage": {
+    "message": "Децентрализованный веб-күтөт"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Урис талап кылат тиешелүү http/префикс https."
+  },
+  "usedByClients": {
+    "message": "Пайдаланылат, ар кандай кардарлардын"
+  },
+  "userName": {
+    "message": "Колдонуучунун аты"
+  },
+  "validFileImport": {
+    "message": "Сиз керек тандоого туура файл үчүн импорттун."
+  },
+  "viewAccount": {
+    "message": "Просмотреть Эсептик Жазуу "
+  },
+  "viewinExplorer": {
+    "message": "Кароого нарын Обозревателе"
+  },
+  "viewContact": {
+    "message": "Көргөндү Байланыштар"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Түрү бир мыкты"
+  },
+  "visitWebSite": {
+    "message": "Посетите биздин веб-сайт"
+  },
+  "walletSeed": {
+    "message": "Үрөн Капчык "
+  },
+  "welcomeBack": {
+    "message": "Кош Келиңиздер!"
+  },
+  "welcome": {
+    "message": "Кош келиңиздер нарын MetaMask"
+  },
+  "writePhrase": {
+    "message": "Жазыңыз бул фразу карата бумажке жана сактоого коопсуз жерде. Эгер сиз кааласаңыз, дагы көп коопсуздук, запишите анын бир нече барак кагаздар жана сактоого ар бир 2 - 3 ар кайсы жерине."
+  },
+  "yesLetsTry": {
+    "message": "Ооба, келгиле, сүйлөмдөгү бош орунга"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Сизге керек кирүүгө уруксат берүүгө карата камерада үчүн пайдаланууга бул функцияны."
+  },
+  "yourSigRequested": {
+    "message": "Сиздин колу запрашивается"
+  },
+  "youSign": {
+    "message": "Сиз подписываете"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Сиздин жеке үрөн фраза"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Ноль баасы газдын ылдамдыгын чейин"
+  }
+}

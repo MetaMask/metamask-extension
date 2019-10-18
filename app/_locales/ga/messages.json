@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Taispeáin Hidirbhearta Ag Teacht Isteach"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Roghnaigh é seo chun úsáid a bhaint as Etherscan a thaispeáint ag teacht isteach a n-idirbheart i n-idirbheart liosta"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "An chairt ar fáil ach amháin ar Ethereum líonraí."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Naisc"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Láithreáin a cheadaítear a léamh do na cuntais"
+  },
+  "addSite": {
+    "message": "Cuir Shuíomh"
+  },
+  "addSiteDescription": {
+    "message": "Láimh add a shuíomh chun go bhféadfaidh sé rochtain a fháil ar do chuntais, úsáideach le haghaidh níos sine dapps"
+  },
+  "connected": {
+    "message": "Ceangailte"
+  },
+  "connectedDescription": {
+    "message": "An liosta de láithreáin ceadaithe rochtain a fháil ar do seoltaí"
+  },
+  "privacyModeDefault": {
+    "message": "Príobháideachta Modh é anois ar chumas réir réamhshocraithe"
+  },
+  "contractInteraction": {
+    "message": "Conradh Idirghníomhaíocht"
+  },
+  "clearApprovalData": {
+    "message": "Bain gach suíomh"
+  },
+  "reject": {
+    "message": "A dhiúltú"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Tá an suíomh seo ag iarraidh rochtain a fháil chun féachaint ar do chuntas reatha seoladh. I gcónaí a dhéanamh cinnte go bhfuil tú muinín an láithreáin tú ag idirghníomhú le."
+  },
+  "about": {
+    "message": "Faoi"
+  },
+  "aboutSettingsDescription": {
+    "message": "Leagan, ionad tacaíochta, agus eolas teagmhála."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Rochtain a fháil ar do ceamara..."
+  },
+  "account": {
+    "message": "Cuntas"
+  },
+  "accountDetails": {
+    "message": "Sonraí An Chuntais"
+  },
+  "accountName": {
+    "message": "Ainm An Chuntais"
+  },
+  "accountOptions": {
+    "message": "Cuntas Roghanna"
+  },
+  "accountSelectionRequired": {
+    "message": "Ní mór duit a roghnú chuntas!"
+  },
+  "activityLog": {
+    "message": "logáil isteach gníomhaíocht"
+  },
+  "addNetwork": {
+    "message": "Cuir Líonra"
+  },
+  "addRecipient": {
+    "message": "Cuir Faighteoir"
+  },
+  "advanced": {
+    "message": "Chun cinn"
+  },
+  "advancedSettingsDescription": {
+    "message": "Rochtain forbróir gnéithe, íoslódáil Stát Logs, Athshocrú Chuntas, thus testnets agus saincheaptha CCS."
+  },
+  "advancedOptions": {
+    "message": "Roghanna Chun Cinn"
+  },
+  "addToAddressBook": {
+    "message": "Cuir leis an leabhar seoltaí"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "John D. m. sh."
+  },
+  "addAlias": {
+    "message": "Cuir ailias"
+  },
+  "addToken": {
+    "message": "Cuir Chomhartha"
+  },
+  "addTokens": {
+    "message": "Cuir Comharthaí"
+  },
+  "addSuggestedTokens": {
+    "message": "Cuir Fios Comharthaí"
+  },
+  "addAcquiredTokens": {
+    "message": "Cuir na comharthaí atá tú a fuarthas ag baint úsáide as MetaMask"
+  },
+  "amount": {
+    "message": "Méid"
+  },
+  "appDescription": {
+    "message": "An Ethereum Sparán i do Bhrabhsálaí",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Cheadú"
+  },
+  "approved": {
+    "message": "Ceadaithe"
+  },
+  "asset": {
+    "message": "Sócmhainní"
+  },
+  "attemptingConnect": {
+    "message": "Ag iarraidh a nascadh a blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "A chur isteach ar iarracht é seo ní ráthaíocht do t-idirbheart bunaidh a chur ar ceal. Má tá an cealú iarracht rathúil, beidh tú a mhuirearú ar an táille idirbheart thuas."
+  },
+  "attributions": {
+    "message": "Aitreabúidí"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Socraigh an t-am díomhaoin i nóiméad roimh MetaMask beidh logáil go huathoibríoch amach"
+  },
+  "average": {
+    "message": "Meán"
+  },
+  "back": {
+    "message": "Ar ais"
+  },
+  "backToAll": {
+    "message": "Ar ais go Léir"
+  },
+  "backupApprovalNotice": {
+    "message": "Cúltaca do Ghnóthú Rúnda cód a choinneáil do sparán agus cistí slán."
+  },
+  "backupApprovalInfo": {
+    "message": "Seo rún é an cód is gá a ghnóthú do sparán i gcás chailleann tú do gléas, déan dearmad ar do phasfhocal, tá a ath-shuiteáil MetaMask, nó ag iarraidh a rochtain a fháil ar do sparán ar gléas eile."
+  },
+  "backupNow": {
+    "message": "Cúltaca anois"
+  },
+  "balance": {
+    "message": "Iarmhéid"
+  },
+  "balanceOutdated": {
+    "message": "Cothromaíocht a d ' fhéadfadh a bheith as dáta"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Dóthain iarmhéid reatha iomlán gáis"
+  },
+  "basic": {
+    "message": "Bunúsach"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloc Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Bain Úsáid As Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Saincheap idirbheart nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Saincheaptha Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Do Bhrabhsálaí gan tacaíocht..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask deartha agus tógtha i California."
+  },
+  "buyWithWyre": {
+    "message": "Cheannach ETH leis Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ligeann leat úsáid a bhaint as cárta creidmheasa chun éarlais ETH ceart i do MetaMask áireamh."
+  },
+  "buyCoinSwitch": {
+    "message": "A cheannach ar CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch is é an aon-stad scríbe a mhalartú níos mó ná 300 cryptocurrencies ag an ráta is fearr."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Ar"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "A chur ar ceal"
+  },
+  "cancelAttempt": {
+    "message": "Iarracht A Chur Ar Ceal"
+  },
+  "cancellationGasFee": {
+    "message": "Cealú Gáis Táille"
+  },
+  "cancelled": {
+    "message": "Curtha ar ceal"
+  },
+  "chainId": {
+    "message": "Slabhra ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Cliceáil anseo a nochtadh rúnda focail"
+  },
+  "close": {
+    "message": "Dún"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Ní mór duit úsáid a bhaint as MetaMask ar Google Chrome d ' fhonn a nascadh le do Crua-earraí Sparán."
+  },
+  "confirm": {
+    "message": "A dheimhniú"
+  },
+  "confirmed": {
+    "message": "Dheimhnigh"
+  },
+  "confirmPassword": {
+    "message": "Deimhnigh Pasfhocal"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "A dheimhniú do Rún Cúltaca Frása"
+  },
+  "congratulations": {
+    "message": "Comhghairdeas"
+  },
+  "connectHardwareWallet": {
+    "message": "Ceangal Crua-Earraí Sparán"
+  },
+  "connect": {
+    "message": "Ceangal"
+  },
+  "connectRequest": {
+    "message": "Ceangal A Iarraidh"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Nascadh a Kovan Tástáil Líonra"
+  },
+  "connectingToMainnet": {
+    "message": "Ag nascadh go dtí Príomh-Ethereum Líonra"
+  },
+  "connectingToRopsten": {
+    "message": "Nascadh a Ropsten Tástáil Líonra"
+  },
+  "connectingToRinkeby": {
+    "message": "Nascadh a Rinkeby Tástáil Líonra"
+  },
+  "connectingToLocalhost": {
+    "message": "Nascadh a Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Nascadh a Goerli Tástáil Líonra"
+  },
+  "contacts": {
+    "message": "Teagmhálacha"
+  },
+  "contactsSettingsDescription": {
+    "message": "Cuir, in eagar, a bhaint, agus a bhainistiú do teagmhálacha"
+  },
+  "continueToWyre": {
+    "message": "Leanúint ar aghaidh a Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Leanúint ar aghaidh a CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Conradh Imscaradh"
+  },
+  "conversionProgress": {
+    "message": "Comhshó dul chun cinn i"
+  },
+  "copiedButton": {
+    "message": "Cóipeáladh"
+  },
+  "copiedExclamation": {
+    "message": "Cóip!"
+  },
+  "copy": {
+    "message": "Cóip"
+  },
+  "copyAddress": {
+    "message": "Chóipeáil seoladh go dtí an ghearrthaisce"
+  },
+  "copyTransactionId": {
+    "message": "Chóipeáil Idirbheart ID"
+  },
+  "copiedTransactionId": {
+    "message": "Cóipeáladh an Idirbheart ID"
+  },
+  "copyToClipboard": {
+    "message": "Cóipeáil go gearrthaisce"
+  },
+  "copyButton": {
+    "message": " Cóip "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "A chruthú"
+  },
+  "createAccount": {
+    "message": "Cruthaigh Cuntas"
+  },
+  "createAWallet": {
+    "message": "Cruthaigh Sparán"
+  },
+  "createPassword": {
+    "message": "Cruthaigh Pasfhocal"
+  },
+  "currencyConversion": {
+    "message": "Comhshó Airgeadra"
+  },
+  "currentLanguage": {
+    "message": "Teanga Reatha"
+  },
+  "customGas": {
+    "message": "Saincheap Gáis"
+  },
+  "customGasSubTitle": {
+    "message": "Méadú ar an táille a laghdú amanna próiseála, ach nach bhfuil sé ráthaithe."
+  },
+  "customToken": {
+    "message": "Saincheaptha Chomhartha"
+  },
+  "customRPC": {
+    "message": "Saincheaptha RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Deachúlacha ní mór a bheith ar a laghad 0, agus nach bhfuil os cionn 36."
+  },
+  "decimal": {
+    "message": "Deachúlacha Cruinneas"
+  },
+  "defaultNetwork": {
+    "message": "An mhainneachtain líonra do Éitear n-idirbheart is Mó Glan."
+  },
+  "delete": {
+    "message": "A scriosadh"
+  },
+  "deleteAccount": {
+    "message": "Faigh Cuntas"
+  },
+  "deposit": {
+    "message": "Taisce"
+  },
+  "depositEther": {
+    "message": "Taisce Éitear"
+  },
+  "details": {
+    "message": "Sonraí"
+  },
+  "directDepositEther": {
+    "message": "Go Díreach Taisce Éitear"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Má tá tú cheana féin roinnt Éitear, an bealach is tapúla a fháil Éitear i do sparán nua ag taisce díreach."
+  },
+  "dismiss": {
+    "message": "Dhíbhe"
+  },
+  "done": {
+    "message": "A dhéanamh"
+  },
+  "downloadGoogleChrome": {
+    "message": "Íosluchtaigh Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Íoslódáil an Rún Cúltaca Frása agus é a choimeád a stóráil go sábháilte ar seachtrach criptithe thiomáint crua nó meán stórála."
+  },
+  "downloadStateLogs": {
+    "message": "Íosluchtaigh Stáit Logs"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Thit"
+  },
+  "edit": {
+    "message": "In eagar"
+  },
+  "editContact": {
+    "message": "Cuir I Dteagmháil"
+  },
+  "emailUs": {
+    "message": "Ríomhphost a chur chugainn!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Ritheadh tú an tástáil - a choinneáil do seedphrase sábháilte, tá sé d ' fhreagracht!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Leideanna maidir le stóráil go sábháilte"
+  },
+  "endOfFlowMessage3": {
+    "message": "Shábháil cúltaca in áiteanna éagsúla."
+  },
+  "endOfFlowMessage4": {
+    "message": "Riamh a roinnt ar an frása le duine ar bith."
+  },
+  "endOfFlowMessage5": {
+    "message": "Bí cúramach de phishing! MetaMask beidh riamh as a stuaim féin a iarraidh le haghaidh do síol frása."
+  },
+  "endOfFlowMessage6": {
+    "message": "Más gá duit a ar ais suas do síol frása arís, is féidir leat teacht ar sé i Socruithe> Slándáil."
+  },
+  "endOfFlowMessage7": {
+    "message": "Má tá tú riamh tá ceisteanna agat, nó a fheiceáil rud éigin fishy, ríomhphost support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ní féidir a ghnóthú do seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Níos mó a fhoghlaim."
+  },
+  "endOfFlowMessage10": {
+    "message": "Go Léir A Rinneadh"
+  },
+  "ensRegistrationError": {
+    "message": "Earráid i ENS clárú ainm"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS ainm nach bhfuil ar fáil ar an líonra reatha. Bain triail as athrú chuig Príomh Ethereum Líonra."
+  },
+  "enterAnAlias": {
+    "message": "Cuir isteach ailias"
+  },
+  "enterPassword": {
+    "message": "Iontráil focal faire"
+  },
+  "enterPasswordContinue": {
+    "message": "Cuir isteach an focal faire chun leanúint ar aghaidh"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Seoladh Poiblí"
+  },
+  "etherscanView": {
+    "message": "Féach cuntas ar Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Measta Amanna Próiseála"
+  },
+  "expandView": {
+    "message": "Leathnú Amharc"
+  },
+  "exportPrivateKey": {
+    "message": "Easpórtáil Eochair Phríobháideach"
+  },
+  "failed": {
+    "message": "Theip ar"
+  },
+  "fast": {
+    "message": "Tapa"
+  },
+  "faster": {
+    "message": "Níos tapúla"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Déan dearmad ar an ngléas seo"
+  },
+  "from": {
+    "message": "Ó"
+  },
+  "fromShapeShift": {
+    "message": "Ó ShapeShift"
+  },
+  "functionType": {
+    "message": "Feidhm Cineál"
+  },
+  "gasLimit": {
+    "message": "Gáis Teorainn"
+  },
+  "gasLimitCalculation": {
+    "message": "Déanaimid ríomh ar an mhol teorainn gáis atá bunaithe ar an ngréasán rátaí ratha."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gáis teorainn ar an méid uasta na n-aonad gáis a bhfuil tú sásta a chaitheamh."
+  },
+  "gasLimitTooLow": {
+    "message": "Gáis teorainn a chur le ní mór a bheith ar a laghad 21000"
+  },
+  "gasUsed": {
+    "message": "Gás A Úsáidtear"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Praghas Gáis Thar A Bheith Íseal"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Praghas gáis sonraíonn an méid Éitear bhfuil tú sásta a íoc as gach aonad gáis."
+  },
+  "gasPriceNoDenom": {
+    "message": "Praghas Gáis"
+  },
+  "gasPriceCalculation": {
+    "message": "Déanaimid ríomh ar an mhol praghsanna gáis atá bunaithe ar an ngréasán rátaí ratha."
+  },
+  "general": {
+    "message": "Ginearálta"
+  },
+  "generalSettingsDescription": {
+    "message": "Comhshó airgeadra, bunscoile airgeadra, teanga, blockies identicon"
+  },
+  "getEther": {
+    "message": "Faigh Éitear"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Cabhair A Fháil."
+  },
+  "getStarted": {
+    "message": "Tús A Chur"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Tá muid sásta a fheiceann tú."
+  },
+  "hardware": {
+    "message": "crua-earraí"
+  },
+  "hardwareWalletConnected": {
+    "message": "Crua-earraí sparán ceangailte"
+  },
+  "hardwareWallets": {
+    "message": "Ceangal crua-earraí sparán"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Roghnaigh crua-earraí sparán gur mhaith leat a úsáid le MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "anseo",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Sonraí Heics"
+  },
+  "hide": {
+    "message": "Cheilt"
+  },
+  "hideToken": {
+    "message": "Cheilt Chomhartha"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Stair"
+  },
+  "import": {
+    "message": "Allmhairiú",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Iompórtáil Áireamh"
+  },
+  "importAccountMsg": {
+    "message": " Allmhairithe cuntais ní bheidh a bhaineann le do ar dtús a cruthaíodh ar MetaMask cuntas seedphrase. Níos mó a fhoghlaim faoi a allmhairítear cuntais "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Iompórtáil Cuntas le Síol Frása"
+  },
+  "importWallet": {
+    "message": "Iompórtáil Sparán"
+  },
+  "importYourExisting": {
+    "message": "Iompórtáil do atá ann cheana féin sparán ag baint úsáide as 12 focal síl frása"
+  },
+  "imported": {
+    "message": "Allmhairithe",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Allmhairiú ag baint úsáide as cuntas síl frása"
+  },
+  "infoHelp": {
+    "message": "Eolas & Cabhair"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Do chéad idirbheart a bhí deimhnithe ag an líonra. Cliceáil OK chun dul ar ais."
+  },
+  "insufficientBalance": {
+    "message": "Dóthain iarmhéid ar."
+  },
+  "insufficientFunds": {
+    "message": "Dóthain cistí."
+  },
+  "insufficientTokens": {
+    "message": "Nach leor comharthaí."
+  },
+  "invalidAddress": {
+    "message": "Neamhbhailí seoladh"
+  },
+  "invalidAddressRecipient": {
+    "message": "Faighteoir seoladh neamhbhailí"
+  },
+  "knownAddressRecipient": {
+    "message": "Ar a dtugtar conradh seoladh."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ní ETH líonra, a leagtar dtí an cás íochtair"
+  },
+  "invalidInput": {
+    "message": "Ionchur neamhbhailí."
+  },
+  "invalidRPC": {
+    "message": "Neamhbhailí CCS URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Neamhbhailí Bloc Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Neamhbhailí síl frása"
+  },
+  "jsonFile": {
+    "message": "JSON Comhad",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Tástáil Líonra"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Níos mó a fhoghlaim"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Ní mór duit a dhéanamh ar úsáid do chuntais seo caite sular féidir leat a chur ceann nua a."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Sea, a ligean ar a fháil ar bun!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Naisc"
+  },
+  "liveGasPricePredictions": {
+    "message": "Beo Ar An Praghas Gáis Réamh-Mheastacháin"
+  },
+  "loading": {
+    "message": "Ag luchtú..."
+  },
+  "loadingTokens": {
+    "message": "Luchtú Comharthaí..."
+  },
+  "loadMore": {
+    "message": "Ualach Níos Mó"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Logáil Isteach I"
+  },
+  "logout": {
+    "message": "Logáil amach"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logáil amach am ró-mhór"
+  },
+  "mainnet": {
+    "message": "Príomh Ethereum Líonra"
+  },
+  "memorizePhrase": {
+    "message": "Memorize an frása seo."
+  },
+  "memo": {
+    "message": "meamram"
+  },
+  "menu": {
+    "message": "Roghchlár"
+  },
+  "message": {
+    "message": "Teachtaireacht"
+  },
+  "metamaskDescription": {
+    "message": "Nascadh tú a Ethereum agus an Díláraithe Gréasáin."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Síl Focail"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Leagan"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Cuir isteach do phasfhocal a dhearbhú go bhfuil sé leat!"
+  },
+  "myAccounts": {
+    "message": "Mo Cuntais"
+  },
+  "myWalletAccounts": {
+    "message": "Mo Sparán Cuntais"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Gach ceann de do MetaMask a cruthaíodh na cuntais a bheidh go huathoibríoch leis an alt seo."
+  },
+  "mustSelectOne": {
+    "message": "Ní mór a roghnú ar a laghad 1 chomhartha."
+  },
+  "needEtherInWallet": {
+    "message": "Chun idirghníomhú le díláraithe iarratais ag baint úsáide as MetaMask, beidh ort Éitear i do sparán."
+  },
+  "needImportFile": {
+    "message": "Ní mór duit a roghnú an comhad a allmhairiú.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ní féidir a sheoladh diúltach méideanna ETH."
+  },
+  "networkName": {
+    "message": "Ainm An Líonra"
+  },
+  "networks": {
+    "message": "Líonraí"
+  },
+  "networkSettingsDescription": {
+    "message": "Add agus a chur in eagar saincheaptha CCS líonraí"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Cuntas Nua A"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Seoladh nua a bhrath! Cliceáil anseo a chur chuig do sheoladh leabhar."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Teagmháil Nua"
+  },
+  "newContract": {
+    "message": "Conradh Nua"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Líonra Nua"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Níl, tá mé cheana féin síl frása"
+  },
+  "protectYourKeys": {
+    "message": "Chosaint Do Chuid Eochracha!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Bí cúramach le do síol frása — tá tuairiscí de na láithreáin ghréasáin iarracht chun aithris a dhéanamh ar MetaMask. MetaMask beidh riamh a iarraidh le haghaidh do síol frása!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Coinnigh do frása sábháilte. Má fheiceann tú rud éigin fishy, nó tá tú éiginnte faoi ar an suíomh gréasáin, r-phost support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Nua CCS URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Nua Iomlán"
+  },
+  "newTransactionFee": {
+    "message": "Nua A Táille Idirbheart"
+  },
+  "next": {
+    "message": "Seo chugainn"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Aon seoladh curtha ar bun leis an ainm seo."
+  },
+  "noDeposits": {
+    "message": "Uimh taiscí a fuarthas"
+  },
+  "noConversionRateAvailable": {
+    "message": "Aon Ráta Comhshó Ar Fáil"
+  },
+  "noTransactions": {
+    "message": "Tá tú aon idirbhearta"
+  },
+  "noThanks": {
+    "message": "Uimh Go Raibh Maith Agat"
+  },
+  "notEnoughGas": {
+    "message": "Nach Bhfuil Go Leor Gáis"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam ní bhfuarthas an"
+  },
+  "noWebcamFound": {
+    "message": "Do ríomhaire le webcam ní bhfuarthas. Le do thoil bain triail eile as."
+  },
+  "ofTextNofM": {
+    "message": "de"
+  },
+  "orderOneHere": {
+    "message": "Ordú Trezor nó Mórleabhair agus a choinneáil do cistí i stóráil fhuar"
+  },
+  "origin": {
+    "message": "Tionscnaimh"
+  },
+  "parameters": {
+    "message": "Paraiméadair"
+  },
+  "participateInMetaMetrics": {
+    "message": "Páirt a ghlacadh i MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Páirt a ghlacadh i MetaMetrics chun cabhrú linn a dhéanamh MetaMask níos fearr"
+  },
+  "password": {
+    "message": "Focal faire"
+  },
+  "passwordsDontMatch": {
+    "message": "Focal faire Don ' t Match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Focal faire fada go leor"
+  },
+  "pastePrivateKey": {
+    "message": "Greamaigh do fógraí príobháideacha eochair teaghrán anseo:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Greamaigh do síol frása anseo!"
+  },
+  "pending": {
+    "message": "ar feitheamh"
+  },
+  "personalAddressDetected": {
+    "message": "Pearsanta seoladh braitheadh. Ionchur an chomhartha conradh seoladh."
+  },
+  "prev": {
+    "message": "Roimhe seo"
+  },
+  "primaryCurrencySetting": {
+    "message": "Bunscoile Airgeadra"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Polasaí Príobháideachta"
+  },
+  "privateKey": {
+    "message": "Eochair Phríobháideach",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Rabhadh: Ná nochtadh an eochair seo. Duine ar bith le do eochracha príobháideacha is féidir steal aon sócmhainní i seilbh i do chuntas."
+  },
+  "privateNetwork": {
+    "message": "Líonra Príobháideach"
+  },
+  "qrCode": {
+    "message": "Taispeáin QR Cód"
+  },
+  "queue": {
+    "message": "Scuaine"
+  },
+  "readdToken": {
+    "message": "Is féidir leat a chur chomhartha seo ar ais sa todhchaí ag dul go dtí \"Add token\" i do chuntais roghchlár roghanna."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Faighteoir Seoladh"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Diúltú Do Gach"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Diúltaíodh"
+  },
+  "reset": {
+    "message": "A athshocrú"
+  },
+  "resetAccount": {
+    "message": "Athshocrú Chuntas"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting do chuntas a bheidh soiléir do stair idirbheart."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "I gcuimhne dom ina dhiaidh sin"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Ar ais i do Chuntas le Síol Frása"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "iarratais feithimh a admháil"
+  },
+  "required": {
+    "message": "Is gá"
+  },
+  "restore": {
+    "message": "Ar ais"
+  },
+  "revealSeedWords": {
+    "message": "Nochtann Focail Síol"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Síol Frása"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Má tá tú riamh a athrú ar brabhsálaithe nó bogadh ríomhairí, beidh tú gá an síol frása chun rochtain a fháil ar do chuntais. Iad a shábháil in áit éigin sábháilte agus rúnda."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NÍ GÁ a roinnt ar an frása seo le duine ar bith!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Tá na focail is féidir a bheith a úsáidtear chun steal gach do chuntais."
+  },
+  "revert": {
+    "message": "Fill"
+  },
+  "remove": {
+    "message": "Bain"
+  },
+  "removeAccount": {
+    "message": "Bain áireamh"
+  },
+  "removeAccountDescription": {
+    "message": "Seo áireamh beidh a bhaintear as do sparán. Le do thoil déan cinnte go bhfuil tú ar an bunaidh síol nó frása eochair phríobháideach le haghaidh an allmhairithe áireamh roimh leanúint ar aghaidh. Is féidir leat a allmhairiú nó a chruthú cuntais arís as an áireamh titim-síos. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Tástáil Líonra"
+  },
+  "ropsten": {
+    "message": "Ropsten Tástáil Líonra"
+  },
+  "goerli": {
+    "message": "Goerli Tástáil Líonra"
+  },
+  "save": {
+    "message": "A shábháil"
+  },
+  "slow": {
+    "message": "Mall"
+  },
+  "slower": {
+    "message": "Níos moille"
+  },
+  "saveAsCsvFile": {
+    "message": "Ach amháin mar a CSV"
+  },
+  "scanInstructions": {
+    "message": "Cuir an cód QR i os comhair do ceamara"
+  },
+  "scanQrCode": {
+    "message": "Scanadh QR Cód"
+  },
+  "search": {
+    "message": "Cuardach a dhéanamh"
+  },
+  "searchResults": {
+    "message": "Torthaí Cuardaigh"
+  },
+  "secretBackupPhrase": {
+    "message": "Rún Cúltaca Frása"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Do rúnda cúltaca frása a dhéanann sé éasca a cúltaca agus ar ais do chuntas."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "RABHADH: Ná nochtadh do cúltaca frása. Duine ar bith a bhfuil an frása seo is féidir a chur ar do Éitear go deo."
+  },
+  "secretPhrase": {
+    "message": "Cuir isteach do rún dó dhéag focal frása anseo a chur ar ais le do cruinneachán."
+  },
+  "securityAndPrivacy": {
+    "message": "Slándáil Agus Príobháideachas"
+  },
+  "securitySettingsDescription": {
+    "message": "Socruithe príobháideachta agus sparán síl frása"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Leith gach focal le spás amháin"
+  },
+  "seedPhraseReq": {
+    "message": "Síol frásaí 12 focail fada"
+  },
+  "selectCurrency": {
+    "message": "Roghnaigh Airgeadra"
+  },
+  "selectEachPhrase": {
+    "message": "Le do thoil roghnaigh gach frása d ' fhonn a dhéanamh cinnte go bhfuil sé ceart."
+  },
+  "selectLocale": {
+    "message": "Roghnaigh Locale"
+  },
+  "selectType": {
+    "message": "Roghnaigh An Cineál"
+  },
+  "send": {
+    "message": "A sheoladh"
+  },
+  "sendAmount": {
+    "message": "A Sheoladh Ar An Méid"
+  },
+  "sendETH": {
+    "message": "A sheoladh ETH"
+  },
+  "sendTokens": {
+    "message": "A Sheoladh Comharthaí"
+  },
+  "sentEther": {
+    "message": "chuir éitear"
+  },
+  "sentTokens": {
+    "message": "chuir comharthaí"
+  },
+  "separateEachWord": {
+    "message": "Leith gach focal le spás amháin"
+  },
+  "searchTokens": {
+    "message": "Cuardaigh Comharthaí"
+  },
+  "selectAnAccount": {
+    "message": "Roghnaigh Cuntas"
+  },
+  "selectAnAccountHelp": {
+    "message": "Roghnaigh an cuntas chun amharc i MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Roghnaigh gáis níos airde táille chun dlús a phróiseáil do t-idirbheart.*"
+  },
+  "selectHdPath": {
+    "message": "Roghnaigh HD Cosán"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Socruithe"
+  },
+  "showAdvancedGasInline": {
+    "message": "Chun cinn gáis rialuithe"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Roghnaigh é seo chun a thaispeáint ar phraghas an gháis agus teorainn a chur le rialuithe go díreach ar an a sheoladh agus a dheimhniú scáileáin."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Taispeáin Comhshó ar Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Roghnaigh é seo chun a thaispeáint fiat comhshó ar Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Seó Príobháideach Eochracha"
+  },
+  "showHexData": {
+    "message": "Léiríonn Sonraí Heics"
+  },
+  "showHexDataDescription": {
+    "message": "Roghnaigh é seo chun a thaispeáint ar an heics réimse sonraí ar an a sheoladh ar scáileán"
+  },
+  "sign": {
+    "message": "Comhartha"
+  },
+  "signatureRequest": {
+    "message": "Síniú Iarratas"
+  },
+  "signed": {
+    "message": "Sínithe"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Síniú Iarratas"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Rud éigin a chuaigh mícheart."
+  },
+  "speedUp": {
+    "message": "Luas Suas"
+  },
+  "speedUpCancellation": {
+    "message": "Luas suas seo a chealú"
+  },
+  "speedUpTransaction": {
+    "message": "Luas suas an t-idirbheart"
+  },
+  "switchNetworks": {
+    "message": "Líonraí Athrú"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Stáit Logs"
+  },
+  "stateLogs": {
+    "message": "Stáit Logs"
+  },
+  "stateLogsDescription": {
+    "message": "Stáit logs go bhfuil do poiblí cuntas a seoltaí agus a sheoladh idirbheart a chinntiú."
+  },
+  "stateLogError": {
+    "message": "Earráid i aisghabháil stáit logs."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Ceangal Crua-Earraí Sparán"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Ceangail do crua-earraí sparán go díreach chuig do ríomhaire."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Roghnaigh Cuntas"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Roghnaigh an cuntas is mian leat chun féachaint. Is féidir leat a roghnú ach amháin ag an am."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Tosaigh ag baint úsáide as dApps agus níos mó!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Bain úsáid as do crua-earraí a áireamh mar a bheadh agat le haon Ethereum áireamh. Logáil isteach chun dApps, a sheoladh Eth, a cheannach agus a stóráil ERC20 comharthaí agus Neamh-Fungible comharthaí cosúil CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Siopa frása seo i bainisteoir phasfhocal cosúil le 1Password."
+  },
+  "submit": {
+    "message": "A chur isteach"
+  },
+  "submitted": {
+    "message": "Curtha isteach"
+  },
+  "supportCenter": {
+    "message": "Tabhair cuairt ar ár Ionad Tacaíochta"
+  },
+  "symbol": {
+    "message": "Siombail"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Siombail ní mór a bheith idir 0 agus 12 carachtair."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Cas ar a bheith le do socruithe tacaíocht suas le 3Box. Is é an gné seo currenty turgnamhach; bain úsáid as ar do phriacal féin."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box curtha faoi mhíchumas mar gheall ar an earráid le linn an tosaigh info"
+  },
+  "syncWithMobile": {
+    "message": "Info soghluaiste"
+  },
+  "syncWithMobileTitle": {
+    "message": "Info soghluaiste"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Má tá tú a oscailt ach an MetaMask app Soghluaiste le haghaidh an chéad uair, ach lean na céimeanna i do ghuthán."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan an cód seo le do MetaMask app soghluaiste"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Déan cinnte go bhfuil aon duine eile atá ag féachaint ar do scáileán nuair a bhíonn tú scanadh ar an gcód seo"
+  },
+  "syncWithMobileComplete": {
+    "message": "Do chuid sonraí a synced go rathúil. Taitneamh a bhaint as an MetaMask app soghluaiste!"
+  },
+  "terms": {
+    "message": "Téarmaí Úsáide"
+  },
+  "testFaucet": {
+    "message": "Tástáil Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Beidh sé seo a chruthú nua sparán agus síol frása"
+  },
+  "tips": {
+    "message": "Leideanna"
+  },
+  "to": {
+    "message": "A"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Chomhartha"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Chomhartha curtha cheana féin seo a leanas."
+  },
+  "tokenContractAddress": {
+    "message": "Chomhartha Conradh Seoladh"
+  },
+  "tokenSymbol": {
+    "message": "Chomhartha Siombail"
+  },
+  "total": {
+    "message": "Iomlán"
+  },
+  "transaction": {
+    "message": "idirbheart"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Idirbheart a bhíonn earráid."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Idirbheart A Shocrú. Eisceacht thrown i gconradh cód."
+  },
+  "transactionErrorNoContract": {
+    "message": "Ag iarraidh a glaoch ar an fheidhm ar bhealach neamh-conradh seoladh."
+  },
+  "transactionFee": {
+    "message": "Táille Idirbheart"
+  },
+  "transactionTime": {
+    "message": "Idirbheart Am"
+  },
+  "transfer": {
+    "message": "A aistriú"
+  },
+  "transferBetweenAccounts": {
+    "message": "Aistriú idir mo cuntais"
+  },
+  "transferFrom": {
+    "message": "Aistriú Ó"
+  },
+  "troubleTokenBalances": {
+    "message": "A bhí againn dtrioblóid luchtú do chomhartha iarmhéideanna. Is féidir leat iad a fheiceáil ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Bain triail as arís"
+  },
+  "typePassword": {
+    "message": "Cineál do MetaMask focal faire"
+  },
+  "unapproved": {
+    "message": "Neamhcheadaithe"
+  },
+  "units": {
+    "message": "aonaid"
+  },
+  "unknown": {
+    "message": "Anaithnid"
+  },
+  "unknownNetwork": {
+    "message": "Anaithnid Líonra Príobháideach"
+  },
+  "unknownQrCode": {
+    "message": "Earráid: ní raibh Muid ábalta a aithint go QR cód"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Rud éigin a chuaigh mícheart...."
+  },
+  "unknownCameraError": {
+    "message": "Tharla earráid agus ag iarraidh a rochtain a fháil ar do ceamara. Le do thoil bain triail eile as..."
+  },
+  "unlock": {
+    "message": "Díghlasáil"
+  },
+  "unlockMessage": {
+    "message": "An díláraithe gréasáin awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Urianna a cheangal ar an cuí HTTP/HTTPS réimír."
+  },
+  "usedByClients": {
+    "message": "A úsáidtear ag éagsúla de na cliaint éagsúla"
+  },
+  "userName": {
+    "message": "Ainm úsáideora"
+  },
+  "validFileImport": {
+    "message": "Ní mór duit a roghnú a bheidh bailí comhad a allmhairiú."
+  },
+  "viewAccount": {
+    "message": "Féach Ar Chuntas"
+  },
+  "viewinExplorer": {
+    "message": "Féach i Explorer"
+  },
+  "viewContact": {
+    "message": "Féach Ar Teagmhála"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Féach ar Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Tabhair cuairt ar ár láithreán gréasáin"
+  },
+  "walletSeed": {
+    "message": "Sparán Síl"
+  },
+  "welcomeBack": {
+    "message": "Fáilte Ar Ais!"
+  },
+  "welcome": {
+    "message": "Fáilte chuig MetaMask"
+  },
+  "writePhrase": {
+    "message": "Scríobh abairt seo ar phíosa páipéir agus a stóráil i suíomh slán. Más mian leat fiú slándála níos mó, scríobh sé síos ar an iliomad píosaí de pháipéar agus a stóráil gach i 2 - 3 áiteanna éagsúla."
+  },
+  "yesLetsTry": {
+    "message": "Sea, a ligean ar iarracht a dhéanamh"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ní mór duit a cheadú ceamara rochtain a fháil ar úsáid a bhaint as an ghné seo."
+  },
+  "yourSigRequested": {
+    "message": "Do shíniú á iarraidh"
+  },
+  "youSign": {
+    "message": "Tá tú ag síniú"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Do fógraí príobháideacha síl frása"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nialas ar phraghas an gháis ar luas suas"
+  }
+}

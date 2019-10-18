@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "ווייַזן טראַנזאַקשאַנז ינקאָמינג"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "סעלעקטירן דאס צו נוצן Etherscan צו ווייַזן ינקאָמינג טראַנזאַקשאַנז אין די טראַנזאַקשאַנז רשימה"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "טשאַרט בלויז בנימצא אויף Ethereum נעטוואָרקס."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "קאַנעקשאַנז"
+  },
+  "connectionsSettingsDescription": {
+    "message": "זייטלעך ערלויבט צו לייענען דיין אַקאַונץ"
+  },
+  "addSite": {
+    "message": "לייג פּלאַץ"
+  },
+  "addSiteDescription": {
+    "message": "מאַניואַלי לייגן אַ פּלאַץ צו לאָזן עס צוטריט צו דיין אַקאַונץ, נוציק פֿאַר עלטערע dapps"
+  },
+  "connected": {
+    "message": "פארבונדן"
+  },
+  "connectedDescription": {
+    "message": "דער רשימה פון זייטלעך ערלויבט צוטריט צו דיין ווענדט"
+  },
+  "privacyModeDefault": {
+    "message": "פּריוואַטקייט מאָדע איז איצט ענייבאַלד דורך פעליקייַט"
+  },
+  "contractInteraction": {
+    "message": "אָפּמאַך ינטעראַקשאַן"
+  },
+  "clearApprovalData": {
+    "message": "באַזייַטיקן אַלע זייטלעך"
+  },
+  "reject": {
+    "message": "אָפּוואַרפן"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "דעם פּלאַץ איז ריקוועסטינג צוטריט צו קוק דיין קראַנט חשבון אַדרעס. שטענדיק מאַכן זיכער איר געטרויען די זייטלעך איר ינטעראַקט מיט."
+  },
+  "about": {
+    "message": "וועגן"
+  },
+  "aboutSettingsDescription": {
+    "message": "ווערסיע, שטיצן צענטער, און קאָנטאַקט אינפֿאָרמאַציע."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "אַקסעסינג דיין אַפּאַראַט..."
+  },
+  "account": {
+    "message": "חשבון"
+  },
+  "accountDetails": {
+    "message": "חשבון פרטים"
+  },
+  "accountName": {
+    "message": "חשבון נאָמען"
+  },
+  "accountOptions": {
+    "message": "חשבון אָפּציעס"
+  },
+  "accountSelectionRequired": {
+    "message": "איר דאַרפֿן צו אויסקלייַבן אַ חשבון!"
+  },
+  "activityLog": {
+    "message": "קלאָץ טעטיקייט"
+  },
+  "addNetwork": {
+    "message": "לייג נעץ"
+  },
+  "addRecipient": {
+    "message": "לייג רעסיפּיענט"
+  },
+  "advanced": {
+    "message": "אַוואַנסירטע"
+  },
+  "advancedSettingsDescription": {
+    "message": "צוטריט דעוועלאָפּער פֿעיִקייטן, אָפּלאָדירן שטאַט לאָגס, באַשטעטיק חשבון, סעטאַפּ testnets און מנהג רפּק."
+  },
+  "advancedOptions": {
+    "message": "אַוואַנסירטע אָפּציעס"
+  },
+  "addToAddressBook": {
+    "message": "לייג צו אַדרעס ספר"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "ע. ג. יוחנן. ד."
+  },
+  "addAlias": {
+    "message": "לייג אַליאַס"
+  },
+  "addToken": {
+    "message": "לייג טאָקען"
+  },
+  "addTokens": {
+    "message": "לייג טאָקענס"
+  },
+  "addSuggestedTokens": {
+    "message": "לייג סאַגדזשעסטיד טאָקענס"
+  },
+  "addAcquiredTokens": {
+    "message": "לייג די טאָקענס איר ווע קונה ניצן MetaMask"
+  },
+  "amount": {
+    "message": "סומע"
+  },
+  "appDescription": {
+    "message": "אַ Ethereum בייַטל אין אייער בלעטערער",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "אַפּרווו"
+  },
+  "approved": {
+    "message": "באוויליקט"
+  },
+  "asset": {
+    "message": "אַססעט"
+  },
+  "attemptingConnect": {
+    "message": "אַטעמפּטינג צו פאַרבינדן צו blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "סאַבמיטינג דעם פּרווון טוט ניט גאַראַנטירן דיין אָריגינעל מאַסע-מאַטן וועט זיין קאַנסאַלד. אויב די קאַנסאַליישאַן פּרווון איז מצליח, איר וועט זיין באפוילן די מאַסע-מאַטן אָפּצאָל אויבן."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "שטעלן די ליידיק צייַט אין מינוט איידער MetaMask וועט אויטאָמאַטיש קלאָץ אויס"
+  },
+  "average": {
+    "message": "דורכשניטלעך"
+  },
+  "back": {
+    "message": "צוריק"
+  },
+  "backToAll": {
+    "message": "צוריק צו אַלע"
+  },
+  "backupApprovalNotice": {
+    "message": "באַקקופּ דיין סוד אָפּזוך קאָד צו האַלטן דיין בייַטל און געלט זיכער."
+  },
+  "backupApprovalInfo": {
+    "message": "דעם סוד קאָד איז פארלאנגט צו צוריקקריגן דיין בייַטל אין פאַל איר פאַרלירן דיין מיטל, פאַרגעסן אייער פּאַראָל, האָבן צו שייַעך-ינסטאַלירן MetaMask, אָדער ווילן צו צוטריט דיין בייַטל אויף אן אנדער מיטל."
+  },
+  "backupNow": {
+    "message": "באַקקופּ איצט"
+  },
+  "balance": {
+    "message": "וואָג"
+  },
+  "balanceOutdated": {
+    "message": "וואָג קען זיין אַוטדייטיד"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "ניט גענוגיק וואָג פֿאַר קראַנט גאַז גאַנץ"
+  },
+  "basic": {
+    "message": "יקערדיק"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "פאַרשפּאַרן Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "נוצן בלאָקקיעס Identicon"
+  },
+  "nonceField": {
+    "message": "קאַסטאַמייז מאַסע-מאַטן נאַנס"
+  },
+  "nonceFieldHeading": {
+    "message": "מנהג נאַנס"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "אייער בלעטערער איז ניט געשטיצט..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask איז דיזיינד און געבויט אין קאַליפאָרניאַ."
+  },
+  "buyWithWyre": {
+    "message": "קויפן עטה מיט ווירע"
+  },
+  "buyWithWyreDescription": {
+    "message": "ווירע לעץ איר נוצן אַ קרעדיט קאָרט צו אַוועקלייגן עטה רעכט אין צו דיין MetaMask חשבון."
+  },
+  "buyCoinSwitch": {
+    "message": "קויפן אויף CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch איז דער איינער-האַלטן דעסטיניישאַן צו וועקסל מער ווי 300 cryptocurrencies בייַ די בעסטער קורס."
+  },
+  "bytes": {
+    "message": "ביטעס"
+  },
+  "off": {
+    "message": "אַוועק"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "אויף"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "באָטל מאַכן"
+  },
+  "cancelAttempt": {
+    "message": "באָטל מאַכן פּרווון"
+  },
+  "cancellationGasFee": {
+    "message": "קאַנסאַליישאַן גאַז אָפּצאָל"
+  },
+  "cancelled": {
+    "message": "קאַנסאַלד"
+  },
+  "chainId": {
+    "message": "קייט ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "דריקט דאָ צו אַנטדעקן סוד ווערטער"
+  },
+  "close": {
+    "message": "נאָענט"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "איר דאַרפֿן צו נוצן MetaMask אויף Google קראָום אין סדר צו פאַרבינדן צו דיין ייַזנוואַרג בייַטל."
+  },
+  "confirm": {
+    "message": "באַשטעטיקן"
+  },
+  "confirmed": {
+    "message": "באשטעטיקט"
+  },
+  "confirmPassword": {
+    "message": "באַשטעטיקן שפּריכוואָרט"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "באַשטעטיקן דיין סוד באַקקופּ פראַזע"
+  },
+  "congratulations": {
+    "message": "מאַזל-טאָוו"
+  },
+  "connectHardwareWallet": {
+    "message": "פאַרבינדן ייַזנוואַרג בייַטל"
+  },
+  "connect": {
+    "message": "פאַרבינדן"
+  },
+  "connectRequest": {
+    "message": "פאַרבינדן בעטן"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "קאַנעקטינג צו Kovan פּרובירן נעץ"
+  },
+  "connectingToMainnet": {
+    "message": "קאַנעקטינג צו הויפּט Ethereum נעץ"
+  },
+  "connectingToRopsten": {
+    "message": "קאַנעקטינג צו Ropsten פּרובירן נעץ"
+  },
+  "connectingToRinkeby": {
+    "message": "קאַנעקטינג צו Rinkeby פּרובירן נעץ"
+  },
+  "connectingToLocalhost": {
+    "message": "קאַנעקטינג צו לאָקאַלהאָסט 8545"
+  },
+  "connectingToGoerli": {
+    "message": "קאַנעקטינג צו Goerli פּרובירן נעץ"
+  },
+  "contacts": {
+    "message": "קאָנטאַקטן"
+  },
+  "contactsSettingsDescription": {
+    "message": "לייגן, רעדאַגירן, ויסמעקן, און פירן דיין קאָנטאַקטן"
+  },
+  "continueToWyre": {
+    "message": "פאָרזעצן צו ווירע"
+  },
+  "continueToCoinSwitch": {
+    "message": "פאָרזעצן צו CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "אָפּמאַך דיפּלוימאַנט"
+  },
+  "conversionProgress": {
+    "message": "קאַנווערזשאַן אין פּראָגרעס"
+  },
+  "copiedButton": {
+    "message": "קאַפּיד"
+  },
+  "copiedExclamation": {
+    "message": "קאַפּיד!"
+  },
+  "copy": {
+    "message": "קאָפּיע"
+  },
+  "copyAddress": {
+    "message": "קאָפּיע אַדרעס צו קליפּבאָרד"
+  },
+  "copyTransactionId": {
+    "message": "קאָפּיע מאַסע-מאַטן שייַן"
+  },
+  "copiedTransactionId": {
+    "message": "קאַפּיד מאַסע-מאַטן שייַן"
+  },
+  "copyToClipboard": {
+    "message": "קאָפּיע צו קליפּבאָרד"
+  },
+  "copyButton": {
+    "message": " קאָפּיע "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "שאַפֿן"
+  },
+  "createAccount": {
+    "message": "שאַפֿן חשבון"
+  },
+  "createAWallet": {
+    "message": "שאַפֿן אַ בייַטל"
+  },
+  "createPassword": {
+    "message": "שאַפֿן פּאַראָל"
+  },
+  "currencyConversion": {
+    "message": "קראַנטקייַט קאַנווערזשאַן"
+  },
+  "currentLanguage": {
+    "message": "קראַנט שפּראַך"
+  },
+  "customGas": {
+    "message": "קאַסטאַמייז גאַז"
+  },
+  "customGasSubTitle": {
+    "message": "ינקריסינג אָפּצאָל זאל פאַרמינערן פּראַסעסינג מאל, אָבער עס איז ניט געראַנטיד."
+  },
+  "customToken": {
+    "message": "מנהג סימען"
+  },
+  "customRPC": {
+    "message": "מנהג רפּק"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "דעסימאַלס מוזן זיין לפּחות 0, און נישט איבער 36."
+  },
+  "decimal": {
+    "message": "דעסימאַלס פון פּינטלעכקייַט"
+  },
+  "defaultNetwork": {
+    "message": "די ניט ויסצאָלן נעץ פֿאַר יטער טראַנזאַקשאַנז איז הויפּט נעץ."
+  },
+  "delete": {
+    "message": "אויסמעקן"
+  },
+  "deleteAccount": {
+    "message": "ויסמעקן חשבון"
+  },
+  "deposit": {
+    "message": "בייַשטייַער"
+  },
+  "depositEther": {
+    "message": "אַוועקלייגן יטער"
+  },
+  "details": {
+    "message": "פרטים"
+  },
+  "directDepositEther": {
+    "message": "גלייַך אַוועקלייגן יטער"
+  },
+  "directDepositEtherExplainer": {
+    "message": "אויב איר שוין האָבן עטלעכע יטער, די קוויקיסט וועג צו באַקומען יטער אין דיין נייַ בייַטל דורך גלייַך אַוועקלייגן."
+  },
+  "dismiss": {
+    "message": "אָפּזאָגן"
+  },
+  "done": {
+    "message": "געטאן"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "אראפקאפיע דעם סוד באַקקופּ פראַזע און האַלטן עס סטאָרד בעשאָלעם אויף אַן פונדרויסנדיק ינקריפּטיד שווער פאָר אָדער סטאָרידזש מיטל."
+  },
+  "downloadStateLogs": {
+    "message": "דאַונלאָוד שטאַט לאָגס"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "דראַפּט"
+  },
+  "edit": {
+    "message": "רעדאַגירן"
+  },
+  "editContact": {
+    "message": "רעדאַגירן קאָנטאַקט"
+  },
+  "emailUs": {
+    "message": "Email אונדז!"
+  },
+  "endOfFlowMessage1": {
+    "message": "איר פארביי די פּראָבע - האַלטן דיין seedphrase זיכער, עס ס דיין פֿאַראַנטוואָרטלעכקייט!"
+  },
+  "endOfFlowMessage2": {
+    "message": "עצות אויף סטאָרינג עס בעשאָלעם"
+  },
+  "endOfFlowMessage3": {
+    "message": "ראַטעווען אַ באַקקופּ אין קייפל ערטער."
+  },
+  "endOfFlowMessage4": {
+    "message": "קיינמאָל טיילן דעם פראַזע מיט ווער עס יז."
+  },
+  "endOfFlowMessage5": {
+    "message": "זיין אָפּגעהיט פון פישינג! MetaMask וועט קיינמאָל ספּאַנטייניאַסלי פרעגן פֿאַר דיין זוימען פראַזע."
+  },
+  "endOfFlowMessage6": {
+    "message": "אויב איר דאַרפֿן צו צוריק אַרויף דיין זוימען פראַזע ווידער, איר קענען געפֿינען עס אין סעטטינגס -> זיכערהייַט."
+  },
+  "endOfFlowMessage7": {
+    "message": "אויב איר אלץ האָבן שאלות אָדער זען עפּעס ניט גלאַטיק, בליצפּאָסט support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask קענען ניט צוריקקריגן דיין seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "לערנען מער."
+  },
+  "endOfFlowMessage10": {
+    "message": "אַלע געטאן"
+  },
+  "ensRegistrationError": {
+    "message": "טעות אין ענס נאָמען רעגיסטראַציע"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ענס נאמען ניט געפונען אויף דעם קראַנט נעץ. פּרובירן סוויטשינג צו הויפּט Ethereum נעץ."
+  },
+  "enterAnAlias": {
+    "message": "אַרייַן אַ אַליאַס"
+  },
+  "enterPassword": {
+    "message": "אַרייַן פּאַראָל"
+  },
+  "enterPasswordContinue": {
+    "message": "אַרייַן פּאַראָל צו פאָרזעצן"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum ציבור אַדרעס"
+  },
+  "etherscanView": {
+    "message": "View חשבון אויף Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "עסטימאַטעד פּראַסעסינג מאל"
+  },
+  "expandView": {
+    "message": "יקספּאַנד View"
+  },
+  "exportPrivateKey": {
+    "message": "צו אַרויספירן די פּריוואַט שליסל"
+  },
+  "failed": {
+    "message": "ניט אַנדערש"
+  },
+  "fast": {
+    "message": "פעסט"
+  },
+  "faster": {
+    "message": "פאַסטער"
+  },
+  "fiat": {
+    "message": "פיאַט",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "פאַרגעסן דעם מיטל"
+  },
+  "from": {
+    "message": "פון"
+  },
+  "fromShapeShift": {
+    "message": "פון ShapeShift"
+  },
+  "functionType": {
+    "message": "פֿונקציע טיפּ"
+  },
+  "gasLimit": {
+    "message": "גאַז שיעור"
+  },
+  "gasLimitCalculation": {
+    "message": "מיר רעכענען די סאַגדזשעסטיד גאַז שיעור באזירט אויף נעץ הצלחה רייץ."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "גאַז שיעור איז די מאַקסימום סומע פון וניץ פון גאַז איר זענען גרייט צו פאַרברענגען."
+  },
+  "gasLimitTooLow": {
+    "message": "גאַז שיעור מוזן זיין לפּחות 21000"
+  },
+  "gasUsed": {
+    "message": "גאַז געניצט"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "גאַז פּרייַז גאָר נידעריק"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "גאַז פּרייַז ספּעסאַפייז די סומע פון יטער איר זענען גרייט צו צאָלן פֿאַר יעדער גאַנצקייַט פון גאַז."
+  },
+  "gasPriceNoDenom": {
+    "message": "גאַז פּרייַז"
+  },
+  "gasPriceCalculation": {
+    "message": "מיר רעכענען די סאַגדזשעסטיד גאַז פּרייסיז באזירט אויף נעץ הצלחה רייץ."
+  },
+  "general": {
+    "message": "אַלגעמיין"
+  },
+  "generalSettingsDescription": {
+    "message": "קראַנטקייַט קאַנווערזשאַן, ערשטיק קראַנטקייַט, שפּראַך, בלאָקקיעס identicon"
+  },
+  "getEther": {
+    "message": "באַקומען יטער"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "באַקומען הילף."
+  },
+  "getStarted": {
+    "message": "באַקומען סטאַרטעד"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "מיר ניטאָ צופרידן צו זען איר."
+  },
+  "hardware": {
+    "message": "ייַזנוואַרג"
+  },
+  "hardwareWalletConnected": {
+    "message": "ייַזנוואַרג בייַטל פארבונדן"
+  },
+  "hardwareWallets": {
+    "message": "פאַרבינדן אַ ייַזנוואַרג בייַטל"
+  },
+  "hardwareWalletsMsg": {
+    "message": "אויסקלייַבן אַ ייַזנוואַרג בייַטל איר ' ד ווי צו נוצן מיט MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "דאָ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "העקס דאַטן"
+  },
+  "hide": {
+    "message": "באַהאַלטן"
+  },
+  "hideToken": {
+    "message": "באַהאַלטן סימען"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "געשיכטע"
+  },
+  "import": {
+    "message": "אַרייַנפיר",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "אַרייַנפיר חשבון"
+  },
+  "importAccountMsg": {
+    "message": " ימפּאָרטיד אַקאַונץ וועט ניט זיין פארבונדן מיט דיין ערידזשנאַלי באשאפן MetaMask חשבון seedphrase. לערן מער וועגן ימפּאָרטיד אַקאַונץ "
+  },
+  "importAccountSeedPhrase": {
+    "message": "אַרייַנפיר אַ חשבון מיט זוימען פראַזע"
+  },
+  "importWallet": {
+    "message": "אַרייַנפיר בייַטל"
+  },
+  "importYourExisting": {
+    "message": "אַרייַנפיר דיין יגזיסטינג בייַטל ניצן אַ 12 וואָרט זוימען פראַזע"
+  },
+  "imported": {
+    "message": "ימפּאָרטיד",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "אַרייַנפיר ניצן חשבון זוימען פראַזע"
+  },
+  "infoHelp": {
+    "message": "Info & העלפן"
+  },
+  "initialTransactionConfirmed": {
+    "message": "דיין ערשט מאַסע-מאַטן איז באשטעטיקט דורך די נעץ. דריקט קעשורע צו גיין צוריק."
+  },
+  "insufficientBalance": {
+    "message": "ניט גענוגיק וואָג."
+  },
+  "insufficientFunds": {
+    "message": "ניט גענוגיק געלט."
+  },
+  "insufficientTokens": {
+    "message": "ניט גענוגיק טאָקענס."
+  },
+  "invalidAddress": {
+    "message": "פאַרקריפּלט אַדרעס"
+  },
+  "invalidAddressRecipient": {
+    "message": "באַקומער אַדרעס איז פאַרקריפּלט"
+  },
+  "knownAddressRecipient": {
+    "message": "באקאנט אָפּמאַך אַדרעס."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "נישט עטה נעץ, שטעלן צו לאָווערקאַסע"
+  },
+  "invalidInput": {
+    "message": "פאַרקריפּלט ינפּוט."
+  },
+  "invalidRPC": {
+    "message": "פאַרקריפּלט רפּק URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "פאַרקריפּלט בלאָק Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "פאַרקריפּלט זוימען פראַזע"
+  },
+  "jsonFile": {
+    "message": "דזשסאָן טעקע",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan פּרובירן נעץ"
+  },
+  "max": {
+    "message": "מאקס"
+  },
+  "learnMore": {
+    "message": "לערנען מער"
+  },
+  "ledgerAccountRestriction": {
+    "message": "איר דאַרפֿן צו מאַכן נוצן דיין לעצטע חשבון איידער איר קענען לייגן אַ נייַ איינער."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "יאָ, לאָזן ס באַקומען שטעלן אַרויף!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "לינקס"
+  },
+  "liveGasPricePredictions": {
+    "message": "לעבן גאַז פּרייַז פֿאָרויסזאָגן"
+  },
+  "loading": {
+    "message": "לאָודינג..."
+  },
+  "loadingTokens": {
+    "message": "לאָודינג טאָקענס..."
+  },
+  "loadMore": {
+    "message": "מאַסע מער"
+  },
+  "localhost": {
+    "message": "לאָקאַלהאָסט 8545"
+  },
+  "login": {
+    "message": "קלאָץ אין"
+  },
+  "logout": {
+    "message": "קלאָץ אויס"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout צייַט איז צו גרויס"
+  },
+  "mainnet": {
+    "message": "הויפּט Ethereum נעץ"
+  },
+  "memorizePhrase": {
+    "message": "מעמערייז דעם פראַזע."
+  },
+  "memo": {
+    "message": "מעמאָו"
+  },
+  "menu": {
+    "message": "מעניו"
+  },
+  "message": {
+    "message": "אָנזאָג"
+  },
+  "metamaskDescription": {
+    "message": "קאַנעקטינג איר צו Ethereum און די דיסענטראַלייזד וועב."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask זוימען ווערטער"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask ווערסיע"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "ביטע אַרייַן אייער פּאַראָל צו באַשטעטיקן עס ס איר!"
+  },
+  "myAccounts": {
+    "message": "מיין אַקאַונץ"
+  },
+  "myWalletAccounts": {
+    "message": "מיין בייַטל אַקאַונץ"
+  },
+  "myWalletAccountsDescription": {
+    "message": "אַלע פון דיין MetaMask באשאפן אַקאַונץ וועט אויטאָמאַטיש ווערן צוגעלייגט צו דעם אָפּטיילונג."
+  },
+  "mustSelectOne": {
+    "message": "מוזן קלייַבן בייַ קלענסטער 1 סימען."
+  },
+  "needEtherInWallet": {
+    "message": "צו ינטעראַקט מיט דיסענטראַלייזד פּראָגראַמען ניצן MetaMask, איר וועט דאַרפֿן יטער אין דיין בייַטל."
+  },
+  "needImportFile": {
+    "message": "איר מוזן אויסקלייַבן אַ טעקע צו אַרייַנפיר.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "קענען ניט שיקן נעגאַטיוו אַמאַונץ פון עטה."
+  },
+  "networkName": {
+    "message": "נעץ נאָמען"
+  },
+  "networks": {
+    "message": "נעטוואָרקס"
+  },
+  "networkSettingsDescription": {
+    "message": "לייג און רעדאַגירן מנהג רפּק נעטוואָרקס"
+  },
+  "nevermind": {
+    "message": "נעווערמיינד"
+  },
+  "newAccount": {
+    "message": "נייַ חשבון"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "נייַ אַדרעס דיטעקטיד! גיט דאָ צו לייגן צו דיין אַדרעס ספר."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "נייַ קאָנטאַקט"
+  },
+  "newContract": {
+    "message": "נייַ אָפּמאַך"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "נייַ נעץ"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "ניין, איך שוין האָבן אַ זוימען פראַזע"
+  },
+  "protectYourKeys": {
+    "message": "באַשיצן אייער שליסלען!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "זיין אָפּגעהיט מיט דיין זוימען פראַזע — עס האָבן שוין מעלדעט פון וועבסיטעס אַז פּרווון צו נאָכמאַכן MetaMask. MetaMask וועט קיינמאָל פרעגן פֿאַר דיין זוימען פראַזע!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "האַלטן דיין פראַזע זיכער. אויב איר זען עפּעס ניט גלאַטיק, אָדער איר ניטאָ ומזיכער וועגן אַ וועבזייַטל, בליצפּאָסט support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "נייַ רפּק URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "נייַ גאַנץ"
+  },
+  "newTransactionFee": {
+    "message": "נייַ מאַסע-מאַטן אָפּצאָל"
+  },
+  "next": {
+    "message": "ווייַטער"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "קיין אַדרעס האט שוין שטעלן פֿאַר דעם נאָמען."
+  },
+  "noDeposits": {
+    "message": "קיין דיפּאַזאַץ באקומען"
+  },
+  "noConversionRateAvailable": {
+    "message": "קיין קאַנווערזשאַן קורס בנימצא"
+  },
+  "noTransactions": {
+    "message": "איר האָבן קיין טראַנזאַקשאַנז"
+  },
+  "noThanks": {
+    "message": "קיין דאַנק"
+  },
+  "notEnoughGas": {
+    "message": "ניט גענוג גאַז"
+  },
+  "noWebcamFoundTitle": {
+    "message": "וועבקאַם נישט געפונען"
+  },
+  "noWebcamFound": {
+    "message": "דיין קאָמפּיוטער ס וועבקאַם איז געווען ניט געפונען. ביטע פּרובירן ווידער."
+  },
+  "ofTextNofM": {
+    "message": "פון"
+  },
+  "orderOneHere": {
+    "message": "סדר אַ Trezor אָדער לעדזשער און האַלטן דיין געלט אין קאַלט סטאָרידזש"
+  },
+  "origin": {
+    "message": "אָנהייב"
+  },
+  "parameters": {
+    "message": "פּאַראַמעטערס"
+  },
+  "participateInMetaMetrics": {
+    "message": "אָנטייל נעמען אין MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "אָנטייל נעמען אין MetaMetrics צו העלפן אונדז מאַכן MetaMask בעסער"
+  },
+  "password": {
+    "message": "פּאַראָל"
+  },
+  "passwordsDontMatch": {
+    "message": "פּאַסווערדז טאָן ניט גלייַכן"
+  },
+  "passwordNotLongEnough": {
+    "message": "פּאַראָל ניט לאַנג גענוג"
+  },
+  "pastePrivateKey": {
+    "message": "פּאַפּ דיין פּריוואַט שליסל שטריקל דאָ:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "פּאַפּ דיין זוימען פראַזע דאָ!"
+  },
+  "pending": {
+    "message": "פּענדינג"
+  },
+  "personalAddressDetected": {
+    "message": "פּערזענלעך אַדרעס דיטעקטיד. אַרייַנשרייַב די סימען אָפּמאַך אַדרעס."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "ערשטיק קראַנטקייַט"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "פּריוואַטקייט פּאָליטיק"
+  },
+  "privateKey": {
+    "message": "פּריוואַט שליסל",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "ווארענונג: קיינמאָל ויסזאָגן דעם שליסל. ווער עס יז מיט אייער פּריוואַט שליסלען קענען גאַנווענען קיין אַסעץ געהאלטן אין דיין חשבון."
+  },
+  "privateNetwork": {
+    "message": "פּריוואַט נעץ"
+  },
+  "qrCode": {
+    "message": "ווייַזן קר קאָד"
+  },
+  "queue": {
+    "message": "ריי"
+  },
+  "readdToken": {
+    "message": "איר קענען לייגן דעם סימען צוריק אין די צוקונפֿט דורך געגאנגען צו \"לייגן טאָוקאַן\" אין דיין אַקאַונץ אָפּציעס מעניו."
+  },
+  "recents": {
+    "message": "רעסענץ"
+  },
+  "recipientAddress": {
+    "message": "באַקומער אַדרעס"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "אָפּוואַרפן אַלע"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "אפגעווארפן"
+  },
+  "reset": {
+    "message": "באַשטעטיק"
+  },
+  "resetAccount": {
+    "message": "באַשטעטיק חשבון"
+  },
+  "resetAccountDescription": {
+    "message": "רעסעטטינג דיין חשבון וועט קלאָר דיין מאַסע-מאַטן געשיכטע."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "דערמאָנען מיר שפּעטער"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "ומקערן דיין חשבון מיט זוימען פראַזע"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "ריקוועס ווארטן צו זייַן יקנאַלידזשד"
+  },
+  "required": {
+    "message": "פארלאנגט"
+  },
+  "restore": {
+    "message": "ומקערן"
+  },
+  "revealSeedWords": {
+    "message": "אַנטדעקן זוימען ווערטער"
+  },
+  "revealSeedWordsTitle": {
+    "message": "זוימען פראַזע"
+  },
+  "revealSeedWordsDescription": {
+    "message": "אויב איר אלץ טוישן בראַוזערז אָדער מאַך קאָמפּיוטערס, איר וועט דאַרפֿן דעם זוימען פראַזע צו צוטריט דיין אַקאַונץ. ראַטעווען זיי ערגעץ זיכער און סוד."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "דו זאלסט נישט טיילן דעם פראַזע מיט ווער עס יז!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "די ווערטער קענען ווערן געניצט צו גאַנווענען אַלע דיין אַקאַונץ."
+  },
+  "revert": {
+    "message": "צוריקקומען"
+  },
+  "remove": {
+    "message": "באַזייַטיקן"
+  },
+  "removeAccount": {
+    "message": "באַזייַטיקן חשבון"
+  },
+  "removeAccountDescription": {
+    "message": "דעם חשבון וועט ווערן אַוועקגענומען פון דיין בייַטל. ביטע מאַכן זיכער איר האָבן די אָריגינעל זוימען פראַזע אָדער פּריוואַט שליסל פֿאַר דעם ימפּאָרטיד חשבון איידער קאַנטיניוינג. איר קענען אַרייַנפיר אָדער שאַפֿן אַקאַונץ ווידער פון די חשבון קאַפּ-אַראָפּ. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby פּרובירן נעץ"
+  },
+  "ropsten": {
+    "message": "Ropsten פּרובירן נעץ"
+  },
+  "goerli": {
+    "message": "Goerli פּרובירן נעץ"
+  },
+  "save": {
+    "message": "ראַטעווען"
+  },
+  "slow": {
+    "message": "פּאַמעלעך"
+  },
+  "slower": {
+    "message": "סלאָוער"
+  },
+  "saveAsCsvFile": {
+    "message": "היט ווי קסוו טעקע"
+  },
+  "scanInstructions": {
+    "message": "אָרט די קר קאָוד אין פראָנט פון דיין אַפּאַראַט"
+  },
+  "scanQrCode": {
+    "message": "יבערקוקן קר קאָד"
+  },
+  "search": {
+    "message": "זוכן"
+  },
+  "searchResults": {
+    "message": "זוכן רעזולטאטן"
+  },
+  "secretBackupPhrase": {
+    "message": "סוד באַקקופּ פראַזע"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "דיין סוד באַקקופּ פראַזע מאכט עס גרינג צו צוריק אַרויף און ומקערן דיין חשבון."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ווארענונג: קיינמאָל ויסזאָגן דיין באַקקופּ פראַזע. ווער עס יז מיט דעם פראַזע קענען נעמען דיין יטער אויף אייביק."
+  },
+  "secretPhrase": {
+    "message": "אַרייַן אייער סוד צוועלף וואָרט פראַזע דאָ צו ומקערן your vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Security & Privacy"
+  },
+  "securitySettingsDescription": {
+    "message": "פּריוואַטקייט סעטטינגס און בייַטל זוימען פראַזע"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "באַזונדער יעדער וואָרט מיט אַ איין פּלאַץ"
+  },
+  "seedPhraseReq": {
+    "message": "זוימען פראַסעס זענען 12 ווערטער לאַנג"
+  },
+  "selectCurrency": {
+    "message": "אויסקלייַבן קראַנטקייַט"
+  },
+  "selectEachPhrase": {
+    "message": "ביטע אויסקלייַבן יעדער פראַזע אין סדר צו מאַכן זיכער עס איז ריכטיק."
+  },
+  "selectLocale": {
+    "message": "אויסקלייַבן לאָקאַלע"
+  },
+  "selectType": {
+    "message": "אויסקלייַבן טיפּ"
+  },
+  "send": {
+    "message": "שיקן"
+  },
+  "sendAmount": {
+    "message": "שיקן סומע"
+  },
+  "sendETH": {
+    "message": "שיקן עטה"
+  },
+  "sendTokens": {
+    "message": "שיקן טאָקענס"
+  },
+  "sentEther": {
+    "message": "געשיקט יטער"
+  },
+  "sentTokens": {
+    "message": "געשיקט טאָקענס"
+  },
+  "separateEachWord": {
+    "message": "באַזונדער יעדער וואָרט מיט אַ איין פּלאַץ"
+  },
+  "searchTokens": {
+    "message": "זוכן טאָקענס"
+  },
+  "selectAnAccount": {
+    "message": "אויסקלייַבן אַ חשבון"
+  },
+  "selectAnAccountHelp": {
+    "message": "אויסקלייַבן די חשבון צו קוק אין MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "אויסקלייַבן אַ העכער גאַז אָפּצאָל צו פאַרגיכערן די פּראַסעסינג פון דיין מאַסע-מאַטן.*"
+  },
+  "selectHdPath": {
+    "message": "אויסקלייַבן הד דרך"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "סעטטינגס"
+  },
+  "showAdvancedGasInline": {
+    "message": "אַוואַנסירטע גאַז קאָנטראָלס"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "אויסקלייַבן דעם צו ווייַזן גאַז פּרייַז און שיעור קאָנטראָלס גלייַך אויף די שיקן און באַשטעטיקן סקרינז."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "ווייַזן קאַנווערזשאַן אויף Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "אויסקלייַבן דעם צו ווייַזן פיאַט מאַשין אויף Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "ווייַזן פּריוואַט קיז"
+  },
+  "showHexData": {
+    "message": "ווייַזן העקס דאַטן"
+  },
+  "showHexDataDescription": {
+    "message": "אויסקלייַבן דעם צו ווייַזן די העקס דאַטן פעלד אויף די שיקן פאַרשטעלן"
+  },
+  "sign": {
+    "message": "צייכן"
+  },
+  "signatureRequest": {
+    "message": "חתימה בעטן"
+  },
+  "signed": {
+    "message": "געחתמעט"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "חתימה בעטן"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! עפּעס געגאנגען אומרעכט."
+  },
+  "speedUp": {
+    "message": "גיכקייַט אַרויף"
+  },
+  "speedUpCancellation": {
+    "message": "גיכקייַט אַרויף דעם קאַנסאַליישאַן"
+  },
+  "speedUpTransaction": {
+    "message": "גיכקייַט אַרויף דעם מאַסע-מאַטן"
+  },
+  "switchNetworks": {
+    "message": "באַשטימען נעטוואָרקס"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask שטאַט לאָגס"
+  },
+  "stateLogs": {
+    "message": "שטאַט לאָגס"
+  },
+  "stateLogsDescription": {
+    "message": "שטאַט לאָגס אַנטהאַלטן דיין ציבור חשבון ווענדט און געשיקט טראַנזאַקשאַנז."
+  },
+  "stateLogError": {
+    "message": "טעות אין ריטריווינג שטאַט לאָגס."
+  },
+  "step1HardwareWallet": {
+    "message": "1. פאַרבינדן ייַזנוואַרג בייַטל"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "פאַרבינדן דיין ייַזנוואַרג בייַטל גלייַך צו דיין קאָמפּיוטער."
+  },
+  "step2HardwareWallet": {
+    "message": "2. אויסקלייַבן אַ חשבון"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "אויסקלייַבן די חשבון איר ווילן צו מיינונג. איר קענען בלויז קלייַבן איינער בייַ אַ צייַט."
+  },
+  "step3HardwareWallet": {
+    "message": "3. אָנהייבן ניצן dApps און מער!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "ניצן דיין ייַזנוואַרג חשבון ווי איר וואָלט מיט קיין Ethereum חשבון. קלאָץ אין צו dApps, שיקן עטה, קויפן און קראָם ERC20 טאָקענס און ניט-פונגיבלע טאָקענס ווי CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "קראָם דעם פראַזע אין אַ פּאַראָל פאַרוואַלטער ווי 1פּאַססוואָרד."
+  },
+  "submit": {
+    "message": "פאָרלייגן"
+  },
+  "submitted": {
+    "message": "דערלאנגט"
+  },
+  "supportCenter": {
+    "message": "באַזוכן אונדזער שטיצן צענטער"
+  },
+  "symbol": {
+    "message": "סימבאָל"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "סימבאָל מוזן זיין צווישן 0 און 12 אותיות."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "קער אויף צו האָבן דיין סעטטינגס באַקט אַרויף מיט 3Box. דעם שטריך איז קוררענטי יקספּערמענאַל; נוצן אין דיין אייגן ריזיקירן."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box האט שוין פאַרקריפּלט רעכט צו אַ טעות בעשאַס די ערשט סינק"
+  },
+  "syncWithMobile": {
+    "message": "סינק מיט רירעוודיק"
+  },
+  "syncWithMobileTitle": {
+    "message": "סינק מיט רירעוודיק"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "אויב איר נאָר עפענען די MetaMask רירעוודיק אַפּ פֿאַר דער ערשטער צייַט, נאָר נאָכפאָלגן די טריט אין דיין טעלעפאָנירן."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "יבערקוקן דעם קאָוד מיט דיין MetaMask רירעוודיק אַפּ"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "מאַכן זיכער קיינער אַנדערש איז קוקן בייַ דיין פאַרשטעלן ווען איר יבערקוקן דעם קאָד"
+  },
+  "syncWithMobileComplete": {
+    "message": "דיין דאַטע האט שוין סינסעד הצלחה. הנאה די MetaMask רירעוודיק אַפּ!"
+  },
+  "terms": {
+    "message": "טערמינען פון נוצן"
+  },
+  "testFaucet": {
+    "message": "פּרובירן קראַן"
+  },
+  "thisWillCreate": {
+    "message": "דעם וועט שאַפֿן אַ נייַ בייַטל און זוימען פראַזע"
+  },
+  "tips": {
+    "message": "עצות"
+  },
+  "to": {
+    "message": "צו"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "סימען"
+  },
+  "tokenAlreadyAdded": {
+    "message": "סימען האט שוין געווען צוגעגעבן."
+  },
+  "tokenContractAddress": {
+    "message": "סימען אָפּמאַך אַדרעס"
+  },
+  "tokenSymbol": {
+    "message": "סימען סימבאָל"
+  },
+  "total": {
+    "message": "גאַנץ"
+  },
+  "transaction": {
+    "message": "מאַסע-מאַטן"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "מאַסע-מאַטן געפּלאָנטערט אַ טעות."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "מאַסע-מאַטן טעות. ויסנעם ארלנגעווארפן אין אָפּמאַך קאָד."
+  },
+  "transactionErrorNoContract": {
+    "message": "טריינג צו רופן אַ פונקציאָנירן אויף אַ ניט-אָפּמאַך אַדרעס."
+  },
+  "transactionFee": {
+    "message": "מאַסע-מאַטן אָפּצאָל"
+  },
+  "transactionTime": {
+    "message": "מאַסע-מאַטן צייַט"
+  },
+  "transfer": {
+    "message": "אַריבערפירן"
+  },
+  "transferBetweenAccounts": {
+    "message": "אַריבערפירן צווישן מיין אַקאַונץ"
+  },
+  "transferFrom": {
+    "message": "אַריבערפירן פון"
+  },
+  "troubleTokenBalances": {
+    "message": "מיר האט צרה לאָודינג דיין סימען באַלאַנסעס. איר קענען מיינונג זיי ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "פּרובירן ווידער"
+  },
+  "typePassword": {
+    "message": "טיפּ דיין MetaMask פּאַראָל"
+  },
+  "unapproved": {
+    "message": "אַנאַפּרוווד"
+  },
+  "units": {
+    "message": "וניץ"
+  },
+  "unknown": {
+    "message": "אומבאַקאַנט"
+  },
+  "unknownNetwork": {
+    "message": "אומבאַקאַנט פּריוואַט נעץ"
+  },
+  "unknownQrCode": {
+    "message": "טעות: מיר קען נישט ידענטיפיצירן אַז קר קאָד"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "אָאָאָפּס! עפּעס זענען פאַלש...."
+  },
+  "unknownCameraError": {
+    "message": "עס איז געווען אַ טעות בשעת טריינג צו צוטריט אייער אַפּאַראַט. ביטע פּרובירן ווידער..."
+  },
+  "unlock": {
+    "message": "ופשליסן"
+  },
+  "unlockMessage": {
+    "message": "די דיסענטראַלייזד וועב אַווייץ"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "וריס דאַרפן די צונעמען הטטפּ/הטטפּס פּרעפיקס."
+  },
+  "usedByClients": {
+    "message": "געניצט דורך אַ פאַרשיידנקייַט פון פאַרשידענע קלייאַנץ"
+  },
+  "userName": {
+    "message": "נאמען"
+  },
+  "validFileImport": {
+    "message": "איר מוזן אויסקלייַבן אַ גילטיק טעקע צו אַרייַנפיר."
+  },
+  "viewAccount": {
+    "message": "View חשבון"
+  },
+  "viewinExplorer": {
+    "message": "View in Explorer"
+  },
+  "viewContact": {
+    "message": "View קאָנטאַקט"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "קוק אויף Etherscan"
+  },
+  "visitWebSite": {
+    "message": "באַזוכן אונדזער וועב פּלאַץ"
+  },
+  "walletSeed": {
+    "message": "בייַטל זוימען"
+  },
+  "welcomeBack": {
+    "message": "באַגריסן צוריק!"
+  },
+  "welcome": {
+    "message": "באַגריסונג צו MetaMask"
+  },
+  "writePhrase": {
+    "message": "שרייב דעם פראַזע אויף אַ שטיק פון פּאַפּיר און קראָם אין אַ זיכער אָרט. אויב איר ווילן אפילו מער זיכערהייַט, שרייַבן עס אַראָפּ אויף קייפל ברעקלעך פון פּאַפּיר און יעדער קראָם אין 2 - 3 פאַרשידענע לאָוקיישאַנז."
+  },
+  "yesLetsTry": {
+    "message": "יאָ, לאָזן ס פּרובירן"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "איר דאַרפֿן צו לאָזן אַפּאַראַט צוטריט צו נוצן דעם שטריך."
+  },
+  "yourSigRequested": {
+    "message": "דיין חתימה איז זייַענדיק געבעטן"
+  },
+  "youSign": {
+    "message": "איר זענען סיינינג"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "דיין פּריוואַט זוימען פראַזע"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "נול גאַז פּרייַז אויף גיכקייַט אַרויף"
+  }
+}

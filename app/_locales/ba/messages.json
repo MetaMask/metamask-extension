@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Инә Күрһәтә Международных"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Был параметрҙарын һайлау өсөн иң яҡшы файҙаланған өсөн, килешеүгә күрһәтә исемлегенә инә транзакцияһы"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Эфириум селтәр графигы уңайлы ғына."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Ҡушылмалар"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Һеҙҙең аккаунт уҡырға рөхсәт Сайты"
+  },
+  "addSite": {
+    "message": "Сайт Өҫтәргә"
+  },
+  "addSiteDescription": {
+    "message": "Ҡул сайтҡа өҫтәр өсөн, һеҙгә уны иҫәбенә инергә мөмкинлек бирҙе, оло йәштәгеләр өсөн файҙалы dapps"
+  },
+  "connected": {
+    "message": "Тоташтырыусы"
+  },
+  "connectedDescription": {
+    "message": "Сайттар исемлеге, адресы һеҙгә инергә рөхсәт булыу"
+  },
+  "privacyModeDefault": {
+    "message": "Хәҙер режимы индерелде яҡлау буйынса шаблон"
+  },
+  "contractInteraction": {
+    "message": "Үҙ-Ара Килешеү "
+  },
+  "clearApprovalData": {
+    "message": "Бөтә бөтөрөп сайты"
+  },
+  "reject": {
+    "message": "Кире ҡағылған"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Был сайттың адресын яҙыу өсөн ағымдағы инеп ҡарауын һорайым. Һәр саҡ күңел, һеҙгә ышана, һеҙ был сайтта бәйләнеш."
+  },
+  "about": {
+    "message": "Тураһында"
+  },
+  "aboutSettingsDescription": {
+    "message": "Версия ярҙам үҙәге, һәм контакт мәғлүмәтен."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Камераға инеү..."
+  },
+  "account": {
+    "message": "Иҫәбенә"
+  },
+  "accountDetails": {
+    "message": "Реквизиттар "
+  },
+  "accountName": {
+    "message": "Иҫәп Яҙмаһы Исеме "
+  },
+  "accountOptions": {
+    "message": "Параметрҙар Иҫәп Яҙмаһы "
+  },
+  "accountSelectionRequired": {
+    "message": "Һеҙ иҫәп яҙмаһын һайларға кәрәк!"
+  },
+  "activityLog": {
+    "message": "операция журналы "
+  },
+  "addNetwork": {
+    "message": "Селтәрҙәргә Өҫтәргә"
+  },
+  "addRecipient": {
+    "message": "Өҫтәп Алырға"
+  },
+  "advanced": {
+    "message": "Өҫтәмә рәүештә"
+  },
+  "advancedSettingsDescription": {
+    "message": "Юл эшләү үҙенсәлектәре, Дәүләт скачать журнал, түгелеп иҫәбенә, пользовательский testnets ЭКП һәм көйҙәр."
+  },
+  "advancedOptions": {
+    "message": "Өҫтәмә Вариант"
+  },
+  "addToAddressBook": {
+    "message": "Адрес китап өҫтәргә була"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "мәҫәлән, Джон Да."
+  },
+  "addAlias": {
+    "message": "Өҫтәп псевдонимы"
+  },
+  "addToken": {
+    "message": "Маркет Өҫтәй"
+  },
+  "addTokens": {
+    "message": "Маркет Өҫтәй"
+  },
+  "addSuggestedTokens": {
+    "message": "Жетон Тәҡдим Өҫтәй"
+  },
+  "addAcquiredTokens": {
+    "message": "Маркет өҫтәп, MetaMask менән ярҙам ала"
+  },
+  "amount": {
+    "message": "Сумманың"
+  },
+  "appDescription": {
+    "message": "Бумажниктар Эфириум һеҙҙең браузер",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Раҫланған"
+  },
+  "approved": {
+    "message": "Раҫланған"
+  },
+  "asset": {
+    "message": "Актив"
+  },
+  "attemptingConnect": {
+    "message": "Блокчейн ом ҡушылдығы."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Был килешеү тәүгеһе түгел гарантиялы, һеҙ юҡҡа сығарырға ынтылыш булыуын күрһәтә. Әгәр бөтөрөргә тырышып, уңышлы булыуы, интернет өсөн түләй юғары взиматься."
+  },
+  "attributions": {
+    "message": "Авторлыҡ"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Автомат ҡуйылды сығыр алдынан минут ваҡыт көтөп metamask"
+  },
+  "average": {
+    "message": "Ул"
+  },
+  "back": {
+    "message": "Элек"
+  },
+  "backToAll": {
+    "message": "Барыһы өсөн"
+  },
+  "backupApprovalNotice": {
+    "message": "Һеҙҙең йәшерен резервтарын сокращенно кодты тергеҙеү, һаҡланған аҡсаның хәүефһеҙлеге өсөн һәм һеҙҙең кошо."
+  },
+  "backupApprovalInfo": {
+    "message": "Был осраҡта һеҙҙең йәшерен код кош тергеҙеү өсөн кәрәк, әгәр һеҙҙе юғалттыҡ, һеҙ айланмалар, пароль онотмай, яңынан билдәләргә тура MetaMask, үҙе теләгән йәки башҡа ҡоролмалар кош асылды."
+  },
+  "backupNow": {
+    "message": "Хәҙер резерв күсермәләрен"
+  },
+  "balance": {
+    "message": "Баланс"
+  },
+  "balanceOutdated": {
+    "message": "Иҫкергән булыуы мөмкин Баланс"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Газ өсөн дөйөм баланс ағымдағы етерлек"
+  },
+  "basic": {
+    "message": "Төп"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Explorer Блогы"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Identicon Уларҙы Ҡулланыу Blockies"
+  },
+  "nonceField": {
+    "message": "Настроить кодты международных "
+  },
+  "nonceFieldHeading": {
+    "message": "Код Пользовательский"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Һеҙҙең браузер ярҙамында булдыра алмайым..."
+  },
+  "builtInCalifornia": {
+    "message": "Калифорния һәм MetaMask проект төҙөү."
+  },
+  "buyWithWyre": {
+    "message": "Лестер вайран менән һатыу етна"
+  },
+  "buyWithWyreDescription": {
+    "message": "Үҙ аккаунт өсөн ҡулланырға депозита кредит картаһы мөмкинлеге даж MetaMask лестер вайран."
+  },
+  "buyCoinSwitch": {
+    "message": "Һатып алыу CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "Иң яҡшы урын булыу өсөн идеаль криптовалюта coinswitch алмашыу буйынса курсын 300-ҙән ашыу."
+  },
+  "bytes": {
+    "message": "Томы баитов"
+  },
+  "off": {
+    "message": "От"
+  },
+  "ok": {
+    "message": "ОКА"
+  },
+  "on": {
+    "message": "Н"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Юҡҡа сығарыу"
+  },
+  "cancelAttempt": {
+    "message": "Юҡҡа Сығарырға Маташа"
+  },
+  "cancellationGasFee": {
+    "message": "Газ Пошлинаһын Бөтөрөү"
+  },
+  "cancelled": {
+    "message": "Юҡҡа сығарыу"
+  },
+  "chainId": {
+    "message": "Сынйыр ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Басыгыз бында өсөн, һүҙҙәрҙең серен асып"
+  },
+  "close": {
+    "message": "Эргәһендә"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Һеҙ google chrome ҡулланырға кәрәк metamask н, кош һеҙҙең өсөн ҡорамалдар тоташтырылған."
+  },
+  "confirm": {
+    "message": "Раҫланған"
+  },
+  "confirmed": {
+    "message": "Раҫланған"
+  },
+  "confirmPassword": {
+    "message": "Пароль Раҫланы"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Үҙ һүҙҙәрен раҫлап йәшерен резервтарын сокращенно"
+  },
+  "congratulations": {
+    "message": "Ҡотланы"
+  },
+  "connectHardwareWallet": {
+    "message": "Тоташыу Аппараты Кошо"
+  },
+  "connect": {
+    "message": "Тоташыу"
+  },
+  "connectRequest": {
+    "message": "Запрос Тоташтырыу"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Кован һынау селтәренә тоташыу"
+  },
+  "connectingToMainnet": {
+    "message": "Төп эфириум селтәренә тоташыу "
+  },
+  "connectingToRopsten": {
+    "message": "Ropsten һынау селтәренә тоташыу"
+  },
+  "connectingToRinkeby": {
+    "message": "Rinkeby һынау селтәренә тоташыу"
+  },
+  "connectingToLocalhost": {
+    "message": "Тоташыу 8545 localhost"
+  },
+  "connectingToGoerli": {
+    "message": "Goerli һынау селтәренә тоташыу"
+  },
+  "contacts": {
+    "message": "Бәйләнеш"
+  },
+  "contactsSettingsDescription": {
+    "message": "Өҫтәп, шымартыу, идара итеү һәм һеҙ бөтөрөп контактҡа"
+  },
+  "continueToWyre": {
+    "message": "Лестер Вайран Дауам Итә"
+  },
+  "continueToCoinSwitch": {
+    "message": "CoinSwitch Дауам Итә"
+  },
+  "contractDeployment": {
+    "message": "Контракт Йәйелдереү "
+  },
+  "conversionProgress": {
+    "message": "Прогресс әүерелеш"
+  },
+  "copiedButton": {
+    "message": "Копируйте"
+  },
+  "copiedExclamation": {
+    "message": "Копируйте!"
+  },
+  "copy": {
+    "message": "Күсермә"
+  },
+  "copyAddress": {
+    "message": "Адрес алмашыу буфер күсереү"
+  },
+  "copyTransactionId": {
+    "message": "Копируйте килешеү id"
+  },
+  "copiedTransactionId": {
+    "message": "Копируйте международных id "
+  },
+  "copyToClipboard": {
+    "message": "Алмашыу буфер күсереү"
+  },
+  "copyButton": {
+    "message": " Күсермә "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Булдырылды"
+  },
+  "createAccount": {
+    "message": "Иҫәп Яҙмаһы Булдырҙы."
+  },
+  "createAWallet": {
+    "message": "Төҙөү кошо"
+  },
+  "createPassword": {
+    "message": "Пароль Ойошторола."
+  },
+  "currencyConversion": {
+    "message": "Валютаның Конвертацияланыу "
+  },
+  "currentLanguage": {
+    "message": "Ағымдағы Теле"
+  },
+  "customGas": {
+    "message": "Газ Көйләү"
+  },
+  "customGasSubTitle": {
+    "message": "Пошлиналар арта эшкәртеү ваҡытын ҡыҫҡартырға мөмкин булды, әммә был түгел гарантиялана."
+  },
+  "customToken": {
+    "message": "Маркет Пользовательский"
+  },
+  "customRPC": {
+    "message": "ЭКП пользовательский"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "36 кәм булырға тейеш тамғаларға һәм унарлы 0 артыҡ түгел."
+  },
+  "decimal": {
+    "message": "Унарлаған теүәллеге билдәһе"
+  },
+  "defaultNetwork": {
+    "message": "Төп эфиры өсөн һатып күләменә селтәр шаблон буйынса."
+  },
+  "delete": {
+    "message": "Бөтөрөп"
+  },
+  "deleteAccount": {
+    "message": "Иҫәп-Хисап Алып"
+  },
+  "deposit": {
+    "message": "Депозит"
+  },
+  "depositEther": {
+    "message": "Эфир Депозит"
+  },
+  "details": {
+    "message": "Деталдәре"
+  },
+  "directDepositEther": {
+    "message": "Депозит Туранан-Тура Эфирҙа"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Әгәр сездә бар, ҡайһы бер үк эфир, тура эфирҙа яңы ысул ярҙамында тиҙ алынған иң һеҙҙең депозит кошо."
+  },
+  "dismiss": {
+    "message": "Ҡыуып"
+  },
+  "done": {
+    "message": "Эшләй"
+  },
+  "downloadGoogleChrome": {
+    "message": "Скачать Хром Гугла"
+  },
+  "downloadSecretBackup": {
+    "message": "Скачать йәки ҡаты диск тышҡы шифрланған был серен һаҡлап тотоу һәм уны резерв фраза сокращенно ҡаршылыҡһыҙ һөйләшәбеҙ."
+  },
+  "downloadStateLogs": {
+    "message": "Дәүләт Скачать Журналы"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Өсөн"
+  },
+  "edit": {
+    "message": "Шымартыу"
+  },
+  "editContact": {
+    "message": "Шаблон Контакты"
+  },
+  "emailUs": {
+    "message": "Беҙ яҙабыҙ!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Нимәһе һеҙҙе - seedphrase хәүефһеҙ тотоу, был һеҙ яуаплы!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Хәүеф-хәтәрҙән һаҡлау буйынса Советы"
+  },
+  "endOfFlowMessage3": {
+    "message": "Бер нисә урында резерв күсермәһе һаҡлана."
+  },
+  "endOfFlowMessage4": {
+    "message": "Кем менән уртаҡлашыу бер ҡасан да һүҙ ҙә булманы."
+  },
+  "endOfFlowMessage5": {
+    "message": "Һаҡ булырға, фишинг! Тәртипле MetaMask орлоҡ бирер өсөн түгел, тигәйне."
+  },
+  "endOfFlowMessage6": {
+    "message": "Әгәр һеҙгә орлоҡтар кәрәк, үҙенең һүҙҙәрен кире алыр, һеҙ таба аласыз, уны көйләү -> хәүеф-хәтәрһеҙлек."
+  },
+  "endOfFlowMessage7": {
+    "message": "Әгәр сездә бар, тип һорау йәки күргән-нечистый тыш, электрон почта support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "Үҙ MetaMask seedphrase тергеҙеү мөмкин түгел."
+  },
+  "endOfFlowMessage9": {
+    "message": "Күберәк белә."
+  },
+  "endOfFlowMessage10": {
+    "message": "Барыһы Яһай"
+  },
+  "ensRegistrationError": {
+    "message": "Хаталарҙы теркәп ens"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС селтәре ағымдағы түгел, исемен табыу. Төп эфириум селтәренә күсеү ҡарай."
+  },
+  "enterAnAlias": {
+    "message": "Псевдонимы индереү"
+  },
+  "enterPassword": {
+    "message": "Пароль индереү"
+  },
+  "enterPasswordContinue": {
+    "message": "Дауам индереү өсөн пароль"
+  },
+  "ethereumPublicAddress": {
+    "message": "Адрес Йәмәғәт Эфириум"
+  },
+  "etherscanView": {
+    "message": "Иң яҡшы иҫәбенә бер төрө"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Эшкәртеү Ваҡытында Иҫәпләшергә "
+  },
+  "expandView": {
+    "message": "Йәйелдереү"
+  },
+  "exportPrivateKey": {
+    "message": "Экспорт Ябыҡ Асҡысы"
+  },
+  "failed": {
+    "message": "Алмаған"
+  },
+  "fast": {
+    "message": "Тиҙ арала"
+  },
+  "faster": {
+    "message": "Тиҙ арала"
+  },
+  "fiat": {
+    "message": "Фиат",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Был ҡоролош онотмай"
+  },
+  "from": {
+    "message": "От"
+  },
+  "fromShapeShift": {
+    "message": "Иң Друидский"
+  },
+  "functionType": {
+    "message": "Тибындағы Функциялар "
+  },
+  "gasLimit": {
+    "message": "Газ Лимит"
+  },
+  "gasLimitCalculation": {
+    "message": "Газ селтәренә лимитһыҙ нигеҙендә уңышлы беҙ уйларға тәҡдим итә."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Лимит газ-газ максималь был берәмектәр һаны, улар һеҙ аҡса бирергә әҙер."
+  },
+  "gasLimitTooLow": {
+    "message": "Кәм булырға тейеш түгел, лимитһыҙ газ 21000"
+  },
+  "gasUsed": {
+    "message": "Газ, Ҡулланыуҙа"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Хаҡы Бик Түбән Газ"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Һанлы эфир газ хаҡын билдәләү, уларҙың газ өсөн түләүҙәр һәр берәмеге әҙер."
+  },
+  "gasPriceNoDenom": {
+    "message": "Газға Хаҡтар "
+  },
+  "gasPriceCalculation": {
+    "message": "Уйлап ҡараһаҡ, беҙ тәҡдим газ селтәре хаҡы рухландыра."
+  },
+  "general": {
+    "message": "Дөйөм"
+  },
+  "generalSettingsDescription": {
+    "message": "Валютаның конвертацияланыу, төп валюта, теле, blockies ул identicon"
+  },
+  "getEther": {
+    "message": "Һеҙгә Эфир"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Һеҙ Ярҙам Итә."
+  },
+  "getStarted": {
+    "message": "Башлана"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Беҙ һеҙҙе күреүебеҙгә шатбыҙ."
+  },
+  "hardware": {
+    "message": "ҡорамалдар"
+  },
+  "hardwareWalletConnected": {
+    "message": "Аппаратты тоташтырып кошо"
+  },
+  "hardwareWallets": {
+    "message": "Аппаратты тоташтырып кошо"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Кош аппараты һайлау, ул һеҙ телисез менән ҡулланыу MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "бында",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Уналтылы Мәғлүмәт"
+  },
+  "hide": {
+    "message": "Йәшереп"
+  },
+  "hideToken": {
+    "message": "Йәшерен Маркет"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "История"
+  },
+  "import": {
+    "message": "Импортты",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Импортҡа Иҫәп Яҙмаһы"
+  },
+  "importAccountMsg": {
+    "message": " Башта һеҙҙең аккаунт булдырыу менән бәйле булған приема seedphrase metamask иҫәбенә түгел. Иҫәп яҙмаһы тураһында күберәк белергә прием "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Һүҙ импортты орлоҡ менән аккаунт"
+  },
+  "importWallet": {
+    "message": "Импортты Кошо"
+  },
+  "importYourExisting": {
+    "message": "Үҙ һүҙен һүҙ ярҙамында орлоҡ менән 12 приема кошо"
+  },
+  "imported": {
+    "message": "Импортты",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Импорт орлоҡтарҙы фразалар ҡулланып аккаунт"
+  },
+  "infoHelp": {
+    "message": "Һәм Мәғлүмәт Ярҙамы"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Интернет селтәрендә һеҙҙең тәүге булыуын раҫлай. ОКА төймәгә басыгыз өсөн ҡайта."
+  },
+  "insufficientBalance": {
+    "message": "Баланс етерлек."
+  },
+  "insufficientFunds": {
+    "message": "Аҡса етерлек."
+  },
+  "insufficientTokens": {
+    "message": "Жетон етерлек."
+  },
+  "invalidAddress": {
+    "message": "Адресы дөрөҫ"
+  },
+  "invalidAddressRecipient": {
+    "message": "Адрес яраҡлы алыу"
+  },
+  "knownAddressRecipient": {
+    "message": "Килешеү адресы билдәле."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Эта селтәре ла, түбәнге регистрҙан йыйылмаһы"
+  },
+  "invalidInput": {
+    "message": "Дөрөҫ индерелгән."
+  },
+  "invalidRPC": {
+    "message": "Торғоһоҙ URL-адресын ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Торғоһоҙ Күҙәтеүсе блогы URL-адрестар"
+  },
+  "invalidSeedPhrase": {
+    "message": "Дөрөҫ фраза орлоҡ"
+  },
+  "jsonFile": {
+    "message": "JSON-файл ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Тест Селтәре Кован "
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "learnMore": {
+    "message": "Күберәк белергә"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Һеҙ тейеш, һеҙ һуңғы файҙаланыу иҫәбенә, тәү сиратта һеҙгә нимә өҫтәй ала."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Эйе, була!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Һылтанмалар"
+  },
+  "liveGasPricePredictions": {
+    "message": "Газ Хаҡы Күҙаллауҙар "
+  },
+  "loading": {
+    "message": "Скачать..."
+  },
+  "loadingTokens": {
+    "message": "Скачать Маркет..."
+  },
+  "loadMore": {
+    "message": "Күберәк Йөкләнеш"
+  },
+  "localhost": {
+    "message": "8545 локаль"
+  },
+  "login": {
+    "message": "Инә."
+  },
+  "logout": {
+    "message": "Сығыу"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Оло артыҡ ваҡытҡа сыҡмаған"
+  },
+  "mainnet": {
+    "message": "Төп Эфириум Селтәре "
+  },
+  "memorizePhrase": {
+    "message": "Был фразаларҙы хәтерләп."
+  },
+  "memo": {
+    "message": "тилит"
+  },
+  "menu": {
+    "message": "Меню"
+  },
+  "message": {
+    "message": "Хәбәрҙәр"
+  },
+  "metamaskDescription": {
+    "message": "Интернет селтәренә тоташыу һәм анығыраҡ Ethereum."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Һүҙҙәр Орлоҡтарын"
+  },
+  "metamaskVersion": {
+    "message": "Версия MetaMask"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Зинһар, пароль һеҙгә индереү, раҫлау өсөн, был һеҙгә!"
+  },
+  "myAccounts": {
+    "message": "Минең Счет"
+  },
+  "myWalletAccounts": {
+    "message": "Минең Иҫәбенә Кошо"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Һеҙ был иҫәп яҙмаһы булдырҙы бөтә бүлектәрендә булырға metamask автоматик өҫтәү."
+  },
+  "mustSelectOne": {
+    "message": "1 билдәләре буйынса һайларға тейеш, һәр хәлдә."
+  },
+  "needEtherInWallet": {
+    "message": "Ҡушымта менән бәйләнеш децентрализовать, MetaMask ҡулланыу, һеҙгә кәрәк, һеҙгә эфир кошо."
+  },
+  "needImportFile": {
+    "message": "Импорт өсөн файлды һайлау кәрәк.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Швейцария юғары техник мәктәбенән сыҡҡан сумманы кире ебәрә алмай."
+  },
+  "networkName": {
+    "message": "Исеме Селтәре "
+  },
+  "networks": {
+    "message": "Селтәре"
+  },
+  "networkSettingsDescription": {
+    "message": "Мөхәррирләү һәм экп селтәрҙәргә өҫтәргә пользовательский "
+  },
+  "nevermind": {
+    "message": "Фиг"
+  },
+  "newAccount": {
+    "message": "Яңы Аккаунт"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Яңы адресын таба! Басыгыз бында өсөн, адрес китап өҫтәнек."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Яңы Бәйләнештәр"
+  },
+  "newContract": {
+    "message": "Яңы Контракт"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Яңы Селтәр"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Юҡ, минән булмай, тигәйнем инде орлоғо"
+  },
+  "protectYourKeys": {
+    "message": "Асҡыс Һеҙҙең Яҡларға!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Һүҙ менән һаҡ булырға, орлоҡ — сайты тураһындағы хәбәргә булһа, ул рефоматорға MetaMask тырыша. Орлоҡ ҡасан да булһа һеҙ һораған өсөн MetaMask фраза!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Хәүефһеҙ һеҙҙе һүҙен тота. Әгәр һеҙ күргән нәмәләр подозрительный, сайт йәки һеҙ ышанырға ла, электрон почта аша support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Яңы URL-адресын ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Һөҙөмтәлә Яңы"
+  },
+  "newTransactionFee": {
+    "message": "Яңыраҡ Интернет Өсөн Түләй "
+  },
+  "next": {
+    "message": "Артабан"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Был исем өсөн адрес юҡ."
+  },
+  "noDeposits": {
+    "message": "Ниндәй депозит ала"
+  },
+  "noConversionRateAvailable": {
+    "message": "Валютаның Конвертацияланыу Юҡ Курстары Асыла"
+  },
+  "noTransactions": {
+    "message": "Килешеү сездә юҡ"
+  },
+  "noThanks": {
+    "message": "Юҡ, Рәхмәт"
+  },
+  "notEnoughGas": {
+    "message": "Газ Етмәү"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Веб-камера таба алмай"
+  },
+  "noWebcamFound": {
+    "message": "Веб-камера һеҙ компьютерҙа ла табырға. Зинһар, тағы бер ҡат ҡарарға."
+  },
+  "ofTextNofM": {
+    "message": "буласаҡ"
+  },
+  "orderOneHere": {
+    "message": "Йәки һеҙ һыуытҡыс һаҡлау сараларын һәм китап заказ Трезор "
+  },
+  "origin": {
+    "message": "Сығышлы"
+  },
+  "parameters": {
+    "message": "Параметрҙарын"
+  },
+  "participateInMetaMetrics": {
+    "message": "MetaMetrics ҡатнашты."
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Metametrics ҡатнашып, беҙ ярҙам итеү өсөн яҡшыраҡ эшләп metamask"
+  },
+  "password": {
+    "message": "Пароль"
+  },
+  "passwordsDontMatch": {
+    "message": "Тап килмәй пароль"
+  },
+  "passwordNotLongEnough": {
+    "message": "Оҙон Пароль етерлек "
+  },
+  "pastePrivateKey": {
+    "message": "Асҡыс бында һеҙ шәхси профилендә юлдары:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Бында орлоҡ фраза профилендә!"
+  },
+  "pending": {
+    "message": "көтә"
+  },
+  "personalAddressDetected": {
+    "message": "Шәхси адресын таба. Адрес маркет килешеүҙәрҙе индерә."
+  },
+  "prev": {
+    "message": "Пред'"
+  },
+  "primaryCurrencySetting": {
+    "message": "Беренсел Валюта"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Хосусил Сәйәсәте "
+  },
+  "privateKey": {
+    "message": "Ябыҡ Асҡысы",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Иҫкәртеү: был ваҡытта ла асыусы асҡыс. Кем-теләһә ниндәй асҡысын урлап булырға мөмкин үҙенең шәхси активтар, һеҙ счет өҫтәрәк ҡушыла."
+  },
+  "privateNetwork": {
+    "message": "Шәхси Селтәр"
+  },
+  "qrCode": {
+    "message": "Күрһәткән QR-код"
+  },
+  "queue": {
+    "message": "Сиратында"
+  },
+  "readdToken": {
+    "message": "Был киләсәктә һеҙгә тамғалар өҫтәп, күсеп \"маркет өҫтәй\" вариант меню иҫәп яҙмаһы."
+  },
+  "recents": {
+    "message": "Ҡаралты"
+  },
+  "recipientAddress": {
+    "message": "Адресы Алыу "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Барыһы Ла Кире Ҡағылмай"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Кире ҡағылған"
+  },
+  "reset": {
+    "message": "Ташланған"
+  },
+  "resetAccount": {
+    "message": "Өҫтөнә Иҫәп Яҙмаһы "
+  },
+  "resetAccountDescription": {
+    "message": "Һеҙҙең иҫәбенә буласаҡ международных таҙартыу тарихы ташлана."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Мин һуңынан иҫкә төшөрөү"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Үҙ һүҙенән кире ҡайтарған орлоҡ менән иҫәп яҙмаһы"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "һорау, тип көтә"
+  },
+  "required": {
+    "message": "Талап ителә"
+  },
+  "restore": {
+    "message": "Тергеҙеү"
+  },
+  "revealSeedWords": {
+    "message": "Асып Һүҙ Орлоҡ"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Һүҙҙәр Орлоҡтарын"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Әгәр һеҙ ҡасан да булһа браузер йәки компьютерға күсереү үҙгәртеп, был һүҙҙәрҙе һеҙгә орлоҡ алыуға мохтаждар иҫәбенә инергә була һеҙҙең. Ҡайҙа уларҙы һаҡлау-йәшерен һәм хәүефһеҙ ҙә."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Бындай фразалар менән кем бүлә алмай!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Ошо һүҙҙәрҙе ҡуллана ала, барыһы да һеҙ иҫәп яҙмаһын өсөн урлай."
+  },
+  "revert": {
+    "message": "Ҡайтты"
+  },
+  "remove": {
+    "message": "Бөтөрөп"
+  },
+  "removeAccount": {
+    "message": "Алыҫ аккаунт"
+  },
+  "removeAccountDescription": {
+    "message": "Кош һеҙ был иҫәп яҙмаһы менән бөтөрөп була. Зинһар, күңел, һеҙҙең өсөн импорт иҫәбенә орлоҡ үҙенсәлекле асҡыс булып был фразаны йәки ябыҡ, кереткәнсе дауам итә. Бәлки һеҙҙе тағы приемға килә яуа иҫәбенә йәки иҫәп яҙмаһы булдырҙы. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Тест Селтәре Rinkeby "
+  },
+  "ropsten": {
+    "message": "Тест Селтәре Ropsten "
+  },
+  "goerli": {
+    "message": "Тест Селтәре Goerli "
+  },
+  "save": {
+    "message": "Һаҡлау"
+  },
+  "slow": {
+    "message": "Яй"
+  },
+  "slower": {
+    "message": "Яй"
+  },
+  "saveAsCsvFile": {
+    "message": "Файл һаҡлау кеүек CSV"
+  },
+  "scanInstructions": {
+    "message": "Урынлаштырыу QR-код а камера өлөшө"
+  },
+  "scanQrCode": {
+    "message": "Qr-код сканировать "
+  },
+  "search": {
+    "message": "Эҙләү"
+  },
+  "searchResults": {
+    "message": "Эҙләнеү Һөҙөмтәләре "
+  },
+  "secretBackupPhrase": {
+    "message": "Йәшерен Резервтарын Фраза Сокращенно"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Һеҙ уны эшләү серҙәрен һеҙҙең аккаунт фраза һәм резерв өсөн резерв сокращенно сокращенно тергеҙеү еңел."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Иҫкәртеү: бер ваҡытта ла үҙенең резерв асыусы фраза. Кем был һүҙҙәр менән бөтөнләй эфирҙа һеҙҙе алырға мөмкин."
+  },
+  "secretPhrase": {
+    "message": "Һеҙ бында ун ике йәшерен һүҙҙәр фраза индереү өсөн һаҡлағыс тергеҙеү."
+  },
+  "securityAndPrivacy": {
+    "message": "Именлек Һәм Хосусил"
+  },
+  "securitySettingsDescription": {
+    "message": "Бумажниктар хосуси параметр һәм орлоҡ фраза"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Һәр буш һүҙ менән айырыу"
+  },
+  "seedPhraseReq": {
+    "message": "12 һөйләмдә һүҙҙәр орлоҡтарын"
+  },
+  "selectCurrency": {
+    "message": "Һайлау Валюта"
+  },
+  "selectEachPhrase": {
+    "message": "Зинһар, һәр һүҙем өсөн һайланым, күңел, был дөрөҫ."
+  },
+  "selectLocale": {
+    "message": "Һайлау Теле"
+  },
+  "selectType": {
+    "message": "Төрөн Һайлау"
+  },
+  "send": {
+    "message": "Ебәреү"
+  },
+  "sendAmount": {
+    "message": "Сумманы Ебәрә"
+  },
+  "sendETH": {
+    "message": "ЕТНА ебәреү"
+  },
+  "sendTokens": {
+    "message": "Ебәреү"
+  },
+  "sentEther": {
+    "message": "эфирға ебәреү"
+  },
+  "sentTokens": {
+    "message": "жетон ебәреү"
+  },
+  "separateEachWord": {
+    "message": "Һәр буш һүҙ менән айырыу"
+  },
+  "searchTokens": {
+    "message": "Токен Эҙләү "
+  },
+  "selectAnAccount": {
+    "message": "Һайлау, иҫәп яҙмаһы"
+  },
+  "selectAnAccountHelp": {
+    "message": "MetaMask ҡарап һайлау өсөн иҫәп яҙмаһы"
+  },
+  "selectAHigherGasFee": {
+    "message": "Һеҙ түләү транзакцияһы өсөн юғары газ эшкәртеүҙе тиҙләтеү һайла.*"
+  },
+  "selectHdPath": {
+    "message": "Юлын һайлай "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Параметрҙарын"
+  },
+  "showAdvancedGasInline": {
+    "message": "Газ идаралығы өҫтәмә элемент "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Был параметрҙарын һайлау, идараны туранан-тура экранда күрһәтеп һәм ебәреү өсөн газға хаҡтарҙы раҫланы һәм был элементтар сикләнгән."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Testnets булған үҙгәртеүҙәрҙе күрһәтергә"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Был параметрҙарын һайлау, үҙгәртеү күрһәтеү өсөн фиат н Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Асҡыс Күрһәтә Ябыла"
+  },
+  "showHexData": {
+    "message": "Уналтылы Мәғлүмәт Күрһәтелә"
+  },
+  "showHexDataDescription": {
+    "message": "Был параметрҙарын һайлау өсөн экранда күрһәтелгән мәғлүмәт яланында hex"
+  },
+  "sign": {
+    "message": "Билдә"
+  },
+  "signatureRequest": {
+    "message": "Ҡултамға. Запрос "
+  },
+  "signed": {
+    "message": "Ҡултамға"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Ҡултамға. Запрос "
+  },
+  "somethingWentWrong": {
+    "message": "Упс! Бер нәмә лә хәл."
+  },
+  "speedUp": {
+    "message": "Тиҙләтелгән"
+  },
+  "speedUpCancellation": {
+    "message": "Был тиҙләтеп бөтөрөргә"
+  },
+  "speedUpTransaction": {
+    "message": "Был операция тиҙләтеү"
+  },
+  "switchNetworks": {
+    "message": "Переключатель Селтәре"
+  },
+  "stateLogFileName": {
+    "message": "Журналдар Торошон MetaMask"
+  },
+  "stateLogs": {
+    "message": "Журнал Торошо"
+  },
+  "stateLogsDescription": {
+    "message": "Дәүләт һәм шәхси иҫәп яҙмаһы журналдарҙы интернет адресына ебәрергә бар."
+  },
+  "stateLogError": {
+    "message": "Бүрәнә хәл алыу хата булмаҫ."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Тоташыу Аппараты Кошо"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Кош аппаратына тоташтырылған компьютерҙар бар."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Һайлау, иҫәп яҙмаһы"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Һайлау аккаунт, уның ҡарарға теләй. Бәлки, һеҙҙең өсөн бер тапҡыр ғына һайлай."
+  },
+  "step3HardwareWallet": {
+    "message": "3. DApps һәм башҡа күп ҡулланыла башланы!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Иҫәп-хисап аппараты ҡуллана, теләһә нисек һеҙ иҫәп яҙмаһын менән эфириум ине. DApps инә, Эта ебәрә, һаҡлау һәм һатыу кеүек erc20 cryptokitties незаменяемый маркет һәм жетондар."
+  },
+  "storePhrase": {
+    "message": "Был фразаның был пароль һаҡлаған менеджер, нисек 1Password."
+  },
+  "submit": {
+    "message": "Күрһәтеү"
+  },
+  "submitted": {
+    "message": "Күрһәтеү"
+  },
+  "supportCenter": {
+    "message": "Беҙҙең үҙәге ярҙамға киләсәк "
+  },
+  "symbol": {
+    "message": "Символына"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "12 араһында булырға тейеш 0 символы һәм билдәһе."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Резерв валюта булып тора өсөн был функцияла менән эксперименталь сокращенно в 3box көйләй; үҙ ҡулланыла."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box һүндерелә була арҡаһында хаталар ваҡытында башланғыс синхронизация"
+  },
+  "syncWithMobile": {
+    "message": "Синхронизация мобиль"
+  },
+  "syncWithMobileTitle": {
+    "message": "Синхронизация мобиль"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Әгәр һеҙ асыу ғына MetaMask беренсе тапҡыр мобиль кушымталар, инструкция һеҙ телефоны ғына кәрәк."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Мобиль ҡушымта менән бирелә metamask код Сканировать"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Күңеленә, бер кем дә экранға ҡарап, был, һеҙ ҡасан код сканировать"
+  },
+  "syncWithMobileComplete": {
+    "message": "Contemporize мәғлүмәт һеҙҙең өсөн уңышлы булды. Мобиль ҡушымта MetaMask наслаждайся!"
+  },
+  "terms": {
+    "message": "Ҡулланыу шарттары"
+  },
+  "testFaucet": {
+    "message": "Кран Һынау"
+  },
+  "thisWillCreate": {
+    "message": "Был орлоҡ һәм яңы һүҙ төҙөргә мөмкинлек бирә кошо"
+  },
+  "tips": {
+    "message": "Советы"
+  },
+  "to": {
+    "message": "Өсөн"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Маркет"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Маркет өҫтәргә була инде."
+  },
+  "tokenContractAddress": {
+    "message": "Адрес Килешеү Маркет "
+  },
+  "tokenSymbol": {
+    "message": "Маркет Символы "
+  },
+  "total": {
+    "message": "Дөйөм"
+  },
+  "transaction": {
+    "message": "килешеү"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Международных хата булмаҫ."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Международных Хата. Башҡа кодты килешәм."
+  },
+  "transactionErrorNoContract": {
+    "message": "Адрес функциялы контракт тыуҙырырға тырыша."
+  },
+  "transactionFee": {
+    "message": "Интернет Өсөн Түләй "
+  },
+  "transactionTime": {
+    "message": "Килешеү Ваҡыты "
+  },
+  "transfer": {
+    "message": "Тәржемә"
+  },
+  "transferBetweenAccounts": {
+    "message": "Иҫәп араһында минең тәржемә"
+  },
+  "transferFrom": {
+    "message": "Иң Трансфер"
+  },
+  "troubleTokenBalances": {
+    "message": "Беҙҙә ҡалдыҡтары тейәп маркер менән проблема булды. Һеҙ уларҙы ҡарарға мөмкин ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Яңынан ҡарау "
+  },
+  "typePassword": {
+    "message": "Пароль индереү MetaMask "
+  },
+  "unapproved": {
+    "message": "Неутвержденный"
+  },
+  "units": {
+    "message": "берәмек"
+  },
+  "unknown": {
+    "message": "Билдәһеҙ"
+  },
+  "unknownNetwork": {
+    "message": "Билдәһеҙ Шәхси Селтәр"
+  },
+  "unknownQrCode": {
+    "message": "Хата: беҙ билдәләй алмайбыҙ, тип qr-код"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Упс! Бер нәмә лә...."
+  },
+  "unknownCameraError": {
+    "message": "Һеҙ аласаһы инеү маташыу хата янына камераға барып. Зинһар, тағы бер ҡат ҡарап..."
+  },
+  "unlock": {
+    "message": "Разблокировканы"
+  },
+  "unlockMessage": {
+    "message": "Децентрализовать веб-көтә"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Тейешле талап http Урис/префикс https."
+  },
+  "usedByClients": {
+    "message": "Төрлө клиенттың ҡулланыу"
+  },
+  "userName": {
+    "message": "Ҡулланыусы исеме"
+  },
+  "validFileImport": {
+    "message": "Файл һеҙ һайлау өсөн импортҡа тура тейеш."
+  },
+  "viewAccount": {
+    "message": "Иҫәп-Хисапты Тикшереү "
+  },
+  "viewinExplorer": {
+    "message": "Күҙәтеүсе ҡараны"
+  },
+  "viewContact": {
+    "message": "Ҡара Контакт"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Иң яҡшы күренештәрҙең береһе."
+  },
+  "visitWebSite": {
+    "message": "Беҙҙең веб-сайты"
+  },
+  "walletSeed": {
+    "message": "Орлоҡ Кошо "
+  },
+  "welcomeBack": {
+    "message": "Рәхим Итегеҙ!"
+  },
+  "welcome": {
+    "message": "Рәхим итегеҙ MetaMask"
+  },
+  "writePhrase": {
+    "message": "Бумажка һаҡлау һәм хәүефһеҙ урында торған был фразалар ижад итә. Әгәр һеҙ хәүефһеҙлек тағы ла күберәк тел, яҙыу һәм уны һаҡлау бер нисә ҡағыҙы һәр япраҡҡа 2 - 3 урын төрлө."
+  },
+  "yesLetsTry": {
+    "message": "Эйе, ауыҙ биреү"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Һеҙ һыу инергә рөхсәт камера кәрәк, был функциялар өсөн ҡулланыла."
+  },
+  "yourSigRequested": {
+    "message": "Һеҙҙең ҡултамға запрашиваться"
+  },
+  "youSign": {
+    "message": "Һеҙ ҡул ҡуя."
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Һүҙ һеҙгә шәхси орлоҡ"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Газ өсөн хаҡ тиҙлек тиклем нуль"
+  }
+}

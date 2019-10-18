@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Шоу Ирж Байгаа Гүйлгээ"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Энэ сонгоно ашиглах Etherscan харуулах ирж байгаа гүйлгээ нь гүйлгээний жагсаалт"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "График нь зөвхөн дээр байгаа Ethereum сүлжээ."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Холболт"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Сайтууд эрхтэй унших нь таны данс"
+  },
+  "addSite": {
+    "message": "Нэмж Сайт"
+  },
+  "addSiteDescription": {
+    "message": "Гараар нэмэх сайт боломж хандах нь таны данс, ашигтай хуучин dapps"
+  },
+  "connected": {
+    "message": "Холбогдсон"
+  },
+  "connectedDescription": {
+    "message": "Сайтын жагсаалтанд хандах эрхтэй таны хаяг"
+  },
+  "privacyModeDefault": {
+    "message": "Нууцлалын Горим нь одоо анхдагчаар идэвхжүүлэгдсэн"
+  },
+  "contractInteraction": {
+    "message": "Гэрээний Харилцан"
+  },
+  "clearApprovalData": {
+    "message": "Устгах бүх сайтууд"
+  },
+  "reject": {
+    "message": "Татгалзах"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Энэ сайт нь хүсэлт хандаж үзэхийн тулд таны харилцах данс хаяг. Үргэлж эсэхийг та итгэж сайт та харилцдаг."
+  },
+  "about": {
+    "message": "Тухай"
+  },
+  "aboutSettingsDescription": {
+    "message": "Хувилбар, дэмжих төв,, холбоо барих мэдээлэл байна."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Хандах таны камер..."
+  },
+  "account": {
+    "message": "Данс"
+  },
+  "accountDetails": {
+    "message": "Дансны Дэлгэрэнгүй"
+  },
+  "accountName": {
+    "message": "Дансны Нэр"
+  },
+  "accountOptions": {
+    "message": "Данс Тохируулгууд"
+  },
+  "accountSelectionRequired": {
+    "message": "Та хэрэгтэй данс сонгоно уу!"
+  },
+  "activityLog": {
+    "message": "үйл ажиллагааны бүртгэл"
+  },
+  "addNetwork": {
+    "message": "Нэмэх Сүлжээ"
+  },
+  "addRecipient": {
+    "message": "Нэмж Хүлээн Авагч"
+  },
+  "advanced": {
+    "message": "Дэвшилтэт"
+  },
+  "advancedSettingsDescription": {
+    "message": "Нэвтрэх хөгжүүлэгч онцлог, татаж авах Улсын Лог, анхны Байдалд нь оруул Данс, тохиргоо testnets, гаалийн RPC."
+  },
+  "advancedOptions": {
+    "message": "Дэвшилтэт Тохируулгууд"
+  },
+  "addToAddressBook": {
+    "message": "Нэмж хаяг"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "жишээ нь Жон Д."
+  },
+  "addAlias": {
+    "message": "Нэмж alias"
+  },
+  "addToken": {
+    "message": "Нэмж Token"
+  },
+  "addTokens": {
+    "message": "Токенс Нэмэх"
+  },
+  "addSuggestedTokens": {
+    "message": "Нэмж Санал Болгосон Токенс"
+  },
+  "addAcquiredTokens": {
+    "message": "Нэмж токенс та хэзээ авсан ашиглан MetaMask"
+  },
+  "amount": {
+    "message": "Хэмжээ"
+  },
+  "appDescription": {
+    "message": "Нэг Ethereum Хэтэвч таны Хөтөч",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Батлах"
+  },
+  "approved": {
+    "message": "Батлагдсан"
+  },
+  "asset": {
+    "message": "Хөрөнгө"
+  },
+  "attemptingConnect": {
+    "message": "Оролдлого холбогдож blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Ирүүлэх энэ оролдлого баталгаа биш таны анхны гүйлгээний хүчингүй болно. Хэрэв хүчингүй болгох оролдлого нь амжилттай, та цэнэглэгдсэн байх болно гүйлгээний хураамж дээр дурдсан."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Тогтоосон сул цаг минутын өмнө MetaMask автоматаар гарах"
+  },
+  "average": {
+    "message": "Дундаж"
+  },
+  "back": {
+    "message": "Буцах"
+  },
+  "backToAll": {
+    "message": "Буцаж Бүх"
+  },
+  "backupApprovalNotice": {
+    "message": "Нөөц таны Нууц Сэргээх кодыг хадгалж, таны түрийвч мөн сангийн аюулгүй."
+  },
+  "backupApprovalInfo": {
+    "message": "Энэ нууц код шаардлагатай сэргээх таны түрийвч тохиолдолд та алдах таны төхөөрөмж, мартаж таны нууц үг, дахин суулгах MetaMask, эсвэл авах хүсэлтэй таны түрийвч өөр төхөөрөмж дээр."
+  },
+  "backupNow": {
+    "message": "Нөөц одоо"
+  },
+  "balance": {
+    "message": "Тэнцэл"
+  },
+  "balanceOutdated": {
+    "message": "Үлдэгдэл байж болох хоцрогдсон"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Хангалтгүй үлдэгдэл нь одоогийн хийн нийт"
+  },
+  "basic": {
+    "message": "Үндсэн"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Блок Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Ашиглах Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Өөрчлөх гүйлгээний nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Гаалийн Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Таны вэб Браузер нь дэмжигдээгүй байна..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask нь бүтээгдсэн Калифорни."
+  },
+  "buyWithWyre": {
+    "message": "Худалдан авах ETH нь Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ашиглах боломжийг олгодог зээлийн карт хадгаламжийн ETH зөв таны MetaMask данс."
+  },
+  "buyCoinSwitch": {
+    "message": "Дээр худалдан авах CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch нь нэг цэгийн очих солилцох 300 гаруй cryptocurrencies үед хамгийн сайн хүү."
+  },
+  "bytes": {
+    "message": "Байт"
+  },
+  "off": {
+    "message": "Унтраах"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Дээр"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Цуцлах"
+  },
+  "cancelAttempt": {
+    "message": "Цуцлах Оролдлого"
+  },
+  "cancellationGasFee": {
+    "message": "Цуцлах Хийн Хураамж"
+  },
+  "cancelled": {
+    "message": "Хүчингүй"
+  },
+  "chainId": {
+    "message": "Гинжин ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Энд дарж илчлэх нууц үг"
+  },
+  "close": {
+    "message": "Ойр"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Та ашиглах хэрэгтэй MetaMask Google Chrome дээр зорилгоор холбох нь таны Тоног төхөөрөмжийн Түрийвч."
+  },
+  "confirm": {
+    "message": "Баталгаажуулах"
+  },
+  "confirmed": {
+    "message": "Батлагдсан"
+  },
+  "confirmPassword": {
+    "message": "Нууц Үгээ Баталгаажуул"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Баталгаажуулах таны Нууц Нөөц Өгүүлбэр"
+  },
+  "congratulations": {
+    "message": "Баяр хүргэе"
+  },
+  "connectHardwareWallet": {
+    "message": "Холбогдох Тоног Төхөөрөмж Түрийвч"
+  },
+  "connect": {
+    "message": "Холбох"
+  },
+  "connectRequest": {
+    "message": "Холбох Хүсэлтийг"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Холбох Kovan Туршилтын Сүлжээ"
+  },
+  "connectingToMainnet": {
+    "message": "Холбох Гол Ethereum Сүлжээ"
+  },
+  "connectingToRopsten": {
+    "message": "Холбох Ropsten Туршилтын Сүлжээ"
+  },
+  "connectingToRinkeby": {
+    "message": "Холбох Rinkeby Туршилтын Сүлжээ"
+  },
+  "connectingToLocalhost": {
+    "message": "Холбох Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Холбох Goerli Туршилтын Сүлжээ"
+  },
+  "contacts": {
+    "message": "Холбоо барих"
+  },
+  "contactsSettingsDescription": {
+    "message": "Нэмэх, засварлах, устгах, удирдах таны холбоо барих хаяг"
+  },
+  "continueToWyre": {
+    "message": "Үргэлжлүүлэн Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Үргэлжлүүлэн CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Гэрээний Байрлуулалт"
+  },
+  "conversionProgress": {
+    "message": "Хувиргах үйл явц"
+  },
+  "copiedButton": {
+    "message": "Хуулж"
+  },
+  "copiedExclamation": {
+    "message": "Хуулж!"
+  },
+  "copy": {
+    "message": "Хуулбар"
+  },
+  "copyAddress": {
+    "message": "Хуулбар хаяг материалд хуулж оруулж"
+  },
+  "copyTransactionId": {
+    "message": "Хуулбар Гүйлгээний ID"
+  },
+  "copiedTransactionId": {
+    "message": "Хуулж Гүйлгээний ID"
+  },
+  "copyToClipboard": {
+    "message": "Хуулбар материалд хуулж оруулж"
+  },
+  "copyButton": {
+    "message": " Хуулбар "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Бий болгох"
+  },
+  "createAccount": {
+    "message": "Бүртгэл Үүсгэх"
+  },
+  "createAWallet": {
+    "message": "Бий болгох Түрийвч"
+  },
+  "createPassword": {
+    "message": "Нууц Үг Үүсгэх"
+  },
+  "currencyConversion": {
+    "message": "Валютын Хөрвүүлэлтийн"
+  },
+  "currentLanguage": {
+    "message": "Одоогийн Хэл"
+  },
+  "customGas": {
+    "message": "Захиалгаар Хийн"
+  },
+  "customGasSubTitle": {
+    "message": "Нэмэгдэж хураамж болох буурсан нь боловсруулах үед, гэхдээ энэ нь баталгаатай биш юм."
+  },
+  "customToken": {
+    "message": "Гаалийн Token"
+  },
+  "customRPC": {
+    "message": "Гаалийн RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals байх естой наад зах нь 0 дээр биш 36."
+  },
+  "decimal": {
+    "message": "Decimals-ийн Нарийн"
+  },
+  "defaultNetwork": {
+    "message": "Анхдагч сүлжээ Ифер гүйлгээ нь Үндсэн Net."
+  },
+  "delete": {
+    "message": "Устгах"
+  },
+  "deleteAccount": {
+    "message": "Бүртгэлээ Устгах"
+  },
+  "deposit": {
+    "message": "Хадгаламжийн"
+  },
+  "depositEther": {
+    "message": "Хадгаламжийн Ифер"
+  },
+  "details": {
+    "message": "Дэлгэрэнгүй"
+  },
+  "directDepositEther": {
+    "message": "Шууд Орд Ифер"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Хэрэв та аль хэдийн зарим нэг Ифер, хамгийн хурдан олж авах арга зам Ифер өөрийн шинэ хэтэвч гэхэд шууд орд."
+  },
+  "dismiss": {
+    "message": "Халах"
+  },
+  "done": {
+    "message": "Хийж"
+  },
+  "downloadGoogleChrome": {
+    "message": "Google Chrome Татаж Авах"
+  },
+  "downloadSecretBackup": {
+    "message": "Энэ нь татаж авах Нууц Нөөц Өгүүлбэр байлгах хадгалж дээр гадаад шифрлэгдсэн хатуу диск эсвэл хадгалалт дунд зэрэг."
+  },
+  "downloadStateLogs": {
+    "message": "Татаж Авах Улсын Бүртгэлүүд"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Буурсан"
+  },
+  "edit": {
+    "message": "Засварлах"
+  },
+  "editContact": {
+    "message": "Засварлах Холбоо Барих"
+  },
+  "emailUs": {
+    "message": "Бидэнд и-мэйл!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Та сорилтыг даван туулж - keep your seedphrase аюулгүй, энэ нь таны үүрэг!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Зөвлөмж дээр хадгалах энэ нь аюулгүй"
+  },
+  "endOfFlowMessage3": {
+    "message": "Хадгалах нөөц олон газар."
+  },
+  "endOfFlowMessage4": {
+    "message": "Хэзээ ч хуваалцах өгүүлбэр нь хэн нэгэн."
+  },
+  "endOfFlowMessage5": {
+    "message": "Тун болгоомжтой байх фишинг! MetaMask хэзээ ч аяндаа асуух нь таны үрийн өгүүлбэр."
+  },
+  "endOfFlowMessage6": {
+    "message": "Хэрэв та хэрэгтэй нөөцлөх нь таны үрийн өгүүлбэр дахин, та үүнийг олж болно Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "Хэрэв та хэзээ нэгэн цагт асуулт байна, эсвэл харж ямар нэг зүйл fishy, и-мэйл support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask чадахгүй сэргээх таны seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Илүү ихийг олж мэдэх."
+  },
+  "endOfFlowMessage10": {
+    "message": "Бүх Хийсэн"
+  },
+  "ensRegistrationError": {
+    "message": "Алдаа ENS нэр бүртгэл"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS нэр олж чадаагүй дээр одоогийн сүлжээ юм. Үзээрэй руу шилжих Гол Ethereum Сүлжээ юм."
+  },
+  "enterAnAlias": {
+    "message": "Орж alias"
+  },
+  "enterPassword": {
+    "message": "Нууц үгээ оруулна"
+  },
+  "enterPasswordContinue": {
+    "message": "Нууц үгээ оруулна үргэлжлүүлэх"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Олон Нийтийн Хаяг"
+  },
+  "etherscanView": {
+    "message": "Харах дансанд Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Тооцоо Боловсруулах Удаа"
+  },
+  "expandView": {
+    "message": "Өргөжүүлэх Харах"
+  },
+  "exportPrivateKey": {
+    "message": "Экспортын Хувийн Түлхүүр"
+  },
+  "failed": {
+    "message": "Амжилтгүй болсон"
+  },
+  "fast": {
+    "message": "Хурдан"
+  },
+  "faster": {
+    "message": "Хурдан"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Энэ мартаж төхөөрөмж"
+  },
+  "from": {
+    "message": "Нь"
+  },
+  "fromShapeShift": {
+    "message": "Нь ShapeShift"
+  },
+  "functionType": {
+    "message": "Үйл Ажиллагаа Төрөл"
+  },
+  "gasLimit": {
+    "message": "Хийн Хязгаар"
+  },
+  "gasLimitCalculation": {
+    "message": "Бид тооцох санал болгосон хийн хязгаар дээр суурилсан сүлжээний амжилтын түвшин."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Хийн хязгаар нь дээд хэмжээний нэгж хийн мөнгөө зарцуулах хүсэлтэй байгаа."
+  },
+  "gasLimitTooLow": {
+    "message": "Хийн хязгаар байх естой наад зах нь 21000"
+  },
+  "gasUsed": {
+    "message": "Хий Ашиглаж"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Хийн Үнэ Маш Бага"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Байгалийн хийн үнийг заана хэмжээ Ифер та төлөхөд бэлэн байгаа нэгж бүр хий."
+  },
+  "gasPriceNoDenom": {
+    "message": "Хийн Үнэ"
+  },
+  "gasPriceCalculation": {
+    "message": "Бид тооцох санал болгосон байгалийн хийн үнэ дээр суурилсан сүлжээний амжилтын түвшин."
+  },
+  "general": {
+    "message": "Ерөнхий"
+  },
+  "generalSettingsDescription": {
+    "message": "Валютын хөрвөлт, үндсэн валют, хэл, blockies identicon"
+  },
+  "getEther": {
+    "message": "Авах Ифер"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Тусламж Авах."
+  },
+  "getStarted": {
+    "message": "Эхлэх"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Бид аз жаргалтай байна, та үзнэ үү."
+  },
+  "hardware": {
+    "message": "тоног төхөөрөмж"
+  },
+  "hardwareWalletConnected": {
+    "message": "Тоног төхөөрөмжийн түрийвч холбогдсон"
+  },
+  "hardwareWallets": {
+    "message": "Холбогдох тоног төхөөрөмжийн түрийвч"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Сонгох тоног төхөөрөмж түрийвч та хүсч ашиглах нь MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "энд",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Аллен Мэдээлэл"
+  },
+  "hide": {
+    "message": "Нуух"
+  },
+  "hideToken": {
+    "message": "Нуух Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Түүх"
+  },
+  "import": {
+    "message": "Импортын",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Импортын Бүртгэл"
+  },
+  "importAccountMsg": {
+    "message": " Импортын данс байх болно холбоотой таны анх бий MetaMask данс seedphrase. Талаар илүү ихийг мэдэхийн импортын данс "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Импортын Данс Үрийн Өгүүлбэр"
+  },
+  "importWallet": {
+    "message": "Импортын Түрийвч"
+  },
+  "importYourExisting": {
+    "message": "Импортын таны одоо байгаа түрийвч ашиглан 12 үгийг үрийн өгүүлбэр"
+  },
+  "imported": {
+    "message": "Импортын",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Импортын ашиглан данс үрийн өгүүлбэр"
+  },
+  "infoHelp": {
+    "message": "Мэдээлэл & Туслах"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Таны анхны гүйлгээг батлагдсан сүлжээ. OK товшино уу буцаж явах."
+  },
+  "insufficientBalance": {
+    "message": "Хангалтгүй тэнцэл."
+  },
+  "insufficientFunds": {
+    "message": "Хангалтгүй сан."
+  },
+  "insufficientTokens": {
+    "message": "Хангалтгүй токенс."
+  },
+  "invalidAddress": {
+    "message": "Буруу хаяг"
+  },
+  "invalidAddressRecipient": {
+    "message": "Хүлээн авагчийн хаяг нь хүчингүй"
+  },
+  "knownAddressRecipient": {
+    "message": "Мэдэгдэж гэрээний хаяг."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Биш ETH сүлжээ, тогтоосон жижиг үсгээр"
+  },
+  "invalidInput": {
+    "message": "Invalid input."
+  },
+  "invalidRPC": {
+    "message": "Хүчин төгөлдөр бус RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Хүчин төгөлдөр бус Блок Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Хүчин төгөлдөр бус үр өгүүлбэр"
+  },
+  "jsonFile": {
+    "message": "JSON Файл",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Туршилтын Сүлжээ"
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "learnMore": {
+    "message": "Илүү ихийг олж мэдэх"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Та хийх хэрэгтэй ашиглах нь таны өнгөрсөн данс өмнө, you can add a new one."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Тийм ээ, авч үзье тохируулах!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Холбоосууд"
+  },
+  "liveGasPricePredictions": {
+    "message": "Амьд Байгалийн Хийн Үнийн Таамаглал"
+  },
+  "loading": {
+    "message": "Ачаалж байна..."
+  },
+  "loadingTokens": {
+    "message": "Ачих Токенс..."
+  },
+  "loadMore": {
+    "message": "Ачаалал Их"
+  },
+  "localhost": {
+    "message": "Localhost-8545"
+  },
+  "login": {
+    "message": "Нэвтрэх"
+  },
+  "logout": {
+    "message": "Гарах"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Гаралтын хугацаа нь хэт их"
+  },
+  "mainnet": {
+    "message": "Гол Ethereum Сүлжээ"
+  },
+  "memorizePhrase": {
+    "message": "Энэ өгүүлбэр цээжил."
+  },
+  "memo": {
+    "message": "танилцуулгад"
+  },
+  "menu": {
+    "message": "Цэс"
+  },
+  "message": {
+    "message": "Зурвас"
+  },
+  "metamaskDescription": {
+    "message": "Та холбох Ethereum болон Төвлөрсөн бус Вэб."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Үрийн Үг"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Хувилбар"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Нууц үгээ оруулна уу батлахын тулд энэ нь та шүү дээ!"
+  },
+  "myAccounts": {
+    "message": "Миний Данс"
+  },
+  "myWalletAccounts": {
+    "message": "Миний Түрийвч Данс"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Таны бүх MetaMask бий данс автоматаар нэмж энэ хэсэг нь."
+  },
+  "mustSelectOne": {
+    "message": "Сонгох естой наад зах нь 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Харилцах төвлөрсөн бус програмууд ашиглан MetaMask, you ' ll need Ифер таны түрийвч."
+  },
+  "needImportFile": {
+    "message": "Та сонгох естой файлыг импортлох.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Илгээж чадахгүй сөрөг хэмжээний ETH."
+  },
+  "networkName": {
+    "message": "Сүлжээний Нэр"
+  },
+  "networks": {
+    "message": "Сүлжээ"
+  },
+  "networkSettingsDescription": {
+    "message": "Нэмэх, засварлах, гаалийн RPC сүлжээ"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Шинэ Данс"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Шинэ хаяг илэрсэн! Энд дарж нэмнэ таны хаяг."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Шинэ Холбоо Барих"
+  },
+  "newContract": {
+    "message": "Шинэ Гэрээ"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Шинэ Сүлжээ"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Ямар ч, би аль хэдийн үрийн өгүүлбэр"
+  },
+  "protectYourKeys": {
+    "message": "Хамгаалах Таны Түлхүүрүүд!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Болгоомжтой байх нь таны үрийн өгүүлбэр — мэдээлэл байна вэб сайт оролдлого дуурайж MetaMask. MetaMask хэзээ ч асуух нь таны үрийн өгүүлбэр!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Keep your өгүүлбэр аюулгүй. Хэрэв та-г үзнэ үү зүйлийг fishy, эсвэл та тодорхой бус байгаа талаар цахим хуудас, и-мэйл support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Шинэ RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Шинэ Нийт"
+  },
+  "newTransactionFee": {
+    "message": "Шинэ Гүйлгээний Шимтгэл"
+  },
+  "next": {
+    "message": "Дараагийн"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Ямар ч хаяг тогтоож байсан энэ нэр."
+  },
+  "noDeposits": {
+    "message": "Ямар ч орд хүлээн авсан"
+  },
+  "noConversionRateAvailable": {
+    "message": "Ямар Ч Хөрвүүлэх Ханш Боломжтой"
+  },
+  "noTransactions": {
+    "message": "Та ямар ч ажил гүйлгээ"
+  },
+  "noThanks": {
+    "message": "Ямар Ч Талархал Илэрхийлье"
+  },
+  "notEnoughGas": {
+    "message": "Хангалттай Биш Хий"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Вэбкам олж чадаагүй"
+  },
+  "noWebcamFound": {
+    "message": "Таны компьютерийн вэбкам олж байсан юм. Дахин оролдоно уу."
+  },
+  "ofTextNofM": {
+    "message": "нь"
+  },
+  "orderOneHere": {
+    "message": "Захиалга нь Trezor, эсвэл Дэвтэр болон байлгах сан, хүйтэн хадгалах"
+  },
+  "origin": {
+    "message": "Гарал үүсэл"
+  },
+  "parameters": {
+    "message": "Параметрүүдийг"
+  },
+  "participateInMetaMetrics": {
+    "message": "Оролцох MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Оролцох MetaMetrics гаргахад нь туслах MetaMask илүү сайн"
+  },
+  "password": {
+    "message": "Нууц үг"
+  },
+  "passwordsDontMatch": {
+    "message": "Нууц үг Таарахгүй Байна"
+  },
+  "passwordNotLongEnough": {
+    "message": "Нууц биш хангалттай урт"
+  },
+  "pastePrivateKey": {
+    "message": "Оо нь таны хувийн түлхүүр мөр энд:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Оо нь таны үрийн өгүүлбэр энд!"
+  },
+  "pending": {
+    "message": "хүлээгдэж"
+  },
+  "personalAddressDetected": {
+    "message": "Хувийн хаяг илэрсэн. Оролт token гэрээний хаяг."
+  },
+  "prev": {
+    "message": "Өмнөх"
+  },
+  "primaryCurrencySetting": {
+    "message": "Үндсэн Валютын"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Нууцлалын Бодлого"
+  },
+  "privateKey": {
+    "message": "Хувийн Түлхүүр",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Анхааруулга: Хэзээ ч ил тод болгох нь энэ нь гол. Хэн нэгэн таны хувийн түлхүүрүүд нь хулгайлж чадна, ямар ч хөрөнгө эзэмшиж таны дансанд."
+  },
+  "privateNetwork": {
+    "message": "Хувийн Сүлжээ"
+  },
+  "qrCode": {
+    "message": "Шоу QR Код"
+  },
+  "queue": {
+    "message": "Дараалал"
+  },
+  "readdToken": {
+    "message": "Та нэмж болно, энэ түлхүүрийг буцааж ирээдүйд гаргасан гэж \"Нэмэх token\" таны данс options цэс."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Хүлээн Авагчийн Хаяг"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Татгалзах Бүх"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Татгалзсан"
+  },
+  "reset": {
+    "message": "Анхны байдалд нь оруулж"
+  },
+  "resetAccount": {
+    "message": "Дахин Тохируулах Данс"
+  },
+  "resetAccountDescription": {
+    "message": "Шинэчлэн таны дансанд тодорхой болно таны гүйлгээний түүх."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Надад сануулах дараа"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Сэргээх таны Дансанд нь Үрийн Өгүүлбэр"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "хүсэлтийг хүлээж байж хүлээн зөвшөөрч"
+  },
+  "required": {
+    "message": "Шаардлагатай"
+  },
+  "restore": {
+    "message": "Сэргээх"
+  },
+  "revealSeedWords": {
+    "message": "Илчлэх Үрийн Үг"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Үрийн Өгүүлбэр"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Хэрэв та хэзээ нэгэн цагт өөрчлөлт хөтчүүд, эсвэл шилжих компьютер, хэрэв та хэрэгтэй энэ нь үрийн өгүүлбэр хандах нь таны данс. Тэднийг аварч хаа нэгтээ аюулгүй, нууц."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Хуваалцах БАЙХГҮЙ бол энэ өгүүлбэрийг хэн нь!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Эдгээр үгсийг ашиглаж болно хулгайлах таны бүх данс."
+  },
+  "revert": {
+    "message": "Болдог байх"
+  },
+  "remove": {
+    "message": "Устгах"
+  },
+  "removeAccount": {
+    "message": "Устгах данс"
+  },
+  "removeAccountDescription": {
+    "message": "Энэ данс устгах болно, таны түрийвч. Уу байгаа эсэхийг шалгаарай, эх үрийн өгүүлбэр эсвэл хувийн түлхүүр энэ нь импортын дансанд үргэлжлүүлэн өмнө. Та импортолж болно, эсвэл бий данс дахин данс drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Туршилтын Сүлжээ"
+  },
+  "ropsten": {
+    "message": "Ropsten Туршилтын Сүлжээ"
+  },
+  "goerli": {
+    "message": "Goerli Туршилтын Сүлжээ"
+  },
+  "save": {
+    "message": "Хадгалах"
+  },
+  "slow": {
+    "message": "Удаан"
+  },
+  "slower": {
+    "message": "Удаан"
+  },
+  "saveAsCsvFile": {
+    "message": "Save as CSV Файл"
+  },
+  "scanInstructions": {
+    "message": "Газар нь QR код нь өмнө нь таны камер"
+  },
+  "scanQrCode": {
+    "message": "QR Код нь скан"
+  },
+  "search": {
+    "message": "Хайлт"
+  },
+  "searchResults": {
+    "message": "Хайлтын Үр Дүн"
+  },
+  "secretBackupPhrase": {
+    "message": "Нууц Нөөц Өгүүлбэр"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Таны нууц нөөц хэллэг нь хялбар болгодог нөөцлөх, нөхөн сэргээх таны дансанд."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "АНХААРУУЛГА: Хэзээ ч ил тод таны нөөц өгүүлбэр. Хэрэв хэн нэгэн нь энэ өгүүлбэр нь авч болно таны Ифер үүрд."
+  },
+  "secretPhrase": {
+    "message": "Орж өөрийн нууц арван хоер үг хэллэг энд сэргээх таны vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Аюулгүй Байдал Ба Нууцлал"
+  },
+  "securitySettingsDescription": {
+    "message": "Нууцлалын тохиргоо, түрийвч үрийн өгүүлбэр"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Тусдаа гарч байгаа үг бүр нь нэг зай"
+  },
+  "seedPhraseReq": {
+    "message": "Үрийн хэлц байдаг 12 хэлбэл урт"
+  },
+  "selectCurrency": {
+    "message": "Сонгох Валютын"
+  },
+  "selectEachPhrase": {
+    "message": "Сонгоно уу өгүүлбэр бүрийг итгэлтэй болгохын тулд, энэ нь зөв."
+  },
+  "selectLocale": {
+    "message": "Сонгох Локал"
+  },
+  "selectType": {
+    "message": "Сонгох Төрөл"
+  },
+  "send": {
+    "message": "Илгээх"
+  },
+  "sendAmount": {
+    "message": "Илгээх Хэмжээ"
+  },
+  "sendETH": {
+    "message": "Илгээх ETH"
+  },
+  "sendTokens": {
+    "message": "Илгээх Токенс"
+  },
+  "sentEther": {
+    "message": "илгээсэн ифер"
+  },
+  "sentTokens": {
+    "message": "илгээсэн токенс"
+  },
+  "separateEachWord": {
+    "message": "Тусдаа гарч байгаа үг бүр нь нэг зай"
+  },
+  "searchTokens": {
+    "message": "Хайлт Токенс"
+  },
+  "selectAnAccount": {
+    "message": "Данс сонгоно уу"
+  },
+  "selectAnAccountHelp": {
+    "message": "Сонгох данс харах MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Сонгох нь дээд хийн төлбөр хурдасгах боловсруулах таны гүйлгээ.*"
+  },
+  "selectHdPath": {
+    "message": "Сонгох HD Зам"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Тохиргоо"
+  },
+  "showAdvancedGasInline": {
+    "message": "Дэвшилтэт хийн хяналт"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Энэ сонгоно харуулах хийн үнэ, хязгаар хяналтыг шууд илгээж баталгаажуулах дэлгэц."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Шоу Хувиргах дээр Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Энэ сонгоно харуулах fiat хувиргах дээр Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Шоу Хувийн Түлхүүрүүд"
+  },
+  "showHexData": {
+    "message": "Шоу Аллен Мэдээлэл"
+  },
+  "showHexDataDescription": {
+    "message": "Энэ сонгоно харуулах аллен өгөгдлийн талбар дээр илгээх, дэлгэц"
+  },
+  "sign": {
+    "message": "Гарын үсэг зурах"
+  },
+  "signatureRequest": {
+    "message": "Гарын Үсэг Хүсэлт"
+  },
+  "signed": {
+    "message": "Гарын үсэг зурсан"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Гарын Үсэг Хүсэлт"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Ямар нэг зүйл буруу явсан."
+  },
+  "speedUp": {
+    "message": "Хурдасгахын"
+  },
+  "speedUpCancellation": {
+    "message": "Хурд хүртэл энэ цуцлах"
+  },
+  "speedUpTransaction": {
+    "message": "Хурд хүртэл энэ ажил гүйлгээ"
+  },
+  "switchNetworks": {
+    "message": "Сольж Сүлжээ"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Улсын Бүртгэлүүд"
+  },
+  "stateLogs": {
+    "message": "Улсын Бүртгэлүүд"
+  },
+  "stateLogsDescription": {
+    "message": "Төрийн бүртгэлийг агуулсан, таны олон нийтийн данс хаяг илгээсэн гүйлгээ."
+  },
+  "stateLogError": {
+    "message": "Алдаа засах улсын лог."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Холбогдох Тоног Төхөөрөмж Түрийвч"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Холбох нь таны тоног төхөөрөмжийн түрийвч шууд таны компьютер."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Данс сонгоно уу"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Дансаа сонго та үзэхийн тулд хүсэж байгаа. Та зөвхөн нэгийг сонгож, тухайн үед."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Ашиглаж эхлэх dApps ба түүнээс дээш!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Ашиглах нь таны тоног төхөөрөмжийн бүртгэл гэх мэт хэрэв та ямар ч Ethereum данс. Нэвтрэх dApps, илгээх, Eth, худалдан авах, хадгалах ERC20 жетон болон төрийн Бус Fungible токенс шиг CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Дэлгүүр энэ өгүүлбэрийн шиг нууц үг менежер 1Password."
+  },
+  "submit": {
+    "message": "Гаргаж"
+  },
+  "submitted": {
+    "message": "Ирүүлсэн"
+  },
+  "supportCenter": {
+    "message": "Бидний очиж Дэмжих Төв"
+  },
+  "symbol": {
+    "message": "Тэмдэг"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Бэлэг тэмдэг байх естой хооронд 0, 12 тэмдэгт."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Дээр эргэж байх нь таны тохиргоо дээр тулгуурласан 3Box. Энэ боломж нь currenty туршилтын; ашиглах өөрийн гэсэн эрсдэл дагуулдаг."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box байна хөгжлийн бэрхшээлтэй улмаас алдаа эхний үед хуулахыг"
+  },
+  "syncWithMobile": {
+    "message": "Sync гар"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync гар"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Хэрэв та зүгээр л нээх MetaMask Гар утасны апп анх удаа л алхмуудыг дагана, таны утас."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Скан энэ код нь таны MetaMask гар утасны апп"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Эсэхийг шалгаарай өөр хэн ч харж байна, таны дэлгэц үед та энэ код нь скан"
+  },
+  "syncWithMobileComplete": {
+    "message": "Таны мэдээлэл байна синк succesfully. Эдлэх MetaMask гар утасны апп!"
+  },
+  "terms": {
+    "message": "Ашиглах нөхцөл"
+  },
+  "testFaucet": {
+    "message": "Туршилтын Шугамнаас"
+  },
+  "thisWillCreate": {
+    "message": "Энэ нь бий болгох, шинэ түрийвч, үрийн өгүүлбэр"
+  },
+  "tips": {
+    "message": "Зөвлөмж"
+  },
+  "to": {
+    "message": "To"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token нь аль хэдийн нэмэгдсэн байна."
+  },
+  "tokenContractAddress": {
+    "message": "Token Гэрээний Хаяг"
+  },
+  "tokenSymbol": {
+    "message": "Token Тэмдэг"
+  },
+  "total": {
+    "message": "Нийт"
+  },
+  "transaction": {
+    "message": "гүйлгээний"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Гүйлгээний тулгарч алдаа."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Гүйлгээний Алдаа. Мөн адил хаясан гэрээний код."
+  },
+  "transactionErrorNoContract": {
+    "message": "Trying to call a function дээр бус гэрээ хаяг."
+  },
+  "transactionFee": {
+    "message": "Гүйлгээний Шимтгэл"
+  },
+  "transactionTime": {
+    "message": "Гүйлгээний Цаг"
+  },
+  "transfer": {
+    "message": "Шилжүүлэх"
+  },
+  "transferBetweenAccounts": {
+    "message": "Миний данс хооронд гүйлгээ хийх"
+  },
+  "transferFrom": {
+    "message": "Шилжүүлэх Нь"
+  },
+  "troubleTokenBalances": {
+    "message": "Бид асуудалтай ачих таны token үлдэгдэл. Та тэднийг харж болно ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Дахин оролдоно"
+  },
+  "typePassword": {
+    "message": "Төрөл таны MetaMask нууц үг"
+  },
+  "unapproved": {
+    "message": "Зөвшөөрөлгүй"
+  },
+  "units": {
+    "message": "нэгж"
+  },
+  "unknown": {
+    "message": "Үл мэдэгдэх"
+  },
+  "unknownNetwork": {
+    "message": "Үл Мэдэгдэх Хувийн Сүлжээ"
+  },
+  "unknownQrCode": {
+    "message": "Алдаа: Бид тодорхойлж чадахгүй байсан гэж QR код"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Ямар нэг зүйл буруу болбол...."
+  },
+  "unknownCameraError": {
+    "message": "Нь алдаа байсан гэж оролдож байхад хандах таны камер. Дахин оролдоно уу..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "Нь төвлөрсөн бус вэб хүлээж"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs шаардлагатай зохих HTTP/HTTPS угтвар."
+  },
+  "usedByClients": {
+    "message": "Ашиглаж янз бүрийн өөр өөр үйлчлүүлэгч"
+  },
+  "userName": {
+    "message": "Хэрэглэгчийн нэр"
+  },
+  "validFileImport": {
+    "message": "Та сонгох естой хүчинтэй файл импортлох."
+  },
+  "viewAccount": {
+    "message": "Харах Данс"
+  },
+  "viewinExplorer": {
+    "message": "Харах Explorer"
+  },
+  "viewContact": {
+    "message": "Харах Холбоо Барих"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Харах Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Манай вэб сайтад зочилно уу"
+  },
+  "walletSeed": {
+    "message": "Түрийвч Үрийн"
+  },
+  "welcomeBack": {
+    "message": "Эргэж Тавтай Морилно Уу!"
+  },
+  "welcome": {
+    "message": "Тавтай морилно уу MetaMask"
+  },
+  "writePhrase": {
+    "message": "Энэ бичиж өгүүлбэр цаасан дээр, дэлгүүр, аюулгүй байршил. Хэрэв та хүсэж байгаа бол бүр ч илүү аюулгүй байдал, үүнийг бичиж олон ширхэг цаасан болон store-д тус бүр 2 - 3 өөр өөр газар."
+  },
+  "yesLetsTry": {
+    "message": "Тийм ээ, оролдож үзье"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Та зөвшөөрөх хэрэгтэй камер хандах, энэ боломжийг ашиглах."
+  },
+  "yourSigRequested": {
+    "message": "Таны гарын үсэг байгаа юм хүсэлт"
+  },
+  "youSign": {
+    "message": "Та гарын үсэг зурах"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Таны хувийн үрийн өгүүлбэр"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Тэг хийн үнэ дээр хурдасгахын"
+  }
+}

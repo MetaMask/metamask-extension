@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Bonisa Engenayo Eyenziweyo"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Khetha oku ukusebenzisa Etherscan ukubonisa engenayo eyenziweyo kwi-eyenziweyo uluhlu"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Tshati ikhona kuphela ngomhla Ethereum networks."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Noqhagamshelwano"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Zephondo bavunyelwe ukuba ukufunda ii-akhawunti zakho"
+  },
+  "addSite": {
+    "message": "Ukongeza Kule Ndawo"
+  },
+  "addSiteDescription": {
+    "message": "Ngokwencwadi site ukuvumela nayo ukufikelela kwi-akhawunti zakho, kuluncedo kuba kunoko dapps"
+  },
+  "connected": {
+    "message": "Zidityanisiwe"
+  },
+  "connectedDescription": {
+    "message": "Uluhlu zephondo kuvunyelwe ufikelelo lwakho iidilesi"
+  },
+  "privacyModeDefault": {
+    "message": "Yangasese Indlela ngoku yenziwe yi default"
+  },
+  "contractInteraction": {
+    "message": "Isivumelwano Ndibano"
+  },
+  "clearApprovalData": {
+    "message": "Ukususa zonke zephondo"
+  },
+  "reject": {
+    "message": "Ukwala"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Le ndawo izama ukufikelela imboniselo yakho yangoku i-akhawunti ye-imeyile. Soloko qiniseka ukuba uthembe zephondo kufuneka ezisebenza ngayo."
+  },
+  "about": {
+    "message": "Malunga"
+  },
+  "aboutSettingsDescription": {
+    "message": "Inguqulelo, inkxaso embindini, kwaye uqhagamshelane ulwazi."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Abafikelela yekhamera yakho..."
+  },
+  "account": {
+    "message": "I-akhawunti"
+  },
+  "accountDetails": {
+    "message": "Iinkcukacha Ze-Akhawunti"
+  },
+  "accountName": {
+    "message": "Igama Le-Akhawunti"
+  },
+  "accountOptions": {
+    "message": "I-Akhawunti Iinketho"
+  },
+  "accountSelectionRequired": {
+    "message": "Kufuneka khetha i-akhawunti!"
+  },
+  "activityLog": {
+    "message": "umsebenzi log"
+  },
+  "addNetwork": {
+    "message": "Yongeza Umsebenzisi Womnatha"
+  },
+  "addRecipient": {
+    "message": "Yongeza Lomamkeli"
+  },
+  "advanced": {
+    "message": "Ephambili"
+  },
+  "advancedSettingsDescription": {
+    "message": "Ukufikelela phambili imisebenzi, ukhuphele Urhulumente Hluleka, Umisele i-Akhawunti, ucwangciso testnets kwaye yesiko RPC."
+  },
+  "advancedOptions": {
+    "message": "Ephambili Iinketho"
+  },
+  "addToAddressBook": {
+    "message": "Yongeza yedilesi"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "umzekelo, John D."
+  },
+  "addAlias": {
+    "message": "Yongeza ngokunye"
+  },
+  "addToken": {
+    "message": "Yongeza Umqondiso"
+  },
+  "addTokens": {
+    "message": "Yongeza Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Yongeza Wacebisa Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Yongeza tokens kuwe anayithathela acquired usebenzisa MetaMask"
+  },
+  "amount": {
+    "message": "Isixa"
+  },
+  "appDescription": {
+    "message": "I-Ethereum Engagqibekangacomment yakho Zincwadi",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Approve"
+  },
+  "approved": {
+    "message": "Ikuvumile"
+  },
+  "asset": {
+    "message": "Asethi"
+  },
+  "attemptingConnect": {
+    "message": "Uzama ukudibanisa blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Kokufaka lo mzamo akusebenzi isiqinisekiso sakho yoqobo intengiselwano iya kuba irhoxisiwe. Ukuba ukucinywa umzamo yenguquko, uza kuba ibe igcwalisiwe i-intengiselwano imali ngasentla."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Misela emileyo ixesha imizuzu phambi MetaMask uza ngokuzenzekelayo ukupuma"
+  },
+  "average": {
+    "message": "Avareji"
+  },
+  "back": {
+    "message": "Emva"
+  },
+  "backToAll": {
+    "message": "Emva Bonke"
+  },
+  "backupApprovalNotice": {
+    "message": "Yogcino yakho Efihlakeleyo Imali ikhowudi ukugcina yakho engagqibekangacomment kwaye imali ekhuselekileyo."
+  },
+  "backupApprovalInfo": {
+    "message": "Oku imfihlo ikhowudi ulindeleke ukuba ukubuyiselwa yakho engagqibekangacomment kwimeko kuwe wawulahla umphefumlo wakho icebo, xana i-password yakho, kufuneka kwakhona-faka MetaMask, okanye ufuna ukufikelela yakho engagqibekangacomment kwesinye isixhobo."
+  },
+  "backupNow": {
+    "message": "Yogcino ngoku"
+  },
+  "balance": {
+    "message": "Ungqinelwano"
+  },
+  "balanceOutdated": {
+    "message": "Echaza zibe madala"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Akonelanga ungqinelwano kuba ngoku igesi iyonke"
+  },
+  "basic": {
+    "message": "Ezisisiseko"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Thintela Ranger"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Sebenzisa Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Ngokusesikweni intengiselwano nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Yesiko Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Yakho Zincwadi ayixhaswanga..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask yenzelwe kwaye wakha kwi-California."
+  },
+  "buyWithWyre": {
+    "message": "Kuthenga ETH kunye Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ikuvumela sebenzisa ikhadi lebhanki letyala ukuba idiphozithi ETH ekunene kwi yakho MetaMask-akhawunti."
+  },
+  "buyCoinSwitch": {
+    "message": "Kuthenga kwi CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch ufumana i-one-misa indawo ukuba exchange ngaphezulu kwama-300 cryptocurrencies e eyona umyinge."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Ngaphandle"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Ngomhla we -"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Rhoxisa"
+  },
+  "cancelAttempt": {
+    "message": "Rhoxisa Umzamo"
+  },
+  "cancellationGasFee": {
+    "message": "Ukucinywa Igesi Imali"
+  },
+  "cancelled": {
+    "message": "Irhoxisiwe"
+  },
+  "chainId": {
+    "message": "Lesixokelelwane ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Cofa apha ukuze kutyhila imfihlo mazwi"
+  },
+  "close": {
+    "message": "Vala"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Kufuneka usebenzise MetaMask kwi-Google ye-chrome ukuze ukunxulumana yakho Hardware Engagqibekangacomment."
+  },
+  "confirm": {
+    "message": "Qinisekisa"
+  },
+  "confirmed": {
+    "message": "Iqinisekiswa"
+  },
+  "confirmPassword": {
+    "message": "Qinisekisa-Password"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Qinisekisa yakho Efihlakeleyo Yogcino Ibinzana"
+  },
+  "congratulations": {
+    "message": "Siyavuyisana"
+  },
+  "connectHardwareWallet": {
+    "message": "Ne-Hardware Engagqibekangacomment"
+  },
+  "connect": {
+    "message": "Ukunxulumana"
+  },
+  "connectRequest": {
+    "message": "Ukunxulumana Isicelo"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Ukuqhagamshela ukuba Kovan Uvavanyo lomsebenzi Womnatha"
+  },
+  "connectingToMainnet": {
+    "message": "Ukuqhagamshela ukuba Engundoqo Ethereum Womnatha"
+  },
+  "connectingToRopsten": {
+    "message": "Ukuqhagamshela ukuba Ropsten Uvavanyo lomsebenzi Womnatha"
+  },
+  "connectingToRinkeby": {
+    "message": "Ukuqhagamshela ukuba Rinkeby Uvavanyo lomsebenzi Womnatha"
+  },
+  "connectingToLocalhost": {
+    "message": "Ukuqhagamshela ukuba Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Ukuqhagamshela ukuba Goerli Uvavanyo lomsebenzi Womnatha"
+  },
+  "contacts": {
+    "message": "Nabo"
+  },
+  "contactsSettingsDescription": {
+    "message": "Ukongeza, hlela, susa, kwaye ulawule yakho qhagamshelana"
+  },
+  "continueToWyre": {
+    "message": "Kuqhubeka Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Kuqhubeka CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Isivumelwano Deployment"
+  },
+  "conversionProgress": {
+    "message": "Uguqulo eqhubekayo"
+  },
+  "copiedButton": {
+    "message": "Ikhutshelwe"
+  },
+  "copiedExclamation": {
+    "message": "Ikhutshelwe!"
+  },
+  "copy": {
+    "message": "Khuphela"
+  },
+  "copyAddress": {
+    "message": "Khuphela idilesi eqhotyoshwayo"
+  },
+  "copyTransactionId": {
+    "message": "Khuphela Intengiselwano ID"
+  },
+  "copiedTransactionId": {
+    "message": "Ikhutshelwe Intengiselwano ID"
+  },
+  "copyToClipboard": {
+    "message": "Khuphela kwibhodi eqhotyoshwayo"
+  },
+  "copyButton": {
+    "message": " Khuphela "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Yenza"
+  },
+  "createAccount": {
+    "message": "Yenza I-Akhawunti"
+  },
+  "createAWallet": {
+    "message": "Yenza Engagqibekangacomment"
+  },
+  "createPassword": {
+    "message": "Yenza I-Password"
+  },
+  "currencyConversion": {
+    "message": "Okwangoku Uguqulo"
+  },
+  "currentLanguage": {
+    "message": "Ngoku Ulwimi"
+  },
+  "customGas": {
+    "message": "Ngokusesikweni Igesi"
+  },
+  "customGasSubTitle": {
+    "message": "Ukwanda imali inokuba nciphisa ukuqhubela phinda-phinda, kodwa akuvumelekanga guaranteed."
+  },
+  "customToken": {
+    "message": "Yesiko Umqondiso"
+  },
+  "customRPC": {
+    "message": "Yesiko RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Amanani eshumi kufuneka, ubuncinane, 0, kwaye ingabi phezu 36."
+  },
+  "decimal": {
+    "message": "Amanani eshumi ka-Bmp"
+  },
+  "defaultNetwork": {
+    "message": "I-default womnatha kuba Etere eyenziweyo ngu Engundoqo Net."
+  },
+  "delete": {
+    "message": "Cima"
+  },
+  "deleteAccount": {
+    "message": "Ukucima I-Akhawunti"
+  },
+  "deposit": {
+    "message": "Idiphozithi"
+  },
+  "depositEther": {
+    "message": "Idiphozithi Etere"
+  },
+  "details": {
+    "message": "Iinkcukacha"
+  },
+  "directDepositEther": {
+    "message": "Ngqo Idiphozithi Etere"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ukuba sele unayo abanye Etere, i-quickest indlela get Etere yakho entsha engagqibekangacomment yi-ngqo idiphozithi."
+  },
+  "dismiss": {
+    "message": "Yonke imihla"
+  },
+  "done": {
+    "message": "Kwenziwa"
+  },
+  "downloadGoogleChrome": {
+    "message": "Fumana Google Ye-Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Fumana le Imfihlo Yogcino Ibinzana kwaye ligcine ukugcinwa ngokukhuselekileyo kwi-external ofihliweyo hard drive okanye kwindawo yokugcina medium."
+  },
+  "downloadStateLogs": {
+    "message": "Fumana Urhulumente Hluleka"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Dropped"
+  },
+  "edit": {
+    "message": "Hlela"
+  },
+  "editContact": {
+    "message": "Hlela Uqhagamshelane"
+  },
+  "emailUs": {
+    "message": "Imeyili apha kuthi!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Ngaba ophunyezwe uvavanyo - gcina yakho seedphrase ekhuselekileyo, ke uxanduva lwakho!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Iincam kwi kugcinwa kuyo ngokukhuselekileyo"
+  },
+  "endOfFlowMessage3": {
+    "message": "Gcina yogcino kwiindawo ezininzi iindawo."
+  },
+  "endOfFlowMessage4": {
+    "message": "Zange share ibinzana kunye nabani na."
+  },
+  "endOfFlowMessage5": {
+    "message": "Lumka ka-phishing! MetaMask ayinakuze spontaneously buza kuba imbewu yakho ibinzana."
+  },
+  "endOfFlowMessage6": {
+    "message": "Ukuba kufuneka emva phezulu imbewu yakho ibinzana kwakhona, ungafumana ngayo Izicwangciso -> Ukhuseleko."
+  },
+  "endOfFlowMessage7": {
+    "message": "Ukuba nawe ngonaphakade kuba imibuzo okanye khangela into fishy, i-imeyili support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ayikwazi ukubuyiselwa yakho seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Funda ngakumbi."
+  },
+  "endOfFlowMessage10": {
+    "message": "Zonke Zenziwa"
+  },
+  "ensRegistrationError": {
+    "message": "Impazamo kwi-ENS igama ubhaliso"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS igama ayifumaneki zangoku womnatha. Zama ukuba iyatshintsha Engundoqo Ethereum Womnatha."
+  },
+  "enterAnAlias": {
+    "message": "Faka elinye igama"
+  },
+  "enterPassword": {
+    "message": "Ufake i-password"
+  },
+  "enterPasswordContinue": {
+    "message": "Ufake i-password ukuqhubeka"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Loluntu Idilesi Ye"
+  },
+  "etherscanView": {
+    "message": "Imboniselo kwi-akhawunti Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Uqikelelo Ukuqhubela Phinda-Phinda"
+  },
+  "expandView": {
+    "message": "Yandisa Imboniselo"
+  },
+  "exportPrivateKey": {
+    "message": "Kumazwe Angaphandle Kweli Private Iqhosha"
+  },
+  "failed": {
+    "message": "Ayiphumelelanga"
+  },
+  "fast": {
+    "message": "Ngokukhawuleza"
+  },
+  "faster": {
+    "message": "Ngokukhawuleza"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Xana kwesi sixhobo"
+  },
+  "from": {
+    "message": "Ukusuka"
+  },
+  "fromShapeShift": {
+    "message": "Ukususela ShapeShift"
+  },
+  "functionType": {
+    "message": "Uhlobo Lomsebenzi"
+  },
+  "gasLimit": {
+    "message": "Igesi Umda"
+  },
+  "gasLimitCalculation": {
+    "message": "Thina ukubala wacebisa ukuba igesi umda ngokusekelwe womnatha impumelelo yokutshintsha."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Igesi umda kukuba ubukhulu isixa-mali iiyunithi ka-igesi uvumelekile ukuba uzimisele ukuchitha."
+  },
+  "gasLimitTooLow": {
+    "message": "Igesi umda kufuneka ubuncinane 21000"
+  },
+  "gasUsed": {
+    "message": "Igesi Kusetyenziswa"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Igesi Ixabiso Kakhulu Low"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Igesi ixabiso ichaza isixa-mali Etere kuwe bazimisele ukuba ahlawule nganye indlela igesi."
+  },
+  "gasPriceNoDenom": {
+    "message": "Igesi Kwexabiso"
+  },
+  "gasPriceCalculation": {
+    "message": "Thina ukubala wacebisa ukuba igesi amaxabiso ngokusekelwe womnatha impumelelo yokutshintsha."
+  },
+  "general": {
+    "message": "Jikelele"
+  },
+  "generalSettingsDescription": {
+    "message": "Okwangoku, guqulo ephambili okwangoku, ulwimi, blockies identicon"
+  },
+  "getEther": {
+    "message": "Get Etere"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Ukufumana Uncedo."
+  },
+  "getStarted": {
+    "message": "Get Waqala"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Siphinda-ndonwabe ukubona kuwe."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware engagqibekangacomment zidityanisiwe"
+  },
+  "hardwareWallets": {
+    "message": "Ukunxulumana a hardware engagqibekangacomment"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Khetha hardware engagqibekangacomment kuwe, nento yokuba ngathi ukusebenzisa kunye MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "apha",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex-Data"
+  },
+  "hide": {
+    "message": "Fihla"
+  },
+  "hideToken": {
+    "message": "Fihla Umqondiso"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Imbali"
+  },
+  "import": {
+    "message": "Ukungenisa",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Ngenisa I-Akhawunti"
+  },
+  "importAccountMsg": {
+    "message": " Aphesheya ii-akhawunti ayisayi kuba enxulumene neakhawunti yakho ekuqaleni wadala MetaMask-akhawunti seedphrase. Funda okungakumbi malunga aphesheya ii-akhawunti "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Ukungenisa Ingxelo kunye Nembewu Ibinzana"
+  },
+  "importWallet": {
+    "message": "Ukungenisa Engagqibekangacomment"
+  },
+  "importYourExisting": {
+    "message": "Ukungenisa yakho ezikhoyo engagqibekangacomment usebenzisa i-12 ilizwi imbewu ibinzana"
+  },
+  "imported": {
+    "message": "Aphesheya",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Ukungenisa usebenzisa i-akhawunti imbewu ibinzana"
+  },
+  "infoHelp": {
+    "message": "Ulwazi & Uncedo"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Lakho lokuqala intengiselwano lwaqiniselwa yi-womnatha. Nqakraza KULUNGILE ukuba umva."
+  },
+  "insufficientBalance": {
+    "message": "Akukho mali yanele."
+  },
+  "insufficientFunds": {
+    "message": "Akonelanga imali."
+  },
+  "insufficientTokens": {
+    "message": "Akonelanga tokens."
+  },
+  "invalidAddress": {
+    "message": "Igama idilesi ye"
+  },
+  "invalidAddressRecipient": {
+    "message": "Lomamkeli idilesi ayisebenzi"
+  },
+  "knownAddressRecipient": {
+    "message": "Ezaziwayo isivumelwano idilesi."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Hayi ETH womnatha, imiselwe ku-oonobumba abancinci"
+  },
+  "invalidInput": {
+    "message": "Igama igalelo."
+  },
+  "invalidRPC": {
+    "message": "Igama RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Igama Block Forte URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Igama imbewu ibinzana"
+  },
+  "jsonFile": {
+    "message": "JSON Ifayile",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Uvavanyo Lomsebenzi Womnatha"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Funda ngakumbi"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Kufuneka basebenzise-akhawunti yakho yokugqibela phambi ungadibanisa entsha enye."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ewe, makhe get set up!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Amakhonkco"
+  },
+  "liveGasPricePredictions": {
+    "message": "Ukuphila Igesi Ixabiso Predictions"
+  },
+  "loading": {
+    "message": "Ukufaka..."
+  },
+  "loadingTokens": {
+    "message": "Ukufaka Tokens..."
+  },
+  "loadMore": {
+    "message": "Ukufaka Ngakumbi"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Ungene"
+  },
+  "logout": {
+    "message": "Ukupuma"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout ixesha kakhulu omkhulu"
+  },
+  "mainnet": {
+    "message": "Engundoqo Ethereum Womnatha"
+  },
+  "memorizePhrase": {
+    "message": "Ukuyibamba eli ibinzana."
+  },
+  "memo": {
+    "message": "umsebenzi"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Umyalezo"
+  },
+  "metamaskDescription": {
+    "message": "Ukuqhagamshela ukuba Ethereum kwaye Decentralized Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Imbewu Mazwi"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Uguqulelo"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Nceda ufake i-password yakho ukuze uqinisekise ke wena!"
+  },
+  "myAccounts": {
+    "message": "Wam-Akhawunti"
+  },
+  "myWalletAccounts": {
+    "message": "Wam Engagqibekangacomment Ii-Akhawunti"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Zonke yakho MetaMask wadala ii-akhawunti kufakelwa ngokuzenzekelayo ukuba eli candelo."
+  },
+  "mustSelectOne": {
+    "message": "Kufuneka khetha ubuncinane 1 umqondiso."
+  },
+  "needEtherInWallet": {
+    "message": "Ukuba ezisebenza nge decentralized izicelo usebenzisa MetaMask, kuza kufuneka Etere yakho engagqibekangacomment."
+  },
+  "needImportFile": {
+    "message": "Kufuneka khetha ifayile ukungenisa.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Awunakuba thumela uthabatha isixa-mali ka-ETH."
+  },
+  "networkName": {
+    "message": "Igama Lothungelwano"
+  },
+  "networks": {
+    "message": "Networks"
+  },
+  "networkSettingsDescription": {
+    "message": "Yongeza kwaye hlela yesiko RPC networks"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "I Akhawunti Entsha"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Entsha idilesi sifunyenwe! Cofa apha ukudibanisa yakho yedilesi."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Entsha Uqhagamshelane"
+  },
+  "newContract": {
+    "message": "Isivumelwano Esitsha"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Uthungelwano Olutsha"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Hayi, besele kuba imbewu ibinzana"
+  },
+  "protectYourKeys": {
+    "message": "Ukukhusela Yakho Izitshixo!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Lumka kunye nembewu yenu ibinzana — babekhona imibiko websites ukuba bazame imitate MetaMask. MetaMask ayinakuze buza kuba imbewu yakho ibinzana!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Gcina yakho ibinzana ekhuselekileyo. Ukuba ubona into fishy, okanye ukhe ubene akaqinisekanga malunga i-website, i-imeyili support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Entsha RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Entsha Iyonke"
+  },
+  "newTransactionFee": {
+    "message": "Entsha Intengiselwano Imali"
+  },
+  "next": {
+    "message": "Elilandelayo"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Akukho idilesi wenziwe misela kuba eli gama."
+  },
+  "noDeposits": {
+    "message": "Akukho efakwa ebhankini wafumana"
+  },
+  "noConversionRateAvailable": {
+    "message": "Akukho Uguqulo Umyinge Ezikhoyo"
+  },
+  "noTransactions": {
+    "message": "Kufuneka akukho eyenziweyo"
+  },
+  "noThanks": {
+    "message": "Hayi Enkosi"
+  },
+  "notEnoughGas": {
+    "message": "Azanelanga Igesi"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam ayifumaneki"
+  },
+  "noWebcamFound": {
+    "message": "Ikhompyutha yakho ngu webcam ayifumanekanga. Nceda uzame kwakhona."
+  },
+  "ofTextNofM": {
+    "message": "ye"
+  },
+  "orderOneHere": {
+    "message": "Ukuze a Trezor okanye Unobumba kwaye bayigcine yakho imali kwi-yingqele agciniweyo"
+  },
+  "origin": {
+    "message": "Kwilizwe lakhe"
+  },
+  "parameters": {
+    "message": "Parameters"
+  },
+  "participateInMetaMetrics": {
+    "message": "Inxaxheba MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Inxaxheba MetaMetrics ukunceda kuthi ukwenza ngcono MetaMask"
+  },
+  "password": {
+    "message": "I-Password"
+  },
+  "passwordsDontMatch": {
+    "message": "Amagama okugqitha Musa Thelekisa"
+  },
+  "passwordNotLongEnough": {
+    "message": "I-Password hayi ixesha elide ngokwaneleyo"
+  },
+  "pastePrivateKey": {
+    "message": "Cola yakho private iqhosha lwamagama apha:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Cola imbewu yakho ibinzana apha!"
+  },
+  "pending": {
+    "message": "kuxhomekeko"
+  },
+  "personalAddressDetected": {
+    "message": "Personal idilesi sifunyenwe. Igalelo le-umqondiso isivumelwano idilesi."
+  },
+  "prev": {
+    "message": "Okudlulileyo"
+  },
+  "primaryCurrencySetting": {
+    "message": "Ephambili Okwangoku"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Umgaqo-Nkqubo Wabucala"
+  },
+  "privateKey": {
+    "message": "Shicilela Iqhosha",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Isilumkiso: Musa disclose eli qhosha. Nabani na neqabane lakho private izitshixo unako steal nayiphi na impahla yexabiso igcine kwi-akhawunti yakho."
+  },
+  "privateNetwork": {
+    "message": "Private Network"
+  },
+  "qrCode": {
+    "message": "Bonisa QR Ikhowudi"
+  },
+  "queue": {
+    "message": "Ufolo"
+  },
+  "readdToken": {
+    "message": "Ungadibanisa lo umqondiso emva kwixesha elizayo yi-oza \"Yongeza umqondiso\" kwi-akhawunti zakho iinketho menu."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Lomamkeli Idilesi Ye"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Lahla Zonke"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Asivunywanga"
+  },
+  "reset": {
+    "message": "Cwangcisa kwakhona"
+  },
+  "resetAccount": {
+    "message": "Umisele I-Akhawunti"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting i-akhawunti yakho iya cacisa yakho intengiselwano imbali."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Remind kum kamva"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Buyisela i-Akhawunti yakho kunye Nembewu Ibinzana"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "izicelo ulinde ukuba abe acknowledged"
+  },
+  "required": {
+    "message": "Kufuneka"
+  },
+  "restore": {
+    "message": "Buyisela"
+  },
+  "revealSeedWords": {
+    "message": "Tyhila Imbewu Mazwi"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Imbewu Ibinzana"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ukuba nawe ngonaphakade tshintsha browsers okanye yiya iikhompyutha, kuya kufuneka oku imbewu ibinzana ukufikelela kwi-akhawunti yakho. Ngaphandle kwabo kwenye indawo ekhuselekileyo kwaye afihlakeleyo."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "MUSA ukwabelana eli ibinzana kunye nabani na!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "La mazwi inokusetyenziselwa steal zonke ii-akhawunti zakho."
+  },
+  "revert": {
+    "message": "Buyisela"
+  },
+  "remove": {
+    "message": "Susa"
+  },
+  "removeAccount": {
+    "message": "Susa i-akhawunti"
+  },
+  "removeAccountDescription": {
+    "message": "Le ngxelo iza kususwa yakho engagqibekangacomment. Nceda qiniseka ukuba unayo yoqobo imbewu ibinzana okanye private iqhosha kuba oku aphesheya-akhawunti phambi siqhubeke. Uyakwazi ukungenisa okanye yenza ii-akhawunti kwakhona kwi-akhawunti faka-phantsi. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Uvavanyo Lomsebenzi Womnatha"
+  },
+  "ropsten": {
+    "message": "Ropsten Uvavanyo Lomsebenzi Womnatha"
+  },
+  "goerli": {
+    "message": "Goerli Uvavanyo Lomsebenzi Womnatha"
+  },
+  "save": {
+    "message": "Gcina"
+  },
+  "slow": {
+    "message": "Nihamba"
+  },
+  "slower": {
+    "message": "Ngokucotha"
+  },
+  "saveAsCsvFile": {
+    "message": "Gcina njenge-CSV Ifayile"
+  },
+  "scanInstructions": {
+    "message": "Beka QR ikhowudi kwi-phambili yakho ikhamera"
+  },
+  "scanQrCode": {
+    "message": "Yovavanyo QR Ikhowudi"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "searchResults": {
+    "message": "Iziphumo Zokukhangela"
+  },
+  "secretBackupPhrase": {
+    "message": "Imfihlo Yogcino Ibinzana"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Yakho efihlakeleyo yogcino ibinzana yenza lula, emva phezulu aze abuyisele i-akhawunti yakho."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ISILUMKISO: Musa disclose yakho yogcino ibinzana. Nabani na kunye eli ibinzana banokuthatha yakho Etere ngonaphakade."
+  },
+  "secretPhrase": {
+    "message": "Faka yakho efihlakeleyo elinesibini ilizwi ibinzana apha ukubuyisela yakho vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Ukhuseleko & Yangasese"
+  },
+  "securitySettingsDescription": {
+    "message": "Yangasese izicwangciso kwaye engagqibekangacomment imbewu ibinzana"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Eyahlukileyo ngamnye ilizwi kunye kuphela isithuba"
+  },
+  "seedPhraseReq": {
+    "message": "Imbewu phrases ingaba 12 amazwi elide"
+  },
+  "selectCurrency": {
+    "message": "Khetha Uphawu Lwangoku"
+  },
+  "selectEachPhrase": {
+    "message": "Nceda khetha ngamnye ibinzana ukuze uqinisekise ukuba ichanekile."
+  },
+  "selectLocale": {
+    "message": "Khetha Locale"
+  },
+  "selectType": {
+    "message": "Khetha Udidi"
+  },
+  "send": {
+    "message": "Thumela"
+  },
+  "sendAmount": {
+    "message": "Thumela Isixa"
+  },
+  "sendETH": {
+    "message": "Thumela ETH"
+  },
+  "sendTokens": {
+    "message": "Thumela Tokens"
+  },
+  "sentEther": {
+    "message": "wathumela etere"
+  },
+  "sentTokens": {
+    "message": "wathumela tokens"
+  },
+  "separateEachWord": {
+    "message": "Eyahlukileyo ngamnye ilizwi kunye kuphela isithuba"
+  },
+  "searchTokens": {
+    "message": "Khangela Tokens"
+  },
+  "selectAnAccount": {
+    "message": "Khetha i-Akhawunti"
+  },
+  "selectAnAccountHelp": {
+    "message": "Khetha i-akhawunti ukubonisa kwi-MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Khetha kakhulu igesi kugunyaziwe nyusa izinga le-ukuqhubela yakho intengiselwano.*"
+  },
+  "selectHdPath": {
+    "message": "Khetha Indlela HD"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Izicwangciso"
+  },
+  "showAdvancedGasInline": {
+    "message": "Ephambili igesi ilawula"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Khetha oku ukubonisa igesi ixabiso kwaye umda ulawulo ngqo kwi thumela kwaye qinisekisa screens."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Bonisa Uguqulo kwi Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Khetha oku ukubonisa fiat uguqulo kwi Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Bonisa Private Izitshixo"
+  },
+  "showHexData": {
+    "message": "Bonisa Hex-Data"
+  },
+  "showHexDataDescription": {
+    "message": "Khetha oku ukubonisa i-hex-data intsimi kwi thumela ikhusi"
+  },
+  "sign": {
+    "message": "Umqondiso"
+  },
+  "signatureRequest": {
+    "message": "Utyikityo Isicelo"
+  },
+  "signed": {
+    "message": "Esayiniweyo"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Utyikityo Isicelo"
+  },
+  "somethingWentWrong": {
+    "message": "Yho! Into waya ezingachanekanga."
+  },
+  "speedUp": {
+    "message": "Isantya Phezulu"
+  },
+  "speedUpCancellation": {
+    "message": "Isantya phezulu le ukucinywa"
+  },
+  "speedUpTransaction": {
+    "message": "Isantya phezulu le intengiselwano"
+  },
+  "switchNetworks": {
+    "message": "Tshintshela Networks"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Urhulumente Hluleka"
+  },
+  "stateLogs": {
+    "message": "Urhulumente Hluleka"
+  },
+  "stateLogsDescription": {
+    "message": "Urhulumente hluleka ziqulathe yakho uluntu i-akhawunti iidilesi waza wathunyelwa eyenziweyo."
+  },
+  "stateLogError": {
+    "message": "Impazamo kwi-ukuvula imo hluleka."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Ne-Hardware Engagqibekangacomment"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Ukunxulumana yakho hardware engagqibekangacomment ngqo kwi khomputha yakho."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Khetha i-Akhawunti"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Khetha i-akhawunti ofuna imboniselo. Uyakwazi kuphela khetha enye ngexesha."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Qala ngokusebenzisa dApps ngakumbi!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Sebenzisa yakho hardware-akhawunti njenge ubuya nayo nayiphi na Ethereum-akhawunti. Ungene kwi-dApps, thumela Eth, kuthenga kwaye store ERC20 tokens kwaye Non-Fungible tokens njenge CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Store eli ibinzana kwi-password umphathi njenge 1Password."
+  },
+  "submit": {
+    "message": "Ngenisa"
+  },
+  "submitted": {
+    "message": "Zingeniswe"
+  },
+  "supportCenter": {
+    "message": "Utyelelo lwethu Inkxaso Umbindi"
+  },
+  "symbol": {
+    "message": "Umfuziselo"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Uphawu kufuneka phakathi kwe-0 ne-12 abasebenzi."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Isijamani ukuba ingaba imimiselo yakho backed phezulu kunye 3Box. Lo msebenzi ngu currenty ukuva; sebenzisa e eyakho umngcipheko."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box ivaliwe ngenxa imposiso ngexesha lokuqala ngaxeshanye"
+  },
+  "syncWithMobile": {
+    "message": "Ngaxeshanye kunye mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Ngaxeshanye kunye mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Ukuba ufuna nje vula MetaMask Mobile app okokuqala, nje balandele amanyathelo kwi-yefowuni yakho."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Hlola oku ikhowudi neqabane lakho MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Qiniseka ukuba akukho mntu okanye ingaba ukhangela kwi desktop yakho xa ufuna hlola oku ikhowudi"
+  },
+  "syncWithMobileComplete": {
+    "message": "I data yakho wenziwe synced succesfully. Bayakuthanda MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Imiqathango Yokusebenzisa"
+  },
+  "testFaucet": {
+    "message": "Uvavanyo Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Oku kuza yenza entsha engagqibekangacomment kwaye imbewu ibinzana"
+  },
+  "tips": {
+    "message": "Iincam"
+  },
+  "to": {
+    "message": "Ukuba"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Umqondiso"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Umqondiso sele idityaniswe."
+  },
+  "tokenContractAddress": {
+    "message": "Umqondiso Isivumelwano Idilesi Ye"
+  },
+  "tokenSymbol": {
+    "message": "Umqondiso Uphawu"
+  },
+  "total": {
+    "message": "Iyonke"
+  },
+  "transaction": {
+    "message": "intengiselwano"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Intengiselwano idibene impazamo."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Intengiselwano Impazamo. Okukodwa baphoselwe kwi-isivumelwano ikhowudi."
+  },
+  "transactionErrorNoContract": {
+    "message": "Ukuzama nibize umsebenzi kwi non-isivumelwano idilesi."
+  },
+  "transactionFee": {
+    "message": "Intengiselwano Imali"
+  },
+  "transactionTime": {
+    "message": "Intengiselwano Ixesha"
+  },
+  "transfer": {
+    "message": "Ukukhutshelwa"
+  },
+  "transferBetweenAccounts": {
+    "message": "Ukukhutshelwa phakathi kwe-bam-akhawunti"
+  },
+  "transferFrom": {
+    "message": "Ukukhutshelwa Ukusuka"
+  },
+  "troubleTokenBalances": {
+    "message": "Sino trouble kufakwa yakho umqondiso esingangezelelwanga. Uyakwazi imboniselo kwabo ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Uzame kwakhona"
+  },
+  "typePassword": {
+    "message": "Udidi lwakho MetaMask-password"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "iiyunithi"
+  },
+  "unknown": {
+    "message": "Engaziwayo"
+  },
+  "unknownNetwork": {
+    "message": "Engaziwayo Private Network"
+  },
+  "unknownQrCode": {
+    "message": "Impazamo: Thina ayikwazanga ukuchonga ukuba QR ikhowudi"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Into waya ezingachanekanga...."
+  },
+  "unknownCameraError": {
+    "message": "Kubekho impazamo ngelixa ezama ukufikelela yakho ikhamera. Nceda uzame kwakhona..."
+  },
+  "unlock": {
+    "message": "Vula"
+  },
+  "unlockMessage": {
+    "message": "I-decentralized web awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs kufuna efanelekileyo HTTP/HTTPS simaphambili."
+  },
+  "usedByClients": {
+    "message": "Olusetyenziswa yi-a ngezixhobo ezahlukeneyo ezahlukeneyo abaxhasi"
+  },
+  "userName": {
+    "message": "Igama lomsebenzisi"
+  },
+  "validFileImport": {
+    "message": "Kufuneka ukhethe elisebenzayo ifayile ukungenisa."
+  },
+  "viewAccount": {
+    "message": "Imboniselo-Akhawunti"
+  },
+  "viewinExplorer": {
+    "message": "Imboniselo kwi-Forte"
+  },
+  "viewContact": {
+    "message": "Imboniselo Uqhagamshelane"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Imboniselo kwi Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Utyelelo lwethu web site"
+  },
+  "walletSeed": {
+    "message": "Engagqibekangacomment Imbewu"
+  },
+  "welcomeBack": {
+    "message": "Wamkelekile Emva!"
+  },
+  "welcome": {
+    "message": "Wamkelekile MetaMask"
+  },
+  "writePhrase": {
+    "message": "Bhala oku ibinzana kwiphwetsha kwaye store ngendlela ekhuselekileyo indawo. Ukuba ufuna nangakumbi zokhuseleko, ubhale kuyo phantsi kwi ezininzi amaqhekeza aye ka-iphepha kwaye store ngamnye kwi-2 - 3 iindawo ezahluka-hlukileyo."
+  },
+  "yesLetsTry": {
+    "message": "Ewe, masizame"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ufuna ukuvumela ikhamera ukufikelela sebenzisa lo msebenzi."
+  },
+  "yourSigRequested": {
+    "message": "Utyikityo lwakho usesinye eceliweyo"
+  },
+  "youSign": {
+    "message": "Uvumelekile ukuba ukusayina"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Yakho private imbewu ibinzana"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Iqanda igesi ixabiso kwi isantya phezulu"
+  }
+}

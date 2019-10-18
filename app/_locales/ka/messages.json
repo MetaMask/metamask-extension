@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "შოუ შემომავალი გარიგებების"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "აირჩიეთ ეს გამოიყენოს Etherscan ნახოთ შემომავალი ტრანზაქცია იმ ტრანზაქციების სია"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "გრაფიკი ხელმისაწვდომია მხოლოდ Ethereum ქსელები."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "კავშირები"
+  },
+  "connectionsSettingsDescription": {
+    "message": "საიტები დაშვებული წავიკითხე თქვენი ანგარიშები"
+  },
+  "addSite": {
+    "message": "დამატება საიტზე"
+  },
+  "addSiteDescription": {
+    "message": "ხელით დაამატოთ საიტზე დაუშვებს, ხელმისაწვდომობის თქვენი ანგარიშები, სასარგებლო შესული dapps"
+  },
+  "connected": {
+    "message": "დაკავშირებული"
+  },
+  "connectedDescription": {
+    "message": "სია საიტები დაშვებული ხელმისაწვდომობის თქვენი მისამართები"
+  },
+  "privacyModeDefault": {
+    "message": "კონფიდენციალურობის რეჟიმი არის საშუალება იყოს"
+  },
+  "contractInteraction": {
+    "message": "ხელშეკრულების ურთიერთქმედების"
+  },
+  "clearApprovalData": {
+    "message": "ამოიღონ ყველა საიტები"
+  },
+  "reject": {
+    "message": "უარყოფა"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "ამ საიტზე არის მოთხოვნის ხელმისაწვდომობა, ნახოთ თქვენი მიმდინარე ანგარიში მისამართი. ყოველთვის დარწმუნდით, რომ თქვენ ენდობით საიტები, თქვენ ურთიერთქმედება."
+  },
+  "about": {
+    "message": "შესახებ"
+  },
+  "aboutSettingsDescription": {
+    "message": "ვერსია, მხარდაჭერის ცენტრი, და საკონტაქტო ინფორმაცია."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "წვდომის თქვენი კამერა..."
+  },
+  "account": {
+    "message": "ანგარიში"
+  },
+  "accountDetails": {
+    "message": "ანგარიშის დეტალები"
+  },
+  "accountName": {
+    "message": "ანგარიშის სახელი"
+  },
+  "accountOptions": {
+    "message": "ანგარიშის პარამეტრები"
+  },
+  "accountSelectionRequired": {
+    "message": "თქვენ უნდა აირჩიოთ ანგარიშზე!"
+  },
+  "activityLog": {
+    "message": "აქტივობა შესვლა"
+  },
+  "addNetwork": {
+    "message": "რჩეულებში ქსელი"
+  },
+  "addRecipient": {
+    "message": "რჩეულებში მიმღები"
+  },
+  "advanced": {
+    "message": "Advanced"
+  },
+  "advancedSettingsDescription": {
+    "message": "წვდომის შემქმნელი თვისებები, ჩამოტვირთვა ქალაქი ჟურნალი,, გადატვირთვის ანგარიშის setup testnets და საბაჟო RPC."
+  },
+  "advancedOptions": {
+    "message": "Advanced პარამეტრები"
+  },
+  "addToAddressBook": {
+    "message": "რჩეულებში მისამართი წიგნი"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "მაგ. ჯონ დ."
+  },
+  "addAlias": {
+    "message": "რჩეულებში alias"
+  },
+  "addToken": {
+    "message": "რჩეულებში ნიშნად"
+  },
+  "addTokens": {
+    "message": "რჩეულებში სიმბოლოს"
+  },
+  "addSuggestedTokens": {
+    "message": "რჩეულებში შესთავაზა სიმბოლოს"
+  },
+  "addAcquiredTokens": {
+    "message": "რჩეულებში სიმბოლოს თქვენ შეიძინა გამოყენებით MetaMask"
+  },
+  "amount": {
+    "message": "თანხა"
+  },
+  "appDescription": {
+    "message": "არის Ethereum საფულე თქვენს ბრაუზერში",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "ამტკიცებს"
+  },
+  "approved": {
+    "message": "დამტკიცებული"
+  },
+  "asset": {
+    "message": "აქტივების"
+  },
+  "attemptingConnect": {
+    "message": "ცდილობს დაკავშირება blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "წარდგენის ეს მცდელობა არ იძლევა გარანტიას, თქვენი ორიგინალური გარიგების უქმდება. თუ გაუქმების მცდელობა წარმატებული, თქვენ ბრალი საკომისიო ზემოთ."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "მითითებული მოჩვენებითი დრო წუთით ადრე MetaMask ავტომატურად log out"
+  },
+  "average": {
+    "message": "საშუალო"
+  },
+  "back": {
+    "message": "უკან"
+  },
+  "backToAll": {
+    "message": "უკან ყველა"
+  },
+  "backupApprovalNotice": {
+    "message": "სარეზერვო თქვენი საიდუმლო აღდგენა კოდი უნდა შეინახოთ თქვენი საფულე და სახსრების უსაფრთხო."
+  },
+  "backupApprovalInfo": {
+    "message": "ეს საიდუმლო კოდი არის საჭირო, რომ ფეხზე თქვენი საფულე შემთხვევაში, თქვენ დაკარგავთ თქვენი მოწყობილობა, დაგავიწყდათ თქვენი პაროლი, უნდა re-install MetaMask, ან გინდათ თქვენი საფულე სხვა მოწყობილობა."
+  },
+  "backupNow": {
+    "message": "სარეზერვო ახლა"
+  },
+  "balance": {
+    "message": "ბალანსი"
+  },
+  "balanceOutdated": {
+    "message": "ბალანსი შეიძლება მოძველებული"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "არასაკმარისი ნაშთის მიმდინარე გაზი საერთო"
+  },
+  "basic": {
+    "message": "ძირითადი"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "ბლოკი Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "გამოყენება Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "სახის გარიგება nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "საბაჟო Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "თქვენი ბრაუზერი არ არის მხარდაჭერილი..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask არის დაპროექტებული და აგებული, კალიფორნიაში."
+  },
+  "buyWithWyre": {
+    "message": "შეიძინეთ ETH ერთად Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre საშუალებას გაძლევთ გამოიყენოთ საკრედიტო ბარათი შეიტანოს ETH უფლება, რომ თქვენი MetaMask ანგარიშზე."
+  },
+  "buyCoinSwitch": {
+    "message": "ყიდვა CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch არის ერთი გაჩერება დანიშნულების გაცვლა 300-ზე მეტი cryptocurrencies საუკეთესო შეფასება."
+  },
+  "bytes": {
+    "message": "ბაიტი"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "On"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "გაუქმება"
+  },
+  "cancelAttempt": {
+    "message": "პასუხის მცდელობა"
+  },
+  "cancellationGasFee": {
+    "message": "გაუქმება გაზის საფასური"
+  },
+  "cancelled": {
+    "message": "გაუქმება"
+  },
+  "chainId": {
+    "message": "ჯაჭვი ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "დააწკაპუნეთ აქ, რათა გამოავლინოს საიდუმლო სიტყვები"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "თქვენ უნდა გამოიყენოთ MetaMask Google Chrome იმისათვის, რომ დაუკავშირდეთ თქვენი აპარატურის საფულე."
+  },
+  "confirm": {
+    "message": "ადასტურებენ"
+  },
+  "confirmed": {
+    "message": "დაადასტურა,"
+  },
+  "confirmPassword": {
+    "message": "დაადასტურეთ პაროლი"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "დაადასტურეთ თქვენი საიდუმლო სარეზერვო ფრაზა"
+  },
+  "congratulations": {
+    "message": "გილოცავთ"
+  },
+  "connectHardwareWallet": {
+    "message": "დაკავშირება ტექნიკის საფულე"
+  },
+  "connect": {
+    "message": "დაკავშირება"
+  },
+  "connectRequest": {
+    "message": "დაკავშირება მოთხოვნა"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "დამაკავშირებელი Kovan ტესტი ქსელი"
+  },
+  "connectingToMainnet": {
+    "message": "დამაკავშირებელი მთავარი Ethereum ქსელი"
+  },
+  "connectingToRopsten": {
+    "message": "დამაკავშირებელი Ropsten ტესტი ქსელი"
+  },
+  "connectingToRinkeby": {
+    "message": "დამაკავშირებელი Rinkeby ტესტი ქსელი"
+  },
+  "connectingToLocalhost": {
+    "message": "დამაკავშირებელი Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "დამაკავშირებელი Goerli ტესტი ქსელი"
+  },
+  "contacts": {
+    "message": "კონტაქტი"
+  },
+  "contactsSettingsDescription": {
+    "message": "დამატება, რედაქტირება, წაშლა, და მართოთ თქვენი კონტაქტები"
+  },
+  "continueToWyre": {
+    "message": "კვლავაც Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "კვლავაც CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "ხელშეკრულების განლაგების"
+  },
+  "conversionProgress": {
+    "message": "კონვერტაციის მიმდინარეობს"
+  },
+  "copiedButton": {
+    "message": "გადაწერა"
+  },
+  "copiedExclamation": {
+    "message": "გადაწერა!"
+  },
+  "copy": {
+    "message": "ასლი"
+  },
+  "copyAddress": {
+    "message": "ასლი მისამართი ბუფერში"
+  },
+  "copyTransactionId": {
+    "message": "ასლი გარიგების ID"
+  },
+  "copiedTransactionId": {
+    "message": "გადაწერა გარიგების ID"
+  },
+  "copyToClipboard": {
+    "message": "ასლი ბუფერში"
+  },
+  "copyButton": {
+    "message": " ასლი "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "შექმნა"
+  },
+  "createAccount": {
+    "message": "ანგარიშის შექმნა"
+  },
+  "createAWallet": {
+    "message": "შექმნათ საფულე"
+  },
+  "createPassword": {
+    "message": "შექმნა პაროლი"
+  },
+  "currencyConversion": {
+    "message": "ვალუტის კონვერტაციის"
+  },
+  "currentLanguage": {
+    "message": "მიმდინარე ენა"
+  },
+  "customGas": {
+    "message": "გე გაზი"
+  },
+  "customGasSubTitle": {
+    "message": "იზრდება საფასური შეიძლება შემცირდეს დამუშავების დროს, მაგრამ ეს არ არის გარანტირებული."
+  },
+  "customToken": {
+    "message": "საბაჟო ნიშნად"
+  },
+  "customRPC": {
+    "message": "საბაჟო RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals უნდა იყოს არანაკლებ 0, და არ არის მეტი 36."
+  },
+  "decimal": {
+    "message": "Decimals სიზუსტით"
+  },
+  "defaultNetwork": {
+    "message": "ნაგულისხმები ქსელი ეთერი ოპერაციები არის მთავარი წმინდა."
+  },
+  "delete": {
+    "message": "წაშლა"
+  },
+  "deleteAccount": {
+    "message": "წაშალე ანგარიში"
+  },
+  "deposit": {
+    "message": "ანაბარი"
+  },
+  "depositEther": {
+    "message": "ანაბარი ეთერი"
+  },
+  "details": {
+    "message": "დეტალები"
+  },
+  "directDepositEther": {
+    "message": "პირდაპირ ანაბარი ეთერი"
+  },
+  "directDepositEtherExplainer": {
+    "message": "თუ თქვენ უკვე გაქვთ გარკვეული ეთერი, სწრაფი გზა, ეთერში თქვენი ახალი საფულე მიერ პირდაპირი ანაბარი."
+  },
+  "dismiss": {
+    "message": "გადააყენოს"
+  },
+  "done": {
+    "message": "კეთდება"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Download ეს საიდუმლო სარეზერვო ფრაზა და შეინახოს იგი შენახული უსაფრთხოდ გარე დაშიფრული მყარ დისკზე ან შენახვის საშუალო."
+  },
+  "downloadStateLogs": {
+    "message": "უფასო ქალაქი ჟურნალი"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "დაეცა"
+  },
+  "edit": {
+    "message": "რედაქტირება"
+  },
+  "editContact": {
+    "message": "Edit კონტაქტი"
+  },
+  "emailUs": {
+    "message": "მოგვწერეთ!"
+  },
+  "endOfFlowMessage1": {
+    "message": "თქვენ გაიარა ტესტი - შეინახეთ seedphrase უსაფრთხო, ეს თქვენი პასუხისმგებლობა!"
+  },
+  "endOfFlowMessage2": {
+    "message": "რჩევები შენახვის იგი უსაფრთხოდ"
+  },
+  "endOfFlowMessage3": {
+    "message": "შენახვა სარეზერვო სხვადასხვა ადგილებში."
+  },
+  "endOfFlowMessage4": {
+    "message": "არასდროს არ იზიარებს ფრაზა არავისთან."
+  },
+  "endOfFlowMessage5": {
+    "message": "ფრთხილად ფიშინგი! MetaMask არასოდეს სპონტანურად ითხოვენ თქვენი სათესლე ფრაზა."
+  },
+  "endOfFlowMessage6": {
+    "message": "თუ თქვენ გჭირდებათ, რომ თქვენი თესლი ფრაზა კიდევ ერთხელ, თქვენ შეგიძლიათ იპოვოთ ის Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "თუ თქვენ ოდესმე გაქვთ შეკითხვები ან რაღაც fishy, ელ support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ვერ აღდგენა თქვენი seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "გაიგეთ მეტი."
+  },
+  "endOfFlowMessage10": {
+    "message": "ყველა გაკეთდეს"
+  },
+  "ensRegistrationError": {
+    "message": "შეცდომა ENS დასახელება გარეშე"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS სახელი არ არის ნაპოვნი მიმდინარე ქსელი. სცადეთ გადასვლის მთავარი Ethereum ქსელი."
+  },
+  "enterAnAlias": {
+    "message": "შეიყვანეთ alias"
+  },
+  "enterPassword": {
+    "message": "შეიყვანეთ პაროლი"
+  },
+  "enterPasswordContinue": {
+    "message": "შეიყვანეთ პაროლი გაგრძელდება"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum საჯარო მისამართი"
+  },
+  "etherscanView": {
+    "message": "იხილეთ ანგარიში Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "სავარაუდო დამუშავება-ჯერ"
+  },
+  "expandView": {
+    "message": "გაფართოების ნახვა"
+  },
+  "exportPrivateKey": {
+    "message": "ექსპორტი კერძო გასაღები"
+  },
+  "failed": {
+    "message": "ვერ"
+  },
+  "fast": {
+    "message": "სწრაფი"
+  },
+  "faster": {
+    "message": "სწრაფად"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "დაივიწყეთ ეს მოწყობილობა"
+  },
+  "from": {
+    "message": "საწყისი"
+  },
+  "fromShapeShift": {
+    "message": "ეხლა ShapeShift"
+  },
+  "functionType": {
+    "message": "ფუნქცია ტიპი"
+  },
+  "gasLimit": {
+    "message": "ბენზინი ლიმიტი"
+  },
+  "gasLimitCalculation": {
+    "message": "ჩვენ გამოვთვალოთ ვარაუდობს, გაზი ლიმიტი საფუძველზე ქსელი წარმატება განაკვეთები."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "ბენზინი ლიმიტი არის მაქსიმალური თანხა ერთეული ბენზინი, თქვენ მზად უნდა დახარჯოს."
+  },
+  "gasLimitTooLow": {
+    "message": "ბენზინი ლიმიტი უნდა იყოს მინიმუმ 21000"
+  },
+  "gasUsed": {
+    "message": "ბენზინი მეორადი"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "გაზის ფასი ძალიან დაბალი"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "გაზის ფასი განსაზღვრავს თანხის ეთერი თქვენ მზად უნდა გადაიხადოს თითოეული აპარატი გაზი."
+  },
+  "gasPriceNoDenom": {
+    "message": "გაზის ფასი"
+  },
+  "gasPriceCalculation": {
+    "message": "ჩვენ გამოვთვალოთ ვარაუდობს, გაზის ფასები საფუძველზე ქსელი წარმატება განაკვეთები."
+  },
+  "general": {
+    "message": "ზოგადი"
+  },
+  "generalSettingsDescription": {
+    "message": "ვალუტის კონვერტაციის, ძირითადი ვალუტის შესაბამისად, ენის, blockies identicon"
+  },
+  "getEther": {
+    "message": "მიიღეთ ეთერი"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "დახმარების მისაღებად."
+  },
+  "getStarted": {
+    "message": "დავიწყოთ"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "ჩვენ მოხარულები ვართ, რომ ნახოთ თქვენ."
+  },
+  "hardware": {
+    "message": "ტექნიკის"
+  },
+  "hardwareWalletConnected": {
+    "message": "ტექნიკის საფულე დაკავშირებული"
+  },
+  "hardwareWallets": {
+    "message": "დაკავშირება ტექნიკის საფულე"
+  },
+  "hardwareWalletsMsg": {
+    "message": "აირჩიეთ hardware საფულე გსურთ გამოყენება MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "აქ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex მონაცემები"
+  },
+  "hide": {
+    "message": "დამალვა"
+  },
+  "hideToken": {
+    "message": "დამალვა ნიშნად"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "ისტორია"
+  },
+  "import": {
+    "message": "იმპორტი",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "იმპორტი ანგარიში"
+  },
+  "importAccountMsg": {
+    "message": " იმპორტირებული ანგარიშები არ იყოს დაკავშირებული თქვენს თავდაპირველად შეიქმნა MetaMask ანგარიში seedphrase. შეიტყვეთ უფრო მეტი იმპორტირებული ანგარიშები "
+  },
+  "importAccountSeedPhrase": {
+    "message": "იმპორტი ანგარიში სათესლე ფრაზა"
+  },
+  "importWallet": {
+    "message": "იმპორტი საფულე"
+  },
+  "importYourExisting": {
+    "message": "იმპორტი თქვენი არსებული საფულე გამოყენებით 12 სიტყვა სათესლე ფრაზა"
+  },
+  "imported": {
+    "message": "იმპორტირებული",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "იმპორტი გამოყენებით ანგარიში სათესლე ფრაზა"
+  },
+  "infoHelp": {
+    "message": "ინფორმაცია & დახმარება"
+  },
+  "initialTransactionConfirmed": {
+    "message": "თქვენი თავდაპირველი გარიგების დაადასტურა ქსელი. დააჭირეთ OK დაბრუნდეს."
+  },
+  "insufficientBalance": {
+    "message": "არასაკმარისი ბალანსი."
+  },
+  "insufficientFunds": {
+    "message": "არასაკმარისი თანხები."
+  },
+  "insufficientTokens": {
+    "message": "არასაკმარისი სიმბოლოს."
+  },
+  "invalidAddress": {
+    "message": "არასწორი მისამართი"
+  },
+  "invalidAddressRecipient": {
+    "message": "ადრესატის მისამართი არასწორია"
+  },
+  "knownAddressRecipient": {
+    "message": "ცნობილია, ხელშეკრულების მისამართი."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "არ ETH ქსელი, მითითებული უნდა ამას"
+  },
+  "invalidInput": {
+    "message": "არასწორი შეყვანის."
+  },
+  "invalidRPC": {
+    "message": "არასწორი RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "არასწორი ბლოკი Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "არასწორი სათესლე ფრაზა"
+  },
+  "jsonFile": {
+    "message": "JSON ფაილი",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan ტესტი ქსელი"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "დაწვრილებით"
+  },
+  "ledgerAccountRestriction": {
+    "message": "თქვენ უნდა გამოიყენოთ თქვენი ბოლო ანგარიში, სანამ თქვენ შეგიძლიათ დაამატოთ ახალი."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "კი, მოდით მისაღებად შეიქმნა!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "ბმულები"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live გაზის ფასი პროგნოზები"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading სიმბოლოს..."
+  },
+  "loadMore": {
+    "message": "დატვირთვა უფრო"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "შესვლა"
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "გამოსვლის დრო არის ძალიან დიდი"
+  },
+  "mainnet": {
+    "message": "მთავარი Ethereum ქსელი"
+  },
+  "memorizePhrase": {
+    "message": "გვემახსოვრება, ეს ფრაზა."
+  },
+  "memo": {
+    "message": "შენიშვნა"
+  },
+  "menu": {
+    "message": "მენიუ"
+  },
+  "message": {
+    "message": "შეტყობინება"
+  },
+  "metamaskDescription": {
+    "message": "დამაკავშირებელი თქვენ Ethereum და დეცენტრალიზებული ვებგვერდი."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask სათესლე სიტყვები"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask ვერსია"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "გთხოვთ შეიყვანოთ თქვენი პაროლი ადასტურებენ, ეს თქვენ!"
+  },
+  "myAccounts": {
+    "message": "ჩემი ანგარიშები"
+  },
+  "myWalletAccounts": {
+    "message": "ჩემი საფულე ანგარიშები"
+  },
+  "myWalletAccountsDescription": {
+    "message": "ყველა თქვენი MetaMask შექმნილი ანგარიშები ავტომატურად დაემატოს ამ განყოფილებაში."
+  },
+  "mustSelectOne": {
+    "message": "უნდა აირჩიოთ მინიმუმ 1 ნიშნად."
+  },
+  "needEtherInWallet": {
+    "message": "ურთიერთქმედება დეცენტრალიზებული განაცხადების გამოყენებით MetaMask, თქვენ უნდა ეთერში თქვენი საფულე."
+  },
+  "needImportFile": {
+    "message": "თქვენ უნდა აირჩიოთ ფაილი იმპორტი.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ვერ გაგზავნას უარყოფითი რაოდენობით ETH."
+  },
+  "networkName": {
+    "message": "ქსელის სახელი"
+  },
+  "networks": {
+    "message": "ქსელები"
+  },
+  "networkSettingsDescription": {
+    "message": "დამატება და რედაქტირება საბაჟო RPC ქსელები"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "ახალი ანგარიში"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "ახალი მისამართი აღმოჩენილი! დააწკაპუნეთ აქ, რათა დაამატოთ თქვენი მისამართი წიგნი."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "ახალი კონტაქტი"
+  },
+  "newContract": {
+    "message": "ახალი კონტრაქტი"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "ახალი ქსელის"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "არა, მე უკვე მაქვს სათესლე ფრაზა"
+  },
+  "protectYourKeys": {
+    "message": "დაიცავით თქვენი გასაღებები!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "ფრთხილად, თქვენი სათესლე ფრაზა — იქ უკვე ინფორმაციით, ვებ-გვერდები, რომლებიც ცდილობენ იმიტაცია MetaMask. MetaMask არასოდეს არ ვითხოვთ თქვენი თესლი ფრაზა!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "შეინახეთ ფრაზა უსაფრთხო. თუ თქვენ რაღაც fishy, ან თქვენ გაურკვეველი ნახვა, email support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "ახალი RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "ახალი საერთო"
+  },
+  "newTransactionFee": {
+    "message": "ახალი საკომისიო"
+  },
+  "next": {
+    "message": "შემდეგი"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "არ მისამართი შეიქმნა ეს სახელი."
+  },
+  "noDeposits": {
+    "message": "დეპოზიტების მიიღო"
+  },
+  "noConversionRateAvailable": {
+    "message": "არ კონვერტაციის შეფასება ხელმისაწვდომი"
+  },
+  "noTransactions": {
+    "message": "თქვენ არ გარიგებების"
+  },
+  "noThanks": {
+    "message": "არა მადლობა"
+  },
+  "notEnoughGas": {
+    "message": "არ არის საკმარისი გაზი"
+  },
+  "noWebcamFoundTitle": {
+    "message": "ვებ კამერა არ მოიძებნა"
+  },
+  "noWebcamFound": {
+    "message": "თქვენი კომპიუტერის ვებ კამერა არ იყო ნაპოვნი. გთხოვთ, სცადეთ კიდევ ერთხელ."
+  },
+  "ofTextNofM": {
+    "message": "საქართველოს"
+  },
+  "orderOneHere": {
+    "message": "იმისათვის, Safe ან დავთარში და შეინახოთ თქვენი თანხები in cold storage"
+  },
+  "origin": {
+    "message": "წარმოშობა"
+  },
+  "parameters": {
+    "message": "პარამეტრები"
+  },
+  "participateInMetaMetrics": {
+    "message": "მონაწილეობა MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "მონაწილეობა MetaMetrics დაგვეხმარება MetaMask უკეთესი"
+  },
+  "password": {
+    "message": "პაროლი"
+  },
+  "passwordsDontMatch": {
+    "message": "პაროლები არ ემთხვევა"
+  },
+  "passwordNotLongEnough": {
+    "message": "პაროლი არ არის საკმარისი"
+  },
+  "pastePrivateKey": {
+    "message": "პასტა თქვენი პირადი გასაღები string აქ:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "პასტა თქვენი თესლი ფრაზა აქ!"
+  },
+  "pending": {
+    "message": "მიმდინარე"
+  },
+  "personalAddressDetected": {
+    "message": "პირადი მისამართი აღმოჩენილი. შეყვანის ნიშნად ხელშეკრულება მისამართი."
+  },
+  "prev": {
+    "message": "წინა"
+  },
+  "primaryCurrencySetting": {
+    "message": "ძირითადი ვალუტის შესაბამისად"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "კონფიდენციალურობის პოლიტიკა"
+  },
+  "privateKey": {
+    "message": "კერძო გასაღები",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "გაფრთხილება: არასოდეს არ გაამჟღავნოს ეს გასაღები. ყველას, თქვენი კერძო ღილაკები შეიძლება მოიპარონ აქტივებს თქვენს ანგარიშზე."
+  },
+  "privateNetwork": {
+    "message": "კერძო ქსელი"
+  },
+  "qrCode": {
+    "message": "შოუ QR კოდი"
+  },
+  "queue": {
+    "message": "მდგომ"
+  },
+  "readdToken": {
+    "message": "თქვენ შეგიძლიათ დაამატოთ ამ ნიშნად უკან მომავალში აპირებს, რომ \"დამატება ნიშნად\" თქვენი ანგარიშები პარამეტრები მენიუ."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "ადრესატის მისამართი"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "თქვას ყველა"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "უარი"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "რესეტი ანგარიშის"
+  },
+  "resetAccountDescription": {
+    "message": "გადატვირთვის თქვენი ანგარიში იქნება გასაგებია თქვენი ტრანზაქციების ისტორიაში."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "შეგახსენებთ, ჩემს შემდეგ"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "აღდგენა თქვენი ანგარიში სათესლე ფრაზა"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "მოთხოვნები ელოდება, რომ იყოს აღიარებული"
+  },
+  "required": {
+    "message": "საჭირო"
+  },
+  "restore": {
+    "message": "აღდგენა"
+  },
+  "revealSeedWords": {
+    "message": "გამოვლენა სათესლე სიტყვები"
+  },
+  "revealSeedWordsTitle": {
+    "message": "სათესლე ფრაზა"
+  },
+  "revealSeedWordsDescription": {
+    "message": "თუ თქვენ ოდესმე შეიცვალოს ბრაუზერები ან გადატანა კომპიუტერი, თქვენ უნდა ეს სათესლე ფრაზა წვდომის თქვენი ანგარიშები. შენახვა სადღაც უსაფრთხო და საიდუმლო."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "არ გაუზიაროს ეს ფრაზა ყველას!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "ეს სიტყვები შეიძლება გამოყენებულ იქნას, რათა მოიპაროს ყველა თქვენი ანგარიშები."
+  },
+  "revert": {
+    "message": "დაუბრუნდება"
+  },
+  "remove": {
+    "message": "ამოღება"
+  },
+  "removeAccount": {
+    "message": "ამოიღონ ანგარიში"
+  },
+  "removeAccountDescription": {
+    "message": "ეს ანგარიში მოიხსნება თქვენი საფულე. გთხოვთ დარწმუნდეთ, რომ თქვენ გაქვთ ორიგინალური სათესლე ფრაზა ან კერძო გასაღები ამ იმპორტირებული ანგარიშის ადრე, გრძელდება. შეგიძლიათ იმპორტი ან შექმნათ ანგარიშები ისევ ანგარიშიდან ჩამოსაშლელი. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby ტესტი ქსელი"
+  },
+  "ropsten": {
+    "message": "Ropsten ტესტი ქსელი"
+  },
+  "goerli": {
+    "message": "Goerli ტესტი ქსელი"
+  },
+  "save": {
+    "message": "შენახვა"
+  },
+  "slow": {
+    "message": "ნელი"
+  },
+  "slower": {
+    "message": "ნელი"
+  },
+  "saveAsCsvFile": {
+    "message": "შენახვა როგორც CSV ფაილი"
+  },
+  "scanInstructions": {
+    "message": "ადგილი QR კოდი თქვენს თვალწინ კამერა"
+  },
+  "scanQrCode": {
+    "message": "სკანირების QR კოდი"
+  },
+  "search": {
+    "message": "ძებნა"
+  },
+  "searchResults": {
+    "message": "ძიების შედეგები"
+  },
+  "secretBackupPhrase": {
+    "message": "საიდუმლო სარეზერვო ფრაზა"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "თქვენი საიდუმლო სარეზერვო ფრაზა ხდის მარტივი უკან და აღვადგინოთ თქვენი ანგარიში."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "გაფრთხილება: არასოდეს არ გაამჟღავნოს თქვენი სარეზერვო ფრაზა. ყველას, ვისაც ეს ფრაზა შეიძლება მიიღოს თქვენი ეთერი სამუდამოდ."
+  },
+  "secretPhrase": {
+    "message": "შეიყვანეთ თქვენი საიდუმლო თორმეტი სიტყვა, ფრაზა აქ რათა აღდგენა თქვენი სარდაფით."
+  },
+  "securityAndPrivacy": {
+    "message": "უსაფრთხოება და კონფიდენციალურობა"
+  },
+  "securitySettingsDescription": {
+    "message": "კონფიდენციალურობის პარამეტრები და საფულე სათესლე ფრაზა"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "ცალკე თითოეული სიტყვა, ერთ სივრცეში"
+  },
+  "seedPhraseReq": {
+    "message": "თესლი ფრაზები 12 სიტყვები დიდი ხნის"
+  },
+  "selectCurrency": {
+    "message": "აირჩიეთ ვალუტა"
+  },
+  "selectEachPhrase": {
+    "message": "გთხოვთ აირჩიოთ თითოეული ფრაზა იმისათვის, რათა დავრწმუნდეთ, რომ ეს არის სწორი."
+  },
+  "selectLocale": {
+    "message": "აირჩიეთ Locale"
+  },
+  "selectType": {
+    "message": "აირჩიეთ ტიპი"
+  },
+  "send": {
+    "message": "გაგზავნას"
+  },
+  "sendAmount": {
+    "message": "გაგზავნას თანხა"
+  },
+  "sendETH": {
+    "message": "გაგზავნას ETH"
+  },
+  "sendTokens": {
+    "message": "გაგზავნას სიმბოლოს"
+  },
+  "sentEther": {
+    "message": "გაგზავნილი ეთერი"
+  },
+  "sentTokens": {
+    "message": "გაგზავნილი სიმბოლოს"
+  },
+  "separateEachWord": {
+    "message": "ცალკე თითოეული სიტყვა, ერთ სივრცეში"
+  },
+  "searchTokens": {
+    "message": "ძიების სიმბოლოს"
+  },
+  "selectAnAccount": {
+    "message": "აირჩიეთ ანგარიში,"
+  },
+  "selectAnAccountHelp": {
+    "message": "აირჩიეთ ანგარიში იხილეთ MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "აირჩიეთ უმაღლესი გაზის საფასური დააჩქაროს დამუშავება, თქვენი გარიგება.*"
+  },
+  "selectHdPath": {
+    "message": "აირჩიეთ HD გზა"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "პარამეტრები"
+  },
+  "showAdvancedGasInline": {
+    "message": "Advanced გაზი კონტროლი"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "აირჩიეთ ეს შოუ გაზის ფასი და ლიმიტის კონტროლი პირდაპირ გაგზავნას და დაადასტურეთ ეკრანებზე."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "შოუ კონვერტაცია Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "აირჩიეთ ეს შოუ fiat კონვერტაცია Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "შოუ კერძო გასაღებები"
+  },
+  "showHexData": {
+    "message": "შოუ Hex მონაცემები"
+  },
+  "showHexDataDescription": {
+    "message": "აირჩიეთ ეს უნდა ნახოთ hex მონაცემთა ველის გაგზავნას ეკრანზე"
+  },
+  "sign": {
+    "message": "ნიშანი"
+  },
+  "signatureRequest": {
+    "message": "ხელმოწერის მოთხოვნა"
+  },
+  "signed": {
+    "message": "ხელი მოაწერა"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "ხელმოწერის მოთხოვნა"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! რაღაც წავიდა არასწორი."
+  },
+  "speedUp": {
+    "message": "Speed Up"
+  },
+  "speedUpCancellation": {
+    "message": "Speed up ამ გაუქმება"
+  },
+  "speedUpTransaction": {
+    "message": "Speed up ამ გარიგების"
+  },
+  "switchNetworks": {
+    "message": "შეცვლა ქსელები"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask ქალაქი ჟურნალი"
+  },
+  "stateLogs": {
+    "message": "ქალაქი ჟურნალი"
+  },
+  "stateLogsDescription": {
+    "message": "ქალაქი ჟურნალი შეიცავს თქვენი ანგარიშის საჯარო მისამართები და გაგზავნილი ოპერაციები."
+  },
+  "stateLogError": {
+    "message": "შეცდომა მიღება ქალაქი ჟურნალი."
+  },
+  "step1HardwareWallet": {
+    "message": "1. დაკავშირება ტექნიკის საფულე"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "შეაერთეთ თქვენი აპარატურის საფულე პირდაპირ თქვენს კომპიუტერში."
+  },
+  "step2HardwareWallet": {
+    "message": "2. აირჩიეთ ანგარიში,"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "აირჩიეთ ანგარიში გსურთ იხილოთ. თქვენ მხოლოდ აირჩიეთ ერთ დროს."
+  },
+  "step3HardwareWallet": {
+    "message": "3. დაიწყოს გამოყენებით dApps და უფრო მეტი!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "გამოიყენეთ თქვენი აპარატურის ანგარიში, როგორც თქვენ, რომ ნებისმიერი Ethereum ანგარიშზე. შესვლა dApps, გაგზავნას Eth, ყიდვა და მაღაზია ERC20 სიმბოლოს და არასამთავრობო Fungible სიმბოლოს, როგორიცაა CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "მაღაზიაში ეს ფრაზა პაროლი მენეჯერი, როგორიცაა 1Password."
+  },
+  "submit": {
+    "message": "წარმოადგინოს"
+  },
+  "submitted": {
+    "message": "წარმოდგენილი"
+  },
+  "supportCenter": {
+    "message": "ეწვიეთ ჩვენს მხარდაჭერის ცენტრის"
+  },
+  "symbol": {
+    "message": "სიმბოლო"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "სიმბოლო უნდა იყოს 0 და 12 პერსონაჟი."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "ჩართეთ თქვენი პარამეტრები გამყარებული 3Box. ეს ფუნქცია currenty ექსპერიმენტული; გამოიყენეთ თქვენი რისკის ფასად."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box გათიშულია გამო შეცდომა თავდაპირველი sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync მობილური"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync მობილური"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "თუ თქვენ უბრალოდ გახსნა MetaMask მობილური აპლიკაცია პირველად, უბრალოდ მიჰყევით ნაბიჯებს თქვენი ტელეფონი."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "სკანირების ეს კოდი თქვენი MetaMask მობილური აპლიკაცია"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "დარწმუნდით, რომ არავინ ეძებს თქვენს ეკრანზე, როდესაც თქვენ scan ეს კოდი"
+  },
+  "syncWithMobileComplete": {
+    "message": "თქვენი მონაცემები უკვე synced წარმატებით. ისიამოვნეთ MetaMask მობილური აპლიკაცია!"
+  },
+  "terms": {
+    "message": "გამოყენების წესები"
+  },
+  "testFaucet": {
+    "message": "ტესტი Faucet"
+  },
+  "thisWillCreate": {
+    "message": "ამ შეიქმნება ახალი საფულე და სათესლე ფრაზა"
+  },
+  "tips": {
+    "message": "რჩევები"
+  },
+  "to": {
+    "message": "რომ"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "ნიშნად"
+  },
+  "tokenAlreadyAdded": {
+    "message": "ნიშნად უკვე დამატებული."
+  },
+  "tokenContractAddress": {
+    "message": "ნიშნად ხელშეკრულება მისამართი"
+  },
+  "tokenSymbol": {
+    "message": "Token-სიმბოლო"
+  },
+  "total": {
+    "message": "საერთო"
+  },
+  "transaction": {
+    "message": "გარიგება"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "გარიგების შეექმნა შეცდომა."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "გარიგების შეცდომა. გამონაკლისი დააგდეს ხელშეკრულების კოდი."
+  },
+  "transactionErrorNoContract": {
+    "message": "ცდილობს ზარის ფუნქცია არა-ხელშეკრულების მისამართი."
+  },
+  "transactionFee": {
+    "message": "საკომისიო"
+  },
+  "transactionTime": {
+    "message": "გარიგების დროს"
+  },
+  "transfer": {
+    "message": "გადაცემა"
+  },
+  "transferBetweenAccounts": {
+    "message": "გადაცემის შორის ჩემი ანგარიშები"
+  },
+  "transferFrom": {
+    "message": "ტრანსფერი"
+  },
+  "troubleTokenBalances": {
+    "message": "ჩვენ გვქონდა პრობლემები დატვირთვისა თქვენს ნიშნად ნაშთები. თქვენ შეგიძლიათ ნახოთ მათ ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "სცადეთ კვლავ"
+  },
+  "typePassword": {
+    "message": "ჩაწერეთ თქვენი MetaMask პაროლი"
+  },
+  "unapproved": {
+    "message": "გაუთვალისწინებელი"
+  },
+  "units": {
+    "message": "ერთეული"
+  },
+  "unknown": {
+    "message": "უცნობი"
+  },
+  "unknownNetwork": {
+    "message": "უცნობი კერძო ქსელი"
+  },
+  "unknownQrCode": {
+    "message": "შეცდომა: ჩვენ ვერ იდენტიფიცირება, რომ QR კოდი"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! რაღაც წავიდა არასწორი...."
+  },
+  "unknownCameraError": {
+    "message": "არ იყო შეცდომა, ხოლო ცდილობს, რათა შეამოწმონ თქვენი კამერა. გთხოვთ სცადოთ..."
+  },
+  "unlock": {
+    "message": "ზარალი"
+  },
+  "unlockMessage": {
+    "message": "დეცენტრალიზებული ვებ ელის"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs მოითხოვს შესაბამის HTTP/HTTPS პრეფიქსი."
+  },
+  "usedByClients": {
+    "message": "გამოიყენება სხვადასხვა კლიენტებს"
+  },
+  "userName": {
+    "message": "მომხმარებლის სახელი"
+  },
+  "validFileImport": {
+    "message": "თქვენ უნდა აირჩიოთ სწორი ფაილი იმპორტი."
+  },
+  "viewAccount": {
+    "message": "იხილეთ ანგარიში"
+  },
+  "viewinExplorer": {
+    "message": "საიტის Explorer"
+  },
+  "viewContact": {
+    "message": "საიტის საკონტაქტო"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "ხედი Etherscan"
+  },
+  "visitWebSite": {
+    "message": "ეწვიეთ ჩვენს ვებ გვერდზე"
+  },
+  "walletSeed": {
+    "message": "საფულე სათესლე"
+  },
+  "welcomeBack": {
+    "message": "კეთილი იყოს თქვენი მობრძანება!"
+  },
+  "welcome": {
+    "message": "მოგესალმებით MetaMask"
+  },
+  "writePhrase": {
+    "message": "დაწერეთ ეს ფრაზა ნაჭერი ქაღალდი და შეინახეთ უსაფრთხო ადგილას. თუ გსურთ უფრო მეტი უსაფრთხოების, დაწერეთ მას სხვადასხვა ცალი ქაღალდის და მაღაზიაში ყოველ 2 - 3 სხვადასხვა ადგილას."
+  },
+  "yesLetsTry": {
+    "message": "კი, მოდით ცდილობენ"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "თქვენ უნდა დაუშვას კამერა წვდომა ამ ფუნქციის გამოყენების უფლება."
+  },
+  "yourSigRequested": {
+    "message": "თქვენი ხელმოწერა მიმდინარეობს მოითხოვა"
+  },
+  "youSign": {
+    "message": "თქვენ ხელმოწერა"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "თქვენი პირადი სათესლე ფრაზა"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "ნულოვანი გაზის ფასი სიჩქარე"
+  }
+}

@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Montri Alvenanta Transakcioj"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Elektas#? i tiu uzi Etherscan montri alvenanta transakcioj en la transakcioj listo"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Chart nur havebla sur Ethereum retoj."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Rilatoj"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Ejoj permesita legi viajn kontojn"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Permane aldoni ejo por permesi al ĝi aliron al viaj kontoj, utila por pli malnovaj dapps"
+  },
+  "connected": {
+    "message": "Ligita"
+  },
+  "connectedDescription": {
+    "message": "La listo de ejoj permesis aliron al via adresoj"
+  },
+  "privacyModeDefault": {
+    "message": "Privateco Mode nun estas ebligita defaŭlte"
+  },
+  "contractInteraction": {
+    "message": "Kontrakto Interago"
+  },
+  "clearApprovalData": {
+    "message": "Forigi ĉiuj ejoj"
+  },
+  "reject": {
+    "message": "Malakcepti"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "# ? I tiu ejo estas petanta aliron al vidi kiel via nuna konto adreso. # ? Iam fari certe ke vi fidas la ejoj vi interagi kun."
+  },
+  "about": {
+    "message": "Pri"
+  },
+  "aboutSettingsDescription": {
+    "message": "Versio, subteno centro, kaj kontakto info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Aliranta via ĉambro..."
+  },
+  "account": {
+    "message": "Konto"
+  },
+  "accountDetails": {
+    "message": "Konto Detaloj"
+  },
+  "accountName": {
+    "message": "Konta Nomo"
+  },
+  "accountOptions": {
+    "message": "Konto Ebloj"
+  },
+  "accountSelectionRequired": {
+    "message": "Vi devas elekti konton!"
+  },
+  "activityLog": {
+    "message": "aktiveco log"
+  },
+  "addNetwork": {
+    "message": "Aldoni Reto"
+  },
+  "addRecipient": {
+    "message": "Aldoni Ricevinton"
+  },
+  "advanced": {
+    "message": "Progresinta"
+  },
+  "advancedSettingsDescription": {
+    "message": "Aliro ellaboranto? efa? o, # de? uto#? Tata#? Tipo, Reset Konto, # aran? o testnets kaj kutimo RPC."
+  },
+  "advancedOptions": {
+    "message": "Altnivela Ebloj"
+  },
+  "addToAddressBook": {
+    "message": "Aldoni al adresa libro"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "ekzemple, John D."
+  },
+  "addAlias": {
+    "message": "Aldoni alias"
+  },
+  "addToken": {
+    "message": "Aldoni Token"
+  },
+  "addTokens": {
+    "message": "Aldonas Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Aldoni Sugestis Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Aldoni la tokens vi?? e akirita uzante MetaMask"
+  },
+  "amount": {
+    "message": "Kvanto"
+  },
+  "appDescription": {
+    "message": "La Ethereum Monujo en via Retumilo",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Aprobi"
+  },
+  "approved": {
+    "message": "Aprobita"
+  },
+  "asset": {
+    "message": "# Valora? o"
+  },
+  "attemptingConnect": {
+    "message": "Provanta konekti al blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "# Submeti? i tiu provo ne garantias via originala transakcio estos nuligita. Se la nuligo provo estas sukcesa, vi estos akuzita la transakcio kotizo supre."
+  },
+  "attributions": {
+    "message": "Atribuoj"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Fiksita la sencela tempo en minutoj antaŭ MetaMask aŭtomate log out"
+  },
+  "average": {
+    "message": "Ordinara"
+  },
+  "back": {
+    "message": "Reen"
+  },
+  "backToAll": {
+    "message": "Reen al Ĉiuj"
+  },
+  "backupApprovalNotice": {
+    "message": "Rezerva via Sekreta Retrovo kodo teni vian monujon kaj fondusoj sekura."
+  },
+  "backupApprovalInfo": {
+    "message": "Tiu sekreta kodo estas bezonata por rekuperi via monujo en kazo vi perdas vian aparaton, forgesos vian pasvorton, devas re-instali MetaMask, aŭ deziras aliri vian monpaperujon sur alia aparato."
+  },
+  "backupNow": {
+    "message": "Rezerva nun"
+  },
+  "balance": {
+    "message": "Ekvilibro"
+  },
+  "balanceOutdated": {
+    "message": "Ekvilibro povas esti malaktuala"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "# Nesufi? a ekvilibro por nuna gaso totala"
+  },
+  "basic": {
+    "message": "Baza"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloko Esploristo"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Uzi Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Agordu transakcio nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Propra Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Via Retumilo ne estas subtenata..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask estas desegnita kaj konstruita en Kalifornio."
+  },
+  "buyWithWyre": {
+    "message": "Aĉeti ETH kun Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre permesas uzi kreditan karton por deponi ETH ĝusta en via MetaMask konto."
+  },
+  "buyCoinSwitch": {
+    "message": "# A? eti sur CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch estas la unu-halto celloko por la interŝanĝo de pli ol 300 cryptocurrencies ĉe la plej bonan indicon."
+  },
+  "bytes": {
+    "message": "Bajtoj"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Sur"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Nuligi"
+  },
+  "cancelAttempt": {
+    "message": "Nuligi Provo"
+  },
+  "cancellationGasFee": {
+    "message": "Nuligo Kotizo Gaso"
+  },
+  "cancelled": {
+    "message": "Nuligita"
+  },
+  "chainId": {
+    "message": "Ĉeno ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Klaku tie ĉi por malkaŝi sekreton vortoj"
+  },
+  "close": {
+    "message": "Fermi"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Vi devas uzi MetaMask sur Google Chrome por konekti al via # lada? ejo Monujo."
+  },
+  "confirm": {
+    "message": "Konfirmi"
+  },
+  "confirmed": {
+    "message": "Konfirmita"
+  },
+  "confirmPassword": {
+    "message": "Konfirmi La Pasvorton"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Konfirmi via Sekreta Rezervo Frazo"
+  },
+  "congratulations": {
+    "message": "Gratulon"
+  },
+  "connectHardwareWallet": {
+    "message": "Konekti Aparataro Monujo"
+  },
+  "connect": {
+    "message": "Konekti"
+  },
+  "connectRequest": {
+    "message": "Konekti Peto"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Konektanta al Kovan Testo Reto"
+  },
+  "connectingToMainnet": {
+    "message": "Konektanta al Ĉefa Ethereum Reto"
+  },
+  "connectingToRopsten": {
+    "message": "Konektanta al Ropsten Testo Reto"
+  },
+  "connectingToRinkeby": {
+    "message": "Konektanta al Rinkeby Testo Reto"
+  },
+  "connectingToLocalhost": {
+    "message": "Konektanta al Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Konektanta al Goerli Testo Reto"
+  },
+  "contacts": {
+    "message": "Kontaktoj"
+  },
+  "contactsSettingsDescription": {
+    "message": "Aldoni, redakti, forigi, kaj mastrumi viajn kontaktojn"
+  },
+  "continueToWyre": {
+    "message": "# Da? ri Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "# Da? ri CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Kontrakto Deplojo"
+  },
+  "conversionProgress": {
+    "message": "Konvertiĝo en progreso"
+  },
+  "copiedButton": {
+    "message": "Kopiita"
+  },
+  "copiedExclamation": {
+    "message": "Kopiita!"
+  },
+  "copy": {
+    "message": "Kopiu"
+  },
+  "copyAddress": {
+    "message": "Kopiu adreson clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Kopio Transakcio ID"
+  },
+  "copiedTransactionId": {
+    "message": "Kopiita Transakcio ID"
+  },
+  "copyToClipboard": {
+    "message": "Kopii al interdeponejo"
+  },
+  "copyButton": {
+    "message": " Kopiu "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Krei"
+  },
+  "createAccount": {
+    "message": "Krei Konton"
+  },
+  "createAWallet": {
+    "message": "Krei Monujo"
+  },
+  "createPassword": {
+    "message": "Krei Pasvorton"
+  },
+  "currencyConversion": {
+    "message": "Valuta Konvertiĝo"
+  },
+  "currentLanguage": {
+    "message": "Nuna Lingvo"
+  },
+  "customGas": {
+    "message": "Agordu Gaso"
+  },
+  "customGasSubTitle": {
+    "message": "Kreskanta kotizo povas malpliigi pretigo tempoj, sed ĝi ne estas guaranteed."
+  },
+  "customToken": {
+    "message": "Propra Token"
+  },
+  "customRPC": {
+    "message": "Propra RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimalaj devas esti almenaŭ 0, kaj ne super 36."
+  },
+  "decimal": {
+    "message": "Dekumoj de Precizeco"
+  },
+  "defaultNetwork": {
+    "message": "La defaŭlta reto por Ether transakcioj estas Ĉefa Reto."
+  },
+  "delete": {
+    "message": "Forigi"
+  },
+  "deleteAccount": {
+    "message": "Forigi Konton"
+  },
+  "deposit": {
+    "message": "Deponejo"
+  },
+  "depositEther": {
+    "message": "Deponejo Ether"
+  },
+  "details": {
+    "message": "Detaloj"
+  },
+  "directDepositEther": {
+    "message": "Rekte Deponejo Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Se vi jam havas iun Ether, la plej rapida vojo akiri Ether en via nova monujo de rekta tavolo."
+  },
+  "dismiss": {
+    "message": "Eksigi"
+  },
+  "done": {
+    "message": "Farita"
+  },
+  "downloadGoogleChrome": {
+    "message": "Elŝuti Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "# De? uto#? i tiu Sekreta Rezervo Frazo kaj teni ĝin sekure stokitaj sur ekstera ĉifrita malfacila stirado aŭ stokado rimedo."
+  },
+  "downloadStateLogs": {
+    "message": "# De? Uto#? Tata#? Tipo"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Falis"
+  },
+  "edit": {
+    "message": "Redakti"
+  },
+  "editContact": {
+    "message": "Redakti Kontakto"
+  },
+  "emailUs": {
+    "message": "# Retpo? tigi nin!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Vi sukcesis en la ekzameno - teni vian seedphrase sekura, ĝi estas via respondeco!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Konsiletoj sur stokante ĝin sekure"
+  },
+  "endOfFlowMessage3": {
+    "message": "Konservi rezervon en multoblaj lokoj."
+  },
+  "endOfFlowMessage4": {
+    "message": "Neniam dividas la frazo kun iu ajn."
+  },
+  "endOfFlowMessage5": {
+    "message": "Esti zorgema de phishing! MetaMask neniam spontanee petas vian semon frazo."
+  },
+  "endOfFlowMessage6": {
+    "message": "Se vi bezonas subteni supre vian semon frazon denove, vi povas trovi ĝin en Fiksoj -> Sekureco."
+  },
+  "endOfFlowMessage7": {
+    "message": "Se vi iam ajn havas demandojn aŭ vidas ion fishy, # retpo? to support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ne povas retrovi vian seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Lerni pli."
+  },
+  "endOfFlowMessage10": {
+    "message": "# ? Iu Farita"
+  },
+  "ensRegistrationError": {
+    "message": "Eraro en ENS nomo # registri? o"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS nomo ne troviĝas sur la nuna reto. Provu ŝaltanta al Ĉefa Ethereum Reto."
+  },
+  "enterAnAlias": {
+    "message": "Eniri alias"
+  },
+  "enterPassword": {
+    "message": "Eniri pasvorton"
+  },
+  "enterPasswordContinue": {
+    "message": "Eniri pasvorton # da? ri"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Publika Adreso"
+  },
+  "etherscanView": {
+    "message": "Vido konto sur Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Proksimuma Pretigo Tempoj"
+  },
+  "expandView": {
+    "message": "Vastigi Vido"
+  },
+  "exportPrivateKey": {
+    "message": "Eksporti La Privatan#? Losilo"
+  },
+  "failed": {
+    "message": "Malsukcesis"
+  },
+  "fast": {
+    "message": "Rapida"
+  },
+  "faster": {
+    "message": "Pli rapida"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Forgesi#? i tiu aparato"
+  },
+  "from": {
+    "message": "De"
+  },
+  "fromShapeShift": {
+    "message": "De ShapeShift"
+  },
+  "functionType": {
+    "message": "Funkcio Tipo"
+  },
+  "gasLimit": {
+    "message": "Gasa Limo"
+  },
+  "gasLimitCalculation": {
+    "message": "Ni kalkulas la sugestita gaso limo bazita sur reto sukcesaj indicoj."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gasa limo estas la maksimuma kvanto de unuoj de gaso vi estas volanta elspezi."
+  },
+  "gasLimitTooLow": {
+    "message": "Gasa limo devas esti almenaŭ 21000"
+  },
+  "gasUsed": {
+    "message": "Gaso Uzita"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gaso Prezo Ekstreme Malalta"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gaso prezo specifas la kvanton de Etero vi estas volanta pagi por ĉiu unuo de gaso."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gaso Prezo"
+  },
+  "gasPriceCalculation": {
+    "message": "Ni kalkulas la sugestita gaso prezoj bazita sur reto sukcesaj indicoj."
+  },
+  "general": {
+    "message": "Generalo"
+  },
+  "generalSettingsDescription": {
+    "message": "Valuta konvertiĝo, primara valuto, lingvo, blockies identicon"
+  },
+  "getEther": {
+    "message": "Akiri Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Akiri Helpon."
+  },
+  "getStarted": {
+    "message": "Get Started"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Ni estas feliĉaj revidi vin."
+  },
+  "hardware": {
+    "message": "aparataro"
+  },
+  "hardwareWalletConnected": {
+    "message": "Aparataro monujo konektita"
+  },
+  "hardwareWallets": {
+    "message": "Konekti aparataro monujo"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Elekti # lada? ejo monujo vi ŝatus uzi kun MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "# ? i tie",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Datumoj"
+  },
+  "hide": {
+    "message": "Kaŝi"
+  },
+  "hideToken": {
+    "message": "Kaŝi Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Historio"
+  },
+  "import": {
+    "message": "Importado",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Importi Konto"
+  },
+  "importAccountMsg": {
+    "message": " Importita kontoj ne estos asociita kun via origine kreita MetaMask konto seedphrase. Lerni pli da pri importita kontoj "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importi Konton kun Semo Frazo"
+  },
+  "importWallet": {
+    "message": "Importi Monujo"
+  },
+  "importYourExisting": {
+    "message": "Importi via ekzistanta monujo uzanta 12 vorto semo frazo"
+  },
+  "imported": {
+    "message": "Importitaj",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Importi uzanta konto semo frazo"
+  },
+  "infoHelp": {
+    "message": "Info & Helpo"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Via komenca transakcio estis konfirmita per la reto. Klako OK reveni."
+  },
+  "insufficientBalance": {
+    "message": "# Nesufi? a ekvilibro."
+  },
+  "insufficientFunds": {
+    "message": "Nesufiĉaj financoj."
+  },
+  "insufficientTokens": {
+    "message": "Nesufiĉa tokens."
+  },
+  "invalidAddress": {
+    "message": "Malvalida adreso"
+  },
+  "invalidAddressRecipient": {
+    "message": "Ricevanto adreso estas nevalida"
+  },
+  "knownAddressRecipient": {
+    "message": "Konata kontrakto adreso."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ne ETH reto, aro al minuskla"
+  },
+  "invalidInput": {
+    "message": "Nevalida input."
+  },
+  "invalidRPC": {
+    "message": "Malvalida URL RPC"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Nevalida Bloko Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Nevalida semo frazo"
+  },
+  "jsonFile": {
+    "message": "JSON Dosieron",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Testo Reto"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Lerni pli"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Vi devas uzi vian lastan konton # anta? ol vi povas aldoni novan unu."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Jes, lasita-a akiri instalita!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Ligoj"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live Gaso Prezo Prognozoj"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Tokens..."
+  },
+  "loadMore": {
+    "message": "Ŝarĝi Pli"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Ensaluti"
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout tempo estas tro granda"
+  },
+  "mainnet": {
+    "message": "Ĉefa Ethereum Reto"
+  },
+  "memorizePhrase": {
+    "message": "Enmemorigi ĉi tiu frazo."
+  },
+  "memo": {
+    "message": "noto"
+  },
+  "menu": {
+    "message": "Menuo"
+  },
+  "message": {
+    "message": "Mesaĝo"
+  },
+  "metamaskDescription": {
+    "message": "Konektante vin al Ethereum kaj la Malcentra Reto."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Semo Vortoj"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Versio"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Bonvolu eniri vian pasvorton por konfirmi ĝin, estas vi!"
+  },
+  "myAccounts": {
+    "message": "Miaj Kontoj"
+  },
+  "myWalletAccounts": {
+    "message": "Mia Monujo Kontoj"
+  },
+  "myWalletAccountsDescription": {
+    "message": "# ? Iu de via MetaMask kreita kontoj # a? tomate estos aldonita al#? i tiu sekcio."
+  },
+  "mustSelectOne": {
+    "message": "Devas elekti almenaŭ 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Interrilati kun malcentralizita aplikoj uzante MetaMask, vi?? l bezono Ether en via monujo."
+  },
+  "needImportFile": {
+    "message": "Vi devas elekti dosieron por importi.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ne povas sendi negativaj kvantoj de ETH."
+  },
+  "networkName": {
+    "message": "Reta Nomo"
+  },
+  "networks": {
+    "message": "Retoj"
+  },
+  "networkSettingsDescription": {
+    "message": "Aldoni kaj redakti kutimo RPC retoj"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Nova Konto"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Nova adreso eltrovita! Klaku tie ĉi por aldoni al via adresaro."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nova Kontakto"
+  },
+  "newContract": {
+    "message": "Nova Kontrakto"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Nova Reto"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Ne, mi jam havas semon frazo"
+  },
+  "protectYourKeys": {
+    "message": "Protekti Vian#? Losilo!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Esti zorgema kun via semo frazo — tie estis raportoj de retejoj kiu provas imiti MetaMask. MetaMask neniam demandas por via semo frazo!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Teni vian frazon sekura. Se vi vidas ion fishy, # a? vi estas necerta pri retejo, # retpo? to support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Nova RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Nova Totala"
+  },
+  "newTransactionFee": {
+    "message": "Nova Transakcio Kotizo"
+  },
+  "next": {
+    "message": "Venonta"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Neniu adreso estis fiksita por tiu nomo."
+  },
+  "noDeposits": {
+    "message": "Neniu deponejoj ricevis"
+  },
+  "noConversionRateAvailable": {
+    "message": "Neniu # Konverti? O Indico Havebla"
+  },
+  "noTransactions": {
+    "message": "Vi havas neniun transakcioj"
+  },
+  "noThanks": {
+    "message": "Ne, Dankon"
+  },
+  "notEnoughGas": {
+    "message": "Ne # Sufi? A Gaso"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam ne trovis"
+  },
+  "noWebcamFound": {
+    "message": "Via komputilo estas webcam ne estis trovita. Bonvolu provi denove."
+  },
+  "ofTextNofM": {
+    "message": "de"
+  },
+  "orderOneHere": {
+    "message": "Ordoni Trezor aŭ Ledger kaj teni viajn financojn en malvarma stokado"
+  },
+  "origin": {
+    "message": "Origino"
+  },
+  "parameters": {
+    "message": "Parametroj"
+  },
+  "participateInMetaMetrics": {
+    "message": "Partopreni en MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Partopreni en MetaMetrics helpi nin fari MetaMask pli bona"
+  },
+  "password": {
+    "message": "Pasvorto"
+  },
+  "passwordsDontMatch": {
+    "message": "Pasvortoj ne Kongruas"
+  },
+  "passwordNotLongEnough": {
+    "message": "Pasvorto ne sufiĉe longe"
+  },
+  "pastePrivateKey": {
+    "message": "Almeti vian privatan#? losilo#? nuro#? i tie:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Almeti via semo frazo,#? i tie!"
+  },
+  "pending": {
+    "message": "farota"
+  },
+  "personalAddressDetected": {
+    "message": "Persona adreso eltrovita. @ Input la ĵetono kontrakto adreso."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primara Valuto"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Privateca Politiko"
+  },
+  "privateKey": {
+    "message": "Privata#? Losilo",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Averto: Neniam diskonigas#? i tiu#? losilo. Iu ajn kun via privata#? losilo povas ŝteli iu # valora? o tenita en via konto."
+  },
+  "privateNetwork": {
+    "message": "Privata Reto"
+  },
+  "qrCode": {
+    "message": "Montri QR Kodo"
+  },
+  "queue": {
+    "message": "Atendovico"
+  },
+  "readdToken": {
+    "message": "Vi povas aldoni ĉi tiu ĵetono reen en la estonteco de iranta al \"Aldoni token\" en viaj kontoj ebloj menuo."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Ricevanto Adreso"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Malakcepti Ĉiujn"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Malakceptita"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Konto Reset"
+  },
+  "resetAccountDescription": {
+    "message": "Rekomenciganta via konto estos klara via transakcio historio."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Memorigas min poste"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Restarigi via Konto kun Semo Frazo"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "petoj atendante por esti agnoskita"
+  },
+  "required": {
+    "message": "Bezonata"
+  },
+  "restore": {
+    "message": "Restarigi"
+  },
+  "revealSeedWords": {
+    "message": "Malkaŝi Semo Vortoj"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Semo Frazo"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Se vi iam ajn ŝanĝi browsers aŭ movi komputiloj, vi devos#? i tiu semo frazo aliri viajn kontojn. Savi ilin ie sekura kaj sekreta."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NE dividas ĉi tiun frazon kun iu ajn!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Ĉi tiuj vortoj povas esti uzitaj por ŝteli ĉiujn viajn kontojn."
+  },
+  "revert": {
+    "message": "Revert"
+  },
+  "remove": {
+    "message": "Forigi"
+  },
+  "removeAccount": {
+    "message": "Forigi konton"
+  },
+  "removeAccountDescription": {
+    "message": "# ? I tiu konto estos forigita de via monujo. Bonvolu fari certe vin havas la origina semo frazo, # a? privata#? losilo por#? i tiu importita konto antaŭ ol daŭranta. Vi povas importi aŭ krei kontojn denove de la konto falo-malsupren. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Testo Reto"
+  },
+  "ropsten": {
+    "message": "Ropsten Testo Reto"
+  },
+  "goerli": {
+    "message": "Goerli Testo Reto"
+  },
+  "save": {
+    "message": "Savi"
+  },
+  "slow": {
+    "message": "Malrapida"
+  },
+  "slower": {
+    "message": "Malrapida"
+  },
+  "saveAsCsvFile": {
+    "message": "Savi kiel CSV Dosiero"
+  },
+  "scanInstructions": {
+    "message": "Loko de la QR kodo en la fronto de via fotilo"
+  },
+  "scanQrCode": {
+    "message": "Skanu QR Kodo"
+  },
+  "search": {
+    "message": "Serĉo"
+  },
+  "searchResults": {
+    "message": "# Ser? O Rezultoj"
+  },
+  "secretBackupPhrase": {
+    "message": "Sekreta Rezervo Frazo"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Via sekreta rezervo frazo faras ĝin facila por subteni supre kaj restarigi via konto."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "AVERTO: Neniam sciigi vian rezervan frazo. Iu ajn kun#? i tiu frazo povas preni vian Ether forever."
+  },
+  "secretPhrase": {
+    "message": "Eniri vian sekreton dekdu vorto frazon ĉi tie por restarigi via kelo."
+  },
+  "securityAndPrivacy": {
+    "message": "Security & Privacy"
+  },
+  "securitySettingsDescription": {
+    "message": "Privateco agordojn kaj monujo semo frazo"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Apartaj ĉiu vorto kun unu sola spaco"
+  },
+  "seedPhraseReq": {
+    "message": "Semo frazoj estas 12 vortoj longa"
+  },
+  "selectCurrency": {
+    "message": "Elektu Monero"
+  },
+  "selectEachPhrase": {
+    "message": "Bonvolu elekti ĉiu frazo por fari certe ĝin estas ĝusta."
+  },
+  "selectLocale": {
+    "message": "Elekti Lokaĵaron"
+  },
+  "selectType": {
+    "message": "Elektu Tipo"
+  },
+  "send": {
+    "message": "Sendi"
+  },
+  "sendAmount": {
+    "message": "Sendu Kvanton"
+  },
+  "sendETH": {
+    "message": "Sendi ETH"
+  },
+  "sendTokens": {
+    "message": "Sendi Tokens"
+  },
+  "sentEther": {
+    "message": "sendita ether"
+  },
+  "sentTokens": {
+    "message": "sendita tokens"
+  },
+  "separateEachWord": {
+    "message": "Apartaj ĉiu vorto kun unu sola spaco"
+  },
+  "searchTokens": {
+    "message": "Serĉo Tokens"
+  },
+  "selectAnAccount": {
+    "message": "Elekti Konton"
+  },
+  "selectAnAccountHelp": {
+    "message": "Elekti la konton por vidi en MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Elektu alta gaso kotizo por akceli la pretigo de via transakcio.*"
+  },
+  "selectHdPath": {
+    "message": "Elekti HD Vojo"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Agordoj"
+  },
+  "showAdvancedGasInline": {
+    "message": "Progresinta gaso kontroloj"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Elekti # tio? i montri gaso prezo kaj limigi kontroloj rekte sur la sendi kaj konfirmi ekranoj."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Montri Konvertiĝo sur Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Elekti # tio? i montri fiat konvertiĝo sur Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Montri Privata#? Losilo"
+  },
+  "showHexData": {
+    "message": "Montri Hex Datumoj"
+  },
+  "showHexDataDescription": {
+    "message": "Elekti # tio? i montras la hex datumoj kampo sur la sendi ekrano"
+  },
+  "sign": {
+    "message": "Signo"
+  },
+  "signatureRequest": {
+    "message": "Subskribo Peto"
+  },
+  "signed": {
+    "message": "Subskribita"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Subskribo Peto"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Io iris malĝuste."
+  },
+  "speedUp": {
+    "message": "Rapidi Supre"
+  },
+  "speedUpCancellation": {
+    "message": "Rapidi supre#? i tiu nuligo"
+  },
+  "speedUpTransaction": {
+    "message": "Rapidi supre#? i tiu transakcio"
+  },
+  "switchNetworks": {
+    "message": "Ŝaltilo Retoj"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Ŝtata Tipo"
+  },
+  "stateLogs": {
+    "message": "Ŝtata Tipo"
+  },
+  "stateLogsDescription": {
+    "message": "Ŝtata tipo enhavas via publika konto adresoj kaj sendis transakcioj."
+  },
+  "stateLogError": {
+    "message": "Eraro en prenado de stato#? tipo."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Konekti Aparataro Monujo"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Konekti via # lada? ejo monujo rekte al via komputilo."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Elekti Konton"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Elekti la konton vi deziras vidi. Vi povas elekti nur unu je fojo."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Komenci uzanta dApps kaj pli!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Uzi vian # lada? ejo konton kiel vi volus kun ajna Ethereum konto. Ensaluti al dApps, sendi Eth, aĉeti kaj stoki ERC20 tokens kaj Ne-Fungible tokens kiel CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Enteni ĉi tiun frazon en pasvorton direktisto kiel 1Password."
+  },
+  "submit": {
+    "message": "# Submeti? i"
+  },
+  "submitted": {
+    "message": "# Submeti? i"
+  },
+  "supportCenter": {
+    "message": "Vizitu niajn Subtenado Centro"
+  },
+  "symbol": {
+    "message": "Simbolo"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbolo devas esti inter 0 kaj 12 karakteroj."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "# ? Irado sur havi viajn agordojn subtenita supre kun 3Box. Ĉi tiu ĉefaĵo estas currenty eksperimenta; uzu je via propra risko."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box estis malebligita pro eraro dum la komenca sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync kun mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync kun mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Se vi nur malfermas la MetaMask Mobile app por la unua fojo, nur sekvi la # pa? o en via telefono."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Skani # tio? i kodo kun via MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Fari certe neniu alia estas rigardanta#? e via ekrano kiam vi skani # tio? i kodo"
+  },
+  "syncWithMobileComplete": {
+    "message": "Via datumo estis synced sukcese. Ĝui la MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Terminoj de Uzo"
+  },
+  "testFaucet": {
+    "message": "Testo Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Ĉi-tio kreos novan monujon kaj semo frazo"
+  },
+  "tips": {
+    "message": "Konsiletoj"
+  },
+  "to": {
+    "message": "Al"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Ĵetono"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token jam estis aldonita."
+  },
+  "tokenContractAddress": {
+    "message": "Token Kontrakto Adreso"
+  },
+  "tokenSymbol": {
+    "message": "Token Simbolo"
+  },
+  "total": {
+    "message": "Totala"
+  },
+  "transaction": {
+    "message": "transakcio"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Transakcio renkontis eraron."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Transakcio Eraro. Escepto ĵetita en kontrakto kodo."
+  },
+  "transactionErrorNoContract": {
+    "message": "Provanta nomi funkcio sur ne-kontrakta adreso."
+  },
+  "transactionFee": {
+    "message": "Transakcio Kotizo"
+  },
+  "transactionTime": {
+    "message": "Transakcio Tempo"
+  },
+  "transfer": {
+    "message": "Translokigo"
+  },
+  "transferBetweenAccounts": {
+    "message": "Translokigo inter miaj kontoj"
+  },
+  "transferFrom": {
+    "message": "Translokigo De"
+  },
+  "troubleTokenBalances": {
+    "message": "Ni havis problemon ŝarĝo via token ekvilibroj. Vi povas vidi ilin ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Provu denove"
+  },
+  "typePassword": {
+    "message": "Tajpi vian pasvorton MetaMask"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "unuoj"
+  },
+  "unknown": {
+    "message": "Nekonata"
+  },
+  "unknownNetwork": {
+    "message": "Nekonata Privata Reto"
+  },
+  "unknownQrCode": {
+    "message": "Eraro: Ni ne povis identigi ke QR kodo"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ve! Io iris malĝuste...."
+  },
+  "unknownCameraError": {
+    "message": "Okazis eraro dum provanta aliri vian fotilon. Bonvolu provi denove..."
+  },
+  "unlock": {
+    "message": "Liberigi"
+  },
+  "unlockMessage": {
+    "message": "La malcentralizita retejo atendas"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs postulas la konvena HTTP/HTTPS prefikso."
+  },
+  "usedByClients": {
+    "message": "Uzata por vario de malsamaj klientoj"
+  },
+  "userName": {
+    "message": "Salutnomo"
+  },
+  "validFileImport": {
+    "message": "Vi devas elekti valida dosieron por importi."
+  },
+  "viewAccount": {
+    "message": "Vido Konto"
+  },
+  "viewinExplorer": {
+    "message": "Vido en Esploristo"
+  },
+  "viewContact": {
+    "message": "Vida Kontakto"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Vido sur Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Vizitu nian ttt-ejo"
+  },
+  "walletSeed": {
+    "message": "Monujo Semo"
+  },
+  "welcomeBack": {
+    "message": "Bonvenon Reen!"
+  },
+  "welcome": {
+    "message": "Bonvenon al MetaMask"
+  },
+  "writePhrase": {
+    "message": "Skribi ĉi tiun frazon sur peco de papero kaj vendejo en sekura loko. Se vi deziras eĉ pli da sekureco, skribi ĝin malsupren sur multoblaj pecoj de papero kaj vendejo en ĉiu 2 - 3 malsamaj lokoj."
+  },
+  "yesLetsTry": {
+    "message": "Jes, ni provu"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Vi devas permesi al la fotilo aliron al uzi ĉi tiun ĉefaĵon."
+  },
+  "yourSigRequested": {
+    "message": "Via subskribo estas estanta petita"
+  },
+  "youSign": {
+    "message": "Vi estas subskribanta"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Via privata semo frazo"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nulo gaso prezo sur rapido supren"
+  }
+}

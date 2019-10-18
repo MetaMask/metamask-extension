@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Seall A-Steach Tar-Ghnìomhan Cumanta"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Tagh seo a chleachdadh Etherscan to show a thig a-steach tar-ghnìomhan cumanta ann an tar-ghnìomhan cumanta air an liosta"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Cairt-mhàin a tha ri fhaotainn air Ethereum lìonraidhean slaodach."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Ceanglaichean"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Làraichean a tha ceadaichte a ' leughadh na cunntasan agad"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Làimh a chur ris an làrach gu faodaidh e cothrom air na cunntasan agad, tha seo feumail airson seann dapps"
+  },
+  "connected": {
+    "message": "Co-cheangailte"
+  },
+  "connectedDescription": {
+    "message": "Liosta de na làraichean ceadaichte cothrom agad seòlaidhean"
+  },
+  "privacyModeDefault": {
+    "message": "Prìobhaideachd Modh a-nis an comas a ghnàth"
+  },
+  "contractInteraction": {
+    "message": "Cùmhnant Co"
+  },
+  "clearApprovalData": {
+    "message": "Thoir air falbh a h-uile làraich"
+  },
+  "reject": {
+    "message": "Diùlt"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Tha an làrach seo a requesting cothrom air sealladh agad an-dràsta an cunntas seòladh. An-còmhnaidh a ' dèanamh cinnteach gu bheil earbsa agad air an làraich agad a dhol an sàs san."
+  },
+  "about": {
+    "message": "Mu dheidhinn"
+  },
+  "aboutSettingsDescription": {
+    "message": "Tionndadh, taic do chasg, agus cuir fios gu fiosrachadh."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Bhith a ' agaibh camara..."
+  },
+  "account": {
+    "message": "Cunntas"
+  },
+  "accountDetails": {
+    "message": "Cunntas Na H -"
+  },
+  "accountName": {
+    "message": "Cunntas Name"
+  },
+  "accountOptions": {
+    "message": "Cunntas Roghainnean"
+  },
+  "accountSelectionRequired": {
+    "message": "Feumaidh tu tagh cunntas!"
+  },
+  "activityLog": {
+    "message": "cleas log"
+  },
+  "addNetwork": {
+    "message": "Cuir Air An Lìonra"
+  },
+  "addRecipient": {
+    "message": "Cuir Fhaighteir"
+  },
+  "advanced": {
+    "message": "Adhartach"
+  },
+  "advancedSettingsDescription": {
+    "message": "Cothrom fhaighinn air an luchd-leasachaidh na feartan, a-nuas State Logaichean, Ath-shuidhich an Cunntas, an suidheachadh a testnets agus gnàthaichte RPC."
+  },
+  "advancedOptions": {
+    "message": "Roghainnean Adhartach"
+  },
+  "addToAddressBook": {
+    "message": "Cuir a-leabhar nan seòladh"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "m. e. John D."
+  },
+  "addAlias": {
+    "message": "Cuir alias"
+  },
+  "addToken": {
+    "message": "Cuir Token"
+  },
+  "addTokens": {
+    "message": "Cuir Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Cuir A Thathar A ' Moladh Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Cuir an tokens thu an-dràsta ged a tha a ' cleachdadh MetaMask"
+  },
+  "amount": {
+    "message": "T"
+  },
+  "appDescription": {
+    "message": "An Ethereum Sporan ann am Brabhsair agad",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Aonta a chur ris"
+  },
+  "approved": {
+    "message": "Aontachadh"
+  },
+  "asset": {
+    "message": "Maoin"
+  },
+  "attemptingConnect": {
+    "message": "Bhathar a ' feuchainn ri ceangal a dhèanamh ris blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Cur a-steach seo a ' dèanamh oidhirp chan urrainn dhuinn barantas a thoirt do chiad dreach transaction thèid crìoch a chur air. Ma cancellation oidhirp a tha soirbheachail, you will be charged the transaction nic a ' phì gu h-àrd."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Suidhich an idle ùine ann am mionaidean mus MetaMask bidh log a-mach gu fèin-obrachail"
+  },
+  "average": {
+    "message": "Cuibheasach"
+  },
+  "back": {
+    "message": "Air ais"
+  },
+  "backToAll": {
+    "message": "Air ais chun a h-Uile"
+  },
+  "backupApprovalNotice": {
+    "message": "Lethbhreacan-glèidhidh agad a chumail Dìomhair Ath-còd air a chumail do sporan agus airgead tèarainte."
+  },
+  "backupApprovalInfo": {
+    "message": "Tha seo a secret code tha feum air gus faighinn seachad do sporan ann an cùis chailleas tu do inneal, forget am facal-faire agad a bhith ag ath-stàlaich MetaMask, no gu bheil thu ag iarraidh cothrom air do sporan air inneal eile."
+  },
+  "backupNow": {
+    "message": "Lethbhreacan-glèidhidh a-nis"
+  },
+  "balance": {
+    "message": "Meidh"
+  },
+  "balanceOutdated": {
+    "message": "Meidh fhaodadh tu"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Insufficient cothromachadh an-dràsta airson gas gu h-iomlan"
+  },
+  "basic": {
+    "message": "Bunasach"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Block Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Cleachd Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Gnàthaich transaction nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Am Brabhsair agad ris nach eil taic..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask a dhealbhachadh agus a thogail ann an California."
+  },
+  "buyWithWyre": {
+    "message": "Ceannaich ETH le Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ag innse dhut gu bheil a ' cleachdadh cairt-creideis a deposit ETH deas ann agad MetaMask cunntas."
+  },
+  "buyCoinSwitch": {
+    "message": "Cheannach air CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch tha one-stop-uidhe gu iomlaid còrr is 300 cryptocurrencies aig an rud a rangachadh as fheàrr."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Dheth"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Air"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Sguir dheth"
+  },
+  "cancelAttempt": {
+    "message": "Sguir Dhen Oidhirp"
+  },
+  "cancellationGasFee": {
+    "message": "Cancellation Gas Nic A ' Phì"
+  },
+  "cancelled": {
+    "message": "Air a chur dheth"
+  },
+  "chainId": {
+    "message": "Sreath ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Briog an seo a-nis a ' toirt faclan dìomhair"
+  },
+  "close": {
+    "message": "Dùin"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Feumaidh tu cleachdadh MetaMask air Google Chrome ann an òrdugh gus ceangal a dhèanamh ris an do bathar-cruaidh Sporan."
+  },
+  "confirm": {
+    "message": "Confirm"
+  },
+  "confirmed": {
+    "message": "Thàinig iad còmhla"
+  },
+  "confirmPassword": {
+    "message": "Dearbhaich Am Facal-Faire"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Confirm your Secret lethbhreac-Glèidhidh Abairt"
+  },
+  "congratulations": {
+    "message": "Congratulations"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Bathar-Cruaidh Sporan"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "connectRequest": {
+    "message": "Ceangail An T-Iarrtas"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "A ' ceangal ri Kovan Deuchainn air an Lìonra"
+  },
+  "connectingToMainnet": {
+    "message": "'Ceangal ris a' Phrìomh Ethereum Network"
+  },
+  "connectingToRopsten": {
+    "message": "A ' ceangal ri Ropsten Deuchainn air an Lìonra"
+  },
+  "connectingToRinkeby": {
+    "message": "A ' ceangal ri Rinkeby Deuchainn air an Lìonra"
+  },
+  "connectingToLocalhost": {
+    "message": "A ' ceangal ri Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "A ' ceangal ri Goerli Deuchainn air an Lìonra"
+  },
+  "contacts": {
+    "message": "Fios thugainn"
+  },
+  "contactsSettingsDescription": {
+    "message": "Add, edit, thoir air falbh, agus a ' stiùireadh luchd-aithne agad"
+  },
+  "continueToWyre": {
+    "message": "Lean air adhart gu Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Lean air adhart gu CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Cùmhnant Deployment"
+  },
+  "conversionProgress": {
+    "message": "Theine ann an adhartas"
+  },
+  "copiedButton": {
+    "message": "Chaidh ath-sgrìobhadh"
+  },
+  "copiedExclamation": {
+    "message": "Chaidh ath-sgrìobhadh!"
+  },
+  "copy": {
+    "message": "Dèan lethbhreac"
+  },
+  "copyAddress": {
+    "message": "Dèan lethbhreac dhen t-seòladh gu stòr-bhòrd"
+  },
+  "copyTransactionId": {
+    "message": "Cuir lethbhreac Transaction ID"
+  },
+  "copiedTransactionId": {
+    "message": "Chaidh ath-sgrìobhadh Transaction ID"
+  },
+  "copyToClipboard": {
+    "message": "Cuir lethbhreac stòr-bhòrd"
+  },
+  "copyButton": {
+    "message": " Dèan lethbhreac "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Cruthaich"
+  },
+  "createAccount": {
+    "message": "An Cunntas A Chruthachadh"
+  },
+  "createAWallet": {
+    "message": "A ' cruthachadh Sporan"
+  },
+  "createPassword": {
+    "message": "Cruthaich Facal-Faire"
+  },
+  "currencyConversion": {
+    "message": "Airgeadra Theine"
+  },
+  "currentLanguage": {
+    "message": "Cànain An-Dràsta"
+  },
+  "customGas": {
+    "message": "Gnàthaich Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Meudachadh ann nic a 'phì an damhair lùghdaich a' giollachd amannan, ach chan eil e a ' dol."
+  },
+  "customToken": {
+    "message": "Custom Token"
+  },
+  "customRPC": {
+    "message": "Custom RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals feumar co-dhiù 0, agus chan eil còrr 36."
+  },
+  "decimal": {
+    "message": "Decimals de Dòigh"
+  },
+  "defaultNetwork": {
+    "message": "The default lìonra airson Ether tar-ghnìomhan cumanta ' s e am Prìomh-Ionnlaid."
+  },
+  "delete": {
+    "message": "Sguabadh às"
+  },
+  "deleteAccount": {
+    "message": "Sguab Às An Cunntas"
+  },
+  "deposit": {
+    "message": "Deposit"
+  },
+  "depositEther": {
+    "message": "Deposit Ether"
+  },
+  "details": {
+    "message": "Na h -"
+  },
+  "directDepositEther": {
+    "message": "Dìreach Deposit Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ma tha agad mar-thà ann an cuid Ether, the quickest way to get Ether ann ùr agad sporan le dìreach deposit."
+  },
+  "dismiss": {
+    "message": "Cuir air falbh"
+  },
+  "done": {
+    "message": "A dhèanamh"
+  },
+  "downloadGoogleChrome": {
+    "message": "Luchdaich A-Nuas Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Luchdaich a-nuas an seo Dìomhair lethbhreac-Glèidhidh Abairt agus cumaidh e air a stòradh gu sàbhailte air an taobh a-muigh encrypted chlàr-chruaidh no a ' stòradh tro mheadhan na gàidhlig."
+  },
+  "downloadStateLogs": {
+    "message": "Luchdaich A-Nuas State Logaichean"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Dropped"
+  },
+  "edit": {
+    "message": "Deasaich"
+  },
+  "editContact": {
+    "message": "Deasaich Fios Thugainn"
+  },
+  "emailUs": {
+    "message": "Cuir post-d thugainn!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Thu a ' dol seachad tha an deuchainn - cùm do seedphrase sàbhailte, tha e an urra ribhse!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Bàrr air a 'stòradh' s e gu sàbhailte"
+  },
+  "endOfFlowMessage3": {
+    "message": "Sàbhail lethbhreac-glèidhidh ann an iomadh àite."
+  },
+  "endOfFlowMessage4": {
+    "message": "A-riamh air a roinn an abairt le duine sam bith."
+  },
+  "endOfFlowMessage5": {
+    "message": "A bhith faiceallach de phishing! MetaMask thèid a-riamh spontaneously a ' faighneachd airson do sìol abairt."
+  },
+  "endOfFlowMessage6": {
+    "message": "Ma dh'fheumas sibh air ais suas do sìol abairt a-rithist, ' s urrainn dhut lorg e ann an Roghainnean -> Tèarainteachd."
+  },
+  "endOfFlowMessage7": {
+    "message": "Ma tha thu a-riamh tha ceistean no a ' faicinn rudeigin fishy, post-d support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask chan fhaigh agad seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Ionnsaich tuilleadh."
+  },
+  "endOfFlowMessage10": {
+    "message": "A H-Uile Dèanamh"
+  },
+  "ensRegistrationError": {
+    "message": "Mearachd ann ENS name registration"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS name cha deach a lorg air an lìonra. Feuch 'comharrachadh a' cur gu Prìomh Ethereum Lìonra."
+  },
+  "enterAnAlias": {
+    "message": "Cuir a-steach an alias"
+  },
+  "enterPassword": {
+    "message": "Cuir a-steach facal-faire"
+  },
+  "enterPasswordContinue": {
+    "message": "Cuir a-steach am facal-faire a chumail a ' dol"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Public Address"
+  },
+  "etherscanView": {
+    "message": "Seall cunntas air Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Tuairmse Air A ' Giollachd Amannan"
+  },
+  "expandView": {
+    "message": "Leudaich View"
+  },
+  "exportPrivateKey": {
+    "message": "Às-Phortaich Iuchair Phrìobhaideach"
+  },
+  "failed": {
+    "message": "Dh'fhàillig"
+  },
+  "fast": {
+    "message": "Luath"
+  },
+  "faster": {
+    "message": "Nas luaithe"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Forget an inneal"
+  },
+  "from": {
+    "message": "Bho"
+  },
+  "fromShapeShift": {
+    "message": "O ShapeShift"
+  },
+  "functionType": {
+    "message": "Function Seòrsa"
+  },
+  "gasLimit": {
+    "message": "Gas Chuingeachadh"
+  },
+  "gasLimitCalculation": {
+    "message": "Tha sinn a 'obrachadh a-mach a' moladh gas a ' chrìoch a tha stèidhichte air lìonra success rate."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gas a 'chrìoch as motha an t-aonadan de gas a tha thu deònach a bhith a' caitheamh."
+  },
+  "gasLimitTooLow": {
+    "message": "Gas a ' chrìoch a bhith co-dhiù 21000"
+  },
+  "gasUsed": {
+    "message": "Gas A Chleachdadh"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Prìs Gu Math Ìosal"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas cosgais sònraichidh seo an t-Ether tha thu deònach a bhith a ' pàigheadh airson gach aonad gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Cosgais"
+  },
+  "gasPriceCalculation": {
+    "message": "Tha sinn a 'obrachadh a-mach a' moladh gas prìsean a tha stèidhichte air lìonra success rate."
+  },
+  "general": {
+    "message": "Coitcheann"
+  },
+  "generalSettingsDescription": {
+    "message": "Airgeadra theine, bun-sgoil airgeadra, cànan, blockies identicon"
+  },
+  "getEther": {
+    "message": "Faigh Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Faigh Cuideachadh."
+  },
+  "getStarted": {
+    "message": "Toiseach-Tòiseachaidh"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "We're happy to see you."
+  },
+  "hardware": {
+    "message": "bathar-cruaidh"
+  },
+  "hardwareWalletConnected": {
+    "message": "Bathar-cruaidh sporan co-cheangailte"
+  },
+  "hardwareWallets": {
+    "message": "Connect bathar-cruaidh san sporan"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Tagh bathar-cruaidh sporan bu mhath leat a chleachdadh le MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "an-seo",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Dàta"
+  },
+  "hide": {
+    "message": "Falaich"
+  },
+  "hideToken": {
+    "message": "Falaich Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Eachdraidh"
+  },
+  "import": {
+    "message": "Ion-phortadh",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Ion-Phortaich Cunntas"
+  },
+  "importAccountMsg": {
+    "message": " Ion-phortadh nan cunntasan nach eil co-cheangailte ri d ' a chaidh a chruthachadh MetaMask cunntas seedphrase. Ionnsaich barrachd mu ion-phortadh nan cunntasan "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Ion-phortaich Cunntas le Sìol Abairt"
+  },
+  "importWallet": {
+    "message": "Ion-Phortaich Sporan"
+  },
+  "importYourExisting": {
+    "message": "Ion-phortadh a tha agad mu thràth sporan a bhith a ' cleachdadh 12 facal sìol abairt"
+  },
+  "imported": {
+    "message": "Ion-phortadh",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Ion-phortadh a ' cleachdadh cunntas sìol abairt"
+  },
+  "infoHelp": {
+    "message": "Fiosrachadh & Cuideachadh"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Agad a ' chiad transaction e far an lìonra. Briog air \" OK \" gus a dhol air ais."
+  },
+  "insufficientBalance": {
+    "message": "Insufficient cothromachadh."
+  },
+  "insufficientFunds": {
+    "message": "Insufficient airgead."
+  },
+  "insufficientTokens": {
+    "message": "Insufficient tokens."
+  },
+  "invalidAddress": {
+    "message": "Seòladh mì-dhligheach"
+  },
+  "invalidAddressRecipient": {
+    "message": "Fhaighteir seòladh mì-dhligheach"
+  },
+  "knownAddressRecipient": {
+    "message": "Aithnichte agus a ' seòladh."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Chan eil ETH lìonra, air a shuidheachadh gu lowercase"
+  },
+  "invalidInput": {
+    "message": "Mì-dhligheach stiùireadh bho."
+  },
+  "invalidRPC": {
+    "message": "Mì-RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Mì-dhligheach a Bhacadh Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Mì-dhligheach sìol abairt"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Deuchainn Air An Lìonra"
+  },
+  "max": {
+    "message": "Air a char as motha"
+  },
+  "learnMore": {
+    "message": "Barrachd fiosrachaidh"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Feumaidh tu a dhèanamh a 'cleachdadh d' chunntais mu dheireadh mus urrainn dhut cuir fear ùr."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Yes, let na get set up!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Ceanglaichean"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live Gas Cosgais Predictions"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "A ' Luchdadh Tokens..."
+  },
+  "loadMore": {
+    "message": "Tuilleadh"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Log A-Steach"
+  },
+  "logout": {
+    "message": "Log a-mach"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout ùine ro mhòr"
+  },
+  "mainnet": {
+    "message": "Prìomh Ethereum Network"
+  },
+  "memorizePhrase": {
+    "message": "Cuir nad chuimhne e seo abairt."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Clàr-taice"
+  },
+  "message": {
+    "message": "Teachdaireachd"
+  },
+  "metamaskDescription": {
+    "message": "Ceangal thu gu Ethereum agus Decentralized-Lìn."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Sìol Faclan"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Cuir a-steach am facal-faire agad a dhearbhadh ' s a tha thu!"
+  },
+  "myAccounts": {
+    "message": "Mo Cunntasan"
+  },
+  "myWalletAccounts": {
+    "message": "Mo Sporan Cunntasan"
+  },
+  "myWalletAccountsDescription": {
+    "message": "A h-uile agad MetaMask a chruthachadh cunntasan seo gu fèin-obrachail a chur ris an earrainn seo."
+  },
+  "mustSelectOne": {
+    "message": "Feumaidh tagh co-dhiù 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Gus a dhol an sàs san decentralized iarrtasan a ' cleachdadh MetaMask, gheibh thu feum Ether do sporan."
+  },
+  "needImportFile": {
+    "message": "Feumaidh tu tagh faidhle ion-phortaich.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Faodaidh nach cuir àicheil na h-ETH."
+  },
+  "networkName": {
+    "message": "Network Name"
+  },
+  "networks": {
+    "message": "Lìonraidhean"
+  },
+  "networkSettingsDescription": {
+    "message": "Cuir agus deasaich gnàthaichte RPC lìonraidhean"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Cunntas Ùr"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "T-seòladh ùr a lorg! Briog an-seo gus a chur ris a ' leabhar nan seòladh agad."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Ùr Fios Thugainn"
+  },
+  "newContract": {
+    "message": "Cùmhnant Ùr"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Ùr Lìonra"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Chan eil, tha mi mu thràth sìol abairt"
+  },
+  "protectYourKeys": {
+    "message": "Dìon Do Keys!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "A bhith faiceallach leis an sìol abairt — tha aithisgean air na làraichean-lìn a oidhirp a imitate MetaMask. MetaMask thèid a-riamh a ' faighneachd airson do sìol abairt!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Cùm do abairt sàbhailte. Ma chì thu rudeigin fishy, no gu bheil thu cinnteach an dèanadh mu làrach-lìn, puist-d support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Ùr RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Ùra Uile Gu Lèir"
+  },
+  "newTransactionFee": {
+    "message": "Ùr Transaction Nic A ' Phì"
+  },
+  "next": {
+    "message": "Ath"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Chan eil an seòladh air a bhith air a shuidheachadh airson seo a name."
+  },
+  "noDeposits": {
+    "message": "Chan eil deposits fhuair"
+  },
+  "noConversionRateAvailable": {
+    "message": "Chan Eil Le Suim Ri Làimh"
+  },
+  "noTransactions": {
+    "message": "You have no tar-ghnìomhan cumanta"
+  },
+  "noThanks": {
+    "message": "Chan Eil Mòran Taing"
+  },
+  "notEnoughGas": {
+    "message": "Chan Eil Gu Leòr Gas"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Archive cha deach a lorg"
+  },
+  "noWebcamFound": {
+    "message": "A ' choimpiutair agad archive cha deach a lorg. Feuch ris a-rithist."
+  },
+  "ofTextNofM": {
+    "message": "na"
+  },
+  "orderOneHere": {
+    "message": "Òrdugh a Trezor no Ledger agus cùm do maoin a cold stòrais"
+  },
+  "origin": {
+    "message": "Origin"
+  },
+  "parameters": {
+    "message": "Paramadairean"
+  },
+  "participateInMetaMetrics": {
+    "message": "Pàirt a ghabhail ann an MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Pàirt a ghabhail ann an MetaMetrics gus cuideachadh a thoirt dhuinn a dhèanamh nas fheàrr MetaMask"
+  },
+  "password": {
+    "message": "Facal-faire"
+  },
+  "passwordsDontMatch": {
+    "message": "Faclan-faire Don't Match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Chan eil am facal-faire fada gu leòr"
+  },
+  "pastePrivateKey": {
+    "message": "Cuir agad prìobhaideach prìomh string an seo:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Cuir do sìol abairt seo!"
+  },
+  "pending": {
+    "message": "ri dhèiligeadh"
+  },
+  "personalAddressDetected": {
+    "message": "Pearsanta seòladh a lorg. Beachdan bho na token agus a ' seòladh."
+  },
+  "prev": {
+    "message": "Roimhe"
+  },
+  "primaryCurrencySetting": {
+    "message": "Bun-Sgoil Airgeadra"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Poileasaidh Prìobhaideachd"
+  },
+  "privateKey": {
+    "message": "Iuchair Phrìobhaideach",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Rabhadh: Cha disclose seo an iuchair. Duine sam bith agad prìobhaideach keys faodaidh goid sam bith assets a chumail ann an cunntas agad."
+  },
+  "privateNetwork": {
+    "message": "Prìobhaideach Air An Lìonra"
+  },
+  "qrCode": {
+    "message": "Seall QR Code"
+  },
+  "queue": {
+    "message": "Feitheamh"
+  },
+  "readdToken": {
+    "message": "'S urrainn dhut seo a token air ais anns an àm ri teachd le bhith a' dol gu \"Cuir token\" anns na cunntasan agad na roghainnean clàr-taice."
+  },
+  "recents": {
+    "message": "Tasglann o chionn goirid"
+  },
+  "recipientAddress": {
+    "message": "Fhaighteir Seòladh"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "A Cur A H-Uile"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "An àrainneachd"
+  },
+  "reset": {
+    "message": "Ath-shuidhich"
+  },
+  "resetAccount": {
+    "message": "Ath-Shuidhich An Cunntas"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting an cunntas agad a thèid fhaighinn ach ann agad a transaction eachdraidh."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Cur nam chuimhne a-mhàin"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Aiseag an Cunntas agad le Sìol Abairt"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "ag iarraidh air a ' feitheamh gu h-oifigeil"
+  },
+  "required": {
+    "message": "Tha riatanach"
+  },
+  "restore": {
+    "message": "Aisig"
+  },
+  "revealSeedWords": {
+    "message": "A Bh Sìol Faclan"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Sìol Abairt"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ma tha thu a-riamh ag atharrachadh browsers no gluais air coimpiutairean, feumaidh tu seo sìol abairt gus cothrom fhaighinn air na cunntasan agad. Sàbhail iad an àiteigin sàbhailte agus dìomhair."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "CHA bhi roinn an abairt seo ri duine sam bith!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Na faclan seo a bhith air a chleachdadh gu goid a h-uile your accounts."
+  },
+  "revert": {
+    "message": "Aisig"
+  },
+  "remove": {
+    "message": "Toirt air falbh"
+  },
+  "removeAccount": {
+    "message": "Thoir air falbh an cunntas"
+  },
+  "removeAccountDescription": {
+    "message": "Seo cunntas a thèid a thoirt air falbh bho do sporan. Dèan cinnteach gu bheil thu a 'chiad dreach sìol abairt no iuchair phrìobhaideach airson seo ion-phortadh a' chunntais roimhe seo. 'S urrainn dhut ion-phortaich no cunntasan a chruthachadh a-rithist an cunntas-tuiteam sìos. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Deuchainn Air An Lìonra"
+  },
+  "ropsten": {
+    "message": "Ropsten Deuchainn Air An Lìonra"
+  },
+  "goerli": {
+    "message": "Goerli Deuchainn Air An Lìonra"
+  },
+  "save": {
+    "message": "Sàbhail"
+  },
+  "slow": {
+    "message": "Slaodach"
+  },
+  "slower": {
+    "message": "Slower"
+  },
+  "saveAsCsvFile": {
+    "message": "Sàbhail mar CSV File"
+  },
+  "scanInstructions": {
+    "message": "Àite the QR code in front of your camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "searchResults": {
+    "message": "Search Results"
+  },
+  "secretBackupPhrase": {
+    "message": "Dìomhair Lethbhreac-Glèidhidh Abairt"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Your secret lethbhreac-glèidhidh abairt tha e furasta gu air ais suas agus an t-aiseag air a ' chunntas agad."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "RABHADH: Cha disclose agad lethbhreac-glèidhidh abairt. Duine sam bith leis an abairt seo faodaidh a th ' agaibh Ether gu bràth."
+  },
+  "secretPhrase": {
+    "message": "Cuir a-steach agad a chumail dìomhair dusan facal abairt seo a ' aiseag do vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Tèarainteachd & Privacy"
+  },
+  "securitySettingsDescription": {
+    "message": "Privacy settings agus sporan sìol abairt"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Fa leth gach facal san aon àite"
+  },
+  "seedPhraseReq": {
+    "message": "Sìol h-abairtean 12 faclan fada"
+  },
+  "selectCurrency": {
+    "message": "Tagh Airgeadra"
+  },
+  "selectEachPhrase": {
+    "message": "Tagh gach abairt ann an òrdugh gus a dhèanamh cinnteach gu bheil e ceart."
+  },
+  "selectLocale": {
+    "message": "Tagh Sgeama Ionadail"
+  },
+  "selectType": {
+    "message": "Tagh Seòrsa"
+  },
+  "send": {
+    "message": "Cuir a"
+  },
+  "sendAmount": {
+    "message": "Cuir An T -"
+  },
+  "sendETH": {
+    "message": "Cuir a-ETH"
+  },
+  "sendTokens": {
+    "message": "Cuir A-Tokens"
+  },
+  "sentEther": {
+    "message": "a chur ether"
+  },
+  "sentTokens": {
+    "message": "a chur a-tokens"
+  },
+  "separateEachWord": {
+    "message": "Fa leth gach facal san aon àite"
+  },
+  "searchTokens": {
+    "message": "Search Tokens"
+  },
+  "selectAnAccount": {
+    "message": "Tagh Cunntas"
+  },
+  "selectAnAccountHelp": {
+    "message": "Tagh an cunntas-shealladh ann an MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Tagh àrd gas nic a 'phì a chumail' s gun do d ' transaction.*"
+  },
+  "selectHdPath": {
+    "message": "Tagh HD t-Slighe"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Roghainnean"
+  },
+  "showAdvancedGasInline": {
+    "message": "Adhartach gas smachd"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Tagh seo a 'sealltainn gu gas cosgais agus a' chrìoch smachd gu dìreach air an cuir a-agus a dhearbhadh sgàilean."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Seall Theine air Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Tagh seo a ' sealltainn gu fiat-theine air Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Seall Iuchair Phrìobhaideach"
+  },
+  "showHexData": {
+    "message": "Seall Hex Dàta"
+  },
+  "showHexDataDescription": {
+    "message": "Tagh seo a ' sealltainn hex dàta raon-cluiche air an cuir a-sgrìn"
+  },
+  "sign": {
+    "message": "Clàradh"
+  },
+  "signatureRequest": {
+    "message": "T-Earr-Sgrìobhadh Iarrtas"
+  },
+  "signed": {
+    "message": "Ainm"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "T-Earr-Sgrìobhadh Iarrtas"
+  },
+  "somethingWentWrong": {
+    "message": "Oich! Chaidh rudeigin cearr."
+  },
+  "speedUp": {
+    "message": "Astar Suas"
+  },
+  "speedUpCancellation": {
+    "message": "Astar suas seo cancellation"
+  },
+  "speedUpTransaction": {
+    "message": "Na gaoithe up seo a transaction"
+  },
+  "switchNetworks": {
+    "message": "Gearr Leum Lìonraidhean"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask State Logaichean"
+  },
+  "stateLogs": {
+    "message": "State Logaichean"
+  },
+  "stateLogsDescription": {
+    "message": "State logaichean tha agad poblach cunntas seòlaidhean agus a chur tar-ghnìomhan cumanta."
+  },
+  "stateLogError": {
+    "message": "Mearachd ann a ' faighinn state logaichean."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Bathar-Cruaidh Sporan"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your bathar-cruaidh sporan dìreach a dhèanamh air a ' choimpiutair agad."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Tagh Cunntas"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Tagh an cunntas a bheil thu airson coimhead air. 'S urrainn dhut a-mhàin fear a thaghadh aig an aon àm."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Tòisich le bhith a ' cleachdadh dApps is mòran a bharrachd!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "A ' cleachdadh do bathar-cruaidh cunntas air mar a bhiodh tu bith Ethereum cunntas. Log a-steach gus dApps, cuir a-Eth, a cheannach is a ' stòradh ERC20 tokens agus Neo-Fungible tokens mar CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Stòr tha an abairt seo ann am facal-faire manaidsear mar 1Password."
+  },
+  "submit": {
+    "message": "A chur a-steach"
+  },
+  "submitted": {
+    "message": "A chur a-steach"
+  },
+  "supportCenter": {
+    "message": "Tadhail air ar Taic S"
+  },
+  "symbol": {
+    "message": "Samhla"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Samhla a bhith eadar 0 agus 12 caractaran."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "A ' tionndadh a tha agad na roghainnean lethbhreac-glèidhidh le 3Box. Chaidh am feart seo a tha currenty cleachdadh; a ' cleachdadh aig agad fhèin ann an cunnart."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box air a bhith air a chur à comas air sgàth mearachd rè a ' chiad sioncronachadh"
+  },
+  "syncWithMobile": {
+    "message": "Sioncronachadh, mòr no le fòn-làimhe"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sioncronachadh, mòr no le fòn-làimhe"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Ma tha thu dìreach fosgail an MetaMask Mobile app airson a ' chiad uair, dìreach lean ris na ceumannan ann am fòn agad."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan seo còd le do MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Dèan cinnteach chan fheum duine sam bith eile a tha a ' coimhead sgrìn agad nuair a bhios tu scan seo code"
+  },
+  "syncWithMobileComplete": {
+    "message": "Dàta agad air a bhith synced succesfully. Tlachd MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Riaghailtean Cleachdaidh"
+  },
+  "testFaucet": {
+    "message": "Deuchainn Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Bheir seo a chruthachadh ùr sporan agus sìol abairt"
+  },
+  "tips": {
+    "message": "Tips"
+  },
+  "to": {
+    "message": "Gu"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token a tha mar-thà air a bhith air a chur ris."
+  },
+  "tokenContractAddress": {
+    "message": "Token Cùmhnant An Seòladh Puist"
+  },
+  "tokenSymbol": {
+    "message": "Token Samhla"
+  },
+  "total": {
+    "message": "Gu h-iomlan"
+  },
+  "transaction": {
+    "message": "transaction"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Transaction encountered an error."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Transaction Mearachd. Ach a-mhàin air an tilgeil ann an cùmhnant code."
+  },
+  "transactionErrorNoContract": {
+    "message": "A 'feuchainn ri gairm a function air neo-cùmhnant a' seòladh."
+  },
+  "transactionFee": {
+    "message": "Transaction Nic A ' Phì"
+  },
+  "transactionTime": {
+    "message": "Transaction Uair"
+  },
+  "transfer": {
+    "message": "Tar-aisig"
+  },
+  "transferBetweenAccounts": {
+    "message": "Tar-aisig eadar mo cunntasan"
+  },
+  "transferFrom": {
+    "message": "Tar-Aisig Bho"
+  },
+  "troubleTokenBalances": {
+    "message": "Bha sinn a ' trioblaid agad a luchdadh token balances. Gheibhear sealladh orra ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Feuch ris a-rithist"
+  },
+  "typePassword": {
+    "message": "T-seòrsa agad MetaMask am facal-faire"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "aonadan"
+  },
+  "unknown": {
+    "message": "Neo-aithnichte"
+  },
+  "unknownNetwork": {
+    "message": "Neo-Aithnichte Prìobhaideach Air An Lìonra"
+  },
+  "unknownQrCode": {
+    "message": "Mearachd: cha b ' urrainn Dhuinn an aithneachadh gu bheil QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Chaidh rudeigin cearr...."
+  },
+  "unknownCameraError": {
+    "message": "Bha mearachd fhad 's a bha a' feuchainn ri inntrigeadh d ' chamara. Feuch ris a-rithist..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "An decentralized lìn romhaibh"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs an rud a tha iomchaidh HTTP/HTTPS ro-leasachan."
+  },
+  "usedByClients": {
+    "message": "Air a chleachdadh le measgachadh de dhiofar luchd-cleachdaidh"
+  },
+  "userName": {
+    "message": "Ainm-cleachdaiche"
+  },
+  "validFileImport": {
+    "message": "Feumaidh tu tagh dligheach am faidhle ion-phortadh."
+  },
+  "viewAccount": {
+    "message": "Seall Cunntas"
+  },
+  "viewinExplorer": {
+    "message": "View in Explorer"
+  },
+  "viewContact": {
+    "message": "View Fios Thugainn"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Sealladh air Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Tadhail air ar làraich-lìn"
+  },
+  "walletSeed": {
+    "message": "Sporan Sìol"
+  },
+  "welcomeBack": {
+    "message": "Fàilte Air Ais!"
+  },
+  "welcome": {
+    "message": "Fàilte gu MetaMask"
+  },
+  "writePhrase": {
+    "message": "Sgrìobh an abairt seo air pìos pàipeir, agus a stòradh ann tèarainte àite. Ma tha thu airson barrachd tèarainteachd, a sgrìobhadh sìos air iomadh pìosan pàipeir agus stòr a tha ann an 2 - 3 diofar àiteachan."
+  },
+  "yesLetsTry": {
+    "message": "Yes, let a ' feuchainn"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Feumaidh tu gus leigeil le camara, cothrom air am feart seo a chleachdadh."
+  },
+  "yourSigRequested": {
+    "message": "T-earr-sgrìobhadh agad a tha ga iarraidh"
+  },
+  "youSign": {
+    "message": "Tha thu a ' signing"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Prìobhaideach agad sìol abairt"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Neoni gas cosgais air na gaoithe up"
+  }
+}

@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Sýna Komandi Viðskipta"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Veldu þetta til að nota Etherscan að sýna komandi viðskipti í viðskiptum listanum"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Graf aðeins í boði á Ethereum net."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Tengingar"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Staður leyft að lesa reikninga"
+  },
+  "addSite": {
+    "message": "Bæta Við Síðuna"
+  },
+  "addSiteDescription": {
+    "message": "Handvirkt bæta staður til að leyfa það aðgang að reikningum, gagnlegt fyrir eldri dapps"
+  },
+  "connected": {
+    "message": "Tengdur"
+  },
+  "connectedDescription": {
+    "message": "Lista af staður leyft aðgang að heimilisföng"
+  },
+  "privacyModeDefault": {
+    "message": "Næði Ham er nú sjálfgefið"
+  },
+  "contractInteraction": {
+    "message": "Samning Samskipti"
+  },
+  "clearApprovalData": {
+    "message": "Fjarlægja allar síður"
+  },
+  "reject": {
+    "message": "Hafna"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Þessi staður er að biðja um aðgang að skoða reikning heimilisfang. Alltaf að ganga úr skugga um að þú treystir staður þú samskipti við."
+  },
+  "about": {
+    "message": "Um"
+  },
+  "aboutSettingsDescription": {
+    "message": "Útgáfu, stuðning miðstöð, og upplýsingar."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Aðgangur myndavélina þína..."
+  },
+  "account": {
+    "message": "Reikning"
+  },
+  "accountDetails": {
+    "message": "Upplýsingar Reikningur"
+  },
+  "accountName": {
+    "message": "Reikning Nafn"
+  },
+  "accountOptions": {
+    "message": "Reikning Valkosti"
+  },
+  "accountSelectionRequired": {
+    "message": "Þú þarft að velja reikning!"
+  },
+  "activityLog": {
+    "message": "starfsemi þig"
+  },
+  "addNetwork": {
+    "message": "Bæta Við Net"
+  },
+  "addRecipient": {
+    "message": "Bæta Viðtakanda"
+  },
+  "advanced": {
+    "message": "Háþróaður"
+  },
+  "advancedSettingsDescription": {
+    "message": "Aðgangur forritara lögun, sækja Ríkisins Staura, Endurstilla Reikning, skipulag testnets og sérsniðin kaupin verður."
+  },
+  "advancedOptions": {
+    "message": "Háþróaður Valkosti"
+  },
+  "addToAddressBook": {
+    "message": "Bæta við símaskránni"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "t. John D."
+  },
+  "addAlias": {
+    "message": "Bæta dulnefni"
+  },
+  "addToken": {
+    "message": "Bæta Skapi"
+  },
+  "addTokens": {
+    "message": "Að Bæta Tákn"
+  },
+  "addSuggestedTokens": {
+    "message": "Bæta Lagði Tákn"
+  },
+  "addAcquiredTokens": {
+    "message": "Bæta tákn sem þú hefur keypt með MetaMask"
+  },
+  "amount": {
+    "message": "Upphæð"
+  },
+  "appDescription": {
+    "message": "Að Ethereum Veski í Vafra",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Samþykkja"
+  },
+  "approved": {
+    "message": "Samþykkti"
+  },
+  "asset": {
+    "message": "Eign"
+  },
+  "attemptingConnect": {
+    "message": "Að reyna að tengja að blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Því að senda þetta tilraun ábyrgist ekki upprunalega viðskipti verður lokað. Ef uppsögn tilraun er vel, þú verður ákærður fyrir viðskiptin gjald fyrir ofan."
+  },
+  "attributions": {
+    "message": "Út höfundum"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Setja aðgerðalaus tíma í mínútur áður en MetaMask mun sjálfkrafa að skrá þig út"
+  },
+  "average": {
+    "message": "Meðaltali"
+  },
+  "back": {
+    "message": "Aftur"
+  },
+  "backToAll": {
+    "message": "Aftur til Allra"
+  },
+  "backupApprovalNotice": {
+    "message": "Öryggisafrit Leyndarmál þitt Bata kóða til að halda veskið þitt og fé örugg."
+  },
+  "backupApprovalInfo": {
+    "message": "Þetta leyndarmál númerið er krafist að batna veskið þitt ef þú tapar tækið, gleyma lykilorð þitt, að setja upp aftur MetaMask, eða vilja til að fá aðgang veskið þitt á annan tæki."
+  },
+  "backupNow": {
+    "message": "Nú er afrit"
+  },
+  "balance": {
+    "message": "Jafnvægi"
+  },
+  "balanceOutdated": {
+    "message": "Jafnvægi kann að vera gamaldags"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Ófullnægjandi jafnvægi fyrir núverandi gas alls"
+  },
+  "basic": {
+    "message": "Helstu"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blokk Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Nota Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Aðlaga viðskipti nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Sérsniðin Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Þinn staður er ekki stutt..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask er hannaði og smíðaði í Kaliforníu."
+  },
+  "buyWithWyre": {
+    "message": "Kaupa UR með Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre leyfir þér að nota greiðslukort að leggja UR rétt í að MetaMask reikning."
+  },
+  "buyCoinSwitch": {
+    "message": "Að kaupa á CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch er einn-hættu áfangastað til að skiptast á meira en 300 cryptocurrencies á besta verðinu."
+  },
+  "bytes": {
+    "message": "Bæti"
+  },
+  "off": {
+    "message": "Burt"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Á"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Hætta"
+  },
+  "cancelAttempt": {
+    "message": "Hætta Að Reyna"
+  },
+  "cancellationGasFee": {
+    "message": "Uppsögn Gas Gjald"
+  },
+  "cancelled": {
+    "message": "Aflýst"
+  },
+  "chainId": {
+    "message": "Keðja SKILRÍKI"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Smella hér til að sýna leyndu orð"
+  },
+  "close": {
+    "message": "Loka"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Þú þarft að nota MetaMask á Google Króm í röð til að tengjast Vélbúnaðinn Veski."
+  },
+  "confirm": {
+    "message": "Staðfesta"
+  },
+  "confirmed": {
+    "message": "Staðfest"
+  },
+  "confirmPassword": {
+    "message": "Staðfesta Lykilorð"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Staðfesta Leyndarmál Afrit Setningu"
+  },
+  "congratulations": {
+    "message": "Til hamingju"
+  },
+  "connectHardwareWallet": {
+    "message": "Tengja Vélbúnaður Veski"
+  },
+  "connect": {
+    "message": "Tengja"
+  },
+  "connectRequest": {
+    "message": "Tengja Beiðni"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Tengja að Kovan Próf Net"
+  },
+  "connectingToMainnet": {
+    "message": "Tengja að Helstu Ethereum Net"
+  },
+  "connectingToRopsten": {
+    "message": "Tengja að Ropsten Próf Net"
+  },
+  "connectingToRinkeby": {
+    "message": "Tengja að Rinkeby Próf Net"
+  },
+  "connectingToLocalhost": {
+    "message": "Tengist þessari vél 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Tengja að Goerli Próf Net"
+  },
+  "contacts": {
+    "message": "Tengiliðir"
+  },
+  "contactsSettingsDescription": {
+    "message": "Bæta við, breyta fjarlægja, og stjórna tengiliði"
+  },
+  "continueToWyre": {
+    "message": "Að halda áfram að Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Að halda áfram að CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Samning Dreifing"
+  },
+  "conversionProgress": {
+    "message": "Viðskipti í gangi"
+  },
+  "copiedButton": {
+    "message": "Afrita"
+  },
+  "copiedExclamation": {
+    "message": "Afrita!"
+  },
+  "copy": {
+    "message": "Afrit"
+  },
+  "copyAddress": {
+    "message": "Afrit heimilisfang að klemmuspjald"
+  },
+  "copyTransactionId": {
+    "message": "Afrit Viðskipti SKILRÍKI"
+  },
+  "copiedTransactionId": {
+    "message": "Afrita Viðskipti SKILRÍKI"
+  },
+  "copyToClipboard": {
+    "message": "Afrit til að klemmuspjald"
+  },
+  "copyButton": {
+    "message": " Afrit "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Búa"
+  },
+  "createAccount": {
+    "message": "Stofna Reikning"
+  },
+  "createAWallet": {
+    "message": "Búa Veski"
+  },
+  "createPassword": {
+    "message": "Búa Lykilorð"
+  },
+  "currencyConversion": {
+    "message": "Gjaldmiðla"
+  },
+  "currentLanguage": {
+    "message": "Núverandi Tungumál"
+  },
+  "customGas": {
+    "message": "Aðlaga Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Auka gjald getur dregið vinnslu sinnum, en það er ekki tryggð."
+  },
+  "customToken": {
+    "message": "Sérsniðin Skapi"
+  },
+  "customRPC": {
+    "message": "Kaupin verður sérsniðin"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Aukastafir verður að vera að minnsta kosti 0, og ekki yfir 36."
+  },
+  "decimal": {
+    "message": "Aukastafir af Nákvæmni"
+  },
+  "defaultNetwork": {
+    "message": "Sjálfgefið netið fyrir Eter viðskiptum er Helstu Net."
+  },
+  "delete": {
+    "message": "Eyða"
+  },
+  "deleteAccount": {
+    "message": "Eyða Reikning"
+  },
+  "deposit": {
+    "message": "Innborgun"
+  },
+  "depositEther": {
+    "message": "Innborgun Eter"
+  },
+  "details": {
+    "message": "Upplýsingar"
+  },
+  "directDepositEther": {
+    "message": "Beint Inn Eter"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ef þú ert nú þegar með nokkrar Eter, fljótlegasta leiðin til að fá Eter í nýja veski með bein innborgun."
+  },
+  "dismiss": {
+    "message": "Sleppa"
+  },
+  "done": {
+    "message": "Gert"
+  },
+  "downloadGoogleChrome": {
+    "message": "Sækja Google Króm"
+  },
+  "downloadSecretBackup": {
+    "message": "Sækja þetta Leyndarmál Afrit Setningu og halda það geymt örugglega á ytri dulkóðuð disknum eða geymslu miðlungs."
+  },
+  "downloadStateLogs": {
+    "message": "Sækja Ríkisins Annálum"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Lækkað"
+  },
+  "edit": {
+    "message": "Breyta"
+  },
+  "editContact": {
+    "message": "Breyta Hafðu"
+  },
+  "emailUs": {
+    "message": "Sendu okkur!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Þú stóðst prófið - halda seedphrase öruggt, það er á þína ábyrgð!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Kenndur á að geyma það örugglega"
+  },
+  "endOfFlowMessage3": {
+    "message": "Sparaðu afrit á mörgum stöðum."
+  },
+  "endOfFlowMessage4": {
+    "message": "Aldrei deila setningu með neinum."
+  },
+  "endOfFlowMessage5": {
+    "message": "Verið varkár komist! MetaMask mun aldrei af sjálfu sér biðja um fræ setningu."
+  },
+  "endOfFlowMessage6": {
+    "message": "Ef þú þarft að taka upp fræ setningu aftur, þú getur fundið það í Stillingar Öryggi."
+  },
+  "endOfFlowMessage7": {
+    "message": "Ef þú hefur spurningar eða sjá eitthvað á seyði, sendu support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ekki batna seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Læra meira."
+  },
+  "endOfFlowMessage10": {
+    "message": "Allt Gert"
+  },
+  "ensRegistrationError": {
+    "message": "Villa í G nafn skráning"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "G nafn ekki að finna á núverandi net. Reyndu að skipta yfir í Helstu Ethereum Net."
+  },
+  "enterAnAlias": {
+    "message": "Sláðu dulnefni"
+  },
+  "enterPassword": {
+    "message": "Sláðu inn lykilorðið"
+  },
+  "enterPasswordContinue": {
+    "message": "Sláðu inn lykilorðið að halda áfram"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Opinbera Heimilisfang"
+  },
+  "etherscanView": {
+    "message": "Skoða reikning á Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Áætlað Vinnslu Sinnum"
+  },
+  "expandView": {
+    "message": "Auka Skoða"
+  },
+  "exportPrivateKey": {
+    "message": "Flytja Sér Lykill"
+  },
+  "failed": {
+    "message": "Mistókst"
+  },
+  "fast": {
+    "message": "Fljótur"
+  },
+  "faster": {
+    "message": "Hraðar"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Gleyma þessu tæki"
+  },
+  "from": {
+    "message": "Úr"
+  },
+  "fromShapeShift": {
+    "message": "Frá ShapeShift"
+  },
+  "functionType": {
+    "message": "Virka Tegund"
+  },
+  "gasLimit": {
+    "message": "Gas Takmörk"
+  },
+  "gasLimitCalculation": {
+    "message": "Við reikna lagði gas takmörk byggt á net árangurs."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gas mörk er mesta magn af einingar af gas þú ert tilbúin til að eyða."
+  },
+  "gasLimitTooLow": {
+    "message": "Gas takmörk verður að vera að minnsta kosti 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Notað"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Verð Mjög Lágt"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas verð skilgreinir magn af Eter þú ert tilbúin til að borga fyrir hvern eining af gasi."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Verð"
+  },
+  "gasPriceCalculation": {
+    "message": "Við reikna lagði gas verð byggt á net árangurs."
+  },
+  "general": {
+    "message": "Almennt"
+  },
+  "generalSettingsDescription": {
+    "message": "Mynt viðskipti, aðal mynt, tungumál, blockies identicon"
+  },
+  "getEther": {
+    "message": "Fá Eter"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Að Fá Hjálp."
+  },
+  "getStarted": {
+    "message": "Byrjaðu"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Við erum glöð að sjá þig."
+  },
+  "hardware": {
+    "message": "vélbúnaður"
+  },
+  "hardwareWalletConnected": {
+    "message": "Vélbúnaður veski tengdur"
+  },
+  "hardwareWallets": {
+    "message": "Tengja vélbúnaður veski"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Veldu vélbúnaður veski sem þú vilt að nota með MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "hér",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Gögn"
+  },
+  "hide": {
+    "message": "Fela"
+  },
+  "hideToken": {
+    "message": "Fela Skapi"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Saga"
+  },
+  "import": {
+    "message": "Innflutningur",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Innflutningur Reikning"
+  },
+  "importAccountMsg": {
+    "message": " Flutt reikninga verður ekki í tengslum við upphaflega búin MetaMask reikning seedphrase. Læra meira um flutt reikninga "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Innflutningur Reikning með Fræ Setningu"
+  },
+  "importWallet": {
+    "message": "Innflutningur Veski"
+  },
+  "importYourExisting": {
+    "message": "Innflutningur núverandi veski með 12 orð fræ setningu"
+  },
+  "imported": {
+    "message": "Flutt",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Innflutningur nota reikning fræ setningu"
+  },
+  "infoHelp": {
+    "message": "Upplýsingar & Hjálpa"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Fyrstu viðskipti var staðfest af netinu. Smellur allt í LAGI að fara til baka."
+  },
+  "insufficientBalance": {
+    "message": "Ófullnægjandi jafnvægi."
+  },
+  "insufficientFunds": {
+    "message": "Ófullnægjandi fé."
+  },
+  "insufficientTokens": {
+    "message": "Ófullnægjandi tákn."
+  },
+  "invalidAddress": {
+    "message": "Ógilt heimilisfang"
+  },
+  "invalidAddressRecipient": {
+    "message": "Heimilisfangi viðtakanda er ógilt"
+  },
+  "knownAddressRecipient": {
+    "message": "Þekktur samning heimilisfang."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ekki UR net, sett til að lágstafir"
+  },
+  "invalidInput": {
+    "message": "Ógilt inntak."
+  },
+  "invalidRPC": {
+    "message": "Ógilt kaupin verður SLÓÐ"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Ógilt Blokk Explorer SLÓÐ"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ógilt fræ setningu"
+  },
+  "jsonFile": {
+    "message": "JSON Skrá",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Próf Net"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Læra meira"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Þú þarft að gera er að nota síðasta reikninginn áður en þú getur bætt nýjan."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Já, við skulum fá að setja upp!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Tengla"
+  },
+  "liveGasPricePredictions": {
+    "message": "Lifandi Gas Verð Spá"
+  },
+  "loading": {
+    "message": "Hleðsla..."
+  },
+  "loadingTokens": {
+    "message": "Hleðsla Tákn..."
+  },
+  "loadMore": {
+    "message": "Meira Álag"
+  },
+  "localhost": {
+    "message": "Þessari vél 8545"
+  },
+  "login": {
+    "message": "Skráðu Þig Í"
+  },
+  "logout": {
+    "message": "Að skrá þig út"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Út tíminn er of mikill"
+  },
+  "mainnet": {
+    "message": "Helstu Ethereum Net"
+  },
+  "memorizePhrase": {
+    "message": "Minnið þessa setningu."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Matseðill"
+  },
+  "message": {
+    "message": "Skilaboðin"
+  },
+  "metamaskDescription": {
+    "message": "Að tengja þig við Ethereum og Dreifð Vefur."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Fræ Orð"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Útgáfa"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Sláðu inn lykilorðið þitt til að staðfesta að þetta sé þú!"
+  },
+  "myAccounts": {
+    "message": "Minn Reikninga"
+  },
+  "myWalletAccounts": {
+    "message": "Veskið Mitt Reikninga"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Öll MetaMask búin reikninga mun sjálfkrafa verið bætt við þennan hluta."
+  },
+  "mustSelectOne": {
+    "message": "Verður að velja á minnst 1 skapi."
+  },
+  "needEtherInWallet": {
+    "message": "Til að eiga samskipti við dreifð forrit með MetaMask, þú þarft Eter í veskið þitt."
+  },
+  "needImportFile": {
+    "message": "Þú verður að velja skrá til að flytja.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ekki er hægt að senda neikvæð magn af UR."
+  },
+  "networkName": {
+    "message": "Nafn Net"
+  },
+  "networks": {
+    "message": "Net"
+  },
+  "networkSettingsDescription": {
+    "message": "Að bæta og breyta sérsniðin kaupin verður net"
+  },
+  "nevermind": {
+    "message": "Gleymdu"
+  },
+  "newAccount": {
+    "message": "Nýjan Reikning"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Nýja tölu uppgötva! Smella hér til að bæta við símaskránni."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nýr Tengiliður"
+  },
+  "newContract": {
+    "message": "Nýjan Samning"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Ný Net"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Nei, ég hef nú þegar fræ setningu"
+  },
+  "protectYourKeys": {
+    "message": "Að Vernda Lyklana!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Farðu varlega með fræ setningu — það hafa verið skýrslur vefsíður að reyna að líkja MetaMask. MetaMask mun aldrei biðja um fræ setningu!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Halda setningu öruggt. Ef þú sérð eitthvað á seyði, eða þú ert óviss um vefsíðu, sendu support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Nýja kaupin verður SLÓÐ"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Nýja Alls"
+  },
+  "newTransactionFee": {
+    "message": "Ný Viðskipti Gjald"
+  },
+  "next": {
+    "message": "Næstu"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Ekkert heimilisfang hefur verið sett fyrir þessu nafni."
+  },
+  "noDeposits": {
+    "message": "Ekki inn fengið"
+  },
+  "noConversionRateAvailable": {
+    "message": "Engin Viðskipti Gengi Laus"
+  },
+  "noTransactions": {
+    "message": "Þú hefur engin viðskipti"
+  },
+  "noThanks": {
+    "message": "Nei Takk"
+  },
+  "notEnoughGas": {
+    "message": "Ekki Nóg Gas"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Vefmyndavél ekki að finna"
+  },
+  "noWebcamFound": {
+    "message": "Tölvan þín er vefmyndavél var ekki komist. Reyndu aftur."
+  },
+  "ofTextNofM": {
+    "message": "af"
+  },
+  "orderOneHere": {
+    "message": "Panta Trezor eða Ledger og halda þínu fé í köldu geymslu"
+  },
+  "origin": {
+    "message": "Uppruna"
+  },
+  "parameters": {
+    "message": "Breytum"
+  },
+  "participateInMetaMetrics": {
+    "message": "Að taka þátt í MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Að taka þátt í MetaMetrics til að hjálpa okkur að gera MetaMask betra"
+  },
+  "password": {
+    "message": "Lykilorð"
+  },
+  "passwordsDontMatch": {
+    "message": "Lykilorð ekki að Passa"
+  },
+  "passwordNotLongEnough": {
+    "message": "Lykilorð ekki nógu lengi"
+  },
+  "pastePrivateKey": {
+    "message": "Líma persónulegur lykil streng hér:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Líma fræ setningu hér!"
+  },
+  "pending": {
+    "message": "bið"
+  },
+  "personalAddressDetected": {
+    "message": "Persónulega heimilisfang greind. Inntak skapi samning heimilisfang."
+  },
+  "prev": {
+    "message": "Fyrri"
+  },
+  "primaryCurrencySetting": {
+    "message": "Aðal Mynt"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Næði Stefnu"
+  },
+  "privateKey": {
+    "message": "Persónulegur Lykill",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Viðvörun: Aldrei að birta þetta lykill. Einhver með sér lykla getur stela allir eignir sem haldin var á reikningnum þínum."
+  },
+  "privateNetwork": {
+    "message": "- Netið"
+  },
+  "qrCode": {
+    "message": "Sýna ÞANNIG Kóða"
+  },
+  "queue": {
+    "message": "Biðröð"
+  },
+  "readdToken": {
+    "message": "Þú getur bætt þessu skapi aftur í framtíðinni með því að fara til \"að Bæta skapi\" í reikninga valkostirnir."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Heimilisfangi Viðtakanda"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Hafna Öllum"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Hafnað"
+  },
+  "reset": {
+    "message": "Endurstilla"
+  },
+  "resetAccount": {
+    "message": "Endurstilla Reikning"
+  },
+  "resetAccountDescription": {
+    "message": "Endurstilla þinn reikning mun hreinsa viðskipti sögu."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Minntu mig á síðar"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Endurheimta þinn Reikning með Fræ Setningu"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "beiðnir að bíða eftir að vera viðurkenndi"
+  },
+  "required": {
+    "message": "Krafist"
+  },
+  "restore": {
+    "message": "Endurheimta"
+  },
+  "revealSeedWords": {
+    "message": "Sýna Fræ Orð"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Fræ Setningu"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ef þú skiptir einhvern tíma um vafrar eða færa tölvur, þú þarft þetta fræ setningu að opna reikninga. Að bjarga þeim á öruggan stað og leyndarmál."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "EKKI deila þessu setningu með neinn!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Þessi orð geta notað til að stela alla reikninga."
+  },
+  "revert": {
+    "message": "Snúa sér"
+  },
+  "remove": {
+    "message": "Fjarlægja"
+  },
+  "removeAccount": {
+    "message": "Fjarlægja reikning"
+  },
+  "removeAccountDescription": {
+    "message": "Þetta reikning verður fjarlægt úr veskinu þínu. Vinsamlegast gakktu úr skugga um að þú hefur upprunalega fræ setningu eða persónulegur lykill fyrir þetta flutt reikninginn áður en þú heldur áfram. Þú getur flutt inn eða búa reikninga aftur af reikningnum falla niður. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Próf Net"
+  },
+  "ropsten": {
+    "message": "Ropsten Próf Net"
+  },
+  "goerli": {
+    "message": "Goerli Próf Net"
+  },
+  "save": {
+    "message": "Sparaðu"
+  },
+  "slow": {
+    "message": "Hægur"
+  },
+  "slower": {
+    "message": "Hægar"
+  },
+  "saveAsCsvFile": {
+    "message": "Sparaðu eins og CSV"
+  },
+  "scanInstructions": {
+    "message": "Settu ÞANNIG númer fyrir framan myndavél"
+  },
+  "scanQrCode": {
+    "message": "Skanna ÞANNIG Kóða"
+  },
+  "search": {
+    "message": "Leita að"
+  },
+  "searchResults": {
+    "message": "Leita Niðurstöður"
+  },
+  "secretBackupPhrase": {
+    "message": "Leyndarmál Afrit Setningu"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Leyndarmál þitt afrit setningu gerir það er auðvelt að baka upp og koma aftur á þinn reikning."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "VIÐVÖRUN: Aldrei að birta afrit setningu. Einhver með þessa setningu getur tekið Eter að eilífu."
+  },
+  "secretPhrase": {
+    "message": "Sláðu inn leyndarmál tólf orð setningu hér til að endurheimta gröfina."
+  },
+  "securityAndPrivacy": {
+    "message": "Öryggi Og Næði"
+  },
+  "securitySettingsDescription": {
+    "message": "Stillingar og veskið fræ setningu"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Sérstakt hvert orð með eitt rúm"
+  },
+  "seedPhraseReq": {
+    "message": "Fræ setningar eru 12 orð langan"
+  },
+  "selectCurrency": {
+    "message": "Veldu Mynt"
+  },
+  "selectEachPhrase": {
+    "message": "Vinsamlegast veldu hverja setningu í röð til að ganga úr skugga um að það er rétt."
+  },
+  "selectLocale": {
+    "message": "Veldu Staður"
+  },
+  "selectType": {
+    "message": "Veldu Tegund"
+  },
+  "send": {
+    "message": "Sendu"
+  },
+  "sendAmount": {
+    "message": "Senda Magn"
+  },
+  "sendETH": {
+    "message": "Senda UR"
+  },
+  "sendTokens": {
+    "message": "Senda Tákn"
+  },
+  "sentEther": {
+    "message": "sendi eter"
+  },
+  "sentTokens": {
+    "message": "sendi tákn"
+  },
+  "separateEachWord": {
+    "message": "Sérstakt hvert orð með eitt rúm"
+  },
+  "searchTokens": {
+    "message": "Leita Tákn"
+  },
+  "selectAnAccount": {
+    "message": "Veldu Reikning"
+  },
+  "selectAnAccountHelp": {
+    "message": "Veldu reikninginn til að skoða í MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Veldu hærra gas gjald að flýta vinnslu viðskipti.*"
+  },
+  "selectHdPath": {
+    "message": "Veldu HD Slóð"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Stillingar"
+  },
+  "showAdvancedGasInline": {
+    "message": "Háþróaður gas stjórna"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Veldu þetta til að sýna verð gas og takmarka stjórna beint á að senda og staðfesta skjár."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Sýna Viðskipti á Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Veldu þetta til að sýna fiat viðskipti á Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Sýna Sér Lykla"
+  },
+  "showHexData": {
+    "message": "Sýna Hex Gögn"
+  },
+  "showHexDataDescription": {
+    "message": "Veldu þetta til að sýna hex gögn sviði á að senda skjánum"
+  },
+  "sign": {
+    "message": "Merki"
+  },
+  "signatureRequest": {
+    "message": "Undirskrift Beiðni"
+  },
+  "signed": {
+    "message": "Undirritað"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Undirskrift Beiðni"
+  },
+  "somethingWentWrong": {
+    "message": "Úps! Eitthvað fór úrskeiðis."
+  },
+  "speedUp": {
+    "message": "Að Flýta"
+  },
+  "speedUpCancellation": {
+    "message": "Að flýta þetta uppsögn"
+  },
+  "speedUpTransaction": {
+    "message": "Að flýta þetta viðskiptin"
+  },
+  "switchNetworks": {
+    "message": "Skiptið Yfir Net"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Ríkisins Annálum"
+  },
+  "stateLogs": {
+    "message": "Ríkið Annálum"
+  },
+  "stateLogsDescription": {
+    "message": "Ríkið annálum innihalda þína opinbera reikning heimilisföng og sendi viðskipti."
+  },
+  "stateLogError": {
+    "message": "Villa í sæki ríkisins staura."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Tengja Vélbúnaður Veski"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Tengdu vélbúnaður veski beint í tölvuna þína."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Veldu Reikning"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Veldu það sem þú vilt að skoða. Þú getur bara velja eitt í einu."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Byrjaðu að nota dApps og fleiri!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Notaðu vélbúnaður reikning eins og þú vilt með hvaða Ethereum reikning. Skráðu þig í að dApps, senda Ur kaupa og geyma ERC20 tákn og Ekki Fungible tákn eins og CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Geyma þessa setningu í lykilorð framkvæmdastjóri eins og 1Password."
+  },
+  "submit": {
+    "message": "Leggja"
+  },
+  "submitted": {
+    "message": "Skilað"
+  },
+  "supportCenter": {
+    "message": "Heimsækja okkar Stuðning Center"
+  },
+  "symbol": {
+    "message": "Tákn"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Tákn verður að vera á milli 0 og 12 stafir."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Kveiktu á að hafa stillingar studdur með 3Box. Þessi eiginleiki er currenty tilrauna; nota á eigin hættu."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box hefur verið óvirk vegna þess að villa á fyrstu sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync með farsíma"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync með farsíma"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Ef þú bara opnar MetaMask Farsíma app í fyrsta sinn, fylgdu skref í símanum."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Skanna þetta númer með MetaMask farsíma app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Gakktu úr skugga um að enginn annar er að horfa á skjánum þínum þegar þú skanna þetta númer"
+  },
+  "syncWithMobileComplete": {
+    "message": "Gögnunum hefur verið samstillt tekist. Njóta MetaMask farsíma app!"
+  },
+  "terms": {
+    "message": "Varðar Nota"
+  },
+  "testFaucet": {
+    "message": "Prófa Krananum"
+  },
+  "thisWillCreate": {
+    "message": "Þetta mun skapa nýtt veski og fræ setningu"
+  },
+  "tips": {
+    "message": "Ábendingar"
+  },
+  "to": {
+    "message": "Til"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Skapi"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Tákn hefur þegar verið bætt við."
+  },
+  "tokenContractAddress": {
+    "message": "Skapi Samning Heimilisfang"
+  },
+  "tokenSymbol": {
+    "message": "Skapi Tákn"
+  },
+  "total": {
+    "message": "Alls"
+  },
+  "transaction": {
+    "message": "viðskiptin"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Viðskiptin komið upp villa."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Viðskiptin Villa. Undantekning kastað í samningnum kóða."
+  },
+  "transactionErrorNoContract": {
+    "message": "Reyna að hringja í aðgerð á ekki samning heimilisfang."
+  },
+  "transactionFee": {
+    "message": "Viðskipti Gjald"
+  },
+  "transactionTime": {
+    "message": "Viðskiptin Tíma"
+  },
+  "transfer": {
+    "message": "Flytja"
+  },
+  "transferBetweenAccounts": {
+    "message": "Flytja milli mín reikninga"
+  },
+  "transferFrom": {
+    "message": "Flytja Úr"
+  },
+  "troubleTokenBalances": {
+    "message": "Við áttum í vandræðum með að hlaða skapi jafnvægi. Þú getur skoðað þá ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Reyndu aftur"
+  },
+  "typePassword": {
+    "message": "Tegund þín MetaMask lykilorð"
+  },
+  "unapproved": {
+    "message": "Ósamþykkt"
+  },
+  "units": {
+    "message": "einingar"
+  },
+  "unknown": {
+    "message": "Óþekkt"
+  },
+  "unknownNetwork": {
+    "message": "Óþekkt Sér Netið"
+  },
+  "unknownQrCode": {
+    "message": "Villa: Við gátum ekki borið kennsl á að ÞANNIG kóða"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Úbbs! Eitthvað fór úrskeiðis...."
+  },
+  "unknownCameraError": {
+    "message": "Það var villa á meðan að reyna að fá aðgang að myndavél. Reyndu aftur..."
+  },
+  "unlock": {
+    "message": "Opna"
+  },
+  "unlockMessage": {
+    "message": "Við dreifð vefur bíður"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Uri þurfa viðeigandi að SÝSLA/HTTPS forskeyti."
+  },
+  "usedByClients": {
+    "message": "Notað er með margs konar viðskiptavini"
+  },
+  "userName": {
+    "message": "Notendanafn"
+  },
+  "validFileImport": {
+    "message": "Þú verður að velja gilt skrá til að flytja."
+  },
+  "viewAccount": {
+    "message": "Skoða Reikning"
+  },
+  "viewinExplorer": {
+    "message": "Skoða í Explorer"
+  },
+  "viewContact": {
+    "message": "Skoða Hafðu"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Skoða á Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Heimsækja vefinn okkar"
+  },
+  "walletSeed": {
+    "message": "Veski Fræ"
+  },
+  "welcomeBack": {
+    "message": "Velkomin Aftur!"
+  },
+  "welcome": {
+    "message": "Velkomin til MetaMask"
+  },
+  "writePhrase": {
+    "message": "Skrifa þessa setningu á blað og verslun í öruggum stað. Ef þú vilt enn meira öryggi, skrifaðu það niður á marga bita af pappír og geyma hver í 2 - 3 öðruvísi núna."
+  },
+  "yesLetsTry": {
+    "message": "Já, við skulum reyna"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Þú þarft að leyfa myndavél aðgang að nota þessa eiginleika."
+  },
+  "yourSigRequested": {
+    "message": "Undirskrift þín er að vera óskað"
+  },
+  "youSign": {
+    "message": "Þú ert að undirrita"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Persónulegur fræ setningu"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Núll gas verð á flýta"
+  }
+}

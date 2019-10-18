@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Kiruvchi Bitimlar Ko'rsatish "
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Bu Etherscan operatsiyalar ro'yxati kiruvchi bitimlar ko'rsatish uchun foydalanish uchun tanlang "
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Grafik Ethereum tarmoqlarda faqat mavjud."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Ulanishlarni"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Saytlar sizning hisob o'qish uchun ruxsat "
+  },
+  "addSite": {
+    "message": "Sayt Qo'shish "
+  },
+  "addSiteDescription": {
+    "message": "Qo'lda bu sizning hisob kirish uchun ruxsat berish uchun bir sayt qo'shish, katta dapps uchun foydali "
+  },
+  "connected": {
+    "message": "Bog'liq"
+  },
+  "connectedDescription": {
+    "message": "Saytlar ro'yxati sizning manzillar kirish uchun ruxsat "
+  },
+  "privacyModeDefault": {
+    "message": "Maxfiylik Rejimini hozir sukut bo'yicha yoqilgan "
+  },
+  "contractInteraction": {
+    "message": "Shartnoma O'zaro"
+  },
+  "clearApprovalData": {
+    "message": "Barcha saytlar olib tashlash "
+  },
+  "reject": {
+    "message": "Rad"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Bu sayt hozirgi hisob manzil ko'rish uchun kirish talab etiladi. Har doim ishonch hosil qiling saytlar siz bilan muloqot siz ishoning."
+  },
+  "about": {
+    "message": "Haqida"
+  },
+  "aboutSettingsDescription": {
+    "message": "Versiya, qo'llab-quvvatlash markazi va aloqa ma'lumot."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Kirishini sizning kamera..."
+  },
+  "account": {
+    "message": "Hisob"
+  },
+  "accountDetails": {
+    "message": "Hisob Ma'lumotlarni"
+  },
+  "accountName": {
+    "message": "Hisob Nomi"
+  },
+  "accountOptions": {
+    "message": "Hisob Imkoniyatlari"
+  },
+  "accountSelectionRequired": {
+    "message": "Qayd yozuvini tanlang kerak!"
+  },
+  "activityLog": {
+    "message": "faoliyat kirish"
+  },
+  "addNetwork": {
+    "message": "Tarmoq Qo'shish "
+  },
+  "addRecipient": {
+    "message": "Qo'shish Oluvchi"
+  },
+  "advanced": {
+    "message": "Ilg'or"
+  },
+  "advancedSettingsDescription": {
+    "message": "Kirish developer xususiyatlari, yuklab olish Davlat Qaydlar, Reset Hisobga olish, o'rnatish testnets va maxsus RPC."
+  },
+  "advancedOptions": {
+    "message": "Ilg'or Imkoniyatlari"
+  },
+  "addToAddressBook": {
+    "message": "Kitob manzil qo'shish "
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "masalan John D."
+  },
+  "addAlias": {
+    "message": "Aliaslari qo'shish "
+  },
+  "addToken": {
+    "message": "Qo'shish Ma'lumoti"
+  },
+  "addTokens": {
+    "message": "Tokens Qo'shish "
+  },
+  "addSuggestedTokens": {
+    "message": "Taklif Tokens Qo'shish "
+  },
+  "addAcquiredTokens": {
+    "message": "Sotib olingan ayting tokens MetaMask yordamida kiritish "
+  },
+  "amount": {
+    "message": "Miqdori"
+  },
+  "appDescription": {
+    "message": "Ethereum bir Hamyon-Brauzerida ",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Tasdiqlash"
+  },
+  "approved": {
+    "message": "Tasdiqlangan"
+  },
+  "asset": {
+    "message": "Shaxs"
+  },
+  "attemptingConnect": {
+    "message": "Uchun harakat blockchain ulanish."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Bu harakat topshirish sizning asl operatsiyani bekor bo'ladi: kafolat bermaydi. Agar bekor urinish muvaffaqiyatli bo'lsa, yuqorida bitim to'lovi zaryadlangan bo'ladi."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "MetaMask avtomatik olib kirish qiladi oldin daqiqa bo'sh vaqt o'rnatish "
+  },
+  "average": {
+    "message": "O'rtacha"
+  },
+  "back": {
+    "message": "Orqa"
+  },
+  "backToAll": {
+    "message": "Orqaga uchun Barcha"
+  },
+  "backupApprovalNotice": {
+    "message": "Zaxira Sir Tiklash sizning kod hamyonni va sizning mablag'larini xavfsiz saqlab qolish uchun."
+  },
+  "backupApprovalInfo": {
+    "message": "Bu maxfiy kod agar siz qurilma yo'qotish, parolni unutib, bor qayta o'rnatish MetaMask holda hamyon saqlab qolish uchun zarur hisoblanadi, yoki boshqa qurilmada hamyon kirishni istayman."
+  },
+  "backupNow": {
+    "message": "Zaxira endi"
+  },
+  "balance": {
+    "message": "Muvozanat"
+  },
+  "balanceOutdated": {
+    "message": "Muvozanat eskirgan bo'lishi mumkin "
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Joriy gaz uchun yetarli balansi umumiy"
+  },
+  "basic": {
+    "message": "Asosiy"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blok Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Foydalanish Identicon Blockies "
+  },
+  "nonceField": {
+    "message": "Nonce sozlash ish "
+  },
+  "nonceFieldHeading": {
+    "message": "Maxsus Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Sizning Brauzer qo'llab-quvvatladi emas..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask va Kaliforniya mo'ljallangan qurilgan."
+  },
+  "buyWithWyre": {
+    "message": "Wyre bilan sotib ETH "
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ETH MetaMask hisob o'ng depozit kredit karta foydalanish imkonini beradi."
+  },
+  "buyCoinSwitch": {
+    "message": "CoinSwitch bo'yicha sotib olish "
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch eng yaxshi stavka 300 dan ortiq cryptocurrencies almashish, bir-stop maqsad hisoblanadi."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Bo'yicha"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Bekor"
+  },
+  "cancelAttempt": {
+    "message": "Bekor Urinish"
+  },
+  "cancellationGasFee": {
+    "message": "Bekor Gaz To'lovi"
+  },
+  "cancelled": {
+    "message": "Bekor"
+  },
+  "chainId": {
+    "message": "Zanjir ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Bosing maxfiy so'z ochib berish uchun bu yerga "
+  },
+  "close": {
+    "message": "Yaqin"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Apparat Hamyon ulanish maqsadida, Google Chrome bo'yicha MetaMask foydalanish kerak."
+  },
+  "confirm": {
+    "message": "Tasdiqlash"
+  },
+  "confirmed": {
+    "message": "Tasdiqladi"
+  },
+  "confirmPassword": {
+    "message": "Parolni Tasdiqlang"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Sir Zaxira sizning Ifoda tasdiqlash "
+  },
+  "congratulations": {
+    "message": "Tabriklar"
+  },
+  "connectHardwareWallet": {
+    "message": "Apparat Hamyonni Ulanish "
+  },
+  "connect": {
+    "message": "Ulanish"
+  },
+  "connectRequest": {
+    "message": "So'rov Ulanish "
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Bog'lanish Kovan Test Tarmoq uchun "
+  },
+  "connectingToMainnet": {
+    "message": "Bog'lovchi Asosiy Ethereum Tarmoq uchun "
+  },
+  "connectingToRopsten": {
+    "message": "Bog'lanish Ropsten Test Tarmoq uchun "
+  },
+  "connectingToRinkeby": {
+    "message": "Bog'lanish Rinkeby Test Tarmoq uchun "
+  },
+  "connectingToLocalhost": {
+    "message": "Bog'lanish Localhost 8545 uchun "
+  },
+  "connectingToGoerli": {
+    "message": "Bog'lanish Goerli Test Tarmoq uchun "
+  },
+  "contacts": {
+    "message": "Kontaktlar"
+  },
+  "contactsSettingsDescription": {
+    "message": ", Tartibga solish, olib tashlash, qo'shish, va siz kontaktlarni boshqarish "
+  },
+  "continueToWyre": {
+    "message": "Wyre davom etmoqda "
+  },
+  "continueToCoinSwitch": {
+    "message": "CoinSwitch davom etmoqda "
+  },
+  "contractDeployment": {
+    "message": "Shartnoma Tarqatish"
+  },
+  "conversionProgress": {
+    "message": "Taraqqiyot konvertatsiya "
+  },
+  "copiedButton": {
+    "message": "Ko'chirilmaydi"
+  },
+  "copiedExclamation": {
+    "message": "Nusxa ko'chirish!"
+  },
+  "copy": {
+    "message": "Ko'chirib olish"
+  },
+  "copyAddress": {
+    "message": "Nusxasini buferga uchun manzil "
+  },
+  "copyTransactionId": {
+    "message": "Nusxa Jurnal ID"
+  },
+  "copiedTransactionId": {
+    "message": "Nusxa ko'chirish Ish ID"
+  },
+  "copyToClipboard": {
+    "message": "Buferga nusxa ko'chirish uchun "
+  },
+  "copyButton": {
+    "message": " Ko'chirib olish "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Yaratish"
+  },
+  "createAccount": {
+    "message": "Hisob Yaratish "
+  },
+  "createAWallet": {
+    "message": "Bir Hamyon yaratish "
+  },
+  "createPassword": {
+    "message": "Parol Yaratish "
+  },
+  "currencyConversion": {
+    "message": "Valyuta-Konversion"
+  },
+  "currentLanguage": {
+    "message": "Joriy Tili"
+  },
+  "customGas": {
+    "message": "Gaz Sozlash"
+  },
+  "customGasSubTitle": {
+    "message": "Oshirish haq marta qayta ishlash kamaytirish mumkin, lekin kafolatlangan emas."
+  },
+  "customToken": {
+    "message": "Maxsus Ma'lumoti"
+  },
+  "customRPC": {
+    "message": "Maxsus RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals 0 emas, balki ustidan 36 kamida bo'lishi kerak."
+  },
+  "decimal": {
+    "message": "Nozik hamda Decimals "
+  },
+  "defaultNetwork": {
+    "message": "Eter operatsiyalar uchun standart tarmoq Asosiy To'r bo'ladi."
+  },
+  "delete": {
+    "message": "O'chirish"
+  },
+  "deleteAccount": {
+    "message": "Hisob Qaydnomasini O'chirish"
+  },
+  "deposit": {
+    "message": "Depozit"
+  },
+  "depositEther": {
+    "message": "Depozit Eter"
+  },
+  "details": {
+    "message": "Batafsil ma'lumot"
+  },
+  "directDepositEther": {
+    "message": "To'g'ridan-To'g'ri Depozit Eter"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Agar siz allaqachon ba'zi Eter bo'lsa, olish uchun tez yo'l to'g'ridan-to'g'ri pul orqali yangi hamyoningizda Eter."
+  },
+  "dismiss": {
+    "message": "Lavozimdan ozod qiladi"
+  },
+  "done": {
+    "message": "Amalga"
+  },
+  "downloadGoogleChrome": {
+    "message": "Google Chrome Yuklab Olish"
+  },
+  "downloadSecretBackup": {
+    "message": "Bu Sir Zaxira Ibora yuklab olish va xavfsiz tashqi shifrlangan qattiq disk yoki saqlash o'rta uni saqlangan tutish."
+  },
+  "downloadStateLogs": {
+    "message": "Yuklab Olish Davlat Qaydlar"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Tushib"
+  },
+  "edit": {
+    "message": "Tahrir"
+  },
+  "editContact": {
+    "message": "Tahrir Aloqa"
+  },
+  "emailUs": {
+    "message": "Bizga Email!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Sinov - sizning seedphrase xavfsiz saqlab qolish, sizning mas'uliyat u siz o'tdi!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Xavfsiz uni saqlash maslahatlar "
+  },
+  "endOfFlowMessage3": {
+    "message": "Bir necha joylarda bir zaxira saqlash."
+  },
+  "endOfFlowMessage4": {
+    "message": "Hech qachon hech kim bilan ifoda baham."
+  },
+  "endOfFlowMessage5": {
+    "message": "Fishing ehtiyot bo'ling! MetaMask hech qachon o'z-o'zidan urug ' sizning ifoda qilish uchun so'raydi."
+  },
+  "endOfFlowMessage6": {
+    "message": "Agar urug ' sizning iborani yana zaxira qilish uchun kerak bo'lsa, Sozlash, uni topishingiz mumkin -> Xavfsizlik."
+  },
+  "endOfFlowMessage7": {
+    "message": "Agar siz hech bir savol yoki biror narsa bor ko'rish bu baliq bo'lsa, support@metamask.io elektron pochta."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask mumkin emas, sizning seedphrase saqlab qolish."
+  },
+  "endOfFlowMessage9": {
+    "message": "Ko'proq bilib oling."
+  },
+  "endOfFlowMessage10": {
+    "message": "Barcha Amalga"
+  },
+  "ensRegistrationError": {
+    "message": "ENS ham xato ro'yxatga olish va nomi "
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS joriy tarmoq bo'yicha topilmadi nomi. Asosiy Ethereum Tarmoq uchun kommutatsiya harakat qilib ko'ring."
+  },
+  "enterAnAlias": {
+    "message": "Bir aliaslari kiriting "
+  },
+  "enterPassword": {
+    "message": "Parolni kiriting "
+  },
+  "enterPasswordContinue": {
+    "message": "Parol davom kiriting "
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Davlat Manzil"
+  },
+  "etherscanView": {
+    "message": "View Etherscan bo'yicha hisob "
+  },
+  "estimatedProcessingTimes": {
+    "message": "Taxmin Qayta Ishlash Marta"
+  },
+  "expandView": {
+    "message": "View Kengaytirish "
+  },
+  "exportPrivateKey": {
+    "message": "Eksport Xususiy Kaliti"
+  },
+  "failed": {
+    "message": "Muvaffaqiyatsiz"
+  },
+  "fast": {
+    "message": "Tez"
+  },
+  "faster": {
+    "message": "Tezroq"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Bu qurilma unutmang "
+  },
+  "from": {
+    "message": "Dan"
+  },
+  "fromShapeShift": {
+    "message": "ShapeShift Dan "
+  },
+  "functionType": {
+    "message": "Faoliyat Turi"
+  },
+  "gasLimit": {
+    "message": "Gaz Chegarasi"
+  },
+  "gasLimitCalculation": {
+    "message": "Biz taklif gaz chegarasi tarmoq muvaffaqiyat stavkalari asosida hisoblash."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gaz chegarasi siz sarflash tayyor gaz birliklari maksimal miqdori hisoblanadi."
+  },
+  "gasLimitTooLow": {
+    "message": "Gaz chegarasi kamida 21000 bo'lishi kerak "
+  },
+  "gasUsed": {
+    "message": "Gaz Ishlatiladi"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gaz Narxi Juda Past"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gaz gaz narxi har bir birligi uchun to'lashga tayyor bo'lsangiz Eter miqdori specifies."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gaz Narxlari"
+  },
+  "gasPriceCalculation": {
+    "message": "Biz taklif gaz narxi tarmoq muvaffaqiyat stavkalari asosida hisoblash."
+  },
+  "general": {
+    "message": "Umumiy"
+  },
+  "generalSettingsDescription": {
+    "message": "Valyuta-konversion, boshlang'ich valyuta, tili, blockies identicon"
+  },
+  "getEther": {
+    "message": "Olish Eter"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Yordam Olish."
+  },
+  "getStarted": {
+    "message": "Boshlash "
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Siz ko'rish uchun baxtli odamsiz."
+  },
+  "hardware": {
+    "message": "apparat"
+  },
+  "hardwareWalletConnected": {
+    "message": "Apparat hamyonni bog'liq"
+  },
+  "hardwareWallets": {
+    "message": "Apparat bir hamyon ulanish "
+  },
+  "hardwareWalletsMsg": {
+    "message": "Tanlang MetaMask bilan foydalanish uchun siz istardim apparat bir hamyonni "
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "bu yerda",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Bu Hex Ma'lumotlar"
+  },
+  "hide": {
+    "message": "Yashirish"
+  },
+  "hideToken": {
+    "message": "Yashirish Ma'lumoti"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Tarixi"
+  },
+  "import": {
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Import Hisob"
+  },
+  "importAccountMsg": {
+    "message": " Import hisob dastlab yaratilgan MetaMask hisob seedphrase bilan bog'liq bo'lmaydi. Ko'proq import hisob haqida ma'lumot "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Urug ' Ibora bilan Hisob-Import "
+  },
+  "importWallet": {
+    "message": "Import Hamyonni"
+  },
+  "importYourExisting": {
+    "message": "Mavjud hamyon 12 so'zi urug ' bir ifoda yordamida Import "
+  },
+  "imported": {
+    "message": "Import",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Import hisob urug ' yordamida ifoda"
+  },
+  "infoHelp": {
+    "message": "Info & Yordam"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Dastlabki sizning ish tarmoq tomonidan tasdiqlangan edi. Bosing qaytib borish uchun OK."
+  },
+  "insufficientBalance": {
+    "message": "Kam balansi."
+  },
+  "insufficientFunds": {
+    "message": "Yetarli mablag'."
+  },
+  "insufficientTokens": {
+    "message": "Kam tokens."
+  },
+  "invalidAddress": {
+    "message": "Asossiz manzil"
+  },
+  "invalidAddressRecipient": {
+    "message": "Oluvchi manzili asossiz hisoblanadi "
+  },
+  "knownAddressRecipient": {
+    "message": "Ma'lum shartnoma manzil."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "ETH, kichik o'rnatish uchun emas, balki tarmoq"
+  },
+  "invalidInput": {
+    "message": "Asossiz kiritish."
+  },
+  "invalidRPC": {
+    "message": "Asossiz RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Asossiz Blok Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Asossiz urug ' iborani"
+  },
+  "jsonFile": {
+    "message": "JSON Fayl",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Tarmoq"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Ko'proq o'rganish"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Yangi bir qo'shishingiz mumkin oldin oxirgi hisob foydalanish kerak."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ha, keling, sozlash olish bering!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Havolalar"
+  },
+  "liveGasPricePredictions": {
+    "message": "Jonli Gaz Narxi Bashorati"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Yuklash Tokens..."
+  },
+  "loadMore": {
+    "message": "Yuk Batafsil"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Tizimga Kirish "
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Chiqish vaqti ham buyuk bo'ladi "
+  },
+  "mainnet": {
+    "message": "Asosiy Ethereum Tarmoq"
+  },
+  "memorizePhrase": {
+    "message": "Bu iborani yod."
+  },
+  "memo": {
+    "message": "eslatma"
+  },
+  "menu": {
+    "message": "Menyu"
+  },
+  "message": {
+    "message": "Xabar"
+  },
+  "metamaskDescription": {
+    "message": "Siz Ethereum uchun ulash va Markazlashtirilmagan Veb."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Urug ' So'zlar"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Versiya"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Parolni siz u tasdiqlash uchun kiriting iltimos!"
+  },
+  "myAccounts": {
+    "message": "Mening Hisob"
+  },
+  "myWalletAccounts": {
+    "message": "Hamyonni Mening Hisob"
+  },
+  "myWalletAccountsDescription": {
+    "message": "MetaMask yaratilgan hisob hamma avtomatik ravishda bu bo'limda qo'shilgan bo'ladi."
+  },
+  "mustSelectOne": {
+    "message": "Tanlang kamida 1 ma'lumoti kerak."
+  },
+  "needEtherInWallet": {
+    "message": "Markazlashtirilmagan dasturlar MetaMask yordamida muloqot qilish, hamyoningizda Eter kerak bo'ladi."
+  },
+  "needImportFile": {
+    "message": "Bir faylni import qilish tanlang kerak.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ETH.salbiy miqdorda yuborish mumkin emas "
+  },
+  "networkName": {
+    "message": "Tarmoq Nomi"
+  },
+  "networks": {
+    "message": "Tarmoqlar"
+  },
+  "networkSettingsDescription": {
+    "message": "Kiritish va tahrir maxsus RPC tarmoqlari"
+  },
+  "nevermind": {
+    "message": "Hech qisi yo'q"
+  },
+  "newAccount": {
+    "message": "Yangi Hisob"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Yangi manzil aniqlangan! Bu yerni bosing manzil sizning kitob kiritish uchun."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Yangi Aloqa"
+  },
+  "newContract": {
+    "message": "Yangi Shartnoma"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Yangi Tarmoq"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Yo'q, men allaqachon urug ' bir ibora bor "
+  },
+  "protectYourKeys": {
+    "message": "Sizning Tugmalari Himoya!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Urug ' sizning ibora bilan ehtiyot bo'ling — harakat veb-saytlar hisobotlar MetaMask taqlid bor edi. MetaMask hech qachon urug ' sizning ifoda qilish uchun so'raydi!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Sizning ifoda xavfsiz saqlab qolish. Qisqa vaqt ichida baliq narsa siz qarang, yoki veb-sahifa, elektron pochta, bir support@metamask.io haqida noaniq bo'lsangiz, "
+  },
+  "rpcUrl": {
+    "message": "Yangi RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Yangi Jami"
+  },
+  "newTransactionFee": {
+    "message": "Yangi Bitim To'lovi"
+  },
+  "next": {
+    "message": "Keyingi"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Yo'q, bu manzil nomi uchun to'siq bo'ldi."
+  },
+  "noDeposits": {
+    "message": "Hech omonatlar qabul qildi"
+  },
+  "noConversionRateAvailable": {
+    "message": "Hech Konversiya Darajasi Mavjud"
+  },
+  "noTransactions": {
+    "message": "Hech qanday bitimlar bor "
+  },
+  "noThanks": {
+    "message": "Yo'q, Rahmat"
+  },
+  "notEnoughGas": {
+    "message": "Etarli Emas Gaz"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Topilmadi Webcam "
+  },
+  "noWebcamFound": {
+    "message": "Sizning kompyuteringizdagi webcam topilgan edi. Yana harakat qilib ko'ring, iltimos."
+  },
+  "ofTextNofM": {
+    "message": "to'g'risida"
+  },
+  "orderOneHere": {
+    "message": "Maqsadida bir yoki Ledger Trezor va sovuq saqlash sizning mablag'larini saqlash "
+  },
+  "origin": {
+    "message": "Kelib chiqishi"
+  },
+  "parameters": {
+    "message": "Parametrlari"
+  },
+  "participateInMetaMetrics": {
+    "message": "MetaMetrics ishtirok etish "
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Bizga MetaMask yaxshiroq qilish yordam berish uchun MetaMetrics ishtirok etish "
+  },
+  "password": {
+    "message": "Parol"
+  },
+  "passwordsDontMatch": {
+    "message": "Parollar O'yin Yo'q "
+  },
+  "passwordNotLongEnough": {
+    "message": "Parolni emas, balki uzoq etarli"
+  },
+  "pastePrivateKey": {
+    "message": "Xususiy asosiy sizning mag'lubiyatga pasta bu yerda:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Urug ' sizning iborani bu erda pasta!"
+  },
+  "pending": {
+    "message": "kutayotgan"
+  },
+  "personalAddressDetected": {
+    "message": "Shaxsiy manzil aniqlangan. Kiritish ma'lumoti shartnoma manzil."
+  },
+  "prev": {
+    "message": "Oldingi"
+  },
+  "primaryCurrencySetting": {
+    "message": "Boshlang'ich Valyuta"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Maxfiylik Siyosati"
+  },
+  "privateKey": {
+    "message": "Xususiy Asosiy",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Ogohlantirish: hech Qachon bu asosiy oshkor. Xususiy sizning tugmalari bilan hech kim har qanday aktivlar hisob bo'lib o'g'irlash mumkin."
+  },
+  "privateNetwork": {
+    "message": "Xususiy Tarmoq"
+  },
+  "qrCode": {
+    "message": "Ko'rsatish QR-Kod"
+  },
+  "queue": {
+    "message": "Navbat"
+  },
+  "readdToken": {
+    "message": "\"\"Hisob options menyu.belgi Qo'shish uchun yer bilan kelajakda bu belgi qaytib qo'shishingiz mumkin "
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Oluvchi Manzili"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Barcha Rad "
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Rad etdi"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Reset Hisob"
+  },
+  "resetAccountDescription": {
+    "message": "Hisob asl holatini tiklash ish tarixini aniq bo'ladi."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Meni keyinchalik eslatib "
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Urug ' Ibora bilan Hisob qayta tiklash "
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "so'rovlar e'tirof bo'lishi uchun kutish "
+  },
+  "required": {
+    "message": "Zarur"
+  },
+  "restore": {
+    "message": "Qayta tiklash"
+  },
+  "revealSeedWords": {
+    "message": "Urug ' So'zlar Bilan Oshkor "
+  },
+  "revealSeedWordsTitle": {
+    "message": "Urug ' Iborani"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Agar hech brauzerlar yoki harakat kompyuterlar o'zgartirish bo'lsa, bu urug ' ibora sizning hisob kirish uchun kerak bo'ladi. Ularni bir joyda xavfsiz va sir saqlash."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Baham hech kim bilan bu ibora YO'Q!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Bu so'zlar barcha hisob o'g'irlash uchun foydalanish mumkin."
+  },
+  "revert": {
+    "message": "Qaytish"
+  },
+  "remove": {
+    "message": "Olib tashlash"
+  },
+  "removeAccount": {
+    "message": "Hisob olib tashlash "
+  },
+  "removeAccountDescription": {
+    "message": "Bu hisob hamyon o'chirildi bo'ladi. Uzluksiz oldin bu import hisob uchun asl urug ' ibora yoki xususiy asosiy bor ishonch hosil qiling, iltimos. Yoki hisob yana hisob ochilayotgan import yaratish mumkin. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Tarmoq"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Tarmoq"
+  },
+  "goerli": {
+    "message": "Goerli Test Tarmoq"
+  },
+  "save": {
+    "message": "Saqlash"
+  },
+  "slow": {
+    "message": "Sekin"
+  },
+  "slower": {
+    "message": "Sekin"
+  },
+  "saveAsCsvFile": {
+    "message": "CSV Fayl sifatida saqlash "
+  },
+  "scanInstructions": {
+    "message": "Sizning kamera oldida joy QR-kod "
+  },
+  "scanQrCode": {
+    "message": "Harakatlanish QR-Kod"
+  },
+  "search": {
+    "message": "Qidiruv"
+  },
+  "searchResults": {
+    "message": "Qidiruv Natijalari"
+  },
+  "secretBackupPhrase": {
+    "message": "Sir Zaxira Iborani"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Sir zaxira sizning ifoda oson zaxira va hisob qayta tiklash uchun qiladi."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "OGOHLANTIRISH: hech Qachon zaxira sizning ifoda oshkor. Bu ibora bilan hech kim sizning Eter abadiy olishi mumkin."
+  },
+  "secretPhrase": {
+    "message": "Sir o'n ikki so'z sizning iborani bu erda sizning gumbazini tiklash uchun kiriting."
+  },
+  "securityAndPrivacy": {
+    "message": "Xavfsizlik & Maxfiylik"
+  },
+  "securitySettingsDescription": {
+    "message": "Maxfiylik sozlamalarini va hamyonni urug ' iborani"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Bitta probel bilan, har bir so'z alohida "
+  },
+  "seedPhraseReq": {
+    "message": "Urug ' iboralar 12 so'zlar uzoq "
+  },
+  "selectCurrency": {
+    "message": "Tanlang Valyuta"
+  },
+  "selectEachPhrase": {
+    "message": "To'g'ri, u ishonch hosil qilish maqsadida har bir ibora tanlang iltimos."
+  },
+  "selectLocale": {
+    "message": "Tanlang Mahalliy"
+  },
+  "selectType": {
+    "message": "Tanlang Turi"
+  },
+  "send": {
+    "message": "Yuborish"
+  },
+  "sendAmount": {
+    "message": "Miqdori Yuboring "
+  },
+  "sendETH": {
+    "message": "Yuborish ETH"
+  },
+  "sendTokens": {
+    "message": "Tokens Yuboring "
+  },
+  "sentEther": {
+    "message": "yuborilgan eter"
+  },
+  "sentTokens": {
+    "message": "yuborilgan tokens"
+  },
+  "separateEachWord": {
+    "message": "Bitta probel bilan, har bir so'z alohida "
+  },
+  "searchTokens": {
+    "message": "Qidiruv Tokens"
+  },
+  "selectAnAccount": {
+    "message": "Tanlang bir Hisob"
+  },
+  "selectAnAccountHelp": {
+    "message": "MetaMask ichida ko'rish uchun hisob tanlang "
+  },
+  "selectAHigherGasFee": {
+    "message": "Oliy gaz to'lovi tanlang sizning ish ishlash tezlashtirish uchun*."
+  },
+  "selectHdPath": {
+    "message": "Tanlang HD Yo'lida"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Sozlash"
+  },
+  "showAdvancedGasInline": {
+    "message": "Ilg'or gaz nazorati"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Bu gaz narxi va chegara nazorati to'g'ridan-to'g'ri yuborish va tasdiqlash ekranlar bo'yicha ko'rsatish uchun tanlang."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Testnets bo'yicha Konvertatsiya ko'rsatish "
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Bu Testnets bo'yicha fiat konvertatsiya ko'rsatish uchun tanlang "
+  },
+  "showPrivateKeys": {
+    "message": "Ko'rsatish Xususiy Kalitlari"
+  },
+  "showHexData": {
+    "message": "Show Bu Hex Ma'lumotlar"
+  },
+  "showHexDataDescription": {
+    "message": "Bu haqida bu hex ma'lumotlar sohasida ekran yuborish ko'rsatish uchun tanlang "
+  },
+  "sign": {
+    "message": "Kiring"
+  },
+  "signatureRequest": {
+    "message": "Imzo Talab"
+  },
+  "signed": {
+    "message": "Imzolandi"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Imzo Talab"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Biror narsa noto'g'ri ketdi."
+  },
+  "speedUp": {
+    "message": "Tezlashtirish"
+  },
+  "speedUpCancellation": {
+    "message": "Bu bekor tezlashtirish "
+  },
+  "speedUpTransaction": {
+    "message": "Bu ish tezlashtirish "
+  },
+  "switchNetworks": {
+    "message": "O'tish Tarmoqlari"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Davlat Qaydlar"
+  },
+  "stateLogs": {
+    "message": "Davlat Qaydlar"
+  },
+  "stateLogsDescription": {
+    "message": "Davlat ijtimoiy hisob manzillar va yubordi operatsiyalarni o'z ichiga oladi."
+  },
+  "stateLogError": {
+    "message": "Qabul qilish davlat xato qaydlar."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Apparat Hamyonni Ulanish "
+  },
+  "step1HardwareWalletMsg": {
+    "message": "To'g'ridan-to'g'ri kompyuterga apparat hamyon ulang."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Tanlang bir Hisob"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Ko'rish uchun kerakli hisob-ni tanlang. Faqat bir vaqtning o'zida bir tanlashingiz mumkin."
+  },
+  "step3HardwareWallet": {
+    "message": "3. DApps va undan foydalanishni boshlash!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Har qanday Ethereum hisob bilan siz istardim apparat hisob qaydnomasidan foydalaning. Ichida dApps uchun kirish, Eth yuborish, va ERC20 tokens sotib do'kon va Nooziq-Fungible CryptoKitties kabi tokens."
+  },
+  "storePhrase": {
+    "message": "1Password kabi parol bir rahbar bu ibora saqlang."
+  },
+  "submit": {
+    "message": "Taqdim"
+  },
+  "submitted": {
+    "message": "Taqdim etilgan"
+  },
+  "supportCenter": {
+    "message": "Biz Qo'llab-quvvatlash Markazi tashrif "
+  },
+  "symbol": {
+    "message": "Ramz"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Ramz o'rtasida 0 va 12 belgilar bo'lishi kerak."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Sizning sozlash 3Box bilan mustahkamlangan bo'lishi uchun ochish. Bu xususiyat currenty tajriba hisoblanadi; o'z zimmasida foydalanish."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box boshlang'ich sinxronlashtirishni davomida xato tufayli nogiron bo'ldi "
+  },
+  "syncWithMobile": {
+    "message": "Mobil bilan hamohang "
+  },
+  "syncWithMobileTitle": {
+    "message": "Mobil bilan hamohang "
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Agar siz faqat birinchi marta MetaMask Mobil ilovasi ochiq bo'lsa, faqat sizning telefoningiz bosqichlarni bajaring."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "MetaMask sizning mobil ilovasi bilan, bu kod harakatlanish "
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Siz bu kodni bo'yicha harakatlanish qachon hech kim boshqa ekranning qarab ishonch hosil qiling "
+  },
+  "syncWithMobileComplete": {
+    "message": "Sizning ma'lumotlar hamohang succesfully bo'ldi. MetaMask mobil ilovasi bahramand!"
+  },
+  "terms": {
+    "message": "Foydalanish shartlari "
+  },
+  "testFaucet": {
+    "message": "Test Müslüm"
+  },
+  "thisWillCreate": {
+    "message": "Bu yangi hamyonni va urug ' bir ibora yaratadi "
+  },
+  "tips": {
+    "message": "Maslahatlar"
+  },
+  "to": {
+    "message": "Uchun"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Ma'lumoti"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Ma'lumoti allaqachon qo'shilgan bo'ldi."
+  },
+  "tokenContractAddress": {
+    "message": "Ma'lumoti Shartnoma Manzil"
+  },
+  "tokenSymbol": {
+    "message": "Ma'lumoti Ramzi"
+  },
+  "total": {
+    "message": "Jami"
+  },
+  "transaction": {
+    "message": "bitim"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Ish xato duch kelgan."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Ish Xato. Istisno shartnoma kodi tashlangan."
+  },
+  "transactionErrorNoContract": {
+    "message": "Nooziq-shartnoma manzil bo'yicha vazifasini qo'ng'iroq qilish uchun harakat."
+  },
+  "transactionFee": {
+    "message": "Xizmat To'lovi"
+  },
+  "transactionTime": {
+    "message": "Ish Vaqti"
+  },
+  "transfer": {
+    "message": "Transfer"
+  },
+  "transferBetweenAccounts": {
+    "message": "Mening hisob o'rtasida o'tkazishingiz "
+  },
+  "transferFrom": {
+    "message": "Transfer Dan"
+  },
+  "troubleTokenBalances": {
+    "message": "Muammo ma'lumoti sizning qoldiq yuklash, biz bor edi. Ularni ko'rishingiz mumkin ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Yana harakat qilib ko'ring "
+  },
+  "typePassword": {
+    "message": "Turi MetaMask sizning parol"
+  },
+  "unapproved": {
+    "message": "Tasdiqlanmagan"
+  },
+  "units": {
+    "message": "birliklari"
+  },
+  "unknown": {
+    "message": "Noma'lum"
+  },
+  "unknownNetwork": {
+    "message": "Noma'lum Xususiy Tarmoq"
+  },
+  "unknownQrCode": {
+    "message": "Xato: bu QR kodini aniqlash Biz olmadi "
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Biror narsa noto'g'ri ketdi...."
+  },
+  "unknownCameraError": {
+    "message": "Sizning kamera kirish uchun harakat esa bir xato bor edi. Iltimos, yana harakat qilib ko'ring..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "Markazlashtirilmagan veb kutmoqda"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs/HTTPS prefiks tegishli HTTP talab qiladi."
+  },
+  "usedByClients": {
+    "message": "Ishlatiladigan turli mijozlar turli tomonidan "
+  },
+  "userName": {
+    "message": "Foydalanuvchi nomi"
+  },
+  "validFileImport": {
+    "message": "Import uchun amal qiladi, bir faylni tanlang kerak."
+  },
+  "viewAccount": {
+    "message": "View Hisob"
+  },
+  "viewinExplorer": {
+    "message": "Explorer ichida ko'rish "
+  },
+  "viewContact": {
+    "message": "View Aloqa"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Etherscan bo'yicha ko'rish "
+  },
+  "visitWebSite": {
+    "message": "Bizning veb-sayt tashrif buyuring "
+  },
+  "walletSeed": {
+    "message": "Hamyonni Urug'"
+  },
+  "welcomeBack": {
+    "message": "Qaytib Kelibsiz!"
+  },
+  "welcome": {
+    "message": "MetaMask xush kelibsiz "
+  },
+  "writePhrase": {
+    "message": "Bir parcha qog'ozga bo'yicha bu ibora yozish va xavfsiz joyda do'kon. Agar hatto ko'proq xavfsizlik bo'lsangiz, bu qog'oz bir necha dona yozib va 2 - 3 har bir do'kon boshqa joylarda."
+  },
+  "yesLetsTry": {
+    "message": "Ha, keling, ko'ring,"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Kamera kirish ushbu dastur foydalanish uchun ruxsat berish uchun kerak."
+  },
+  "yourSigRequested": {
+    "message": "Sizning imzo talab qilinmoqda "
+  },
+  "youSign": {
+    "message": "Siz imzo bor "
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Xususiy urug ' sizning iborani"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nol gaz tezligi bo'yicha qadar narxi "
+  }
+}

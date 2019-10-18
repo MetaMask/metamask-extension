@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Juru Li Deħlin-Tranżazzjonijiet"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Agħżel dan għall-użu Etherscan li juru tranżazzjonijiet li deħlin fil-tranżazzjonijiet lista"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Ċart disponibbli biss fuq Ethereum-netwerks."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Konnessjonijiet"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Is-siti permess li taqra tiegħek kontijiet"
+  },
+  "addSite": {
+    "message": "Żid Is-Sit"
+  },
+  "addSiteDescription": {
+    "message": "Manwalment żid is-sit li jippermettu l-aċċess għall-kontijiet tiegħek, utli għall-anzjani dapps"
+  },
+  "connected": {
+    "message": "Konnessi"
+  },
+  "connectedDescription": {
+    "message": "Il-lista ta'siti permess l-aċċess għall-indirizzi"
+  },
+  "privacyModeDefault": {
+    "message": "Il-privatezza Mod issa huwa attivat awtomatikament"
+  },
+  "contractInteraction": {
+    "message": "Kuntratt Interazzjoni"
+  },
+  "clearApprovalData": {
+    "message": "Neħħi s-siti kollha"
+  },
+  "reject": {
+    "message": "Tirrifjuta"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Dan is-sit huwa jintalab l-aċċess għall-għan kont kurrenti tiegħek indirizz. Dejjem kun żgur li għandek l-fiduċja l-siti li jinteraġixxu ma'."
+  },
+  "about": {
+    "message": "Dwar"
+  },
+  "aboutSettingsDescription": {
+    "message": "Il-verżjoni, l-appoġġ taċ-ċentru, u l-kuntatt info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Aċċess għall-kamera tiegħek..."
+  },
+  "account": {
+    "message": "Kont tal -"
+  },
+  "accountDetails": {
+    "message": "Dettalji Ta'Kont"
+  },
+  "accountName": {
+    "message": "Kont-Isem Tal -"
+  },
+  "accountOptions": {
+    "message": "Kont-Għażliet"
+  },
+  "accountSelectionRequired": {
+    "message": "Ikollok bżonn tagħżel il-kont!"
+  },
+  "activityLog": {
+    "message": "l-attività log"
+  },
+  "addNetwork": {
+    "message": "Żid Tan-Netwerk"
+  },
+  "addRecipient": {
+    "message": "Żid Riċevitur"
+  },
+  "advanced": {
+    "message": "Avvanzati"
+  },
+  "advancedSettingsDescription": {
+    "message": "L-aċċess iżviluppatur tal-karatteristiċi, niżżel l-Istat Zkuk, Risettjar Kont, setup testnets u tad-dwana'RPC."
+  },
+  "advancedOptions": {
+    "message": "Għażliet Avvanzati"
+  },
+  "addToAddressBook": {
+    "message": "Żid l-indirizz tal-ktieb"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "pereżempju John D."
+  },
+  "addAlias": {
+    "message": "Żid magħruf ukoll bħala"
+  },
+  "addToken": {
+    "message": "Żid Dispożittiv"
+  },
+  "addTokens": {
+    "message": "Żid Towkins"
+  },
+  "addSuggestedTokens": {
+    "message": "Żid Ssuġġerit Towkins"
+  },
+  "addAcquiredTokens": {
+    "message": "Żid il-towkins inti kont akkwistat bl-użu MetaMask"
+  },
+  "amount": {
+    "message": "L-ammont"
+  },
+  "appDescription": {
+    "message": "L-Ethereum Kartiera fil-Browser tiegħek",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Japprova"
+  },
+  "approved": {
+    "message": "Approvati"
+  },
+  "asset": {
+    "message": "Assi"
+  },
+  "attemptingConnect": {
+    "message": "- Tentattiv li jgħaqqdu l-blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Preżentazzjoni dan l-attentat ma garanzija oriġinali tiegħek tranżazzjoni ser jiġu kkanċellati. Jekk il-kanċellazzjoni tentattiv huwa suċċess, inti se tkun mitluba l-tranżazzjoni ħlas hawn fuq."
+  },
+  "attributions": {
+    "message": "Attribuzzjoni"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Issettja l-ħin wieqaf fil-minuti qabel MetaMask awtomatikament log"
+  },
+  "average": {
+    "message": "Medja"
+  },
+  "back": {
+    "message": "- Dahar"
+  },
+  "backToAll": {
+    "message": "Lura għal Kulħadd"
+  },
+  "backupApprovalNotice": {
+    "message": "Riżerva tiegħek Sigriet-Irkupru tal-kodiċi biex iżommu l-kartiera u l-fondi sigur."
+  },
+  "backupApprovalInfo": {
+    "message": "Dan il-kodiċi sigriet huwa meħtieġ li tirkupra l-kartiera tiegħek fil-każ li titlef it-tagħmir tiegħek, tinsa l-password tiegħek, għandek terġa installa MetaMask, jew tixtieq li l-aċċess kartiera tiegħek dwar il-mezz ieħor."
+  },
+  "backupNow": {
+    "message": "Riżerva issa"
+  },
+  "balance": {
+    "message": "Il-bilanċ"
+  },
+  "balanceOutdated": {
+    "message": "Il-bilanċ jista'jkun skadut"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Insuffiċjenti tal-bilanċ għall-kurrenti tal-gass tal-total"
+  },
+  "basic": {
+    "message": "Bażika"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blokk Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "L-Użu Fly Bogħod Identicon"
+  },
+  "nonceField": {
+    "message": "Ippersonalizza l-tranżazzjoni nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Tad-Dwana Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Browser tiegħek mhijiex appoġġjata..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask hija ddisinjata u mibnija fil-California."
+  },
+  "buyWithWyre": {
+    "message": "Jixtru ETH mal-Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre tikri tuża l-karta tal-kreditu għall-depożitu ETH dritt tiegħek MetaMask-kont."
+  },
+  "buyCoinSwitch": {
+    "message": "Jixtru fuq CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch huwa l-one-stop-destinazzjoni għall-iskambju aktar minn 300 cryptocurrencies bir-rata aħjar."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Fuq"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Tikkanċella"
+  },
+  "cancelAttempt": {
+    "message": "Tikkanċella Tentattiv"
+  },
+  "cancellationGasFee": {
+    "message": "Tħassir Tal-Gass Ħlas"
+  },
+  "cancelled": {
+    "message": "Kkanċellata"
+  },
+  "chainId": {
+    "message": "ID-katina"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Ikklikkja hawn jiżvelaw sigriet kliem"
+  },
+  "close": {
+    "message": "Qrib"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Għandek bżonn għall-użu MetaMask fuq il-Homepage sabiex jgħaqqdu tiegħek Ħardwer tal-Kartiera."
+  },
+  "confirm": {
+    "message": "Jikkonfermaw"
+  },
+  "confirmed": {
+    "message": "Kkonfermat"
+  },
+  "confirmPassword": {
+    "message": "Jikkonfermaw Il-Password"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Jikkonfermaw tiegħek Sigriet Riżerva Frażi"
+  },
+  "congratulations": {
+    "message": "Nifraħ"
+  },
+  "connectHardwareWallet": {
+    "message": "Qabbad Il-Ħardwer Tal-Kartiera"
+  },
+  "connect": {
+    "message": "Qabbad"
+  },
+  "connectRequest": {
+    "message": "Qabbad It-Talba"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Konnessjoni Kovan tat-Test tan-Netwerk"
+  },
+  "connectingToMainnet": {
+    "message": "Konnessjoni Prinċipali Ethereum tan-Netwerk"
+  },
+  "connectingToRopsten": {
+    "message": "Konnessjoni Ropsten tat-Test tan-Netwerk"
+  },
+  "connectingToRinkeby": {
+    "message": "Konnessjoni Rinkeby tat-Test tan-Netwerk"
+  },
+  "connectingToLocalhost": {
+    "message": "Konnessjoni Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Konnessjoni Goerli tat-Test tan-Netwerk"
+  },
+  "contacts": {
+    "message": "Kuntatti"
+  },
+  "contactsSettingsDescription": {
+    "message": "Żid, jeditjaw, neħħi, u timmaniġġja l-kuntatti tiegħek"
+  },
+  "continueToWyre": {
+    "message": "Ikomplu Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Ikomplu CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "- Kuntratt Tal-Iskjerament"
+  },
+  "conversionProgress": {
+    "message": "Il-konverżjoni u l-programm progress"
+  },
+  "copiedButton": {
+    "message": "Kkupjati"
+  },
+  "copiedExclamation": {
+    "message": "Kkupjati!"
+  },
+  "copy": {
+    "message": "Kopja"
+  },
+  "copyAddress": {
+    "message": "Kopja jindirizza lill-qarrej"
+  },
+  "copyTransactionId": {
+    "message": "Kopja tat-Tranżazzjoni ID"
+  },
+  "copiedTransactionId": {
+    "message": "Kkupjati ID Transazzjoni"
+  },
+  "copyToClipboard": {
+    "message": "Kopja lill-qarrej"
+  },
+  "copyButton": {
+    "message": " Kopja "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Joħolqu"
+  },
+  "createAccount": {
+    "message": "Oħloq Kont"
+  },
+  "createAWallet": {
+    "message": "Joħolqu-Kartiera"
+  },
+  "createPassword": {
+    "message": "Joħolqu L-Password"
+  },
+  "currencyConversion": {
+    "message": "Konverżjoni Tal-Munita"
+  },
+  "currentLanguage": {
+    "message": "Attwali Tal-Lingwa"
+  },
+  "customGas": {
+    "message": "Ippersonalizza L-Gass Tal -"
+  },
+  "customGasSubTitle": {
+    "message": "Tiżdied il-ħlas jistgħu jnaqqsu l-ipproċessar drabi, iżda dan ma jkunx garantit."
+  },
+  "customToken": {
+    "message": "Tad-Dwana Dispożittiv"
+  },
+  "customRPC": {
+    "message": "Tad-dwana'RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Deċimali għandu jkun mill-inqas 0, u mhux aktar minn 36."
+  },
+  "decimal": {
+    "message": "Deċimali ta'Preċiżjoni"
+  },
+  "defaultNetwork": {
+    "message": "L-kontumaċja tan-netwerk għall-Ether-tranżazzjonijiet huwa Prinċipali Nett."
+  },
+  "delete": {
+    "message": "Neħħi"
+  },
+  "deleteAccount": {
+    "message": "Neħħi Kont Tal -"
+  },
+  "deposit": {
+    "message": "Depożitu"
+  },
+  "depositEther": {
+    "message": "Depożitu Ether"
+  },
+  "details": {
+    "message": "Id-dettalji"
+  },
+  "directDepositEther": {
+    "message": "Direttament Depożitu Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Jekk inti diġà għandhom xi Ether, l-aktar rapida mod biex tikseb Ether fil-ġdid tiegħek kartiera b'depożitu dirett."
+  },
+  "dismiss": {
+    "message": "Tiċħad"
+  },
+  "done": {
+    "message": "Magħmul"
+  },
+  "downloadGoogleChrome": {
+    "message": "Niżżel-Homepage"
+  },
+  "downloadSecretBackup": {
+    "message": "Niżżel dan il-Sigriet Riżerva Frażi u żżommu maħżuna mingħajr periklu fuq esterna f'kodiċi diffiċli issuq jew ħażna ta'żmien medju."
+  },
+  "downloadStateLogs": {
+    "message": "Niżżel L-Istat Zkuk"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Niżel"
+  },
+  "edit": {
+    "message": "Jeditjaw"
+  },
+  "editContact": {
+    "message": "Jeditjaw Il-Kuntatt"
+  },
+  "emailUs": {
+    "message": "Ibgħatilna Email!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Inti għadda l-test tal - żomm tiegħek seedphrase sikuri, huwa r-responsabbiltà tiegħek!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Pariri dwar il-ħażna mingħajr periklu"
+  },
+  "endOfFlowMessage3": {
+    "message": "Save ta'riżerva fil-postijiet multipli."
+  },
+  "endOfFlowMessage4": {
+    "message": "Qatt taqsam il-frażi ma'xi ħadd."
+  },
+  "endOfFlowMessage5": {
+    "message": "Oqgħod attent tal-wkoll! MetaMask qatt se spontanjament staqsi għall-żerriegħa tiegħek frażi."
+  },
+  "endOfFlowMessage6": {
+    "message": "Jekk għandek bżonn li lura sa tiegħek taż-żerriegħa tal-frażi mill-ġdid, inti tista'ssib fil-Settings tal -> tas-Sigurtà."
+  },
+  "endOfFlowMessage7": {
+    "message": "Jekk qatt ikollok xi mistoqsijiet jew tara xi ħaġa dubjużi, l-email support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ma tistax tirkupra l-seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Tgħallem aktar."
+  },
+  "endOfFlowMessage10": {
+    "message": "L-Jsir"
+  },
+  "ensRegistrationError": {
+    "message": "L-iżball fil-EN-isem tal-reġistrazzjoni"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "L-EN-isem tal-jistgħux jinstabu fuq il-kurrent fin-netwerk. Ipprova-qlib għal Prinċipali Ethereum tan-Netwerk."
+  },
+  "enterAnAlias": {
+    "message": "Jidħol magħruf ukoll bħala"
+  },
+  "enterPassword": {
+    "message": "Daħħal il-password"
+  },
+  "enterPasswordContinue": {
+    "message": "Daħħal il-password li tkompli"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum L-Indirizz Pubbliku"
+  },
+  "etherscanView": {
+    "message": "Il-fehma tal-kont fuq Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Stmat L-Ipproċessar Darbiet"
+  },
+  "expandView": {
+    "message": "Jespandu-Dawl"
+  },
+  "exportPrivateKey": {
+    "message": "L-Esportazzjoni Privati Ewlenin"
+  },
+  "failed": {
+    "message": "Naqset"
+  },
+  "fast": {
+    "message": "Fast"
+  },
+  "faster": {
+    "message": "Aktar mgħaġġel"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Tinsa dan l-apparat"
+  },
+  "from": {
+    "message": "Mill -"
+  },
+  "fromShapeShift": {
+    "message": "Mill-ShapeShift"
+  },
+  "functionType": {
+    "message": "- Funzjoni Tat-Tip"
+  },
+  "gasLimit": {
+    "message": "Gass Ta'Limitu"
+  },
+  "gasLimitCalculation": {
+    "message": "Aħna tikkalkula l-suġġeriti tal-gass limitu bbażat fuq tan-netwerk tal-rati ta ' suċċess."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Limitu tal-gass huwa l-ammont massimu ta'l-unitajiet tal-gass inti lest li jonfoq."
+  },
+  "gasLimitTooLow": {
+    "message": "Limitu tal-gass għandu jkun mill-inqas 21000"
+  },
+  "gasUsed": {
+    "message": "Il-Gass Jintuża"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gass Prezz Estremament Baxx"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Prezz tal-gass jispeċifika l-ammont ta Ether inti lest biex tħallas għal kull unità tal-gass."
+  },
+  "gasPriceNoDenom": {
+    "message": "Prezz Tal-Gass"
+  },
+  "gasPriceCalculation": {
+    "message": "Aħna tikkalkula l-ssuġġerit-prezzijiet tal-gass bbażata fuq tan-netwerk tal-rati ta ' suċċess."
+  },
+  "general": {
+    "message": "Ġenerali"
+  },
+  "generalSettingsDescription": {
+    "message": "Konverżjoni tal-munita, tal-primarja tal-munita, tal-lingwa, fly bogħod identicon"
+  },
+  "getEther": {
+    "message": "Jiksbu Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Tikseb L-Għajnuna."
+  },
+  "getStarted": {
+    "message": "Tibda"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Aħna kuntenti li tara int."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Ħardwer tal-kartiera konnessi"
+  },
+  "hardwareWallets": {
+    "message": "Qabbad il-ħardwer tal-kartiera"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Agħżel il-ħardwer tal-kartiera li inti tixtieq għall-użu ma MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "hawnhekk",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Ess Tad-Data"
+  },
+  "hide": {
+    "message": "Jaħbu"
+  },
+  "hideToken": {
+    "message": "Jaħbu Dispożittiv"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "L-istorja"
+  },
+  "import": {
+    "message": "L-importazzjoni",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "L-Importazzjoni Tal-Kont"
+  },
+  "importAccountMsg": {
+    "message": " Importati-kontijiet mhux se jkun assoċjat ma tiegħek oriġinarjament maħluqa MetaMask kont seedphrase. Tgħallem aktar dwar l-importati-kontijiet "
+  },
+  "importAccountSeedPhrase": {
+    "message": "L-importazzjoni Kont mal-Żerriegħa tal-Frażi"
+  },
+  "importWallet": {
+    "message": "L-Importazzjoni Tal-Kartiera"
+  },
+  "importYourExisting": {
+    "message": "L-importazzjoni eżistenti tiegħek kartiera bl-użu ta ' 12-kelma taż-żerriegħa tal-frażi"
+  },
+  "imported": {
+    "message": "Importati",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "L-importazzjoni bl-użu tal-kont taż-żerriegħa tal-frażi"
+  },
+  "infoHelp": {
+    "message": "Info & Jgħinu"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Inizjali tiegħek tranżazzjoni kienet ikkonfermata mill-netwerk. Ikklikkja OK li jmorru lura."
+  },
+  "insufficientBalance": {
+    "message": "Insuffiċjenti tal-bilanċ."
+  },
+  "insufficientFunds": {
+    "message": "Fondi biżżejjed."
+  },
+  "insufficientTokens": {
+    "message": "Insuffiċjenti towkins."
+  },
+  "invalidAddress": {
+    "message": "Invalidu l-indirizz"
+  },
+  "invalidAddressRecipient": {
+    "message": "Riċevitur l-indirizz huwa invalidu"
+  },
+  "knownAddressRecipient": {
+    "message": "Magħrufa kuntratt indirizz."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Mhux ETH tan-netwerk, sett biex zghar"
+  },
+  "invalidInput": {
+    "message": "Invalidu l-input."
+  },
+  "invalidRPC": {
+    "message": "Invalida'RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Invalida Blokk Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Invalida taż-żerriegħa tal-frażi"
+  },
+  "jsonFile": {
+    "message": "JSON-Fajl",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Tat-Test Tan-Netwerk"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Tgħallem aktar"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Inti għandek bżonn tagħmel użu tiegħek aħħar kont qabel ma inti tista'żżid waħda ġdida."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Iva, ejja tikseb stabbilit!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Rabtiet"
+  },
+  "liveGasPricePredictions": {
+    "message": "Ħajjin-Prezz Tal-Gass Tbassir"
+  },
+  "loading": {
+    "message": "It-tagħbija..."
+  },
+  "loadingTokens": {
+    "message": "It-Tagħbija Towkins..."
+  },
+  "loadMore": {
+    "message": "Tagħbija Aktar"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Log Fil -"
+  },
+  "logout": {
+    "message": "Log"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout ħin hija kbira wisq"
+  },
+  "mainnet": {
+    "message": "Ewlenin Ethereum Tan-Netwerk"
+  },
+  "memorizePhrase": {
+    "message": "Jimmemorizza din il-frażi."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Messaġġ"
+  },
+  "metamaskDescription": {
+    "message": "Konnessjoni inti Ethereum u l-Deċentralizzata tal-Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Taż-Żerriegħa Tal-Kliem"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Verżjoni"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Jekk jogħġbok ikteb l-password tiegħek biex tikkonferma li inti!"
+  },
+  "myAccounts": {
+    "message": "Tiegħi Kontijiet"
+  },
+  "myWalletAccounts": {
+    "message": "Kartiera Tiegħi Kontijiet"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Kollha tiegħek MetaMask maħluqa-kontijiet ser jiżdiedu awtomatikament għal din it-taqsima."
+  },
+  "mustSelectOne": {
+    "message": "Trid tagħżel mill-inqas 1 simboliku."
+  },
+  "needEtherInWallet": {
+    "message": "Biex jinteraġixxu ma deċentralizzata l-applikazzjonijiet bl-użu MetaMask, int ser ikollok bżonn Ether fil-portafoll tiegħek."
+  },
+  "needImportFile": {
+    "message": "Trid tagħżel il-fajl li l-importazzjoni.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ma jistgħu jibagħtu l-ammonti negattivi tal-ETH."
+  },
+  "networkName": {
+    "message": "Tan-Netwerk Tal-Isem Tal -"
+  },
+  "networks": {
+    "message": "In-netwerks"
+  },
+  "networkSettingsDescription": {
+    "message": "Żid u jeditjaw tad-dwana'RPC netwerks"
+  },
+  "nevermind": {
+    "message": "Tinkwetax"
+  },
+  "newAccount": {
+    "message": "Kont Ġdid"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Indirizz ġdid osservati! Ikklikkja hawn li żżid mal-ktieb l-indirizz tiegħek."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Kuntatt Ġdid"
+  },
+  "newContract": {
+    "message": "- Kuntratt Il-Ġdid"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Netwerk Ġdid"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "L-ebda, I diġà għandhom taż-żerriegħa tal-frażi"
+  },
+  "protectYourKeys": {
+    "message": "Jipproteġu Ċ-Ċwievet Tiegħek!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Oqgħod attent li ma tiegħek taż-żerriegħa tal-frażi — kien hemm rapporti ta ' siti tal-web li tentattiv biex jimitaw MetaMask. MetaMask qatt se jitlob għall-żerriegħa tiegħek frażi!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Żomm tiegħek frażi sikur. Jekk tara xi ħaġa dubjużi, jew int inċerta dwar il-websajt, l-email support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "L-ġodda'RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Total Ġdid"
+  },
+  "newTransactionFee": {
+    "message": "L-Ġodda Tat-Tranżazzjoni Ħlas"
+  },
+  "next": {
+    "message": "Li jmiss"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "L-ebda indirizz ġie stabbilit għal dan il-isem."
+  },
+  "noDeposits": {
+    "message": "L-ebda depożiti riċevuti"
+  },
+  "noConversionRateAvailable": {
+    "message": "L-Ebda Rata Ta'Konverżjoni Disponibbli"
+  },
+  "noTransactions": {
+    "message": "Inti għandek l-ebda tranżazzjonijiet"
+  },
+  "noThanks": {
+    "message": "L-Ebda Grazzi"
+  },
+  "notEnoughGas": {
+    "message": "Mhux Biżżejjed Gass"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Big ma sabet"
+  },
+  "noWebcamFound": {
+    "message": "Tal-kompjuter tiegħek big ma nstabx. Jekk jogħġbok erġa ' ipprova."
+  },
+  "ofTextNofM": {
+    "message": "tal -"
+  },
+  "orderOneHere": {
+    "message": "Sabiex a Trezor jew il-Ktieb u żomm it-fondi fil-kiesaħ-ħażna"
+  },
+  "origin": {
+    "message": "L-oriġini"
+  },
+  "parameters": {
+    "message": "Parametri"
+  },
+  "participateInMetaMetrics": {
+    "message": "Jipparteċipaw fil-MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Jipparteċipaw fil-MetaMetrics biex tgħinna jagħmlu l-aħjar MetaMask"
+  },
+  "password": {
+    "message": "Il-Password"
+  },
+  "passwordsDontMatch": {
+    "message": "Passwords Ma Jaqblux"
+  },
+  "passwordNotLongEnough": {
+    "message": "Il-Password mhux twil biżżejjed"
+  },
+  "pastePrivateKey": {
+    "message": "Pejst tiegħek privati ewlenin sekwenza hawn:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Pejst tiegħek taż-żerriegħa tal-frażi hawn!"
+  },
+  "pending": {
+    "message": "pendenti"
+  },
+  "personalAddressDetected": {
+    "message": "L-indirizz personali identifikati. Input il-mod kuntratt indirizz."
+  },
+  "prev": {
+    "message": "Dok"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primarju Tal-Munita"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "L-Privatezza Tal-Politika"
+  },
+  "privateKey": {
+    "message": "Privati Ewlenin",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Twissija: Qatt ma jagħtu dan ewlenin. Ħadd ma tiegħek ċwievet privati jistgħu jerġgħu kull assi miżmuma fil-kont tiegħek."
+  },
+  "privateNetwork": {
+    "message": "Netwerk Privat"
+  },
+  "qrCode": {
+    "message": "Juru Kodiċi QR"
+  },
+  "queue": {
+    "message": "Kju"
+  },
+  "readdToken": {
+    "message": "Inti tista'żżid dan l-dispożittiv lura fil-ġejjieni billi tmur għall - \"Żid dispożittiv\" fil-kontijiet tiegħek għażliet tal-menu."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Riċevitur L-Indirizz"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Tirrifjuta Kollha"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Miċħuda"
+  },
+  "reset": {
+    "message": "Risettjar"
+  },
+  "resetAccount": {
+    "message": "Risettjar Kont Tal -"
+  },
+  "resetAccountDescription": {
+    "message": "Risettjar-kont tiegħek se ċar tiegħek tranżazzjoni l-istorja."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Ifakkru me aktar tard"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Terġa-Kont tiegħek mal-Żerriegħa tal-Frażi"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "it-talbiet ta'stennija jiġi rikonoxxut"
+  },
+  "required": {
+    "message": "Meħtieġa"
+  },
+  "restore": {
+    "message": "Terġa"
+  },
+  "revealSeedWords": {
+    "message": "Jiżvelaw Taż-Żerriegħa Tal-Kliem"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Żerriegħa Tal-Frażi"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Jekk inti qatt tbiddel il-brawżers jew timxi-kompjuters, inti ser ikollok bżonn dan l-żerriegħa tal-frażi li l-aċċess kontijiet tiegħek. Ħlief x'imkien sikur u sigriet."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "M'għandekx taqsam din il-frażi ma'xi ħadd!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Dawn il-kliem jistgħu jintużaw biex jieħdu l-kontijiet tiegħek."
+  },
+  "revert": {
+    "message": "Jerġa'lura"
+  },
+  "remove": {
+    "message": "Neħħi"
+  },
+  "removeAccount": {
+    "message": "Neħħi kont tal -"
+  },
+  "removeAccountDescription": {
+    "message": "Dan il-kont ser jitneħħew mid-kartiera tiegħek. Jekk jogħġbok kun żgur li għandek l-oriġinali taż-żerriegħa tal-frażi jew privati ewlenin għal dan il-importati kont qabel ma tkompli. Tista ' l-importazzjoni jew joħolqu-kontijiet mill-ġdid mill-kont drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Tat-Test Tan-Netwerk"
+  },
+  "ropsten": {
+    "message": "Ropsten Tat-Test Tan-Netwerk"
+  },
+  "goerli": {
+    "message": "Goerli Tat-Test Tan-Netwerk"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "slow": {
+    "message": "Bil-mod"
+  },
+  "slower": {
+    "message": "Bil-mod"
+  },
+  "saveAsCsvFile": {
+    "message": "Ħlief kif CSV-Fajl"
+  },
+  "scanInstructions": {
+    "message": "Poġġi l-kodiċi QR quddiem il-kamera"
+  },
+  "scanQrCode": {
+    "message": "Scan Kodiċi QR"
+  },
+  "search": {
+    "message": "Fittex"
+  },
+  "searchResults": {
+    "message": "Riżultati Tat-Tfittxija"
+  },
+  "secretBackupPhrase": {
+    "message": "Sigriet Riżerva Frażi"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Sigriet tiegħek riżerva frażi jagħmilha faċli biex back-up u jirrestawraw l-kont tiegħek."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "TWISSIJA: Qatt ma jikxfux riżerva frażi. Ħadd ma din il-frażi jistgħu jieħdu tiegħek Ether għal dejjem."
+  },
+  "secretPhrase": {
+    "message": "Jidħol tiegħek sigriet tnax-il kelma-frażi hawn biex jirrestawraw l-kaxxa tiegħek."
+  },
+  "securityAndPrivacy": {
+    "message": "Is-Sigurtà U L-Privatezza"
+  },
+  "securitySettingsDescription": {
+    "message": "Konfigurazzjonijiet tal-privatezza u l-kartiera taż-żerriegħa tal-frażi"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Separati kull kelma bi spazju uniku"
+  },
+  "seedPhraseReq": {
+    "message": "Żerriegħa tal-frażijiet huma 12-kliem fit-tul"
+  },
+  "selectCurrency": {
+    "message": "Agħżel Il-Munita"
+  },
+  "selectEachPhrase": {
+    "message": "Jekk jogħġbok agħżel kull frażi sabiex tagħmel żgur li hija korretta."
+  },
+  "selectLocale": {
+    "message": "Agħżel Locale"
+  },
+  "selectType": {
+    "message": "Agħżel It-Tip"
+  },
+  "send": {
+    "message": "Ibgħat"
+  },
+  "sendAmount": {
+    "message": "Ibgħat-Ammont"
+  },
+  "sendETH": {
+    "message": "Ibgħat ETH"
+  },
+  "sendTokens": {
+    "message": "Ibgħat Towkins"
+  },
+  "sentEther": {
+    "message": "mibgħuta ether"
+  },
+  "sentTokens": {
+    "message": "mibgħuta towkins"
+  },
+  "separateEachWord": {
+    "message": "Separati kull kelma bi spazju uniku"
+  },
+  "searchTokens": {
+    "message": "Fittex Towkins"
+  },
+  "selectAnAccount": {
+    "message": "Agħżel Kont"
+  },
+  "selectAnAccountHelp": {
+    "message": "Agħżel il-kont għall-opinjoni fl-MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Agħżel ogħla tal-gass ħlas biex iħaffu l-ipproċessar ta'l-operazzjoni.*"
+  },
+  "selectHdPath": {
+    "message": "Agħżel HD-Passaġġ"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "L-issettjar"
+  },
+  "showAdvancedGasInline": {
+    "message": "Avvanzat tal-gass tal-kontrolli tal -"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Agħżel dan li juru-prezzijiet tal-gass u l-limitu tal-kontrolli direttament fuq il-tibgħat u jikkonferma l-iskrins."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Juru li l-Konverżjoni fuq Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Agħżel dan li juru fiat konverżjoni fuq Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Juru Privati Ċwievet"
+  },
+  "showHexData": {
+    "message": "Juru Ess Tad-Data"
+  },
+  "showHexDataDescription": {
+    "message": "Agħżel dan li juru l-ess qasam tad-data dwar il-tibgħat l-iskrin"
+  },
+  "sign": {
+    "message": "Is-sinjal"
+  },
+  "signatureRequest": {
+    "message": "Firma Talba"
+  },
+  "signed": {
+    "message": "Ffirmat"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Firma Talba"
+  },
+  "somethingWentWrong": {
+    "message": "Għaliex! Xi ħaġa li marret ħażin."
+  },
+  "speedUp": {
+    "message": "Tħaffef"
+  },
+  "speedUpCancellation": {
+    "message": "Jitħaffef dan il-kanċellazzjoni"
+  },
+  "speedUpTransaction": {
+    "message": "Tħaffef din it-tranżazzjoni"
+  },
+  "switchNetworks": {
+    "message": "Jaqilbu Netwerks"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask-Istat Zkuk"
+  },
+  "stateLogs": {
+    "message": "L-Istat Zkuk"
+  },
+  "stateLogsDescription": {
+    "message": "L-istat zkuk fihom tiegħek pubbliku kont ta'l-indirizzi u mibgħuta-tranżazzjonijiet."
+  },
+  "stateLogError": {
+    "message": "Żball fl-irkupru tal-istat zkuk."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Qabbad Il-Ħardwer Tal-Kartiera"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Qabbad tiegħek ħardwer tal-kartiera direttament lill-kompjuter tiegħek."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Agħżel Kont"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Agħżel il-kont inti tixtieq tara. Inti jistgħu jagħżlu wieħed biss kull darba."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Tibda tuża dApps u aktar!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Uża l-ħardwer tal-kont bħal inti ma kwalunkwe Ethereum-kont. Log fil-dApps, ibgħat Eth, jixtri u aħżen ERC20 towkins u Mhumiex skambjabbli liberament towkins simili CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Aħżen din il-frażi fil-password president bħal 1Password."
+  },
+  "submit": {
+    "message": "Tissottometti"
+  },
+  "submitted": {
+    "message": "Sottomess"
+  },
+  "supportCenter": {
+    "message": "Żjara l-Appoġġ tagħna Ċentru"
+  },
+  "symbol": {
+    "message": "Is-simbolu"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Is-simbolu għandu jkun bejn 0 u 12-karattri."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Dawwar fuq li jkollhom settings tiegħek sostnuti bl-3Box. Din il-karatteristika huwa currenty sperimentali; l-użu fil-responsabbiltà tiegħek."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box ġie b'diżabilità minħabba żball matul l-ewwel sinkronizzazzjoni"
+  },
+  "syncWithMobile": {
+    "message": "Maċ-mobbli"
+  },
+  "syncWithMobileTitle": {
+    "message": "Maċ-mobbli"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Jekk inti biss tiftaħ il-MetaMask app Mobbli, għall-ewwel darba biss segwi l-passi fil-telefon tiegħek."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan dan il-kodiċi ma tiegħek MetaMask app mobbli"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Kun żgur li ħadd ieħor qed tħares lejn l-iskrin tiegħek meta inti scan dan il-kodiċi"
+  },
+  "syncWithMobileComplete": {
+    "message": "Id-dejta tiegħek tkun ġiet tiegħek b'suċċess. Igawdu l-MetaMask mobbli app!"
+  },
+  "terms": {
+    "message": "It-termini ta ' l-Użu"
+  },
+  "testFaucet": {
+    "message": "Test Tat-Tapp Tal -"
+  },
+  "thisWillCreate": {
+    "message": "Dan se joħolqu l-ġdida tal-kartiera u l-żerriegħa tal-frażi"
+  },
+  "tips": {
+    "message": "Ponot"
+  },
+  "to": {
+    "message": "Biex"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Dispożittiv"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Dispożittiv diġà ġie miżjud."
+  },
+  "tokenContractAddress": {
+    "message": "Dispożittiv Ta'Kuntratt L-Indirizz"
+  },
+  "tokenSymbol": {
+    "message": "Dispożittiv-Simbolu"
+  },
+  "total": {
+    "message": "Totali"
+  },
+  "transaction": {
+    "message": "it-tranżazzjoni"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Tranżazzjoni li jiltaqgħu magħhom l-iżball."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "It-Tranżazzjoni L-Iżball. Eċċezzjoni jintefgħu fil-kuntratt tal-kodiċi."
+  },
+  "transactionErrorNoContract": {
+    "message": "Jippruvaw sejħa funzjoni mhux kuntratt indirizz."
+  },
+  "transactionFee": {
+    "message": "Dritt Ta'Tranżazzjoni"
+  },
+  "transactionTime": {
+    "message": "It-Tranżazzjoni Ħin"
+  },
+  "transfer": {
+    "message": "It-trasferiment"
+  },
+  "transferBetweenAccounts": {
+    "message": "It-trasferiment bejn l-tiegħi kontijiet"
+  },
+  "transferFrom": {
+    "message": "It-Trasferiment Mill -"
+  },
+  "troubleTokenBalances": {
+    "message": "Aħna kellhom problemi tat-tagħbija tiegħek dispożittiv ta'bilanċi. Inti tista l-fehma tagħhom ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Erġa ' ipprova"
+  },
+  "typePassword": {
+    "message": "It-tip tiegħek MetaMask-password"
+  },
+  "unapproved": {
+    "message": "Mhux approvati"
+  },
+  "units": {
+    "message": "l-unitajiet"
+  },
+  "unknown": {
+    "message": "Mhux magħruf"
+  },
+  "unknownNetwork": {
+    "message": "Mhux Magħruf Netwerk Privat"
+  },
+  "unknownQrCode": {
+    "message": "L-iżball: Aħna ma setgħux jiġu identifikati li kodiċi QR"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Xi ħaġa li marret ħażin...."
+  },
+  "unknownCameraError": {
+    "message": "Kien hemm żball filwaqt li tipprova l-aċċess kamera tiegħek. Jekk jogħġbok erġa ' ipprova..."
+  },
+  "unlock": {
+    "message": "Nisfruttaw"
+  },
+  "unlockMessage": {
+    "message": "L-deċentralizzata tal-web jistenna"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs jeħtieġu l xieraq HTTP/HTTPS-prefiss."
+  },
+  "usedByClients": {
+    "message": "Jintuża mill-varjetà ta'klijenti differenti"
+  },
+  "userName": {
+    "message": "Isem tal-utent"
+  },
+  "validFileImport": {
+    "message": "Trid tagħżel valida-fajl li l-importazzjoni."
+  },
+  "viewAccount": {
+    "message": "Il-Fehma Tal-Kont"
+  },
+  "viewinExplorer": {
+    "message": "- Dawl fil-Explorer"
+  },
+  "viewContact": {
+    "message": "Il-Fehma Tal-Kuntatt"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Opinjoni dwar Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Żur is-sit web tagħna"
+  },
+  "walletSeed": {
+    "message": "Żerriegħa Tal-Kartiera"
+  },
+  "welcomeBack": {
+    "message": "Merħba Lura!"
+  },
+  "welcome": {
+    "message": "Merħba lill MetaMask"
+  },
+  "writePhrase": {
+    "message": "Tikteb din il-frażi fuq il-biċċa tal-karta u l-aħżen fil-sigur-post. Jekk inti tixtieq aktar sigurtà, jiktbu l-isfel fuq il-biċċiet multipli tal-karta u l-taħżen kull 2 - 3 postijiet differenti."
+  },
+  "yesLetsTry": {
+    "message": "Iva, ejja jippruvaw"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Għandek bżonn biex jippermettu lill-kamera l-aċċess għall-użu din il-karatteristika."
+  },
+  "yourSigRequested": {
+    "message": "Firma tiegħek qed tintalab"
+  },
+  "youSign": {
+    "message": "Inti huma l-iffirmar"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Privat tiegħek taż-żerriegħa tal-frażi"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Iż-żero gass tal-prezzijiet fuq il-veloċità sa"
+  }
+}

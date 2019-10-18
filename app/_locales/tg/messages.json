@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Нишон Воридотӣ Аҳд"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Ро интихоб кунед, ин параметр, ба истифода баред яке аз беҳтарин аст, ба нишон воридотӣ аҳд дар рӯйхати аҳдҳо"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Ҷадвали дастрас танҳо дар шабакаи Эфириума."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Пайвастагињои"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Сомонаҳои иҷозат хондани ҳисобҳои озод"
+  },
+  "addSite": {
+    "message": "Илова Сомона"
+  },
+  "addSiteDescription": {
+    "message": "Ба таври дастӣ илова кунед дар сомона, барои таъмин ба ӯ дастрасӣ ба суратҳисобҳои худ, муфид барои пиронсолон dapps"
+  },
+  "connected": {
+    "message": "Пайваст"
+  },
+  "connectedDescription": {
+    "message": "Рӯйхати сомонаҳои, ки ба онҳо иҷозат дода дастрасӣ ба шумо суроғаҳои зерин пешниҳод шаванд"
+  },
+  "privacyModeDefault": {
+    "message": "Моддӣ низоми акнун имкон пешфарз"
+  },
+  "contractInteraction": {
+    "message": "Ҳамкории Шартнома "
+  },
+  "clearApprovalData": {
+    "message": "Чӣ тавр ба хориҷ ҳамаи сомонаҳои"
+  },
+  "reject": {
+    "message": "Ба дурӯғ"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Ин сомона запрашивает дастрасӣ барои дидани ҷорӣ суроғаи сабти. Ҳамеша боварӣ ҳосил кунед, ки Шумо доверяете сомонаҳои шумо взаимодействуете."
+  },
+  "about": {
+    "message": "Дар бораи"
+  },
+  "aboutSettingsDescription": {
+    "message": "Нусхаи Маркази дастгирии ва маълумот барои тамос."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Дастрасӣ ба камера..."
+  },
+  "account": {
+    "message": "Суратҳисоб"
+  },
+  "accountDetails": {
+    "message": "Мушаххасоти "
+  },
+  "accountName": {
+    "message": "Ном Ҳисоби "
+  },
+  "accountOptions": {
+    "message": "Танзимоти Ҳисоб "
+  },
+  "accountSelectionRequired": {
+    "message": "Шумо бояд интихоб кунед, ҳисоби шумо!"
+  },
+  "activityLog": {
+    "message": "сабти амалиети "
+  },
+  "addNetwork": {
+    "message": "Илова Шабакаи"
+  },
+  "addRecipient": {
+    "message": "Илова Қабулкунанда"
+  },
+  "advanced": {
+    "message": "Илова бар ин"
+  },
+  "advancedSettingsDescription": {
+    "message": "Хусусиятҳои дастрасии таҳиякунанда, download Давлатии маҷаллаҳо, барои аз нав танзимкунии суратҳисоб, testnets танзимот ва одати ЭКП."
+  },
+  "advancedOptions": {
+    "message": "Имконоти Иловагӣ"
+  },
+  "addToAddressBook": {
+    "message": "Илова ба китоби адресную"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "масалан, Ҷон Д."
+  },
+  "addAlias": {
+    "message": "Илова псевдоним"
+  },
+  "addToken": {
+    "message": "Илова Аломати"
+  },
+  "addTokens": {
+    "message": "Илова Тирҳои"
+  },
+  "addSuggestedTokens": {
+    "message": "Илова Пешниҳод Жетоны"
+  },
+  "addAcquiredTokens": {
+    "message": "Илова тирҳои, ки бо истифода аз MetaMask"
+  },
+  "amount": {
+    "message": "Маблағи"
+  },
+  "appDescription": {
+    "message": "Бумажника Эфириума дар браузери шумо",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Тасдиқ"
+  },
+  "approved": {
+    "message": "Тасдиқ шудааст"
+  },
+  "asset": {
+    "message": "Дороӣ"
+  },
+  "attemptingConnect": {
+    "message": "Кӯшиш ба нуқтаеро ба блокчейн."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Представив ин як кӯшиши кафолат худ муќаррароти созишномаи хоҳад бекор карда мешавад. Агар кӯшиши бекор кардани бомуваффақият, маблағ ситонида мешавад, барои созишномаи боло."
+  },
+  "attributions": {
+    "message": "Атрибуции"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Насб кардани вақти интизории дақиқа дар назди MetaMask ба таври худкор выйдете"
+  },
+  "average": {
+    "message": "Миена"
+  },
+  "back": {
+    "message": "Пеш"
+  },
+  "backToAll": {
+    "message": "Барои ҳама"
+  },
+  "backupApprovalNotice": {
+    "message": "Кадани шумо сирри рамзи барқарорсозии, ки ба нигоҳ доштани ҳамени худ ва воситаҳои амният."
+  },
+  "backupApprovalInfo": {
+    "message": "Ин сирри рамзи зарур аст, ки барои барқарор намудани pocketbook кунед, дар ҳолате, ки агар шумо ба даст дастгоҳи худро, рамз фаромӯш шуд, рост меояд аз нав муқаррар намоянд MetaMask, е мехоҳед, кушодани ҳисоби худ дар дастгоҳи дигар."
+  },
+  "backupNow": {
+    "message": "Нусха ҳоло"
+  },
+  "balance": {
+    "message": "Тавозуни"
+  },
+  "balanceOutdated": {
+    "message": "Тавозуни метавонад тарҳи"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Нокифоя тавозуни барои ҷорӣ газ умумии"
+  },
+  "basic": {
+    "message": "Асосии"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Блоки Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Истифода Ки Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Танзим рамзи аҳд "
+  },
+  "nonceFieldHeading": {
+    "message": "Корбар Рамз"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Браузери шумо дастгирӣ надорад..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask спроектирован ва сохта, дар Калифорния аст,."
+  },
+  "buyWithWyre": {
+    "message": "Харидани ЕТН бо Вайр"
+  },
+  "buyWithWyreDescription": {
+    "message": "Вайр имкон медиҳад, ки бо истифода аз корти қарзӣ барои амонат даж дар ҳисоби MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Харидани дар CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch ғурубгоҳи комил барои мубодилаи бештар аз 300 криптовалюты оид ба беҳтар қурби."
+  },
+  "bytes": {
+    "message": "Байт"
+  },
+  "off": {
+    "message": "Аз"
+  },
+  "ok": {
+    "message": "ХУБ"
+  },
+  "on": {
+    "message": "Ба"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Бекор"
+  },
+  "cancelAttempt": {
+    "message": "Бекор Кӯшиши"
+  },
+  "cancellationGasFee": {
+    "message": "Бекор Кардани Боҷҳои Газ"
+  },
+  "cancelled": {
+    "message": "Бекор"
+  },
+  "chainId": {
+    "message": "Занҷираи ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Дар ин ҷо зер кунед, ки ба ошкор намудани сирри суханони"
+  },
+  "close": {
+    "message": "Наздик"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Шумо лозим аст, ки истифода MetaMask дар бораи Google Chrome, барои пайвастшавӣ ба шумо ва таҷҳизонии бинои ҳисоби."
+  },
+  "confirm": {
+    "message": "Тасдиқ"
+  },
+  "confirmed": {
+    "message": "Тасдиқ"
+  },
+  "confirmPassword": {
+    "message": "Тасдиқи Рамз"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Тасдиқ худро махфӣ кадани ибораҳои"
+  },
+  "congratulations": {
+    "message": "Поздравляем"
+  },
+  "connectHardwareWallet": {
+    "message": "Пайвастшавӣ Сахтафзор Ҳисоби"
+  },
+  "connect": {
+    "message": "Пайвастшавӣ"
+  },
+  "connectRequest": {
+    "message": "Пайваст Кардани Дархости"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Пайвастшавӣ ба Кован тестовой шабакаи"
+  },
+  "connectingToMainnet": {
+    "message": "Пайвастшавӣ ба асосии шабакаи Эфириума "
+  },
+  "connectingToRopsten": {
+    "message": "Пайвастшавӣ ба Ropsten тестовой шабакаи"
+  },
+  "connectingToRinkeby": {
+    "message": "Пайвастшавӣ ба Rinkeby тестовой шабакаи"
+  },
+  "connectingToLocalhost": {
+    "message": "Пайвастшавӣ ба localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Пайвастшавӣ ба Goerli тестовой шабакаи"
+  },
+  "contacts": {
+    "message": "Тамос"
+  },
+  "contactsSettingsDescription": {
+    "message": "Илова кардан, таҳрир, тоза ва идора кардани худро аз тамос"
+  },
+  "continueToWyre": {
+    "message": "Идома Вайр"
+  },
+  "continueToCoinSwitch": {
+    "message": "Идома CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Развертывание Қарордод "
+  },
+  "conversionProgress": {
+    "message": "Таҳаввулот дар пешрафти"
+  },
+  "copiedButton": {
+    "message": "Скопировал"
+  },
+  "copiedExclamation": {
+    "message": "Нусхабардорӣ осори!"
+  },
+  "copy": {
+    "message": "Нусхаи"
+  },
+  "copyAddress": {
+    "message": "Нусхабардории суроғаи дар буферӣ мубодилаи"
+  },
+  "copyTransactionId": {
+    "message": "Созишномаи нусхабардорӣ id"
+  },
+  "copiedTransactionId": {
+    "message": "Скопированный ID аҳд "
+  },
+  "copyToClipboard": {
+    "message": "Нусхаи дар буферӣ мубодилаи"
+  },
+  "copyButton": {
+    "message": " Нусхаи "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Эҷод"
+  },
+  "createAccount": {
+    "message": "Сохтани Корбари Нав"
+  },
+  "createAWallet": {
+    "message": "Эҷоди ҳисоби"
+  },
+  "createPassword": {
+    "message": "Эҷод Рамз"
+  },
+  "currencyConversion": {
+    "message": "Табдили Асъори "
+  },
+  "currentLanguage": {
+    "message": "Забони Равон"
+  },
+  "customGas": {
+    "message": "Насб Кардани Газ"
+  },
+  "customGasSubTitle": {
+    "message": "Баланд бардоштани боҷи метавонад бурида вақти коркард, вале ин кафолат дода мешавад."
+  },
+  "customToken": {
+    "message": "Корбар Аломати"
+  },
+  "customRPC": {
+    "message": "Одати ЭКП"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Десятичных нишонаи бояд на камтар аз 0 ва на зиеда аз 36."
+  },
+  "decimal": {
+    "message": "Десятичных нишонаи дурустии"
+  },
+  "defaultNetwork": {
+    "message": "Шабакаи пешфарз барои ester аҳдҳои ҳаҷми асосии."
+  },
+  "delete": {
+    "message": "Чӣ тавр ба хориҷ"
+  },
+  "deleteAccount": {
+    "message": "Чӣ Тавр Ба Хориҷ Ҳисоби"
+  },
+  "deposit": {
+    "message": "Амонат"
+  },
+  "depositEther": {
+    "message": "Амонат Ester"
+  },
+  "details": {
+    "message": "Тафсилоти"
+  },
+  "directDepositEther": {
+    "message": "Бевосита Ба Амонат Ester"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Агар шумо аллакай баъзе зинда, зудтаринро роҳи ба даст овардани stream дар нави худ ҳисоби бо роҳи бевосита гирифтани амонат."
+  },
+  "dismiss": {
+    "message": "Уволить"
+  },
+  "done": {
+    "message": "Анҷом"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Гугл; Ie"
+  },
+  "downloadSecretBackup": {
+    "message": "Download ин сирри кадани ибораи ва нигоҳ доштани он бехатар нигоҳ ба берунӣ зашифрованный диски е ҳомили."
+  },
+  "downloadStateLogs": {
+    "message": "Download Давлатии Гузоришҳо"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Ба"
+  },
+  "edit": {
+    "message": "Таҳрир"
+  },
+  "editContact": {
+    "message": "Таҳрир Барои Тамос"
+  },
+  "emailUs": {
+    "message": "Ба мо нависед!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Ба шумо аз озмоиши - нигоҳ seedphrase бехатар, ин масъулияти шумо мебошад!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Маслиҳат оид ба нигоҳдорӣ бехатар"
+  },
+  "endOfFlowMessage3": {
+    "message": "Нигоҳ доштани резервной нусхаи он дар якчанд љой."
+  },
+  "endOfFlowMessage4": {
+    "message": "Ҳеҷ гоҳ мубодила фразой Бо касе."
+  },
+  "endOfFlowMessage5": {
+    "message": "Эҳтиет бошед, фишинг! MetaMask на спонтанно мепурсанд, барои тухмии ибора."
+  },
+  "endOfFlowMessage6": {
+    "message": "Агар ба шумо лозим аст, ки ба даст баргашт худро ба насли ту ибораҳои, шумо метавонед онро дар Танзимот -> Амният."
+  },
+  "endOfFlowMessage7": {
+    "message": "Агар шумо ягон савол е дидани чизи нечисто, почтаи электронӣ support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask наметавонад барқарор кунед seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Маълумоти бештар дар."
+  },
+  "endOfFlowMessage10": {
+    "message": "Done"
+  },
+  "ensRegistrationError": {
+    "message": "Хато дар ENS бақайдгирии"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС ном нест, дарефт ҷорӣ дар шабакаи. Кӯшиш кунед, ки рафтан ба саҳифаи аввалин шабакаи Эфириума."
+  },
+  "enterAnAlias": {
+    "message": "Лутфан, псевдоним"
+  },
+  "enterPassword": {
+    "message": "Лутфан, пароли"
+  },
+  "enterPasswordContinue": {
+    "message": "Лутфан, пароли, барои идомаи"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ҷамъиятӣ Эфириума Суроғаи"
+  },
+  "etherscanView": {
+    "message": "Навъ ҳисоб ба яке аз беҳтарин"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Дар Давраи Тахминии Коркарди "
+  },
+  "expandView": {
+    "message": "Љойгир кардани"
+  },
+  "exportPrivateKey": {
+    "message": "Содироти Калиди Пӯшида"
+  },
+  "failed": {
+    "message": "Нашуд"
+  },
+  "fast": {
+    "message": "Зуд"
+  },
+  "faster": {
+    "message": "Тезтар"
+  },
+  "fiat": {
+    "message": "Фиат",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Фаромӯш ин дастгоҳ"
+  },
+  "from": {
+    "message": "Аз"
+  },
+  "fromShapeShift": {
+    "message": "Аз Друидских"
+  },
+  "functionType": {
+    "message": "Намуди Функсияи "
+  },
+  "gasLimit": {
+    "message": "Ҳудуди Газ"
+  },
+  "gasLimitCalculation": {
+    "message": "Мо ҳисоб пешниҳод ҳудуди газ дар асоси муваффақияти шабака."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Газовый меъери он ба ҳадди шумораи адад газ, ки шумо омода аст, ки харҷ."
+  },
+  "gasLimitTooLow": {
+    "message": "Ҳудуди газ бояд на кам аз 21000"
+  },
+  "gasUsed": {
+    "message": "Газ Истифода"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Нархи Газ Хеле Пасти"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Нархи газ муайян шумораи ester, ки шумо омода пардохт барои ҳар як воҳиди газ."
+  },
+  "gasPriceNoDenom": {
+    "message": "Нархи Газ "
+  },
+  "gasPriceCalculation": {
+    "message": "Мо ҳисоб пешниҳодшуда нархи газ вобаста ба муваффақияти шабака."
+  },
+  "general": {
+    "message": "Умумӣ"
+  },
+  "generalSettingsDescription": {
+    "message": "Табдили асъор, асъори асосии, забон, ки blockies identicon"
+  },
+  "getEther": {
+    "message": "Шумо Ester"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Ба Шумо Кӯмак."
+  },
+  "getStarted": {
+    "message": "Сар"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Мо хурсандем, ки шумо мебинед."
+  },
+  "hardware": {
+    "message": "таҷҳизот"
+  },
+  "hardwareWalletConnected": {
+    "message": "Аппаратный ҳисоби пайваст"
+  },
+  "hardwareWallets": {
+    "message": "Пайваст аппаратный ҳисоби"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Интихоб сахтафзор кошелька, ки шумо мехоҳед истифода баред, бо MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "дар ин ҷо",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Шестнадцатеричных Маълумот"
+  },
+  "hide": {
+    "message": "Пинҳон"
+  },
+  "hideToken": {
+    "message": "Пинҳон Аломати"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Дар достони"
+  },
+  "import": {
+    "message": "Воридоти",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Воридоти Ҳисобҳои"
+  },
+  "importAccountMsg": {
+    "message": " Воридоти барои ҳисобҳои озод хоҳад алоќаманд худ аввал таъсис MetaMask seedphrase суратҳисоби. Маълумоти бештар дар бораи импортированных ҳисобҳои "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Воридоти ҳисоби бо тухмиҳои ибораи"
+  },
+  "importWallet": {
+    "message": "Воридоти Ҳисоби"
+  },
+  "importYourExisting": {
+    "message": "Воридот худро ҳисоби бо истифода аз 12 калимаҳои тухмиҳои ибораи"
+  },
+  "imported": {
+    "message": "Воридотӣ",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Воридот бо истифода аз ҳисоби тухмии ибораи"
+  },
+  "infoHelp": {
+    "message": "Маълумот Ва Кӯмаки"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Шумо аслии созишномаи буд, шабакаи тасдиқ карда мешавад. Нуқтаеро OK барои бозгашт."
+  },
+  "insufficientBalance": {
+    "message": "Нокифоя тавозуни."
+  },
+  "insufficientFunds": {
+    "message": "Ба қадри кофӣ маблағҳо."
+  },
+  "insufficientTokens": {
+    "message": "Нокифоя жетонов."
+  },
+  "invalidAddress": {
+    "message": "Неверный суроғаи"
+  },
+  "invalidAddressRecipient": {
+    "message": "Суроғаи қабулкунанда недействителен"
+  },
+  "knownAddressRecipient": {
+    "message": "Маълум суроғаи шартнома."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Эт на шабакаи маҷмӯи дар пасттар феҳристи"
+  },
+  "invalidInput": {
+    "message": "Неверный даровардан."
+  },
+  "invalidRPC": {
+    "message": "Недопустимый URL-суроғаи ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Недопустимый воҳиди Обозревателе URL-суроға"
+  },
+  "invalidSeedPhrase": {
+    "message": "Неверный тухмиҳои ибораи"
+  },
+  "jsonFile": {
+    "message": "JSON-файл ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Озмоиши Шабакаи Кован "
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "learnMore": {
+    "message": "Маълумоти бештар"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Шумо бояд бо истифода аз поен ба охир шумо ҳисоби пеш аз шумо метавонед илова кардани як нав."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Бале, хоҳем!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Пайвандҳо"
+  },
+  "liveGasPricePredictions": {
+    "message": "Дурнамои Нархи Газ "
+  },
+  "loading": {
+    "message": "Боркунц..."
+  },
+  "loadingTokens": {
+    "message": "Тирҳои Боркунц..."
+  },
+  "loadMore": {
+    "message": "Нагрузка Бештар"
+  },
+  "localhost": {
+    "message": "Local 8545"
+  },
+  "login": {
+    "message": "Ба Қайдгири"
+  },
+  "logout": {
+    "message": "Берун"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Баромадан замон хеле бузург аст"
+  },
+  "mainnet": {
+    "message": "Главная Шабакаи Эфириума "
+  },
+  "memorizePhrase": {
+    "message": "Запомните ин ибора."
+  },
+  "memo": {
+    "message": "памятка"
+  },
+  "menu": {
+    "message": "Меню"
+  },
+  "message": {
+    "message": "Мансаби"
+  },
+  "metamaskDescription": {
+    "message": "Пайвастшавӣ ба шабакаи Ethereum ва децентрализации интернет."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Тухмиҳои Суханони"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Илтимос, чоп Кунед рамзи шумо ба тасдиқ, ки ин ба шумо!"
+  },
+  "myAccounts": {
+    "message": "Ман Ҳисобҳои"
+  },
+  "myWalletAccounts": {
+    "message": "Ҳисоби Ман Ҳисобҳои"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Ҳамаи шуморо ба MetaMask бо ҳисобҳои ба таври худкор илова, дар ин бахш."
+  },
+  "mustSelectOne": {
+    "message": "Бояд интихоб кунед, ақаллан 1 аломати."
+  },
+  "needEtherInWallet": {
+    "message": "Фаъолияти муштарак бо децентрализованными замимаҳои, бо истифода аз MetaMask, ба шумо лозим аст, ester дар ҳамени худ."
+  },
+  "needImportFile": {
+    "message": "Зарур аст, ки ба интихоби файл барои воридот.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Наметавонам ирсол отрицательную маблағи аз Швейтсария олӣ техникии мактаб."
+  },
+  "networkName": {
+    "message": "Номи Шабака "
+  },
+  "networks": {
+    "message": "Шабакаҳои"
+  },
+  "networkSettingsDescription": {
+    "message": "Илова ва таҳрир истифодабарандаи шабакаҳои ЭКП "
+  },
+  "nevermind": {
+    "message": "Фигу"
+  },
+  "newAccount": {
+    "message": "Ҳисоби Нави"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Дар суроғаи нав кашф! Дар ин ҷо зер кунед, то илова, дар адресную китоб."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Нав Тамос"
+  },
+  "newContract": {
+    "message": "Нав Қарордод"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Нав Шабакаи"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Не, ман аллакай тухмиҳои ибораи"
+  },
+  "protectYourKeys": {
+    "message": "Ҳифзи Худ Калидҳои!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Эҳтиет бошед, бо тухмиҳои ибораи — буданд, паемҳо дар бораи сомонаҳо, ки кӯшиш ба пайравӣ MetaMask. MetaMask ҳаргиз илтиҷо барои худ тухмӣ ибораи!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Нигоҳ кунед, ки ибораи бехатар. Агар шумо мебинед, чизе подозрительное, е шумо боварӣ дар сайт, почтаи электронӣ support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Нав URL-суроғаи ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Нав Ҷамбаст"
+  },
+  "newTransactionFee": {
+    "message": "Нав Музди Созишномаи "
+  },
+  "next": {
+    "message": "Минбаъд"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Не, суроғаи барои ин номи."
+  },
+  "noDeposits": {
+    "message": "Ҳеҷ амонатҳо, ки"
+  },
+  "noConversionRateAvailable": {
+    "message": "Не Қурби Табдили Дастрас"
+  },
+  "noTransactions": {
+    "message": "Шуморо ҳеҷ аҳду"
+  },
+  "noThanks": {
+    "message": "Не, Ташаккур"
+  },
+  "notEnoughGas": {
+    "message": "Камбудии Газ"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Дар Веб-камера ефт нашуд"
+  },
+  "noWebcamFound": {
+    "message": "Веб-камера компютери шумо нест дарефт. Лутфан, кӯшиш боз."
+  },
+  "ofTextNofM": {
+    "message": "аз"
+  },
+  "orderOneHere": {
+    "message": "Фармоиш Трезор е китоб ва нигоҳ доштани маблағҳо дар яхдон "
+  },
+  "origin": {
+    "message": "Истеҳсолкардаи"
+  },
+  "parameters": {
+    "message": "Имконот"
+  },
+  "participateInMetaMetrics": {
+    "message": "Иштирок дар MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Иштирок дар MetaMetrics, ки ба мо кӯмак кунад, беҳтар MetaMask"
+  },
+  "password": {
+    "message": "Рамз"
+  },
+  "passwordsDontMatch": {
+    "message": "Нишонаҳо мувофиқат намекунанд"
+  },
+  "passwordNotLongEnough": {
+    "message": "Рамз ба қадри кофӣ дароз "
+  },
+  "pastePrivateKey": {
+    "message": "Embed шахсии шумо тугмаи сатри дар ин ҷо:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Гузоштани тухми як ибора ин ҷо!"
+  },
+  "pending": {
+    "message": "дар ҳоле ки интизор"
+  },
+  "personalAddressDetected": {
+    "message": "Шахсӣ суроға кашф. Ворид шартнома аломати суроғаҳои."
+  },
+  "prev": {
+    "message": "Пред'"
+  },
+  "primaryCurrencySetting": {
+    "message": "Якумин Асъори"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Сиесати Корбурди Маълумоти Шахсӣ "
+  },
+  "privateKey": {
+    "message": "Фоидаовар Калиди",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Огоҳӣ: ҳеҷ гоҳ ифшо кардани ин калид. Касе худро шахсӣ калидҳои метавонанд дуздӣ ҳар гуна дороиҳои, ки дар бораи ин ҳисоб кунад."
+  },
+  "privateNetwork": {
+    "message": "Хусусӣ Шабакаи"
+  },
+  "qrCode": {
+    "message": "Нишон QR кодекс"
+  },
+  "queue": {
+    "message": "Навбат"
+  },
+  "readdToken": {
+    "message": "Шумо метавонед илова кунед ин аломати дар оянда Рафтан ба \"Илова аломати\" дар менюи имконоти ҳисобҳои."
+  },
+  "recents": {
+    "message": "Сохтмони"
+  },
+  "recipientAddress": {
+    "message": "Суроғаи Қабулкунанда "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Дурӯғ Ҳамаи"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Рад"
+  },
+  "reset": {
+    "message": "Барои аз нав танзимкунии"
+  },
+  "resetAccount": {
+    "message": "Барои Аз Нав Танзимкунии Ҳисоби "
+  },
+  "resetAccountDescription": {
+    "message": "Барои аз нав танзимкунии худ ба суратҳисоби тоза хоҳад таърихи транзакций."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Напомните ман баъдтар"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Барқарор кардани худро аз ҳисоби бо тухмиҳои ибораи"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "дархостҳо, ожидающих эътироф"
+  },
+  "required": {
+    "message": "Талаб"
+  },
+  "restore": {
+    "message": "Барқарор намудани"
+  },
+  "revealSeedWords": {
+    "message": "Ошкор Намудани Тухмиҳои Суханони"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Тухмиҳои Ибораи"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Агар шумо ягон бор ба тағйир додани браузерҳо е ҳаракат компютерҳо, шумо бояд ин тухмӣ ибораҳои дастрасӣ ба суратҳисобҳои худ. Нигоҳ ба онҳо бирав, дар ҷое бехатар ва секретной."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "На шарик, чунин ибора бо касе!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Ин суханон метавонанд истифода бурда шаванд, то ки дуздӣ ҳамаи шумо ҳисобҳои."
+  },
+  "revert": {
+    "message": "Назад"
+  },
+  "remove": {
+    "message": "Чӣ тавр ба хориҷ"
+  },
+  "removeAccount": {
+    "message": "Чӣ тавр ба хориҷ ҳисоби"
+  },
+  "removeAccountDescription": {
+    "message": "Ин ҳисоби дур хоҳад бо pocketbook кунед. Лутфан, боварӣ ҳосил кунед, ки шумо аслии насли ту ибораҳои е қатъ калиди барои ин воридотӣ суратҳисоб, пеш аз давом додан. Шумо метавонед ба воридот ва е аз нав ба эҷоди ҳисобҳои аз выпадающего суратҳисоби. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Шабакаи Rinkeby Озмоиши "
+  },
+  "ropsten": {
+    "message": "Шабакаи Ropsten Озмоиши "
+  },
+  "goerli": {
+    "message": "Озмоиши Шабакаи Goerli "
+  },
+  "save": {
+    "message": "Нигоҳ"
+  },
+  "slow": {
+    "message": "Оҳиста-оҳиста"
+  },
+  "slower": {
+    "message": "Сусттар барои"
+  },
+  "saveAsCsvFile": {
+    "message": "Захира ҳамчун файл CSV"
+  },
+  "scanInstructions": {
+    "message": "Овехтани QR кодекс дар пеши камера"
+  },
+  "scanQrCode": {
+    "message": "Рамзи скан QR "
+  },
+  "search": {
+    "message": "Ҷустуҷӯи"
+  },
+  "searchResults": {
+    "message": "Натоиҷи Ҷустуҷӯ "
+  },
+  "secretBackupPhrase": {
+    "message": "Махфӣ Кадани Ибораҳои"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Шумо сирри нусха ибораи онро ба осонӣ барои нусха бардоштан ва барқарор намудани худ аккаунта."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Огоҳӣ: ҳаргиз худро ошкор захиравӣ ибораҳои. Касе, ки бо ин фразой метавонед гирифтани худ зинда то абад."
+  },
+  "secretPhrase": {
+    "message": "Ворид кунед сирри дувоздаҳ калимаҳои ибораҳои дар ин ҷо ба барқарор нигаҳдории аст."
+  },
+  "securityAndPrivacy": {
+    "message": "Амният Ва Махфияти"
+  },
+  "securitySettingsDescription": {
+    "message": "Танзимоти махфият ва ҳамени тухмиҳои ибораи"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Барнаббо ҳар як калима бо пробелом"
+  },
+  "seedPhraseReq": {
+    "message": "Тухмиҳои ибораҳои 12 калимаҳои"
+  },
+  "selectCurrency": {
+    "message": "Интихоб Асъори"
+  },
+  "selectEachPhrase": {
+    "message": "Лутфан, интихоб кунед ҳар як ибора, барои он, ки боварӣ ҳосил кунед, ки он дуруст аст."
+  },
+  "selectLocale": {
+    "message": "Забони Худро Интихоб Кунед"
+  },
+  "selectType": {
+    "message": "Ро Интихоб Кунед, Намуди"
+  },
+  "send": {
+    "message": "Ирсол"
+  },
+  "sendAmount": {
+    "message": "Фиристодани Маблағи"
+  },
+  "sendETH": {
+    "message": "Ирсол ЕТН"
+  },
+  "sendTokens": {
+    "message": "Ирсол"
+  },
+  "sentEther": {
+    "message": "фиристода ester"
+  },
+  "sentTokens": {
+    "message": "отправил жетоны"
+  },
+  "separateEachWord": {
+    "message": "Барнаббо ҳар як калима бо пробелом"
+  },
+  "searchTokens": {
+    "message": "Токены Ҷустуҷӯ "
+  },
+  "selectAnAccount": {
+    "message": "Интихоб кардани ҳисоб"
+  },
+  "selectAnAccountHelp": {
+    "message": "Интихоб кардани ҳисоб барои дидани MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Интихоб зиеда аз баланди газовое диҳад, ки барои тезондани коркарди худ аҳд.*"
+  },
+  "selectHdPath": {
+    "message": "Роҳи интихоб "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Имконот"
+  },
+  "showAdvancedGasInline": {
+    "message": "Иловагӣ унсурҳои идоракунии газ "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Ро интихоб кунед, ин параметр барои нишон додани нархи газ ва маҳдуд кардани унсурҳои идоракунии бевосита барои Ирсол ва тасдиқ экранҳои."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Нишон додани дигаргунсозиҳо дар Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Ро интихоб кунед, ин параметр нишон табдил фиат дар Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Нишон Пўшида Калидҳои"
+  },
+  "showHexData": {
+    "message": "Нишон Шестнадцатеричный Маълумот"
+  },
+  "showHexDataDescription": {
+    "message": "Ро интихоб кунед, ин параметр барои нишон додани соҳаи hex маълумот дар экрани"
+  },
+  "sign": {
+    "message": "Аломати"
+  },
+  "signatureRequest": {
+    "message": "Дархости Имзо "
+  },
+  "signed": {
+    "message": "Имзои"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Дархости Имзо "
+  },
+  "somethingWentWrong": {
+    "message": "Упс! Чизе вайрон шудааст."
+  },
+  "speedUp": {
+    "message": "Суръат"
+  },
+  "speedUpCancellation": {
+    "message": "Барои суръат бахшидан ба ин бекор кардани"
+  },
+  "speedUpTransaction": {
+    "message": "Барои суръат бахшидан ба ин амалиет"
+  },
+  "switchNetworks": {
+    "message": "Калиди Шабакаҳои"
+  },
+  "stateLogFileName": {
+    "message": "Ҳолати MetaMask Гузоришҳо"
+  },
+  "stateLogs": {
+    "message": "Ҳолати Гузоришҳо"
+  },
+  "stateLogsDescription": {
+    "message": "Давлатии гузоришҳо дорои суроғаи шахсан ҳисоби фиристод ва аҳдҳои."
+  },
+  "stateLogError": {
+    "message": "Хатогӣ ҳангоми гирифтани вазъи гузоришҳо."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Пайвастшавӣ Сахтафзор Ҳисоби"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Пайваст аппаратный ҳисоби бевосита дар компютери шумо."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Интихоб кардани ҳисоб"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Ро интихоб кунед, ҳисоби шумо, ки мехоҳед ба дидани. Шумо метавонед интихоб кунед, ки танҳо барои як маротиба."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Оғози истифодаи dApps ва бештар!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Истифодаи сахтафзор ҳисоби шумо, чунон ки ба шумо мехоҳам бо ягон ҳисоби едатон Эфириума. Низомнома дар бораи хусусиятҳои иҷозатномадиҳӣ дар dApps, ирсол Эт, харидорӣ ва захира ERC20 жетоны ва незаменяемые тирҳои чӣ тавр CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Нигоҳ доштани ин ибора Дар менеҷери паролей, чӣ тавр ба 1Password."
+  },
+  "submit": {
+    "message": "Пешниҳод"
+  },
+  "submitted": {
+    "message": "Представленный"
+  },
+  "supportCenter": {
+    "message": "Сафари мо Маркази дастгирии "
+  },
+  "symbol": {
+    "message": "Рамзи"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Рамзи бояд байни 0 ва 12 аломат."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Барои танзимоти нусха бо 3box савол Ин хусусияти аст таҷрибавӣ асъор; истифода баред, ба худ салоҳдиди ва хатари шумо аст."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box дар қатъ шуда буд, аз сабаби хатогии дар давраи ибтидоӣ ҳамоҳангсозии"
+  },
+  "syncWithMobile": {
+    "message": "Синхронизация бо мобильными"
+  },
+  "syncWithMobileTitle": {
+    "message": "Синхронизация бо мобильными"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Агар шумо танҳо як MetaMask барномаҳои мобилӣ барои бори аввал аст, танҳо пайравӣ ба телефони худ пайдо."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Скан кодекси мазкур бо MetaMask барнома мобилӣ"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Боварӣ ҳосил кунед, ки ҳеҷ кас ба назар дар экран, вақте ки шумо сканируете ин рамзи"
+  },
+  "syncWithMobileComplete": {
+    "message": "Хисоботхои шумо буданд, бомуваффақият синхронизированы. Баҳра баред MetaMask барнома мобилӣ!"
+  },
+  "terms": {
+    "message": "Шартҳои истифодаи"
+  },
+  "testFaucet": {
+    "message": "Озмоиши Ламс"
+  },
+  "thisWillCreate": {
+    "message": "Ин имконият медиҳад, эҷод кардани ҳисоби нав ва тухмиҳои ибораи"
+  },
+  "tips": {
+    "message": "Маслињат"
+  },
+  "to": {
+    "message": "Барои"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Аломати"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Аломати аллакай илова шуд."
+  },
+  "tokenContractAddress": {
+    "message": "Аломати Суроғаи Шартномаи "
+  },
+  "tokenSymbol": {
+    "message": "Аломати Савол Аломати "
+  },
+  "total": {
+    "message": "Умумии"
+  },
+  "transaction": {
+    "message": "аҳд"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Аҳд хатогӣ ба вуҷуд омад."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Хато Аҳд. Истисно дар шартнома рамзи."
+  },
+  "transactionErrorNoContract": {
+    "message": "Кӯшиш боиси хусусият дар контрактные суроғаи."
+  },
+  "transactionFee": {
+    "message": "Музди Созишномаи "
+  },
+  "transactionTime": {
+    "message": "Вақти Аҳд "
+  },
+  "transfer": {
+    "message": "Тарҷума"
+  },
+  "transferBetweenAccounts": {
+    "message": "Тарҷумаи байни духтарони ман суратҳисобҳои"
+  },
+  "transferFrom": {
+    "message": "Гузаштан Аз"
+  },
+  "troubleTokenBalances": {
+    "message": "Мо буданд, мушкилоти зеркашии бақияи савол аломати. Шумо метавонед дидани онҳо ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Кӯшиш кунед, ки боз "
+  },
+  "typePassword": {
+    "message": "Лутфан, пароли MetaMask "
+  },
+  "unapproved": {
+    "message": "Неутвержденные"
+  },
+  "units": {
+    "message": "воҳиди"
+  },
+  "unknown": {
+    "message": "Номаълум"
+  },
+  "unknownNetwork": {
+    "message": "Номашҳур Шабакаи Хусусии"
+  },
+  "unknownQrCode": {
+    "message": "Хатогӣ: мо тавонистанд, ки муайян карда шавад, ки QR коди"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Упс! Чизе вайрон шудааст...."
+  },
+  "unknownCameraError": {
+    "message": "Хатогӣ ҳангоми кӯшиши ба даст овардани дастрасӣ ба камераи шумо. Лутфан, кӯшиш боз..."
+  },
+  "unlock": {
+    "message": "Маҳллӣ"
+  },
+  "unlockMessage": {
+    "message": "Децентрализованный веб-интизор аст"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Урис талаб дахлдор http/префикси https."
+  },
+  "usedByClients": {
+    "message": "Мизоҷони мухталиф аст, истифода бурда мешавад"
+  },
+  "userName": {
+    "message": "Номи корбарӣ"
+  },
+  "validFileImport": {
+    "message": "Шумо бояд ҳуқуқи интихоб файл барои воридот."
+  },
+  "viewAccount": {
+    "message": "Дидани Ҳисоби "
+  },
+  "viewinExplorer": {
+    "message": "Тамошои дар Обозревателе"
+  },
+  "viewContact": {
+    "message": "View Тамос"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Назар ба яке аз беҳтарин"
+  },
+  "visitWebSite": {
+    "message": "Боздид аз сомонаи мо"
+  },
+  "walletSeed": {
+    "message": "Тухмиҳои Ҳисоби "
+  },
+  "welcomeBack": {
+    "message": "Хуш Омадед!"
+  },
+  "welcome": {
+    "message": "Хуш омадед ба MetaMask"
+  },
+  "writePhrase": {
+    "message": "Навиштани ин ибора дар бумажке ва нигоҳ доштан дар ягон ҷои бехатари. Агар шумо хоҳед, ки боз ҳам бештар ба амният, менависем, ки онро ба якчанд листах қиматнок ва захира дар ҳар 2 - 3 гуногун гардиданд."
+  },
+  "yesLetsTry": {
+    "message": "Ҳа, биеед кӯшиш ба"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Шумо лозим аст, имкони дастрасӣ ба камера, ки ба истифодаи ин хусусият доред."
+  },
+  "yourSigRequested": {
+    "message": "Шумо сарлавҳа запрашивается"
+  },
+  "youSign": {
+    "message": "Шумо аз қайд"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Шахсии шумо тухмиҳои ибораи"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Сифр нархи газ дар суръати то"
+  }
+}

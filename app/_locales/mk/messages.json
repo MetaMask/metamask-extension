@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Покаже Дојдовни Трансакции"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Изберете го ова за да користите Etherscan да се покаже дојдовни трансакции во трансакции листа"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Табела достапен само на Ethereum мрежи."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Врски"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Сајтови дозволено да ги читате вашите сметки"
+  },
+  "addSite": {
+    "message": "Додадете Сајтот"
+  },
+  "addSiteDescription": {
+    "message": "Рачно додадете страницата за да ви овозможи пристап до вашите сметки, корисни за постарите dapps"
+  },
+  "connected": {
+    "message": "Поврзани"
+  },
+  "connectedDescription": {
+    "message": "Листата на дозволени сајтови пристап до вашите адреси"
+  },
+  "privacyModeDefault": {
+    "message": "Приватноста на Владата сега е овозможено стандардно"
+  },
+  "contractInteraction": {
+    "message": "Договорот Интеракција"
+  },
+  "clearApprovalData": {
+    "message": "Отстрани ги сите сајтови"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Овој сајт е барање за пристап за да ја видите вашата тековна сметка адреса. Секогаш бидете сигурни дека ќе му верувате на сајтови можете да комуницирате со."
+  },
+  "about": {
+    "message": "За"
+  },
+  "aboutSettingsDescription": {
+    "message": "Верзија, центарот за поддршка и контакт информации."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Пристап до вашите камера..."
+  },
+  "account": {
+    "message": "Сметка"
+  },
+  "accountDetails": {
+    "message": "Детали За Сметката"
+  },
+  "accountName": {
+    "message": "Име На Сметка"
+  },
+  "accountOptions": {
+    "message": "Сметка Опции"
+  },
+  "accountSelectionRequired": {
+    "message": "Вие треба да изберете сметка!"
+  },
+  "activityLog": {
+    "message": "активност дневник"
+  },
+  "addNetwork": {
+    "message": "Додадете Мрежа"
+  },
+  "addRecipient": {
+    "message": "Додај Примач"
+  },
+  "advanced": {
+    "message": "Напредни"
+  },
+  "advancedSettingsDescription": {
+    "message": "Пристап инвеститорот карактеристики, симнете Државата се Најавува, Ресетирање на Сметка, поставување testnets и обичај RPC."
+  },
+  "advancedOptions": {
+    "message": "Напредни Опции"
+  },
+  "addToAddressBook": {
+    "message": "Додај во адресар"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "на пр. Џон Д."
+  },
+  "addAlias": {
+    "message": "Додадете алијас"
+  },
+  "addToken": {
+    "message": "Додадете Токен"
+  },
+  "addTokens": {
+    "message": "Додадете Токени"
+  },
+  "addSuggestedTokens": {
+    "message": "Додадете Предложи Токени"
+  },
+  "addAcquiredTokens": {
+    "message": "Додадете жетони сте стекнале со користење MetaMask"
+  },
+  "amount": {
+    "message": "Количина"
+  },
+  "appDescription": {
+    "message": "На Ethereum Паричник во вашиот интернет Пребарувач",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Одобри"
+  },
+  "approved": {
+    "message": "Одобрени"
+  },
+  "asset": {
+    "message": "Предност"
+  },
+  "attemptingConnect": {
+    "message": "Се обидува да се поврзете со blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Поднесување овој обид не гарантира вашиот оригиналната трансакција ќе биде избришана. Ако откажувањето обид е успешна, ќе биде наплатена трансакција на плаќање погоре."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Поставување на времето на мирување во минути пред MetaMask автоматски ќе се одјавите"
+  },
+  "average": {
+    "message": "Просечна"
+  },
+  "back": {
+    "message": "Назад"
+  },
+  "backToAll": {
+    "message": "Назад кон Сите"
+  },
+  "backupApprovalNotice": {
+    "message": "Копија вашата Тајна за Обновување на код да се задржи вашиот паричник и средства да се обезбеди."
+  },
+  "backupApprovalInfo": {
+    "message": "Оваа тајна кодот е потребен за да се опорави вашиот паричник во случај да го изгубите вашиот уред, да заборавите вашата лозинка, мора да се ре-инсталира MetaMask, или сакате да пристапите до вашиот паричник на друг уред."
+  },
+  "backupNow": {
+    "message": "Backup сега"
+  },
+  "balance": {
+    "message": "Рамнотежа"
+  },
+  "balanceOutdated": {
+    "message": "Рамнотежата може да се застарени"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Недоволна биланс на тековна гас вкупно"
+  },
+  "basic": {
+    "message": "Основни"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Блок Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Користете Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Персонализација на трансакцијата nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Обичај Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Вашиот Пребарувач не е поддржан..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask е дизајниран и изграден во Калифорнија."
+  },
+  "buyWithWyre": {
+    "message": "Купи ETH со Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ви овозможува да го користите кредитна картичка за да депозит ETH право во вашата MetaMask сметка."
+  },
+  "buyCoinSwitch": {
+    "message": "Купи на CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch е една дестинација за размена на повеќе од 300 cryptocurrencies во најдобар курс."
+  },
+  "bytes": {
+    "message": "Бајти"
+  },
+  "off": {
+    "message": "Исклучување"
+  },
+  "ok": {
+    "message": "Ок"
+  },
+  "on": {
+    "message": "На"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Откажување"
+  },
+  "cancelAttempt": {
+    "message": "Го Откажете Обидот"
+  },
+  "cancellationGasFee": {
+    "message": "Откажување Гас Такса"
+  },
+  "cancelled": {
+    "message": "Откажани"
+  },
+  "chainId": {
+    "message": "Синџир ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Кликни тука за да се открие тајната зборови"
+  },
+  "close": {
+    "message": "Затворете"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Вие треба да ги користите MetaMask на Google Chrome со цел да се поврзете со вашиот Хардвер Паричник."
+  },
+  "confirm": {
+    "message": "Потврдете"
+  },
+  "confirmed": {
+    "message": "Потврдено"
+  },
+  "confirmPassword": {
+    "message": "Потврди Лозинка"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Потврдите вашата Тајна за Бекап Фраза"
+  },
+  "congratulations": {
+    "message": "Честитки"
+  },
+  "connectHardwareWallet": {
+    "message": "Поврзете Хардвер Паричник"
+  },
+  "connect": {
+    "message": "Поврзете се"
+  },
+  "connectRequest": {
+    "message": "Поврзете Барање"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Поврзување на Kovan Тест Мрежа"
+  },
+  "connectingToMainnet": {
+    "message": "Поврзување со Главната Мрежа Ethereum"
+  },
+  "connectingToRopsten": {
+    "message": "Поврзување на Ropsten Тест Мрежа"
+  },
+  "connectingToRinkeby": {
+    "message": "Поврзување на Rinkeby Тест Мрежа"
+  },
+  "connectingToLocalhost": {
+    "message": "Поврзување со Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Поврзување на Goerli Тест Мрежа"
+  },
+  "contacts": {
+    "message": "Контакти"
+  },
+  "contactsSettingsDescription": {
+    "message": "Додади, измени, отстрани, и да управувате со вашите контакти"
+  },
+  "continueToWyre": {
+    "message": "Продолжи да Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Продолжи да CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Договорот За Распоредување"
+  },
+  "conversionProgress": {
+    "message": "Конверзија во тек"
+  },
+  "copiedButton": {
+    "message": "Копирани"
+  },
+  "copiedExclamation": {
+    "message": "Копирани!"
+  },
+  "copy": {
+    "message": "Копија"
+  },
+  "copyAddress": {
+    "message": "Копирај адреса на таблата со исечоци"
+  },
+  "copyTransactionId": {
+    "message": "Копија Трансакција ID"
+  },
+  "copiedTransactionId": {
+    "message": "Копирани Трансакција ID"
+  },
+  "copyToClipboard": {
+    "message": "Копирај на табла со исечоци"
+  },
+  "copyButton": {
+    "message": " Копија "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Креирај"
+  },
+  "createAccount": {
+    "message": "Креирање Сметка"
+  },
+  "createAWallet": {
+    "message": "Се создаде Паричник"
+  },
+  "createPassword": {
+    "message": "Креирање Лозинка"
+  },
+  "currencyConversion": {
+    "message": "Конверзија На Валути"
+  },
+  "currentLanguage": {
+    "message": "Тековната Јазик"
+  },
+  "customGas": {
+    "message": "Персонализација На Гас"
+  },
+  "customGasSubTitle": {
+    "message": "Зголемување на такса може да се намали обработка пати, но тоа не е загарантирана."
+  },
+  "customToken": {
+    "message": "Обичај Токен"
+  },
+  "customRPC": {
+    "message": "Обичај RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Децимали мора да биде најмалку 0, а не над 36."
+  },
+  "decimal": {
+    "message": "Децимали на Прецизност"
+  },
+  "defaultNetwork": {
+    "message": "Стандардната мрежа за Етер трансакции е Главната Нето."
+  },
+  "delete": {
+    "message": "Избриши"
+  },
+  "deleteAccount": {
+    "message": "Избриши Сметка"
+  },
+  "deposit": {
+    "message": "Депозит"
+  },
+  "depositEther": {
+    "message": "Депозит Етер"
+  },
+  "details": {
+    "message": "Детали"
+  },
+  "directDepositEther": {
+    "message": "Директно Депозит Етер"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ако веќе имате некои Етер, најбрзиот начин да се добие Етер во вашиот нов паричник со директна депозит."
+  },
+  "dismiss": {
+    "message": "Разреши"
+  },
+  "done": {
+    "message": "Направено"
+  },
+  "downloadGoogleChrome": {
+    "message": "Гугл Хром"
+  },
+  "downloadSecretBackup": {
+    "message": "Преземање на оваа Тајна Копија Фраза и чувајте го чуваат безбедно на надворешен шифрирана хард диск или чување на медиум."
+  },
+  "downloadStateLogs": {
+    "message": "Преземете Државата Логови"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Падна"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "editContact": {
+    "message": "Изменување На Контакт"
+  },
+  "emailUs": {
+    "message": "Ни e-mail!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Ти помина на тестот - чувајте ги вашите seedphrase безбедно, тоа е вашиот одговорност!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Совети за чување на тоа безбедно"
+  },
+  "endOfFlowMessage3": {
+    "message": "Save резервната во повеќе места."
+  },
+  "endOfFlowMessage4": {
+    "message": "Никогаш споделување на фразата со никого."
+  },
+  "endOfFlowMessage5": {
+    "message": "Бидете внимателни на фишинг! MetaMask никогаш нема спонтано ве прашува за семе фраза."
+  },
+  "endOfFlowMessage6": {
+    "message": "Ако треба да направите резервна копија од вашите семе фраза повторно, можете да го најдете во Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "Ако некогаш се имате прашања или се види нешто што се риби, е-мејл support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask не може да се опорави на вашите seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Дознајте повеќе."
+  },
+  "endOfFlowMessage10": {
+    "message": "Сето Тоа Е Направено"
+  },
+  "ensRegistrationError": {
+    "message": "Грешка во ENS име регистрација"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS име не се најде на тековната мрежа. Обидете се префрла на Главната Ethereum Мрежа."
+  },
+  "enterAnAlias": {
+    "message": "Внесете алијас"
+  },
+  "enterPassword": {
+    "message": "Внесете лозинка"
+  },
+  "enterPasswordContinue": {
+    "message": "Внесете лозинка за да продолжи"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Јавно Обраќање"
+  },
+  "etherscanView": {
+    "message": "Приказ на сметка на Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Се Проценува Обработка Пати"
+  },
+  "expandView": {
+    "message": "Прошири Ја Видите"
+  },
+  "exportPrivateKey": {
+    "message": "Извоз На Приватниот Клуч"
+  },
+  "failed": {
+    "message": "Не успеа"
+  },
+  "fast": {
+    "message": "Брзо"
+  },
+  "faster": {
+    "message": "Побрзо"
+  },
+  "fiat": {
+    "message": "Фиат",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Заборавете на овој уред"
+  },
+  "from": {
+    "message": "Од"
+  },
+  "fromShapeShift": {
+    "message": "Од ShapeShift"
+  },
+  "functionType": {
+    "message": "Функција Тип"
+  },
+  "gasLimit": {
+    "message": "Гас Граница"
+  },
+  "gasLimitCalculation": {
+    "message": "Ние се пресмета предложи гас лимит врз основа на мрежниот успех стапки."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Гас граница е максималниот износ на единиците на гас што се подготвени да потрошат."
+  },
+  "gasLimitTooLow": {
+    "message": "Гас за ограничување мора да биде најмалку 21000"
+  },
+  "gasUsed": {
+    "message": "Гас Што Се Користи"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Гас Цена На Исклучително Ниско"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Гас цената ја одредува висината на Етер сте подготвени да плаќаат за секоја единица на гас."
+  },
+  "gasPriceNoDenom": {
+    "message": "Цена На Гас"
+  },
+  "gasPriceCalculation": {
+    "message": "Ние се пресмета предложи гас цени врз основа на мрежниот успех стапки."
+  },
+  "general": {
+    "message": "Општи"
+  },
+  "generalSettingsDescription": {
+    "message": "Валута конверзија, основната валута, јазик, blockies identicon"
+  },
+  "getEther": {
+    "message": "Се Етер"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Добиете Помош."
+  },
+  "getStarted": {
+    "message": "Почеток"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Ние сме среќни да те видам."
+  },
+  "hardware": {
+    "message": "хардвер"
+  },
+  "hardwareWalletConnected": {
+    "message": "Хардвер паричникот поврзани"
+  },
+  "hardwareWallets": {
+    "message": "Поврзете хардвер паричник"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Одберете некој хардвер за паричникот што би сакале да се користи со MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "овде",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Хексадецимален Податоци"
+  },
+  "hide": {
+    "message": "Сокриј"
+  },
+  "hideToken": {
+    "message": "Сокриј Токен"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Историја"
+  },
+  "import": {
+    "message": "Увоз",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Увоз Сметка"
+  },
+  "importAccountMsg": {
+    "message": " Увезени сметки не се поврзани со вашиот првично замислен MetaMask сметка seedphrase. Дознај повеќе за увезени сметки "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Увоз Сметка со Семе Фраза"
+  },
+  "importWallet": {
+    "message": "Увоз Паричник"
+  },
+  "importYourExisting": {
+    "message": "Увоз на вашиот постоечки паричник користење на 12 збор семе фраза"
+  },
+  "imported": {
+    "message": "Увезената",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Увоз using сметка семе фраза"
+  },
+  "infoHelp": {
+    "message": "Инфо & Помош"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Вашата почетна трансакција беше потврдено од страна на мрежата. Кликнете на OK за да се вратам."
+  },
+  "insufficientBalance": {
+    "message": "Доволно рамнотежа."
+  },
+  "insufficientFunds": {
+    "message": "Доволно финансиски средства."
+  },
+  "insufficientTokens": {
+    "message": "Недоволна токени."
+  },
+  "invalidAddress": {
+    "message": "Невалидна адреса"
+  },
+  "invalidAddressRecipient": {
+    "message": "Примачот адреса е неважечка"
+  },
+  "knownAddressRecipient": {
+    "message": "Познат договорот адреса."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Не ETH мрежа, утврден во мали букви"
+  },
+  "invalidInput": {
+    "message": "Невалиден внес."
+  },
+  "invalidRPC": {
+    "message": "Невалиден RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Невалиден Блок Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Невалиден семе фраза"
+  },
+  "jsonFile": {
+    "message": "JSON Датотека",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Тест Мрежа"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Дознај повеќе"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Што треба да се направи употреба на вашиот последен сметка пред да можете да додадете нова."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Да, ајде да се постави!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Линкови"
+  },
+  "liveGasPricePredictions": {
+    "message": "Живеат Гас Цена Предвидувања"
+  },
+  "loading": {
+    "message": "Се вчитува..."
+  },
+  "loadingTokens": {
+    "message": "Вчитување Токени..."
+  },
+  "loadMore": {
+    "message": "Оптоварување Повеќе"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Се Најавите"
+  },
+  "logout": {
+    "message": "Одјавите"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout (одјава) време е премногу голема"
+  },
+  "mainnet": {
+    "message": "Главната Ethereum Мрежа"
+  },
+  "memorizePhrase": {
+    "message": "Се сеќавате на оваа фраза."
+  },
+  "memo": {
+    "message": "мемо"
+  },
+  "menu": {
+    "message": "Мени"
+  },
+  "message": {
+    "message": "Порака"
+  },
+  "metamaskDescription": {
+    "message": "Поврзување можете да Ethereum и Децентрализирани Веб."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Семе Зборови"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Верзија"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Ве молиме внесете ја вашата лозинка за да ја потврдите тоа е вас!"
+  },
+  "myAccounts": {
+    "message": "Моите Сметки"
+  },
+  "myWalletAccounts": {
+    "message": "Мојот Паричник Сметки"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Сите на вашите MetaMask креирани сметки автоматски ќе биде додаден во овој дел."
+  },
+  "mustSelectOne": {
+    "message": "Мора да изберете најмалку 1 токен."
+  },
+  "needEtherInWallet": {
+    "message": "За да комуницирате со децентрализирани апликациите со користење на MetaMask, ќе треба Етер во вашиот паричник."
+  },
+  "needImportFile": {
+    "message": "Мора да изберете датотека за увоз.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Не може да испрати негативни износи на ETH."
+  },
+  "networkName": {
+    "message": "Име На Мрежа"
+  },
+  "networks": {
+    "message": "Мрежи"
+  },
+  "networkSettingsDescription": {
+    "message": "Додавање и уредување обичај RPC мрежи"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Нова Сметка"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Нова адреса откриен! Кликнете тука за да го додадете вашиот адресар."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Нов Контакт"
+  },
+  "newContract": {
+    "message": "Нов Договор"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Нова Мрежа"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Не, јас веќе имаат семе фраза"
+  },
+  "protectYourKeys": {
+    "message": "Заштитете Го Вашиот Копчињата!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Бидете внимателни со вашиот семе фраза — имаше извештаи на веб-сајтови кои се обидувајте да го имитираат MetaMask. MetaMask никогаш нема да побара за вашата семе фраза!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Чувајте ги вашите фраза безбедно. Ако видите вакво нешто риби, или сте несигурни во врска со веб-сајт, електронска пошта support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Нови RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Нова Вкупно"
+  },
+  "newTransactionFee": {
+    "message": "Нова Трансакција На Плаќање"
+  },
+  "next": {
+    "message": "Следна"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Нема адреса е закажан за ова име."
+  },
+  "noDeposits": {
+    "message": "Не депозити примени"
+  },
+  "noConversionRateAvailable": {
+    "message": "Не Конверзија Го Оценувате Достапни"
+  },
+  "noTransactions": {
+    "message": "Немате трансакции"
+  },
+  "noThanks": {
+    "message": "Не, Благодарам"
+  },
+  "notEnoughGas": {
+    "message": "Не Е Доволно Гас"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Веб камера не се најде"
+  },
+  "noWebcamFound": {
+    "message": "Вашиот компјутер е веб камера не беше пронајден. Ве молиме обидете се повторно."
+  },
+  "ofTextNofM": {
+    "message": "на"
+  },
+  "orderOneHere": {
+    "message": "Цел на Trezor или Книга и да ја задржите вашите средства во ладно складирање"
+  },
+  "origin": {
+    "message": "Потекло"
+  },
+  "parameters": {
+    "message": "Параметри"
+  },
+  "participateInMetaMetrics": {
+    "message": "Учествуваат во MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Учествуваат во MetaMetrics да ни помогне да се направи подобро MetaMask"
+  },
+  "password": {
+    "message": "Лозинка"
+  },
+  "passwordsDontMatch": {
+    "message": "Лозинки Не се Совпаѓаат"
+  },
+  "passwordNotLongEnough": {
+    "message": "Лозинката не доволно долго"
+  },
+  "pastePrivateKey": {
+    "message": "Ставете вашиот приватен клуч string тука:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Ставете ја вашата семе фраза тука!"
+  },
+  "pending": {
+    "message": "очекување"
+  },
+  "personalAddressDetected": {
+    "message": "Лична адреса откриен. Внесување на знак договорот адреса."
+  },
+  "prev": {
+    "message": "Претходна"
+  },
+  "primaryCurrencySetting": {
+    "message": "Основно Валута"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Политика За Приватност"
+  },
+  "privateKey": {
+    "message": "Приватен Клуч",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Предупредување: Никогаш не го објави ова копче. Секој со вашиот приватен клуч може да украде било средства кои се чуваат во вашата сметка."
+  },
+  "privateNetwork": {
+    "message": "Приватна Мрежа"
+  },
+  "qrCode": {
+    "message": "Покаже QR Кодот"
+  },
+  "queue": {
+    "message": "Листа на чекање"
+  },
+  "readdToken": {
+    "message": "Можете да го додадете овој знак назад во иднина со одење на \"Add токен\" во вашите сметки менито со опции."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Примачот Адреса"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Отфрли Сите"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Одбиени"
+  },
+  "reset": {
+    "message": "Ресетирање"
+  },
+  "resetAccount": {
+    "message": "Ресетирање На Сметка"
+  },
+  "resetAccountDescription": {
+    "message": "Ресетирање на вашата сметка ќе се исчистите вашата трансакција историја."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Ме потсети подоцна"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Вратите вашата Сметка со Семе Фраза"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "барања кои чекаат да бидат признати"
+  },
+  "required": {
+    "message": "Потребни"
+  },
+  "restore": {
+    "message": "Враќање"
+  },
+  "revealSeedWords": {
+    "message": "Открие Семе Зборови"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Семе Фраза"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ако некогаш сте се промени интернет прелистувачи или преместување на компјутери, ќе треба ова семе фраза за пристап до вашите сметки. Зачувајте ги некаде безбедно и тајни."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "НЕ споделување на оваа фраза со никого!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Овие зборови може да се користи за да украде сите ваши сметки."
+  },
+  "revert": {
+    "message": "Revert"
+  },
+  "remove": {
+    "message": "Отстранете"
+  },
+  "removeAccount": {
+    "message": "Отстрани сметка"
+  },
+  "removeAccountDescription": {
+    "message": "Оваа сметка ќе бидат отстранети од вашиот паричник. Ве молиме бидете сигурни дека го имате оригиналниот семе фраза или приватен клуч за оваа увезени сметка пред да продолжите. Може да се внесуваат или да креирате сметки повторно од сметката на спуштање. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Тест Мрежа"
+  },
+  "ropsten": {
+    "message": "Ropsten Тест Мрежа"
+  },
+  "goerli": {
+    "message": "Goerli Тест Мрежа"
+  },
+  "save": {
+    "message": "Зачувајте"
+  },
+  "slow": {
+    "message": "Бавно"
+  },
+  "slower": {
+    "message": "Побавно"
+  },
+  "saveAsCsvFile": {
+    "message": "Зачувај како CSV Фајл"
+  },
+  "scanInstructions": {
+    "message": "Место на QR код во предниот дел на вашето камера"
+  },
+  "scanQrCode": {
+    "message": "Скенира QR Код"
+  },
+  "search": {
+    "message": "Пребарување"
+  },
+  "searchResults": {
+    "message": "Резултати Од Пребарувањето"
+  },
+  "secretBackupPhrase": {
+    "message": "Тајната Копија Фраза"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Вашата тајна за бекап фраза, го прави лесно да направите резервни копии и да вратите вашата сметка."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ПРЕДУПРЕДУВАЊЕ: Никогаш нема да ги откриете вашите резерви фраза. Секој со оваа фраза може да се земе вашата Етер засекогаш."
+  },
+  "secretPhrase": {
+    "message": "Внесете ја вашата тајна дванаесет збор, фраза тука за да се врати на вашите свод."
+  },
+  "securityAndPrivacy": {
+    "message": "За Безбедност И Приватност"
+  },
+  "securitySettingsDescription": {
+    "message": "Прилагодувања за приватност и паричникот семе фраза"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Оддели го секој збор со едно простор"
+  },
+  "seedPhraseReq": {
+    "message": "Семе фрази се 12 зборови долго"
+  },
+  "selectCurrency": {
+    "message": "Изберете Валута"
+  },
+  "selectEachPhrase": {
+    "message": "Ве молиме одберете ја секоја фраза, со цел да бидете сигурни дека тоа е точно."
+  },
+  "selectLocale": {
+    "message": "Одберете Локација"
+  },
+  "selectType": {
+    "message": "Одберете Тип"
+  },
+  "send": {
+    "message": "Испрати"
+  },
+  "sendAmount": {
+    "message": "Испрати Износ"
+  },
+  "sendETH": {
+    "message": "Испрати ETH"
+  },
+  "sendTokens": {
+    "message": "Испрати Токени"
+  },
+  "sentEther": {
+    "message": "испратено етер"
+  },
+  "sentTokens": {
+    "message": "испратено токени"
+  },
+  "separateEachWord": {
+    "message": "Оддели го секој збор со едно простор"
+  },
+  "searchTokens": {
+    "message": "Пребарување Токени"
+  },
+  "selectAnAccount": {
+    "message": "Одберете некоја Сметка"
+  },
+  "selectAnAccountHelp": {
+    "message": "Одберете сметка за да ја видите во MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Изберете повисока гас надомест за да се забрза обработката на трансакцијата.*"
+  },
+  "selectHdPath": {
+    "message": "Одберете HD Пат"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Прилагодувања"
+  },
+  "showAdvancedGasInline": {
+    "message": "Напредни гас контроли"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Изберете го ова за да покаже гас цена и граничните контроли директно да испраќаат и да се потврди екрани."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Покаже Конверзија на Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Изберете го ова за да покаже фиат конверзија на Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Покаже Приватни Клучеви"
+  },
+  "showHexData": {
+    "message": "Покаже Хексадецимален Податоци"
+  },
+  "showHexDataDescription": {
+    "message": "Изберете го ова за да го покаже хексадецимален податоци областа на испратите екранот"
+  },
+  "sign": {
+    "message": "Знак"
+  },
+  "signatureRequest": {
+    "message": "Потпис Барање"
+  },
+  "signed": {
+    "message": "Потпишан"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Потпис Барање"
+  },
+  "somethingWentWrong": {
+    "message": "Упс! Нешто не беше во ред."
+  },
+  "speedUp": {
+    "message": "За Да Го Забрзате"
+  },
+  "speedUpCancellation": {
+    "message": "Брзина до ова откажување"
+  },
+  "speedUpTransaction": {
+    "message": "Да се забрза оваа трансакција"
+  },
+  "switchNetworks": {
+    "message": "Менувате Мрежи"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Државата Логови"
+  },
+  "stateLogs": {
+    "message": "Државата Логови"
+  },
+  "stateLogsDescription": {
+    "message": "Државата најавува содржат вашиот јавен профил адреси и испрати трансакции."
+  },
+  "stateLogError": {
+    "message": "Грешка во повикувањето на државата логови."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Поврзете Хардвер Паричник"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Поврзете го вашиот хардвер паричникот директно до вашиот компјутер."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Одберете некоја Сметка"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Одберете ја сметката што сакате да ја видите. Можете да изберете само едно по едно време."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Започнете со користење на dApps и повеќе!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Користете го вашиот хардвер сметка како што би направиле со секој Ethereum сметка. Се пријавите за да dApps, испрати Eth, купување и чување на ERC20 белези и Не-Fungible белези како CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Продавница оваа фраза во лозинка менаџер како 1Password."
+  },
+  "submit": {
+    "message": "Достави"
+  },
+  "submitted": {
+    "message": "Поднесени"
+  },
+  "supportCenter": {
+    "message": "Посетете го нашиот Центар за Поддршка"
+  },
+  "symbol": {
+    "message": "Симбол"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Симбол мора да биде помеѓу 0 и 12 знаци."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Вклучи за да имаат вашите поставувања поткрепени со 3Box. Оваа функција е currenty експериментални; употреба на вашиот сопствен ризик."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box е исклучена поради грешка во текот на првичната синхронизација"
+  },
+  "syncWithMobile": {
+    "message": "Синхронизација со мобилни"
+  },
+  "syncWithMobileTitle": {
+    "message": "Синхронизација со мобилни"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Ако само ја отвори MetaMask Мобилен стан за прв пат, само следете ги чекорите во вашиот телефон."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Скенирање на овој код со вашиот MetaMask мобилен стан"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Осигурете се дека никој друг не е во потрага на вашиот екран кога ќе го скенира овој код"
+  },
+  "syncWithMobileComplete": {
+    "message": "Вашите податоци е синхронизираат succesfully. Уживајте во MetaMask мобилен стан!"
+  },
+  "terms": {
+    "message": "Услови на Употреба"
+  },
+  "testFaucet": {
+    "message": "Тест Тапа"
+  },
+  "thisWillCreate": {
+    "message": "Ова ќе создаде нов паричник и семе фраза"
+  },
+  "tips": {
+    "message": "Совети"
+  },
+  "to": {
+    "message": "Да"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Токен"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Токен е веќе додадена."
+  },
+  "tokenContractAddress": {
+    "message": "Токен Договорот Адреса"
+  },
+  "tokenSymbol": {
+    "message": "Во Знак Симбол"
+  },
+  "total": {
+    "message": "Вкупно"
+  },
+  "transaction": {
+    "message": "трансакцијата"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Трансакцијата се среќаваат грешка."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Трансакцијата Грешка. Исклучок фрлени во договорот код."
+  },
+  "transactionErrorNoContract": {
+    "message": "Се обидувате да повикате функција на не-договор адреса."
+  },
+  "transactionFee": {
+    "message": "Трансакција На Плаќање"
+  },
+  "transactionTime": {
+    "message": "Трансакцијата Време"
+  },
+  "transfer": {
+    "message": "Трансфер"
+  },
+  "transferBetweenAccounts": {
+    "message": "Трансфер меѓу моите сметки"
+  },
+  "transferFrom": {
+    "message": "Пренос Од"
+  },
+  "troubleTokenBalances": {
+    "message": "Имавме проблеми со вчитување на вашиот токен салда. Можете да ги видите ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Обиди се повторно"
+  },
+  "typePassword": {
+    "message": "Напишете ја вашата MetaMask лозинка"
+  },
+  "unapproved": {
+    "message": "Неодобрени"
+  },
+  "units": {
+    "message": "единици"
+  },
+  "unknown": {
+    "message": "Непознат"
+  },
+  "unknownNetwork": {
+    "message": "Непознат Приватна Мрежа"
+  },
+  "unknownQrCode": {
+    "message": "Грешка: не можевме да кажат дека QR кодот"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Нешто не беше во ред...."
+  },
+  "unknownCameraError": {
+    "message": "Имаше грешка при обидот да пристапите на вашата камера. Ве молиме обидете се повторно..."
+  },
+  "unlock": {
+    "message": "Отклучите"
+  },
+  "unlockMessage": {
+    "message": "На децентрализирана веб чека"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Врски бараат соодветни HTTP/HTTPS префикс."
+  },
+  "usedByClients": {
+    "message": "Се користи од страна на различни клиенти"
+  },
+  "userName": {
+    "message": "Корисничко име"
+  },
+  "validFileImport": {
+    "message": "Мора да изберете валидна датотека за увоз."
+  },
+  "viewAccount": {
+    "message": "Погледнете Сметка"
+  },
+  "viewinExplorer": {
+    "message": "Видете во Explorer"
+  },
+  "viewContact": {
+    "message": "Преглед На Контакт"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Приказ на Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Посетете ја нашата веб сајт"
+  },
+  "walletSeed": {
+    "message": "Паричникот Семе"
+  },
+  "welcomeBack": {
+    "message": "Добредојде Назад!"
+  },
+  "welcome": {
+    "message": "Добредојдовте на MetaMask"
+  },
+  "writePhrase": {
+    "message": "Напишете оваа фраза на парче хартија и да се чува на безбедна локација. Ако сакате дури и поголема безбедност, напишете го долу, на повеќе парчиња хартија и да ги чува секој во 2 - 3 различни локации."
+  },
+  "yesLetsTry": {
+    "message": "Да, ајде да се обидеме"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Што треба да им овозможи на камерата пристап да ја користите оваа функција."
+  },
+  "yourSigRequested": {
+    "message": "Вашиот потпис се бара"
+  },
+  "youSign": {
+    "message": "Вие сте потпишување"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Вашиот приватен семе фраза"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Нула гас цена на брзина до"
+  }
+}

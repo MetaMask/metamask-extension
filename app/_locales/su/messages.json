@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Témbongkeun Asup Transaksi"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Pilih ieu ngagunakeun Etherscan pikeun mintonkeun asup transaksi dina transaksi daptar"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Chart ngan sadia dina Ethereum jaringan."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Sambungan"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Loka diidinan maca akun anjeun"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Sacara manual nambah loka pikeun ngidinan aksés ka akun anjeun, dipake keur kolot dapps"
+  },
+  "connected": {
+    "message": "Nyambung"
+  },
+  "connectedDescription": {
+    "message": "Daptar loka diidinan aksés ka anjeun alamat"
+  },
+  "privacyModeDefault": {
+    "message": "Mode privasi ayeuna diaktipkeun ku standar"
+  },
+  "contractInteraction": {
+    "message": "Kontrak Interaksi"
+  },
+  "clearApprovalData": {
+    "message": "Cabut sadaya loka"
+  },
+  "reject": {
+    "message": "Nolak"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Ieu loka téh requesting aksés pikeun nempo anjeun ayeuna akun alamat. Sok pastikeun anjeun dipercanten loka anjeun berinteraksi sareng nu."
+  },
+  "about": {
+    "message": "Kira-kira"
+  },
+  "aboutSettingsDescription": {
+    "message": "Vérsi, ngarojong puseur, jeung inpo kontak."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Ngakses kamera anjeun..."
+  },
+  "account": {
+    "message": "Account"
+  },
+  "accountDetails": {
+    "message": "Wincik Akun"
+  },
+  "accountName": {
+    "message": "Ngaran Akun"
+  },
+  "accountOptions": {
+    "message": "Pilihan Akun"
+  },
+  "accountSelectionRequired": {
+    "message": "Anjeun kudu milih hiji akun!"
+  },
+  "activityLog": {
+    "message": "aktivitas log"
+  },
+  "addNetwork": {
+    "message": "Tambah Jaringan"
+  },
+  "addRecipient": {
+    "message": "Nambah Panarima"
+  },
+  "advanced": {
+    "message": "Maju"
+  },
+  "advancedSettingsDescription": {
+    "message": "Aksés developer fitur, ngundeur State Log, Ngareset Akun, setelan testnets jeung adat RPC."
+  },
+  "advancedOptions": {
+    "message": "Advanced Pilihan"
+  },
+  "addToAddressBook": {
+    "message": "Nambah ka buku alamat"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "misalna John D."
+  },
+  "addAlias": {
+    "message": "Tambah alias"
+  },
+  "addToken": {
+    "message": "Nambah Token"
+  },
+  "addTokens": {
+    "message": "Tambah Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Tambah Ngusulkeun Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Tambah tokens anjeun geus kaala ngagunakeun MetaMask"
+  },
+  "amount": {
+    "message": "Jumlah"
+  },
+  "appDescription": {
+    "message": "Hiji Ethereum Dompét di Panyungsi anjeun",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Approve"
+  },
+  "approved": {
+    "message": "Disatujuan"
+  },
+  "asset": {
+    "message": "Asset"
+  },
+  "attemptingConnect": {
+    "message": "Ngusahakeun pikeun nyambung ka blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Ngalebetkeun usaha ieu teu ngajamin anjeun original urus bakal dibolaykeun. Lamun pembatalan usaha suksés, anjeun bakal muatan fee urus luhur."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Nyetel waktos cicing di menit saméméh MetaMask bakal otomatis log out"
+  },
+  "average": {
+    "message": "Rata-rata"
+  },
+  "back": {
+    "message": "Deui"
+  },
+  "backToAll": {
+    "message": "Deui ka Sadaya"
+  },
+  "backupApprovalNotice": {
+    "message": "Cadangan anjeun Rusiah Recovery code pikeun ngajaga dompét anjeun jeung dana aman."
+  },
+  "backupApprovalInfo": {
+    "message": "Ieu rusiah kode anu diperlukeun pikeun cageur anjeun dompét bisi leungit alat anjeun, poho deui kecap akses anjeun, kudu ulang masang MetaMask, atawa hayang pikeun ngakses dompét anjeun di alat nu sejen."
+  },
+  "backupNow": {
+    "message": "Cadangan ayeuna"
+  },
+  "balance": {
+    "message": "Kasaimbangan"
+  },
+  "balanceOutdated": {
+    "message": "Kasaimbangan bisa jadi luntur"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Cukup kasaimbangan kiwari gas total"
+  },
+  "basic": {
+    "message": "Dasar"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Block Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Make Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Ngaluyukeun urus nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Adat Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Panyungsi anjeun teu dirojong..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask dirancang jeung diwangun dina California."
+  },
+  "buyWithWyre": {
+    "message": "Meuli ETH jeung Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ngidinan anjeun make kartu kiridit deposit ETH katuhu dina ka anjeun MetaMask account."
+  },
+  "buyCoinSwitch": {
+    "message": "Meuli dina CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch nyaéta hiji-eureun tujuan ka bursa leuwih ti 300 cryptocurrencies di laju pangalusna."
+  },
+  "bytes": {
+    "message": "Bait"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Dina"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Ngabolaykeun"
+  },
+  "cancelAttempt": {
+    "message": "Ngabolaykeun Nyobian"
+  },
+  "cancellationGasFee": {
+    "message": "Pembatalan Gas Fee"
+  },
+  "cancelled": {
+    "message": "Dibolaykeun"
+  },
+  "chainId": {
+    "message": "Ranté ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Klik di dieu pikeun nembongkeun rusiah kecap"
+  },
+  "close": {
+    "message": "Deukeut"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Anjeun kudu make MetaMask dina Google Chrome dina raraga pikeun nyambung ka anjeun Hardware Dompét."
+  },
+  "confirm": {
+    "message": "Konpirmasikeun"
+  },
+  "confirmed": {
+    "message": "Dikonfirmasi"
+  },
+  "confirmPassword": {
+    "message": "Tegeskeun Deui Kecap Akses"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Mastikeun Rusiah anjeun Cadangan Frase"
+  },
+  "congratulations": {
+    "message": "Ucapan salamet"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Hardware Dompét"
+  },
+  "connect": {
+    "message": "Nyambung"
+  },
+  "connectRequest": {
+    "message": "Connect Request"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Nyambungkeun ka Kovan Test Network"
+  },
+  "connectingToMainnet": {
+    "message": "Nyambung ka Utama Ethereum Jaringan"
+  },
+  "connectingToRopsten": {
+    "message": "Nyambungkeun ka Ropsten Test Network"
+  },
+  "connectingToRinkeby": {
+    "message": "Nyambungkeun ka Rinkeby Test Network"
+  },
+  "connectingToLocalhost": {
+    "message": "Nyambungkeun ka Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Nyambungkeun ka Goerli Test Network"
+  },
+  "contacts": {
+    "message": "Kontak"
+  },
+  "contactsSettingsDescription": {
+    "message": "Tambah, ngédit, mindahkeun, jeung ngatur kontak anjeun"
+  },
+  "continueToWyre": {
+    "message": "Terus Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Terus CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Kontrak Deployment"
+  },
+  "conversionProgress": {
+    "message": "Artos di kamajuan"
+  },
+  "copiedButton": {
+    "message": "Disalin"
+  },
+  "copiedExclamation": {
+    "message": "Disalin!"
+  },
+  "copy": {
+    "message": "Salinan"
+  },
+  "copyAddress": {
+    "message": "Nyalin alamat clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Nyalin Urus ID"
+  },
+  "copiedTransactionId": {
+    "message": "Disalin Urus ID"
+  },
+  "copyToClipboard": {
+    "message": "Copy to clipboard"
+  },
+  "copyButton": {
+    "message": " Salinan "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Nyieun"
+  },
+  "createAccount": {
+    "message": "Nyieun Akun"
+  },
+  "createAWallet": {
+    "message": "Nyieun Dompét"
+  },
+  "createPassword": {
+    "message": "Nyieun Password"
+  },
+  "currencyConversion": {
+    "message": "Tukeur Artos"
+  },
+  "currentLanguage": {
+    "message": "Kiwari Basa"
+  },
+  "customGas": {
+    "message": "Ngaluyukeun Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Ngaronjatkeun fee bisa ngurangan processing kali, tapi teu dijamin."
+  },
+  "customToken": {
+    "message": "Adat Token"
+  },
+  "customRPC": {
+    "message": "Adat RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals kudu sahenteuna 0, jeung teu leuwih ti 36."
+  },
+  "decimal": {
+    "message": "Decimals Precision"
+  },
+  "defaultNetwork": {
+    "message": "Standar jaringan pikeun Éter transaksi Net Utama."
+  },
+  "delete": {
+    "message": "Pupus"
+  },
+  "deleteAccount": {
+    "message": "Pupus Akun"
+  },
+  "deposit": {
+    "message": "Deposit"
+  },
+  "depositEther": {
+    "message": "Deposit Éter"
+  },
+  "details": {
+    "message": "Rincian"
+  },
+  "directDepositEther": {
+    "message": "Langsung Deposit Éter"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Lamun anjeun geus boga sababaraha Éter, cara quickest pikeun meunangkeun Éter dina anyar anjeun dompét ku deposit langsung."
+  },
+  "dismiss": {
+    "message": "Ngilangkeun"
+  },
+  "done": {
+    "message": "Rengse"
+  },
+  "downloadGoogleChrome": {
+    "message": "Ngundeur Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Ngundeur ieu Rusiah Cadangan Frasa jeung ngajaga eta disimpen aman dina hiji luar énkripsi teuas drive atawa medium gudang."
+  },
+  "downloadStateLogs": {
+    "message": "Ngundeur State Log"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Turun"
+  },
+  "edit": {
+    "message": "Édit"
+  },
+  "editContact": {
+    "message": "Édit Kontak"
+  },
+  "emailUs": {
+    "message": "Surélék urang!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Anjeun lulus test - tetep anjeun seedphrase aman, éta tanggung jawab anjeun!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips dina nyimpen eta aman"
+  },
+  "endOfFlowMessage3": {
+    "message": "Nyimpen cadangan dina sababaraha tempat."
+  },
+  "endOfFlowMessage4": {
+    "message": "Kungsi share frasa jeung saha."
+  },
+  "endOfFlowMessage5": {
+    "message": "Jadi ati phishing! MetaMask kungsi bakal spontaneously ménta anjeun siki frasa."
+  },
+  "endOfFlowMessage6": {
+    "message": "Lamun anjeun kudu nyieun nepi anjeun siki frasa deui, anjeun bisa manggihan eta dina Setélan -> Kaamanan."
+  },
+  "endOfFlowMessage7": {
+    "message": "Lamun kungsi mibanda patalékan atawa nempo hiji hal amis, email support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask bisa cageur anjeun seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Diajar leuwih."
+  },
+  "endOfFlowMessage10": {
+    "message": "Sadaya Dipigawé"
+  },
+  "ensRegistrationError": {
+    "message": "Kasalahan dina ENS ngadaptar ngaran"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS ngaran teu kapanggih dina jaringan kiwari. Coba ngaganti ka Utama Ethereum Jaringan."
+  },
+  "enterAnAlias": {
+    "message": "Tuliskeun alias"
+  },
+  "enterPassword": {
+    "message": "Tuliskeun kecap akses"
+  },
+  "enterPasswordContinue": {
+    "message": "Tuliskeun kecap akses pikeun terus"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Umum Alamat"
+  },
+  "etherscanView": {
+    "message": "View akun dina Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Kira-Kira Processing Kali"
+  },
+  "expandView": {
+    "message": "Dilegakeun View"
+  },
+  "exportPrivateKey": {
+    "message": "Ékspor Key Swasta"
+  },
+  "failed": {
+    "message": "Gagal"
+  },
+  "fast": {
+    "message": "Gancang"
+  },
+  "faster": {
+    "message": "Gancang"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Poho alat ieu"
+  },
+  "from": {
+    "message": "Ti"
+  },
+  "fromShapeShift": {
+    "message": "Ti ShapeShift"
+  },
+  "functionType": {
+    "message": "Tipe Fungsi"
+  },
+  "gasLimit": {
+    "message": "Gas Wates"
+  },
+  "gasLimitCalculation": {
+    "message": "Urang ngitung nu ngusulkeun gas wates dumasar kana jaringan ongkos kasuksésan."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gas ngawates jumlah maksimum unit gas anjeun aya daék méakkeun."
+  },
+  "gasLimitTooLow": {
+    "message": "Gas wates sahenteuna kudu 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Dipaké"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Harga Pisan Low"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Harga Gas hususna jumlah Éter anjeun aya daék mayar pikeun unggal unit tina gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Harga Gas"
+  },
+  "gasPriceCalculation": {
+    "message": "Urang ngitung nu ngusulkeun harga gas dumasar kana jaringan ongkos kasuksésan."
+  },
+  "general": {
+    "message": "General"
+  },
+  "generalSettingsDescription": {
+    "message": "Tukeur ngarobah, dasar mata, basa, blockies identicon"
+  },
+  "getEther": {
+    "message": "Meunangkeun Éter"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Meunang Pitulung."
+  },
+  "getStarted": {
+    "message": "Meunangkeun Dimimitian"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Simkuring happy nempo anjeun."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware disambungkeun dompét"
+  },
+  "hardwareWallets": {
+    "message": "Connect hardware dompét"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Pilih hiji hardware dompét anjeun remen dipake jeung MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "dieu",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Data"
+  },
+  "hide": {
+    "message": "Sumputkeun"
+  },
+  "hideToken": {
+    "message": "Sumputkeun Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Sajarah"
+  },
+  "import": {
+    "message": "Impor",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Impor Akun"
+  },
+  "importAccountMsg": {
+    "message": " Diimpor akun teu baris jadi patali jeung anjeun asalna dijieun MetaMask akun seedphrase. Diajar leuwih ngeunaan impor akun "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Impor hiji Akun jeung Siki Frase"
+  },
+  "importWallet": {
+    "message": "Impor Dompét"
+  },
+  "importYourExisting": {
+    "message": "Impor nu tos aya dompét maké 12 kecap siki frase"
+  },
+  "imported": {
+    "message": "Diimpor",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Impor ngagunakeun akun siki frase"
+  },
+  "infoHelp": {
+    "message": "Info & Mantuan"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Mimiti anjeun urus ieu dikonfirmasi ku jaringan. Klik OK balik deui."
+  },
+  "insufficientBalance": {
+    "message": "Cukup kasaimbangan."
+  },
+  "insufficientFunds": {
+    "message": "Dana cukup."
+  },
+  "insufficientTokens": {
+    "message": "Cukup tokens."
+  },
+  "invalidAddress": {
+    "message": "Sah alamat"
+  },
+  "invalidAddressRecipient": {
+    "message": "Alamat panarima nyaéta salah"
+  },
+  "knownAddressRecipient": {
+    "message": "Dipikawanoh kontrak alamat."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Teu ETH jaringan, pakakas pikeun aksara leutik"
+  },
+  "invalidInput": {
+    "message": "Input sah."
+  },
+  "invalidRPC": {
+    "message": "Sah RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Salah Block Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Sah siki frase"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Network"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Diajar leuwih"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Anjeun kudu nyieun pamakéan terakhir akun saméméh anjeun bisa nambahkeun nu anyar."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Enya, hayu urang meunangkeun nyetel!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Tumbu"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live Harga Gas Prediksi"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Tokens..."
+  },
+  "loadMore": {
+    "message": "Muka Leuwih"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Asup Log"
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout waktu teuing gede"
+  },
+  "mainnet": {
+    "message": "Utama Ethereum Jaringan"
+  },
+  "memorizePhrase": {
+    "message": "Ngapalkeun ieu frasa."
+  },
+  "memo": {
+    "message": "mémo"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Talatah"
+  },
+  "metamaskDescription": {
+    "message": "Nyambungkeun anjeun ka Ethereum jeung Desentralisasi Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Siki Kecap"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Vérsi"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Mangga ngasupkeun sandi pikeun ngonfirmasi ieu anjeun!"
+  },
+  "myAccounts": {
+    "message": "Akun Mah"
+  },
+  "myWalletAccounts": {
+    "message": "Mah Dompét Akun"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Sakabéh anjeun MetaMask dijieun akun bakal otomatis ditambahkeun ka bagian ieu."
+  },
+  "mustSelectOne": {
+    "message": "Kudu milih sahenteuna 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Pikeun interaksi jeung desentralisasi aplikasi ngagunakeun MetaMask, anjeun bakal kudu Éter dina dompét anjeun."
+  },
+  "needImportFile": {
+    "message": "Anjeun kudu milih hiji file pikeun ngimpor.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Teu bisa ngirim négatif ageung ETH."
+  },
+  "networkName": {
+    "message": "Ngaran Jaringan"
+  },
+  "networks": {
+    "message": "Jaringan"
+  },
+  "networkSettingsDescription": {
+    "message": "Tambah jeung édit adat RPC jaringan"
+  },
+  "nevermind": {
+    "message": "Teu nanaon"
+  },
+  "newAccount": {
+    "message": "Akun Anyar"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Alamat anyar kauninga! Klik di dieu pikeun nambahkeun ka buku alamat anjeun."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Kontak Anyar"
+  },
+  "newContract": {
+    "message": "Kontrak Anyar"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Jaringan Anyar"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "No, kuring geus boga siki hiji frase"
+  },
+  "protectYourKeys": {
+    "message": "Nangtayungan Kenop Anjeun!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Ati-ati jeung anjeun siki frase — aya geus laporan situs web nu usaha niru MetaMask. MetaMask kungsi bakal ménta anjeun siki frasa!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Tetep anjeun frasa aman. Lamun anjeun nempo hiji hal amis, atawa anjeun geus pasti ngeunaan hiji website, email support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Anyar RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Anyar Total"
+  },
+  "newTransactionFee": {
+    "message": "Anyar Fee Urus"
+  },
+  "next": {
+    "message": "Next"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "No alamat geus diatur pikeun ngaran ieu."
+  },
+  "noDeposits": {
+    "message": "No deposit narima"
+  },
+  "noConversionRateAvailable": {
+    "message": "No Laju Ngarobah Sadia"
+  },
+  "noTransactions": {
+    "message": "Anjeun teu boga transaksi"
+  },
+  "noThanks": {
+    "message": "No Atuh"
+  },
+  "notEnoughGas": {
+    "message": "Teu Cukup Gas"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam teu kapanggih"
+  },
+  "noWebcamFound": {
+    "message": "Webcam komputer anjeun teu kapanggih. Mangga cobian deui."
+  },
+  "ofTextNofM": {
+    "message": "tina"
+  },
+  "orderOneHere": {
+    "message": "Mesen hiji Trezor atawa Ledger jeung jaga anjeun dana di gudang tiis"
+  },
+  "origin": {
+    "message": "Asal"
+  },
+  "parameters": {
+    "message": "Parameter"
+  },
+  "participateInMetaMetrics": {
+    "message": "Ilubiung dina MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Ilubiung dina MetaMetrics pikeun mantuan urang nyieun MetaMask leuwih alus"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "passwordsDontMatch": {
+    "message": "Kecap akses nu teu Cocog"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password teu cukup lila"
+  },
+  "pastePrivateKey": {
+    "message": "Némpelkeun anjeun key swasta string di dieu:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Némpelkeun siki anjeun frasa di dieu!"
+  },
+  "pending": {
+    "message": "pending"
+  },
+  "personalAddressDetected": {
+    "message": "Pribadi alamat kauninga. Input token kontrak alamat."
+  },
+  "prev": {
+    "message": "Basa indonésia"
+  },
+  "primaryCurrencySetting": {
+    "message": "Dasar Tukeur"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Kabijakan Privasi"
+  },
+  "privateKey": {
+    "message": "Key Swasta",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Warning: Kungsi nyingkab ieu konci. Saha jeung swasta anjeun bisa kenop maok nu mana wae nu aset anu diayakeun dina akun anjeun."
+  },
+  "privateNetwork": {
+    "message": "Jaringan Pribadi"
+  },
+  "qrCode": {
+    "message": "Mintonkeun QR Code"
+  },
+  "queue": {
+    "message": "Kiwari"
+  },
+  "readdToken": {
+    "message": "Anjeun bisa nambah token ieu deui dina mangsa nu bakal datang ku akang \"Tambah token\" dina akun anjeun pilihan menu."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Panarima Alamat"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Nolak Sagala"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Ditampik"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Reset Akun"
+  },
+  "resetAccountDescription": {
+    "message": "Ngareset akun anjeun bakal mupus sajarah urus."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Ngingetkeun kuring saterusna"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Mulangkeun Akun anjeun jeung Siki Frase"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "requests nungguan jadi dicaritakeun"
+  },
+  "required": {
+    "message": "Diperlukeun"
+  },
+  "restore": {
+    "message": "Mulangkeun"
+  },
+  "revealSeedWords": {
+    "message": "Nembongkeun Siki Kecap"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Siki Frase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Mun anjeun kungsi ngarobah panyungsi atawa pindah komputer, anjeun bakal kudu siki ieu frasa pikeun ngakses akun anjeun. Nyimpen eta tempat aman jeung rusiah."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "ULAH babagi ieu frasa jeung saha!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Kecap ieu bisa dipaké pikeun maok kabéh akun anjeun."
+  },
+  "revert": {
+    "message": "Dibalikkeun"
+  },
+  "remove": {
+    "message": "Miceun"
+  },
+  "removeAccount": {
+    "message": "Cabut akun"
+  },
+  "removeAccountDescription": {
+    "message": "Akun ieu bakal dipiceun tina dompét anjeun. Mangga mastikeun anjeun geus asli siki frase atawa swasta konci pikeun ieu diimpor akun saméméh neraskeun. Anjeun bisa ngimpor atawa nyieun akun deui ti akun turun-handap. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Network"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Network"
+  },
+  "goerli": {
+    "message": "Goerli Test Network"
+  },
+  "save": {
+    "message": "Simpen"
+  },
+  "slow": {
+    "message": "Slow"
+  },
+  "slower": {
+    "message": "Leuwih laun"
+  },
+  "saveAsCsvFile": {
+    "message": "Nyalametkeun salaku File CSV"
+  },
+  "scanInstructions": {
+    "message": "Tempat QR code di hareupeun kamera anjeun"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "searchResults": {
+    "message": "Hasil Teangan"
+  },
+  "secretBackupPhrase": {
+    "message": "Rusiah Cadangan Frase"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Rusiah anjeun cadangan frasa ngajadikeun eta gampang pikeun nyadangkeun tur malikkeun akun anjeun."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WARNING: Kungsi nyingkab cadangan anjeun frasa. Saha jeung ieu frasa bisa nyokot anjeun Éter salawasna."
+  },
+  "secretPhrase": {
+    "message": "Enter your rusiah dua belas kecap frasa di dieu pikeun mulangkeun anjeun kolong."
+  },
+  "securityAndPrivacy": {
+    "message": "Kaamanan & Privasi"
+  },
+  "securitySettingsDescription": {
+    "message": "Setélan privasi jeung dompét siki frase"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Misah unggal kecap jeung single rohangan"
+  },
+  "seedPhraseReq": {
+    "message": "Siki frasa aya 12 kecap lila"
+  },
+  "selectCurrency": {
+    "message": "Pilih Tukeur"
+  },
+  "selectEachPhrase": {
+    "message": "Mangga milih unggal frase dina raraga pikeun mastikeun eta bener."
+  },
+  "selectLocale": {
+    "message": "Pilih Lokalisasi"
+  },
+  "selectType": {
+    "message": "Pilih Tipe"
+  },
+  "send": {
+    "message": "Ngirim"
+  },
+  "sendAmount": {
+    "message": "Ngirim Jumlah"
+  },
+  "sendETH": {
+    "message": "Ngirim ETH"
+  },
+  "sendTokens": {
+    "message": "Ngirim Tokens"
+  },
+  "sentEther": {
+    "message": "dikirim éter"
+  },
+  "sentTokens": {
+    "message": "dikirim tokens"
+  },
+  "separateEachWord": {
+    "message": "Misah unggal kecap jeung single rohangan"
+  },
+  "searchTokens": {
+    "message": "Search Tokens"
+  },
+  "selectAnAccount": {
+    "message": "Pilih hiji Akun"
+  },
+  "selectAnAccountHelp": {
+    "message": "Pilih akun view dina MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Pilih hiji gas nu leuwih luhur fee pikeun ngagancangkeun processing urus anjeun.*"
+  },
+  "selectHdPath": {
+    "message": "Pilih HD Jalur"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Setélan"
+  },
+  "showAdvancedGasInline": {
+    "message": "Maju gas kadali"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Pilih ieu pikeun mintonkeun harga gas jeung wates kadali langsung dina ngirim jeung mastikeun layar."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Show Konversi dina Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Pilih ieu pikeun mintonkeun artos fiat dina Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Mintonkeun Kenop Swasta"
+  },
+  "showHexData": {
+    "message": "Témbongkeun Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Pilih ieu pikeun mintonkeun hex widang data dina ngirim layar"
+  },
+  "sign": {
+    "message": "Asup"
+  },
+  "signatureRequest": {
+    "message": "Signature Request"
+  },
+  "signed": {
+    "message": "Ditandatanganan"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Signature Request"
+  },
+  "somethingWentWrong": {
+    "message": "Beu! Hiji hal nu salah."
+  },
+  "speedUp": {
+    "message": "Laju Nepi"
+  },
+  "speedUpCancellation": {
+    "message": "Laju nepi ieu pembatalan"
+  },
+  "speedUpTransaction": {
+    "message": "Laju nepi urus ieu"
+  },
+  "switchNetworks": {
+    "message": "Pindah Networks"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask State Log"
+  },
+  "stateLogs": {
+    "message": "State Log"
+  },
+  "stateLogsDescription": {
+    "message": "State log ngandung anjeun akun publik alamat tur dikirim transaksi."
+  },
+  "stateLogError": {
+    "message": "Kasalahan dina retrieving state log."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Dompét"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Sambungkeun alat hardware dompét langsung ka komputer anjeun."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Pilih hiji Akun"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Pilih akun nu anjeun hoyong tempo. Anjeun ngan bisa milih hiji dina hiji waktu."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Ngamimitian maké dApps jeung leuwih!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Pamakéan hardware anjeun akun kawas anjeun ngalakukeunana ku nu mana wae nu Ethereum account. Asup ka dApps, ngirim Eth, meuli jeung toko ERC20 tokens jeung Non-Fungible tokens kawas CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Nyimpen ieu frasa barang dina hiji password manager kawas produk 1Password."
+  },
+  "submit": {
+    "message": "Ngalebetkeun"
+  },
+  "submitted": {
+    "message": "Nyerah"
+  },
+  "supportCenter": {
+    "message": "Nganjang urang Ngarojong Puseur"
+  },
+  "symbol": {
+    "message": "Lambang"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Lambang kudu antara 0 jeung 12 karakter."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Ngahurungkeun boga setelan anjeun dijieun cadangana jeung 3Box. Fitur ieu currenty percobaan; pamakéan di risiko anjeun sorangan."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box geus ditumpurkeun alatan kasalahan salila mimiti sync"
+  },
+  "syncWithMobile": {
+    "message": "Nyingkronkeun jeung mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Nyingkronkeun jeung mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Upami anjeun ngan muka MetaMask aplikasi Mobile pikeun kahiji kalina, ngan lengkah dina telepon anjeun."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Nyeken kodeu ieu jeung anjeun MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Pastikeun taya sahijieun sejenna nyaeta nempo layar anjeun lamun anjeun mindai ieu kode"
+  },
+  "syncWithMobileComplete": {
+    "message": "Data anjeun geus nyingkronkeun succesfully. Ngarasakeun MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Katangtuan Pamakéan"
+  },
+  "testFaucet": {
+    "message": "Test Keran"
+  },
+  "thisWillCreate": {
+    "message": "Ieu bakal nyieun hiji anyar dompét jeung siki frase"
+  },
+  "tips": {
+    "message": "Tips"
+  },
+  "to": {
+    "message": "Ka"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token geus geus ditambahkeun."
+  },
+  "tokenContractAddress": {
+    "message": "Token Kontrak Alamat"
+  },
+  "tokenSymbol": {
+    "message": "Token Lambang"
+  },
+  "total": {
+    "message": "Total"
+  },
+  "transaction": {
+    "message": "urus"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Urus encountered an error."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Urus Error. Iwal dialungkeun di kontrak kode."
+  },
+  "transactionErrorNoContract": {
+    "message": "Nyoba nelepon hiji fungsi dina non-kontrak alamat."
+  },
+  "transactionFee": {
+    "message": "Fee Urus"
+  },
+  "transactionTime": {
+    "message": "Waktu Urus"
+  },
+  "transfer": {
+    "message": "Mindahkeun"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transfer antara akun mah"
+  },
+  "transferFrom": {
+    "message": "Transfer Ti"
+  },
+  "troubleTokenBalances": {
+    "message": "Urang geus kasulitan loading anjeun token balances. Anjeun bisa nempo eta ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Cobian deui"
+  },
+  "typePassword": {
+    "message": "Tipe anjeun MetaMask password"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "unit"
+  },
+  "unknown": {
+    "message": "Teu kanyahoan"
+  },
+  "unknownNetwork": {
+    "message": "Nu Teu Dipikanyaho Swasta Jaringan"
+  },
+  "unknownQrCode": {
+    "message": "Error: Urang teu bisa nangtukeun nu QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Hiji hal nu salah...."
+  },
+  "unknownCameraError": {
+    "message": "There was an error while nyoba pikeun ngakses kamera anjeun. Mangga cobian deui..."
+  },
+  "unlock": {
+    "message": "Muka konci"
+  },
+  "unlockMessage": {
+    "message": "Nu desentralisasi web awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs merlukeun hade HTTP/HTTPS awalan."
+  },
+  "usedByClients": {
+    "message": "Dipaké ku rupa-rupa nu beda-beda klien"
+  },
+  "userName": {
+    "message": "Ngaran nu maké"
+  },
+  "validFileImport": {
+    "message": "Anjeun kudu milih a valid file pikeun ngimpor."
+  },
+  "viewAccount": {
+    "message": "View Akun"
+  },
+  "viewinExplorer": {
+    "message": "View di Explorer"
+  },
+  "viewContact": {
+    "message": "View Kontak"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "View on Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Ngadatangan loka web urang"
+  },
+  "walletSeed": {
+    "message": "Dompét Siki"
+  },
+  "welcomeBack": {
+    "message": "Wilujeng Sumping Deui!"
+  },
+  "welcome": {
+    "message": "Wilujeng sumping di MetaMask"
+  },
+  "writePhrase": {
+    "message": "Nulis ieu frasa barang dina hiji sapotong kertas jeung nyimpen di hiji lokasi nu aman. Upami anjeun hoyong komo leuwih kaamanan, nulis eta turun dina sababaraha lembar kertas jeung nyimpen unggal 2 - 3 lokasi nu beda."
+  },
+  "yesLetsTry": {
+    "message": "Enya, hayu urang coba"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Anjeun teu kudu ngidinan kaméra aksés pikeun make fitur ieu."
+  },
+  "yourSigRequested": {
+    "message": "Signature anjeun keur dipénta"
+  },
+  "youSign": {
+    "message": "Anjeun signing"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Swasta anjeun siki frase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nol harga gas dina speed up"
+  }
+}

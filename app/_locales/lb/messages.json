@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Weisen Eingehende Transaktiounen"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Wielt dës benotzen Etherscan ze weisen eingehende Transaktiounen an der Transaktiounen-Lëscht"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Schönherr nëmmen op den Netzwierker."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Verbindungen"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Besichten internetsiten Liesen kënnen Hir Konten"
+  },
+  "addSite": {
+    "message": "Websäit Derbäisetzen"
+  },
+  "addSiteDescription": {
+    "message": "Manuell fügen Se eng Säit e, domat Si Zougang zu Hire Konten, nëtzlech fir eeler dapps"
+  },
+  "connected": {
+    "message": "Verbonnen"
+  },
+  "connectedDescription": {
+    "message": "D ' Lëscht vun besichten internetsiten erlaabt den Zougrëff op Är Adresse"
+  },
+  "privacyModeDefault": {
+    "message": "De Privacy-Modus ass elo standardméisseg aktivéiert"
+  },
+  "contractInteraction": {
+    "message": "Traité Interaktioun"
+  },
+  "clearApprovalData": {
+    "message": "Ewechhuelen Dir all besichten internetsiten"
+  },
+  "reject": {
+    "message": "Ablehnen"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Dës Websäit anfordert, Accès op Är aktuell Kont-Adress. Oppassen Si ëmmer drop Vertrauen, d ' besichten internetsiten, déi Si mat interagéieren."
+  },
+  "about": {
+    "message": "Iwwer"
+  },
+  "aboutSettingsDescription": {
+    "message": "Versioun, support center an contact info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Zougrëff op Är Kamera..."
+  },
+  "account": {
+    "message": "Kont"
+  },
+  "accountDetails": {
+    "message": "Kont-Detailer"
+  },
+  "accountName": {
+    "message": "De Wikië-Numm"
+  },
+  "accountOptions": {
+    "message": "Kont Optiounen"
+  },
+  "accountSelectionRequired": {
+    "message": "Si musse wielen Si e Kont!"
+  },
+  "activityLog": {
+    "message": "de activity log"
+  },
+  "addNetwork": {
+    "message": "Netzwierk Derbäisetzen"
+  },
+  "addRecipient": {
+    "message": "Empfänger Derbäisetzen"
+  },
+  "advanced": {
+    "message": "Fortgeschrëttener"
+  },
+  "advancedSettingsDescription": {
+    "message": "Access-Entwéckler-Funktiounen, download-State-Protokolle, Kont Zerécksetzen, setup testnets an benotzerdefinéiert RPC."
+  },
+  "advancedOptions": {
+    "message": "Erweidert Optiounen"
+  },
+  "addToAddressBook": {
+    "message": "Zum Adressbuch derbäisetzen"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "z.B. John D."
+  },
+  "addAlias": {
+    "message": "Alias derbäisetzen"
+  },
+  "addToken": {
+    "message": "Dobai Vum Token"
+  },
+  "addTokens": {
+    "message": "Dobai Vum Token"
+  },
+  "addSuggestedTokens": {
+    "message": "Fügen Se Virgeschloen Token"
+  },
+  "addAcquiredTokens": {
+    "message": "Fügen Se d ' Token, déi Dir verkaaft hutt, mat hëllef vun MetaMask"
+  },
+  "amount": {
+    "message": "Héicht"
+  },
+  "appDescription": {
+    "message": "E Astraleums Brieftasche an Ärem Browser",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Genehmigen"
+  },
+  "approved": {
+    "message": "Akzeptéiert"
+  },
+  "asset": {
+    "message": "Asset"
+  },
+  "attemptingConnect": {
+    "message": "Versuch, eng Verbindung zu blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "D ' iwwermëttlung vun dëse Versuch net garantieren, Hir ursprénglech Transaktion storniert ginn. Wann d ' Stornierung Versuch erfollegräich ass, gëtt de Betrag vun der Transaktionsgebühr virun."
+  },
+  "attributions": {
+    "message": "Zuschreibungen"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Leeën Dir d ' Leerlaufzeit an Minutten virun MetaMask gëtt automatesch Onse"
+  },
+  "average": {
+    "message": "Duerchschnëttlech"
+  },
+  "back": {
+    "message": "Zréck"
+  },
+  "backToAll": {
+    "message": "Zréck zu Allen"
+  },
+  "backupApprovalNotice": {
+    "message": "Savoie Si Hir Geheime Wiederherstellungs-code ze halen Si Hir Brieftasche an d ' Mëttel sécher."
+  },
+  "backupApprovalInfo": {
+    "message": "Dësen secret-code ass erfuerdert, fir erholen Hir Brieftasche zu Fall verléieren Hiert Instrument, Äert Passwuert vergiess hutt, nees z ' iwwerspille MetaMask, oder wëllt Dir den Accès op Hir wallet op en anert Instrument."
+  },
+  "backupNow": {
+    "message": "Elo savoie"
+  },
+  "balance": {
+    "message": "Balance"
+  },
+  "balanceOutdated": {
+    "message": "Gläichgewiicht kënnen collage sinn"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Unzureichende balance fir Stroum gas Total"
+  },
+  "basic": {
+    "message": "Basic"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Block Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Benotzt Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Upassen Transaktion nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Benotzerdefinéiert Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Äre Browser gëtt net ënnerstëtzt..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask ass entworf a gebaut a Kalifornien."
+  },
+  "buyWithWyre": {
+    "message": "Kafen ETH mat Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre erméiglecht et Iech, eng Kreditkaart ze hinterlegen ETH direkt an Hire MetaMask-Kont."
+  },
+  "buyCoinSwitch": {
+    "message": "Kafen CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch ass d ' one-stop-de rothschild gefalen ze tauschen méi wéi 300 cryptocurrencies am beschten Präis."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Aus"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Op"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Ofbriechen"
+  },
+  "cancelAttempt": {
+    "message": "Versuch Ofbriechen"
+  },
+  "cancellationGasFee": {
+    "message": "Lizenz Gas-Taxe"
+  },
+  "cancelled": {
+    "message": "Ofgesot"
+  },
+  "chainId": {
+    "message": "Ketten-ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Klickt hei fir ze enthüllen geheim Wierder"
+  },
+  "close": {
+    "message": "An der Géigend"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Si brauchen MetaMask op Google Chrome, fir d ' Verbindung zu Hirer Hardware Wallet."
+  },
+  "confirm": {
+    "message": "Bestätegen"
+  },
+  "confirmed": {
+    "message": "Bestätegt"
+  },
+  "confirmPassword": {
+    "message": "Passwuert Bestätegen"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Bestätegt Hir Geheime Backup-Saz"
+  },
+  "congratulations": {
+    "message": "Herzlichen Filmregisseuren"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect-Hardware-Wallet"
+  },
+  "connect": {
+    "message": "Verbannen"
+  },
+  "connectRequest": {
+    "message": "Connect- / Quelltext Änneren"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "D ' Verbindung zu Kovan Test-Netzwierk"
+  },
+  "connectingToMainnet": {
+    "message": "Verbindung zum Haapt-Netzwierk vum Astraleums"
+  },
+  "connectingToRopsten": {
+    "message": "D ' Verbindung zu Ropsten Test-Netzwierk"
+  },
+  "connectingToRinkeby": {
+    "message": "D ' Verbindung zu Rinkeby Test-Netzwierk"
+  },
+  "connectingToLocalhost": {
+    "message": "D ' Verbindung zu Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "D ' Verbindung zu Goerli Test-Netzwierk"
+  },
+  "contacts": {
+    "message": "Kontakter"
+  },
+  "contactsSettingsDescription": {
+    "message": "Dobäisetzen, Änneren, ewechhuelen a verwalten Si Hir Kontakter"
+  },
+  "continueToWyre": {
+    "message": "Weider Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Weider CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Traité Bereitstellung"
+  },
+  "conversionProgress": {
+    "message": "Ëmwandlung an Aarbecht"
+  },
+  "copiedButton": {
+    "message": "Inspiréiere"
+  },
+  "copiedExclamation": {
+    "message": "Kopéiert!"
+  },
+  "copy": {
+    "message": "Kopéieren"
+  },
+  "copyAddress": {
+    "message": "Kopéiert d 'Adress an d' Tëschentablag"
+  },
+  "copyTransactionId": {
+    "message": "Kopéiert d ' Transaktions-ID"
+  },
+  "copiedTransactionId": {
+    "message": "Kopéiert Transaktions-ID"
+  },
+  "copyToClipboard": {
+    "message": "An d ' Tëschentablag kopéieren"
+  },
+  "copyButton": {
+    "message": " Kopéieren "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Bauen"
+  },
+  "createAccount": {
+    "message": "Kont Erstellen"
+  },
+  "createAWallet": {
+    "message": "Maachen Se eng Geldbörse"
+  },
+  "createPassword": {
+    "message": "Passwuert Maachen"
+  },
+  "currencyConversion": {
+    "message": "Währungsumrechnung"
+  },
+  "currentLanguage": {
+    "message": "Aktuell Sprooch"
+  },
+  "customGas": {
+    "message": "Upassen Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Erhéijung vun der Taxe kann sech reduzéieren, Durchlaufzeiten, awer et ass net garantéiert."
+  },
+  "customToken": {
+    "message": "Custom Token"
+  },
+  "customRPC": {
+    "message": "Benotzerdefinéiert RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Dezimalzahlen muss op d ' mannst 0 an net méi als 36."
+  },
+  "decimal": {
+    "message": "Dezimalstellen Genauegkeet"
+  },
+  "defaultNetwork": {
+    "message": "D ' Standard-Netzwierk fir Äther-Transaktiounen ass Main Net."
+  },
+  "delete": {
+    "message": "Läschen"
+  },
+  "deleteAccount": {
+    "message": "Konto Läschen"
+  },
+  "deposit": {
+    "message": "Robert mugabe"
+  },
+  "depositEther": {
+    "message": "Einzahlung Äther"
+  },
+  "details": {
+    "message": "Detailer"
+  },
+  "directDepositEther": {
+    "message": "Direkt Einzahlung Äther"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Wann Dir schonn iwwer e puer Äther, deen Schnellsten Wee, fir Ether an Hirem neie Geldbeutel duerch direkt Einzahlung."
+  },
+  "dismiss": {
+    "message": "Entlooss"
+  },
+  "done": {
+    "message": "Gedon"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Lued Se dat Geheimnis Backup-Saz an haalt Dir et sécher gespäichert op engem externe verschlüsselten Festplack oder Speichermedium."
+  },
+  "downloadStateLogs": {
+    "message": "Download-State-Protokolle"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Geläscht"
+  },
+  "edit": {
+    "message": "Änneren"
+  },
+  "editContact": {
+    "message": "Kontakt Änneren"
+  },
+  "emailUs": {
+    "message": "E-Mail eis!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Si hunn den test bestanen - hale Si Hir seedphrase sécher, et ass Hir Verantwortung!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tipps fir d ' Aufbewahrung sécher"
+  },
+  "endOfFlowMessage3": {
+    "message": "Späichert e backup op ville Plazen."
+  },
+  "endOfFlowMessage4": {
+    "message": "Ni Kapital vun der Saz mat niemandem."
+  },
+  "endOfFlowMessage5": {
+    "message": "Vorsicht phishing! MetaMask ni spontan Froen fir Hir Saatgut-Saz."
+  },
+  "endOfFlowMessage6": {
+    "message": "Wann Si brauchen, fir eng Sicherungskopie Hirer seed erëm, kënne Si et an Astellungen -> Sécherheet."
+  },
+  "endOfFlowMessage7": {
+    "message": "Wann Dir jeemools hunn Froen oder fannen Si eppes fischig, E-Mail support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask net wiederherstellen, Hir seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Gitt méi doriwwer gewuer."
+  },
+  "endOfFlowMessage10": {
+    "message": "All Gedon,"
+  },
+  "ensRegistrationError": {
+    "message": "Feeler an ENS Numm-Registréierung"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS Numm, déi net op d ' aktuell Netzwierk. Probéieren Se d ' Ëmstellung op Haapt-Astraleums Netzwierk."
+  },
+  "enterAnAlias": {
+    "message": "Gitt e alias"
+  },
+  "enterPassword": {
+    "message": "Gitt d ' e Passwuert"
+  },
+  "enterPasswordContinue": {
+    "message": "Gitt d ' Passwuert an, fir fortzufahren"
+  },
+  "ethereumPublicAddress": {
+    "message": "Astraleums Public Address"
+  },
+  "etherscanView": {
+    "message": "\"Musse uweisen\" op Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Geschätzten Bearbeitungszeit"
+  },
+  "expandView": {
+    "message": "Vergréisseren Si D ' Meenung"
+  },
+  "exportPrivateKey": {
+    "message": "Private Schlëssel Exportéieren"
+  },
+  "failed": {
+    "message": "Fehlgeschlagen"
+  },
+  "fast": {
+    "message": "Séier"
+  },
+  "faster": {
+    "message": "Séier"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Dëst Instrument ignoréieren"
+  },
+  "from": {
+    "message": "Aus"
+  },
+  "fromShapeShift": {
+    "message": "Vun ShapeShift"
+  },
+  "functionType": {
+    "message": "Funktioun Typ"
+  },
+  "gasLimit": {
+    "message": "Gas Limit"
+  },
+  "gasLimitCalculation": {
+    "message": "Mir berechnen de virgeschloene gas-limit, baséierend op network Erfolleg Präisser."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gas limit ass d ' maximal Zuel vun den Eenheeten an gas, déi Si bereet sinn, ze verbrauche."
+  },
+  "gasLimitTooLow": {
+    "message": "Gas-limit muss op d ' mannst 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Gebraucht"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Präis Extrem Niddreg"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gaspreis bestëmmt d ' Quantitéit vun der Äther, den Si bereet sinn ze bezuelen fir all Eenheet vu gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas-Präis"
+  },
+  "gasPriceCalculation": {
+    "message": "Mir berechnen de virgeschloene gas-Präisser, baséierend op network Erfolleg Präisser."
+  },
+  "general": {
+    "message": "Allgemeng"
+  },
+  "generalSettingsDescription": {
+    "message": "Währungsumrechnung, primär Währung, d ' Sprooch, blockies identicon"
+  },
+  "getEther": {
+    "message": "Kréien Äther"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Huelen Si Sech Hëllef."
+  },
+  "getStarted": {
+    "message": "Eraklammen"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Mir si glécklech, Iech ze gesinn."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware-wallet verbonnen"
+  },
+  "hardwareWallets": {
+    "message": "Verbannen Si eng hardware-wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Wielt eng hardware-Brieftasche, déi Si benotzen wëllt, mat MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "do",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex-Daten"
+  },
+  "hide": {
+    "message": "Ausblenden"
+  },
+  "hideToken": {
+    "message": "Ausblenden Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Geschicht"
+  },
+  "import": {
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Musse Import"
+  },
+  "importAccountMsg": {
+    "message": " Importierte Konten ginn net am Zesummenhank mat Hirer ufanks MetaMask-Kont seedphrase. Gitt méi doriwwer gewuer iwwer d ' importierten Konten "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importéieren Si e Kont bei Seed"
+  },
+  "importWallet": {
+    "message": "Import Wallet"
+  },
+  "importYourExisting": {
+    "message": "Importéieren Si Hir bestinn wallet mat 12 seed-Wuert"
+  },
+  "imported": {
+    "message": "Anere sproochen",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Import mat Kont seed"
+  },
+  "infoHelp": {
+    "message": "Info & Hëllef"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Hir éischt Transaktion gouf bestëmmt duerch d ' Netz. Klickt op OK, fir zréck ze goen."
+  },
+  "insufficientBalance": {
+    "message": "Unzureichende balance."
+  },
+  "insufficientFunds": {
+    "message": "Unzureichende finanziell Mëttel."
+  },
+  "insufficientTokens": {
+    "message": "Net genuch Token."
+  },
+  "invalidAddress": {
+    "message": "Ungültige Adress"
+  },
+  "invalidAddressRecipient": {
+    "message": "Empfänger-Adress ass ongëlteg"
+  },
+  "knownAddressRecipient": {
+    "message": "Bekannt Traité Adress."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Net ETH-Netzwierk, stellen Si op Buchstawen"
+  },
+  "invalidInput": {
+    "message": "Ungültige Maacht."
+  },
+  "invalidRPC": {
+    "message": "Ungültige RPC-UM"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Ungültiger Block-Explorer mat der VIRGOENSWEIS"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ungültige seed"
+  },
+  "jsonFile": {
+    "message": "JSON-Datei",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test-Netzwierk"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Gitt méi doriwwer gewuer"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Si brauchen, fir benotzen Si Hir Lescht Rechnung, ier Dir en neie dobai."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Jo, loost eis ageriicht kréien!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Lénks"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live-Gaspreis Virausoe"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Be-Token..."
+  },
+  "loadMore": {
+    "message": "Méi Lueden"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Log-In"
+  },
+  "logout": {
+    "message": "Onse"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout-Zäit ass ze grouss"
+  },
+  "mainnet": {
+    "message": "Main Astraleums Netzwierk"
+  },
+  "memorizePhrase": {
+    "message": "Erënneren Si sech dëse Saz."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menü"
+  },
+  "message": {
+    "message": "Homepage."
+  },
+  "metamaskDescription": {
+    "message": "Och Si an den Dezentralen Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Saatgut Wierder"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask-Versioun"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Wann ech gelift gitt Äert Passwuert ze bestätegen, et ass Se!"
+  },
+  "myAccounts": {
+    "message": "Mengen Konten"
+  },
+  "myWalletAccounts": {
+    "message": "Mengen Wallet-Konten"
+  },
+  "myWalletAccountsDescription": {
+    "message": "All Är MetaMask ervirgeruff Konten ginn automatesch zu dësem Abschnitt Derbäi."
+  },
+  "mustSelectOne": {
+    "message": "Musse wielen Si op d ' mannst 1-token."
+  },
+  "needEtherInWallet": {
+    "message": "Fir d ' Interaktioun mat dezentralen Applikatiounen mat MetaMask, musse Si Äther an de Geldbeutel."
+  },
+  "needImportFile": {
+    "message": "Si mussen eng Datei auswielen, importéieren.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Kann net schécken negativ Zuele vun der ETH."
+  },
+  "networkName": {
+    "message": "Netzwierk-Numm"
+  },
+  "networks": {
+    "message": "Netzwierker"
+  },
+  "networkSettingsDescription": {
+    "message": "Dobai a Änneren, benotzerdefinéiert RPC-Netzwierker"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Neie Kont"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Nei Adress erkannt! Klickt hei fir zu Ärem Adressbuch."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Neie Kontakt"
+  },
+  "newContract": {
+    "message": "Neien Traité"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Neit Netzwierk"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Neen, ech hunn schonn en seed"
+  },
+  "protectYourKeys": {
+    "message": "Schützen Si Hir Schlëssel!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Sidd virsiichteg mat Hire Som-Saz — et gëtt Rapporten, besichten internetsiten, déi versichen ze imitieren, MetaMask. MetaMask Froen Si ni no Hirem seed!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Hale Si Hire Saz sécher. Wann Dir gesinn, well et ass dach wat faul, oder Si sech net sécher sinn iwwer eng websäit, E-Mail support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Nei RPC-UM"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Nei Zomme"
+  },
+  "newTransactionFee": {
+    "message": "Nei Transaktion Taxe"
+  },
+  "next": {
+    "message": "Weider"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Keng Adress zu dësem Numm."
+  },
+  "noDeposits": {
+    "message": "Keng Oflagerungen kréien"
+  },
+  "noConversionRateAvailable": {
+    "message": "Keng Conversion-Rate Zur Verfügung"
+  },
+  "noTransactions": {
+    "message": "Si hu keng Transaktiounen"
+  },
+  "noThanks": {
+    "message": "Nee Merci"
+  },
+  "notEnoughGas": {
+    "message": "Net Genuch Gas"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam net fonnt"
+  },
+  "noWebcamFound": {
+    "message": "Äre computer d ' webcam net fonnt gouf. W. e. g probéieren Si et nach eng kéier."
+  },
+  "ofTextNofM": {
+    "message": "de"
+  },
+  "orderOneHere": {
+    "message": "Fir e Trezor oder Ledger an datt Si Hir Sue zu cold storage"
+  },
+  "origin": {
+    "message": "Hierkonft"
+  },
+  "parameters": {
+    "message": "Parameter"
+  },
+  "participateInMetaMetrics": {
+    "message": "Participatioun un MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Participatioun un MetaMetrics, déi eis hëllefen, besser MetaMask"
+  },
+  "password": {
+    "message": "Passwuert"
+  },
+  "passwordsDontMatch": {
+    "message": "Passwörter net Festgehale"
+  },
+  "passwordNotLongEnough": {
+    "message": "Passwuert net laang genuch"
+  },
+  "pastePrivateKey": {
+    "message": "Fügen Se Hire private Schlëssel-string hei:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Fügen Se Hir seed-hei!"
+  },
+  "pending": {
+    "message": "ausstehend"
+  },
+  "personalAddressDetected": {
+    "message": "Senger Adress erkannt. Agank vun der token-Traité-Adress."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primär Währung"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Datenschutzerklärung"
+  },
+  "privateKey": {
+    "message": "Private Schlëssel",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Warnungen: Ni dësem Schlëssel. Iergend een mat Hirem private Schlëssel klauen kann all Vermögenswerte an Hirem Kont."
+  },
+  "privateNetwork": {
+    "message": "Biographie Netzwierk"
+  },
+  "qrCode": {
+    "message": "Uweisen QR-Code"
+  },
+  "queue": {
+    "message": "Warteschlange"
+  },
+  "readdToken": {
+    "message": "Kënnt Dir dësen token zréck an d ' Zukunft, andeems Dir op \"Add token\" an Hirem Konten-Optiounen-Menü."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Empfänger-Adress"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "All Ablehnen"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Ofgeleent"
+  },
+  "reset": {
+    "message": "Zerécksetzen"
+  },
+  "resetAccount": {
+    "message": "Kont Zerécksetzen"
+  },
+  "resetAccountDescription": {
+    "message": "Zerécksetzen Hire Kont läschen, ginn Hir Transaktion Geschicht."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Mech spéider erënneren"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Wiederherstellen Hirem Mëssbraucht mat Seed"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "Technesch, déi drop waard erkannt ze ginn"
+  },
+  "required": {
+    "message": "Obligatoresch"
+  },
+  "restore": {
+    "message": "Wiederherstellen"
+  },
+  "revealSeedWords": {
+    "message": "Enthüllen Saatgut Wierder"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Seed"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Wann Si sech jeemools mäi Browser oder d ' réckelen vu Computeren, musse Si déi seed-Zougrëff op Är Konten. Späichert Se iergendwou sécher a geheim."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NET deelen déi bleiwe mat all!!!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Dës Wierder kënne gebraucht ginn, fir ze klauen all Är Konten."
+  },
+  "revert": {
+    "message": "Wiederherstellen"
+  },
+  "remove": {
+    "message": "Ewechhuelen"
+  },
+  "removeAccount": {
+    "message": "Kont ewechhuelen"
+  },
+  "removeAccountDescription": {
+    "message": "Dëse Kont gëtt ewech ginn, aus der Brieftasche. W. e. g stellen Si sécher, datt Si déi éischt seed-oder private Schlëssel fir d ' importierte Kont, ier Si weiderfueren. Kënnen Se importéieren oder erstellen, d 'accounts nees aus dem Kont\" drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby-Test-Netzwierk"
+  },
+  "ropsten": {
+    "message": "Ropsten Test-Netzwierk"
+  },
+  "goerli": {
+    "message": "Goerli Test-Netzwierk"
+  },
+  "save": {
+    "message": "Späicheren"
+  },
+  "slow": {
+    "message": "Lues"
+  },
+  "slower": {
+    "message": "Lues"
+  },
+  "saveAsCsvFile": {
+    "message": "Späicheren als CSV-Datei"
+  },
+  "scanInstructions": {
+    "message": "Placéieren Si den QR-code virun Hir Kamera"
+  },
+  "scanQrCode": {
+    "message": "QR-Code Scannen"
+  },
+  "search": {
+    "message": "Sichen"
+  },
+  "searchResults": {
+    "message": "Recherche"
+  },
+  "secretBackupPhrase": {
+    "message": "Geheimnis Backup-Saz"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Hiert Geheimnis backup-Saz mécht et einfach ze sécheren a wiederherstellen Hirem Mëssbraucht."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WARNUNGEN: Ni Hir backup-Saz. Ween mat dësem Saz kënnen Hire Ether fir ëmmer."
+  },
+  "secretPhrase": {
+    "message": "Gitt Är geheim zwielef Wort Saz hei zum wiederherstellen der vault."
+  },
+  "securityAndPrivacy": {
+    "message": "Sécherheet & Dateschutz"
+  },
+  "securitySettingsDescription": {
+    "message": "D ' privatsphär-Astellunge an wallet-seed"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Trennen Dir all Wuert mat engem eenzege Raum"
+  },
+  "seedPhraseReq": {
+    "message": "Som Sätz sinn 12 Wierder laang sinn"
+  },
+  "selectCurrency": {
+    "message": "Währung Wielen"
+  },
+  "selectEachPhrase": {
+    "message": "W. e. g wielen Dir all Saz, fir sécherzestellen, datt et korrekt ass."
+  },
+  "selectLocale": {
+    "message": "Gebietsschema Auswielen"
+  },
+  "selectType": {
+    "message": "Wielt Typ"
+  },
+  "send": {
+    "message": "Schécken"
+  },
+  "sendAmount": {
+    "message": "Schécken Betrag"
+  },
+  "sendETH": {
+    "message": "Send-ETH"
+  },
+  "sendTokens": {
+    "message": "Schécken-Token"
+  },
+  "sentEther": {
+    "message": "äther geschéckt"
+  },
+  "sentTokens": {
+    "message": "geschéckt Token"
+  },
+  "separateEachWord": {
+    "message": "Trennen Dir all Wuert mat engem eenzege Raum"
+  },
+  "searchTokens": {
+    "message": "Sich Token"
+  },
+  "selectAnAccount": {
+    "message": "Wielt e Kont"
+  },
+  "selectAnAccountHelp": {
+    "message": "Wielt de Kont, fir an MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Wielt eng héich gas-Taxe ze vergréisseren d ' Beaarbechtung vun Hirer Transaktion.*"
+  },
+  "selectHdPath": {
+    "message": "Wielt HD-Pad"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Astellungen"
+  },
+  "showAdvancedGasInline": {
+    "message": "Advanced gas-Kontrollen"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Commune Se dat, fir ze weisen, gas-Präis-a limit-Ufänkt direkt op der schécken a bestätegt Bildschirme."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Weisen Konvertierung op Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Commune Se dat, fir ze weisen fiat Ëmstellung op Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Weisen, Privat Keys"
+  },
+  "showHexData": {
+    "message": "Show Hex Date"
+  },
+  "showHexDataDescription": {
+    "message": "Commune Se dat, fir ze weisen hex-Daten-Feld um Bildschierm schécken"
+  },
+  "sign": {
+    "message": "Mellen"
+  },
+  "signatureRequest": {
+    "message": "Signatur Ufro"
+  },
+  "signed": {
+    "message": "Verfollegen"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Signatur Ufro"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Ass eppes schief."
+  },
+  "speedUp": {
+    "message": "Vergréisseren"
+  },
+  "speedUpCancellation": {
+    "message": "Vitesse bis déi Stornierung"
+  },
+  "speedUpTransaction": {
+    "message": "Vitesse bis déi Transaktion"
+  },
+  "switchNetworks": {
+    "message": "Schalteren Netzwierker"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask-State-Protokolle"
+  },
+  "stateLogs": {
+    "message": "State-Protokolle"
+  },
+  "stateLogsDescription": {
+    "message": "State-Protokolle enthält Hiren ëffentleche musse-Adressen a kuckt Transaktiounen."
+  },
+  "stateLogError": {
+    "message": "Feeler beim abrufen vun Status-logs."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect-Hardware-Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Verbannen Si Hire hardware-wallet direkt op Äre computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Wielt e Kont"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Wielt de Kont, dee Si uweisen wëllt. Si kënnen nëmme wielen Si eng zu engem Zäitpunkt."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Lass mat dApps a méi!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Benotzen Se Hir hardware-Kont wéi all aner Kont vum Astraleums. Mellen Si sech an dApps, schécken Eth, kafen a späicheren ERC20 Token an Net-Vertretbare-Token wéi CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Späicheren Si dëse Saz an e Passwuert-manager wéi 1Password."
+  },
+  "submit": {
+    "message": "Schécken"
+  },
+  "submitted": {
+    "message": "Applikatiounen"
+  },
+  "supportCenter": {
+    "message": "Besicht eise Support Center"
+  },
+  "symbol": {
+    "message": "Symbol"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol muss tëschent 0 an 12 Zeechen."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Veröffentlechen Se Hir Astellungen sécher mat 3Box. Dës Funktioun ass an der Zäit experimentell; Gebrauch op eege Gefor."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box gouf opgrond vun engem Feeler ausgeschalt, während der éischter Synchroniséierung"
+  },
+  "syncWithMobile": {
+    "message": "Sync mat mobil"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync mat mobil"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Wann Dir gitt einfach déi MetaMask Mobil-app fir d ' éischt kéier, Kënnt Dir einfach de Schrëtt op Ärem Telefon."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scannen Si dëse code mat Hirem MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Plazen Si sécher, datt kee soss op der Sich op Ärem Bildschierm, wann Se Scannen Si dëse code"
+  },
+  "syncWithMobileComplete": {
+    "message": "Hir Donnéeë goufen erfollegräich synchroniséiert. Genéisst d ' MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Benotzungsconditiounen"
+  },
+  "testFaucet": {
+    "message": "Test Wasserhahn"
+  },
+  "thisWillCreate": {
+    "message": "Sou maachen Si en neie Geldbeutel a seed"
+  },
+  "tips": {
+    "message": "Tipps"
+  },
+  "to": {
+    "message": "Zu"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token huet schonn Eropgelueden."
+  },
+  "tokenContractAddress": {
+    "message": "Token Vertrag Adress"
+  },
+  "tokenSymbol": {
+    "message": "Token-Symbol"
+  },
+  "total": {
+    "message": "Am ganzen"
+  },
+  "transaction": {
+    "message": "Transaktion"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "D ' Transaktion ass e Feeler geschitt."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Transaktion Fehlermeldung. Ausser am Vertrags-code."
+  },
+  "transactionErrorNoContract": {
+    "message": "Versicht, ruffe Si eng Funktioun op engem net-Traité-Adress."
+  },
+  "transactionFee": {
+    "message": "Transaktionsgebühr"
+  },
+  "transactionTime": {
+    "message": "Transaktion Zäit"
+  },
+  "transfer": {
+    "message": "Transfer"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transfer tëscht mengen Konten"
+  },
+  "transferFrom": {
+    "message": "Transfer Aus"
+  },
+  "troubleTokenBalances": {
+    "message": "Mir hate Problemer, d ' lued Är token-Suen. Dir kënnt Se gesinn ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Probéieren Si et nees"
+  },
+  "typePassword": {
+    "message": "Gitt Äert Passwuert MetaMask"
+  },
+  "unapproved": {
+    "message": "Net registréiert"
+  },
+  "units": {
+    "message": "Eenheeten"
+  },
+  "unknown": {
+    "message": "Onbekannt"
+  },
+  "unknownNetwork": {
+    "message": "Onbekannt Privat Netzwierk"
+  },
+  "unknownQrCode": {
+    "message": "Feeler: Mir konnten net erkennen, datt QR-code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Ass eppes schief...."
+  },
+  "unknownCameraError": {
+    "message": "Et gouf e Feeler beim Zougrëff op Hir Kamera. W. e. g probéieren Si et nees..."
+  },
+  "unlock": {
+    "message": "Déblockéieren"
+  },
+  "unlockMessage": {
+    "message": "D ' dezentrale web erwaart"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs erfuerderen, déi entspriechend CLIENT/HTTPS-Prefix."
+  },
+  "usedByClients": {
+    "message": "Benotzt duerch eng Villzuel vun ënnerschiddleche ack"
+  },
+  "userName": {
+    "message": "Benotzernumm"
+  },
+  "validFileImport": {
+    "message": "Si musse wielen Si eng richteg Datei ze importéieren."
+  },
+  "viewAccount": {
+    "message": "\"Musse Uweisen"
+  },
+  "viewinExplorer": {
+    "message": "Usiicht am Explorer"
+  },
+  "viewContact": {
+    "message": "Kontakt Uweisen"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Bléck op Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Besicht eis websäit"
+  },
+  "walletSeed": {
+    "message": "Wallet-Seed"
+  },
+  "welcomeBack": {
+    "message": "Wëllkomm Zréck!"
+  },
+  "welcome": {
+    "message": "Wëllkomm zu MetaMask"
+  },
+  "writePhrase": {
+    "message": "Schreiwen Dir dëse Saz op en Stéck Pabeier a späicheren Se an engem séchere op der Plaz. Wann Si wëllen och méi Sécherheet, schreift Si op e puer Stécker vun Pabeier, a späicheren Se all an 2 - 3 verschiddene Plazen."
+  },
+  "yesLetsTry": {
+    "message": "Jo, loost ons probéieren"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Si mussen zulassen, datt d ' Kamera zougräifen fir dës Funktioun ze benotzen."
+  },
+  "yourSigRequested": {
+    "message": "Hir Ënnerschrëft gëtt angefordert"
+  },
+  "youSign": {
+    "message": "Si Ënnerschreiwen"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Hir privat seed"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Null-gas-Präis, deen op speed up"
+  }
+}

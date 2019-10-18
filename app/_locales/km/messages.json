@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "បង្ហាញចូលប្រតិបត្តិ"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "ជ្រើសវានេះដើម្បីប្រើ Etherscan ដើម្បីបង្ហាញចូលប្រតិបត្តិនៅក្នុងប្រតិបត្តិបញ្ជី"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "តារាចប្រើបានតែនៅលើ Ethereum បណ្តាញ។"
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "តភ្ជាប់"
+  },
+  "connectionsSettingsDescription": {
+    "message": "តំបន់អនុញ្ញាតឱ្យអានរបស់គណនី"
+  },
+  "addSite": {
+    "message": "បន្ថែមតំបន់"
+  },
+  "addSiteDescription": {
+    "message": "ដៃបន្ថែមបណ្តាញមួយដើម្បីអនុញ្ញាតវាចូលទៅគណនីរបស់អ្នក,ប្រយោជន៍សម្រាប់វ័យចំណាស់ dapps"
+  },
+  "connected": {
+    "message": "តភ្ជាប់"
+  },
+  "connectedDescription": {
+    "message": "បញ្ជីនៃតំបន់អនុញ្ញាតឲ្យចូលដំណើររបស់អ្នកដ្ឋាន"
+  },
+  "privacyModeDefault": {
+    "message": "ឯកជនរបៀបគឺជាឥឡូវនេះអនុញ្ញាតដោយលំនាំដើម"
+  },
+  "contractInteraction": {
+    "message": "កិច្ចសន្យាអន្តរកម្ម"
+  },
+  "clearApprovalData": {
+    "message": "យកចេញទាំងអស់តំបន់"
+  },
+  "reject": {
+    "message": "ច្រានចោល"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "តំបន់នេះត្រូវស្នើសុំចូលទៅមើលបច្ចុប្បន្នរដ្ឋានគណនី។ តែងតែធ្វើឱ្យប្រាកដថាអ្នកជឿទុកចិត្តរបណ្ដាញដែលអ្នកទាក់ទងជាមួយ។"
+  },
+  "about": {
+    "message": "អំពី"
+  },
+  "aboutSettingsDescription": {
+    "message": "កំណែ,ការគាំទ្រមជ្ឈមណ្ឌល,និងទាក់ទងព័ត៌មាន។"
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "ការចូលរបស់កាមេរ៉ា។។។"
+  },
+  "account": {
+    "message": "គណនី"
+  },
+  "accountDetails": {
+    "message": "គណនីលម្អិត"
+  },
+  "accountName": {
+    "message": "ឈ្មោះគណនី"
+  },
+  "accountOptions": {
+    "message": "ជម្រើសគណនី"
+  },
+  "accountSelectionRequired": {
+    "message": "អ្នកត្រូវការដើម្បីជ្រើសគណនីមួយ!"
+  },
+  "activityLog": {
+    "message": "សកម្មភាពចូល"
+  },
+  "addNetwork": {
+    "message": "បន្ថែមបណ្តាញ"
+  },
+  "addRecipient": {
+    "message": "បន្ថែមអ្នកទទួល"
+  },
+  "advanced": {
+    "message": "កម្រិតខ្ពស់"
+  },
+  "advancedSettingsDescription": {
+    "message": "ដំណើរអភិវឌ្ឍន៍ក្ខណៈពិសេស,ទាញយករដ្ឋកំណត់ហេតុ,កំណត់គណនី,រៀបចំ testnets និងផ្ទាល់ខ្លួន RPC។"
+  },
+  "advancedOptions": {
+    "message": "ជម្រើសកម្រិតខ្ពស់"
+  },
+  "addToAddressBook": {
+    "message": "បន្ថែមទៅសៀវភៅអាស័យដ្ឋាន"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "ឧយ៉ូហាន D។"
+  },
+  "addAlias": {
+    "message": "បន្ថែមឈ្មោះក្លែង"
+  },
+  "addToken": {
+    "message": "បន្ថែមសញ្ញា"
+  },
+  "addTokens": {
+    "message": "បន្ថែមថូខឹន"
+  },
+  "addSuggestedTokens": {
+    "message": "បន្ថែមការស្នើថូខឹន"
+  },
+  "addAcquiredTokens": {
+    "message": "បន្ថែមថូខឹនដែលអ្នកបានទិញដោយប្រើ MetaMask"
+  },
+  "amount": {
+    "message": "ចំនួន"
+  },
+  "appDescription": {
+    "message": "ការ Ethereum នៅក្នុងកាបូបរបស់កម្មវិធីរុ",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "អនុម័ត"
+  },
+  "approved": {
+    "message": "អនុម័ត"
+  },
+  "asset": {
+    "message": "ទ្រព្យ"
+  },
+  "attemptingConnect": {
+    "message": "ប៉ុនប៉ងដើម្បីភ្ជាប់ទៅត៍។"
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "ការដាក់ស្នើនេះប៉ុនប៉ងមិនធានាដើមរបស់ប្រតិបត្តិការនឹងត្រូវបានលុបចោល។ ប្រសិនបើការលុបចោប៉នជោគជ័យ,អ្នកនឹងត្រូវបានចោទប្រតិបត្តិការថ្លៃសេវាខាងលើ។"
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "កំណត់ពេលវេលាទំនេរនៅក្នុងនាទីមុនពេល MetaMask ស្វ័យប្រវត្តិចេញ"
+  },
+  "average": {
+    "message": "ជាមធ្យម"
+  },
+  "back": {
+    "message": "ត្រឡប់"
+  },
+  "backToAll": {
+    "message": "ត្រឡប់ទៅទាំងអស់"
+  },
+  "backupApprovalNotice": {
+    "message": "បម្រុងរបស់សម្ងាត់រងើបលេខកូដដើម្បីរក្សាកាបូបលុយនិងថវត្ថិភាព។"
+  },
+  "backupApprovalInfo": {
+    "message": "សម្ងាត់នេះគឺជាកូដទាមទារដើម្បីសង្គ្រោះកាបូបលុយក្នុងករណីអ្នកបាត់បង់របស់ឧបករណ៍ភ្លេងរបស់ពាក្យសម្ងាត់,មានការឡើងវិញ-ដំឡើង MetaMask,ឬចង់ចូលដំណើររបស់អ្នកកាបូបនៅលើឧបករណ៍ផ្សេងទៀត។"
+  },
+  "backupNow": {
+    "message": "បម្រុងឥឡូវនេះ"
+  },
+  "balance": {
+    "message": "តុល្យការ"
+  },
+  "balanceOutdated": {
+    "message": "តុល្យការអាចត្រូវបានហួសសម័យ"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "គ្រប់គ្រាន់តុល្យសម្រាប់បច្ចុប្បន្នឧស្ម័នសរុប"
+  },
+  "basic": {
+    "message": "មូលដ្ឋាន"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "ប្លុករុក"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "ប្រើ Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "ប្ដូរប្រតិបត្តិកា nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "ផ្ទាល់ខ្លួន Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "កម្មវិធីរុករគឺមិនគាំទ្រ។។។"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask នរចនាឡើងនិងកសាងឡើងនៅក្នុងកាលីហ្វញ៉ា។"
+  },
+  "buyWithWyre": {
+    "message": "ទិញ ETH ជាមួយនឹង Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre អនុញ្ញាតឱ្យអ្នកប្រើប្រាស់កាតឥណទានដើម្បីដាក់ ETH ងស្ដាំនៅក្នុងរបស់ MetaMask គណនី។"
+  },
+  "buyCoinSwitch": {
+    "message": "ទិញនៅលើ CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch គឺជាការមួយបញ្ឈប់ទិសដៅដើម្បីផ្លាស់ប្តូរច្រើនជាង ៣០០ cryptocurrencies នៅដ៏ល្អបំផុតត្រា។"
+  },
+  "bytes": {
+    "message": "បៃ"
+  },
+  "off": {
+    "message": "បិទ"
+  },
+  "ok": {
+    "message": "យល់ព្រម"
+  },
+  "on": {
+    "message": "លើ"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "បោះបង់"
+  },
+  "cancelAttempt": {
+    "message": "បោះបង់ព្យាយា"
+  },
+  "cancellationGasFee": {
+    "message": "លុបចោលថ្លៃឧស្ម័ន"
+  },
+  "cancelled": {
+    "message": "លុបចោល"
+  },
+  "chainId": {
+    "message": "ខ្សែសង្វាក់សម្គាល់"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "សូមចុចនៅទីនេះដើម្បីបង្ហាញពាក្យសម្ងាត់"
+  },
+  "close": {
+    "message": "បិទ"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "អ្នកត្រូវការប្រើ MetaMask នៅលើ Google Chrome នៅក្នុងគោលបំណងដើម្បីភ្ជាប់របស់អ្នករឹងកាបូប។"
+  },
+  "confirm": {
+    "message": "បញ្ជាក់"
+  },
+  "confirmed": {
+    "message": "បញ្ជាក់"
+  },
+  "confirmPassword": {
+    "message": "បញ្ជាក់ពាក្យសម្ងាត់"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "បញ្ជាក់របស់សម្ងាត់បម្រុងឃ្លា"
+  },
+  "congratulations": {
+    "message": "សូមអបអ"
+  },
+  "connectHardwareWallet": {
+    "message": "តភ្ជាប់ផ្នែករឹងកាបូប"
+  },
+  "connect": {
+    "message": "តភ្ជាប់"
+  },
+  "connectRequest": {
+    "message": "ភ្ជាប់ស្នើសុំ"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "តភ្ជាប់ទៅ Kovan ធ្វើតេស្តបណ្តាញ"
+  },
+  "connectingToMainnet": {
+    "message": "ភ្ជាប់ទៅកាន់ Ethereum បណ្តាញ"
+  },
+  "connectingToRopsten": {
+    "message": "តភ្ជាប់ទៅ Ropsten ធ្វើតេស្តបណ្តាញ"
+  },
+  "connectingToRinkeby": {
+    "message": "តភ្ជាប់ទៅ Rinkeby ធ្វើតេស្តបណ្តាញ"
+  },
+  "connectingToLocalhost": {
+    "message": "តភ្ជាប់ទៅម៉ាស៊ីន ៨៥៤៥"
+  },
+  "connectingToGoerli": {
+    "message": "តភ្ជាប់ទៅ Goerli ធ្វើតេស្តបណ្តាញ"
+  },
+  "contacts": {
+    "message": "ទំនាក់ទំន"
+  },
+  "contactsSettingsDescription": {
+    "message": "បន្ថែម,កែសម្រួល,លុប,និងគ្រប់គ្រងទំនាក់ទំនងរបស់"
+  },
+  "continueToWyre": {
+    "message": "បន្តដើម្បី Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "បន្តដើម្បី CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "កិច្ចសន្យាក់ពង្រាយ"
+  },
+  "conversionProgress": {
+    "message": "ការបម្លែងនៅក្នុងរីកចម្រើន"
+  },
+  "copiedButton": {
+    "message": "ចម្លង"
+  },
+  "copiedExclamation": {
+    "message": "ចម្លង!"
+  },
+  "copy": {
+    "message": "ចម្លង"
+  },
+  "copyAddress": {
+    "message": "ចម្លងអាសយដ្ឋានដើម្បីម្បៀតខ្ទាស់"
+  },
+  "copyTransactionId": {
+    "message": "ចម្លងប្រតិបត្តិលេខសម្គា"
+  },
+  "copiedTransactionId": {
+    "message": "ចម្លងប្រតិបត្តិលេខសម្គា"
+  },
+  "copyToClipboard": {
+    "message": "ម្លងទៅក្ដារតម្បៀតខ្ទាស់"
+  },
+  "copyButton": {
+    "message": " ចម្លង "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "បង្កើត"
+  },
+  "createAccount": {
+    "message": "បង្កើតគណនី"
+  },
+  "createAWallet": {
+    "message": "បង្កើតកាបូបមួយ"
+  },
+  "createPassword": {
+    "message": "បង្កើតពាក្យសម្ងាត់"
+  },
+  "currencyConversion": {
+    "message": "ការបម្លែងរូបិយប័ណ្ណ"
+  },
+  "currentLanguage": {
+    "message": "បច្ចុប្បន្នភាសា"
+  },
+  "customGas": {
+    "message": "ប្ដូរឧស្ម័ន"
+  },
+  "customGasSubTitle": {
+    "message": "បង្កើនថ្លៃសេវាអាចបន្ថយដំណើរដង,ប៉ុន្តែវាមិនត្រូវបានធានា។"
+  },
+  "customToken": {
+    "message": "សញ្ញាផ្ទាល់ខ្លួន"
+  },
+  "customRPC": {
+    "message": "ផ្ទាល់ខ្លួន RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "ទសភាគត្រូវតែយ៉ាងហោច ០,និងមិនបានជាង ៣៦។"
+  },
+  "decimal": {
+    "message": "ទសភាគនៃការជាក់លាក់"
+  },
+  "defaultNetwork": {
+    "message": "លំនាំបណ្តាញសម្រាប់ធើរប្រតិបត្តិគឺសំខាន់សុទ្ធ។"
+  },
+  "delete": {
+    "message": "លុប"
+  },
+  "deleteAccount": {
+    "message": "លុបគណនី"
+  },
+  "deposit": {
+    "message": "ដាក់ប្រាក់"
+  },
+  "depositEther": {
+    "message": "ដាក់ប្រាក់កាសធាតុ"
+  },
+  "details": {
+    "message": "ម្អិត"
+  },
+  "directDepositEther": {
+    "message": "ដោយផ្ទាល់ដាក់ប្រាក់កាសធាតុ"
+  },
+  "directDepositEtherExplainer": {
+    "message": "ប្រសិនបើអ្នករួចទៅហើយមានអេធើរ,ការលឿនបំផុតវិធីដើម្បីទទួលបានធើនៅក្នុងថ្មីរបស់កាបូបដោយផ្ទាល់ដាក់ប្រាក់។"
+  },
+  "dismiss": {
+    "message": "បោះបង់ចោល"
+  },
+  "done": {
+    "message": "ធ្វើរួច"
+  },
+  "downloadGoogleChrome": {
+    "message": "ទាញយក"
+  },
+  "downloadSecretBackup": {
+    "message": "ទាញយកនេះសម្ងាត់បម្រុងឃ្លានិងរក្សាវាទុកសុវត្ថិភាពនៅខាងក្រៅអ៊ិនគ្រីបដ្រាយវ៍រឹងឬការផ្ទុកមធ្យម។"
+  },
+  "downloadStateLogs": {
+    "message": "ទាញយករដ្ឋកំណត់ហេតុ"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "បានធ្លាក់ចុះ"
+  },
+  "edit": {
+    "message": "កែសម្រួល"
+  },
+  "editContact": {
+    "message": "កែសម្រួលទំនាក់ទំន"
+  },
+  "emailUs": {
+    "message": "អ៊ីម៉ែលមកយើង!"
+  },
+  "endOfFlowMessage1": {
+    "message": "អ្នកអនុម័តការធ្វើតេស្ត-រក្សារបស់អ្នក seedphrase សុវត្ថិភាព,វាជាការខុសត្រូវ!"
+  },
+  "endOfFlowMessage2": {
+    "message": "គន្លឹះរក្សាទុកវានៅលើសុវត្ថិភាព"
+  },
+  "endOfFlowMessage3": {
+    "message": "រក្សាទុកការបម្រុងនៅក្នុងជាច្រើនកន្លែង។"
+  },
+  "endOfFlowMessage4": {
+    "message": "មិនដែលចែករំលែកឃ្លានេះជាមួយនឹងនរណាម្នាក់។"
+  },
+  "endOfFlowMessage5": {
+    "message": "ត្រូវប្រុងប្រយ័ត្ននៃការបន្លំ! MetaMask នឹងមិនយឯកឯងសួរសម្រាប់របស់ពូជដែលឃ្លា។"
+  },
+  "endOfFlowMessage6": {
+    "message": "ប្រសិនបើអ្នកត្រូវការដើម្បីត្រឡប់ឡើងរបស់ពូមួយឃ្លាម្តងទៀត,អ្នកអាចរកឃើញវានៅក្នុងការកំណត់->សន្តិសុខ។"
+  },
+  "endOfFlowMessage7": {
+    "message": "ប្រសិនបើអ្នកមិនធ្លាប់មានសំណួរឬការមើលឃើញអ្វីមួយត្រី,រអ៊ីម៉ែល support@metamask។io។"
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask មិនអាចងើបស់ seedphrase។"
+  },
+  "endOfFlowMessage9": {
+    "message": "រៀនច្រើនទៀត។"
+  },
+  "endOfFlowMessage10": {
+    "message": "ធ្វើទាំងអស់"
+  },
+  "ensRegistrationError": {
+    "message": "កំហុសក្នុង ENS ចុះឈ្មោះ"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS ឈ្មោះមិនឃើញនៅលើបច្ចុប្បន្នបណ្តាញ។ សូមព្យាយាមប្ដូរទៅចម្បង Ethereum បណ្តាញ។"
+  },
+  "enterAnAlias": {
+    "message": "បញ្ចូលឈ្មោះក្លែង"
+  },
+  "enterPassword": {
+    "message": "បញ្ចូលពាក្យសម្ងាត់"
+  },
+  "enterPasswordContinue": {
+    "message": "បញ្ចូលពាក្យសម្ងាត់ដើម្បីបន្ត"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum សាធារណៈអាស័យដ្ឋាន"
+  },
+  "etherscanView": {
+    "message": "មើលគណនីនៅលើ Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "ប៉ាន់ប្រមាណដំណើរដ"
+  },
+  "expandView": {
+    "message": "ពង្រីងកាយមើល"
+  },
+  "exportPrivateKey": {
+    "message": "ការនាំចេញសោឯកជន"
+  },
+  "failed": {
+    "message": "បរាជ័យ"
+  },
+  "fast": {
+    "message": "ល្បឿនលឿន"
+  },
+  "faster": {
+    "message": "លឿន"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "ភ្លេចនេះឧបករណ៍"
+  },
+  "from": {
+    "message": "ពី"
+  },
+  "fromShapeShift": {
+    "message": "ពី ShapeShift"
+  },
+  "functionType": {
+    "message": "មុខងារប្រភេទ"
+  },
+  "gasLimit": {
+    "message": "ឧស្ម័នដែនកំណត់"
+  },
+  "gasLimitCalculation": {
+    "message": "យើងគណនាការស្នើស្ម័នដែនកំណត់មូលដ្ឋានលើបណ្តាញត្រាជោគជ័យ។"
+  },
+  "gasLimitInfoModalContent": {
+    "message": "ឧស្ម័នដែនកំណត់ជាអតិបរមាចំនួននៃគ្រឿងនៃឧស្ម័នអ្នកមានឆន្ទៈដើម្បីចំណាយ។"
+  },
+  "gasLimitTooLow": {
+    "message": "ឧស្ម័នដែនកំណត់ត្រូវតែត្រូវបាននៅហោចណាស់ ២១០០០"
+  },
+  "gasUsed": {
+    "message": "ឧស្ម័នប្រើ"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "តម្លៃឧស្ម័នទាបខ្លាំង"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "តម្លៃឧស្ម័នបញ្ជាក់ចំនួននៃការធើរអ្នកមានឆន្ទៈដើម្បីបង់ប្រាក់សម្រាប់អង្គភាពគ្នានៃការឧស្ម័ន។"
+  },
+  "gasPriceNoDenom": {
+    "message": "តម្លៃឧស្ម័ន"
+  },
+  "gasPriceCalculation": {
+    "message": "យើងគណនាបានស្នើរតម្លៃឧស្ម័នមូលដ្ឋានលើបណ្តាញត្រាជោគជ័យ។"
+  },
+  "general": {
+    "message": "ទូទៅ"
+  },
+  "generalSettingsDescription": {
+    "message": "រូបិយប័ណ្ណរបម្លែង,បឋមរូបិយប័ណ្ណ,ភាសា,blockies identicon"
+  },
+  "getEther": {
+    "message": "ទទួលបានធើ"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "ទទួលបានជំនួយ។"
+  },
+  "getStarted": {
+    "message": "ទទួលបានចាប់ផ្តើម"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "យើងកំពុងសប្បាយដើម្បីមើលឃើញអ្នក។"
+  },
+  "hardware": {
+    "message": "ផ្នែករឹង"
+  },
+  "hardwareWalletConnected": {
+    "message": "ផ្នែករឹងរបូតភ្ជាប់"
+  },
+  "hardwareWallets": {
+    "message": "តភ្ជាប់ផ្នែករឹងកាបូប"
+  },
+  "hardwareWalletsMsg": {
+    "message": "ជ្រើសផ្នែករឹងបូកអ្នកចង់ប្រើជាមួយនឹ MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "នៅទីនេះ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "ទិន្នន័យគោ"
+  },
+  "hide": {
+    "message": "លាក់"
+  },
+  "hideToken": {
+    "message": "លាក់សញ្ញា"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "ប្រវត្តិសាស្រ្ត"
+  },
+  "import": {
+    "message": "នាំចូល",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "នាំចូលគណនី"
+  },
+  "importAccountMsg": {
+    "message": " នាំចូលគណនីនឹងមិនត្រូវបានភ្ជាប់ជាមួយនឹងរបស់អ្នកបង្កើតឡើង MetaMask គណនី seedphrase។ រៀនបន្ថែមអំពីការនាំចូលគណនី "
+  },
+  "importAccountSeedPhrase": {
+    "message": "នាំចូលគណនីមួយជាមួយនឹងគ្រាប់ពូឃ្លា"
+  },
+  "importWallet": {
+    "message": "នាំចូលកាបូប"
+  },
+  "importYourExisting": {
+    "message": "នាំចូលរបស់អ្នកដែលមានស្រាបូងដោយប្រើ ១២ ពាក្យពូឃ្លា"
+  },
+  "imported": {
+    "message": "នាំចូល",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "នាំចូលដោយប្រើគណនីពូឃ្លា"
+  },
+  "infoHelp": {
+    "message": "ព័ត៌មាន&ជួយ"
+  },
+  "initialTransactionConfirmed": {
+    "message": "របស់អ្នកដំបូងប្រតិបត្តិត្រូវបានបញ្ជាក់ដោយបណ្តាញ។ ចុចយល់ព្រមដើម្បីចូលទៅវិញ។"
+  },
+  "insufficientBalance": {
+    "message": "គ្រប់គ្រាន់តុល្យភាព។"
+  },
+  "insufficientFunds": {
+    "message": "គ្រប់គ្រាន់មូលនិធិ។"
+  },
+  "insufficientTokens": {
+    "message": "គ្រប់គ្រាន់ថូខឹន។"
+  },
+  "invalidAddress": {
+    "message": "មិនត្រឹមអាស័យដ្ឋាន"
+  },
+  "invalidAddressRecipient": {
+    "message": "អ្នកទទួលដ្ឋានត្រឹមត្រូវ"
+  },
+  "knownAddressRecipient": {
+    "message": "គេស្គាល់ថាកិច្ចសន្យាសយដ្ឋាន។"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "មិ ETH បណ្តាញ,កំណត់ឱ្យអក្សរតូច"
+  },
+  "invalidInput": {
+    "message": "មិនត្រឹមបញ្ចូល។"
+  },
+  "invalidRPC": {
+    "message": "មិនត្រឹម RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "មិនត្រឹមប្លុករុក URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "មិនត្រឹមពូឃ្លា"
+  },
+  "jsonFile": {
+    "message": "JSON ឯកសារ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan ធ្វើតេស្តបណ្តាញ"
+  },
+  "max": {
+    "message": "អតិ"
+  },
+  "learnMore": {
+    "message": "រៀនបន្ថែម"
+  },
+  "ledgerAccountRestriction": {
+    "message": "អ្នកត្រូវការដើម្បីធ្វើឱ្យការប្រើប្រាស់គណនីមុនពេលអ្នកអាចបន្ថែមថ្មីមួយ។"
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "បាទ,សូមទទួលបានបង្កើតឡើង!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "តំណភ្ជាប់"
+  },
+  "liveGasPricePredictions": {
+    "message": "រស់នៅតម្លៃឧស្ម័នការព្យាករ"
+  },
+  "loading": {
+    "message": "ការផ្ទុក។។។"
+  },
+  "loadingTokens": {
+    "message": "ការផ្ទុកថូខឹន។។។"
+  },
+  "loadMore": {
+    "message": "ផ្ទុកបន្ថែម"
+  },
+  "localhost": {
+    "message": "ម៉ា ៨៥៤៥"
+  },
+  "login": {
+    "message": "ចូលក្នុង"
+  },
+  "logout": {
+    "message": "ហេតុចេញ"
+  },
+  "logoutTimeTooGreat": {
+    "message": "ចេញពេលវេលាគឺអស្ចារ្យផង"
+  },
+  "mainnet": {
+    "message": "សំខាន់ Ethereum បណ្តាញ"
+  },
+  "memorizePhrase": {
+    "message": "ទន្ទេញឃ្លានេះ។"
+  },
+  "memo": {
+    "message": "នុសរណៈ"
+  },
+  "menu": {
+    "message": "ម៉ឺនុយ"
+  },
+  "message": {
+    "message": "សារ"
+  },
+  "metamaskDescription": {
+    "message": "ការភ្ជាប់អ្នកដើម្បី Ethereum និងវិមជ្ឈការបណ្តាញ។"
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask ពូជពាក្យ"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask ណែ"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "សូមបញ្ចូលពាក្យសម្ងាត់ដើម្បីបញ្ជាក់វារបស់អ្នក!"
+  },
+  "myAccounts": {
+    "message": "របស់ខ្ញុំគណនី"
+  },
+  "myWalletAccounts": {
+    "message": "បូបរបស់គណនី"
+  },
+  "myWalletAccountsDescription": {
+    "message": "ទាំងអស់នៃការរបស់អ្នក MetaMask បង្កើតគណនីនឹងត្រូវបានបន្ថែមទៅផ្នែកនេះ។"
+  },
+  "mustSelectOne": {
+    "message": "ត្រូវតែជ្រើសយ៉ាងហោចណាស់ ១ ញ្ញាសម្ងាត់។"
+  },
+  "needEtherInWallet": {
+    "message": "ដើម្បីទាក់ទងជាមួយនឹងវិមជ្ឈការកម្មវិធីប្រើប្រាស់ MetaMask,អ្នកនឹងត្រូវការធើររបស់អ្នកនៅក្នុងកាបូប។"
+  },
+  "needImportFile": {
+    "message": "អ្នកត្រូវតែជ្រើសឯកសារនាំចូល។",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "មិនអាចផ្ញើអវិជ្ជមានបរិមាណនៃការ ETH។"
+  },
+  "networkName": {
+    "message": "ឈ្មោះបណ្តាញ"
+  },
+  "networks": {
+    "message": "ណ្តាញ"
+  },
+  "networkSettingsDescription": {
+    "message": "បន្ថែមនិងកែសម្រួលផ្ទាល់ខ្លួន RPC បណ្តាញ"
+  },
+  "nevermind": {
+    "message": "មិនអីទេ"
+  },
+  "newAccount": {
+    "message": "គណនីថ្មី"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "ថ្មីអាសយដ្ឋានរកឃើញ! សូមចុចនៅទីនេះដើម្បីបន្ថែមដើម្បីដ្ឋានរបស់សៀវភៅ។"
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "ជាថ្មីទាក់ទង"
+  },
+  "newContract": {
+    "message": "កិច្ចសន្យាថ្មី"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "ថ្មីបណ្តាញ"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "គ្មាន,ខ្ញុំមានរួចហើយជាពូឃ្លា"
+  },
+  "protectYourKeys": {
+    "message": "ការពាររបស់អ្នកគ្រាប់ចុច!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "ត្រូវប្រុងប្រយ័ត្នជាមួយនឹងរបស់ពូមួយឃ្លា—មានរបាយការណ៍នៃវេបសាយដែលព្យាយាមដើម្បីយកតម្រាប់ MetaMask។ MetaMask នឹងមិនសួរសម្រាប់របស់ពូជដែលឃ្លា!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "រក្សាការឃ្លាត្ថិភាព។ ប្រសិនបើអ្នកឃើញអ្វីមួត្រី,ឬអ្នកកំពុងមិនច្បាស់អំពីការគេហទំព័រ,អ៊ីម៉ែល support@metamask។io"
+  },
+  "rpcUrl": {
+    "message": "ថ្មី RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "ថ្មីសរុប"
+  },
+  "newTransactionFee": {
+    "message": "ថ្លៃប្រតិបត្តិថ្មី"
+  },
+  "next": {
+    "message": "បន្ទាប់"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "គ្មានដ្ឋានត្រូវបានកំណត់សម្រាប់ឈ្មោះនេះ។"
+  },
+  "noDeposits": {
+    "message": "គ្មានការទទួលបញ្ញើ"
+  },
+  "noConversionRateAvailable": {
+    "message": "គ្មានការបម្លែងអត្រាអាចប្រើបាន"
+  },
+  "noTransactions": {
+    "message": "អ្នកមានគ្មានការប្រតិបត្តិ"
+  },
+  "noThanks": {
+    "message": "គ្មានការអរគុណ"
+  },
+  "notEnoughGas": {
+    "message": "មិនស្ម័គ្រប់គ្រាន់"
+  },
+  "noWebcamFoundTitle": {
+    "message": "រ៉ាមិនឃើញ"
+  },
+  "noWebcamFound": {
+    "message": "របស់អ្នកកុំព្យូទ័ររបស់រ៉ាមិនត្រូវបានរកឃើញ។ សូមព្យាយាមម្តងទៀត។"
+  },
+  "ofTextNofM": {
+    "message": "នៃ"
+  },
+  "orderOneHere": {
+    "message": "គោលបំណងមួយ Trezor ឬសៀវភៅនិងរក្សារបស់មូលនិធិក្នុផ្ទុកផ្តាសាយ"
+  },
+  "origin": {
+    "message": "ប្រភពដើម"
+  },
+  "parameters": {
+    "message": "ប៉ារ៉ាម៉ែត្រ"
+  },
+  "participateInMetaMetrics": {
+    "message": "ចូលរួមនៅក្នុង MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "ចូលរួមនៅក្នុង MetaMetrics ដើម្បីជួយយើងធ្វើឱ្យ MetaMask ល្អប្រសើរ"
+  },
+  "password": {
+    "message": "ពាក្យសម្ងាត់"
+  },
+  "passwordsDontMatch": {
+    "message": "ពាក្យសម្ងាត់មិនផ្គូផ្គង"
+  },
+  "passwordNotLongEnough": {
+    "message": "ពាក្យសម្ងាត់មិនយូរគ្រប់គ្រាន់"
+  },
+  "pastePrivateKey": {
+    "message": "បិទភ្ជាប់របស់សោឯកជនខ្សែអក្សរនៅទីនេះ៖",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "បិទភ្ជាប់របស់ពូមួយឃ្លានៅទីនេះ!"
+  },
+  "pending": {
+    "message": "រង់ចាំការ"
+  },
+  "personalAddressDetected": {
+    "message": "ដ្ឋានផ្ទាល់ខ្លួនរកឃើញ។ បញ្ចូលសញ្ញាសម្ងាត់កិច្ចសន្យាសយដ្ឋាន។"
+  },
+  "prev": {
+    "message": "មុន"
+  },
+  "primaryCurrencySetting": {
+    "message": "បឋមរូបិយប័ណ្ណ"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "ឯកជន"
+  },
+  "privateKey": {
+    "message": "សោឯកជន",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "ព្រមាន៖មិនដែលបង្ហាញពីគន្លឹះនេះ។ នរណាម្នាក់ជាមួយនឹងរបស់ឯកជនគ្រាប់ចុចអាចលួចណាមួយទ្រព្យសម្បត្តិនៅក្នុងគណនីរបស់អ្នក។"
+  },
+  "privateNetwork": {
+    "message": "បណ្តាញឯកជន"
+  },
+  "qrCode": {
+    "message": "បង្ហាញបញ្ជរ"
+  },
+  "queue": {
+    "message": "ជួរ"
+  },
+  "readdToken": {
+    "message": "អ្នកអាចបន្ថែមនេះសញ្ញាសម្ងាវិញនៅក្នុងអនាគតដោយចូលទៅ\"បន្ថែមសញ្ញា\"នៅក្នុងគណនីរបស់អ្នកជម្រើសម៉ឺនុយ។"
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "អ្នកទទួលដ្ឋាន"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "ច្រានចោលទាំងអស់"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "ច្រាន"
+  },
+  "reset": {
+    "message": "កំណត់"
+  },
+  "resetAccount": {
+    "message": "កំណត់គណនី"
+  },
+  "resetAccountDescription": {
+    "message": "កំណត់គណនីរបស់អ្នកនឹងច្បាស់លាស់របស់អ្នកប្រវត្តិសាស្រ្ត។"
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "រំលឹកខ្ញុំក្រោយមក"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "ស្តាររបស់អ្នកគណនីជាមួយនឹងគ្រាប់ពូឃ្លា"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "សំណើររង់ចាំដើម្បីត្រូវបានទទួលស្គាល់"
+  },
+  "required": {
+    "message": "ទាមទារ"
+  },
+  "restore": {
+    "message": "ស្តា"
+  },
+  "revealSeedWords": {
+    "message": "បង្ហាញគ្រាប់ពូជពាក្យ"
+  },
+  "revealSeedWordsTitle": {
+    "message": "គ្រាប់ពូឃ្លា"
+  },
+  "revealSeedWordsDescription": {
+    "message": "ប្រសិនបើអ្នកមិនធ្លាប់ផ្លាស់ប្តូរកម្មវិធីរុសឬផ្លាស់ប្តូរកុំព្យូទ័រ,អ្នកនឹងត្រូវការនេះពូជដែលឃ្លានដើម្បីចូលដំណើររបស់អ្នកគណនី។ រក្សាទុកពួកគេកន្លែងសុវត្ថិភាពនិងសម្ងាត់។"
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "មិនបានចែករំលែកឃ្លានេះជាមួយនឹងនរណាម្នាក់!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "ពាក្យទាំងនេះអាចត្រូវបានប្រើដើម្បីលួចយកទាំងអស់របស់គណនី។"
+  },
+  "revert": {
+    "message": "ត្រឡប់"
+  },
+  "remove": {
+    "message": "យកចេញ"
+  },
+  "removeAccount": {
+    "message": "យកគណនី"
+  },
+  "removeAccountDescription": {
+    "message": "គណនីនេះនឹងត្រូវបានយកចេញពីកាបូបរបស់។ សូមធ្វើឱ្យប្រាកដថាអ្នកមានដើមពូជដែលឃ្លានឬឯកជនសំខាន់សម្រាប់ការនេះបាននាំចូលគណនីមុនពេលបន្ត។ អ្នកអាចនាំចូលឬបង្កើតគណនីថ្មីម្តងទៀតពីគណនីធ្លាក់ចុះ។ "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby ធ្វើតេស្តបណ្តាញ"
+  },
+  "ropsten": {
+    "message": "Ropsten ធ្វើតេស្តបណ្តាញ"
+  },
+  "goerli": {
+    "message": "Goerli ធ្វើតេស្តបណ្តាញ"
+  },
+  "save": {
+    "message": "រក្សាទុក"
+  },
+  "slow": {
+    "message": "យឺត"
+  },
+  "slower": {
+    "message": "យឺត"
+  },
+  "saveAsCsvFile": {
+    "message": "រក្សាទុកជាឯកសារ CSV"
+  },
+  "scanInstructions": {
+    "message": "កន្លែងបញ្ជរនៅពីមុខកាមេរ៉ារបស់អ្នក"
+  },
+  "scanQrCode": {
+    "message": "ការស្កេនស្កេនលេខកូដ"
+  },
+  "search": {
+    "message": "ស្វែងរក"
+  },
+  "searchResults": {
+    "message": "លទ្ធផលស្វែងរក"
+  },
+  "secretBackupPhrase": {
+    "message": "សម្ងាត់បម្រុងឃ្លា"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "របស់សម្ងាត់បម្រុងមួយឃ្លាធ្វើឱ្យវាងាយស្រួលដើម្បីឡើងវិញនិងស្តារគណនីរបស់អ្នក។"
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ព្រមាន៖មិនដែលបង្ហាញរបស់អ្នកបម្រុងឃ្លា។ នរណាម្នាក់ជាមួយនឹងឃ្លានេះអាចយករបស់អ្នកធើរៀងរហូត។"
+  },
+  "secretPhrase": {
+    "message": "បញ្ចូម្ងាត់របស់ដប់ពីរពាក្យមួយឃ្លានៅទីនេះដើម្បីស្តាររបស់អ្នកដេក។"
+  },
+  "securityAndPrivacy": {
+    "message": "សន្ដិសុខ&ឯកជន"
+  },
+  "securitySettingsDescription": {
+    "message": "ឯកជនកំណត់និងកាបូបគ្រាប់ពូឃ្លា"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "ដោយឡែពាក្យនីមួយចន្លោះតែមួយ"
+  },
+  "seedPhraseReq": {
+    "message": "ពូជដែលឃ្លាន ១២ ពាក្យវែង"
+  },
+  "selectCurrency": {
+    "message": "ជ្រើសរូបិយប័ណ្ណ"
+  },
+  "selectEachPhrase": {
+    "message": "សូមជ្រើសឃ្លាគ្នានៅក្នុងគោលបំណងដើម្បីធ្វើឱ្យប្រាកដថាវាត្រឹមត្រូវ។"
+  },
+  "selectLocale": {
+    "message": "ជ្រើសមូលដ្ឋាន"
+  },
+  "selectType": {
+    "message": "ជ្រើសប្រភេទ"
+  },
+  "send": {
+    "message": "ផ្ញើ"
+  },
+  "sendAmount": {
+    "message": "ផ្ញើប្រាក់"
+  },
+  "sendETH": {
+    "message": "ផ្ញើ ETH"
+  },
+  "sendTokens": {
+    "message": "ផ្ញើថូខឹន"
+  },
+  "sentEther": {
+    "message": "បញ្ជូនធើ"
+  },
+  "sentTokens": {
+    "message": "បញ្ជូនថូខឹន"
+  },
+  "separateEachWord": {
+    "message": "ដោយឡែពាក្យនីមួយចន្លោះតែមួយ"
+  },
+  "searchTokens": {
+    "message": "ស្វែងរកថូខឹន"
+  },
+  "selectAnAccount": {
+    "message": "ជ្រើសគណនីមួយ"
+  },
+  "selectAnAccountHelp": {
+    "message": "ជ្រើសគណនីដើម្បីមើលនៅក្នុង MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "ជ្រើសខ្ពស់ជាងឧស្ម័នថ្លៃដើម្បីពន្លឿនដំណើរការនៃការប្រតិបត្តិ។*"
+  },
+  "selectHdPath": {
+    "message": "ជ្រើស HD ផ្លូវ"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "ការកំណត់"
+  },
+  "showAdvancedGasInline": {
+    "message": "កម្រិតខ្ពស់ឧស្ម័គ្រប់គ្រង"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "ជ្រើសនេះដើម្បីបង្ហាញតម្លៃឧស្ម័ននិងកំណត់គ្រប់គ្រងផ្ទាល់នៅលើការផ្ញើនិងបញ្ជាក់អេក្រង់។"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "បង្ហាញការបម្លែងនៅលើ Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "ជ្រើសនេះដើម្បីបង្ហាញ fiat របម្លែងនៅលើ Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "បង្ហាញកូនសោឯកជន"
+  },
+  "showHexData": {
+    "message": "បង្ហាញទិន្នន័យគោ"
+  },
+  "showHexDataDescription": {
+    "message": "ជ្រើសនេះដើម្បីបង្ហាញគោលវាលទិន្នន័យនៅលើផ្ញើអេក្រង់"
+  },
+  "sign": {
+    "message": "ចុះ"
+  },
+  "signatureRequest": {
+    "message": "ហត្ថលេខាស្នើសុំ"
+  },
+  "signed": {
+    "message": "ចុះហត្ថលេខា"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "ហត្ថលេខាស្នើសុំ"
+  },
+  "somethingWentWrong": {
+    "message": "អូ! អ្វីមួយបានទៅខុស។"
+  },
+  "speedUp": {
+    "message": "បង្កើនល្បឿន"
+  },
+  "speedUpCancellation": {
+    "message": "ល្បឿនឡើងនេះរលុបចោល"
+  },
+  "speedUpTransaction": {
+    "message": "បង្កើនល្បឿនប្រតិបត្តិការនេះ"
+  },
+  "switchNetworks": {
+    "message": "បណ្តាញប្តូរ"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask រដ្ឋកំណត់ហេតុ"
+  },
+  "stateLogs": {
+    "message": "រដ្ឋកំណត់ហេតុ"
+  },
+  "stateLogsDescription": {
+    "message": "រដ្ឋកំណត់ហេតុមានរបស់សាធារណៈគណនីយដ្ឋាននិងបញ្ជូនប្រតិបត្តិ។"
+  },
+  "stateLogError": {
+    "message": "កំហុសក្នុងការទៅរដ្ឋកំណត់ហេតុ។"
+  },
+  "step1HardwareWallet": {
+    "message": "១។ តភ្ជាប់ផ្នែករឹងកាបូប"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "តភ្ជាប់របស់អ្នករឹងកាបូបដោយផ្ទាល់ទៅកុំព្យូទ័ររបស់អ្នក។"
+  },
+  "step2HardwareWallet": {
+    "message": "២។ ជ្រើសគណនីមួយ"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "ជ្រើសគណនីអ្នកចង់មើល។ អ្នកអាចជ្រើសបានតែមួយនៅពេលវេលា។"
+  },
+  "step3HardwareWallet": {
+    "message": "៣។ ចាប់ផ្តើមប្រើ dApps និងច្រើនទៀត!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "ប្រើរបស់រឹងគណនីដូចជាអ្នកនឹងយ Ethereum គណនី។ ចូលទៅក្នុង dApps,ផ្ញើ Eth,ទិញនិងហាង ERC២០ សម្ងាត់និងមិនមែន Fungible ថូខឹនដូច CryptoKitties។"
+  },
+  "storePhrase": {
+    "message": "ហាងឃ្លានេះនៅក្នុងពាក្យសម្ងាត់អ្នកគ្រប់គ្រងដូច ១password។"
+  },
+  "submit": {
+    "message": "ដាក់ស្នើ"
+  },
+  "submitted": {
+    "message": "ដាក់ជូន"
+  },
+  "supportCenter": {
+    "message": "ទស្សនកិច្ចរបស់យើងគាំទ្រមជ្ឈមណ្ឌល"
+  },
+  "symbol": {
+    "message": "និមិត្តសញ្ញា"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "និមិត្តសញ្ញាត្រូវតែត្រូវបានរវាង ០ និង ១២ តួអក្សរ។"
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "បើកនៅលើដើម្បីឱ្យមានការកំណត់របស់អ្នកគាំទ្រឡើងជាមួយនឹង ៣box។ នេះគឺជា currenty ពិសោធន៍;ប្រើប្រាស់របស់ខ្លួន។"
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "៣box វបានបិទដោយសារកំហុសមួយអំឡុងពេលដំបូងកម្ម"
+  },
+  "syncWithMobile": {
+    "message": "កាលកម្មជាមួយនឹងទូរស័ព្ទដៃ"
+  },
+  "syncWithMobileTitle": {
+    "message": "កាលកម្មជាមួយនឹងទូរស័ព្ទដៃ"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "ប្រសិនបើអ្នកគ្រាន់តែបើក MetaMask ទូរស័ព្ទដៃកម្មវិធីសម្រាប់ពេលដំបូង,គ្រាន់តែអនុវត្តតាមជំហាននៅក្នុងរបស់ទូរស័ព្ទ។"
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "ស្កេនលេខកូដនេះជាមួយនឹងរបស់អ្នក MetaMask ទូរស័ព្ទដៃកម្មវិធី"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "ធ្វើឱ្យប្រាកដថាគ្មាននរណាផ្សេងទៀតគឺសម្លឹងមើលអេក្រង់របស់អ្នកនៅពេលដែលអ្នកការស្កេនលេខកូដនេះ"
+  },
+  "syncWithMobileComplete": {
+    "message": "របស់ទិន្នន័យត្រូវបានធ្វើជោគជ័យ។ រីករាយ MetaMask ទូរស័ព្ទដៃកម្មវិធី!"
+  },
+  "terms": {
+    "message": "លក្ខខណ្ឌនៃការប្រើប្រាស់"
+  },
+  "testFaucet": {
+    "message": "តេស្ត Faucet"
+  },
+  "thisWillCreate": {
+    "message": "ការនេះនឹងបង្កើតថ្មីកាបូបនិងគ្រាប់ពូឃ្លា"
+  },
+  "tips": {
+    "message": "គន្លឹះ"
+  },
+  "to": {
+    "message": "ដើម្បីរ"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "សញ្ញា"
+  },
+  "tokenAlreadyAdded": {
+    "message": "សញ្ញាមានរួចទៅហើយត្រូវបានបន្ថែម។"
+  },
+  "tokenContractAddress": {
+    "message": "សញ្ញាកិច្ចសន្យាសយដ្ឋាន"
+  },
+  "tokenSymbol": {
+    "message": "សញ្ញានិមិត្តសញ្ញា"
+  },
+  "total": {
+    "message": "សរុប"
+  },
+  "transaction": {
+    "message": "ប្រតិបត្តិ"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "ប្រតិបត្តិជួបប្រទះកំហុសមួយ។"
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "ប្រតិបត្តិកំហុស។ លែងបោះចោលនៅក្នុងកិច្ចសន្យាលេខកូដ។"
+  },
+  "transactionErrorNoContract": {
+    "message": "ការព្យាយាមដើម្បីហៅមុខងារនៅលើមិនមែនជាកិច្ចសន្យាសយដ្ឋាន។"
+  },
+  "transactionFee": {
+    "message": "ថ្លៃប្រតិបត្តិ"
+  },
+  "transactionTime": {
+    "message": "ប្រតិបត្តិពេលវេលា"
+  },
+  "transfer": {
+    "message": "ការផ្ទេរ"
+  },
+  "transferBetweenAccounts": {
+    "message": "ផ្ទេររវាងគណនីរបស់ខ្ញុំ"
+  },
+  "transferFrom": {
+    "message": "ការផ្ទេរពី"
+  },
+  "troubleTokenBalances": {
+    "message": "យើងមានបញ្ហាការផ្ទុករបស់សញ្ញាសមតុល្យ។ អ្នកអាចមើលពួកគេ ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "ព្យាយាមម្តងទៀត"
+  },
+  "typePassword": {
+    "message": "ប្រភេទរបស់អ្នក MetaMask ក្យសម្ងាត់"
+  },
+  "unapproved": {
+    "message": "អនុញ្ញាត"
+  },
+  "units": {
+    "message": "គ្រឿង"
+  },
+  "unknown": {
+    "message": "មិនស្គាល់"
+  },
+  "unknownNetwork": {
+    "message": "ស្គាល់បណ្តាញឯកជន"
+  },
+  "unknownQrCode": {
+    "message": "កំហុស៖យើងមិនអាចកំណត់ដែលស្កេនលេខកូដ"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! អ្វីមួយបានទៅខុស។។។។"
+  },
+  "unknownCameraError": {
+    "message": "មានកំហុសខណៈពេលព្យាយាមដើម្បីចូលដំណើររបស់កាមេរ៉ា។ សូមព្យាយាមម្តងទៀត។។។"
+  },
+  "unlock": {
+    "message": "ដោះសោ"
+  },
+  "unlockMessage": {
+    "message": "ការវិមជ្ឈការបណ្តាក់"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs តម្រូវការសមរម្យ HTTP/HTTPS បុព្វបទ។"
+  },
+  "usedByClients": {
+    "message": "បានប្រើដោយភាពខុសគ្នានៃការខុសគ្នាតិថិជន"
+  },
+  "userName": {
+    "message": "ឈ្មោះអ្នកប្រើ"
+  },
+  "validFileImport": {
+    "message": "អ្នកត្រូវតែជ្រើសសុពលភាពឯកសារនាំចូល។"
+  },
+  "viewAccount": {
+    "message": "មើលគណនី"
+  },
+  "viewinExplorer": {
+    "message": "មើលនៅក្នុងណិត"
+  },
+  "viewContact": {
+    "message": "ទំនាក់ទំនងកាយមើល"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "មើលនៅលើ Etherscan"
+  },
+  "visitWebSite": {
+    "message": "ទស្សនកិច្ចរបស់យើងតំបន់បណ្តា"
+  },
+  "walletSeed": {
+    "message": "កាបូបគ្រាប់ពូជ"
+  },
+  "welcomeBack": {
+    "message": "ស្វាគមន៍!"
+  },
+  "welcome": {
+    "message": "សូមស្វាគម MetaMask"
+  },
+  "writePhrase": {
+    "message": "សរសេរឃ្លាលើក្រដាសមួយនិងហាងនៅក្នុងភាពទីតាំង។ ប្រសិនបើអ្នកចង់បានកាន់តែច្រើនសន្ដិសុខ,សរសេរវាចុះនៅលើបំណែកជាច្រើននៃក្រដាសនិងហាងនៅ ២-៣ ទីតាំងផ្សេង។"
+  },
+  "yesLetsTry": {
+    "message": "បាទ,ចូរព្យាយាម"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "អ្នកត្រូវការដើម្បីអនុញ្ញាតកាមេរ៉ាចូលដំណើរដើម្បីប្រើលក្ខណៈពិសេសនេះ។"
+  },
+  "yourSigRequested": {
+    "message": "របស់ហត្ថលេខាត្រូវបានស្នើសុំ"
+  },
+  "youSign": {
+    "message": "អ្នកត្រូវចុះហត្ថលេខា"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "របស់ឯកជនពូឃ្លា"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "ន្យតម្លៃឧស្ម័ននៅលើបង្កើនល្បឿន"
+  }
+}

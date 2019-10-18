@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Göstərmək Daxil Olan Əməliyyat"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Seçin bu seçimi istifadə etmək üçün ən yaxşı göstərmək üçün daxil olan əməliyyat siyahıda əməliyyatlar"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "İş qrafiki mövcuddur yalnız şəbəkə Эфириума."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Əlaqə"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Saytlar icazə oxumaq hesabları"
+  },
+  "addSite": {
+    "message": "Sayta Əlavə Et"
+  },
+  "addSiteDescription": {
+    "message": "Əl et saytı ilə təmin etmək üçün ona sizin hesabları, faydalı böyüklər üçün dapps"
+  },
+  "connected": {
+    "message": "Bağlı"
+  },
+  "connectedDescription": {
+    "message": "Saytların siyahısını və onlara daxil olmaq üçün icazə, sizin ünvanları"
+  },
+  "privacyModeDefault": {
+    "message": "Təhlükəsiz rejim indi default aktiv"
+  },
+  "contractInteraction": {
+    "message": "Qarşılıqlı Müqavilə "
+  },
+  "clearApprovalData": {
+    "message": "Aradan qaldırılması bütün saytlar"
+  },
+  "reject": {
+    "message": "Rədd etmək"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Bu sayt sorğu keçirmək imkanı cari ünvanı qeyd. Həmişə əmin olun, Siz nə etibar saytları siz qarşılıqlı."
+  },
+  "about": {
+    "message": "Haqqında"
+  },
+  "aboutSettingsDescription": {
+    "message": "Version, Mərkəzi dəstək və əlaqə."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Giriş kamera..."
+  },
+  "account": {
+    "message": "Hesab"
+  },
+  "accountDetails": {
+    "message": "Məlumat "
+  },
+  "accountName": {
+    "message": "Hesab Adı "
+  },
+  "accountOptions": {
+    "message": "Parametrləri Hesabı "
+  },
+  "accountSelectionRequired": {
+    "message": "Seçmək lazımdır hesabı!"
+  },
+  "activityLog": {
+    "message": "jurnal əməliyyatlar "
+  },
+  "addNetwork": {
+    "message": "Əlavə Şəbəkəsi"
+  },
+  "addRecipient": {
+    "message": "Alıcının Əlavə Et"
+  },
+  "advanced": {
+    "message": "Əlavə"
+  },
+  "advancedSettingsDescription": {
+    "message": "Xüsusən də daxil developer, download Dövlət jurnallar, yenidən hesablama, testnets parametrlər və xüsusi ЭКП."
+  },
+  "advancedOptions": {
+    "message": "Əlavə Et"
+  },
+  "addToAddressBook": {
+    "message": "Ünvanı kitab əlavə et"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "məsələn, John D."
+  },
+  "addAlias": {
+    "message": "Əlavə ləqəb"
+  },
+  "addToken": {
+    "message": "Əlavə Marker"
+  },
+  "addTokens": {
+    "message": "Əlavə Ayələr"
+  },
+  "addSuggestedTokens": {
+    "message": "Əlavə Təklif Ayələr"
+  },
+  "addAcquiredTokens": {
+    "message": "Əlavə ayələr vasitəsilə əldə MetaMask"
+  },
+  "amount": {
+    "message": "Məbləğ"
+  },
+  "appDescription": {
+    "message": "Cüzdan Эфириума brauzerinizin",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Təsdiq"
+  },
+  "approved": {
+    "message": "Təsdiq edilmişdir"
+  },
+  "asset": {
+    "message": "Aktiv"
+  },
+  "attemptingConnect": {
+    "message": "Çalışıram qoşulmaq блокчейн."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Təqdim edərək bu cəhdlərin heç bir zəmanət ılkin əməliyyatlar ləğv olunacaq. Əgər cəhdi ləğv uğurlu, haqqı müqavilə yüksəkdir."
+  },
+  "attributions": {
+    "message": "Özellikleri"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Müəyyən gözləmə müddəti dəqiqə əvvəl MetaMask avtomatik çıxmaq"
+  },
+  "average": {
+    "message": "Orta"
+  },
+  "back": {
+    "message": "Geriyə"
+  },
+  "backToAll": {
+    "message": "Hər kəs üçün"
+  },
+  "backupApprovalNotice": {
+    "message": "Backup sizin gizli kodu bərpa saxlamaq üçün pul və vəsait təhlükəsizlik."
+  },
+  "backupApprovalInfo": {
+    "message": "Bu gizli kodu üçün tələb bərpa sizin pul kisəsi halda, siz itirmək əgər sizin cihaz parol unutmaq lazım gəlir yenidən qurmaq MetaMask, ya açmaq istəyirsinizsə sizin pul kisəsi başqa bir cihaz."
+  },
+  "backupNow": {
+    "message": "Backup indi"
+  },
+  "balance": {
+    "message": "Balans"
+  },
+  "balanceOutdated": {
+    "message": "Balans ola bilər köhnəlmiş"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Kifayət qədər yaxşı olmaması balans üçün cari qazın ümumi"
+  },
+  "basic": {
+    "message": "Əsas"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Vahid Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "İstifadə Etdiyi Blockies İdenticon"
+  },
+  "nonceField": {
+    "message": "Konfiqurasiya əməliyyat kodu "
+  },
+  "nonceFieldHeading": {
+    "message": "İstifadəçi Kodu"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Brauzerinizin dəstəklənmir..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask layihələndirilib və inşa edilib, California."
+  },
+  "buyWithWyre": {
+    "message": "Almaq ЕТН ilə Вайр"
+  },
+  "buyWithWyreDescription": {
+    "message": "Вайр imkan verir kredit kartı istifadə üçün depozit даж hesabınıza MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Almaq CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch üçün ideal yerdir mübadiləsi 300-dən çox криптовалюты daha yaxşı kurs."
+  },
+  "bytes": {
+    "message": "Byte"
+  },
+  "off": {
+    "message": "Təcrübəsi"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Azn"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Ləğv et"
+  },
+  "cancelAttempt": {
+    "message": "Ləğv Etmək Üçün Cəhd"
+  },
+  "cancellationGasFee": {
+    "message": "Ləğv Qaz Rüsumların"
+  },
+  "cancelled": {
+    "message": "Ləğv"
+  },
+  "chainId": {
+    "message": "Zəncirvari ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Üçün buraya basın sirrini açmaq sözləri"
+  },
+  "close": {
+    "message": "Yanında"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "İstifadə etmək lazımdır MetaMask Google Chrome qoşulmaq üçün sizin avadanlıq pul kisəsi."
+  },
+  "confirm": {
+    "message": "Təsdiq"
+  },
+  "confirmed": {
+    "message": "Təsdiq"
+  },
+  "confirmPassword": {
+    "message": "Təsdiq Parol"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Təsdiq öz gizli backup ifadələr"
+  },
+  "congratulations": {
+    "message": "Təbrik edirik"
+  },
+  "connectHardwareWallet": {
+    "message": "Əlaqə Aparat Pul Kisəsi"
+  },
+  "connect": {
+    "message": "Əlaqə"
+  },
+  "connectRequest": {
+    "message": "Qoşun Sorğu"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Qoşulma Кован test şəbəkə"
+  },
+  "connectingToMainnet": {
+    "message": "Qoşulma əsas şəbəkə Эфириума "
+  },
+  "connectingToRopsten": {
+    "message": "Qoşulma Ropsten test şəbəkə"
+  },
+  "connectingToRinkeby": {
+    "message": "Qoşulma Rinkeby test şəbəkə"
+  },
+  "connectingToLocalhost": {
+    "message": "Qoşulma localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Qoşulma Goerli test şəbəkə"
+  },
+  "contacts": {
+    "message": "Əlaqə"
+  },
+  "contactsSettingsDescription": {
+    "message": "Əlavə edə, redaktə edə, silə və idarə etmək üçün kontaktlar"
+  },
+  "continueToWyre": {
+    "message": "Davam Вайр"
+  },
+  "continueToCoinSwitch": {
+    "message": "Davam CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Müqavilənin Yerləşdirilməsi "
+  },
+  "conversionProgress": {
+    "message": "Dəyişikliklər tərəqqi"
+  },
+  "copiedButton": {
+    "message": "Sitemizi"
+  },
+  "copiedExclamation": {
+    "message": "Скопировано!"
+  },
+  "copy": {
+    "message": "Surəti"
+  },
+  "copyAddress": {
+    "message": "Surəti ünvan panoya"
+  },
+  "copyTransactionId": {
+    "message": "Əqd ıd surəti"
+  },
+  "copiedTransactionId": {
+    "message": "Sitemizi ID əməliyyat "
+  },
+  "copyToClipboard": {
+    "message": "Panoya surəti"
+  },
+  "copyButton": {
+    "message": " Surəti "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Yaratmaq"
+  },
+  "createAccount": {
+    "message": "Hesab Yaratmaq"
+  },
+  "createAWallet": {
+    "message": "Yaratmaq pul kisəsi"
+  },
+  "createPassword": {
+    "message": "Parol Yaratmaq"
+  },
+  "currencyConversion": {
+    "message": "Convert Valyuta "
+  },
+  "currentLanguage": {
+    "message": "Cari Dili"
+  },
+  "customGas": {
+    "message": "Quraşdırma Qaz"
+  },
+  "customGasSubTitle": {
+    "message": "Artırılması rüsumu azalda bilər zamanda, emal, amma bu heç bir zəmanət verilir."
+  },
+  "customToken": {
+    "message": "İstifadəçi Marker"
+  },
+  "customRPC": {
+    "message": "Xüsusi ЭКП"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimal nişanlarının az olmamalıdır 0 və daha 36."
+  },
+  "decimal": {
+    "message": "Decimal nişanlarının dəqiqliyi"
+  },
+  "defaultNetwork": {
+    "message": "Şəbəkə default üçün efir əməliyyatların əsas həcmi."
+  },
+  "delete": {
+    "message": "Sil"
+  },
+  "deleteAccount": {
+    "message": "Hesab Silmək"
+  },
+  "deposit": {
+    "message": "Əmanət"
+  },
+  "depositEther": {
+    "message": "Depozit Efir"
+  },
+  "details": {
+    "message": "Ətraflı"
+  },
+  "directDepositEther": {
+    "message": "Birbaşa Efir Əmanət"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Əgər siz artıq var, bəzi efir, ən sürətli şəkildə almaq efir sizin yeni bir pul kisəsi ilə birbaşa verilir."
+  },
+  "dismiss": {
+    "message": "Azad"
+  },
+  "done": {
+    "message": "Görülən"
+  },
+  "downloadGoogleChrome": {
+    "message": "Yukle, Google Xrom"
+  },
+  "downloadSecretBackup": {
+    "message": "Download bu gizli backup söz və onu saxlamaq təhlükəsiz saxlamaq üçün xarici şifrelenmiş hard disk və ya daşıyıcı."
+  },
+  "downloadStateLogs": {
+    "message": "Download Dövlət Jurnal"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Görə"
+  },
+  "edit": {
+    "message": "Redaktə"
+  },
+  "editContact": {
+    "message": "Redaktə Əlaqə"
+  },
+  "emailUs": {
+    "message": "Bizə göndərin!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Siz test - saxlamaq seedphrase təhlükəsiz, bu, məsuliyyət daşıyır!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Məsləhət saxlanılması üçün təhlükəsiz"
+  },
+  "endOfFlowMessage3": {
+    "message": "Qənaət backup bir neçə yerdə."
+  },
+  "endOfFlowMessage4": {
+    "message": "Heç vaxt bölüşmək üçün söz kimlə."
+  },
+  "endOfFlowMessage5": {
+    "message": "Ehtiyatlı olun, phishing! MetaMask deyil, kortəbii vermək üçün toxum söz."
+  },
+  "endOfFlowMessage6": {
+    "message": "Əgər sizə lazım geri almaq sizin toxum ifadələr, siz tapa bilərsiniz Settings -> Security."
+  },
+  "endOfFlowMessage7": {
+    "message": "Əgər suallarınız və ya bir şey görmək zalım olan e-poçt support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask deyil bərpa edə bilər, öz seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Daha ətraflı məlumat."
+  },
+  "endOfFlowMessage10": {
+    "message": "Bütün İşlər"
+  },
+  "ensRegistrationError": {
+    "message": "Səhv ENS qeydiyyat"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС adı tapılmadı cari şəbəkə. Cəhd edin, getmək əsas şəbəkə Эфириума."
+  },
+  "enterAnAlias": {
+    "message": "Yazın ləqəb"
+  },
+  "enterPassword": {
+    "message": "Şifrəni daxil edin"
+  },
+  "enterPasswordContinue": {
+    "message": "Parol daxil edin davam etdirilməsi üçün"
+  },
+  "ethereumPublicAddress": {
+    "message": "İctimai Эфириума Ünvan"
+  },
+  "etherscanView": {
+    "message": "Növü hesab biri ən yaxşı"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Təxmini Vaxt User "
+  },
+  "expandView": {
+    "message": "Yerləşdirmək"
+  },
+  "exportPrivateKey": {
+    "message": "İxrac Qapalı Açar"
+  },
+  "failed": {
+    "message": "Bilmədi"
+  },
+  "fast": {
+    "message": "Tez"
+  },
+  "faster": {
+    "message": "Sürətli"
+  },
+  "fiat": {
+    "message": "Фиат",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Unutmaq bu cihaz"
+  },
+  "from": {
+    "message": "Təcrübəsi"
+  },
+  "fromShapeShift": {
+    "message": "Biri Друидских"
+  },
+  "functionType": {
+    "message": "Növü Funksiyaları "
+  },
+  "gasLimit": {
+    "message": "Limit Qaz"
+  },
+  "gasLimitCalculation": {
+    "message": "Biz ümid edirik təklif limiti qaz əsasında uğurlu şəbəkəsinin."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Qaz limit-bu maksimum sayı, ədəd qaz hazır olduğunuz sərf etmək."
+  },
+  "gasLimitTooLow": {
+    "message": "Limit qaz az olmamalıdır bu 21,000"
+  },
+  "gasUsed": {
+    "message": "Qaz, İstifadə Olunan"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Qazın Qiyməti Çox Aşağıdır"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Qazın qiyməti müəyyən miqdarda efir hazır olduğunuz ödəmək hər bir vahidinə qaz var."
+  },
+  "gasPriceNoDenom": {
+    "message": "Qazın Qiyməti "
+  },
+  "gasPriceCalculation": {
+    "message": "Biz ümid edirik təklif etdiyi qazın qiymətinin asılı olaraq, uğur, şəbəkə."
+  },
+  "general": {
+    "message": "Ümumi"
+  },
+  "generalSettingsDescription": {
+    "message": "Convert valyutanın əsas valyutası, dil, ki, blockies identicon"
+  },
+  "getEther": {
+    "message": "Sizə Efir"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Sizə Kömək Etmək."
+  },
+  "getStarted": {
+    "message": "Başlayaq"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Biz sizi görməyimizə şadıq."
+  },
+  "hardware": {
+    "message": "avadanlıq"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware pul kisəsi bağlı"
+  },
+  "hardwareWallets": {
+    "message": "Qoşun hardware pul kisəsi"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Seçin aparat pul kisəsi istəyirəm ki, istifadə MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "burada",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hexadecimal Məlumat"
+  },
+  "hide": {
+    "message": "Gizlətmək"
+  },
+  "hideToken": {
+    "message": "Gizlətmək Marker"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Tarix"
+  },
+  "import": {
+    "message": "İdxal",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "İdxal Hesabları"
+  },
+  "importAccountMsg": {
+    "message": " İdxal hesabları olmayacaq ilə bağlı sizin ilk yaradılmışdır MetaMask seedphrase hesabı. Haqqında daha ətraflı məlumat idxal olunan hesablar "
+  },
+  "importAccountSeedPhrase": {
+    "message": "İdxal hesabı ilə toxum söz"
+  },
+  "importWallet": {
+    "message": "İdxal Pul Kisəsi"
+  },
+  "importYourExisting": {
+    "message": "İdxal öz pul kisəsi ilə 12 sözləri toxum söz"
+  },
+  "imported": {
+    "message": "İdxal",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "İdxal istifadə edərək hesabı toxum söz"
+  },
+  "infoHelp": {
+    "message": "Məlumat Və Yardım"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Sizin ilkin müqavilə təsdiq edilmişdir şəbəkəsinin. OK düyməsini basın qayıtmaq üçün."
+  },
+  "insufficientBalance": {
+    "message": "Kifayət qədər yaxşı olmaması balansı."
+  },
+  "insufficientFunds": {
+    "message": "Vəsait kifayət qədər deyil."
+  },
+  "insufficientTokens": {
+    "message": "Kifayət qədər ayələr."
+  },
+  "invalidAddress": {
+    "message": "Səhv ünvan"
+  },
+  "invalidAddressRecipient": {
+    "message": "Ünvan alıcı müqavilə etibarsızdır"
+  },
+  "knownAddressRecipient": {
+    "message": "Məşhur ünvanında müqavilə."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ət deyil, şəbəkə, zəng aşağı halda"
+  },
+  "invalidInput": {
+    "message": "Səhv daxil edilməsi."
+  },
+  "invalidRPC": {
+    "message": "Yolverilməz URL-ünvanı ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Yolverilməz blok siz webvıewer URL-ünvanı"
+  },
+  "invalidSeedPhrase": {
+    "message": "Səhv toxum söz"
+  },
+  "jsonFile": {
+    "message": "JSON-fayl ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Test Şəbəkə Кован "
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Daha ətraflı"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Siz istifadə etmək lazımdır, sizin son hesabına, daha əvvəl edə əlavə yeni."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Bəli, edəcəyik!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Linklər"
+  },
+  "liveGasPricePredictions": {
+    "message": "Proqnoz Qiymətinin Qaz "
+  },
+  "loading": {
+    "message": "Yükləmə..."
+  },
+  "loadingTokens": {
+    "message": "Ayələr Loading..."
+  },
+  "loadMore": {
+    "message": "Yükü Çox"
+  },
+  "localhost": {
+    "message": "Yerli 8545"
+  },
+  "login": {
+    "message": "Daxil Ol"
+  },
+  "logout": {
+    "message": "Çıxmaq"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Çıxış vaxt çox böyükdür"
+  },
+  "mainnet": {
+    "message": "Əsas Şəbəkə Эфириума "
+  },
+  "memorizePhrase": {
+    "message": "Yadda saxlayın ki, bu söz."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menyu"
+  },
+  "message": {
+    "message": "Mesaj"
+  },
+  "metamaskDescription": {
+    "message": "Şəbəkə bağlantısı Ethereum və desentralizasiya internet."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Toxum Sözləri"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Daxil edin, parol təsdiqləmək üçün, siz!"
+  },
+  "myAccounts": {
+    "message": "Mənim Hesabları"
+  },
+  "myWalletAccounts": {
+    "message": "Mənim Pul Hesabları"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Bütün MetaMask yaratdığı hesabları avtomatik olaraq əlavə bu bölmədə."
+  },
+  "mustSelectOne": {
+    "message": "Seçmək lazımdır ki, ən azı 1 işarədir."
+  },
+  "needEtherInWallet": {
+    "message": "İlə qarşılıqlı децентрализованными apps istifadə edərək, MetaMask lazımdır efir sizin pul kisəsi."
+  },
+  "needImportFile": {
+    "message": "Lazımdır fayl seçmək üçün idxal.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Bilmirəm göndərmək mənfi məbləğində olan İsveçrənin ali texniki məktəb."
+  },
+  "networkName": {
+    "message": "Şəbəkə Adı "
+  },
+  "networks": {
+    "message": "Şəbəkə"
+  },
+  "networkSettingsDescription": {
+    "message": "Əlavə və redaktə etmək üçün xüsusi şəbəkələrin ЭКП "
+  },
+  "nevermind": {
+    "message": "Фигу"
+  },
+  "newAccount": {
+    "message": "Yeni Hesab"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Yeni ünvanı aşkar! Basın burada əlavə etmək üçün bir ünvan kitab."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Yeni Bir Əlaqə"
+  },
+  "newContract": {
+    "message": "Yeni Müqavilə"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Yeni Şəbəkə"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Yox, mən artıq var toxum söz"
+  },
+  "protectYourKeys": {
+    "message": "Qorumaq Açarlar!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Ehtiyatlı olun ilə toxum söz — haqqında məlumatlar verildi saytlarda olan təqlid etməyə çalışırıq MetaMask. MetaMask heç vaxt tələb edəcək, sizin üçün toxum söz!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Saxlamaq üçün söz təhlükəsiz. Əgər siz görürsünüz ki, hansısa подозрительное, ya əmin saytda e-poçt support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Yeni URL-ünvanı ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Yeni Nəticəsi"
+  },
+  "newTransactionFee": {
+    "message": "Yeni Haqqı Müqavilə "
+  },
+  "next": {
+    "message": "Daha sonra"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Heç bir ünvan üçün bu adı."
+  },
+  "noDeposits": {
+    "message": "Heç bir depozitlər qəbul"
+  },
+  "noConversionRateAvailable": {
+    "message": "Yoxdur Kurs Dönüşüm Mövcuddur"
+  },
+  "noTransactions": {
+    "message": "Yoxdur əməliyyatlar"
+  },
+  "noThanks": {
+    "message": "Yox, Sağ Olun"
+  },
+  "notEnoughGas": {
+    "message": "Qaz Çatışmır"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Web-kamera tapılmadı"
+  },
+  "noWebcamFound": {
+    "message": "Veb-kamera, kompüter tapılmadı. Lütfən, yenidən cəhd edin."
+  },
+  "ofTextNofM": {
+    "message": "biri"
+  },
+  "orderOneHere": {
+    "message": "Sifariş Tresor və ya kitab və saxlamaq vəsait soyuducu "
+  },
+  "origin": {
+    "message": "Mənşə"
+  },
+  "parameters": {
+    "message": "Parametrləri"
+  },
+  "participateInMetaMetrics": {
+    "message": "İştirak MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "İştirak MetaMetrics üçün bizə kömək etmək MetaMask yaxşı"
+  },
+  "password": {
+    "message": "Parol"
+  },
+  "passwordsDontMatch": {
+    "message": "Parol uyğun gəlmir"
+  },
+  "passwordNotLongEnough": {
+    "message": "Parol kifayət qədər uzun "
+  },
+  "pastePrivateKey": {
+    "message": "Daxil etmək sizin şəxsi açarı burada satır:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Daxil edin toxum söz burada!"
+  },
+  "pending": {
+    "message": "gözləyir"
+  },
+  "personalAddressDetected": {
+    "message": "Şəxsi ünvanı aşkar edilmişdir. Giriş müqaviləsinin mö ' cüzə ünvanları."
+  },
+  "prev": {
+    "message": "Əvvəl'"
+  },
+  "primaryCurrencySetting": {
+    "message": "İlkin Valyuta"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Məxfilik Siyasəti "
+  },
+  "privateKey": {
+    "message": "Xüsusi Açarı",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Xəbərdarlıq: heç vaxt açıqlamaq, bu açar. Kimsə öz şəxsi düymələri oğurlamaq bilər, hər hansı bir aktivləri olan və hesabı."
+  },
+  "privateNetwork": {
+    "message": "Özəl Şəbəkə"
+  },
+  "qrCode": {
+    "message": "Göstərmək QR-kodu"
+  },
+  "queue": {
+    "message": "Növbə"
+  },
+  "readdToken": {
+    "message": "Siz də əlavə edə bilərsiniz bu işarə gələcəkdə Gedən Əlavə et \"mö ' cüzə\" menyu variantları hesablar."
+  },
+  "recents": {
+    "message": "Tikili"
+  },
+  "recipientAddress": {
+    "message": "Ünvan Alıcı "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Rədd Bütün"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Rədd"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Yenidən Hesabı "
+  },
+  "resetAccountDescription": {
+    "message": "Reset hesabı təmizləmək əməliyyatın tarixi."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Yadıma sonra"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Bərpa hesabı ilə toxum söz"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "sorğu gözləyən etiraf edib"
+  },
+  "required": {
+    "message": "Tələb olunur"
+  },
+  "restore": {
+    "message": "Bərpa"
+  },
+  "revealSeedWords": {
+    "message": "Aşkar Toxum Sözləri"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Toxum Söz"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Əgər siz nə vaxtsa dəyişmək brauzerlərdə və ya hərəkət kompüter lazımdır ki, bu toxum ifadələr almaq, sizin hesabları. Onları saxlamaq, harasa təhlükəsiz və məxfi."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Heç bölüşür belə bir söz ilə, hər kəs!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Bu sözlər istifadə oluna bilər oğurlamaq üçün bütün hesabları."
+  },
+  "revert": {
+    "message": "Geri qayıtmaq"
+  },
+  "remove": {
+    "message": "Sil"
+  },
+  "removeAccount": {
+    "message": "Sil hesabı"
+  },
+  "removeAccountDescription": {
+    "message": "Bu haqq-hesab silinəcək sizin pul kisəsi. Əmin olun ki, sizdə var, orijinal toxum söz və ya xüsusi açarı bunun üçün idxal hesabına davam əvvəl. Siz, idxal və ya yenidən yaratmaq hesablar biri açılan hesablar. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Şəbəkə Rinkeby Test "
+  },
+  "ropsten": {
+    "message": "Şəbəkə Ropsten Test "
+  },
+  "goerli": {
+    "message": "Test Şəbəkə Goerli "
+  },
+  "save": {
+    "message": "Saxlamaq"
+  },
+  "slow": {
+    "message": "Yavaş-yavaş"
+  },
+  "slower": {
+    "message": "Yavaş"
+  },
+  "saveAsCsvFile": {
+    "message": "Kimi saxlamaq CSV faylı"
+  },
+  "scanInstructions": {
+    "message": "Qoyun QR kodu kamera qarşısında"
+  },
+  "scanQrCode": {
+    "message": "Kodu scan QR "
+  },
+  "search": {
+    "message": "Axtarış"
+  },
+  "searchResults": {
+    "message": "Axtarış Nəticələri "
+  },
+  "secretBackupPhrase": {
+    "message": "Gizli Backup İfadələr"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Sizin gizli backup ifadə edir onun üçün asan backup və bərpa hesabınızla."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Xəbərdarlıq: heç vaxt açıqlamaq öz ehtiyat ifadələr. Kim bu söz götürə bilərsiniz yayım əbədi."
+  },
+  "secretPhrase": {
+    "message": "Yazın sizin gizli on iki kəlmə söz bərpa etmək üçün burada saxlama."
+  },
+  "securityAndPrivacy": {
+    "message": "Təhlükəsizlik Və Məxfilik"
+  },
+  "securitySettingsDescription": {
+    "message": "Gizlilik ayarları və cüzdan toxum söz"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Ayırın, hər bir sözü ilə uçurum"
+  },
+  "seedPhraseReq": {
+    "message": "Toxum ifadələr 12 söz"
+  },
+  "selectCurrency": {
+    "message": "Valyuta Seçin"
+  },
+  "selectEachPhrase": {
+    "message": "Buyurun, seçin, hər bir söz üçün əmin olun ki, bu, doğru deyil."
+  },
+  "selectLocale": {
+    "message": "Dil Seçin"
+  },
+  "selectType": {
+    "message": "Növü Seçin"
+  },
+  "send": {
+    "message": "Göndər"
+  },
+  "sendAmount": {
+    "message": "Göndər Məbləği"
+  },
+  "sendETH": {
+    "message": "Göndər ЕТН"
+  },
+  "sendTokens": {
+    "message": "Göndər"
+  },
+  "sentEther": {
+    "message": "göndərilmiş efir"
+  },
+  "sentTokens": {
+    "message": "göndərdi ayələr"
+  },
+  "separateEachWord": {
+    "message": "Ayırın, hər bir sözü ilə uçurum"
+  },
+  "searchTokens": {
+    "message": "Токены Axtar "
+  },
+  "selectAnAccount": {
+    "message": "Hesabı seçin"
+  },
+  "selectAnAccountHelp": {
+    "message": "Hesabı seçin keçirmək üçün MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Seçin, daha yüksək qaz haqqı sürətləndirmək üçün emal sizin əməliyyat.*"
+  },
+  "selectHdPath": {
+    "message": "Yolunu seçin "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Parametrləri"
+  },
+  "showAdvancedGasInline": {
+    "message": "Əlavə nəzarət qaz "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Seçin bu seçim göstərmək üçün qaz qiymətləri məhdudlaşdırmaq üçün nəzarət birbaşa Göndərmək və təsdiq ekranlar."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Göstərmək dönüşüm Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Seçin bu seçim göstərmək üçün dönüşüm фиат azn Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Göstərmək Qapalı Düymələri"
+  },
+  "showHexData": {
+    "message": "Göstərmək Hexadecimal Məlumat"
+  },
+  "showHexDataDescription": {
+    "message": "Seçin bu seçim göstərmək sahəsində hex data ekran"
+  },
+  "sign": {
+    "message": "İşarəsi"
+  },
+  "signatureRequest": {
+    "message": "Sorğu İmza "
+  },
+  "signed": {
+    "message": "İmza"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Sorğu İmza "
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Bir şey yanlış getdi."
+  },
+  "speedUp": {
+    "message": "Sürətləndirmək"
+  },
+  "speedUpCancellation": {
+    "message": "Sürətləndirmək, bu ləğvi"
+  },
+  "speedUpTransaction": {
+    "message": "Sürətləndirmək bu əməliyyatı"
+  },
+  "switchNetworks": {
+    "message": "Keçid Şəbəkələrinin"
+  },
+  "stateLogFileName": {
+    "message": "Dövlət MetaMask Jurnal"
+  },
+  "stateLogs": {
+    "message": "Dövlət Jurnal"
+  },
+  "stateLogsDescription": {
+    "message": "Dövlət jurnallar ehtiva ünvan şəxsi hesabı və göndərilən məşğul olur."
+  },
+  "stateLogError": {
+    "message": "Səhv alarkən dövlət qeydlər."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Əlaqə Aparat Pul Kisəsi"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Qoşun hardware pul kisəsi birbaşa kompüter."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Hesabı seçin"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Seçin hesab etmək istədiyiniz keçirmək. Siz seçə bilərsiniz ki, yalnız bir dəfə."
+  },
+  "step3HardwareWallet": {
+    "message": "3. İstifadə başlamaq dApps və daha çox!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "İstifadə hardware hesabı, necə istədiyiniz hər hansı bir hesabı Эфириума. Daxil dApps göndərmək Ət almaq və saxlamaq ERC20 ayələr və незаменяемые markerlər kimi CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Mağaza bu söz parol meneceri kimi 1Password."
+  },
+  "submit": {
+    "message": "Təqdim"
+  },
+  "submitted": {
+    "message": "Təqdim olunan"
+  },
+  "supportCenter": {
+    "message": "Bizim ziyarət dəstək Mərkəzi "
+  },
+  "symbol": {
+    "message": "Rəmzi"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simvolu olmalıdır arasında 0 və 12 simvol."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Tənzimləmək üçün backup ilə 3box v. Bu xüsusiyyət eksperimental valyuta; istifadə edin, öz riski."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box idi əlil olan səhv zamanı, ibtidai sync"
+  },
+  "syncWithMobile": {
+    "message": "Sinxronizasiya mobil"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sinxronizasiya mobil"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Əgər siz yalnız açıq MetaMask mobil apps ilk dəfə, yalnız təlimatlara əməl edin sizin telefonunuzda."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan bu kodu ilə MetaMask mobil app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Əmin olun ki, heç kim baxır ekran zaman сканируете bu kodu"
+  },
+  "syncWithMobileComplete": {
+    "message": "Sizin data idi uğurla senkronize. Enjoy MetaMask mobil app!"
+  },
+  "terms": {
+    "message": "İstifadə şərtləri"
+  },
+  "testFaucet": {
+    "message": "Test Tap"
+  },
+  "thisWillCreate": {
+    "message": "Bu, imkan verəcək ki, yeni bir yaratmaq pul kisəsi və toxum söz"
+  },
+  "tips": {
+    "message": "Məsləhətlər"
+  },
+  "to": {
+    "message": "Üçün"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Marker"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Mö ' cüzə artıq əlavə edildi."
+  },
+  "tokenContractAddress": {
+    "message": "Mö ' Cüzə Ünvan Müqavilə "
+  },
+  "tokenSymbol": {
+    "message": "Rəmzi Token "
+  },
+  "total": {
+    "message": "Ümumi"
+  },
+  "transaction": {
+    "message": "əməliyyat"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Əməliyyat səhv."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Səhv Əməliyyatlar. İstisna müqavilədə kodu."
+  },
+  "transactionErrorNoContract": {
+    "message": "Çalışıram zəng funksiyası kontrakt ünvanı."
+  },
+  "transactionFee": {
+    "message": "Haqqı Müqavilə "
+  },
+  "transactionTime": {
+    "message": "Hazırda Əməliyyat "
+  },
+  "transfer": {
+    "message": "Tərcümə"
+  },
+  "transferBetweenAccounts": {
+    "message": "Tərcümə arasında mənim hesabları"
+  },
+  "transferFrom": {
+    "message": "Transfer"
+  },
+  "troubleTokenBalances": {
+    "message": "Bizim problemlərimiz var idi download qalıqları marker. Bilərsiniz ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Yenidən cəhd edin "
+  },
+  "typePassword": {
+    "message": "Parol daxil edin MetaMask "
+  },
+  "unapproved": {
+    "message": "Неутвержденные"
+  },
+  "units": {
+    "message": "vahid"
+  },
+  "unknown": {
+    "message": "Məlum deyil"
+  },
+  "unknownNetwork": {
+    "message": "Naməlum Xüsusi Şəbəkə"
+  },
+  "unknownQrCode": {
+    "message": "Səhv: biz bilməmişik ki, müəyyən QR kodu"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Oops! Bir şey yanlış getdi...."
+  },
+  "unknownCameraError": {
+    "message": "Səhv edərkən əldə etmək üçün cəhd, sizin kamera. Lütfən, yenidən cəhd edin..."
+  },
+  "unlock": {
+    "message": "Kilidini açmaq"
+  },
+  "unlockMessage": {
+    "message": "Децентрализованный web gözləyir"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Урис tələb müvafiq http/prefiks https."
+  },
+  "usedByClients": {
+    "message": "İstifadə olunan müxtəlif müştəri"
+  },
+  "userName": {
+    "message": "İstifadəçi adı"
+  },
+  "validFileImport": {
+    "message": "Siz düzgün seçmək üçün fayl idxal."
+  },
+  "viewAccount": {
+    "message": "Göz Hesabı "
+  },
+  "viewinExplorer": {
+    "message": "Bax siz webvıewer"
+  },
+  "viewContact": {
+    "message": "Əlaqə Bax"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Görünüşü yaxşı biri"
+  },
+  "visitWebSite": {
+    "message": "Bizim veb səhifəsinə müraciət edin"
+  },
+  "walletSeed": {
+    "message": "Toxum Kisəsi "
+  },
+  "welcomeBack": {
+    "message": "Xoş Gəlmisiniz!"
+  },
+  "welcome": {
+    "message": "Xoş gəlmisiniz MetaMask"
+  },
+  "writePhrase": {
+    "message": "E-məktub bu cümlə azn kağız və saxlamaq üçün təhlükəsiz yerdə. Əgər istəyirsinizsə, daha çox təhlükəsizlik, yazın, onun bir neçə vərəqələri kağız və saxlamaq üçün hər 2 - 3 müxtəlif yerləri."
+  },
+  "yesLetsTry": {
+    "message": "Bəli edək"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Sizə lazım olan imkanı kamerada, bu funksiyanı istifadə etmək."
+  },
+  "yourSigRequested": {
+    "message": "İmza tələb olunur"
+  },
+  "youSign": {
+    "message": "Siz imzalanması"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Sizin şəxsi toxum söz"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Sıfır qiymət qazın sürəti ilə qədər"
+  }
+}

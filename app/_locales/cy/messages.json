@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Yn Dangos Mewn Trafodion"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Dewiswch hwn i ddefnyddio Etherscan i ddangos galwad sy'n dod i mewn trafodion yn y rhestr drafodion"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Siart dim ond ar gael ar Ethereum rhwydweithiau."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Cysylltiadau"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Safleoedd yn caniatáu i ddarllen eich cyfrifon"
+  },
+  "addSite": {
+    "message": "Ychwanegu Safle"
+  },
+  "addSiteDescription": {
+    "message": "Llaw ychwanegu safle i ganiatáu iddo gael mynediad at eich cyfrifon, yn ddefnyddiol ar gyfer hŷn dapps"
+  },
+  "connected": {
+    "message": "Yn gysylltiedig"
+  },
+  "connectedDescription": {
+    "message": "Rhestr o safleoedd yn caniatáu mynediad at eich cyfeiriadau"
+  },
+  "privacyModeDefault": {
+    "message": "Preifatrwydd Modd yn awr yn ei alluogi yn ddiofyn"
+  },
+  "contractInteraction": {
+    "message": "Contract Rhyngweithio"
+  },
+  "clearApprovalData": {
+    "message": "Cael gwared ar yr holl safleoedd"
+  },
+  "reject": {
+    "message": "Gwrthod"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Mae'r safle hwn yn gofyn am fynediad at farn yn eich cyfrif cyfredol cyfeiriad. Dylech bob amser wneud yn siŵr eich bod yn ymddiried yn y safleoedd yr ydych yn rhyngweithio gyda."
+  },
+  "about": {
+    "message": "Am"
+  },
+  "aboutSettingsDescription": {
+    "message": "Fersiwn, cefnogaeth ganolfan, ac yn cysylltu â gwybodaeth."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Cael mynediad at eich camera..."
+  },
+  "account": {
+    "message": "Cyfrif"
+  },
+  "accountDetails": {
+    "message": "Manylion Cyfrif"
+  },
+  "accountName": {
+    "message": "Enw'r Cyfrif"
+  },
+  "accountOptions": {
+    "message": "Cyfrif Opsiynau"
+  },
+  "accountSelectionRequired": {
+    "message": "Mae angen i chi ddewis cyfrif!"
+  },
+  "activityLog": {
+    "message": "gweithgaredd log"
+  },
+  "addNetwork": {
+    "message": "Ychwanegu Rhwydwaith"
+  },
+  "addRecipient": {
+    "message": "Ychwanegu Derbynnydd"
+  },
+  "advanced": {
+    "message": "Uwch"
+  },
+  "advancedSettingsDescription": {
+    "message": "Mynediad datblygwr nodweddion, llwytho i lawr Wladwriaeth Logiau, Ailosod Cyfrif, setup testnets ac arfer RPC."
+  },
+  "advancedOptions": {
+    "message": "Opsiynau Uwch"
+  },
+  "addToAddressBook": {
+    "message": "Ychwanegu i llyfr cyfeiriadau"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "e. e. roedd John D."
+  },
+  "addAlias": {
+    "message": "Ychwanegu alias"
+  },
+  "addToken": {
+    "message": "Ychwanegu Token"
+  },
+  "addTokens": {
+    "message": "Ychwanegu Tocynnau"
+  },
+  "addSuggestedTokens": {
+    "message": "Ychwanegu Awgrymu Tocynnau"
+  },
+  "addAcquiredTokens": {
+    "message": "Ychwanegwch y tocynnau yr ydych wedi ei gaffael gan ddefnyddio MetaMask"
+  },
+  "amount": {
+    "message": "Swm"
+  },
+  "appDescription": {
+    "message": "Mae Ethereum Waled yn eich Porwr",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Cymeradwyo"
+  },
+  "approved": {
+    "message": "Cymeradwyo"
+  },
+  "asset": {
+    "message": "Asedau"
+  },
+  "attemptingConnect": {
+    "message": "Ceisio i gysylltu â blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Cyflwyno ymgais hwn nid yw'n gwarantu eich trafodiad gwreiddiol yn cael ei ganslo. Os yw'r canslo ymgais yn llwyddiannus, byddwch yn gorfod talu ffi trafodiad uchod."
+  },
+  "attributions": {
+    "message": "Priodoliadau"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Gosod yr amser segur yn y munud cyn MetaMask yn awtomatig logio allan"
+  },
+  "average": {
+    "message": "Ar gyfartaledd"
+  },
+  "back": {
+    "message": "Yn ôl"
+  },
+  "backToAll": {
+    "message": "Yn ôl i Gyd"
+  },
+  "backupApprovalNotice": {
+    "message": "Backup eich Cyfrinach Adferiad cod i gadw eich waled ac arian yn ddiogel."
+  },
+  "backupApprovalInfo": {
+    "message": "Cod cyfrinachol hwn yn cael ei hangen i adennill eich waled rhag ofn y byddwch yn colli eich dyfais, anghofio eich cyfrinair, rhaid i chi ail-osod MetaMask, neu os ydych am gael mynediad at eich waled ar ddyfais arall."
+  },
+  "backupNow": {
+    "message": "Wrth gefn yn awr"
+  },
+  "balance": {
+    "message": "Cydbwysedd"
+  },
+  "balanceOutdated": {
+    "message": "Cydbwysedd allai fod wedi dyddio"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Digon o gydbwysedd ar gyfer nwy ar hyn o bryd cyfanswm"
+  },
+  "basic": {
+    "message": "Sylfaenol"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloc Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Defnyddiwch Music Catch Identicon"
+  },
+  "nonceField": {
+    "message": "Addasu trafodiad nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Eich Porwr yn cael ei gefnogi..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask yn a gynlluniwyd ac a adeiladwyd yng Nghaliffornia."
+  },
+  "buyWithWyre": {
+    "message": "Prynu ETH gyda Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre yn gadael i chi ddefnyddio cardiau credyd i adneuo ETH yn iawn yn eich MetaMask cyfrif."
+  },
+  "buyCoinSwitch": {
+    "message": "Prynu ar CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch yn y cyrchfan un stop i gyfradd yn fwy na 300 cryptocurrencies ar y gyfradd orau posibl."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Oddi ar y"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Ar"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Diddymu"
+  },
+  "cancelAttempt": {
+    "message": "Diddymu Ymgais"
+  },
+  "cancellationGasFee": {
+    "message": "Canslo Nwy Ffi"
+  },
+  "cancelled": {
+    "message": "Canslo"
+  },
+  "chainId": {
+    "message": "Cadwyn ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Cliciwch yma i ddatgelu cyfrinach o eiriau"
+  },
+  "close": {
+    "message": "Yn agos"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Mae angen i chi ddefnyddio'r MetaMask ar Google Chrome er mwyn cysylltu at eich Caledwedd Waled."
+  },
+  "confirm": {
+    "message": "Gadarnhau"
+  },
+  "confirmed": {
+    "message": "Cadarnhaodd"
+  },
+  "confirmPassword": {
+    "message": "Cadarnhau Cyfrinair"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Cadarnhau eich Cyfrinach wrth Gefn Ymadrodd"
+  },
+  "congratulations": {
+    "message": "Llongyfarchiadau"
+  },
+  "connectHardwareWallet": {
+    "message": "Cysylltu Caledwedd Waled"
+  },
+  "connect": {
+    "message": "Cysylltu"
+  },
+  "connectRequest": {
+    "message": "Cysylltu Gais"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Cysylltu Kovan Prawf Rhwydwaith"
+  },
+  "connectingToMainnet": {
+    "message": "Cysylltu i'r Prif Ethereum Rhwydwaith"
+  },
+  "connectingToRopsten": {
+    "message": "Cysylltu Ropsten Prawf Rhwydwaith"
+  },
+  "connectingToRinkeby": {
+    "message": "Cysylltu Rinkeby Prawf Rhwydwaith"
+  },
+  "connectingToLocalhost": {
+    "message": "Cysylltu i Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Cysylltu Goerli Prawf Rhwydwaith"
+  },
+  "contacts": {
+    "message": "Cysylltiadau"
+  },
+  "contactsSettingsDescription": {
+    "message": "Ychwanegu, golygu, dileu, a rheoli eich cysylltiadau"
+  },
+  "continueToWyre": {
+    "message": "Parhau i Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Parhau i CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Contract Defnyddio"
+  },
+  "conversionProgress": {
+    "message": "Drosi ar y gweill"
+  },
+  "copiedButton": {
+    "message": "Copïo"
+  },
+  "copiedExclamation": {
+    "message": "Copïo!"
+  },
+  "copy": {
+    "message": "Copi"
+  },
+  "copyAddress": {
+    "message": "Copi cyfeiriad i clipfwrdd"
+  },
+  "copyTransactionId": {
+    "message": "Copi Trafodiad ID"
+  },
+  "copiedTransactionId": {
+    "message": "Copïo Trafodiad ID"
+  },
+  "copyToClipboard": {
+    "message": "Copi i clipfwrdd"
+  },
+  "copyButton": {
+    "message": " Copi "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Creu"
+  },
+  "createAccount": {
+    "message": "Creu Cyfrif"
+  },
+  "createAWallet": {
+    "message": "Creu Waled"
+  },
+  "createPassword": {
+    "message": "Creu Cyfrinair"
+  },
+  "currencyConversion": {
+    "message": "Trosi Arian Cyfred"
+  },
+  "currentLanguage": {
+    "message": "Iaith Ar Hyn O Bryd"
+  },
+  "customGas": {
+    "message": "Addasu Nwy"
+  },
+  "customGasSubTitle": {
+    "message": "Cynyddu ffi yn lleihau amseroedd prosesu, ond nid yn gwarantu."
+  },
+  "customToken": {
+    "message": "Custom Tocyn"
+  },
+  "customRPC": {
+    "message": "Custom RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Degolion rhaid iddo fod o leiaf 0, ac nid dros 36."
+  },
+  "decimal": {
+    "message": "Degolion o Gywirdeb"
+  },
+  "defaultNetwork": {
+    "message": "Y diofyn rhwydwaith Ether ar gyfer trafodion yn y Prif Net."
+  },
+  "delete": {
+    "message": "Dileu"
+  },
+  "deleteAccount": {
+    "message": "Dileu Cyfrif"
+  },
+  "deposit": {
+    "message": "Blaendal"
+  },
+  "depositEther": {
+    "message": "Blaendal Ether"
+  },
+  "details": {
+    "message": "Manylion"
+  },
+  "directDepositEther": {
+    "message": "Yn Uniongyrchol Blaendal Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Os ydych eisoes yn cael rhywfaint o Ether, y ffordd gyflymaf i gael Ether yn eich waled gan blaendal uniongyrchol."
+  },
+  "dismiss": {
+    "message": "Diswyddo"
+  },
+  "done": {
+    "message": "Ei wneud"
+  },
+  "downloadGoogleChrome": {
+    "message": "Lawrlwytho Google Chrome."
+  },
+  "downloadSecretBackup": {
+    "message": "Lawrlwythwch y Gyfrinach wrth Gefn Ymadrodd a chadw ei storio'n ddiogel ar allanol amgryptio gyriant caled neu ar y cyfrwng storio."
+  },
+  "downloadStateLogs": {
+    "message": "Lawrlwytho Wladwriaeth Logiau"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Gollwng"
+  },
+  "edit": {
+    "message": "Golygu"
+  },
+  "editContact": {
+    "message": "Golygu Cyswllt"
+  },
+  "emailUs": {
+    "message": "Anfonwch e-bost atom!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Byddwch yn llwyddo yn y prawf - cadwch eich seedphrase yn ddiogel, mae'n eich cyfrifoldeb chi!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Awgrymiadau ar storio ddiogel"
+  },
+  "endOfFlowMessage3": {
+    "message": "Cadw copi wrth gefn mewn mannau lluosog."
+  },
+  "endOfFlowMessage4": {
+    "message": "Peidiwch byth â rhannu'r ymadrodd gydag unrhyw un."
+  },
+  "endOfFlowMessage5": {
+    "message": "Byddwch yn ofalus o gwe-rwydo! MetaMask fydd byth yn ddigymell yn gofyn am eich hadau ymadrodd."
+  },
+  "endOfFlowMessage6": {
+    "message": "Os oes angen i yn ôl i fyny eich hadau ymadrodd unwaith eto, gallwch ddod o hyd iddo yn Gosodiadau> Diogelwch."
+  },
+  "endOfFlowMessage7": {
+    "message": "Os ydych chi erioed gennych gwestiwn neu gweld rhywbeth bysgodlyd, e-bost support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ni all adfer eich seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "I ddysgu mwy."
+  },
+  "endOfFlowMessage10": {
+    "message": "I Gyd Ei Wneud"
+  },
+  "ensRegistrationError": {
+    "message": "Gwall yn y ENS cofrestru enw"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS enw ddim yn dod o hyd ar y rhwydwaith presennol. Ceisiwch newid i Brif Ethereum Rhwydwaith."
+  },
+  "enterAnAlias": {
+    "message": "Mynd i mewn i alias"
+  },
+  "enterPassword": {
+    "message": "Rhowch y cyfrinair."
+  },
+  "enterPasswordContinue": {
+    "message": "Rhowch y cyfrinair i barhau"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Cyfeiriad Cyhoeddus"
+  },
+  "etherscanView": {
+    "message": "Gweld cyfrif ar Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Amcangyfrif O Amserau Prosesu"
+  },
+  "expandView": {
+    "message": "Ehangu Gweld"
+  },
+  "exportPrivateKey": {
+    "message": "Allforio Allwedd Breifat"
+  },
+  "failed": {
+    "message": "Methu"
+  },
+  "fast": {
+    "message": "Cyflym"
+  },
+  "faster": {
+    "message": "Gyflymach"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Ag anghofio y ddyfais hon"
+  },
+  "from": {
+    "message": "O"
+  },
+  "fromShapeShift": {
+    "message": "O ShapeShift"
+  },
+  "functionType": {
+    "message": "Swyddogaeth Math"
+  },
+  "gasLimit": {
+    "message": "Terfyn Nwy"
+  },
+  "gasLimitCalculation": {
+    "message": "Rydym yn cyfrifo y awgrymwyd terfyn nwy yn seiliedig ar y rhwydwaith cyfraddau llwyddiant."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Terfyn nwy yn cael y swm uchaf o unedau o nwy yr ydych yn barod i wario."
+  },
+  "gasLimitTooLow": {
+    "message": "Terfyn nwy rhaid i fod o leiaf 21000"
+  },
+  "gasUsed": {
+    "message": "Nwy A Ddefnyddir"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Pris Nwy Isel Iawn"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Pris nwy yn pennu faint o Ether y byddwch yn barod i dalu ar gyfer pob uned o nwy."
+  },
+  "gasPriceNoDenom": {
+    "message": "Pris Nwy"
+  },
+  "gasPriceCalculation": {
+    "message": "Rydym yn cyfrifo yn awgrymu prisiau nwy yn seiliedig ar y rhwydwaith cyfraddau llwyddiant."
+  },
+  "general": {
+    "message": "Cyffredinol"
+  },
+  "generalSettingsDescription": {
+    "message": "Trosi arian cyfred, cynradd, arian, iaith, music catch identicon"
+  },
+  "getEther": {
+    "message": "Cael Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Cael Help."
+  },
+  "getStarted": {
+    "message": "Cael Dechrau"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Rydym yn hapus i weld chi."
+  },
+  "hardware": {
+    "message": "caledwedd"
+  },
+  "hardwareWalletConnected": {
+    "message": "Caledwedd waled yn gysylltiedig"
+  },
+  "hardwareWallets": {
+    "message": "Cysylltu caledwedd waled"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Dewiswch caledwedd waled hoffech i'w defnyddio gyda MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "yma",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Data"
+  },
+  "hide": {
+    "message": "Cuddio"
+  },
+  "hideToken": {
+    "message": "Cuddio Tocyn"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Hanes"
+  },
+  "import": {
+    "message": "Mewnforio",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Mewnforio Cyfrif"
+  },
+  "importAccountMsg": {
+    "message": " Mewnforio cyfrifon yn nid yw fod yn gysylltiedig â eich wreiddiol a grëwyd MetaMask cyfrif seedphrase. Dysgwch fwy am fewnforio cyfrifon "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Mewnforio Cyfrif gyda Hadau Ymadrodd"
+  },
+  "importWallet": {
+    "message": "Mewnforio Waled"
+  },
+  "importYourExisting": {
+    "message": "Mewnforio presennol eich waled defnyddio 12 gair yn hadau ymadrodd"
+  },
+  "imported": {
+    "message": "Mewnforio",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Mewnforio gan ddefnyddio cyfrif hadau ymadrodd"
+  },
+  "infoHelp": {
+    "message": "Gwybodaeth A Chymorth"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Eich cychwynnol trafodiad yn cael ei gadarnhau gan y rhwydwaith. Cliciwch OK i fynd yn ôl."
+  },
+  "insufficientBalance": {
+    "message": "Digon o gydbwysedd."
+  },
+  "insufficientFunds": {
+    "message": "Digon o arian."
+  },
+  "insufficientTokens": {
+    "message": "Digon o docynnau."
+  },
+  "invalidAddress": {
+    "message": "Annilys cyfeiriad"
+  },
+  "invalidAddressRecipient": {
+    "message": "Cyfeiriad derbynnydd yn annilys"
+  },
+  "knownAddressRecipient": {
+    "message": "Hysbys contract cyfeiriad."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Nid ETH rhwydwaith, gosod i llythrennau bach"
+  },
+  "invalidInput": {
+    "message": "Mewnbwn annilys."
+  },
+  "invalidRPC": {
+    "message": "Annilys URL RPC"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Annilys Bloc Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Annilys hadau ymadrodd"
+  },
+  "jsonFile": {
+    "message": "Ffeil JSON",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Prawf Rhwydwaith"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "I ddysgu mwy"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Mae angen i chi ddefnyddio eich cyfrif diwethaf cyn y gallwch chi ychwanegu un newydd."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ie, gadewch i ni gael ei sefydlu!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Dolenni"
+  },
+  "liveGasPricePredictions": {
+    "message": "Byw Pris Nwy Rhagfynegiadau"
+  },
+  "loading": {
+    "message": "Llwytho..."
+  },
+  "loadingTokens": {
+    "message": "Llwytho Tocynnau..."
+  },
+  "loadMore": {
+    "message": "Llwyth Mwy"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Logio I Mewn"
+  },
+  "logout": {
+    "message": "Yn logio allan"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Allgofnodi amser yn rhy fawr"
+  },
+  "mainnet": {
+    "message": "Prif Ethereum Rhwydwaith"
+  },
+  "memorizePhrase": {
+    "message": "Cofio yr ymadrodd hwn."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Bwydlen"
+  },
+  "message": {
+    "message": "Neges"
+  },
+  "metamaskDescription": {
+    "message": "Cysylltu â chi i Ethereum a Datganoledig ar y We."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Hadau Geiriau"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Fersiwn"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Os gwelwch yn dda rhowch eich cyfrinair i gadarnhau ei fod yn chi!"
+  },
+  "myAccounts": {
+    "message": "Fy Nghyfrifon"
+  },
+  "myWalletAccounts": {
+    "message": "Fy Waled Cyfrifon"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Eich holl MetaMask creu cyfrifon yn awtomatig yn cael ei ychwanegu at yr adran hon."
+  },
+  "mustSelectOne": {
+    "message": "Mae'n rhaid dewis o leiaf 1 tocyn."
+  },
+  "needEtherInWallet": {
+    "message": "I ryngweithio gyda datganoledig ceisiadau gan ddefnyddio MetaMask, bydd angen Ether yn eich waled."
+  },
+  "needImportFile": {
+    "message": "Rhaid i chi ddewis y ffeil i fewnforio.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ni all anfon negyddol symiau o ETH."
+  },
+  "networkName": {
+    "message": "Enw Rhwydwaith"
+  },
+  "networks": {
+    "message": "Rhwydweithiau"
+  },
+  "networkSettingsDescription": {
+    "message": "Ychwanegu a golygu arfer RPC rhwydweithiau"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Cyfrif Newydd"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Cyfeiriad newydd ei ganfod! Cliciwch yma i ychwanegu at eich llyfr cyfeiriadau."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Cyswllt Newydd"
+  },
+  "newContract": {
+    "message": "Contract Newydd"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Rhwydwaith Newydd"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Na, rwyf eisoes wedi hadau ymadrodd"
+  },
+  "protectYourKeys": {
+    "message": "Amddiffyn Eich Allweddi!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Byddwch yn ofalus gyda eich hadau ymadrodd — cafwyd adroddiadau o wefannau sy'n ymgais i ddynwared MetaMask. MetaMask fydd byth yn gofyn am eich hadau ymadrodd!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Cadwch eich ymadrodd yn ddiogel. Os ydych yn gweld rhywbeth bysgodlyd, neu os ydych yn ansicr ynglŷn â'r wefan, e-bost support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Newydd RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Newydd Cyfanswm"
+  },
+  "newTransactionFee": {
+    "message": "Newydd Ffi Trafodiad"
+  },
+  "next": {
+    "message": "Nesaf"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Dim cyfeiriad wedi ei osod ar gyfer yr enw hwn."
+  },
+  "noDeposits": {
+    "message": "Nid oes unrhyw adneuon a dderbynnir"
+  },
+  "noConversionRateAvailable": {
+    "message": "Unrhyw Gyfradd Drosi Sydd Ar Gael"
+  },
+  "noTransactions": {
+    "message": "Nid oes gennych unrhyw drafodion"
+  },
+  "noThanks": {
+    "message": "Dim Diolch"
+  },
+  "notEnoughGas": {
+    "message": "Nid Yw Digon O Nwy"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Gwegamera heb ei ganfod"
+  },
+  "noWebcamFound": {
+    "message": "Eich cyfrifiadur gwe-gamera nid oedd o hyd. Os gwelwch yn dda ceisiwch eto."
+  },
+  "ofTextNofM": {
+    "message": "o"
+  },
+  "orderOneHere": {
+    "message": "Archebu Trezor neu Cyfriflyfr a chadw eich arian mewn storio oer"
+  },
+  "origin": {
+    "message": "Tarddiad"
+  },
+  "parameters": {
+    "message": "Paramedrau"
+  },
+  "participateInMetaMetrics": {
+    "message": "Cymryd rhan mewn MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Cymryd rhan mewn MetaMetrics i helpu i wneud MetaMask yn well"
+  },
+  "password": {
+    "message": "Cyfrinair"
+  },
+  "passwordsDontMatch": {
+    "message": "Cyfrineiriau ddim yn Cyfateb"
+  },
+  "passwordNotLongEnough": {
+    "message": "Cyfrinair ddim yn ddigon hir"
+  },
+  "pastePrivateKey": {
+    "message": "Gludo eich allwedd breifat llinyn yma:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Gludo eich hadau ymadrodd yma!"
+  },
+  "pending": {
+    "message": "yr arfaeth"
+  },
+  "personalAddressDetected": {
+    "message": "Personol cyfeiriad canfod. Mewnbwn y tocyn contract cyfeiriad."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Cynradd Arian"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Polisi Preifatrwydd"
+  },
+  "privateKey": {
+    "message": "Allwedd Breifat",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Rhybudd: peidiwch Byth â datgelu hyn yn allweddol. Unrhyw un gyda eich allweddi preifat yn gallu dwyn unrhyw asedau a ddelir yn eich cyfrif."
+  },
+  "privateNetwork": {
+    "message": "Rhwydwaith Preifat"
+  },
+  "qrCode": {
+    "message": "Yn dangos QR Code"
+  },
+  "queue": {
+    "message": "Ciw"
+  },
+  "readdToken": {
+    "message": "Gallwch ychwanegu tocyn hwn yn ôl yn y dyfodol drwy fynd i \"Ychwanegu token\" yn eich cyfrifon yn y ddewislen opsiynau."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Cyfeiriad Derbynnydd"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Gwrthod Pob"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Gwrthod"
+  },
+  "reset": {
+    "message": "Ailosod"
+  },
+  "resetAccount": {
+    "message": "Ailosod Y Cyfrif"
+  },
+  "resetAccountDescription": {
+    "message": "Ailosod eich cyfrif yn glir eich hanes trafodiad."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Fy atgoffa yn nes ymlaen"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Adfer eich Cyfrif gyda Hadau Ymadrodd"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "ceisiadau yn aros i gael eu cydnabod"
+  },
+  "required": {
+    "message": "Angen"
+  },
+  "restore": {
+    "message": "Adfer"
+  },
+  "revealSeedWords": {
+    "message": "Datgelu Hadau Geiriau"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Hadau Ymadrodd"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Os ydych chi erioed wedi newid porwyr neu symud cyfrifiaduron, bydd angen y hadau ymadrodd i gael mynediad at eich cyfrifon. Achub nhw yn rhywle yn ddiogel ac yn gyfrinachol."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "PEIDIWCH â rhannu ymadrodd hwn gydag unrhyw un!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Gall y geiriau hyn yn cael ei ddefnyddio i ddwyn eich holl gyfrifon."
+  },
+  "revert": {
+    "message": "Dychwelyd"
+  },
+  "remove": {
+    "message": "Dileu"
+  },
+  "removeAccount": {
+    "message": "Dileu cyfrif"
+  },
+  "removeAccountDescription": {
+    "message": "Bydd y cyfrif yn cael ei ddileu oddi wrth eich waled. Os gwelwch yn dda gwnewch yn siŵr eich bod yn cael y gwreiddiol hadau ymadrodd neu allwedd breifat ar gyfer y mewnforio yn cyfrif cyn parhau. Gallwch chi fewnforio neu greu cyfrifon unwaith eto oddi wrth y cyfrif galw-i-lawr. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Prawf Rhwydwaith"
+  },
+  "ropsten": {
+    "message": "Ropsten Prawf Rhwydwaith"
+  },
+  "goerli": {
+    "message": "Goerli Prawf Rhwydwaith"
+  },
+  "save": {
+    "message": "Arbed"
+  },
+  "slow": {
+    "message": "Yn araf"
+  },
+  "slower": {
+    "message": "Yn arafach"
+  },
+  "saveAsCsvFile": {
+    "message": "Achub fel CSV Ffeil"
+  },
+  "scanInstructions": {
+    "message": "Rhowch y cod QR flaen eich camera"
+  },
+  "scanQrCode": {
+    "message": "Sganio Cod QR"
+  },
+  "search": {
+    "message": "Chwilio"
+  },
+  "searchResults": {
+    "message": "Canlyniadau Chwilio"
+  },
+  "secretBackupPhrase": {
+    "message": "Gyfrinach Wrth Gefn Ymadrodd"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Eich cyfrinach wrth gefn ymadrodd yn ei gwneud yn hawdd i yn ôl i fyny ac yn adfer eich cyfrif."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "RHYBUDD: peidiwch Byth â datgelu eich copi wrth gefn ymadrodd. Unrhyw un gyda hyn ymadrodd yn gallu cymryd eich Ether am byth."
+  },
+  "secretPhrase": {
+    "message": "Rhowch eich gyfrinach deuddeg gair ymadrodd yma i adfer eich gladdgell."
+  },
+  "securityAndPrivacy": {
+    "message": "Diogelwch & Preifatrwydd"
+  },
+  "securitySettingsDescription": {
+    "message": "Gosodiadau preifatrwydd a waled hadau ymadrodd"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Ar wahân i bob gair gyda'r un gofod"
+  },
+  "seedPhraseReq": {
+    "message": "Hadau ymadroddion yn 12 geiriau hir"
+  },
+  "selectCurrency": {
+    "message": "Dewis Arian Cyfred"
+  },
+  "selectEachPhrase": {
+    "message": "Os gwelwch yn dda dewis pob ymadrodd yn orchymyn i wneud yn siŵr ei fod yn gywir."
+  },
+  "selectLocale": {
+    "message": "Dewiswch Locale"
+  },
+  "selectType": {
+    "message": "Dewis Math"
+  },
+  "send": {
+    "message": "Anfon"
+  },
+  "sendAmount": {
+    "message": "Anfon Swm"
+  },
+  "sendETH": {
+    "message": "Anfon ETH"
+  },
+  "sendTokens": {
+    "message": "Anfon Tocynnau"
+  },
+  "sentEther": {
+    "message": "anfon ether"
+  },
+  "sentTokens": {
+    "message": "anfon tocynnau"
+  },
+  "separateEachWord": {
+    "message": "Ar wahân i bob gair gyda'r un gofod"
+  },
+  "searchTokens": {
+    "message": "Chwilio Tocynnau"
+  },
+  "selectAnAccount": {
+    "message": "Dewis Cyfrif"
+  },
+  "selectAnAccountHelp": {
+    "message": "Dewis y cyfrif i'w gweld yn MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Dewiswch nwy uwch ffi i gyflymu'r gwaith o brosesu eich trafodiad.*"
+  },
+  "selectHdPath": {
+    "message": "Dewiswch HD Llwybr"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Lleoliadau"
+  },
+  "showAdvancedGasInline": {
+    "message": "Uwch nwy rheolaethau"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Dewiswch hwn i ddangos pris nwy ac yn cyfyngu ar rheolaethau yn uniongyrchol ar y anfon ac yn cadarnhau sgriniau."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Yn dangos Drosi ar Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Dewiswch hwn i ddangos fiat drosi ar Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Yn Dangos Allweddi Preifat"
+  },
+  "showHexData": {
+    "message": "Yn Dangos Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Dewiswch hwn i ddangos y hex data maes ar y anfon sgrin"
+  },
+  "sign": {
+    "message": "Arwydd"
+  },
+  "signatureRequest": {
+    "message": "Llofnod Cais"
+  },
+  "signed": {
+    "message": "Llofnodi"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Llofnod Cais"
+  },
+  "somethingWentWrong": {
+    "message": "Wps! Aeth rhywbeth o'i le."
+  },
+  "speedUp": {
+    "message": "Cyflymder I Fyny"
+  },
+  "speedUpCancellation": {
+    "message": "Cyflymder i fyny mae hyn yn canslo"
+  },
+  "speedUpTransaction": {
+    "message": "Cyflymder i fyny trafodiad hwn"
+  },
+  "switchNetworks": {
+    "message": "Newid Rhwydweithiau"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Wladwriaeth Logiau"
+  },
+  "stateLogs": {
+    "message": "Wladwriaeth Logiau"
+  },
+  "stateLogsDescription": {
+    "message": "Wladwriaeth boncyffion yn cynnwys eich cyfrifon cyhoeddus cyfeiriadau ac anfon trafodion."
+  },
+  "stateLogError": {
+    "message": "Gwall wrth adfer y wladwriaeth logiau."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Cysylltu Caledwedd Waled"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Cysylltu eich caledwedd waled yn uniongyrchol i'ch cyfrifiadur."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Dewis Cyfrif"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Dewis y cyfrif rydych am ei weld. Gallwch ddewis dim ond un ar y tro."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Dechrau defnyddio dApps a mwy!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Defnyddiwch eich caledwedd yn cyfrif fel y byddech gydag unrhyw Ethereum cyfrif. Mewngofnodi i dApps, anfon Eth, prynu a siop ERC20 tocynnau a Di-Fungible tocynnau hoffi CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Siop yr ymadrodd hwn mewn rheolwr cyfrinair fel 1cyfrinair."
+  },
+  "submit": {
+    "message": "Cyflwyno"
+  },
+  "submitted": {
+    "message": "Cyflwyno"
+  },
+  "supportCenter": {
+    "message": "Ewch i'n Canolfan Cymorth"
+  },
+  "symbol": {
+    "message": "Symbol"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol rhaid i fod rhwng 0 a 12 o gymeriadau."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Trowch ar gael yn eich gosodiadau cefnogi i fyny gyda 3Box. Mae'r nodwedd hon yn currenty arbrofol; defnyddiwch ar eich risg eich hun."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box wedi bod yn anabl o ganlyniad i gamgymeriad yn ystod y cychwynnol sync"
+  },
+  "syncWithMobile": {
+    "message": "Cydamseru gyda'r symudol"
+  },
+  "syncWithMobileTitle": {
+    "message": "Cydamseru gyda'r symudol"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Os ydych yn unig yn agor y MetaMask app Symudol am y tro cyntaf, dim ond dilyn y camau yn eich ffôn."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Sganiwch y cod hwn gyda eich MetaMask app symudol"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Gwnewch yn siŵr nad oes neb arall yn edrych ar eich sgrin pan fyddwch yn sganio cod hwn"
+  },
+  "syncWithMobileComplete": {
+    "message": "Eich data wedi cael ei synced succesfully. Mwynhewch y MetaMask app symudol!"
+  },
+  "terms": {
+    "message": "Telerau Defnyddio"
+  },
+  "testFaucet": {
+    "message": "Prawf Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Bydd hyn yn creu newydd waled a hadau ymadrodd"
+  },
+  "tips": {
+    "message": "Awgrymiadau"
+  },
+  "to": {
+    "message": "I"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Tocyn"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Tocyn eisoes wedi cael eu hychwanegu."
+  },
+  "tokenContractAddress": {
+    "message": "Tocyn Contract Cyfeiriad"
+  },
+  "tokenSymbol": {
+    "message": "Tocyn Symbol"
+  },
+  "total": {
+    "message": "Cyfanswm y"
+  },
+  "transaction": {
+    "message": "trafodiad"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Trafodiad yn dod ar draws gwall."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Trafodiad Yn Methu. Eithriad daflu yn y contract cod."
+  },
+  "transactionErrorNoContract": {
+    "message": "Ceisio i alw swyddogaeth ar nad ydynt yn-contract cyfeiriad."
+  },
+  "transactionFee": {
+    "message": "Ffi Trafodiad"
+  },
+  "transactionTime": {
+    "message": "Trafodiad Amser"
+  },
+  "transfer": {
+    "message": "Trosglwyddo"
+  },
+  "transferBetweenAccounts": {
+    "message": "Trosglwyddo rhwng fy nghyfrifon"
+  },
+  "transferFrom": {
+    "message": "Trosglwyddo O"
+  },
+  "troubleTokenBalances": {
+    "message": "Rydym wedi cael trafferth i lwytho eich tocyn balansau. Gallwch weld nhw ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Ceisiwch eto"
+  },
+  "typePassword": {
+    "message": "Teipiwch eich MetaMask cyfrinair"
+  },
+  "unapproved": {
+    "message": "Unapproved"
+  },
+  "units": {
+    "message": "unedau"
+  },
+  "unknown": {
+    "message": "Anhysbys"
+  },
+  "unknownNetwork": {
+    "message": "Anhysbys Rhwydwaith Preifat"
+  },
+  "unknownQrCode": {
+    "message": "Gwall: Ni allem nodi bod QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Aeth rhywbeth o'i le...."
+  },
+  "unknownCameraError": {
+    "message": "Roedd gwall tra yn ceisio i gael mynediad at eich camera. Os gwelwch yn dda ceisiwch eto..."
+  },
+  "unlock": {
+    "message": "Datglo"
+  },
+  "unlockMessage": {
+    "message": "Mae'r datganoledig ar y we yn aros"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs ei gwneud yn ofynnol y bo'n briodol HTTP/HTTPS rhagddodiad."
+  },
+  "usedByClients": {
+    "message": "A ddefnyddir gan amrywiaeth o cleientiaid gwahanol"
+  },
+  "userName": {
+    "message": "Enw defnyddiwr"
+  },
+  "validFileImport": {
+    "message": "Mae'n rhaid i chi ddewis dilys ffeil i fewnforio."
+  },
+  "viewAccount": {
+    "message": "Gweld Cyfrif"
+  },
+  "viewinExplorer": {
+    "message": "Gweld yn Explorer"
+  },
+  "viewContact": {
+    "message": "Gweld Cyswllt"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Barn ar Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Ewch i'n safle gwe"
+  },
+  "walletSeed": {
+    "message": "Waled Hadau"
+  },
+  "welcomeBack": {
+    "message": "Croeso Yn Ôl!"
+  },
+  "welcome": {
+    "message": "Croeso i MetaMask"
+  },
+  "writePhrase": {
+    "message": "Ysgrifennu ymadrodd hwn ar ddarn o bapur a'u storio mewn man diogel. Os ydych am hyd yn oed mwy o sicrwydd, ysgrifennu i lawr ar wahanol ddarnau o bapur a siop bob yn 2 - 3 gwahanol leoliadau."
+  },
+  "yesLetsTry": {
+    "message": "Ie, gadewch i ni geisio"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Mae angen i chi ganiatáu camera mynediad i ddefnyddio'r nodwedd hon."
+  },
+  "yourSigRequested": {
+    "message": "Eich llofnod yn cael ei gofynnwyd amdanynt"
+  },
+  "youSign": {
+    "message": "Rydych yn cofrestru"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Eich preifat hadau ymadrodd"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Sero pris nwy ar gyflymder i fyny"
+  }
+}

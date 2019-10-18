@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Të Treguar Transaksionet Hyrëse"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Zgjidhni këtë për të përdorur Etherscan për të treguar transaksionet hyrëse në listën e transaksioneve të"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Tabelë në dispozicion vetëm në Ethereum rrjetet."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Lidhjet"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Faqet e lejuar për të lexuar llogaritë tuaja"
+  },
+  "addSite": {
+    "message": "Të Shtoni Faqen"
+  },
+  "addSiteDescription": {
+    "message": "Të shtuar manualisht një faqe të lejojnë qasje në llogaritë tuaja, të dobishme për më të vjetër dapps"
+  },
+  "connected": {
+    "message": "Lidhur"
+  },
+  "connectedDescription": {
+    "message": "Lista e vendeve të lejuar qasje në tuaj të adresave"
+  },
+  "privacyModeDefault": {
+    "message": "Privacy Mode tani është aktivizuar nga default"
+  },
+  "contractInteraction": {
+    "message": "Kontrata E Ndërveprimit"
+  },
+  "clearApprovalData": {
+    "message": "Hequr të gjitha faqet"
+  },
+  "reject": {
+    "message": "Refuzuar"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Kjo faqe është kërkuar qasje për të parë llogarisë suaj adresa. Gjithmonë sigurohuni që ju të besoni faqet që ju ndërveprojnë me të."
+  },
+  "about": {
+    "message": "Rreth"
+  },
+  "aboutSettingsDescription": {
+    "message": "Version, qendra për përkrahje dhe kontakt info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Hyrë në aparatin tuaj..."
+  },
+  "account": {
+    "message": "Llogari"
+  },
+  "accountDetails": {
+    "message": "Detajet E Llogarisë"
+  },
+  "accountName": {
+    "message": "Emri I Llogarisë"
+  },
+  "accountOptions": {
+    "message": "Llogari Opsionet"
+  },
+  "accountSelectionRequired": {
+    "message": "Ju duhet të zgjidhni një llogari!"
+  },
+  "activityLog": {
+    "message": "aktiviteti identifikohu"
+  },
+  "addNetwork": {
+    "message": "Shto Rrjetin"
+  },
+  "addRecipient": {
+    "message": "Shto Marrësin"
+  },
+  "advanced": {
+    "message": "Avancuar"
+  },
+  "advancedSettingsDescription": {
+    "message": "Qasje zhvilluesi karakteristika, shkarko Shtetit Shkrimet, Reset Llogari, setup testnets dhe me porosi RPC."
+  },
+  "advancedOptions": {
+    "message": "Opsionet E Avancuara"
+  },
+  "addToAddressBook": {
+    "message": "Shto në librin e adresave"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "p.sh. John D."
+  },
+  "addAlias": {
+    "message": "Të shtoni pseudonim"
+  },
+  "addToken": {
+    "message": "Të Shtoni Token"
+  },
+  "addTokens": {
+    "message": "Të Shtoni Shenjat"
+  },
+  "addSuggestedTokens": {
+    "message": "Të Shtoni Sugjeruar Shenjat"
+  },
+  "addAcquiredTokens": {
+    "message": "Shtuar shenjat që ju keni fituar duke përdorur MetaMask"
+  },
+  "amount": {
+    "message": "Sasia"
+  },
+  "appDescription": {
+    "message": "Një Ethereum Portofolin në Shfletuesin tuaj",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Të miratojë"
+  },
+  "approved": {
+    "message": "Miratuar"
+  },
+  "asset": {
+    "message": "Pasuri"
+  },
+  "attemptingConnect": {
+    "message": "Duke u përpjekur për të lidhur në blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Paraqitur këtë përpjekje nuk garanton tuaj origjinale e transaksionit do të jetë anuluar. Nëse anulimin e përpjekje është i suksesshëm, ju do të jetë i ngarkuar transaksionit tarifa më sipër."
+  },
+  "attributions": {
+    "message": "Të kota"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Cilësoni kohën e mosveprimit në minuta para MetaMask automatikisht do të log out"
+  },
+  "average": {
+    "message": "Mesatare"
+  },
+  "back": {
+    "message": "Prapa"
+  },
+  "backToAll": {
+    "message": "Përsëri për të Gjitha"
+  },
+  "backupApprovalNotice": {
+    "message": "Backup tuaj të Fshehtë Shërim kodi për të mbajtur portofolin tuaj dhe fondet e sigurt."
+  },
+  "backupApprovalInfo": {
+    "message": "Këtë kod të fshehtë është e nevojshme për të rimarrë portofolin tuaj, në rast se ju humbni pajisjen tuaj, harroni fjalëkalimin tuaj, keni për të ri-instaluar MetaMask, ose të dëshironi për të hyrë në portofolin tuaj në një pajisje tjetër."
+  },
+  "backupNow": {
+    "message": "Rikthim tani"
+  },
+  "balance": {
+    "message": "Bilanci"
+  },
+  "balanceOutdated": {
+    "message": "Bilanci mund të jetë e vjetëruar"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "E pamjaftueshme bilanci aktual të gazit gjithsej"
+  },
+  "basic": {
+    "message": "Bazë"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blloku Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Përdorni Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Rregulloje transaksion nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Porosi Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Shfletuesi juaj nuk është i mbështetur..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask është projektuar dhe ndërtuar në Kaliforni."
+  },
+  "buyWithWyre": {
+    "message": "Blej ETH me Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ju lejon të përdorni një kartë krediti për të depozitave ETH drejtë në tuaj MetaMask llogari."
+  },
+  "buyCoinSwitch": {
+    "message": "Të blerë në CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch është one-stop destinacion për të shkëmbyer më shumë se 300 cryptocurrencies në të mirë të kursit."
+  },
+  "bytes": {
+    "message": "Byte"
+  },
+  "off": {
+    "message": "Off"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Në"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "cancelAttempt": {
+    "message": "Cancel Përpjekje"
+  },
+  "cancellationGasFee": {
+    "message": "Anulimi I Gazit Tarifa"
+  },
+  "cancelled": {
+    "message": "Anulua"
+  },
+  "chainId": {
+    "message": "Zinxhiri ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Kliko këtu për të zbuluar sekretin fjalë"
+  },
+  "close": {
+    "message": "Afër"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Ju duhet të përdorni MetaMask në Google Chrome, në mënyrë që të lidheni me Hardware tuaj Portofolin."
+  },
+  "confirm": {
+    "message": "Konfirmoni"
+  },
+  "confirmed": {
+    "message": "Konfirmohet"
+  },
+  "confirmPassword": {
+    "message": "Konfirmoni Fjalëkalimin"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Konfirmoni të Fshehtë Rezervë Fraza"
+  },
+  "congratulations": {
+    "message": "Urime"
+  },
+  "connectHardwareWallet": {
+    "message": "Lidhur Hardware Wallet"
+  },
+  "connect": {
+    "message": "Lidhur"
+  },
+  "connectRequest": {
+    "message": "Lidhur Kërkesë"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Lidh me Kovan Test Rrjeti"
+  },
+  "connectingToMainnet": {
+    "message": "Lidhja Kryesore Ethereum Rrjetit"
+  },
+  "connectingToRopsten": {
+    "message": "Lidh me Ropsten Test Rrjeti"
+  },
+  "connectingToRinkeby": {
+    "message": "Lidh me Rinkeby Test Rrjeti"
+  },
+  "connectingToLocalhost": {
+    "message": "Lidh me Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Lidh me Goerli Test Rrjeti"
+  },
+  "contacts": {
+    "message": "Kontaktet"
+  },
+  "contactsSettingsDescription": {
+    "message": "Të shtuar, redaktuar, hequr, dhe për të menaxhuar kontaktet tuaja"
+  },
+  "continueToWyre": {
+    "message": "Vazhdojnë të Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Vazhdojnë të CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Kontrata E Vendosjes"
+  },
+  "conversionProgress": {
+    "message": "Konvertimi në progres"
+  },
+  "copiedButton": {
+    "message": "Kopjohen"
+  },
+  "copiedExclamation": {
+    "message": "E kopjuar!"
+  },
+  "copy": {
+    "message": "Kopje"
+  },
+  "copyAddress": {
+    "message": "Kopje të adresuar për të clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Kopje ID Transaksionit"
+  },
+  "copiedTransactionId": {
+    "message": "Kopjohen ID Transaksionit"
+  },
+  "copyToClipboard": {
+    "message": "Kopje të clipboard"
+  },
+  "copyButton": {
+    "message": " Kopje "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Krijuar"
+  },
+  "createAccount": {
+    "message": "Krijo Llogari"
+  },
+  "createAWallet": {
+    "message": "Krijo një Kuletë"
+  },
+  "createPassword": {
+    "message": "Krijoni Fjalëkalim"
+  },
+  "currencyConversion": {
+    "message": "Konvertimit Të Monedhës"
+  },
+  "currentLanguage": {
+    "message": "Gjuhë E Tanishme"
+  },
+  "customGas": {
+    "message": "Rregulloje Gazit"
+  },
+  "customGasSubTitle": {
+    "message": "Rritja e tarifës mund të ulet përpunimit herë, por nuk është e garantuar."
+  },
+  "customToken": {
+    "message": "Porosi Token"
+  },
+  "customRPC": {
+    "message": "Porosi RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals duhet të jetë të paktën 0, dhe jo mbi 36."
+  },
+  "decimal": {
+    "message": "Decimals Saktësi"
+  },
+  "defaultNetwork": {
+    "message": "Default rrjetit për Ethëri transaksionet Kryesore Neto."
+  },
+  "delete": {
+    "message": "Fshini"
+  },
+  "deleteAccount": {
+    "message": "Fshini Llogarinë"
+  },
+  "deposit": {
+    "message": "Depozitë"
+  },
+  "depositEther": {
+    "message": "Depozita Ethëri"
+  },
+  "details": {
+    "message": "Detajet"
+  },
+  "directDepositEther": {
+    "message": "Direkt Depozitave Ethëri"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Nëse ju tashmë keni disa Eter, mënyra më e shpejtë për të marrë Ethëri në tuaj të re portofolin nga depozita direkte."
+  },
+  "dismiss": {
+    "message": "Të shkarkonte"
+  },
+  "done": {
+    "message": "Bërë"
+  },
+  "downloadGoogleChrome": {
+    "message": "Shkarko Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Shkarko këtë të Fshehtë Rezervë Fraza dhe për të mbajtur atë të ruhen në mënyrë të sigurtë në një të jashtëm të koduar në hard drive ose të ruajtjes së mesme."
+  },
+  "downloadStateLogs": {
+    "message": "Shkarko Shtetit Shkrimet"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Ra"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "editContact": {
+    "message": "Ndrysho Kontakt"
+  },
+  "emailUs": {
+    "message": "Na shkruani!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Ju keni kaluar testin - mbani seedphrase të sigurt, kjo është përgjegjësia juaj!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Këshilla për ruajtjen atë në mënyrë të sigurtë"
+  },
+  "endOfFlowMessage3": {
+    "message": "Ruani një kopje rezervë në vende të shumta."
+  },
+  "endOfFlowMessage4": {
+    "message": "Kurrë nuk ndajnë fraza me askënd."
+  },
+  "endOfFlowMessage5": {
+    "message": "Të jenë të kujdesshëm e phishing! MetaMask kurrë nuk do spontanisht kërkoni për pasardhësit tuaj fraza."
+  },
+  "endOfFlowMessage6": {
+    "message": "Nëse keni nevojë për të mbështetur farën tuaj fraza përsëri, ju mund të gjeni atë në Settings -> Siguria."
+  },
+  "endOfFlowMessage7": {
+    "message": "Nëse ndonjëherë ju keni pyetje ose shihni diçka si peshk, - mail support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask nuk mund të shërohen tuaj seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Mësoni më shumë."
+  },
+  "endOfFlowMessage10": {
+    "message": "Bërë Të Gjitha"
+  },
+  "ensRegistrationError": {
+    "message": "Gabim në ENS emrin e regjistrimit"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS emrin nuk gjenden në faqen aktuale në rrjet. Mundohuni kalimi Kryesore Ethereum Rrjetit."
+  },
+  "enterAnAlias": {
+    "message": "Shkruani një pseudonim"
+  },
+  "enterPassword": {
+    "message": "Futni fjalëkalimin"
+  },
+  "enterPasswordContinue": {
+    "message": "Shkruani fjalëkalimin për të vazhduar"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Publike Adresa"
+  },
+  "etherscanView": {
+    "message": "Pamje llogari në Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Vlerësuar Përpunimit Herë"
+  },
+  "expandView": {
+    "message": "Të Zgjeruar Të Parë"
+  },
+  "exportPrivateKey": {
+    "message": "Eksporti Kryesore Private"
+  },
+  "failed": {
+    "message": "Dështoi"
+  },
+  "fast": {
+    "message": "Të shpejtë"
+  },
+  "faster": {
+    "message": "Më të shpejtë"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Harroje këtë pajisje"
+  },
+  "from": {
+    "message": "Nga"
+  },
+  "fromShapeShift": {
+    "message": "Nga ShapeShift"
+  },
+  "functionType": {
+    "message": "Funksioni Lloji"
+  },
+  "gasLimit": {
+    "message": "Gazit Kufi"
+  },
+  "gasLimitCalculation": {
+    "message": "Ne llogaritur sugjeruar gazit kufi bazuar në rrjet sukses shkallët."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gazit limit është shuma maksimale e njësive të gazit që ju janë të gatshëm për të shpenzuar."
+  },
+  "gasLimitTooLow": {
+    "message": "Gazit kufi duhet të jetë të paktën 21000"
+  },
+  "gasUsed": {
+    "message": "Gazit Të Përdorur"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gazit Çmim Shumë Të Ulët Të"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gazit çmimi përcakton shumën e Ethërit ju janë të gatshëm të paguajnë për çdo njësi të gazit."
+  },
+  "gasPriceNoDenom": {
+    "message": "Çmimi I Gazit"
+  },
+  "gasPriceCalculation": {
+    "message": "Ne llogaritur sugjeruar çmimet e gazit të bazuara në rrjet sukses shkallët."
+  },
+  "general": {
+    "message": "Të përgjithshme"
+  },
+  "generalSettingsDescription": {
+    "message": "Konvertimit të monedhës, fillor monedhës, gjuhën, blockies identicon"
+  },
+  "getEther": {
+    "message": "Merrni Ethëri"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Merrni Ndihmë."
+  },
+  "getStarted": {
+    "message": "Fillimi"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Ne jemi të lumtur të shoh ty."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware portofolin e lidhur"
+  },
+  "hardwareWallets": {
+    "message": "Lidhja e një hardware wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Zgjidhni një hardware portofolin ju do të donte për të përdorur me MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "këtu",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Magji Të Dhënave"
+  },
+  "hide": {
+    "message": "Fshehur"
+  },
+  "hideToken": {
+    "message": "Të Fshehur Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Histori"
+  },
+  "import": {
+    "message": "Importi",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Import Llogari"
+  },
+  "importAccountMsg": {
+    "message": " Importuar llogaritë nuk do të jenë të lidhura me llogarinë tuaj të krijuar fillimisht MetaMask llogari seedphrase. Mësoni më shumë për të importuar llogaritë "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importit një Llogari me Farën e Fraza"
+  },
+  "importWallet": {
+    "message": "Import Wallet"
+  },
+  "importYourExisting": {
+    "message": "Import ekzistuese tuaj portofolin duke përdorur një 12 fjala farë fraza"
+  },
+  "imported": {
+    "message": "Importuar",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Import duke përdorur llogarinë farë fraza"
+  },
+  "infoHelp": {
+    "message": "Info & Ndihmë"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Tuaj fillestar e transaksionit është konfirmuar nga rrjeti. Kliko OK për të shkuar mbrapa."
+  },
+  "insufficientBalance": {
+    "message": "E pamjaftueshme bilancit."
+  },
+  "insufficientFunds": {
+    "message": "Fonde të pamjaftueshme."
+  },
+  "insufficientTokens": {
+    "message": "Të pamjaftueshme argumentet."
+  },
+  "invalidAddress": {
+    "message": "Të pavlefshme adresa"
+  },
+  "invalidAddressRecipient": {
+    "message": "Pranuesit adresa është e pavlefshme"
+  },
+  "knownAddressRecipient": {
+    "message": "I njohur kontratës adresa."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Nuk ETH i rrjetit, i vendosur në shkronja jokapitale"
+  },
+  "invalidInput": {
+    "message": "Të pavlefshme të dhëna."
+  },
+  "invalidRPC": {
+    "message": "Të pavlefshme RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Të pavlefshme Bllok Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Të pavlefshme farë fraza"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Rrjeti"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Ju duhet për të bërë përdorimin tuaj të fundit llogari para ju mund të shtoni një të re."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Po, le të marrë vendosur!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Lidhjet"
+  },
+  "liveGasPricePredictions": {
+    "message": "Jetojnë Gazit Çmimi Parashikimet"
+  },
+  "loading": {
+    "message": "E ngarkimit..."
+  },
+  "loadingTokens": {
+    "message": "Ngarkimit Argumentet..."
+  },
+  "loadMore": {
+    "message": "Ngarkuar Më Shumë"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Identifikohu"
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Dilni kohë është shumë i madh"
+  },
+  "mainnet": {
+    "message": "Kryesore Ethereum Rrjetit"
+  },
+  "memorizePhrase": {
+    "message": "Të mësojnë përmendësh këtë frazë."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Mesazh"
+  },
+  "metamaskDescription": {
+    "message": "Lidh ju të Ethereum dhe të Decentralizuar Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Farë Fjalët"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Versionin"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Ju lutemi shkruani fjalëkalimin tuaj për të konfirmuar se është për ju!"
+  },
+  "myAccounts": {
+    "message": "Llogaritë E Mia"
+  },
+  "myWalletAccounts": {
+    "message": "Kuletën Time Llogaritë"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Të gjitha tuaj të MetaMask krijuar llogaritë do të automatikisht të shtohet në këtë seksion."
+  },
+  "mustSelectOne": {
+    "message": "Duhet të zgjidhni të paktën 1 token."
+  },
+  "needEtherInWallet": {
+    "message": "Për të bashkëvepruar me decentralizuar aplikacionet duke përdorur MetaMask, ju do të duhet Ethëri në portofolin tuaj."
+  },
+  "needImportFile": {
+    "message": "Ju duhet të zgjidhni një skedar për të importuar.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Nuk mund të dërgoni negative sasi të ETH."
+  },
+  "networkName": {
+    "message": "Emri I Rrjetit"
+  },
+  "networks": {
+    "message": "Rrjetet"
+  },
+  "networkSettingsDescription": {
+    "message": "Të shtoni dhe të redaktoni porosi RPC rrjetet"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Llogari Të Re"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Adresë të re e zbuluar! Kliko këtu për të shtuar libri juaj i adresave."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Një Kontakt Të Ri"
+  },
+  "newContract": {
+    "message": "Kontratë Të Re"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Rrjeti Të Ri"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Jo, unë tashmë kanë një farë fraza"
+  },
+  "protectYourKeys": {
+    "message": "Të Mbrojtur Çelësat Tuaj!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Të jenë të kujdesshëm me farën tuaj fraza — nuk kanë qenë raportet e faqet e internetit që përpiqet të imitojë MetaMask. MetaMask kurrë nuk do të pyet për pasardhësit tuaj fraza!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Mbani fraza të sigurt. Nëse ju shihni diçka si peshk, ose ju jeni të pasigurt në lidhje me një faqe interneti, e-mail support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Re RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Të Ri Të Përgjithshëm"
+  },
+  "newTransactionFee": {
+    "message": "Transaksion Të Ri Tarifa"
+  },
+  "next": {
+    "message": "Tjetër"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Nuk ka adresa ka qenë e vendosur për këtë emër."
+  },
+  "noDeposits": {
+    "message": "Nuk ka depozita të marra"
+  },
+  "noConversionRateAvailable": {
+    "message": "Asnjë Shkalla E Konvertimit Në Dispozicion"
+  },
+  "noTransactions": {
+    "message": "Ju nuk keni të transaksioneve"
+  },
+  "noThanks": {
+    "message": "Jo Faleminderit"
+  },
+  "notEnoughGas": {
+    "message": "Nuk Është E Mjaftueshme Të Gazit"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam nuk u gjet"
+  },
+  "noWebcamFound": {
+    "message": "E kompjuterit tuaj webcam nuk u gjet. Ju lutemi të provoni përsëri."
+  },
+  "ofTextNofM": {
+    "message": "e"
+  },
+  "orderOneHere": {
+    "message": "Për një Trezor apo libër kontabël dhe për të mbajtur llogarinë tuaj në ruajtje të ftohtë"
+  },
+  "origin": {
+    "message": "Origjina"
+  },
+  "parameters": {
+    "message": "Parametrat"
+  },
+  "participateInMetaMetrics": {
+    "message": "Të marrë pjesë në MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Të marrë pjesë në MetaMetrics për të na ndihmuar të bëni më të mirë MetaMask"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "passwordsDontMatch": {
+    "message": "Fjalëkalimet nuk Përputhen"
+  },
+  "passwordNotLongEnough": {
+    "message": "Fjalëkalimi jo kohë të mjaftueshme"
+  },
+  "pastePrivateKey": {
+    "message": "Paste kyç tuaj private string këtu:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Paste farën tuaj fraza këtu!"
+  },
+  "pending": {
+    "message": "në pritje"
+  },
+  "personalAddressDetected": {
+    "message": "Adresa personale zbuluar. Të dhëna shenja të kontratës adresa."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Fillore Monedhës"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Politika E Fshehtësisë"
+  },
+  "privateKey": {
+    "message": "Çelësi Privat",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Paralajmërim: Mos zbulojë këtë kryesore. Dikush me çelësat tuaj private mund të vjedhin ndonjë aktivet e mbajtura në llogarinë tuaj."
+  },
+  "privateNetwork": {
+    "message": "Rrjet Privat"
+  },
+  "qrCode": {
+    "message": "Tregojnë Kodin QR"
+  },
+  "queue": {
+    "message": "Në radhë"
+  },
+  "readdToken": {
+    "message": "Ju mund të shtoni këtë shenjë përsëri në të ardhmen duke shkuar për të \"Shto token\" në llogaritë tuaja options menu."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Pranuesit Adresa"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Hedhim Poshtë Të Gjitha"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Refuzuar"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Reset Llogari"
+  },
+  "resetAccountDescription": {
+    "message": "Adaptimet e llogarisë suaj do të qarta transaksionin tuaj historisë."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Më kujtojnë më vonë"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Rikthimi i Llogarinë tuaj me Farën e Fraza"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "kërkesat në pritje për t'u pranuar"
+  },
+  "required": {
+    "message": "Kërkohet"
+  },
+  "restore": {
+    "message": "Rikthimi"
+  },
+  "revealSeedWords": {
+    "message": "Të Zbulojë Farë Fjalët"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Pasardhësit E Fraza"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Nëse ndonjëherë ju të ndryshojë shfletues apo të shkojë në kompjuter, ju do të duhet ky farë fraza për të hyrë në llogaritë tuaja. Ruajini në ndonjë vend të sigurt dhe të fshehtë."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "NUK e ndajnë këtë frazë me askënd!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Këto fjalë mund të përdoret për të vjedhur të gjitha llogaritë tuaja."
+  },
+  "revert": {
+    "message": "Kthehet"
+  },
+  "remove": {
+    "message": "Hiq"
+  },
+  "removeAccount": {
+    "message": "Hiq llogarinë"
+  },
+  "removeAccountDescription": {
+    "message": "Kjo llogari do të hiqen nga portofolin tuaj. Ju lutem sigurohuni që ju keni fara origjinal fraza ose privat kryesore për këtë importuara llogarinë, para se të vazhdoni. Ju mund të importojë ose të krijojnë llogaritë përsëri nga llogaria drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Rrjeti"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Rrjeti"
+  },
+  "goerli": {
+    "message": "Goerli Test Rrjeti"
+  },
+  "save": {
+    "message": "Ruaj"
+  },
+  "slow": {
+    "message": "Të ngadalshëm"
+  },
+  "slower": {
+    "message": "Më të ngadalshme"
+  },
+  "saveAsCsvFile": {
+    "message": "Ruaj si File CSV"
+  },
+  "scanInstructions": {
+    "message": "Vendosni kodin QR në frontin e kamera juaj"
+  },
+  "scanQrCode": {
+    "message": "Scan Kodin QR"
+  },
+  "search": {
+    "message": "Kërko"
+  },
+  "searchResults": {
+    "message": "Rezultatet E Kërkimit"
+  },
+  "secretBackupPhrase": {
+    "message": "Të Fshehtë Rezervë Fraza"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Tuaj të fshehtë rezervë fraza e bën të lehtë për të mbështetur dhe rivendosjen e llogarisë tuaj."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "PARALAJMËRIM: Mos jepni informacionet tuaja backup fraza. Dikush me këtë frazë mund të marrë tuaj Ethëri përgjithmonë."
+  },
+  "secretPhrase": {
+    "message": "Shkruani sekret dymbëdhjetë fjalë e fraza këtu për të rivendosur tuaj kërcim."
+  },
+  "securityAndPrivacy": {
+    "message": "Siguria Dhe Privatësia"
+  },
+  "securitySettingsDescription": {
+    "message": "Parametrat e intimitetit dhe portofolin farë fraza"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Të veçantë çdo fjalë me një hapësirë të vetme"
+  },
+  "seedPhraseReq": {
+    "message": "Farë fraza janë 12 fjalë të gjatë"
+  },
+  "selectCurrency": {
+    "message": "Zgjidhni Monedhës"
+  },
+  "selectEachPhrase": {
+    "message": "Ju lutem zgjidhni çdo frazë, në mënyrë që të sigurohuni që ajo është e saktë."
+  },
+  "selectLocale": {
+    "message": "Zgjidhni Locale"
+  },
+  "selectType": {
+    "message": "Zgjidhni Lloji"
+  },
+  "send": {
+    "message": "Dërgoni"
+  },
+  "sendAmount": {
+    "message": "Dërgoni Shumën"
+  },
+  "sendETH": {
+    "message": "Dërgoni ETH"
+  },
+  "sendTokens": {
+    "message": "Dërgoni Shenjat"
+  },
+  "sentEther": {
+    "message": "dërguar ethëri"
+  },
+  "sentTokens": {
+    "message": "dërguar shenjat"
+  },
+  "separateEachWord": {
+    "message": "Të veçantë çdo fjalë me një hapësirë të vetme"
+  },
+  "searchTokens": {
+    "message": "Kërkim Shenjat"
+  },
+  "selectAnAccount": {
+    "message": "Përzgjidhni një Llogari"
+  },
+  "selectAnAccountHelp": {
+    "message": "Përzgjidhni llogarinë për të parë në MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Zgjidhni një më të lartë të gazit tarifë për të përshpejtuar përpunimin e transaksionit tuaj.*"
+  },
+  "selectHdPath": {
+    "message": "Zgjidhni Rrugën HD"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Cilësimet"
+  },
+  "showAdvancedGasInline": {
+    "message": "Avancuar gazit kontrollet"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Zgjidhni këtë për të treguar të gazit të çmimeve dhe të kufizojnë kontrollon direkt në dërgoni dhe për të konfirmuar ekranet."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Tregojnë Konvertimit në Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Zgjidhni këtë për të treguar fiat konvertimit në Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Tregojnë Private Çelësat"
+  },
+  "showHexData": {
+    "message": "Të Tregojmë Magji Të Dhënave"
+  },
+  "showHexDataDescription": {
+    "message": "Zgjidhni këtë për të treguar hex e të dhënave në terren për të dërguar ekran"
+  },
+  "sign": {
+    "message": "Shenjë"
+  },
+  "signatureRequest": {
+    "message": "Nënshkrimi I Kërkesës"
+  },
+  "signed": {
+    "message": "Nënshkruar"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Nënshkrimi I Kërkesës"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Diçka shkoi keq."
+  },
+  "speedUp": {
+    "message": "Speed Up"
+  },
+  "speedUpCancellation": {
+    "message": "Shpejtësia e këtij anulimi"
+  },
+  "speedUpTransaction": {
+    "message": "Të shpejtuar këtë transaksion"
+  },
+  "switchNetworks": {
+    "message": "Kaloni Rrjetet"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Shtetit Shkrimet"
+  },
+  "stateLogs": {
+    "message": "Shteti Shkrimet"
+  },
+  "stateLogsDescription": {
+    "message": "Shteti shkrimet përmbajnë tuaj publike llogari dhe adresat e dërgoi transaksioneve."
+  },
+  "stateLogError": {
+    "message": "Gabim në gjetjen e shtetit shkrimet."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Lidhur Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Lidhur hardware tuaj portofolin direkt në kompjuterin tuaj."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Përzgjidhni një Llogari"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Përzgjidhni llogarinë që dëshironi të shihni. Ju mund të zgjidhni një në një kohë."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Të fillojë duke përdorur dApps dhe më shumë!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Përdorni hardware tuaj llogari si ju do të me ndonjë Ethereum llogari. Identifikohu për të dApps, dërgoni Eth, blej dhe për të ruajtur ERC20 argumentet dhe Jo-Fungible argumentet si CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Dyqan këtë frazë në një menaxher fjalëkalim si 1Password."
+  },
+  "submit": {
+    "message": "Submit"
+  },
+  "submitted": {
+    "message": "Dorëzohet"
+  },
+  "supportCenter": {
+    "message": "Vizitoni Qendra për Përkrahje të"
+  },
+  "symbol": {
+    "message": "Simbol"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbol duhet të jetë midis 0 dhe 12 karaktere."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Kthehet në që të ketë parametrat tuaj të mbështetura me 3Box. Ky tipar është currenty eksperimentale; të përdorin në rrezik tuaj."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box ka qenë me aftësi të kufizuara, për shkak të një gabimi gjatë fillestare sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync me celular"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync me celular"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Nëse ju vetëm të hapur MetaMask Mobile app për herë të parë, vetëm ndiqni hapat në telefonin tuaj."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan ky kod me MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Sigurohuni që askush tjetër që është në kërkim në ekranin tuaj, kur ju të scan këtij kodi"
+  },
+  "syncWithMobileComplete": {
+    "message": "Të dhënat tuaja është synced me sukses. Gëzojnë MetaMask app celular!"
+  },
+  "terms": {
+    "message": "Kushtet e Përdorimit"
+  },
+  "testFaucet": {
+    "message": "Test Rakord"
+  },
+  "thisWillCreate": {
+    "message": "Kjo do të krijojë një të re portofolin dhe pasardhësit e fraza"
+  },
+  "tips": {
+    "message": "Këshilla"
+  },
+  "to": {
+    "message": "Për"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Si shenjë ka tashmë janë shtuar."
+  },
+  "tokenContractAddress": {
+    "message": "Shenjë E Kontratës Adresa"
+  },
+  "tokenSymbol": {
+    "message": "Shenjë E Simbol"
+  },
+  "total": {
+    "message": "Gjithsej"
+  },
+  "transaction": {
+    "message": "transaksion"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Transaksion hasur një gabim."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Transaksion Gabim. Përjashtim hedhur në kontratën e kodit."
+  },
+  "transactionErrorNoContract": {
+    "message": "Duke u përpjekur për të thirrur një funksion në një jo-kontratës adresa."
+  },
+  "transactionFee": {
+    "message": "Transaksion Tarifa"
+  },
+  "transactionTime": {
+    "message": "Transaksion Kohë"
+  },
+  "transfer": {
+    "message": "Transferimi"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transferimi ndërmjet tim llogaritë"
+  },
+  "transferFrom": {
+    "message": "Transferimi Nga"
+  },
+  "troubleTokenBalances": {
+    "message": "Kemi pasur probleme të ngarkimit tuaj token peshore. Ju mund ta shikoni ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Provo përsëri"
+  },
+  "typePassword": {
+    "message": "Lloji juaj MetaMask fjalëkalimin"
+  },
+  "unapproved": {
+    "message": "Paaprovuar"
+  },
+  "units": {
+    "message": "njësitë"
+  },
+  "unknown": {
+    "message": "I panjohur"
+  },
+  "unknownNetwork": {
+    "message": "I Panjohur Rrjet Privat"
+  },
+  "unknownQrCode": {
+    "message": "Gabim: Ne nuk mund të identifikojë se kodin QR"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Diçka shkoi keq...."
+  },
+  "unknownCameraError": {
+    "message": "Nuk ishte një gabim ndërsa duke u përpjekur për të hyrë në aparatin tuaj. Ju lutemi të provoni përsëri..."
+  },
+  "unlock": {
+    "message": "Hape"
+  },
+  "unlockMessage": {
+    "message": "E decentralizuar web pret"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs kërkojnë të përshtatshme HTTP/HTTPS prefiksin."
+  },
+  "usedByClients": {
+    "message": "Përdoret nga një shumëllojshmëri të ndryshme të klientëve"
+  },
+  "userName": {
+    "message": "Emrin e përdoruesit"
+  },
+  "validFileImport": {
+    "message": "Ju duhet të zgjidhni një vlefshme file për të importuar."
+  },
+  "viewAccount": {
+    "message": "Pamje Llogari"
+  },
+  "viewinExplorer": {
+    "message": "Parë në Explorer"
+  },
+  "viewContact": {
+    "message": "Pamja E Kontaktit"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Shiko në Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Vizitoni faqen tonë të internetit"
+  },
+  "walletSeed": {
+    "message": "Portofoli I Farës"
+  },
+  "welcomeBack": {
+    "message": "Mirëpritur Mbrapa!"
+  },
+  "welcome": {
+    "message": "Mirë se vini në MetaMask"
+  },
+  "writePhrase": {
+    "message": "Të shkruar këtë frazë në një copë letër dhe dyqan në një vend të sigurt. Në qoftë se ju doni edhe më të sigurisë, të shkruajnë atë në copa të shumta të letrës dhe çdo dyqan në 2 - 3 vende të ndryshme."
+  },
+  "yesLetsTry": {
+    "message": "Po, le të përpiqemi të"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Ju duhet të lejojë kamera qasje për të përdorur këtë funksion."
+  },
+  "yourSigRequested": {
+    "message": "Nënshkrimi juaj është duke u kërkuar"
+  },
+  "youSign": {
+    "message": "Ju jeni të nënshkrimit"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Tuaj private farë fraza"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Zero gazit çmimin më të shpejtuar"
+  }
+}

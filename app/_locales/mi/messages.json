@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Whakaatu Taumai Whakawhitinga"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Tīpakohia tenei ki te whakamahi i Etherscan ki te whakaatu taumai whakawhitinga i roto i te whakawhitinga i te rārangi"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Tūtohi e wātea ana anake i runga i Ethereum whatunga."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Hononga"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Ngā pae whakaaetia ki te pānui i tō pūkete"
+  },
+  "addSite": {
+    "message": "Add Site"
+  },
+  "addSiteDescription": {
+    "message": "Ā te tāpiri i te pae ki te tuku i te reira te uru ki tō pūkete, whai hua mō te pakeke dapps"
+  },
+  "connected": {
+    "message": "Hono"
+  },
+  "connectedDescription": {
+    "message": "I te rārangi o ngā pae whakaaetia te uru ki tō wāhitau"
+  },
+  "privacyModeDefault": {
+    "message": "Tūmataiti Aratau i te mea i teie nei i te whakahohea e te taunoa"
+  },
+  "contractInteraction": {
+    "message": "Kirimana Pāhekoheko"
+  },
+  "clearApprovalData": {
+    "message": "Te tango i te katoa pae"
+  },
+  "reject": {
+    "message": "Te whakakahore"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Tēnei pae ko te tono i te whai wāhi ki te tiro i to outou pūkete o nāianei wāhitau. I nga wa katoa kia koutou te whakawhirinaki ki te pae taunekeneke koe ki te."
+  },
+  "about": {
+    "message": "E pā ana ki"
+  },
+  "aboutSettingsDescription": {
+    "message": "Putanga, te tautoko i te pokapū, me te info whakapā."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Te whakauru i ō kāmera..."
+  },
+  "account": {
+    "message": "Pūkete"
+  },
+  "accountDetails": {
+    "message": "Taipitopito Pūkete"
+  },
+  "accountName": {
+    "message": "Ingoa Pūkete"
+  },
+  "accountOptions": {
+    "message": "Pūkete Kōwhiringa"
+  },
+  "accountSelectionRequired": {
+    "message": "E hiahia ana koe ki te tīpako i tētahi pūkete!"
+  },
+  "activityLog": {
+    "message": "mahi te takiuru"
+  },
+  "addNetwork": {
+    "message": "Tāpiri Whatunga"
+  },
+  "addRecipient": {
+    "message": "Tāpiri Kaiwhiwhi"
+  },
+  "advanced": {
+    "message": "Arā"
+  },
+  "advancedSettingsDescription": {
+    "message": "Te uru kaiwhakawhanake āhuatanga, download State Rākau, te Tautuhi anō Pūkete, tatū testnets, me te ritenga RPC."
+  },
+  "advancedOptions": {
+    "message": "Kōwhiringa Arā"
+  },
+  "addToAddressBook": {
+    "message": "Tāpiri ki te pukapuka wāhitau"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "hei tauira, John D."
+  },
+  "addAlias": {
+    "message": "Tāpiri ingoakē"
+  },
+  "addToken": {
+    "message": "Tāpiri Tohu"
+  },
+  "addTokens": {
+    "message": "Tāpiri Tohu"
+  },
+  "addSuggestedTokens": {
+    "message": "Tāpiri I Te Whakaaro Tohu"
+  },
+  "addAcquiredTokens": {
+    "message": "Tāpiri i te tohu kua riro koe i te whakamahi i MetaMask"
+  },
+  "amount": {
+    "message": "Nui"
+  },
+  "appDescription": {
+    "message": "He Ethereum Putea i roto i tō Pūtirotiro",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Whakaaetia"
+  },
+  "approved": {
+    "message": "Whakaaetia"
+  },
+  "asset": {
+    "message": "Rawa"
+  },
+  "attemptingConnect": {
+    "message": "E ngana ana ki te hono atu ki te blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Te tuku i tenei ngana e kore e kī i tō hoko taketake ka whakakorea. Ki te i te whakakorenga ngana, ko te angitu, ka whakatupato koe i te utu hoko i runga."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Whakaturia te wā mangere i roto i te meneti i mua i te MetaMask ka aunoa te takiuru i roto i"
+  },
+  "average": {
+    "message": "Toharite"
+  },
+  "back": {
+    "message": "Hoki"
+  },
+  "backToAll": {
+    "message": "Hoki ki te Katoa"
+  },
+  "backupApprovalNotice": {
+    "message": "Pūrua o koutou mea Ngaro Whakaora waehere ki te pupuri i to koutou putea, me te moni mau."
+  },
+  "backupApprovalInfo": {
+    "message": "Tenei waehere ngaro ko hiahiatia ana ki te ora i to koutou putea i roto i te take ngaro koe i tou pūrere, wareware i tō kupuhipa, ki te anō-tāuta i te MetaMask, e hiahia ana ranei ki te uru i to koutou putea i runga i tetahi pūrere."
+  },
+  "backupNow": {
+    "message": "Pūrua i teie nei"
+  },
+  "balance": {
+    "message": "Toenga"
+  },
+  "balanceOutdated": {
+    "message": "Toenga kia tawhito"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Iti toenga mo o nāianei hau katoa"
+  },
+  "basic": {
+    "message": "Taketake"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Poraka Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Te Whakamahi I Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Te whakarite hoko nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Ritenga Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Tō Pūtirotiro e kore e tautoko..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask kei te hangaia, ka hanga i roto i California."
+  },
+  "buyWithWyre": {
+    "message": "Hoko TIAIRAA'RA ki Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ka taea e koe te whakamahi i te kāri he nama ki te whakatakoto TIAIRAA'RA tika i roto i te ki koutou MetaMask pūkete."
+  },
+  "buyCoinSwitch": {
+    "message": "Hoko i runga i CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch ko te kotahi-mutu i ūnga ki te utu atu atu i te 300 cryptocurrencies i te pai auau."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Atu"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Ki runga"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Whakakore"
+  },
+  "cancelAttempt": {
+    "message": "Te Whakakore I Te Ngana"
+  },
+  "cancellationGasFee": {
+    "message": "Whakakorenga Hau Utu"
+  },
+  "cancelled": {
+    "message": "Whakakorea"
+  },
+  "chainId": {
+    "message": "Mekameka ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Pāwhiri ki konei kia whakakitea ngaro kupu"
+  },
+  "close": {
+    "message": "Katia"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "E hiahia ana koe ki te whakamahi i MetaMask i runga i Google Chrome roto i te tikanga ki te hono atu ki tō Taputapu Putea."
+  },
+  "confirm": {
+    "message": "Te whakaū i"
+  },
+  "confirmed": {
+    "message": "Whakapumautia"
+  },
+  "confirmPassword": {
+    "message": "Whakaū Kupuhipa"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Te whakaū i tou Ngaro te Tārua Parau"
+  },
+  "congratulations": {
+    "message": "Mihi"
+  },
+  "connectHardwareWallet": {
+    "message": "Tūhono I Te Taputapu Putea"
+  },
+  "connect": {
+    "message": "Hono"
+  },
+  "connectRequest": {
+    "message": "Tūhono I Te Tono"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Tūhono ki Kovan te Whakamatautau i te Whatunga"
+  },
+  "connectingToMainnet": {
+    "message": "Te tūhono ki te Matua Ethereum Whatunga"
+  },
+  "connectingToRopsten": {
+    "message": "Tūhono ki Ropsten te Whakamatautau i te Whatunga"
+  },
+  "connectingToRinkeby": {
+    "message": "Tūhono ki Rinkeby te Whakamatautau i te Whatunga"
+  },
+  "connectingToLocalhost": {
+    "message": "Te tūhono ki te Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Tūhono ki Goerli te Whakamatautau i te Whatunga"
+  },
+  "contacts": {
+    "message": "Hoapā"
+  },
+  "contactsSettingsDescription": {
+    "message": "Tāpiri, whakatika, tangohia, me te whakahaere i tō hoapā"
+  },
+  "continueToWyre": {
+    "message": "Haere tonu ki te Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Haere tonu ki te CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Kirimana Whakamahinga"
+  },
+  "conversionProgress": {
+    "message": "Te faafariuraa i roto i te ahunga whakamua"
+  },
+  "copiedButton": {
+    "message": "Tārua"
+  },
+  "copiedExclamation": {
+    "message": "Tārua!"
+  },
+  "copy": {
+    "message": "Tārua"
+  },
+  "copyAddress": {
+    "message": "Tārua wāhitau ki te papatopenga"
+  },
+  "copyTransactionId": {
+    "message": "Tārua Tauwhitinga ID"
+  },
+  "copiedTransactionId": {
+    "message": "Tārua Tauwhitinga ID"
+  },
+  "copyToClipboard": {
+    "message": "Tārua ki te papatopenga"
+  },
+  "copyButton": {
+    "message": " Tārua "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Te waihanga"
+  },
+  "createAccount": {
+    "message": "Waihanga Pūkete"
+  },
+  "createAWallet": {
+    "message": "Te hanga i te Putea"
+  },
+  "createPassword": {
+    "message": "Te Waihanga I Te Kupuhipa"
+  },
+  "currencyConversion": {
+    "message": "Te Faafariuraa Moni"
+  },
+  "currentLanguage": {
+    "message": "Reo O Nāianei"
+  },
+  "customGas": {
+    "message": "Te Whakarite I Te Hau"
+  },
+  "customGasSubTitle": {
+    "message": "Te whakanui ake i te utu kia iti tukatuka nga wa, engari i te reira e kore te kī taurangi."
+  },
+  "customToken": {
+    "message": "Ritenga Maimai"
+  },
+  "customRPC": {
+    "message": "Ritenga RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Te ira, me te kia i te iti rawa i te 0, me te kore i runga 36."
+  },
+  "decimal": {
+    "message": "Te ira o te Pū"
+  },
+  "defaultNetwork": {
+    "message": "Te taunoa whatunga mo Etera whakawhitinga, ko te Matua Kupenga."
+  },
+  "delete": {
+    "message": "Muku"
+  },
+  "deleteAccount": {
+    "message": "Mukua Te Pūkete"
+  },
+  "deposit": {
+    "message": "Whakatakoto"
+  },
+  "depositEther": {
+    "message": "Moni Tāpui Etera"
+  },
+  "details": {
+    "message": "Ngā taipitopito"
+  },
+  "directDepositEther": {
+    "message": "Tika Te Whakatakoto Etera"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ki te kē koe te whai i te tahi Etera, te ara te vitiviti e ki te tiki Etera i roto i to koutou putea hou mā te tāpui tika."
+  },
+  "dismiss": {
+    "message": "Tonoa"
+  },
+  "done": {
+    "message": "Mea ai"
+  },
+  "downloadGoogleChrome": {
+    "message": "Tikiake Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Tikiake tenei mea Ngaro Tārua i Parau, me te pupuri i te reira i te rongoa humarie i runga i te waho whakamunatia puku mārō ranei te rokiroki reo."
+  },
+  "downloadStateLogs": {
+    "message": "Download State Rangitaki"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Maturuturu iho"
+  },
+  "edit": {
+    "message": "Whakatika"
+  },
+  "editContact": {
+    "message": "Whakatika Whakapā"
+  },
+  "emailUs": {
+    "message": "Email us!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Koe te haere i te whakamātautau - kia mau ki to koutou seedphrase haumaru, te reira to koutou i te hopoi'a!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips i runga i te rokiroki i te reira humarie"
+  },
+  "endOfFlowMessage3": {
+    "message": "Te whakaora i te pūrua i roto i te maha nga wahi."
+  },
+  "endOfFlowMessage4": {
+    "message": "E kore e faaite i te parau ki a te tangata."
+  },
+  "endOfFlowMessage5": {
+    "message": "Kia tupato o hītinihanga! MetaMask e kore e māhorahora te ui mo tou uri parau."
+  },
+  "endOfFlowMessage6": {
+    "message": "Ki te hiahia koe ki te hoki ake to koutou uri parau ano, ka taea e koe te kitea te reira i roto i te Tautuhinga -> Haumarutanga."
+  },
+  "endOfFlowMessage7": {
+    "message": "Ki te ake koe i ngā pātai ranei, te kite i te tahi mea utumu, te īmēra support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask e kore e taea e ora i to outou seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Ako atu."
+  },
+  "endOfFlowMessage10": {
+    "message": "Mahi Katoa"
+  },
+  "ensRegistrationError": {
+    "message": "Te hapa i roto i te ENS rēhita ingoa"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS ingoa e kore e kitea i runga i te whatunga o nāianei. Whakamātauria whakawhiti ki te Matua Ethereum Whatunga."
+  },
+  "enterAnAlias": {
+    "message": "E tomo te ingoakē"
+  },
+  "enterPassword": {
+    "message": "E tomo te kupuhipa"
+  },
+  "enterPasswordContinue": {
+    "message": "E tomo te kupuhipa ki te haere tonu"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Tūmatanui Wāhitau"
+  },
+  "etherscanView": {
+    "message": "Tirohia pūkete i runga i Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Te Whakatau Tata I Te Wā Tukatuka"
+  },
+  "expandView": {
+    "message": "Whakawhānui Tirohia"
+  },
+  "exportPrivateKey": {
+    "message": "Kaweake I Te Kī Tūmataiti"
+  },
+  "failed": {
+    "message": "I rahua te"
+  },
+  "fast": {
+    "message": "Nohopuku"
+  },
+  "faster": {
+    "message": "Tere"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Wareware tenei pūrere"
+  },
+  "from": {
+    "message": "I"
+  },
+  "fromShapeShift": {
+    "message": "I ShapeShift"
+  },
+  "functionType": {
+    "message": "Mahi Patopato"
+  },
+  "gasLimit": {
+    "message": "Hau Rohe"
+  },
+  "gasLimitCalculation": {
+    "message": "Tātai tatou i te whakaaro hau rohe e hāngai ana i runga i whatunga auau angitu."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Te hau te whakawhāiti i te nui mōrahi o ngā waeine o te hau ko koe pai ki te whakapau."
+  },
+  "gasLimitTooLow": {
+    "message": "Hau rohe me te kia i te iti rawa 21000"
+  },
+  "gasUsed": {
+    "message": "Hau Whakamahia"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Hau I Te Utu Tino Iti"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas price he whakarite i te nui o Etere ko koe pai ki te utu mō ia kōwae o te hau."
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Price"
+  },
+  "gasPriceCalculation": {
+    "message": "Tātai tatou i te fokotu ◊ u ki te utu hau e hāngai ana i runga i whatunga auau angitu."
+  },
+  "general": {
+    "message": "General"
+  },
+  "generalSettingsDescription": {
+    "message": "Te faafariuraa moni, tuatahi moni, te reo, blockies identicon"
+  },
+  "getEther": {
+    "message": "Tiki Etera"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Te Tiki I Te Tauturu."
+  },
+  "getStarted": {
+    "message": "Tīmata"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "E matou hari ki te kite koe."
+  },
+  "hardware": {
+    "message": "pūmārō"
+  },
+  "hardwareWalletConnected": {
+    "message": "Te taputapu putea hono"
+  },
+  "hardwareWallets": {
+    "message": "Tūhono i te taputapu putea"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Tīpakohia he taputapu putea e hiahia ana koe ki te whakamahi ki te MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "here",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Raraunga"
+  },
+  "hide": {
+    "message": "Huna"
+  },
+  "hideToken": {
+    "message": "Huna Tohu"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "History"
+  },
+  "import": {
+    "message": "Kawemai",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Kawemai I Ngā Pūkete"
+  },
+  "importAccountMsg": {
+    "message": " Kawemai i ngā pūkete e kore e kia e pā ana ki to koutou hanga tuatahi MetaMask pūkete seedphrase. Ako atu e pā ana ki te kawemai i ngā pūkete "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Te kawemai i tētahi Pūkete ki te Uri Parau"
+  },
+  "importWallet": {
+    "message": "Te Kawemai I Te Putea"
+  },
+  "importYourExisting": {
+    "message": "Te kawemai o koutou ngā putea mā te whakamahi i te 12 kupu uri parau"
+  },
+  "imported": {
+    "message": "Kawemai",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Te kawemai i te whakamahi i te pūkete uri parau"
+  },
+  "infoHelp": {
+    "message": "Info & Tauturu I Te"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Koutou tuatahi hoko i whakapumautia i te whatunga. Pāwhiri OK ki te haere hoki."
+  },
+  "insufficientBalance": {
+    "message": "Iti toenga."
+  },
+  "insufficientFunds": {
+    "message": "Iti moni."
+  },
+  "insufficientTokens": {
+    "message": "Te iti tohu."
+  },
+  "invalidAddress": {
+    "message": "Muhu wāhitau"
+  },
+  "invalidAddressRecipient": {
+    "message": "Kaiwhiwhi wāhitau muhu"
+  },
+  "knownAddressRecipient": {
+    "message": "Mohiotia kirimana wāhitau."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "E kore e TIAIRAA'RA whatunga, whakaturia ki te pūriki"
+  },
+  "invalidInput": {
+    "message": "Muhu tāuru."
+  },
+  "invalidRPC": {
+    "message": "Muhu RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Muhu Poraka Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Muhu uri parau"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Te Whakamatautau I Te Whatunga"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Ako anō"
+  },
+  "ledgerAccountRestriction": {
+    "message": "E hiahia ana koe ki te hanga whakamahi o koutou whakamutunga ki te pūkete i mua i ka taea e koe te tāpiri i te kotahi hou."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ae, kia whiwhi whakaturia ake!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Hononga"
+  },
+  "liveGasPricePredictions": {
+    "message": "Ora Hau Price Matapae"
+  },
+  "loading": {
+    "message": "Kei te utaina..."
+  },
+  "loadingTokens": {
+    "message": "Kei Te Utaina Te Tohu..."
+  },
+  "loadMore": {
+    "message": "Te Uta Ake"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Takiuru I Roto I"
+  },
+  "logout": {
+    "message": "Takiuru i roto i"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout wā he nui rawa"
+  },
+  "mainnet": {
+    "message": "Matua Ethereum Whatunga"
+  },
+  "memorizePhrase": {
+    "message": "Te tamau aau i teie parau."
+  },
+  "memo": {
+    "message": "manatu"
+  },
+  "menu": {
+    "message": "Tahua"
+  },
+  "message": {
+    "message": "Karere"
+  },
+  "metamaskDescription": {
+    "message": "Tūhono koe ki te Ethereum me te Wehenga o te Tukutuku."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Uri Kupu"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Putanga"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Tomo koa i tō kupuhipa ki te whakaū i te reira koe!"
+  },
+  "myAccounts": {
+    "message": "Toku Pūkete"
+  },
+  "myWalletAccounts": {
+    "message": "Toku Putea Pūkete"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Katoa o koutou MetaMask hanga pūkete, ka aunoa te tāpiri atu ki tēnei wāhanga."
+  },
+  "mustSelectOne": {
+    "message": "Me te tīpako i te iti rawa 1 tohu."
+  },
+  "needEtherInWallet": {
+    "message": "Ki te taunekeneke ki te wehenga o te tono mā te whakamahi i MetaMask, ka hiahia koe Etera i roto i to koutou putea."
+  },
+  "needImportFile": {
+    "message": "Me koe te tīpako i te kōnae ki te kawemai.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "E kore e taea e tukua kino moni o te TIAIRAA'RA."
+  },
+  "networkName": {
+    "message": "Whatunga Ingoa"
+  },
+  "networks": {
+    "message": "Whatunga"
+  },
+  "networkSettingsDescription": {
+    "message": "Tāpiri me te whakatika ritenga RPC whatunga"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Pūkete Hou"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Address New detected! Pāwhiri ki konei ki te tāpiri ki tō pukapuka wāhitau."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Whakapā Hou"
+  },
+  "newContract": {
+    "message": "New Contract"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Whatunga Hou"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Kahore, kahore i ahau kua i te uri parau"
+  },
+  "protectYourKeys": {
+    "message": "Te Tiaki I To Koutou Mau Taviri!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Kia tupato ki a koutou purapura parau — i reira kua pūrongo o te tukutuku, e ngana ki te aru i MetaMask. MetaMask e kore e ui mo tou uri parau!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Kia mau ki to koutou kīanga haumaru. Ki te kite koe i te tahi mea utumu, ranei koutou kei pahuhu e pā ana ki te paetukutuku, email support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "New RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Hou Katoa"
+  },
+  "newTransactionFee": {
+    "message": "New Tauwhitinga Utu"
+  },
+  "next": {
+    "message": "I muri mai"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "No wāhitau kua whakaturia hoki tenei ingoa."
+  },
+  "noDeposits": {
+    "message": "No te putunga riro"
+  },
+  "noConversionRateAvailable": {
+    "message": "No Te Faafariuraa I Te Auau E Wātea Ana"
+  },
+  "noTransactions": {
+    "message": "Te whai koe i kore te whakawhitinga"
+  },
+  "noThanks": {
+    "message": "Kahore He Whakawhetai"
+  },
+  "notEnoughGas": {
+    "message": "E Kore E Nui Te Hau"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam e kore e kitea"
+  },
+  "noWebcamFound": {
+    "message": "O tō rorohiko webcam kihai i kitea. Koa ngana anō."
+  },
+  "ofTextNofM": {
+    "message": "o"
+  },
+  "orderOneHere": {
+    "message": "Te tikanga te Trezor ranei Kaute, me te pupuri i tou moni i roto i te matao rokiroki"
+  },
+  "origin": {
+    "message": "Takenga mai"
+  },
+  "parameters": {
+    "message": "Tawhā"
+  },
+  "participateInMetaMetrics": {
+    "message": "Whai wāhi i roto i te MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Whai wāhi i roto i te MetaMetrics ki te tauturu ia tatou ia te hanga i MetaMask pai"
+  },
+  "password": {
+    "message": "Kupuhipa"
+  },
+  "passwordsDontMatch": {
+    "message": "Kupuhipa Kore e Ōrite"
+  },
+  "passwordNotLongEnough": {
+    "message": "Kupuhipa, e kore e roa nui"
+  },
+  "pastePrivateKey": {
+    "message": "Whakapiri koutou kī tūmataiti aho i konei:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Whakapiri koutou uri parau konei!"
+  },
+  "pending": {
+    "message": "pending"
+  },
+  "personalAddressDetected": {
+    "message": "Wāhitau whaiaro kitea. Tāuru te tohu kirimana wāhitau."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Tuatahi Moni"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Kaupapahere Tūmataiti"
+  },
+  "privateKey": {
+    "message": "Kī Tūmataiti",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Whakatūpato: e Kore e whakaatu i tenei kī. Te tangata ki to koutou mau taviri tūmataiti e taea te tahae i tetahi rawa puritia i roto i tō pūkete."
+  },
+  "privateNetwork": {
+    "message": "Whatunga Tūmataiti"
+  },
+  "qrCode": {
+    "message": "Whakaatu i te Waehere UT"
+  },
+  "queue": {
+    "message": "Rārangi"
+  },
+  "readdToken": {
+    "message": "Ka taea e koe te tāpiri i tēnei tohu hoki i roto i te heke mai na roto i te haere ki te \"Tāpiri i maimai\" i roto i tō pūkete tahua kōwhiringa."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Kaiwhiwhi Wāhitau"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Whakakahore Katoa"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Paopao"
+  },
+  "reset": {
+    "message": "Tautuhi"
+  },
+  "resetAccount": {
+    "message": "Tautuhi Anō Pūkete"
+  },
+  "resetAccountDescription": {
+    "message": "Te tautuhianō o tō pūkete e whakakite i tou hītori tauwhitinga."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Fakamanatu ki ahau i muri mai"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Te whakaora i tō Pūkete ki te Uri Parau"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "tono tatari ki te kia i whakaae"
+  },
+  "required": {
+    "message": "E hiahiatia ana"
+  },
+  "restore": {
+    "message": "Whakahokia mai te"
+  },
+  "revealSeedWords": {
+    "message": "Whakakitea Uri Kupu"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Uri Parau"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ki te ake koe te huri i te pūtirotiro ranei ki te neke i te rorohiko, ka hiahia koe i tenei uri te kīanga ki te uru ki tō pūkete. Whakaora i a ratou tetahi wahi haumaru, me te ngaro."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "E KORE E faaite i tenei parau ki te tangata!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "I enei kupu e taea te whakamahi ki te tahae i tou pūkete."
+  },
+  "revert": {
+    "message": "Hoki"
+  },
+  "remove": {
+    "message": "Tango"
+  },
+  "removeAccount": {
+    "message": "Tangohia te pūkete"
+  },
+  "removeAccountDescription": {
+    "message": "Tenei pūkete, ka kia nekehia atu i to koutou putea. Tēnā, kia whai koe i te taketake uri parau tūmataiti ranei te matua hoki tenei kawemai pūkete i mua i te haere tonu. Ka taea e koe te kawemai i te ranei te hanga pūkete i roto i te pūkete taka-iho. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Te Whakamatautau I Te Whatunga"
+  },
+  "ropsten": {
+    "message": "Ropsten Te Whakamatautau I Te Whatunga"
+  },
+  "goerli": {
+    "message": "Goerli Te Whakamatautau I Te Whatunga"
+  },
+  "save": {
+    "message": "Whakaora i te"
+  },
+  "slow": {
+    "message": "Puhoi"
+  },
+  "slower": {
+    "message": "Pōturi"
+  },
+  "saveAsCsvFile": {
+    "message": "Whakaora te rite te Kōnae CSV"
+  },
+  "scanInstructions": {
+    "message": "A tuu i te waehere UT i roto i te mua o to koutou kāmera"
+  },
+  "scanQrCode": {
+    "message": "Matawai Waehere UT"
+  },
+  "search": {
+    "message": "Rapu"
+  },
+  "searchResults": {
+    "message": "Rapu Hua"
+  },
+  "secretBackupPhrase": {
+    "message": "Ngaro Tārua Parau"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Tō ngaro te tārua parau hanga ngāwari te reira ki te hoki ake, ka whakahokia mai i tō pūkete."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WHAKATŪPATO: e Kore e te whāki i to koutou tārua parau. Te tangata ki tenei parau e taea te tango i tou Etera ake ake."
+  },
+  "secretPhrase": {
+    "message": "Tomo tō ngaro te tekau ma rua kupu kīanga i konei ki te whakaora i tō kikorangi."
+  },
+  "securityAndPrivacy": {
+    "message": "Haumarutanga & Tūmataitinga"
+  },
+  "securitySettingsDescription": {
+    "message": "Tautuhinga tūmataitinga, me te putea uri parau"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Wehe ia kupu ki te kotahi wāhi"
+  },
+  "seedPhraseReq": {
+    "message": "Uri kīanga e te kupu te roa o te 12"
+  },
+  "selectCurrency": {
+    "message": "Tīpako Moni"
+  },
+  "selectEachPhrase": {
+    "message": "Tīpako koa ia parau i roto i te tikanga ki te kia te reira tika."
+  },
+  "selectLocale": {
+    "message": "Tīpakohia Māori"
+  },
+  "selectType": {
+    "message": "Tīpakohia Te Momo"
+  },
+  "send": {
+    "message": "Tukua atu"
+  },
+  "sendAmount": {
+    "message": "Te Tuku Moni"
+  },
+  "sendETH": {
+    "message": "Tukua TIAIRAA'RA"
+  },
+  "sendTokens": {
+    "message": "Te Tuku Tohu"
+  },
+  "sentEther": {
+    "message": "ka tonoa e etera"
+  },
+  "sentTokens": {
+    "message": "tonoa tohu"
+  },
+  "separateEachWord": {
+    "message": "Wehe ia kupu ki te kotahi wāhi"
+  },
+  "searchTokens": {
+    "message": "Rapu Tohu"
+  },
+  "selectAnAccount": {
+    "message": "Te tīpako i tētahi Pūkete"
+  },
+  "selectAnAccountHelp": {
+    "message": "Tīpakohia te pūkete ki te tiro i te MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Tīpakohia te teitei hau utu ki te whakatere i te tukatuka o koutou hoko.*"
+  },
+  "selectHdPath": {
+    "message": "Tīpakohia HD Ara"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Tautuhinga"
+  },
+  "showAdvancedGasInline": {
+    "message": "Arā hau mana"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Tīpakohia tenei ki te whakaatu i te hau utu, me te whakawhāiti i te mana tika i runga i te tuku, me te whakaū i te mata."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Whakaatu te Faafariuraa i runga i Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Tīpakohia tenei ki te whakaatu i fiat faafariuraa i runga i Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Whakaatu I Te Kī Tūmataiti"
+  },
+  "showHexData": {
+    "message": "Whakaatu Hex Raraunga"
+  },
+  "showHexDataDescription": {
+    "message": "Tīpakohia tenei ki te whakaatu i te hex mara raraunga i runga i te unga i te mata"
+  },
+  "sign": {
+    "message": "Haina"
+  },
+  "signatureRequest": {
+    "message": "Waitohu Tono"
+  },
+  "signed": {
+    "message": "Haina"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Waitohu Tono"
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Te tahi mea haere he."
+  },
+  "speedUp": {
+    "message": "Te Tere Ake"
+  },
+  "speedUpCancellation": {
+    "message": "Tere ake i tēnei whakakorenga"
+  },
+  "speedUpTransaction": {
+    "message": "Tere ake te tenei tauwhitinga"
+  },
+  "switchNetworks": {
+    "message": "Te Whakawhiti I Te Whatunga"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask State Rangitaki"
+  },
+  "stateLogs": {
+    "message": "State Rangitaki"
+  },
+  "stateLogsDescription": {
+    "message": "State rākau i roto i tō pūkete tūmatanui wāhitau, me te tonoa e ngā whakawhitinga."
+  },
+  "stateLogError": {
+    "message": "Te hapa i roto i te te tiki i te kāwanatanga rangitaki."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Tūhono I Te Taputapu Putea"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Tūhono tō taputapu putea tika i ki tō rorohiko."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Te tīpako i tētahi Pūkete"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Tīpakohia te pūkete e hiahia ana koe ki te tiro a koe. Ka taea e koe te whiriwhiri tetahi i te wa."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Tīmata te whakamahi i dApps me te ake!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Te whakamahi i tō taputapu te pūkete rite pai koe ki tetahi Ethereum pūkete. Takiuru i roto i ki te dApps, tonoa Tiairaa'ra, te hoko me te rokiroki i te ERC20 tohu, me te Kore-Fungible tohu rite CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Rokiroki i tēnei kīanga i roto i te kaiwhakahaere kupuhipa rite 1Password."
+  },
+  "submit": {
+    "message": "Tuku"
+  },
+  "submitted": {
+    "message": "Tuku"
+  },
+  "supportCenter": {
+    "message": "Tirohia i to tatou Pokapū Tautoko"
+  },
+  "symbol": {
+    "message": "Tohu"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Tohu me te kia i waenganui i te 0 me te 12 pūāhua."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Tahuri i runga i ki te whai i ō tautuhinga tautokona ake i te 3Box. Tēnei āhuatanga he currenty whakamātau; te whakamahi i to koutou tūpono ake."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box kua monokia e tika ana ki te hapa i roto i te tuatahi tukutahi"
+  },
+  "syncWithMobile": {
+    "message": "Tukutahi ki te pūkoro"
+  },
+  "syncWithMobileTitle": {
+    "message": "Tukutahi ki te pūkoro"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Ki te koe tika whakatuwhera i te MetaMask taupānga Pūkoro mo te wa tuatahi, te whai i tika nga kaupae e i roto i to koutou waea."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Te matawai i tenei waehere ki tou MetaMask taupānga pūkoro"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Kia tino tangata ke atu, ko te rapu i tou mata, no te te karapa i koe i tenei waehere"
+  },
+  "syncWithMobileComplete": {
+    "message": "Tou raraunga kua tukutahia pai. Kia pai te MetaMask taupānga pūkoro!"
+  },
+  "terms": {
+    "message": "Ngā ritenga Whakamahi"
+  },
+  "testFaucet": {
+    "message": "Test Kōrere"
+  },
+  "thisWillCreate": {
+    "message": "Tenei ka te hanga i tētahi putea, me te uri parau"
+  },
+  "tips": {
+    "message": "Tohutohu"
+  },
+  "to": {
+    "message": "Ki te"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Tohu"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Tohu kua tapiritia."
+  },
+  "tokenContractAddress": {
+    "message": "Tohu Kirimana Wāhitau"
+  },
+  "tokenSymbol": {
+    "message": "Tohu Tohu"
+  },
+  "total": {
+    "message": "Tapeke"
+  },
+  "transaction": {
+    "message": "hoko"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Hoko tūpono he hapa."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Hoko Hapa. Haunga maka i roto i te kirimana ki te waehere."
+  },
+  "transactionErrorNoContract": {
+    "message": "E ngana ana ki te karanga i te mahi i runga i te kirimana-kore wāhitau."
+  },
+  "transactionFee": {
+    "message": "Utu Hoko"
+  },
+  "transactionTime": {
+    "message": "Hoko Wa"
+  },
+  "transfer": {
+    "message": "Whakawhiti"
+  },
+  "transferBetweenAccounts": {
+    "message": "Whakawhiti i waenganui i toku pūkete"
+  },
+  "transferFrom": {
+    "message": "Whakawhiti I Te"
+  },
+  "troubleTokenBalances": {
+    "message": "I matou i te raruraru kei te utaina koutou maimai pauna. Ka taea e koe te tiro ia ratou ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Ngana anō"
+  },
+  "typePassword": {
+    "message": "Momo i tō MetaMask kupuhipa"
+  },
+  "unapproved": {
+    "message": "Akiri"
+  },
+  "units": {
+    "message": "wae"
+  },
+  "unknown": {
+    "message": "Unknown"
+  },
+  "unknownNetwork": {
+    "message": "Unknown Whatunga Tūmataiti"
+  },
+  "unknownQrCode": {
+    "message": "Hapa: Tatou kihai i taea e te tautuhi e te waehere UT"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Te tahi mea haere he...."
+  },
+  "unknownCameraError": {
+    "message": "Te reira i reira he hapa i te wā e ngana ana ki te uru ki tō kāmera. Koa ngana anō..."
+  },
+  "unlock": {
+    "message": "Wewete"
+  },
+  "unlockMessage": {
+    "message": "Te wehenga o te tukutuku tiai"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs rapua te tika HTTP/HTTPS kuhimua."
+  },
+  "usedByClients": {
+    "message": "E whakamahia ana e te whānuitanga o ngā kiritaki"
+  },
+  "userName": {
+    "message": "Ingoa kaiwhakamahi"
+  },
+  "validFileImport": {
+    "message": "Me tīpako e koe te tika kōnae ki te kawemai."
+  },
+  "viewAccount": {
+    "message": "Tirohia Pūkete"
+  },
+  "viewinExplorer": {
+    "message": "Tirohia i roto i te mozilla Firefox"
+  },
+  "viewContact": {
+    "message": "Tirohia Whakapā"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Tirohia i runga i Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Tirohia i to tatou pae tukutuku"
+  },
+  "walletSeed": {
+    "message": "Putea Uri"
+  },
+  "welcomeBack": {
+    "message": "Welcome Back!"
+  },
+  "welcome": {
+    "message": "Nau mai ki te MetaMask"
+  },
+  "writePhrase": {
+    "message": "Tuhia tēnei kīanga i runga i te wahi o te pepa, me te taonga i roto i te wāhi haumaru. Ki te hiahia koe ara atu haumarutanga, tuhituhi i te reira iho i runga i maha nga wahi o te pepa, me toa ia i roto i te 2 - 3 wāhi rerekē."
+  },
+  "yesLetsTry": {
+    "message": "Ae, kia tamata"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "E hiahia ana koe ki te tukua e kāmera uru ki te whakamahi i tēnei āhuatanga."
+  },
+  "yourSigRequested": {
+    "message": "Tou waitohu ko te tono"
+  },
+  "youSign": {
+    "message": "Ko koe te haina"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Tou tūmataiti uri parau"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Te kore te hau i te utu ki runga ki te tere ake"
+  }
+}

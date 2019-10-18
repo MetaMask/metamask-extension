@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Hampiseho Ny Narahi-Varotra"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Mifidy izany ny mampiasa Etherscan mba hampiseho ny narahi-varotra ao ny varotra lisitra"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Tabilao ihany no hita ao amin'ny Ethereum tambajotra."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Fifandraisana"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Toerana mahazo mamaky ny tantara"
+  },
+  "addSite": {
+    "message": "Ampio Toerana"
+  },
+  "addSiteDescription": {
+    "message": "Tanana hanampy ny toerana mba hamela azy io ny fidirana amin'ny kaonty, mahasoa ho an'ny be taona dapps"
+  },
+  "connected": {
+    "message": "Mifandray"
+  },
+  "connectedDescription": {
+    "message": "Ny lisitry ny toerana mahazo ny fidirana amin'ny adiresy"
+  },
+  "privacyModeDefault": {
+    "message": "Privacy Fomba ankehitriny dia alefa amin'ny default"
+  },
+  "contractInteraction": {
+    "message": "Fifanekena Fifandraisana"
+  },
+  "clearApprovalData": {
+    "message": "Esory izay rehetra toerana"
+  },
+  "reject": {
+    "message": "Mitsipaka"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Ity tranonkala ity dia mangataka ny fidirana amin'ny fomba fijery ny amin'izao fotoana izao account adiresy. Ho azo antoka foana ianao matoky ny toerana mifandray amin'ny."
+  },
+  "about": {
+    "message": "Momba ny"
+  },
+  "aboutSettingsDescription": {
+    "message": "Dikan -, fanohanana ny foibe, sy ny fifandraisana info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Ny fahazoana ny fakan-tsary..."
+  },
+  "account": {
+    "message": "Tantara"
+  },
+  "accountDetails": {
+    "message": "Antsipirihan'ny Momba Ny Kaonty"
+  },
+  "accountName": {
+    "message": "Tantara Anarana"
+  },
+  "accountOptions": {
+    "message": "Tantara Safidy"
+  },
+  "accountSelectionRequired": {
+    "message": "Ianao mila mifidy ny tantara!"
+  },
+  "activityLog": {
+    "message": "asa vatan-kazo"
+  },
+  "addNetwork": {
+    "message": "Ampio Ny Tambajotra"
+  },
+  "addRecipient": {
+    "message": "Ampio Mpandray"
+  },
+  "advanced": {
+    "message": "Mandroso"
+  },
+  "advancedSettingsDescription": {
+    "message": "Ny fidirana amin'ny mpamorona endri-javatra, download Fanjakana Hazo, Famerenana ny Kaonty, fanamboarana testnets sy ny fomba amam-panao RPC."
+  },
+  "advancedOptions": {
+    "message": "Mandroso Safidy"
+  },
+  "addToAddressBook": {
+    "message": "Manampy mba hiatrehana ny boky"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "ohatra: Jaona D."
+  },
+  "addAlias": {
+    "message": "Ampio antsoina"
+  },
+  "addToken": {
+    "message": "Ampio Famantarana"
+  },
+  "addTokens": {
+    "message": "Ampio Famantarana"
+  },
+  "addSuggestedTokens": {
+    "message": "Manampy Soso-Kevitra Famantarana"
+  },
+  "addAcquiredTokens": {
+    "message": "Ampio ny famantarana efa nahazo ny fampiasana MetaMask"
+  },
+  "amount": {
+    "message": "Vola"
+  },
+  "appDescription": {
+    "message": "Ny Ethereum kitapom-batsy ao amin'ny Navigateur",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Mankasitraka"
+  },
+  "approved": {
+    "message": "Nekena"
+  },
+  "asset": {
+    "message": "- Pananana"
+  },
+  "attemptingConnect": {
+    "message": "Miezaka mifandray blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Manaiky ity fikasana dia tsy manome antoka ny tany am-boalohany ny raharaham-barotra dia tsy azo ajanona. Raha toa ny fanafoanana ny fikasana dia mahomby, ianao dia nandidy ny saram-raharaham-barotra etsy ambony."
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Nametraka ny kamo fotoana minitra alohan'ny MetaMask dia tonga dia mivoaka"
+  },
+  "average": {
+    "message": "Eo ho eo"
+  },
+  "back": {
+    "message": "Indray"
+  },
+  "backToAll": {
+    "message": "Hiverina any Rehetra"
+  },
+  "backupApprovalNotice": {
+    "message": "Nomaniny ho solon'izay ny zava-Miafina ny Fanarenana ny fehezan-dalàna mba hitandrina ny kitapom-batsy sy ny vola azo antoka."
+  },
+  "backupApprovalInfo": {
+    "message": "Zava-miafina izany fehezan-dalàna takiana ho sitrana ny kitapom-batsy raha very ny fitaovana, adino ny tenimiafina, tsy maintsy indray hametraka MetaMask, na te-hiditra amin'ny kitapom-batsy amin'ny fitaovana iray hafa."
+  },
+  "backupNow": {
+    "message": "Nomaniny ho solon'izay ankehitriny"
+  },
+  "balance": {
+    "message": "Fifandanjana"
+  },
+  "balanceOutdated": {
+    "message": "Mandanjalanja ny mety ho efa lany andro"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Tsy ampy ny mahay mandanjalanja ny amin'izao fotoana izao mandatsa-dranomaso tanteraka"
+  },
+  "basic": {
+    "message": "Fototra"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Andian-Tsoratra Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Mampiasa Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Ampanjifaina raharaham-barotra nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Fomba Amam-Panao Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Ny Browser dia tsy raisina an-tànana..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask natao sy miorina ao California."
+  },
+  "buyWithWyre": {
+    "message": "Buy ETH amin'ny Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre mamela anao fampiasana ny carte de crédit mba petra-bola ETH tsara ao an-MetaMask kaonty."
+  },
+  "buyCoinSwitch": {
+    "message": "Buy eo CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch dia ny iray nijanona toerana ny fifanakalozana kokoa noho ny 300 cryptocurrencies amin'ny tsara indrindra ny tahan'ny."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "off": {
+    "message": "Eny"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Amin'ny"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Hanafoana"
+  },
+  "cancelAttempt": {
+    "message": "Hanafoana Ny Ezaka"
+  },
+  "cancellationGasFee": {
+    "message": "Fanafoanana Ny Saram-Dranomaso"
+  },
+  "cancelled": {
+    "message": "Nofoanana"
+  },
+  "chainId": {
+    "message": "Rojo ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Tsindrio eto mba hanambara ny teny miafina"
+  },
+  "close": {
+    "message": "Akaiky"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Mila mampiasa MetaMask ao amin'ny Google Chrome mba connect ny Fitaovana kitapom-batsy."
+  },
+  "confirm": {
+    "message": "Hanamarina"
+  },
+  "confirmed": {
+    "message": "Nanamafy"
+  },
+  "confirmPassword": {
+    "message": "Manamafy Ny Tenimiafina"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Manamafy ny zava-Miafina nomaniny ho Solon'izay ny andian-Teny"
+  },
+  "congratulations": {
+    "message": "Arahabaina"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Ny Fitaovana Kitapom-Batsy"
+  },
+  "connect": {
+    "message": "Mifandray"
+  },
+  "connectRequest": {
+    "message": "Mampifandray Ny Fangatahana"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Mampifandray ny Kovan Fitsapana Tambajotra"
+  },
+  "connectingToMainnet": {
+    "message": "Mampifandray ny Lehibe Ethereum Tambajotra"
+  },
+  "connectingToRopsten": {
+    "message": "Mampifandray ny Ropsten Fitsapana Tambajotra"
+  },
+  "connectingToRinkeby": {
+    "message": "Mampitohy an'i Rinkeby Fitsapana Tambajotra"
+  },
+  "connectingToLocalhost": {
+    "message": "Mampifandray to Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Mampifandray ny Goerli Fitsapana Tambajotra"
+  },
+  "contacts": {
+    "message": "Fifandraisana"
+  },
+  "contactsSettingsDescription": {
+    "message": "Manampy, ovay, manala, sy ny fitantanana ny fifandraisana"
+  },
+  "continueToWyre": {
+    "message": "Mbola Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Mbola CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Fifanekena Fanapariahana"
+  },
+  "conversionProgress": {
+    "message": "Ny fiovam-po ao amin'ny fandrosoana"
+  },
+  "copiedButton": {
+    "message": "Adika"
+  },
+  "copiedExclamation": {
+    "message": "Adika!"
+  },
+  "copy": {
+    "message": "Dika mitovy"
+  },
+  "copyAddress": {
+    "message": "Dika mitovy ny adiresy ao anatin'ny fanindri-taratasy"
+  },
+  "copyTransactionId": {
+    "message": "Dika mitovy ny raharaham-Barotra ID"
+  },
+  "copiedTransactionId": {
+    "message": "Adika raharaham-Barotra ID"
+  },
+  "copyToClipboard": {
+    "message": "Dika mitovy ny hela-tsilaka"
+  },
+  "copyButton": {
+    "message": " Dika mitovy "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Mamorona"
+  },
+  "createAccount": {
+    "message": "Mamorona Kaonty"
+  },
+  "createAWallet": {
+    "message": "Mamorona kitapom-batsy"
+  },
+  "createPassword": {
+    "message": "Hamorona Tenimiafina"
+  },
+  "currencyConversion": {
+    "message": "Vola Fiovam-Po"
+  },
+  "currentLanguage": {
+    "message": "Fiteny Amin'izao Fotoana Izao"
+  },
+  "customGas": {
+    "message": "Ampanjifaina-Dranomaso"
+  },
+  "customGasSubTitle": {
+    "message": "Mitombo ny sarany mety hampihena ny fanodinana ny fotoana, fa tsy azo antoka."
+  },
+  "customToken": {
+    "message": "Fomba Amam-Panao Famantarana"
+  },
+  "customRPC": {
+    "message": "Fomba amam-panao RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals dia tsy maintsy farafaharatsiny 0, ary tsy mihoatra ny 36."
+  },
+  "decimal": {
+    "message": "Decimals ny fametrahana mazava Tsara"
+  },
+  "defaultNetwork": {
+    "message": "Ny default amin'ny tambajotra ho an'ny Etera varotra no Tena Net."
+  },
+  "delete": {
+    "message": "Hamafa"
+  },
+  "deleteAccount": {
+    "message": "Hamafa Kaonty"
+  },
+  "deposit": {
+    "message": "Petra-bola"
+  },
+  "depositEther": {
+    "message": "Petra-Bola Etera"
+  },
+  "details": {
+    "message": "Ny antsipiriany"
+  },
+  "directDepositEther": {
+    "message": "Mivantana Petra-Bola Etera"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Raha toa ka efa manana ny sasany an ' i Etera, ny fomba haingana mba hahazoana ny Etera tao amin'ny vaovao ny kitapom-batsy mivantana amin'ny petra-bola."
+  },
+  "dismiss": {
+    "message": "Handroaka"
+  },
+  "done": {
+    "message": "Atao"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Download izany zava-Miafina nomaniny ho Solon'izay ny andian-Teny sy mitandrina izany dia voatahiry soa aman-tsara eo ivelany misy mari-pamantarana fiara mafy na ny fitehirizana ny fitaovana."
+  },
+  "downloadStateLogs": {
+    "message": "Download Fanjakana Hazo"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Nandatsaka"
+  },
+  "edit": {
+    "message": "Ovay"
+  },
+  "editContact": {
+    "message": "Ovay Ny Fifandraisana"
+  },
+  "emailUs": {
+    "message": "Mailaka antsika!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Dia nandeha ny fitsapana - hitandrina ny seedphrase soa aman-tsara, izany dia midika ny andraikitra!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Soso-kevitra momba ny mitahiry azy io soa aman-tsara"
+  },
+  "endOfFlowMessage3": {
+    "message": "Hamonjy ny nomaniny ho solon'izay amin'ny toerana maro."
+  },
+  "endOfFlowMessage4": {
+    "message": "Tsy mizara ny andian-teny miaraka na iza na iza."
+  },
+  "endOfFlowMessage5": {
+    "message": "Mitandrema ny phishing! MetaMask dia tsy nahitàna mangataka ny taranaka andian-teny."
+  },
+  "endOfFlowMessage6": {
+    "message": "Raha toa ka mila miverina ambony ny taranaka andian-teny indray, ianao dia afaka mahita izany ao amin'ny Settings -> Fiarovana."
+  },
+  "endOfFlowMessage7": {
+    "message": "Raha mbola manana fanontaniana na jereo ny zavatra mampiahiahy, mailaka support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask tsy sitrana ny seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Hianatra bebe kokoa."
+  },
+  "endOfFlowMessage10": {
+    "message": "Izay Rehetra Atao"
+  },
+  "ensRegistrationError": {
+    "message": "Fahadisoana eo amin'ny ENS anarana fisoratana anarana"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS anarana tsy hita ao amin'ny ny amin'izao fotoana izao tambajotra. Miezaka ara Lehibe Ethereum Tambajotra."
+  },
+  "enterAnAlias": {
+    "message": "Miditra amin'ny antsoina hoe"
+  },
+  "enterPassword": {
+    "message": "Ampidiro ny teny miafina"
+  },
+  "enterPasswordContinue": {
+    "message": "Ampidiro ny teny miafina mba hanohy"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum-Bahoaka Adiresy"
+  },
+  "etherscanView": {
+    "message": "Hijery ny kaonty ao amin'ny Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Tombanana Fanodinana In"
+  },
+  "expandView": {
+    "message": "Hanitatra Ny Fomba Fijery"
+  },
+  "exportPrivateKey": {
+    "message": "Fanondranana Tsy Miankina Manan-Danja"
+  },
+  "failed": {
+    "message": "Tsy nahomby"
+  },
+  "fast": {
+    "message": "Fifadian-kanina"
+  },
+  "faster": {
+    "message": "Haingana kokoa"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Manadino io fitaovana io"
+  },
+  "from": {
+    "message": "Avy"
+  },
+  "fromShapeShift": {
+    "message": "Avy ShapeShift"
+  },
+  "functionType": {
+    "message": "Karazana Asa"
+  },
+  "gasLimit": {
+    "message": "- Dranomaso Fetra"
+  },
+  "gasLimitCalculation": {
+    "message": "Isika manao kajy ny soso-kevitra-dranomaso fetra mifototra amin'ny tambajotra tahan'ny fahombiazana."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "- Dranomaso no mametra ny ambony indrindra habetsaky ny vondrona entona ianao ka vonona ny handany."
+  },
+  "gasLimitTooLow": {
+    "message": "- Dranomaso fetra dia tsy maintsy farafaharatsiny 21000"
+  },
+  "gasUsed": {
+    "message": "- Dranomaso Nampiasaina"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Mandatsa-Dranomaso Ny Vidin'ny Tena Ambany"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Mandatsa-dranomaso ny vidin'ny dia mamaritra ny habetsaky ny Etera ianao ka vonona ny hahafoy ho an'ny tarika tsirairay ny entona."
+  },
+  "gasPriceNoDenom": {
+    "message": "- Dranomaso Price"
+  },
+  "gasPriceCalculation": {
+    "message": "Isika manao kajy ny soso-kevitra dranomaso, vidin-javatra mifototra amin'ny tambajotra tahan'ny fahombiazana."
+  },
+  "general": {
+    "message": "Ankapobeny"
+  },
+  "generalSettingsDescription": {
+    "message": "Vola fiovam-po, kilonga vola, ny fiteny, blockies identicon"
+  },
+  "getEther": {
+    "message": "Get Etera"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Hahazo Fanampiana."
+  },
+  "getStarted": {
+    "message": "Hanomboka"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Faly izahay mahita anao."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware kitapom-batsy mifandray"
+  },
+  "hardwareWallets": {
+    "message": "Connect ny fitaovana kitapom-batsy"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Mifidy ny fitaovana kitapom-batsy tianao ampiasaina amin'ny MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "eto",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Tahirin-Kevitra"
+  },
+  "hide": {
+    "message": "Manafina"
+  },
+  "hideToken": {
+    "message": "Afeno Ny Famantarana"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Tantara"
+  },
+  "import": {
+    "message": "Manafatra",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Manafatra Kaonty"
+  },
+  "importAccountMsg": {
+    "message": " Nafarana ny kaonty dia tsy azo ampifandraisina amin'ny tany am-boalohany namorona MetaMask kaonty seedphrase. Hianatra bebe kokoa momba ny kaonty nafarana "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Manafatra ny Kaonty amin'ny Taranaka andian-Teny"
+  },
+  "importWallet": {
+    "message": "Manafatra Kitapom-Batsy"
+  },
+  "importYourExisting": {
+    "message": "Manafatra ny efa misy kitapom-batsy mampiasa ny 12 teny taranaka andian-teny"
+  },
+  "imported": {
+    "message": "Nafarana",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Manafatra ny fampiasana kaonty taranaka andian-teny"
+  },
+  "infoHelp": {
+    "message": "Info & Vonjy"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Ny voalohany fividianana dia voamarina amin'ny alalan'ny tambajotra. Tsindrio ny OK hiverina."
+  },
+  "insufficientBalance": {
+    "message": "Tsy ampy ny mahay mandanjalanja."
+  },
+  "insufficientFunds": {
+    "message": "Tsy ampy ny vola."
+  },
+  "insufficientTokens": {
+    "message": "Tsy ampy ny famantarana."
+  },
+  "invalidAddress": {
+    "message": "Diso adiresy"
+  },
+  "invalidAddressRecipient": {
+    "message": "Mpandray ny adiresy dia tsy manan-kery"
+  },
+  "knownAddressRecipient": {
+    "message": "Fantatra fifanarahana adiresy."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Tsy ETH tambajotra, nametraka ny raki-bolana malalaka"
+  },
+  "invalidInput": {
+    "message": "Tsy mitombina ny torohevitra."
+  },
+  "invalidRPC": {
+    "message": "Tsy manan-kery RPC URL"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Tsy ekena ny Fanakanana Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Tsy mitombina ny taranaka andian-teny"
+  },
+  "jsonFile": {
+    "message": "JSON Rakitra",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Fitsapana Tambajotra"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Hianatra bebe kokoa"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Mila mampiasa ny farany tantara alohan'ny afaka manampy iray vaovao."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Eny, aoka ny mahazo nanangana!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Rohy"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live-Dranomaso Price Faminaniana"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Ny Famantarana..."
+  },
+  "loadMore": {
+    "message": "Enta-Mavesatra Kokoa"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Log In"
+  },
+  "logout": {
+    "message": "Log out"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Fivoahana fotoana lehibe loatra"
+  },
+  "mainnet": {
+    "message": "Tena Ethereum Tambajotra"
+  },
+  "memorizePhrase": {
+    "message": "Tsianjery io andian-teny io."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Hafatra"
+  },
+  "metamaskDescription": {
+    "message": "Mampifandray anao Ethereum sy ny Fanapariahana ny Tranonkala."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Voa Teny"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Ampidiro ny teny miafina mba hanamarina izany ianao!"
+  },
+  "myAccounts": {
+    "message": "Ny Kaonty"
+  },
+  "myWalletAccounts": {
+    "message": "Ny Kitapom-Batsy Kaonty"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Rehetra ny MetaMask namorona kaonty dia tonga dia homena amin'ity fizarana ity."
+  },
+  "mustSelectOne": {
+    "message": "Tsy maintsy mifidy, fara fahakeliny, 1 famantarana."
+  },
+  "needEtherInWallet": {
+    "message": "Mifandray amin'ny fanapariahana ny fampiharana mampiasa MetaMask, ianao no mila ny Etera ao amin'ny kitapom-batsy."
+  },
+  "needImportFile": {
+    "message": "Tsy maintsy mifidy ny rakitra mba manafatra.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Tsy afaka handefa ratsy be ny ETH."
+  },
+  "networkName": {
+    "message": "Ny Tambajotra Name"
+  },
+  "networks": {
+    "message": "Ny tambajotra"
+  },
+  "networkSettingsDescription": {
+    "message": "Ampio sy hanova ny fomba amam-panao RPC tambajotra"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Kaonty Vaovao"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Adiresy vaovao hita! Tsindrio eto mba hanampy ny adiresy boky."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Fifandraisana Vaovao"
+  },
+  "newContract": {
+    "message": "Fifanekena Vaovao"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Tambajotra Vaovao"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Tsia, efa manana taranaka andian-teny"
+  },
+  "protectYourKeys": {
+    "message": "Miaro Ny Fanalahidy!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Mitandrema amin'ny taranaka andian-teny — nisy tatitra momba ny vohikala izay miezaka manahaka MetaMask. MetaMask dia tsy mangataka ny taranaka andian-teny!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Hitandrina ny teny soa aman-tsara. Raha mahita zavatra mampiahiahy, na ianao tsy azo antoka momba ny tranonkala, mailaka support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Vaovao RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Vaovao Tanteraka"
+  },
+  "newTransactionFee": {
+    "message": "Vaovao Raharaham-Barotra Saran'ny"
+  },
+  "next": {
+    "message": "Manaraka"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Tsy misy adiresy efa napetraka ho amin'izany anarana izany."
+  },
+  "noDeposits": {
+    "message": "Tsy misy mipetraka nahazo"
+  },
+  "noConversionRateAvailable": {
+    "message": "Tsy Misy Ny Fiovam-Po Ny Tahan'ny Misy"
+  },
+  "noTransactions": {
+    "message": "Tsy varotra"
+  },
+  "noThanks": {
+    "message": "Tsy Misy Fisaorana"
+  },
+  "notEnoughGas": {
+    "message": "Tsy Ampy Ny Entona"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam tsy hita"
+  },
+  "noWebcamFound": {
+    "message": "Ny solosaina ny webcam no tsy hita. Andramo indray."
+  },
+  "ofTextNofM": {
+    "message": "ny"
+  },
+  "orderOneHere": {
+    "message": "Order ny Trezor na ny Mitadidy sy mitandrina ny vola any amin'ny tany mangatsiaka fitehirizana"
+  },
+  "origin": {
+    "message": "Fiaviana"
+  },
+  "parameters": {
+    "message": "Masontsivana"
+  },
+  "participateInMetaMetrics": {
+    "message": "Mandray anjara amin'ny MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Mandray anjara amin'ny MetaMetrics mba hanampy antsika hanao MetaMask tsara kokoa"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "passwordsDontMatch": {
+    "message": "Tsy Mitovy ny tenimiafina"
+  },
+  "passwordNotLongEnough": {
+    "message": "Ny tenimiafina tsy ampy lava"
+  },
+  "pastePrivateKey": {
+    "message": "Mametaka ny tsy miankina manan-daza eto:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Mametaka ny taranaka andian-teny eto!"
+  },
+  "pending": {
+    "message": "eo am-piandrasana"
+  },
+  "personalAddressDetected": {
+    "message": "Manokana ny adiresy hita. Fahan'ny ny famantarana fifanarahana adiresy."
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Kilonga Vola"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Politika Fiarovana Fiainan'olona"
+  },
+  "privateKey": {
+    "message": "Manan-Danja Manokana",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Fampitandremana: Tsy mbola hamoaka ity famaha ity. Na iza na iza amin'ny tsy miankina fanalahidy afaka hangalatra na inona na inona toe-bola notontosaina eo amin'ny tantara."
+  },
+  "privateNetwork": {
+    "message": "Tsy Miankina Amin'ny Tambajotra"
+  },
+  "qrCode": {
+    "message": "Asehoy ny QR Code"
+  },
+  "queue": {
+    "message": "Filaharana"
+  },
+  "readdToken": {
+    "message": "Ianao dia afaka mampitombo izany indray amin'ny famantarana ny ho avy ny handeha \"Ampio famantarana\" ao amin'ny kaonty safidy sakafo."
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "Nahazo Adiresy"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Mandà Rehetra"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Nolavin'ny"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "resetAccount": {
+    "message": "Reset Ny Kaonty"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting ny kaonty dia mazava ny raharaham-barotra tantara."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Mampahatsiahy ahy taty aoriana"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Ny hamerina indray ny Kaonty amin'ny Taranaka andian-Teny"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "fangatahana niandry ny ho niaiky"
+  },
+  "required": {
+    "message": "Ilaina"
+  },
+  "restore": {
+    "message": "Hamerina indray"
+  },
+  "revealSeedWords": {
+    "message": "Hanambara Teny Voa"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Taranaka Andian-Teny"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Ve ianao, raha miova navigateur na mifindra solosaina, dia mila izany taranaka andian-teny hoe miditra ny kaonty. Mamonjy azy ireo any amin'ny toerana azo antoka sy ny tsiambaratelo."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "TSY mitovy izany hoe na iza na iza!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Ireo teny ireo dia afaka ny ho ampiasaina mba hangalatra rehetra ny kaonty."
+  },
+  "revert": {
+    "message": "Iverenana"
+  },
+  "remove": {
+    "message": "Esory"
+  },
+  "removeAccount": {
+    "message": "Esory ny kaonty"
+  },
+  "removeAccountDescription": {
+    "message": "Ity tantara ity dia ho esorina avy amin'ny kitapom-batsy. Mba ho azo antoka manana ny tany am-boalohany ny taranaka andian-teny na tsy miankina manan-danja noho izany nafarana kaonty vao nanohy ny dia. Afaka manafatra na hamorona tantara indray avy any amin'ny kaonty rano indray mitete-midina. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Fitsapana Tambajotra"
+  },
+  "ropsten": {
+    "message": "Ropsten Fitsapana Tambajotra"
+  },
+  "goerli": {
+    "message": "Goerli Fitsapana Tambajotra"
+  },
+  "save": {
+    "message": "Hamonjy"
+  },
+  "slow": {
+    "message": "Miadana"
+  },
+  "slower": {
+    "message": "Miadana"
+  },
+  "saveAsCsvFile": {
+    "message": "Afa-tahaka ny CSV Rakitra"
+  },
+  "scanInstructions": {
+    "message": "Apetraho ny QR code manoloana ny fakan-tsary"
+  },
+  "scanQrCode": {
+    "message": "Scan ny QR Code"
+  },
+  "search": {
+    "message": "Fikarohana"
+  },
+  "searchResults": {
+    "message": "Vokatry Ny Fikarohana"
+  },
+  "secretBackupPhrase": {
+    "message": "Zava-Miafina Nomaniny Ho Solon'izay Ny Andian-Teny"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Ny zava-miafina nomaniny ho solon'izay ny andian-teny mahatonga azy mora ny miverina ka hamerina indray ny kaonty."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "FAMPITANDREMANA: Tsy mbola hamoaka ny nomaniny ho solon'izay ny andian-teny. Na iza na iza amin'ny andian-teny io dia afaka maka ny Etera mandrakizay."
+  },
+  "secretPhrase": {
+    "message": "Ampidiro ny zava-miafina roa ambin'ny folo teny fehezan-teny ity mba hamerina ny vata."
+  },
+  "securityAndPrivacy": {
+    "message": "Security & Fiainana Manokana"
+  },
+  "securitySettingsDescription": {
+    "message": "Ny fiainana manokana ny toe-javatra sy ny kitapom-batsy taranaka andian-teny"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Misaraka ny teny tsirairay amin'ny tokan-tena-toerana"
+  },
+  "seedPhraseReq": {
+    "message": "Taranaka andian-teny 12 teny lava"
+  },
+  "selectCurrency": {
+    "message": "Mifidy Vola"
+  },
+  "selectEachPhrase": {
+    "message": "Mba mifidiana andian-teny tsirairay mba ho azo antoka izany dia marina."
+  },
+  "selectLocale": {
+    "message": "Mifidy Toerana"
+  },
+  "selectType": {
+    "message": "Mifidy Ny Karazana"
+  },
+  "send": {
+    "message": "Mandefa"
+  },
+  "sendAmount": {
+    "message": "Mandefa Vola"
+  },
+  "sendETH": {
+    "message": "Mandefa ETH"
+  },
+  "sendTokens": {
+    "message": "Mandefa Famantarana"
+  },
+  "sentEther": {
+    "message": "naniraka ny etera"
+  },
+  "sentTokens": {
+    "message": "nandefa famantarana"
+  },
+  "separateEachWord": {
+    "message": "Misaraka ny teny tsirairay amin'ny tokan-tena-toerana"
+  },
+  "searchTokens": {
+    "message": "Mitady Famantarana"
+  },
+  "selectAnAccount": {
+    "message": "Mifidy ny Tantara"
+  },
+  "selectAnAccountHelp": {
+    "message": "Mifidy ny fitantarana ny fomba fijery ao MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Mifidy ny ambony-dranomaso ny sarany mba hanafainganana ny fikarakarana ny raharaham-barotra.*"
+  },
+  "selectHdPath": {
+    "message": "Mifidy HD Lalana"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Toe-javatra"
+  },
+  "showAdvancedGasInline": {
+    "message": "Mandroso-dranomaso ny fanaraha-maso"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Mifidy izany mba hampisehoana-dranomaso price sy mametra ny fanaraha-maso mivantana ny mandefa sy hanamafy ny efijery."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Mampiseho ny Fiovam-po ao amin'ny Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Mifidy izany mba hampisehoana fiat ny fiovam-po ao amin'ny Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Mampiseho Ny Tsy Miankina Ny Fanalahidy"
+  },
+  "showHexData": {
+    "message": "Mampiseho Hex Tahirin-Kevitra"
+  },
+  "showHexDataDescription": {
+    "message": "Mifidy izany mba hanehoana ny hex tahirin-kevitra an-tsaha ny mandefa efijery"
+  },
+  "sign": {
+    "message": "Sonia"
+  },
+  "signatureRequest": {
+    "message": "Fanaovan-Tsonia Mangataka"
+  },
+  "signed": {
+    "message": "Nanao sonia"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Fanaovan-Tsonia Mangataka"
+  },
+  "somethingWentWrong": {
+    "message": "Oay! Ny zavatra tsy nety."
+  },
+  "speedUp": {
+    "message": "Hanafainganana"
+  },
+  "speedUpCancellation": {
+    "message": "Hanafainganana izany fanafoanana"
+  },
+  "speedUpTransaction": {
+    "message": "Hanafainganana izany ny raharaham-barotra"
+  },
+  "switchNetworks": {
+    "message": "Mifamadika Ny Tambajotra"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Fanjakana Hazo"
+  },
+  "stateLogs": {
+    "message": "Fanjakana Hazo"
+  },
+  "stateLogsDescription": {
+    "message": "Fanjakana hazo misy ny kaonty hitam-bahoaka ny adiresy sy naniraka ny varotra."
+  },
+  "stateLogError": {
+    "message": "Fahadisoana eo amin'ny retrieving fanjakana hazo."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Ny Fitaovana Kitapom-Batsy"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect ny fitaovana kitapom-batsy mivantana ny solosaina."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Mifidy ny Tantara"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Mifidy ny tantara tianao ny hijery. Ianao ihany no afaka mifidy ny iray amin'ny fotoana."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Manomboka mampiasa dApps ary kokoa!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Mampiasa ny fitaovana ny kaonty toy ny ataonao rehefa misy Ethereum kaonty. Miditra ao dApps, mandefa Eth, buy ary store ERC20 famantarana sy ny Tsy Fungible famantarana toy CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Store izany andian-teny ao mpitantana tenimiafina toy ny 1Password."
+  },
+  "submit": {
+    "message": "Manaiky"
+  },
+  "submitted": {
+    "message": "Nanaiky"
+  },
+  "supportCenter": {
+    "message": "Tsidiho ny Fanohanana ny Foibe"
+  },
+  "symbol": {
+    "message": "Mariky"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Mariky tsy maintsy anelanelan'ny 0 sy 12 mpandray anjara."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Mitodika amin'ny manana ny toe-javatra nanohana ny amin'ny 3Box. Endri-javatra io dia currenty fanandramana; - mampiasa amin'ny doza manokana."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box efa kilemaina noho ny fahadisoana nandritra ny voalohany handrindra"
+  },
+  "syncWithMobile": {
+    "message": "Mifandrindra amin'ny finday"
+  },
+  "syncWithMobileTitle": {
+    "message": "Mifandrindra amin'ny finday"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Raha vao misokatra ny MetaMask fampiharana Finday ho an'ny fotoana voalohany, manaraka fotsiny ireo dingana ao amin'ny finday."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan ity fehezan-dalàna miaraka amin'ny MetaMask fampiharana finday"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Ataovy azo antoka tsy misy olon-kafa no mijery amin'ny efijery ianao rehefa notarafina fehezan-dalàna ity"
+  },
+  "syncWithMobileComplete": {
+    "message": "Ny angon-drakitra efa synced succesfully. Ankafizo ny MetaMask fampiharana finday!"
+  },
+  "terms": {
+    "message": "Fepetra Fampiasana"
+  },
+  "testFaucet": {
+    "message": "Fitsapana Faucet"
+  },
+  "thisWillCreate": {
+    "message": "Izany dia mamorona vaovao kitapom-batsy sy ny taranaka andian-teny"
+  },
+  "tips": {
+    "message": "Soso-kevitra"
+  },
+  "to": {
+    "message": "Ny"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Famantarana"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Famantarana efa nanampy."
+  },
+  "tokenContractAddress": {
+    "message": "Famantarana Fifanarahana Adiresy"
+  },
+  "tokenSymbol": {
+    "message": "Famantarana Famantarana"
+  },
+  "total": {
+    "message": "Tanteraka"
+  },
+  "transaction": {
+    "message": "raharaham-barotra"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Raharaham-barotra tojo olana."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Raharaham-Barotra Ny Fahadisoana. Afa-tsy tao amin'ny fifanarahana ny fehezan-dalàna."
+  },
+  "transactionErrorNoContract": {
+    "message": "Miezaka ny miantso ny asa mikasika ny tsy fifanarahana adiresy."
+  },
+  "transactionFee": {
+    "message": "Raharaham-Barotra Saran'ny"
+  },
+  "transactionTime": {
+    "message": "Raharaham-Barotra Ny Fotoana"
+  },
+  "transfer": {
+    "message": "Hamindra"
+  },
+  "transferBetweenAccounts": {
+    "message": "Famindrana eo ny tantara"
+  },
+  "transferFrom": {
+    "message": "Famindrana Avy"
+  },
+  "troubleTokenBalances": {
+    "message": "Nanana olana loading ny famantarana mizana. Ianao dia afaka mijery azy ireo ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Andramo indray"
+  },
+  "typePassword": {
+    "message": "Karazana ny MetaMask tenimiafina"
+  },
+  "unapproved": {
+    "message": "Nodinihana"
+  },
+  "units": {
+    "message": "vondrona"
+  },
+  "unknown": {
+    "message": "Tsy fantatra"
+  },
+  "unknownNetwork": {
+    "message": "Tsy Fantatra Tsy Miankina Tambajotra"
+  },
+  "unknownQrCode": {
+    "message": "Fahadisoana: tsy afaka mamantatra fa ny QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Ny zavatra tsy nety...."
+  },
+  "unknownCameraError": {
+    "message": "Nisy hadisoana raha miezaka miditra ny fakan-tsary. Andramo indray..."
+  },
+  "unlock": {
+    "message": "Hamaha"
+  },
+  "unlockMessage": {
+    "message": "Ny fanapariahana ny tranonkala miandry"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Tsy mitaky ny mety HTTP/HTTPS tovona."
+  },
+  "usedByClients": {
+    "message": "Ampiasaina amin'ny isan-karazany ny isan-karazany ny mpanjifa"
+  },
+  "userName": {
+    "message": "Solonanarana"
+  },
+  "validFileImport": {
+    "message": "Tsy maintsy mifidy ny rakitra manan-kery ny manafatra."
+  },
+  "viewAccount": {
+    "message": "Hijery Ny Tantara"
+  },
+  "viewinExplorer": {
+    "message": "Fomba fijery amin'ny Explorer"
+  },
+  "viewContact": {
+    "message": "View Fifandraisana"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Fomba fijery amin'ny Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Tsidiho ny tranonkala"
+  },
+  "walletSeed": {
+    "message": "Kitapom-Batsy Voa"
+  },
+  "welcomeBack": {
+    "message": "Tonga Soa Indray!"
+  },
+  "welcome": {
+    "message": "Tonga soa eto amin'ny MetaMask"
+  },
+  "writePhrase": {
+    "message": "Manorata andian-teny io dia amin'ny sombin-taratasy sy ny fivarotana ao amin'ny toerana azo antoka. Raha tianao kokoa ny fandriampahalemana, ny hanoratra izany teo amin'ny maro tapa-taratasy sy ny fivarotana tsirairay ao amin'ny 2 - 3 amin'ny toerana samy hafa."
+  },
+  "yesLetsTry": {
+    "message": "Eny, aoka hiezaka"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Mila mamela ny fidirana fakan-tsary mba hampiasa izany endri-javatra."
+  },
+  "yourSigRequested": {
+    "message": "Ny sonia no ho nangataka"
+  },
+  "youSign": {
+    "message": "Ianao sonia"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Ny tsy miankina ny taranaka andian-teny"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Aotra-dranomaso price amin'ny hanafainganana"
+  }
+}

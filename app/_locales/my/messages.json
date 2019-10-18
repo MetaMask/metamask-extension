@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "ပြပွဲအဝင်ငွေကြေးလွှဲပြောင်း"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "ဤရွေးဖို့အသုံးပြုပါ Etherscan ပြသရန်ဝင်များတွင်ငွေပေးချေငွေပေးချေစာရင်း"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "ဇယားပေါ်တွင်သာရရှိနိုင် Ethereum။"
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "ဆက္သြယ္မႈမ်ား"
+  },
+  "connectionsSettingsDescription": {
+    "message": "ဆိုဒ်များဖို့ခွင့်ပြုဖတ်သင့်အကောင့်အသစ်များ"
+  },
+  "addSite": {
+    "message": "ဆိုဒ်ထည့်ပါ"
+  },
+  "addSiteDescription": {
+    "message": "ကိုယ်တိုင်ထည့်ဆိုက်မှခွင့်ပြုဝင်ရောက်သင့်အကောင့်များ၊အသုံးဝင်သည်အသက်ကြီး dapps"
+  },
+  "connected": {
+    "message": "နိ"
+  },
+  "connectedDescription": {
+    "message": "များ၏စာရင်းဆိုက်များကိုအသုံးပြုခွင့်ခွင့်သင့်လိပ်စာ"
+  },
+  "privacyModeDefault": {
+    "message": "ကိုယ်ရေးအည့္ခယခုအခါပုံမွန္အားျဖင့္သင့္ေလ်ာ္ေ"
+  },
+  "contractInteraction": {
+    "message": "စာချုပ်အပြန်အလှန်"
+  },
+  "clearApprovalData": {
+    "message": "ဖယ်ရှားအားလုံးဆိုဒ်များ"
+  },
+  "reject": {
+    "message": "ငြင်းပယ်"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "ဤဆိုက်သည်တောင်းဝင်ရောက်ကြည့်ရှု၏လက်ရှိအကောင့်ကို။ အစဉ်မပြတ်သေချာအောင်သင်ယုံကြည်သောဆိုဒ်များသင်နှင့်အတူထိတွေ့ဆက်ဆံ။"
+  },
+  "about": {
+    "message": "အကြောင်း"
+  },
+  "aboutSettingsDescription": {
+    "message": "ဗားရှင်း၊ထောက်ခံမှုအလယ်ဗဟိုနှင့်ဆက်သွယ်ရန်အချက်အလက်။"
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "သုံးစွဲသင့်ကင်မရာ။။။"
+  },
+  "account": {
+    "message": "စာရင္း"
+  },
+  "accountDetails": {
+    "message": "အကောင့်အသေးစိတ်"
+  },
+  "accountName": {
+    "message": "အကောင့်အမည်"
+  },
+  "accountOptions": {
+    "message": "အကောင့်ရွေးချယ်စရာ"
+  },
+  "accountSelectionRequired": {
+    "message": "သင်လိုအပ်ရန်အကောင့်တစ်ခုကိုရွေးပါ!"
+  },
+  "activityLog": {
+    "message": "လှုပ်ရှားမှုမှတ်တမ်း"
+  },
+  "addNetwork": {
+    "message": "ထည့်ကွန်ယက်"
+  },
+  "addRecipient": {
+    "message": "ထည့်သွင်းသူ"
+  },
+  "advanced": {
+    "message": "အဆင့်မြင့်"
+  },
+  "advancedSettingsDescription": {
+    "message": "လက်လှမ်းတင္သြင္းပစၥည္းမ်ား၊ပြည်နယ်သစ်လုံး၊ပြန်လည်အကောင့်ကို၊၊တည်ဆောက် testnets နှင့်ထုံးစံ RPC။"
+  },
+  "advancedOptions": {
+    "message": "အဆင့်မြင့်ရွေးချယ်မှုများ"
+  },
+  "addToAddressBook": {
+    "message": "လိပ္စာစာအုပ္"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "ဥပမာဂျွန် D။"
+  },
+  "addAlias": {
+    "message": "ထည့်ဝှက်"
+  },
+  "addToken": {
+    "message": "ထည့်လက္ခဏာသက်သေဖြစ်"
+  },
+  "addTokens": {
+    "message": "ထည့်ကင်"
+  },
+  "addSuggestedTokens": {
+    "message": "ထည့်သွင်းအကြံပြုကင်"
+  },
+  "addAcquiredTokens": {
+    "message": "ထည့်ကင်သင်ဝယ်ယူအသုံးပြု MetaMask"
+  },
+  "amount": {
+    "message": "ပမာဏ"
+  },
+  "appDescription": {
+    "message": "အ Ethereum ပိုက်ဆံအိတ်အတွက်ငွေကြေးအ",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "အတည်ပြု"
+  },
+  "approved": {
+    "message": "တည်ပြု"
+  },
+  "asset": {
+    "message": "ရာတစ်ခု"
+  },
+  "attemptingConnect": {
+    "message": "ကြိုးစားနေချိတ်ဆက်ဖို့ blockchain။"
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "တင်သွင်းဒီကြိုးပမ်းမှုကိုအာမခံမပေးပါဘူး၊သင်သည်သင်၏မူရင်းအရောင်းအဝယ်ဖျက်သိမ်းမည်ဖြစ်။ အကယ္ဖ်က္သိမ္းကြိုးပမ်းမှုအောင်မြင်၊သငျသညျတရားစွဲဆိုလိမ့်မည်အရောင်းအဝယ်အခကြေးငွေထက်။"
+  },
+  "attributions": {
+    "message": "Attributions"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "အစုအပျင်းအတွက်အချိန်မိနစ်မပြုမီ MetaMask လိုအလျောက်ထွက်မှတ်တမ်း"
+  },
+  "average": {
+    "message": "ပျမ်းမျှ"
+  },
+  "back": {
+    "message": "ပြန်"
+  },
+  "backToAll": {
+    "message": "နောက်ကျောအားလုံး"
+  },
+  "backupApprovalNotice": {
+    "message": "ရန္ျသင့်ရဲ့လျှို့ဝှက်ပြန်လည်ထူထောင်ရေးကုဒ်ကိုစောင့်ရှောက်သင့်ရဲ့ပိုက်ဆံအိတ်နှင့်ရန်ပုံငွေများကိုလုံလုံခြုံခြုံ။"
+  },
+  "backupApprovalInfo": {
+    "message": "ဒီလျှို့ဝှက်ကုဒ်လိုအပ်သည်ထမြောက်သင့်ရဲ့ပိုက်ဆံအိတ်အမှု၌သင်ကိုယ်သင်၏ကိရိယာ၊သင့်ရဲ့စကားဝှက်ကိုမေ့ဖို့ရှိသည်ပြန်လည်တပ်ဆင် MetaMask၊သို့မဟုတ်ချင်မှဝင်ရောက်ခွင့်ပိုက်ဆံအိတ်အပေါ်အခြားစက်ကိရိယာ။"
+  },
+  "backupNow": {
+    "message": "ရန္ျခု"
+  },
+  "balance": {
+    "message": "ချိန်ခွင်လျှာ"
+  },
+  "balanceOutdated": {
+    "message": "ချိန်ခွင်တွင်"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "လုံလောက်သောဟန်ချက်များအတွက်လက်ရှိဓာတ်ငွေ့စုစုပေါင်း"
+  },
+  "basic": {
+    "message": "အခြေခံပညာ"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "ပိတ်ဆို့ရှာဖွေ"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "သုံး Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "စိတ်ကြိုက်ရောင်းအဝယ်ကၤမ်ား"
+  },
+  "nonceFieldHeading": {
+    "message": "ထုံးစံကၤမ်ား"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "ေသခ်ာေအာင္ျမထောက်ခံ။။။"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask ဒီဇိုင်းနှင့်တည်ဆောက်အတွက်ကယ်လီဖိုးနီးယား။"
+  },
+  "buyWithWyre": {
+    "message": "ဝယ် ETH တူ Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre ပေးနိုင်ပါတယ်တစ်ခရက်ဒစ်ကဒ်ကိုသုံးဖို့အသိုက် ETH ညာဘက်အတွက်အသင့်ရဲ့ MetaMask။"
+  },
+  "buyCoinSwitch": {
+    "message": "ဝယ်ယူအပေါ် CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch အတည်း-ကိုရပ်တန့်ဦးတည်ပိုပြီးဖလှယ်ဖို့ထက် ၃၀၀ cryptocurrencies မှာအကောင်းဆုံးအနှုန်း။"
+  },
+  "bytes": {
+    "message": "ဘိုက်"
+  },
+  "off": {
+    "message": "ပယ်"
+  },
+  "ok": {
+    "message": "အိုကေ"
+  },
+  "on": {
+    "message": "အပေါ်"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "ဖျက်သိမ်း"
+  },
+  "cancelAttempt": {
+    "message": "ဖျက်သိမ်းကြိုးပမ်းမှု"
+  },
+  "cancellationGasFee": {
+    "message": "ဖျက်သိမ်းဓာတ်ငွေ့အခကြေးငွေ"
+  },
+  "cancelled": {
+    "message": "ဖျက်သိမ်း"
+  },
+  "chainId": {
+    "message": "ကွင်းဆက်ပ"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "ထုတ်ဖေါ်ဖို့ဒီမှာနှိပ်ပါလျှို့ဝှက်စကား"
+  },
+  "close": {
+    "message": "အနီးကပ်"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "သင်လိုအပ်အသုံးပြုရန် MetaMask ကိုဂူ Chrome မှနိုင်ရန်အတွက်ချိတ်ဆက်ဖို့သင့်ရဲ့ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်။"
+  },
+  "confirm": {
+    "message": "တည်ပြု"
+  },
+  "confirmed": {
+    "message": "အတည်ပြု"
+  },
+  "confirmPassword": {
+    "message": "စကားဝွက္ကိုအတည္ျပဳ"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "အတည်ပြုသင့်လျှို့ဝှက်ရန္ျစာပိုဒ္တို"
+  },
+  "congratulations": {
+    "message": "မတန္ဘူး"
+  },
+  "connectHardwareWallet": {
+    "message": "ချိတ်ဆက်ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်"
+  },
+  "connect": {
+    "message": "ချိတ်ဆက်"
+  },
+  "connectRequest": {
+    "message": "ချိတ်ဆက်တာင္း"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "ခ်ိတ္ဆက္ေ Kovan စမ်းသပ်ကွန်ယက်"
+  },
+  "connectingToMainnet": {
+    "message": "ဆက်သွယ်ဖို့အဓိက Ethereum ကွန်ယက်"
+  },
+  "connectingToRopsten": {
+    "message": "ခ်ိတ္ဆက္ေ Ropsten စမ်းသပ်ကွန်ယက်"
+  },
+  "connectingToRinkeby": {
+    "message": "ခ်ိတ္ဆက္ေ Rinkeby စမ်းသပ်ကွန်ယက်"
+  },
+  "connectingToLocalhost": {
+    "message": "ဆက်သွယ်ဖို့ Localhost ၈၅၄၅"
+  },
+  "connectingToGoerli": {
+    "message": "ခ်ိတ္ဆက္ေ Goerli စမ်းသပ်ကွန်ယက်"
+  },
+  "contacts": {
+    "message": "အဆက်အသွယ်"
+  },
+  "contactsSettingsDescription": {
+    "message": "ထည့်သွင်းပါ၊တည်းဖြတ်ပါ၊ဖယ်ရှား၊သင့်ရဲ့အဆက်အသွယ်"
+  },
+  "continueToWyre": {
+    "message": "ဆက်လက် Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "ဆက်လက် CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "စာချုပ်ဖြန့်ကျက်"
+  },
+  "conversionProgress": {
+    "message": "ပြောင်းလဲခြင်းအတွက်တိုးတက်မှု"
+  },
+  "copiedButton": {
+    "message": "ကူး"
+  },
+  "copiedExclamation": {
+    "message": "ကူး!"
+  },
+  "copy": {
+    "message": "မိတ္တူ"
+  },
+  "copyAddress": {
+    "message": "မိတ္တူလိပ်စာကို clipboard"
+  },
+  "copyTransactionId": {
+    "message": "မိတ္တူရောင်းအဝယ်ပ"
+  },
+  "copiedTransactionId": {
+    "message": "ကူးရောင်းအဝယ်ပ"
+  },
+  "copyToClipboard": {
+    "message": "Clipboard မှမိတ္တူ"
+  },
+  "copyButton": {
+    "message": " မိတ္တူ "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "ဖန်တီး"
+  },
+  "createAccount": {
+    "message": "အကောင့်ဖန်တီးရန်"
+  },
+  "createAWallet": {
+    "message": "ဖန်တီးတဲ့ပိုက်ဆံအိတ်"
+  },
+  "createPassword": {
+    "message": "ဖန်တီးစကားဝှက်ကို"
+  },
+  "currencyConversion": {
+    "message": "ငွေကြေးစနစ်ပြောင်းလဲခြင်း"
+  },
+  "currentLanguage": {
+    "message": "လက်ရှိဘာသာစကား"
+  },
+  "customGas": {
+    "message": "စိတ်ကြိုက်ဓာတ်ငွေ့"
+  },
+  "customGasSubTitle": {
+    "message": "တိုးမြှင့်ကြေးလျော့ပြောင်းအလဲအကြိမ်၊ဒါပေမယ့်အဲဒါကိုအာမခံချက်မပေး။"
+  },
+  "customToken": {
+    "message": "ထုံးစံလက္ခဏာသက်သေဖြစ်"
+  },
+  "customRPC": {
+    "message": "ထုံးစံ RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "ဒႆရမည်မှာအနည်းဆုံး ၀၊မကျော် ၃၆။"
+  },
+  "decimal": {
+    "message": "ဒႆ၏တိက်ေ"
+  },
+  "defaultNetwork": {
+    "message": "ထိုပုံသေကွန်ယက်အ Ether ရောင်းအဓိကအသားတင်။"
+  },
+  "delete": {
+    "message": "ပယ်ဖျက်"
+  },
+  "deleteAccount": {
+    "message": "အေကာင့္ပယ္ဖ်က္ကိုႏွ"
+  },
+  "deposit": {
+    "message": "သိုက်"
+  },
+  "depositEther": {
+    "message": "ငြ Ether"
+  },
+  "details": {
+    "message": "အသေးစိတ်"
+  },
+  "directDepositEther": {
+    "message": "ကိုတိုက်ရိုက်သိုက် Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "သင်ပြီးသားအချို့ Ether၊ရရှိရန်အမြန်ဆုံးနည်းလမ်း Ether၏ပိုက်ဆံအိတ်ဖြင့်တိုက်ရိုက်သိုက်။"
+  },
+  "dismiss": {
+    "message": "ပယ်"
+  },
+  "done": {
+    "message": "ပြု"
+  },
+  "downloadGoogleChrome": {
+    "message": "ဒေါင်းလုပ်ဂူ Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "ဒီလျှို့ဝှက်ချက်ရန္ျစာပိုဒ်တိုများနှင့်စောင့်ရှောက်အပေါ်လုံခြုံစိတ်ချစွာသိမ်းဆည်းထားသည့်ယင်းစာဝှက်ထားခက်မောင်းသို့မဟုတ်သိုလှောင်မှု။"
+  },
+  "downloadStateLogs": {
+    "message": "ဒေါင်းလုပ်ပြည်နယ်မှတ်တမ်းများ"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "ကျဆင်းသွား"
+  },
+  "edit": {
+    "message": "ပြင်ဆင်ရန်"
+  },
+  "editContact": {
+    "message": "ပြင်ဆင်ရန်ဆက်သွယ်"
+  },
+  "emailUs": {
+    "message": "ကျွန်တော်တို့ကိုအီးမေးလ်!"
+  },
+  "endOfFlowMessage1": {
+    "message": "သင်စမ်းသပ်ကူးမြောက်-စောင့်ရှောက်သင့်ရဲ့ seedphrase ဘေးကင်းလုံခြုံ၊ဒါကြောင့်ဖွင့်သင့်ရဲ့တာဝန်!"
+  },
+  "endOfFlowMessage2": {
+    "message": "အကြောင်းသိကောင်းစရာများအပေါ်လုံခြုံစိတ်ချစွာထိုသို့သိမ်းဆည်း"
+  },
+  "endOfFlowMessage3": {
+    "message": "အင္းအရံအမျိုးစုံအရပ်တို့ကိုမ။"
+  },
+  "endOfFlowMessage4": {
+    "message": "မျှဝေဘယ်တော့မှထားသောစာပိုဒ်တိုများနှင့်အတူမည်သူမဆို။"
+  },
+  "endOfFlowMessage5": {
+    "message": "သတိထားပါ phishing! MetaMask ဘယ်တော့မှလိမ့်မည်အလျောက်သင့်ရဲ့အမျိုးအနွယ်ကိုအဘို့အမေးပါ။"
+  },
+  "endOfFlowMessage6": {
+    "message": "လိုအပ်မယ်ဆိုရင်သင်ပြန်ဖွင့်သင့်ရဲ့အမျိုးအနွယ်ကိုစာပိုဒ္တိုနောက်တဖန်အ၊သင်ရှာဖွေနိုင်ပါတယ်အတြင္း->လုံခြုံရေး။"
+  },
+  "endOfFlowMessage7": {
+    "message": "လိုလျှင်အစဉ်အဆက်သင်မေးခွန်းများကိုရှိသည်သို့မဟုတ်ငါတစ်ခုခုမြင်သောအရွာင္ဖယ္ေ၊အီးမေးလ် support@metamask။io။"
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask ဆယ်တင်နိုင်သောအသင့် seedphrase။"
+  },
+  "endOfFlowMessage9": {
+    "message": "ပိုမိုလေ့လာသင်ယူ။"
+  },
+  "endOfFlowMessage10": {
+    "message": "အားလုံးသည်ပြုသောအမှု"
+  },
+  "ensRegistrationError": {
+    "message": "အမှားအတွက် ENS မှတ်ပုံတင်"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS အမည်မပေါ်လက်ရှိကွန်ယက်။ ကြိုးစားပြောင်းအဓိက Ethereum။"
+  },
+  "enterAnAlias": {
+    "message": "မဝင်အမည်ဝှက်"
+  },
+  "enterPassword": {
+    "message": "စကားဝှက်ကိုရိုက်ထည့်ပါ"
+  },
+  "enterPasswordContinue": {
+    "message": "စကားဝှက်ကိုရိုက်ထည့်ပါဆက်လက်"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum အများပြည်သူလိပ်စာ"
+  },
+  "etherscanView": {
+    "message": "ကြည့်ရှုအကောင့်ကိုအပေါ် Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "ခန့်မှန်းခြေပြောင်းအလဲအကြိမ်"
+  },
+  "expandView": {
+    "message": "ချဲ့ထွင်ကြည့်ရှု"
+  },
+  "exportPrivateKey": {
+    "message": "ပည္ပပုဂ္ဂလိကရန်"
+  },
+  "failed": {
+    "message": "ပျက်ကွက်"
+  },
+  "fast": {
+    "message": "အစာရှောင်ခြင်း"
+  },
+  "faster": {
+    "message": "ပိုမြန်"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "မေ့ဤကိရိယာ"
+  },
+  "from": {
+    "message": "ကနေ"
+  },
+  "fromShapeShift": {
+    "message": "ကနေ ShapeShift"
+  },
+  "functionType": {
+    "message": "က်းဇူးျအမျိုးအစား"
+  },
+  "gasLimit": {
+    "message": "ဓာတ်ငွေ့ကန့်သတ်"
+  },
+  "gasLimitCalculation": {
+    "message": "ကျနော်တို့တွက်ချက်အကြံပြုငွေ့ကန့်သတ်အပေါ်အခြေခံပြီးကွန်ယက်အောင်မြင်မှုနှုန်း။"
+  },
+  "gasLimitInfoModalContent": {
+    "message": "ဓာတ်ငွေ့ကန့်သတ်အမြင့်ဆုံးပမာဏယူနစ်အသင်ဖြုန်းဖို့လိုလိုလားလားရှိကြတယ်။"
+  },
+  "gasLimitTooLow": {
+    "message": "ဓာတ်ငွေ့ကန့်သတ်ရမည်မှာအနည်းဆုံး ၂၁၀၀၀"
+  },
+  "gasUsed": {
+    "message": "ဓာတ်ငွေ့အသုံးပြု"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "ဓာတ်ငွေ့စျေးနှုန်းအလွန်အမင်းနိမ့်"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "ဓာတ်ငွေ့စျေးနှုန်းသတ်မှတ်ပမာဏကို Ether သင်ပေးဆပ်ရန်ဆန္ဒရှိအသီးအသီးယူနစ်၏။"
+  },
+  "gasPriceNoDenom": {
+    "message": "ဓာတ်ငွေ့စျေးနှုန်း"
+  },
+  "gasPriceCalculation": {
+    "message": "ကျနော်တို့တွက်ချက်အကြံပြုဓာတ်ငွေ့ဈေးနှုန်းအပေါ်အခြေခံပြီးကွန်ယက်အောင်မြင်မှုနှုန်း။"
+  },
+  "general": {
+    "message": "အထွေထွေ"
+  },
+  "generalSettingsDescription": {
+    "message": "ငွေကြေးစနစ်ပြောင်းလဲခြင်း၊အဓိကေငြေၾကး၊ဘာသာစကား၊blockies identicon"
+  },
+  "getEther": {
+    "message": "ရ Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "အကူအညီရယူပါ။"
+  },
+  "getStarted": {
+    "message": "စတင်ရန်"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "ကျွန်တော်တို့ကြည့်ဖို့ပျော်ရွှင်ပါတယ်။"
+  },
+  "hardware": {
+    "message": "ဟာ့ဒ်ဝဲ"
+  },
+  "hardwareWalletConnected": {
+    "message": "ဟာ့ဒ်ဝဲတော်ပိုက်ဆံအိတ်"
+  },
+  "hardwareWallets": {
+    "message": "ချိတ်ဆက်ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်"
+  },
+  "hardwareWalletsMsg": {
+    "message": "ရွေးဟာ့ဒ်ဝဲပိုက်ဆံအိတ်သင်အသုံးပြုချင်ပါတယ်အတူ MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "ဒီ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "မွတ္ထားဒေတာ"
+  },
+  "hide": {
+    "message": "ပုန်း"
+  },
+  "hideToken": {
+    "message": "ပုန်းလက္ခဏာသက်သေဖြစ်"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "သမိုင္း"
+  },
+  "import": {
+    "message": "သွင်းကုန်",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "သွင်းကုန်အကောင့်ကို"
+  },
+  "importAccountMsg": {
+    "message": " တင်သွင်းအကောင့်လိမ့်မည်မဟုတ်ပါနှင့်အတူဆက်စပ်သင့်ရဲ့အမူလကဖန်တီး MetaMask အကောင့်ကို seedphrase။ အကြောင်းကိုပိုမိုလေ့လာသင်ယူအကောင့်အသစ်များတင်သွင်း "
+  },
+  "importAccountSeedPhrase": {
+    "message": "သွင်းကုန်အကောင့်တစ်ခုနှင့်အတူအမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "importWallet": {
+    "message": "သွင်းကုန်ပိုက်ဆံအိတ်"
+  },
+  "importYourExisting": {
+    "message": "သွင်းကုန်သင့်ရဲ့လက်ရှိပိုက်ဆံအိတ်အသုံးပြု။၁၂ စကားလုံးမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "imported": {
+    "message": "တင်သွင်း",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "သွင်းကုန်သုံးပြီးအကောင့်အမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "infoHelp": {
+    "message": "သတင္း&အကူအညီ"
+  },
+  "initialTransactionConfirmed": {
+    "message": "သင့်ရဲ့ကနဦးအရောင်းအဝယ်ကအတည်ပြုခဲ့ပါတယ်။ ကိုနှိပ်ပါအိုကေသွားပြန်သည်။"
+  },
+  "insufficientBalance": {
+    "message": "လုံလောက်သော။"
+  },
+  "insufficientFunds": {
+    "message": "လုံလောက်သောရန်ပုံငွေများ။"
+  },
+  "insufficientTokens": {
+    "message": "လုံလောက်သောကင်။"
+  },
+  "invalidAddress": {
+    "message": "မဲလိပ်စာ"
+  },
+  "invalidAddressRecipient": {
+    "message": "သူလိပ်စာမဲ"
+  },
+  "knownAddressRecipient": {
+    "message": "လူသိများစာချုပ်။"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "မ ETH ကြန္ယက္၊အစုံကိုမူလ"
+  },
+  "invalidInput": {
+    "message": "လက္မွား။"
+  },
+  "invalidRPC": {
+    "message": "မဲ RPC ဆိုဒ္လိပ္စာ"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "မဲပိတ်ဆို့ရှာဖွေဆိုဒ္လိပ္စာ"
+  },
+  "invalidSeedPhrase": {
+    "message": "မဲနွယ်ကိုစာပိုဒ္တို"
+  },
+  "jsonFile": {
+    "message": "ပွန်ဒီယုိဖုိင္",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan စမ်းသပ်ကွန်ယက်"
+  },
+  "max": {
+    "message": "မက်စ်"
+  },
+  "learnMore": {
+    "message": "ပိုမိုလေ့လာသင်ယူ"
+  },
+  "ledgerAccountRestriction": {
+    "message": "သင်လိုအပ်အသုံးပြုရန်သင့်ရဲ့နောက်ဆုံးအကောင့်ကိုမီထည့်နိုင်သည်။"
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "ဟုတ်ကဲ့၊ကုန်ရတက်ထား!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "လင့်များ"
+  },
+  "liveGasPricePredictions": {
+    "message": "တိုက်ရိုက်ဓာတ်ငွေ့စျေးနှုန်းဟော"
+  },
+  "loading": {
+    "message": "ကုန်တင်။။။"
+  },
+  "loadingTokens": {
+    "message": "ကုန်တင်ကင်။။။"
+  },
+  "loadMore": {
+    "message": "ဝန်ပို"
+  },
+  "localhost": {
+    "message": "Localhost ၈၅၄၅"
+  },
+  "login": {
+    "message": "ထဲ"
+  },
+  "logout": {
+    "message": "ကဏ္ဍ"
+  },
+  "logoutTimeTooGreat": {
+    "message": "ပိုစ့်အချိန်အရမ်းကြီး"
+  },
+  "mainnet": {
+    "message": "အဓိက Ethereum ကွန်ယက်"
+  },
+  "memorizePhrase": {
+    "message": "လွတ်ကျက်ဒီ။"
+  },
+  "memo": {
+    "message": "မှတ်စု"
+  },
+  "menu": {
+    "message": "နူး"
+  },
+  "message": {
+    "message": "မည္"
+  },
+  "metamaskDescription": {
+    "message": "ဆက်သွယ်ဖို့သင် Ethereum နှင့်အဆမ္ေ။"
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask အနွယ်ကိုစကား"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask ဗားရှင်း"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "ကျေးဇူးပြု၍သင့်စကားဝှက်ကိုအတည်ပြုရန်!"
+  },
+  "myAccounts": {
+    "message": "ငါ့အကောင့်အသစ်များ"
+  },
+  "myWalletAccounts": {
+    "message": "ငါ့ပိုက်ဆံအိတ်အကောင့်အသစ်များ"
+  },
+  "myWalletAccountsDescription": {
+    "message": "အားလုံးသင့်ရဲ့ MetaMask အကောင့်ဖန်တီးလိမ့်မည်အလိုအလျောက်ထည့်သွင်းရန်ဤအပိုင်း။"
+  },
+  "mustSelectOne": {
+    "message": "မဖြစ်မနေရွေးအနည်းဆုံး ၁ လက္ခဏာသက်သေဖြစ်။"
+  },
+  "needEtherInWallet": {
+    "message": "နှင့်အတူထိတွေ့ဆက်ဆံဖို့ဆမ္ေကေးရှင်းကိုအသုံးပြု MetaMask၊သငျသညျဖို့လိုအပ်ပါလိမ့်မယ် Ether အတွက်အသင့်ရဲ့ပိုက်ဆံအိတ်။"
+  },
+  "needImportFile": {
+    "message": "သင်ရွေးတဲ့ဖိုင်ကိုတင်သွင်းဖို့။",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "ပို့လို့မရနုတ်လက္ခဏာပမာဏ ETH။"
+  },
+  "networkName": {
+    "message": "ကွန်ယက်အမည်"
+  },
+  "networks": {
+    "message": "ကွန်ရက်"
+  },
+  "networkSettingsDescription": {
+    "message": "ထည့်ပြီးပြင်ထုံးစံ RPC ကွန်ရက်"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "အကောင့်သစ်"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "လိပ်စာသစ်တွေ့ရှိ! ကိုနှိပ်ပါဒီမှာထည့်သွင်းရန်သင့်လိပ်စာစာအုပ်။"
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "အသစ်ဆက်သွယ်ရန်"
+  },
+  "newContract": {
+    "message": "အသစ်စာချုပ်"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "အသစ်ကွန်ယက်"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "အဘယ်သူမျှမ၊ငါပြီးသားတစ်ဦးအမြိုးအနှစာပိုဒ္တို"
+  },
+  "protectYourKeys": {
+    "message": "ကာကွယ်စောင့်ရှောက်သင့်ရဲ့သော့!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "သတိပြုရကြမည်နှင့်အတူသင့်ရဲ့အမျိုးအနွယ်ကိုစာပိုဒ္တို—ရင်ခံစာများရှိခဲ့တဲ့ကွန်ရက်စာမျက်နှာတွေရန်ကြိုးစားတု MetaMask။ MetaMask ဘယ်တော့မှလိမ့်မည်၊သင့်ရဲ့အဘို့ကိုမေးမြန်းနွယ်စာပိုဒ္တို!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "သင့်ရဲ့စောင့်ရှောက်ထားသောစာပိုဒ်တိုများ။ သင်တို့ကိုတွေ့မြင်ခဲ့လျှင်ရင္ေရွာင္ဖယ္ေ၊သို့မဟုတ်သင်သေချာမရေရာအကြောင်းဝက်ဘ်ဆိုက်၊အီးမေးလ် support@metamask။io"
+  },
+  "rpcUrl": {
+    "message": "အသစ် RPC ဆိုဒ္လိပ္စာ"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "အသစ်စုစုပေါင်း"
+  },
+  "newTransactionFee": {
+    "message": "အသစ်ငွေပေးငွေယူကြေး"
+  },
+  "next": {
+    "message": "လာမယ့်"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "အမွတ္လိပ်စာတွင်အလွန်ရှည်လျားသောအဘို့ဤမည်။"
+  },
+  "noDeposits": {
+    "message": "အဘယ်သူမျှမသိုက်လက်ခံရရှိ"
+  },
+  "noConversionRateAvailable": {
+    "message": "အဘယ်သူမျှမအဖြစ်ပြောင်းလဲခြင်းမှုနှုန်းရရှိနိုင်"
+  },
+  "noTransactions": {
+    "message": "သင်ကမရောင်းအ"
+  },
+  "noThanks": {
+    "message": "မ"
+  },
+  "notEnoughGas": {
+    "message": "မလုံလောက်ဘူးအငွေ့"
+  },
+  "noWebcamFoundTitle": {
+    "message": "ကမ်မတွေ့ရှိ"
+  },
+  "noWebcamFound": {
+    "message": "သင့်ကွန်ပျူတာ၏တည်းဖြတ်မဟုတ်ခဲ့တွေ့ရှိ။ ထပ်ကြိုးစားကျေးဇူးပြုပြီး။"
+  },
+  "ofTextNofM": {
+    "message": "၏"
+  },
+  "orderOneHere": {
+    "message": "အမိန့် Trezor သို့မဟုတ်ဂျာနှင့်စောင့်ရှောက်သင့်ရဲ့ရန်ပုံငွေအတွက်အအေးသိုလှောင်မှု"
+  },
+  "origin": {
+    "message": "မူလ"
+  },
+  "parameters": {
+    "message": "မြန်မာဘာသာ"
+  },
+  "participateInMetaMetrics": {
+    "message": "တွင်ပါ MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "တွင်ပါ MetaMetrics အစေကျွန်တော်တို့ကိုကူညီ MetaMask ကောင်း"
+  },
+  "password": {
+    "message": "စကားဝှက်ကို"
+  },
+  "passwordsDontMatch": {
+    "message": "စကားဝှက်များမကိုက်"
+  },
+  "passwordNotLongEnough": {
+    "message": "စကားဝှက်ကိုရှည်မလုံလောက်"
+  },
+  "pastePrivateKey": {
+    "message": "ငါးပိသင့်ရဲ့ပုဂ္ဂလိကရန်ကိဳးေဒီမှာပါ:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "ငါးပိသင့်အမျိုးအနွယ်ကိုစာပိုဒ္တိုဒီမှာ!"
+  },
+  "pending": {
+    "message": "ဆိုင်းငံ့"
+  },
+  "personalAddressDetected": {
+    "message": "ပုဂ္ဂိုလ်ရေးလိပ်စာတွေ့ရှိ။ ထလက္ခဏာသက်သေဖြစ်စာချုပ်။"
+  },
+  "prev": {
+    "message": "့သို့"
+  },
+  "primaryCurrencySetting": {
+    "message": "မူလတန်းငွေကြေး"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "ကိုယ်ရေးအချက်အလက်မူဝါဒ"
+  },
+  "privateKey": {
+    "message": "ပုဂ္ဂလိကရန်",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "သတိပေးခြင်း:ဘယ်တော့မှထုတ်ဖော်ဒီသော့ချက်။ မည်သူမဆိုအတူသင့်ရဲ့ပုဂ္ဂလိကသော့နိုင်ခိုးယူဆိုပိုင်ဆိုင်မှုများကိုကျင်းပသင့်ရဲ့အကောင့်ထဲမှာ။"
+  },
+  "privateNetwork": {
+    "message": "ပုဂ္ဂလိကကွန်ယက်"
+  },
+  "qrCode": {
+    "message": "ပြရပ္ကြက္ကုဒ်"
+  },
+  "queue": {
+    "message": "တန်း"
+  },
+  "readdToken": {
+    "message": "သင်ထည့်နိုင်အောင်ဒီလက္ခဏာသက်သေဖြစ်နောက်ကျောအနာဂတ်အတွက်အားဖြင့်သွား\"ထည့်သွင်းလက္ခဏာသက်သေဖြစ်\"သင့်အကောင့်အသစ်များ၏ရွေးချယ်မှုများ။"
+  },
+  "recents": {
+    "message": "Recents"
+  },
+  "recipientAddress": {
+    "message": "သူလိပ်စာ"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "ငြင်းပယ်အားလုံး"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "ငြင်းပယ်"
+  },
+  "reset": {
+    "message": "ပန္လည္တည္ေ"
+  },
+  "resetAccount": {
+    "message": "ပြန်လည်အကောင့်ကို"
+  },
+  "resetAccountDescription": {
+    "message": "ပြန်လည်ပြင်ဆင်ခြင်းသင်သည်သင်၏အကောင့်ကိုအမည်ရှင်းလင်းသင့်ရဲ့အရောင်းအဝယ်နည်း။"
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "ငါ့ကိုသတိရကြာ"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "ပြန်သောအကောင့်နှင့်အတူအမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "ေတာင္းခံရဖို့စောင့်ဆိုင်းနေသည်အသိအမှတ်ပြု"
+  },
+  "required": {
+    "message": "လိုအပ်"
+  },
+  "restore": {
+    "message": "င့္ခ်က္"
+  },
+  "revealSeedWords": {
+    "message": "ထုတ်ဖေါ်နွယ်စကား"
+  },
+  "revealSeedWordsTitle": {
+    "message": "နွယ်စာပိုဒ္တို"
+  },
+  "revealSeedWordsDescription": {
+    "message": "သင်သည်အစဉ်အဆက်ပြောင်းလဲဘြတ္သို့မဟုတ်လှုပ်ရှားကွန်ပျူတာများ၊သင်လိုအပ်ပါလိမ့်မည်ဒီအနွယ်ကိုစာပိုဒ္တိုဝင်ရောက်ဖို့သင့်ရဲ့အကောင့်အသစ်များ၏။ သူတို့ကိုကယ်တင်နေရာရာမှာလုံခြုံနှင့်လျှို့ဝှက်ချက်။"
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "ဒီမျှဝေမပြုထားသောစာပိုဒ်တိုများနှင့်အတူမည်သူမဆို!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "ဤစကားအသုံးပြုနိုင်ပါတယ်ခိုးယူဖို့အားလုံးသင့်ရဲ့အကောင့်အသစ်များ၏။"
+  },
+  "revert": {
+    "message": "ကောင်းမွန်"
+  },
+  "remove": {
+    "message": "ဖယ်ရှား"
+  },
+  "removeAccount": {
+    "message": "ဖယ်ရှားရန်အကောင့်"
+  },
+  "removeAccountDescription": {
+    "message": "ဒီအကောင့်ကိုဖယ်ရှားခံရမည်မှသင့်ရဲ့ပိုက်ဆံအိတ်။ သေချာအောင်ကျေးဇူးပြုပြီးသင်အပြည့်အနွယ်ထားသောစာပိုဒ်တိုများသို့မဟုတ်ပုဂ္ဂလိကရန်ဤအဘို့အတင်သွင်းကောင့်မီဆက်လက်။ သင်သွင်းကုန်သို့မဟုတ်ဖန်တီးအကောင့်အသစ်များမှအကောင့်ကိုၚေ။ "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby စမ်းသပ်ကွန်ယက်"
+  },
+  "ropsten": {
+    "message": "Ropsten စမ်းသပ်ကွန်ယက်"
+  },
+  "goerli": {
+    "message": "Goerli စမ်းသပ်ကွန်ယက်"
+  },
+  "save": {
+    "message": "အိမ္ျခံေျမစာရင္းမ်ား"
+  },
+  "slow": {
+    "message": "နှေးကွေး"
+  },
+  "slower": {
+    "message": "နှေးကွေး"
+  },
+  "saveAsCsvFile": {
+    "message": "ကယ်တင်အဖြစ်အဆင့်မြှင့်တင်ဖိုင်ကို"
+  },
+  "scanInstructions": {
+    "message": "နေရာရပ္ကြက္ကုဒ်များ၏ရှေ့မှောက်၌သင်၏ကင်မရာ"
+  },
+  "scanQrCode": {
+    "message": "စကင်ဖတ်စစ်ဆေးရပ္ကြက္ကုဒ်"
+  },
+  "search": {
+    "message": "ရှာ"
+  },
+  "searchResults": {
+    "message": "ရှာဖွေမှုရလာဒ်များ"
+  },
+  "secretBackupPhrase": {
+    "message": "လျှို့ဝှက်ချက်ရန္ျစာပိုဒ္တို"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "သင့်ရဲ့လျှို့ဝှက်ချက်ရန္ျစာပိုဒ္တိုရန်လွယ်ကူစေသည်နောက်ကျောတက်နှင့်ပြန်လည်သင့်အကောင့်ကို။"
+  },
+  "secretBackupPhraseWarning": {
+    "message": "သတိပေးခြင်း:ဘယ်တော့မှထုတ်ဖော်ခင္း။ မည်သူမဆိုအတူဒီစကားယူနိုင်၏Ether။"
+  },
+  "secretPhrase": {
+    "message": "သင္၏လျှို့ဝှက်ချက်တဆယ်နှစ်စကားလုံးစာပိုဒ္တိုဒီမှာပြန်ကြက်။"
+  },
+  "securityAndPrivacy": {
+    "message": "လုံခြုံရေးတွေကို&သီးသန့်လုံခြုံရေး"
+  },
+  "securitySettingsDescription": {
+    "message": "သီးသန့်ချိန်ညှိနှင့်ပိုက်ဆံအိတ်အမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "သီးခြားအသီးအသီးစကားလုံးနှင့်အတူတစ်ခုတည်းကိုအာကာသ"
+  },
+  "seedPhraseReq": {
+    "message": "နွယ်စာပိုဒ်တိုများ ၁၂ စကားသည်ရှည်လျား"
+  },
+  "selectCurrency": {
+    "message": "ရွေးငွေကြေး"
+  },
+  "selectEachPhrase": {
+    "message": "ယခုရွေးတစ်ခုချင်းစီထားသောစာပိုဒ်တိုများဖို့အမိန့်အတွက်သေချာအောင်လုပ်ပါဒါကြောင့်မှန်သည်။"
+  },
+  "selectLocale": {
+    "message": "ရွေးဗ"
+  },
+  "selectType": {
+    "message": "အမျိုးအစားကိုရွေးပါ"
+  },
+  "send": {
+    "message": "ေ"
+  },
+  "sendAmount": {
+    "message": "ေငြပမာဏ"
+  },
+  "sendETH": {
+    "message": "ေETH"
+  },
+  "sendTokens": {
+    "message": "ၾကာ္ျကင်"
+  },
+  "sentEther": {
+    "message": "စေလွှတ် ether"
+  },
+  "sentTokens": {
+    "message": "စေလွှတ်ကင်"
+  },
+  "separateEachWord": {
+    "message": "သီးခြားအသီးအသီးစကားလုံးနှင့်အတူတစ်ခုတည်းကိုအာကာသ"
+  },
+  "searchTokens": {
+    "message": "ကင်ရှာ"
+  },
+  "selectAnAccount": {
+    "message": "အကောင့်တစ်ခုကိုရွေးပါ"
+  },
+  "selectAnAccountHelp": {
+    "message": "ရွေးအကောင့်ကိုကြည့်ရှုရန်အတွက် MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "ရွေးတစ်ဦးပိုမိုမြင့်မားဓာတ်ငွေ့အခကြေးငွေအရှိန်အဟုန်မြှင့်ဖို့အပြောင်းအလဲသင်၏အရောင်းအဝယ်။*"
+  },
+  "selectHdPath": {
+    "message": "ရွေး HD လမ်းကြောင်းကို"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "ခ်ိန္ၫ"
+  },
+  "showAdvancedGasInline": {
+    "message": "အဆင့်မြင့်ငွေ့ထိန်းချုပ်မှု"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "ဤရွေးပြဓာတ်ငွေ့စျေးနှုန်းနှင့်ကန့်သတ်ထိန်းချုပ်မှုများအပေါ်တိုက်ရိုက်ပေးပို့ပြီးအတည်ပြုဖန်သား။"
+  },
+  "showFiatConversionInTestnets": {
+    "message": "ပြပွဲအပေါ်ကူးပြောင်း Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "ဤရွေးပြ fiat ပေါ်ကူးပြောင်း Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "ပြပုဂ္ဂလိကသော့"
+  },
+  "showHexData": {
+    "message": "ပြမွတ္ထားဒေတာ"
+  },
+  "showHexDataDescription": {
+    "message": "ဤရွေးပြသရန်မွတ္ထားဒေတာလယ်ပြင်ပေါ်အၾကာ္ျလက္ျ"
+  },
+  "sign": {
+    "message": "နိမိတ်လက္ခဏာ"
+  },
+  "signatureRequest": {
+    "message": "လက်မှတ်တောင်းဆို"
+  },
+  "signed": {
+    "message": "လက်မှတ်ရေးထိုး"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "လက်မှတ်တောင်းဆို"
+  },
+  "somethingWentWrong": {
+    "message": "ည့္ဖုိ တစ်ခုခုမှားသွားလေ၏။"
+  },
+  "speedUp": {
+    "message": "ရှိန်မြှင့်"
+  },
+  "speedUpCancellation": {
+    "message": "မြန်နှုန်းနှင့်ဤဖျက်သိမ်း"
+  },
+  "speedUpTransaction": {
+    "message": "မြန်နှုန်းနှင့်ဤအရောင်းအဝယ်"
+  },
+  "switchNetworks": {
+    "message": "ပြောင်းလဲကွန်ရက်"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask ပြည်နယ်မှတ်တမ်းများ"
+  },
+  "stateLogs": {
+    "message": "ပြည်နယ်မှတ်တမ်းများ"
+  },
+  "stateLogsDescription": {
+    "message": "ပြည်နယ်ဆံ့ကိုသစ်လုံးသင်၏အများပြည်သူအကောင့်လိပ်စာနှင့်စေလွှတ်ျဖစ္ပါသည္။"
+  },
+  "stateLogError": {
+    "message": "အမှားအတွက်ရယူရန်ပြည်နယ်ကိုမှတ်တမ်းများ။"
+  },
+  "step1HardwareWallet": {
+    "message": "၁။ ချိတ်ဆက်ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "သင့်ရဲ့ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်ကိုမှကိုတိုက်ရိုက်သင့်ရဲ့ကွန်ပျူတာကို။"
+  },
+  "step2HardwareWallet": {
+    "message": "၂။ အကောင့်တစ်ခုကိုရွေးပါ"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "ရွေးအကောင့်သင်ချင်တယ်အမြင်။ သင်သာရွေးချယ်တစ်ခုမှာအချိန်။"
+  },
+  "step3HardwareWallet": {
+    "message": "၃။ စတင်အသုံးပြု dApps နှင့်ပို။!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "သင့်ရဲ့ဟာ့ဒ်ဝဲအကောင့်ကိုသင်ကြိုက်မယ်လို့မဆိုအ Ethereum။ မှတ်တမ်းအတွက်အ dApps ေပးပါ Eth၊စတိုးဆိုင် ERC၂၀ ကင်နှင့်မ Fungible ကင်ကဲ့သို့ CryptoKitties။"
+  },
+  "storePhrase": {
+    "message": "စတိုးဆိုင်ဤထားသောစာပိုဒ်တိုများအတွက်စကားဝှက်တစ်ခုမှမန်နေဂျာလို ၁password။"
+  },
+  "submit": {
+    "message": "တင်သွင်း"
+  },
+  "submitted": {
+    "message": "တင္ၿ"
+  },
+  "supportCenter": {
+    "message": "သွားရောက်ကြည့်ရှုကျွန်ုပ်တို့ကူညီရေးစင်တာ"
+  },
+  "symbol": {
+    "message": "သင်္ကေတ"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "အမှတ်သင်္ကေတဖြစ်ရမည်ကြား ၀ င့္ ၁၂။"
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "အလှည့်ရှိသည်ဖို့သင့်ချိန်ညှိနှင့်အတူတက်ကျောထောက်နောက်ခံ ၃box။ ဒီနယ္ဝင္စမ်းသပ်;ကိုသုံးသင့်ရဲ့ကိုယ်ပိုင်စွန့်စားမှုမှာ။"
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "၃box ကိုပိတ်ထားသည်ကြောင့်အမှားတစ်ခုအတွင်းကနဦးအချိန်ကိုက်"
+  },
+  "syncWithMobile": {
+    "message": "ချိန်ကိုက်နှင့်အတူမိုဘိုင်း"
+  },
+  "syncWithMobileTitle": {
+    "message": "ချိန်ကိုက်နှင့်အတူမိုဘိုင်း"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "လျှင်သင်ရုံဖွင့်လှစ် MetaMask မိုဘိုင်းအက်ပ်ပထမဦးဆုံးအကြိမ်အဘို့၊ကိုယ့်အဆင့်များအတိုင်းလိုက်နာသာ။"
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "စကင်ဖတ်စစ်ဆေးဤကုဒ်နှင့်အတူသင့်ရဲ့ MetaMask မိုဘိုင်းအက်ပ်"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "သေချာအောင်ဘယ်သူမှဖြစ်မှာရှာဖွေနေသင့်ရဲ့မျက်နှာပြင်အခါသင်စကင်ဖတ်စစ်ဆေးဒီကုဒ်ကို"
+  },
+  "syncWithMobileComplete": {
+    "message": "သင့်ရဲ့ဒေတာတွေကိုခဲ့မးလ္ေ succesfully။ ခံစား MetaMask မိုဘိုင်းအက်ပ်!"
+  },
+  "terms": {
+    "message": "အသုံးပြုမှု၏စည်းကမ်းချက်များ"
+  },
+  "testFaucet": {
+    "message": "စမ်းသပ် Faucet"
+  },
+  "thisWillCreate": {
+    "message": "ဒီကိုဖန်တီးလိမ့်မည်အသစ်တစ်ခုကိုပိုက်ဆံအိတ်နှင့်အမျိုးအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "tips": {
+    "message": "အကြောင်းသိကောင်းစရာများ"
+  },
+  "to": {
+    "message": "ကို"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "လက္ခဏာသက်သေဖြစ်"
+  },
+  "tokenAlreadyAdded": {
+    "message": "လက္ခဏာသက်သေဖြစ်ပြီးသားဆက်ပြောသည်။"
+  },
+  "tokenContractAddress": {
+    "message": "လက္ခဏာသက်သေဖြစ်စာချုပ်ချုပ်လိပ်စာ"
+  },
+  "tokenSymbol": {
+    "message": "လက္ခဏာသက်သေဖြစ်သင်္ကေတ"
+  },
+  "total": {
+    "message": "စုစုပေါင်း"
+  },
+  "transaction": {
+    "message": "အရောင်းအဝယ်"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "အရောင်းအဝယ်ရင်ဆိုင်နေရသည့်အမှား။"
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "အရောင်းအဝယ်မှား။ ချွင်းချက်ပစ်ကန်ထရိုက်အတွက်ကုဒ်။"
+  },
+  "transactionErrorNoContract": {
+    "message": "ကိုခေါ်အပင္ေပၚမူ-စာခ်ဳပ္။"
+  },
+  "transactionFee": {
+    "message": "ငွေပေးငွေယူကြေး"
+  },
+  "transactionTime": {
+    "message": "အရောင်းအဝယ်အချိန်"
+  },
+  "transfer": {
+    "message": "လွှဲပြောင်း"
+  },
+  "transferBetweenAccounts": {
+    "message": "လွှဲပြောင်းအကြား၊ငါ့အကောင့်အသစ်များ"
+  },
+  "transferFrom": {
+    "message": "မွလႊဲေျပာင္းျခင္း"
+  },
+  "troubleTokenBalances": {
+    "message": "ကျနော်တို့အခက်အခဲကုန်တင်၏လက္ခဏာသက်သေဖြစ်ချိန်ခွင်။ သင်ကသူတို့ကိုကြည့်ရှုနိုင်ပါသည် ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "ထပ်ကြိုးစား"
+  },
+  "typePassword": {
+    "message": "အမျိုးအစားသင့်စကားဝှက်ကို MetaMask"
+  },
+  "unapproved": {
+    "message": "ပိတ်"
+  },
+  "units": {
+    "message": "ယူနစ်"
+  },
+  "unknown": {
+    "message": "အမည်မသိ"
+  },
+  "unknownNetwork": {
+    "message": "အမည်မသိပုဂ္ဂလိကကွန်ယက်"
+  },
+  "unknownQrCode": {
+    "message": "အမှား:ကျွန်တော်တို့မခွဲခြားသောရပ္ကြက္ကုဒ်"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! တစ်ခုခုမှားသွားလေ၏။။။။"
+  },
+  "unknownCameraError": {
+    "message": "ရှိမှားဖို့ကြိုးစားနေစဉ်သင့်။ ကျေးဇူးပြု၍ထပ်ကြိုးစားကြည့်ပါ။။။"
+  },
+  "unlock": {
+    "message": "သော့ဖွင့်"
+  },
+  "unlockMessage": {
+    "message": "အသက္ရဝဘ်စောင့်မျှော်နေပါတယ်"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "URIs လိုအပ်သင့်လျော်သောရႈေက်ာ္လိုက္လွ်င္/HTTPS ရှ့။"
+  },
+  "usedByClients": {
+    "message": "အသုံးပြုခြင်းအားဖြင့်အမျိုးမျိုးကွဲပြားခြားနားဖောက်သည်"
+  },
+  "userName": {
+    "message": "အသုံးပြုသူအမည်"
+  },
+  "validFileImport": {
+    "message": "သင်ရွေးတဲ့ခိုင်လုံတဲ့ဖိုင်ကိုတင်သွင်းဖို့။"
+  },
+  "viewAccount": {
+    "message": "ကြည့်ရှုအကောင့်ကို"
+  },
+  "viewinExplorer": {
+    "message": "အမြင်အတွက်စူးစမ်းရှာဖွေ"
+  },
+  "viewContact": {
+    "message": "ကြည့်ရန်ဆက်သွယ်ရန်"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "အပေါ်အမြင် Etherscan"
+  },
+  "visitWebSite": {
+    "message": "ကျွန်ုပ်တို့ရဲ့ကွန်ရက်စာမျက်နှာသွားရောက်ကြည့်ရှု"
+  },
+  "walletSeed": {
+    "message": "ပိုက်ဆံအိတ်အမျိုးအနွယ်ကို"
+  },
+  "welcomeBack": {
+    "message": "နောက်ကျောမှလှိုက်လှဲစွာကြိုဆိုပါသည်!"
+  },
+  "welcome": {
+    "message": "ဓါန္မွလွိဳက္လွဲစြာၾကိဳ MetaMask"
+  },
+  "writePhrase": {
+    "message": "ဒီထားသောစာပိုဒ်တိုများအပေါ်တစ်ဖဲ့ကိုရခြင်းစက္ကူနှင့်စတိုးဆိုင်။ သင်ချင်တယ်ဆိုရင်သင်ပင်ပိုလုံခြုံရေး၊ကိုပေါ်ချရေး၏စက္ကူနှင့်စတိုးဆိုင်အသီးအသီး၌၂-၃ ကွဲပြားခြားနားတဲ့နေရာဒေသ။"
+  },
+  "yesLetsTry": {
+    "message": "ဟုတ်ကဲ့၊"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "သငျသညျခွင့်ပြုပါရန်လိုအပ်ကင္မရာလက်လှမ်းဖို့ဒီကိုသုံး။"
+  },
+  "yourSigRequested": {
+    "message": "သင်သည်သင်၏လက်မှတ်သည်ဖြစ်ခြင်းတောင်းဆို"
+  },
+  "youSign": {
+    "message": "သင်လက်မှတ်ထိုး"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "သင့်ရဲ့ပုဂ္ဂလိကအနွယ်ကိုစာပိုဒ္တို"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "သုညဓာတ်ငွေ့စျေးနှုန်းအပေါ်အရှိန်မြှင့်"
+  }
+}

@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Ցույց Տալ Մուտքային Գործարքներ"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Ընտրեք այս տարբերակը օգտագործել են լավագույն, որպեսզի ցույց մուտքային գործարքի ցուցակում գործարքների"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Ժամանակացույցը հասանելի է միայն ցանցի Эфириума."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Բաղադրություն"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Կայքեր թույլատրվում է կարդալ ձեր հաշիվները"
+  },
+  "addSite": {
+    "message": "Ավելացնել Կայքը"
+  },
+  "addSiteDescription": {
+    "message": "Ձեռքով ավելացնել, որ կայքը նրան տրամադրել մուտք դեպի ձեր հաշիվների, օգտակար է տարեց dapps"
+  },
+  "connected": {
+    "message": "Կապված"
+  },
+  "connectedDescription": {
+    "message": "Ցուցակը կայքեր, որոնց թույլատրվում է մուտք գործել ձեր հասցեներով"
+  },
+  "privacyModeDefault": {
+    "message": "Պաշտպանված ռեժիմում այժմ ներառված է լռելյայն"
+  },
+  "contractInteraction": {
+    "message": "Փոխգործակցությունը Պայմանագրի "
+  },
+  "clearApprovalData": {
+    "message": "Հեռացնել բոլոր կայքերը"
+  },
+  "reject": {
+    "message": "Մերժել է"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Այս կայքը հարցնում է մուտք դիտելու ընթացիկ հասցեները գրառումները. Միշտ համոզվեք, որ Դուք վստահում կայքեր դու."
+  },
+  "about": {
+    "message": "Մասին"
+  },
+  "aboutSettingsDescription": {
+    "message": "Տարբերակը, աջակցության Կենտրոն եւ հետադարձ կապ."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Մուտք գործել տեսախցիկի..."
+  },
+  "account": {
+    "message": "Հաշվի"
+  },
+  "accountDetails": {
+    "message": "Վավերապայմանները "
+  },
+  "accountName": {
+    "message": "Հաշվի Անունը "
+  },
+  "accountOptions": {
+    "message": "Հաշվի Կառավարում "
+  },
+  "accountSelectionRequired": {
+    "message": "Դուք պետք է ընտրել հաշիվ!"
+  },
+  "activityLog": {
+    "message": "ամսագիրը գործառնությունների "
+  },
+  "addNetwork": {
+    "message": "Ավելացնել Ցանցը"
+  },
+  "addRecipient": {
+    "message": "Ավելացնել Ստացողի"
+  },
+  "advanced": {
+    "message": "Լրացուցիչ"
+  },
+  "advancedSettingsDescription": {
+    "message": "Նկարագրություն մուտք ծրագրավորողը, ներբեռնել Պետական ամսագրեր, վերականգնել հաշվի testnets կառավարում եւ մաքսային ЭКП."
+  },
+  "advancedOptions": {
+    "message": "Լրացուցիչ Ընտրանքներ"
+  },
+  "addToAddressBook": {
+    "message": "Ավելացնել հասցեների գրքույկ"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "օրինակ, Ջոն Դ."
+  },
+  "addAlias": {
+    "message": "Ավելացնել alias"
+  },
+  "addToken": {
+    "message": "Ավելացնել Մարկեր"
+  },
+  "addTokens": {
+    "message": "Ավելացնել Մարկերներ"
+  },
+  "addSuggestedTokens": {
+    "message": "Ավելացնել Առաջարկել Է Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Ավելացնել մարկերներ օգնությամբ ստացված MetaMask"
+  },
+  "amount": {
+    "message": "Գումարի"
+  },
+  "appDescription": {
+    "message": "Դրամապանակ Эфириума ձեր բրաուզերում",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Հաստատել"
+  },
+  "approved": {
+    "message": "Հաստատվել է"
+  },
+  "asset": {
+    "message": "Ակտիվը"
+  },
+  "attemptingConnect": {
+    "message": "Փորձում եմ միանալ блокчейн."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Ներկայացնելով այս փորձը չի երաշխավորում ձեր նախնական գործարքի չեղյալ. Եթե փորձ է արվում չեղյալ հաջող գանձվում է վճար գործարքը վերը."
+  },
+  "attributions": {
+    "message": "Атрибуции"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Տեղադրել ժամանակ սպասումները րոպե առաջ MetaMask ինքնաբերաբար դուրս գալ"
+  },
+  "average": {
+    "message": "Միջին"
+  },
+  "back": {
+    "message": "Առաջ"
+  },
+  "backToAll": {
+    "message": "Բոլորի համար"
+  },
+  "backupApprovalNotice": {
+    "message": "Կրկնօրինակեք ձեր գաղտնի կոդ վերականգնման, պահել ձեր դրամապանակը եւ անվտանգության միջոցները."
+  },
+  "backupApprovalInfo": {
+    "message": "Այս գաղտնի կոդը անհրաժեշտ է վերականգնել ձեր դրամապանակի դեպքում, եթե դուք կորցնում եք ձեր սարքը, մոռացել եք ձեր գաղտնաբառը, պետք է նորից տեղադրեք MetaMask, կամ ուզում է բացել իր դրամապանակը այլ սարքի."
+  },
+  "backupNow": {
+    "message": "Պահեստային հիմա"
+  },
+  "balance": {
+    "message": "Հաշվեկշիռ"
+  },
+  "balanceOutdated": {
+    "message": "Հավասարակշռությունը կարող է լինել հնացած"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Անբավարար հաշվեկշիռ ընթացիկ գազի ընդհանուր"
+  },
+  "basic": {
+    "message": "Հիմնական"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Միավոր Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Օգտագործել Որին Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Ստեղծել կոդ գործարքներ "
+  },
+  "nonceFieldHeading": {
+    "message": "Օգտվողի Կոդը"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Ձեր զննարկիչը չի ապահովվում..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask engineered եւ կառուցվել է Կալիֆորնիայում."
+  },
+  "buyWithWyre": {
+    "message": "Գնել ЕТН հետ Вайр"
+  },
+  "buyWithWyreDescription": {
+    "message": "Вайр թույլ է տալիս օգտագործել վարկային քարտ ավանդի տաքացնող ձեր հաշիվը MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Գնել CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch կատարյալ վայր փոխանակման համար ավելի քան 300 криптовалюты ըստ լավը փոխարժեքով:"
+  },
+  "bytes": {
+    "message": "Բայթ"
+  },
+  "off": {
+    "message": "Է"
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "on": {
+    "message": "Է"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Չեղարկել"
+  },
+  "cancelAttempt": {
+    "message": "Չեղարկել Փորձ"
+  },
+  "cancellationGasFee": {
+    "message": "Չեղյալ Գազային Տուրքերի"
+  },
+  "cancelled": {
+    "message": "Չեղյալ է համարվել"
+  },
+  "chainId": {
+    "message": "Շղթա ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Սեղմեք այստեղ է, որ բացահայտել գաղտնիքը խոսքերը"
+  },
+  "close": {
+    "message": "Կողքին"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Դուք պետք է օգտագործել MetaMask Google Chrome, միացնել ձեր սարքավորումների դրամապանակը:"
+  },
+  "confirm": {
+    "message": "Հաստատել"
+  },
+  "confirmed": {
+    "message": "Հաստատել է"
+  },
+  "confirmPassword": {
+    "message": "Գաղտնաբառի Հաստատում"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Հաստատեք ձեր գաղտնի backup արտահայտություն"
+  },
+  "congratulations": {
+    "message": "Շնորհավորում ենք"
+  },
+  "connectHardwareWallet": {
+    "message": "Կապ Ապարատային Դրամապանակը"
+  },
+  "connect": {
+    "message": "Միացման"
+  },
+  "connectRequest": {
+    "message": "Միացրեք Ձեր Հարցման"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Միացեք Кован ցանցի թեստային"
+  },
+  "connectingToMainnet": {
+    "message": "Միացեք հիմնական ցանցի Эфириума "
+  },
+  "connectingToRopsten": {
+    "message": "Միացեք Ropsten ցանցի թեստային"
+  },
+  "connectingToRinkeby": {
+    "message": "Միացեք Rinkeby ցանցի թեստային"
+  },
+  "connectingToLocalhost": {
+    "message": "Միացեք localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Միացեք Goerli ցանցի թեստային"
+  },
+  "contacts": {
+    "message": "Հետադարձ կապ"
+  },
+  "contactsSettingsDescription": {
+    "message": "Է ավելացնել, խմբագրել, ջնջել եւ կառավարել ձեր կոնտակտները"
+  },
+  "continueToWyre": {
+    "message": "Շարունակել Вайр"
+  },
+  "continueToCoinSwitch": {
+    "message": "Շարունակել CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Տեղակայման Պայմանագրի "
+  },
+  "conversionProgress": {
+    "message": "Բարեփոխումները առաջընթաց"
+  },
+  "copiedButton": {
+    "message": "Պատճենահանված"
+  },
+  "copiedExclamation": {
+    "message": "Скопировано!"
+  },
+  "copy": {
+    "message": "Պատճենը"
+  },
+  "copyAddress": {
+    "message": "Պատճենել հասցե clipboard"
+  },
+  "copyTransactionId": {
+    "message": "Գործարքը id-ն պատճենել"
+  },
+  "copiedTransactionId": {
+    "message": "Պատճենահանված ID գործարքներ "
+  },
+  "copyToClipboard": {
+    "message": "Պատճենել clipboard"
+  },
+  "copyButton": {
+    "message": " Պատճենը "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Է ստեղծել"
+  },
+  "createAccount": {
+    "message": "Ստեղծել Հաշիվ"
+  },
+  "createAWallet": {
+    "message": "Ստեղծել դրամապանակը"
+  },
+  "createPassword": {
+    "message": "Ստեղծել Գաղտնաբառը"
+  },
+  "currencyConversion": {
+    "message": "Конвертация Արժույթի "
+  },
+  "currentLanguage": {
+    "message": "Ընթացիկ Լեզուն"
+  },
+  "customGas": {
+    "message": "Կարգավորել Գազի"
+  },
+  "customGasSubTitle": {
+    "message": "Մաքսատուրքի բարձրացումը կարող է կրճատել մշակման ժամանակ, բայց դա չի երաշխավորվում:"
+  },
+  "customToken": {
+    "message": "Մաքսային Մարկեր"
+  },
+  "customRPC": {
+    "message": "Մաքսային ЭКП"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Տասնորդական նշանների պետք է լինի ոչ պակաս, քան 0, եւ ոչ ավելի, քան 36."
+  },
+  "decimal": {
+    "message": "Տասնորդական նշանների ճշգրտությամբ"
+  },
+  "defaultNetwork": {
+    "message": "Ցանցը լռելյայն եթերից գործարքների հիմնական ծավալը."
+  },
+  "delete": {
+    "message": "Հեռացնել"
+  },
+  "deleteAccount": {
+    "message": "Ջնջել Հաշիվը"
+  },
+  "deposit": {
+    "message": "Ավանդ"
+  },
+  "depositEther": {
+    "message": "Ավանդ Եթերից"
+  },
+  "details": {
+    "message": "Մանրամասները"
+  },
+  "directDepositEther": {
+    "message": "Ուղղակիորեն Ավանդ Եթերից"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Եթե դուք արդեն ունեք որոշակի եթեր, առավել արագ ճանապարհ ստանալ եթեր ձեր նոր դրամապանակը ուղղակի ավանդի."
+  },
+  "dismiss": {
+    "message": "Հեռացնել"
+  },
+  "done": {
+    "message": "Արվել"
+  },
+  "downloadGoogleChrome": {
+    "message": "Ներբեռնել Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Բեռնել այս գաղտնիքը backup արտահայտություն և պահպանեք այն անվտանգ պահել արտաքին կոդավորված կոշտ սկավառակի կամ կրիչ."
+  },
+  "downloadStateLogs": {
+    "message": "Բեռնել Պետական Ամսագրեր"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Համար"
+  },
+  "edit": {
+    "message": "Խմբագրել"
+  },
+  "editContact": {
+    "message": "Խմբագրել Կոնտակտային"
+  },
+  "emailUs": {
+    "message": "Գրեք մեզ!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Դուք անցել եք թեստ - պահպանեք seedphrase անվտանգ, դա ձեր պատասխանատվությունն է!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Խորհուրդներ անվտանգ պահպանման"
+  },
+  "endOfFlowMessage3": {
+    "message": "Պահպանման պահեստային մի քանի տեղերում:"
+  },
+  "endOfFlowMessage4": {
+    "message": "Երբեք արտահայտությամբ է կիսել որևէ մեկի Հետ ։ "
+  },
+  "endOfFlowMessage5": {
+    "message": "Զգույշ եղեք, իբրեւագրոհ! MetaMask չի ինքնաբուխ խնդրել սերմերի արտահայտություն."
+  },
+  "endOfFlowMessage6": {
+    "message": "Եթե ձեզ անհրաժեշտ է ետ ստանալ իր զաւակ արտահայտություն, դուք կարող եք գտնել այն Կարգավորումներ> Անվտանգությունը:"
+  },
+  "endOfFlowMessage7": {
+    "message": "Եթե դուք ունեք հարցեր կամ ինչ-որ անմաքուր, էլեկտրոնային փոստ support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask չի կարող վերականգնել իր seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Իմանալ ավելին."
+  },
+  "endOfFlowMessage10": {
+    "message": "Ամեն Ինչ Արվում Է"
+  },
+  "ensRegistrationError": {
+    "message": "Սխալ է ENS գրանցման"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС անունը չի գտնվել ընթացիկ ցանցի. Փորձեք գլխավոր ցանցը Эфириума."
+  },
+  "enterAnAlias": {
+    "message": "Մուտքագրեք ձեր կեղծանունը"
+  },
+  "enterPassword": {
+    "message": "Մուտքագրեք գաղտնաբառը"
+  },
+  "enterPasswordContinue": {
+    "message": "Մուտքագրեք եք ձեր գաղտնաբառը շարունակելու համար"
+  },
+  "ethereumPublicAddress": {
+    "message": "Հասարակական Эфириума Հասցե"
+  },
+  "etherscanView": {
+    "message": "Տեսարան հաշվի վրա մեկը"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Մոտավոր Մշակման Ժամանակ "
+  },
+  "expandView": {
+    "message": "Ծավալել"
+  },
+  "exportPrivateKey": {
+    "message": "Արտահանում Փակ Բանալին"
+  },
+  "failed": {
+    "message": "Չի հաջողվել"
+  },
+  "fast": {
+    "message": "Արագ"
+  },
+  "faster": {
+    "message": "Ավելի արագ"
+  },
+  "fiat": {
+    "message": "Ֆիատ",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Մոռանալ այս սարքը"
+  },
+  "from": {
+    "message": "Է"
+  },
+  "fromShapeShift": {
+    "message": "Են Друидских"
+  },
+  "functionType": {
+    "message": "Տեսակը Գործառույթները "
+  },
+  "gasLimit": {
+    "message": "Սահմանաչափի Գազի"
+  },
+  "gasLimitCalculation": {
+    "message": "Մենք ակնկալում ենք առաջարկել սահմանաչափի գազի հիման վրա է հաջողության ցանցի."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Գազի սահմանաչափը-դա առավելագույն միավոր գազի գինը, որ դուք պատրաստ են ծախսել."
+  },
+  "gasLimitTooLow": {
+    "message": "Սահմանաչափի գազի պետք է լինի ոչ պակաս, քան 21000"
+  },
+  "gasUsed": {
+    "message": "Գազ Է, Օգտագործվում Է"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Գազի Գինը Շատ Ցածր Է"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Գազի գինը որոշում միավորների քան եթերից, որ դուք պատրաստ են վճարել յուրաքանչյուր միավոր ։ "
+  },
+  "gasPriceNoDenom": {
+    "message": "Գազի Գինը "
+  },
+  "gasPriceCalculation": {
+    "message": "Մենք ակնկալում ենք առաջարկվող գնի կախված է հաջողության ցանցի."
+  },
+  "general": {
+    "message": "Ընդհանուր"
+  },
+  "generalSettingsDescription": {
+    "message": "Конвертация արժույթի հիմնական արժույթը, լեզուն, որը blockies identicon"
+  },
+  "getEther": {
+    "message": "Ձեզ Եթերից"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Ձեզ Օգնել:"
+  },
+  "getStarted": {
+    "message": "Սկսենք"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Մենք ուրախ ենք տեսնել ձեզ."
+  },
+  "hardware": {
+    "message": "սարքավորումներ"
+  },
+  "hardwareWalletConnected": {
+    "message": "Ապարատային դրամապանակը կապված"
+  },
+  "hardwareWallets": {
+    "message": "Միացեք ապարատային դրամապանակը"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Ընտրեք ապարատային դրամապանակի համար, որը ցանկանում եք օգտագործել MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "այստեղ",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Шестнадцатеричных Տվյալների"
+  },
+  "hide": {
+    "message": "Թաքցնել"
+  },
+  "hideToken": {
+    "message": "Թաքցնել Մարկեր"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Պատմություն"
+  },
+  "import": {
+    "message": "Ներմուծում",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Ներմուծում Հաշիվներ"
+  },
+  "importAccountMsg": {
+    "message": " Ներմուծվել հաշիվները չեն առնչվում են ձեր ի սկզբանե ստեղծվել է MetaMask seedphrase հաշվին. Ավելին իմանալ այն մասին, ներմուծված հաշիվներ "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Ներմուծում հաշիվը սերմերի արտահայտությունը"
+  },
+  "importWallet": {
+    "message": "Ներմուծում Դրամապանակը"
+  },
+  "importYourExisting": {
+    "message": "Ներմուծել է իր դրամապանակը, օգտագործելով 12 բառեր սերմերի արտահայտությունը"
+  },
+  "imported": {
+    "message": "Ներմուծված",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Ներմուծում օգտագործելով հաշիվ սերմերի արտահայտությունը"
+  },
+  "infoHelp": {
+    "message": "Տեղեկատվություն և Օգնություն"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Ձեր նախնական գործարքը հաստատվել է ցանցում. Սեղմեք հաղորդագրությունները OK կոճակը, որպեսզի վերադառնալ:"
+  },
+  "insufficientBalance": {
+    "message": "Անբավարար հավասարակշռությունը."
+  },
+  "insufficientFunds": {
+    "message": "Բավարար միջոցներ."
+  },
+  "insufficientTokens": {
+    "message": "Բավարար չէ տառ."
+  },
+  "invalidAddress": {
+    "message": "Սխալ հասցե"
+  },
+  "invalidAddressRecipient": {
+    "message": "Ստացողի հասցեն վավերական"
+  },
+  "knownAddressRecipient": {
+    "message": "Հայտնի հասցեով պայմանագիրը:"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Էտ չի ցանցը, մի շարք ստորին ռեգիստրում"
+  },
+  "invalidInput": {
+    "message": "Սխալ մուտքագրում."
+  },
+  "invalidRPC": {
+    "message": "Անթույլատրելի է URL-հասցե ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Անթույլատրելի միավոր Բրաուզերի URL-հասցե"
+  },
+  "invalidSeedPhrase": {
+    "message": "Սխալ սերմերի արտահայտությունը"
+  },
+  "jsonFile": {
+    "message": "JSON-ֆայլի ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Թեստ Ցանցի Кован "
+  },
+  "max": {
+    "message": "Մաքս"
+  },
+  "learnMore": {
+    "message": "Իմանալ ավելին"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Դուք պետք է օգտագործել ձեր վերջնական հաշիվը, նախքան դուք կարող եք ավելացնել նոր."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Այո, պետք է!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Հղումներ"
+  },
+  "liveGasPricePredictions": {
+    "message": "Կանխատեսումները Գների Գազ "
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Մարկերներ Loading..."
+  },
+  "loadMore": {
+    "message": "Բեռը Ավելի"
+  },
+  "localhost": {
+    "message": "Տեղական 8545"
+  },
+  "login": {
+    "message": "Մուտք Գործել"
+  },
+  "logout": {
+    "message": "Դուրս գալ"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Ելք ժամանակ շատ մեծ է"
+  },
+  "mainnet": {
+    "message": "Գլխավոր Ցանցը Эфириума "
+  },
+  "memorizePhrase": {
+    "message": "Հիշեք այդ արտահայտությունը ։ "
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Մենյու"
+  },
+  "message": {
+    "message": "Հաղորդագրություն"
+  },
+  "metamaskDescription": {
+    "message": "Միացման ցանցի Ethereum եւ ապակենտրոնացման ինտերնետ."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Սերմերի Խոսքերը"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Տարբերակը"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Խնդրում ենք, մուտքագրեք Ձեր գաղտնաբառը, որպեսզի հաստատեք, որ դուք!"
+  },
+  "myAccounts": {
+    "message": "Իմ Հաշիվները"
+  },
+  "myWalletAccounts": {
+    "message": "Իմ Քսակը Հաշվի"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Ձեր բոլոր MetaMask ստեղծված հաշիվներ ավտոմատ ավելացվել այս բաժինը."
+  },
+  "mustSelectOne": {
+    "message": "Պետք է ընտրել առնվազն 1 նշան."
+  },
+  "needEtherInWallet": {
+    "message": "Համագործակցել децентрализованными ծրագրեր, օգտագործելով MetaMask, դուք պետք է եթերից ձեր դրամապանակը:"
+  },
+  "needImportFile": {
+    "message": "Անհրաժեշտ է ընտրել ֆայլի ներմուծման համար.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Չեմ կարող ուղարկել բացասական գումարը ՝ Շվեյցարիայի բարձրագույն տեխնիկական դպրոցի."
+  },
+  "networkName": {
+    "message": "Ցանցի Անունը "
+  },
+  "networks": {
+    "message": "Ցանցերի"
+  },
+  "networkSettingsDescription": {
+    "message": "Ավելացնելով եւ խմբագրում մաքսային ցանցերի ЭКП "
+  },
+  "nevermind": {
+    "message": "Ֆիգուն"
+  },
+  "newAccount": {
+    "message": "Նոր Հաշիվ"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Նոր հասցե հայտնաբերվել! Սեղմեք այստեղ է, որ պետք է ավելացնել հասցեների գրքույկ."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Նոր Կապ"
+  },
+  "newContract": {
+    "message": "Նոր Պայմանագիր"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Նոր Ցանց"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Ոչ, ես արդեն ունեմ սերմերի արտահայտությունը"
+  },
+  "protectYourKeys": {
+    "message": "Պաշտպանել Ձեր Բանալիները!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Եղեք զգույշ սերմերի արտահայտությունը էին հաղորդագրություններ կայքերում, որոնք փորձում են նմանակել MetaMask. MetaMask երբեք չի խնդրել ձեր սերմի արտահայտությունը!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Պահել ձեր արտահայտությունը անվտանգ. Եթե դուք տեսնում եք ինչ-որ կասկածելի, կամ դուք վստահ չեք կայքում, էլեկտրոնային փոստով support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Նոր URL-հասցե ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Նոր Արդյունքը"
+  },
+  "newTransactionFee": {
+    "message": "Նոր Վճար Գործարքի "
+  },
+  "next": {
+    "message": "Ավելին"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Հասցե այդ անունով."
+  },
+  "noDeposits": {
+    "message": "Ոչ մի ավանդներ, ստացված"
+  },
+  "noConversionRateAvailable": {
+    "message": "Ոչ Դասընթացը Փոխարկման Հասանելի Է"
+  },
+  "noTransactions": {
+    "message": "Դուք չեք գործարքների"
+  },
+  "noThanks": {
+    "message": "Ոչ, Շնորհակալություն"
+  },
+  "notEnoughGas": {
+    "message": "Բացակայում Են Գազի"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Վեբ-տեսախցիկ չի գտնվել"
+  },
+  "noWebcamFound": {
+    "message": "Վեբ-տեսախցիկներ, ձեր համակարգիչը չի գտնվել: Խնդրում եմ, փորձեք կրկին."
+  },
+  "ofTextNofM": {
+    "message": "են"
+  },
+  "orderOneHere": {
+    "message": "Պատվիրել Tresor կամ գիրք և խնայել ձեր միջոցները սառնարանում "
+  },
+  "origin": {
+    "message": "Ծագման"
+  },
+  "parameters": {
+    "message": "Ընտրանքներ"
+  },
+  "participateInMetaMetrics": {
+    "message": "Մասնակցել MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Մասնակցել MetaMetrics, որոնք կօգնեն մեզ ավելի լավ MetaMask"
+  },
+  "password": {
+    "message": "Գաղտնաբառը"
+  },
+  "passwordsDontMatch": {
+    "message": "Գաղտնաբառերը չեն համընկնում"
+  },
+  "passwordNotLongEnough": {
+    "message": "Գաղտնաբառը բավականաչափ երկար "
+  },
+  "pastePrivateKey": {
+    "message": "Տեղադրեք ձեր անձնական բանալին տողերը այստեղ:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Տեղադրեք սերմերի արտահայտությունը այստեղ."
+  },
+  "pending": {
+    "message": "սպասում է"
+  },
+  "personalAddressDetected": {
+    "message": "Անձնական հասցե հայտնաբերվել ։ Մուտքագրում պայմանագրի մարկեր հասցեները."
+  },
+  "prev": {
+    "message": "Առաջ'"
+  },
+  "primaryCurrencySetting": {
+    "message": "Առաջնային Արժույթը"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Գաղտնիության Քաղաքականություն "
+  },
+  "privateKey": {
+    "message": "Փակ Բանալին",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Զգուշացում: երբեք չի բացահայտի այդ բանալին. Ինչ-որ մեկին իր անձնական բանալիները կարող են գողանալ ցանկացած ակտիվները, որոնք գտնվում են ձեր հաշվով."
+  },
+  "privateNetwork": {
+    "message": "Մասնավոր Ցանց"
+  },
+  "qrCode": {
+    "message": "Ցույց տալ QR-կոդ"
+  },
+  "queue": {
+    "message": "Հերթի"
+  },
+  "readdToken": {
+    "message": "Դուք կարող եք ավելացնել այս նշանը ապագայում, Սեղմելով \"Ավելացնել մարկեր\" ցանկի տարբերակները հաշիվներ."
+  },
+  "recents": {
+    "message": "Շինություն"
+  },
+  "recipientAddress": {
+    "message": "Ստացողի Հասցեն "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Մերժել Է Բոլոր"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Մերժվել"
+  },
+  "reset": {
+    "message": "Վերագործարկեք"
+  },
+  "resetAccount": {
+    "message": "Վերականգնել Հաշիվը "
+  },
+  "resetAccountDescription": {
+    "message": "Վերագործարկեք ձեր հաշիվները մաքրել պատմությունը գործարքների."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Միասին: խրախուսեք ինձ ուշ"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Վերականգնել իրենց հաշիվ սերմերի արտահայտությունը"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "հարցումներ, սպասում են ճանաչել"
+  },
+  "required": {
+    "message": "Պահանջվում է"
+  },
+  "restore": {
+    "message": "Վերականգնման համար"
+  },
+  "revealSeedWords": {
+    "message": "Բացահայտել Սերմերի Խոսքերը"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Սերմերի Արտահայտությունը"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Եթե դուք երբեւէ փոխել բրաուզերների կամ տեղափոխել համակարգիչներ, դուք պետք է այդ սերմի արտահայտություն մուտք գործել ձեր հաշիվը. Պահպանել դրանք տեղ անվտանգ եւ գաղտնի."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Չի կիսում նման արտահայտություն հետ!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Այս խոսքերը կարող են օգտագործվել գողանալ ձեր բոլոր հաշիվները."
+  },
+  "revert": {
+    "message": "Վերադառնալ"
+  },
+  "remove": {
+    "message": "Հեռացնել"
+  },
+  "removeAccount": {
+    "message": "Ջնջել հաշիվը"
+  },
+  "removeAccountDescription": {
+    "message": "Այս հաշիվը ջնջվել ձեր դրամապանակի. Խնդրում ենք համոզվեք, որ դուք ունեք բնօրինակը սերմ արտահայտություն կամ անձնական բանալին այս ներմուծման հաշվին, առաջ է շարունակել. Դուք կարող եք ներմուծել կամ նորից ստեղծել հաշիվներ բացվող հաշիվները. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Ցանցը Rinkeby Թեսթ "
+  },
+  "ropsten": {
+    "message": "Ցանցը Ropsten Թեսթ "
+  },
+  "goerli": {
+    "message": "Թեստ Ցանցի Goerli "
+  },
+  "save": {
+    "message": "Պահպանել"
+  },
+  "slow": {
+    "message": "Կամաց-կամաց"
+  },
+  "slower": {
+    "message": "Դանդաղ"
+  },
+  "saveAsCsvFile": {
+    "message": "Պահպանել, ինչպես CSV ֆայլը"
+  },
+  "scanInstructions": {
+    "message": "Տեղադրեք հայտարարությունը QR-կոդ դիմաց խցիկի"
+  },
+  "scanQrCode": {
+    "message": "Կոդ scan QR "
+  },
+  "search": {
+    "message": "Որոնում"
+  },
+  "searchResults": {
+    "message": "Որոնման Արդյունքներ. "
+  },
+  "secretBackupPhrase": {
+    "message": "Գաղտնի Backup Արտահայտություն"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Ձեր գաղտնիքը կրկնօրինակում արտահայտությունը ստիպում է հեշտությամբ կրկնօրինակում եւ վերականգնել ձեր հաշիվը."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Զգուշացում: երբեք չբացահայտել իր պահուստային արտահայտություն. Ով է այս արտահայտությունը կարող եք վերցնել ձեր եթերը ընդմիշտ."
+  },
+  "secretPhrase": {
+    "message": "Մուտքագրեք ձեր գաղտնի տասներկու բառ արտահայտություն: այստեղ է, որ վերականգնել շտեմարան."
+  },
+  "securityAndPrivacy": {
+    "message": "Անվտանգություն և Գաղտնիություն"
+  },
+  "securitySettingsDescription": {
+    "message": "Գաղտնիության կայանքները եւ դրամապանակը սերմերի արտահայտությունը"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Отделите ամեն բառը մի խնդիր է"
+  },
+  "seedPhraseReq": {
+    "message": "Սերմերի արտահայտություններ 12 բառեր"
+  },
+  "selectCurrency": {
+    "message": "Ընտրեք Արտարժույթը"
+  },
+  "selectEachPhrase": {
+    "message": "Խնդրում ենք ընտրել յուրաքանչյուր արտահայտությունը, որպեսզի համոզվեք, որ դա ճիշտ է ։ "
+  },
+  "selectLocale": {
+    "message": "Ընտրեք Լեզուն"
+  },
+  "selectType": {
+    "message": "Ընտրեք Տեսակը"
+  },
+  "send": {
+    "message": "Ուղարկել"
+  },
+  "sendAmount": {
+    "message": "Ուղարկել Գումարը"
+  },
+  "sendETH": {
+    "message": "Ուղարկել ЕТН"
+  },
+  "sendTokens": {
+    "message": "Ուղարկել"
+  },
+  "sentEther": {
+    "message": "ուղարկվել է եթերից"
+  },
+  "sentTokens": {
+    "message": "ուղարկել tokens"
+  },
+  "separateEachWord": {
+    "message": "Отделите ամեն բառը մի խնդիր է"
+  },
+  "searchTokens": {
+    "message": "Խորհրդանիշներ Որոնում "
+  },
+  "selectAnAccount": {
+    "message": "Ընտրեք հաշիվ"
+  },
+  "selectAnAccountHelp": {
+    "message": "Ընտրեք հաշիվ դիտելու MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Ընտրեք առավել բարձր գազային վճար արագացնել վերամշակող ձեր գործարքների.*"
+  },
+  "selectHdPath": {
+    "message": "Ընտրեք ուղին "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Ընտրանքներ"
+  },
+  "showAdvancedGasInline": {
+    "message": "Լրացուցիչ տարրեր կառավարման գազ "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Ընտրեք այս տարբերակը, որպեսզի ցույց տալ գազի գնի ու սահմանափակել տարրերի կառավարման անմիջապես Ուղարկել եւ հաստատել էկրաններ."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Ցույց տալ փոխակերպման Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Ընտրեք այս տարբերակը, որպեսզի ցույց դարձի ֆիատ է Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Ցույց Տալ Մասնավոր Բանալիների"
+  },
+  "showHexData": {
+    "message": "Ցույց Տալ Шестнадцатеричный Տվյալների"
+  },
+  "showHexDataDescription": {
+    "message": "Ընտրեք այս տարբերակը, որպեսզի ցույց դաշտ hex տվյալների էկրանի վրա"
+  },
+  "sign": {
+    "message": "Նշան"
+  },
+  "signatureRequest": {
+    "message": "Հարցման Ստորագրությունը "
+  },
+  "signed": {
+    "message": "Ստորագրությունը"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Հարցման Ստորագրությունը "
+  },
+  "somethingWentWrong": {
+    "message": "Oops! Ինչ-որ բան է գնում, սխալ."
+  },
+  "speedUp": {
+    "message": "Արագացնել"
+  },
+  "speedUpCancellation": {
+    "message": "Արագացնել այդ վերացումը"
+  },
+  "speedUpTransaction": {
+    "message": "Արագացնել այդ գործողությունը"
+  },
+  "switchNetworks": {
+    "message": "Switch Ցանցերի"
+  },
+  "stateLogFileName": {
+    "message": "Վիճակը MetaMask Ամսագրեր"
+  },
+  "stateLogs": {
+    "message": "Վիճակը Ամսագրերի"
+  },
+  "stateLogsDescription": {
+    "message": "Պետական ամսագրեր է պարունակում հասցեները անհատական հաշիվ եւ ուղարկեց գործարքների."
+  },
+  "stateLogError": {
+    "message": "Սխալ է, երբ ստանում վիճակի խճողել."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Կապ Ապարատային Դրամապանակը"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Միացեք ապարատային դրամապանակը ուղղակիորեն ձեր համակարգչի համար."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Ընտրեք հաշիվ"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Ընտրեք հաշիվ, որը ցանկանում եք դիտել. Դուք կարող եք ընտրել միայն մեկ անգամ:"
+  },
+  "step3HardwareWallet": {
+    "message": "3. Սկսել է օգտագործել dApps եւ շատ ավելին!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Օգտագործելով ապարատային հաշիվ, ինչպես դուք եք ցանկանում ցանկացած հաշվի Эфириума. Մուտք գործել dApps, ուղարկեք Սենյակ, գնել եւ պահել ERC20 խորհրդանիշներ եւ незаменяемые մարկերներ ինչպես CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Պահպանեք այս արտահայտությունը մենեջեր գաղտնաբառերը, ինչպես 1Password."
+  },
+  "submit": {
+    "message": "Ներկայացնել"
+  },
+  "submitted": {
+    "message": "Ներկայացված"
+  },
+  "supportCenter": {
+    "message": "Այցելեք մեր աջակցության Կենտրոն "
+  },
+  "symbol": {
+    "message": "Խորհրդանիշ"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Խորհրդանիշը պետք է լինի 0, 12 նիշ."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Կարգավորել կրկնօրինակում 3box վ Այս հատկությունը փորձարարական արժույթի; օգտագործեք ձեր սեփական ռիսկով."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box է անջատված էր սխալները ընթացքում նախնական համաժամացման"
+  },
+  "syncWithMobile": {
+    "message": "Sync հետ բջջային"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync հետ բջջային"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Եթե դուք պարզապես բացել MetaMask բջջային ծրագրեր, առաջին անգամ է, պարզապես հետեւեք հրահանգներին ձեր հեռախոսում."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Սկան տվյալ կոդ հետ MetaMask բջջային ծրագիր"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Համոզվեք, որ ոչ ոք չի նայում էկրանին, երբ դուք сканируете այս կոդը"
+  },
+  "syncWithMobileComplete": {
+    "message": "Ձեր տվյալները հաջողությամբ սինխրոն. Վայելեք MetaMask բջջային ծրագիրը!"
+  },
+  "terms": {
+    "message": "Օգտագործման պայմաններ"
+  },
+  "testFaucet": {
+    "message": "Փորձարկում Ծորակ"
+  },
+  "thisWillCreate": {
+    "message": "Դա թույլ կտա ստեղծել նոր դրամապանակ և սերմերի արտահայտությունը"
+  },
+  "tips": {
+    "message": "Խորհուրդներ"
+  },
+  "to": {
+    "message": "Համար"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Մարկեր"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Մարկեր արդեն ավելացված է զամբյուղի մեջ."
+  },
+  "tokenContractAddress": {
+    "message": "Մարկեր Հասցեները Պայմանագիրը "
+  },
+  "tokenSymbol": {
+    "message": "Խորհրդանիշ Մարկեր "
+  },
+  "total": {
+    "message": "Ընդհանուր"
+  },
+  "transaction": {
+    "message": "գործարքի"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Գործարքի սխալ է տեղի ունեցել."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Սխալ Է Գործարքի. Բացառություն պայմանագրում կոդը."
+  },
+  "transactionErrorNoContract": {
+    "message": "Փորձում առաջացնել հնարավորությունը պայմանագրային հասցե."
+  },
+  "transactionFee": {
+    "message": "Վճար Գործարքի "
+  },
+  "transactionTime": {
+    "message": "Գործարքի "
+  },
+  "transfer": {
+    "message": "Թարգմանություն"
+  },
+  "transferBetweenAccounts": {
+    "message": "Թարգմանություն միջեւ իմ հաշիվները"
+  },
+  "transferFrom": {
+    "message": "Տրանսֆեր"
+  },
+  "troubleTokenBalances": {
+    "message": "Մենք խնդիրներ ունեինք բեռնելիս մնացորդները մարկեր. Դուք կարող եք դիտել դրանք ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Փորձեք կրկին "
+  },
+  "typePassword": {
+    "message": "Մուտքագրեք եք ձեր գաղտնաբառը MetaMask "
+  },
+  "unapproved": {
+    "message": "Неутвержденные"
+  },
+  "units": {
+    "message": "միավոր"
+  },
+  "unknown": {
+    "message": "Հայտնի չէ"
+  },
+  "unknownNetwork": {
+    "message": "Անհայտ Մասնավոր Ցանցերի"
+  },
+  "unknownQrCode": {
+    "message": "Սխալ է: մենք չենք կարողացել որոշել, թե ինչ է QR կոդ"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Oops! Ինչ-որ բան է գնում, սխալ...."
+  },
+  "unknownCameraError": {
+    "message": "Սխալ է, երբ փորձում են մուտք գործել ձեր դռնփակ. Խնդրում ենք կրկին փորձել..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "Децентрализованный վեբ սպասում"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Урис պահանջում են համապատասխան http/բնորոշիչ https."
+  },
+  "usedByClients": {
+    "message": "Օգտագործվում է տարբեր հաճախորդների"
+  },
+  "userName": {
+    "message": "Անուն"
+  },
+  "validFileImport": {
+    "message": "Դուք պետք է ընտրել ճիշտ ֆայլի ներմուծման համար."
+  },
+  "viewAccount": {
+    "message": "Դիտել Հաշիվ "
+  },
+  "viewinExplorer": {
+    "message": "Դիտել Բրաուզերի"
+  },
+  "viewContact": {
+    "message": "Դիտել Հետադարձ Կապ"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Գեղեցիկ տեսարան մեկը լավագույն"
+  },
+  "visitWebSite": {
+    "message": "Այցելեք մեր վեբ կայք"
+  },
+  "walletSeed": {
+    "message": "Սերմերի Դրամապանակը "
+  },
+  "welcomeBack": {
+    "message": "Բարի Գալուստ!"
+  },
+  "welcome": {
+    "message": "Բարի գալուստ MetaMask"
+  },
+  "writePhrase": {
+    "message": "Գրեք արտահայտությունը, գրում են թղթի վրա եւ պահել անվտանգ վայրում. Եթե դուք ցանկանում եք ավելի մեծ անվտանգության, գրանցեք նրա մի քանի թերթերով թուղթ եւ պահել ամեն 2 - 3 տարբեր վայրերում."
+  },
+  "yesLetsTry": {
+    "message": "Այո, եկեք փորձենք"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Դուք պետք է թույլ տալ մուտք գործել խցում, օգտագործել այս հնարավորությունը."
+  },
+  "yourSigRequested": {
+    "message": "Ձեր ստորագրությունը queried"
+  },
+  "youSign": {
+    "message": "Դուք ստորագրում"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Ձեր անձնական սերմերի արտահայտությունը"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Զրո գազի գինը արագությամբ"
+  }
+}

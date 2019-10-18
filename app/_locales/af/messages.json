@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Wys Inkomende Transaksies"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Kies om dit te gebruik Etherscan om te wys inkomende transaksies in die transaksies lys"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Grafiek slegs beskikbaar op Ethereum netwerke."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Verbindings"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Plekke toegelaat word om te lees jou rekeninge"
+  },
+  "addSite": {
+    "message": "Voeg Site"
+  },
+  "addSiteDescription": {
+    "message": "Met die hand te voeg'n webwerf wat toelaat dat dit toegang tot jou rekeninge, nuttig vir ouer dapps"
+  },
+  "connected": {
+    "message": "Verbind"
+  },
+  "connectedDescription": {
+    "message": "Die lys van plekke toegelaat word om toegang tot jou spreek"
+  },
+  "privacyModeDefault": {
+    "message": "Privaatheid Af is nou geaktiveer deur verstek."
+  },
+  "contractInteraction": {
+    "message": "Kontrak Interaksie"
+  },
+  "clearApprovalData": {
+    "message": "Verwyder alle terreine"
+  },
+  "reject": {
+    "message": "Verwerp"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Hierdie webwerf is versoek om toegang te sien jou huidige rekening adres. Maak altyd seker dat jy vertrou dat die webwerwe wat jy interaksie met."
+  },
+  "about": {
+    "message": "Oor"
+  },
+  "aboutSettingsDescription": {
+    "message": "Weergawe, ondersteuning sentrum, en kontak info."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Toegang tot jou kamera..."
+  },
+  "account": {
+    "message": "Rekening"
+  },
+  "accountDetails": {
+    "message": "Rekening Besonderhede"
+  },
+  "accountName": {
+    "message": "Rekening Naam"
+  },
+  "accountOptions": {
+    "message": "Rekening Opsies"
+  },
+  "accountSelectionRequired": {
+    "message": "Wat jy nodig het om te kies'n rekening!"
+  },
+  "activityLog": {
+    "message": "aktiwiteit meld"
+  },
+  "addNetwork": {
+    "message": "Voeg Netwerk"
+  },
+  "addRecipient": {
+    "message": "Voeg Ontvanger"
+  },
+  "advanced": {
+    "message": "Gevorderde"
+  },
+  "advancedSettingsDescription": {
+    "message": "Toegang ontwikkelaar funksies, laai Staat Logs, Herstel Rekening, die opstel van testnets en persoonlike RPC."
+  },
+  "advancedOptions": {
+    "message": "Gevorderde Opsies"
+  },
+  "addToAddressBook": {
+    "message": "Voeg om die adres boek"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "bv. John D."
+  },
+  "addAlias": {
+    "message": "Voeg alias"
+  },
+  "addToken": {
+    "message": "Voeg Gebrand"
+  },
+  "addTokens": {
+    "message": "Voeg Tekens"
+  },
+  "addSuggestedTokens": {
+    "message": "Voeg Voorgestel Tekens"
+  },
+  "addAcquiredTokens": {
+    "message": "Voeg die tekens wat jy het verkry met behulp van MetaMask"
+  },
+  "amount": {
+    "message": "Bedrag"
+  },
+  "appDescription": {
+    "message": "'n Ethereum Beursie in jou Leser",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Keur"
+  },
+  "approved": {
+    "message": "Goedgekeur"
+  },
+  "asset": {
+    "message": "Asset"
+  },
+  "attemptingConnect": {
+    "message": "Probeer om te verbind tot die blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Die indiening van hierdie poging waarborg nie jou oorspronklike transaksie sal gekanselleer word. Indien die kansellasie poging is suksesvol, jy sal gehef word om die transaksie fooi bo."
+  },
+  "attributions": {
+    "message": "Attribusies"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Stel die ledige tyd in minute voor MetaMask sal outomaties teken"
+  },
+  "average": {
+    "message": "Gemiddelde"
+  },
+  "back": {
+    "message": "Terug"
+  },
+  "backToAll": {
+    "message": "Terug na Al"
+  },
+  "backupApprovalNotice": {
+    "message": "Friends jou Geheime Herstel kode om jou beursie te hou en fondse beveilig."
+  },
+  "backupApprovalInfo": {
+    "message": "Hierdie geheime kode is nodig om te herstel jou beursie in die geval jy verloor jou toestel, jou wagwoord vergeet het om te her-installeer MetaMask, of wil om toegang te verkry tot jou beursie op'n ander toestel."
+  },
+  "backupNow": {
+    "message": "Friends nou"
+  },
+  "balance": {
+    "message": "Balans"
+  },
+  "balanceOutdated": {
+    "message": "Balans kan verouderd wees"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Onvoldoende balans vir die huidige gas totale"
+  },
+  "basic": {
+    "message": "Basiese"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Blok Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Gebruik Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Pas transaksie hierdie keer"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Hierdie Keer"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Jou Leser is nie ondersteun nie..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask is ontwerp en gebou in Kalifornië."
+  },
+  "buyWithWyre": {
+    "message": "Koop ETH met Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre kan jy'n kredietkaart gebruik om te deposito ETH reg in jou MetaMask rekening."
+  },
+  "buyCoinSwitch": {
+    "message": "Koop op CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch is die een-stop bestemming te ruil meer as 300 cryptocurrencies op die beste koers."
+  },
+  "bytes": {
+    "message": "Grepe"
+  },
+  "off": {
+    "message": "Af"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "on": {
+    "message": "Op"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Kanselleer"
+  },
+  "cancelAttempt": {
+    "message": "Kanselleer Poging"
+  },
+  "cancellationGasFee": {
+    "message": "Kansellasie Gas Fooi"
+  },
+  "cancelled": {
+    "message": "Gekanselleer"
+  },
+  "chainId": {
+    "message": "Ketting ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Klik hier om te openbaar die geheim woorde"
+  },
+  "close": {
+    "message": "Naby"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Wat jy nodig het om te gebruik MetaMask op Google Chrome ten einde aan te sluit om jou Hardeware Beursie."
+  },
+  "confirm": {
+    "message": "Bevestig"
+  },
+  "confirmed": {
+    "message": "Bevestig"
+  },
+  "confirmPassword": {
+    "message": "Bevestig Wagwoord"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Bevestig jou Geheime Friends Frase"
+  },
+  "congratulations": {
+    "message": "Baie geluk"
+  },
+  "connectHardwareWallet": {
+    "message": "Sluit Hardeware Beursie"
+  },
+  "connect": {
+    "message": "Sluit"
+  },
+  "connectRequest": {
+    "message": "Sluit Versoek"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Die koppeling van Kovan Toets Netwerk"
+  },
+  "connectingToMainnet": {
+    "message": "Die koppeling na die Hoof Ethereum Netwerk"
+  },
+  "connectingToRopsten": {
+    "message": "Die koppeling van Ropsten Toets Netwerk"
+  },
+  "connectingToRinkeby": {
+    "message": "Die koppeling van Rinkeby Toets Netwerk"
+  },
+  "connectingToLocalhost": {
+    "message": "Die koppeling van Localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Die koppeling van Goerli Toets Netwerk"
+  },
+  "contacts": {
+    "message": "Kontakte"
+  },
+  "contactsSettingsDescription": {
+    "message": "Voeg, te wysig, verwyder, en die bestuur van jou kontakte"
+  },
+  "continueToWyre": {
+    "message": "Voortgaan om te Wyre"
+  },
+  "continueToCoinSwitch": {
+    "message": "Voortgaan om te CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Kontrak Ontplooiing"
+  },
+  "conversionProgress": {
+    "message": "Sukses in die gang"
+  },
+  "copiedButton": {
+    "message": "Gekopieer"
+  },
+  "copiedExclamation": {
+    "message": "Gekopieer!"
+  },
+  "copy": {
+    "message": "Afskrif"
+  },
+  "copyAddress": {
+    "message": "Kopieer adres na die knipbord"
+  },
+  "copyTransactionId": {
+    "message": "Kopieer Transaksie ID"
+  },
+  "copiedTransactionId": {
+    "message": "Gekopieer Transaksie ID"
+  },
+  "copyToClipboard": {
+    "message": "Kopieer na die knipbord"
+  },
+  "copyButton": {
+    "message": " Afskrif "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Skep"
+  },
+  "createAccount": {
+    "message": "Skep Rekening"
+  },
+  "createAWallet": {
+    "message": "Skep'n Beursie"
+  },
+  "createPassword": {
+    "message": "Skep Wagwoord"
+  },
+  "currencyConversion": {
+    "message": "Valuta-Omskakeling"
+  },
+  "currentLanguage": {
+    "message": "Huidige Taal"
+  },
+  "customGas": {
+    "message": "Pas Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Die verhoging van die bedrag kan verminder die verwerking van tye, maar dit is nie gewaarborg nie."
+  },
+  "customToken": {
+    "message": "Persoonlike Teken"
+  },
+  "customRPC": {
+    "message": "Persoonlike RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Desimale moet ten minste 0, en nie meer as 36."
+  },
+  "decimal": {
+    "message": "Desimale Presisie"
+  },
+  "defaultNetwork": {
+    "message": "Die standaard netwerk vir Eter transaksies is die Belangrikste Netto."
+  },
+  "delete": {
+    "message": "Verwyder"
+  },
+  "deleteAccount": {
+    "message": "Verwyder Rekening"
+  },
+  "deposit": {
+    "message": "Deposito"
+  },
+  "depositEther": {
+    "message": "Deposito Eter"
+  },
+  "details": {
+    "message": "Besonderhede"
+  },
+  "directDepositEther": {
+    "message": "Direk Deposito Eter"
+  },
+  "directDepositEtherExplainer": {
+    "message": "As jy reeds'n paar Eter, die vinnigste manier om te kry Eter in jou nuwe beursie deur direkte deposito."
+  },
+  "dismiss": {
+    "message": "Ontslaan"
+  },
+  "done": {
+    "message": "Gedoen"
+  },
+  "downloadGoogleChrome": {
+    "message": "Aflaai Van Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Laai hierdie Geheim Friends Frase en hou dit veilig gestoor op'n eksterne geïnkripteer hardeskyf of stoor medium."
+  },
+  "downloadStateLogs": {
+    "message": "Aflaai Staat Logs"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "Laat val"
+  },
+  "edit": {
+    "message": "Wysig"
+  },
+  "editContact": {
+    "message": "Wysig Kontak"
+  },
+  "emailUs": {
+    "message": "E-pos ons!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Jy geslaag het in die toets - hou jou seedphrase veilige, dit is jou verantwoordelikheid!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Wenke op die stoor dit veilig"
+  },
+  "endOfFlowMessage3": {
+    "message": "Red'n back-up in verskeie plekke."
+  },
+  "endOfFlowMessage4": {
+    "message": "Nooit deel van die frase met iemand."
+  },
+  "endOfFlowMessage5": {
+    "message": "Wees versigtig van phishing! MetaMask sal nooit spontaan vra vir jou saad frase."
+  },
+  "endOfFlowMessage6": {
+    "message": "As jy nodig het om te back-up van jou saad frase weer, jy kan dit vind in die Instellings -> Sekuriteit."
+  },
+  "endOfFlowMessage7": {
+    "message": "As jy ooit enige vrae of sien iets fishy, e-pos support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask kan nie herstel jou seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Leer meer."
+  },
+  "endOfFlowMessage10": {
+    "message": "Al Gedoen"
+  },
+  "ensRegistrationError": {
+    "message": "Fout in die naam registrasie ENS"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS naam nie gevind nie op die huidige netwerk. Probeer om oor te skakel na Belangrikste Ethereum Netwerk."
+  },
+  "enterAnAlias": {
+    "message": "Tik'n alias"
+  },
+  "enterPassword": {
+    "message": "Tik wagwoord"
+  },
+  "enterPasswordContinue": {
+    "message": "Tik die wagwoord om voort te gaan"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum Openbare Adres"
+  },
+  "etherscanView": {
+    "message": "View rekening op Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Beraam Die Verwerking Van Tye"
+  },
+  "expandView": {
+    "message": "Uit Te Brei Kyk"
+  },
+  "exportPrivateKey": {
+    "message": "Uitvoer Private Sleutel"
+  },
+  "failed": {
+    "message": "Misluk"
+  },
+  "fast": {
+    "message": "Vinnig"
+  },
+  "faster": {
+    "message": "Vinniger"
+  },
+  "fiat": {
+    "message": "Fiat",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Vergeet om hierdie toestel"
+  },
+  "from": {
+    "message": "Uit"
+  },
+  "fromShapeShift": {
+    "message": "Van ShapeShift"
+  },
+  "functionType": {
+    "message": "Tipe Funksie"
+  },
+  "gasLimit": {
+    "message": "Gas Limiet"
+  },
+  "gasLimitCalculation": {
+    "message": "Ons bereken die voorgestelde gas beperk wat gebaseer is op die netwerk sukses tariewe."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Gas limiet is die maksimum bedrag van die eenhede van die gas wat jy bereid is om te spandeer."
+  },
+  "gasLimitTooLow": {
+    "message": "Gas limiet moet wees ten minste 21000"
+  },
+  "gasUsed": {
+    "message": "Die Gas Wat Gebruik Word"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Prys Uiters Lae"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas prys bepaal die bedrag van die Eter jy bereid is om te betaal vir elke eenheid van die gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Die Gas-Prys"
+  },
+  "gasPriceCalculation": {
+    "message": "Ons bereken die voorgestelde gas pryse wat gebaseer is op die netwerk sukses tariewe."
+  },
+  "general": {
+    "message": "Algemene"
+  },
+  "generalSettingsDescription": {
+    "message": "Valuta-omskakeling, primêre geldeenheid, taal, blockies identicon"
+  },
+  "getEther": {
+    "message": "Kry Eter"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Kry Help."
+  },
+  "getStarted": {
+    "message": "Begin"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Ons is bly om te sien jy."
+  },
+  "hardware": {
+    "message": "hardeware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardeware beursie verbind"
+  },
+  "hardwareWallets": {
+    "message": "Sluit'n hardeware beursie"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Kies'n hardeware beursie wat jy wil gebruik met MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "hier",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Hex Data"
+  },
+  "hide": {
+    "message": "Steek"
+  },
+  "hideToken": {
+    "message": "Steek Teken"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Geskiedenis"
+  },
+  "import": {
+    "message": "Invoer",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Invoer Rekening"
+  },
+  "importAccountMsg": {
+    "message": " Ingevoerde rekeninge sal nie wees wat verband hou met jou oorspronklik geskep MetaMask rekening seedphrase. Leer meer oor ingevoerde rekeninge "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Die invoer van'n Rekening met die Saad Frase"
+  },
+  "importWallet": {
+    "message": "Invoer Beursie"
+  },
+  "importYourExisting": {
+    "message": "Die invoer van jou bestaande beursie met behulp van'n 12 woord saad frase"
+  },
+  "imported": {
+    "message": "Ingevoerde",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Die invoer van die gebruik van rekening saad frase"
+  },
+  "infoHelp": {
+    "message": "Info & Help"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Jou aanvanklike transaksie is bevestig deur die netwerk. Klik OK om terug te gaan."
+  },
+  "insufficientBalance": {
+    "message": "Onvoldoende balans."
+  },
+  "insufficientFunds": {
+    "message": "Onvoldoende fondse."
+  },
+  "insufficientTokens": {
+    "message": "Onvoldoende bewyse."
+  },
+  "invalidAddress": {
+    "message": "Ongeldige adres"
+  },
+  "invalidAddressRecipient": {
+    "message": "Ontvanger adres is ongeldig"
+  },
+  "knownAddressRecipient": {
+    "message": "Bekend kontrak adres."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Nie ETH netwerk, stel na kleinletters"
+  },
+  "invalidInput": {
+    "message": "Invalid input."
+  },
+  "invalidRPC": {
+    "message": "Ongeldig URL RPC"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Ongeldig Blok Explorer URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ongeldig saad frase"
+  },
+  "jsonFile": {
+    "message": "JSON Lêer",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Toets Netwerk"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "learnMore": {
+    "message": "Leer meer"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Wat jy nodig het om gebruik te maak van jou laaste rekening voor jy kan voeg'n nuwe een."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Ja, laat ons ontslae te stel!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Skakels"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live Gas Prys Voorspellings"
+  },
+  "loading": {
+    "message": "Laai..."
+  },
+  "loadingTokens": {
+    "message": "Laai Tekens..."
+  },
+  "loadMore": {
+    "message": "Laai Meer"
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "Teken In"
+  },
+  "logout": {
+    "message": "Teken uit"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Logout tyd is te groot"
+  },
+  "mainnet": {
+    "message": "Belangrikste Ethereum Netwerk"
+  },
+  "memorizePhrase": {
+    "message": "Onthou hierdie frase."
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "message": {
+    "message": "Boodskap"
+  },
+  "metamaskDescription": {
+    "message": "Die koppeling van jou na Ethereum en die Gedesentraliseerde Web."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Saad Woorde"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Weergawe"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Tik jou wagwoord te bevestig dat dit is jy!"
+  },
+  "myAccounts": {
+    "message": "My Rekeninge"
+  },
+  "myWalletAccounts": {
+    "message": "My Beursie Rekeninge"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Al wat van jou MetaMask geskep rekeninge sal outomaties bygevoeg word aan hierdie artikel."
+  },
+  "mustSelectOne": {
+    "message": "Moet kies ten minste 1 gebrand."
+  },
+  "needEtherInWallet": {
+    "message": "Om in interaksie te tree met gedesentraliseerde programme met behulp van MetaMask, sal jy nodig het Eter in jou beursie."
+  },
+  "needImportFile": {
+    "message": "Jy moet kies'n lêer in te voer.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Kan nie stuur negatiewe bedrae van ETH."
+  },
+  "networkName": {
+    "message": "Netwerk Naam"
+  },
+  "networks": {
+    "message": "Netwerke"
+  },
+  "networkSettingsDescription": {
+    "message": "Voeg en wysig persoonlike RPC netwerke"
+  },
+  "nevermind": {
+    "message": "Nevermind"
+  },
+  "newAccount": {
+    "message": "Nuwe Rekening"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Nuwe adres opgespoor! Klik hier om by te voeg tot jou adres boek."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Nuwe Kontak"
+  },
+  "newContract": {
+    "message": "Nuwe Kontrak"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Nuwe Netwerk"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Nee, ek het reeds'n saad frase"
+  },
+  "protectYourKeys": {
+    "message": "Beskerm Jou Sleutels!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Wees versigtig met jou saad frase — daar is verslae van die webwerwe wat probeer om na te boots MetaMask. MetaMask sal nooit vra vir jou saad frase!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Hou jou frase veilig. As jy sien iets fishy, of jy onseker is oor'n webwerf, e-pos support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Nuwe RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Nuwe Totale"
+  },
+  "newTransactionFee": {
+    "message": "Nuwe Transaksie Fooi"
+  },
+  "next": {
+    "message": "Volgende"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Geen adres is ingestel vir hierdie naam."
+  },
+  "noDeposits": {
+    "message": "Geen deposito ontvang"
+  },
+  "noConversionRateAvailable": {
+    "message": "Geen Wisselkoers Beskikbaar"
+  },
+  "noTransactions": {
+    "message": "Jy het geen transaksies"
+  },
+  "noThanks": {
+    "message": "Nee Dankie"
+  },
+  "notEnoughGas": {
+    "message": "Nie Genoeg Gas"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam nie gevind nie"
+  },
+  "noWebcamFound": {
+    "message": "Jou rekenaar se webkamera is nie gevind nie. Probeer asseblief weer."
+  },
+  "ofTextNofM": {
+    "message": "van"
+  },
+  "orderOneHere": {
+    "message": "Om'n Trezor of Grootboek en hou jou geld in die koue stoor"
+  },
+  "origin": {
+    "message": "Oorsprong"
+  },
+  "parameters": {
+    "message": "Parameters"
+  },
+  "participateInMetaMetrics": {
+    "message": "Deel te neem in MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Deel te neem in MetaMetrics om ons te help maak MetaMask beter"
+  },
+  "password": {
+    "message": "Wagwoord"
+  },
+  "passwordsDontMatch": {
+    "message": "Wagwoorde nie Pas nie"
+  },
+  "passwordNotLongEnough": {
+    "message": "Wagwoord nie lank genoeg"
+  },
+  "pastePrivateKey": {
+    "message": "Plak jou private sleutel string hier:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Plak jou saad frase hier!"
+  },
+  "pending": {
+    "message": "hangende"
+  },
+  "personalAddressDetected": {
+    "message": "Persoonlike adres bespeur. Insette van die teken kontrak adres."
+  },
+  "prev": {
+    "message": "Vorige"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primêre Geldeenheid"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Privaatheidsbeleid"
+  },
+  "privateKey": {
+    "message": "Private Sleutel",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Waarskuwing: moet Nooit openbaar hierdie sleutel. Iemand met jou private sleutels kan steel nie enige bates wat gehou word in jou rekening."
+  },
+  "privateNetwork": {
+    "message": "Privaat Netwerk"
+  },
+  "qrCode": {
+    "message": "Wys QR Code"
+  },
+  "queue": {
+    "message": "Ry"
+  },
+  "readdToken": {
+    "message": "Jy kan voeg hierdie teken terug in die toekoms deur te gaan om te \"Voeg gebrand\" in jou rekeninge opsies menu."
+  },
+  "recents": {
+    "message": "Onlangse"
+  },
+  "recipientAddress": {
+    "message": "Ontvanger Adres"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Verwerp Alle"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Verwerp"
+  },
+  "reset": {
+    "message": "Herstel"
+  },
+  "resetAccount": {
+    "message": "Herstel Rekening"
+  },
+  "resetAccountDescription": {
+    "message": "Die herstel van jou rekening sal duidelik jou transaksie geskiedenis."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Herinner my later"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Die herstel van jou Rekening met Saad Frase"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "versoeke wat wag om te word erken"
+  },
+  "required": {
+    "message": "Vereis"
+  },
+  "restore": {
+    "message": "Herstel"
+  },
+  "revealSeedWords": {
+    "message": "Openbaar Saad Woorde"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Saad Frase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "As jy al ooit verander blaaiers of beweeg rekenaars, sal jy nodig het om hierdie saad frase om toegang tot jou rekeninge. Stoor dit iewers veilige en geheime."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "MOENIE deel hierdie frase met iemand!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Hierdie woorde kan gebruik word om te steel al jou rekeninge."
+  },
+  "revert": {
+    "message": "Terugkeer"
+  },
+  "remove": {
+    "message": "Verwyder"
+  },
+  "removeAccount": {
+    "message": "Verwyder rekening"
+  },
+  "removeAccountDescription": {
+    "message": "Hierdie rekening sal verwyder word uit jou beursie. Maak asseblief seker dat jy die oorspronklike saad frase of private sleutel vir hierdie ingevoerde rekening voor die voortsetting van. Jy kan invoer of skep rekeninge weer uit die rekening drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Toets Netwerk"
+  },
+  "ropsten": {
+    "message": "Ropsten Toets Netwerk"
+  },
+  "goerli": {
+    "message": "Goerli Toets Netwerk"
+  },
+  "save": {
+    "message": "Red"
+  },
+  "slow": {
+    "message": "Stadig"
+  },
+  "slower": {
+    "message": "Stadiger"
+  },
+  "saveAsCsvFile": {
+    "message": "Stoor as CSV-Lêer"
+  },
+  "scanInstructions": {
+    "message": "Plaas die QR-kode in die voorkant van jou kamera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "search": {
+    "message": "Soek"
+  },
+  "searchResults": {
+    "message": "Soek Resultate"
+  },
+  "secretBackupPhrase": {
+    "message": "Die Geheim Friends Frase"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Jou geheime friends frase maak dit maklik om te back-up en die herstel van jou rekening."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WAARSKUWING: moet Nooit openbaar jou friends frase. Enigiemand met hierdie frase kan neem jou Eter vir ewig."
+  },
+  "secretPhrase": {
+    "message": "Tik jou geheime twaalf woord frase hier om te herstel van jou kluis."
+  },
+  "securityAndPrivacy": {
+    "message": "Sekuriteit En Privaatheid"
+  },
+  "securitySettingsDescription": {
+    "message": "Privaatheid instellings en beursie saad frase"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Skei elke woord met'n enkele ruimte"
+  },
+  "seedPhraseReq": {
+    "message": "Saad frases is 12 woorde lank"
+  },
+  "selectCurrency": {
+    "message": "Kies Geldeenheid"
+  },
+  "selectEachPhrase": {
+    "message": "Kies asseblief elke frase in om seker te maak dit is korrek."
+  },
+  "selectLocale": {
+    "message": "Kies Locale"
+  },
+  "selectType": {
+    "message": "Kies Die Tipe"
+  },
+  "send": {
+    "message": "Stuur"
+  },
+  "sendAmount": {
+    "message": "Stuur Bedrag"
+  },
+  "sendETH": {
+    "message": "Stuur ETH"
+  },
+  "sendTokens": {
+    "message": "Stuur Tekens"
+  },
+  "sentEther": {
+    "message": "gestuur eter"
+  },
+  "sentTokens": {
+    "message": "gestuur tekens"
+  },
+  "separateEachWord": {
+    "message": "Skei elke woord met'n enkele ruimte"
+  },
+  "searchTokens": {
+    "message": "Soek Tekens"
+  },
+  "selectAnAccount": {
+    "message": "Kies'n Rekening"
+  },
+  "selectAnAccountHelp": {
+    "message": "Kies die rekening te sien in MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Kies'n hoër gas-fooi te versnel die verwerking van die transaksie.*"
+  },
+  "selectHdPath": {
+    "message": "Kies HD Pad"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Instellings"
+  },
+  "showAdvancedGasInline": {
+    "message": "Gevorderde gas beheer"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Kies hierdie om te wys die gas-prys en die beperking van beheer direk op die stuur en bevestig skerms."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Wys Omsetting op Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Kies hierdie om te wys fiat omsetting op Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Wys Private Sleutels"
+  },
+  "showHexData": {
+    "message": "Wys Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Kies hierdie om te wys die hex data in die veld op die stuur skerm"
+  },
+  "sign": {
+    "message": "Teken"
+  },
+  "signatureRequest": {
+    "message": "Handtekening Versoek"
+  },
+  "signed": {
+    "message": "Onderteken"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Handtekening Versoek"
+  },
+  "somethingWentWrong": {
+    "message": "Oeps! Iets het verkeerd gegaan."
+  },
+  "speedUp": {
+    "message": "Bespoedig"
+  },
+  "speedUpCancellation": {
+    "message": "Bespoedig hierdie kansellasie"
+  },
+  "speedUpTransaction": {
+    "message": "Bespoedig hierdie transaksie"
+  },
+  "switchNetworks": {
+    "message": "Skakel Netwerke"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask Staat Logs"
+  },
+  "stateLogs": {
+    "message": "Staat Logs"
+  },
+  "stateLogsDescription": {
+    "message": "Staat logs bevat jou openbare rekening adresse en gestuur transaksies."
+  },
+  "stateLogError": {
+    "message": "Fout in die herwinning van die staat logs."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Sluit Hardeware Beursie"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Maak jou hardeware wallet direk aan jou rekenaar."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Kies'n Rekening"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Kies die rekening wat jy wil om te kyk. Jy kan net kies een op'n tyd."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Begin met behulp van dApps en meer!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Gebruik jou hardeware rekening soos jy sou met enige Ethereum rekening. Teken in om te dApps, stuur Eth, koop en stoor ERC20 tekens en Nie-Fungible tekens soos CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Stoor hierdie frase in'n wagwoord bestuurder soos 1Password."
+  },
+  "submit": {
+    "message": "Stuur"
+  },
+  "submitted": {
+    "message": "Voorgelê"
+  },
+  "supportCenter": {
+    "message": "Besoek ons Support Center"
+  },
+  "symbol": {
+    "message": "Simbool"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbool moet wees tussen 0 en 12 karakters."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Draai op jou instellings gerugsteun met 3Box. Hierdie funksie is currenty eksperimentele; gebruik op jou eie risiko."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box is afgeskakel as gevolg van'n fout tydens die aanvanklike sync"
+  },
+  "syncWithMobile": {
+    "message": "Sync met mobiele"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync met mobiele"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "As jy net oop die MetaMask Mobiele app vir die eerste keer, volg net die stappe in jou selfoon."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Skandeer hierdie kode met jou MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Maak seker dat niemand anders is om te kyk na jou skerm wanneer jy scan die kode"
+  },
+  "syncWithMobileComplete": {
+    "message": "Jou data is gesynchroniseerd suksesvol. Geniet die MetaMask mobile app!"
+  },
+  "terms": {
+    "message": "Terme van die Gebruik"
+  },
+  "testFaucet": {
+    "message": "Toets Kraan"
+  },
+  "thisWillCreate": {
+    "message": "Dit sal skep'n nuwe beursie en saad frase"
+  },
+  "tips": {
+    "message": "Wenke"
+  },
+  "to": {
+    "message": "Om te"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Teken"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Gebrand het reeds bygevoeg."
+  },
+  "tokenContractAddress": {
+    "message": "Teken Kontrak Adres"
+  },
+  "tokenSymbol": {
+    "message": "Teken Simbool"
+  },
+  "total": {
+    "message": "Totale"
+  },
+  "transaction": {
+    "message": "transaksie"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Transaksie ondervind'n fout."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Transaksie Fout. Uitsondering gegooi word in die kontrak kode."
+  },
+  "transactionErrorNoContract": {
+    "message": "Probeer om te bel'n funksie op'n nie-kontrak adres."
+  },
+  "transactionFee": {
+    "message": "Transaksie Fooi"
+  },
+  "transactionTime": {
+    "message": "Transaksie Tyd"
+  },
+  "transfer": {
+    "message": "Oordrag"
+  },
+  "transferBetweenAccounts": {
+    "message": "Oordrag tussen my rekeninge"
+  },
+  "transferFrom": {
+    "message": "Oordrag Van"
+  },
+  "troubleTokenBalances": {
+    "message": "Ons het probleme met die laai van jou teken balanseer. Jy kan sien hulle ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Probeer weer"
+  },
+  "typePassword": {
+    "message": "Tik jou MetaMask wagwoord"
+  },
+  "unapproved": {
+    "message": "Goedgekeurde"
+  },
+  "units": {
+    "message": "eenhede"
+  },
+  "unknown": {
+    "message": "Onbekende"
+  },
+  "unknownNetwork": {
+    "message": "Onbekende Privaat Netwerk"
+  },
+  "unknownQrCode": {
+    "message": "Fout: Ons kon nie identifiseer dat QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Iets het verkeerd gegaan...."
+  },
+  "unknownCameraError": {
+    "message": "Daar was'n fout terwyl hy probeer om toegang tot jou kamera. Probeer asseblief weer..."
+  },
+  "unlock": {
+    "message": "Ontsluit"
+  },
+  "unlockMessage": {
+    "message": "Die gedesentraliseerde web wag"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Uri vereis die toepaslike HTTP/HTTPS voorvoegsel."
+  },
+  "usedByClients": {
+    "message": "Wat gebruik word deur'n verskeidenheid van verskillende kliënte"
+  },
+  "userName": {
+    "message": "Gebruikersnaam"
+  },
+  "validFileImport": {
+    "message": "Jy moet kies'n geldige lêer in te voer."
+  },
+  "viewAccount": {
+    "message": "View Rekening"
+  },
+  "viewinExplorer": {
+    "message": "Kyk in Explorer"
+  },
+  "viewContact": {
+    "message": "Die Oog Kontak"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Kyk op Etherscan"
+  },
+  "visitWebSite": {
+    "message": "Besoek ons webwerf"
+  },
+  "walletSeed": {
+    "message": "Beursie Saad"
+  },
+  "welcomeBack": {
+    "message": "Welkom Terug!"
+  },
+  "welcome": {
+    "message": "Welkom by MetaMask"
+  },
+  "writePhrase": {
+    "message": "Skryf hierdie woorde op'n stuk papier en die winkel in'n veilige plek. As jy wil, selfs meer sekuriteit, skryf dit neer op verskeie stukke van die papier en stoor elk in 2 - 3 verskillende plekke."
+  },
+  "yesLetsTry": {
+    "message": "Ja, kom ons probeer"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Jy moet toelaat dat die kamera toegang tot hierdie funksie te gebruik."
+  },
+  "yourSigRequested": {
+    "message": "Jou handtekening is wat op versoek"
+  },
+  "youSign": {
+    "message": "Jy is die ondertekening van"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Jou private saad frase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Nul gas prys op bespoedig"
+  }
+}

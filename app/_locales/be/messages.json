@@ -1,0 +1,1478 @@
+{
+  "showIncomingTransactions": {
+    "message": "Паказаць Ўваходныя Транзакцыі"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Выберыце гэты параметр, каб выкарыстоўваць адзін з лепшых, каб паказаць ўваходныя транзакцыі ў спісе здзелак"
+  },
+  "chartOnlyAvailableEth": {
+    "message": "Графік даступны толькі ў сеткі Эфириума."
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "connections": {
+    "message": "Злучэння"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Сайты дазволена чытаць вашы акаўнты"
+  },
+  "addSite": {
+    "message": "Дадаць Сайт"
+  },
+  "addSiteDescription": {
+    "message": "Ўручную дадаць сайт, каб даць яму доступ да вашых рахунках, карысная для пажылых dapps"
+  },
+  "connected": {
+    "message": "Падлучаны"
+  },
+  "connectedDescription": {
+    "message": "Спіс сайтаў, якім дазволены доступ да вашых адрасах"
+  },
+  "privacyModeDefault": {
+    "message": "Абаронены рэжым зараз уключаны па змаўчанні"
+  },
+  "contractInteraction": {
+    "message": "Узаемадзеянне Дагавора "
+  },
+  "clearApprovalData": {
+    "message": "Выдаліць усе сайты"
+  },
+  "reject": {
+    "message": "Адхіліць"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "Гэты сайт запытвае доступ для прагляду бягучага адрасы запісу. Заўсёды пераканайцеся, што Вы давяраеце сайты вы ўзаемадзейнічаеце."
+  },
+  "about": {
+    "message": "Аб"
+  },
+  "aboutSettingsDescription": {
+    "message": "Версія, Цэнтр падтрымкі, і кантактная інфармацыя."
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessingYourCamera": {
+    "message": "Доступ да камеры..."
+  },
+  "account": {
+    "message": "Рахункі"
+  },
+  "accountDetails": {
+    "message": "Рэквізіты "
+  },
+  "accountName": {
+    "message": "Імя Ўліковага Запісу "
+  },
+  "accountOptions": {
+    "message": "Параметры Ўліковага Запісу "
+  },
+  "accountSelectionRequired": {
+    "message": "Вам трэба выбраць уліковы запіс!"
+  },
+  "activityLog": {
+    "message": "часопіс аперацый "
+  },
+  "addNetwork": {
+    "message": "Дадаць Сетку"
+  },
+  "addRecipient": {
+    "message": "Дадаць Атрымальніка"
+  },
+  "advanced": {
+    "message": "Дадаткова"
+  },
+  "advancedSettingsDescription": {
+    "message": "Асаблівасці доступ распрацоўшчык, спампаваць Дзяржаўная часопісы, скід рахункі, testnets налады і прыстасаваныя ЭКП."
+  },
+  "advancedOptions": {
+    "message": "Дадатковыя Опцыі"
+  },
+  "addToAddressBook": {
+    "message": "Дадаць у адрасную кнігу"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "напрыклад, Джон Д."
+  },
+  "addAlias": {
+    "message": "Дадаць псеўданім"
+  },
+  "addToken": {
+    "message": "Дадаць Маркер"
+  },
+  "addTokens": {
+    "message": "Дадаць Маркеры"
+  },
+  "addSuggestedTokens": {
+    "message": "Дадаць Прапанаваў Жэтоны"
+  },
+  "addAcquiredTokens": {
+    "message": "Дадаць маркеры, атрыманыя з дапамогай MetaMask"
+  },
+  "amount": {
+    "message": "Сума"
+  },
+  "appDescription": {
+    "message": "Паперніка Эфириума ў вашым браўзэры",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Зацвердзіць"
+  },
+  "approved": {
+    "message": "Зацверджаны"
+  },
+  "asset": {
+    "message": "Актыў"
+  },
+  "attemptingConnect": {
+    "message": "Спрабую падлучыцца да блокчейн."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Прадставіўшы гэтую спробу не гарантуе вашай першапачатковай здзелкі будуць адмененыя. Калі спроба адмены паспяховай, спаганяецца плата за здзелку вышэй."
+  },
+  "attributions": {
+    "message": "Атрыбуцыі"
+  },
+  "autoLogoutTimeLimit": {
+    "message": "Auto-Logout Timer (minutes)"
+  },
+  "autoLogoutTimeLimitDescription": {
+    "message": "Ўсталяваць час чакання ў хвілінах перад MetaMask аўтаматычна выйдзеце"
+  },
+  "average": {
+    "message": "Сярэдняя"
+  },
+  "back": {
+    "message": "Таму"
+  },
+  "backToAll": {
+    "message": "Для ўсіх"
+  },
+  "backupApprovalNotice": {
+    "message": "Рэзервовае капіраванне ваш сакрэтны код аднаўлення, каб захаваць ваш кашалёк і сродкі ў бяспецы."
+  },
+  "backupApprovalInfo": {
+    "message": "Гэты сакрэтны код неабходны для аднаўлення вашага кашалька ў выпадку, калі вы страціце ваша прылада, забыліся пароль, прыходзіцца зноўку ўсталёўваць MetaMask, або хочаце адкрыць свой кашалёк на адным прыладзе."
+  },
+  "backupNow": {
+    "message": "Рэзервовую копію зараз"
+  },
+  "balance": {
+    "message": "Баланс"
+  },
+  "balanceOutdated": {
+    "message": "Баланс можа быць састарэлай"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Недастатковы баланс для бягучых газу агульная"
+  },
+  "basic": {
+    "message": "Асноўныя"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockExplorerUrl": {
+    "message": "Блок Explorer"
+  },
+  "blockExplorerView": {
+    "message": "View account at $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Выкарыстоўваць Якую Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Наладзіць код транзакцыі "
+  },
+  "nonceFieldHeading": {
+    "message": "Карыстацкі Код"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  },
+  "browserNotSupported": {
+    "message": "Ваш браўзэр не падтрымліваецца..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask спраектаваны і пабудаваны ў Каліфорніі."
+  },
+  "buyWithWyre": {
+    "message": "Купіць ЕТН з Вайр"
+  },
+  "buyWithWyreDescription": {
+    "message": "Вайр дазваляе выкарыстоўваць крэдытную карту для дэпазіту даж ў свой рахунак MetaMask."
+  },
+  "buyCoinSwitch": {
+    "message": "Купіць на CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch з'яўляецца ідэальным месцам для абмену больш за 300 криптовалюты па лепшага курсе."
+  },
+  "bytes": {
+    "message": "Байт"
+  },
+  "off": {
+    "message": "Ад"
+  },
+  "ok": {
+    "message": "ОК"
+  },
+  "on": {
+    "message": "На"
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Block Explorer URL (optional)"
+  },
+  "cancel": {
+    "message": "Адмяніць"
+  },
+  "cancelAttempt": {
+    "message": "Спроба Адмяніць"
+  },
+  "cancellationGasFee": {
+    "message": "Адмена Газавых Пошлін"
+  },
+  "cancelled": {
+    "message": "Адменены"
+  },
+  "chainId": {
+    "message": "Ланцуг ID"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
+  "clickToRevealSeed": {
+    "message": "Націсніце тут, каб раскрыць таямніцу словы"
+  },
+  "close": {
+    "message": "Побач"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Вам трэба выкарыстоўваць MetaMask на Google Chrome, каб падлучыцца да вашага абсталявання кашалёк."
+  },
+  "confirm": {
+    "message": "Пацвердзіць"
+  },
+  "confirmed": {
+    "message": "Пацвердзіў"
+  },
+  "confirmPassword": {
+    "message": "Пацверджанне Пароля"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Пацвердзіце сваё сакрэтнае рэзервовае капіяванне фразы"
+  },
+  "congratulations": {
+    "message": "Віншуем"
+  },
+  "connectHardwareWallet": {
+    "message": "Падключэнне Апаратных Кашалек"
+  },
+  "connect": {
+    "message": "Падлучэнне"
+  },
+  "connectRequest": {
+    "message": "Падключыце Запыце"
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
+  "connectingToKovan": {
+    "message": "Падключэнне да Кован тэставай сеткі"
+  },
+  "connectingToMainnet": {
+    "message": "Падключэнне да асноўнай сеткі Эфириума "
+  },
+  "connectingToRopsten": {
+    "message": "Падключэнне да Ropsten тэставай сеткі"
+  },
+  "connectingToRinkeby": {
+    "message": "Падключэнне да Rinkeby тэставай сеткі"
+  },
+  "connectingToLocalhost": {
+    "message": "Падключэнне да localhost 8545"
+  },
+  "connectingToGoerli": {
+    "message": "Падключэнне да Goerli тэставай сеткі"
+  },
+  "contacts": {
+    "message": "Кантакты"
+  },
+  "contactsSettingsDescription": {
+    "message": "Дадаваць, рэдагаваць, выдаляць і кіраваць вашыя кантакты"
+  },
+  "continueToWyre": {
+    "message": "Працягваць Вайр"
+  },
+  "continueToCoinSwitch": {
+    "message": "Працягваць CoinSwitch"
+  },
+  "contractDeployment": {
+    "message": "Разгортванне Кантракту "
+  },
+  "conversionProgress": {
+    "message": "Пераўтварэнні ў прагрэс"
+  },
+  "copiedButton": {
+    "message": "Скапіяваў"
+  },
+  "copiedExclamation": {
+    "message": "Скапіявана!"
+  },
+  "copy": {
+    "message": "Копія"
+  },
+  "copyAddress": {
+    "message": "Капіяваць адрас у буфер абмену"
+  },
+  "copyTransactionId": {
+    "message": "Здзелка скапіяваць id"
+  },
+  "copiedTransactionId": {
+    "message": "Скапіяваны ID транзакцыі "
+  },
+  "copyToClipboard": {
+    "message": "Капіяваць у буфер абмену"
+  },
+  "copyButton": {
+    "message": " Копія "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
+  },
+  "create": {
+    "message": "Стварыць"
+  },
+  "createAccount": {
+    "message": "Стварыць Уліковы Запіс"
+  },
+  "createAWallet": {
+    "message": "Стварыць кашалёк"
+  },
+  "createPassword": {
+    "message": "Стварыць Пароль"
+  },
+  "currencyConversion": {
+    "message": "Канвертацыя Валюты "
+  },
+  "currentLanguage": {
+    "message": "Бягучы Мову"
+  },
+  "customGas": {
+    "message": "Налада Газу"
+  },
+  "customGasSubTitle": {
+    "message": "Павышэнне пошліны можа скараціць час апрацоўкі, але гэта не гарантуецца."
+  },
+  "customToken": {
+    "message": "Карыстацкі Маркер"
+  },
+  "customRPC": {
+    "message": "Прыстасаваныя ЭКП"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Дзесятковых знакаў павінна быць не менш 0 і не больш за 36."
+  },
+  "decimal": {
+    "message": "Дзесятковых знакаў дакладнасці"
+  },
+  "defaultNetwork": {
+    "message": "Сетка па змаўчанні для эфіру здзелак асноўны аб'ём."
+  },
+  "delete": {
+    "message": "Выдаліць"
+  },
+  "deleteAccount": {
+    "message": "Выдаліць Уліковы Запіс"
+  },
+  "deposit": {
+    "message": "Дэпазіт"
+  },
+  "depositEther": {
+    "message": "Дэпазіт Эфіру"
+  },
+  "details": {
+    "message": "Дэталі"
+  },
+  "directDepositEther": {
+    "message": "Наўпрост Дэпазіт Эфіру"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Калі ў вас ужо ёсць некаторы эфір, самы хуткі спосаб атрымаць эфір у ваш новы кашалек шляхам прамога дэпазіту."
+  },
+  "dismiss": {
+    "message": "Звольніць"
+  },
+  "done": {
+    "message": "Зроблена"
+  },
+  "downloadGoogleChrome": {
+    "message": "Спампаваць Гугл Хром"
+  },
+  "downloadSecretBackup": {
+    "message": "Спампаваць гэты сакрэт рэзервовае капіяванне фразы і трымаеце яго бяспечна захоўваць на знешнім зашыфраваны жорсткі дыск або носьбіт."
+  },
+  "downloadStateLogs": {
+    "message": "Спампаваць Дзяржаўная Часопісы"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "dropped": {
+    "message": "За"
+  },
+  "edit": {
+    "message": "Рэдагаваць"
+  },
+  "editContact": {
+    "message": "Рэдагаваць Кантактную"
+  },
+  "emailUs": {
+    "message": "Напішыце нам!"
+  },
+  "endOfFlowMessage1": {
+    "message": "Вы прайшлі тэст - трымайце seedphrase бяспечны, гэта ваша адказнасць!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Парады па захоўванні бяспечна"
+  },
+  "endOfFlowMessage3": {
+    "message": "Захаванне рэзервовай копіі ў некалькіх месцах."
+  },
+  "endOfFlowMessage4": {
+    "message": "Ніколі не падзяліцца фразы З кім-небудзь."
+  },
+  "endOfFlowMessage5": {
+    "message": "Будзьце асцярожныя, фішынг! MetaMask не спантанна задаць для насення фразу."
+  },
+  "endOfFlowMessage6": {
+    "message": "Калі вам трэба атрымаць назад сваё насеньне фразы, вы можаце знайсці яго ў Налады -> Бяспека."
+  },
+  "endOfFlowMessage7": {
+    "message": "Калі ў вас ёсць пытанні ці ўбачыць што-то нячыстае, электронная пошта support@metamask.io."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask не можа аднавіць свой seedphrase."
+  },
+  "endOfFlowMessage9": {
+    "message": "Даведацца больш."
+  },
+  "endOfFlowMessage10": {
+    "message": "Усё Зроблена"
+  },
+  "ensRegistrationError": {
+    "message": "Памылка ў ENS рэгістрацыі"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ЭНС імя не знойдзена ў бягучай сеткі. Паспрабуйце перайсці на галоўную сетку Эфириума."
+  },
+  "enterAnAlias": {
+    "message": "Калі ласка, увядзіце псеўданім"
+  },
+  "enterPassword": {
+    "message": "Калі ласка, увядзіце пароль"
+  },
+  "enterPasswordContinue": {
+    "message": "Калі ласка, увядзіце пароль для працягу"
+  },
+  "ethereumPublicAddress": {
+    "message": "Грамадскія Эфириума Адрас"
+  },
+  "etherscanView": {
+    "message": "Выгляд рахункі на адзін з лепшых"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Разліковы Час Апрацоўкі "
+  },
+  "expandView": {
+    "message": "Разгарнуць"
+  },
+  "exportPrivateKey": {
+    "message": "Экспарт Закрытага Ключа"
+  },
+  "failed": {
+    "message": "Не ўдалося"
+  },
+  "fast": {
+    "message": "Хутка"
+  },
+  "faster": {
+    "message": "Хутчэй"
+  },
+  "fiat": {
+    "message": "Фіят",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forgetDevice": {
+    "message": "Забыць гэта прылада"
+  },
+  "from": {
+    "message": "Ад"
+  },
+  "fromShapeShift": {
+    "message": "З Друидских"
+  },
+  "functionType": {
+    "message": "Тып Функцыі "
+  },
+  "gasLimit": {
+    "message": "Ліміту Газу"
+  },
+  "gasLimitCalculation": {
+    "message": "Мы разлічваем прапанаваў ліміту газу на аснове паспяховасці сеткі."
+  },
+  "gasLimitInfoModalContent": {
+    "message": "Газавы ліміт-гэта максімальная колькасць адзінак газу, якую вы гатовыя выдаткаваць."
+  },
+  "gasLimitTooLow": {
+    "message": "Ліміту газу павінна быць не менш 21000"
+  },
+  "gasUsed": {
+    "message": "Газ, Які Выкарыстоўваецца"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Цана На Газ Вельмі Нізкая"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Цана на газ вызначае колькасць эфіру, якую вы гатовыя заплаціць за кожную адзінку газу."
+  },
+  "gasPriceNoDenom": {
+    "message": "Цана На Газ "
+  },
+  "gasPriceCalculation": {
+    "message": "Мы разлічваем прапанаванай цэны на газ у залежнасці ад паспяховасці сеткі."
+  },
+  "general": {
+    "message": "Агульныя"
+  },
+  "generalSettingsDescription": {
+    "message": "Канвертацыя валюты, асноўная валюта, мова, якую blockies identicon"
+  },
+  "getEther": {
+    "message": "Вам Эфіру"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "Вам Дапамагчы."
+  },
+  "getStarted": {
+    "message": "Пачнем"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "Мы рады бачыць вас."
+  },
+  "hardware": {
+    "message": "абсталяванне"
+  },
+  "hardwareWalletConnected": {
+    "message": "Апаратны кашалек падлучаны"
+  },
+  "hardwareWallets": {
+    "message": "Падключыце апаратны кашалек"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Выберыце апаратнага кашалька, які вы хочаце выкарыстоўваць з MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "here": {
+    "message": "тут",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Шаснаццатковых Дадзеных"
+  },
+  "hide": {
+    "message": "Схаваць"
+  },
+  "hideToken": {
+    "message": "Схаваць Маркер"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "history": {
+    "message": "Гісторыя"
+  },
+  "import": {
+    "message": "Імпарт",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Імпарт Уліковых Запісаў"
+  },
+  "importAccountMsg": {
+    "message": " Імпартаваныя акаўнты не будуць звязаны з вашым першапачаткова створаны MetaMask seedphrase рахункі. Даведацца больш пра імпартаваных уліковых запісаў "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Імпарт рахунак з насення фраза"
+  },
+  "importWallet": {
+    "message": "Імпарт Кашалек"
+  },
+  "importYourExisting": {
+    "message": "Імпартаваць свой кашалёк з дапамогай 12 словы насення фраза"
+  },
+  "imported": {
+    "message": "Імпартныя",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Імпарт выкарыстоўваючы рахунак насення фраза"
+  },
+  "infoHelp": {
+    "message": "Інфармацыя І Дапамогу"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Ваша першапачатковая здзелка была пацверджана сеткі. Націсніце кнопку ОК, каб вярнуцца."
+  },
+  "insufficientBalance": {
+    "message": "Недастатковы баланс."
+  },
+  "insufficientFunds": {
+    "message": "Недастаткова сродкаў."
+  },
+  "insufficientTokens": {
+    "message": "Недастаткова жэтонаў."
+  },
+  "invalidAddress": {
+    "message": "Няправільны адрас"
+  },
+  "invalidAddressRecipient": {
+    "message": "Адрас атрымальніка ня дзейнічае"
+  },
+  "knownAddressRecipient": {
+    "message": "Вядомаму адрасе дагавор."
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Эт не сетка, набор у ніжні рэгістр"
+  },
+  "invalidInput": {
+    "message": "Няправільны ўвод."
+  },
+  "invalidRPC": {
+    "message": "Недапушчальны URL-адрас ЭКП "
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Недапушчальны блок Аглядальніку URL-адрас"
+  },
+  "invalidSeedPhrase": {
+    "message": "Няправільны насення фраза"
+  },
+  "jsonFile": {
+    "message": "JSON-файл ",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Тэст Сеткі Кован "
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "learnMore": {
+    "message": "Даведайцеся больш"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Вы павінны выкарыстоўваць ваш апошні рахунак, перш чым вы можаце дадаць новы."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Так, будзем!"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Спасылкі"
+  },
+  "liveGasPricePredictions": {
+    "message": "Прагнозы Коштаў На Газ "
+  },
+  "loading": {
+    "message": "Загрузка..."
+  },
+  "loadingTokens": {
+    "message": "Маркеры Загрузка..."
+  },
+  "loadMore": {
+    "message": "Нагрузка Больш"
+  },
+  "localhost": {
+    "message": "Лакальны 8545"
+  },
+  "login": {
+    "message": "Увайсці Ў"
+  },
+  "logout": {
+    "message": "Выйсці"
+  },
+  "logoutTimeTooGreat": {
+    "message": "Выхад часу занадта вялікая"
+  },
+  "mainnet": {
+    "message": "Галоўная Сетка Эфириума "
+  },
+  "memorizePhrase": {
+    "message": "Запомніце гэтую фразу."
+  },
+  "memo": {
+    "message": "памятка"
+  },
+  "menu": {
+    "message": "Меню"
+  },
+  "message": {
+    "message": "Паведамленне"
+  },
+  "metamaskDescription": {
+    "message": "Падключэнне да сеткі Ethereum і дэцэнтралізацыі інтэрнэту."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Насення Словы"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Версія"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
+  "mobileSyncText": {
+    "message": "Калі ласка, увядзіце Ваш пароль, каб пацвердзіць, што гэта вы!"
+  },
+  "myAccounts": {
+    "message": "Мае Рахункі"
+  },
+  "myWalletAccounts": {
+    "message": "Мой Кашалёк Рахункі"
+  },
+  "myWalletAccountsDescription": {
+    "message": "Усе вашыя MetaMask створаныя ўліковыя запісы будуць аўтаматычна дададзены ў гэты раздзел."
+  },
+  "mustSelectOne": {
+    "message": "Павінны абраць па крайняй меры 1 знак."
+  },
+  "needEtherInWallet": {
+    "message": "Ўзаемадзейнічаць з дэцэнтралізаванай прыкладаннямі, выкарыстоўваючы MetaMask, вам неабходна эфіру ў ваш кашалёк."
+  },
+  "needImportFile": {
+    "message": "Неабходна выбраць файл для імпарту.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Не магу адправіць адмоўную суму з Швейцарскай вышэйшай тэхнічнай школы."
+  },
+  "networkName": {
+    "message": "Імя Сеткі "
+  },
+  "networks": {
+    "message": "Сетак"
+  },
+  "networkSettingsDescription": {
+    "message": "Даданне і рэдагаванне карыстацкіх сетак ЭКП "
+  },
+  "nevermind": {
+    "message": "Дулю"
+  },
+  "newAccount": {
+    "message": "Новы Рахунак"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Новы адрас выяўленыя! Націсніце тут, каб дадаць у адрасную кнігу."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Новы Кантакт"
+  },
+  "newContract": {
+    "message": "Новы Кантракт"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newNetwork": {
+    "message": "Новая Сетка"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Няма, у мяне ўжо ёсць фраза насення"
+  },
+  "protectYourKeys": {
+    "message": "Абараніць Вашыя Ключы!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Будзьце асцярожныя з насення фраза — былі паведамленні аб сайтах, якія спрабуюць пераймаць MetaMask. MetaMask ніколі не будзе прасіць для вашага семені фраза!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Трымаць вашу фразу бяспечны. Калі вы бачыце што-то падазронае, ці вы не ўпэўненыя ў сайце, па электроннай пошце support@metamask.io"
+  },
+  "rpcUrl": {
+    "message": "Новы URL-адрас ЭКП "
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "newTotal": {
+    "message": "Новы Вынік"
+  },
+  "newTransactionFee": {
+    "message": "Новая Плата За Здзелку "
+  },
+  "next": {
+    "message": "Далей"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAddressForName": {
+    "message": "Няма адрас для гэтага імя."
+  },
+  "noDeposits": {
+    "message": "Ніякія дэпазіты, атрыманыя"
+  },
+  "noConversionRateAvailable": {
+    "message": "Няма Курс Канвертацыі Даступны"
+  },
+  "noTransactions": {
+    "message": "У вас няма здзелак"
+  },
+  "noThanks": {
+    "message": "Няма, Дзякуй"
+  },
+  "notEnoughGas": {
+    "message": "Не Хапае Газу"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Вэб-камера не знойдзена"
+  },
+  "noWebcamFound": {
+    "message": "Вэб-камеры вашага кампутара не знойдзена. Калі ласка, паспрабуйце зноў."
+  },
+  "ofTextNofM": {
+    "message": "з"
+  },
+  "orderOneHere": {
+    "message": "Замовіць Трэзор ці кнігу і захаваць вашы сродкі ў халадзільніку "
+  },
+  "origin": {
+    "message": "Паходжання"
+  },
+  "parameters": {
+    "message": "Параметры"
+  },
+  "participateInMetaMetrics": {
+    "message": "Удзел у MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Удзельнічаць у MetaMetrics, каб дапамагчы нам зрабіць лепш MetaMask"
+  },
+  "password": {
+    "message": "Пароль"
+  },
+  "passwordsDontMatch": {
+    "message": "Паролі не супадаюць"
+  },
+  "passwordNotLongEnough": {
+    "message": "Пароль недастаткова доўгі "
+  },
+  "pastePrivateKey": {
+    "message": "Уставіць ваш асабісты ключ радкі тут:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Устаўце насення фраза тут!"
+  },
+  "pending": {
+    "message": "у чаканні"
+  },
+  "personalAddressDetected": {
+    "message": "Асабісты адрас выяўленыя. Увод дагавора маркер адрасы."
+  },
+  "prev": {
+    "message": "Прад'"
+  },
+  "primaryCurrencySetting": {
+    "message": "Першасная Валюта"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "privacyMsg": {
+    "message": "Палітыка Прыватнасці "
+  },
+  "privateKey": {
+    "message": "Закрыты Ключ",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Папярэджанне: ніколі не раскрываць гэты ключ. Каму-то свае асабістыя ключы могуць скрасці любыя актывы, якія знаходзяцца на вашым рахунку."
+  },
+  "privateNetwork": {
+    "message": "Прыватная Сетка"
+  },
+  "qrCode": {
+    "message": "Паказаць QR-код"
+  },
+  "queue": {
+    "message": "Чэргі"
+  },
+  "readdToken": {
+    "message": "Вы можаце дадаць гэты знак у будучыні, Перайшоўшы на \"Дадаць маркер\" у меню опцыі ўліковыя запісы."
+  },
+  "recents": {
+    "message": "Пабудова"
+  },
+  "recipientAddress": {
+    "message": "Адрас Атрымальніка "
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Search, public address (0x), or ENS"
+  },
+  "rejectAll": {
+    "message": "Адхіліць Усе"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
+  "rejected": {
+    "message": "Адхіленыя"
+  },
+  "reset": {
+    "message": "Скід"
+  },
+  "resetAccount": {
+    "message": "Скінуць Уліковы Запіс "
+  },
+  "resetAccountDescription": {
+    "message": "Скід вашага рахунку будзе ачысціць гісторыю транзакцый."
+  },
+  "deleteNetwork": {
+    "message": "Delete Network?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Are you sure you want to delete this network?"
+  },
+  "remindMeLater": {
+    "message": "Нагадаеце мне пазней"
+  },
+  "restoreFromSeed": {
+    "message": "Restore account?"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Аднавіць свой уліковы запіс з насення фраза"
+  },
+  "restoreWalletPreferences": {
+    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "запытаў, якія чакаюць прызнаў"
+  },
+  "required": {
+    "message": "Патрабуецца"
+  },
+  "restore": {
+    "message": "Аднаўленне"
+  },
+  "revealSeedWords": {
+    "message": "Раскрыць Насення Словы"
+  },
+  "revealSeedWordsTitle": {
+    "message": "Насення Фраза"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Калі вы калі-небудзь змяніць браўзэры або перамяшчаць кампутары, вы будзеце мець патрэбу ў гэтым семені фразы атрымаць доступ да вашых рахунках. Захаваць іх куды-небудзь бяспечнай і сакрэтнай."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Не падзяляе такую фразу з кім!"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Гэтыя словы могуць выкарыстоўвацца, каб скрасці ўсе вашы ўліковыя запісы."
+  },
+  "revert": {
+    "message": "Вярнуцца"
+  },
+  "remove": {
+    "message": "Выдаліць"
+  },
+  "removeAccount": {
+    "message": "Выдаліць рахунак"
+  },
+  "removeAccountDescription": {
+    "message": "Гэтая уліковы запіс будзе выдаленая з вашага кашалька. Калі ласка, пераканайцеся, што ў вас ёсць арыгінальны насеньне фразы або закрыты ключ для гэтага імпартныя рахункі, перш чым працягнуць. Вы можаце імпартаваць або зноў стварыць уліковыя запісы з выпадальнага рахункі. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "rinkeby": {
+    "message": "Сетка Rinkeby Тэст "
+  },
+  "ropsten": {
+    "message": "Сетка Ropsten Тэст "
+  },
+  "goerli": {
+    "message": "Тэст Сеткі Goerli "
+  },
+  "save": {
+    "message": "Захаваць"
+  },
+  "slow": {
+    "message": "Павольна"
+  },
+  "slower": {
+    "message": "Павольней"
+  },
+  "saveAsCsvFile": {
+    "message": "Захаваць як CSV файл"
+  },
+  "scanInstructions": {
+    "message": "Размесціце QR-код у пярэдняй частцы камеры"
+  },
+  "scanQrCode": {
+    "message": "Код сканавання QR "
+  },
+  "search": {
+    "message": "Пошук"
+  },
+  "searchResults": {
+    "message": "Вынікі Пошуку "
+  },
+  "secretBackupPhrase": {
+    "message": "Сакрэтная Рэзервовае Капіяванне Фразы"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Ваш сакрэт рэзервовага капіявання фраза робіць яго лёгка для рэзервовага капіявання і аднаўлення вашага акаўнта."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Папярэджанне: ніколі не раскрываць свае рэзервовыя фразы. Хто з гэтай фразай можаце ўзяць ваш эфір назаўжды."
+  },
+  "secretPhrase": {
+    "message": "Калі ласка, увядзіце ваш сакрэтны дванаццаць слоў фразы тут, каб аднавіць сховішча."
+  },
+  "securityAndPrivacy": {
+    "message": "Бяспека І Канфідэнцыяльнасць"
+  },
+  "securitySettingsDescription": {
+    "message": "Налады прыватнасці і кашалек насення фраза"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Аддзеліце кожнае слова з прабелам"
+  },
+  "seedPhraseReq": {
+    "message": "Насення фраз 12 слоў"
+  },
+  "selectCurrency": {
+    "message": "Выберыце Валюту"
+  },
+  "selectEachPhrase": {
+    "message": "Калі ласка, абярыце кожная фраза для таго, каб пераканацца, што гэта правільна."
+  },
+  "selectLocale": {
+    "message": "Абярыце Мову"
+  },
+  "selectType": {
+    "message": "Выберыце Тып"
+  },
+  "send": {
+    "message": "Адправіць"
+  },
+  "sendAmount": {
+    "message": "Адправіць Суму"
+  },
+  "sendETH": {
+    "message": "Адправіць ЕТН"
+  },
+  "sendTokens": {
+    "message": "Адправіць"
+  },
+  "sentEther": {
+    "message": "адпраўлена эфіру"
+  },
+  "sentTokens": {
+    "message": "адправіў жэтоны"
+  },
+  "separateEachWord": {
+    "message": "Аддзеліце кожнае слова з прабелам"
+  },
+  "searchTokens": {
+    "message": "Токены Пошук "
+  },
+  "selectAnAccount": {
+    "message": "Абярыце уліковы запіс"
+  },
+  "selectAnAccountHelp": {
+    "message": "Абярыце уліковы запіс для прагляду ў MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Абярыце больш высокае газавае плату для паскарэння апрацоўкі вашай транзакцыі.*"
+  },
+  "selectHdPath": {
+    "message": "Выберыце шлях "
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "settings": {
+    "message": "Параметры"
+  },
+  "showAdvancedGasInline": {
+    "message": "Дадатковыя элементы кіравання газ "
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Выберыце гэты параметр, каб паказаць цэны на газ і абмежаваць элементаў кіравання прама на Адправіць і пацвердзіць экраны."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Паказаць пераўтварэнні на Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Выберыце гэты параметр, каб паказаць пераўтварэнні фіят на Testnets"
+  },
+  "showPrivateKeys": {
+    "message": "Паказаць Закрытых Ключоў"
+  },
+  "showHexData": {
+    "message": "Паказаць Шаснаццатковы Дадзеных"
+  },
+  "showHexDataDescription": {
+    "message": "Выберыце гэты параметр, каб паказаць поле hex дадзеных на экран"
+  },
+  "sign": {
+    "message": "Знак"
+  },
+  "signatureRequest": {
+    "message": "Запыт Подпісы "
+  },
+  "signed": {
+    "message": "Подпіс"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Запыт Подпісы "
+  },
+  "somethingWentWrong": {
+    "message": "Упс! Што-то пайшло не так."
+  },
+  "speedUp": {
+    "message": "Паскорыць"
+  },
+  "speedUpCancellation": {
+    "message": "Паскорыць гэты адмена"
+  },
+  "speedUpTransaction": {
+    "message": "Паскорыць гэтую аперацыю"
+  },
+  "switchNetworks": {
+    "message": "Перамыкач Сетак"
+  },
+  "stateLogFileName": {
+    "message": "Стан MetaMask Часопісы"
+  },
+  "stateLogs": {
+    "message": "Стан Часопісаў"
+  },
+  "stateLogsDescription": {
+    "message": "Дзяржаўная часопісы ўтрымліваюць адрасы персанальную уліковы запіс і паслаў здзелак."
+  },
+  "stateLogError": {
+    "message": "Памылка пры атрыманні стану бервяна."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Падключэнне Апаратных Кашалек"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Падключыце апаратны кашалек прама на кампутар."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Абярыце уліковы запіс"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Абярыце рахунак, які вы хочаце прагледзець. Вы можаце выбраць толькі адзін за раз."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Пачаць выкарыстоўваць dApps і многае іншае!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Выкарыстанне апаратных ўліковы запіс, як вы б з любой уліковым запісам Эфириума. Ўвайдзіце ў dApps, адправіць Эт, купляць і захоўваць ERC20 жэтоны і незаменяемые маркеры як CryptoKitties."
+  },
+  "storePhrase": {
+    "message": "Захоўваць гэтую фразу Ў менеджэр пароляў, як 1Password."
+  },
+  "submit": {
+    "message": "Прадставіць"
+  },
+  "submitted": {
+    "message": "Прадстаўлены"
+  },
+  "supportCenter": {
+    "message": "Наведайце наш Цэнтр падтрымкі "
+  },
+  "symbol": {
+    "message": "Сімвал"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Сімвал павінен быць паміж 0 і 12 знакаў."
+  },
+  "syncWithThreeBox": {
+    "message": "Sync data with 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Для налады рэзервовага капіявання з 3box ст. Гэтая функцыя з'яўляецца эксперыментальнай валюты; выкарыстоўвайце на свой страх і рызыка."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3box у быў адключаны з-за памылкі падчас пачатковай сінхранізацыі"
+  },
+  "syncWithMobile": {
+    "message": "Сінхранізацыя з мабільнымі"
+  },
+  "syncWithMobileTitle": {
+    "message": "Сінхранізацыя з мабільнымі"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Калі вы проста адкрываеце MetaMask мабільныя прыкладання ў першы раз, проста выконвайце інструкцыі на вашым тэлефоне."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Сканаваць гэты код з MetaMask мабільнае прыкладанне"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Пераканайцеся, што ніхто не глядзіць на экран, калі вы сканируете гэты код"
+  },
+  "syncWithMobileComplete": {
+    "message": "Вашы дадзеныя былі паспяхова сінхранізаваныя. Атрымлівайце асалоду ад MetaMask мабільнае прыкладанне!"
+  },
+  "terms": {
+    "message": "Умовы выкарыстання"
+  },
+  "testFaucet": {
+    "message": "Выпрабаванне Кран"
+  },
+  "thisWillCreate": {
+    "message": "Гэта дазволіць стварыць новы кашалёк і насення фраза"
+  },
+  "tips": {
+    "message": "Парады"
+  },
+  "to": {
+    "message": "Для"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Маркер"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Маркер ўжо быў дададзены."
+  },
+  "tokenContractAddress": {
+    "message": "Маркер Адрасы Дагавор "
+  },
+  "tokenSymbol": {
+    "message": "Сімвал Маркера "
+  },
+  "total": {
+    "message": "Агульная"
+  },
+  "transaction": {
+    "message": "здзелкі"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed at $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped at $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated at $2."
+  },
+  "transactionErrored": {
+    "message": "Транзакцыі адбылася памылка."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
+  },
+  "transactionError": {
+    "message": "Памылка Транзакцыі. Выключэнне ў дамове код."
+  },
+  "transactionErrorNoContract": {
+    "message": "Спрабую выклікаць функцыю на кантрактныя адрас."
+  },
+  "transactionFee": {
+    "message": "Плата За Здзелку "
+  },
+  "transactionTime": {
+    "message": "Час Здзелкі "
+  },
+  "transfer": {
+    "message": "Пераклад"
+  },
+  "transferBetweenAccounts": {
+    "message": "Пераклад паміж сваімі рахункамі"
+  },
+  "transferFrom": {
+    "message": "Трансфер З"
+  },
+  "troubleTokenBalances": {
+    "message": "У нас былі праблемы з загрузкай рэшткі маркера. Вы можаце праглядзець іх ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Паспрабуйце зноў "
+  },
+  "typePassword": {
+    "message": "Калі ласка, увядзіце пароль MetaMask "
+  },
+  "unapproved": {
+    "message": "Нямоцныя"
+  },
+  "units": {
+    "message": "адзінкі"
+  },
+  "unknown": {
+    "message": "Невядома"
+  },
+  "unknownNetwork": {
+    "message": "Невядомы Прыватнай Сеткі"
+  },
+  "unknownQrCode": {
+    "message": "Памылка: мы не змаглі вызначыць, што QR код"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Упс! Што-то пайшло не так...."
+  },
+  "unknownCameraError": {
+    "message": "Адбылася памылка пры спробе атрымаць доступ да вашай камеры. Калі ласка, паспрабуйце зноў..."
+  },
+  "unlock": {
+    "message": "Разблакіроўка"
+  },
+  "unlockMessage": {
+    "message": "Дэцэнтралізаваны вэб-чакае"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
+  },
+  "uriErrorMsg": {
+    "message": "Урис патрабуюць адпаведныя http/прэфікс https."
+  },
+  "usedByClients": {
+    "message": "Выкарыстоўваецца розных кліентаў"
+  },
+  "userName": {
+    "message": "Імя карыстальніка"
+  },
+  "validFileImport": {
+    "message": "Вы павінны выбраць правільны файл для імпарту."
+  },
+  "viewAccount": {
+    "message": "Прагледзець Уліковы Запіс "
+  },
+  "viewinExplorer": {
+    "message": "Прагляд у Аглядальніку"
+  },
+  "viewContact": {
+    "message": "Паглядзець Кантакты"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "View at $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Від на адзін з лепшых"
+  },
+  "visitWebSite": {
+    "message": "Наведайце наш вэб-сайт"
+  },
+  "walletSeed": {
+    "message": "Насення Кашалек "
+  },
+  "welcomeBack": {
+    "message": "Сардэчна Запрашаем!"
+  },
+  "welcome": {
+    "message": "Сардэчна запрашаем у MetaMask"
+  },
+  "writePhrase": {
+    "message": "Напішыце гэтую фразу на паперцы і захоўваць у бяспечным месцы. Калі вы хочаце яшчэ больш бяспекі, запішыце яго на некалькіх лістах паперы і захоўваць у кожную 2 - 3 розных месцы."
+  },
+  "yesLetsTry": {
+    "message": "Так, давайце паспрабуем"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Вам трэба дазволіць доступ да камеры, каб выкарыстоўваць гэтую функцыю."
+  },
+  "yourSigRequested": {
+    "message": "Ваша подпіс запытваецца"
+  },
+  "youSign": {
+    "message": "Вы падпісваеце"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Вашыя асабістыя насення фраза"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Нуль цана газу на хуткасці да"
+  }
+}
