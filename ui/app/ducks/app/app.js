@@ -3,10 +3,10 @@ const actions = require('../../store/actions')
 const txHelper = require('../../../lib/tx-helper')
 const log = require('loglevel')
 
-module.exports = reduceApp
+// Actions
+const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
-
-function reduceApp (state, action) {
+export default function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
@@ -73,6 +73,8 @@ function reduceApp (state, action) {
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
     loadingMethodData: false,
+    show3BoxModalAfterImport: false,
+    threeBoxLastUpdated: null,
   }, state.appState)
 
   switch (action.type) {
@@ -756,11 +758,25 @@ function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
+    case SET_THREEBOX_LAST_UPDATED:
+      return extend(appState, {
+        threeBoxLastUpdated: action.value,
+      })
+
     default:
       return appState
   }
 }
 
+// Action Creators
+export function setThreeBoxLastUpdated (lastUpdated) {
+  return {
+    type: SET_THREEBOX_LAST_UPDATED,
+    value: lastUpdated,
+  }
+}
+
+// Helpers
 function checkUnconfActions (state) {
   const unconfActionList = getUnconfActionList(state)
   const hasUnconfActions = unconfActionList.length > 0

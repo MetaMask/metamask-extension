@@ -38,7 +38,7 @@ const getEnvironmentType = (url = window.location.href) => {
   const parsedUrl = new URL(url)
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
-  } else if (parsedUrl.pathname === '/home.html') {
+  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
@@ -144,6 +144,10 @@ function removeListeners (listeners, emitter) {
   })
 }
 
+function getRandomArrayItem (array) {
+  return array[Math.floor((Math.random() * array.length))]
+}
+
 module.exports = {
   removeListeners,
   applyListeners,
@@ -154,4 +158,5 @@ module.exports = {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
+  getRandomArrayItem,
 }

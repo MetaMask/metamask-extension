@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import {
   MAINNET_CODE,
   ROPSTEN_CODE,
-  RINKEYBY_CODE,
+  RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
 } from '../../../../../app/scripts/controllers/network/enums'
@@ -12,7 +12,7 @@ import {
 const networkToClassHash = {
   [MAINNET_CODE]: 'mainnet',
   [ROPSTEN_CODE]: 'ropsten',
-  [RINKEYBY_CODE]: 'rinkeby',
+  [RINKEBY_CODE]: 'rinkeby',
   [GOERLI_CODE]: 'goerli',
   [KOVAN_CODE]: 'kovan',
 }

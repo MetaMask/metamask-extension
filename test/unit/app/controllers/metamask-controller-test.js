@@ -4,10 +4,36 @@ const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
-const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
 const EthQuery = require('eth-query')
+
+const threeBoxSpies = {
+  init: sinon.spy(),
+  getThreeBoxAddress: sinon.spy(),
+  getThreeBoxSyncingState: sinon.stub().returns(true),
+  turnThreeBoxSyncingOn: sinon.spy(),
+  _registerUpdates: sinon.spy(),
+}
+const proxyquire = require('proxyquire')
+
+class ThreeBoxControllerMock {
+  constructor () {
+    this.store = {
+      subscribe: () => {},
+      getState: () => ({}),
+    }
+    this.init = threeBoxSpies.init
+    this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
+    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
+    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
+    this._registerUpdates = threeBoxSpies._registerUpdates
+  }
+}
+
+const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
+  './controllers/threebox': ThreeBoxControllerMock,
+})
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'
@@ -82,6 +108,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
+      threeBoxSpies.init.reset()
+      threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -99,6 +127,12 @@ describe('MetaMaskController', function () {
       addresses.forEach((address) => {
         assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
       })
+    })
+
+    it('gets the address from threebox and creates a new 3box instance', async () => {
+      await metamaskController.submitPassword(password)
+      assert(threeBoxSpies.init.calledOnce)
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
     })
   })
 

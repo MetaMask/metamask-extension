@@ -8,7 +8,17 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
-import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount, updateTransaction } from '../../store/actions'
+import {
+  updateCustomNonce,
+  clearSend,
+  cancelTx,
+  cancelTxs,
+  updateAndApproveTx,
+  showModal,
+  setMetaMetricsSendCount,
+  updateTransaction,
+  getNextNonce,
+} from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -18,7 +28,7 @@ import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
+import { getMetaMaskAccounts, getCustomNonceValue, getUseNonceField, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -27,6 +37,12 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
     [base.toLowerCase()]: contractMap[base],
   }
 }, {})
+
+let customNonceValue = ''
+const customNonceMerge = txData => customNonceValue ? ({
+  ...txData,
+  customNonceValue,
+}) : txData
 
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, match: { params = {} } } = ownProps
@@ -45,6 +61,7 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     metaMetricsSendCount,
+    nextNonce,
   } = metamask
   const {
     tokenData,
@@ -146,16 +163,23 @@ const mapStateToProps = (state, ownProps) => {
       gasPrice,
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
+    useNonceField: getUseNonceField(state),
+    customNonceValue: getCustomNonceValue(state),
     insufficientBalance,
     hideSubtitle: (!isMainnet && !showFiatInTestnets),
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
     metaMetricsSendCount,
     transactionCategory,
+    nextNonce,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = dispatch => {
   return {
+    updateCustomNonce: value => {
+      customNonceValue = value
+      dispatch(updateCustomNonce(value))
+    },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
@@ -172,8 +196,9 @@ const mapDispatchToProps = dispatch => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: txData => dispatch(updateAndApproveTx(txData)),
+    sendTransaction: txData => dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
+    getNextNonce: () => dispatch(getNextNonce()),
   }
 }
 

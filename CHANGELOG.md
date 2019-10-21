@@ -2,9 +2,29 @@
 
 ## Current Develop Branch
 
+## 7.3.0 Fri Sep 27 2019
+- [#6972](https://github.com/MetaMask/metamask-extension/pull/6972): 3box integration
+- [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
+- [#7170](https://github.com/MetaMask/metamask-extension/pull/7170): Remove the disk store
+- [#7176](https://github.com/MetaMask/metamask-extension/pull/7176): Performance: Delivery optimized images
+- [#7189](https://github.com/MetaMask/metamask-extension/pull/7189): add goerli to incoming tx
+- [#7190](https://github.com/MetaMask/metamask-extension/pull/7190): Remove unused locale messages
+- [#7173](https://github.com/MetaMask/metamask-extension/pull/7173): Fix RPC error messages
+- [#7205](https://github.com/MetaMask/metamask-extension/pull/7205): address book entries by chainId
+- [#7207](https://github.com/MetaMask/metamask-extension/pull/7207): obs-store/local-store should upgrade webextension error to real error
+- [#7162](https://github.com/MetaMask/metamask-extension/pull/7162): Add a/b test for full screen transaction confirmations
+- [#7089](https://github.com/MetaMask/metamask-extension/pull/7089): Add advanced setting to enable editing nonce on confirmation screens
+- [#7239](https://github.com/MetaMask/metamask-extension/pull/7239): Update ETH logo, update deposit Ether logo height and width
+- [#7255](https://github.com/MetaMask/metamask-extension/pull/7255): Use translated string for state log
+- [#7266](https://github.com/MetaMask/metamask-extension/pull/7266): fix issue of xyz ens not resolving
+- [#7253](https://github.com/MetaMask/metamask-extension/pull/7253): Prevent Logout Timer that's longer than a week.
+- [#7285](https://github.com/MetaMask/metamask-extension/pull/7285): Lessen the length of ENS validation to 3
+- [#7287](https://github.com/MetaMask/metamask-extension/pull/7287): Fix phishing detect script
+
 ## 7.2.3 Fri Oct 04 2019
 - [#7252](https://github.com/MetaMask/metamask-extension/pull/7252): Fix gas limit when sending tx without data to a contract
 - [#7260](https://github.com/MetaMask/metamask-extension/pull/7260): Do not transate on seed phrases
+- [#7252](https://github.com/MetaMask/metamask-extension/pull/7252): Ensure correct tx category when sending to contracts without tx data
 
 ## 7.2.2 Tue Sep 24 2019
 - [#7213](https://github.com/MetaMask/metamask-extension/pull/7213): Update minimum Firefox verison to 56.0

@@ -100,7 +100,7 @@ function isValidAddress (address) {
 }
 
 function isValidENSAddress (address) {
-  return address.match(/^.{7,}\.(eth|test)$/)
+  return address.match(/^.{3,}\.(eth|test|xyz)$/)
 }
 
 function isInvalidChecksumAddress (address) {
