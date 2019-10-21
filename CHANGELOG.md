@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 7.3.1 Mon Oct 21 2019
+- [#7298](https://github.com/MetaMask/metamask-extension/pull/7298): Turn off full screen vs popup a/b test 
+
 ## 7.3.0 Fri Sep 27 2019
 - [#6972](https://github.com/MetaMask/metamask-extension/pull/6972): 3box integration
 - [#7168](https://github.com/MetaMask/metamask-extension/pull/7168): Add fixes for German translations
