@@ -36,9 +36,9 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[totalUnconfirmed - 1]
     : {}
-  const { id: transactionId, transactionCategory, origin } = transaction
+  const { id: transactionId, transactionCategory } = transaction
 
-  const trackABTest = origin !== 'MetaMask'
+  const trackABTest = false
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
