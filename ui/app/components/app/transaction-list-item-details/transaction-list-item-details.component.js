@@ -33,6 +33,10 @@ export default class TransactionListItemDetails extends PureComponent {
     cancelDisabled: false,
   }
 
+  handleRetryClick = () => {
+    console.log('wat')
+  }
+
   handleEtherscanClick = () => {
     const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
     const { hash, metamaskNetworkId } = primaryTransaction
@@ -172,6 +176,19 @@ export default class TransactionListItemDetails extends PureComponent {
                 <img src="/images/arrow-popout.svg" />
               </Button>
             </Tooltip>
+            {
+              showRetry && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryFailedTransaction')}>
+                <Button
+                  type="raised"
+                  onClick={this.handleRetryClick}
+                  className="transaction-list-item-details__header-button"
+                  disabled={!hash}
+                >
+                  {/* <img src="/images/arrow-popout.svg" /> */}
+                  <i className="fa fa-refresh"></i>
+                </Button>
+              </Tooltip>
+            }
           </div>
         </div>
         <div className="transaction-list-item-details__body">
