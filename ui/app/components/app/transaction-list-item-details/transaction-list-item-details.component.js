@@ -33,9 +33,7 @@ export default class TransactionListItemDetails extends PureComponent {
     cancelDisabled: false,
   }
 
-  handleRetryClick = () => {
-    console.log('wat')
-  }
+  handleRetryClick = event => this.handleRetry(event)
 
   handleEtherscanClick = () => {
     const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
