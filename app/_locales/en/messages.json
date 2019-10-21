@@ -1442,8 +1442,8 @@
   "viewOnEtherscan": {
     "message": "View on Etherscan"
   },
-  "retryFailedTransaction": {
-    "message": "Retry Failed Transaction"
+  "retryTransaction": {
+    "message": "Retry Transaction"
   },
   "visitWebSite": {
     "message": "Visit our web site"
