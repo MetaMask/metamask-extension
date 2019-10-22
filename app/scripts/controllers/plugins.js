@@ -15,7 +15,7 @@ const SES = (
             return () => true
           },
         }
-      }
+      },
     }
     : require('ses')
 )
@@ -39,7 +39,7 @@ class PluginsController extends EventEmitter {
 
     // TODO:SECURITY disable errorStackMode for production
     this.rootRealm = SES.makeSESRootRealm({
-      consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'
+      consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow',
     })
 
     this.setupProvider = opts.setupProvider
