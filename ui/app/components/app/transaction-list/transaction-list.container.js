@@ -7,7 +7,7 @@ import {
   nonceSortedPendingTransactionsSelector,
   getTxParams,
 } from '../../../selectors/transactions'
-import { getSelectedAddress, getAssetImages } from '../../../selectors/selectors'
+import { getSelectedAddress, getAssetImages, getFeatureFlags } from '../../../selectors/selectors'
 import { selectedTokenSelector } from '../../../selectors/tokens'
 import { updateNetworkNonce } from '../../../store/actions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
@@ -31,6 +31,7 @@ const mapStateToProps = (state, ownProps) => {
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
+  const transactionTimeFeatureActive = getFeatureFlags(state).transactionTime
 
   return {
     completedTransactions: nonceSortedCompletedTransactionsSelector(state),
@@ -41,6 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     blockTime: getBasicGasEstimateBlockTime(state),
     customGasPrice,
     currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
+    transactionTimeFeatureActive,
   }
 }
 

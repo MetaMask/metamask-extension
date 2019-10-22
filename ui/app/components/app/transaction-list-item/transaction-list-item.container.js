@@ -13,7 +13,14 @@ import {
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
-import { getIsMainnet, preferencesSelector, getSelectedAddress, conversionRateSelector, getKnownMethodData } from '../../../selectors/selectors'
+import {
+  getIsMainnet,
+  preferencesSelector,
+  getSelectedAddress,
+  conversionRateSelector,
+  getKnownMethodData,
+  getFeatureFlags,
+} from '../../../selectors/selectors'
 import { isBalanceSufficient } from '../../../pages/send/send.utils'
 import { getBasicGasEstimateBlockTime } from '../../../selectors/custom-gas'
 
@@ -39,6 +46,8 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate: conversionRateSelector(state),
   })
 
+  const transactionTimeFeatureActive = getFeatureFlags(state).transactionTime
+
   return {
     methodData: getKnownMethodData(state, data) || {},
     showFiat: (isMainnet || !!showFiatInTestnets),
@@ -47,6 +56,7 @@ const mapStateToProps = (state, ownProps) => {
     rpcPrefs,
     isDeposit,
     blockTime: getBasicGasEstimateBlockTime(state),
+    transactionTimeFeatureActive,
   }
 }
 

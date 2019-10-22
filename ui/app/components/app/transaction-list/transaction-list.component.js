@@ -25,6 +25,7 @@ export default class TransactionList extends PureComponent {
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
     currentTimeEstimate: PropTypes.string,
+    transactionTimeFeatureActive: PropTypes.bool,
   }
 
   componentDidMount () {
@@ -33,11 +34,12 @@ export default class TransactionList extends PureComponent {
       updateNetworkNonce,
       fetchBasicGasAndTimeEstimates,
       fetchGasEstimates,
+      transactionTimeFeatureActive,
     } = this.props
 
     updateNetworkNonce()
 
-    if (pendingTransactions.length) {
+    if (transactionTimeFeatureActive && pendingTransactions.length) {
       fetchBasicGasAndTimeEstimates()
         .then(basicEstimates => basicEstimates.blockTime)
         .then(blockTime => {
@@ -53,13 +55,14 @@ export default class TransactionList extends PureComponent {
       updateNetworkNonce,
       fetchBasicGasAndTimeEstimates,
       fetchGasEstimates,
+      transactionTimeFeatureActive,
     } = this.props
 
     if (pendingTransactions.length > prevPendingTransactions.length) {
       updateNetworkNonce()
     }
 
-    if (pendingTransactions.length > 0 && prevPendingTransactions.length === 0) {
+    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && prevPendingTransactions.length === 0) {
       fetchBasicGasAndTimeEstimates()
         .then(basicEstimates => basicEstimates.blockTime)
         .then(blockTime => {

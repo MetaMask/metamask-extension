@@ -40,6 +40,7 @@ export default class TransactionListItem extends PureComponent {
     getContractMethodData: PropTypes.func,
     isDeposit: PropTypes.bool,
     currentTimeEstimate: PropTypes.string,
+    transactionTimeFeatureActive: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -185,6 +186,7 @@ export default class TransactionListItem extends PureComponent {
       transactionGroup,
       rpcPrefs,
       isEarliestNonce,
+      transactionTimeFeatureActive,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -224,11 +226,14 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
-          <TransactionTimeRemaining
-            className="transaction-list-item__estimated-time"
-            statusKey={getStatusKey(primaryTransaction) }
-            currentTimeEstimate={this.props.currentTimeEstimate}
-          />
+          { transactionTimeFeatureActive
+            ? <TransactionTimeRemaining
+              className="transaction-list-item__estimated-time"
+              statusKey={getStatusKey(primaryTransaction) }
+              currentTimeEstimate={this.props.currentTimeEstimate}
+            />
+            : null
+          }
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
