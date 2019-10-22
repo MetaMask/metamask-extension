@@ -320,6 +320,7 @@ class PluginsController extends EventEmitter {
         XMLHttpRequest,
         WebSocket,
         Buffer,
+        Date,
       })
       sessedPlugin()
     } catch (err) {
