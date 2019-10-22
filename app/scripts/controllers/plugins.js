@@ -57,7 +57,8 @@ class PluginsController extends EventEmitter {
 
   runExistingPlugins () {
     const plugins = this.store.getState().plugins
-    console.log('running existing plugins')
+    console.log('running existing plugins', plugins)
+
     Object.values(plugins).forEach(({ pluginName, approvedPermissions, sourceCode }) => {
       console.log(`running: ${pluginName}`)
       const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
