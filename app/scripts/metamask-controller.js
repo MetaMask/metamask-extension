@@ -1176,7 +1176,6 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
 
-      const address = sigUtil.normalize(cleanMsgParams.from)
       const signature = await this.keyringController.signTypedMessage(cleanMsgParams, { version })
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
