@@ -50,7 +50,7 @@
   },
   "resolutions": {
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12",
-    "pubnub/superagent-proxy/proxy-agent/pac-proxy-agent/https-proxy-agent": "^3.0.0"
+    "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
     "3box": "^1.10.2",
