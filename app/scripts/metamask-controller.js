@@ -1168,9 +1168,12 @@ module.exports = class MetamaskController extends EventEmitter {
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
 
-      // For some reason every version after V1 has stringified params.
+      // For some reason every version after V1 used stringified params.
       if (version !== 'V1') {
-        cleanMsgParams.data = JSON.parse(cleanMsgParams.data)
+        // But we don't have to require that. We can stop suggesting it now:
+        if (typeof cleanMsgParams.data === 'string') {
+          cleanMsgParams.data = JSON.parse(cleanMsgParams.data)
+        }
       }
 
       const address = sigUtil.normalize(cleanMsgParams.from)
