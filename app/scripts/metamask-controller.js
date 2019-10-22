@@ -55,7 +55,6 @@ const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
-const sigUtil = require('eth-sig-util')
 const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
