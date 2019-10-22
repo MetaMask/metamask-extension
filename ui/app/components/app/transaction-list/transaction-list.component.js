@@ -28,20 +28,43 @@ export default class TransactionList extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.updateNetworkNonce()
-    this.props.fetchBasicGasAndTimeEstimates()
-      .then(basicEstimates => basicEstimates.blockTime)
-      .then(blockTime => {
-        this.props.fetchGasEstimates(blockTime)
-      })
+    const {
+      pendingTransactions,
+      updateNetworkNonce,
+      fetchBasicGasAndTimeEstimates,
+      fetchGasEstimates,
+    } = this.props
+
+    updateNetworkNonce()
+
+    if (pendingTransactions.length) {
+      fetchBasicGasAndTimeEstimates()
+        .then(basicEstimates => basicEstimates.blockTime)
+        .then(blockTime => {
+          fetchGasEstimates(blockTime)
+        })
+    }
   }
 
   componentDidUpdate (prevProps) {
     const { pendingTransactions: prevPendingTransactions = [] } = prevProps
-    const { pendingTransactions = [], updateNetworkNonce } = this.props
+    const {
+      pendingTransactions = [],
+      updateNetworkNonce,
+      fetchBasicGasAndTimeEstimates,
+      fetchGasEstimates,
+    } = this.props
 
     if (pendingTransactions.length > prevPendingTransactions.length) {
       updateNetworkNonce()
+    }
+
+    if (pendingTransactions.length > 0 && prevPendingTransactions.length === 0) {
+      fetchBasicGasAndTimeEstimates()
+        .then(basicEstimates => basicEstimates.blockTime)
+        .then(blockTime => {
+          fetchGasEstimates(blockTime)
+        })
     }
   }
 
