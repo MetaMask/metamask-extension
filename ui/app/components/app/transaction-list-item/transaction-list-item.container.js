@@ -9,6 +9,7 @@ import { getHexGasTotal, increaseLastGasPrice } from '../../../helpers/utils/con
 import { formatDate } from '../../../helpers/utils/util'
 import {
   fetchGasEstimates,
+  fetchBasicGasAndTimeEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
@@ -51,6 +52,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
     getContractMethodData: methodData => dispatch(getContractMethodData(methodData)),

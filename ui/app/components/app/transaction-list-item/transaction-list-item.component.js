@@ -39,10 +39,6 @@ export default class TransactionListItem extends PureComponent {
     data: PropTypes.string,
     getContractMethodData: PropTypes.func,
     isDeposit: PropTypes.bool,
-    blockTime: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
     currentTimeEstimate: PropTypes.string,
   }
 

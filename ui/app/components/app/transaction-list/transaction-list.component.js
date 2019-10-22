@@ -24,19 +24,13 @@ export default class TransactionList extends PureComponent {
     assetImages: PropTypes.object,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
-    blockTime: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
     currentTimeEstimate: PropTypes.string,
   }
 
   componentDidMount () {
     this.props.updateNetworkNonce()
-    const promise = this.props.fetchBasicGasAndTimeEstimates()
+    this.props.fetchBasicGasAndTimeEstimates()
       .then(basicEstimates => basicEstimates.blockTime)
-
-    promise
       .then(blockTime => {
         this.props.fetchGasEstimates(blockTime)
       })
