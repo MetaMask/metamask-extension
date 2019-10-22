@@ -153,6 +153,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
+    isRetry: transaction.status === 'failed',
     txId: transaction.id,
     insufficientBalance,
     gasEstimatesLoading,
@@ -206,6 +207,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     isConfirm,
     txId,
     isSpeedUp,
+    isRetry,
     insufficientBalance,
     maxModeOn,
     customGasPrice,
@@ -221,6 +223,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
+    createRetryTransaction: dispatchCreateRetryTransaction,
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
@@ -233,6 +236,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps,
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
+      console.log(isSpeedUp, isRetry)
+      // return false
+
       if (isConfirm) {
         const updatedTx = {
           ...transaction,
@@ -246,6 +252,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchHideModal()
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)
+        dispatchHideSidebar()
+        dispatchCancelAndClose()
+      } else if (isRetry) {
+        console.log('yay!')
+        dispatchCreateRetryTransaction(txId, gasPrice)
         dispatchHideSidebar()
         dispatchCancelAndClose()
       } else {
@@ -268,7 +279,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     cancelAndClose: () => {
       dispatchCancelAndClose()
-      if (isSpeedUp) {
+      if (isSpeedUp || isRetry) {
         dispatchHideSidebar()
       }
     },

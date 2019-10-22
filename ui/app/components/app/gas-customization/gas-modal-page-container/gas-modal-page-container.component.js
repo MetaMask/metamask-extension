@@ -42,6 +42,7 @@ export default class GasModalPageContainer extends Component {
     ]),
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
+    isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
   }
@@ -68,6 +69,7 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
+<<<<<<< HEAD
   renderAdvancedTabContent () {
     const {
       updateCustomGasPrice,
@@ -86,6 +88,24 @@ export default class GasModalPageContainer extends Component {
       isEthereumNetwork,
     } = this.props
 
+=======
+  renderAdvancedTabContent ({
+    convertThenUpdateCustomGasPrice,
+    convertThenUpdateCustomGasLimit,
+    customGasPrice,
+    customGasLimit,
+    newTotalFiat,
+    gasChartProps,
+    currentTimeEstimate,
+    insufficientBalance,
+    gasEstimatesLoading,
+    customPriceIsSafe,
+    isSpeedUp,
+    isRetry,
+    transactionFee,
+    isEthereumNetwork,
+  }) {
+>>>>>>> wip
     return (
       <AdvancedTabContent
         updateCustomGasPrice={updateCustomGasPrice}
@@ -99,6 +119,7 @@ export default class GasModalPageContainer extends Component {
         gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
+        isRetry={isRetry}
         isEthereumNetwork={isEthereumNetwork}
       />
     )

@@ -51,6 +51,9 @@ export default class Sidebar extends Component {
 
   render () {
     const { transitionName, sidebarOpen, sidebarShouldClose } = this.props
+    console.log(
+      sidebarOpen, sidebarShouldClose
+    )
 
     return (
       <div>

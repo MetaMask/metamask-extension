@@ -22,6 +22,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    showRetryy: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
@@ -32,8 +33,6 @@ export default class TransactionListItemDetails extends PureComponent {
     justCopied: false,
     cancelDisabled: false,
   }
-
-  handleRetryClick = event => this.handleRetry(event)
 
   handleEtherscanClick = () => {
     const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
@@ -61,7 +60,12 @@ export default class TransactionListItemDetails extends PureComponent {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
 
     event.stopPropagation()
+    console.log(id)
     onRetry(id)
+  }
+
+  handleRetryClick = event => {
+    this.handleRetry(event)
   }
 
   handleCopyTxId = () => {
@@ -126,6 +130,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const {
       transactionGroup,
       showRetry,
+      showRetryy,
       onCancel,
       onRetry,
       rpcPrefs: { blockExplorerUrl } = {},
@@ -175,12 +180,12 @@ export default class TransactionListItemDetails extends PureComponent {
               </Button>
             </Tooltip>
             {
-              showRetry && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+              showRetryy && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
                 <Button
                   type="raised"
                   onClick={this.handleRetryClick}
                   className="transaction-list-item-details__header-button"
-                  disabled={!hash}
+                  // disabled={!hash}
                 >
                   {/* <img src="/images/arrow-popout.svg" /> */}
                   <i className="fa fa-refresh"></i>

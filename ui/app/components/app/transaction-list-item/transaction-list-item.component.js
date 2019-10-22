@@ -112,6 +112,7 @@ export default class TransactionListItem extends PureComponent {
     }
 
     const retryId = id || initialTransactionId
+    console.log(retryId)
 
     this.context.metricsEvent({
       eventOpts: {
@@ -234,6 +235,8 @@ export default class TransactionListItem extends PureComponent {
                   transactionGroup={transactionGroup}
                   onRetry={this.handleRetry}
                   showRetry={showRetry}
+                  // maybe this should just check primaryTransaction.status?
+                  showRetryy={getStatusKey(primaryTransaction) === 'failed'}
                   isEarliestNonce={isEarliestNonce}
                   onCancel={this.handleCancel}
                   showCancel={showCancel}
