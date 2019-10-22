@@ -5,8 +5,9 @@ import TransactionList from './transaction-list.component'
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
+  getTxParams,
 } from '../../../selectors/transactions'
-import { getSelectedAddress, getAssetImages, getSelectedToken } from '../../../selectors/selectors'
+import { getSelectedAddress, getAssetImages } from '../../../selectors/selectors'
 import { selectedTokenSelector } from '../../../selectors/tokens'
 import { updateNetworkNonce } from '../../../store/actions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
@@ -15,7 +16,6 @@ import {
   getCustomGasPrice,
   getEstimatedGasPrices,
   getEstimatedGasTimes,
-  getFastPriceEstimateInHexWEI,
 } from '../../../selectors/custom-gas'
 import { getRenderableTimeEstimate } from '../../../helpers/utils/gas-time-estimates.util'
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util'
@@ -71,16 +71,4 @@ export default compose(
 
 function calcCustomGasPrice (customGasPriceInHex) {
   return Number(hexWEIToDecGWEI(customGasPriceInHex))
-}
-
-function getTxParams (state, selectedTransaction = {}) {
-  const { metamask: { send } } = state
-  const { txParams } = selectedTransaction
-  return txParams || {
-    from: send.from,
-    gas: send.gasLimit || '0x5208',
-    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-    to: send.to,
-    value: getSelectedToken(state) ? '0x0' : send.amount,
-  }
 }

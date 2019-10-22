@@ -11,6 +11,8 @@ import {
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import { selectedTokenAddressSelector } from './tokens'
+import { getFastPriceEstimateInHexWEI } from './custom-gas'
+import { getSelectedToken } from './selectors'
 import txHelper from '../../lib/tx-helper'
 
 export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
@@ -303,3 +305,15 @@ export const submittedPendingTransactionsSelector = createSelector(
     transactions.filter(transaction => transaction.status === SUBMITTED_STATUS)
   )
 )
+
+export const getTxParams = (state, selectedTransaction = {}) => {
+  const { metamask: { send } } = state
+  const { txParams } = selectedTransaction
+  return txParams || {
+    from: send.from,
+    gas: send.gasLimit || '0x5208',
+    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+    to: send.to,
+    value: getSelectedToken(state) ? '0x0' : send.amount,
+  }
+}

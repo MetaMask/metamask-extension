@@ -34,7 +34,6 @@ import {
   preferencesSelector,
 } from '../../../../selectors/selectors.js'
 import {
-  getFastPriceEstimateInHexWEI,
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
   getCustomGasLimit,
@@ -46,6 +45,9 @@ import {
   getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
 } from '../../../../selectors/custom-gas'
+import {
+  getTxParams,
+} from '../../../../selectors/transactions'
 import {
   getTokenBalance,
 } from '../../../../pages/send/send.selectors'
@@ -298,18 +300,6 @@ function calcCustomGasPrice (customGasPriceInHex) {
 
 function calcCustomGasLimit (customGasLimitInHex) {
   return parseInt(customGasLimitInHex, 16)
-}
-
-function getTxParams (state, selectedTransaction = {}) {
-  const { metamask: { send } } = state
-  const { txParams } = selectedTransaction
-  return txParams || {
-    from: send.from,
-    gas: send.gasLimit || '0x5208',
-    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-    to: send.to,
-    value: getSelectedToken(state) ? '0x0' : send.amount,
-  }
 }
 
 function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {
