@@ -15,7 +15,7 @@ const SES = (
             return () => true
           },
         }
-      },
+      }
     }
     : require('ses')
 )
@@ -38,7 +38,9 @@ class PluginsController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     // TODO:SECURITY disable errorStackMode for production
-    this.rootRealm = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
+    this.rootRealm = SES.makeSESRootRealm({
+      consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'
+    })
 
     this.setupProvider = opts.setupProvider
     this._txController = opts._txController
@@ -47,6 +49,7 @@ class PluginsController extends EventEmitter {
     this._getAccounts = opts._getAccounts
     this.getApi = opts.getApi
     this.getAppKeyForDomain = opts.getAppKeyForDomain
+    this.onUnlock = opts.onUnlock
 
     this.rpcMessageHandlers = new Map()
     this.adding = {}
@@ -275,7 +278,6 @@ class PluginsController extends EventEmitter {
       updatePluginState: this.updatePluginState.bind(this, pluginName),
       getPluginState: this.getPluginState.bind(this, pluginName),
       onNewTx: () => {},
-      onUnlock: this._onUnlock,
       ...this.getApi(),
     }
     const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
@@ -283,6 +285,7 @@ class PluginsController extends EventEmitter {
       onMetaMaskEvent,
       registerRpcMessageHandler,
       getAppKey: () => this.getAppKeyForDomain(pluginName),
+      onUnlock: this.onUnlock,
     }
     apiList.forEach(apiKey => {
       apisToProvide[apiKey] = possibleApis[apiKey]
@@ -315,6 +318,7 @@ class PluginsController extends EventEmitter {
         fetch,
         XMLHttpRequest,
         WebSocket,
+        Buffer,
       })
       sessedPlugin()
     } catch (err) {

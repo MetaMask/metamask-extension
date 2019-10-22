@@ -6,7 +6,6 @@ const pluginRestrictedMethodDescriptions = {
   fetch: 'Retrieve data from external sites',
   updatePluginState: 'Store data locally',
   getPluginState: 'Get data stored locally',
-  onUnlock: 'Take action when you unlock your account',
   Box: 'Backup your data to 3Box',
   subscribeToPreferencesControllerChanges: 'Access your preferences and take action when they change',
   updatePreferencesControllerState: 'Update/modify your preferences',
@@ -163,7 +162,7 @@ function getExternalRestrictedMethods (permissionsController) {
           // Here is where we would invoke the message on that plugin iff possible.
           const handler = permissionsController.pluginsController.rpcMessageHandlers.get(origin)
           if (!handler) {
-            res.error = rpcErrors.methodNotFound(null, req.method)
+            res.error = rpcErrors.methodNotFound(`Plugin RPC message handler not found.`, req.method)
             return end(res.error)
           }
 

@@ -188,10 +188,10 @@ class PermissionsController {
         const ethereumProvider = this.pluginsController.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
         await this.pluginsController.run(pluginName, approvedPermissions, sourceCode, ethereumProvider)
       }))
-        .catch((reason) => {
+        .catch((err) => {
           // We swallow this error, we don't want the plugin permissions prompt to block the resolution
           // Of the main dapp's permissions prompt.
-          console.error(`Plugin had its permissions rejected: ${reason.message}`)
+          console.error(`Error when adding plugin:`, err)
         })
 
     } catch (reason) {

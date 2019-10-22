@@ -274,6 +274,7 @@ module.exports = class MetamaskController extends EventEmitter {
       _networkController: this.networkController,
       _blockTracker: this.blockTracker,
       _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
+      onUnlock: this._onUnlock.bind(this),
       getApi: this.getPluginsApi.bind(this),
       initState: initState.PluginsController,
       getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
@@ -1688,18 +1689,11 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  _onUnlock (keyRingControllerMemStore, cb) {
-    const { keyrings } = keyRingControllerMemStore.getState()
-    let addressesWereEmpty = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), []).length === 0
-    keyRingControllerMemStore.subscribe(state => {
-      const { isUnlocked, keyrings } = state
-      const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
-      if (addressesWereEmpty && addresses.length && isUnlocked) {
-        addressesWereEmpty = false
-        console.log('!!! _onUnlock addresses[0]', addresses[0])
-        return cb(addresses[0])
-      } else {
-        addressesWereEmpty = addresses.length === 0
+  _onUnlock (cb) {
+    this.keyringController.memStore.subscribe(state => {
+      const { isUnlocked } = state
+      if (isUnlocked) {
+        return cb()
       }
     })
   }
