@@ -9737,13 +9737,14 @@ eth-hd-keyring@^2.0.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-hd-keyring@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-2.1.0.tgz#da93224f791fb1d9220598f7c96f04181dff6ace"
-  integrity sha512-1ZcPmj4h18tmwG7RIturC2lpeimuiAyUGW9Ic5ztCFNeRAcfiQ3ic7sENWhzqbSgth9xkAMIHqM8IY31VJviZg==
+eth-hd-keyring@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.4.0.tgz#288e73041f2b3f047b4151fb4b5ab5ad5710b9a6"
+  integrity sha512-MMKSSwDWuEfItEM/826LHrs2HVjy57qQQfcgSxIYOCJY0vykw++LH8d6QJOBrGFe+xu/gtbHBRMURrFGdqfevw==
   dependencies:
     bip39 "^2.2.0"
-    eth-sig-util "^2.0.1"
+    eth-sig-util "^2.4.4"
+    eth-simple-keyring "^3.4.0"
     ethereumjs-abi "^0.6.5"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
@@ -9846,17 +9847,17 @@ eth-keyring-controller@^5.0.1:
     obs-store "^4.0.3"
     promise-filter "^1.1.0"
 
-eth-keyring-controller@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.1.0.tgz#1dbe539f6ca483d6f2fa16b33b00d66eeb2de974"
-  integrity sha512-NCXzYIBHJo5o8XoyPdGRLRLTi2pitJKlZPcDO+Un4wbt3djrvWH8adopLH+kNw9zUfk2C5OQqUQ4/UibSvanxA==
+eth-keyring-controller@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.3.0.tgz#8d85a67b894360ab7d601222ca71df8ed5f456c6"
+  integrity sha512-aoqYjKUbdOSgS1s63IsTp69QAMtLPTCqR4VAbCULps71o3yuaA9JRx2W+GAxqVNBtIdyZllxoOJlvErkO4iWNw==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    eth-hd-keyring "^2.1.0"
+    eth-hd-keyring "^3.4.0"
     eth-sig-util "^1.4.0"
-    eth-simple-keyring "^2.1.0"
+    eth-simple-keyring "^3.4.0"
     ethereumjs-util "^5.1.2"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
@@ -9962,6 +9963,18 @@ eth-sig-util@^2.1.0:
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
 
+eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.5.0.tgz#1018cf8bef2fe275ecbd526cf3248757b0880053"
+  integrity sha512-ahApxr+e1cls/GwcFSGsgRLrMqG6D6cBnK9CRHhx97O/s9ow+URIxbPvov8jfE70ZnNBdHMircoSCpi1b4QHjA==
+  dependencies:
+    buffer "^5.2.1"
+    elliptic "^6.4.0"
+    ethereumjs-abi "0.6.5"
+    ethereumjs-util "^5.1.1"
+    tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
+
 eth-simple-keyring@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-2.0.0.tgz#ef1e97c4aebb7229dce9c0ec5cc84efcd3a76395"
@@ -9974,12 +9987,12 @@ eth-simple-keyring@^2.0.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-simple-keyring@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-2.1.0.tgz#bfff8f7c438a9b5164e995db1cccbbdb9e27752f"
-  integrity sha512-31emUxGHOVhYzlPoEGyfrn1Usi2ZI9qDqMnDHwG0R0HdIuF/I10qlf401MkiD9lcMDuvgJkLpqqAvGxrKrFCwA==
+eth-simple-keyring@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.4.0.tgz#01464234b070af42a343a3c451dd58b00ae1a042"
+  integrity sha512-g/ObWqWaTHikrhhm7fNinpkkpEPqBRz02oBXcH81mc3VFkOLb3pjfvNg1Da6Jh+A4wA0kBE4vkiiG7BUwF1zNg==
   dependencies:
-    eth-sig-util "^2.0.1"
+    eth-sig-util "^2.5.0"
     ethereumjs-abi "^0.6.5"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
@@ -13470,9 +13483,9 @@ https-proxy-agent@2.2.1, https-proxy-agent@^2.1.1:
     debug "^3.1.0"
 
 https-proxy-agent@^2.2.1:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-2.2.2.tgz#271ea8e90f836ac9f119daccd39c19ff7dfb0793"
-  integrity sha512-c8Ndjc9Bkpfx/vCJueCPy0jlP4ccCCSNDp8xwCZzPjKJUm+B+u9WX2x98Qx4n1PiMNTWo3D7KK5ifNV/yJyRzg==
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-2.2.3.tgz#fb6cd98ed5b9c35056b5a73cd01a8a721d7193d1"
+  integrity sha512-Ytgnz23gm2DVftnzqRRz2dOXZbGd2uiajSw/95bPp6v53zPRspQjLm/AfBgqbJ2qfeRXWIOMVLpp86+/5yX39Q==
   dependencies:
     agent-base "^4.3.0"
     debug "^3.1.0"
