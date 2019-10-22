@@ -34,7 +34,6 @@ import {
   preferencesSelector,
 } from '../../../../selectors/selectors.js'
 import {
-  formatTimeEstimate,
   getFastPriceEstimateInHexWEI,
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
@@ -59,6 +58,7 @@ import {
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util'
+import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import {
   formatETHFee,
 } from '../../../../helpers/utils/formatters'
@@ -67,7 +67,6 @@ import {
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
-import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
@@ -333,32 +332,4 @@ function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conver
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency]),
   )(aHexWEI, bHexWEI)
-}
-
-function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
-  const minGasPrice = gasPrices[0]
-  const maxGasPrice = gasPrices[gasPrices.length - 1]
-  let priceForEstimation = currentGasPrice
-  if (currentGasPrice < minGasPrice) {
-    priceForEstimation = minGasPrice
-  } else if (currentGasPrice > maxGasPrice) {
-    priceForEstimation = maxGasPrice
-  }
-
-  const {
-    closestLowerValueIndex,
-    closestHigherValueIndex,
-    closestHigherValue,
-    closestLowerValue,
-  } = getAdjacentGasPrices({ gasPrices, priceToPosition: priceForEstimation })
-
-  const newTimeEstimate = extrapolateY({
-    higherY: estimatedTimes[closestHigherValueIndex],
-    lowerY: estimatedTimes[closestLowerValueIndex],
-    higherX: closestHigherValue,
-    lowerX: closestLowerValue,
-    xForExtrapolation: priceForEstimation,
-  })
-
-  return formatTimeEstimate(newTimeEstimate, currentGasPrice > maxGasPrice, currentGasPrice < minGasPrice)
 }

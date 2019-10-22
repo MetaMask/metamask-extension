@@ -15,10 +15,9 @@ import {
   getCustomGasPrice,
   getEstimatedGasPrices,
   getEstimatedGasTimes,
-  formatTimeEstimate,
   getFastPriceEstimateInHexWEI,
 } from '../../../selectors/custom-gas'
-import { getAdjacentGasPrices, extrapolateY } from '../gas-customization/gas-price-chart/gas-price-chart.utils'
+import { getRenderableTimeEstimate } from '../../../helpers/utils/gas-time-estimates.util'
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util'
 
 const mapStateToProps = (state, ownProps) => {
@@ -69,34 +68,6 @@ export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(TransactionList)
-
-function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
-  const minGasPrice = gasPrices[0]
-  const maxGasPrice = gasPrices[gasPrices.length - 1]
-  let priceForEstimation = currentGasPrice
-  if (currentGasPrice < minGasPrice) {
-    priceForEstimation = minGasPrice
-  } else if (currentGasPrice > maxGasPrice) {
-    priceForEstimation = maxGasPrice
-  }
-
-  const {
-    closestLowerValueIndex,
-    closestHigherValueIndex,
-    closestHigherValue,
-    closestLowerValue,
-  } = getAdjacentGasPrices({ gasPrices, priceToPosition: priceForEstimation })
-
-  const newTimeEstimate = extrapolateY({
-    higherY: estimatedTimes[closestHigherValueIndex],
-    lowerY: estimatedTimes[closestLowerValueIndex],
-    higherX: closestHigherValue,
-    lowerX: closestLowerValue,
-    xForExtrapolation: priceForEstimation,
-  })
-
-  return formatTimeEstimate(newTimeEstimate, currentGasPrice > maxGasPrice, currentGasPrice < minGasPrice)
-}
 
 function calcCustomGasPrice (customGasPriceInHex) {
   return Number(hexWEIToDecGWEI(customGasPriceInHex))
