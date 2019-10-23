@@ -12,6 +12,7 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
   let driver
@@ -53,7 +54,7 @@ describe('MetaMask', function () {
     describe('First time flow starting from an existing seed phrase', () => {
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+        const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         welcomeScreenBtn.click()
         await delay(largeDelayMs)
       })
@@ -90,7 +91,7 @@ describe('MetaMask', function () {
 
       it('clicks through the success screen', async () => {
         await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-        const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+        const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await doneButton.click()
         await delay(regularDelayMs)
       })
@@ -176,7 +177,7 @@ describe('MetaMask', function () {
     describe('First time flow starting from an existing seed phrase', () => {
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver2, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(driver2, By.css('.first-time-flow__button'))
+        const welcomeScreenBtn = await findElement(driver2, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         welcomeScreenBtn.click()
         await delay(largeDelayMs)
       })
@@ -213,7 +214,7 @@ describe('MetaMask', function () {
 
       it('clicks through the success screen', async () => {
         await findElement(driver2, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-        const doneButton = await findElement(driver2, By.css('button.first-time-flow__button'))
+        const doneButton = await findElement(driver2, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await doneButton.click()
         await delay(regularDelayMs)
       })

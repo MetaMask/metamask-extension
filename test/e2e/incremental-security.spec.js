@@ -15,6 +15,7 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
   let extensionId
@@ -56,7 +57,7 @@ describe('MetaMask', function () {
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
@@ -89,8 +90,8 @@ describe('MetaMask', function () {
     })
 
     it('skips the seed phrase challenge', async () => {
-      const buttons = await findElements(driver, By.css('.first-time-flow__button'))
-      await buttons[0].click()
+      const button = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
+      await button.click()
       await delay(regularDelayMs)
 
       const detailsButton = await findElement(driver, By.css('.account-details__details-button'))
@@ -173,7 +174,7 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = (await findElements(driver, By.css('button.first-time-flow__button')))[1]
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -195,7 +196,7 @@ describe('MetaMask', function () {
           await revealSeedPhraseButton.click()
           await delay(regularDelayMs)
 
-          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+          const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
           await nextScreen.click()
           await delay(regularDelayMs)
         }
