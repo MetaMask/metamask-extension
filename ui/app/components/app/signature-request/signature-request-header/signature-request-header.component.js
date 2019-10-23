@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import AccountDropdownMini from '../../../ui/account-dropdown-mini'
+import AccountListItem from '../../../../pages/send/account-list-item/account-list-item.component'
 import NetworkDisplay from '../../network-display'
 
 export default class SignatureRequestHeader extends PureComponent {
@@ -14,10 +14,9 @@ export default class SignatureRequestHeader extends PureComponent {
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {selectedAccount && accounts && <AccountDropdownMini
-            selectedAccount={selectedAccount}
-            accounts={accounts}
-            disabled
+          {selectedAccount && accounts && <AccountListItem
+            displayBalance={false}
+            account={selectedAccount}
           />}
           {name}
         </div>
