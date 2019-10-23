@@ -76,7 +76,7 @@ describe('TransactionListItemDetails Component', () => {
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 4)
+    assert.equal(wrapper.find(Button).length, 3)
   })
 
   it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', () => {
