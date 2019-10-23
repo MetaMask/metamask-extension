@@ -9,7 +9,6 @@ const {
   checkBrowserForConsoleErrors,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   verboseReportOnFailure,
   setupFetchMocking,
@@ -18,7 +17,6 @@ const {
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
-  let extensionId
   let driver
   let publicAddress
 
@@ -32,7 +30,6 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    extensionId = result.extensionId
     await setupFetchMocking(driver)
   })
 
@@ -187,37 +184,12 @@ describe('MetaMask', function () {
       await delay(tinyDelayMs)
     }
 
-    async function retypeSeedPhrase (words, wasReloaded, count = 0) {
-      try {
-        if (wasReloaded) {
-          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
-          await driver.wait(until.elementLocated(byRevealButton, 10000))
-          const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
-          await revealSeedPhraseButton.click()
-          await delay(regularDelayMs)
-
-          const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
-          await nextScreen.click()
-          await delay(regularDelayMs)
-        }
-
-        for (let i = 0; i < 12; i++) {
-          await clickWordAndWait(words[i])
-        }
-      } catch (e) {
-        if (count > 2) {
-          throw e
-        } else {
-          await loadExtension(driver, extensionId)
-          await retypeSeedPhrase(words, true, count + 1)
-        }
-      }
-    }
-
     it('can retype the seed phrase', async () => {
       const words = seedPhrase.split(' ')
 
-      await retypeSeedPhrase(words)
+      for (const word of words) {
+        await clickWordAndWait(word)
+      }
 
       const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirm.click()
