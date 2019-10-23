@@ -35,7 +35,15 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest(metadata)
       assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
+<<<<<<< HEAD
         providerRequests: [metadata],
+=======
+        providerRequests: [{
+          origin: 'example.com',
+          siteTitle: 'Example',
+          siteImage: 'https://example.com/logo.svg',
+        }],
+>>>>>>> Remove code allowing signing of wyre messages without confirmations
       })
     })
 
@@ -53,7 +61,15 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest(metadata)
       assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
+<<<<<<< HEAD
         providerRequests: [metadata],
+=======
+        providerRequests: [{
+          origin: 'example.com',
+          siteTitle: 'Example',
+          siteImage: 'https://example.com/logo.svg',
+        }],
+>>>>>>> Remove code allowing signing of wyre messages without confirmations
       })
     })
 
@@ -78,7 +94,19 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest(metadata[1])
       assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
+<<<<<<< HEAD
         providerRequests: metadata,
+=======
+        providerRequests: [{
+          origin: 'example1.com',
+          siteTitle: 'Example 1',
+          siteImage: 'https://example1.com/logo.svg',
+        }, {
+          origin: 'example2.com',
+          siteTitle: 'Example 2',
+          siteImage: 'https://example2.com/logo.svg',
+        }],
+>>>>>>> Remove code allowing signing of wyre messages without confirmations
       })
     })
 
@@ -103,7 +131,19 @@ describe('ProviderApprovalController', () => {
       controller._handleProviderRequest(metadata[1])
       assert.deepEqual(controller._getMergedState(), {
         approvedOrigins: {},
+<<<<<<< HEAD
         providerRequests: metadata,
+=======
+        providerRequests: [{
+          origin: 'example1.com',
+          siteTitle: 'Example 1',
+          siteImage: 'https://example1.com/logo.svg',
+        }, {
+          origin: 'example2.com',
+          siteTitle: 'Example 2',
+          siteImage: 'https://example2.com/logo.svg',
+        }],
+>>>>>>> Remove code allowing signing of wyre messages without confirmations
       })
     })
 
