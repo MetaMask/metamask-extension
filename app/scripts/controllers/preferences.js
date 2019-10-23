@@ -44,7 +44,7 @@ class PreferencesController {
       // perform sensitive operations.
       featureFlags: {
         showIncomingTransactions: true,
-        transactionTimeFeatureActive: false,
+        transactionTime: false,
       },
       knownMethodData: {},
       participateInMetaMetrics: null,
