@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-
+window.BigNumber = BigNumber
 export function newBigSigDig (n) {
-  return new BigNumber((new BigNumber(n)).toPrecision(15))
+  return new BigNumber((new BigNumber(String(n))).toPrecision(15))
 }
 
 const createOp = (a, b, op) => (newBigSigDig(a))[op](newBigSigDig(b))
