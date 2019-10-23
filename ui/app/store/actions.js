@@ -350,6 +350,7 @@ var actions = {
 
   createCancelTransaction,
   createSpeedUpTransaction,
+  createRetryTransaction,
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
@@ -1845,6 +1846,30 @@ function createSpeedUpTransaction (txId, customGasPrice) {
 
   return dispatch => {
     return new Promise((resolve, reject) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        resolve(newState)
+      })
+    })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
+  }
+}
+
+function createRetryTransaction (txId, customGasPrice) {
+  log.debug('background.createRetryTransaction')
+  let newTx
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      // I'm kinda just piggybacking on `createSpeedUpTransaction` to avoid creating a new background method
+      // Not sure if this is acceptable?
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))

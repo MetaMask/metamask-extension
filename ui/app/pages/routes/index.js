@@ -232,7 +232,9 @@ class Routes extends Component {
         }
         <Sidebar
           sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)}
+          // this is most certainly wrong
+          // do we even need this prop?
+          // sidebarShouldClose={false}
           hideSidebar={this.props.hideSidebar}
           transitionName={sidebarTransitionName}
           type={sidebarType}

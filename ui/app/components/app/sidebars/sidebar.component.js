@@ -51,9 +51,6 @@ export default class Sidebar extends Component {
 
   render () {
     const { transitionName, sidebarOpen, sidebarShouldClose } = this.props
-    console.log(
-      sidebarOpen, sidebarShouldClose
-    )
 
     return (
       <div>
@@ -62,9 +59,9 @@ export default class Sidebar extends Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={200}
         >
-          { sidebarOpen && !sidebarShouldClose ? this.renderSidebarContent() : null }
+          { sidebarOpen ? this.renderSidebarContent() : null }
         </ReactCSSTransitionGroup>
-        { sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null }
+        { sidebarOpen ? this.renderOverlay() : null }
       </div>
     )
   }
