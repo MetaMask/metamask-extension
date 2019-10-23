@@ -53,10 +53,8 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
-const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
-const sigUtil = require('eth-sig-util')
 const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
@@ -1168,28 +1166,16 @@ module.exports = class MetamaskController extends EventEmitter {
     const version = msgParams.version
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
-      const address = sigUtil.normalize(cleanMsgParams.from)
-      const keyring = await this.keyringController.getKeyringForAccount(address)
-      let signature
-      // HW Wallet keyrings don't expose private keys
-      // so we need to handle it separately
-      if (!HW_WALLETS_KEYRINGS.includes(keyring.type)) {
-        const wallet = keyring._getWalletForAccount(address)
-        const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
-        switch (version) {
-          case 'V1':
-            signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
-            break
-          case 'V3':
-            signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
-            break
-          case 'V4':
-            signature = sigUtil.signTypedData_v4(privKey, { data: JSON.parse(cleanMsgParams.data) })
-            break
+
+      // For some reason every version after V1 used stringified params.
+      if (version !== 'V1') {
+        // But we don't have to require that. We can stop suggesting it now:
+        if (typeof cleanMsgParams.data === 'string') {
+          cleanMsgParams.data = JSON.parse(cleanMsgParams.data)
         }
-      } else {
-        signature = await keyring.signTypedData(address, cleanMsgParams.data)
       }
+
+      const signature = await this.keyringController.signTypedMessage(cleanMsgParams, { version })
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
     } catch (error) {
