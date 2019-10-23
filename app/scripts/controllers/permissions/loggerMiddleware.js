@@ -81,24 +81,24 @@ module.exports = function createLoggerMiddleware ({
 
     let accounts
     const entries = result
-    ? result.map(perm => {
+      ? result.map(perm => {
         if (perm.parentCapability === 'eth_accounts') {
           accounts = getAccountsFromPermission(perm)
         }
         return perm.parentCapability
       })
-      .reduce((acc, m) => {
-        if (requestedMethods.includes(m)) {
-          acc[m] = {
-            lastApproved: time,
+        .reduce((acc, m) => {
+          if (requestedMethods.includes(m)) {
+            acc[m] = {
+              lastApproved: time,
+            }
+            if (m === 'eth_accounts') {
+              acc[m].accounts = accounts
+            }
           }
-          if (m === 'eth_accounts') {
-            acc[m].accounts = accounts
-          }
-        }
-        return acc
-      }, {})
-    : {}
+          return acc
+        }, {})
+      : {}
 
     if (Object.keys(entries).length > 0) {
       commitHistory(origin, entries, accounts)
