@@ -10,6 +10,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   CONNECTIONS_ROUTE,
   ADVANCED_ROUTE,
+  PERMISSIONS_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
@@ -27,6 +28,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [CONNECTIONS_ROUTE]: 'connections',
   [ADVANCED_ROUTE]: 'advanced',
+  [PERMISSIONS_ROUTE]: 'permissions',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
   [CONTACT_LIST_ROUTE]: 'contacts',

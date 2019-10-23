@@ -73,7 +73,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       // descriptions? In all current cases, if this condition triggers,
       // approving the permissions will fail.
       if (!permissionsDescriptions[methodName]) {
-        console.warn('Unknown permission requested.')
+        console.warn(`Unknown permission requested: ${methodName}`)
       }
       const description = permissionsDescriptions[methodName] || methodName
 

@@ -16,11 +16,6 @@ const HISTORY_STORE_KEY = 'permissionsHistory'
 const WALLET_METHOD_PREFIX = 'wallet_'
 const INTERNAL_METHOD_PREFIX = 'metamask_'
 
-function prefix (method) {
-  return WALLET_METHOD_PREFIX + method
-}
-
-// class PermissionsController extends SafeEventEmitter {
 class PermissionsController {
 
   constructor (
@@ -46,6 +41,7 @@ class PermissionsController {
       internalPrefix: INTERNAL_METHOD_PREFIX,
       store: this.store,
       storeKey: METADATA_STORE_KEY,
+      getAccounts: this.getAccounts.bind(this),
     }))
     engine.push(createLoggerMiddleware({
       walletPrefix: WALLET_METHOD_PREFIX,
@@ -160,10 +156,6 @@ class PermissionsController {
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
 
-    this.testProfile = {
-      name: 'Dan Finlay',
-    }
-
     this.pendingApprovals = {}
 
     this.permissions = new RpcCap({
@@ -204,4 +196,8 @@ class PermissionsController {
 module.exports = {
   PermissionsController,
   addInternalMethodPrefix: prefix,
+}
+
+function prefix (method) {
+  return WALLET_METHOD_PREFIX + method
 }

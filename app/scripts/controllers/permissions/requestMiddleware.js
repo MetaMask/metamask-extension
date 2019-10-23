@@ -6,12 +6,18 @@ const { errors: rpcErrors } = require('eth-json-rpc-errors')
  * Create middleware for preprocessing permissions requests.
  */
 module.exports = function createRequestMiddleware ({
-  internalPrefix, store, storeKey,
+  internalPrefix, store, storeKey, getAccounts
 }) {
   return createAsyncMiddleware(async (req, res, next) => {
 
     if (typeof req.method !== 'string') {
       res.error = rpcErrors.invalidRequest(null, req)
+      return
+    }
+
+    // intercepting eth_accounts requests for backwards compatibility
+    if (req.method === 'eth_accounts') {
+      res.result = await getAccounts(req.origin)
       return
     }
 
@@ -36,6 +42,6 @@ module.exports = function createRequestMiddleware ({
       }
     }
 
-    return next()
+    next()
   })
 }

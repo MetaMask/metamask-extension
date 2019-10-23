@@ -83,7 +83,7 @@ export default class PermissionsActivity extends Component {
         e.method.endsWith('getPermissions') ||
         e.method.endsWith('requestPermissions')
       ) {
-        if (e.response.result.length === 0) {
+        if (!e.response.result || e.response.result.length === 0) {
           return (
             <li className="settings-page__content-list-item">
               {'None.'}

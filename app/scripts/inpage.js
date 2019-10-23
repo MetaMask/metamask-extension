@@ -138,9 +138,3 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
     window.postMessage('onboardingcomplete', '*')
   }
 })
-
-// TODO:synchronous re-implement web3.eth.defaultAccount
-// set web3 defaultAccount
-// inpageProvider.publicConfigStore.subscribe(function (state) {
-//   web3.eth.defaultAccount = state.selectedAddress
-// })
