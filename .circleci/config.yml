@@ -35,6 +35,9 @@ workflows:
       - test-unit:
           requires:
             - prep-deps
+      - test-unit-global:
+          requires:
+            - prep-deps
       - test-mozilla-lint:
           requires:
             - prep-deps
@@ -51,6 +54,7 @@ workflows:
           requires:
             - test-lint
             - test-unit
+            - test-unit-global
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
@@ -310,6 +314,16 @@ jobs:
           paths:
             - .nyc_output
             - coverage
+  test-unit-global:
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:unit:global
+          command: yarn test:unit:global
   test-mozilla-lint:
     docker:
       - image: circleci/node:10.16-browsers
