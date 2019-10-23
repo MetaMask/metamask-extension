@@ -2,6 +2,7 @@ const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const ObservableStore = require('obs-store')
 const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
+const { ethErrors } = require('eth-json-rpc-errors')
 
 const getRestrictedMethods = require('./restrictedMethods')
 const createRequestMiddleware = require('./requestMiddleware')
@@ -10,11 +11,10 @@ const createLoggerMiddleware = require('./loggerMiddleware')
 // Methods that do not require any permissions to use:
 const SAFE_METHODS = require('./permissions-safe-methods.json')
 
-const METADATA_STORE_KEY = 'siteMetadata'
+const METADATA_STORE_KEY = 'domainMetadata'
 const LOG_STORE_KEY = 'permissionsLog'
 const HISTORY_STORE_KEY = 'permissionsHistory'
 const WALLET_METHOD_PREFIX = 'wallet_'
-const INTERNAL_METHOD_PREFIX = 'metamask_'
 
 class PermissionsController {
 
@@ -38,7 +38,6 @@ class PermissionsController {
     const { origin } = options
     const engine = new JsonRpcEngine()
     engine.push(createRequestMiddleware({
-      internalPrefix: INTERNAL_METHOD_PREFIX,
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this),
@@ -61,9 +60,7 @@ class PermissionsController {
    * if any. This method exists for when a trusted context needs to know
    * which accounts are exposed to a given domain.
    *
-   * Do not use in untrusted contexts; just send an RPC request.
-   *
-   * @param {string} origin
+   * @param {string} origin - The origin string.
    */
   getAccounts (origin) {
     return new Promise((resolve, _) => {
@@ -127,8 +124,7 @@ class PermissionsController {
   async approvePermissionsRequest (approved) {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
-    const resolve = approval.resolve
-    resolve(approved.permissions)
+    approval.resolve(approved.permissions)
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -139,8 +135,7 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
-    const reject = approval.reject
-    reject(false) // TODO:lps:review should this be an error instead?
+    approval.reject(ethErrors.provider.userRejectedRequest())
     this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
@@ -172,15 +167,13 @@ class PermissionsController {
        * A promise-returning callback used to determine whether to approve
        * permissions requests or not.
        *
-       * Currently only returns a boolean, but eventually should return any specific parameters or amendments to the permissions.
+       * Currently only returns a boolean, but eventually should return any
+       * specific parameters or amendments to the permissions.
        *
-       * @param {string} domain - The requesting domain string
-       * @param {string} req - The request object sent in to the `requestPermissions` method.
-       * @returns {Promise<bool>} approved - Whether the user approves the request or not.
+       * @param {string} req - The internal rpc-cap user request object.
        */
-      requestUserApproval: async (options) => {
-        const { metadata } = options
-        const { id } = metadata
+      requestUserApproval: async (req) => {
+        const { metadata: { id } } = req
 
         this._openPopup && this._openPopup()
 

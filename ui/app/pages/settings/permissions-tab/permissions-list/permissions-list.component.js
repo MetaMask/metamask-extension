@@ -11,7 +11,7 @@ export default class PermissionsList extends Component {
     permissions: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     removePermissionsFor: PropTypes.func.isRequired,
-    siteMetadata: PropTypes.object,
+    domainMetadata: PropTypes.object,
   }
 
   static contextTypes = {
@@ -133,7 +133,7 @@ export default class PermissionsList extends Component {
   }
 
   renderPermissionsList () {
-    const { permissions, permissionsDescriptions, siteMetadata } = this.props
+    const { permissions, permissionsDescriptions, domainMetadata } = this.props
     return (
       <ul>
         {
@@ -144,7 +144,7 @@ export default class PermissionsList extends Component {
             ) return null
 
             const targetMetadata = (
-              siteMetadata[domain] ||
+              domainMetadata[domain] ||
               { name: domain, icon: null }
             )
 

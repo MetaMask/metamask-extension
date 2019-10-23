@@ -63,7 +63,6 @@ inpageProvider.setMaxListeners(100)
 // this will be default true so it does not break any old apps.
 inpageProvider.autoRefreshOnNetworkChange = true
 
-// TODO:synchronous re-implement: { networkVersion, selectedAddress } = window.ethereum
 // publicConfig isn't populated until we get a message from background.
 // Using this getter will ensure the state is available
 const getPublicConfigWhenReady = async () => {
@@ -72,7 +71,6 @@ const getPublicConfigWhenReady = async () => {
   // if state is missing, wait for first update
   if (!state.hasOwnProperty('isUnlocked')) {
     state = await new Promise(resolve => store.once('update', resolve))
-    console.log('new state', state)
   }
   return state
 }

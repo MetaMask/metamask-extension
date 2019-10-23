@@ -4,7 +4,7 @@ import {
   getSelectedIdentity,
   getPermissionsDescriptions,
   getPermissionsRequests,
-  getSiteMetadata,
+  getDomainMetadata,
 } from '../../../selectors/selectors'
 
 const mapStateToProps = (state) => {
@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
     requests: getPermissionsRequests(state),
     selectedIdentity: getSelectedIdentity(state),
     permissionsDescriptions: getPermissionsDescriptions(state),
-    siteMetadata: getSiteMetadata(state),
+    domainMetadata: getDomainMetadata(state),
   }
 }
 

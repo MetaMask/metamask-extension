@@ -11,7 +11,7 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentity: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
-    siteMetadata: PropTypes.object.isRequired,
+    domainMetadata: PropTypes.object.isRequired,
     requests: PropTypes.array.isRequired,
   };
 
@@ -126,12 +126,12 @@ export default class PermissionPageContainer extends Component {
   }
 
   render () {
-    const { requests, permissionsDescriptions, siteMetadata } = this.props
+    const { requests, permissionsDescriptions, domainMetadata } = this.props
 
     const requestMetadata = requests[0].metadata
 
-    const targetSiteMetadata = (
-      siteMetadata[requestMetadata.origin] ||
+    const targetDomainMetadata = (
+      domainMetadata[requestMetadata.origin] ||
       { name: requestMetadata.origin, icon: null }
     )
 
@@ -140,7 +140,7 @@ export default class PermissionPageContainer extends Component {
         <PermissionPageContainerHeader />
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
-          siteMetadata={targetSiteMetadata}
+          domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
           permissionsDescriptions={permissionsDescriptions}
           onPermissionToggle={this.onPermissionToggle}

@@ -81,7 +81,7 @@ module.exports = function createLoggerMiddleware ({
 
     let accounts
     const entries = result
-      .map(perm => {
+    ? result.map(perm => {
         if (perm.parentCapability === 'eth_accounts') {
           accounts = getAccountsFromPermission(perm)
         }
@@ -98,6 +98,7 @@ module.exports = function createLoggerMiddleware ({
         }
         return acc
       }, {})
+    : {}
 
     if (Object.keys(entries).length > 0) {
       commitHistory(origin, entries, accounts)
