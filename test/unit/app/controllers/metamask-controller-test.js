@@ -2,6 +2,7 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
+const ethUtil = require('ethereumjs-util')
 const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
 const firstTimeState = require('../../../unit/localhostState')
@@ -101,6 +102,51 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll()
     sandbox.restore()
+  })
+
+  describe('#getAccounts', function () {
+
+    beforeEach(async function () {
+      const password = 'a-fake-password'
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+    })
+
+    it('returns first address when dapp calls web3.eth.getAccounts', function () {
+      metamaskController.networkController._baseProviderParams.getAccounts((err, res) => {
+        assert.ifError(err)
+        assert.equal(res.length, 1)
+        assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      })
+    })
+  })
+
+  describe('#importAccountWithStrategy', function () {
+
+    const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+
+    beforeEach(async function () {
+      const password = 'a-fake-password'
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+      await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    })
+
+    it('adds private key to keyrings in KeyringController', async function () {
+      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType('Simple Key Pair')
+      const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
+      const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
+      const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
+      const privKey = ethUtil.bufferToHex(privKeyBuffer)
+      const pubKey = ethUtil.bufferToHex(addressBuffer)
+      assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
+      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
+
+    it('adds private key to keyrings in KeyringController', async function () {
+      const keyringAccounts = await metamaskController.keyringController.getAccounts()
+      assert.equal(keyringAccounts[keyringAccounts.length - 1], '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
   })
 
   describe('submitPassword', function () {
