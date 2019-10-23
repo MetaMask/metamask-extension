@@ -157,6 +157,7 @@ describe('gas-modal-page-container container', () => {
         },
         insufficientBalance: true,
         isSpeedUp: false,
+        isRetry: false,
         txId: 34,
         isEthereumNetwork: true,
         isMainnet: true,
