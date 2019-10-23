@@ -42,7 +42,6 @@ export default class GasModalPageContainer extends Component {
     ]),
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
-    isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
   }
@@ -101,7 +100,6 @@ export default class GasModalPageContainer extends Component {
     gasEstimatesLoading,
     customPriceIsSafe,
     isSpeedUp,
-    isRetry,
     transactionFee,
     isEthereumNetwork,
   }) {
@@ -119,7 +117,6 @@ export default class GasModalPageContainer extends Component {
         gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
-        isRetry={isRetry}
         isEthereumNetwork={isEthereumNetwork}
       />
     )
