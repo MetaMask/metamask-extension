@@ -784,11 +784,11 @@ describe('Actions', () => {
       signTypedMsgSpy.restore()
     })
 
-    it('calls signTypedMsg in background with no error', async () => {
+    it('calls signTypedMsg in background with no error', () => {
       const store = mockStore()
       signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
 
-      store.dispatch(await actions.signTypedMsg(msgParamsV3))
+      store.dispatch(actions.signTypedMsg(msgParamsV3))
       assert(signTypedMsgSpy.calledOnce)
     })
 
