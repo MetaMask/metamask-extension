@@ -323,13 +323,6 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        /**
-         * TODO:lps:review this is called all over eth-json-rpc-middleware.
-         * By implementing this method using the permissionsController, we
-         * effectively enforce eth_accounts permissions by origin for all
-         * methods using accounts in the Ethereum provider.
-         * We should consider centralizing this logic in the near future.
-         */
         if (origin === 'MetaMask') {
           return [this.preferencesController.getSelectedAddress()]
         } else if (
@@ -374,13 +367,12 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     function selectPublicState ({ isUnlocked, network, completedOnboarding, provider }) {
-      const result = {
+      return {
         isUnlocked,
         networkVersion: network,
         onboardingcomplete: completedOnboarding,
         chainId: selectChainId({ network, provider }),
       }
-      return result
     }
     return publicConfigStore
   }

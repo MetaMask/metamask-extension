@@ -71,7 +71,8 @@ export default class PermissionPageContainerContent extends PureComponent {
 
       // TODO:lps:review is this how we want to handle permissions without
       // descriptions? In all current cases, if this condition triggers,
-      // approving the permissions will fail.
+      // the request will still fail when rpc-cap attempts to approve the
+      // permissions.
       if (!permissionsDescriptions[methodName]) {
         console.warn(`Unknown permission requested: ${methodName}`)
       }
@@ -102,7 +103,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { siteMetadata } = this.props
     const { t } = this.context
 
-    // TODO:lps change the learnMore link
     return (
       <div className="permission-approval-container__content">
         <section>
@@ -114,7 +114,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             {this.renderRequestedPermissions()}
             <br/>
             <a
-              href="https://metamask.io"
+              href="https://medium.com/metamask/introducing-web3-permissions-c55b3d73563f"
               target="_blank"
               rel="noopener noreferrer"
             >

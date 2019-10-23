@@ -1,6 +1,6 @@
 
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 
 /**
  * Create middleware for preprocessing permissions requests.
@@ -11,7 +11,7 @@ module.exports = function createRequestMiddleware ({
   return createAsyncMiddleware(async (req, res, next) => {
 
     if (typeof req.method !== 'string') {
-      res.error = rpcErrors.invalidRequest(null, req)
+      res.error = ethErrors.rpc.invalidRequest({ data: req})
       return
     }
 

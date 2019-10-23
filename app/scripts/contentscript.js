@@ -227,10 +227,3 @@ async function domIsReady () {
   // wait for load
   await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }
-
-// /**
-//  * Reloads the site
-//  */
-// function forceReloadSite () {
-//   window.location.reload()
-// }

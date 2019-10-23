@@ -28,7 +28,11 @@ import Button from '../ui/button'
 
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
-// TODO:lps this doesn't work, get the account from the sig request instead
+/**
+ * TODO:lps
+ * This call fails. The account must be grabbed from elsewhere.
+ * In an old TODO getting it from "the sig request" was suggested?
+ */
 function mapStateToProps (state) {
   return {
     balance: getSelectedAccount(state).balance,
