@@ -62,7 +62,10 @@ export default class TransactionList extends PureComponent {
       updateNetworkNonce()
     }
 
-    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && prevPendingTransactions.length === 0) {
+    const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
+    const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0
+
+    if (transactionTimeFeatureWasActivated && pendingTransactionAdded) {
       fetchBasicGasAndTimeEstimates()
         .then(basicEstimates => basicEstimates.blockTime)
         .then(blockTime => {
