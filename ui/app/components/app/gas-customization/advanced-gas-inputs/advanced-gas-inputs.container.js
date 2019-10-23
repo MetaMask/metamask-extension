@@ -25,9 +25,9 @@ const mapDispatchToProps = dispatch => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {customGasPrice, customGasLimit, updateCustomGasPrice, updateCustomGasLimit} = ownProps
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    ...ownProps,
     customGasPrice: convertGasPriceForInputs(customGasPrice),
     customGasLimit: convertGasLimitForInputs(customGasLimit),
     updateCustomGasPrice: (price) => updateCustomGasPrice(decGWEIToHexWEI(price)),

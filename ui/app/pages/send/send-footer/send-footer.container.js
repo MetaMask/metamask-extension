@@ -42,8 +42,8 @@ function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
-  const gasChangedLabel = activeButtonIndex >= 0
-    ? gasButtonInfo[activeButtonIndex].labelKey
+  const gasEstimateType = activeButtonIndex >= 0
+    ? gasButtonInfo[activeButtonIndex].gasEstimateType
     : 'custom'
 
   return {
@@ -61,7 +61,7 @@ function mapStateToProps (state) {
     tokenBalance: getTokenBalance(state),
     unapprovedTxs: getUnapprovedTxs(state),
     sendErrors: getSendErrors(state),
-    gasChangedLabel,
+    gasEstimateType,
   }
 }
 

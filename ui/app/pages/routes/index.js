@@ -12,7 +12,7 @@ import classnames from 'classnames'
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../send/send.container')
+import SendTransactionScreen from '../send'
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu

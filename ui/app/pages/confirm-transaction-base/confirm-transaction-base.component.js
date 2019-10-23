@@ -14,6 +14,7 @@ import {
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
+import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 import TextField from '../../components/ui/text-field'
 
@@ -171,7 +172,7 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (customGas.gasLimit < 21000) {
+    if (hexToDecimal(customGas.gasLimit) < 21000) {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
