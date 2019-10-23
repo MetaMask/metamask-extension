@@ -1,11 +1,6 @@
 
 // this must run before anything else
-if (
-  process.env.IN_TEST !== 'true' &&
-  process.env.METAMASK_ENV !== 'test'
-) {
-  require('./lib/freezePromise')
-}
+require('./lib/freezePromise')
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
