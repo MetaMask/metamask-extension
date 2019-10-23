@@ -1,3 +1,7 @@
+
+// this must run before anything else
+require('./lib/freezePromise')
+
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
