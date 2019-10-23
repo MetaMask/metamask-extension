@@ -1794,7 +1794,6 @@ function markAccountsFound () {
 }
 
 function retryTransaction (txId, gasPrice) {
-  console.log(txId, gasPrice)
   log.debug(`background.retryTransaction`)
   let newTxId
 

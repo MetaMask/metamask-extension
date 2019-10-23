@@ -60,12 +60,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
 
     event.stopPropagation()
-    console.log(id)
     onRetry(id)
-  }
-
-  handleRetryClick = event => {
-    this.handleRetry(event)
   }
 
   handleCopyTxId = () => {
@@ -183,11 +178,9 @@ export default class TransactionListItemDetails extends PureComponent {
               showRetryy && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
                 <Button
                   type="raised"
-                  onClick={this.handleRetryClick}
+                  onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button"
-                  // disabled={!hash}
                 >
-                  {/* <img src="/images/arrow-popout.svg" /> */}
                   <i className="fa fa-refresh"></i>
                 </Button>
               </Tooltip>

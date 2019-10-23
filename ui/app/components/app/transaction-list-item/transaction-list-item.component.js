@@ -112,7 +112,6 @@ export default class TransactionListItem extends PureComponent {
     }
 
     const retryId = id || initialTransactionId
-    console.log(retryId)
 
     this.context.metricsEvent({
       eventOpts: {

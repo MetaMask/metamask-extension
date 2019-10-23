@@ -240,9 +240,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps,
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
-      console.log(isSpeedUp, isRetry)
-      // return false
-
       if (isConfirm) {
         const updatedTx = {
           ...transaction,
