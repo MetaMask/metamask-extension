@@ -4,7 +4,12 @@
 
 
 // these need to run before anything else
-require('./lib/freezePromise')
+if (
+  process.env.IN_TEST !== 'true' &&
+  process.env.METAMASK_ENV !== 'test'
+) {
+  require('./lib/freezePromise')
+}
 require('./lib/setupFetchDebugging')()
 
 // polyfills
