@@ -15,10 +15,10 @@ if (
  * Makes a key:value pair on a target object immutable, with limitations.
  * The key cannot be reassigned or deleted, and the value is recursively frozen
  * using Object.freeze.
- * 
+ *
  * Because of JavaScript language limitations, this is does not mean that the
  * value is completely immutable. It is, however, better than nothing.
- * 
+ *
  * @param {Object} target - The target object to freeze a property on.
  * @param {String} key - The key to freeze.
  * @param {any} [value] - The value to freeze, if different from the existing value on the target.
