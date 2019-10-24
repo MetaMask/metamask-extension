@@ -206,6 +206,10 @@ class Routes extends Component {
       }
       : null
 
+    const sidebarShouldClose = sidebarTransaction &&
+      !sidebarTransaction.status === 'failed' &&
+      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+
     return (
       <div
         className={classnames('app', { 'mouse-user-styles': isMouseUser})}
@@ -232,9 +236,7 @@ class Routes extends Component {
         }
         <Sidebar
           sidebarOpen={sidebarIsOpen}
-          // this is most certainly wrong
-          // do we even need this prop?
-          // sidebarShouldClose={false}
+          sidebarShouldClose={sidebarShouldClose}
           hideSidebar={this.props.hideSidebar}
           transitionName={sidebarTransitionName}
           type={sidebarType}

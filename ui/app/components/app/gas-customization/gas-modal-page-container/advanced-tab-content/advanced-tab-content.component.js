@@ -22,7 +22,6 @@ export default class AdvancedTabContent extends Component {
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
-    isRetry: PropTypes.bool,
     isEthereumNetwork: PropTypes.bool,
   }
 

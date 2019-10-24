@@ -59,9 +59,9 @@ export default class Sidebar extends Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={200}
         >
-          { sidebarOpen ? this.renderSidebarContent() : null }
+          { sidebarOpen && !sidebarShouldClose ? this.renderSidebarContent() : null }
         </ReactCSSTransitionGroup>
-        { sidebarOpen ? this.renderOverlay() : null }
+        { sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null }
       </div>
     )
   }
