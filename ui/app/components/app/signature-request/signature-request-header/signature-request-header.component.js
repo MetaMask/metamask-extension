@@ -10,11 +10,12 @@ export default class SignatureRequestHeader extends PureComponent {
   }
 
   render () {
-    const { selectedAccount, accounts } = this.props
+    const { selectedAccount } = this.props
+    console.log('selectedAccount', selectedAccount)
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {selectedAccount && accounts && <AccountListItem
+          {selectedAccount && <AccountListItem
             displayBalance={false}
             account={selectedAccount}
           />}

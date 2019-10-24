@@ -3,6 +3,13 @@
     display: flex;
     flex-direction: column;
 
+    &__title {
+        font-weight: 500;
+        font-size: 14px;
+        color: #636778;
+        margin-left: 12px;
+    }
+
     h2 {
         flex: 1 1 0;
         text-align: left;
@@ -18,23 +25,39 @@
         background-color: #f8f9fb;
         padding-bottom: 0.5rem;
         overflow: auto;
+        padding-left: 12px;
+        padding-right: 12px;
+        width: 360px;
+        font-family: monospace;
     }
     
-    &--type {
-        font-size: 0.8rem;
-        padding: 0.5rem;
+    &__type-title {
+        font-family: monospace;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        margin-left: 12px;
+        margin-top: 6px;
+        margin-bottom: 10px;
     }
 
-    &--node {
+    &--node, &--node-leaf {
         padding-left: 0.8rem;
-        margin-bottom: 0.5rem;
 
         &-label {
-            color: #e0e0e0;
+            color: #5B5D67;
         }
 
         &-value {
+            color: black;
             margin-left: 0.5rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
+    }
+
+    &--node-leaf {
+        display: flex;
     }
 }

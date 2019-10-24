@@ -8,4 +8,18 @@
   &--account, &--network {
     flex: 1;
   }
+
+  &--account {
+    display: flex;
+    align-items: center;
+
+    .account-list-item__account-name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .account-list-item__top-row {
+      margin: 0px;
+    }
+  }
 }

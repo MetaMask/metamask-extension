@@ -60,6 +60,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.unapprovedTypedMessages, metamaskState.network)
   const numberOfUnapprivedTx = unapprovedTxsAll.length
   if (numberOfUnapprivedTx > 0) {
+    console.log('unapprovedTxsAll', unapprovedTxsAll)
     store.dispatch(actions.showConfTxPage({
       id: unapprovedTxsAll[numberOfUnapprivedTx - 1].id,
     }))

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class SignatureRequestMessage extends PureComponent {
   static propTypes = {
@@ -24,7 +25,12 @@ export default class SignatureRequestMessage extends PureComponent {
     return (
       <div className="signature-request-message--node">
         {this.makeNode(data).map(([ label, value ], i) => (
-          <div className="signature-request-message--node" key={i}>
+          <div
+            className={classnames('signature-request-message--node', {
+              'signature-request-message--node-leaf': typeof value !== 'object' || value === null,
+            })}
+            key={i}
+          >
             <span className="signature-request-message--node-label">{label}: </span>
             {
               typeof value === 'object' && value !== null ?
@@ -43,9 +49,9 @@ export default class SignatureRequestMessage extends PureComponent {
 
     return (
       <div className="signature-request-message">
-        <h2>{this.context.t('signatureRequest1')}</h2>
+        <div className="signature-request-message__title">{this.context.t('signatureRequest1')}</div>
         <div className="signature-request-message--root">
-          <p className="signature-request-message--type">{this.context.t('signatureRequest1')}</p>
+          <div className="signature-request-message__type-title">{this.context.t('signatureRequest1')}</div>
           {this.renderNode(data)}
         </div>
       </div>
