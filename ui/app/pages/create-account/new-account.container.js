@@ -1,19 +1,19 @@
-const Component = require('react').Component
-const { Switch, Route, matchPath } = require('react-router-dom')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../store/actions')
-const { getCurrentViewContext } = require('../../selectors/selectors')
-const classnames = require('classnames')
+import { Component } from 'react'
+import { Switch, Route, matchPath } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import h from 'react-hyperscript'
+import { connect } from 'react-redux'
+import actions from '../../store/actions'
+import { getCurrentViewContext } from '../../selectors/selectors'
+import classnames from 'classnames'
 import NewAccountCreateForm from './new-account.component'
-const NewAccountImportForm = require('./import-account')
-const ConnectHardwareForm = require('./connect-hardware')
-const {
+import NewAccountImportForm from './import-account'
+import ConnectHardwareForm from './connect-hardware'
+import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
-} = require('../../helpers/constants/routes')
+} from '../../helpers/constants/routes'
 
 class CreateAccountPage extends Component {
   renderTabs () {

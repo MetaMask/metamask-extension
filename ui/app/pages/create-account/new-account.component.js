@@ -1,9 +1,9 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../store/actions')
-const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
+import { Component } from 'react'
+import PropTypes from 'prop-types'
+import h from 'react-hyperscript'
+import { connect } from 'react-redux'
+import actions from '../../store/actions'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
 class NewAccountCreateForm extends Component {
