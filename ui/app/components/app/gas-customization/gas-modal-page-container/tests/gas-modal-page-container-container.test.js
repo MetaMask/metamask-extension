@@ -297,19 +297,19 @@ describe('gas-modal-page-container container', () => {
       })
     })
 
-    describe('convertThenUpdateCustomGasPrice()', () => {
-      it('should dispatch a setCustomGasPrice action with the arg passed to convertThenUpdateCustomGasPrice converted to WEI', () => {
-        mapDispatchToPropsObject.convertThenUpdateCustomGasPrice('0xffff')
+    describe('updateCustomGasPrice()', () => {
+      it('should dispatch a setCustomGasPrice action', () => {
+        mapDispatchToPropsObject.updateCustomGasPrice('0xffff')
         assert(dispatchSpy.calledOnce)
         assert(gasActionSpies.setCustomGasPrice.calledOnce)
-        assert.equal(gasActionSpies.setCustomGasPrice.getCall(0).args[0], '0x3b9a8e653600')
+        assert.equal(gasActionSpies.setCustomGasPrice.getCall(0).args[0], '0xffff')
       })
     })
 
 
-    describe('convertThenUpdateCustomGasLimit()', () => {
-      it('should dispatch a setCustomGasLimit action with the arg passed to convertThenUpdateCustomGasLimit converted to hex', () => {
-        mapDispatchToPropsObject.convertThenUpdateCustomGasLimit(16)
+    describe('updateCustomGasLimit()', () => {
+      it('should dispatch a setCustomGasLimit action', () => {
+        mapDispatchToPropsObject.updateCustomGasLimit('0x10')
         assert(dispatchSpy.calledOnce)
         assert(gasActionSpies.setCustomGasLimit.calledOnce)
         assert.equal(gasActionSpies.setCustomGasLimit.getCall(0).args[0], '0x10')

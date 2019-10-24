@@ -51,7 +51,7 @@
   },
   "resolutions": {
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12",
-    "pubnub/superagent-proxy/proxy-agent/pac-proxy-agent/https-proxy-agent": "^3.0.0"
+    "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -93,7 +93,7 @@
     "eth-json-rpc-filters": "^4.1.0",
     "eth-json-rpc-infura": "^4.0.1",
     "eth-json-rpc-middleware": "^4.2.0",
-    "eth-keyring-controller": "^5.1.0",
+    "eth-keyring-controller": "^5.3.0",
     "eth-ledger-bridge-keyring": "^0.2.0",
     "eth-method-registry": "^1.2.0",
     "eth-phishing-detect": "^1.1.4",
