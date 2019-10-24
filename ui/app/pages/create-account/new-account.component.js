@@ -126,5 +126,4 @@ NewAccountCreateForm.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)
-
+export default connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)

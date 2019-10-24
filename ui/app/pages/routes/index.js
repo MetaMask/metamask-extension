@@ -31,7 +31,7 @@ const MobileSyncPage = require('../mobile-sync')
 const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
-const CreateAccountPage = require('../create-account')
+import CreateAccountPage from '../create-account'
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
