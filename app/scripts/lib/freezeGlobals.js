@@ -31,8 +31,7 @@ function freeze (target, key, value, enumerable = true) {
   }
 
   if (value !== undefined) {
-    target[key] = deepFreeze()
-    opts.value = value
+    opts.value = deepFreeze(value)
     opts.enumerable = enumerable
   } else {
     target[key] = deepFreeze(target[key])
