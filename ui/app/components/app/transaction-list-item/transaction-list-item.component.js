@@ -234,7 +234,6 @@ export default class TransactionListItem extends PureComponent {
                   transactionGroup={transactionGroup}
                   onRetry={this.handleRetry}
                   showSpeedUp={showSpeedUp}
-                  // maybe this should just check primaryTransaction.status?
                   showRetry={getStatusKey(primaryTransaction) === 'failed'}
                   isEarliestNonce={isEarliestNonce}
                   onCancel={this.handleCancel}

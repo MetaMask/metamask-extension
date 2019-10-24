@@ -1867,8 +1867,6 @@ function createRetryTransaction (txId, customGasPrice) {
 
   return dispatch => {
     return new Promise((resolve, reject) => {
-      // I'm kinda just piggybacking on `createSpeedUpTransaction` to avoid creating a new background method
-      // Not sure if this is acceptable?
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
