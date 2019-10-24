@@ -8018,7 +8018,7 @@ deep-extend@^0.6.0, deep-extend@~0.6.0:
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deep-freeze-strict@^1.1.1:
+deep-freeze-strict@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/deep-freeze-strict/-/deep-freeze-strict-1.1.1.tgz#77d0583ca24a69be4bbd9ac2fae415d55523e5b0"
   integrity sha1-d9BYPKJKab5LvZrC+uQV1VUj5bA=
@@ -25510,7 +25510,7 @@ tapable@^1.0.0, tapable@^1.1.0:
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.3.tgz#a1fccc06b58db61fd7a45da2da44f5f3a3e67ba2"
   integrity sha512-4WK/bYZmj8xLr+HUCODHGF1ZFzsYffasLUgEiMBY4fgtltdO6B4WJtlSbPaDTLpYTcGVwM2qLnFTICEcNxs3kA==
 
-tape@^4.5.1, tape@^4.6.3, tape@^4.8.0:
+tape@^4.6.3, tape@^4.8.0:
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/tape/-/tape-4.8.0.tgz#f6a9fec41cc50a1de50fa33603ab580991f6068e"
   integrity sha512-TWILfEnvO7I8mFe35d98F6T5fbLaEtbFTG/lxWvid8qDfFTxt19EBijWmB4j3+Hoh5TfHE2faWs73ua+EphuBA==

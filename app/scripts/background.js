@@ -2,7 +2,9 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// this needs to run before anything else
+
+// these need to run before anything else
+require('./lib/freezeGlobals')
 require('./lib/setupFetchDebugging')()
 
 // polyfills
