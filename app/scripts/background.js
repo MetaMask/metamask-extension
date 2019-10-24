@@ -4,7 +4,7 @@
 
 
 // these need to run before anything else
-require('./lib/freezePromise')
+require('./lib/freezeGlobals')
 require('./lib/setupFetchDebugging')()
 
 // polyfills

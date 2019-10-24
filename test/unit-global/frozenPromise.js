@@ -1,42 +1,55 @@
 
-'use strict'
-
 /* eslint-disable no-native-reassign */
 
 // this is what we're testing
-require('../../app/scripts/lib/freezePromise')
+require('../../app/scripts/lib/freezeGlobals')
 
-const test = require('tape')
+const assert = require('assert')
 
-test('Promise global is immutable', t => {
+describe('Promise global is immutable', () => {
 
-  try {
-    Promise = {}
-    t.fail('did not throw error')
-  } catch (err) {
-    t.ok(err, 'throws when reassinging promise (syntax 1)')
-  }
+  it('throws when reassinging promise (syntax 1)', () => {
+    try {
+      Promise = {}
+      assert.fail('did not throw error')
+    } catch (err) {
+      assert.ok(err, 'did throw error')
+    }
+  })
 
-  try {
-    global.Promise = {}
-    t.fail('did not throw error')
-  } catch (err) {
-    t.ok(err, 'throws when reassinging promise (syntax 2)')
-  }
+  it('throws when reassinging promise (syntax 2)', () => {
+    try {
+      global.Promise = {}
+      assert.fail('did not throw error')
+    } catch (err) {
+      assert.ok(err, 'did throw error')
+    }
+  })
 
-  try {
-    Promise.all = () => {}
-    t.fail('did not throw error')
-  } catch (err) {
-    t.ok(err, 'throws when mutating existing Promise property')
-  }
+  it('throws when mutating existing Promise property', () => {
+    try {
+      Promise.all = () => {}
+      assert.fail('did not throw error')
+    } catch (err) {
+      assert.ok(err, 'did throw error')
+    }
+  })
 
-  try {
-    Promise.foo = 'bar'
-    t.fail('did not throw error')
-  } catch (err) {
-    t.ok(err, 'throws when adding new Promise property')
-  }
+  it('throws when adding new Promise property', () => {
+    try {
+      Promise.foo = 'bar'
+      assert.fail('did not throw error')
+    } catch (err) {
+      assert.ok(err, 'did throw error')
+    }
+  })
 
-  t.end()
+  it('throws when deleting Promise from global', () => {
+    try {
+      delete global.Promise
+      assert.fail('did not throw error')
+    } catch (err) {
+      assert.ok(err, 'did throw error')
+    }
+  })
 })
