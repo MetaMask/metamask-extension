@@ -1,7 +1,7 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const ObservableStore = require('obs-store')
-const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
+const RpcCap = require('rpc-cap').CapabilitiesController
 const { ethErrors } = require('eth-json-rpc-errors')
 
 const getRestrictedMethods = require('./restrictedMethods')
