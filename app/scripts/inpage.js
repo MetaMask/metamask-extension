@@ -147,22 +147,12 @@ inpageProvider._metamask = new Proxy({
   },
 
   /**
-   * Registers a page as having an onboarding button. This facilitates MetaMask focusing the initiating tab after onboarding.
+   * Registers a page as having initated onboarding. This facilitates MetaMask focusing the initiating tab after onboarding.
    *
    * @returns {Promise} - Promise resolving to undefined
    */
   registerOnboarding: async () => {
     await promisify(onboardingStream.write({ type: 'registerOnboarding' }))
-  },
-
-  /**
-   * Registers an onboarding forwarding page
-   *
-   * @param {string} openerLocation - The location of the page that opened the forwarder
-   * @returns {Promise} - Promise resolving to undefined
-   */
-  registerOnboardingForwarder: async (openerLocation) => {
-    await promisify(onboardingStream.write({ type: 'registerOnboardingForwarder', openerLocation }))
   },
 }, {
   get: function (obj, prop) {

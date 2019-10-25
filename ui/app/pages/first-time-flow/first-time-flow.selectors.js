@@ -20,17 +20,13 @@ function getFirstTimeFlowTypeRoute (state) {
 }
 
 const getOnboardingInitiator = (state) => {
-  const { initiatedOnboarding, onboardingTabs } = state.metamask
+  const { onboardingTabs } = state.metamask
 
-  if (!initiatedOnboarding || initiatedOnboarding.length !== 1 || !onboardingTabs) {
+  if (!onboardingTabs || Object.keys(onboardingTabs).length !== 1) {
     return null
   }
 
-  const origin = initiatedOnboarding[0]
-  if (!onboardingTabs[origin]) {
-    return null
-  }
-
+  const origin = Object.keys(onboardingTabs)[0]
   const tabId = onboardingTabs[origin]
   return {
     origin,

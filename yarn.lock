@@ -18222,10 +18222,10 @@ metamask-logo@^2.1.4:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
 
-metamask-onboarding@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/metamask-onboarding/-/metamask-onboarding-0.1.0.tgz#6710bdeb50400aef8bf2e1f87b73a117205921f2"
-  integrity sha512-skURP3S3bH+o60q9r6jw6gvYmyU9CXw+NtReI3UE/XUAy3FT2Xzyr7+z4jUGyZdOkAxDPaSwIEg0qe6LH2wWgA==
+metamask-onboarding@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/metamask-onboarding/-/metamask-onboarding-0.1.1.tgz#72081ecc47278b577be192e21b5669a9428e9458"
+  integrity sha512-WEgyB1LSoGrIth3yxIZ8ag6NDl9CYuuqV2qjaoOlPx2Rk76HXgpVVFMcdBsUR4D0QZxG/Blkg7gy67Isa4gUDQ==
   dependencies:
     bowser "^2.5.4"
 

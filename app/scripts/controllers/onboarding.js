@@ -25,7 +25,6 @@ class OnboardingController {
    */
   constructor (opts = {}) {
     const initialTransientState = {
-      initiatedOnboarding: [],
       onboardingTabs: {},
     }
     const initState = extend(
@@ -60,7 +59,7 @@ class OnboardingController {
   }
 
   /**
-   * Registering a site as having an onboarding button
+   * Registering a site as having initiated onboarding
    *
    * @param {string} location - The location of the site registering
    * @param {string} tabId - The id of the tab registering
@@ -77,25 +76,6 @@ class OnboardingController {
       this.store.updateState({ onboardingTabs })
     }
   }
-
-  /**
-   * Registering a site as having an onboarding button
-   *
-   * @param {string} openerLocation - The location of site that opened the onboarding forwarder
-   */
-  async registerOnboardingForwarder (openerLocation) {
-    if (this.completedOnboarding) {
-      log.debug('Ignoring registerOnboardingForwarder; user already onboarded')
-      return
-    }
-    const initiatedOnboarding = this.store.getState().initiatedOnboarding.slice()
-    if (!initiatedOnboarding.includes(openerLocation)) {
-      log.debug(`Registering forwarder opener location: '${openerLocation}'`)
-      initiatedOnboarding.push(openerLocation)
-      this.store.updateState({ initiatedOnboarding })
-    }
-  }
-
 }
 
 module.exports = OnboardingController

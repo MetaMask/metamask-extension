@@ -3,7 +3,6 @@ const path = require('path')
 const pump = require('pump')
 const log = require('loglevel')
 const Dnode = require('dnode')
-const assert = require('assert').strict
 const querystring = require('querystring')
 const { Writable } = require('readable-stream')
 const LocalMessageDuplexStream = require('post-message-stream')
@@ -110,9 +109,6 @@ async function setupStreams () {
       try {
         if (chunk.type === 'registerOnboarding') {
           extension.runtime.sendMessage({ type: 'metamask:registerOnboarding', location: window.location.href }, handleSendMessageResponse)
-        } else if (chunk.type === 'registerOnboardingForwarder') {
-          assert(chunk.openerLocation, 'Missing opener location')
-          extension.runtime.sendMessage({ type: 'metamask:registerOnboardingForwarder', openerLocation: chunk.openerLocation }, handleSendMessageResponse)
         } else {
           throw new Error(`Unrecognized onboarding message type: '${chunk.type}'`)
         }

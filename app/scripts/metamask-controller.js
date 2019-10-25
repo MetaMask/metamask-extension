@@ -1538,13 +1538,6 @@ module.exports = class MetamaskController extends EventEmitter {
         assert(message.location, 'Missing location from message')
 
         handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
-      } else if (message.type === 'metamask:registerOnboardingForwarder') {
-        assert(message.openerLocation, 'Missing opener location')
-        // TODO: filter by forwarder domain unless in testing/development
-        // const url = new URL(sender.url)
-        // assert(url.origin === forwarderDomain, `Unrecognized forwarder origin: '${url.origin}'`)
-
-        handleMessage = this.onboardingController.registerOnboardingForwarder(message.openerLocation)
       } else {
         throw new Error(`Unrecognized message type: '${message.type}'`)
       }

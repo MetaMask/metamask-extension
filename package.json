@@ -256,7 +256,7 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-qunit": "^1.2.1",
     "lodash.assign": "^4.0.6",
-    "metamask-onboarding": "^0.1.0",
+    "metamask-onboarding": "^0.1.1",
     "mocha": "^5.0.0",
     "mocha-eslint": "^4.0.0",
     "mocha-jsdom": "^1.1.0",
