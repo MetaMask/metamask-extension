@@ -36,7 +36,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
-const { PermissionsController } = require('./controllers/permissions/permissions')
+const { PermissionsController } = require('./controllers/permissions/')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -405,11 +405,12 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   getApi () {
     const keyringController = this.keyringController
-    const preferencesController = this.preferencesController
-    const txController = this.txController
     const networkController = this.networkController
     const onboardingController = this.onboardingController
+    const permissionsController = this.permissionsController
+    const preferencesController = this.preferencesController
     const threeBoxController = this.threeBoxController
+    const txController = this.txController
 
     return {
       // etc
@@ -519,16 +520,18 @@ module.exports = class MetamaskController extends EventEmitter {
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
 
       // permissions
-      approvePermissionsRequest: nodeify(this.permissionsController.approvePermissionsRequest, this.permissionsController),
-      clearPermissions: this.permissionsController.clearPermissions.bind(this.permissionsController),
-      clearPermissionsHistory: this.permissionsController.clearHistory.bind(this.permissionsController),
-      clearPermissionsLog: this.permissionsController.clearLog.bind(this.permissionsController),
-      getApprovedAccounts: nodeify(this.permissionsController.getAccounts.bind(this.permissionsController)),
-      rejectPermissionsRequest: nodeify(this.permissionsController.rejectPermissionsRequest, this.permissionsController),
-      removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
+      approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
+      clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
+      clearPermissionsHistory: permissionsController.clearHistory.bind(permissionsController),
+      clearPermissionsLog: permissionsController.clearLog.bind(permissionsController),
+      getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
+      rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
+      removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
+      getCaveatsFor: permissionsController.getCaveatsFor.bind(permissionsController),
+      getCaveat: permissionsController.getCaveat.bind(permissionsController),
+      updateExposedAccounts: nodeify(permissionsController.updateExposedAccounts, permissionsController),
     }
   }
-
 
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS

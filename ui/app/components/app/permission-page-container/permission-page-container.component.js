@@ -91,31 +91,20 @@ export default class PermissionPageContainer extends Component {
     const {
       requests, approvePermissionsRequest, rejectPermissionsRequest,
     } = this.props
+
     const request = {
       ...requests[0],
       permissions: { ...requests[0].permissions },
     }
+
     Object.keys(this.state.selectedPermissions).forEach(key => {
       if (!this.state.selectedPermissions[key]) {
         delete request.permissions[key]
       }
     })
 
-    // TODO: add a caveat factory method somewhere, probably
-    if ('eth_accounts' in request.permissions) {
-      if (!request.permissions.eth_accounts.caveats) {
-        request.permissions.eth_accounts.caveats = []
-      }
-      request.permissions.eth_accounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: [this.state.selectedAccount.address],
-        },
-      )
-    }
-
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request)
+      approvePermissionsRequest(request, [this.state.selectedAccount.address])
     } else {
       rejectPermissionsRequest(request.metadata.id)
     }

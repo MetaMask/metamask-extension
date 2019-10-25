@@ -2663,11 +2663,12 @@ function selectApprovedAccount (origin) {
 
 /**
  * Approves the permission requests with the given IDs.
- * @param {Array} requestId
+ * @param {string} requestId - The id of the permissions request.
+ * @param {string[]} accounts - The accounts to expose, if any.
  */
-function approvePermissionsRequest (requestId) {
+function approvePermissionsRequest (requestId, accounts) {
   return () => {
-    background.approvePermissionsRequest(requestId)
+    background.approvePermissionsRequest(requestId, accounts)
   }
 }
 
