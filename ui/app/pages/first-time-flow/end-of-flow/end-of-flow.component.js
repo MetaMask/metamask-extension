@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import extension from 'extensionizer'
 import Button from '../../../components/ui/button'
 import MetaFoxLogo from '../../../components/ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-
+import { returnToOnboardingInitiator } from '../onboarding-initiator-util'
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -22,9 +21,27 @@ export default class EndOfFlowScreen extends PureComponent {
     }),
   }
 
+  onComplete = async () => {
+    const { history, completeOnboarding, completionMetaMetricsName, onboardingInitiator } = this.props
+
+    await completeOnboarding()
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Onboarding',
+        action: 'Onboarding Complete',
+        name: completionMetaMetricsName,
+      },
+    })
+
+    if (onboardingInitiator) {
+      await returnToOnboardingInitiator(onboardingInitiator)
+    }
+    history.push(DEFAULT_ROUTE)
+  }
+
   render () {
     const { t } = this.context
-    const { history, completeOnboarding, completionMetaMetricsName, onboardingInitiator } = this.props
+    const { onboardingInitiator } = this.props
 
     const completeButtonText = onboardingInitiator ?
       t('onboardingReturnMessage', [onboardingInitiator.location]) :
@@ -72,22 +89,7 @@ export default class EndOfFlowScreen extends PureComponent {
         <Button
           type="primary"
           className="first-time-flow__button"
-          onClick={async () => {
-            await completeOnboarding()
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Onboarding',
-                action: 'Onboarding Complete',
-                name: completionMetaMetricsName,
-              },
-            })
-
-            if (onboardingInitiator) {
-              extension.tabs.update(onboardingInitiator.tabId, { active: true })
-              window.close()
-            }
-            history.push(DEFAULT_ROUTE)
-          }}
+          onClick={this.onComplete}
         >
           { completeButtonText }
         </Button>

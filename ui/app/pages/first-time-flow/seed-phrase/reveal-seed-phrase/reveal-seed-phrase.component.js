@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import extension from 'extensionizer'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
+import { returnToOnboardingInitiator } from '../../onboarding-initiator-util'
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -65,8 +65,7 @@ export default class RevealSeedPhrase extends PureComponent {
     await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
 
     if (onboardingInitiator) {
-      extension.tabs.update(onboardingInitiator.tabId, { active: true })
-      window.close()
+      await returnToOnboardingInitiator(onboardingInitiator)
     }
     history.push(DEFAULT_ROUTE)
   }
