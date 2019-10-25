@@ -17,7 +17,7 @@ export default class EndOfFlowScreen extends PureComponent {
     completeOnboarding: PropTypes.func,
     completionMetaMetricsName: PropTypes.string,
     onboardingInitiator: PropTypes.exact({
-      origin: PropTypes.string,
+      location: PropTypes.string,
       tabId: PropTypes.number,
     }),
   }
@@ -27,7 +27,7 @@ export default class EndOfFlowScreen extends PureComponent {
     const { history, completeOnboarding, completionMetaMetricsName, onboardingInitiator } = this.props
 
     const completeButtonText = onboardingInitiator ?
-      t('onboardingReturnMessage', [onboardingInitiator.origin]) :
+      t('onboardingReturnMessage', [onboardingInitiator.location]) :
       t('endOfFlowMessage10')
 
     return (

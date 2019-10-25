@@ -26,10 +26,10 @@ const getOnboardingInitiator = (state) => {
     return null
   }
 
-  const origin = Object.keys(onboardingTabs)[0]
-  const tabId = onboardingTabs[origin]
+  const location = Object.keys(onboardingTabs)[0]
+  const tabId = onboardingTabs[location]
   return {
-    origin,
+    location,
     tabId,
   }
 }

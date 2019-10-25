@@ -19,7 +19,7 @@ export default class RevealSeedPhrase extends PureComponent {
     setSeedPhraseBackedUp: PropTypes.func,
     setCompletedOnboarding: PropTypes.func,
     onboardingInitiator: PropTypes.exact({
-      origin: PropTypes.string,
+      location: PropTypes.string,
       tabId: PropTypes.number,
     }),
   }
@@ -123,7 +123,7 @@ export default class RevealSeedPhrase extends PureComponent {
       (
         <div>
           <p>{ t('remindMeLater') }</p>
-          <p>{ t('onboardingReturnMessage', [onboardingInitiator.origin]) }</p>
+          <p>{ t('onboardingReturnMessage', [onboardingInitiator.location]) }</p>
         </div>
       ) :
       t('remindMeLater')
