@@ -77,6 +77,7 @@ const getPublicConfigWhenReady = async () => {
 
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
+
   /**
    * Determines if MetaMask is unlocked by the user
    *
@@ -85,6 +86,16 @@ inpageProvider._metamask = new Proxy({
   isUnlocked: async function () {
     const { isUnlocked } = await getPublicConfigWhenReady()
     return Boolean(isUnlocked)
+  },
+
+  /**
+   * WILL BE DEPRECATED.
+   * Asynchronously determines if this domain is currently enabled.
+   *
+   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
+   */
+  isApproved: async function () {
+    return Boolean(inpageProvider.selectedAddress)
   },
 }, {
   get: function (obj, prop) {
