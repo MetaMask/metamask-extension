@@ -223,7 +223,7 @@ class PermissionsController {
   /**
    * Gets the caveat with the given name for the given permission of the
    * given origin.
-   * 
+   *
    * @param {string} permission - The name of the target permission.
    * @param {string} origin - The origin that has the permission.
    * @param {string} caveatName - The name of the caveat to retrieve.

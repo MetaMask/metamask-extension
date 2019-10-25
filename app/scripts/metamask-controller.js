@@ -177,7 +177,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.accountTracker._updateAccounts()
     })
 
-    // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -185,10 +184,14 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
-
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
 
-    // detect tokens controller
+    this.permissionsController = new PermissionsController({
+      keyringController: this.keyringController,
+      openPopup: opts.openPopup,
+      closePopup: opts.closePopup,
+    }, initState.PermissionsController, initState.PermissionsMetadata)
+
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
       network: this.networkController,
@@ -207,9 +210,9 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
     })
 
-    // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
+      getPermittedAccounts: this.permissionsController.getAccounts.bind(this.permissionsController),
       networkStore: this.networkController.networkStore,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
@@ -259,13 +262,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.on('update', (memState) => {
       this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
     })
-
-    this.permissionsController = new PermissionsController({
-      keyringController: this.keyringController,
-      openPopup: opts.openPopup,
-      closePopup: opts.closePopup,
-    },
-    initState.PermissionsController, initState.PermissionsMetadata)
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
