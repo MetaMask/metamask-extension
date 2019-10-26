@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Switch, Route, matchPath } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import h from 'react-hyperscript'
 import classnames from 'classnames'
 import NewAccountCreateForm from './new-account.container'
 import NewAccountImportForm from './import-account'
@@ -38,31 +37,34 @@ export default class CreateAccountPage extends Component {
   }
 
   render () {
-    return h('div.new-account', {}, [
-      h('div.new-account__header', [
-        h('div.new-account__title', this.context.t('newAccount')),
-        this.renderTabs(),
-      ]),
-      h('div.new-account__form', [
-        h(Switch, [
-          h(Route, {
-            exact: true,
-            path: NEW_ACCOUNT_ROUTE,
-            component: NewAccountCreateForm,
-          }),
-          h(Route, {
-            exact: true,
-            path: IMPORT_ACCOUNT_ROUTE,
-            component: NewAccountImportForm,
-          }),
-          h(Route, {
-            exact: true,
-            path: CONNECT_HARDWARE_ROUTE,
-            component: ConnectHardwareForm,
-          }),
-        ]),
-      ]),
-    ])
+    return (
+      <div className="new-account">
+        <div className="new-account__header">
+          <div className={`new-account__header ${this.context.t('newAccount')}`}>
+            {this.renderTabs()}
+          </div>
+        </div>
+        <div className="new-account__form">
+          <Switch>
+            <Route
+              exact={true}
+              path={NEW_ACCOUNT_ROUTE}
+              component={NewAccountCreateForm}
+            />
+            <Route
+              exact={true}
+              path={IMPORT_ACCOUNT_ROUTE}
+              component={NewAccountImportForm}
+            />
+            <Route
+              exact={true}
+              path={CONNECT_HARDWARE_ROUTE}
+              component={ConnectHardwareForm}
+            />
+          </Switch>
+        </div>
+      </div>
+    )
   }
 }
 
