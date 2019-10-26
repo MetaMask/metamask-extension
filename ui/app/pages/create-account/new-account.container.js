@@ -1,20 +1,33 @@
 import { connect } from 'react-redux'
 import actions from '../../store/actions'
-import { getCurrentViewContext } from '../../selectors/selectors'
-import CreateAccountPage from './create-account.component'
+import NewAccountCreateForm from './new-account.component'
 
-const mapStateToProps = state => ({
-  displayedForm: getCurrentViewContext(state),
-})
+const mapStateToProps = state => {
+  const { metamask: { network, selectedAddress, identities = {} } } = state
+  const numberOfExistingAccounts = Object.keys(identities).length
 
-const mapDispatchToProps = dispatch => ({
-  displayForm: form => dispatch(actions.setNewAccountForm(form)),
-  showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
-  showExportPrivateKeyModal: () => {
-    dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
-  },
-  hideModal: () => dispatch(actions.hideModal()),
-  setAccountLabel: (address, label) => dispatch(actions.setAccountLabel(address, label)),
-})
+  return {
+    network,
+    address: selectedAddress,
+    numberOfExistingAccounts,
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateAccountPage)
+const mapDispatchToProps = dispatch => {
+  return {
+    toCoinbase: address => dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
+    hideModal: () => dispatch(actions.hideModal()),
+    createAccount: newAccountName => {
+      return dispatch(actions.addNewAccount())
+        .then(newAccountAddress => {
+          if (newAccountName) {
+            dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
+          }
+        })
+    },
+    showImportPage: () => dispatch(actions.showImportPage()),
+    showConnectPage: () => dispatch(actions.showConnectPage()),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)

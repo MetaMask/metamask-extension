@@ -1,12 +1,10 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import h from 'react-hyperscript'
-import { connect } from 'react-redux'
-import actions from '../../store/actions'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
-class NewAccountCreateForm extends Component {
+export default class NewAccountCreateForm extends Component {
   constructor (props, context) {
     super(props)
 
@@ -93,37 +91,7 @@ NewAccountCreateForm.propTypes = {
   t: PropTypes.func,
 }
 
-const mapStateToProps = state => {
-  const { metamask: { network, selectedAddress, identities = {} } } = state
-  const numberOfExistingAccounts = Object.keys(identities).length
-
-  return {
-    network,
-    address: selectedAddress,
-    numberOfExistingAccounts,
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    toCoinbase: address => dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
-    hideModal: () => dispatch(actions.hideModal()),
-    createAccount: newAccountName => {
-      return dispatch(actions.addNewAccount())
-        .then(newAccountAddress => {
-          if (newAccountName) {
-            dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
-          }
-        })
-    },
-    showImportPage: () => dispatch(actions.showImportPage()),
-    showConnectPage: () => dispatch(actions.showConnectPage()),
-  }
-}
-
 NewAccountCreateForm.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)

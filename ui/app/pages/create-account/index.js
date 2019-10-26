@@ -1,1 +1,1 @@
-export { default } from './new-account.container'
+export { default } from './create-account.container'
