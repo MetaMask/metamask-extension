@@ -6020,6 +6020,14 @@ caniuse-lite@^1.0.30000955, caniuse-lite@^1.0.30000971:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000973.tgz#2f8e8e54f9e6c5b7a631c9e69bfa1093d8cfd360"
   integrity sha512-/F3t/Yo8LEdRSEPCmI15fLu5vepVh9UCg/9inJXF5AAfW7xRRJkbaM2ut52iRMQMnGCLQouLbFdbOA+VEFOIsg==
 
+capnode@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/capnode/-/capnode-4.0.1.tgz#0f66290a30cc4e0ef7d5a7df540be9d68678a3f7"
+  integrity sha512-T0HI8AgZtDEsrmvNc56A7oo9WYrsn1JNo9789N+kIqaNJLKHXiS/iNmLoVm450MwgIbN+arYP2dHlkz5ZR9p3A==
+  dependencies:
+    crypto-random-string "^1.0.0"
+    stream "0.0.2"
+
 capture-stack-trace@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.1.tgz#a6c0bbe1f38f3aa0b92238ecb6ff42c344d4135d"
@@ -8936,6 +8944,11 @@ email-validator@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-2.0.4.tgz#b8dfaa5d0dae28f1b03c95881d904d4e40bfe7ed"
   integrity sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==
+
+emitter-component@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.1.1.tgz#065e2dbed6959bf470679edabeaf7981d1003ab6"
+  integrity sha1-Bl4tvtaVm/RwZ57avq95gdEAOrY=
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -17946,9 +17959,9 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
-  version "2.0.1"
-  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/893491af0b2aa3aa904748bc22c3dd03a32f31da"
+metamask-inpage-provider@MetaMask/metamask-inpage-provider#capnode3:
+  version "3.0.0"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/2abb18d2410d5c9795ede9b6d4dfab6e10aa719f"
   dependencies:
     json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
@@ -17957,7 +17970,6 @@ metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
     obs-store "^4.0.3"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
-    uuid "^3.3.2"
 
 metamask-logo@^2.1.4:
   version "2.1.4"
@@ -25070,6 +25082,13 @@ stream-to-pull-stream@^1.7.2, stream-to-pull-stream@^1.7.3:
   dependencies:
     looper "^3.0.0"
     pull-stream "^3.2.3"
+
+stream@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/stream/-/stream-0.0.2.tgz#7f5363f057f6592c5595f00bc80a27f5cec1f0ef"
+  integrity sha1-f1Nj8Ff2WSxVlfALyAon9c7B8O8=
+  dependencies:
+    emitter-component "^1.1.1"
 
 streamroller@^1.0.5:
   version "1.0.5"

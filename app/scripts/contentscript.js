@@ -61,6 +61,7 @@ async function setupStreams () {
     name: 'contentscript',
     target: 'inpage',
   })
+
   const extensionPort = extension.runtime.connect({ name: 'contentscript' })
   const extensionStream = new PortStream(extensionPort)
 
@@ -87,6 +88,7 @@ async function setupStreams () {
   // forward communication across inpage-background for these channels only
   forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
   forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
+  forwardTrafficBetweenMuxers('cap', pageMux, extensionMux)
 
   // connect "phishing" channel to warning system
   const phishingStream = extensionMux.createStream('phishing')

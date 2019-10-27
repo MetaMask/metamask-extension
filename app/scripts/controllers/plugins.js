@@ -4,6 +4,7 @@ const extend = require('xtend')
 const {
   pluginRestrictedMethodDescriptions,
 } = require('./permissions/restrictedMethods')
+const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 const isTest = process.env.IN_TEST === 'true' || process.env.METAMASK_ENV === 'test'
 const SES = (
@@ -52,6 +53,7 @@ class PluginsController extends EventEmitter {
     this.onUnlock = opts.onUnlock
 
     this.rpcMessageHandlers = new Map()
+    this.apiRequestHandlers = new Map()
     this.adding = {}
   }
 
@@ -96,6 +98,7 @@ class PluginsController extends EventEmitter {
 
   clearPluginState () {
     this.rpcMessageHandlers.clear()
+    this.apiRequestHandlers.clear()
     this.store.updateState({
       plugins: {},
       pluginStates: {},
@@ -235,6 +238,15 @@ class PluginsController extends EventEmitter {
     return this._startPlugin(pluginName, approvedPermissions, sourceCode, ethereumProvider)
   }
 
+  async apiRequest (plugin, origin) {
+    const handler = this.apiRequestHandlers.get(plugin)
+    if (!handler) {
+      throw rpcErrors.methodNotFound('apiRequest: ' + plugin)
+    }
+
+    return handler(origin)
+  }
+
   _eventEmitterToListenerMap (eventEmitter) {
     return eventEmitter.eventNames().map(eventName => {
       return {
@@ -282,9 +294,11 @@ class PluginsController extends EventEmitter {
       ...this.getApi(),
     }
     const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
+    const registerApiRequestHandler = this._registerApiRequestHandler.bind(this, pluginName)
     const apisToProvide = {
       onMetaMaskEvent,
       registerRpcMessageHandler,
+      registerApiRequestHandler,
       getAppKey: () => this.getAppKeyForDomain(pluginName),
       onUnlock: this.onUnlock,
     }
@@ -296,6 +310,10 @@ class PluginsController extends EventEmitter {
 
   _registerRpcMessageHandler (pluginName, handler) {
     this.rpcMessageHandlers.set(pluginName, handler)
+  }
+
+  _registerApiRequestHandler (pluginName, handler) {
+    this.apiRequestHandlers.set(pluginName, handler)
   }
 
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {

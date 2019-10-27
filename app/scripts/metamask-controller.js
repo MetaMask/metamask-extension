@@ -7,6 +7,7 @@
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
+const Capnode = require('capnode').default
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const asStream = require('obs-store/lib/asStream')
@@ -1492,6 +1493,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // messages between inpage and background
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupCapnodeConnection(mux.createStream('cap'), originDomain)
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
@@ -1511,6 +1513,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupCapnodeConnection(mux.createStream('cap'), originDomain)
   }
 
   /**
@@ -1587,6 +1590,30 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
+  setupCapnodeConnection (outStream, origin) {
+    const apiObj = {
+      ping: () => 'pong',
+      subscribe: ({ listener }) => {
+        setTimeout(() => listener('Hello!'), 1000)
+      },
+      getPluginApi: (pluginName) => {
+        return this.pluginsController.apiRequest(pluginName, origin)
+      },
+    }
+    const cap = new Capnode({ index: apiObj })
+    const server = cap.createRemote()
+
+    pump(
+      outStream,
+      server,
+      outStream,
+      (err) => {
+        // TODO: Any capServer deallocation steps.
+        if (err) log.error(err)
+      }
+    )
+  }
+
   setupProvider (origin, getSiteMetadata, isPlugin) {
     const engine = this.setupProviderEngine(origin, getSiteMetadata, isPlugin)
     const provider = providerFromEngine(engine)
@@ -1633,6 +1660,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
+
     return engine
   }
 
