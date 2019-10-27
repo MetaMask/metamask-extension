@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import h from 'react-hyperscript'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
@@ -21,7 +21,26 @@ export default class NewAccountCreateForm extends Component {
     const { newAccountName, defaultAccountName } = this.state
     const { history, createAccount } = this.props
 
-    return h('div.new-account-create-form', [
+    return (
+      <div className='new-account-create-form'>
+        <div className='new-account-create-form__input-label'>
+        {this.context.t('accountName')}
+        </div>
+        <div className='new-account-create-form__input-wrapper'>
+          <input className='new-account-create-form__input'
+            value={newAccountName}
+            placeholder={defaultAccountName}
+            onChange={event => this.setState({ newAccountName: event.target.value })}
+          />
+        </div>
+        <div className='new-account-create-form__buttons'>
+          <Button
+            className='new-account-create-form__button'
+          >{this.context.t('cancel')}</Button>
+        </div>
+      </div>
+    )
+    /* return h('div.new-account-create-form', [
 
       h('div.new-account-create-form__input-label', {}, [
         this.context.t('accountName'),
@@ -77,7 +96,7 @@ export default class NewAccountCreateForm extends Component {
 
       ]),
 
-    ])
+    ]) */
   }
 }
 
