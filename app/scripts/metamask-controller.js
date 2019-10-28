@@ -54,6 +54,7 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const nanoid = require('nanoid')
 const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
@@ -88,6 +89,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // observable state store
     this.store = new ComposableObservableStore(initState)
+
+    // external connections by origin
+    // Do not modify directly. Use the associated methods.
+    this.connections = {}
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
@@ -190,6 +195,8 @@ module.exports = class MetamaskController extends EventEmitter {
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
       closePopup: opts.closePopup,
+      notifyDomain: this.notifyConnections.bind(this),
+      notifyAllDomains: this.notifyAllConnections.bind(this),
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -1399,6 +1406,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine })
 
+    const connectionId = this.addConnection(origin, { engine })
+
     pump(
       outStream,
       providerStream,
@@ -1410,6 +1419,7 @@ module.exports = class MetamaskController extends EventEmitter {
             mid.destroy()
           }
         })
+        connectionId && this.removeConnection(origin, connectionId)
         if (err) log.error(err)
       }
     )
@@ -1473,6 +1483,89 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
+  // manage external connections
+
+  /**
+   * Adds a reference to a connection by origin. Ignores the 'MetaMask' origin.
+   * Caller must ensure that the returned id is stored such that the reference
+   * can be deleted later.
+   * 
+   * @param {string} origin - The connection's origin string.
+   * @param {Object} options - Data associated with the connection
+   * @param {Object} options.engine - The connection's JSON Rpc Engine
+   * @returns {string} - The connection's id (so that it can be deleted later)
+   */
+  addConnection (origin, { engine }) {
+
+    if (origin === 'MetaMask') return null
+
+    if (!this.connections[origin]) {
+      this.connections[origin] = {}
+    }
+
+    const id = nanoid()
+    this.connections[origin][id] = {
+      engine,
+    }
+
+    return id
+  }
+
+  /**
+   * Deletes a reference to a connection, by origin and id.
+   * Ignores unknown origins.
+   * 
+   * @param {string} origin - The connection's origin string.
+   * @param {string} id - The connection's id, as returned from addConnection.
+   */
+  removeConnection (origin, id) {
+
+    if (!this.connections[origin]) return
+
+    delete this.connections[origin][id]
+
+    if (Object.keys(this.connections[origin].length === 0)) {
+      delete this.connections[origin]
+    }
+  }
+
+  /**
+   * Causes the RPC engines associated with the connections to the given origin
+   * to emit an event with the given name and payload.
+   * Ignores unknown origins.
+   * 
+   * @param {string} origin - The connection's origin string.
+   * @param {string} eventName - The name of the event to emit.
+   * @param {any} payload - The event payload.
+   */
+  notifyConnections (origin, eventName, payload) {
+
+    if (!this.connections[origin]) return
+
+    Object.values(this.connections[origin]).forEach(conn => {
+      conn.engine && conn.engine.emit(eventName, payload)
+    })
+  }
+
+  /**
+   * Causes the RPC engines associated with all connections to emit an event
+   * with the given name and payload.
+   * 
+   * @param {string} eventName - The name of the event to emit.
+   * @param {any} payload - The event payload.
+   */
+  notifyAllConnections (eventName, payload) {
+
+    Object.values(this.connections).forEach(origin => {
+      Object.values(origin).forEach(conn => {
+        conn.engine && conn.engine.emit(eventName, payload)
+      })
+    })
+  }
+
+
+  // handlers
+
   /**
    * Handle a KeyringController update
    * @param {object} state the KC state
@@ -1501,6 +1594,8 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  // misc
+
   /**
    * A method for emitting the full MetaMask state to all registered listeners.
    * @private
@@ -1508,6 +1603,10 @@ module.exports = class MetamaskController extends EventEmitter {
   privateSendUpdate () {
     this.emit('update', this.getState())
   }
+
+  //=============================================================================
+  // MISCELLANEOUS
+  //=============================================================================
 
   /**
    * A method for estimating a good gas price at recent prices.

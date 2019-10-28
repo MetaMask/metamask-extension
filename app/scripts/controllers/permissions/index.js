@@ -23,7 +23,9 @@ const CAVEAT_NAMES = {
 class PermissionsController {
 
   constructor (
-    { openPopup, closePopup, keyringController} = {},
+    {
+      openPopup, closePopup, notifyDomain, notifyAllDomains, keyringController
+    } = {},
     restoredPermissions = {},
     restoredState = {}) {
     this.store = new ObservableStore({
@@ -31,6 +33,8 @@ class PermissionsController {
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
+    this.notifyDomain = notifyDomain
+    this.notifyAllDomains = notifyAllDomains
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
@@ -136,6 +140,8 @@ class PermissionsController {
     this.permissions.updateCaveatFor(
       origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
     )
+
+    this.notifyDomain(origin, 'accountsChanged', accounts)
   }
 
   /**
@@ -157,8 +163,7 @@ class PermissionsController {
         ethAccounts.caveats = []
       }
 
-      // caveat names are unique, and we only want this caveat constructed
-      // here
+      // caveat names are unique, and we will only construct this caveat here
       ethAccounts.caveats = ethAccounts.caveats.filter(c => (
         c.name !== CAVEAT_NAMES.exposedAccounts
       ))
@@ -199,10 +204,17 @@ class PermissionsController {
    * @param {object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
+
     Object.entries(domains).forEach(([origin, perms]) => {
+
       this.permissions.removePermissionsFor(
         origin,
         perms.map(methodName => {
+
+          if (methodName === 'eth_accounts') {
+            this.notifyDomain(origin, 'accountsChanged', [])
+          }
+
           return { parentCapability: methodName }
         })
       )
@@ -237,6 +249,7 @@ class PermissionsController {
    */
   clearPermissions () {
     this.permissions.clearDomains()
+    this.notifyAllDomains('accountsChanged', [])
   }
 
   /**
