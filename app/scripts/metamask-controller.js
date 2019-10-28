@@ -1520,49 +1520,48 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   removeConnection (origin, id) {
 
-    if (!this.connections[origin]) return
+    const connections = this.connections[origin]
+    if (!connections) return
 
-    delete this.connections[origin][id]
+    delete connections[id]
 
-    if (Object.keys(this.connections[origin].length === 0)) {
+    if (Object.keys(connections.length === 0)) {
       delete this.connections[origin]
     }
   }
 
   /**
    * Causes the RPC engines associated with the connections to the given origin
-   * to emit an event with the given name and payload.
+   * to emit a notification event with the given payload.
    * Ignores unknown origins.
    * 
    * @param {string} origin - The connection's origin string.
-   * @param {string} eventName - The name of the event to emit.
    * @param {any} payload - The event payload.
    */
-  notifyConnections (origin, eventName, payload) {
+  notifyConnections (origin, payload) {
 
-    if (!this.connections[origin]) return
+    const connections = this.connections[origin]
+    if (!connections) return
 
-    Object.values(this.connections[origin]).forEach(conn => {
-      conn.engine && conn.engine.emit(eventName, payload)
+    Object.values(connections).forEach(conn => {
+      conn.engine && conn.engine.emit('notification', payload)
     })
   }
 
   /**
-   * Causes the RPC engines associated with all connections to emit an event
-   * with the given name and payload.
+   * Causes the RPC engines associated with all connections to emit a
+   * notification event with the given payload.
    * 
-   * @param {string} eventName - The name of the event to emit.
    * @param {any} payload - The event payload.
    */
-  notifyAllConnections (eventName, payload) {
+  notifyAllConnections (payload) {
 
     Object.values(this.connections).forEach(origin => {
       Object.values(origin).forEach(conn => {
-        conn.engine && conn.engine.emit(eventName, payload)
+        conn.engine && conn.engine.emit('notification', payload)
       })
     })
   }
-
 
   // handlers
 

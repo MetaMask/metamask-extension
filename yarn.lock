@@ -15510,7 +15510,7 @@ json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0:
     promise-to-callback "^1.0.0"
     safe-event-emitter "^1.0.1"
 
-json-rpc-engine@^5.0.0, json-rpc-engine@^5.1.3, json-rpc-engine@^5.1.4:
+json-rpc-engine@^5.1.3, json-rpc-engine@^5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-5.1.4.tgz#c18d1959eb175049fa7301d4866931ae2f879e47"
   integrity sha512-nBFWYJ1mvlZL7gqq0M9230SxedL9CbSYO1WgrFi/C1Zo+ZrHUZWLRbr7fUdlLt9TC0G+sf/aEUeuJjR2lHsMvA==
@@ -17877,16 +17877,15 @@ mersenne-twister@^1.0.1:
 
 metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
   version "2.0.1"
-  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/2a3ee943f64a3a573d3025be37ed8e1a62ba97ef"
+  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/2aa309ba499610a0a063aa96a00659bb95cb485d"
   dependencies:
-    json-rpc-engine "^5.0.0"
+    json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.1"
+    obs-store "^4.0.3"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
-    through2 "^2.0.3"
 
 metamask-logo@^2.1.4:
   version "2.1.4"
@@ -19343,7 +19342,7 @@ oboe@2.1.3:
   dependencies:
     http-https "^1.0.0"
 
-obs-store@^4.0.1, obs-store@^4.0.3:
+obs-store@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/obs-store/-/obs-store-4.0.3.tgz#b632ec7814baa604fae084a4c97e87c0b7a6d14c"
   integrity sha512-+mm13kCRDv6IcvUDKTw0LIy5+dQhIktYaR/RwwZUFzOTi/fjMaNBnk42Adb94qZqJ00qWkjhQSZH7MXlKnTi8A==

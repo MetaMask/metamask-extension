@@ -19,6 +19,7 @@ const WALLET_METHOD_PREFIX = 'wallet_'
 const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
 }
+const ACCOUNTS_CHANGED_NOTIFICATION = 'metamask_accountsChanged'
 
 class PermissionsController {
 
@@ -141,7 +142,10 @@ class PermissionsController {
       origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
     )
 
-    this.notifyDomain(origin, 'accountsChanged', accounts)
+    this.notifyDomain(origin, {
+      method: ACCOUNTS_CHANGED_NOTIFICATION,
+      result: accounts 
+    })
   }
 
   /**
@@ -212,7 +216,10 @@ class PermissionsController {
         perms.map(methodName => {
 
           if (methodName === 'eth_accounts') {
-            this.notifyDomain(origin, 'accountsChanged', [])
+            this.notifyDomain(
+              origin,
+              { method: ACCOUNTS_CHANGED_NOTIFICATION, result: [] }
+            )
           }
 
           return { parentCapability: methodName }
@@ -249,7 +256,10 @@ class PermissionsController {
    */
   clearPermissions () {
     this.permissions.clearDomains()
-    this.notifyAllDomains('accountsChanged', [])
+    this.notifyAllDomains({
+      method: ACCOUNTS_CHANGED_NOTIFICATION,
+      result: []
+    })
   }
 
   /**
