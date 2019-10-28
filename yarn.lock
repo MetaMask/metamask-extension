@@ -17877,8 +17877,9 @@ mersenne-twister@^1.0.1:
 
 metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
   version "2.1.0"
-  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/2c386c6f12e2e9163ed11681691e2063ff8b37cb"
+  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/50bdec2e5cc5ae512c768219e05f06794d377b40"
   dependencies:
+    fast-deep-equal "^2.0.1"
     json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
