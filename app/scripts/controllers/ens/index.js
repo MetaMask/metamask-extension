@@ -8,6 +8,10 @@ const ZERO_X_ERROR_ADDRESS = '0x'
 
 class EnsController {
   constructor ({ ens, provider, networkStore } = {}) {
+    const initState = {
+      ensResolutionsByAddress: {},
+    }
+
     this._ens = ens
     if (!this._ens) {
       const network = networkStore.getState()
@@ -19,6 +23,7 @@ class EnsController {
       }
 
       networkStore.subscribe((network) => {
+        this.store.putState(initState)
         this._ens = new Ens({
           network,
           provider,
@@ -26,9 +31,7 @@ class EnsController {
       })
     }
 
-    this.store = new ObservableStore({
-      ensResolutionsByAddress: {},
-    })
+    this.store = new ObservableStore(initState)
   }
 
   reverseResolveAddress (address) {
