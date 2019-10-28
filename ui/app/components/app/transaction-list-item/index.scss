@@ -17,6 +17,7 @@
     grid-template-areas:
       "identicon action status primary-amount"
       "identicon nonce status secondary-amount";
+    grid-template-rows: 24px;
 
     @media screen and (max-width: $break-small) {
       padding: .5rem 1rem;
@@ -25,6 +26,7 @@
         "nonce nonce nonce"
         "identicon action primary-amount"
         "identicon status secondary-amount";
+      grid-template-rows: auto 24px;
     }
 
     &:hover {
