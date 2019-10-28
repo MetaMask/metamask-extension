@@ -44,6 +44,23 @@ describe('EnsController', function () {
       assert.equal(name, 'peaksignal.eth')
     })
 
+    it('should only resolve an ENS name once', async () => {
+      const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
+      const reverse = sinon.stub().withArgs(address).returns('peaksignal.eth')
+      const lookup = sinon.stub().withArgs('peaksignal.eth').returns(address)
+      const ens = new EnsController({
+        ens: {
+          reverse,
+          lookup,
+        },
+      })
+
+      assert.equal(await ens.reverseResolveAddress(address), 'peaksignal.eth')
+      assert.equal(await ens.reverseResolveAddress(address), 'peaksignal.eth')
+      assert.ok(lookup.calledOnce)
+      assert.ok(reverse.calledOnce)
+    })
+
     it('should fail if the name is registered to a different address than the reverse-resolved', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const ens = new EnsController({

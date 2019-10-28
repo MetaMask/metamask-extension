@@ -43,6 +43,11 @@ class EnsController {
       return undefined
     }
 
+    const state = this.store.getState()
+    if (state.ensResolutionsByAddress[address]) {
+      return state.ensResolutionsByAddress[address]
+    }
+
     const domain = await this._ens.reverse(address)
     const registeredAddress = await this._ens.lookup(domain)
     if (registeredAddress === ZERO_ADDRESS) throw new Error('No address for name')
