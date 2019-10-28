@@ -96,11 +96,9 @@ const mapStateToProps = (state, ownProps) => {
     )
 
   const checksummedAddress = checksumAddress(toAddress)
-  const ensName = ensResolutionsByAddress[checksummedAddress] || ''
   const addressBookObject = addressBook[checksummedAddress]
-  const toNickname = addressBookObject
-    ? addressBookObject.name
-    : ensName
+  const toEns = ensResolutionsByAddress[checksummedAddress] || ''
+  const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
 
@@ -140,6 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
     fromName,
     toAddress,
+    toEns,
     toName,
     toNickname,
     ethTransactionAmount,
