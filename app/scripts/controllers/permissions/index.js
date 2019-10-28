@@ -19,7 +19,7 @@ const WALLET_METHOD_PREFIX = 'wallet_'
 const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
 }
-const ACCOUNTS_CHANGED_NOTIFICATION = 'metamask_accountsChanged'
+const ACCOUNTS_CHANGED_NOTIFICATION = 'wallet_accountsChanged'
 
 class PermissionsController {
 
