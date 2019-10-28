@@ -1489,7 +1489,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Adds a reference to a connection by origin. Ignores the 'MetaMask' origin.
    * Caller must ensure that the returned id is stored such that the reference
    * can be deleted later.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
    * @param {Object} options - Data associated with the connection
    * @param {Object} options.engine - The connection's JSON Rpc Engine
@@ -1514,7 +1514,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Deletes a reference to a connection, by origin and id.
    * Ignores unknown origins.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
    * @param {string} id - The connection's id, as returned from addConnection.
    */
@@ -1534,7 +1534,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Causes the RPC engines associated with the connections to the given origin
    * to emit a notification event with the given payload.
    * Ignores unknown origins.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
    * @param {any} payload - The event payload.
    */
@@ -1551,7 +1551,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
-   * 
+   *
    * @param {any} payload - The event payload.
    */
   notifyAllConnections (payload) {

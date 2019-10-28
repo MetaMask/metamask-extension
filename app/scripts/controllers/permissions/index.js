@@ -25,7 +25,7 @@ class PermissionsController {
 
   constructor (
     {
-      openPopup, closePopup, notifyDomain, notifyAllDomains, keyringController
+      openPopup, closePopup, notifyDomain, notifyAllDomains, keyringController,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -144,7 +144,7 @@ class PermissionsController {
 
     this.notifyDomain(origin, {
       method: ACCOUNTS_CHANGED_NOTIFICATION,
-      result: accounts 
+      result: accounts,
     })
   }
 
@@ -258,7 +258,7 @@ class PermissionsController {
     this.permissions.clearDomains()
     this.notifyAllDomains({
       method: ACCOUNTS_CHANGED_NOTIFICATION,
-      result: []
+      result: [],
     })
   }
 
