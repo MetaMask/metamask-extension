@@ -291,7 +291,6 @@ module.exports = class MetamaskController extends EventEmitter {
       CachedBalancesController: this.cachedBalancesController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
-      ThreeBoxController: this.threeBoxController.store,
       ABTestController: this.abTestController.store,
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
@@ -339,7 +338,7 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        if (origin === 'MetaMask') {
+        if (origin === 'metamask') {
           return [this.preferencesController.getSelectedAddress()]
         } else if (
           this.keyringController.memStore.getState().isUnlocked
@@ -1419,6 +1418,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {object} publicApi - The public API
    */
   setupProviderConnection (outStream, senderUrl, extensionId) {
+    const origin = senderUrl.hostname
     const engine = this.setupProviderEngine(senderUrl, extensionId)
 
     // setup connection
@@ -1505,10 +1505,10 @@ module.exports = class MetamaskController extends EventEmitter {
   // manage external connections
 
   /**
-   * Adds a reference to a connection by origin. Ignores the 'MetaMask' origin.
+   * Adds a reference to a connection by origin. Ignores the 'metamask' origin.
    * Caller must ensure that the returned id is stored such that the reference
    * can be deleted later.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
    * @param {Object} options - Data associated with the connection
    * @param {Object} options.engine - The connection's JSON Rpc Engine
@@ -1516,7 +1516,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   addConnection (origin, { engine }) {
 
-    if (origin === 'MetaMask') return null
+    if (origin === 'metamask') return null
 
     if (!this.connections[origin]) {
       this.connections[origin] = {}
@@ -1533,55 +1533,54 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Deletes a reference to a connection, by origin and id.
    * Ignores unknown origins.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
    * @param {string} id - The connection's id, as returned from addConnection.
    */
   removeConnection (origin, id) {
 
-    if (!this.connections[origin]) return
+    const connections = this.connections[origin]
+    if (!connections) return
 
-    delete this.connections[origin][id]
+    delete connections[id]
 
-    if (Object.keys(this.connections[origin].length === 0)) {
+    if (Object.keys(connections.length === 0)) {
       delete this.connections[origin]
     }
   }
 
   /**
    * Causes the RPC engines associated with the connections to the given origin
-   * to emit an event with the given name and payload.
+   * to emit a notification event with the given payload.
    * Ignores unknown origins.
-   * 
+   *
    * @param {string} origin - The connection's origin string.
-   * @param {string} eventName - The name of the event to emit.
    * @param {any} payload - The event payload.
    */
-  notifyConnections (origin, eventName, payload) {
+  notifyConnections (origin, payload) {
 
-    if (!this.connections[origin]) return
+    const connections = this.connections[origin]
+    if (!connections) return
 
-    Object.values(this.connections[origin]).forEach(conn => {
-      conn.engine && conn.engine.emit(eventName, payload)
+    Object.values(connections).forEach(conn => {
+      conn.engine && conn.engine.emit('notification', payload)
     })
   }
 
   /**
-   * Causes the RPC engines associated with all connections to emit an event
-   * with the given name and payload.
-   * 
-   * @param {string} eventName - The name of the event to emit.
+   * Causes the RPC engines associated with all connections to emit a
+   * notification event with the given payload.
+   *
    * @param {any} payload - The event payload.
    */
-  notifyAllConnections (eventName, payload) {
+  notifyAllConnections (payload) {
 
     Object.values(this.connections).forEach(origin => {
       Object.values(origin).forEach(conn => {
-        conn.engine && conn.engine.emit(eventName, payload)
+        conn.engine && conn.engine.emit('notification', payload)
       })
     })
   }
-
 
   // handlers
 

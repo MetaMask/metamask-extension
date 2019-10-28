@@ -30,9 +30,10 @@ const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
 /**
  * TODO:lps
- * This call fails. The account must be grabbed from elsewhere.
+ * Signature requests will usually/always fail. The account must be retrieved differently.
  * In an old TODO getting it from "the sig request" was suggested?
  */
+
 function mapStateToProps (state) {
   return {
     balance: getSelectedAccount(state).balance,

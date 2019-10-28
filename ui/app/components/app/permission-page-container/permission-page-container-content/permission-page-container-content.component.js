@@ -69,10 +69,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
     const items = Object.keys(selectedPermissions).map((methodName) => {
 
-      // TODO:lps:review is this how we want to handle permissions without
-      // descriptions? In all current cases, if this condition triggers,
-      // the request will still fail when rpc-cap attempts to approve the
-      // permissions.
+      // the request will almost certainly be reject by rpc-cap if this happens
       if (!permissionsDescriptions[methodName]) {
         console.warn(`Unknown permission requested: ${methodName}`)
       }

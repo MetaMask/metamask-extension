@@ -1,3 +1,6 @@
+
+// TODO:deprecate:2019-12-16
+
 module.exports = setupDappAutoReload
 
 function setupDappAutoReload (web3, observable) {

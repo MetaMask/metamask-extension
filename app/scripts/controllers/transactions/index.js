@@ -191,11 +191,11 @@ class TransactionController extends EventEmitter {
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
-    // TODO:lps once, I saw origin with a value of 'chrome-extension://...' for a
-    // transaction initiated from the UI.
+    // TODO:lps once, I saw 'origin' with a value of 'chrome-extension://...'
+    // for a transaction initiated from the UI.
     // When would this happen? It's a problem if it does. I don't think we want to
     // hard-code 'chrome-extension://' here
-    if (origin === 'MetaMask') {
+    if (origin === 'metamask') {
       // Assert the from address is the selected address
       if (normalizedTxParams.from !== this.getSelectedAddress()) {
         throw ethErrors.rpc.internal(`Internally initiated transaction is using invalid account.`)

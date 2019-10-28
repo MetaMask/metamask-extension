@@ -11790,6 +11790,33 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
+gaba@^1.6.0:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.8.2.tgz#89b02cd675438858cc289755bc0202f942224a97"
+  integrity sha512-V4Q65enKpEzfQsIqKvj9E3UrBwgQEtpQKLQLnR3tgGYRGRdDzI7uJ9sZtuzDxAWqs9gbR2sUJ3kUfDfBj4+xFQ==
+  dependencies:
+    await-semaphore "^0.1.3"
+    eth-contract-metadata "^1.9.1"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-infura "^4.0.1"
+    eth-keyring-controller "^5.3.0"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-sig-util "^2.3.0"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "0.6.0"
+    ethjs-query "^0.3.8"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    isomorphic-fetch "^2.2.1"
+    jsonschema "^1.2.4"
+    percentile "^1.2.1"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^15.0.4"
+
 gaba@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.8.0.tgz#5370e5d662de6aa8e4e41de791da0996a7e12dbe"
@@ -17216,7 +17243,7 @@ lodash.uniqby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
-lodash@4.17.14, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.8.0, lodash@~4.17.10, lodash@~4.17.2, lodash@~4.17.4:
+lodash@4.17.14, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.8.0, lodash@~4.17.10, lodash@~4.17.2, lodash@~4.17.4:
   version "4.17.14"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.14.tgz#9ce487ae66c96254fe20b599f21b6816028078ba"
   integrity sha512-mmKYbW3GLuJeX+iGP+Y7Gp1AiGHGbXHCOh/jZmrawMmsE7MS4znI3RL2FsjbqOyMayHInjOeykW7PEajUk1/xw==
@@ -17833,18 +17860,18 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
-  version "2.0.1"
-  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/2a3ee943f64a3a573d3025be37ed8e1a62ba97ef"
+metamask-inpage-provider@MetaMask/metamask-inpage-provider#LoginPerSite:
+  version "3.1.0"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/c394b2d8dc6aaf0175d4defe5635a31052e146ed"
   dependencies:
-    json-rpc-engine "^5.0.0"
+    fast-deep-equal "^2.0.1"
+    json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.1"
+    obs-store "^4.0.3"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
-    through2 "^2.0.3"
 
 metamask-logo@^2.1.4:
   version "2.1.4"
@@ -19304,7 +19331,7 @@ oboe@2.1.4:
   dependencies:
     http-https "^1.0.0"
 
-obs-store@^4.0.1, obs-store@^4.0.3:
+obs-store@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/obs-store/-/obs-store-4.0.3.tgz#b632ec7814baa604fae084a4c97e87c0b7a6d14c"
   integrity sha512-+mm13kCRDv6IcvUDKTw0LIy5+dQhIktYaR/RwwZUFzOTi/fjMaNBnk42Adb94qZqJ00qWkjhQSZH7MXlKnTi8A==
@@ -23227,10 +23254,10 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
-rpc-cap@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-0.18.0.tgz#a3852900506b286c93ba8ae811b54925bfb3d7f0"
-  integrity sha512-GIoDJOdVZRi/EFSPlccZxveE+SVszZhZzuNmlzlXX7YPNwTY656/wVXQCo4LUdrpIFojHhQVmQp5kBw7QrSbmA==
+rpc-cap@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-1.0.0.tgz#a4568a35749d59c24212e608d37590c41ac1198d"
+  integrity sha512-40HhfODqm8kV7PpheDlT0aVs4JqeCws6aMwwd7KdZtMI9DY8FnCQGzOyUf6zsTPgmWPPxEW5Z4hc2pV7SsuyMw==
   dependencies:
     clone "^2.1.2"
     eth-json-rpc-errors "^2.0.0"
@@ -26785,7 +26812,7 @@ uuid@3.2.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
   integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
 
-uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.2.2, uuid@^3.3.2:
+uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.2.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
@@ -26794,11 +26821,6 @@ uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
-
-uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.2.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
-  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 uuid@^3.3.2, uuid@^3.3.3:
   version "3.3.3"
