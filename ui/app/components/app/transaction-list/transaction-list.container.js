@@ -12,7 +12,6 @@ import { selectedTokenSelector } from '../../../selectors/tokens'
 import { updateNetworkNonce } from '../../../store/actions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
 import {
-  getBasicGasEstimateBlockTime,
   getCustomGasPrice,
   getEstimatedGasPrices,
   getEstimatedGasTimes,
@@ -39,8 +38,6 @@ const mapStateToProps = (state, ownProps) => {
     selectedToken: selectedTokenSelector(state),
     selectedAddress: getSelectedAddress(state),
     assetImages: getAssetImages(state),
-    blockTime: getBasicGasEstimateBlockTime(state),
-    customGasPrice,
     currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
     transactionTimeFeatureActive,
   }

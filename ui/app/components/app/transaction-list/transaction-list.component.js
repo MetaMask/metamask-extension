@@ -41,10 +41,7 @@ export default class TransactionList extends PureComponent {
 
     if (transactionTimeFeatureActive && pendingTransactions.length) {
       fetchBasicGasAndTimeEstimates()
-        .then(basicEstimates => basicEstimates.blockTime)
-        .then(blockTime => {
-          fetchGasEstimates(blockTime)
-        })
+        .then(({ blockTime }) => fetchGasEstimates(blockTime))
     }
   }
 
@@ -65,12 +62,9 @@ export default class TransactionList extends PureComponent {
     const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
     const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0
 
-    if (transactionTimeFeatureWasActivated && pendingTransactionAdded) {
+    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && (transactionTimeFeatureWasActivated || pendingTransactionAdded)) {
       fetchBasicGasAndTimeEstimates()
-        .then(basicEstimates => basicEstimates.blockTime)
-        .then(blockTime => {
-          fetchGasEstimates(blockTime)
-        })
+        .then(({ blockTime }) => fetchGasEstimates(blockTime))
     }
   }
 
@@ -142,7 +136,6 @@ export default class TransactionList extends PureComponent {
           isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}
           assetImages={assetImages}
-          fetchBasicGasAndTimeEstimates={this.props.fetchBasicGasAndTimeEstimates}
           currentTimeEstimate={this.props.currentTimeEstimate}
         />
       )

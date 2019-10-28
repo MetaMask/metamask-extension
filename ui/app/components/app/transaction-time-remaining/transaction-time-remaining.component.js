@@ -9,10 +9,6 @@ const statusToTextHash = {
 }
 
 export default class TransactionTimeRemaining extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-  }
-
   static propTypes = {
     statusKey: PropTypes.string,
     className: PropTypes.string,

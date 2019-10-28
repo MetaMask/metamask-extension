@@ -22,7 +22,6 @@ import {
   getFeatureFlags,
 } from '../../../selectors/selectors'
 import { isBalanceSufficient } from '../../../pages/send/send.utils'
-import { getBasicGasEstimateBlockTime } from '../../../selectors/custom-gas'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask: { accounts, provider, frequentRpcListDetail } } = state
@@ -55,7 +54,6 @@ const mapStateToProps = (state, ownProps) => {
     hasEnoughCancelGas,
     rpcPrefs,
     isDeposit,
-    blockTime: getBasicGasEstimateBlockTime(state),
     transactionTimeFeatureActive,
   }
 }
