@@ -1442,6 +1442,9 @@
   "viewOnEtherscan": {
     "message": "View on Etherscan"
   },
+  "retryTransaction": {
+    "message": "Retry Transaction"
+  },
   "visitWebSite": {
     "message": "Visit our web site"
   },

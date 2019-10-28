@@ -21,6 +21,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
+    showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
@@ -123,6 +124,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { justCopied } = this.state
     const {
       transactionGroup,
+      showSpeedUp,
       showRetry,
       onCancel,
       onRetry,
@@ -138,7 +140,7 @@ export default class TransactionListItemDetails extends PureComponent {
           <div>{ t('details') }</div>
           <div className="transaction-list-item-details__header-buttons">
             {
-              showRetry && (
+              showSpeedUp && (
                 <Button
                   type="raised"
                   onClick={this.handleRetry}
@@ -172,6 +174,17 @@ export default class TransactionListItemDetails extends PureComponent {
                 <img src="/images/arrow-popout.svg" />
               </Button>
             </Tooltip>
+            {
+              showRetry && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+                <Button
+                  type="raised"
+                  onClick={this.handleRetry}
+                  className="transaction-list-item-details__header-button"
+                >
+                  <i className="fa fa-refresh"></i>
+                </Button>
+              </Tooltip>
+            }
           </div>
         </div>
         <div className="transaction-list-item-details__body">

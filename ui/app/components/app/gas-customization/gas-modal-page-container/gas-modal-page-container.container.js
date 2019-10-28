@@ -6,6 +6,7 @@ import {
   setGasLimit,
   setGasPrice,
   createSpeedUpTransaction,
+  createRetryTransaction,
   hideSidebar,
   updateSendAmount,
   setGasTotal,
@@ -153,6 +154,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
+    isRetry: transaction.status === 'failed',
     txId: transaction.id,
     insufficientBalance,
     gasEstimatesLoading,
@@ -187,6 +189,9 @@ const mapDispatchToProps = dispatch => {
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
     },
+    createRetryTransaction: (txId, gasPrice) => {
+      return dispatch(createRetryTransaction(txId, gasPrice))
+    },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
     hideSidebar: () => dispatch(hideSidebar()),
@@ -206,6 +211,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     isConfirm,
     txId,
     isSpeedUp,
+    isRetry,
     insufficientBalance,
     maxModeOn,
     customGasPrice,
@@ -221,6 +227,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
+    createRetryTransaction: dispatchCreateRetryTransaction,
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
@@ -248,6 +255,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)
         dispatchHideSidebar()
         dispatchCancelAndClose()
+      } else if (isRetry) {
+        dispatchCreateRetryTransaction(txId, gasPrice)
+        dispatchHideSidebar()
+        dispatchCancelAndClose()
       } else {
         dispatchSetGasData(gasLimit, gasPrice)
         dispatchHideGasButtonGroup()
@@ -268,7 +279,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     cancelAndClose: () => {
       dispatchCancelAndClose()
-      if (isSpeedUp) {
+      if (isSpeedUp || isRetry) {
         dispatchHideSidebar()
       }
     },
