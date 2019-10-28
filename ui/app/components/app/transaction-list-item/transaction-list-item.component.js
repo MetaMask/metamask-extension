@@ -185,6 +185,7 @@ export default class TransactionListItem extends PureComponent {
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
+    const fromAddress = txParams.from
     const toAddress = tokenData
       ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
       : txParams.to
@@ -240,6 +241,8 @@ export default class TransactionListItem extends PureComponent {
                   showCancel={showCancel}
                   cancelDisabled={!hasEnoughCancelGas}
                   rpcPrefs={rpcPrefs}
+                  senderAddress={fromAddress}
+                  recipientAddress={toAddress}
                 />
               </div>
             )
