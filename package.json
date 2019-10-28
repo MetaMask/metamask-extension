@@ -141,6 +141,7 @@
     "prop-types": "^15.6.1",
     "pubnub": "4.24.4",
     "pump": "^3.0.0",
+    "punycode": "^2.1.1",
     "qrcode-generator": "1.4.1",
     "ramda": "^0.24.1",
     "react": "^15.6.2",

@@ -1,5 +1,6 @@
 const ethUtil = require('ethereumjs-util')
 const ObservableStore = require('obs-store')
+const punycode = require('punycode')
 const Ens = require('./ens')
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -45,8 +46,7 @@ class EnsController {
     if (registeredAddress === ZERO_X_ERROR_ADDRESS) throw new Error('ENS Registry error')
 
     if (ethUtil.toChecksumAddress(registeredAddress) === address) {
-      // TODO deal with homoglyphs
-      this._updateResolutionsByAddress(address, domain)
+      this._updateResolutionsByAddress(address, punycode.toASCII(domain))
       return domain
     } else {
       return undefined
