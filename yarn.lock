@@ -17876,8 +17876,8 @@ mersenne-twister@^1.0.1:
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
 metamask-inpage-provider@rekmarks/metamask-inpage-provider#permissions:
-  version "2.0.1"
-  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/29d933c745fdfc66a104d6f3f61fe756f73abca9"
+  version "2.1.0"
+  resolved "https://codeload.github.com/rekmarks/metamask-inpage-provider/tar.gz/206ca85d11ff12f53ffd6a70014cb1488b158a72"
   dependencies:
     json-rpc-engine "^5.1.3"
     json-rpc-middleware-stream "^2.1.1"
