@@ -18,7 +18,7 @@
 
     @media screen and (max-width: $break-small) {
       padding: .5rem 1rem;
-      grid-template-columns: 45px 145px 3fr;
+      grid-template-columns: 45px 145px 3fr 1fr;
       grid-template-areas: "identicon action-and-nonce status amounts";
     }
 
