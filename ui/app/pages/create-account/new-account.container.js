@@ -5,11 +5,13 @@ import NewAccountCreateForm from './new-account.component'
 const mapStateToProps = state => {
   const { metamask: { network, selectedAddress, identities = {} } } = state
   const numberOfExistingAccounts = Object.keys(identities).length
+  const newAccountNumber = numberOfExistingAccounts + 1
 
   return {
     network,
     address: selectedAddress,
     numberOfExistingAccounts,
+    newAccountNumber,
   }
 }
 

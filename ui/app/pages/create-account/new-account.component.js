@@ -6,9 +6,7 @@ import Button from '../../components/ui/button'
 export default class NewAccountCreateForm extends Component {
   constructor (props, context) {
     super(props)
-
-    const { numberOfExistingAccounts = 0 } = props
-    const newAccountNumber = numberOfExistingAccounts + 1
+    const { newAccountNumber = 0 } = props
 
     this.state = {
       newAccountName: '',
