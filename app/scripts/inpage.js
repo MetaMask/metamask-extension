@@ -95,6 +95,7 @@ inpageProvider._metamask = new Proxy({
    * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
    */
   isApproved: async function () {
+    console.warn('MetaMask: "isApproved" will be removed in the near future. Use "ethereum.send(\'eth_accounts\') instead.')
     return Boolean(inpageProvider.selectedAddress)
   },
 }, {
