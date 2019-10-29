@@ -18,6 +18,7 @@ export default class EditContact extends PureComponent {
     history: PropTypes.object,
     name: PropTypes.string,
     address: PropTypes.string,
+    chainId: PropTypes.string,
     memo: PropTypes.string,
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
@@ -33,7 +34,7 @@ export default class EditContact extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { history, name, addToAddressBook, removeFromAddressBook, address, memo, viewRoute, listRoute, setAccountLabel } = this.props
+    const { history, name, addToAddressBook, removeFromAddressBook, address, chainId, memo, viewRoute, listRoute, setAccountLabel } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
@@ -43,7 +44,7 @@ export default class EditContact extends PureComponent {
             type="link"
             className="settings-page__address-book-button"
             onClick={() => {
-              removeFromAddressBook(address)
+              removeFromAddressBook(chainId, address)
               history.push(listRoute)
             }}
           >

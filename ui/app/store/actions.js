@@ -2011,11 +2011,11 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
  * @description Calls the addressBookController to remove an existing address.
  * @param {String} addressToRemove - Address of the entry to remove from the address book
  */
-function removeFromAddressBook (addressToRemove) {
+function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
   return () => {
-    background.removeFromAddressBook(checksumAddress(addressToRemove))
+    background.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 
