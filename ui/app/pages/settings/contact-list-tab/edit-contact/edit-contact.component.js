@@ -59,6 +59,7 @@ export default class EditContact extends PureComponent {
             <TextField
               type="text"
               id="nickname"
+              placeholder={this.context.t('addAlias')}
               value={this.state.newName}
               onChange={e => this.setState({ newName: e.target.value })}
               fullWidth
