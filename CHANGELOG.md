@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.4.0 Tue Oct 29 2019
+
 ## 7.3.1 Mon Oct 21 2019
 - [#7298](https://github.com/MetaMask/metamask-extension/pull/7298): Turn off full screen vs popup a/b test 
 
