@@ -26,9 +26,9 @@ export default class EditContact extends PureComponent {
   }
 
   state = {
-    newName: '',
-    newAddress: '',
-    newMemo: '',
+    newName: this.props.name,
+    newAddress: this.props.address,
+    newMemo: this.props.memo,
     error: '',
   }
 
@@ -59,8 +59,7 @@ export default class EditContact extends PureComponent {
             <TextField
               type="text"
               id="nickname"
-              placeholder={this.context.t('addAlias')}
-              value={this.state.newName || name}
+              value={this.state.newName}
               onChange={e => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
@@ -74,8 +73,7 @@ export default class EditContact extends PureComponent {
             <TextField
               type="text"
               id="address"
-              placeholder={address}
-              value={this.state.newAddress || address}
+              value={this.state.newAddress}
               error={this.state.error}
               onChange={e => this.setState({ newAddress: e.target.value })}
               fullWidth
@@ -91,7 +89,7 @@ export default class EditContact extends PureComponent {
               type="text"
               id="memo"
               placeholder={memo}
-              value={this.state.newMemo || memo}
+              value={this.state.newMemo}
               onChange={e => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"
@@ -110,12 +108,12 @@ export default class EditContact extends PureComponent {
             if (this.state.newAddress !== '' && this.state.newAddress !== address) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
-                removeFromAddressBook(address)
+                removeFromAddressBook(chainId, address)
                 addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
                 setAccountLabel(this.state.newAddress, this.state.newName || name)
                 history.push(listRoute)
               } else {
-                this.setState({ error: 'invalid address' })
+                this.setState({ error: this.context.t('invalidAddress') })
               }
             } else {
               // update name
