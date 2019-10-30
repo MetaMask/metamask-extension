@@ -353,6 +353,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingTransactionByHash: (hash) => this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy

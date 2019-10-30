@@ -1,8 +1,7 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
 const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const createWalletSubprovider = require('eth-json-rpc-middleware/wallet')
-
+const { createPendingNonceMiddleware, createPendingTxMiddleware } = require('./middleware/pending')
 module.exports = createMetamaskMiddleware
 
 function createMetamaskMiddleware ({
@@ -15,6 +14,7 @@ function createMetamaskMiddleware ({
   processTypedMessageV4,
   processPersonalMessage,
   getPendingNonce,
+  getPendingTransactionByHash,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -32,16 +32,7 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
+    createPendingTxMiddleware({ getPendingTransactionByHash }),
   ])
   return metamaskMiddleware
-}
-
-function createPendingNonceMiddleware ({ getPendingNonce }) {
-  return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'eth_getTransactionCount') return next()
-    const address = req.params[0]
-    const blockRef = req.params[1]
-    if (blockRef !== 'pending') return next()
-    res.result = await getPendingNonce(address)
-  })
 }

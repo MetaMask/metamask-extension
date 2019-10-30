@@ -1,9 +1,9 @@
 const assert = require('assert')
 const nock = require('nock')
-const NetworkController = require('../../../../app/scripts/controllers/network')
+const NetworkController = require('../../../../../app/scripts/controllers/network')
 const {
   getNetworkDisplayName,
-} = require('../../../../app/scripts/controllers/network/util')
+} = require('../../../../../app/scripts/controllers/network/util')
 
 describe('# Network Controller', function () {
   let networkController
