@@ -439,8 +439,19 @@ class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
-    const txHash = await this.query.sendRawTransaction(rawTx)
+    let txHash
+    try {
+      txHash = await this.query.sendRawTransaction(rawTx)
+    } catch (error) {
+      if (error.message.toLowerCase().includes('known transaction')) {
+        txHash = ethUtil.sha3(ethUtil.addHexPrefix(rawTx)).toString('hex')
+        txHash = ethUtil.addHexPrefix(txHash)
+      } else {
+        throw error
+      }
+    }
     this.setTxHash(txId, txHash)
+
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
