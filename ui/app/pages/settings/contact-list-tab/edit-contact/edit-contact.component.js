@@ -25,6 +25,12 @@ export default class EditContact extends PureComponent {
     setAccountLabel: PropTypes.func,
   }
 
+  static defaultProps = {
+    name: '',
+    address: '',
+    memo: '',
+  }
+
   state = {
     newName: this.props.name,
     newAddress: this.props.address,
