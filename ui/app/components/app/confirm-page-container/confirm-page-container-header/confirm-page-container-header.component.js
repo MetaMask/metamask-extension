@@ -6,7 +6,7 @@ import {
 } from '../../../../../../app/scripts/lib/enums'
 import NetworkDisplay from '../../network-display'
 
-export default class ConfirmPageContainer extends Component {
+export default class ConfirmPageContainerHeader extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
