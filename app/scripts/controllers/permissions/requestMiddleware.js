@@ -6,7 +6,7 @@ const { errors: rpcErrors } = require('eth-json-rpc-errors')
  * Create middleware for preprocessing permissions requests.
  */
 module.exports = function createRequestMiddleware ({
-  internalPrefix, store, storeKey,
+  store, storeKey,
 }) {
   return createAsyncMiddleware(async (req, res, next) => {
 
@@ -15,14 +15,15 @@ module.exports = function createRequestMiddleware ({
       return
     }
 
-    if (req.method.startsWith(internalPrefix)) {
-      switch (req.method.split(internalPrefix)[1]) {
-        case 'sendSiteMetadata':
+    const prefix = 'wallet_'
+    if (req.method.startsWith(prefix)) {
+      switch (req.method.split(prefix)[1]) {
+        case 'sendDomainMetadata':
           if (
             req.siteMetadata &&
-            typeof req.siteMetadata.name === 'string'
+            typeof req.domainMetadata.name === 'string'
           ) {
-            addDomainMetadata(req.origin, req.siteMetadata)
+            addDomainMetadata(req.origin, req.domainMetadata)
           }
           res.result = true
           return

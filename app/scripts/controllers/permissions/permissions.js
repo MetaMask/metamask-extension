@@ -19,7 +19,6 @@ const METADATA_STORE_KEY = 'siteMetadata'
 const LOG_STORE_KEY = 'permissionsLog'
 const HISTORY_STORE_KEY = 'permissionsHistory'
 const WALLET_METHOD_PREFIX = 'wallet_'
-const INTERNAL_METHOD_PREFIX = 'metamask_'
 
 function prefix (method) {
   return WALLET_METHOD_PREFIX + method
@@ -57,7 +56,6 @@ class PermissionsController {
     const engine = new JsonRpcEngine()
     engine.push(this.createPluginMethodRestrictionMiddleware(isPlugin))
     engine.push(createRequestMiddleware({
-      internalPrefix: INTERNAL_METHOD_PREFIX,
       store: this.store,
       storeKey: METADATA_STORE_KEY,
     }))
