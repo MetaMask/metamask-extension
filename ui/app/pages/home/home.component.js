@@ -97,7 +97,7 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
     } = this.props
-    console.log(123456)
+
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }

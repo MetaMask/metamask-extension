@@ -119,7 +119,6 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    console.log('transactionId, paramsTransactionId', transactionId, paramsTransactionId)
     return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>

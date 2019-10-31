@@ -6,12 +6,11 @@ import NetworkDisplay from '../../network-display'
 export default class SignatureRequestHeader extends PureComponent {
   static propTypes = {
     selectedAccount: PropTypes.object.isRequired,
-    accounts: PropTypes.object,
   }
 
   render () {
     const { selectedAccount } = this.props
-    console.log('selectedAccount', selectedAccount)
+
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
