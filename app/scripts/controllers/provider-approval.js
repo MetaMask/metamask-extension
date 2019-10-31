@@ -24,15 +24,8 @@ class ProviderApprovalController extends SafeEventEmitter {
       providerRequests: [],
     })
 
-    const defaultState = {}
-    this.store = new ObservableStore({
-      ...defaultState,
-      ...initState,
-      approvedOrigins: {
-        ...defaultState.approvedOrigins,
-        ...initState.approvedOrigins,
-      },
-    })
+    const defaultState = { approvedOrigins: {} }
+    this.store = new ObservableStore(Object.assign(defaultState, initState))
   }
 
   /**
@@ -97,7 +90,7 @@ class ProviderApprovalController extends SafeEventEmitter {
     if (originAlreadyHandled && isUnlocked) {
       return
     }
-    this.openPopup && this.openPopup({ isProviderApproval: true })
+    this.openPopup && this.openPopup()
   }
 
   /**
