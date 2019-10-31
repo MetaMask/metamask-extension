@@ -581,7 +581,7 @@ export default class ConfirmTransactionBase extends Component {
     })
 
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.onbeforeunload = () => {
+      this._onBeforeUnload = () => {
         metricsEvent({
           eventOpts: {
             category: 'Transactions',
@@ -594,9 +594,16 @@ export default class ConfirmTransactionBase extends Component {
         })
         cancelTransaction({ id })
       }
+      window.addEventListener('beforeunload', this._onBeforeUnload)
     }
 
     getNextNonce()
+  }
+
+  componentWillUnmount () {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      window.removeEventListener('beforeunload', this._onBeforeUnload)
+    }
   }
 
   render () {
