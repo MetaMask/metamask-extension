@@ -107,7 +107,7 @@ SignatureRequest.prototype.componentDidMount = function () {
   const { clearConfirmTransaction, cancel } = this.props
   const { metricsEvent } = this.context
   if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-    window.onbeforeunload = event => {
+    this._onBeforeUnload = event => {
       metricsEvent({
         eventOpts: {
           category: 'Transactions',
@@ -118,6 +118,13 @@ SignatureRequest.prototype.componentDidMount = function () {
       clearConfirmTransaction()
       cancel(event)
     }
+    window.addEventListener('beforeunload', this._onBeforeUnload)
+  }
+}
+
+SignatureRequest.prototype.componentWillUnmount = function () {
+  if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    window.removeEventListener('beforeunload', this._onBeforeUnload)
   }
 }
 
