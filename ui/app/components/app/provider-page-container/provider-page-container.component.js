@@ -18,8 +18,11 @@ export default class ProviderPageContainer extends PureComponent {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   };
-
+  componentWillUnmount () {
+    window.onbeforeunload = null
+  }
   componentDidMount () {
+    window.onbeforeunload = this.onCancel
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
