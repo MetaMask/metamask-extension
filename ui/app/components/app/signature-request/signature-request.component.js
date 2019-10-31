@@ -64,7 +64,7 @@ export default class SignatureRequest extends PureComponent {
     const { message } = JSON.parse(data)
 
     return (
-      <div className="signature-request">
+      <div className="signature-request page-container">
         <Header selectedAccount={selectedAccount} accounts={accounts} />
         <div className="signature-request-content">
           <div className="signature-request-content__title">{this.context.t('sigRequest')}</div>
