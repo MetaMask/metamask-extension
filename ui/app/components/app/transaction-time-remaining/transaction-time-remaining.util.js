@@ -4,7 +4,7 @@ export function calcTransactionTimeRemaining (initialTimeEstimate, submittedTime
   const currentTime = (new Date()).getTime()
   const timeElapsedSinceSubmission = (currentTime - submittedTime) / 1000
   const timeRemainingOnEstimate = initialTimeEstimate - timeElapsedSinceSubmission
-  console.log('timeRemainingOnEstimate', timeRemainingOnEstimate)
+
   const renderingTimeRemainingEstimate = timeRemainingOnEstimate < 30
     ? '< 30 s'
     : formatTimeEstimate(timeRemainingOnEstimate)

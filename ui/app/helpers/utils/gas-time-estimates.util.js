@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-window.BigNumber = BigNumber
+
 export function newBigSigDig (n) {
   return new BigNumber((new BigNumber(String(n))).toPrecision(15))
 }
@@ -51,7 +51,7 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
   const formattedSec = `${seconds ? seconds + ' sec' : ''}`
   const formattedCombined = formattedMin && formattedSec
     ? `${symbol}${formattedMin} ${formattedSec}`
-    : symbol + [formattedMin, formattedSec].find(t => t)
+    : symbol + (formattedMin || formattedSec)
 
   return formattedCombined
 }

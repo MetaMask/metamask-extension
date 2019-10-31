@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   const customGasPrice = calcCustomGasPrice(currentGasPrice)
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
-  console.log('customGasPrice, gasPrices, estimatedTimes', customGasPrice, gasPrices, estimatedTimes)
+
   const {
     newTimeEstimate: initialTimeEstimate,
   } = getRawTimeEstimateData(customGasPrice, gasPrices, estimatedTimes)
