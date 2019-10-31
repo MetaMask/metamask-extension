@@ -159,20 +159,25 @@ window.ethereum = createStandardProvider(proxiedInpageProvider)
 //
 
 if (typeof window.web3 !== 'undefined') {
-  throw new Error(`MetaMask detected another web3.
+  console.warn(`MetaMask detected another web3.
      MetaMask will not work reliably with another web3 extension.
      This usually happens if you have two MetaMasks installed,
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
-}
+} else {
+  const web3 = new Web3(proxiedInpageProvider)
+  web3.setProvider = function () {
+    log.debug('MetaMask - overrode web3.setProvider')
+  }
+  log.debug('MetaMask - injected web3')
 
-const web3 = new Web3(proxiedInpageProvider)
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
-}
-log.debug('MetaMask - injected web3')
+  setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+  // set web3 defaultAccount
+  inpageProvider.publicConfigStore.subscribe(function (state) {
+    web3.eth.defaultAccount = state.selectedAddress
+  })
+}
 
 // export global web3, with usage-detection and deprecation warning
 
@@ -194,11 +199,6 @@ global.web3 = new Proxy(web3, {
   },
 })
 */
-
-// set web3 defaultAccount
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
-})
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
   if (state.onboardingcomplete) {
