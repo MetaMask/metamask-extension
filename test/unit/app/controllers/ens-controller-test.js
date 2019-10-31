@@ -22,8 +22,12 @@ describe('EnsController', function () {
     })
 
     it('should construct the controller given an existing ENS instance', async () => {
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {},
+        networkStore,
       })
 
       assert.ok(ens._ens)
@@ -33,11 +37,15 @@ describe('EnsController', function () {
   describe('#reverseResolveName', function () {
     it('should resolve to an ENS name', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
           lookup: sinon.stub().withArgs('peaksignal.eth').returns(address),
         },
+        networkStore,
       })
 
       const name = await ens.reverseResolveAddress(address)
@@ -48,11 +56,15 @@ describe('EnsController', function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const reverse = sinon.stub().withArgs(address).returns('peaksignal.eth')
       const lookup = sinon.stub().withArgs('peaksignal.eth').returns(address)
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {
           reverse,
           lookup,
         },
+        networkStore,
       })
 
       assert.equal(await ens.reverseResolveAddress(address), 'peaksignal.eth')
@@ -63,11 +75,15 @@ describe('EnsController', function () {
 
     it('should fail if the name is registered to a different address than the reverse-resolved', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
           lookup: sinon.stub().withArgs('peaksignal.eth').returns('0xfoo'),
         },
+        networkStore,
       })
 
       const name = await ens.reverseResolveAddress(address)
@@ -76,11 +92,15 @@ describe('EnsController', function () {
 
     it('should throw an error when the lookup resolves to the zero address', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
           lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_ADDRESS),
         },
+        networkStore,
       })
 
       try {
@@ -93,11 +113,15 @@ describe('EnsController', function () {
 
     it('should throw an error the lookup resolves to the zero x address', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
+      const networkStore = {
+        subscribe: sinon.spy(),
+      }
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
           lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_X_ERROR_ADDRESS),
         },
+        networkStore,
       })
 
       try {

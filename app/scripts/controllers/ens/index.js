@@ -21,17 +21,16 @@ class EnsController {
           provider,
         })
       }
-
-      networkStore.subscribe((network) => {
-        this.store.putState(initState)
-        this._ens = new Ens({
-          network,
-          provider,
-        })
-      })
     }
 
     this.store = new ObservableStore(initState)
+    networkStore.subscribe((network) => {
+      this.store.putState(initState)
+      this._ens = new Ens({
+        network,
+        provider,
+      })
+    })
   }
 
   reverseResolveAddress (address) {
