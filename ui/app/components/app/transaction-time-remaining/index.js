@@ -1,1 +1,1 @@
-export { default } from './transaction-time-remaining.component'
+export { default } from './transaction-time-remaining.container'

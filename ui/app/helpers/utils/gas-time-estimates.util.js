@@ -56,7 +56,7 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
   return formattedCombined
 }
 
-export function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
+export function getRawTimeEstimateData (currentGasPrice, gasPrices, estimatedTimes) {
   const minGasPrice = gasPrices[0]
   const maxGasPrice = gasPrices[gasPrices.length - 1]
   let priceForEstimation = currentGasPrice
@@ -80,6 +80,20 @@ export function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimated
     lowerX: closestLowerValue,
     xForExtrapolation: priceForEstimation,
   })
+
+  return {
+    newTimeEstimate,
+    minGasPrice,
+    maxGasPrice,
+  }
+}
+
+export function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
+  const {
+    newTimeEstimate,
+    minGasPrice,
+    maxGasPrice,
+  } = getRawTimeEstimateData(currentGasPrice, gasPrices, estimatedTimes)
 
   return formatTimeEstimate(newTimeEstimate, currentGasPrice > maxGasPrice, currentGasPrice < minGasPrice)
 }

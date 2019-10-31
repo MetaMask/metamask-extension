@@ -24,8 +24,8 @@ export default class TransactionList extends PureComponent {
     assetImages: PropTypes.object,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
-    currentTimeEstimate: PropTypes.string,
     transactionTimeFeatureActive: PropTypes.bool,
+    firstPendingTransactionId: PropTypes.number,
   }
 
   componentDidMount () {
@@ -118,7 +118,7 @@ export default class TransactionList extends PureComponent {
   }
 
   renderTransaction (transactionGroup, index, isPendingTx = false) {
-    const { selectedToken, assetImages } = this.props
+    const { selectedToken, assetImages, firstPendingTransactionId } = this.props
     const { transactions = [] } = transactionGroup
 
     return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
@@ -136,7 +136,7 @@ export default class TransactionList extends PureComponent {
           isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}
           assetImages={assetImages}
-          currentTimeEstimate={this.props.currentTimeEstimate}
+          firstPendingTransactionId={firstPendingTransactionId}
         />
       )
   }
