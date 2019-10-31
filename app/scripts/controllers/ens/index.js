@@ -49,15 +49,16 @@ class EnsController {
 
     const domain = await this._ens.reverse(address)
     const registeredAddress = await this._ens.lookup(domain)
-    if (registeredAddress === ZERO_ADDRESS) throw new Error('No address for name')
-    if (registeredAddress === ZERO_X_ERROR_ADDRESS) throw new Error('ENS Registry error')
-
-    if (ethUtil.toChecksumAddress(registeredAddress) === address) {
-      this._updateResolutionsByAddress(address, punycode.toASCII(domain))
-      return domain
-    } else {
+    if (registeredAddress === ZERO_ADDRESS || registeredAddress === ZERO_X_ERROR_ADDRESS) {
       return undefined
     }
+
+    if (ethUtil.toChecksumAddress(registeredAddress) !== address) {
+      return undefined
+    }
+
+    this._updateResolutionsByAddress(address, punycode.toASCII(domain))
+    return domain
   }
 
   _updateResolutionsByAddress (address, domain) {
