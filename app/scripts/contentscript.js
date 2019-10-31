@@ -161,8 +161,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck() &&
-    documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() && documentElementCheck()
 }
 
 /**
@@ -213,36 +212,6 @@ function documentElementCheck () {
     return documentElement.toLowerCase() === 'html'
   }
   return true
-}
-
-/**
- * Checks if the current domain is blacklisted
- *
- * @returns {boolean} {@code true} if the current domain is blacklisted
- */
-function blacklistedDomainCheck () {
-  const blacklistedDomains = [
-    'uscourts.gov',
-    'dropbox.com',
-    'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
-    'adyen.com',
-    'gravityforms.com',
-    'harbourair.com',
-    'ani.gamer.com.tw',
-    'blueskybooking.com',
-    'sharefile.com',
-  ]
-  const currentUrl = window.location.href
-  let currentRegex
-  for (let i = 0; i < blacklistedDomains.length; i++) {
-    const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
-    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
-    if (!currentRegex.test(currentUrl)) {
-      return true
-    }
-  }
-  return false
 }
 
 /**
