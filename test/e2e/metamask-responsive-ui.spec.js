@@ -236,10 +236,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1
       }, 10000)
 
-      if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-        await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
-      }
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
     })
   })
 })
