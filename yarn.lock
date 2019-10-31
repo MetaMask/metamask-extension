@@ -10126,6 +10126,17 @@ ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
 
+ethereumjs-util@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.0.tgz#8e9646c13322e75a9c593cf705d27d4a51c991c0"
+  integrity sha1-jpZGwTMi51qcWTz3BdJ9SlHJkcA=
+  dependencies:
+    bn.js "^4.8.0"
+    create-hash "^1.1.2"
+    keccak "^1.0.2"
+    rlp "^2.0.0"
+    secp256k1 "^3.0.1"
+
 ethereumjs-util@6.1.0, ethereumjs-util@^6.0.0, ethereumjs-util@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.1.0.tgz#e9c51e5549e8ebd757a339cc00f5380507e799c8"
@@ -10161,16 +10172,6 @@ ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.1, ethereum
     keccak "^1.0.2"
     rlp "^2.0.0"
     safe-buffer "^5.1.1"
-    secp256k1 "^3.0.1"
-
-"ethereumjs-util@github:ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9":
-  version "5.0.1"
-  resolved "https://codeload.github.com/ethereumjs/ethereumjs-util/tar.gz/ac5d0908536b447083ea422b435da27f26615de9"
-  dependencies:
-    bn.js "^4.8.0"
-    create-hash "^1.1.2"
-    keccak "^1.0.2"
-    rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
 ethereumjs-util@~6.0.0:
