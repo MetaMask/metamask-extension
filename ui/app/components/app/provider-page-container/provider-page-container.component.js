@@ -18,11 +18,9 @@ export default class ProviderPageContainer extends PureComponent {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   };
-  componentWillUnmount () {
-    window.onbeforeunload = null
-  }
+
   componentDidMount () {
-    window.onbeforeunload = this.onCancel
+    window.addEventListener('beforeunload', this.onCancel)
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
@@ -30,6 +28,10 @@ export default class ProviderPageContainer extends PureComponent {
         name: 'Popup Opened',
       },
     })
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.onCancel)
   }
 
   onCancel = () => {

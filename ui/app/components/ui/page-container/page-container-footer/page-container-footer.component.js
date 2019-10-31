@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../../button'
 
 export default class PageContainerFooter extends Component {
+
   static propTypes = {
     children: PropTypes.node,
     onCancel: PropTypes.func,
