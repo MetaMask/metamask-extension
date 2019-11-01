@@ -18,6 +18,7 @@ import {
   setMetaMetricsSendCount,
   updateTransaction,
   getNextNonce,
+  tryReverseResolveAddress,
 } from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -51,6 +52,7 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {
+    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
@@ -93,7 +95,9 @@ const mapStateToProps = (state, ownProps) => {
         : addressSlicer(checksumAddress(toAddress))
     )
 
-  const addressBookObject = addressBook[checksumAddress(toAddress)]
+  const checksummedAddress = checksumAddress(toAddress)
+  const addressBookObject = addressBook[checksummedAddress]
+  const toEns = ensResolutionsByAddress[checksummedAddress] || ''
   const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
@@ -134,6 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
     fromName,
     toAddress,
+    toEns,
     toName,
     toNickname,
     ethTransactionAmount,
@@ -176,6 +181,9 @@ const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = dispatch => {
   return {
+    tryReverseResolveAddress: (address) => {
+      return dispatch(tryReverseResolveAddress(address))
+    },
     updateCustomNonce: value => {
       customNonceValue = value
       dispatch(updateCustomNonce(value))

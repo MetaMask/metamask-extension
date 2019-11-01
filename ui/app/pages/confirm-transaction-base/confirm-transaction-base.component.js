@@ -64,6 +64,7 @@ export default class ConfirmTransactionBase extends Component {
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
+    toEns: PropTypes.string,
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
@@ -103,6 +104,7 @@ export default class ConfirmTransactionBase extends Component {
     transactionCategory: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
+    tryReverseResolveAddress: PropTypes.func.isRequired,
   }
 
   state = {
@@ -567,7 +569,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentDidMount () {
-    const { txData: { origin, id } = {}, cancelTransaction, getNextNonce } = this.props
+    const { toAddress, txData: { origin, id } = {}, cancelTransaction, getNextNonce, tryReverseResolveAddress } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -598,6 +600,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     getNextNonce()
+    tryReverseResolveAddress(toAddress)
   }
 
   componentWillUnmount () {
@@ -613,6 +616,7 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
+      toEns,
       toNickname,
       methodData,
       valid: propsValid = true,
@@ -643,6 +647,7 @@ export default class ConfirmTransactionBase extends Component {
         fromAddress={fromAddress}
         toName={toName}
         toAddress={toAddress}
+        toEns={toEns}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
