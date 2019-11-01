@@ -7,6 +7,7 @@ import TransactionAction from '../transaction-action'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import TokenCurrencyDisplay from '../../ui/token-currency-display'
 import TransactionListItemDetails from '../transaction-list-item-details'
+import TransactionTimeRemaining from '../transaction-time-remaining'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../../helpers/constants/transactions'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
@@ -38,6 +39,8 @@ export default class TransactionListItem extends PureComponent {
     data: PropTypes.string,
     getContractMethodData: PropTypes.func,
     isDeposit: PropTypes.bool,
+    transactionTimeFeatureActive: PropTypes.bool,
+    firstPendingTransactionId: PropTypes.number,
   }
 
   static defaultProps = {
@@ -50,6 +53,13 @@ export default class TransactionListItem extends PureComponent {
 
   state = {
     showTransactionDetails: false,
+  }
+
+  componentDidMount () {
+    if (this.props.data) {
+      this.props.getContractMethodData(this.props.data)
+    }
+
   }
 
   handleClick = () => {
@@ -162,12 +172,6 @@ export default class TransactionListItem extends PureComponent {
       )
   }
 
-  componentDidMount () {
-    if (this.props.data) {
-      this.props.getContractMethodData(this.props.data)
-    }
-  }
-
   render () {
     const {
       assetImages,
@@ -182,6 +186,8 @@ export default class TransactionListItem extends PureComponent {
       transactionGroup,
       rpcPrefs,
       isEarliestNonce,
+      firstPendingTransactionId,
+      transactionTimeFeatureActive,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -221,6 +227,13 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
+          { transactionTimeFeatureActive && (transaction.id === firstPendingTransactionId)
+            ? <TransactionTimeRemaining
+              className="transaction-list-item__estimated-time"
+              transaction={ primaryTransaction }
+            />
+            : null
+          }
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
