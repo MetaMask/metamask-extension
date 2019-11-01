@@ -142,6 +142,12 @@ export default class PermissionsList extends Component {
               permissions[domain].permissions.length === 0 ||
               !this.state.domains[domain] // state may lag behind props slightly
             ) return null
+
+            const targetMetadata = (
+              siteMetadata[domain] ||
+              { name: domain, icon: null }
+            )
+
             // TODO: these elements look like trash and their CSS is placeholder only
             return (
               <li key={domain}>
@@ -155,15 +161,16 @@ export default class PermissionsList extends Component {
                     />
                     {
                       !this.state.domains[domain].iconError &&
-                      siteMetadata[domain].icon ? (
+                      targetMetadata.icon
+                        ? (
                           <img
                             className="settings-page__content-list-identicon"
-                            src={siteMetadata[domain].icon}
+                            src={targetMetadata.icon}
                             onError={this.onIconError(domain)}
                           />
                         ) : (
                           <i className="settings-page__content-list-indenticon--default">
-                            {siteMetadata[domain].name.charAt(0).toUpperCase()}
+                            {targetMetadata.name.charAt(0).toUpperCase()}
                           </i>
                         )
                     }
