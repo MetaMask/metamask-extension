@@ -10,12 +10,6 @@ import Identicon from '../../ui/identicon'
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
     txData: PropTypes.object.isRequired,
-    accounts: PropTypes.shape(
-      PropTypes.shape({
-        address: PropTypes.string,
-        balance: PropTypes.string,
-      })
-    ),
     selectedAccount: PropTypes.shape({
       address: PropTypes.string,
       balance: PropTypes.string,
@@ -56,7 +50,6 @@ export default class SignatureRequest extends PureComponent {
   render () {
     const {
       selectedAccount,
-      accounts,
       txData: { msgParams: { data, origin, from: senderWallet }},
       cancel,
       sign,
@@ -65,7 +58,7 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request page-container">
-        <Header selectedAccount={selectedAccount} accounts={accounts} />
+        <Header selectedAccount={selectedAccount} />
         <div className="signature-request-content">
           <div className="signature-request-content__title">{this.context.t('sigRequest')}</div>
           <div className="signature-request-content__identicon-container">
