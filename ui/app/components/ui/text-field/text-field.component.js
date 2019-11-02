@@ -32,8 +32,7 @@ const styles = {
     color: '#fff',
   },
   materialWhitePaddedInput: {
-    paddingLeft: '8px',
-    paddingRight: '8px',
+    padding: '8px',
   },
   // Non-material styles
   formLabel: {
