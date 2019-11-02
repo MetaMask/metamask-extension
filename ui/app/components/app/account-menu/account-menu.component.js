@@ -45,7 +45,7 @@ export default class AccountMenu extends Component {
   accountsRef;
 
   state = {
-    atAccountListBottom: false,
+    shouldShowScrollButton: false,
     searchQuery: '',
   }
 
@@ -62,13 +62,21 @@ export default class AccountMenu extends Component {
     ],
   })
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate (prevProps, prevState) {
     const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps
+    const { searchQuery: prevSearchQuery } = prevState
     const { isAccountMenuOpen } = this.props
+    const { searchQuery } = this.state
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {
-      this.setAtAccountListBottom()
+      this.setShouldShowScrollButton()
       this.resetSearchQuery()
+    }
+
+    // recalculate on each search query change
+    // whether we can show scroll down button
+    if (isAccountMenuOpen && prevSearchQuery !== searchQuery) {
+      this.setShouldShowScrollButton()
     }
   }
 
@@ -231,32 +239,33 @@ export default class AccountMenu extends Component {
     this.setState({ searchQuery })
   }
 
-  setAtAccountListBottom = () => {
+  setShouldShowScrollButton = () => {
     const { scrollTop, offsetHeight, scrollHeight } = this.accountsRef
+
+    const canScroll = scrollHeight > offsetHeight
+
     const atAccountListBottom = scrollTop + offsetHeight >= scrollHeight
-    this.setState({ atAccountListBottom })
+
+    const shouldShowScrollButton = canScroll && !atAccountListBottom
+
+    this.setState({ shouldShowScrollButton})
   }
 
-  onScroll = debounce(this.setAtAccountListBottom, 25)
+  onScroll = debounce(this.setShouldShowScrollButton, 25)
 
   handleScrollDown = e => {
     e.stopPropagation()
+
     const { scrollHeight } = this.accountsRef
     this.accountsRef.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' })
-    this.setAtAccountListBottom()
+
+    this.setShouldShowScrollButton()
   }
 
   renderScrollButton () {
-    const { atAccountListBottom } = this.state
-    const accountsRef = this.accountsRef
+    const { shouldShowScrollButton } = this.state
 
-    if (!accountsRef) {
-      return null
-    }
-
-    const isAccountsScrollable = accountsRef.scrollHeight > accountsRef.offsetHeight
-
-    return !atAccountListBottom && isAccountsScrollable && (
+    return shouldShowScrollButton && (
       <div
         className="account-menu__scroll-button"
         onClick={this.handleScrollDown}
@@ -265,6 +274,7 @@ export default class AccountMenu extends Component {
           src="./images/icons/down-arrow.svg"
           width={28}
           height={28}
+          alt="scroll down"
         />
       </div>
     )
