@@ -19,8 +19,6 @@ class ProviderApprovalController extends SafeEventEmitter {
     this.openPopup = openPopup
     this.preferencesController = preferencesController
     this.memStore = new ObservableStore({
-      approvedOrigins: {},
-      dismissedOrigins: {},
       providerRequests: [],
     })
 

@@ -80,7 +80,7 @@ function openWyre(address, atTimeOfOpen, onClose, onComplete) {
       dest: `ethereum:${address}`,
     },
   })
-  console.log('widget', widget)
+
   widget.open()
 
   atTimeOfOpen()
