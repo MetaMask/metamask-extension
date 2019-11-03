@@ -70,7 +70,7 @@ function createWyreWidget () {
   return widget;
 }
 
-function openWyre(address, atTimeOfOpen, onClose, onComplete) {
+function openWyre(address) {
   const Wyre = createWyreWidget()
   const widget = new Wyre({
     env: 'prod',
@@ -82,12 +82,6 @@ function openWyre(address, atTimeOfOpen, onClose, onComplete) {
   })
 
   widget.open()
-
-  atTimeOfOpen()
-
-  widget.on('exit', onClose)
-
-  widget.on('complete', onComplete)
 }
 
 module.exports = openWyre

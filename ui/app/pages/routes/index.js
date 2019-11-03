@@ -8,7 +8,6 @@ import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 import classnames from 'classnames'
-import { matches } from '../../helpers/utils/util'
 import openWyre from '../../../vendor/wyre'
 
 // init
@@ -107,29 +106,11 @@ class Routes extends Component {
       modal,
       showDepositModal,
       selectedAddress,
-      stopWaitingForWyreSigRequest,
-      waitForWyreSigRequest,
     } = this.props
 
-    if (location.pathname === DEPOSIT_ROUTE && (!modal || !modal.open)) {
+    if (location.pathname === DEPOSIT_ROUTE && (!modal || !modal.open) && selectedAddress) {
       showDepositModal()
-      openWyre(selectedAddress, waitForWyreSigRequest, stopWaitingForWyreSigRequest, stopWaitingForWyreSigRequest)
-    }
-  }
-
-  componentDidUpdate () {
-    const {
-      waitingForWyreSigRequest,
-      unapprovedPersonalMsgs,
-      stopWaitingForWyreSigRequest,
-      showSigRequestModalForId,
-    } = this.props
-
-    const wyreMessage = Object.values(unapprovedPersonalMsgs).find(msg => matches(msg, 'msgParams.origin', /wyre/))
-
-    if (waitingForWyreSigRequest && wyreMessage) {
-      showSigRequestModalForId(wyreMessage.id)
-      stopWaitingForWyreSigRequest()
+      openWyre(selectedAddress)
     }
   }
 
@@ -384,12 +365,7 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
-  waitingForWyreSigRequest: PropTypes.bool,
-  unapprovedPersonalMsgs: PropTypes.object,
-  stopWaitingForWyreSigRequest: PropTypes.func,
-  showSigRequestModalForId: PropTypes.func,
   showDepositModal: PropTypes.func,
-  waitForWyreSigRequest: PropTypes.func,
   modal: PropTypes.object,
   selectedAddress: PropTypes.string,
 }
@@ -406,14 +382,6 @@ function mapStateToProps (state) {
 
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
 
-  const {
-    unapprovedTxs,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    unapprovedPersonalMsgs,
-  } = metamask
-
   return {
     // state from plugin
     sidebar,
@@ -425,13 +393,6 @@ function mapStateToProps (state) {
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
-    unapprovedTxs,
-    unapprovedMsgs: state.metamask.unapprovedMsgs,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    unapprovedPersonalMsgs,
-    menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
@@ -440,6 +401,7 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
     providerRequests: metamask.providerRequests,
+    selectedAddress: metamask.selectedAddress,
   }
 }
 
@@ -450,10 +412,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    stopWaitingForWyreSigRequest: () => dispatch(actions.stopWaitingForWyreSigRequest()),
-    showSigRequestModalForId: id => dispatch(actions.showModal({ name: 'SIGNATURE_REQUEST', id })),
     showDepositModal: () => dispatch(actions.showModal({ name: 'DEPOSIT_ETHER' })),
-    waitForWyreSigRequest: () => dispatch(actions.waitForWyreSigRequest()),
   }
 }
 

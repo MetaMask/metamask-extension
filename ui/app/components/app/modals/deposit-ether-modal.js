@@ -45,8 +45,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
     toFaucet: network => dispatch(actions.buyEth({ network })),
-    waitForWyreSigRequest: () => dispatch(actions.waitForWyreSigRequest()),
-    stopWaitingForWyreSigRequest: () => dispatch(actions.stopWaitingForWyreSigRequest()),
   }
 }
 
@@ -127,7 +125,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, address, toFaucet, toCoinSwitch, waitForWyreSigRequest, stopWaitingForWyreSigRequest } = this.props
+  const { network, address, toFaucet, toCoinSwitch } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -192,7 +190,7 @@ DepositEtherModal.prototype.render = function () {
             if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
               global.platform.openExtensionInBrowser(DEPOSIT_ROUTE)
             } else {
-              openWyre(address, waitForWyreSigRequest, stopWaitingForWyreSigRequest, stopWaitingForWyreSigRequest)
+              openWyre(address)
             }
           },
           hide: isTestNetwork && !network === '42',
