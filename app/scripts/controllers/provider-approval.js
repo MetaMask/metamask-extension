@@ -47,7 +47,8 @@ class ProviderApprovalController extends SafeEventEmitter {
       if (extensionId) {
         metadata.extensionId = extensionId
       } else {
-        Object.assign(metadata, await getSiteMetadata(origin))
+        const siteMetadata = await getSiteMetadata(origin)
+        Object.assign(metadata, { siteTitle: siteMetadata.name, siteImage: siteMetadata.icon})
       }
       this._handleProviderRequest(metadata)
       // wait for resolution of request
