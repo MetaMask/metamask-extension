@@ -37,7 +37,7 @@ export default class TransactionList extends PureComponent {
     }
   }
 
-  shouldShowRetry = (transactionGroup, isEarliestNonce) => {
+  shouldShowSpeedUp = (transactionGroup, isEarliestNonce) => {
     const { transactions = [], hasRetried } = transactionGroup
     const [earliestTransaction = {}] = transactions
     const { submittedTime } = earliestTransaction
@@ -100,7 +100,7 @@ export default class TransactionList extends PureComponent {
         <TransactionListItem
           transactionGroup={transactionGroup}
           key={`${transactionGroup.nonce}:${index}`}
-          showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
+          showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
           showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
           isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}

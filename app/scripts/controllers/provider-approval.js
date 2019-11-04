@@ -31,19 +31,26 @@ class ProviderApprovalController extends SafeEventEmitter {
    *
    * @param {object} opts - opts for the middleware contains the origin for the middleware
    */
-  createMiddleware ({ origin, getSiteMetadata }) {
+  createMiddleware ({ senderUrl, extensionId, getSiteMetadata }) {
     return createAsyncMiddleware(async (req, res, next) => {
       // only handle requestAccounts
       if (req.method !== 'eth_requestAccounts') return next()
       // if already approved or privacy mode disabled, return early
       const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+      const origin = senderUrl.hostname
       if (this.shouldExposeAccounts(origin) && isUnlocked) {
         res.result = [this.preferencesController.getSelectedAddress()]
         return
       }
       // register the provider request
-      const metadata = await getSiteMetadata(origin)
-      this._handleProviderRequest(origin, metadata.name, metadata.icon)
+      const metadata = { hostname: senderUrl.hostname, origin }
+      if (extensionId) {
+        metadata.extensionId = extensionId
+      } else {
+        const siteMetadata = await getSiteMetadata(origin)
+        Object.assign(metadata, { siteTitle: siteMetadata.name, siteImage: siteMetadata.icon})
+      }
+      this._handleProviderRequest(metadata)
       // wait for resolution of request
       const approved = await new Promise(resolve => this.once(`resolvedRequest:${origin}`, ({ approved }) => resolve(approved)))
       if (approved) {
@@ -55,18 +62,25 @@ class ProviderApprovalController extends SafeEventEmitter {
   }
 
   /**
+  * @typedef {Object} SiteMetadata
+  * @param {string} hostname - The hostname of the site
+  * @param {string} origin - The origin of the site
+  * @param {string} [siteTitle] - The title of the site
+  * @param {string} [siteImage] - The icon for the site
+  * @param {string} [extensionId] - The extension ID of the extension
+  */
+  /**
    * Called when a tab requests access to a full Ethereum provider API
    *
-   * @param {string} origin - Origin of the window requesting full provider access
-   * @param {string} siteTitle - The title of the document requesting full provider access
-   * @param {string} siteImage - The icon of the window requesting full provider access
+   * @param {SiteMetadata} siteMetadata - The metadata for the site requesting full provider access
    */
-  _handleProviderRequest (origin, siteTitle, siteImage) {
+  _handleProviderRequest (siteMetadata) {
     const { providerRequests } = this.memStore.getState()
+    const origin = siteMetadata.origin
     this.memStore.updateState({
       providerRequests: [
         ...providerRequests,
-        { origin, siteTitle, siteImage },
+        siteMetadata,
       ],
     })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
@@ -98,6 +112,7 @@ class ProviderApprovalController extends SafeEventEmitter {
         [origin]: {
           siteTitle: providerRequest ? providerRequest.siteTitle : null,
           siteImage: providerRequest ? providerRequest.siteImage : null,
+          hostname: providerRequest ? providerRequest.hostname : null,
         },
       },
     })

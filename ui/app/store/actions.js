@@ -350,6 +350,7 @@ var actions = {
 
   createCancelTransaction,
   createSpeedUpTransaction,
+  createRetryTransaction,
 
   approveProviderRequestByOrigin,
   rejectProviderRequestByOrigin,
@@ -1860,6 +1861,28 @@ function createSpeedUpTransaction (txId, customGasPrice) {
   }
 }
 
+function createRetryTransaction (txId, customGasPrice) {
+  log.debug('background.createRetryTransaction')
+  let newTx
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        resolve(newState)
+      })
+    })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
+  }
+}
+
 //
 // config
 //
@@ -1988,11 +2011,11 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
  * @description Calls the addressBookController to remove an existing address.
  * @param {String} addressToRemove - Address of the entry to remove from the address book
  */
-function removeFromAddressBook (addressToRemove) {
+function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
   return () => {
-    background.removeFromAddressBook(checksumAddress(addressToRemove))
+    background.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 

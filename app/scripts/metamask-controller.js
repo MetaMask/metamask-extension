@@ -53,10 +53,8 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
-const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
-const sigUtil = require('eth-sig-util')
 const contractMap = require('eth-contract-metadata')
 const {
   AddressBookController,
@@ -336,7 +334,7 @@ module.exports = class MetamaskController extends EventEmitter {
         // Expose no accounts if this origin has not been approved, preventing
         // account-requring RPC methods from completing successfully
         const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'MetaMask' && !exposeAccounts) { return [] }
+        if (origin !== 'metamask' && !exposeAccounts) { return [] }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -1168,28 +1166,16 @@ module.exports = class MetamaskController extends EventEmitter {
     const version = msgParams.version
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
-      const address = sigUtil.normalize(cleanMsgParams.from)
-      const keyring = await this.keyringController.getKeyringForAccount(address)
-      let signature
-      // HW Wallet keyrings don't expose private keys
-      // so we need to handle it separately
-      if (!HW_WALLETS_KEYRINGS.includes(keyring.type)) {
-        const wallet = keyring._getWalletForAccount(address)
-        const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
-        switch (version) {
-          case 'V1':
-            signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
-            break
-          case 'V3':
-            signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
-            break
-          case 'V4':
-            signature = sigUtil.signTypedData_v4(privKey, { data: JSON.parse(cleanMsgParams.data) })
-            break
+
+      // For some reason every version after V1 used stringified params.
+      if (version !== 'V1') {
+        // But we don't have to require that. We can stop suggesting it now:
+        if (typeof cleanMsgParams.data === 'string') {
+          cleanMsgParams.data = JSON.parse(cleanMsgParams.data)
         }
-      } else {
-        signature = await keyring.signTypedData(address, cleanMsgParams.data)
       }
+
+      const signature = await this.keyringController.signTypedMessage(cleanMsgParams, { version })
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
     } catch (error) {
@@ -1332,23 +1318,25 @@ module.exports = class MetamaskController extends EventEmitter {
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {string} originDomain - The domain requesting the stream, which
-   * may trigger a blacklist reload.
+   * @param {URL} senderUrl - The URL of the resource requesting the stream,
+   * which may trigger a blacklist reload.
+   * @param {string} extensionId - The extension id of the sender, if the sender
+   * is an extension
    */
-  setupUntrustedCommunication (connectionStream, originDomain) {
+  setupUntrustedCommunication (connectionStream, senderUrl, extensionId) {
     // Check if new connection is blacklisted
-    if (this.phishingController.test(originDomain)) {
-      log.debug('MetaMask - sending phishing warning for', originDomain)
-      this.sendPhishingWarning(connectionStream, originDomain)
+    if (this.phishingController.test(senderUrl.hostname)) {
+      log.debug('MetaMask - sending phishing warning for', senderUrl.hostname)
+      this.sendPhishingWarning(connectionStream, senderUrl.hostname)
       return
     }
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
-    const publicApi = this.setupPublicApi(mux.createStream('publicApi'), originDomain)
-    this.setupProviderConnection(mux.createStream('provider'), originDomain, publicApi)
-    this.setupPublicConfig(mux.createStream('publicConfig'), originDomain)
+    const publicApi = this.setupPublicApi(mux.createStream('publicApi'))
+    this.setupProviderConnection(mux.createStream('provider'), senderUrl, extensionId, publicApi)
+    this.setupPublicConfig(mux.createStream('publicConfig'), senderUrl)
   }
 
   /**
@@ -1358,15 +1346,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * functions, like the ability to approve transactions or sign messages.
    *
    * @param {*} connectionStream - The duplex stream to connect to.
-   * @param {string} originDomain - The domain requesting the connection,
+   * @param {URL} senderUrl - The URL requesting the connection,
    * used in logging and error reporting.
    */
-  setupTrustedCommunication (connectionStream, originDomain) {
+  setupTrustedCommunication (connectionStream, senderUrl) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
-    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupProviderConnection(mux.createStream('provider'), senderUrl)
   }
 
   /**
@@ -1419,11 +1407,14 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {string} origin - The URI of the requesting resource.
+   * @param {URL} senderUrl - The URI of the requesting resource.
+   * @param {string} extensionId - The id of the extension, if the requesting
+   * resource is an extension.
+   * @param {object} publicApi - The public API
    */
-  setupProviderConnection (outStream, origin, publicApi) {
+  setupProviderConnection (outStream, senderUrl, extensionId, publicApi) {
     const getSiteMetadata = publicApi && publicApi.getSiteMetadata
-    const engine = this.setupProviderEngine(origin, getSiteMetadata)
+    const engine = this.setupProviderEngine(senderUrl, extensionId, getSiteMetadata)
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1433,7 +1424,7 @@ module.exports = class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
-        // cleanup filter polyfill middleware
+        // handle any middleware cleanup
         engine._middleware.forEach((mid) => {
           if (mid.destroy && typeof mid.destroy === 'function') {
             mid.destroy()
@@ -1447,7 +1438,8 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (origin, getSiteMetadata) {
+  setupProviderEngine (senderUrl, extensionId, getSiteMetadata) {
+    const origin = senderUrl.hostname
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1470,7 +1462,8 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // requestAccounts
     engine.push(this.providerApprovalController.createMiddleware({
-      origin,
+      senderUrl,
+      extensionId,
       getSiteMetadata,
     }))
     // forward to metamask primary provider
@@ -1487,11 +1480,12 @@ module.exports = class MetamaskController extends EventEmitter {
    * this is a good candidate for deprecation.
    *
    * @param {*} outStream - The stream to provide public config over.
+   * @param {URL} senderUrl - The URL of requesting resource
    */
-  setupPublicConfig (outStream, originDomain) {
+  setupPublicConfig (outStream, senderUrl) {
     const configStore = this.createPublicConfigStore({
       // check the providerApprovalController's approvedOrigins
-      checkIsEnabled: () => this.providerApprovalController.shouldExposeAccounts(originDomain),
+      checkIsEnabled: () => this.providerApprovalController.shouldExposeAccounts(senderUrl.hostname),
     })
     const configStream = asStream(configStore)
 

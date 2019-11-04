@@ -6,7 +6,13 @@ export default class ProviderApproval extends Component {
   static propTypes = {
     approveProviderRequestByOrigin: PropTypes.func.isRequired,
     rejectProviderRequestByOrigin: PropTypes.func.isRequired,
-    providerRequest: PropTypes.object.isRequired,
+    providerRequest: PropTypes.exact({
+      hostname: PropTypes.string.isRequired,
+      siteImage: PropTypes.string,
+      siteTitle: PropTypes.string,
+      origin: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+    }).isRequired,
   };
 
   static contextTypes = {
@@ -20,9 +26,10 @@ export default class ProviderApproval extends Component {
         approveProviderRequestByOrigin={approveProviderRequestByOrigin}
         rejectProviderRequestByOrigin={rejectProviderRequestByOrigin}
         origin={providerRequest.origin}
-        tabID={providerRequest.tabID}
         siteImage={providerRequest.siteImage}
         siteTitle={providerRequest.siteTitle}
+        hostname={providerRequest.hostname}
+        extensionId={providerRequest.extensionId}
       />
     )
   }

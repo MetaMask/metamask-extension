@@ -12,7 +12,7 @@ import classnames from 'classnames'
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../send/send.container')
+import SendTransactionScreen from '../send'
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
@@ -31,7 +31,7 @@ const MobileSyncPage = require('../mobile-sync')
 const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
-const CreateAccountPage = require('../create-account')
+import CreateAccountPage from '../create-account'
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
@@ -206,6 +206,10 @@ class Routes extends Component {
       }
       : null
 
+    const sidebarShouldClose = sidebarTransaction &&
+      !sidebarTransaction.status === 'failed' &&
+      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+
     return (
       <div
         className={classnames('app', { 'mouse-user-styles': isMouseUser})}
@@ -232,7 +236,7 @@ class Routes extends Component {
         }
         <Sidebar
           sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)}
+          sidebarShouldClose={sidebarShouldClose}
           hideSidebar={this.props.hideSidebar}
           transitionName={sidebarTransitionName}
           type={sidebarType}

@@ -6,6 +6,7 @@ import {
   setGasLimit,
   setGasPrice,
   createSpeedUpTransaction,
+  createRetryTransaction,
   hideSidebar,
   updateSendAmount,
   setGasTotal,
@@ -56,7 +57,6 @@ import {
   addHexWEIsToDec,
   subtractHexWEIsToDec,
   decEthToConvertedCurrency as ethTotalToConvertedCurrency,
-  decGWEIToHexWEI,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util'
 import {
@@ -154,6 +154,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     transaction: txData || transaction,
     isSpeedUp: transaction.status === 'submitted',
+    isRetry: transaction.status === 'failed',
     txId: transaction.id,
     insufficientBalance,
     gasEstimatesLoading,
@@ -175,8 +176,7 @@ const mapDispatchToProps = dispatch => {
     },
     hideModal: () => dispatch(hideModal()),
     updateCustomGasPrice,
-    convertThenUpdateCustomGasPrice: newPrice => updateCustomGasPrice(decGWEIToHexWEI(newPrice)),
-    convertThenUpdateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit.toString(16)))),
+    updateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
     setGasData: (newLimit, newPrice) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
@@ -188,6 +188,9 @@ const mapDispatchToProps = dispatch => {
     },
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
+    },
+    createRetryTransaction: (txId, gasPrice) => {
+      return dispatch(createRetryTransaction(txId, gasPrice))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
@@ -208,6 +211,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     isConfirm,
     txId,
     isSpeedUp,
+    isRetry,
     insufficientBalance,
     maxModeOn,
     customGasPrice,
@@ -219,11 +223,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     transaction,
   } = stateProps
   const {
-    updateCustomGasPrice: dispatchUpdateCustomGasPrice,
     hideGasButtonGroup: dispatchHideGasButtonGroup,
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
+    createRetryTransaction: dispatchCreateRetryTransaction,
     hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
@@ -251,6 +255,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)
         dispatchHideSidebar()
         dispatchCancelAndClose()
+      } else if (isRetry) {
+        dispatchCreateRetryTransaction(txId, gasPrice)
+        dispatchHideSidebar()
+        dispatchCancelAndClose()
       } else {
         dispatchSetGasData(gasLimit, gasPrice)
         dispatchHideGasButtonGroup()
@@ -267,11 +275,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
-      handleGasPriceSelection: dispatchUpdateCustomGasPrice,
+      handleGasPriceSelection: otherDispatchProps.updateCustomGasPrice,
     },
     cancelAndClose: () => {
       dispatchCancelAndClose()
-      if (isSpeedUp) {
+      if (isSpeedUp || isRetry) {
         dispatchHideSidebar()
       }
     },

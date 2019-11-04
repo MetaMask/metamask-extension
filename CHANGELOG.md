@@ -2,8 +2,21 @@
 
 ## Current Develop Branch
 
+## 7.4.0 Tue Oct 29 2019
+- [#7186](https://github.com/MetaMask/metamask-extension/pull/7186): Use `AdvancedGasInputs` in `AdvancedTabContent`
+- [#7304](https://github.com/MetaMask/metamask-extension/pull/7304): Move signTypedData signing out to keyrings
+- [#7306](https://github.com/MetaMask/metamask-extension/pull/7306): correct the zh-TW translation
+- [#7309](https://github.com/MetaMask/metamask-extension/pull/7309): Freeze Promise global on boot
+- [#7296](https://github.com/MetaMask/metamask-extension/pull/7296): Add "Retry" option for failed transactions
+- [#7319](https://github.com/MetaMask/metamask-extension/pull/7319): Fix transaction list item status spacing issue
+- [#7218](https://github.com/MetaMask/metamask-extension/pull/7218): Add hostname and extensionId to site metadata
+- [#7324](https://github.com/MetaMask/metamask-extension/pull/7324): Fix contact deletion
+- [#7326](https://github.com/MetaMask/metamask-extension/pull/7326): Fix edit contact details
+- [#7325](https://github.com/MetaMask/metamask-extension/pull/7325): Update eth-json-rpc-filters to fix memory leak
+- [#7334](https://github.com/MetaMask/metamask-extension/pull/7334): Add web3 deprecation warning
+
 ## 7.3.1 Mon Oct 21 2019
-- [#7298](https://github.com/MetaMask/metamask-extension/pull/7298): Turn off full screen vs popup a/b test 
+- [#7298](https://github.com/MetaMask/metamask-extension/pull/7298): Turn off full screen vs popup a/b test
 
 ## 7.3.0 Fri Sep 27 2019
 - [#6972](https://github.com/MetaMask/metamask-extension/pull/6972): 3box integration
