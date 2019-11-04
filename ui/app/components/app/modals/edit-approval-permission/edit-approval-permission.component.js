@@ -149,19 +149,19 @@ export default class EditApprovalPermission extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { setCustomAmount, hideModal } = this.props
-
+    const { setCustomAmount, hideModal, customTokenAmount } = this.props
+    const { selectedOptionIsUnlimited, customSpendLimit } = this.state
     return (
       <Modal
         onSubmit={() => {
-          setCustomAmount(Number(this.state.customSpendLimit))
+          setCustomAmount(!selectedOptionIsUnlimited ? customSpendLimit : '')
           hideModal()
         }}
         submitText={t('save')}
         submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
-        submitDisabled={ this.state.customSpendLimit === this.props.customTokenAmount }
+        submitDisabled={ (customSpendLimit === customTokenAmount) && !selectedOptionIsUnlimited }
       >
         { this.renderModalContent() }
       </Modal>
