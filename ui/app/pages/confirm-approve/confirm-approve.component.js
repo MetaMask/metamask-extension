@@ -78,6 +78,7 @@ export default class ConfirmApprove extends Component {
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={tokenAddress}
+        showAccountInHeader={true}
         title={tokensText}
         contentComponent={<ConfirmApproveContent
           siteImage={siteImage}

@@ -20,6 +20,7 @@ export default class ConfirmPageContainer extends Component {
     title: PropTypes.string,
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
+    showAccountInHeader: PropTypes.bool,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -106,6 +107,7 @@ export default class ConfirmPageContainer extends Component {
       ofText,
       requestsWaitingText,
       hideSenderToRecipient,
+      showAccountInHeader,
     } = this.props
     const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
@@ -126,6 +128,8 @@ export default class ConfirmPageContainer extends Component {
         <ConfirmPageContainerHeader
           showEdit={showEdit}
           onEdit={() => onEdit()}
+          showAccountInHeader={showAccountInHeader}
+          accountAddress={fromAddress}
         >
           { hideSenderToRecipient
             ? null
