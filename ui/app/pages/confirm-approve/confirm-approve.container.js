@@ -67,7 +67,7 @@ const mapStateToProps = (state, ownProps) => {
     userAddress: selectedAddress,
     origin: formattedOrigin,
     data,
-    decimals,
+    decimals: Number(decimals),
     txData: transaction,
   }
 }
