@@ -1,7 +1,7 @@
 {
   "name": "TrustVault",
   "short_name": "TrustVault",
-  "version": "7.2.4",
+  "version": "7.2.5",
   "manifest_version": 2,
   "author": "https://trustology.io",
   "description": "TrustVault Ethereum Browser Extension",
