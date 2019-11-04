@@ -12,7 +12,7 @@ export function getCustomTxParamsData (data, { customPermissionAmount, tokenAmou
       return data
     }
     let dataWithoutCurrentAmount = matches[1]
-    const customPermissionValue = decimalToHex(calcTokenValue(customPermissionAmount, decimals))
+    const customPermissionValue = decimalToHex(calcTokenValue(Number(customPermissionAmount), decimals))
 
     const differenceInLengths = customPermissionValue.length - tokenValue.length
     const zeroModifier = dataWithoutCurrentAmount.length - differenceInLengths
