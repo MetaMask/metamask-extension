@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
       send,
       unapprovedTxs,
       abTests: { fullScreenVsPopup },
+      conversionRate,
     },
     confirmTransaction,
   } = state
@@ -53,6 +54,7 @@ const mapStateToProps = (state, ownProps) => {
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
     trackABTest,
     fullScreenVsPopupTestGroup: fullScreenVsPopup,
+    conversionRate,
   }
 }
 

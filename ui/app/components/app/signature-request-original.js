@@ -243,7 +243,7 @@ SignatureRequest.prototype.renderBody = function () {
   let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
-  const { type, msgParams: { data, version } } = txData
+  const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
@@ -275,17 +275,15 @@ SignatureRequest.prototype.renderBody = function () {
     }, [notice]),
 
     h('div.request-signature__rows',
-      type === 'eth_signTypedData' && (version === 'V3' || version === 'V4') ?
-        this.renderTypedData(data) :
-        rows.map(({ name, value }) => {
-          if (typeof value === 'boolean') {
-            value = value.toString()
-          }
-          return h('div.request-signature__row', [
-            h('div.request-signature__row-title', [`${name}:`]),
-            h('div.request-signature__row-value', value),
-          ])
-        }),
+      rows.map(({ name, value }, index) => {
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
+        return h('div.request-signature__row', { key: `request-signature-row-${index}` }, [
+          h('div.request-signature__row-title', [`${name}:`]),
+          h('div.request-signature__row-value', value),
+        ])
+      })
     ),
   ])
 }

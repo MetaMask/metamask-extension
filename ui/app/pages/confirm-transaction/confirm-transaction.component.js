@@ -45,6 +45,7 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
     fullScreenVsPopupTestGroup: PropTypes.string,
     trackABTest: PropTypes.bool,
+    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {
@@ -118,7 +119,6 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-
     return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>
