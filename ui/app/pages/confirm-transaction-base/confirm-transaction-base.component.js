@@ -387,7 +387,8 @@ export default class ConfirmTransactionBase extends Component {
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount,
-      async onSubmit () {
+      onSubmit: async () => {
+        this._removeBeforeUnload()
         await cancelAllTransactions()
         clearConfirmTransaction()
         history.push(DEFAULT_ROUTE)
@@ -409,6 +410,7 @@ export default class ConfirmTransactionBase extends Component {
       updateCustomNonce,
     } = this.props
 
+    this._removeBeforeUnload()
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
@@ -458,6 +460,7 @@ export default class ConfirmTransactionBase extends Component {
       submitting: true,
       submitError: null,
     }, () => {
+      this._removeBeforeUnload()
       metricsEvent({
         eventOpts: {
           category: 'Transactions',
@@ -568,8 +571,30 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
+  _beforeUnload = () => {
+    const { txData: { origin, id } = {}, cancelTransaction } = this.props
+    const { metricsEvent } = this.context
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'Cancel Tx Via Notification Close',
+      },
+      customVariables: {
+        origin,
+      },
+    })
+    cancelTransaction({ id })
+  }
+
+  _removeBeforeUnload = () => {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      window.removeEventListener('beforeunload', this._beforeUnload)
+    }
+  }
+
   componentDidMount () {
-    const { toAddress, txData: { origin, id } = {}, cancelTransaction, getNextNonce, tryReverseResolveAddress } = this.props
+    const { toAddress, txData: { origin } = {}, getNextNonce, tryReverseResolveAddress } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -583,20 +608,7 @@ export default class ConfirmTransactionBase extends Component {
     })
 
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-      this._onBeforeUnload = () => {
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Cancel Tx Via Notification Close',
-          },
-          customVariables: {
-            origin,
-          },
-        })
-        cancelTransaction({ id })
-      }
-      window.addEventListener('beforeunload', this._onBeforeUnload)
+      window.addEventListener('beforeunload', this._beforeUnload)
     }
 
     getNextNonce()
@@ -604,9 +616,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentWillUnmount () {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._onBeforeUnload)
-    }
+    this._removeBeforeUnload()
   }
 
   render () {

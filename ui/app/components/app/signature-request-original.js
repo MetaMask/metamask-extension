@@ -103,29 +103,34 @@ function SignatureRequest (props) {
   }
 }
 
-SignatureRequest.prototype.componentDidMount = function () {
+SignatureRequest.prototype._beforeUnload = (event) => {
   const { clearConfirmTransaction, cancel } = this.props
   const { metricsEvent } = this.context
+  metricsEvent({
+    eventOpts: {
+      category: 'Transactions',
+      action: 'Sign Request',
+      name: 'Cancel Sig Request Via Notification Close',
+    },
+  })
+  clearConfirmTransaction()
+  cancel(event)
+}
+
+SignatureRequest.prototype._removeBeforeUnload = () => {
   if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-    this._onBeforeUnload = event => {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Sign Request',
-          name: 'Cancel Sig Request Via Notification Close',
-        },
-      })
-      clearConfirmTransaction()
-      cancel(event)
-    }
-    window.addEventListener('beforeunload', this._onBeforeUnload)
+    window.removeEventListener('beforeunload', this._beforeUnload)
+  }
+}
+
+SignatureRequest.prototype.componentDidMount = function () {
+  if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    window.addEventListener('beforeunload', this._beforeUnload)
   }
 }
 
 SignatureRequest.prototype.componentWillUnmount = function () {
-  if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-    window.removeEventListener('beforeunload', this._onBeforeUnload)
-  }
+  this._removeBeforeUnload()
 }
 
 SignatureRequest.prototype.renderHeader = function () {
@@ -297,6 +302,7 @@ SignatureRequest.prototype.renderFooter = function () {
       large: true,
       className: 'request-signature__footer__cancel-button',
       onClick: event => {
+        this._removeBeforeUnload()
         cancel(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {
@@ -315,6 +321,7 @@ SignatureRequest.prototype.renderFooter = function () {
       large: true,
       className: 'request-signature__footer__sign-button',
       onClick: event => {
+        this._removeBeforeUnload()
         sign(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {
