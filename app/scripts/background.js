@@ -391,7 +391,10 @@ function setupController (initState, initLangCode) {
   // communication with page or other extension
   function connectExternal (remotePort) {
     const senderUrl = new URL(remotePort.sender.url)
-    const extensionId = remotePort.sender.id
+    let extensionId
+    if (remotePort.sender.id !== extension.runtime.id) {
+      extensionId = remotePort.sender.id
+    }
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
   }
