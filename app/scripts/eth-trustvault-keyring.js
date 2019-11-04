@@ -197,7 +197,7 @@ class TrustvaultKeyring extends EventEmitter {
           try {
             const query = this._refreshAuthTokensQuery(this.auth)
             const { data } = await this.trustVaultBridgeRequest({ query })
-            this.auth = data.tokens.refreshAuthenticationTokens
+            this.auth = data.refreshAuthenticationTokens
             return this._request(constructQuery, queryContext)
           } catch (error) {
             log.warn('TrustVault session has expired. Connect to TrustVault again', error)
