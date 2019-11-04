@@ -129,7 +129,12 @@ export default class EditApprovalPermission extends PureComponent {
                   type="number"
                   min="0"
                   placeholder={ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }
-                  onChange={(event) => this.setState({ customSpendLimit: event.target.value })}
+                  onChange={(event) => {
+                    this.setState({ customSpendLimit: event.target.value })
+                    if (selectedOptionIsUnlimited) {
+                      this.setState({ selectedOptionIsUnlimited: false })
+                    }
+                  }}
                   fullWidth
                   margin="dense"
                   value={ this.state.customSpendLimit }
