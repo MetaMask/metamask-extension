@@ -14,6 +14,7 @@ export default class EditApprovalPermission extends PureComponent {
     tokenSymbol: PropTypes.string,
     tokenBalance: PropTypes.string,
     setCustomAmount: PropTypes.func,
+    origin: PropTypes.string,
   }
 
   static contextTypes = {
@@ -26,6 +27,7 @@ export default class EditApprovalPermission extends PureComponent {
   }
 
   renderModalContent () {
+    const { t } = this.context
     const {
       hideModal,
       selectedIdentity,
@@ -33,6 +35,7 @@ export default class EditApprovalPermission extends PureComponent {
       tokenSymbol,
       tokenBalance,
       customTokenAmount,
+      origin,
     } = this.props
     const { name, address } = selectedIdentity || {}
 
@@ -40,7 +43,7 @@ export default class EditApprovalPermission extends PureComponent {
       <div className="edit-approval-permission">
         <div className="edit-approval-permission__header">
           <div className="edit-approval-permission__title">
-            Edit Permission
+            { t('editPermission') }
           </div>
           <div
             className="edit-approval-permission__header__close"
@@ -54,7 +57,7 @@ export default class EditApprovalPermission extends PureComponent {
               diameter={32}
             />
             <div className="edit-approval-permission__account-info__name">{ name }</div>
-            <div>Balance</div>
+            <div>{ t('balance') }</div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
             {`${tokenBalance} ${tokenSymbol}`}
@@ -62,10 +65,10 @@ export default class EditApprovalPermission extends PureComponent {
         </div>
         <div className="edit-approval-permission__edit-section">
           <div className="edit-approval-permission__edit-section__title">
-            Spend limit permission
+            { t('spendLimitPermission') }
           </div>
           <div className="edit-approval-permission__edit-section__description">
-            Allow Uniswap to withdraw and spend up to the following amount:
+            { t('allowWithdrawAndSpend', [origin]) }
           </div>
           <div className="edit-approval-permission__edit-section__option">
             <div
@@ -86,12 +89,12 @@ export default class EditApprovalPermission extends PureComponent {
               })}>
                 {
                   tokenAmount < tokenBalance
-                    ? -'Proposed Approval Limit'
-                    : 'Unlimited'
+                    ? t('proposedApprovalLimit')
+                    : t('unlimited')
                 }
               </div>
               <div className="edit-approval-permission__edit-section__option-description" >
-                Spend limit requested by Uniswap
+                { t('spendLimitRequestedBy', [origin]) }
               </div>
               <div className="edit-approval-permission__edit-section__option-value" >
                 {`${tokenAmount} ${tokenSymbol}`}
@@ -115,10 +118,10 @@ export default class EditApprovalPermission extends PureComponent {
                 'edit-approval-permission__edit-section__option-label': this.state.selectedOption !== 'custom',
                 'edit-approval-permission__edit-section__option-label--selected': this.state.selectedOption === 'custom',
               })}>
-                Custom spend limit
+                { t('customSpendLimit') }
               </div>
               <div className="edit-approval-permission__edit-section__option-description" >
-                Enter a max spend limit
+                { t('enterMaxSpendLimit') }
               </div>
               <div className="edit-approval-permission__edit-section__option-input" >
                 <TextField

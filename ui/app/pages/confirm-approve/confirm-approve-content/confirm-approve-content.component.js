@@ -64,7 +64,9 @@ export default class ConfirmApproveContent extends Component {
     )
   }
 
+  // TODO: Add "Learn Why" with link to the feeAssociatedRequest text
   renderTransactionDetailsContent () {
+    const { t } = this.context
     const {
       ethTransactionTotal,
       fiatTransactionTotal,
@@ -72,7 +74,7 @@ export default class ConfirmApproveContent extends Component {
     return (
       <div className="confirm-approve-content__transaction-details-content">
         <div className="confirm-approve-content__small-text">
-          A fee is associated with this request. Learn why
+          { t('feeAssociatedRequest') }
         </div>
         <div className="confirm-approve-content__transaction-details-content__fee">
           <div className="confirm-approve-content__transaction-details-content__primary-fee">
@@ -87,17 +89,18 @@ export default class ConfirmApproveContent extends Component {
   }
 
   renderPermissionContent () {
+    const { t } = this.context
     const { customTokenAmount, tokenAmount, tokenSymbol, origin, toAddress } = this.props
 
     return (
       <div className="flex-column">
-        <div className="confirm-approve-content__small-text">{origin} may access and spend up to this max amount</div>
+        <div className="confirm-approve-content__small-text">{ t('accessAndSpendNotice', [origin]) }</div>
         <div className="flex-row">
-          <div className="confirm-approve-content__label">Amount:</div>
+          <div className="confirm-approve-content__label">{ t('amountWithColon') }</div>
           <div className="confirm-approve-content__medium-text">{ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }</div>
         </div>
         <div className="flex-row">
-          <div className="confirm-approve-content__label">To:</div>
+          <div className="confirm-approve-content__label">{ t('toWithColon') }</div>
           <div className="confirm-approve-content__medium-text">{ addressSummary(toAddress) }</div>
         </div>
       </div>
@@ -105,16 +108,18 @@ export default class ConfirmApproveContent extends Component {
   }
 
   renderDataContent () {
+    const { t } = this.context
     const { data } = this.props
     return (
       <div className="flex-column">
-        <div className="confirm-approve-content__small-text">Function: Approve</div>
+        <div className="confirm-approve-content__small-text">{ t('functionApprove') }</div>
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">{ data }</div>
       </div>
     )
   }
 
   render () {
+    const { t } = this.context
     const {
       siteImage,
       tokenAmount,
@@ -141,19 +146,19 @@ export default class ConfirmApproveContent extends Component {
           />
         </div>
         <div className="confirm-approve-content__title">
-          { `Allow ${origin} to spend your ${tokenSymbol}?` }
+          { t('allowOriginSpendToken', [origin, tokenSymbol]) }
         </div>
         <div className="confirm-approve-content__description">
-          { `Do you trust this site? By granting this permission, you’re allowing ${origin} to withdraw your ${tokenSymbol} and automate transactions for you.` }
+          { t('trustSiteApprovePermission', [origin, tokenSymbol]) }
         </div>
         <div
           className="confirm-approve-content__edit-submission-button-container"
         >
           <div
             className="confirm-approve-content__medium-link-text cursor-pointer"
-            onClick={() => showEditApprovalPermissionModal({ customTokenAmount, tokenAmount, tokenSymbol, setCustomAmount, tokenBalance })}
+            onClick={() => showEditApprovalPermissionModal({ customTokenAmount, tokenAmount, tokenSymbol, setCustomAmount, tokenBalance, origin })}
           >
-            Edit permission
+            { t('editPermission') }
           </div>
         </div>
         <div className="confirm-approve-content__card-wrapper">
