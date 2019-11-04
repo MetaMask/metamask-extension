@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.5.0 Mon Nov 04 2019
+
 ## 7.4.0 Tue Oct 29 2019
 - [#7186](https://github.com/MetaMask/metamask-extension/pull/7186): Use `AdvancedGasInputs` in `AdvancedTabContent`
 - [#7304](https://github.com/MetaMask/metamask-extension/pull/7304): Move signTypedData signing out to keyrings
