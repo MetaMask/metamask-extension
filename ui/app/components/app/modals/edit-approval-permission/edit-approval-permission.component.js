@@ -23,7 +23,7 @@ export default class EditApprovalPermission extends PureComponent {
 
   state = {
     customSpendLimit: this.props.customTokenAmount,
-    selectedOption: this.props.customTokenAmount ? 'custom' : 'unlimited',
+    selectedOptionIsUnlimited: !this.props.customTokenAmount,
   }
 
   renderModalContent () {
@@ -38,6 +38,7 @@ export default class EditApprovalPermission extends PureComponent {
       origin,
     } = this.props
     const { name, address } = selectedIdentity || {}
+    const { selectedOptionIsUnlimited } = this.state
 
     return (
       <div className="edit-approval-permission">
@@ -73,19 +74,19 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__edit-section__option">
             <div
               className="edit-approval-permission__edit-section__radio-button"
-              onClick={() => this.setState({ selectedOption: 'unlimited' })}
+              onClick={() => this.setState({ selectedOptionIsUnlimited: true })}
             >
               <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': this.state.selectedOption !== 'unlimited',
-                'edit-approval-permission__edit-section__radio-button-outline--selected': this.state.selectedOption === 'unlimited',
+                'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
+                'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
               })} />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
-              {this.state.selectedOption === 'unlimited' && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
+              { selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
               <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': this.state.selectedOption !== 'unlimited',
-                'edit-approval-permission__edit-section__option-label--selected': this.state.selectedOption === 'unlimited',
+                'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
+                'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
               })}>
                 {
                   tokenAmount < tokenBalance
@@ -104,19 +105,19 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__edit-section__option">
             <div
               className="edit-approval-permission__edit-section__radio-button"
-              onClick={() => this.setState({ selectedOption: 'custom' })}
+              onClick={() => this.setState({ selectedOptionIsUnlimited: false })}
             >
               <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': this.state.selectedOption !== 'custom',
-                'edit-approval-permission__edit-section__radio-button-outline--selected': this.state.selectedOption === 'custom',
+                'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
+                'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
               })} />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
-              {this.state.selectedOption === 'custom' && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
+              { !selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
               <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': this.state.selectedOption !== 'custom',
-                'edit-approval-permission__edit-section__option-label--selected': this.state.selectedOption === 'custom',
+                'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
+                'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
               })}>
                 { t('customSpendLimit') }
               </div>
