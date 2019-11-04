@@ -1232,7 +1232,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
+      await driver.wait(until.elementTextMatches(txValues[0], /-5\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
     })
@@ -1339,7 +1339,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-5\s*TST/))
+      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
     })
