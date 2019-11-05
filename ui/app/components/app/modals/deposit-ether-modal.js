@@ -9,7 +9,6 @@ const openWyre = require('../../../../vendor/wyre')
 const { DEPOSIT_ROUTE } = require('../../../helpers/constants/routes')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
 const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const SafelloForm = require('../safello-form')
 
 import Button from '../../ui/button'
 
