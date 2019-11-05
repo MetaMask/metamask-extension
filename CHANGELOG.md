@@ -3,6 +3,22 @@
 ## Current Develop Branch
 
 ## 7.5.0 Mon Nov 04 2019
+- [#7328](https://github.com/MetaMask/metamask-extension/pull/7328): ignore known transactions on first broadcast and continue with normal flow
+- [#7327](https://github.com/MetaMask/metamask-extension/pull/7327): eth_getTransactionByHash will now check metamask's local history for pending transactions
+- [#7333](https://github.com/MetaMask/metamask-extension/pull/7333): Cleanup beforeunload handler after transaction is resolved
+- [#7038](https://github.com/MetaMask/metamask-extension/pull/7038): Add support for ZeroNet
+- [#7334](https://github.com/MetaMask/metamask-extension/pull/7334): Add web3 deprecation warning
+- [#6924](https://github.com/MetaMask/metamask-extension/pull/6924): Add Estimated time to pending tx
+- [#7177](https://github.com/MetaMask/metamask-extension/pull/7177): ENS Reverse Resolution support
+- [#6891](https://github.com/MetaMask/metamask-extension/pull/6891): New signature request v3 UI
+- [#7348](https://github.com/MetaMask/metamask-extension/pull/7348): fix width in first time flow button
+- [#7271](https://github.com/MetaMask/metamask-extension/pull/7271): Redesign approve screen
+- [#7354](https://github.com/MetaMask/metamask-extension/pull/7354): fix account menu width
+- [#7379](https://github.com/MetaMask/metamask-extension/pull/7379): Set default advanced tab gas limit
+- [#7380](https://github.com/MetaMask/metamask-extension/pull/7380): Fix advanced tab gas chart
+- [#7374](https://github.com/MetaMask/metamask-extension/pull/7374): Hide accounts dropdown scrollbars on Firefox
+- [#7357](https://github.com/MetaMask/metamask-extension/pull/7357): Update to gaba@1.8.0
+- [#7335](https://github.com/MetaMask/metamask-extension/pull/7335): Add onbeforeunload and have it call onCancel
 
 ## 7.4.0 Tue Oct 29 2019
 - [#7186](https://github.com/MetaMask/metamask-extension/pull/7186): Use `AdvancedGasInputs` in `AdvancedTabContent`
