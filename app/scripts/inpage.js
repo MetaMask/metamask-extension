@@ -31,13 +31,14 @@ const restoreContextAfterImports = () => {
 }
 
 cleanContextForImports()
-require('web3/dist/web3.min.js')
+
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
-const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
 
-let warned = false
+// TODO:deprecate:2019-12-16
+require('web3/dist/web3.min.js')
+const setupDappAutoReload = require('./lib/auto-reload.js')
 
 restoreContextAfterImports()
 
@@ -59,54 +60,9 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-// give the dapps control of a refresh they can toggle this off on the window.ethereum
-// this will be default true so it does not break any old apps.
-inpageProvider.autoRefreshOnNetworkChange = true
-
-// publicConfig isn't populated until we get a message from background.
-// Using this getter will ensure the state is available
-const getPublicConfigWhenReady = async () => {
-  const store = inpageProvider.publicConfigStore
-  let state = store.getState()
-  // if state is missing, wait for first update
-  if (!state.hasOwnProperty('isUnlocked')) {
-    state = await new Promise(resolve => store.once('update', resolve))
-  }
-  return state
-}
-
-// add metamask-specific convenience methods
-inpageProvider._metamask = new Proxy({
-
-  /**
-   * Determines if MetaMask is unlocked by the user
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
-   */
-  isUnlocked: async function () {
-    const { isUnlocked } = await getPublicConfigWhenReady()
-    return Boolean(isUnlocked)
-  },
-
-  /**
-   * WILL BE DEPRECATED.
-   * Asynchronously determines if this domain is currently enabled.
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
-   */
-  isApproved: async function () {
-    console.warn('MetaMask: "isApproved" will be removed in the near future. Use "ethereum.send(\'eth_accounts\') instead.')
-    return Boolean(inpageProvider.selectedAddress)
-  },
-}, {
-  get: function (obj, prop) {
-    !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
-    'not been standardized yet. This means that these methods may not be implemented ' +
-    'in other dapp browsers and may be removed from MetaMask in the future.')
-    warned = true
-    return obj[prop]
-  },
-})
+//
+// TODO:deprecate:2019-12-16
+//
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues
@@ -116,11 +72,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = proxiedInpageProvider
-
-//
 // setup web3
-//
 
 if (typeof window.web3 !== 'undefined') {
   throw new Error(`MetaMask detected another web3.
@@ -137,6 +89,12 @@ web3.setProvider = function () {
 log.debug('MetaMask - injected web3')
 
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+
+//
+// end deprecate:2019-12-16
+//
+
+window.ethereum = proxiedInpageProvider
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
   if (state.onboardingcomplete) {
