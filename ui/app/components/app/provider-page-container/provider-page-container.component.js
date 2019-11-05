@@ -30,12 +30,12 @@ export default class ProviderPageContainer extends PureComponent {
     })
   }
 
-  removeBeforeUnload () {
+  _removeBeforeUnload () {
     window.removeEventListener('beforeunload', this.onCancel)
   }
 
   componentWillUnmount () {
-    this.removeBeforeUnload()
+    this._removeBeforeUnload()
   }
 
   onCancel = () => {
@@ -47,7 +47,7 @@ export default class ProviderPageContainer extends PureComponent {
         name: 'Canceled',
       },
     })
-    this.removeBeforeUnload()
+    this._removeBeforeUnload()
     rejectProviderRequestByOrigin(origin)
   }
 
@@ -60,7 +60,7 @@ export default class ProviderPageContainer extends PureComponent {
         name: 'Confirmed',
       },
     })
-    this.removeBeforeUnload()
+    this._removeBeforeUnload()
     approveProviderRequestByOrigin(origin)
   }
 
