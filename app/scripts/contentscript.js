@@ -18,7 +18,7 @@ const inpageBundle = inpageContent + inpageSuffix
 // If we create a FireFox-only code path using that API,
 // MetaMask will be much faster loading and performant on Firefox.
 
-if (shouldInjectWeb3()) {
+if (shouldInjectProvider()) {
   injectScript(inpageBundle)
   start()
 }
@@ -37,7 +37,7 @@ function injectScript (content) {
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
   } catch (e) {
-    console.error('MetaMask script injection failed', e)
+    console.error('MetaMask provider injection failed.', e)
   }
 }
 
@@ -121,7 +121,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  *
  * @returns {boolean} {@code true} if Web3 should be injected
  */
-function shouldInjectWeb3 () {
+function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
     documentElementCheck() && !blacklistedDomainCheck()
 }
