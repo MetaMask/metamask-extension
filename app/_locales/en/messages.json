@@ -56,6 +56,10 @@
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
+  "accessAndSpendNotice": {
+    "message": "$1 may access and spend up to this max amount",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -113,8 +117,19 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
+  "allowOriginSpendToken": {
+    "message": "Allow $1 to spend your $2?",
+    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  },
+  "allowWithdrawAndSpend": {
+    "message": "Allow $1 to withdraw and spend up to the following amount:",
+    "description": "The url of the site that requested permission to 'withdraw and spend'"
+  },
   "amount": {
     "message": "Amount"
+  },
+  "amountWithColon": {
+    "message": "Amount:"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -384,6 +399,9 @@
   "customRPC": {
     "message": "Custom RPC"
   },
+  "customSpendLimit": {
+    "message": "Custom Spend Limit"
+  },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
   },
@@ -444,6 +462,9 @@
   "editContact": {
     "message": "Edit Contact"
   },
+  "editPermission": {
+    "message": "Edit Permission"
+  },
   "emailUs": {
     "message": "Email us!"
   },
@@ -486,6 +507,9 @@
   "enterAnAlias": {
     "message": "Enter an alias"
   },
+  "enterMaxSpendLimit": {
+    "message": "Enter Max Spend Limit"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
@@ -516,6 +540,9 @@
   "faster": {
     "message": "Faster"
   },
+  "feeAssociatedRequest": {
+    "message": "A fee is associated with this request."
+  },
   "fiat": {
     "message": "Fiat",
     "description": "Exchange type"
@@ -532,6 +559,9 @@
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
+  },
+  "functionApprove": {
+    "message": "Function: Approve"
   },
   "functionType": {
     "message": "Function Type"
@@ -953,6 +983,9 @@
   "privateNetwork": {
     "message": "Private Network"
   },
+  "proposedApprovalLimit": {
+    "message": "Proposed Approval Limit"
+  },
   "qrCode": {
     "message": "Show QR Code"
   },
@@ -1212,6 +1245,13 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
+  "spendLimitPermission": {
+    "message": "Spend limit permission"
+  },
+  "spendLimitRequestedBy": {
+    "message": "Spend limit requested by $1",
+    "description": "Origin of the site requesting the spend limit"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
@@ -1308,6 +1348,9 @@
   "to": {
     "message": "To"
   },
+  "toWithColon": {
+    "message": "To:"
+  },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
     "description": "system will fill in deposit type in start of message"
@@ -1382,6 +1425,10 @@
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "trustSiteApprovePermission": {
+    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
+    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+  },
   "tryAgain": {
     "message": "Try again"
   },
@@ -1408,6 +1455,9 @@
   },
   "unknownCameraError": {
     "message": "There was an error while trying to access your camera. Please try again..."
+  },
+  "unlimited": {
+    "message": "Unlimited"
   },
   "unlock": {
     "message": "Unlock"

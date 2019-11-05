@@ -105,6 +105,8 @@ export default class ConfirmTransactionBase extends Component {
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
+    hideSenderToRecipient: PropTypes.bool,
+    showAccountInHeader: PropTypes.bool,
   }
 
   state = {
@@ -645,6 +647,8 @@ export default class ConfirmTransactionBase extends Component {
       warning,
       unapprovedTxCount,
       transactionCategory,
+      hideSenderToRecipient,
+      showAccountInHeader,
     } = this.props
     const { submitting, submitError, submitWarning } = this.state
 
@@ -655,6 +659,7 @@ export default class ConfirmTransactionBase extends Component {
       <ConfirmPageContainer
         fromName={fromName}
         fromAddress={fromAddress}
+        showAccountInHeader={showAccountInHeader}
         toName={toName}
         toAddress={toAddress}
         toEns={toEns}
@@ -693,6 +698,7 @@ export default class ConfirmTransactionBase extends Component {
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
+        hideSenderToRecipient={hideSenderToRecipient}
       />
     )
   }
