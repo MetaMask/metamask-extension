@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import React, {PureComponent} from 'react'
 import { ProviderPageContainerContent, ProviderPageContainerHeader } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
 export default class ProviderPageContainer extends PureComponent {
   static propTypes = {
@@ -20,7 +22,9 @@ export default class ProviderPageContainer extends PureComponent {
   };
 
   componentDidMount () {
-    window.addEventListener('beforeunload', this.onCancel)
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      window.addEventListener('beforeunload', this.onCancel)
+    }
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
