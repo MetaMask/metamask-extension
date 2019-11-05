@@ -23,7 +23,7 @@ export default class ProviderPageContainer extends PureComponent {
 
   componentDidMount () {
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this.onCancel)
+      window.addEventListener('beforeunload', this._beforeUnload)
     }
     this.context.metricsEvent({
       eventOpts: {
@@ -34,8 +34,21 @@ export default class ProviderPageContainer extends PureComponent {
     })
   }
 
+  _beforeUnload () {
+    const { origin, rejectProviderRequestByOrigin } = this.props
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Auth',
+        action: 'Connect',
+        name: 'Cancel Connect Request Via Notification Close',
+      },
+    })
+    this._removeBeforeUnload()
+    rejectProviderRequestByOrigin(origin)
+  }
+
   _removeBeforeUnload () {
-    window.removeEventListener('beforeunload', this.onCancel)
+    window.removeEventListener('beforeunload', this._beforeUnload)
   }
 
   componentWillUnmount () {
