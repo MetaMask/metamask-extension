@@ -17877,7 +17877,7 @@ mersenne-twister@^1.0.1:
 
 metamask-inpage-provider@MetaMask/metamask-inpage-provider#LoginPerSite:
   version "3.1.0"
-  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/70539fed061a21f8b8dd331d59c702335f61c476"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/c394b2d8dc6aaf0175d4defe5635a31052e146ed"
   dependencies:
     fast-deep-equal "^2.0.1"
     json-rpc-engine "^5.1.3"

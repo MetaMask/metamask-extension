@@ -117,9 +117,9 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 }
 
 /**
- * Determines if Web3 should be injected
+ * Determines if the provider should be injected
  *
- * @returns {boolean} {@code true} if Web3 should be injected
+ * @returns {boolean} {@code true} if the provider should be injected
  */
 function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
@@ -144,8 +144,8 @@ function doctypeCheck () {
  * Returns whether or not the extension (suffix) of the current document is prohibited
  *
  * This checks {@code window.location.pathname} against a set of file extensions
- * that should not have web3 injected into them. This check is indifferent of query parameters
- * in the location.
+ * that we should not inject the provider into. This check is indifferent of
+ * query parameters in the location.
  *
  * @returns {boolean} whether or not the extension of the current document is prohibited
  */
