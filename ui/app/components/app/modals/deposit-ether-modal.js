@@ -212,7 +212,7 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: SAFELLO_ROW_TITLE,
           text: SAFELLO_ROW_TEXT,
-          buttonLabel: this.context.t('safelloBuy'),
+          buttonLabel: this.context.t('buyWithSafello'),
           onButtonClick: () => toSafello(address),
           hide: isTestNetwork,
         }),
