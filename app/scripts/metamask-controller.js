@@ -439,6 +439,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
+      setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -1835,6 +1836,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseNonceField (val, cb) {
     try {
       this.preferencesController.setUseNonceField(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets the IPFS gateway to use for ENS content resolution.
+   * @param {string} val - the host of the gateway to set
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setIpfsGateway (val, cb) {
+    try {
+      this.preferencesController.setIpfsGateway(val)
       cb(null)
     } catch (err) {
       cb(err)

@@ -31,11 +31,15 @@ export default class AdvancedTab extends PureComponent {
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
     threeBoxDisabled: PropTypes.bool.isRequired,
+    setIpfsGateway: PropTypes.func.isRequired,
+    ipfsGateway: PropTypes.string.isRequired,
   }
 
   state = {
     autoLogoutTimeLimit: this.props.autoLogoutTimeLimit,
     logoutTimeError: '',
+    ipfsGateway: `https://${this.props.ipfsGateway}`,
+    ipfsGatewayError: '',
   }
 
   renderMobileSync () {
@@ -351,6 +355,72 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  handleIpfsGatewayChange (url) {
+    const { t } = this.context
+
+    this.setState(() => {
+      let ipfsGatewayError = ''
+
+      try {
+        const urlObj = new URL(url) // check if is valid url
+        if (!urlObj.host) throw new Error('invalid url : no host')
+      } catch (error) {
+        ipfsGatewayError = t('invalidIpfsGateway')
+      }
+
+      return {
+        ipfsGateway: url,
+        ipfsGatewayError,
+      }
+    })
+  }
+
+  handleIpfsGatewaySave () {
+    const url = new URL(this.state.ipfsGateway)
+    const host = url.host
+    this.props.setIpfsGateway(host)
+  }
+
+  renderIpfsGatewayControl () {
+    const { t } = this.context
+    const { ipfsGatewayError } = this.state
+    const { ipfsGateway } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('ipfsGateway') }</span>
+          <div className="settings-page__content-description">
+            { t('ipfsGatewayDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <TextField
+              type="text"
+              value={this.state.ipfsGateway}
+              defaultValue={ipfsGateway}
+              onChange={e => this.handleIpfsGatewayChange(e.target.value)}
+              error={ipfsGatewayError}
+              fullWidth
+              margin="dense"
+            />
+            <Button
+              type="primary"
+              className="settings-tab__rpc-save-button"
+              disabled={ ipfsGatewayError !== '' }
+              onClick={() => {
+                this.handleIpfsGatewaySave()
+              }}
+            >
+              { t('save') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -366,6 +436,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderUseNonceOptIn() }
         { this.renderAutoLogoutTimeLimit() }
         { this.renderThreeBoxControl() }
+        { this.renderIpfsGatewayControl() }
       </div>
     )
   }

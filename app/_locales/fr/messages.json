@@ -599,6 +599,15 @@
   "invalidSeedPhrase": {
     "message": "Phrase Seed invalide"
   },
+  "ipfsGateway": {
+    "message": "IPFS Gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Entrez l'URL de la gateway IPFS à utiliser pour résoudre les contenus ENS"
+  },
+  "invalidIpfsGateway": {
+    "message": "IPFS Gateway Invalide : la valeur doit être une URL valide"
+  },
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"

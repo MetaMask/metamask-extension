@@ -6826,16 +6826,6 @@ cids@^0.5.3, cids@~0.5.4, cids@~0.5.6:
     multicodec "~0.5.0"
     multihashes "~0.4.14"
 
-cids@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/cids/-/cids-0.6.0.tgz#0de7056a5246a7c7ebf3134eb4d83b3b8b841a06"
-  integrity sha512-34wuIeiBZOuvBwUuYR4XooVuXUQI2PYU9VmgM2eB3xkSmQYRlv2kh/dIbmGiLY2GuONlGR3lLtYdVkx1G9yXUg==
-  dependencies:
-    class-is "^1.1.0"
-    multibase "~0.6.0"
-    multicodec "~0.5.0"
-    multihashes "~0.4.14"
-
 cids@^0.7.1, cids@~0.7.0, cids@~0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/cids/-/cids-0.7.1.tgz#d8bba49a35a0e82110879b5001abf1039c62347f"
@@ -7413,12 +7403,12 @@ content-disposition@0.5.3, content-disposition@^0.5.2, content-disposition@~0.5.
   dependencies:
     safe-buffer "5.1.2"
 
-content-hash@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.4.4.tgz#4bec87caecfcff8cf1a37645301cbef4728a083f"
-  integrity sha512-3FaUsqt7VR725pVxe0vIScGI5efmpryIXdVSeXafQ63fb5gRGparAQlAGxTSOiv0yRg7YeliseXuB20ByD1duQ==
+content-hash@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.5.0.tgz#6f8a98feec0360f09213e951c69e57c727093e3a"
+  integrity sha512-Opn9YSjQQc3Wst/VPwGTdKcNONuQr4yc0dtvEbV82UGDIsc7dE2bdTz3FpLRxfnuOkHx8y9/94sZ3aytmUQ1HA==
   dependencies:
-    cids "^0.6.0"
+    cids "^0.7.1"
     multicodec "^0.5.5"
     multihashes "^0.4.15"
 

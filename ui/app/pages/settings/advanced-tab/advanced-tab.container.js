@@ -11,6 +11,7 @@ import {
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
+  setIpfsGateway,
 } from '../../../store/actions'
 import { preferencesSelector } from '../../../selectors/selectors'
 
@@ -24,6 +25,7 @@ export const mapStateToProps = state => {
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
+    ipfsGateway,
   } = metamask
   const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
 
@@ -36,6 +38,7 @@ export const mapStateToProps = state => {
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
+    ipfsGateway,
   }
 }
 
@@ -58,6 +61,9 @@ export const mapDispatchToProps = dispatch => {
       } else {
         dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState))
       }
+    },
+    setIpfsGateway: value => {
+      return dispatch(setIpfsGateway(value))
     },
   }
 }
