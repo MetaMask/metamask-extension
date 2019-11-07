@@ -1203,7 +1203,7 @@
     "message": "Search Accounts"
   },
   "noAccountsFound": {
-    "message": "No accounts found for a given search query"
+    "message": "No accounts found for the given search query"
   },
   "selectAnAccount": {
     "message": "Select an Account"
