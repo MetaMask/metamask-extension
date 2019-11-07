@@ -2,7 +2,7 @@ const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const ObservableStore = require('obs-store')
-const RpcCap = require('json-rpc-capabilities-middleware').CapabilitiesController
+const RpcCap = require('rpc-cap').CapabilitiesController
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 const {
