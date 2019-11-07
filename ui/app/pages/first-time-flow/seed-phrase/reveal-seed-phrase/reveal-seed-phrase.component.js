@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
+import Snackbar from '../../../../components/ui/snackbar'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import { returnToOnboardingInitiator } from '../../onboarding-initiator-util'
@@ -118,15 +119,6 @@ export default class RevealSeedPhrase extends PureComponent {
     const { isShowingSeedPhrase } = this.state
     const { onboardingInitiator } = this.props
 
-    const skipMessage = onboardingInitiator ?
-      (
-        <div>
-          <p>{ t('remindMeLater') }</p>
-          <p>{ t('onboardingReturnMessage', [onboardingInitiator.location]) }</p>
-        </div>
-      ) :
-      t('remindMeLater')
-
     return (
       <div className="reveal-seed-phrase">
         <div className="seed-phrase__sections">
@@ -170,7 +162,7 @@ export default class RevealSeedPhrase extends PureComponent {
             className="first-time-flow__button"
             onClick={this.handleSkip}
           >
-            { skipMessage }
+            { t('remindMeLater') }
           </Button>
           <Button
             type="primary"
@@ -181,6 +173,13 @@ export default class RevealSeedPhrase extends PureComponent {
             { t('next') }
           </Button>
         </div>
+        {
+          onboardingInitiator ?
+            <Snackbar
+              content={t('onboardingReturnNotice', [t('remindMeLater'), onboardingInitiator.location])}
+            /> :
+            null
+        }
       </div>
     )
   }

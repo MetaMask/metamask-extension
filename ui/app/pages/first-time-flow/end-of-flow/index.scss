@@ -39,13 +39,7 @@
   }
 
   button {
-    width: auto;
-    min-width: 207px;
-    max-width: 742px;
-    @media screen and (max-width: $break-small) {
-      width: 100%;
-    }
-    height: auto;
+    width: 207px;
   }
 
   &__start-over-button {

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../components/ui/button'
+import Snackbar from '../../../components/ui/snackbar'
 import MetaFoxLogo from '../../../components/ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { returnToOnboardingInitiator } from '../onboarding-initiator-util'
@@ -42,10 +43,6 @@ export default class EndOfFlowScreen extends PureComponent {
   render () {
     const { t } = this.context
     const { onboardingInitiator } = this.props
-
-    const completeButtonText = onboardingInitiator ?
-      t('onboardingReturnMessage', [onboardingInitiator.location]) :
-      t('endOfFlowMessage10')
 
     return (
       <div className="end-of-flow">
@@ -91,8 +88,15 @@ export default class EndOfFlowScreen extends PureComponent {
           className="first-time-flow__button"
           onClick={this.onComplete}
         >
-          { completeButtonText }
+          { t('endOfFlowMessage10') }
         </Button>
+        {
+          onboardingInitiator ?
+            <Snackbar
+              content={t('onboardingReturnNotice', [t('endOfFlowMessage10'), onboardingInitiator.location])}
+            /> :
+            null
+        }
       </div>
     )
   }
