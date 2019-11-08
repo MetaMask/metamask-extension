@@ -13,7 +13,7 @@
     width: 100%;
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 45px 1fr 1fr 1fr;
+    grid-template-columns: 45px 1fr 1fr 1fr 1fr;
     grid-template-areas:
       "identicon action status estimated-time primary-amount"
       "identicon nonce status estimated-time secondary-amount";
