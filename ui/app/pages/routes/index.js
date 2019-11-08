@@ -17,7 +17,6 @@ const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
 const Sidebar = require('../../components/app/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../../components/app/sidebars/sidebar.constants')
 
 // other views
 import Home from '../home'
@@ -45,10 +44,6 @@ const Alert = require('../../components/ui/alert')
 
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
-
-import {
-  submittedPendingTransactionsSelector,
-} from '../../selectors/transactions'
 
 // Routes
 import {
@@ -177,38 +172,12 @@ class Routes extends Component {
       frequentRpcListDetail,
       currentView,
       setMouseUserState,
-      sidebar,
-      submittedPendingTransactions,
       isMouseUser,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
-
-    const {
-      isOpen: sidebarIsOpen,
-      transitionName: sidebarTransitionName,
-      type: sidebarType,
-      props,
-    } = sidebar
-    const { transaction: sidebarTransaction } = props || {}
-
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
-
-    const sidebarShouldClose = sidebarTransaction &&
-      !sidebarTransaction.status === 'failed' &&
-      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
 
     return (
       <div
@@ -234,15 +203,7 @@ class Routes extends Component {
             />
           )
         }
-        <Sidebar
-          sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarShouldClose}
-          hideSidebar={this.props.hideSidebar}
-          transitionName={sidebarTransitionName}
-          type={sidebarType}
-          sidebarProps={sidebar.props}
-          onOverlayClose={sidebarOnOverlayClose}
-        />
+        <Sidebar />
         <NetworkDropdown
           provider={provider}
           frequentRpcListDetail={frequentRpcListDetail}
@@ -336,7 +297,6 @@ Routes.propTypes = {
   provider: PropTypes.object,
   frequentRpcListDetail: PropTypes.array,
   currentView: PropTypes.object,
-  sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isUnlocked: PropTypes.bool,
@@ -344,7 +304,6 @@ Routes.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   lockMetaMask: PropTypes.func,
-  submittedPendingTransactions: PropTypes.array,
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
@@ -355,7 +314,6 @@ Routes.propTypes = {
 function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
-    sidebar,
     alertOpen,
     alertMessage,
     isLoading,
@@ -366,7 +324,6 @@ function mapStateToProps (state) {
 
   return {
     // state from plugin
-    sidebar,
     alertOpen,
     alertMessage,
     textDirection: state.metamask.textDirection,
@@ -374,7 +331,6 @@ function mapStateToProps (state) {
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
-    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
