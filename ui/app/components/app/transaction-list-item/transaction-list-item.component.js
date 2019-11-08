@@ -12,6 +12,8 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../../helpers/constants/transactions'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { getStatusKey } from '../../../helpers/utils/transactions.util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -196,6 +198,11 @@ export default class TransactionListItem extends PureComponent {
       ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
       : txParams.to
 
+    const isFullScreen = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN
+    const showEstimatedTime = transactionTimeFeatureActive &&
+      (transaction.id === firstPendingTransactionId) &&
+      isFullScreen
+
     return (
       <div className="transaction-list-item">
         <div
@@ -228,7 +235,7 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
-          { transactionTimeFeatureActive && (transaction.id === firstPendingTransactionId)
+          { showEstimatedTime
             ? <TransactionTimeRemaining
               className="transaction-list-item__estimated-time"
               transaction={ primaryTransaction }
