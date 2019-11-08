@@ -58,8 +58,8 @@ export default class AddContact extends PureComponent {
 
   validate = address => {
     const valid = isValidAddress(address)
-    const validEnsDomain = this.namicorn.isSupportedDomain(address)
-    if (valid || validEnsDomain || address === '') {
+    const validDomain = this.namicorn.isSupportedDomain(address)
+    if (valid || validDomain || address === '') {
       this.setState({ error: '', ethAddress: address })
     } else {
       this.setState({ error: 'Invalid Address' })

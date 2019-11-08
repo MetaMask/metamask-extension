@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import c from 'classnames'
 import { isValidAddress } from '../../../../helpers/utils/util'
 import {ellipsify} from '../../send.utils'
-import Namicorn from 'namicorn'
+import { Namicorn, ResolutionError } from 'namicorn'
+
 import debounce from 'debounce'
 import copyToClipboard from 'copy-to-clipboard/index'
 
@@ -74,16 +75,27 @@ export default class NamingInput extends Component {
 
   lookupDomain = async (domain) => {
     domain = domain.trim()
-    this.namicorn.resolve(domain)
-      .then((result) => {
-        const symbol = this.props.selectedToken ? this.props.selectedToken.symbol : null
-        const address = result.addresses[symbol || 'ETH']
-        if (!address || address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
-        if (!result.meta.owner) throw new Error(this.context.t('noOwnerForName'))
-        this.props.updateNamingResolution(address)
-      })
+    this.namicorn.addressOrThrow(domain, this.props.selectedToken || 'ETH')
+      .then((address) => { this.props.updateNamingResolution(address) })
       .catch((reason) => {
-        this.props.updateNamingResolutionError(reason.message)
+        var message = reason.message
+        if (reason instanceof ResolutionError) {
+          switch (reason.code) {
+            case 'UnregisteredDomain':
+              message = this.context.t('noOwnerForName')
+              break
+            case 'UnspecifiedCurrency':
+              message = this.context.t('noAddressForName')
+              break
+            case 'UnsupportedDomain':
+              message = this.context.t('invalidDomain')
+              break
+            default:
+              message = reason.message
+              break
+          }
+        }
+        this.props.updateNamingResolutionError(message)
       })
   }
 
@@ -105,15 +117,7 @@ export default class NamingInput extends Component {
       updateNamingResolutionError('')
       return
     }
-    if (this.namicorn.isSupportedDomainInNetwork(input)) {
-      this.lookupDomain(input)
-    } else if (this.namicorn.isSupportedDomain(input)) {
-      updateNamingResolution('')
-      updateNamingResolutionError(this.context.t('noNetworkSupport'))
-    } else {
-      updateNamingResolution('')
-      updateNamingResolutionError(this.context.t('invalidDomain'))
-    }
+    this.lookupDomain(input)
   }
 
 

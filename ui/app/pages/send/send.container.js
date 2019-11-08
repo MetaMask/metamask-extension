@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
+import Namicorn from 'namicorn'
 const {
   getSelectedAddress,
 } = require('../../selectors/selectors')
-import Namicorn from 'namicorn'
 import {
   getAmountConversionRate,
   getBlockGasLimit,
