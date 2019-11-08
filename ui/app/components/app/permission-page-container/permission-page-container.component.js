@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import deepEqual from 'fast-deep-equal'
-import { PermissionPageContainerContent, PermissionPageContainerHeader } from '.'
+import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+
 
 export default class PermissionPageContainer extends Component {
 
@@ -12,7 +14,7 @@ export default class PermissionPageContainer extends Component {
     selectedIdentity: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object.isRequired,
-    requests: PropTypes.array.isRequired,
+    request: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -52,7 +54,7 @@ export default class PermissionPageContainer extends Component {
   }
 
   getRequestedMethodNames (props) {
-    return Object.keys(props.requests[0].permissions)
+    return Object.keys(props.request.permissions)
   }
 
   onPermissionToggle = methodName => () => {
@@ -75,12 +77,12 @@ export default class PermissionPageContainer extends Component {
   }
 
   onCancel = () => {
-    const { requests, rejectPermissionsRequest } = this.props
-    rejectPermissionsRequest(requests[0].metadata.id)
+    const { request, rejectPermissionsRequest, history } = this.props
+    rejectPermissionsRequest(request.metadata.id)
+    history.push(DEFAULT_ROUTE)
   }
 
   onSubmit = () => {
-
     // sanity validation
     if (!this.state.selectedAccount) {
       throw new Error(
@@ -89,12 +91,12 @@ export default class PermissionPageContainer extends Component {
     }
 
     const {
-      requests, approvePermissionsRequest, rejectPermissionsRequest,
+      request: _request, approvePermissionsRequest, rejectPermissionsRequest,
     } = this.props
 
     const request = {
-      ...requests[0],
-      permissions: { ...requests[0].permissions },
+      ..._request,
+      permissions: { ..._request.permissions },
     }
 
     Object.keys(this.state.selectedPermissions).forEach(key => {
@@ -110,14 +112,10 @@ export default class PermissionPageContainer extends Component {
     }
   }
 
-  onAccountSelect = selectedAccount => {
-    this.setState({ selectedAccount })
-  }
-
   render () {
-    const { requests, permissionsDescriptions, domainMetadata } = this.props
+    const { request, permissionsDescriptions, domainMetadata, selectedIdentity, redirect } = this.props
 
-    const requestMetadata = requests[0].metadata
+    const requestMetadata = request.metadata
 
     const targetDomainMetadata = (
       domainMetadata[requestMetadata.origin] ||
@@ -126,23 +124,26 @@ export default class PermissionPageContainer extends Component {
 
     return (
       <div className="page-container permission-approval-container">
-        <PermissionPageContainerHeader />
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
           domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
           permissionsDescriptions={permissionsDescriptions}
           onPermissionToggle={this.onPermissionToggle}
-          onAccountSelect={this.onAccountSelect}
-          selectedAccount={this.state.selectedAccount}
+          selectedAccount={selectedIdentity}
+          redirect={redirect}
         />
-        <PageContainerFooter
-          onCancel={() => this.onCancel()}
-          cancelText={this.context.t('cancel')}
-          onSubmit={() => this.onSubmit()}
-          submitText={this.context.t('submit')}
-          submitButtonType="confirm"
-        />
+        { !redirect
+          ? <PageContainerFooter
+            onCancel={() => this.onCancel()}
+            cancelText={this.context.t('cancel')}
+            onSubmit={() => this.onSubmit()}
+            submitText={this.context.t('submit')}
+            submitButtonType="confirm"
+            buttonSizeLarge={false}
+          />
+          : null
+        }
       </div>
     )
   }

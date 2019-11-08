@@ -1,0 +1,22 @@
+.connected-sites {
+  width: 100%;
+
+  &__header {
+    display: flex;
+    height: 67px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-bottom: 1px solid #C4C4C4;
+  }
+
+  &__title {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    color: #24292E;
+  }
+}

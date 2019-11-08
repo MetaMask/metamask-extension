@@ -25,7 +25,7 @@ class PermissionsController {
 
   constructor (
     {
-      openPopup, closePopup, notifyDomain, notifyAllDomains, keyringController,
+      platform, closePopup, notifyDomain, notifyAllDomains, keyringController,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -36,9 +36,8 @@ class PermissionsController {
     })
     this.notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this._openPopup = openPopup
-    this._closePopup = closePopup
     this.keyringController = keyringController
+    this._platform = platform
     this._restrictedMethods = getRestrictedMethods(this)
     this._initializePermissions(restoredPermissions)
   }
@@ -392,7 +391,7 @@ class PermissionsController {
       requestUserApproval: async (req) => {
         const { metadata: { id } } = req
 
-        this._openPopup && this._openPopup()
+        this._platform.openExtensionInBrowser('connect')
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }

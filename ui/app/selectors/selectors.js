@@ -8,6 +8,7 @@ const {
 import {
   addressSlicer,
   checksumAddress,
+  formatDate,
 } from '../helpers/utils/util'
 
 const selectors = {
@@ -63,6 +64,10 @@ const selectors = {
   getAddressBookEntry,
   getAddressBookEntryName,
   getFeatureFlags,
+  getFirstPermissionRequest,
+  getRenderablePermissionsDomains,
+  getPermissionsDomains,
+  getAddressConnectedIconMap,
 }
 
 module.exports = selectors
@@ -413,4 +418,85 @@ function getKnownMethodData (state, data) {
 
 function getFeatureFlags (state) {
   return state.metamask.featureFlags
+}
+
+function getFirstPermissionRequest (state) {
+  const requests = getPermissionsRequests(state)
+  return requests.length ? requests[0] : null
+}
+
+function getPermissionsDomains (state) {
+  return state.metamask.domains
+}
+
+function getAddressConnectedIconMap (state) {
+  const {
+    domains,
+    domainMetadata,
+    permissionsHistory,
+    permissionsDescriptions,
+  } = state.metamask
+
+  const addressConnectedIconMap = {}
+
+  Object.keys(domains).forEach(domainKey => {
+    const { permissions } = domains[domainKey]
+    const { icon, name } = domainMetadata[domainKey]
+    permissions.forEach(perm => {
+      const caveats = perm.caveats || []
+      const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
+      if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
+        exposedAccountCaveat.value.forEach(address => {
+          addressConnectedIconMap[address] = addressConnectedIconMap[address]
+            ? [ ...addressConnectedIconMap[address], { icon, name } ]
+            : [ { icon, name } ]
+        })
+      }
+    })
+  })
+
+  return addressConnectedIconMap
+}
+
+function getRenderablePermissionsDomains (state) {
+  const {
+    domains,
+    domainMetadata,
+    permissionsHistory,
+    permissionsDescriptions,
+    selectedAddress,
+  } = state.metamask
+
+  const renderableDomains = Object.keys(domains).reduce((acc, domainKey) => {
+    const { permissions } = domains[domainKey]
+    const permissionsWithCaveatsForSelectedAddress = permissions.filter(perm => {
+      const caveats = perm.caveats || []
+      const caveatsValues = caveats.map(caveat => caveat.value)
+      return caveatsValues[0] === selectedAddress || (caveatsValues[0] && caveatsValues[0][0] === selectedAddress)
+    })
+
+    if (permissionsWithCaveatsForSelectedAddress.length) {
+      const permissionKeys = permissions.map(permission => permission.parentCapability)
+      const {
+        name,
+        icon,
+      } = domainMetadata[domainKey]
+      const permissionsHistoryForDomain = permissionsHistory[domainKey]
+      const lastApprovedTimes = Object.values(permissionsHistoryForDomain).map(({ lastApproved }) => lastApproved)
+      const lastConnectedTime = lastApprovedTimes.length
+        ? lastApprovedTimes.sort()[0]
+        : null
+      return [ ...acc, {
+        name,
+        icon,
+        key: domainKey,
+        lastConnectedTime: formatDate(lastConnectedTime, 'd-M-yyyy'),
+        permissionDescriptions: permissionKeys.map(permissionKey => permissionsDescriptions[permissionKey]),
+      }]
+    } else {
+      return acc
+    }
+  }, [])
+
+  return renderableDomains
 }

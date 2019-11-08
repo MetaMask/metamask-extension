@@ -1,0 +1,91 @@
+.permissions-connect-choose-account {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  width: 100%;
+  align-items: center;
+
+  &__title {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+    color: #24292E;
+  }
+
+  &__text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 25px;
+    color: #24292E;
+  }
+
+  &__accounts-list {
+    width: 393px;
+    border: 1px solid #D0D5DA;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-top: 36px;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #D2D8DD;
+
+    &:hover {
+      background: aliceblue;
+      cursor: pointer;
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      margin-left: 16px;
+    }
+
+    &__label {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 25px;
+      color: #000000;
+    }
+
+    &__balance {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 17px;
+      color: #6A737D;
+    }
+
+    &__last-connected {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 10px;
+      line-height: 140.62%;
+      text-align: right;
+      vertical-align: bottom;
+      color: #037DD6;
+    }
+  }
+
+  &__new-account {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #037DD6;
+    margin-top: 24px;
+  }
+
+}

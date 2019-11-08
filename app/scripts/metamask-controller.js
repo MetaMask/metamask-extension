@@ -198,7 +198,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController({
       keyringController: this.keyringController,
-      openPopup: opts.openPopup,
+      platform: opts.platform,
       closePopup: opts.closePopup,
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),

@@ -12,7 +12,7 @@ import {
   showInfoPage,
   showModal,
 } from '../../../store/actions'
-import { getMetaMaskAccounts, getActiveTab } from '../../../selectors/selectors'
+import { getMetaMaskAccounts, getActiveTab, getAddressConnectedIconMap } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
@@ -28,6 +28,7 @@ function mapStateToProps (state) {
     isUnlocked,
     keyrings,
     selectedAddress,
+    addressConnectedIconMap: getAddressConnectedIconMap(state),
   }
 }
 
