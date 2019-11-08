@@ -35,6 +35,7 @@ export default class AccountMenu extends PureComponent {
     showAccountDetail: PropTypes.func,
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
+    addressConnectedIconMap: PropTypes.object,
   }
 
   state = {
@@ -57,6 +58,7 @@ export default class AccountMenu extends PureComponent {
       selectedAddress,
       keyrings,
       showAccountDetail,
+      addressConnectedIconMap,
     } = this.props
 
     const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
@@ -71,6 +73,8 @@ export default class AccountMenu extends PureComponent {
       const keyring = keyrings.find(kr => {
         return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
       })
+
+      const addressIconArray = addressConnectedIconMap[identity.address]
 
       return (
         <div
@@ -104,6 +108,23 @@ export default class AccountMenu extends PureComponent {
               type={PRIMARY}
             />
           </div>
+            { addressIconArray
+              ? <div className="account-menu__icon-list">{ addressIconArray.map((addressIcon, index) => {
+                return (<div className="connected-sites-list__identicon-container" style={{ zIndex: index + 1 }}>
+                  <div className="connected-sites-list__identicon-border" />
+                  { addressIcon.icon
+                    ? <img
+                      className="connected-sites-list__identicon"
+                      src={addressIcon.icon}
+                    />
+                    : <i className="connected-sites-list__identicon--default">
+                        {addressIcon.name.charAt(0).toUpperCase()}
+                      </i>
+                  }
+                </div>)
+              }) }</div>
+               : null
+             }
           { this.renderKeyringType(keyring) }
           { this.renderRemoveAccount(keyring, identity) }
         </div>

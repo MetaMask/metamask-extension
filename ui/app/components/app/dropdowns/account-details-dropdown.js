@@ -1,10 +1,13 @@
 const Component = require('react').Component
 const PropTypes = require('prop-types')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
+const { CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
 const genAccountLink = require('../../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
@@ -13,7 +16,7 @@ AccountDetailsDropdown.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsDropdown)
+module.exports = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)
 
 function mapStateToProps (state) {
   return {
@@ -59,6 +62,7 @@ AccountDetailsDropdown.prototype.render = function () {
     viewOnEtherscan,
     showRemoveAccountConfirmationModal,
     rpcPrefs,
+    history,
   } = this.props
 
   const address = selectedIdentity.address
@@ -125,6 +129,21 @@ AccountDetailsDropdown.prototype.render = function () {
         ? rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]
         : null),
       icon: h(`img`, { src: 'images/open-etherscan.svg', style: { height: '15px' } }),
+    }),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Navigation',
+            action: 'Account Options',
+            name: 'Opened Connected Sites',
+          },
+        })
+        history.push(CONNECTED_ROUTE)
+      },
+      text: this.context.t('connectedSites'),
+      icon: h(`img`, { src: 'images/icons/retweet.svg', style: { height: '15px' } }),
     }),
     isRemovable ? h(Item, {
       onClick: (e) => {

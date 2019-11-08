@@ -66,6 +66,12 @@ class ExtensionPlatform {
     }
   }
 
+  queryTabs (cb) {
+    extension.tabs.query({}, tabs => {
+      cb(tabs)
+    })
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()
