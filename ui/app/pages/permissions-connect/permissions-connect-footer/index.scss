@@ -1,0 +1,24 @@
+.permissions-connect-footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  position: absolute;
+  bottom: 50px;
+
+  &__text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 17px;
+    color: #6A737D;
+    display: flex;
+    margin-top: 10px;
+
+    &--link {
+      color: #037DD6;
+      margin-left: 4px;
+    }
+  }
+}

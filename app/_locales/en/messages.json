@@ -20,6 +20,12 @@
   "confirmClear": {
     "message": "Are you sure you want to remove all dapp/website permissions?"
   },
+  "connectedSites": {
+    "message": "Connected Sites"
+  },
+  "connectingWithMetaMask": {
+    "message": "Connecting With MetaMask..."
+  },
   "connections": {
     "message": "Connections"
   },
@@ -32,6 +38,10 @@
   "addSiteDescription": {
     "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
   },
+  "chooseAnAcount": {
+    "message": "Choose and account"
+  },
+
   "connected": {
     "message": "Connected"
   },
@@ -46,6 +56,9 @@
   },
   "reject": {
     "message": "Reject"
+  },
+  "redirectingBackToDapp": {
+    "message": "Redirecting back to dapp..."
   },
   "providerRequest": {
     "message": "$1 would like to connect to your account"
@@ -432,6 +445,18 @@
   "details": {
     "message": "Details"
   },
+  "disconnectAccount": {
+    "message": "Disconnect account"
+  },
+  "disconnectAccountModalDescription": {
+    "message": "Are you sure? You will no longer be able to interact with this site."
+  },
+  "disconnectAccountQuestion": {
+    "message": "Disconnect account?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "Disconnect from this account?"
+  },
   "directDepositEther": {
     "message": "Directly Deposit Ether"
   },
@@ -440,6 +465,9 @@
   },
   "dismiss": {
     "message": "Dismiss"
+  },
+  "domainLastConnect": {
+    "message": "Last Connected: $1"
   },
   "done": {
     "message": "Done"
@@ -741,6 +769,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "learnAboutRisks": {
+    "message": "Learn about the risks here."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -753,6 +784,9 @@
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
+  },
+  "likeToConnect": {
+    "message": "$1 would like to connect to your Metamask account"
   },
   "links": {
     "message": "Links"
@@ -884,6 +918,9 @@
   },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "onlyConnectTrust": {
+    "message": "Only connect with sites you trust."
   },
   "optionalChainId": {
     "message": "ChainID (optional)"
@@ -1089,6 +1126,9 @@
   },
   "readyToConnect": {
     "message": "Ready to Connect?"
+  },
+  "revokeInPermissions": {
+    "message": "* You can view and revoke permissions in MetaMask settings."
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -1346,6 +1386,9 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "thisWillAllow": {
+    "message": "This will allow $1 to:"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
   },
@@ -1357,6 +1400,9 @@
   },
   "toWithColon": {
     "message": "To:"
+  },
+  "toConnectWith": {
+    "message": "To connect with $1"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",

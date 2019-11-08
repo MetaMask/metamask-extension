@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 import AccountDropdownMini from '../../../ui/account-dropdown-mini'
+import classnames from 'classnames'
 
 export default class PermissionPageContainerContent extends PureComponent {
 
@@ -12,7 +13,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedAccount: PropTypes.object.isRequired,
-    onAccountSelect: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -23,40 +23,56 @@ export default class PermissionPageContainerContent extends PureComponent {
     iconError: false,
   }
 
+  renderAccountInfo = (account) => {
+    return (
+      <div className="permission-approval-visual__account-info">
+        <div className="permission-approval-visual__account-info__label">
+          { account.label }
+        </div>
+        <div className="permission-approval-visual__account-info__address">
+          { account.truncatedAddress }
+        </div>
+      </div>
+    )
+  }
+
   renderPermissionApprovalVisual = () => {
     const {
-      requestMetadata, domainMetadata, selectedAccount, onAccountSelect,
+      requestMetadata, domainMetadata, selectedAccount, onAccountSelect, redirect
     } = this.props
 
     return (
       <div className="permission-approval-visual">
         <section>
-          {!this.state.iconError && domainMetadata.icon ? (
-            <img
-              className="permission-approval-visual__identicon"
-              src={domainMetadata.icon}
-              onError={() => this.setState({ iconError: true })}
-            />
-          ) : (
-            <i className="permission-approval-visual__identicon--default">
-              {domainMetadata.name.charAt(0).toUpperCase()}
-            </i>
-          )}
-          <h1>{domainMetadata.name}</h1>
-          <h2>{requestMetadata.origin}</h2>
+          <div className="permission-approval-visual__identicon-container">
+            <div className="permission-approval-visual__identicon-border" />
+            {!this.state.iconError && domainMetadata.icon ? (
+              <img
+                className="permission-approval-visual__identicon"
+                src={domainMetadata.icon}
+                onError={() => this.setState({ iconError: true })}
+              />
+            ) : (
+              <i className="permission-approval-visual__identicon--default">
+                {domainMetadata.name.charAt(0).toUpperCase()}
+              </i>
+            )}
+          </div>
+          { redirect ? null : <h1>{domainMetadata.name}</h1> }
+          { redirect ? null : <h2>{requestMetadata.origin}</h2> }
         </section>
         <span className="permission-approval-visual__check" />
+        <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
         <section>
-          <Identicon
-            className="permission-approval-visual__identicon"
-            address={selectedAccount.address}
-            diameter={64}
-          />
-          <AccountDropdownMini
-            className="permission-approval-container__content"
-            onSelect={onAccountSelect}
-            selectedAccount={selectedAccount}
-          />
+          <div className="permission-approval-visual__identicon-container">
+            <div className="permission-approval-visual__identicon-border" />
+            <Identicon
+              className="permission-approval-visual__identicon"
+              address={selectedAccount.address}
+              diameter={54}
+            />
+          </div>
+          { redirect ? null : this.renderAccountInfo(selectedAccount) }
         </section>
       </div>
     )
@@ -66,6 +82,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     const {
       onPermissionToggle, selectedPermissions, permissionsDescriptions,
     } = this.props
+    const { t } = this.context
 
     const items = Object.keys(selectedPermissions).map((methodName) => {
 
@@ -76,52 +93,44 @@ export default class PermissionPageContainerContent extends PureComponent {
       const description = permissionsDescriptions[methodName] || methodName
 
       return (
-        <li key={methodName}>
-          <input
-            className="permission-approval-container__content__checkbox"
-            type="checkbox"
-            checked={selectedPermissions[methodName]}
-            onChange={onPermissionToggle(methodName)}
-            disabled={methodName === 'eth_accounts'}
-          />
+        <div className="permission-approval-container__content__permission" key={methodName}>
+          <i className="fa fa-check-circle fa-sm" />
           <label>{description}</label>
-        </li>
+        </div>
       )
     })
 
     return (
-      <ul className="permission-approval-container__content__requested">
+      <div className="permission-approval-container__content__requested">
         {items}
-      </ul>
+        <div className="permission-approval-container__content__revoke-note">{ t('revokeInPermissions') }</div>
+      </div>
     )
   }
 
   render () {
-    const { domainMetadata } = this.props
+    const { domainMetadata, redirect } = this.props
     const { t } = this.context
 
     return (
-      <div className="permission-approval-container__content">
-        <section>
-          <h2>{t('permissionsRequest')}</h2>
-          {this.renderPermissionApprovalVisual()}
-          <section>
-            <h1>{domainMetadata.name}</h1>
-            <h2>{'Would like to:'}</h2>
-            {this.renderRequestedPermissions()}
-            <br/>
-            <a
-              href="https://medium.com/metamask/introducing-web3-permissions-c55b3d73563f"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('learnMore')}.
-            </a>
+      <div className={classnames('permission-approval-container__content', {
+        'permission-approval-container__content--redirect': redirect,
+      })}>
+        <div className="permission-approval-container__title">
+          { redirect ? t('connectingWithMetaMask') : t('likeToConnect', [domainMetadata.name]) }
+        </div>
+        {this.renderPermissionApprovalVisual()}
+        { !redirect
+          ? <section className="permission-approval-container__permissions-container">
+            <div className="permission-approval-container__permissions-header">
+              { t('thisWillAllow', [domainMetadata.name]) }
+            </div>
+            { this.renderRequestedPermissions() }
           </section>
-        </section>
-        <section className="secure-badge">
-          <img src="/images/mm-secure.svg" />
-        </section>
+          : <div className="permission-approval-container__permissions-header-redirect">
+            { t('redirectingBackToDapp') }
+          </div>
+        }
       </div>
     )
   }

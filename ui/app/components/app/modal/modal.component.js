@@ -16,6 +16,7 @@ export default class Modal extends PureComponent {
     submitType: PropTypes.string,
     submitText: PropTypes.string,
     submitDisabled: PropTypes.bool,
+    hideFooter: PropTypes.bool,
     // Cancel button (left button)
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
@@ -41,10 +42,12 @@ export default class Modal extends PureComponent {
       cancelText,
       contentClass,
       containerClass,
+      hideFooter,
+      className = '',
     } = this.props
 
     return (
-      <div className={classnames('modal-container', containerClass)}>
+      <div className={classnames("modal-container", className, containerClass)}>
         {
           headerText && (
             <div className="modal-container__header">
@@ -61,27 +64,30 @@ export default class Modal extends PureComponent {
         <div className={classnames('modal-container__content', contentClass)}>
           { children }
         </div>
-        <div className="modal-container__footer">
-          {
-            onCancel && (
+        { !hideFooter
+          ? <div className="modal-container__footer">
+              {
+                onCancel && (
+                  <Button
+                    type={cancelType}
+                    onClick={onCancel}
+                    className="modal-container__footer-button"
+                  >
+                    { cancelText }
+                  </Button>
+                )
+              }
               <Button
-                type={cancelType}
-                onClick={onCancel}
+                type={submitType}
+                onClick={onSubmit}
+                disabled={submitDisabled}
                 className="modal-container__footer-button"
               >
-                { cancelText }
+                { submitText }
               </Button>
-            )
-          }
-          <Button
-            type={submitType}
-            onClick={onSubmit}
-            disabled={submitDisabled}
-            className="modal-container__footer-button"
-          >
-            { submitText }
-          </Button>
-        </div>
+            </div>
+          : null
+        }
       </div>
     )
   }

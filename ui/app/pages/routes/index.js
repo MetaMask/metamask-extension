@@ -25,6 +25,8 @@ import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
+import PermissionsConnect from '../permissions-connect'
+import ConnectedSites from '../connected-sites'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
 const MobileSyncPage = require('../mobile-sync')
@@ -67,6 +69,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -116,6 +120,8 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={CONNECT_ROUTE} component={PermissionsConnect} exact />
+        <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
@@ -163,6 +169,10 @@ class Routes extends Component {
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
       return this.onConfirmPage() || this.hasPermissionsRequests()
+    }
+
+    if (this.hasPermissionsRequests()) {
+      return true
     }
   }
 
