@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import {
   accountsWithSendEtherInfoSelector,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
+  getSendResolution,
+  getSendResolutionError,
 } from '../../send.selectors.js'
 import {
   getAddressBook,
@@ -16,7 +16,7 @@ import AddRecipient from './add-recipient.component'
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)
 
 function mapStateToProps (state) {
-  const namingResolution = getSendEnsResolution(state)
+  const namingResolution = getSendResolution(state)
 
   let addressBookEntryName = ''
   if (namingResolution) {
@@ -31,7 +31,7 @@ function mapStateToProps (state) {
     addressBook,
     namingResolution,
     addressBookEntryName,
-    ensResolutionError: getSendEnsResolutionError(state),
+    ensResolutionError: getSendResolutionError(state),
     contacts: addressBook.filter(({ name }) => !!name),
     nonContacts: addressBook.filter(({ name }) => !name),
   }

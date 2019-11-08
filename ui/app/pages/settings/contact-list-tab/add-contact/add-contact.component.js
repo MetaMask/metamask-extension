@@ -29,14 +29,13 @@ export default class AddContact extends PureComponent {
     ethAddress: '',
     ensAddress: '',
     error: '',
-    ensError: '',
+    resolutionError: '',
   }
 
   constructor (props) {
     super(props)
     this.dValidate = debounce(this.validate, 1000)
-    this.namicorn = new Namicorn({blockchain: {ens: {network: parseInt(props.network)}, zns: true}})
-
+    this.namicorn = new Namicorn({ blockchain: { ens: { network: parseInt(props.network) }, zns: true } })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -75,9 +74,9 @@ export default class AddContact extends PureComponent {
         onPaste={text => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
         updateNamingResolution={address => {
-          this.setState({ ensAddress: address, error: '', ensError: '' })
+          this.setState({ ensAddress: address, error: '', resolutionError: '' })
         }}
-        updateNamingResolutionError={message => this.setState({ ensError: message })}
+        updateNamingResolutionError={message => this.setState({ resolutionError: message })}
       />
     )
   }
@@ -85,8 +84,7 @@ export default class AddContact extends PureComponent {
   render () {
     const { t } = this.context
     const { history, addToAddressBook } = this.props
-
-    const errorToRender = this.state.ensError || this.state.error
+    const errorToRender = this.state.resolutionError || this.state.error
 
     return (
       <div className="settings-page__content-row address-book__add-contact">

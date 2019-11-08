@@ -27,8 +27,8 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
+  getSendResolution,
+  getSendResolutionError,
 } from './send.selectors'
 import {
   getAddressBook,
@@ -64,7 +64,6 @@ module.exports = compose(
   connect(mapStateToProps, mapDispatchToProps)
 )(SendEther)
 
-
 function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
@@ -82,8 +81,8 @@ function mapStateToProps (state) {
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
-    namingResolution: getSendEnsResolution(state),
-    ensResolutionError: getSendEnsResolutionError(state),
+    namingResolution: getSendResolution(state),
+    ensResolutionError: getSendResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
     tokens: getTokens(state),
@@ -130,7 +129,7 @@ function mapDispatchToProps (dispatch) {
     updateSendEnsResolution: (namingResolution) => dispatch(updateSendEnsResolution(namingResolution)),
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook, network) => {
-      const namicorn = new Namicorn({blockchain: {ens: {network}, zns: true}})
+      const namicorn = new Namicorn({ blockchain: { ens: { network }, zns: true } })
       if (namicorn.isSupportedDomain(toNickname)) {
         const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
         if (!addressBookEntry.name !== toNickname) {

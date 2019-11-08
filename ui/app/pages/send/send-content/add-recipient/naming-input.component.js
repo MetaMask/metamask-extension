@@ -41,12 +41,10 @@ export default class NamingInput extends Component {
 
   componentDidMount () {
     const network = this.props.network
-    this.namicorn = new Namicorn({blockchain: {ens: {network: parseInt(network)}, zns: true}})
+    this.namicorn = new Namicorn({ blockchain: { ens: { network: parseInt(network) }, zns: true } })
     const networkHasEnsSupport = this.namicorn.ens.isSupportedNetwork()
     this.setState({ namingResolution: ZERO_ADDRESS })
-
     if (networkHasEnsSupport) { this.checkName = debounce(this.lookupDomain, 200) }
-
   }
 
   // If an address is sent without a nickname, meaning not from ENS or from
@@ -60,7 +58,7 @@ export default class NamingInput extends Component {
     } = this.props
 
     if (prevProps.network !== network) {
-      this.namicorn = new Namicorn({blockchain: {ens: {network: parseInt(network)}, zns: true}})
+      this.namicorn = new Namicorn({ blockchain: { ens: { network: parseInt(network) }, zns: true } })
       this.onChange({ target: { value: input } })
     }
   }

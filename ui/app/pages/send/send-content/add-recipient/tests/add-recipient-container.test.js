@@ -18,8 +18,8 @@ proxyquire('../add-recipient.container.js', {
     },
   },
   '../../send.selectors.js': {
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+    getSendResolution: (s) => `mockSendEnsResolution:${s}`,
+    getSendResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
     accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {

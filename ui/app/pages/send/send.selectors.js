@@ -43,8 +43,8 @@ const selectors = {
   getSendHexData,
   getSendHexDataFeatureFlagState,
   getSendEditingTransactionId,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
+  getSendResolution,
+  getSendResolutionError,
   getSendErrors,
   getSendFrom,
   getSendFromBalance,
@@ -247,11 +247,11 @@ function getTokenBalance (state) {
   return state.metamask.send.tokenBalance
 }
 
-function getSendEnsResolution (state) {
+function getSendResolution (state) {
   return state.metamask.send.namingResolution
 }
 
-function getSendEnsResolutionError (state) {
+function getSendResolutionError (state) {
   return state.metamask.send.ensResolutionError
 }
 

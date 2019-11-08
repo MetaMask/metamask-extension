@@ -46,8 +46,8 @@ proxyquire('../send.container.js', {
     getSendFromObject: (s) => `mockFrom:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+    getSendResolution: (s) => `mockSendEnsResolution:${s}`,
+    getSendResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
   },
   './send-content/add-recipient/add-recipient.selectors': {
     getTokens: s => `mockTokens:${s}`,
