@@ -515,6 +515,9 @@ module.exports = class MetamaskController extends EventEmitter {
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
 
+      // AssetsController
+      removeAsset: nodeify(this.assetsController.removeAsset, this.assetsController),
+
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 

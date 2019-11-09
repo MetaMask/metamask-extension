@@ -239,6 +239,7 @@ var actions = {
   addTokens,
   removeToken,
   updateTokens,
+  removeAsset,
   removeSuggestedTokens,
   addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
@@ -1707,6 +1708,24 @@ function removeToken (address) {
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
+      })
+    })
+  }
+}
+
+function removeAsset (fromDomain, asset) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      console.log('fromDomain, asset', fromDomain, asset)
+      background.removeAsset(fromDomain, asset, (err, removedAsset) => {
+        console.log('removedAsset', removedAsset)
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve(removedAsset)
       })
     })
   }
