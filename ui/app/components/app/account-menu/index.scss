@@ -58,6 +58,7 @@
     max-height: 256px;
     position: relative;
     z-index: 200;
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;
