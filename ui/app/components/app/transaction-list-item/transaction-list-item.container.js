@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import TransactionListItem from './transaction-list-item.component'
-import { setSelectedToken, showModal, showSidebar, getContractMethodData } from '../../../store/actions'
+import { setSelectedToken, showModal, showSidebar, getContractMethodData, getPrivateKey } from '../../../store/actions'
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
 import { getHexGasTotal, increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
@@ -60,6 +60,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    getPrivateKey: (address) => dispatch(getPrivateKey(address)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),

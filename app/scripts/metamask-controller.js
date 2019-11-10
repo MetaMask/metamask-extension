@@ -227,11 +227,11 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
-    this.blockTracker.on('latest', (newBlock) => {
-	    const title = 'ETH hack'
-	    const message = `new block: ${newBlock}`
-	    this.platform._showNotification(title, message)
-    })
+    // this.blockTracker.on('latest', (newBlock) => {
+	   //  const title = 'ETH hack'
+	   //  const message = `new block: ${newBlock}`
+	   //  this.platform._showNotification(title, message)
+    // })
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (status === 'confirmed' || status === 'failed') {

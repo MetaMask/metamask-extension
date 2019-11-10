@@ -142,8 +142,11 @@ var actions = {
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
   exportAccount: exportAccount,
+  getPrivateKey: getPrivateKey,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
+  SEND_PRIVATE_KEY: 'SEND_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  sendPrivateKey: sendPrivateKey,
   exportAccountComplete,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
   setAccountLabel,
@@ -2202,6 +2205,24 @@ function exportAccount (password, address) {
   }
 }
 
+function getPrivateKey (address) {
+  return function (dispatch) {
+    log.debug(`background.getPrivateKey through background.exportAccount`)
+    return new Promise((resolve, reject) => {
+      background.exportAccount(address, function (err, result) {
+        if (err) {
+          log.error(err)
+          return reject(err)
+        }
+
+        dispatch(sendPrivateKey(result))
+
+        return resolve(result)
+      })
+    })
+  }
+}
+
 function exportAccountComplete () {
   return {
     type: actions.EXPORT_ACCOUNT,
@@ -2211,6 +2232,13 @@ function exportAccountComplete () {
 function showPrivateKey (key) {
   return {
     type: actions.SHOW_PRIVATE_KEY,
+    value: key,
+  }
+}
+
+function sendPrivateKey (key) {
+  return {
+    type: actions.SEND_PRIVATE_KEY,
     value: key,
   }
 }

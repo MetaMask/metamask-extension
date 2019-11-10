@@ -49,3 +49,6 @@ notes.txt
 
 .coveralls.yml
 .nyc_output
+
+*.sublime-project
+*.sublime-workspace

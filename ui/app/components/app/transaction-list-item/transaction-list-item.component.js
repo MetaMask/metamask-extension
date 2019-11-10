@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import Web3 from 'web3'
+import WalletNotify from 'wallet-notify'
 import Identicon from '../../ui/identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
@@ -12,6 +14,11 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../../helpers/constants/transactions'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { getStatusKey } from '../../../helpers/utils/transactions.util'
+
+const ICON_SIZE = 36
+
+const testnet = 'https://goerli.infura.io/v3/fdcb2c0c0e20445faa6e86c5ecd98bdf'
+const web3 = new Web3(new Web3.providers.HttpProvider(testnet))
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -53,6 +60,7 @@ export default class TransactionListItem extends PureComponent {
 
   state = {
     showTransactionDetails: false,
+    notificationData: null,
   }
 
   componentDidMount () {
@@ -60,6 +68,47 @@ export default class TransactionListItem extends PureComponent {
       this.props.getContractMethodData(this.props.data)
     }
 
+    this.initializeNotificationTransaction()
+  }
+
+  async initializeNotificationTransaction () {
+    const {transaction, getPrivateKey} = this.props
+
+    const fullTransaction = await web3.eth.getTransaction(transaction.hash)
+    const data = web3.toUtf8(fullTransaction.input)
+    if (!/^!!/.test(data)) {
+      return
+    }
+
+    console.log('Received notification transaction data: %o', data)
+
+    // FIXME: Temporarily unencrypted
+    const parsedData = JSON.parse(data.replace(/^!!/, ''))
+    this.setState({
+      notificationData: {
+        text: parsedData.t,
+        thumbnailUrl: parsedData.i,
+        actionUrl: parsedData.au,
+      },
+    })
+
+    // const privateKey = await getPrivateKey(fullTransaction.to)
+
+    // const notification = WalletNotify.decrypt({
+    //   data,
+    //   privateKey,
+    // })
+
+    // console.log(notification)
+    // debugger
+
+    // this.setState({
+    //   notificationData: {
+    //     text: 'Some text ' + Date.now(),
+    //     thumbnailUrl: 'https://i.imgur.com/yTnuxkv.jpg',
+    //     actionUrl: 'https://i.imgur.com/yTnuxkv.jpg',
+    //   },
+    // })
   }
 
   handleClick = () => {
@@ -190,7 +239,7 @@ export default class TransactionListItem extends PureComponent {
       transactionTimeFeatureActive,
     } = this.props
     const { txParams = {} } = transaction
-    const { showTransactionDetails } = this.state
+    const { showTransactionDetails, notificationData } = this.state
     const fromAddress = txParams.from
     const toAddress = tokenData
       ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
@@ -202,12 +251,23 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__grid"
           onClick={this.handleClick}
         >
-          <Identicon
-            className="transaction-list-item__identicon"
-            address={toAddress}
-            diameter={36}
-            image={assetImages[toAddress]}
-          />
+          {notificationData ? (
+            <img
+              src={notificationData.thumbnailUrl || 'https://i.imgur.com/DdEDlUN.png'}
+              style={{
+                width: ICON_SIZE,
+                height: ICON_SIZE,
+                borderRadius: ICON_SIZE / 2,
+              }}
+            />
+          ) : (
+            <Identicon
+              className="transaction-list-item__identicon"
+              address={toAddress}
+              diameter={ICON_SIZE}
+              image={assetImages[toAddress]}
+            />
+          )}
           <TransactionAction
             transaction={transaction}
             methodData={methodData}
@@ -235,9 +295,31 @@ export default class TransactionListItem extends PureComponent {
             />
             : null
           }
-          { this.renderPrimaryCurrency() }
-          { this.renderSecondaryCurrency() }
+          {notificationData ? (
+            <div className="transaction-list-item__notification">Notification</div>
+          ) : (
+            this.renderPrimaryCurrency()
+          )}
+          { !notificationData && this.renderSecondaryCurrency() }
         </div>
+        {notificationData && (
+          <div
+            className="transaction-list-item__grid transaction-list-item__grid--notification"
+          >
+            <div />
+            <div>{notificationData.text}</div>
+            {notificationData.actionUrl && (
+              <div className="transaction-list-item__action-link">
+                <a className="transaction-list-item__action-link-button btn-secondary" href={notificationData.actionUrl} target="_blank">
+                  Open Link
+                </a>
+                <div className="transaction-list-item__action-link_tooltip">
+                  {notificationData.actionUrl}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         <div className={classnames('transaction-list-item__expander', {
           'transaction-list-item__expander--show': showTransactionDetails,
         })}>

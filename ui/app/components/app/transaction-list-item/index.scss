@@ -146,3 +146,57 @@
     }
   }
 }
+
+.transaction-list-item--notification {
+  align-items: stretch;
+}
+
+.transaction-list-item__grid--notification {
+  grid-template-columns: 45px 1fr auto;
+  grid-template-areas: "gap message action";
+
+  &:hover {
+    cursor: default;
+    background: $white;
+  }
+}
+
+.transaction-list-item__action-link {
+  position: relative;
+}
+
+.transaction-list-item__action-link-button {
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+
+  &:hover {
+    color: $Blue-500;
+  }
+}
+
+.transaction-list-item__action-link_tooltip {
+  position: absolute;
+  z-index: 100;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  display: none;
+}
+
+.transaction-list-item__action-link:hover .transaction-list-item__action-link_tooltip {
+  display: block;
+}
+
+.transaction-list-item__notification {
+  justify-self: flex-end;
+  font-size: 12px;
+  color: #aaa;
+}
