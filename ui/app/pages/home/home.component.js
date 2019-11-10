@@ -42,7 +42,7 @@ export default class Home extends PureComponent {
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
-    threeBoxLastUpdated: PropTypes.string,
+    threeBoxLastUpdated: PropTypes.number,
   }
 
   componentWillMount () {
