@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import {
+  decGWEIToHexWEI,
+} from '../../../../../helpers/utils/conversions.util'
 import Loading from '../../../../ui/loading-screen'
 import GasPriceChart from '../../gas-price-chart'
 import AdvancedGasInputs from '../../advanced-gas-inputs'
@@ -42,6 +45,11 @@ export default class AdvancedTabContent extends Component {
     )
   }
 
+  onGasChartUpdate = (price) => {
+    const { updateCustomGasPrice } = this.props
+    updateCustomGasPrice(decGWEIToHexWEI(price))
+  }
+
   render () {
     const { t } = this.context
     const {
@@ -78,7 +86,7 @@ export default class AdvancedTabContent extends Component {
             ? <div>
               <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
               {!gasEstimatesLoading
-                ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
+                ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
                 : <Loading />
               }
               <div className="advanced-tab__fee-chart__speed-buttons">
