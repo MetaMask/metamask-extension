@@ -42,7 +42,7 @@ export default class Home extends PureComponent {
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
-    threeBoxLastUpdated: PropTypes.string,
+    threeBoxLastUpdated: PropTypes.number,
   }
 
   componentWillMount () {
@@ -119,10 +119,10 @@ export default class Home extends PureComponent {
               <TransactionView>
                 <MultipleNotifications
                   className
-                  notifications={[
-                    {
-                      shouldBeRendered: showPrivacyModeNotification,
-                      component: <HomeNotification
+                >
+                  {
+                    showPrivacyModeNotification
+                      ? <HomeNotification
                         descriptionText={t('privacyModeDefault')}
                         acceptText={t('learnMore')}
                         onAccept={() => {
@@ -134,11 +134,12 @@ export default class Home extends PureComponent {
                           unsetMigratedPrivacyMode()
                         }}
                         key="home-privacyModeDefault"
-                      />,
-                    },
-                    {
-                      shouldBeRendered: shouldShowSeedPhraseReminder,
-                      component: <HomeNotification
+                      />
+                      : null
+                  }
+                  {
+                    shouldShowSeedPhraseReminder
+                      ? <HomeNotification
                         descriptionText={t('backupApprovalNotice')}
                         acceptText={t('backupNow')}
                         onAccept={() => {
@@ -150,12 +151,13 @@ export default class Home extends PureComponent {
                         }}
                         infoText={t('backupApprovalInfo')}
                         key="home-backupApprovalNotice"
-                      />,
-                    },
-                    {
-                      shouldBeRendered: threeBoxLastUpdated && showRestorePrompt,
-                      component: <HomeNotification
-                        descriptionText={t('restoreWalletPreferences', [ formatDate(parseInt(threeBoxLastUpdated), 'M/d/y') ])}
+                      />
+                      : null
+                  }
+                  {
+                    threeBoxLastUpdated && showRestorePrompt
+                      ? <HomeNotification
+                        descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
                         acceptText={t('restore')}
                         ignoreText={t('noThanks')}
                         infoText={t('dataBackupFoundInfo')}
@@ -169,9 +171,10 @@ export default class Home extends PureComponent {
                           setShowRestorePromptToFalse()
                         }}
                         key="home-privacyModeDefault"
-                      />,
-                    },
-                  ]}/>
+                      />
+                      : null
+                  }
+                </MultipleNotifications>
               </TransactionView>
             )
             : null }
