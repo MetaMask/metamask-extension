@@ -26,10 +26,14 @@ class EnsController {
     this.store = new ObservableStore(initState)
     networkStore.subscribe((network) => {
       this.store.putState(initState)
-      this._ens = new Ens({
-        network,
-        provider,
-      })
+      if (Ens.getNetworkEnsSupport(network)) {
+        this._ens = new Ens({
+          network,
+          provider,
+        })
+      } else {
+        delete this._ens
+      }
     })
   }
 
