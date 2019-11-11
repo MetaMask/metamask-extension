@@ -98,13 +98,6 @@ function isValidAddress (address) {
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
-<<<<<<< HEAD
-=======
-function isValidENSAddress (address) {
-  return address.match(/^.{3,}\.(eth|test|xyz)$/)
-}
-
->>>>>>> 78224601b981829345bf85dc40c0bd3f08fec57b
 function isInvalidChecksumAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
