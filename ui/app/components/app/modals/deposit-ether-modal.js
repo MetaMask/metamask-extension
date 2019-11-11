@@ -5,10 +5,6 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getNetworkDisplayName } = require('../../../../../app/scripts/controllers/network/util')
-const openWyre = require('../../../../vendor/wyre')
-const { DEPOSIT_ROUTE } = require('../../../helpers/constants/routes')
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
 
 import Button from '../../ui/button'
 
@@ -125,7 +121,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, address, toFaucet, toCoinSwitch } = this.props
+  const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -186,14 +182,8 @@ DepositEtherModal.prototype.render = function () {
           title: WYRE_ROW_TITLE,
           text: WYRE_ROW_TEXT,
           buttonLabel: this.context.t('continueToWyre'),
-          onButtonClick: () => {
-            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-              global.platform.openExtensionInBrowser(DEPOSIT_ROUTE)
-            } else {
-              openWyre(address)
-            }
-          },
-          hide: isTestNetwork && !network === '42',
+          onButtonClick: () => toWyre(address),
+          hide: isTestNetwork,
         }),
 
         this.renderRow({

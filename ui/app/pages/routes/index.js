@@ -8,7 +8,6 @@ import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 import classnames from 'classnames'
-import openWyre from '../../../vendor/wyre'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
@@ -68,7 +67,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
-  DEPOSIT_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -100,20 +98,6 @@ class Routes extends Component {
     })
   }
 
-  componentDidMount () {
-    const {
-      location,
-      modal,
-      showDepositModal,
-      selectedAddress,
-    } = this.props
-
-    if (location.pathname === DEPOSIT_ROUTE && (!modal || !modal.open) && selectedAddress) {
-      showDepositModal()
-      openWyre(selectedAddress)
-    }
-  }
-
   renderRoutes () {
     const { autoLogoutTimeLimit, setLastActiveTime } = this.props
 
@@ -132,7 +116,6 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated path={DEPOSIT_ROUTE} component={Home} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
@@ -365,9 +348,6 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   providerRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
-  showDepositModal: PropTypes.func,
-  modal: PropTypes.object,
-  selectedAddress: PropTypes.string,
 }
 
 function mapStateToProps (state) {
@@ -401,7 +381,6 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
     providerRequests: metamask.providerRequests,
-    selectedAddress: metamask.selectedAddress,
   }
 }
 
@@ -412,7 +391,6 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    showDepositModal: () => dispatch(actions.showModal({ name: 'DEPOSIT_ETHER' })),
   }
 }
 
