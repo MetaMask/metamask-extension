@@ -1,6 +1,7 @@
 const ethUtil = require('ethereumjs-util')
 const ObservableStore = require('obs-store')
 const punycode = require('punycode')
+const log = require('loglevel')
 const Ens = require('./ens')
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -51,8 +52,22 @@ class EnsController {
       return state.ensResolutionsByAddress[address]
     }
 
-    const domain = await this._ens.reverse(address)
-    const registeredAddress = await this._ens.lookup(domain)
+    let domain
+    try {
+      domain = await this._ens.reverse(address)
+    } catch (error) {
+      log.debug(error)
+      return undefined
+    }
+
+    let registeredAddress
+    try {
+      registeredAddress = await this._ens.lookup(domain)
+    } catch (error) {
+      log.debug(error)
+      return undefined
+    }
+
     if (registeredAddress === ZERO_ADDRESS || registeredAddress === ZERO_X_ERROR_ADDRESS) {
       return undefined
     }
