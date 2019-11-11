@@ -496,6 +496,16 @@ describe('Transaction Controller', function () {
       assert.equal(publishedTx.hash, hash)
       assert.equal(publishedTx.status, 'submitted')
     })
+
+    it('should ignore the error "Transaction Failed: known transaction" and be as usual', async function () {
+      providerResultStub['eth_sendRawTransaction'] = async (_, __, ___, end) => { end('Transaction Failed: known transaction') }
+      const rawTx = '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a'
+      txController.txStateManager.addTx(txMeta)
+      await txController.publishTransaction(txMeta.id, rawTx)
+      const publishedTx = txController.txStateManager.getTx(1)
+      assert.equal(publishedTx.hash, '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09')
+      assert.equal(publishedTx.status, 'submitted')
+    })
   })
 
   describe('#retryTransaction', function () {

@@ -8,14 +8,13 @@ const {
   checkBrowserForConsoleErrors,
   findElement,
   findElements,
-  loadExtension,
   verboseReportOnFailure,
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
-  let extensionId
   let driver
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
@@ -29,7 +28,6 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    extensionId = result.extensionId
     await setupFetchMocking(driver)
   })
 
@@ -54,7 +52,7 @@ describe('MetaMask', function () {
   describe('Going through the first time flow', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
@@ -99,7 +97,7 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = (await findElements(driver, By.css('button.first-time-flow__button')))[1]
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -112,37 +110,12 @@ describe('MetaMask', function () {
       await delay(tinyDelayMs)
     }
 
-    async function retypeSeedPhrase (words, wasReloaded, count = 0) {
-      try {
-        if (wasReloaded) {
-          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
-          await driver.wait(until.elementLocated(byRevealButton, 10000))
-          const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
-          await revealSeedPhraseButton.click()
-          await delay(regularDelayMs)
-
-          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-          await nextScreen.click()
-          await delay(regularDelayMs)
-        }
-
-        for (let i = 0; i < 12; i++) {
-          await clickWordAndWait(words[i])
-        }
-      } catch (e) {
-        if (count > 2) {
-          throw e
-        } else {
-          await loadExtension(driver, extensionId)
-          await retypeSeedPhrase(words, true, count + 1)
-        }
-      }
-    }
-
     it('can retype the seed phrase', async () => {
       const words = seedPhrase.split(' ')
 
-      await retypeSeedPhrase(words)
+      for (const word of words) {
+        await clickWordAndWait(word)
+      }
 
       const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirm.click()
@@ -151,7 +124,7 @@ describe('MetaMask', function () {
 
     it('clicks through the success screen', async () => {
       await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await doneButton.click()
       await delay(regularDelayMs)
     })
@@ -183,7 +156,7 @@ describe('MetaMask', function () {
 
       await passwordInputs[0].sendKeys('correct horse battery staple')
       await passwordInputs[1].sendKeys('correct horse battery staple')
-      await driver.findElement(By.css('.first-time-flow__button')).click()
+      await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.restore.message}')]`)).click()
       await delay(regularDelayMs)
     })
 
@@ -237,13 +210,13 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 1)
+      await driver.wait(async () => {
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 1
+      }, 10000)
 
-      if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-        await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
-      }
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
     })
   })
 
@@ -278,13 +251,13 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 2)
+      await driver.wait(async () => {
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 2
+      }, 10000)
 
-      if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-        await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/), 10000)
-      }
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+      await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/), 10000)
     })
   })
 })

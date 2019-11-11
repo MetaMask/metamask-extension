@@ -25,6 +25,7 @@ const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
+const DEPOSIT_ROUTE = '/deposit'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -94,4 +95,5 @@ module.exports = {
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  DEPOSIT_ROUTE,
 }

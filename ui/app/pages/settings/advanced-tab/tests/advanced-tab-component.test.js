@@ -38,7 +38,7 @@ describe('AdvancedTab Component', () => {
     textField.props().onChange({ target: { value: 1440 } })
     assert.equal(root.state().autoLogoutTimeLimit, 1440)
 
-    autoTimeout.find('button').simulate('click')
+    autoTimeout.find('.settings-tab__rpc-save-button').simulate('click')
     assert.equal(setAutoLogoutTimeLimitSpy.args[0][0], 1440)
   })
 })

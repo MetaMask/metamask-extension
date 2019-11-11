@@ -2,7 +2,7 @@
   position: fixed;
   z-index: 100;
   top: 58px;
-  width: 310px;
+  width: 320px;
 
   @media screen and (max-width: 575px) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -58,6 +58,7 @@
     max-height: 256px;
     position: relative;
     z-index: 200;
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;

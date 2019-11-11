@@ -1,1 +1,1 @@
-export { default } from './transaction-list-item-details.component'
+export { default } from './transaction-list-item-details.container'

@@ -59,11 +59,6 @@ import {
   SEND_ROUTE,
 } from '../../helpers/constants/routes'
 
-module.exports = compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(SendEther)
-
 function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
@@ -139,3 +134,8 @@ function mapDispatchToProps (dispatch) {
     },
   }
 }
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SendEther)

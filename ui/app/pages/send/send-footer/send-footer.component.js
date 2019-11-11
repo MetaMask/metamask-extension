@@ -27,7 +27,7 @@ export default class SendFooter extends Component {
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
     sendErrors: PropTypes.object,
-    gasChangedLabel: PropTypes.string,
+    gasEstimateType: PropTypes.string,
   }
 
   static contextTypes = {
@@ -58,7 +58,7 @@ export default class SendFooter extends Component {
       update,
       toAccounts,
       history,
-      gasChangedLabel,
+      gasEstimateType,
     } = this.props
     const { metricsEvent } = this.context
 
@@ -94,7 +94,7 @@ export default class SendFooter extends Component {
             name: 'Complete',
           },
           customVariables: {
-            gasChanged: gasChangedLabel,
+            gasChanged: gasEstimateType,
           },
         })
         history.push(CONFIRM_TRANSACTION_ROUTE)
@@ -102,9 +102,10 @@ export default class SendFooter extends Component {
   }
 
   formShouldBeDisabled () {
-    const { data, inError, selectedToken, tokenBalance, gasTotal, to } = this.props
+    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
-    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to)
+    const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
+    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow
     return shouldBeDisabled
   }
 

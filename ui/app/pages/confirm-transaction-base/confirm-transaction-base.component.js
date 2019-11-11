@@ -14,6 +14,7 @@ import {
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
+import { hexToDecimal } from '../../helpers/utils/conversions.util'
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
 import TextField from '../../components/ui/text-field'
 
@@ -63,6 +64,7 @@ export default class ConfirmTransactionBase extends Component {
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
+    toEns: PropTypes.string,
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
@@ -102,6 +104,9 @@ export default class ConfirmTransactionBase extends Component {
     transactionCategory: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
+    tryReverseResolveAddress: PropTypes.func.isRequired,
+    hideSenderToRecipient: PropTypes.bool,
+    showAccountInHeader: PropTypes.bool,
   }
 
   state = {
@@ -171,7 +176,7 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (customGas.gasLimit < 21000) {
+    if (hexToDecimal(customGas.gasLimit) < 21000) {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -384,7 +389,8 @@ export default class ConfirmTransactionBase extends Component {
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount,
-      async onSubmit () {
+      onSubmit: async () => {
+        this._removeBeforeUnload()
         await cancelAllTransactions()
         clearConfirmTransaction()
         history.push(DEFAULT_ROUTE)
@@ -406,6 +412,7 @@ export default class ConfirmTransactionBase extends Component {
       updateCustomNonce,
     } = this.props
 
+    this._removeBeforeUnload()
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
@@ -455,6 +462,7 @@ export default class ConfirmTransactionBase extends Component {
       submitting: true,
       submitError: null,
     }, () => {
+      this._removeBeforeUnload()
       metricsEvent({
         eventOpts: {
           category: 'Transactions',
@@ -565,8 +573,30 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
+  _beforeUnload = () => {
+    const { txData: { origin, id } = {}, cancelTransaction } = this.props
+    const { metricsEvent } = this.context
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Confirm Screen',
+        name: 'Cancel Tx Via Notification Close',
+      },
+      customVariables: {
+        origin,
+      },
+    })
+    cancelTransaction({ id })
+  }
+
+  _removeBeforeUnload = () => {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      window.removeEventListener('beforeunload', this._beforeUnload)
+    }
+  }
+
   componentDidMount () {
-    const { txData: { origin, id } = {}, cancelTransaction, getNextNonce } = this.props
+    const { toAddress, txData: { origin } = {}, getNextNonce, tryReverseResolveAddress } = this.props
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
@@ -580,22 +610,15 @@ export default class ConfirmTransactionBase extends Component {
     })
 
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.onbeforeunload = () => {
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Cancel Tx Via Notification Close',
-          },
-          customVariables: {
-            origin,
-          },
-        })
-        cancelTransaction({ id })
-      }
+      window.addEventListener('beforeunload', this._beforeUnload)
     }
 
     getNextNonce()
+    tryReverseResolveAddress(toAddress)
+  }
+
+  componentWillUnmount () {
+    this._removeBeforeUnload()
   }
 
   render () {
@@ -605,6 +628,7 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
+      toEns,
       toNickname,
       methodData,
       valid: propsValid = true,
@@ -623,6 +647,8 @@ export default class ConfirmTransactionBase extends Component {
       warning,
       unapprovedTxCount,
       transactionCategory,
+      hideSenderToRecipient,
+      showAccountInHeader,
     } = this.props
     const { submitting, submitError, submitWarning } = this.state
 
@@ -633,8 +659,10 @@ export default class ConfirmTransactionBase extends Component {
       <ConfirmPageContainer
         fromName={fromName}
         fromAddress={fromAddress}
+        showAccountInHeader={showAccountInHeader}
         toName={toName}
         toAddress={toAddress}
+        toEns={toEns}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
@@ -670,6 +698,7 @@ export default class ConfirmTransactionBase extends Component {
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
+        hideSenderToRecipient={hideSenderToRecipient}
       />
     )
   }

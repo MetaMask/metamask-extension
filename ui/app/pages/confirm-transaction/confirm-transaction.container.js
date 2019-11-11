@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
       send,
       unapprovedTxs,
       abTests: { fullScreenVsPopup },
+      conversionRate,
     },
     confirmTransaction,
   } = state
@@ -36,9 +37,9 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[totalUnconfirmed - 1]
     : {}
-  const { id: transactionId, transactionCategory, origin } = transaction
+  const { id: transactionId, transactionCategory } = transaction
 
-  const trackABTest = origin !== 'MetaMask'
+  const trackABTest = false
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
@@ -53,6 +54,7 @@ const mapStateToProps = (state, ownProps) => {
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
     trackABTest,
     fullScreenVsPopupTestGroup: fullScreenVsPopup,
+    conversionRate,
   }
 }
 

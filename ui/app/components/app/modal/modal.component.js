@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
+import classnames from 'classnames'
 
 export default class Modal extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
+    contentClass: PropTypes.string,
+    containerClass: PropTypes.string,
     // Header text
     headerText: PropTypes.string,
     onClose: PropTypes.func,
@@ -36,10 +39,12 @@ export default class Modal extends PureComponent {
       onCancel,
       cancelType,
       cancelText,
+      contentClass,
+      containerClass,
     } = this.props
 
     return (
-      <div className="modal-container">
+      <div className={classnames('modal-container', containerClass)}>
         {
           headerText && (
             <div className="modal-container__header">
@@ -53,7 +58,7 @@ export default class Modal extends PureComponent {
             </div>
           )
         }
-        <div className="modal-container__content">
+        <div className={classnames('modal-container__content', contentClass)}>
           { children }
         </div>
         <div className="modal-container__footer">

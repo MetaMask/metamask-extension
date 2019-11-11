@@ -162,7 +162,7 @@
     "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
-    "message": "封鎖 Explorer"
+    "message": "區塊鏈瀏覽器"
   },
   "blockExplorerView": {
     "message": "在 $1 觀看帳號 ",
@@ -199,7 +199,7 @@
     "message": "開啟"
   },
   "optionalBlockExplorerUrl": {
-    "message": "封鎖 Explorer URL（非必要）"
+    "message": "區塊鏈瀏覽器 URL（非必要）"
   },
   "cancel": {
     "message": "取消"
@@ -635,7 +635,7 @@
     "message": "無效的 RPC URI"
   },
   "invalidBlockExplorerURL": {
-    "message": "無效的 Block Explorer URI"
+    "message": "無效的區塊鏈瀏覽器 URL"
   },
   "invalidSeedPhrase": {
     "message": "無效的助憶詞"
