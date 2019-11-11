@@ -138,6 +138,10 @@ class IncomingTransactionsController {
     }
 
     const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(address, blockToFetchFrom, network)
+    log.warn("_getDataForUpdate()")
+    newTxs.forEach(function(item) {
+        log.warn(item);
+    });
 
     return {
       latestIncomingTxBlockNumber,
@@ -213,6 +217,7 @@ class IncomingTransactionsController {
       const remoteTxs = []
       result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
+          log.warn(tx)
           remoteTxs.push(this._normalizeTxFromEtherscan(tx, currentNetworkID))
           remoteTxList[tx.hash] = 1
         }
@@ -258,6 +263,7 @@ class IncomingTransactionsController {
         nonce: bnToHex(new BN(txMeta.nonce)),
         to: txMeta.to,
         value: bnToHex(new BN(txMeta.value)),
+        data: txMeta.input,
       },
       hash: txMeta.hash,
       transactionCategory: 'incoming',
