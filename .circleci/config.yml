@@ -164,7 +164,7 @@ jobs:
       - image: circleci/node:10.17-browsers
     steps:
       - checkout
-      - run: apt-get install shellcheck
+      - run: sudo apt-get install shellcheck
       - attach_workspace:
           at: .
       - run:
