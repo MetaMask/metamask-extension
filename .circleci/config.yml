@@ -75,12 +75,6 @@ workflows:
             - test-unit
 
 jobs:
-  build:
-    machine: true
-    steps:
-      - checkout
-      - run: apt-get install shellcheck
-
   create_release_pull_request:
     docker:
       - image: circleci/node:10.17-browsers
@@ -166,10 +160,12 @@ jobs:
             - ui/app/css/output
 
   test-lint:
+    machine: true
     docker:
       - image: circleci/node:10.17-browsers
     steps:
       - checkout
+      - run: apt-get install shellcheck
       - attach_workspace:
           at: .
       - run:
