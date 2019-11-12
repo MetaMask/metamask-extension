@@ -1,11 +1,7 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 
-
 const abi = require('human-standard-token-abi')
-import {
-  transactionsSelector,
-} from './transactions'
 const {
   multiplyCurrencies,
 } = require('../helpers/utils/conversion-util')
@@ -24,7 +20,6 @@ const selectors = {
   getAssetImages,
   getTokenExchangeRate,
   conversionRateSelector,
-  transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
   getGasIsLoading,

@@ -109,12 +109,6 @@ describe('Selectors', function () {
     assert.equal(currentAccountwithSendEther.name, 'Test Account')
   })
 
-  describe('#transactionSelector', function () {
-    it('returns transactions from state', function () {
-      selectors.transactionsSelector(mockState)
-    })
-  })
-
   it('#getGasIsLoading', () => {
     const gasIsLoading = selectors.getGasIsLoading(mockState)
     assert.equal(gasIsLoading, false)

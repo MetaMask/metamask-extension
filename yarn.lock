@@ -6924,13 +6924,13 @@ content-disposition@0.5.3, content-disposition@^0.5.2:
   dependencies:
     safe-buffer "5.1.2"
 
-content-hash@^2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.4.3.tgz#89e6d295bbf2c53fb69b3d8fb43ae572ac7b6096"
-  integrity sha512-QBfQRlBBCJP94fV8zcUMChGMKzQMAZX6rn36yldc2A16C47tWdOTYjPosyZ7/AfdyW/xB5cP3RgZIAomnUDGIA==
+content-hash@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.4.4.tgz#4bec87caecfcff8cf1a37645301cbef4728a083f"
+  integrity sha512-3FaUsqt7VR725pVxe0vIScGI5efmpryIXdVSeXafQ63fb5gRGparAQlAGxTSOiv0yRg7YeliseXuB20ByD1duQ==
   dependencies:
     cids "^0.6.0"
-    multicodec "^0.5.4"
+    multicodec "^0.5.5"
     multihashes "^0.4.15"
 
 content-type-parser@^1.0.1:
@@ -9694,19 +9694,6 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-2.0.0.tgz#487ca4f065088ee840739cbad9b853003e79bd06"
-  integrity sha512-lTeANNPNj/j08sWU7LUQZTsx9NUJaUsiOdVxeP0UI5kke7L+Sd7zJWBmCShudEVG8PkqKLE1KJo08o430sl6rw==
-  dependencies:
-    bip39 "^2.2.0"
-    eth-sig-util "^2.0.1"
-    ethereumjs-abi "^0.6.5"
-    ethereumjs-util "^5.1.1"
-    ethereumjs-wallet "^0.6.0"
-    events "^1.1.1"
-    xtend "^4.0.1"
-
 eth-hd-keyring@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.4.0.tgz#288e73041f2b3f047b4151fb4b5ab5ad5710b9a6"
@@ -9801,22 +9788,6 @@ eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-mid
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-keyring-controller@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.0.1.tgz#695ccde891bb050100c7ad39c4ddf8bfe2da6117"
-  integrity sha512-u87mdyQ1cOyLyaSME0XzV+qPvM+AO8MMMe+/rpvYxCYRK9KtvGTriyfF67zFcsYVaoRS5Ovc4QiQXCAZEyf3QQ==
-  dependencies:
-    bip39 "^2.4.0"
-    bluebird "^3.5.0"
-    browser-passworder "^2.0.3"
-    eth-hd-keyring "^2.0.0"
-    eth-sig-util "^1.4.0"
-    eth-simple-keyring "^2.0.0"
-    ethereumjs-util "^5.1.2"
-    loglevel "^1.5.0"
-    obs-store "^4.0.3"
-    promise-filter "^1.1.0"
-
 eth-keyring-controller@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.3.0.tgz#8d85a67b894360ab7d601222ca71df8ed5f456c6"
@@ -9901,7 +9872,7 @@ eth-query@^2.0.2, eth-query@^2.1.0, eth-query@^2.1.2:
     json-rpc-random-id "^1.0.0"
     xtend "^4.0.1"
 
-eth-sig-util@2.3.0, eth-sig-util@^2.0.1, eth-sig-util@^2.3.0:
+eth-sig-util@2.3.0, eth-sig-util@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.3.0.tgz#c54a6ac8e8796f7e25f59cf436982a930e645231"
   integrity sha512-ugD1AvaggvKaZDgnS19W5qOfepjGc7qHrt7TrAaL54gJw9SHvgIXJ3r2xOMW30RWJZNP+1GlTOy5oye7yXA4xA==
@@ -9932,18 +9903,6 @@ eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
     ethereumjs-util "^5.1.1"
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
-
-eth-simple-keyring@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-2.0.0.tgz#ef1e97c4aebb7229dce9c0ec5cc84efcd3a76395"
-  integrity sha512-4dMbkIy2k1qotDTjWINvXG+7tBmofp0YUhlXgcG0+I3w684V46+MAHEkBtD2Y09iEeIB07RDXrezKP9WxOpynA==
-  dependencies:
-    eth-sig-util "^2.0.1"
-    ethereumjs-abi "^0.6.5"
-    ethereumjs-util "^5.1.1"
-    ethereumjs-wallet "^0.6.0"
-    events "^1.1.1"
-    xtend "^4.0.1"
 
 eth-simple-keyring@^3.4.0:
   version "3.4.0"
@@ -10126,6 +10085,17 @@ ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
 
+ethereumjs-util@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.0.tgz#8e9646c13322e75a9c593cf705d27d4a51c991c0"
+  integrity sha1-jpZGwTMi51qcWTz3BdJ9SlHJkcA=
+  dependencies:
+    bn.js "^4.8.0"
+    create-hash "^1.1.2"
+    keccak "^1.0.2"
+    rlp "^2.0.0"
+    secp256k1 "^3.0.1"
+
 ethereumjs-util@6.1.0, ethereumjs-util@^6.0.0, ethereumjs-util@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.1.0.tgz#e9c51e5549e8ebd757a339cc00f5380507e799c8"
@@ -10161,16 +10131,6 @@ ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.1, ethereum
     keccak "^1.0.2"
     rlp "^2.0.0"
     safe-buffer "^5.1.1"
-    secp256k1 "^3.0.1"
-
-"ethereumjs-util@github:ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9":
-  version "5.0.1"
-  resolved "https://codeload.github.com/ethereumjs/ethereumjs-util/tar.gz/ac5d0908536b447083ea422b435da27f26615de9"
-  dependencies:
-    bn.js "^4.8.0"
-    create-hash "^1.1.2"
-    keccak "^1.0.2"
-    rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
 ethereumjs-util@~6.0.0:
@@ -11823,16 +11783,16 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
-gaba@^1.7.5:
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.7.5.tgz#216cc3196178917a0ae56eda2e1d8981c125364c"
-  integrity sha512-1S70Sijw5VH4r+pyoZQEoYk+zzsHmwT+xjKPzCo1Ep8A/N1EfcgQxwsD9HNMvPol03Qaf92udIHhry1L7wMjgg==
+gaba@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.8.0.tgz#5370e5d662de6aa8e4e41de791da0996a7e12dbe"
+  integrity sha512-M20fZ6yKRefxgxb82l5Of0VutFxvc1Uxg8LSncaiq5kWQZO1UNe5pkxQc4EQT9rGAcBm6ASv7FG0B04syIELRA==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.9.1"
     eth-ens-namehash "^2.0.8"
     eth-json-rpc-infura "^4.0.1"
-    eth-keyring-controller "^5.0.1"
+    eth-keyring-controller "^5.3.0"
     eth-method-registry "1.1.0"
     eth-phishing-detect "^1.1.13"
     eth-query "^2.1.2"
@@ -18359,17 +18319,17 @@ multicast-dns@^7.2.0:
     dns-packet "^4.0.0"
     thunky "^1.0.2"
 
-multicodec@^0.5.4, multicodec@~0.5.0:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.4.tgz#ab2afb0cd00cd853c5a2eecb0dd1404dc7745388"
-  integrity sha512-0lPLiZ58b2jyXylx2qgda9/6N0YCNIpBxRsZ8sxYayVjEKh58XyNN74VTTQOR/ZCQFgbj0CsqfyRpEDPPlOMkw==
-  dependencies:
-    varint "^5.0.0"
-
-multicodec@~0.5.1, multicodec@~0.5.3:
+multicodec@^0.5.5, multicodec@~0.5.1, multicodec@~0.5.3:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.5.tgz#55c2535b44eca9ea40a13771420153fe075bb36d"
   integrity sha512-1kOifvwAqp9IdiiTKmpK2tS+LY6GHZdKpk3S2EvW4T32vlwDyA3hJoZtGauzqdedUPVNGChnTksEotVOCVlC+Q==
+  dependencies:
+    varint "^5.0.0"
+
+multicodec@~0.5.0:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/multicodec/-/multicodec-0.5.4.tgz#ab2afb0cd00cd853c5a2eecb0dd1404dc7745388"
+  integrity sha512-0lPLiZ58b2jyXylx2qgda9/6N0YCNIpBxRsZ8sxYayVjEKh58XyNN74VTTQOR/ZCQFgbj0CsqfyRpEDPPlOMkw==
   dependencies:
     varint "^5.0.0"
 
@@ -21365,7 +21325,7 @@ punycode@^1.2.4, punycode@^1.3.2, punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
   integrity sha1-wNWmOycYgArY4esPpSachN1BhF4=
 
-punycode@^2.1.0:
+punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==

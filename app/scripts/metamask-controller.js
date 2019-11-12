@@ -23,6 +23,7 @@ const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
+const EnsController = require('./controllers/ens')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const AppStateController = require('./controllers/app-state')
@@ -136,6 +137,11 @@ module.exports = class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       provider: this.provider,
       networkController: this.networkController,
+    })
+
+    this.ensController = new EnsController({
+      provider: this.provider,
+      networkStore: this.networkController.networkStore,
     })
 
     this.incomingTransactionsController = new IncomingTransactionsController({
@@ -315,6 +321,8 @@ module.exports = class MetamaskController extends EventEmitter {
       // ThreeBoxController
       ThreeBoxController: this.threeBoxController.store,
       ABTestController: this.abTestController.store,
+      // ENS Controller
+      EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -353,6 +361,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingTransactionByHash: (hash) => this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -499,6 +508,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
+
+      // EnsController
+      tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),
 
       // KeyringController
       setLocked: nodeify(this.setLocked, this),

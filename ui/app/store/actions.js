@@ -392,6 +392,8 @@ var actions = {
   setShowRestorePromptToFalse,
   turnThreeBoxSyncingOn,
   turnThreeBoxSyncingOnAndInitialize,
+
+  tryReverseResolveAddress,
 }
 
 module.exports = actions
@@ -596,6 +598,19 @@ function requestRevealSeedWords (password) {
       dispatch(actions.displayWarning(error.message))
       throw new Error(error.message)
     }
+  }
+}
+
+function tryReverseResolveAddress (address) {
+  return () => {
+    return new Promise((resolve) => {
+      background.tryReverseResolveAddress(address, (err) => {
+        if (err) {
+          log.error(err)
+        }
+        resolve()
+      })
+    })
   }
 }
 
@@ -856,8 +871,6 @@ function signMsg (msgData) {
   log.debug('action - signMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
-
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signMessage`)
       background.signMessage(msgData, (err, newState) => {
@@ -884,7 +897,6 @@ function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signPersonalMessage`)
       background.signPersonalMessage(msgData, (err, newState) => {
@@ -911,7 +923,6 @@ function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signTypedMessage`)
       background.signTypedMessage(msgData, (err, newState) => {
@@ -1124,7 +1135,6 @@ function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
   return (dispatch, getState) => {
     log.debug(`actions calling background.approveTransaction`)
-    window.onbeforeunload = null
     background.approveTransaction(txData.id, (err) => {
       if (err) {
         dispatch(actions.txError(err))
@@ -1201,7 +1211,6 @@ function updateAndApproveTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
         dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
@@ -1260,7 +1269,6 @@ function txError (err) {
 function cancelMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`background.cancelMessage`)
       background.cancelMessage(msgData.id, (err, newState) => {
@@ -1283,7 +1291,6 @@ function cancelMsg (msgData) {
 function cancelPersonalMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
@@ -1306,7 +1313,6 @@ function cancelPersonalMsg (msgData) {
 function cancelTypedMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelTypedMessage(id, (err, newState) => {
@@ -1330,7 +1336,6 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, err => {
         if (err) {
@@ -1360,7 +1365,6 @@ function cancelTx (txData) {
  */
 function cancelTxs (txDataList) {
   return async (dispatch) => {
-    window.onbeforeunload = null
     dispatch(actions.showLoadingIndication())
     const txIds = txDataList.map(({id}) => id)
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
@@ -1744,7 +1748,6 @@ function addTokens (tokens) {
 function removeSuggestedTokens () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve) => {
       background.removeSuggestedTokens((err, suggestedTokens) => {
         dispatch(actions.hideLoadingIndication())
