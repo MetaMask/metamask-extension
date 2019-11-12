@@ -128,6 +128,46 @@ class PermissionsController {
   }
 
   /**
+   * Grants the given origin the eth_accounts permission for the given account(s).
+   * This method should ONLY be called as a result of direct user action in the UI,
+   * with the intention of supporting legacy dapps that don't support EIP 1102.
+   *
+   * @param {string} origin - The origin to expose the account(s) to.
+   * @param {Array<string>} accounts - The account(s) to expose.
+   */
+  async legacyExposeAccounts (origin, accounts) {
+
+    const permissions = {
+      eth_accounts: {},
+    }
+
+    await this.finalizePermissionsRequest(permissions, accounts)
+
+    let error
+    try {
+      error = await new Promise((resolve) => {
+        this.permissions.grantNewPermissions(origin, permissions, {}, err => resolve(err))
+      })
+    } catch (err) {
+      error = err
+    }
+
+    if (error) {
+      if (error.code === 4001) {
+        throw error
+      } else {
+        throw ethErrors.rpc.internal({
+          message: `Failed to add 'eth_accounts' to '${origin}'.`,
+          data: {
+            originalError: error,
+            accounts,
+          },
+        })
+      }
+    }
+  }
+
+  /**
    * Update the accounts exposed to the given origin.
    * Throws error if the update fails.
    *

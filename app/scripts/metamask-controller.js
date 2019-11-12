@@ -560,6 +560,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getCaveatsFor: permissionsController.getCaveatsFor.bind(permissionsController),
       getCaveat: permissionsController.getCaveat.bind(permissionsController),
       updateExposedAccounts: nodeify(permissionsController.updateExposedAccounts, permissionsController),
+      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
     }
   }
 
