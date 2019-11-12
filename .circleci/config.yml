@@ -160,7 +160,6 @@ jobs:
             - ui/app/css/output
 
   test-lint:
-    machine: true
     docker:
       - image: circleci/node:10.17-browsers
     steps:
