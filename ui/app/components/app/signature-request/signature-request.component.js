@@ -61,15 +61,20 @@ export default class SignatureRequest extends PureComponent {
         <Header selectedAccount={selectedAccount} />
         <div className="signature-request-content">
           <div className="signature-request-content__title">{this.context.t('sigRequest')}</div>
-          <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial" >{ message.from.name && message.from.name[0] }</div>
-            <div className="signature-request-content__identicon-border" />
-            <Identicon
-              address={message.from.wallet}
-              diameter={70}
-            />
-          </div>
-          <div className="signature-request-content__info--bolded">{message.from.name}</div>
+          {
+            message.from ?
+              <div>
+                <div className="signature-request-content__identicon-container">
+                  <div className="signature-request-content__identicon-initial" >{ message.from.name && message.from.name[0] }</div> */}
+                  <div className="signature-request-content__identicon-border" />
+                  <Identicon
+                    address={message.from.wallet}
+                    diameter={70}
+                  />
+                  <div className="signature-request-content__info--bolded">{message.from.name}</div>
+                </div>
+              </div> : ''
+          }
           <div className="signature-request-content__info">{origin}</div>
           <div className="signature-request-content__info">{this.formatWallet(senderWallet)}</div>
         </div>
