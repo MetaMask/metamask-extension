@@ -171,7 +171,7 @@
     "redux-thunk": "^2.2.0",
     "request-promise": "^4.2.1",
     "reselect": "^3.0.1",
-    "rpc-cap": "^1.0.0",
+    "rpc-cap": "^1.0.1",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
