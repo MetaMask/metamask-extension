@@ -93,7 +93,7 @@ describe('storage is migrated successfully', () => {
   })
 
 
-  it('should remove down to 40 transactions if their are over 40 transactions and their are enough final transactions to remove', (done) => {
+  it('should remove down to 40 transactions if there are over 40 transactions and there are enough final transactions to remove', (done) => {
     storage.data.TransactionController.transactions = transactions60
     migration37.migrate(storage).then((migratedData) => {
       assert.equal(migratedData.meta.version, 37)
