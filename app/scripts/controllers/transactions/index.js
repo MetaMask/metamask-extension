@@ -470,7 +470,7 @@ class TransactionController extends EventEmitter {
    * @param {number} txId - The tx's ID
    * @returns {Promise<void>}
    */
-  async confirmTransaction (txId) {
+  async confirmTransaction (txId, receipt) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTx(txId)
@@ -479,26 +479,23 @@ class TransactionController extends EventEmitter {
       return
     }
 
-    try {
-      const txReceipt = await this.query.getTransactionReceipt(txMeta.hash)
+    // It seems that sometimes the numerical values being returned from
+    // this.query.getTransactionReceipt are BN instances and not strings.
+    const gasUsed = typeof receipt.gasUsed !== 'string'
+      ? receipt.gasUsed.toString(16)
+      : receipt.gasUsed
 
-      // It seems that sometimes the numerical values being returned from
-      // this.query.getTransactionReceipt are BN instances and not strings.
-      const gasUsed = typeof txReceipt.gasUsed !== 'string'
-        ? txReceipt.gasUsed.toString(16)
-        : txReceipt.gasUsed
-
-      txMeta.txReceipt = {
-        ...txReceipt,
-        gasUsed,
-      }
-
-      this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
-    } catch (err) {
-      log.error(err)
+    txMeta.receipt = {
+      ...receipt,
+      gasUsed,
     }
 
+    this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+
     this.txStateManager.setTxStatusConfirmed(txId)
+    // just double check that the block number is their
+    // discard tx history after confirmation
+    if (receipt.blockNumber) delete txMeta.history
     this._markNonceDuplicatesDropped(txId)
   }
 
@@ -594,7 +591,7 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
-    this.pendingTxTracker.on('tx:confirmed', (txId) => this.confirmTransaction(txId))
+    this.pendingTxTracker.on('tx:confirmed', (txId, receipt) => this.confirmTransaction(txId, receipt))
     this.pendingTxTracker.on('tx:dropped', this.txStateManager.setTxStatusDropped.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
