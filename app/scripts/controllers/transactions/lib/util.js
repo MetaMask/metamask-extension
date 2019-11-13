@@ -86,7 +86,7 @@ function validateRecipient (txParams) {
   return txParams
 }
 
-const finalStates =  [
+const finalStates = [
   'rejected', // the user has responded no!
   'confirmed', // the tx has been included in a block.
   'failed', // the tx failed for some reason, included on tx data.
