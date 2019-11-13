@@ -14,9 +14,6 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
       # - prep-docs:
       #    requires:
       #      - prep-deps
@@ -28,10 +25,10 @@ workflows:
             - prep-deps
       - test-e2e-chrome:
           requires:
-            - prep-build-test
+            - prep-deps
       - test-e2e-firefox:
           requires:
-            - prep-build-test
+            - prep-deps
       - test-unit:
           requires:
             - prep-deps
@@ -129,24 +126,6 @@ jobs:
             - dist
             - builds
 
-  prep-build-test:
-    docker:
-      - image: circleci/node:10.16-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing
-          command: yarn build:test
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test
-
   prep-docs:
     docker:
       - image: circleci/node:10.16-browsers
@@ -214,11 +193,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: yarn build:test && yarn test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -235,11 +211,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: yarn build:test && yarn test:e2e:firefox
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts

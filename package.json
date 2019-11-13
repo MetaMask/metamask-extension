@@ -117,7 +117,7 @@
     "gaba": "^1.8.0",
     "human-standard-token-abi": "^2.0.0",
     "jazzicon": "^1.2.0",
-    "json-rpc-engine": "^5.1.4",
+    "json-rpc-engine": "^5.1.5",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
     "lodash.debounce": "^4.0.8",
