@@ -41,8 +41,8 @@ import {
   setGasTotal,
   showQrScanner,
   qrCodeDetected,
-  updateSendEnsResolution,
-  updateSendEnsResolutionError,
+  updateSendNamingResolution,
+  updateSendNamingResolutionError,
 } from '../../store/actions'
 import {
   resetSendState,
@@ -77,7 +77,7 @@ function mapStateToProps (state) {
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
     namingResolution: getSendResolution(state),
-    ensResolutionError: getSendResolutionError(state),
+    NamingResolutionError: getSendResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
     tokens: getTokens(state),
@@ -121,8 +121,8 @@ function mapDispatchToProps (dispatch) {
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
-    updateSendEnsResolution: (namingResolution) => dispatch(updateSendEnsResolution(namingResolution)),
-    updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
+    updateSendNamingResolution: (namingResolution) => dispatch(updateSendNamingResolution(namingResolution)),
+    updateSendNamingResolutionError: (message) => dispatch(updateSendNamingResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook, network) => {
       const namicorn = new Namicorn({ blockchain: { ens: { network }, zns: true } })
       if (namicorn.isSupportedDomain(toNickname)) {

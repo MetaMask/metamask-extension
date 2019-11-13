@@ -19,7 +19,7 @@ proxyquire('../add-recipient.container.js', {
   },
   '../../send.selectors.js': {
     getSendResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+    getSendResolutionError: (s) => `mockSendNamingResolutionError:${s}`,
     accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {
@@ -38,7 +38,7 @@ describe('add-recipient container', () => {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
         namingResolution: 'mockSendEnsResolution:mockState',
-        ensResolutionError: 'mockSendEnsResolutionError:mockState',
+        NamingResolutionError: 'mockSendNamingResolutionError:mockState',
         ownedAccounts: 'mockAccountsWithSendEtherInfoSelector:mockState',
         addressBookEntryName: undefined,
         nonContacts: [],

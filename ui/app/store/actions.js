@@ -201,8 +201,8 @@ var actions = {
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
   UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
-  updateSendEnsResolution,
-  updateSendEnsResolutionError,
+  updateSendNamingResolution,
+  updateSendNamingResolutionError,
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -1116,14 +1116,14 @@ function clearSend () {
   }
 }
 
-function updateSendEnsResolution (namingResolution) {
+function updateSendNamingResolution (namingResolution) {
   return {
     type: actions.UPDATE_SEND_ENS_RESOLUTION,
     payload: namingResolution,
   }
 }
 
-function updateSendEnsResolutionError (errorMessage) {
+function updateSendNamingResolutionError (errorMessage) {
   return {
     type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,

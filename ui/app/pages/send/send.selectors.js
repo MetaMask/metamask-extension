@@ -252,7 +252,7 @@ function getSendResolution (state) {
 }
 
 function getSendResolutionError (state) {
-  return state.metamask.send.ensResolutionError
+  return state.metamask.send.NamingResolutionError
 }
 
 function getTokenExchangeRate (state, tokenSymbol) {

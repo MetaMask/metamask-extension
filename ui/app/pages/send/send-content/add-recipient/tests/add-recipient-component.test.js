@@ -146,7 +146,7 @@ describe('AddRecipient Component', function () {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
-        ensResolutionError: 'very bad',
+        NamingResolutionError: 'very bad',
         contacts: [],
         nonContacts: [],
       })

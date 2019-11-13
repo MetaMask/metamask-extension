@@ -138,7 +138,7 @@
   }
 }
 
-.ens-input {
+.naming-input {
   @extend %row-nowrap;
 
   &__wrapper {
@@ -206,7 +206,7 @@
     &--valid {
       border-color: $Blue-500;
 
-      .ens-input__wrapper {
+      .naming-input__wrapper {
         &__status-icon {
           background-image: url("/images/check-green-solid.svg");
         }

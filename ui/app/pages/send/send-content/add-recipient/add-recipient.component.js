@@ -20,7 +20,7 @@ export default class AddRecipient extends Component {
     namingResolution: PropTypes.string,
     toError: PropTypes.string,
     toWarning: PropTypes.string,
-    ensResolutionError: PropTypes.string,
+    NamingResolutionError: PropTypes.string,
     selectedToken: PropTypes.object,
     hasHexData: PropTypes.bool,
     tokens: PropTypes.array,
@@ -196,7 +196,7 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs () {
-    const { toError, toWarning, ensResolutionError, namingResolution } = this.props
+    const { toError, toWarning, NamingResolutionError, namingResolution } = this.props
     const { t } = this.context
     const contacts = this.searchForContacts()
     const recents = this.searchForRecents()
@@ -205,13 +205,13 @@ export default class AddRecipient extends Component {
       return null
     }
 
-    if (ensResolutionError) {
+    if (NamingResolutionError) {
       return (
         <Dialog
           type="error"
           className="send__error-dialog"
         >
-          {ensResolutionError}
+          {NamingResolutionError}
         </Dialog>
       )
     }

@@ -41,7 +41,7 @@ function reduceMetamask (state, action) {
       forceGasMin: null,
       toNickname: '',
       namingResolution: null,
-      ensResolutionError: '',
+      NamingResolutionError: '',
     },
     coinOptions: {},
     useBlockie: false,
@@ -285,7 +285,7 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           namingResolution: action.payload,
-          ensResolutionError: '',
+          NamingResolutionError: '',
         },
       })
 
@@ -294,7 +294,7 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           namingResolution: null,
-          ensResolutionError: action.payload,
+          NamingResolutionError: action.payload,
         },
       })
 

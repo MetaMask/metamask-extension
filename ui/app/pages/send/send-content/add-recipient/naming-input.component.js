@@ -129,16 +129,16 @@ export default class NamingInput extends Component {
     }
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={c('naming-input', className)}>
         <div
-          className={c('ens-input__wrapper', {
-            'ens-input__wrapper__status-icon--error': false,
-            'ens-input__wrapper__status-icon--valid': false,
+          className={c('naming-input__wrapper', {
+            'naming-input__wrapper__status-icon--error': false,
+            'naming-input__wrapper__status-icon--valid': false,
           })}
         >
-          <div className="ens-input__wrapper__status-icon" />
+          <div className="naming-input__wrapper__status-icon" />
           <input
-            className="ens-input__wrapper__input"
+            className="naming-input__wrapper__input"
             type="text"
             dir="auto"
             placeholder={t('recipientAddressPlaceholder')}
@@ -148,9 +148,9 @@ export default class NamingInput extends Component {
             autoFocus
           />
           <div
-            className={c('ens-input__wrapper__action-icon', {
-              'ens-input__wrapper__action-icon--erase': input,
-              'ens-input__wrapper__action-icon--qrcode': !input,
+            className={c('naming-input__wrapper__action-icon', {
+              'naming-input__wrapper__action-icon--erase': input,
+              'naming-input__wrapper__action-icon--qrcode': !input,
             })}
             onClick={() => {
               if (input) {
@@ -172,23 +172,23 @@ export default class NamingInput extends Component {
 
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={c('naming-input', className)}>
         <div
-          className="ens-input__wrapper ens-input__wrapper--valid"
+          className="naming-input__wrapper naming-input__wrapper--valid"
         >
-          <div className="ens-input__wrapper__status-icon ens-input__wrapper__status-icon--valid" />
+          <div className="naming-input__wrapper__status-icon naming-input__wrapper__status-icon--valid" />
           <div
-            className="ens-input__wrapper__input ens-input__wrapper__input--selected"
+            className="naming-input__wrapper__input naming-input__wrapper__input--selected"
             placeholder={t('recipientAddress')}
             onChange={this.onChange}
           >
-            <div className="ens-input__selected-input__title">
+            <div className="naming-input__selected-input__title">
               {name || ellipsify(selectedAddress)}
             </div>
-            { name && <div className="ens-input__selected-input__subtitle">{selectedAddress}</div> }
+            { name && <div className="naming-input__selected-input__subtitle">{selectedAddress}</div> }
           </div>
           <div
-            className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
+            className="naming-input__wrapper__action-icon naming-input__wrapper__action-icon--erase"
             onClick={this.resetInput}
           />
         </div>

@@ -47,7 +47,7 @@ proxyquire('../send.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
     getSendResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+    getSendResolutionError: (s) => `mockSendNamingResolutionError:${s}`,
   },
   './send-content/add-recipient/add-recipient.selectors': {
     getTokens: s => `mockTokens:${s}`,
@@ -92,7 +92,7 @@ describe('send container', () => {
         qrCodeData: 'mockQrCodeData:mockState',
         tokens: 'mockTokens:mockState',
         namingResolution: 'mockSendEnsResolution:mockState',
-        ensResolutionError: 'mockSendEnsResolutionError:mockState',
+        NamingResolutionError: 'mockSendNamingResolutionError:mockState',
         toNickname: 'mockToNickname:mockState',
         addressBook: 'mockAddressBook:mockState',
       })
