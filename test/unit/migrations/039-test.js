@@ -1,6 +1,6 @@
 const assert = require('assert')
 let id = 0
-const migration37 = require('../../../app/scripts/migrations/037')
+const migration39 = require('../../../app/scripts/migrations/039')
 const nullStorage = {meta: { version: 0 }, data: {}}
 const storage = {
   meta: {},
@@ -86,8 +86,8 @@ do {
 
 describe('storage is migrated successfully', () => {
   it('should not fail', (done) => {
-    migration37.migrate(nullStorage).then((migratedData) => {
-      assert.equal(migratedData.meta.version, 37)
+    migration39.migrate(nullStorage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 39)
       done()
     }).catch(done)
   })
@@ -95,8 +95,8 @@ describe('storage is migrated successfully', () => {
 
   it('should remove down to 40 transactions if their are over 40 transactions and their are enough final transactions to remove', (done) => {
     storage.data.TransactionController.transactions = transactions60
-    migration37.migrate(storage).then((migratedData) => {
-      assert.equal(migratedData.meta.version, 37)
+    migration39.migrate(storage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 39)
       const len = migratedData.data.TransactionController.transactions.length
       assert(len === 40, `should be 40 got ${len}`)
       done()
@@ -105,8 +105,8 @@ describe('storage is migrated successfully', () => {
 
   it('should remove transactions but it will still be greater than 40', (done) => {
     storage.data.TransactionController.transactions = transactions160
-    migration37.migrate(storage).then((migratedData) => {
-      assert.equal(migratedData.meta.version, 37)
+    migration39.migrate(storage).then((migratedData) => {
+      assert.equal(migratedData.meta.version, 39)
       const len = migratedData.data.TransactionController.transactions.length
       assert(len === 80, `should be 80 but got ${len}`)
       done()
