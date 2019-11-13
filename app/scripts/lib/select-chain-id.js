@@ -15,6 +15,9 @@ const standardNetworkId = {
 }
 
 function selectChainId (metamaskState) {
+  if (!metamaskState || !metamaskState.provider || !metamaskState.provider.chaindId) {
+    return undefined
+  }
   const { network, provider: { chaindId } } = metamaskState
   return standardNetworkId[network] || `0x${parseInt(chaindId, 10).toString(16)}`
 }

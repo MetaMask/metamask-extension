@@ -1,11 +1,13 @@
 const Through = require('through2')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
+const makeDuplexPair = require('./duplex-socket')
 
 module.exports = {
   jsonParseStream: jsonParseStream,
   jsonStringifyStream: jsonStringifyStream,
   setupMultiplex: setupMultiplex,
+  makeDuplexPair,
 }
 
 /**
