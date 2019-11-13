@@ -39,7 +39,7 @@ function transformState (state) {
             transactions.splice(index, 1)
           }
           txCount = transactions.length
-        } while (txCount > 40 && containsFinalStates(transactions))
+        } while (txCount > DEFAULT_TX_HISTORY_LIMIT && containsFinalStates(transactions))
       }
     }
   }
