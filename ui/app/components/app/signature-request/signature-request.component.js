@@ -54,7 +54,7 @@ export default class SignatureRequest extends PureComponent {
       cancel,
       sign,
     } = this.props
-    const { message } = JSON.parse(data)
+    const { message, domain = {} } = JSON.parse(data)
 
     return (
       <div className="signature-request page-container">
@@ -62,14 +62,14 @@ export default class SignatureRequest extends PureComponent {
         <div className="signature-request-content">
           <div className="signature-request-content__title">{this.context.t('sigRequest')}</div>
           <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial" >{ message.from.name && message.from.name[0] }</div>
+            <div className="signature-request-content__identicon-initial" >{ domain.name && domain.name[0] }</div>
             <div className="signature-request-content__identicon-border" />
             <Identicon
-              address={message.from.wallet}
+              address={senderWallet}
               diameter={70}
             />
           </div>
-          <div className="signature-request-content__info--bolded">{message.from.name}</div>
+          <div className="signature-request-content__info--bolded">{domain.name}</div>
           <div className="signature-request-content__info">{origin}</div>
           <div className="signature-request-content__info">{this.formatWallet(senderWallet)}</div>
         </div>
