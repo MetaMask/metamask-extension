@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 7.5.1 Tuesday Nov 13 2019
+- [#7402](https://github.com/MetaMask/metamask-extension/pull/7402): Fix regression for signed types data screens
+- [#7390](https://github.com/MetaMask/metamask-extension/pull/7390): Update json-rpc-engine
+- [#7401](https://github.com/MetaMask/metamask-extension/pull/7401): Reject connection request on window close
+
 ## 7.5.0 Mon Nov 04 2019
 - [#7328](https://github.com/MetaMask/metamask-extension/pull/7328): ignore known transactions on first broadcast and continue with normal flow
 - [#7327](https://github.com/MetaMask/metamask-extension/pull/7327): eth_getTransactionByHash will now check metamask's local history for pending transactions
