@@ -9708,7 +9708,7 @@ eth-hd-keyring@^3.4.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-json-rpc-errors@^1.0.1, eth-json-rpc-errors@^1.1.0:
+eth-json-rpc-errors@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-1.1.0.tgz#2a4291fb20c0483c99b53286a814ed14ca4efb2e"
   integrity sha512-AAA76BmwwSR5Mws+ivZUYxoDwMygDuMWxSTEmqDXhRPTExSWe5wuJLT/rSfvPSy9+owSudy67JmyRQ02RAOOYQ==
