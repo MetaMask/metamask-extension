@@ -30,7 +30,8 @@
     "mocha",
     "chai",
     "react",
-    "json"
+    "json",
+    "import"
   ],
 
   "globals": {
@@ -43,6 +44,7 @@
   },
 
   "rules": {
+    "import/no-unresolved": ["error", { "commonjs": true }],
     "no-restricted-globals": ["error", "event"],
     "accessor-pairs": 2,
     "arrow-spacing": [2, { "before": true, "after": true }],
