@@ -10,7 +10,7 @@ const log = require('loglevel')
 const R = require('ramda')
 
 const SignatureRequest = require('../../components/app/signature-request').default
-const SignatureRequestOriginal = require('../../components/app/signature-request-original')
+const SignatureRequestOriginal = require('../../components/app/signature-request-original').default
 const Loading = require('../../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
