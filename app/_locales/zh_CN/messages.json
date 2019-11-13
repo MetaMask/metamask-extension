@@ -261,7 +261,7 @@
   "connect": {
     "message": "连接"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "关联请求"
   },
   "connectingTo": {

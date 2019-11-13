@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Paggamit sa Contract"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "I-clear ang Privacy Data"
   },
   "reject": {

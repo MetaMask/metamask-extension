@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Kontraktssamhandling"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tøm personvernsdata"
   },
   "reject": {
@@ -249,7 +249,7 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Kontaktforespørsel "
   },
   "connectingTo": {

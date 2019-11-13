@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "የግላዊነት ውሂብን አጥራ"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "የግንኙነት ጥያቄ"
   },
   "connectingTo": {

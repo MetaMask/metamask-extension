@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "حذف اطلاعات حریم خصوصی"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "درخواست اتصال"
   },
   "connectingTo": {

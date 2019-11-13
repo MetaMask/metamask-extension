@@ -240,7 +240,7 @@
   "connect": {
     "message": "Connetti"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Richiesta Connessione"
   },
   "connectingTo": {

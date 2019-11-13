@@ -249,7 +249,7 @@
   "connect": {
     "message": "Verbinden"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Verbindungsanfrage"
   },
   "connectingTo": {

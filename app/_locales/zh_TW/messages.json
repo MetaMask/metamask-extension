@@ -258,7 +258,7 @@
   "connect": {
     "message": "連線"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "連線請求"
   },
   "connectingTo": {
