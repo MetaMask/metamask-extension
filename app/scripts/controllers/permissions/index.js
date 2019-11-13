@@ -43,8 +43,15 @@ class PermissionsController {
     this._initializePermissions(restoredPermissions)
   }
 
-  createMiddleware (options) {
-    const { origin } = options
+  createMiddleware ({ origin, extensionId }) {
+    if (extensionId) {
+      this.store.updateState({
+        [METADATA_STORE_KEY]: {
+          ...this.store.getState()[METADATA_STORE_KEY],
+          [origin]: { extensionId },
+        },
+      })
+    }
     const engine = new JsonRpcEngine()
     engine.push(createRequestMiddleware({
       store: this.store,

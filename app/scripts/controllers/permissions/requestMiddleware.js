@@ -24,14 +24,21 @@ module.exports = function createRequestMiddleware ({
 
       // custom method for getting metadata from the requesting domain
       case 'wallet_sendDomainMetadata':
+        const storeState = store.getState()[storeKey]
+        const extensionId = storeState[req.origin]
+          ? storeState[req.origin].extensionId
+          : undefined
         if (
           req.domainMetadata &&
           typeof req.domainMetadata.name === 'string'
         ) {
           store.updateState({
             [storeKey]: {
-              ...store.getState()[storeKey],
-              [req.origin]: req.domainMetadata,
+              ...storeState,
+              [req.origin]: {
+                extensionId,
+                ...req.domainMetadata,
+              },
             },
           })
         }
