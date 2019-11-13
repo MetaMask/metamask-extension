@@ -1,3 +1,5 @@
+![MetaMask Snaps Logo](https://miro.medium.com/max/1492/1*3rV0z0ufTqkGC4RJ3vXQwA.png)
+
 # MetaMask Snaps Beta
 
 Welcome to the MetaMask Snaps Beta. This repository is a fork of the regular MetaMask extension, which you can find [here](https://github.com/MetaMask/metamask-extension/).
