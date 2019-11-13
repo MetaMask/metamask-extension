@@ -44,6 +44,7 @@ class PermissionsController {
   }
 
   createMiddleware ({ origin, extensionId }) {
+
     if (extensionId) {
       this.store.updateState({
         [METADATA_STORE_KEY]: {
@@ -52,12 +53,15 @@ class PermissionsController {
         },
       })
     }
+
     const engine = new JsonRpcEngine()
+
     engine.push(createRequestMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this),
     }))
+
     engine.push(createLoggerMiddleware({
       walletPrefix: WALLET_METHOD_PREFIX,
       restrictedMethods: Object.keys(this._restrictedMethods),
@@ -65,6 +69,7 @@ class PermissionsController {
       logStoreKey: LOG_STORE_KEY,
       historyStoreKey: HISTORY_STORE_KEY,
     }))
+
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
