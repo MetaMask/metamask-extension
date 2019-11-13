@@ -252,7 +252,7 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Požiadavka na pripojenie"
   },
   "connectingTo": {

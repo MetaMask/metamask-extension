@@ -258,7 +258,7 @@
   "connect": {
     "message": "연결"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "연결 요청"
   },
   "connectingTo": {

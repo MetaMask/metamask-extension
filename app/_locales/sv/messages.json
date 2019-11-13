@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Rensa personlig data"
   },
   "appName": {
@@ -246,7 +246,7 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Anslutningsförfrågan"
   },
   "connectingTo": {

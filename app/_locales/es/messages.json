@@ -218,7 +218,7 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Petición para conectar"
   },
   "connectingTo": {

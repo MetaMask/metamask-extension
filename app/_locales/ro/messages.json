@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Ștergeți datele confidențiale"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Solicitare de conectare"
   },
   "connectingTo": {

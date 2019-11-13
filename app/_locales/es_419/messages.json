@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Interacción contractual"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Borrar datos de privacidad"
   },
   "reject": {
@@ -249,7 +249,7 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Solicitud de conexión"
   },
   "connectingTo": {

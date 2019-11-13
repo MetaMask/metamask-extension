@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "נקה נתוני פרטיות"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "התחברות"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "חבר/י בקשה"
   },
   "connectingTo": {

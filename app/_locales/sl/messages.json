@@ -261,7 +261,7 @@
   "connect": {
     "message": "Poveži"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Zahteva za povezavo"
   },
   "connectingTo": {

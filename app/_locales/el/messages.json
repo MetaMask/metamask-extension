@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Εκκαθάριση Δεδομένων Απορρήτου"
   },
   "reject": {
@@ -249,7 +249,7 @@
   "connect": {
     "message": "Σύνδεση"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Αίτημα Σύνδεσης"
   },
   "connectingTo": {

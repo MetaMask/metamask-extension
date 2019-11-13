@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tyhjennä yksityisyystiedot"
   },
   "reject": {
@@ -249,7 +249,7 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Yhdistämispyyntö"
   },
   "connectingTo": {

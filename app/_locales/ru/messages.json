@@ -740,7 +740,7 @@
   "connect": {
     "message": "Подключиться"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Запрос на подключение"
   },
   "connectingTo": {

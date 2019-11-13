@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Futa Data za Faragha"
   },
   "appName": {
@@ -246,7 +246,7 @@
   "connect": {
     "message": "Unganisha"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Unganisha Ombi"
   },
   "connectingTo": {

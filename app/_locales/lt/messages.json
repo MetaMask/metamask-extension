@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Išvalyti asmeninius duomenis"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Prijungimo užklausa"
   },
   "connectingTo": {

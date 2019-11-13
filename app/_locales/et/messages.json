@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tühjenda privaatsusandmed"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Ühenduse taotlus"
   },
   "connectingTo": {

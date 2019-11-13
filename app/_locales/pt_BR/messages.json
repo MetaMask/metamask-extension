@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Interação do Contrato"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Limpar Dados de Privacidade"
   },
   "appName": {
@@ -246,7 +246,7 @@
   "connect": {
     "message": "Conectar-se"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Solicitação de Conexão"
   },
   "connectingTo": {

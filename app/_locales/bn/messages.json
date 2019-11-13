@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "গোপনীয়তার ডেটা মুছে পরিস্কার করুন"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "সংযুক্ত করুন"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "সংযোগের অনুরোধ"
   },
   "connectingTo": {

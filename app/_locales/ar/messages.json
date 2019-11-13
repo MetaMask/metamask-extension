@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "مسح بيانات الخصوصية"
   },
   "reject": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "طلب اتصال"
   },
   "connectingTo": {

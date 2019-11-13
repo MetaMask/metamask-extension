@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "ಗೌಪ್ಯತೆ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "appName": {
@@ -252,7 +252,7 @@
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "ವಿನಂತಿಯನ್ನು ಸಂಪರ್ಕಪಡಿಸಿ"
   },
   "connectingTo": {

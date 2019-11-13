@@ -11,7 +11,7 @@
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Obrišite privatne podatke"
   },
   "reject": {
@@ -249,7 +249,7 @@
   "connect": {
     "message": "Повезивање"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Zahtev za povezivanjem"
   },
   "connectingTo": {
