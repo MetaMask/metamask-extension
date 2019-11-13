@@ -34,7 +34,7 @@ export default class ProviderPageContainer extends PureComponent {
     })
   }
 
-  _beforeUnload () {
+  _beforeUnload = () => {
     const { origin, rejectProviderRequestByOrigin } = this.props
     this.context.metricsEvent({
       eventOpts: {
