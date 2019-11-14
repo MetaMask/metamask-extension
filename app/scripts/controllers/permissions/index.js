@@ -5,7 +5,7 @@ const RpcCap = require('rpc-cap').CapabilitiesController
 const { ethErrors } = require('eth-json-rpc-errors')
 
 const getRestrictedMethods = require('./restrictedMethods')
-const createRequestMiddleware = require('./requestMiddleware')
+const createMethodMiddleware = require('./methodMiddleware')
 const createLoggerMiddleware = require('./loggerMiddleware')
 
 // Methods that do not require any permissions to use:
@@ -56,10 +56,13 @@ class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
-    engine.push(createRequestMiddleware({
+    engine.push(createMethodMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
-      getAccounts: this.getAccounts.bind(this),
+      getAccounts: this.getAccounts.bind(this, origin),
+      requestAccountsPermission: this._requestPermissions.bind(
+        this, origin, { eth_accounts: {} }
+      ),
     }))
 
     engine.push(createLoggerMiddleware({
@@ -94,6 +97,28 @@ class PermissionsController {
 
       function _end () {
         if (res.error || !Array.isArray(res.result)) resolve([])
+        else resolve(res.result)
+      }
+    })
+  }
+
+  /**
+   * Submits a permissions request to rpc-cap. Internal use only.
+   *
+   * @param {string} origin - The origin string.
+   * @param {IRequestedPermissions} permissions - The requested permissions.
+   */
+  _requestPermissions (origin, permissions) {
+    return new Promise((resolve, reject) => {
+
+      const req = { method: 'wallet_requestPermissions', params: [permissions] }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+
+      function _end (err) {
+        if (err || res.error) reject(err || res.error)
         else resolve(res.result)
       }
     })

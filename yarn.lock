@@ -18219,11 +18219,12 @@ mersenne-twister@^1.0.1:
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
 metamask-inpage-provider@MetaMask/metamask-inpage-provider#LoginPerSite:
-  version "3.1.0"
-  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/96720b37373ec67d30f127f0f7fdc2a9cac9484b"
+  version "4.0.0"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/feb2ccacb12a0af8f2c3a37dacb74f7c49920f04"
   dependencies:
+    eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"
-    json-rpc-engine "^5.1.3"
+    json-rpc-engine "^5.1.5"
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
