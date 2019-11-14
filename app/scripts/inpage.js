@@ -88,7 +88,10 @@ web3.setProvider = function () {
 }
 log.debug('MetaMask - injected web3')
 
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+proxiedInpageProvider._web3Ref = web3.eth
+
+// setup dapp auto reload AND proxy web3
+setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 
 //
 // end deprecate:2019-12-16
@@ -96,7 +99,7 @@ setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
 window.ethereum = proxiedInpageProvider
 
-inpageProvider.publicConfigStore.subscribe(function (state) {
+inpageProvider._publicConfigStore.subscribe(function (state) {
   if (state.onboardingcomplete) {
     window.postMessage('onboardingcomplete', '*')
   }
