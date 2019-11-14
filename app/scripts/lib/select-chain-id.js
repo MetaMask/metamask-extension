@@ -15,11 +15,11 @@ const standardNetworkId = {
 }
 
 function selectChainId (metamaskState) {
-  if (!metamaskState || !metamaskState.provider || !metamaskState.provider.chaindId) {
+  if (!metamaskState || !metamaskState.provider || !metamaskState.provider.chainId) {
     return undefined
   }
-  const { network, provider: { chaindId } } = metamaskState
-  return standardNetworkId[network] || `0x${parseInt(chaindId, 10).toString(16)}`
+  const { network, provider: { chainId } } = metamaskState
+  return standardNetworkId[network] || `0x${parseInt(chainId, 10).toString(16)}`
 }
 
 module.exports = selectChainId

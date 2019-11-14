@@ -17956,7 +17956,7 @@ mersenne-twister@^1.0.1:
 
 metamask-inpage-provider@MetaMask/metamask-inpage-provider#plugins:
   version "4.0.0"
-  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/b99e46d916dd7f1b1458e7cda64e18ee0153dbca"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/2884eef783b1728ac34c52e3dda601a98885ee87"
   dependencies:
     capnode "^4.0.1"
     eth-json-rpc-errors "^2.0.0"

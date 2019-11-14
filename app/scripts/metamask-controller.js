@@ -409,6 +409,8 @@ module.exports = class MetamaskController extends EventEmitter {
       this.removeEventListener && this.removeEventListener('update', updatePublicConfigStore)
     }
 
+    return publicConfigStore
+
     function updatePublicConfigStore (memState) {
       publicConfigStore.putState(selectPublicState(memState))
     }
@@ -422,7 +424,6 @@ module.exports = class MetamaskController extends EventEmitter {
       }
       return result
     }
-    return publicConfigStore
   }
 
   //=============================================================================
