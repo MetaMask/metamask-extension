@@ -101,9 +101,10 @@ function SignatureRequest (props) {
   this.state = {
     selectedAccount: props.selectedAccount,
   }
+  this._beforeUnload = this._beforeUnload.bind(this)
 }
 
-SignatureRequest.prototype._beforeUnload = (event) => {
+SignatureRequest.prototype._beforeUnload = function (event) {
   const { clearConfirmTransaction, cancel } = this.props
   const { metricsEvent } = this.context
   metricsEvent({
@@ -117,7 +118,7 @@ SignatureRequest.prototype._beforeUnload = (event) => {
   cancel(event)
 }
 
-SignatureRequest.prototype._removeBeforeUnload = () => {
+SignatureRequest.prototype._removeBeforeUnload = function () {
   if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
     window.removeEventListener('beforeunload', this._beforeUnload)
   }
