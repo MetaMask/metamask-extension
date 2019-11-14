@@ -3,6 +3,7 @@
 ## Current Develop Branch
 
 ## 7.5.2 Thu Nov 14 2019
+- [#7414](https://github.com/MetaMask/metamask-extension/pull/7414): Ensure SignatureRequestOriginal 'beforeunload' handler is bound
 
 ## 7.5.1 Tuesday Nov 13 2019
 - [#7402](https://github.com/MetaMask/metamask-extension/pull/7402): Fix regression for signed types data screens
