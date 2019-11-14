@@ -190,8 +190,8 @@ const mapDispatchToProps = dispatch => {
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
     },
-    createRetryTransaction: (txId, gasPrice) => {
-      return dispatch(createRetryTransaction(txId, gasPrice))
+    createRetryTransaction: (txId, gasPrice, gasLimit) => {
+      return dispatch(createRetryTransaction(txId, gasPrice, gasLimit))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
@@ -257,7 +257,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchHideSidebar()
         dispatchCancelAndClose()
       } else if (isRetry) {
-        dispatchCreateRetryTransaction(txId, gasPrice)
+        dispatchCreateRetryTransaction(txId, gasPrice, gasLimit)
         dispatchHideSidebar()
         dispatchCancelAndClose()
       } else {

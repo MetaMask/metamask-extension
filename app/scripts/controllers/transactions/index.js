@@ -307,17 +307,16 @@ class TransactionController extends EventEmitter {
     return newTxMeta
   }
 
-  async createSpeedUpTransaction (originalTxId, customGasPrice) {
+  async createRetryTransaction (originalTxId, customGasPrice, customGasLimit) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
-    const { gasPrice: lastGasPrice } = txParams
-
-    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+    const { gas: lastGasLimit, gasPrice: lastGasPrice } = txParams
 
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
         ...txParams,
-        gasPrice: newGasPrice,
+        gasPrice: customGasPrice || lastGasPrice,
+        gas: customGasLimit || lastGasLimit,
       },
       lastGasPrice,
       loadingDefaults: false,
@@ -328,6 +327,15 @@ class TransactionController extends EventEmitter {
     this.addTx(newTxMeta)
     await this.approveTransaction(newTxMeta.id)
     return newTxMeta
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const { txParams } = originalTxMeta
+    const { gasPrice: lastGasPrice } = txParams
+    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+
+    return this.createRetryTransaction(originalTxId, newGasPrice)
   }
 
   /**

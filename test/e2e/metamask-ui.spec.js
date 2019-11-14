@@ -1014,7 +1014,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send a custom token from dapp', () => {
+  describe('Sends a custom token from dapp to produce a failure and then retries the send successfully', () => {
     let gasModal
     it('sends an already created token', async () => {
       const windowHandles = await driver.getAllWindowHandles()
@@ -1066,7 +1066,7 @@ describe('MetaMask', function () {
       await delay(50)
       await gasLimitInput.sendKeys(Key.BACK_SPACE)
       await delay(50)
-      await gasLimitInput.sendKeys('60000')
+      await gasLimitInput.sendKeys('21000')
 
       await delay(1000)
 
@@ -1076,7 +1076,7 @@ describe('MetaMask', function () {
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
       const renderedGasFee = await gasFeeInputs[0].getText()
-      assert.equal(renderedGasFee, '0.0006')
+      assert.equal(renderedGasFee, '0.00021')
     })
 
     it('submits the transaction', async function () {
@@ -1087,6 +1087,43 @@ describe('MetaMask', function () {
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
+    })
+
+    it('finds the transaction in the transactions list and initiates a retry', async function () {
+      let failedTxes
+      await driver.wait(async () => {
+        const failedTxes = await findElements(driver, By.css('.transaction-list__failed-transactions .transaction-list-item'))
+        return failedTxes.length === 1
+      }, 10000)
+      const failedTx = failedTxes
+      await failedTx.click()
+      await delay(regularDelayMs)
+
+      const retryButton = await findElement(driver, By.css('.transaction-list-item-details__header-button > .fa-refresh'))
+      await retryButton.click()
+
+      await delay(regularDelayMs)
+      gasModal = await driver.findElement(By.css('.sidebar-left'))
+    })
+
+    it('sets the gas to a passing level and submits', async () => {
+      const modalTabs = await findElements(driver, By.css('.page-container__tab'))
+      await modalTabs[1].click()
+      await delay(regularDelayMs)
+
+      const [, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
+
+      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await delay(50)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await delay(50)
+      await gasLimitInput.sendKeys('60000')
+
+      await delay(1000)
+
+      const save = await findElement(driver, By.css('.page-container__footer-button'))
+      await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
     })
 
     it('finds the transaction in the transactions list', async function () {
