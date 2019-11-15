@@ -22,6 +22,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
+      - test-lint-shellcheck:
+          requires:
+            - prep-deps
       - test-e2e-chrome:
           requires:
             - prep-deps
