@@ -177,7 +177,7 @@ export default class NetworksTab extends PureComponent {
       editRpc,
       networkDefaultedToProvider,
       providerUrl,
-      networksToRender
+      networksToRender,
     } = this.props
 
     const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP

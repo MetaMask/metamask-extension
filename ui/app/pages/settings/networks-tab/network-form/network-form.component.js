@@ -24,7 +24,7 @@ export default class NetworkForm extends PureComponent {
     isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
-    networksToRender: PropTypes.array
+    networksToRender: PropTypes.array,
   }
 
   state = {
