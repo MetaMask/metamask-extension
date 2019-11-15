@@ -80,7 +80,8 @@ export default class AccountMenu extends PureComponent {
       selectedAddress,
       keyrings,
       showAccountDetail,
-      addressConnectedIconMap,
+      addressConnectedDomainMap,
+      originOfCurrentTab,
     } = this.props
 
     const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
@@ -95,8 +96,8 @@ export default class AccountMenu extends PureComponent {
       const keyring = keyrings.find(kr => {
         return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
       })
-
-      const addressIconArray = addressConnectedIconMap[identity.address]
+      const addressDomains = addressConnectedDomainMap[identity.address] || {}
+      const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab]
 
       return (
         <div
@@ -130,21 +131,21 @@ export default class AccountMenu extends PureComponent {
               type={PRIMARY}
             />
           </div>
-            { addressIconArray
-              ? <div className="account-menu__icon-list">{ addressIconArray.map((addressIcon, index) => {
-                return (<div className="connected-sites-list__identicon-container" style={{ zIndex: index + 1 }}>
-                  <div className="connected-sites-list__identicon-border" />
-                  { addressIcon.icon
-                    ? <img
-                      className="connected-sites-list__identicon"
-                      src={addressIcon.icon}
-                    />
-                    : <i className="connected-sites-list__identicon--default">
-                        {addressIcon.name.charAt(0).toUpperCase()}
-                      </i>
-                  }
-                </div>)
-              }) }</div>
+            { iconAndNameForOpenDomain
+              ? <div className="account-menu__icon-list">
+                  <div className="connected-sites-list__identicon-container">
+                    <div className="connected-sites-list__identicon-border" />
+                    { iconAndNameForOpenDomain.icon
+                      ? <img
+                        className="connected-sites-list__identicon"
+                        src={iconAndNameForOpenDomain.icon}
+                      />
+                      : <i className="connected-sites-list__identicon--default">
+                          {iconAndNameForOpenDomain.name.charAt(0).toUpperCase()}
+                        </i>
+                    }
+                  </div>
+                </div>
                : null
              }
           { this.renderKeyringType(keyring) }

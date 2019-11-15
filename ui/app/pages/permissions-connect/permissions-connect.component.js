@@ -28,14 +28,24 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow () {
-    const { permissionsRequest } = this.props
+    const { permissionsRequest, currentMetaMaskTabOpenerId } = this.props
     this.setState({
       page: null,
     })
     setTimeout(() => {
-      let temp = permissionsRequest.origin === 'localhost' ? 'http://localhost:8080' : null
-      window.location.replace(temp ? temp : 'https://' + permissionsRequest.origin)
+      global.platform.switchToTab(currentMetaMaskTabOpenerId, () => {
+        window.close()
+      })
     }, 2000)
+  }
+
+  componentDidMount () {
+    const {
+      getOpenMetaMaskTabs,
+      getCurrentWindowTab,
+    } = this.props
+    getCurrentWindowTab()
+    getOpenMetaMaskTabs()
   }
 
   render () {
@@ -48,6 +58,7 @@ export default class PermissionConnect extends Component {
       newAccountNumber,
       nativeCurrency,
       permissionsRequest,
+      currentMetaMaskTabOpener,
     } = this.props
     const { page, selectedAccountAddress } = this.state
 

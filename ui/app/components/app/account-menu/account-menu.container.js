@@ -11,14 +11,23 @@ import {
   showConfigPage,
   showInfoPage,
   showModal,
+  getCurrentWindowTab,
+  getTabIdOrigins,
 } from '../../../store/actions'
-import { getMetaMaskAccounts, getActiveTab, getAddressConnectedIconMap } from '../../../selectors/selectors'
+import { getMetaMaskAccounts, getActiveTab, getAddressConnectedDomainMap } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
-  const { metamask: {
-    selectedAddress, isAccountMenuOpen, keyrings, identities, isUnlocked,
-  } } = state
+  const {
+    metamask: {
+      selectedAddress, isAccountMenuOpen, keyrings, identities, isUnlocked,
+    },
+    appState: {
+      openExternalTabs,
+      tabIdOrigins,
+    },
+  } = state
+  const originOfCurrentTab = tabIdOrigins[Object.keys(tabIdOrigins).find(id => openExternalTabs[id])]
 
   return {
     accounts: getMetaMaskAccounts(state),
@@ -28,7 +37,8 @@ function mapStateToProps (state) {
     isUnlocked,
     keyrings,
     selectedAddress,
-    addressConnectedIconMap: getAddressConnectedIconMap(state),
+    addressConnectedDomainMap: getAddressConnectedDomainMap(state),
+    originOfCurrentTab,
   }
 }
 

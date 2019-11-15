@@ -72,6 +72,19 @@ class ExtensionPlatform {
     })
   }
 
+  currentTab () {
+    return new Promise(resolve => {
+      extension.tabs.getCurrent(tab => {
+        console.log('currentTab tab', tab)
+        resolve(tab)
+      })
+    })
+  }
+
+  switchToTab (tabId, cb) {
+    chrome.tabs.update(tabId, {highlighted: true}, cb)
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()

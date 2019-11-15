@@ -64,6 +64,9 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const openNonMetamaskTabsIDs = {}
+const tabIdOriginMap = {}
+let previousTabId
 
 // state persistence
 const localStore = new LocalStore()
@@ -247,6 +250,15 @@ function setupController (initState, initLangCode) {
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
+    getOpenMetaMaskTabs: () => {
+      return openMetamaskTabsIDs
+    },
+    getTabIdOrigins: () => {
+      return tabIdOriginMap
+    },
+    getOpenExternalTabsIDs: () => {
+      return openNonMetamaskTabsIDs
+    }
   })
 
   const provider = controller.provider
@@ -375,7 +387,8 @@ function setupController (initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id
-        openMetamaskTabsIDs[tabId] = true
+        openMetamaskTabsIDs[tabId] = { opener: previousTabId || null }
+        previousTabId = tabId
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId]
@@ -383,6 +396,11 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab) {
+        const tabId = remotePort.sender.tab.id
+        openNonMetamaskTabsIDs[tabId] = true
+        previousTabId = tabId
+      }
       connectExternal(remotePort)
     }
   }
@@ -470,5 +488,24 @@ function openPopup () {
 extension.runtime.onInstalled.addListener(({reason}) => {
   if ((reason === 'install') && (!METAMASK_DEBUG)) {
     platform.openExtensionInBrowser()
+  }
+})
+
+extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if ( message.type == 'notifyTabId' && sender.tab) {
+    const originMatch = message.URL.match(/\/\/(.+)\//)
+    tabIdOriginMap[sender.tab.id] = originMatch.length && originMatch[1]
+    sendResponse({ tabId: sender.tab.id })
+  }
+})
+
+extension.tabs.onActivated.addListener(({ tabId }) => {
+  if (previousTabId !== tabId) {
+    if (openMetamaskTabsIDs[tabId]) {
+      openMetamaskTabsIDs[tabId] = { opener: previousTabId }
+      previousTabId = tabId
+    } else if (openNonMetamaskTabsIDs[tabId]) {
+      previousTabId = tabId
+    }
   }
 })
