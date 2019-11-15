@@ -42,7 +42,8 @@ export default class AccountMenu extends PureComponent {
     showAccountDetail: PropTypes.func,
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
-    addressConnectedIconMap: PropTypes.object,
+    addressConnectedDomainMap: PropTypes.object,
+    originOfCurrentTab: PropTypes.number,
   }
 
   state = {
@@ -131,23 +132,23 @@ export default class AccountMenu extends PureComponent {
               type={PRIMARY}
             />
           </div>
-            { iconAndNameForOpenDomain
-              ? <div className="account-menu__icon-list">
-                  <div className="connected-sites-list__identicon-container">
-                    <div className="connected-sites-list__identicon-border" />
-                    { iconAndNameForOpenDomain.icon
-                      ? <img
-                        className="connected-sites-list__identicon"
-                        src={iconAndNameForOpenDomain.icon}
-                      />
-                      : <i className="connected-sites-list__identicon--default">
-                          {iconAndNameForOpenDomain.name.charAt(0).toUpperCase()}
-                        </i>
-                    }
-                  </div>
-                </div>
-               : null
-             }
+          { iconAndNameForOpenDomain
+            ? <div className="account-menu__icon-list">
+              <div className="connected-sites-list__identicon-container">
+                <div className="connected-sites-list__identicon-border" />
+                { iconAndNameForOpenDomain.icon
+                  ? <img
+                    className="connected-sites-list__identicon"
+                    src={iconAndNameForOpenDomain.icon}
+                  />
+                  : <i className="connected-sites-list__identicon--default">
+                    {iconAndNameForOpenDomain.name.charAt(0).toUpperCase()}
+                  </i>
+                }
+              </div>
+            </div>
+            : null
+          }
           { this.renderKeyringType(keyring) }
           { this.renderRemoveAccount(keyring, identity) }
         </div>

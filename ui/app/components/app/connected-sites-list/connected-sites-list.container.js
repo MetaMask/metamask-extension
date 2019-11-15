@@ -22,7 +22,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     showDisconnectAccountModal: (domainKey, domain) => {
-      dispatch(showModal({ name: 'DISCONNECT_ACCOUNT' , domainKey, domain }))
+      dispatch(showModal({ name: 'DISCONNECT_ACCOUNT', domainKey, domain }))
     },
     showDisconnectAllModal: () => {
       dispatch(showModal({ name: 'DISCONNECT_ALL' }))

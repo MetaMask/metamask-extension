@@ -38,7 +38,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderPermissionApprovalVisual = () => {
     const {
-      requestMetadata, domainMetadata, selectedAccount, onAccountSelect, redirect
+      requestMetadata, domainMetadata, selectedAccount, onAccountSelect, redirect,
     } = this.props
 
     return (
