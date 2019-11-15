@@ -177,6 +177,7 @@ export default class NetworksTab extends PureComponent {
       editRpc,
       networkDefaultedToProvider,
       providerUrl,
+      networksToRender
     } = this.props
 
     const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -189,6 +190,7 @@ export default class NetworksTab extends PureComponent {
           shouldRenderNetworkForm
             ? (
               <NetworkForm
+                networksToRender={networksToRender}
                 setRpcTarget={setRpcTarget}
                 editRpc={editRpc}
                 networkName={label || labelKey && t(labelKey) || ''}

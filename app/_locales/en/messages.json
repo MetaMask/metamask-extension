@@ -1471,6 +1471,9 @@
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
   },
+  "uriExistsErrorMsg": {
+    "message": "URI is already present in the existing list of networks"
+  },
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
