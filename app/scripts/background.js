@@ -258,7 +258,7 @@ function setupController (initState, initLangCode) {
     },
     getOpenExternalTabsIDs: () => {
       return openNonMetamaskTabsIDs
-    }
+    },
   })
 
   const provider = controller.provider
@@ -492,7 +492,7 @@ extension.runtime.onInstalled.addListener(({reason}) => {
 })
 
 extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if ( message.type == 'notifyTabId' && sender.tab) {
+  if (message.type === 'notifyTabId' && sender.tab) {
     const originMatch = message.URL.match(/\/\/(.+)\//)
     tabIdOriginMap[sender.tab.id] = originMatch.length && originMatch[1]
     sendResponse({ tabId: sender.tab.id })

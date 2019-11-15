@@ -407,7 +407,7 @@ var actions = {
   SET_OPEN_EXTERNAL_TABS: 'SET_OPEN_EXTERNAL_TABS',
   SET_OPEN_METAMASK_TABS: 'SET_OPEN_METAMASK_TABS',
   SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
-  SET_TAB_ID_ORIGINS: 'SET_TAB_ID_ORIGINS'
+  SET_TAB_ID_ORIGINS: 'SET_TAB_ID_ORIGINS',
 }
 
 module.exports = actions
@@ -3058,7 +3058,7 @@ function getOpenMetaMaskTabs () {
   return async (dispatch) => {
     const openMetaMaskTabs = await pify(background.getOpenMetaMaskTabs).call(background)
     dispatch(setOpenMetaMaskTabs(openMetaMaskTabs))
-  } 
+  }
 }
 
 function setOpenExternalTabs (openExternalTabs) {
@@ -3072,7 +3072,7 @@ function getOpenExternalTabs () {
   return async (dispatch) => {
     const openExternalTabs = await pify(background.getOpenExternalTabs).call(background)
     dispatch(setOpenExternalTabs(openExternalTabs))
-  } 
+  }
 }
 
 function setTabIdOrigins (tabIdOrigins) {
@@ -3086,7 +3086,7 @@ function getTabIdOrigins () {
   return async (dispatch) => {
     const tabIdOrigins = await pify(background.getTabIdOrigins).call(background)
     dispatch(setTabIdOrigins(tabIdOrigins))
-  } 
+  }
 }
 
 function setCurrentWindowTab (currentWindowTab) {
