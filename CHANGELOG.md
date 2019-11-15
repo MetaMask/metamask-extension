@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.5.3 Fri Nov 15 2019
+
 ## 7.5.2 Thu Nov 14 2019
 - [#7414](https://github.com/MetaMask/metamask-extension/pull/7414): Ensure SignatureRequestOriginal 'beforeunload' handler is bound
 
