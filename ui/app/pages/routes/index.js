@@ -81,7 +81,7 @@ import {
 
 class Routes extends Component {
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD, getTabIdOrigins, getOpenExternalTabs } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -100,6 +100,9 @@ class Routes extends Component {
         })
       }
     })
+
+    getTabIdOrigins()
+    getOpenExternalTabs()
   }
 
   renderRoutes () {
@@ -358,6 +361,8 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   permissionsRequests: PropTypes.array,
   autoLogoutTimeLimit: PropTypes.number,
+  getTabIdOrigins: PropTypes.func,
+  getOpenExternalTabs: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -405,6 +410,8 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
+    getTabIdOrigins: () => dispatch(actions.getTabIdOrigins()),
+    getOpenExternalTabs: () => dispatch(actions.getOpenExternalTabs()),
   }
 }
 

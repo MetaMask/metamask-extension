@@ -67,7 +67,7 @@ const selectors = {
   getFirstPermissionRequest,
   getRenderablePermissionsDomains,
   getPermissionsDomains,
-  getAddressConnectedIconMap,
+  getAddressConnectedDomainMap,
 }
 
 module.exports = selectors
@@ -429,7 +429,7 @@ function getPermissionsDomains (state) {
   return state.metamask.domains
 }
 
-function getAddressConnectedIconMap (state) {
+function getAddressConnectedDomainMap (state) {
   const {
     domains,
     domainMetadata,
@@ -448,8 +448,8 @@ function getAddressConnectedIconMap (state) {
       if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
         exposedAccountCaveat.value.forEach(address => {
           addressConnectedIconMap[address] = addressConnectedIconMap[address]
-            ? [ ...addressConnectedIconMap[address], { icon, name } ]
-            : [ { icon, name } ]
+            ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name } }
+            : { [domainKey]: { icon, name } }
         })
       }
     })

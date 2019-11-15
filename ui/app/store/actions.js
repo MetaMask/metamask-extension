@@ -399,6 +399,15 @@ var actions = {
   turnThreeBoxSyncingOnAndInitialize,
 
   tryReverseResolveAddress,
+
+  getOpenMetaMaskTabs,
+  getCurrentWindowTab,
+  getTabIdOrigins,
+  getOpenExternalTabs,
+  SET_OPEN_EXTERNAL_TABS: 'SET_OPEN_EXTERNAL_TABS',
+  SET_OPEN_METAMASK_TABS: 'SET_OPEN_METAMASK_TABS',
+  SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
+  SET_TAB_ID_ORIGINS: 'SET_TAB_ID_ORIGINS'
 }
 
 module.exports = actions
@@ -3035,5 +3044,62 @@ function getNextNonce () {
         resolve(nextNonce)
       })
     })
+  }
+}
+
+function setOpenMetaMaskTabs (openMetaMaskTabs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TABS,
+    value: openMetaMaskTabs,
+  }
+}
+
+function getOpenMetaMaskTabs () {
+  return async (dispatch) => {
+    const openMetaMaskTabs = await pify(background.getOpenMetaMaskTabs).call(background)
+    dispatch(setOpenMetaMaskTabs(openMetaMaskTabs))
+  } 
+}
+
+function setOpenExternalTabs (openExternalTabs) {
+  return {
+    type: actions.SET_OPEN_EXTERNAL_TABS,
+    value: openExternalTabs,
+  }
+}
+
+function getOpenExternalTabs () {
+  return async (dispatch) => {
+    const openExternalTabs = await pify(background.getOpenExternalTabs).call(background)
+    dispatch(setOpenExternalTabs(openExternalTabs))
+  } 
+}
+
+function setTabIdOrigins (tabIdOrigins) {
+  return {
+    type: actions.SET_TAB_ID_ORIGINS,
+    value: tabIdOrigins,
+  }
+}
+
+function getTabIdOrigins () {
+  return async (dispatch) => {
+    const tabIdOrigins = await pify(background.getTabIdOrigins).call(background)
+    dispatch(setTabIdOrigins(tabIdOrigins))
+  } 
+}
+
+function setCurrentWindowTab (currentWindowTab) {
+  return {
+    type: actions.SET_CURRENT_WINDOW_TAB,
+    value: currentWindowTab,
+  }
+}
+
+
+function getCurrentWindowTab () {
+  return async (dispatch) => {
+    const currentWindowTab = await global.platform.currentTab()
+    dispatch(setCurrentWindowTab(currentWindowTab))
   }
 }

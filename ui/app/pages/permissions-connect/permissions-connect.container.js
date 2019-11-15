@@ -4,12 +4,12 @@ import {
   accountsWithSendEtherInfoSelector,
   getFirstPermissionRequest,
   getNativeCurrency,
+  getActiveTab,
 } from '../../selectors/selectors'
-import { approvePermissionsRequest, rejectPermissionsRequest, showModal } from '../../store/actions'
+import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getOpenMetaMaskTabs, getCurrentWindowTab } from '../../store/actions'
 
 const mapStateToProps = state => {
   const permissionsRequest = getFirstPermissionRequest(state)
-  console.log('permissionsRequest', permissionsRequest)
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
@@ -26,12 +26,16 @@ const mapStateToProps = state => {
     }
   })
 
+  const { openMetaMaskTabs = {}, currentWindowTab = {} } = state.appState
+  const currentOpenMetaMaskTab = openMetaMaskTabs[currentWindowTab.id] || {}
+
   return {
     permissionsRequest,
     accounts: accountsWithLabel,
     originName: origin,
     newAccountNumber: accountsWithLabel.length + 1,
     nativeCurrency,
+    currentMetaMaskTabOpenerId: currentOpenMetaMaskTab.opener,
   }
 }
 
@@ -46,6 +50,8 @@ const mapDispatchToProps = dispatch => {
         newAccountNumber,
       }))
     },
+    getOpenMetaMaskTabs: () => dispatch(getOpenMetaMaskTabs()),
+    getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
   }
 }
 

@@ -45,10 +45,22 @@ function injectScript (content) {
  * Sets up the stream communication and submits site metadata
  *
  */
+let tabId
 async function start () {
   await setupStreams()
-  await domIsReady()
+  const { target: { location: { origin } = {} } = {} } = await domIsReady()
+  extension.runtime.sendMessage({ type: 'notifyTabId', origin }, function (res) {
+    if (res) {
+      tabId = res.tabId
+    }
+  })
 }
+  
+extension.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if ( message.type == 'requestNewMessage' && message.tabId === tabId ) {
+    extension.runtime.sendMessage({ type: 'notifyTabId', origin: window.location.origin })
+  }
+})
 
 /**
  * Sets up two-way communication streams between the
@@ -225,5 +237,10 @@ async function domIsReady () {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) return
   // wait for load
-  await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+  return new Promise(resolve => {
+    window.addEventListener('DOMContentLoaded', (...args) => {
+      resolve(...args)
+    }, { once: true })
+  })
+
 }
