@@ -33,7 +33,7 @@
     "test:flat:build:ui": "yarn test:flat:build:states && browserify --transform babelify --transform brfs ./development/mock-dev.js -o ./development/bundle.js",
     "ganache:start": "./development/run-ganache",
     "sentry:publish": "node ./development/sentry-publish.js",
-    "lint": "eslint . --ext js,json && yarn lint:shellcheck",
+    "lint": "eslint . --ext js,json",
     "lint:fix": "eslint . --ext js,json --fix",
     "lint:changed": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint",
     "lint:changed:fix": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint --fix",

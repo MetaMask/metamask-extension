@@ -49,6 +49,7 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
+            - test-lint-shellcheck
             - test-unit
             - test-unit-global
             - test-mozilla-lint
@@ -164,7 +165,6 @@ jobs:
       - image: circleci/node:10.17-browsers
     steps:
       - checkout
-      - run: sudo apt-get install shellcheck
       - attach_workspace:
           at: .
       - run:
@@ -173,6 +173,18 @@ jobs:
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
+
+  test-lint-shellcheck:
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - checkout
+      - run: sudo apt-get install shellcheck
+      - attach_workspace:
+          at: .
+      - run:
+          name: Shellcheck Lint
+          command: yarn lint
 
   test-deps:
     docker:
