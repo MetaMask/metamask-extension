@@ -10,7 +10,7 @@ function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns })
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
 
   // return api object
   return {
