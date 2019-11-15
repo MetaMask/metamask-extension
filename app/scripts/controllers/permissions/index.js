@@ -25,7 +25,7 @@ class PermissionsController {
 
   constructor (
     {
-      platform, closePopup, notifyDomain, notifyAllDomains, keyringController,
+      platform, notifyDomain, notifyAllDomains, keyringController,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {

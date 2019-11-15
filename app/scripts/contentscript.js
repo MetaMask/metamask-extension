@@ -58,8 +58,8 @@ async function start () {
   })
 }
 
-extension.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  if ( message.type == 'requestNewMessage' && message.tabId === tabId ) {
+extension.runtime.onMessage.addListener(function (message) {
+  if (message.type === 'requestNewMessage' && message.tabId === tabId) {
     extension.runtime.sendMessage({ type: 'notifyTabId', origin: window.location.origin })
   }
 })

@@ -44,7 +44,7 @@ export default class ConnectedSitesList extends Component {
             const domainIsExpanded = expandedDomain === domain.key
             return (
               <div
-                className={classnames("connected-sites-list__domain", {
+                className={classnames('connected-sites-list__domain', {
                   'connected-sites-list__domain--expanded': domainIsExpanded,
                 })}
                 key={`connected-domain-${domainIndex}`}

@@ -32,7 +32,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    disconnectAccount: () => dispatchDisconnectAccount(domainKey, domain)
+    disconnectAccount: () => dispatchDisconnectAccount(domainKey, domain),
   }
 }
 

@@ -82,7 +82,7 @@ class ExtensionPlatform {
   }
 
   switchToTab (tabId, cb) {
-    chrome.tabs.update(tabId, {highlighted: true}, cb)
+    extension.tabs.update(tabId, {highlighted: true}, cb)
   }
 
   _showConfirmedTransaction (txMeta) {
