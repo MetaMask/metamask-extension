@@ -22,9 +22,7 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-      - test-lint-shellcheck:
-          requires:
-            - prep-deps
+      - test-lint-shellcheck
       - test-e2e-chrome:
           requires:
             - prep-deps
@@ -183,8 +181,6 @@ jobs:
     steps:
       - checkout
       - run: sudo apt-get install shellcheck
-      - attach_workspace:
-          at: .
       - run:
           name: Shellcheck Lint
           command: yarn lint:shellcheck
