@@ -1,7 +1,6 @@
-version: 2
+version: 2.1
 
 workflows:
-  version: 2
   test_and_release:
     jobs:
       - create_release_pull_request:
