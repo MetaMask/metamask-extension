@@ -41,6 +41,7 @@ web3.currentProvider.enable().then(() => {
   const approveTokens = document.getElementById('approveTokens')
   const transferTokensWithoutGas = document.getElementById('transferTokensWithoutGas')
   const approveTokensWithoutGas = document.getElementById('approveTokensWithoutGas')
+  const signTypedData = document.getElementById('signTypedData')
 
   deployButton.addEventListener('click', async function () {
     document.getElementById('contractStatus').innerHTML = 'Deploying'
@@ -183,5 +184,58 @@ web3.currentProvider.enable().then(() => {
 
   ethereum.on('accountsChanged', (accounts) => {
     accountsDiv.innerHTML = accounts
+  })
+
+  const signTypedDataResultsDiv = document.getElementById('signTypedDataResult')
+  signTypedData.addEventListener('click', function () {
+
+    const typedData = {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallet', type: 'address' },
+        ],
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person' },
+          { name: 'contents', type: 'string' },
+        ],
+      },
+      primaryType: 'Mail',
+      domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 3,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      },
+      message: {
+        sender: {
+          name: 'Cow',
+          wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+        },
+        recipient: {
+          name: 'Bob',
+          wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+        },
+        contents: 'Hello, Bob!',
+      },
+    }
+    web3.currentProvider.sendAsync({
+      method: 'eth_signTypedData_v3',
+      params: [ethereum.selectedAddress, JSON.stringify(typedData)],
+      from: ethereum.selectedAddress,
+    }, function (err, result) {
+      if (err) {
+        console.log(err)
+      } else {
+        signTypedDataResultsDiv.innerHTML = result
+      }
+    })
   })
 })
