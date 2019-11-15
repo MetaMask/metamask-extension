@@ -7,7 +7,7 @@ import {
 
 export default class ConnectSites extends Component {
   static propTypes = {
-    history: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   static contextTypes = {

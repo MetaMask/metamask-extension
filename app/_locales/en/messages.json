@@ -499,6 +499,12 @@
   "disconnectAccount": {
     "message": "Disconnect account"
   },
+  "disconnectAll": {
+    "message": "Disconnect All"
+  },
+  "disconnectAllModalDescription": {
+    "message": "Are you sure? You will no longer be able to interact with any of these sites."
+  },
   "disconnectAccountModalDescription": {
     "message": "Are you sure? You will no longer be able to interact with this site."
   },
@@ -507,6 +513,9 @@
   },
   "disconnectFromThisAccount": {
     "message": "Disconnect from this account?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "Disconnect all accounts?"
   },
   "directDepositEther": {
     "message": "Directly Deposit Ether"

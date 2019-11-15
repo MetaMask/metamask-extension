@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import Button from '../../ui/button'
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -8,7 +9,6 @@ export default class ConnectedSitesList extends Component {
   }
 
   static propTypes = {
-    disconnectAccount: PropTypes.func.isRequired,
     renderableDomains: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string,
       icon: PropTypes.string,
@@ -33,7 +33,7 @@ export default class ConnectedSitesList extends Component {
   }
 
   render () {
-    const { renderableDomains, domains, showDisconnectAccountModal } = this.props
+    const { renderableDomains, domains, showDisconnectAccountModal, showDisconnectAllModal } = this.props
     const { expandedDomain } = this.state
     const { t } = this.context
 
@@ -70,17 +70,23 @@ export default class ConnectedSitesList extends Component {
                         <div className="connected-sites-list__domain-name">
                           { domain.name }
                         </div>
-                        <div className="connected-sites-list__domain-origin">
+                      </div>
+                      { domain.lastConnectedTime
+                        ? <div className="connected-sites-list__domain-last-connected">
+                          { t('domainLastConnect', [domain.lastConnectedTime]) }
+                        </div>
+                        : null
+                      }
+                      {domainIsExpanded
+                        ? <div className="connected-sites-list__domain-origin">
                           { domain.key }
                         </div>
-                      </div>
-                      <div className="connected-sites-list__domain-last-connected">
-                        { t('domainLastConnect', [domain.lastConnectedTime]) }
-                      </div>
+                        : null
+                      }
                     </div>
                   </div>
                   <div className="connected-sites-list__expand-arrow">
-                    { domainIsExpanded ? <i className="fa fa-chevron-left fa-sm" /> : <i className="fa fa-chevron-down fa-sm" /> }
+                    { domainIsExpanded ? <i className="fa fa-chevron-up fa-sm" /> : <i className="fa fa-chevron-down fa-sm" /> }
                   </div>
                 </div>
                 { domainIsExpanded
@@ -112,6 +118,11 @@ export default class ConnectedSitesList extends Component {
             )
           })
         }
+        <div className="connected-sites-list__disconnect-all">
+          <Button onClick={showDisconnectAllModal} type="danger" >
+            { t('disconnectAll') }
+          </Button>
+        </div>
       </div>
     )
   }

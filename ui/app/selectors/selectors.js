@@ -482,15 +482,17 @@ function getRenderablePermissionsDomains (state) {
         icon,
       } = domainMetadata[domainKey]
       const permissionsHistoryForDomain = permissionsHistory[domainKey]
-      const lastApprovedTimes = Object.values(permissionsHistoryForDomain).map(({ lastApproved }) => lastApproved)
+      const lastApprovedTimes = permissionsHistoryForDomain
+        ? Object.values(permissionsHistoryForDomain).map(({ lastApproved }) => lastApproved)
+        : []
       const lastConnectedTime = lastApprovedTimes.length
-        ? lastApprovedTimes.sort()[0]
+        ? formatDate(lastApprovedTimes.sort()[0], 'd-M-yyyy')
         : null
       return [ ...acc, {
         name,
         icon,
         key: domainKey,
-        lastConnectedTime: formatDate(lastConnectedTime, 'd-M-yyyy'),
+        lastConnectedTime,
         permissionDescriptions: permissionKeys.map(permissionKey => permissionsDescriptions[permissionKey]),
       }]
     } else {

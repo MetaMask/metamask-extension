@@ -5,6 +5,7 @@ import ConnectedSitesList from './connected-sites-list.component'
 import {
   removePermissionsFor,
   showModal,
+  clearPermissions,
 } from '../../../store/actions'
 import {
   getRenderablePermissionsDomains,
@@ -22,7 +23,10 @@ const mapDispatchToProps = dispatch => {
   return {
     showDisconnectAccountModal: (domainKey, domain) => {
       dispatch(showModal({ name: 'DISCONNECT_ACCOUNT' , domainKey, domain }))
-    }
+    },
+    showDisconnectAllModal: () => {
+      dispatch(showModal({ name: 'DISCONNECT_ALL' }))
+    },
   }
 }
 

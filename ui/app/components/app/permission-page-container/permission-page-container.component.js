@@ -135,6 +135,7 @@ export default class PermissionPageContainer extends Component {
         />
         { !redirect
           ? <PageContainerFooter
+            cancelButtonType="primary"
             onCancel={() => this.onCancel()}
             cancelText={this.context.t('cancel')}
             onSubmit={() => this.onSubmit()}
