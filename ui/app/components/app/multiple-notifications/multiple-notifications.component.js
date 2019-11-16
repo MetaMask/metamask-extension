@@ -3,6 +3,11 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
 export default class MultipleNotifications extends PureComponent {
+  static defaultProps = {
+    children: [],
+    classNames: [],
+  }
+
   static propTypes = {
     children: PropTypes.array,
     classNames: PropTypes.array,
@@ -14,7 +19,7 @@ export default class MultipleNotifications extends PureComponent {
 
   render () {
     const { showAll } = this.state
-    const { children, classNames = [] } = this.props
+    const { children, classNames } = this.props
 
     const childrenToRender = children.filter(child => child)
     if (childrenToRender.length === 0) {
