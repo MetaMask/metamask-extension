@@ -3,11 +3,8 @@ import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import PermissionPageContainer from './permission-page-container.component'
 import {
-  getSelectedIdentity,
   getPermissionsDescriptions,
-  getPermissionsRequests,
   getDomainMetadata,
-  getFirstPermissionRequest,
 } from '../../../selectors/selectors'
 
 const mapStateToProps = (state) => {

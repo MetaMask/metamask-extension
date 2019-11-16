@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Modal, { ModalContent } from '../../modal'
+import Modal from '../../modal'
 import Button from '../../../ui/button'
 
 

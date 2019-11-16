@@ -9,6 +9,15 @@ export default class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
+    currentMetaMaskTabOpenerId: PropTypes.number.isRequired,
+    getOpenMetaMaskTabs: PropTypes.func.isRequired,
+    getCurrentWindowTab: PropTypes.func.isRequired,
+    accounts: PropTypes.array.isRequired,
+    originName: PropTypes.string.isRequired,
+    showNewAccountModal: PropTypes.func.isRequired,
+    newAccountNumber: PropTypes.number.isRequired,
+    nativeCurrency: PropTypes.string,
+    permissionsRequest: PropTypes.object.isRequired,
   }
 
   static contextTypes = {
@@ -28,7 +37,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow () {
-    const { permissionsRequest, currentMetaMaskTabOpenerId } = this.props
+    const { currentMetaMaskTabOpenerId } = this.props
     this.setState({
       page: null,
     })
@@ -58,7 +67,6 @@ export default class PermissionConnect extends Component {
       newAccountNumber,
       nativeCurrency,
       permissionsRequest,
-      currentMetaMaskTabOpener,
     } = this.props
     const { page, selectedAccountAddress } = this.state
 

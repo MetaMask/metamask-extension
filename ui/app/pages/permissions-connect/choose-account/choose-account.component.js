@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import Identicon from '../../../components/ui/identicon'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
@@ -28,9 +27,10 @@ export default class ChooseAccount extends Component {
     return (
       <div className="permissions-connect-choose-account__accounts-list">
         {
-          accounts.map(account => {
+          accounts.map((account, index) => {
             const { address, addressLabel, lastConnectedDate, balance } = account
             return (<div
+              key={`permissions-connect-choose-account-${index}`}
               onClick={ () => selectAccount(address) }
               className="permissions-connect-choose-account__account"
             >

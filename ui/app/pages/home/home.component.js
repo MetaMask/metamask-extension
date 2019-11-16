@@ -14,7 +14,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-  CONNECT_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {

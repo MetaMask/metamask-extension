@@ -8,6 +8,7 @@ export default class Modal extends PureComponent {
     children: PropTypes.node,
     contentClass: PropTypes.string,
     containerClass: PropTypes.string,
+    className: PropTypes.string,
     // Header text
     headerText: PropTypes.string,
     onClose: PropTypes.func,

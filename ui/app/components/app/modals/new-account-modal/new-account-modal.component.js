@@ -11,6 +11,7 @@ export default class NewAccountModal extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     newAccountNumber: PropTypes.number.isRequired,
+    onSave: PropTypes.func.isRequired,
   }
 
   state = {
@@ -44,7 +45,6 @@ export default class NewAccountModal extends Component {
           <input
             type="text"
             className="new-account-modal__input"
-            placeholder={t('addToAddressBookModalPlaceholder')}
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
             value={this.state.alias}
