@@ -4,7 +4,6 @@ import {
   accountsWithSendEtherInfoSelector,
   getFirstPermissionRequest,
   getNativeCurrency,
-  getActiveTab,
 } from '../../selectors/selectors'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getOpenMetaMaskTabs, getCurrentWindowTab } from '../../store/actions'
 

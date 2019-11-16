@@ -10,8 +10,6 @@ import {
   showConfigPage,
   showInfoPage,
   showModal,
-  getCurrentWindowTab,
-  getTabIdOrigins,
 } from '../../../store/actions'
 import { getMetaMaskAccounts, getAddressConnectedDomainMap } from '../../../selectors/selectors'
 
@@ -27,6 +25,7 @@ function mapStateToProps (state) {
       tabIdOrigins,
     },
   } = state
+
   const originOfCurrentTab = tabIdOrigins[Object.keys(tabIdOrigins).find(id => openExternalTabs[id])]
 
   return {
