@@ -117,9 +117,7 @@ export default class Home extends PureComponent {
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
               <TransactionView>
-                <MultipleNotifications
-                  className
-                >
+                <MultipleNotifications>
                   {
                     showPrivacyModeNotification
                       ? <HomeNotification
