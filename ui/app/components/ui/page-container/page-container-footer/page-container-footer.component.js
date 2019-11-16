@@ -14,6 +14,7 @@ export default class PageContainerFooter extends Component {
     disabled: PropTypes.bool,
     submitButtonType: PropTypes.string,
     hideCancel: PropTypes.bool,
+    buttonSizeLarge: PropTypes.bool,
   }
 
   static contextTypes = {

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Modal, { ModalContent } from '../../modal'
+import Modal from '../../modal'
 import Button from '../../../ui/button'
 
 
@@ -16,7 +16,7 @@ export default class DisconnectAccount extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { hideModal, disconnectAllAccounts, disconnectAccount } = this.props
+    const { hideModal, disconnectAccount } = this.props
 
     return (
       <Modal

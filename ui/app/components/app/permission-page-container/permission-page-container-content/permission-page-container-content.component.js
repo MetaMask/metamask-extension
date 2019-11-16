@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
-import AccountDropdownMini from '../../../ui/account-dropdown-mini'
 import classnames from 'classnames'
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -13,6 +12,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedAccount: PropTypes.object.isRequired,
+    redirect: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -38,7 +38,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderPermissionApprovalVisual = () => {
     const {
-      requestMetadata, domainMetadata, selectedAccount, onAccountSelect, redirect,
+      requestMetadata, domainMetadata, selectedAccount, redirect,
     } = this.props
 
     return (
@@ -80,7 +80,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderRequestedPermissions () {
     const {
-      onPermissionToggle, selectedPermissions, permissionsDescriptions,
+      selectedPermissions, permissionsDescriptions,
     } = this.props
     const { t } = this.context
 

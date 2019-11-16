@@ -3,9 +3,7 @@ import { compose } from 'recompose'
 
 import ConnectedSitesList from './connected-sites-list.component'
 import {
-  removePermissionsFor,
   showModal,
-  clearPermissions,
 } from '../../../store/actions'
 import {
   getRenderablePermissionsDomains,

@@ -17,6 +17,8 @@ export default class ConnectedSitesList extends Component {
       permissionDescriptions: PropTypes.array,
     })).isRequired,
     domains: PropTypes.object.isRequired,
+    showDisconnectAccountModal: PropTypes.func.isRequired,
+    showDisconnectAllModal: PropTypes.func.isRequired,
   }
 
   state = {

@@ -433,8 +433,6 @@ function getAddressConnectedDomainMap (state) {
   const {
     domains,
     domainMetadata,
-    permissionsHistory,
-    permissionsDescriptions,
   } = state.metamask
 
   const addressConnectedIconMap = {}

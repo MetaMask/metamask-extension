@@ -15,6 +15,8 @@ export default class PermissionPageContainer extends Component {
     permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
+    redirect: PropTypes.bool,
+    history: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
