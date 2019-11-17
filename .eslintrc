@@ -149,6 +149,7 @@
     "padded-blocks": "off",
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
     "react/no-deprecated": 0,
+    "react/default-props-match-prop-types": 2,
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],
     "space-before-blocks": [2, "always"],
