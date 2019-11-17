@@ -21,10 +21,10 @@ describe('AdvancedTabContent Component', function () {
     wrapper = shallow(<AdvancedTabContent
       updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
       updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
-      customModalGasPriceInHex={'11'}
-      customModalGasLimitInHex={'23456'}
-      timeRemaining={'21500'}
-      transactionFee={'$0.25'}
+      customModalGasPriceInHex="11"
+      customModalGasLimitInHex="23456"
+      timeRemaining="21500"
+      transactionFee="$0.25"
       insufficientBalance={false}
       customPriceIsSafe={true}
       isSpeedUp={false}

@@ -14,10 +14,10 @@ describe('Page Footer', () => {
     wrapper = shallow(<PageFooter
       onCancel = {onCancel}
       onSubmit = {onSubmit}
-      cancelText = {'Cancel'}
-      submitText = {'Submit'}
+      cancelText = "Cancel"
+      submitText = "Submit"
       disabled = {false}
-      submitButtonType = {'Test Type'}
+      submitButtonType = "Test Type"
     />)
   })
 

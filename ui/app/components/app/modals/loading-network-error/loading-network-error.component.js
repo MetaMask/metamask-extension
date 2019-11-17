@@ -12,7 +12,7 @@ const LoadingNetworkError = (props, context) => {
       submitText={t('tryAgain')}
     >
       <ModalContent
-        description={'Oops! Something went wrong.'}
+        description="Oops! Something went wrong."
       />
     </Modal>
   )

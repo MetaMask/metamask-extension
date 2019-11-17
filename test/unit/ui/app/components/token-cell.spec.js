@@ -37,12 +37,12 @@ describe('Token Cell', () => {
     wrapper = mount(
       <Provider store={store}>
         <TokenCell
-          address={'0xAnotherToken'}
-          symbol={'TEST'}
-          string={'5.000'}
+          address="0xAnotherToken"
+          symbol="TEST"
+          string="5.000"
           network={22}
-          currentCurrency={'usd'}
-          image={'./test-image'}
+          currentCurrency="usd"
+          image="./test-image"
         />
       </Provider>
     )

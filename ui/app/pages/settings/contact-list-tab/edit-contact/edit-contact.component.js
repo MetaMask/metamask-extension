@@ -133,7 +133,7 @@ export default class EditContact extends PureComponent {
             history.push(`${viewRoute}/${address}`)
           }}
           submitText={this.context.t('save')}
-          submitButtonType={'confirm'}
+          submitButtonType="confirm"
         />
       </div>
     )

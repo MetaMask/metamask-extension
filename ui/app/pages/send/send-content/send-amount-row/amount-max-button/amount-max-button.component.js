@@ -64,7 +64,7 @@ export default class AmountMaxButton extends Component {
     const { maxModeOn, buttonDataLoading, inError } = this.props
 
     return (
-      <div className={'send-v2__amount-max'} onClick={buttonDataLoading || inError ? null : this.onMaxClick}>
+      <div className="send-v2__amount-max" onClick={buttonDataLoading || inError ? null : this.onMaxClick}>
         <input type="checkbox" checked={maxModeOn} />
         <div className={classnames('send-v2__amount-max__button', { 'send-v2__amount-max__button__disabled': buttonDataLoading || inError })}>
           {this.context.t('max')}

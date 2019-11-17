@@ -25,7 +25,7 @@ describe('SendDropdownList Component', function () {
       ]}
       closeDropdown={propsMethodSpies.closeDropdown}
       onSelect={propsMethodSpies.onSelect}
-      activeAddress={'mockAddress2'}
+      activeAddress="mockAddress2"
     />, { context: { t: str => str + '_t' } })
   })
 
@@ -39,7 +39,7 @@ describe('SendDropdownList Component', function () {
     it('should return check icon if the passed addresses are the same', () => {
       assert.deepEqual(
         wrapper.instance().getListItemIcon('mockAccount0', 'mockAccount0'),
-        <i className={`fa fa-check fa-lg`} style={ { color: '#02c9b1' } }/>
+        <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } }/>
       )
     })
 

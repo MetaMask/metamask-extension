@@ -16,9 +16,9 @@ describe('Page Container Header', () => {
       showBackButton = {true}
       onBackButtonClick = {onBackButtonClick}
       backButtonStyles = {style}
-      title = {'Test Title'}
-      subtitle = {'Test Subtitle'}
-      tabs = {'Test Tab'}
+      title = "Test Title"
+      subtitle = "Test Subtitle"
+      tabs = "Test Tab"
       onClose = {onClose}
     />)
   })
