@@ -1340,7 +1340,7 @@
   "updatedWithDate": {
     "message": "تم تحديث $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."
   },
   "usedByClients": {

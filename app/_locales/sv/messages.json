@@ -1322,7 +1322,7 @@
   "updatedWithDate": {
     "message": "Uppdaterat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },
   "usedByClients": {

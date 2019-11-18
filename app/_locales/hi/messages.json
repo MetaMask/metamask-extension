@@ -1341,7 +1341,7 @@
   "updatedWithDate": {
     "message": "$1 अपडेट किया गया"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI को उपयुक्त HTTP/HTTPS प्रीफ़िक्स की आवश्यकता होती है।"
   },
   "usedByClients": {

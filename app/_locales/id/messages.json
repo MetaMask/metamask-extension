@@ -1316,7 +1316,7 @@
   "updatedWithDate": {
     "message": "Diperbarui $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "usedByClients": {

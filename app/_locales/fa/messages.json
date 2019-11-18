@@ -1347,7 +1347,7 @@
   "updatedWithDate": {
     "message": "بروزرسانی شد 1$1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URl ها نیازمند پیشوند مناسب HTTP/HTTPS اند."
   },
   "usedByClients": {

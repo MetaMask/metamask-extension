@@ -1337,7 +1337,7 @@
   "updatedWithDate": {
     "message": "Värskendatud $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."
   },
   "usedByClients": {

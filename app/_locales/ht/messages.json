@@ -851,7 +851,7 @@
   "updatedWithDate": {
     "message": "Mete ajou $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
   },
   "usedByClients": {

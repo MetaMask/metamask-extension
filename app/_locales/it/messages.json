@@ -1307,7 +1307,7 @@
   "updatedWithDate": {
     "message": "Aggiornata $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."
   },
   "usedByClients": {

@@ -488,7 +488,7 @@
   "unknownNetwork": {
     "message": "Rede Privada Desconhecida"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Links requerem o prefixo HTTP/HTTPS apropriado."
   },
   "usedByClients": {

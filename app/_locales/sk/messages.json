@@ -1301,7 +1301,7 @@
   "updatedWithDate": {
     "message": "Aktualizované $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
   "usedByClients": {

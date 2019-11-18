@@ -1344,7 +1344,7 @@
   "updatedWithDate": {
     "message": "$1 päivitetty"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
   },
   "usedByClients": {
