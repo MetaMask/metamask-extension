@@ -1985,6 +1985,18 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
+"@metamask/forwarder@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.0.0.tgz#3e321022a36561cc6e7b7c84df25f600925f4d95"
+  integrity sha512-ufgPndhZz0oNhRrixiR6cXH/HwtFwurWvbrU8zAZsFnf1hB4L2VB2Wey/P1wStIx+BJJQjyROvCDyPDoz4ny1A==
+
+"@metamask/onboarding@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.1.2.tgz#d5126cbb5e593d782645d6236c497e27bd38d3c4"
+  integrity sha512-+85Z5OxckGuYr5cCoMlpxASu9geJBMYvwkNWqa5qDDEYKZ8eNXHsADcVYFsvBhxFcf87dC7ty1kWljYVEfTIIA==
+  dependencies:
+    bowser "^2.5.4"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -18221,13 +18233,6 @@ metamask-logo@^2.1.4:
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
-
-metamask-onboarding@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/metamask-onboarding/-/metamask-onboarding-0.1.1.tgz#72081ecc47278b577be192e21b5669a9428e9458"
-  integrity sha512-WEgyB1LSoGrIth3yxIZ8ag6NDl9CYuuqV2qjaoOlPx2Rk76HXgpVVFMcdBsUR4D0QZxG/Blkg7gy67Isa4gUDQ==
-  dependencies:
-    bowser "^2.5.4"
 
 methods@^1.1.1, methods@~1.1.2:
   version "1.1.2"
