@@ -26,9 +26,9 @@ describe('AdvancedTabContent Component', function () {
       timeRemaining="21500"
       transactionFee="$0.25"
       insufficientBalance={false}
-      customPriceIsSafe={true}
+      customPriceIsSafe
       isSpeedUp={false}
-      isEthereumNetwork={true}
+      isEthereumNetwork
     />)
   })
 

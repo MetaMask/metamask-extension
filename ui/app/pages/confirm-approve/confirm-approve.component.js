@@ -78,7 +78,7 @@ export default class ConfirmApprove extends Component {
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={tokenAddress}
-        showAccountInHeader={true}
+        showAccountInHeader
         title={tokensText}
         contentComponent={<ConfirmApproveContent
           siteImage={siteImage}
@@ -98,7 +98,7 @@ export default class ConfirmApprove extends Component {
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />}
-        hideSenderToRecipient={true}
+        hideSenderToRecipient
         customTxParamsData={customPermissionAmount
           ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
           : null

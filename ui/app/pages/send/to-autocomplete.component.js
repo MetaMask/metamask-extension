@@ -61,7 +61,7 @@ export default class ToAutoComplete extends Component {
               }}
               icon={this.getListItemIcon(account.address, to)}
               displayBalance={false}
-              displayAddress={true}
+              displayAddress
             />
           ))}
         </div>

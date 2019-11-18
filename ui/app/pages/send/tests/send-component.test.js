@@ -58,7 +58,7 @@ describe('Send Component', function () {
       recentBlocks={['mockBlock']}
       selectedAddress="mockSelectedAddress"
       selectedToken="mockSelectedToken"
-      showHexData={true}
+      showHexData
       tokenBalance="mockTokenBalance"
       tokenContract="mockTokenContract"
       updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}

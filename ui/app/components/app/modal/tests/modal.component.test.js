@@ -110,7 +110,7 @@ describe('Modal Component', () => {
         cancelText="Cancel"
         onSubmit={handleSubmit}
         submitText="Submit"
-        submitDisabled={true}
+        submitDisabled
         headerText="My Header"
         onClose={handleCancel}
       />
