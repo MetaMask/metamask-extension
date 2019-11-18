@@ -225,7 +225,7 @@ export default class NetworkForm extends PureComponent {
       this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : invalidUrlErrorMsg))
     }
 
-    if (rpcUrls.includes(url)) {
+    if (stateKey === 'rpcUrl' && rpcUrls.includes(url)) {
       this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'))
     }
   }
