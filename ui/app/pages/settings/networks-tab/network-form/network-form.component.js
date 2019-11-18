@@ -212,21 +212,31 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  validateUrl = (url, stateKey) => {
+  validateBlockExplorerURL = (url, stateKey) => {
     const { rpcUrls } = this.props
-    const invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
 
-    if (validUrl.isWebUri(url) || (stateKey === 'blockExplorerUrl' && url === '')) {
-      this.setErrorTo(stateKey, '')
-    } else {
+    if (!validUrl.isWebUri(url) && url !== '') {
       const appendedRpc = `http://${url}`
       const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
 
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : invalidUrlErrorMsg))
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : 'invalidBlockExplorerURL'))
+    } else {
+      this.setErrorTo(stateKey, '')
     }
+  }
 
-    if (stateKey === 'rpcUrl' && rpcUrls.includes(url)) {
+  validateUrlRpcUrl = (url, stateKey) => {
+    const { rpcUrls } = this.props
+
+    if (!validUrl.isWebUri(url) && url !== '') {
+      const appendedRpc = `http://${url}`
+      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : 'invalidRPC'))
+    } else if (rpcUrls.includes(url)) {
       this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'))
+    } else {
+      this.setErrorTo(stateKey, '')
     }
   }
 
@@ -260,7 +270,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'rpcUrl',
           'rpc-url',
-          this.setStateWithValue('rpcUrl', this.validateUrl),
+          this.setStateWithValue('rpcUrl', this.validateUrlRpcUrl),
           rpcUrl,
         )}
         {this.renderFormTextField(
@@ -280,7 +290,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'blockExplorerUrl',
           'block-explorer-url',
-          this.setStateWithValue('blockExplorerUrl', this.validateUrl),
+          this.setStateWithValue('blockExplorerUrl', this.validateBlockExplorerURL),
           blockExplorerUrl,
           'optionalBlockExplorerUrl',
         )}
