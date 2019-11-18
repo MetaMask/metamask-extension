@@ -29,7 +29,7 @@ describe('SendFooter Component', function () {
       addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
       amount="mockAmount"
       clearSend={propsMethodSpies.clearSend}
-      disabled={true}
+      disabled
       editingTransactionId="mockEditingTransactionId"
       errors={{}}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
@@ -186,7 +186,7 @@ describe('SendFooter Component', function () {
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
         amount="mockAmount"
         clearSend={propsMethodSpies.clearSend}
-        disabled={true}
+        disabled
         editingTransactionId="mockEditingTransactionId"
         errors={{}}
         from={ { address: 'mockAddress', balance: 'mockBalance' } }

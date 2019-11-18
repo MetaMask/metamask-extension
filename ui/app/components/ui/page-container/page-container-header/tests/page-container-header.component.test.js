@@ -13,7 +13,7 @@ describe('Page Container Header', () => {
     onClose = sinon.spy()
 
     wrapper = shallow(<PageContainerHeader
-      showBackButton={true}
+      showBackButton
       onBackButtonClick={onBackButtonClick}
       backButtonStyles={style}
       title="Test Title"

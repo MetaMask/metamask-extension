@@ -130,7 +130,7 @@ export default class SendGasRow extends Component {
         customGasPrice={gasPrice}
         customGasLimit={gasLimit}
         insufficientBalance={insufficientBalance}
-        customPriceIsSafe={true}
+        customPriceIsSafe
         isSpeedUp={false}
       />
       { this.renderAdvancedOptionsButton() }

@@ -261,7 +261,7 @@ export default class ConfirmTransactionBase extends Component {
                 customGasPrice={customGas.gasPrice}
                 customGasLimit={customGas.gasLimit}
                 insufficientBalance={insufficientBalance}
-                customPriceIsSafe={true}
+                customPriceIsSafe
                 isSpeedUp={false}
               />
               : null

@@ -200,7 +200,7 @@ describe('GasModalPageContainer Component', function () {
         customGasLimitInHex="mockCustomGasLimitInHex"
         insufficientBalance={false}
         disableSave={false}
-        hideBasic={true}
+        hideBasic
       />)
       const renderTabsResult = wrapper.instance().renderTabs()
 
