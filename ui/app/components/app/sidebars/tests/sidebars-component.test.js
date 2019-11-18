@@ -19,8 +19,8 @@ describe('Sidebar Component', function () {
     wrapper = shallow(<Sidebar
       sidebarOpen={false}
       hideSidebar={propsMethodSpies.hideSidebar}
-      transitionName={'someTransition'}
-      type={'wallet-view'}
+      transitionName="someTransition"
+      type="wallet-view"
     />)
   })
 

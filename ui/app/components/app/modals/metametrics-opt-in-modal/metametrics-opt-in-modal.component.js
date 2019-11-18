@@ -102,7 +102,7 @@ export default class MetaMetricsOptInModal extends Component {
                     hideModal()
                   })
               }}
-              cancelText={'No Thanks'}
+              cancelText="No Thanks"
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
@@ -118,8 +118,8 @@ export default class MetaMetricsOptInModal extends Component {
                     hideModal()
                   })
               }}
-              submitText={'I agree'}
-              submitButtonType={'confirm'}
+              submitText="I agree"
+              submitButtonType="confirm"
               disabled={false}
             />
           </div>

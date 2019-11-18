@@ -116,7 +116,7 @@ export default class GasModalPageContainer extends Component {
             <span className="gas-modal-content__info-row__send-info__value">{sendAmount}</span>
           </div>
           <div className="gas-modal-content__info-row__transaction-info">
-            <span className={'gas-modal-content__info-row__transaction-info__label'}>{this.context.t('transactionFee')}</span>
+            <span className="gas-modal-content__info-row__transaction-info__label">{this.context.t('transactionFee')}</span>
             <span className="gas-modal-content__info-row__transaction-info__value">{transactionFee}</span>
           </div>
           <div className="gas-modal-content__info-row__total-info">

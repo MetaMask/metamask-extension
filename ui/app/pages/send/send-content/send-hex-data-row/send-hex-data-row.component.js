@@ -29,7 +29,7 @@ export default class SendHexDataRow extends Component {
       <SendRowWrapper
         label={`${t('hexData')}:`}
         showError={inError}
-        errorType={'amount'}
+        errorType="amount"
       >
         <textarea
           onInput={this.onInput}

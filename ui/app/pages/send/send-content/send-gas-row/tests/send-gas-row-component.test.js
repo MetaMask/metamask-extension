@@ -19,10 +19,10 @@ describe('SendGasRow Component', function () {
   beforeEach(() => {
     wrapper = shallow(<SendGasRow
       conversionRate={20}
-      convertedCurrency={'mockConvertedCurrency'}
-      gasFeeError={'mockGasFeeError'}
+      convertedCurrency="mockConvertedCurrency"
+      gasFeeError="mockGasFeeError"
       gasLoadingError={false}
-      gasTotal={'mockGasTotal'}
+      gasTotal="mockGasTotal"
       gasButtonGroupShown={false}
       showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
       resetGasButtons={propsMethodSpies.resetGasButtons}

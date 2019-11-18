@@ -17,9 +17,9 @@ describe('GasFeeDisplay Component', function () {
   beforeEach(() => {
     wrapper = shallow(<GasFeeDisplay
       conversionRate={20}
-      gasTotal={'mockGasTotal'}
-      primaryCurrency={'mockPrimaryCurrency'}
-      convertedCurrency={'mockConvertedCurrency'}
+      gasTotal="mockGasTotal"
+      primaryCurrency="mockPrimaryCurrency"
+      convertedCurrency="mockConvertedCurrency"
       showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
       onReset={propsMethodSpies.onReset}
     />, {context: {t: str => str + '_t'}})

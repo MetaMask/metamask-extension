@@ -34,9 +34,9 @@ export default class Sidebar extends Component {
     const { transaction = {} } = sidebarProps
     switch (type) {
       case WALLET_VIEW_SIDEBAR:
-        return <WalletView responsiveDisplayClassname={'sidebar-right' } />
+        return <WalletView responsiveDisplayClassname="sidebar-right" />
       case 'customize-gas':
-        return <div className={'sidebar-left'}><CustomizeGas transaction={transaction} /></div>
+        return <div className="sidebar-left"><CustomizeGas transaction={transaction} /></div>
       default:
         return null
     }

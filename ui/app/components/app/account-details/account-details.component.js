@@ -76,7 +76,7 @@ export default class AccountDetails extends Component {
           </div>
         </div>
         <Tooltip
-          position={'bottom'}
+          position="bottom"
           title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
           wrapperClassName="account-details__tooltip"
         >
