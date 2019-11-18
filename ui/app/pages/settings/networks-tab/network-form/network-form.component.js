@@ -24,7 +24,7 @@ export default class NetworkForm extends PureComponent {
     isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
-    networksToRender: PropTypes.array,
+    rpcUrls: PropTypes.array,
   }
 
   state = {
@@ -212,9 +212,9 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  validateUrl = (networksToRender, url, stateKey) => {
+  validateUrl = (url, stateKey) => {
+    const { rpcUrls } = this.props
     const invalidUrlErrorMsg = stateKey === 'rpcUrl' ? 'invalidRPC' : 'invalidBlockExplorerURL'
-    const rpcUrls = networksToRender.map(network => network.rpcUrl)
 
     if (validUrl.isWebUri(url) || (stateKey === 'blockExplorerUrl' && url === '')) {
       this.setErrorTo(stateKey, '')
@@ -236,7 +236,6 @@ export default class NetworkForm extends PureComponent {
       viewOnly,
       isCurrentRpcTarget,
       networksTabIsInAddMode,
-      networksToRender,
     } = this.props
     const {
       networkName,
@@ -261,7 +260,7 @@ export default class NetworkForm extends PureComponent {
         {this.renderFormTextField(
           'rpcUrl',
           'rpc-url',
-          this.setStateWithValue('rpcUrl', this.validateUrl.bind(null, networksToRender)),
+          this.setStateWithValue('rpcUrl', this.validateUrl),
           rpcUrl,
         )}
         {this.renderFormTextField(
