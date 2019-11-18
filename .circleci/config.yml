@@ -177,7 +177,7 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run: sudo apt-get install shellcheck
