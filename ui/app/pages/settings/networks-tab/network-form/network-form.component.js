@@ -212,12 +212,14 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
+  isValidWhenAppended = url => {
+    const appendedRpc = `http://${url}`
+    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+  }
+
   validateBlockExplorerURL = (url, stateKey) => {
     if (!validUrl.isWebUri(url) && url !== '') {
-      const appendedRpc = `http://${url}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
-
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : 'invalidBlockExplorerURL'))
+      this.setErrorTo(stateKey, this.context.t(this.isValidWhenAppended(url) ? 'urlErrorMsg' : 'invalidBlockExplorerURL'))
     } else {
       this.setErrorTo(stateKey, '')
     }
@@ -227,10 +229,7 @@ export default class NetworkForm extends PureComponent {
     const { rpcUrls } = this.props
 
     if (!validUrl.isWebUri(url) && url !== '') {
-      const appendedRpc = `http://${url}`
-      const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
-
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : 'invalidRPC'))
+      this.setErrorTo(stateKey, this.context.t(this.isValidWhenAppended(url) ? 'urlErrorMsg' : 'invalidRPC'))
     } else if (rpcUrls.includes(url)) {
       this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'))
     } else {
