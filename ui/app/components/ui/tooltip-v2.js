@@ -7,7 +7,6 @@ export default class Tooltip extends PureComponent {
     arrow: true,
     children: null,
     containerClassName: '',
-    hideOnClick: false,
     html: null,
     onHidden: null,
     position: 'left',

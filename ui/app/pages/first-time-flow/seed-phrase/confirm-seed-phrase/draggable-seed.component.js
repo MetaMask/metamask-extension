@@ -25,7 +25,6 @@ class DraggableSeed extends Component {
 
   static defaultProps = {
     className: '',
-    onClick () {},
   }
 
   componentWillReceiveProps (nextProps) {
