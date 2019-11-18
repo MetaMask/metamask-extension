@@ -12,9 +12,9 @@ describe('Dropdown', () => {
   beforeEach(() => {
     wrapper = shallow(
       <DropdownMenuItem
-        onClick = {onClickSpy}
-        style = {{test: 'style'}}
-        closeMenu = {closeMenuSpy}
+        onClick={onClickSpy}
+        style={{test: 'style'}}
+        closeMenu={closeMenuSpy}
       >
       </DropdownMenuItem>
     )

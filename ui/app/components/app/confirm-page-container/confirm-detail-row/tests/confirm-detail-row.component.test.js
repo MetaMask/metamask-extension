@@ -17,12 +17,12 @@ describe('Confirm Detail Row Component', function () {
         errorType="mockErrorType"
         label="mockLabel"
         showError={false}
-        primaryText = "mockFiatText"
-        secondaryText = "mockEthText"
-        primaryValueTextColor= "mockColor"
-        onHeaderClick= {propsMethodSpies.onHeaderClick}
-        headerText = "mockHeaderText"
-        headerTextClassName = "mockHeaderClass"
+        primaryText="mockFiatText"
+        secondaryText="mockEthText"
+        primaryValueTextColor="mockColor"
+        onHeaderClick={propsMethodSpies.onHeaderClick}
+        headerText="mockHeaderText"
+        headerTextClassName="mockHeaderClass"
       />
     )
   })
