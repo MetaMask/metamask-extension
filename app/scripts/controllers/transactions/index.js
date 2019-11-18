@@ -211,12 +211,12 @@ class TransactionController extends EventEmitter {
 
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
-    const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPE_STANDARD,
-      transactionCategory,
     })
+    const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
+    txMeta.transactionCategory = transactionCategory
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
 
