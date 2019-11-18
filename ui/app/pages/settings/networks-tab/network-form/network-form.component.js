@@ -222,11 +222,11 @@ export default class NetworkForm extends PureComponent {
       const appendedRpc = `http://${url}`
       const validWhenAppended = validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
 
-      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'uriErrorMsg' : invalidUrlErrorMsg))
+      this.setErrorTo(stateKey, this.context.t(validWhenAppended ? 'urlErrorMsg' : invalidUrlErrorMsg))
     }
 
     if (rpcUrls.includes(url)) {
-      this.setErrorTo(stateKey, this.context.t('uriExistsErrorMsg'))
+      this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'))
     }
   }
 
