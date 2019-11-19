@@ -13,6 +13,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  CONNECT_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -45,14 +46,19 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
-    permissionsRequests: PropTypes.array,
+    hasPermissionRequests: PropTypes.bool,
   }
 
   componentWillMount () {
     const {
       history,
       unconfirmedTransactionsCount = 0,
+      hasPermissionRequests,
     } = this.props
+
+    if (hasPermissionRequests) {
+      history.push(CONNECT_ROUTE)
+    }
 
     if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
