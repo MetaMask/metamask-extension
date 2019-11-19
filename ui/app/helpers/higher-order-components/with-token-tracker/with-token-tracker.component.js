@@ -20,8 +20,6 @@ export default function withTokenTracker (WrappedComponent) {
       }
 
       this.tracker = null
-      this.updateBalance = this.updateBalance.bind(this)
-      this.setError = this.setError.bind(this)
     }
 
     componentDidMount () {
@@ -71,17 +69,17 @@ export default function withTokenTracker (WrappedComponent) {
         .catch(error => this.setState({ error: error.message }))
     }
 
-    setError (error) {
+    setError = error => {
       this.setState({ error })
-    }
+    };
 
-    updateBalance (tokens = []) {
+    updateBalance = (tokens = []) => {
       if (!this.tracker.running) {
         return
       }
       const [{ string, symbol, balance }] = tokens
       this.setState({ string, symbol, error: null, balance })
-    }
+    };
 
     removeListeners () {
       if (this.tracker) {
@@ -103,5 +101,5 @@ export default function withTokenTracker (WrappedComponent) {
         />
       )
     }
-  }
+  };
 }
