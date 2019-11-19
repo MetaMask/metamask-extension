@@ -62,6 +62,7 @@ export default class ConfirmApprove extends Component {
       data,
       decimals,
       txData,
+      currentCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
       ...restProps
@@ -95,6 +96,7 @@ export default class ConfirmApprove extends Component {
           showEditApprovalPermissionModal={showEditApprovalPermissionModal}
           data={data}
           toAddress={toAddress}
+          currentCurrency={currentCurrency}
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />}

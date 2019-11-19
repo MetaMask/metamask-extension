@@ -5,6 +5,7 @@ import Identicon from '../../../components/ui/identicon'
 import {
   addressSummary,
 } from '../../../helpers/utils/util'
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -26,6 +27,7 @@ export default class ConfirmApproveContent extends Component {
     tokenBalance: PropTypes.string,
     data: PropTypes.string,
     toAddress: PropTypes.string,
+    currentCurrency: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
   }
@@ -68,6 +70,7 @@ export default class ConfirmApproveContent extends Component {
   renderTransactionDetailsContent () {
     const { t } = this.context
     const {
+      currentCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
     } = this.props
@@ -78,10 +81,10 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="confirm-approve-content__transaction-details-content__fee">
           <div className="confirm-approve-content__transaction-details-content__primary-fee">
-            { fiatTransactionTotal }
+            { formatCurrency(fiatTransactionTotal, currentCurrency) }
           </div>
           <div className="confirm-approve-content__transaction-details-content__secondary-fee">
-            { ethTransactionTotal }
+            { `${ethTransactionTotal} ETH` }
           </div>
         </div>
       </div>
