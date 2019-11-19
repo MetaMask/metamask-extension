@@ -117,7 +117,7 @@ CustomizeGasModal.contextTypes = {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
 
-CustomizeGasModal.prototype.componentWillReceiveProps = function (nextProps) {
+CustomizeGasModal.prototype.UNSAFE_componentWillReceiveProps = function (nextProps) {
   const currentState = getFreshState(this.props)
   const {
     gasPrice: currentGasPrice,

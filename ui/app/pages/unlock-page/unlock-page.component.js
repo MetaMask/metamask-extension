@@ -35,7 +35,7 @@ export default class UnlockPage extends Component {
     this.animationEventEmitter = new EventEmitter()
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { isUnlocked, history } = this.props
 
     if (isUnlocked) {

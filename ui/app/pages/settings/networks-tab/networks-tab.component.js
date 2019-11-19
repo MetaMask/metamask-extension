@@ -31,7 +31,7 @@ export default class NetworksTab extends PureComponent {
     networkDefaultedToProvider: PropTypes.bool,
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.setSelectedSettingsRpcUrl(null)
   }
 

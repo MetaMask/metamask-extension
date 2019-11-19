@@ -9,7 +9,7 @@ class Alert extends Component {
     className: '',
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (!this.props.visible && nextProps.visible) {
       this.animateIn(nextProps)
     } else if (this.props.visible && !nextProps.visible) {
