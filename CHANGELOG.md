@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.6.1 Tue Nov 19 2019
+
 ## 7.6.0 Mon Nov 18 2019
 - [#7450](https://github.com/MetaMask/metamask-extension/pull/7450): Add migration notification for users with non-zero Sai
 - [#7461](https://github.com/MetaMask/metamask-extension/pull/7461): Import styles for showing multiple notifications
