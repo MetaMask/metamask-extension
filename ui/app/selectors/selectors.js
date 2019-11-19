@@ -437,21 +437,23 @@ function getAddressConnectedDomainMap (state) {
 
   const addressConnectedIconMap = {}
 
-  Object.keys(domains).forEach(domainKey => {
-    const { permissions } = domains[domainKey]
-    const { icon, name } = domainMetadata[domainKey]
-    permissions.forEach(perm => {
-      const caveats = perm.caveats || []
-      const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
-      if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
-        exposedAccountCaveat.value.forEach(address => {
-          addressConnectedIconMap[address] = addressConnectedIconMap[address]
-            ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name } }
-            : { [domainKey]: { icon, name } }
-        })
-      }
+  if (domains) {
+    Object.keys(domains).forEach(domainKey => {
+      const { permissions } = domains[domainKey]
+      const { icon, name } = domainMetadata[domainKey]
+      permissions.forEach(perm => {
+        const caveats = perm.caveats || []
+        const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
+        if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
+          exposedAccountCaveat.value.forEach(address => {
+            addressConnectedIconMap[address] = addressConnectedIconMap[address]
+              ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name } }
+              : { [domainKey]: { icon, name } }
+          })
+        }
+      })
     })
-  })
+  }
 
   return addressConnectedIconMap
 }
