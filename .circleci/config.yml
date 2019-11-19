@@ -77,7 +77,7 @@ workflows:
 jobs:
   create_release_pull_request:
     docker:
-      - image: circleci/node:8.15.1-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -89,7 +89,7 @@ jobs:
 
   prep-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -108,7 +108,7 @@ jobs:
 
   prep-build:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -127,7 +127,7 @@ jobs:
 
   prep-docs:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -142,7 +142,7 @@ jobs:
 
   prep-scss:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -161,7 +161,7 @@ jobs:
 
   test-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -175,7 +175,7 @@ jobs:
 
   test-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -186,7 +186,7 @@ jobs:
 
   test-e2e-chrome:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -201,7 +201,7 @@ jobs:
 
   test-e2e-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -219,7 +219,7 @@ jobs:
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -249,7 +249,7 @@ jobs:
 
   job-publish-release:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -273,7 +273,7 @@ jobs:
 
   test-unit:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -288,7 +288,7 @@ jobs:
             - coverage
   test-unit-global:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -298,7 +298,7 @@ jobs:
           command: yarn test:unit:global
   test-mozilla-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -309,7 +309,7 @@ jobs:
 
   test-integration-flat-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -325,7 +325,7 @@ jobs:
     environment:
       browsers: '["Chrome"]'
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -336,7 +336,7 @@ jobs:
 
   all-tests-pass:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - run:
           name: All Tests Passed
@@ -344,7 +344,7 @@ jobs:
 
   coveralls-upload:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:

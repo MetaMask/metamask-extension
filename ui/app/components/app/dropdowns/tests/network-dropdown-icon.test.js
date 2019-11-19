@@ -8,10 +8,10 @@ describe('Network Dropdown Icon', () => {
 
   beforeEach(() => {
     wrapper = shallow(<NetworkDropdownIcon
-      backgroundColor = {'red'}
-      isSelected = {false}
-      innerBorder = {'none'}
-      diameter = {'12'}
+      backgroundColor="red"
+      isSelected={false}
+      innerBorder="none"
+      diameter="12"
     />)
   })
 

@@ -30,7 +30,7 @@ export default class ConfirmSendEther extends Component {
 
     return (
       <ConfirmTransactionBase
-        actionKey={'confirm'}
+        actionKey="confirm"
         hideData={hideData}
         onEdit={confirmTransactionData => this.handleEdit(confirmTransactionData)}
       />
