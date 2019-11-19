@@ -529,7 +529,7 @@
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
   "usedByClients": {

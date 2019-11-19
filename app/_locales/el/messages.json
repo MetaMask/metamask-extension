@@ -1341,7 +1341,7 @@
   "updatedWithDate": {
     "message": "Ενημερώθηκε το $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Τα URI απαιτούν το κατάλληλο πρόθεμα HTTP/HTTPS."
   },
   "usedByClients": {

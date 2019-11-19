@@ -1190,7 +1190,7 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInEth = await findElement(driver, By.css('.confirm-approve-content__transaction-details-content__secondary-fee'))
-      assert.equal(await gasFeeInEth.getText(), '0.0006')
+      assert.equal(await gasFeeInEth.getText(), '0.0006 ETH')
     })
 
     it('edits the permission', async () => {

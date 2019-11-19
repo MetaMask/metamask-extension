@@ -83,7 +83,7 @@ export default class AccountListItem extends Component {
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
                   value={balance}
-                  hideTitle={true}
+                  hideTitle
                 />
                 {
                   balanceIsCached ? <span className="account-list-item__cached-star">*</span> : null
@@ -94,7 +94,7 @@ export default class AccountListItem extends Component {
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
                     value={balance}
-                    hideTitle={true}
+                    hideTitle
                   />
                 )
               }

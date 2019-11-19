@@ -1343,7 +1343,7 @@
   "updatedWithDate": {
     "message": "Atjaunināts $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
   },
   "usedByClients": {

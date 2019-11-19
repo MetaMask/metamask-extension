@@ -478,7 +478,7 @@
   "unknownNetwork": {
     "message": "Onbekend privénetwerk"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
   },
   "usedByClients": {

@@ -1320,7 +1320,7 @@
   "updatedWithDate": {
     "message": "更新時間 $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs 需要加入適當的 HTTP/HTTPS 前綴字"
   },
   "usedByClients": {

@@ -23,7 +23,7 @@ export default class BasicTabContent extends Component {
         {!gasPriceButtonGroupProps.loading
           ? <GasPriceButtonGroup
             className="gas-price-button-group--alt"
-            showCheck={true}
+            showCheck
             {...gasPriceButtonGroupProps}
           />
           : <Loading />

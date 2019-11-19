@@ -204,7 +204,7 @@ export default class GasModalPageContainer extends Component {
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}
-          hideCancel={true}
+          hideCancel
         />
       </div>
     )

@@ -554,7 +554,7 @@
   "unknownNetwork": {
     "message": "அறியப்படாத தனியார் நெட்வொர்க்"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI கள் சரியான HTTP / HTTPS முன்னொட்டு தேவை."
   },
   "usedByClients": {

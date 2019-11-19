@@ -62,6 +62,7 @@ export default class ConfirmApprove extends Component {
       data,
       decimals,
       txData,
+      currentCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
       ...restProps
@@ -78,7 +79,7 @@ export default class ConfirmApprove extends Component {
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={tokenAddress}
-        showAccountInHeader={true}
+        showAccountInHeader
         title={tokensText}
         contentComponent={<ConfirmApproveContent
           siteImage={siteImage}
@@ -95,10 +96,11 @@ export default class ConfirmApprove extends Component {
           showEditApprovalPermissionModal={showEditApprovalPermissionModal}
           data={data}
           toAddress={toAddress}
+          currentCurrency={currentCurrency}
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />}
-        hideSenderToRecipient={true}
+        hideSenderToRecipient
         customTxParamsData={customPermissionAmount
           ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
           : null

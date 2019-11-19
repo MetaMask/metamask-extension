@@ -1316,7 +1316,7 @@
   "updatedWithDate": {
     "message": "Actualitzat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
   },
   "usedByClients": {

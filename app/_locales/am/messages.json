@@ -1344,7 +1344,7 @@
   "updatedWithDate": {
     "message": "የዘመነ $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
   },
   "usedByClients": {

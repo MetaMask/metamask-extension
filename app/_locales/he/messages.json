@@ -1341,7 +1341,7 @@
   "updatedWithDate": {
     "message": "עודכן $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
   },
   "usedByClients": {

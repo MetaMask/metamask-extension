@@ -547,7 +547,7 @@
   "unknownNetwork": {
     "message": "Bilinmeyen özel ağ"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIler için HTTP/HTTPS öneki gerekmektedir."
   },
   "usedByClients": {
