@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 const PropTypes = require('prop-types')
 const { Provider } = require('react-redux')
 const { HashRouter } = require('react-router-dom')
