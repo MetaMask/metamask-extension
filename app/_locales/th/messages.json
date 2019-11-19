@@ -656,7 +656,7 @@
   "updatedWithDate": {
     "message": "อัปเดต $1 แล้ว"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
   },
   "usedByClients": {

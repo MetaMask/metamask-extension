@@ -1337,7 +1337,7 @@
   "updatedWithDate": {
     "message": "Ažurirano $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
   },
   "usedByClients": {

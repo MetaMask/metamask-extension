@@ -1474,8 +1474,11 @@
   "updatedWithDate": {
     "message": "Updated $1"
   },
-  "uriErrorMsg": {
-    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+  "urlErrorMsg": {
+    "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlExistsErrorMsg": {
+    "message": "URL is already present in existing list of networks"
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"

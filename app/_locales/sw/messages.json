@@ -1325,7 +1325,7 @@
   "updatedWithDate": {
     "message": "Imesasishwa $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
   "usedByClients": {

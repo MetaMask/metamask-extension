@@ -1328,7 +1328,7 @@
   "updatedWithDate": {
     "message": "Actualizat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
   },
   "usedByClients": {

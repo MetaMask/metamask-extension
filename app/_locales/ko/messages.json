@@ -1338,7 +1338,7 @@
   "updatedWithDate": {
     "message": "$1에 업데이트 됨"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI는 HTTP/HTTPS로 시작해야 합니다."
   },
   "usedByClients": {

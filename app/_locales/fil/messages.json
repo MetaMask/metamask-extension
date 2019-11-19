@@ -1235,7 +1235,7 @@
   "updatedWithDate": {
     "message": "Na-update ang $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."
   },
   "usedByClients": {

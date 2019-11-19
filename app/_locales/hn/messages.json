@@ -491,7 +491,7 @@
   "unknownNetwork": {
     "message": "अज्ञात निजी नेटवर्क"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
   },
   "usedByClients": {

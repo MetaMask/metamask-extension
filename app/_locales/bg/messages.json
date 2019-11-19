@@ -1343,7 +1343,7 @@
   "updatedWithDate": {
     "message": "Актуализирано $1 "
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
   },
   "usedByClients": {
