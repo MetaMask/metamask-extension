@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.6.0 Mon Nov 18 2019
+
 ## 7.5.3 Fri Nov 15 2019
 - [#7412](https://github.com/MetaMask/metamask-extension/pull/7412): lock eth-contract-metadata (#7412)
 - [#7416](https://github.com/MetaMask/metamask-extension/pull/7416): Add eslint import plugin to help detect unresolved paths

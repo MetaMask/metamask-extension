@@ -29,6 +29,11 @@
     justify-content: space-between;
   }
 
+  &__icon {
+    height: 16px;
+    align-self: center;
+  }
+
   &__text {
     font-family: Roboto, 'sans-serif';
     font-style: normal;
