@@ -6,7 +6,7 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import { getNetworkIdentifier, preferencesSelector, hasPermissionRequests } from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
@@ -150,13 +150,8 @@ class Routes extends Component {
     return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
   }
 
-  hasPermissionsRequests () {
-    const { permissionsRequests } = this.props
-    return Array.isArray(permissionsRequests) && permissionsRequests.length > 0
-  }
-
   hideAppHeader () {
-    const { location } = this.props
+    const { location, hasPermissionsRequests } = this.props
 
     const isInitializing = Boolean(matchPath(location.pathname, {
       path: INITIALIZE_ROUTE, exact: false,
@@ -171,10 +166,10 @@ class Routes extends Component {
     }
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasPermissionsRequests()
+      return this.onConfirmPage() || hasPermissionsRequests
     }
 
-    if (this.hasPermissionsRequests()) {
+    if (hasPermissionsRequests) {
       return true
     }
   }
@@ -359,14 +354,14 @@ Routes.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
-  permissionsRequests: PropTypes.array,
+  hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
   getTabIdOrigins: PropTypes.func,
   getOpenExternalTabs: PropTypes.func,
 }
 
 function mapStateToProps (state) {
-  const { appState, metamask } = state
+  const { appState } = state
   const {
     sidebar,
     alertOpen,
@@ -376,10 +371,6 @@ function mapStateToProps (state) {
   } = appState
 
   const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
-
-  const {
-    permissionsRequests,
-  } = metamask
 
   return {
     // state from plugin
@@ -399,7 +390,7 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-    permissionsRequests,
+    hasPermissionsRequests: hasPermissionRequests(state),
   }
 }
 

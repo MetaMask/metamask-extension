@@ -65,6 +65,7 @@ const selectors = {
   getAddressBookEntryName,
   getFeatureFlags,
   getFirstPermissionRequest,
+  hasPermissionRequests,
   getRenderablePermissionsDomains,
   getPermissionsDomains,
   getAddressConnectedDomainMap,
@@ -422,7 +423,11 @@ function getFeatureFlags (state) {
 
 function getFirstPermissionRequest (state) {
   const requests = getPermissionsRequests(state)
-  return requests.length ? requests[0] : null
+  return requests && requests[0] ? requests[0] : null
+}
+
+function hasPermissionRequests (state) {
+  return Boolean(getFirstPermissionRequest(state))
 }
 
 function getPermissionsDomains (state) {
