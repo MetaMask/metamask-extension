@@ -20,7 +20,7 @@ const Index = props => {
       </HashRouter>
     </Provider>
   )
-};
+}
 
 Index.propTypes = {
   store: PropTypes.object,

@@ -24,7 +24,7 @@ const TabBar = props => {
       ))}
     </div>
   )
-};
+}
 
 TabBar.propTypes = {
   isActive: PropTypes.func.isRequired,
