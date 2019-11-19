@@ -675,7 +675,9 @@ function addNewKeyring (type, opts) {
     log.debug(`background.addNewKeyring`)
     background.addNewKeyring(type, opts, (err) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
       dispatch(actions.showAccountsPage())
     })
   }
@@ -2288,7 +2290,9 @@ function pairUpdate (coin) {
     dispatch(actions.hideWarning())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
-      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
+      if (mktResponse.error) {
+        return dispatch(actions.displayWarning(mktResponse.error))
+      }
       dispatch({
         type: actions.PAIR_UPDATE,
         value: {
@@ -2306,7 +2310,9 @@ function shapeShiftSubview () {
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
+        if (mktResponse.error) {
+          return dispatch(actions.displayWarning(mktResponse.error))
+        }
         dispatch({
           type: actions.SHAPESHIFT_SUBVIEW,
           value: {
@@ -2324,7 +2330,9 @@ function coinShiftRquest (data, marketData) {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
       dispatch(actions.hideLoadingIndication())
-      if (response.error) return dispatch(actions.displayWarning(response.error))
+      if (response.error) {
+        return dispatch(actions.displayWarning(response.error))
+      }
       var message = `
         Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
@@ -2359,7 +2367,9 @@ function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
+      if (mktResponse.error) {
+        return dispatch(actions.displayWarning(mktResponse.error))
+      }
 
       var message = [
         `Deposit your ${coin} to the address below:`,

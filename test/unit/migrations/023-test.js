@@ -37,7 +37,9 @@ let nonDeletableCount = 0
 let status
 while (transactions.length <= 100) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  if (!deletableTxStates.find((s) => s === status)) nonDeletableCount++
+  if (!deletableTxStates.find((s) => s === status)) {
+    nonDeletableCount++
+  }
   transactions.push({status})
 }
 

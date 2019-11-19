@@ -36,8 +36,12 @@ require('jsdom-global')()
 window.localStorage = {}
 
 // crypto.getRandomValues
-if (!window.crypto) window.crypto = {}
-if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+if (!window.crypto) {
+  window.crypto = {}
+}
+if (!window.crypto.getRandomValues) {
+  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+}
 
 function enableFailureOnUnhandledPromiseRejection () {
   // overwrite node's promise with the stricter Bluebird promise
@@ -60,7 +64,9 @@ function enableFailureOnUnhandledPromiseRejection () {
     } else {
       var oldOHR = window.onunhandledrejection
       window.onunhandledrejection = function (evt) {
-        if (typeof oldOHR === 'function') oldOHR.apply(this, arguments)
+        if (typeof oldOHR === 'function') {
+          oldOHR.apply(this, arguments)
+        }
         throw evt.detail.reason
       }
     }

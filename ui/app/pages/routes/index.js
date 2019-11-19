@@ -261,7 +261,9 @@ class Routes extends Component {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
       var passwordBox = document.querySelector('input[type=password]')
-      if (!passwordBox) return
+      if (!passwordBox) {
+        return
+      }
       passwordBox.focus()
     } else {
       // currently active: deactivate

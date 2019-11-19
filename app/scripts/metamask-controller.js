@@ -342,7 +342,9 @@ module.exports = class MetamaskController extends EventEmitter {
         // Expose no accounts if this origin has not been approved, preventing
         // account-requring RPC methods from completing successfully
         const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'metamask' && !exposeAccounts) { return [] }
+        if (origin !== 'metamask' && !exposeAccounts) {
+          return []
+        }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -1404,7 +1406,9 @@ module.exports = class MetamaskController extends EventEmitter {
         this.activeControllerConnections--
         this.emit('controllerConnectionChanged', this.activeControllerConnections)
         // report any error
-        if (err) log.error(err)
+        if (err) {
+          log.error(err)
+        }
       }
     )
     dnode.on('remote', (remote) => {
@@ -1442,7 +1446,9 @@ module.exports = class MetamaskController extends EventEmitter {
             mid.destroy()
           }
         })
-        if (err) log.error(err)
+        if (err) {
+          log.error(err)
+        }
       }
     )
   }
@@ -1507,7 +1513,9 @@ module.exports = class MetamaskController extends EventEmitter {
       (err) => {
         configStore.destroy()
         configStream.destroy()
-        if (err) log.error(err)
+        if (err) {
+          log.error(err)
+        }
       }
     )
   }
@@ -1527,7 +1535,9 @@ module.exports = class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // report any error
-        if (err) log.error(err)
+        if (err) {
+          log.error(err)
+        }
       }
     )
 
@@ -1676,10 +1686,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} amount - The amount of ether desired, as a base 10 string.
    */
   buyEth (address, amount) {
-    if (!amount) amount = '5'
+    if (!amount) {
+      amount = '5'
+    }
     const network = this.networkController.getNetworkState()
     const url = getBuyEthUrl({ network, address, amount })
-    if (url) this.platform.openWindow({ url })
+    if (url) {
+      this.platform.openWindow({ url })
+    }
   }
 
   /**

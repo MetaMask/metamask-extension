@@ -65,7 +65,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+      .reduce((result, msg) => {
+        result[msg.id] = msg; return result
+      }, {})
   }
 
   /**
@@ -110,7 +112,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
   addUnapprovedMessage (msgParams, req) {
     log.debug(`PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // add origin from request
-    if (req) msgParams.origin = req.origin
+    if (req) {
+      msgParams.origin = req.origin
+    }
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
@@ -229,7 +233,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+    if (!msg) {
+      throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)

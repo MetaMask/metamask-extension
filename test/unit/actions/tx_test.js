@@ -33,9 +33,15 @@ describe('tx confirmation screen', function () {
   describe('cancelTx', function () {
     before(function (done) {
       actions._setBackgroundConnection({
-        approveTransaction (_, cb) { cb('An error!') },
-        cancelTransaction (_, cb) { cb() },
-        getState (cb) { cb() },
+        approveTransaction (_, cb) {
+          cb('An error!')
+        },
+        cancelTransaction (_, cb) {
+          cb()
+        },
+        getState (cb) {
+          cb()
+        },
       })
       done()
     })

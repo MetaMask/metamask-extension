@@ -43,8 +43,12 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
-  if (value === 'None') return value
-  if (value === '...') return value
+  if (value === 'None') {
+    return value
+  }
+  if (value === '...') {
+    return value
+  }
 
   const {
     conversionRate,

@@ -227,7 +227,9 @@ describe('MetaMaskController', function () {
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what'
       sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      metamaskController.getBalance.callsFake(() => {
+        return Promise.resolve('0x0')
+      })
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch(() => null)
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
@@ -237,7 +239,9 @@ describe('MetaMaskController', function () {
 
     it('should clear previous identities after vault restoration', async () => {
       sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      metamaskController.getBalance.callsFake(() => {
+        return Promise.resolve('0x0')
+      })
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       assert.deepEqual(metamaskController.getState().identities, {
@@ -676,7 +680,9 @@ describe('MetaMaskController', function () {
 
     beforeEach(async () => {
       sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      metamaskController.getBalance.callsFake(() => {
+        return Promise.resolve('0x0')
+      })
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
@@ -734,7 +740,9 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance')
-      metamaskController.getBalance.callsFake(() => { return Promise.resolve('0x0') })
+      metamaskController.getBalance.callsFake(() => {
+        return Promise.resolve('0x0')
+      })
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
@@ -809,7 +817,9 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
 
       streamTest = createThoughStream((chunk, _, cb) => {
-        if (chunk.name !== 'phishing') return cb()
+        if (chunk.name !== 'phishing') {
+          return cb()
+        }
         assert.equal(chunk.data.hostname, phishingUrl.hostname)
         resolve()
         cb()
@@ -929,6 +939,8 @@ describe('MetaMaskController', function () {
 
 function deferredPromise () {
   let resolve
-  const promise = new Promise(_resolve => { resolve = _resolve })
+  const promise = new Promise(_resolve => {
+    resolve = _resolve
+  })
   return { promise, resolve }
 }

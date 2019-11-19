@@ -123,7 +123,9 @@ async function setupPublicApi (outStream) {
     outStream,
     (err) => {
       // report any error
-      if (err) log.error(err)
+      if (err) {
+        log.error(err)
+      }
     }
   )
   const background = await new Promise(resolve => dnode.once('remote', resolve))
@@ -151,7 +153,9 @@ function getSiteMetadata () {
  */
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
-  if (err) warningMsg += '\n' + err.stack
+  if (err) {
+    warningMsg += '\n' + err.stack
+  }
   console.warn(warningMsg)
 }
 
@@ -302,7 +306,9 @@ function getSiteIcon (window) {
  */
 async function domIsReady () {
   // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) return
+  if (['interactive', 'complete'].includes(document.readyState)) {
+    return
+  }
   // wait for load
   await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }

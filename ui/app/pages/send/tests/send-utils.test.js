@@ -18,8 +18,12 @@ const {
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
-    if (String(a).match(/^0x.+/)) a = Number(String(a).slice(2))
-    if (String(b).match(/^0x.+/)) b = Number(String(b).slice(2))
+    if (String(a).match(/^0x.+/)) {
+      a = Number(String(a).slice(2))
+    }
+    if (String(b).match(/^0x.+/)) {
+      b = Number(String(b).slice(2))
+    }
     return a + b
   }),
   conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),

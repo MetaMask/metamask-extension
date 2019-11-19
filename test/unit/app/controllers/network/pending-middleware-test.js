@@ -19,7 +19,9 @@ describe('#createPendingNonceMiddleware', function () {
   it('should fill the result with a the "pending" nonce', (done) => {
     const req = { method: 'eth_getTransactionCount', params: [address, 'pending'] }
     const res = {}
-    pendingNonceMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
+    pendingNonceMiddleware(req, res, () => {
+      done(new Error('should not have called next'))
+    }, () => {
       assert(res.result === '0x2')
       done()
     })
@@ -63,7 +65,9 @@ describe('#createPendingTxMiddleware', function () {
     returnUndefined = false
     const req = { method: 'eth_getTransactionByHash', params: [address, 'pending'] }
     const res = {}
-    pendingTxMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
+    pendingTxMiddleware(req, res, () => {
+      done(new Error('should not have called next'))
+    }, () => {
       /*
       // uncomment this section for debugging help with non matching keys
       const coppy = {...res.result}

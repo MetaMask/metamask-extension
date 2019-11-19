@@ -402,7 +402,9 @@ class TransactionController extends EventEmitter {
         log.error(err)
       }
       // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) nonceLock.releaseLock()
+      if (nonceLock) {
+        nonceLock.releaseLock()
+      }
       // continue with error chain
       throw err
     } finally {
@@ -603,7 +605,9 @@ class TransactionController extends EventEmitter {
       }
     })
     this.pendingTxTracker.on('tx:retry', (txMeta) => {
-      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+      if (!('retryCount' in txMeta)) {
+        txMeta.retryCount = 0
+      }
       txMeta.retryCount++
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
@@ -657,10 +661,14 @@ class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     const { nonce, from } = txMeta.txParams
     const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
-    if (!sameNonceTxs.length) return
+    if (!sameNonceTxs.length) {
+      return
+    }
     // mark all same nonce transactions as dropped and give i a replacedBy hash
     sameNonceTxs.forEach((otherTxMeta) => {
-      if (otherTxMeta.id === txId) return
+      if (otherTxMeta.id === txId) {
+        return
+      }
       otherTxMeta.replacedBy = txMeta.hash
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
       this.txStateManager.setTxStatusDropped(otherTxMeta.id)
