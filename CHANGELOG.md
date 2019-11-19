@@ -3,6 +3,9 @@
 ## Current Develop Branch
 
 ## 7.6.1 Tue Nov 19 2019
+- [#7475](https://github.com/MetaMask/metamask-extension/pull/7475): Add 'Remind Me Later' to the Maker notification
+- [#7436](https://github.com/MetaMask/metamask-extension/pull/7436): Add additional rpcUrl verification
+- [#7468](https://github.com/MetaMask/metamask-extension/pull/7468): Show transaction fee units on approve screen
 
 ## 7.6.0 Mon Nov 18 2019
 - [#7450](https://github.com/MetaMask/metamask-extension/pull/7450): Add migration notification for users with non-zero Sai
