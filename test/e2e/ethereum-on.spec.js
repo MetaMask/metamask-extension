@@ -132,9 +132,9 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('has not set the network within the dapp', async () => {
-      const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '')
+    it('network is set to localhost within the dapp', async () => {
+      const networkDiv = await findElement(driver, By.css('#networkDiv'))
+      assert.equal(await networkDiv.getText(), '5777')
     })
 
     it('changes the network', async () => {
@@ -151,19 +151,19 @@ describe('MetaMask', function () {
 
     it('sets the network div within the dapp', async () => {
       await driver.switchTo().window(dapp)
-      const networkDiv = await findElement(driver, By.css('#network'))
+      const networkDiv = await findElement(driver, By.css('#networkDiv'))
       assert.equal(await networkDiv.getText(), '3')
     })
 
     it('sets the chainId div within the dapp', async () => {
       await driver.switchTo().window(dapp)
-      const chainIdDiv = await findElement(driver, By.css('#chainId'))
+      const chainIdDiv = await findElement(driver, By.css('#chainIdDiv'))
       assert.equal(await chainIdDiv.getText(), '0x3')
     })
 
     it('sets the account div within the dapp', async () => {
       await driver.switchTo().window(dapp)
-      const accountsDiv = await findElement(driver, By.css('#accounts'))
+      const accountsDiv = await findElement(driver, By.css('#accountsDiv'))
       assert.equal(await accountsDiv.getText(), publicAddress.toLowerCase())
     })
   })

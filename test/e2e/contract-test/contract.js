@@ -169,19 +169,21 @@ web3.currentProvider.enable().then(() => {
 
   ethereum.autoRefreshOnNetworkChange = false
 
-  const networkDiv = document.getElementById('network')
-  const chainIdDiv = document.getElementById('chainId')
-  const accountsDiv = document.getElementById('accounts')
 
-  ethereum.on('networkChanged', (networkId) => {
-    networkDiv.innerHTML = networkId
-  })
+})
 
-  ethereum.on('chainIdChanged', (chainId) => {
-    chainIdDiv.innerHTML = chainId
-  })
+const networkDiv = document.getElementById('networkDiv')
+const chainIdDiv = document.getElementById('chainIdDiv')
+const accountsDiv = document.getElementById('accountsDiv')
 
-  ethereum.on('accountsChanged', (accounts) => {
-    accountsDiv.innerHTML = accounts
-  })
+ethereum.on('networkChanged', (networkId) => {
+  networkDiv.innerHTML = networkId
+})
+
+ethereum.on('chainIdChanged', (chainId) => {
+  chainIdDiv.innerHTML = chainId
+})
+
+ethereum.on('accountsChanged', (accounts) => {
+  accountsDiv.innerHTML = accounts
 })
