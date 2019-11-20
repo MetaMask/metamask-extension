@@ -75,7 +75,6 @@ class ExtensionPlatform {
   currentTab () {
     return new Promise(resolve => {
       extension.tabs.getCurrent(tab => {
-        console.log('currentTab tab', tab)
         resolve(tab)
       })
     })
