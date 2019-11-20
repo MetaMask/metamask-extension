@@ -84,6 +84,14 @@ class ExtensionPlatform {
     extension.tabs.update(tabId, {highlighted: true}, cb)
   }
 
+  closeTab (tabId) {
+    return new Promise(resolve => {
+      extension.tabs.remove(tabId, () => {
+        resolve()
+      })
+    })
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()
