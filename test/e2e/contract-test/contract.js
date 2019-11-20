@@ -49,6 +49,8 @@ const initialize = () => {
   const approveTokensWithoutGas = document.getElementById('approveTokensWithoutGas')
   const signTypedData = document.getElementById('signTypedData')
   const signTypedDataResults = document.getElementById('signTypedDataResult')
+  const getAccountsButton = document.getElementById('getAccounts')
+  const getAccountsResults = document.getElementById('getAccountsResult')
 
   const contractStatus = document.getElementById('contractStatus')
   const tokenAddress = document.getElementById('tokenAddress')
@@ -315,6 +317,16 @@ const initialize = () => {
           signTypedDataResults.innerHTML = result
         }
       })
+    })
+
+    getAccountsButton.addEventListener('click', async () => {
+      try {
+        const accounts = await ethereum.send({ method: 'eth_acounts' })
+        getAccountsResults.innerHTML = accounts[0] || 'Not able to get accounts'
+      } catch (error) {
+        console.error(error)
+        getAccountsResults.innerHTML = `Error: ${error}`
+      }
     })
 
   }
