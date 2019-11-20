@@ -41,6 +41,8 @@ web3.currentProvider.enable().then(() => {
   const approveTokens = document.getElementById('approveTokens')
   const transferTokensWithoutGas = document.getElementById('transferTokensWithoutGas')
   const approveTokensWithoutGas = document.getElementById('approveTokensWithoutGas')
+  const getAccountsButton = document.getElementById('getAccounts')
+  const getAccountsResult = document.getElementById('getAccountsResult')
 
   deployButton.addEventListener('click', async function () {
     document.getElementById('contractStatus').innerHTML = 'Deploying'
@@ -169,7 +171,10 @@ web3.currentProvider.enable().then(() => {
 
   ethereum.autoRefreshOnNetworkChange = false
 
-
+  getAccountsButton.addEventListener('click', async function () {
+    const accounts = await ethereum.send({ method: 'eth_accounts' })
+    getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts'
+  })
 })
 
 const networkDiv = document.getElementById('networkDiv')
