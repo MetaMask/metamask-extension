@@ -12,11 +12,11 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const pify = require('pify')
 const Web3 = require('web3')
-const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+// const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 
-const { bnToHex } = require('./util')
-const { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
-const { SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN, SINGLE_CALL_BALANCES_ADDRESS_KOVAN } = require('../controllers/network/contract-addresses')
+// const { bnToHex } = require('./util')
+// const { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
+// const { SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN, SINGLE_CALL_BALANCES_ADDRESS_KOVAN } = require('../controllers/network/contract-addresses')
 
 
 class AccountTracker {
@@ -181,22 +181,24 @@ class AccountTracker {
     const addresses = Object.keys(accounts)
     const currentNetwork = parseInt(this.network.getNetworkState())
 
+    // TODO:plugins re-implement _updateAccountsViaBalanceChecker using ethers
+    // and a modern balance checker at some point in the future
     switch (currentNetwork) {
-      case MAINNET_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
-        break
+      // case MAINNET_CODE:
+      //   await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
+      //   break
 
-      case RINKEBY_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
-        break
+      // case RINKEBY_CODE:
+      //   await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
+      //   break
 
-      case ROPSTEN_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
-        break
+      // case ROPSTEN_CODE:
+      //   await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
+      //   break
 
-      case KOVAN_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
-        break
+      // case KOVAN_CODE:
+      //   await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
+      //   break
 
       default:
         await Promise.all(addresses.map(this._updateAccount.bind(this)))
@@ -223,30 +225,29 @@ class AccountTracker {
     this.store.updateState({ accounts })
   }
 
-  /**
-   * Updates current address balances from balanceChecker deployed contract instance
-   * @param {*} addresses
-   * @param {*} deployedContractAddress
-   */
-  async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
-    const accounts = this.store.getState().accounts
-    this.web3.setProvider(this._provider)
-    const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(deployedContractAddress)
-    const ethBalance = ['0x0']
+  // /**
+  //  * Updates current address balances from balanceChecker deployed contract instance
+  //  * @param {*} addresses
+  //  * @param {*} deployedContractAddress
+  //  */
+  // async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
+  //   const accounts = this.store.getState().accounts
+  //   this.web3.setProvider(this._provider)
+  //   const ethContract = new this.web3.eth.Contract(SINGLE_CALL_BALANCES_ABI, deployedContractAddress)
+  //   const ethBalance = ['0x0']
 
-    ethContract.balances(addresses, ethBalance, (error, result) => {
-      if (error) {
-        log.warn(`MetaMask - Account Tracker single call balance fetch failed`, error)
-        return Promise.all(addresses.map(this._updateAccount.bind(this)))
-      }
-      addresses.forEach((address, index) => {
-        const balance = bnToHex(result[index])
-        accounts[address] = { address, balance }
-      })
-      this.store.updateState({ accounts })
-    })
-  }
-
+  //   ethContract.methods.balances(addresses, ethBalance).call(null, (error, result) => {
+  //     if (error) {
+  //       log.warn(`MetaMask - Account Tracker single call balance fetch failed`, error)
+  //       return Promise.all(addresses.map(this._updateAccount.bind(this)))
+  //     }
+  //     addresses.forEach((address, index) => {
+  //       const balance = bnToHex(result[index])
+  //       accounts[address] = { address, balance }
+  //     })
+  //     this.store.updateState({ accounts })
+  //   })
+  // }
 }
 
 module.exports = AccountTracker
