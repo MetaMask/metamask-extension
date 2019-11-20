@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "O Modo de Privacidade está ativado por padrão"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabela disponível apenas em redes de Ethereum."
   },
@@ -20,12 +17,6 @@
   },
   "reject": {
     "message": "Rejeitar"
-  },
-  "providerRequest": {
-    "message": "$1 gostaria de se conectar à sua conta"
-  },
-  "providerRequestInfo": {
-    "message": "Este site está solicitando acesso para visualizar o seu endereço de conta atual. Certifique-se sempre de confiar nos sites com os quais você interage."
   },
   "about": {
     "message": "Sobre"
@@ -246,9 +237,6 @@
   "connect": {
     "message": "Conectar-se"
   },
-  "permissionsRequest": {
-    "message": "Solicitação de Conexão"
-  },
   "connectingTo": {
     "message": "Conectando a $1"
   },
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se você já tem Ether, a forma mais rápida de colocá-lo em sua nova carteira é o depósito direto."
-  },
-  "dismiss": {
-    "message": "Dispensar"
   },
   "done": {
     "message": "Concluído"

@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Le mode conversation privée est maintenant activé par défaut"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tableau disponible uniquement sur les réseaux Ethereum."
   },
@@ -10,9 +7,6 @@
   },
   "contractInteraction": {
     "message": "Interaction avec un contrat"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Les données de site Web approuvées ont été supprimées."
   },
   "permissionsSettings": {
     "message": "Données d'approbation"
@@ -25,12 +19,6 @@
   },
   "reject": {
     "message": "Rejeter"
-  },
-  "providerRequest": {
-    "message": "$1 voudrait se connecter à votre compte"
-  },
-  "providerRequestInfo": {
-    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ethereum pour pouvoir interagir avec la chaîne de blocs Ethereum. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ethereum."
   },
   "about": {
     "message": "À propos"
@@ -249,9 +237,6 @@
   "connect": {
     "message": "Connecter"
   },
-  "permissionsRequest": {
-    "message": "Demande de connexion"
-  },
   "connectingTo": {
     "message": "Connexion à $1"
   },
@@ -371,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
-  },
-  "dismiss": {
-    "message": "Ignorer"
   },
   "done": {
     "message": "Terminé"

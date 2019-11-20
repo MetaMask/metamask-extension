@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Integritetsläge är nu aktiverat som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
   },
@@ -20,12 +17,6 @@
   },
   "reject": {
     "message": "Avvisa"
-  },
-  "providerRequest": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
-  "providerRequestInfo": {
-    "message": "Den här sidan begär åtkomst till din aktuella kontoadress. Se till att du kan lita på de sidor du använder dig av."
   },
   "about": {
     "message": "Om"
@@ -246,9 +237,6 @@
   "connect": {
     "message": "Ansluta"
   },
-  "permissionsRequest": {
-    "message": "Anslutningsförfrågan"
-  },
   "connectingTo": {
     "message": "Ansluter till $1"
   },
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
-  "dismiss": {
-    "message": "Ta bort permanent"
   },
   "done": {
     "message": "Klart"
