@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "El modo de privacidad está habilitado de manera predeterminada"
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart está disponible únicamente en las redes de Ethereum."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Rechazar"
-  },
-  "providerRequest": {
-    "message": "$1 desea conectarse a tu cuenta"
-  },
-  "providerRequestInfo": {
-    "message": "Este sitio está solicitando acceso para ver la dirección de tu cuenta corriente. Asegúrate siempre de que confías en los sitios con los que interactúas."
   },
   "about": {
     "message": "Acerca de"
@@ -249,9 +240,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "permissionsRequest": {
-    "message": "Solicitud de conexión"
-  },
   "connectingTo": {
     "message": "Conexión con $1"
   },
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ya tienes algunos Ethers, la forma más rápida de ingresarlos en tu nueva billetera es a través de un depósito directo."
-  },
-  "dismiss": {
-    "message": "Rechazar"
   },
   "done": {
     "message": "Listo"

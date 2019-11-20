@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Naka-enable ang Privacy Mode bilang default"
-  },
   "chartOnlyAvailableEth": {
     "message": "Available lang ang chart sa mga Ethereum network."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Tanggihan"
-  },
-  "providerRequest": {
-    "message": "Gusto ng $1 na kumonekta sa iyong account"
-  },
-  "providerRequestInfo": {
-    "message": "Humihiling ng access ang site na ito na tingnan ang kasalukuyan mong account address. Palaging tiyaking pinagkakatiwalaan mo ang mga site na pinupuntahan mo."
   },
   "about": {
     "message": "Tungkol sa"
@@ -341,9 +332,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
-  },
-  "dismiss": {
-    "message": "Balewalain"
   },
   "done": {
     "message": "Tapos na"

@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Personvernmodus er nå aktivert som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Avslå"
-  },
-  "providerRequest": {
-    "message": "$1 ønsker å forbindes med kontoen din "
-  },
-  "providerRequestInfo": {
-    "message": "Dette nettstedet ber om tilgang til å vise din nåværende kontoadresse. Alltid kontroller at du stoler på nettstedene du samhandler med."
   },
   "about": {
     "message": "Info"
@@ -249,9 +240,6 @@
   "connect": {
     "message": "Koble til"
   },
-  "permissionsRequest": {
-    "message": "Kontaktforespørsel "
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
-  },
-  "dismiss": {
-    "message": "Lukk"
   },
   "done": {
     "message": "Ferdig"

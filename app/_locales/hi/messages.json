@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "गोपनीय मोड अब डिफ़ॉल्ट रूप से सक्षम है"
-  },
   "chartOnlyAvailableEth": {
     "message": "केवल ईथरअम नेटवर्क पर उपलब्ध चार्ट।"
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "अस्‍वीकार करें"
-  },
-  "providerRequest": {
-    "message": "$1 आपके खाते से कनेक्ट होता चाहता हैं"
-  },
-  "providerRequestInfo": {
-    "message": "यह साइट आपके वर्तमान खाते का पता देखने के लिए एक्सेस का अनुरोध कर रही है। हमेशा सुनिश्चित करें कि आप जिन साइटों पर जाते हैं वे विश्वसनीय हैं।"
   },
   "about": {
     "message": "इसके बारे में"
@@ -252,9 +243,6 @@
   "connect": {
     "message": "कनेक्ट करें"
   },
-  "permissionsRequest": {
-    "message": "संपर्क अनुरोध"
-  },
   "connectingTo": {
     "message": "$1 से कनेक्ट हो रहा है"
   },
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "यदि आपके पास पहले से ही कुछ Ether हैं, तो अपने नए वॉलेट में Ether पाने का सबसे तेज़ तरीका सीधे जमा करना है।"
-  },
-  "dismiss": {
-    "message": "खारिज करें"
   },
   "done": {
     "message": "पूर्ण"

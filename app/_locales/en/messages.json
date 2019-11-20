@@ -8,12 +8,6 @@
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With MetaMask"
   },
-  "caveat_filterParams": {
-    "message": "Only with: "
-  },
-  "caveat_filterResponse": {
-    "message": "Only: "
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
@@ -26,36 +20,11 @@
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
   },
-  "connections": {
-    "message": "Connections"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
-  },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
   "chooseAnAcount": {
     "message": "Choose and account"
   },
-  
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
-  },
   "contractInteraction": {
     "message": "Contract Interaction"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Permissions cleared successfully."
   },
   "permissionsSettings": {
     "message": "Manage Permissions"
@@ -68,9 +37,6 @@
   },
   "clearPermissions": {
     "message": "Clear Permissions"
-  },
-  "clearPermissionsDescription": {
-    "message": "Clear permissions so that all dapps/websites must request access again."
   },
   "updatePermissions": {
     "message": "Update Permissions"
@@ -87,9 +53,6 @@
   "clearPermissionsActivity": {
     "message": "Clear Permissions Activity"
   },
-  "clearPermissionsActivityDescription": {
-    "message": "Clear the permissions activity log."
-  },
   "permissionsHistorySettings": {
     "message": "Permissions History"
   },
@@ -102,20 +65,11 @@
   "clearPermissionsHistory": {
     "message": "Clear Permissions History"
   },
-  "clearPermissionsHistoryDescription": {
-    "message": "Clear the permissions history."
-  },
   "reject": {
     "message": "Reject"
   },
   "redirectingBackToDapp": {
     "message": "Redirecting back to dapp..."
-  },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
   "about": {
     "message": "About"
@@ -370,9 +324,6 @@
   "connect": {
     "message": "Connect"
   },
-  "permissionsRequest": {
-    "message": "Permissions Request"
-  },
   "connectingTo": {
     "message": "Connecting to $1"
   },
@@ -525,9 +476,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "dismiss": {
-    "message": "Dismiss"
   },
   "domainLastConnect": {
     "message": "Last Connected: $1"

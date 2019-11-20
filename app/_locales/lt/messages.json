@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Dabar privatumo režimas suaktyvintas pagal numatytąją nuostatą"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagramos yra tik „Ethereum“ tinkluose."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Atmesti"
-  },
-  "providerRequest": {
-    "message": "$1 norėtų prisijungti prie jūsų paskyros"
-  },
-  "providerRequestInfo": {
-    "message": "Ši svetainė prašo prieigos peržiūrėti jūsų dabartinės paskyros adresą. Visada patikrinkite, ar pasitikite svetainėmis, su kuriomis sąveikaujate."
   },
   "about": {
     "message": "Apie"
@@ -252,9 +243,6 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "permissionsRequest": {
-    "message": "Prijungimo užklausa"
-  },
   "connectingTo": {
     "message": "Jungiamasi prie $1"
   },
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
-  },
-  "dismiss": {
-    "message": "Atsisakyti"
   },
   "done": {
     "message": "Atlikta"

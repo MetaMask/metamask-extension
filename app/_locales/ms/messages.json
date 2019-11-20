@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Mod Privasi kini diaktifkan secara lalai"
-  },
   "chartOnlyAvailableEth": {
     "message": "Carta hanya tersedia di rangkaian Ethereum."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Tolak"
-  },
-  "providerRequest": {
-    "message": "$1 ingin menyambung kepada akaun anda"
-  },
-  "providerRequestInfo": {
-    "message": "Tapak ini meminta akses untuk melihat alamat akaun semasa anda. Sentiasa pastikan anda mempercayai tapak web yang anda berinteraksi."
   },
   "about": {
     "message": "Mengenai"
@@ -249,9 +240,6 @@
   "connect": {
     "message": "Sambung"
   },
-  "permissionsRequest": {
-    "message": "Sambungkan Permintaan"
-  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
@@ -365,9 +353,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
-  },
-  "dismiss": {
-    "message": "Singkirkan"
   },
   "done": {
     "message": "Selesai"

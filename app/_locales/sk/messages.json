@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim súkromia je povolený. Je prednastavený automaticky"
-  },
   "chartOnlyAvailableEth": {
     "message": "Graf je k dispozícii iba v sieťach Ethereum."
   },
@@ -10,9 +7,6 @@
   },
   "contractInteraction": {
     "message": "Zmluvná interakcia"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
   },
   "permissionsSettings": {
     "message": "Údaje o schválení"
@@ -25,12 +19,6 @@
   },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerRequest": {
-    "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "about": {
     "message": "Informácie"
@@ -252,9 +240,6 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "permissionsRequest": {
-    "message": "Požiadavka na pripojenie"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
@@ -374,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
-  },
-  "dismiss": {
-    "message": "Zatvoriť"
   },
   "done": {
     "message": "Hotovo"

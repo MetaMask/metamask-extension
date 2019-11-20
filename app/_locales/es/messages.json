@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Modo Privado está activado ahora por defecto"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabla solo disponible en redes Ethereum."
   },
@@ -10,9 +7,6 @@
   },
   "contractInteraction": {
     "message": "Interacción con contrato"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Los datos aprobados del sitio web se borraron con éxito."
   },
   "permissionsSettings": {
     "message": "Datos de aprobación"
@@ -25,12 +19,6 @@
   },
   "reject": {
     "message": "Rechazar"
-  },
-  "providerRequest": {
-    "message": "$1 quisiera conectar con tu cuenta"
-  },
-  "providerRequestInfo": {
-    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la blockchain de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
   },
   "about": {
     "message": "Acerca"
@@ -218,9 +206,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "permissionsRequest": {
-    "message": "Petición para conectar"
-  },
   "connectingTo": {
     "message": "Conectánodse a $1"
   },
@@ -340,9 +325,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si posees Ether, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
-  },
-  "dismiss": {
-    "message": "Descartar"
   },
   "done": {
     "message": "Completo"

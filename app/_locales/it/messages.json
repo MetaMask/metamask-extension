@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "La modalità privacy è ora abilitata per impostazione predefinita"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
   },
@@ -10,9 +7,6 @@
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Dati del sito Web approvati cancellati correttamente."
   },
   "permissionsSettings": {
     "message": "Dati di approvazione"
@@ -25,12 +19,6 @@
   },
   "reject": {
     "message": "Annulla"
-  },
-  "providerRequest": {
-    "message": "$1 vorrebbe connettersi al tuo account"
-  },
-  "providerRequestInfo": {
-    "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ethereum in modo che possa interagire con la blockchain di Ethereum. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ethereum."
   },
   "about": {
     "message": "Informazioni"
@@ -240,9 +228,6 @@
   "connect": {
     "message": "Connetti"
   },
-  "permissionsRequest": {
-    "message": "Richiesta Connessione"
-  },
   "connectingTo": {
     "message": "Connessione in corso a $1"
   },
@@ -362,9 +347,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
-  },
-  "dismiss": {
-    "message": "Ignora"
   },
   "done": {
     "message": "Finito"
@@ -1375,24 +1357,6 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prezzo del gas maggiore di zero"
-  },
-  "connections": {
-    "message": "Connessioni"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Siti autorizzati ad accedere ai tuoi accounts"
-  },
-  "addSite": {
-    "message": "Aggiungi Sito"
-  },
-  "addSiteDescription": {
-    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
-  },
-  "connected": {
-    "message": "Connesso"
-  },
-  "connectedDescription": {
-    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
   },
   "contacts": {
     "message": "Contatti"

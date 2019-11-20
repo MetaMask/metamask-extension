@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Način se Privatnost sada zadano omogućava"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon je dostupan samo na mrežama Ethereum."
   },
@@ -20,12 +17,6 @@
   },
   "reject": {
     "message": "Odbaci"
-  },
-  "providerRequest": {
-    "message": "Korisnik $1 želi se povezati na vaš račun"
-  },
-  "providerRequestInfo": {
-    "message": "Na ovom se mjestu zahtijeva pristup za pregledavanje vaše trenutačne adrese računa. Uvijek pazite da vjerujete mrežnim mjestima s kojima rukujete."
   },
   "about": {
     "message": "O opcijama"
@@ -252,9 +243,6 @@
   "connect": {
     "message": "Povežite se"
   },
-  "permissionsRequest": {
-    "message": "Zahtjev za povezivanjem"
-  },
   "connectingTo": {
     "message": "Povezivanje na $1"
   },
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
-  },
-  "dismiss": {
-    "message": "Odbaci"
   },
   "done": {
     "message": "Gotovo"

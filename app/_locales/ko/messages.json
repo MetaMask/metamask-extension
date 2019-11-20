@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "이제 프라이버시 모드가 기본 설정으로 활성화됐습니다"
-  },
   "chartOnlyAvailableEth": {
     "message": "이더리움 네트워크에서만 사용 가능한 차트."
   },
@@ -10,9 +7,6 @@
   },
   "contractInteraction": {
     "message": "계약 상호 작용"
-  },
-  "clearPermissionsSuccess": {
-    "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
   },
   "permissionsSettings": {
     "message": "승인 데이터"
@@ -25,12 +19,6 @@
   },
   "reject": {
     "message": "거부"
-  },
-  "providerRequest": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
-  "providerRequestInfo": {
-    "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
   },
   "about": {
     "message": "정보"
@@ -258,9 +246,6 @@
   "connect": {
     "message": "연결"
   },
-  "permissionsRequest": {
-    "message": "연결 요청"
-  },
   "connectingTo": {
     "message": "$1에 연결"
   },
@@ -380,9 +365,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "약간의 이더를 이미 보유하고 있다면, 새로 만든 지갑에 직접 입금하여 이더를 보유할 수 있습니다."
-  },
-  "dismiss": {
-    "message": "숨기기"
   },
   "done": {
     "message": "완료"

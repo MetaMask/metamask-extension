@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "El mode de privacitat ara està activat per defecte"
-  },
   "chartOnlyAvailableEth": {
     "message": "Mostra només els disponibles a les xarxes Ethereum."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "Rebutja"
-  },
-  "providerRequest": {
-    "message": "a $1 li agradaria connectar-se al teu compte"
-  },
-  "providerRequestInfo": {
-    "message": "Aquesta pàgina està demanant accès a la teva adreça"
   },
   "about": {
     "message": "Informació"
@@ -249,9 +240,6 @@
   "connect": {
     "message": "Connecta"
   },
-  "permissionsRequest": {
-    "message": "Sol·licitud de connexió"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
-  "dismiss": {
-    "message": "Omet"
   },
   "done": {
     "message": "Fet"

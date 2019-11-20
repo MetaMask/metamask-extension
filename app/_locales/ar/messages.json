@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "يتم تمكين وضع الخصوصية الآن بشكل افتراضي"
-  },
   "chartOnlyAvailableEth": {
     "message": "الرسم البياني متاح فقط على شبكات إيثيريوم."
   },
@@ -16,12 +13,6 @@
   },
   "reject": {
     "message": "رفض"
-  },
-  "providerRequest": {
-    "message": "يرغب $1 في الاتصال بحسابك"
-  },
-  "providerRequestInfo": {
-    "message": "يطلب هذا الموقع حق الوصول لعرض عنوان حسابك الحالي. تأكد دائماً من ثقتك في المواقع التي تتفاعل معها."
   },
   "about": {
     "message": "حول"
@@ -252,9 +243,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "permissionsRequest": {
-    "message": "طلب اتصال"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
-  },
-  "dismiss": {
-    "message": "رفض"
   },
   "done": {
     "message": "تم"
