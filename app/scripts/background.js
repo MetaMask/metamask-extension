@@ -396,10 +396,20 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      const portStream = new PortStream(remotePort)
       if (remotePort.sender && remotePort.sender.tab) {
         const tabId = remotePort.sender.tab.id
-        openNonMetamaskTabsIDs[tabId] = true
+
+        Object.keys(openNonMetamaskTabsIDs).forEach(key => {
+          openNonMetamaskTabsIDs[key] = { active: false }
+        })
+        openNonMetamaskTabsIDs[tabId] = { active: true }
+
         previousTabId = tabId
+
+        endOfStream(portStream, () => {
+          delete openNonMetamaskTabsIDs[tabId]
+        })
       }
       connectExternal(remotePort)
     }
@@ -493,7 +503,7 @@ extension.runtime.onInstalled.addListener(({reason}) => {
 
 extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'notifyTabId' && sender.tab) {
-    const originMatch = message.URL && message.URL.match(/\/\/(.+)\//)
+    const originMatch = message.origin && message.origin.match(/\/\/([^/:]+)\/?/)
     tabIdOriginMap[sender.tab.id] = originMatch && originMatch.length && originMatch[1]
     sendResponse({ tabId: sender.tab.id })
   }
@@ -505,6 +515,10 @@ extension.tabs.onActivated.addListener(({ tabId }) => {
       openMetamaskTabsIDs[tabId] = { opener: previousTabId }
       previousTabId = tabId
     } else if (openNonMetamaskTabsIDs[tabId]) {
+      Object.keys(openNonMetamaskTabsIDs).forEach(key => {
+        openNonMetamaskTabsIDs[key] = { active: false }
+      })
+      openNonMetamaskTabsIDs[tabId] = { active: true }
       previousTabId = tabId
     }
   }
