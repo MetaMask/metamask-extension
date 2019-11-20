@@ -38,11 +38,22 @@ class ConnectScreen extends Component {
       )
     }
 
+    renderConnectToCoolWalletButton () {
+      return h(
+        `button.hw-connect__btn${this.state.selectedDevice === 'coolwallet' ? '.selected' : ''}`,
+        { onClick: _ => this.setState({selectedDevice: 'coolwallet'}) },
+        h('img.hw-connect__btn__img', {
+          src: 'images/coolwallets-logo.svg',
+        })
+      )
+    }
+
     renderButtons () {
       return (
         h('div', {}, [
           h('div.hw-connect__btn-wrapper', {}, [
-            this.renderConnectToLedgerButton(),
+            this.renderConnectToCoolWalletButton(),
+            // this.renderConnectToLedgerButton(),
             this.renderConnectToTrezorButton(),
           ]),
           h(Button, {
@@ -87,10 +98,11 @@ class ConnectScreen extends Component {
       const links = {
         trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
         ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+        coolwallet: `<a class='hw-connect__get-hw__link' href='https://www.coolwallet.io/product/coolwallet/' target='_blank'>CoolWallet</a>`,
       }
 
       const text = this.context.t('orderOneHere')
-      const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+      const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger).replace('CoolWallet', links.coolwallet)
 
       return h('div.hw-connect__get-hw__msg', { dangerouslySetInnerHTML: {__html: response }})
     }

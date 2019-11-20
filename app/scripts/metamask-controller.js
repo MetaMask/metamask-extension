@@ -53,6 +53,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
+const CoolWalletKeyring = require('eth-cws-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const contractMap = require('eth-contract-metadata')
@@ -179,7 +180,11 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      CoolWalletKeyring,
+    ]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -710,6 +715,7 @@ module.exports = class MetamaskController extends EventEmitter {
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
+      coolwallet: [],
     }
 
     // transactions
@@ -798,6 +804,9 @@ module.exports = class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type
         break
+      case 'coolwallet':
+        keyringName = CoolWalletKeyring.type
+        break
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
@@ -870,6 +879,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async unlockHardwareWalletAccount (index, deviceName, hdPath) {
+    console.log(`unlockHardwareWalletAccount`)
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
 
     keyring.setAccountToUnlock(index)
