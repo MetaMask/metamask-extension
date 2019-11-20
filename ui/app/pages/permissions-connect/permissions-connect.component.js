@@ -9,7 +9,7 @@ export default class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    currentMetaMaskTabOpenerId: PropTypes.number.isRequired,
+    currentMetaMaskTabOpenerId: PropTypes.number,
     getOpenMetaMaskTabs: PropTypes.func.isRequired,
     getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
@@ -24,6 +24,7 @@ export default class PermissionConnect extends Component {
     originName: '',
     nativeCurrency: '',
     permissionsRequest: {},
+    currentMetaMaskTabOpenerId: null,
   }
 
   static contextTypes = {
