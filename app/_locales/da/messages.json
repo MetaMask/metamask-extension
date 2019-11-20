@@ -1313,7 +1313,7 @@
   "updatedWithDate": {
     "message": "Opdaterede $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
   },
   "usedByClients": {

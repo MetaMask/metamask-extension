@@ -101,24 +101,37 @@ function SignatureRequest (props) {
   this.state = {
     selectedAccount: props.selectedAccount,
   }
+  this._beforeUnload = this._beforeUnload.bind(this)
+}
+
+SignatureRequest.prototype._beforeUnload = function (event) {
+  const { clearConfirmTransaction, cancel } = this.props
+  const { metricsEvent } = this.context
+  metricsEvent({
+    eventOpts: {
+      category: 'Transactions',
+      action: 'Sign Request',
+      name: 'Cancel Sig Request Via Notification Close',
+    },
+  })
+  clearConfirmTransaction()
+  cancel(event)
+}
+
+SignatureRequest.prototype._removeBeforeUnload = function () {
+  if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    window.removeEventListener('beforeunload', this._beforeUnload)
+  }
 }
 
 SignatureRequest.prototype.componentDidMount = function () {
-  const { clearConfirmTransaction, cancel } = this.props
-  const { metricsEvent } = this.context
   if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
-    window.onbeforeunload = event => {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Sign Request',
-          name: 'Cancel Sig Request Via Notification Close',
-        },
-      })
-      clearConfirmTransaction()
-      cancel(event)
-    }
+    window.addEventListener('beforeunload', this._beforeUnload)
   }
+}
+
+SignatureRequest.prototype.componentWillUnmount = function () {
+  this._removeBeforeUnload()
 }
 
 SignatureRequest.prototype.renderHeader = function () {
@@ -236,7 +249,7 @@ SignatureRequest.prototype.renderBody = function () {
   let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
-  const { type, msgParams: { data, version } } = txData
+  const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
@@ -268,17 +281,15 @@ SignatureRequest.prototype.renderBody = function () {
     }, [notice]),
 
     h('div.request-signature__rows',
-      type === 'eth_signTypedData' && (version === 'V3' || version === 'V4') ?
-        this.renderTypedData(data) :
-        rows.map(({ name, value }) => {
-          if (typeof value === 'boolean') {
-            value = value.toString()
-          }
-          return h('div.request-signature__row', [
-            h('div.request-signature__row-title', [`${name}:`]),
-            h('div.request-signature__row-value', value),
-          ])
-        }),
+      rows.map(({ name, value }, index) => {
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
+        return h('div.request-signature__row', { key: `request-signature-row-${index}` }, [
+          h('div.request-signature__row-title', [`${name}:`]),
+          h('div.request-signature__row-value', value),
+        ])
+      })
     ),
   ])
 }
@@ -292,6 +303,7 @@ SignatureRequest.prototype.renderFooter = function () {
       large: true,
       className: 'request-signature__footer__cancel-button',
       onClick: event => {
+        this._removeBeforeUnload()
         cancel(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {
@@ -310,6 +322,7 @@ SignatureRequest.prototype.renderFooter = function () {
       large: true,
       className: 'request-signature__footer__sign-button',
       onClick: event => {
+        this._removeBeforeUnload()
         sign(event).then(() => {
           this.context.metricsEvent({
             eventOpts: {

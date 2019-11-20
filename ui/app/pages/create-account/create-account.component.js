@@ -47,17 +47,17 @@ export default class CreateAccountPage extends Component {
         <div className="new-account__form">
           <Switch>
             <Route
-              exact={true}
+              exact
               path={NEW_ACCOUNT_ROUTE}
               component={NewAccountCreateForm}
             />
             <Route
-              exact={true}
+              exact
               path={IMPORT_ACCOUNT_ROUTE}
               component={NewAccountImportForm}
             />
             <Route
-              exact={true}
+              exact
               path={CONNECT_HARDWARE_ROUTE}
               component={ConnectHardwareForm}
             />

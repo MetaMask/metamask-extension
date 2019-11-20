@@ -26,17 +26,17 @@ describe('SendAmountRow Component', function () {
 
   beforeEach(() => {
     wrapper = shallow(<SendAmountRow
-      amount={'mockAmount'}
-      amountConversionRate={'mockAmountConversionRate'}
-      balance={'mockBalance'}
+      amount="mockAmount"
+      amountConversionRate="mockAmountConversionRate"
+      balance="mockBalance"
       conversionRate={7}
-      convertedCurrency={'mockConvertedCurrency'}
-      gasTotal={'mockGasTotal'}
+      convertedCurrency="mockConvertedCurrency"
+      gasTotal="mockGasTotal"
       inError={false}
-      primaryCurrency={'mockPrimaryCurrency'}
+      primaryCurrency="mockPrimaryCurrency"
       selectedToken={ { address: 'mockTokenAddress' } }
       setMaxModeTo={propsMethodSpies.setMaxModeTo}
-      tokenBalance={'mockTokenBalance'}
+      tokenBalance="mockTokenBalance"
       updateGasFeeError={propsMethodSpies.updateGasFeeError}
       updateSendAmount={propsMethodSpies.updateSendAmount}
       updateSendAmountError={propsMethodSpies.updateSendAmountError}

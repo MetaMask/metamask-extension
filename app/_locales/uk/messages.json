@@ -1347,7 +1347,7 @@
   "updatedWithDate": {
     "message": "Оновлено $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
   },
   "usedByClients": {

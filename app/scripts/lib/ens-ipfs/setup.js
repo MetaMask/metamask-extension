@@ -10,7 +10,7 @@ function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns })
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
 
   // return api object
   return {
@@ -53,6 +53,8 @@ function setupEnsIpfsResolver ({ provider }) {
         url = `https://swarm-gateways.net/bzz:/${hash}${path}${search || ''}`
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${path}${search || ''}`
+      } else if (type === 'zeronet') {
+        url = `http://127.0.0.1:43110/${hash}${path}${search || ''}`
       }
     } catch (err) {
       console.warn(err)

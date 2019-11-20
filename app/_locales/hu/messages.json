@@ -1337,7 +1337,7 @@
   "updatedWithDate": {
     "message": "$1 frissítve"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
   },
   "usedByClients": {

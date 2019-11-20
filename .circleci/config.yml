@@ -1,7 +1,6 @@
-version: 2
+version: 2.1
 
 workflows:
-  version: 2
   test_and_release:
     jobs:
       - create_release_pull_request:
@@ -12,9 +11,6 @@ workflows:
       - prep-deps
       - test-deps
       - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-test:
           requires:
             - prep-deps
       # - prep-docs:
@@ -28,10 +24,10 @@ workflows:
             - prep-deps
       - test-e2e-chrome:
           requires:
-            - prep-build-test
+            - prep-deps
       - test-e2e-firefox:
           requires:
-            - prep-build-test
+            - prep-deps
       - test-unit:
           requires:
             - prep-deps
@@ -81,7 +77,7 @@ workflows:
 jobs:
   create_release_pull_request:
     docker:
-      - image: circleci/node:8.15.1-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -93,7 +89,7 @@ jobs:
 
   prep-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -112,7 +108,7 @@ jobs:
 
   prep-build:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -129,27 +125,9 @@ jobs:
             - dist
             - builds
 
-  prep-build-test:
-    docker:
-      - image: circleci/node:10.16-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing
-          command: yarn build:test
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test
-
   prep-docs:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -164,7 +142,7 @@ jobs:
 
   prep-scss:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -183,7 +161,7 @@ jobs:
 
   test-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -197,7 +175,7 @@ jobs:
 
   test-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -208,17 +186,14 @@ jobs:
 
   test-e2e-chrome:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
           name: test:e2e:chrome
-          command: yarn test:e2e:chrome
+          command: yarn build:test && yarn test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -226,7 +201,7 @@ jobs:
 
   test-e2e-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -235,11 +210,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
           name: test:e2e:firefox
-          command: yarn test:e2e:firefox
+          command: yarn build:test && yarn test:e2e:firefox
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -247,7 +219,7 @@ jobs:
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -277,7 +249,7 @@ jobs:
 
   job-publish-release:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -301,7 +273,7 @@ jobs:
 
   test-unit:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -316,7 +288,7 @@ jobs:
             - coverage
   test-unit-global:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -326,7 +298,7 @@ jobs:
           command: yarn test:unit:global
   test-mozilla-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -337,7 +309,7 @@ jobs:
 
   test-integration-flat-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -353,7 +325,7 @@ jobs:
     environment:
       browsers: '["Chrome"]'
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -364,7 +336,7 @@ jobs:
 
   all-tests-pass:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - run:
           name: All Tests Passed
@@ -372,7 +344,7 @@ jobs:
 
   coveralls-upload:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:

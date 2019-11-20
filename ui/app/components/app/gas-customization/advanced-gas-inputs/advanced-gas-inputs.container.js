@@ -12,7 +12,7 @@ function convertGasPriceForInputs (gasPriceInHexWEI) {
 }
 
 function convertGasLimitForInputs (gasLimitInHexWEI) {
-  return parseInt(gasLimitInHexWEI, 16)
+  return parseInt(gasLimitInHexWEI, 16) || 0
 }
 
 const mapDispatchToProps = dispatch => {

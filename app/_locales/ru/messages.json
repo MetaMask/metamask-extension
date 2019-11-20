@@ -542,7 +542,7 @@
   "unknownNetwork": {
     "message": "Неизвестная частная сеть"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Для URI требуется соответствующий префикс HTTP/HTTPS."
   },
   "usedByClients": {

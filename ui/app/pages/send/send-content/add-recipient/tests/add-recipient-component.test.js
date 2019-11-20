@@ -23,9 +23,9 @@ describe('AddRecipient Component', function () {
       closeToDropdown={propsMethodSpies.closeToDropdown}
       inError={false}
       inWarning={false}
-      network={'mockNetwork'}
+      network="mockNetwork"
       openToDropdown={propsMethodSpies.openToDropdown}
-      to={'mockTo'}
+      to="mockTo"
       toAccounts={['mockAccount']}
       toDropdownOpen={false}
       updateGas={propsMethodSpies.updateGas}

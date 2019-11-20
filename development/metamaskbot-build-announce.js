@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const request = require('request-promise')
-const VERSION = require('../dist/chrome/manifest.json').version
+const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
 

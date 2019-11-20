@@ -423,6 +423,15 @@ class TransactionController extends EventEmitter {
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+
+    // add r,s,v values for provider request purposes see createMetamaskMiddleware
+    // and JSON rpc standard for further explanation
+    txMeta.r = ethUtil.bufferToHex(ethTx.r)
+    txMeta.s = ethUtil.bufferToHex(ethTx.s)
+    txMeta.v = ethUtil.bufferToHex(ethTx.v)
+
+    this.txStateManager.updateTx(txMeta, 'transactions#signTransaction: add r, s, v values')
+
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
@@ -439,8 +448,19 @@ class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
-    const txHash = await this.query.sendRawTransaction(rawTx)
+    let txHash
+    try {
+      txHash = await this.query.sendRawTransaction(rawTx)
+    } catch (error) {
+      if (error.message.toLowerCase().includes('known transaction')) {
+        txHash = ethUtil.sha3(ethUtil.addHexPrefix(rawTx)).toString('hex')
+        txHash = ethUtil.addHexPrefix(txHash)
+      } else {
+        throw error
+      }
+    }
     this.setTxHash(txId, txHash)
+
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 

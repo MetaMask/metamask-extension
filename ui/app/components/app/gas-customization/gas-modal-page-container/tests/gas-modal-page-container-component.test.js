@@ -74,9 +74,9 @@ describe('GasModalPageContainer Component', function () {
       customGasLimit={54321}
       gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
       infoRowProps={mockInfoRowProps}
-      currentTimeEstimate={'1 min 31 sec'}
-      customGasPriceInHex={'mockCustomGasPriceInHex'}
-      customGasLimitInHex={'mockCustomGasLimitInHex'}
+      currentTimeEstimate="1 min 31 sec"
+      customGasPriceInHex="mockCustomGasPriceInHex"
+      customGasLimitInHex="mockCustomGasLimitInHex"
       insufficientBalance={false}
       disableSave={false}
     />)
@@ -195,12 +195,12 @@ describe('GasModalPageContainer Component', function () {
         customGasLimit={54321}
         gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
         infoRowProps={mockInfoRowProps}
-        currentTimeEstimate={'1 min 31 sec'}
-        customGasPriceInHex={'mockCustomGasPriceInHex'}
-        customGasLimitInHex={'mockCustomGasLimitInHex'}
+        currentTimeEstimate="1 min 31 sec"
+        customGasPriceInHex="mockCustomGasPriceInHex"
+        customGasLimitInHex="mockCustomGasLimitInHex"
         insufficientBalance={false}
         disableSave={false}
-        hideBasic={true}
+        hideBasic
       />)
       const renderTabsResult = wrapper.instance().renderTabs()
 

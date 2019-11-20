@@ -26,7 +26,7 @@ export default class ToAutoComplete extends Component {
 
   getListItemIcon (listItemAddress, toAddress) {
     return toAddress && listItemAddress === toAddress
-      ? <i className={'fa fa-check fa-lg'}
+      ? <i className="fa fa-check fa-lg"
         style={{
           color: '#02c9b1',
         }}
@@ -48,20 +48,20 @@ export default class ToAutoComplete extends Component {
 
     return (
       <div>
-        <div className={'send-v2__from-dropdown__close-area'} onClick={closeDropdown} />
-        <div className={'send-v2__from-dropdown__list'}>
+        <div className="send-v2__from-dropdown__close-area" onClick={closeDropdown} />
+        <div className="send-v2__from-dropdown__list">
           {accountsToRender.map((account, i) => (
             <AccountListItem
               key={i}
               account={account}
-              className={'account-list-item__dropdown'}
+              className="account-list-item__dropdown"
               handleClick={() => {
                 onChange(account.address)
                 closeDropdown()
               }}
               icon={this.getListItemIcon(account.address, to)}
               displayBalance={false}
-              displayAddress={true}
+              displayAddress
             />
           ))}
         </div>
@@ -106,7 +106,7 @@ export default class ToAutoComplete extends Component {
     } = this.props
 
     return (
-      <div className={'send-v2__to-autocomplete'}>
+      <div className="send-v2__to-autocomplete">
         <input
           className={classnames('send-v2__to-autocomplete__input', {
             'send-v2__error-border': inError,
@@ -122,7 +122,7 @@ export default class ToAutoComplete extends Component {
         {
           to
             ? null
-            : <i className={'fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret'}
+            : <i className="fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret"
               onClick={() => this.handleInputEvent()}
               style={{
                 style: {color: '#dedede'},

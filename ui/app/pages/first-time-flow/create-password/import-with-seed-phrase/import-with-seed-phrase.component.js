@@ -50,7 +50,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   componentWillMount () {
-    window.onbeforeunload = () => this.context.metricsEvent({
+    this._onBeforeUnload = () => this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
         action: 'Import Seed Phrase',
@@ -61,6 +61,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
         errorMessage: this.state.seedPhraseError,
       },
     })
+    window.addEventListener('beforeunload', this._onBeforeUnload)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this._onBeforeUnload)
   }
 
   handleSeedPhraseChange (seedPhrase) {

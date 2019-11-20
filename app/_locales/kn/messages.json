@@ -1347,7 +1347,7 @@
   "updatedWithDate": {
     "message": "$1 ನವೀಕರಿಸಲಾಗಿದೆ"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
   },
   "usedByClients": {

@@ -90,7 +90,7 @@ describe('TransactionActivityLog Component', () => {
         onCancel={() => {}}
         onRetry={() => {}}
         primaryTransactionStatus="pending"
-        isEarliestNonce={true}
+        isEarliestNonce
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
     )

@@ -120,6 +120,7 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, address, h
           type: 'secondary',
           large: true,
           className: 'export-private-key__button',
+          disabled: !this.state.password,
           onClick: () => this.exportAccountAndGetPrivateKey(this.state.password, address),
         }, this.context.t('confirm'))
       )

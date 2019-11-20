@@ -100,7 +100,7 @@ export default class EditContact extends PureComponent {
               onChange={e => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"
-              multiline={true}
+              multiline
               rows={3}
               classes={{
                 inputMultiline: 'address-book__view-contact__text-area',
@@ -133,7 +133,7 @@ export default class EditContact extends PureComponent {
             history.push(`${viewRoute}/${address}`)
           }}
           submitText={this.context.t('save')}
-          submitButtonType={'confirm'}
+          submitButtonType="confirm"
         />
       </div>
     )

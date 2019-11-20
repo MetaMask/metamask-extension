@@ -1329,7 +1329,7 @@
   "updatedWithDate": {
     "message": "Posodobljeno $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
   },
   "usedByClients": {

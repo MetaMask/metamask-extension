@@ -1319,7 +1319,7 @@
   "updatedWithDate": {
     "message": "Oppdatert $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
   },
   "usedByClients": {

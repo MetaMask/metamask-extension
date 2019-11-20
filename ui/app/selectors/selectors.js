@@ -1,11 +1,7 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 
-
 const abi = require('human-standard-token-abi')
-import {
-  transactionsSelector,
-} from './transactions'
 const {
   multiplyCurrencies,
 } = require('../helpers/utils/conversion-util')
@@ -24,7 +20,6 @@ const selectors = {
   getAssetImages,
   getTokenExchangeRate,
   conversionRateSelector,
-  transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
   getGasIsLoading,
@@ -54,6 +49,7 @@ const selectors = {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
+  getDaiV1Token,
   isEthereumNetwork,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
@@ -228,6 +224,12 @@ function getAddressBookEntry (state, address) {
 function getAddressBookEntryName (state, address) {
   const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
   return entry && entry.name !== '' ? entry.name : addressSlicer(address)
+}
+
+function getDaiV1Token (state) {
+  const OLD_DAI_CONTRACT_ADDRESS = '0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359'
+  const tokens = state.metamask.tokens || []
+  return tokens.find(({address}) => checksumAddress(address) === OLD_DAI_CONTRACT_ADDRESS)
 }
 
 function accountsWithSendEtherInfoSelector (state) {

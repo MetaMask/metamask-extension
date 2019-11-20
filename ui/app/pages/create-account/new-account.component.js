@@ -58,13 +58,13 @@ export default class NewAccountCreateForm extends Component {
         <div className="new-account-create-form__buttons">
           <Button
             type="default"
-            large={true}
+            large
             className="new-account-create-form__button"
             onClick={() => history.push(DEFAULT_ROUTE)}
           >{this.context.t('cancel')}</Button>
           <Button
             type="secondary"
-            large={true}
+            large
             className="new-account-create-form__button"
             onClick={createClick}
           >{this.context.t('create')}</Button>

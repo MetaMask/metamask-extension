@@ -7,7 +7,7 @@ export default class Tooltip extends PureComponent {
     arrow: true,
     children: null,
     containerClassName: '',
-    hideOnClick: false,
+    html: null,
     onHidden: null,
     position: 'left',
     size: 'small',
@@ -21,6 +21,7 @@ export default class Tooltip extends PureComponent {
     children: PropTypes.node,
     containerClassName: PropTypes.string,
     disabled: PropTypes.bool,
+    html: PropTypes.node,
     onHidden: PropTypes.func,
     position: PropTypes.oneOf([
       'top',
@@ -38,9 +39,9 @@ export default class Tooltip extends PureComponent {
   }
 
   render () {
-    const {arrow, children, containerClassName, disabled, position, size, title, trigger, onHidden, wrapperClassName, style } = this.props
+    const {arrow, children, containerClassName, disabled, position, html, size, title, trigger, onHidden, wrapperClassName, style } = this.props
 
-    if (!title) {
+    if (!title && !html) {
       return (
         <div className={wrapperClassName}>
           {children}
@@ -51,6 +52,7 @@ export default class Tooltip extends PureComponent {
     return (
       <div className={wrapperClassName}>
         <ReactTippy
+          html={html}
           className={containerClassName}
           disabled={disabled}
           title={title}

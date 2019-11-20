@@ -2,6 +2,56 @@
 
 ## Current Develop Branch
 
+## 7.6.1 Tue Nov 19 2019
+- [#7475](https://github.com/MetaMask/metamask-extension/pull/7475): Add 'Remind Me Later' to the Maker notification
+- [#7436](https://github.com/MetaMask/metamask-extension/pull/7436): Add additional rpcUrl verification
+- [#7468](https://github.com/MetaMask/metamask-extension/pull/7468): Show transaction fee units on approve screen
+
+## 7.6.0 Mon Nov 18 2019
+- [#7450](https://github.com/MetaMask/metamask-extension/pull/7450): Add migration notification for users with non-zero Sai
+- [#7461](https://github.com/MetaMask/metamask-extension/pull/7461): Import styles for showing multiple notifications
+- [#7451](https://github.com/MetaMask/metamask-extension/pull/7451): Add button disabled when password is empty
+
+## 7.5.3 Fri Nov 15 2019
+- [#7412](https://github.com/MetaMask/metamask-extension/pull/7412): lock eth-contract-metadata (#7412)
+- [#7416](https://github.com/MetaMask/metamask-extension/pull/7416): Add eslint import plugin to help detect unresolved paths
+- [#7414](https://github.com/MetaMask/metamask-extension/pull/7414): Ensure SignatureRequestOriginal 'beforeunload' handler is bound (#7414)
+- [#7430](https://github.com/MetaMask/metamask-extension/pull/7430): Update badge colour
+- [#7408](https://github.com/MetaMask/metamask-extension/pull/7408): Utilize the full size of icon space (#7408)
+- [#7431](https://github.com/MetaMask/metamask-extension/pull/7431): Add all icons to manifest (#7431)
+- [#7426](https://github.com/MetaMask/metamask-extension/pull/7426): Ensure Etherscan result is valid before reading it (#7426)
+- [#7434](https://github.com/MetaMask/metamask-extension/pull/7434): Update 512px icon (#7434)
+- [#7410](https://github.com/MetaMask/metamask-extension/pull/7410): Fix sourcemaps for Sentry
+- [#7420](https://github.com/MetaMask/metamask-extension/pull/7420): Adds and end to end test for typed signature requests
+- [#7439](https://github.com/MetaMask/metamask-extension/pull/7439): Add metricsEvent to contextTypes (#7439)
+- [#7419](https://github.com/MetaMask/metamask-extension/pull/7419): Added webRequest.RequestFilter to filter main_frame .eth requests (#7419)
+
+## 7.5.2 Thu Nov 14 2019
+- [#7414](https://github.com/MetaMask/metamask-extension/pull/7414): Ensure SignatureRequestOriginal 'beforeunload' handler is bound
+
+## 7.5.1 Tuesday Nov 13 2019
+- [#7402](https://github.com/MetaMask/metamask-extension/pull/7402): Fix regression for signed types data screens
+- [#7390](https://github.com/MetaMask/metamask-extension/pull/7390): Update json-rpc-engine
+- [#7401](https://github.com/MetaMask/metamask-extension/pull/7401): Reject connection request on window close
+
+## 7.5.0 Mon Nov 04 2019
+- [#7328](https://github.com/MetaMask/metamask-extension/pull/7328): ignore known transactions on first broadcast and continue with normal flow
+- [#7327](https://github.com/MetaMask/metamask-extension/pull/7327): eth_getTransactionByHash will now check metamask's local history for pending transactions
+- [#7333](https://github.com/MetaMask/metamask-extension/pull/7333): Cleanup beforeunload handler after transaction is resolved
+- [#7038](https://github.com/MetaMask/metamask-extension/pull/7038): Add support for ZeroNet
+- [#7334](https://github.com/MetaMask/metamask-extension/pull/7334): Add web3 deprecation warning
+- [#6924](https://github.com/MetaMask/metamask-extension/pull/6924): Add Estimated time to pending tx
+- [#7177](https://github.com/MetaMask/metamask-extension/pull/7177): ENS Reverse Resolution support
+- [#6891](https://github.com/MetaMask/metamask-extension/pull/6891): New signature request v3 UI
+- [#7348](https://github.com/MetaMask/metamask-extension/pull/7348): fix width in first time flow button
+- [#7271](https://github.com/MetaMask/metamask-extension/pull/7271): Redesign approve screen
+- [#7354](https://github.com/MetaMask/metamask-extension/pull/7354): fix account menu width
+- [#7379](https://github.com/MetaMask/metamask-extension/pull/7379): Set default advanced tab gas limit
+- [#7380](https://github.com/MetaMask/metamask-extension/pull/7380): Fix advanced tab gas chart
+- [#7374](https://github.com/MetaMask/metamask-extension/pull/7374): Hide accounts dropdown scrollbars on Firefox
+- [#7357](https://github.com/MetaMask/metamask-extension/pull/7357): Update to gaba@1.8.0
+- [#7335](https://github.com/MetaMask/metamask-extension/pull/7335): Add onbeforeunload and have it call onCancel
+
 ## 7.4.0 Tue Oct 29 2019
 - [#7186](https://github.com/MetaMask/metamask-extension/pull/7186): Use `AdvancedGasInputs` in `AdvancedTabContent`
 - [#7304](https://github.com/MetaMask/metamask-extension/pull/7304): Move signTypedData signing out to keyrings

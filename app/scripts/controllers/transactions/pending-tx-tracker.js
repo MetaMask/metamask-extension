@@ -174,7 +174,7 @@ class PendingTransactionTracker extends EventEmitter {
 
     // get latest transaction status
     try {
-      const { blockNumber } = await this.query.getTransactionByHash(txHash) || {}
+      const { blockNumber } = await this.query.getTransactionReceipt(txHash) || {}
       if (blockNumber) {
         this.emit('tx:confirmed', txId)
       }
@@ -196,7 +196,7 @@ class PendingTransactionTracker extends EventEmitter {
   async _checkIftxWasDropped (txMeta) {
     const { txParams: { nonce, from }, hash } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
-    const { blockNumber } = await this.query.getTransactionByHash(hash) || {}
+    const { blockNumber } = await this.query.getTransactionReceipt(hash) || {}
     if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
       return true
     }

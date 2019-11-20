@@ -130,7 +130,7 @@ export default class SendGasRow extends Component {
         customGasPrice={gasPrice}
         customGasLimit={gasLimit}
         insufficientBalance={insufficientBalance}
-        customPriceIsSafe={true}
+        customPriceIsSafe
         isSpeedUp={false}
       />
       { this.renderAdvancedOptionsButton() }
@@ -152,7 +152,7 @@ export default class SendGasRow extends Component {
       <SendRowWrapper
         label={`${this.context.t('transactionFee')}:`}
         showError={gasFeeError}
-        errorType={'gasFee'}
+        errorType="gasFee"
       >
         { this.renderContent() }
       </SendRowWrapper>

@@ -11,8 +11,8 @@ export default class AdvancedGasInputs extends Component {
   static propTypes = {
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
-    customGasPrice: PropTypes.number,
-    customGasLimit: PropTypes.number,
+    customGasPrice: PropTypes.number.isRequired,
+    customGasLimit: PropTypes.number.isRequired,
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,

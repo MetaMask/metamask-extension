@@ -1332,7 +1332,7 @@
   "updatedWithDate": {
     "message": "Zaktualizowano $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
   },
   "usedByClients": {

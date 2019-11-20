@@ -53,7 +53,7 @@ export default class TransactionViewBalance extends PureComponent {
                 value={balance}
                 type={PRIMARY}
                 ethNumberOfDecimals={4}
-                hideTitle={true}
+                hideTitle
               />
               {
                 balanceIsCached ? <span className="transaction-view-balance__cached-star">*</span> : null
@@ -69,7 +69,7 @@ export default class TransactionViewBalance extends PureComponent {
                   value={balance}
                   type={SECONDARY}
                   ethNumberOfDecimals={4}
-                  hideTitle={true}
+                  hideTitle
                 />
               )
             }

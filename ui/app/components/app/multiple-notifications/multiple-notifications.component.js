@@ -3,8 +3,13 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
 export default class MultipleNotifications extends PureComponent {
+  static defaultProps = {
+    children: [],
+    classNames: [],
+  }
+
   static propTypes = {
-    notifications: PropTypes.array,
+    children: PropTypes.array,
     classNames: PropTypes.array,
   }
 
@@ -14,11 +19,10 @@ export default class MultipleNotifications extends PureComponent {
 
   render () {
     const { showAll } = this.state
-    const { notifications, classNames = [] } = this.props
+    const { children, classNames } = this.props
 
-    const notificationsToBeRendered = notifications.filter(notificationConfig => notificationConfig.shouldBeRendered)
-
-    if (notificationsToBeRendered.length === 0) {
+    const childrenToRender = children.filter(child => child)
+    if (childrenToRender.length === 0) {
       return null
     }
 
@@ -29,12 +33,12 @@ export default class MultipleNotifications extends PureComponent {
           'home-notification-wrapper--show-first': !showAll,
         })}
       >
-        { notificationsToBeRendered.map(notificationConfig => notificationConfig.component) }
+        { childrenToRender }
         <div
           className="home-notification-wrapper__i-container"
           onClick={() => this.setState({ showAll: !showAll })}
         >
-          {notificationsToBeRendered.length > 1 ? <i className={classnames('fa fa-sm fa-sort-amount-asc', {
+          {childrenToRender.length > 1 ? <i className={classnames('fa fa-sm fa-sort-amount-asc', {
             'flipped': !showAll,
           })} /> : null}
         </div>
