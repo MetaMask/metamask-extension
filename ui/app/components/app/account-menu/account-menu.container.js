@@ -21,8 +21,8 @@ function mapStateToProps (state) {
       selectedAddress, isAccountMenuOpen, keyrings, identities,
     },
     appState: {
-      openExternalTabs,
-      tabIdOrigins,
+      openExternalTabs = {},
+      tabIdOrigins = {},
     },
   } = state
 
