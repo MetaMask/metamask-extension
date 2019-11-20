@@ -240,6 +240,12 @@
   "buyWithWyreDescription": {
     "message": "Wyre lets you use a credit card to deposit ETH right in to your MetaMask account."
   },
+  "buyWithBridge": {
+    "message": "Buy xDAI with DAI"
+  },
+  "buyWithBridgeDescription": {
+    "message": "xDAI bridge lets you exchange your DAI to xDAI in your MetaMask account."
+  },
   "buyCoinSwitch": {
     "message": "Buy on CoinSwitch"
   },
@@ -333,6 +339,9 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
   },
+  "connectingToXDai": {
+    "message": "Connecting to xDAI chain"
+  },
   "contacts": {
     "message": "Contacts"
   },
@@ -341,6 +350,9 @@
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
+  },
+  "continueToBridge": {
+    "message": "Continue to Bridge"
   },
   "continueToCoinSwitch": {
     "message": "Continue to CoinSwitch"
@@ -1100,6 +1112,9 @@
   },
   "goerli": {
     "message": "Goerli Test Network"
+  },
+  "xdai": {
+    "message": "xDAI chain"
   },
   "save": {
     "message": "Save"

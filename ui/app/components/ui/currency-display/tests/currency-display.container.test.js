@@ -28,6 +28,7 @@ describe('CurrencyDisplay container', () => {
         conversionRate: 280.45,
         currentCurrency: 'usd',
         nativeCurrency: 'ETH',
+        ticker: undefined,
       })
     })
   })
@@ -38,6 +39,7 @@ describe('CurrencyDisplay container', () => {
         conversionRate: 280.45,
         currentCurrency: 'usd',
         nativeCurrency: 'ETH',
+        ticker: undefined,
       }
 
       const tests = [

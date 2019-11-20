@@ -9,6 +9,7 @@ import {
 } from '../../helpers/utils/conversions.util'
 import {
   isEthereumNetwork,
+  getIsXDai,
 } from '../../selectors/selectors'
 
 // Actions
@@ -366,6 +367,10 @@ function inliersByIQR (data, prop) {
 export function fetchGasEstimates (blockTime) {
   return (dispatch, getState) => {
     const state = getState()
+
+    if (getIsXDai(state)) {
+      return Promise.resolve('0x1')
+    }
 
     if (!isEthereumNetwork(state)) {
       return Promise.resolve(null)

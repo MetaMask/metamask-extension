@@ -33,6 +33,10 @@
   &.goerli-test-network .menu-icon-circle div {
     background-color: rgba(48, 153, 242, .7) !important;
   }
+
+  &.xdai-chain .menu-icon-circle div {
+    background-color: rgba(83, 156, 155, .7) !important;
+  }
 }
 
 .dropdown-menu-item {

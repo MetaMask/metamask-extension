@@ -24,6 +24,7 @@ describe('CurrencyInput container', () => {
             conversionRate: 280.45,
             currentCurrency: 'usd',
             nativeCurrency: 'ETH',
+            ticker: 'ETH',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -41,6 +42,7 @@ describe('CurrencyInput container', () => {
           nativeCurrency: 'ETH',
           hideFiat: false,
           maxModeOn: false,
+          ticker: 'ETH',
         },
       },
       // Test # 2
@@ -51,6 +53,7 @@ describe('CurrencyInput container', () => {
             conversionRate: 280.45,
             currentCurrency: 'usd',
             nativeCurrency: 'ETH',
+            ticker: 'ETH',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -68,6 +71,7 @@ describe('CurrencyInput container', () => {
           nativeCurrency: 'ETH',
           hideFiat: true,
           maxModeOn: false,
+          ticker: 'ETH',
         },
       },
       // Test # 3
@@ -78,6 +82,7 @@ describe('CurrencyInput container', () => {
             conversionRate: 280.45,
             currentCurrency: 'usd',
             nativeCurrency: 'ETH',
+            ticker: 'ETH',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -95,6 +100,7 @@ describe('CurrencyInput container', () => {
           nativeCurrency: 'ETH',
           hideFiat: false,
           maxModeOn: false,
+          ticker: 'ETH',
         },
       },
       // Test # 4
@@ -105,6 +111,7 @@ describe('CurrencyInput container', () => {
             conversionRate: 280.45,
             currentCurrency: 'usd',
             nativeCurrency: 'ETH',
+            ticker: 'ETH',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -122,6 +129,7 @@ describe('CurrencyInput container', () => {
           nativeCurrency: 'ETH',
           hideFiat: false,
           maxModeOn: false,
+          ticker: 'ETH',
         },
       },
     ]

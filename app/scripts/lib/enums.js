@@ -14,6 +14,7 @@ const ROPSTEN_CHAIN_ID = '0x3'
 const RINKEBY_CHAIN_ID = '0x4'
 const KOVAN_CHAIN_ID = '0x2a'
 const GOERLI_CHAIN_ID = '0x5'
+const XDAI_CHAIN_ID = '0x64'
 
 module.exports = {
   ENVIRONMENT_TYPE_POPUP,
@@ -30,4 +31,5 @@ module.exports = {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
+  XDAI_CHAIN_ID,
 }

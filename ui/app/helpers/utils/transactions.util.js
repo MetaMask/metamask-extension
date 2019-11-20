@@ -8,6 +8,7 @@ import {
 } from '../../../../app/scripts/controllers/transactions/enums'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import fetchWithCache from './fetch-with-cache'
+import { isXDai } from './util'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -227,6 +228,10 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
   }
-  const prefix = prefixForNetwork(networkId)
-  return `https://${prefix}etherscan.io/tx/${hash}`
+  if (isXDai(networkId)) {
+    return `https://blockscout.com/poa/xdai/tx/${hash}`
+  } else {
+    const prefix = prefixForNetwork(networkId)
+    return `https://${prefix}etherscan.io/tx/${hash}`
+  }
 }

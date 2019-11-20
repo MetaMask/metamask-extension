@@ -43,6 +43,7 @@ const selectors = {
   getUseNonceField,
   getCustomNonceValue,
   getIsMainnet,
+  getIsXDai,
   getCurrentNetworkId,
   getSelectedAsset,
   getCurrentKeyring,
@@ -321,7 +322,12 @@ function getTotalUnapprovedCount ({ metamask }) {
 
 function getIsMainnet (state) {
   const networkType = getNetworkIdentifier(state)
-  return networkType === NETWORK_TYPES.MAINNET
+  return networkType === NETWORK_TYPES.MAINNET || networkType === NETWORK_TYPES.XDAI
+}
+
+function getIsXDai (state) {
+  const networkType = getNetworkIdentifier(state)
+  return networkType === NETWORK_TYPES.XDAI
 }
 
 function isEthereumNetwork (state) {

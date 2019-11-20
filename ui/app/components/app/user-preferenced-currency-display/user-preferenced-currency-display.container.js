@@ -61,6 +61,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     currency,
     numberOfDecimals,
     prefix,
+    type,
   }
 }
 

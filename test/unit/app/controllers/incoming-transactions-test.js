@@ -11,6 +11,7 @@ const {
   KOVAN,
   GOERLI,
   MAINNET,
+  XDAI,
 } = require('../../../../app/scripts/controllers/network/enums')
 
 describe('IncomingTransactionsController', () => {
@@ -22,6 +23,7 @@ describe('IncomingTransactionsController', () => {
       [KOVAN]: null,
       [GOERLI]: null,
       [MAINNET]: null,
+      [XDAI]: null,
     },
   }
 

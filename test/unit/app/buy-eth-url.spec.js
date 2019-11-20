@@ -16,6 +16,9 @@ describe('buy-eth-url', function () {
   const kovan = {
     network: '42',
   }
+  const xdai = {
+    network: '100',
+  }
 
   it('returns coinbase url with amount and address for network 1', function () {
     const wyreUrl = getBuyEthUrl(mainnet)
@@ -37,6 +40,11 @@ describe('buy-eth-url', function () {
   it('returns kovan github test faucet for network 42', function () {
     const kovanUrl = getBuyEthUrl(kovan)
     assert.equal(kovanUrl, 'https://github.com/kovan-testnet/faucet')
+  })
+
+  it('returns burner wallet for network 100', function () {
+    const xdaiUrl = getBuyEthUrl(xdai)
+    assert.equal(xdaiUrl, 'https://dai-bridge.poa.network/')
   })
 
 })

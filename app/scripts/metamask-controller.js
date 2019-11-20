@@ -64,6 +64,7 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
+const { XDAI } = require('../../ui/app/helpers/constants/common')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -1667,9 +1668,14 @@ module.exports = class MetamaskController extends EventEmitter {
   setCurrentCurrency (currencyCode, cb) {
     const { ticker } = this.networkController.getNetworkConfig()
     try {
+      let nativeCurrency = ticker
+      if (ticker === XDAI) {
+        nativeCurrency = 'usd'
+      }
       const currencyState = {
-        nativeCurrency: ticker,
+        nativeCurrency: nativeCurrency,
         currentCurrency: currencyCode,
+        ticker: ticker,
       }
       this.currencyRateController.update(currencyState)
       this.currencyRateController.configure(currencyState)

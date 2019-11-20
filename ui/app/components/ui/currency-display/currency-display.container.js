@@ -1,19 +1,21 @@
 import { connect } from 'react-redux'
 import CurrencyDisplay from './currency-display.component'
 import { getValueFromWeiHex, formatCurrency } from '../../../helpers/utils/confirm-tx.util'
+import { GWEI, SECONDARY, XDAI } from '../../../helpers/constants/common'
 
 const mapStateToProps = state => {
-  const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
+  const { metamask: { nativeCurrency, currentCurrency, conversionRate, ticker } } = state
 
   return {
     currentCurrency,
     conversionRate,
     nativeCurrency,
+    ticker,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { nativeCurrency, currentCurrency, conversionRate, ...restStateProps } = stateProps
+  const { nativeCurrency, currentCurrency, conversionRate, ticker, ...restStateProps } = stateProps
   const {
     value,
     numberOfDecimals = 2,
@@ -27,6 +29,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const toCurrency = currency || currentCurrency
 
+  const currencyCode = ticker === XDAI ? ticker : toCurrency
   const displayValue = propsDisplayValue || formatCurrency(
     getValueFromWeiHex({
       value,
@@ -35,9 +38,19 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       numberOfDecimals,
       toDenomination: denomination,
     }),
-    toCurrency
+    currencyCode
   )
-  const suffix = propsSuffix || (hideLabel ? undefined : toCurrency.toUpperCase())
+  let suffix = propsSuffix || (hideLabel ? undefined : toCurrency.toUpperCase())
+  if (ticker === XDAI &&
+    toCurrency === 'usd' &&
+    ownProps.className &&
+    (ownProps.className.includes('primary') ||
+      (ownProps.className.includes('transaction-breakdown__value') && denomination !== GWEI && ownProps.type !== SECONDARY) ||
+      ownProps.className === 'token-amount'
+    )
+  ) {
+    suffix = ticker
+  }
 
   return {
     ...restStateProps,

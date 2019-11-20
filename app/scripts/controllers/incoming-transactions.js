@@ -10,11 +10,13 @@ const {
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
+  XDAI_CODE,
   ROPSTEN,
   RINKEBY,
   KOVAN,
   GOERLI,
   MAINNET,
+  XDAI,
 } = require('./network/enums')
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
@@ -22,6 +24,7 @@ const networkTypeToIdMap = {
   [KOVAN]: String(KOVAN_CODE),
   [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
+  [XDAI]: String(XDAI_CODE),
 }
 const fetch = fetchWithTimeout({
   timeout: 30000,
@@ -57,6 +60,7 @@ class IncomingTransactionsController {
         [KOVAN]: null,
         [GOERLI]: null,
         [MAINNET]: null,
+        [XDAI]: null,
       },
     }, opts.initState)
     this.store = new ObservableStore(initState)
@@ -184,20 +188,29 @@ class IncomingTransactionsController {
   async _fetchTxs (address, fromBlock, networkType) {
     let etherscanSubdomain = 'api'
     const currentNetworkID = networkTypeToIdMap[networkType]
-    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET]
+    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET, XDAI]
 
     if (supportedNetworkTypes.indexOf(networkType) === -1) {
       return {}
     }
 
-    if (networkType !== MAINNET) {
-      etherscanSubdomain = `api-${networkType}`
-    }
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+    let url
+    if (networkType === XDAI) {
+      url = `https://blockscout.com/poa/xdai/api?module=account&action=txlist&address=${address}&page=1`
 
-    if (fromBlock) {
-      url += `&startBlock=${parseInt(fromBlock, 10)}`
+      if (fromBlock) {
+        url += `&startblock=${parseInt(fromBlock, 10)}`
+      }
+    } else {
+      if (networkType !== MAINNET) {
+        etherscanSubdomain = `api-${networkType}`
+      }
+      const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
+      url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+
+      if (fromBlock) {
+        url += `&startBlock=${parseInt(fromBlock, 10)}`
+      }
     }
     const response = await fetch(url)
     const parsedResponse = await response.json()

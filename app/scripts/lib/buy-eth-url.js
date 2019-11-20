@@ -32,6 +32,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
       return 'https://github.com/kovan-testnet/faucet'
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/'
+    case 'bridge':
+      return 'https://dai-bridge.poa.network/'
   }
   throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
 }
@@ -48,6 +50,8 @@ function getDefaultServiceForNetwork (network) {
       return 'kovan-faucet'
     case '5':
       return 'goerli-faucet'
+    case '100':
+      return 'bridge'
   }
   throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }

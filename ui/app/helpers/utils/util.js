@@ -2,6 +2,7 @@ const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 import { DateTime } from 'luxon'
+const { XDAI_CODE } = require('../../../../app/scripts/controllers/network/enums')
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
@@ -62,6 +63,7 @@ module.exports = {
   addressSlicer,
   isEthNetwork,
   isValidAddressHead,
+  isXDai,
 }
 
 function isEthNetwork (netId) {
@@ -350,4 +352,8 @@ function isValidAddressHead (address) {
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
+}
+
+function isXDai (network) {
+  return parseInt(network) === XDAI_CODE
 }

@@ -50,6 +50,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'goerli') {
     hoverText = context.t('goerli')
     iconName = 'goerli-test-network'
+  } else if (providerName === 'xdai') {
+    hoverText = context.t('xdai')
+    iconName = 'xdai-chain'
   } else {
     hoverText = providerId
     iconName = 'private-network'
@@ -64,6 +67,7 @@ Network.prototype.render = function () {
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
         'goerli-test-network': providerName === 'goerli',
+        'xdai-chain': providerName === 'xdai',
       }),
       title: hoverText,
       onClick: (event) => {
@@ -122,6 +126,16 @@ Network.prototype.render = function () {
                 loading: networkNumber === 'loading',
               }),
               h('.network-name', context.t('goerli')),
+              h('.network-indicator__down-arrow'),
+            ])
+          case 'xdai-chain':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#539c9b', // $xdai-green
+                nonSelectBackgroundColor: '#8ac1c0',
+                loading: networkNumber === 'loading',
+              }),
+              h('.network-name', context.t('xdai')),
               h('.network-indicator__down-arrow'),
             ])
           default:

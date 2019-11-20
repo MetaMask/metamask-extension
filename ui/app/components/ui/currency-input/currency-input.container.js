@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import CurrencyInput from './currency-input.component'
-import { ETH } from '../../../helpers/constants/common'
+import { ETH, XDAI } from '../../../helpers/constants/common'
 import { getMaxModeOn } from '../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import {getIsMainnet, preferencesSelector} from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
+  const { metamask: { nativeCurrency, currentCurrency, conversionRate, ticker } } = state
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const maxModeOn = getMaxModeOn(state)
@@ -16,17 +16,21 @@ const mapStateToProps = state => {
     conversionRate,
     hideFiat: (!isMainnet && !showFiatInTestnets),
     maxModeOn,
+    ticker,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { nativeCurrency, currentCurrency } = stateProps
-
+  const { nativeCurrency, currentCurrency, ticker } = stateProps
+  let nativeSuffix = nativeCurrency
+  if (ticker === XDAI) {
+    nativeSuffix = ticker
+  }
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    nativeSuffix: nativeCurrency || ETH,
+    nativeSuffix: nativeSuffix || ETH,
     fiatSuffix: currentCurrency.toUpperCase(),
   }
 }

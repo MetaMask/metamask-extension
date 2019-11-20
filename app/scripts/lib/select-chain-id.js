@@ -4,6 +4,7 @@ const {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
+  XDAI_CHAIN_ID,
 } = require('./enums')
 
 const standardNetworkId = {
@@ -12,6 +13,7 @@ const standardNetworkId = {
   '4': RINKEBY_CHAIN_ID,
   '42': KOVAN_CHAIN_ID,
   '5': GOERLI_CHAIN_ID,
+  '100': XDAI_CHAIN_ID,
 }
 
 function selectChainId (metamaskState) {

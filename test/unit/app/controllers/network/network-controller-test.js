@@ -95,6 +95,9 @@ describe('Network utils', () => {
       }, {
         input: 'goerli',
         expected: 'Goerli',
+      }, {
+        input: 'xdai',
+        expected: 'xDAI',
       },
     ]
 

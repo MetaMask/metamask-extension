@@ -138,6 +138,28 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'xdai',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.handleClick('xdai'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'xdai' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#539c9b', // $xdai-green
+          isSelected: providerType === 'xdai',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'xdai' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('xdai')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'ropsten',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => this.handleClick('ropsten'),
@@ -311,6 +333,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('localhost')
   } else if (providerName === 'goerli') {
     name = this.context.t('goerli')
+  } else if (providerName === 'xdai') {
+    name = this.context.t('xdai')
   } else {
     name = provider.nickname || this.context.t('unknownNetwork')
   }

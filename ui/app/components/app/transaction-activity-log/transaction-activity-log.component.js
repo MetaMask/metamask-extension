@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
-import { formatDate } from '../../../helpers/utils/util'
+import { formatDate, isXDai } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
 import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
@@ -30,10 +30,15 @@ export default class TransactionActivityLog extends PureComponent {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 
-    const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    let explorerUrl
+    if (isXDai(metamaskNetworkId)) {
+      explorerUrl = `https://blockscout.com/poa/xdai/tx/${hash}`
+    } else {
+      const prefix = prefixForNetwork(metamaskNetworkId)
+      explorerUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    }
 
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openWindow({ url: explorerUrl })
   }
 
   renderInlineRetry (index, activity) {

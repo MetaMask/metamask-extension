@@ -9,9 +9,11 @@ const {
   KOVAN,
   MAINNET,
   GOERLI,
+  XDAI,
 } = require('./network/enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-
+const DEFAULT_PROVIDER_TYPES = INFURA_PROVIDER_TYPES
+DEFAULT_PROVIDER_TYPES.push(XDAI)
 
 class RecentBlocksController {
 
@@ -51,15 +53,15 @@ class RecentBlocksController {
     }
     let isListening = false
     const { type } = networkController.getProviderConfig()
-    if (!INFURA_PROVIDER_TYPES.includes(type) && type !== 'loading') {
+    if (!DEFAULT_PROVIDER_TYPES.includes(type) && type !== 'loading') {
       this.blockTracker.on('latest', blockListner)
       isListening = true
     }
     networkController.on('networkDidChange', (newType) => {
-      if (INFURA_PROVIDER_TYPES.includes(newType) && isListening) {
+      if (DEFAULT_PROVIDER_TYPES.includes(newType) && isListening) {
         this.blockTracker.removeListener('latest', blockListner)
       } else if (
-        !INFURA_PROVIDER_TYPES.includes(type) &&
+        !DEFAULT_PROVIDER_TYPES.includes(type) &&
         type !== 'loading' &&
         !isListening
       ) {

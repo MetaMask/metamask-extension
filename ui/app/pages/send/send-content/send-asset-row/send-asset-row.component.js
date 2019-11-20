@@ -4,9 +4,18 @@ import SendRowWrapper from '../send-row-wrapper'
 import Identicon from '../../../../components/ui/identicon/identicon.component'
 import TokenBalance from '../../../../components/ui/token-balance'
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-import {PRIMARY} from '../../../../helpers/constants/common'
+import {PRIMARY, XDAI, ETH} from '../../../../helpers/constants/common'
+import { connect } from 'react-redux'
 
-export default class SendAssetRow extends Component {
+const mapStateToProps = state => {
+  const { metamask: { ticker } } = state
+
+  return {
+    ticker,
+  }
+}
+
+class SendAssetRow extends Component {
   static propTypes = {
     tokens: PropTypes.arrayOf(
       PropTypes.shape({
@@ -19,6 +28,7 @@ export default class SendAssetRow extends Component {
     selectedAddress: PropTypes.string.isRequired,
     selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
+    ticker: PropTypes.string,
   }
 
   static contextTypes = {
@@ -94,8 +104,10 @@ export default class SendAssetRow extends Component {
   }
 
   renderEth () {
+    console.log('this.state:')
+    console.log(this.state)
     const { t } = this.context
-    const { accounts, selectedAddress } = this.props
+    const { accounts, selectedAddress, ticker } = this.props
 
     const balanceValue = accounts[selectedAddress] ? accounts[selectedAddress].balance : ''
 
@@ -108,7 +120,7 @@ export default class SendAssetRow extends Component {
           <Identicon diameter={36} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">ETH</div>
+          <div className="send-v2__asset-dropdown__symbol">{ticker === XDAI ? ticker : ETH}</div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">{`${t('balance')}:`}</span>
             <UserPreferencedCurrencyDisplay
@@ -150,3 +162,5 @@ export default class SendAssetRow extends Component {
     )
   }
 }
+
+export default connect(mapStateToProps, null, null)(SendAssetRow)

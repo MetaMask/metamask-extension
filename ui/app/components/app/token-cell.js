@@ -8,6 +8,7 @@ const prefixForNetwork = require('../../../lib/etherscan-prefix-for-network')
 const selectors = require('../../selectors/selectors')
 const actions = require('../../store/actions')
 const { conversionUtil, multiplyCurrencies } = require('../../helpers/utils/conversion-util')
+const { isXDai } = require('../../helpers/utils/util')
 
 const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
 
@@ -156,7 +157,7 @@ TokenCell.prototype.send = function (address, event) {
 }
 
 TokenCell.prototype.view = function (address, userAddress, network) {
-  const url = etherscanLinkFor(address, userAddress, network)
+  const url = explorerLinkFor(address, userAddress, network)
   if (url) {
     navigateTo(url)
   }
@@ -166,9 +167,16 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (tokenAddress, address, network) {
+function explorerLinkFor (tokenAddress, address, network) {
+  if (parseInt(network) === 100) {
+
+  }
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
+  if (isXDai(network)) {
+    return `https://blockscout.com/poa/xdai/tokens/${tokenAddress}`
+  } else {
+    return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
+  }
 }
 
 function tokenFactoryFor (tokenAddress) {

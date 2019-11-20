@@ -24,6 +24,9 @@ module.exports = function (address, network, rpcPrefs) {
     case 5: // goerli test net
       link = `https://goerli.etherscan.io/address/${address}`
       break
+    case 100: // xdai chain
+      link = `https://blockscout.com/poa/xdai/address/${address}`
+      break
     default:
       link = ''
       break

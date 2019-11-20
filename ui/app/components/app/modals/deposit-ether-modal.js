@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getNetworkDisplayName } = require('../../../../../app/scripts/controllers/network/util')
+const { isXDai } = require('../../../../app/helpers/utils/util')
 
 import Button from '../../ui/button'
 
@@ -12,6 +13,8 @@ let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT
 let WYRE_ROW_TITLE
 let WYRE_ROW_TEXT
+let BRIDGE_ROW_TITLE
+let BRIDGE_ROW_TEXT
 let FAUCET_ROW_TITLE
 let COINSWITCH_ROW_TITLE
 let COINSWITCH_ROW_TEXT
@@ -27,6 +30,9 @@ function mapDispatchToProps (dispatch) {
   return {
     toWyre: (address) => {
       dispatch(actions.buyEth({ service: 'wyre', address, amount: 0 }))
+    },
+    toBridge: (address) => {
+      dispatch(actions.buyEth({ service: 'bridge', address, amount: 0 }))
     },
     toCoinSwitch: (address) => {
       dispatch(actions.buyEth({ service: 'coinswitch', address }))
@@ -53,6 +59,8 @@ function DepositEtherModal (_, context) {
   DIRECT_DEPOSIT_ROW_TEXT = context.t('directDepositEtherExplainer')
   WYRE_ROW_TITLE = context.t('buyWithWyre')
   WYRE_ROW_TEXT = context.t('buyWithWyreDescription')
+  BRIDGE_ROW_TITLE = context.t('buyWithBridge')
+  BRIDGE_ROW_TEXT = context.t('buyWithBridgeDescription')
   FAUCET_ROW_TITLE = context.t('testFaucet')
   COINSWITCH_ROW_TITLE = context.t('buyCoinSwitch')
   COINSWITCH_ROW_TEXT = context.t('buyCoinSwitchExplainer')
@@ -121,7 +129,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
+  const { network, toWyre, toBridge, toCoinSwitch, address, toFaucet } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -169,7 +177,7 @@ DepositEtherModal.prototype.render = function () {
           text: this.facuetRowText(networkName),
           buttonLabel: this.context.t('getEther'),
           onButtonClick: () => toFaucet(network),
-          hide: !isTestNetwork,
+          hide: !isTestNetwork || isXDai,
         }),
 
         this.renderRow({
@@ -183,7 +191,16 @@ DepositEtherModal.prototype.render = function () {
           text: WYRE_ROW_TEXT,
           buttonLabel: this.context.t('continueToWyre'),
           onButtonClick: () => toWyre(address),
-          hide: isTestNetwork,
+          hide: isTestNetwork || isXDai,
+        }),
+
+        this.renderRow({
+          logo: h('i.fa.fa-tint.fa-2x'),
+          title: BRIDGE_ROW_TITLE,
+          text: BRIDGE_ROW_TEXT,
+          buttonLabel: this.context.t('continueToBridge'),
+          onButtonClick: () => toBridge(address),
+          hide: !isXDai,
         }),
 
         this.renderRow({
@@ -197,7 +214,7 @@ DepositEtherModal.prototype.render = function () {
           text: COINSWITCH_ROW_TEXT,
           buttonLabel: this.context.t('continueToCoinSwitch'),
           onButtonClick: () => toCoinSwitch(address),
-          hide: isTestNetwork,
+          hide: isTestNetwork || isXDai,
         }),
 
       ]),

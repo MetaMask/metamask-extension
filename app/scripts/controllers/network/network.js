@@ -21,6 +21,8 @@ const {
   MAINNET,
   LOCALHOST,
   GOERLI,
+  XDAI,
+  XDAI_CODE,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
@@ -54,6 +56,9 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
+    if (parseInt(opts.network) === XDAI_CODE) {
+      defaultNetworkConfig.ticker = 'XDAI'
+    }
     this.networkConfig = new ObservableStore(defaultNetworkConfig)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, settings: this.networkConfig })
     this.on('networkDidChange', this.lookupNetwork)
@@ -145,7 +150,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) || type === XDAI || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
@@ -180,6 +185,8 @@ module.exports = class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
+    } else if (type === XDAI) {
+      this._configureStandardProvider({ rpcUrl: 'https://dai.poa.network', chainId: '100', ticker: 'XDAI', nickname })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
@@ -223,6 +230,7 @@ module.exports = class NetworkController extends EventEmitter {
     // setup networkConfig
     var settings = {
       network: chainId,
+      ticker,
     }
     settings = extend(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)

@@ -49,6 +49,8 @@ export default class LoadingNetworkScreen extends PureComponent {
       name = this.context.t('connectingToLocalhost')
     } else if (providerName === 'goerli') {
       name = this.context.t('connectingToGoerli')
+    } else if (providerName === 'xdai') {
+      name = this.context.t('connectingToXDai')
     } else {
       name = this.context.t('connectingTo', [providerId])
     }

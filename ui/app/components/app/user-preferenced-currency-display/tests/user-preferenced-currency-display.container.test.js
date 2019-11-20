@@ -80,6 +80,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 6,
             prefix: undefined,
+            type: 'PRIMARY',
           },
         },
         {
@@ -97,6 +98,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 2,
             prefix: undefined,
+            type: 'PRIMARY',
           },
         },
         {
@@ -116,6 +118,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             currency: undefined,
             numberOfDecimals: 4,
             prefix: '-',
+            type: 'SECONDARY',
           },
         },
         {
@@ -137,6 +140,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 3,
             prefix: 'b',
+            type: 'SECONDARY',
           },
         },
         {
@@ -154,6 +158,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 6,
             prefix: undefined,
+            type: 'PRIMARY',
           },
         },
         {
@@ -171,6 +176,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 2,
             prefix: undefined,
+            type: 'PRIMARY',
           },
         },
         {
@@ -188,6 +194,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             nativeCurrency: 'ETH',
             numberOfDecimals: 2,
             prefix: undefined,
+            type: 'PRIMARY',
           },
         },
       ]

@@ -30,6 +30,10 @@
     &--goerli {
       background-color: lighten($dodger-blue, 35%);
     }
+
+    &--xdai {
+      background-color: lighten($xdai-green, 35%);
+    }
   }
 
   &__name {
@@ -60,6 +64,10 @@
 
     &--goerli {
       background-color: $dodger-blue;
+    }
+
+    &--xdai {
+      background-color: $xdai-green;
     }
   }
 }

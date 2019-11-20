@@ -9,6 +9,15 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
+    labelKey: 'xdai',
+    iconColor: '#539c9b',
+    providerType: 'xdai',
+    rpcUrl: 'https://dai.poa.network',
+    chainId: '100',
+    ticker: 'xDAI',
+    blockExplorerUrl: 'https://blockscout.com/poa/xdai',
+  },
+  {
     labelKey: 'ropsten',
     iconColor: '#FF4A8D',
     providerType: 'ropsten',
