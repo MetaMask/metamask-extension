@@ -51,9 +51,12 @@ export default class PermissionConnect extends Component {
       permissionAccepted: accepted,
     })
     setTimeout(() => {
-      global.platform.switchToTab(currentMetaMaskTabOpenerId, () => {
-        window.close()
-      })
+      global.platform.currentTab()
+        .then(({ id: currentTabId }) => {
+          global.platform.switchToTab(currentMetaMaskTabOpenerId, () => {
+            global.platform.closeTab(currentTabId)
+          })
+        })
     }, 2000)
   }
 
