@@ -17,12 +17,12 @@ export default class HomeNotification extends PureComponent {
   }
 
   static propTypes = {
-    acceptText: PropTypes.string.isRequired,
+    acceptText: PropTypes.node.isRequired,
     onAccept: PropTypes.func,
-    ignoreText: PropTypes.string,
+    ignoreText: PropTypes.node,
     onIgnore: PropTypes.func,
-    descriptionText: PropTypes.string.isRequired,
-    infoText: PropTypes.string,
+    descriptionText: PropTypes.node.isRequired,
+    infoText: PropTypes.node,
     classNames: PropTypes.array,
   }
 
