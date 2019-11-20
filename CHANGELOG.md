@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
 
 ## 7.6.1 Tue Nov 19 2019
 - [#7475](https://github.com/MetaMask/metamask-extension/pull/7475): Add 'Remind Me Later' to the Maker notification
