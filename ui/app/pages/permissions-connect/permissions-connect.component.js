@@ -13,11 +13,17 @@ export default class PermissionConnect extends Component {
     getOpenMetaMaskTabs: PropTypes.func.isRequired,
     getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
-    originName: PropTypes.string.isRequired,
+    originName: PropTypes.string,
     showNewAccountModal: PropTypes.func.isRequired,
     newAccountNumber: PropTypes.number.isRequired,
     nativeCurrency: PropTypes.string,
-    permissionsRequest: PropTypes.object.isRequired,
+    permissionsRequest: PropTypes.object,
+  }
+
+  static defaultProps = {
+    originName: '',
+    nativeCurrency: '',
+    permissionsRequest: {},
   }
 
   static contextTypes = {
@@ -27,6 +33,7 @@ export default class PermissionConnect extends Component {
   state = {
     page: 1,
     selectedAccountAddress: '',
+    permissionAccepted: null,
   }
 
   selectAccount (address) {
@@ -36,10 +43,11 @@ export default class PermissionConnect extends Component {
     })
   }
 
-  redirectFlow () {
+  redirectFlow (accepted) {
     const { currentMetaMaskTabOpenerId } = this.props
     this.setState({
       page: null,
+      permissionAccepted: accepted,
     })
     setTimeout(() => {
       global.platform.switchToTab(currentMetaMaskTabOpenerId, () => {
@@ -68,7 +76,7 @@ export default class PermissionConnect extends Component {
       nativeCurrency,
       permissionsRequest,
     } = this.props
-    const { page, selectedAccountAddress } = this.state
+    const { page, selectedAccountAddress, permissionAccepted } = this.state
 
     return (
       <div className="permissions-connect">
@@ -93,11 +101,15 @@ export default class PermissionConnect extends Component {
             request={permissionsRequest}
             approvePermissionsRequest={ (requestId, accounts) => {
               approvePermissionsRequest(requestId, accounts)
-              this.redirectFlow()
+              this.redirectFlow(true)
             }}
-            rejectPermissionsRequest={rejectPermissionsRequest}
+            rejectPermissionsRequest={requestId => {
+              rejectPermissionsRequest(requestId)
+              this.redirectFlow(false)
+            }}
             selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
             redirect={page === null}
+            permissionRejected={ permissionAccepted === false }
           />
           <PermissionsConnectFooter /></div>
         }
