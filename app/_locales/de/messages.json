@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Der Datenschutzmodus ist jetzt standardmäßig aktiviert"
-  },
   "chartOnlyAvailableEth": {
     "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
   },
@@ -13,12 +10,6 @@
   },
   "reject": {
     "message": "Ablehnen"
-  },
-  "providerRequest": {
-    "message": "$1 möchte sich mit deinem Account verbinden"
-  },
-  "providerRequestInfo": {
-    "message": "Diese Website fordert Zugriff auf Ihre aktuelle Kontoadresse. Stellen Sie immer sicher, dass Sie den Websites vertrauen, mit denen Sie interagieren."
   },
   "about": {
     "message": "Über"
@@ -353,9 +344,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
-  },
-  "dismiss": {
-    "message": "Schließen"
   },
   "done": {
     "message": "Fertig"

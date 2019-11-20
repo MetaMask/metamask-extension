@@ -12,9 +12,6 @@
   "reject": {
     "message": "Tanggihan"
   },
-  "providerRequestInfo": {
-    "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ethereum API upang maaari itong makipag-ugnayan sa Ethereum blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ethereum access."
-  },
   "accountDetails": {
     "message": "Detalye ng Account"
   },

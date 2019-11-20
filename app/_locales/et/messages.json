@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "Privaatsusrežiim on nüüd vaikimisi lubatud"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabel on saadaval vaid Ethereumi võrkudes."
   },
@@ -13,12 +10,6 @@
   },
   "reject": {
     "message": "Lükka tagasi"
-  },
-  "providerRequest": {
-    "message": "$1 soovib teie kontoga ühenduse luua"
-  },
-  "providerRequestInfo": {
-    "message": "See sait taotleb juurdepääsu teie praeguse konto aadressi vaatamiseks. Veenduge alati, et usaldate saite, millega suhtlete."
   },
   "about": {
     "message": "Teave"
@@ -368,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
-  },
-  "dismiss": {
-    "message": "Loobu"
   },
   "done": {
     "message": "Valmis"

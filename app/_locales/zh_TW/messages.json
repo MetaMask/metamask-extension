@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "隱私模式現已根據預設開啟"
-  },
   "chartOnlyAvailableEth": {
     "message": "圖表僅適用於以太坊網路。"
   },
@@ -13,12 +10,6 @@
   },
   "reject": {
     "message": "拒絕"
-  },
-  "providerRequest": {
-    "message": "$1 請求訪問帳戶權限"
-  },
-  "providerRequestInfo": {
-    "message": "此網站希望能讀取您的帳戶資訊。請務必確認您信任這個網站、並了解後續可能的交易行為。"
   },
   "about": {
     "message": "關於"
@@ -365,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "如果您已經擁有乙太幣，直接存入功能是讓新錢包最快取得乙太幣的方式。"
-  },
-  "dismiss": {
-    "message": "關閉"
   },
   "done": {
     "message": "完成"

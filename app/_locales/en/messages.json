@@ -29,30 +29,8 @@
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
   },
-  "connections": {
-    "message": "Connections"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
-  },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
   "chooseAnAcount": {
     "message": "Choose and account"
-  },
-
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
@@ -62,12 +40,6 @@
   },
   "redirectingBackToDapp": {
     "message": "Redirecting back to dapp..."
-  },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
   "about": {
     "message": "About"
@@ -474,9 +446,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "dismiss": {
-    "message": "Dismiss"
   },
   "domainLastConnect": {
     "message": "Last Connected: $1"

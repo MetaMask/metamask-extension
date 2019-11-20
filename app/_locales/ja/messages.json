@@ -1,7 +1,4 @@
 {
-  "privacyModeDefault": {
-    "message": "プライバシーモードがデフォルトで有効になりました"
-  },
   "chartOnlyAvailableEth": {
     "message": "チャートはEthereumネットワークでのみ利用可能です。"
   },
@@ -13,12 +10,6 @@
   },
   "reject": {
     "message": "拒否"
-  },
-  "providerRequest": {
-    "message": "$1 はあなたのアカウントにアクセスしようとしています。"
-  },
-  "providerRequestInfo": {
-    "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
   },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
