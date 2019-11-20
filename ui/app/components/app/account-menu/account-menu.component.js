@@ -36,7 +36,7 @@ export default class AccountMenu extends PureComponent {
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
     addressConnectedDomainMap: PropTypes.object,
-    originOfCurrentTab: PropTypes.number,
+    originOfCurrentTab: PropTypes.string,
   }
 
   state = {
