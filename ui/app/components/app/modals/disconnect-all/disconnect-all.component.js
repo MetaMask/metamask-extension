@@ -2,12 +2,13 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Modal from '../../modal'
 import Button from '../../../ui/button'
-
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 
 export default class DisconnectAll extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     disconnectAll: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   static contextTypes = {
@@ -16,7 +17,7 @@ export default class DisconnectAll extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { hideModal, disconnectAll } = this.props
+    const { hideModal, disconnectAll, history } = this.props
 
     return (
       <Modal
@@ -33,6 +34,7 @@ export default class DisconnectAll extends PureComponent {
             onClick={ () => {
               disconnectAll()
               hideModal()
+              history.push(DEFAULT_ROUTE)
             }}
             className=""
           >
