@@ -370,7 +370,9 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
   const props = this.props
   const network = props.network
 
-  if (type !== 'rpc') return null
+  if (type !== 'rpc') {
+    return null
+  }
 
   switch (rpcTarget) {
 

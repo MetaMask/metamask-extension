@@ -3,7 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 
 inherits(Menu, Component)
-function Menu () { Component.call(this) }
+function Menu () {
+  Component.call(this)
+}
 
 Menu.prototype.render = function () {
   const { className = '', children, isShowing } = this.props
@@ -13,7 +15,9 @@ Menu.prototype.render = function () {
 }
 
 inherits(Item, Component)
-function Item () { Component.call(this) }
+function Item () {
+  Component.call(this)
+}
 
 Item.prototype.render = function () {
   const {
@@ -37,14 +41,18 @@ Item.prototype.render = function () {
 }
 
 inherits(Divider, Component)
-function Divider () { Component.call(this) }
+function Divider () {
+  Component.call(this)
+}
 
 Divider.prototype.render = function () {
   return h('div.menu__divider')
 }
 
 inherits(CloseArea, Component)
-function CloseArea () { Component.call(this) }
+function CloseArea () {
+  Component.call(this)
+}
 
 CloseArea.prototype.render = function () {
   return h('div.menu__close-area', { onClick: this.props.onClick })

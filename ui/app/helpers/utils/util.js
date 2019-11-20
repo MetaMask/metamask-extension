@@ -73,13 +73,19 @@ function isEthNetwork (netId) {
 }
 
 function valuesFor (obj) {
-  if (!obj) return []
+  if (!obj) {
+    return []
+  }
   return Object.keys(obj)
-    .map(function (key) { return obj[key] })
+    .map(function (key) {
+      return obj[key]
+    })
 }
 
 function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
-  if (!address) return ''
+  if (!address) {
+    return ''
+  }
   let checked = checksumAddress(address)
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
@@ -88,14 +94,18 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
 }
 
 function miniAddressSummary (address) {
-  if (!address) return ''
+  if (!address) {
+    return ''
+  }
   var checked = checksumAddress(address)
   return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
 function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
-  if (address === '0x0000000000000000000000000000000000000000') return false
+  if (address === '0x0000000000000000000000000000000000000000') {
+    return false
+  }
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
@@ -105,12 +115,16 @@ function isValidENSAddress (address) {
 
 function isInvalidChecksumAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
-  if (address === '0x0000000000000000000000000000000000000000') return false
+  if (address === '0x0000000000000000000000000000000000000000') {
+    return false
+  }
   return !isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed) && ethUtil.isValidAddress(prefixed)
 }
 
 function isAllOneCase (address) {
-  if (!address) return true
+  if (!address) {
+    return true
+  }
   var lower = address.toLowerCase()
   var upper = address.toUpperCase()
   return address === lower || address === upper
@@ -118,7 +132,9 @@ function isAllOneCase (address) {
 
 // Takes wei Hex, returns wei BN, even if input is null
 function numericBalance (balance) {
-  if (!balance) return new ethUtil.BN(0, 16)
+  if (!balance) {
+    return new ethUtil.BN(0, 16)
+  }
   var stripped = ethUtil.stripHexPrefix(balance)
   return new ethUtil.BN(stripped, 16)
 }
@@ -132,7 +148,9 @@ function parseBalance (balance) {
 
   beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
   afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
-  if (afterDecimal === '') { afterDecimal = '0' }
+  if (afterDecimal === '') {
+    afterDecimal = '0'
+  }
   return [beforeDecimal, afterDecimal]
 }
 
@@ -147,7 +165,9 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ET
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
         var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
-        if (sigFigs) { afterDecimal = sigFigs[0] }
+        if (sigFigs) {
+          afterDecimal = sigFigs[0]
+        }
         formatted = '0.' + afterDecimal + ` ${ticker}`
       }
     } else {

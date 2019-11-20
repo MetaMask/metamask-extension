@@ -28,10 +28,14 @@ function setupDappAutoReload (web3, observable) {
   observable.subscribe(function (state) {
     // if the auto refresh on network change is false do not
     // do anything
-    if (!window.ethereum.autoRefreshOnNetworkChange) return
+    if (!window.ethereum.autoRefreshOnNetworkChange) {
+      return
+    }
 
     // if reload in progress, no need to check reload logic
-    if (reloadInProgress) return
+    if (reloadInProgress) {
+      return
+    }
 
     const currentNetwork = state.networkVersion
 
@@ -42,10 +46,14 @@ function setupDappAutoReload (web3, observable) {
     }
 
     // skip reload logic if web3 not used
-    if (!lastTimeUsed) return
+    if (!lastTimeUsed) {
+      return
+    }
 
     // if network did not change, exit
-    if (currentNetwork === lastSeenNetwork) return
+    if (currentNetwork === lastSeenNetwork) {
+      return
+    }
 
     // initiate page reload
     reloadInProgress = true

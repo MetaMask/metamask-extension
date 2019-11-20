@@ -260,7 +260,9 @@ function setupController (initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') return
+    if (status !== 'failed') {
+      return
+    }
     const txMeta = controller.txController.txStateManager.getTx(txId)
     try {
       reportFailedTxToSentry({ sentry, txMeta })

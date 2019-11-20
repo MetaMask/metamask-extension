@@ -34,7 +34,9 @@ class ProviderApprovalController extends SafeEventEmitter {
   createMiddleware ({ senderUrl, extensionId, getSiteMetadata }) {
     return createAsyncMiddleware(async (req, res, next) => {
       // only handle requestAccounts
-      if (req.method !== 'eth_requestAccounts') return next()
+      if (req.method !== 'eth_requestAccounts') {
+        return next()
+      }
       // if already approved or privacy mode disabled, return early
       const isUnlocked = this.keyringController.memStore.getState().isUnlocked
       const origin = senderUrl.hostname

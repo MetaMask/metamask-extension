@@ -104,7 +104,9 @@ class ConnectScreen extends Component {
 
 
     scrollToTutorial = () => {
-      if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})
+      if (this.referenceNode) {
+        this.referenceNode.scrollIntoView({behavior: 'smooth'})
+      }
     }
 
     renderLearnMore () {
@@ -141,7 +143,9 @@ class ConnectScreen extends Component {
       ]
 
       return h('.hw-tutorial', {
-        ref: node => { this.referenceNode = node },
+        ref: node => {
+          this.referenceNode = node
+        },
       },
       steps.map((step) => (
         h('div.hw-connect', {}, [

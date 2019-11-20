@@ -13,7 +13,9 @@ module.exports = getBuyEthUrl
  */
 function getBuyEthUrl ({ network, amount, address, service }) {
   // default service by network if not specified
-  if (!service) service = getDefaultServiceForNetwork(network)
+  if (!service) {
+    service = getDefaultServiceForNetwork(network)
+  }
 
   switch (service) {
     case 'wyre':
