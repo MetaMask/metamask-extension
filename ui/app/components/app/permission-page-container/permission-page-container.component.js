@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 import deepEqual from 'fast-deep-equal'
 import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-
 
 export default class PermissionPageContainer extends Component {
 
@@ -14,9 +12,15 @@ export default class PermissionPageContainer extends Component {
     selectedIdentity: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object.isRequired,
-    request: PropTypes.object.isRequired,
+    request: PropTypes.object,
     redirect: PropTypes.bool,
-    history: PropTypes.object.isRequired,
+    permissionRejected: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    redirect: null,
+    permissionRejected: null,
+    request: {},
   };
 
   static contextTypes = {
@@ -79,9 +83,8 @@ export default class PermissionPageContainer extends Component {
   }
 
   onCancel = () => {
-    const { request, rejectPermissionsRequest, history } = this.props
+    const { request, rejectPermissionsRequest } = this.props
     rejectPermissionsRequest(request.metadata.id)
-    history.push(DEFAULT_ROUTE)
   }
 
   onSubmit = () => {
@@ -115,7 +118,7 @@ export default class PermissionPageContainer extends Component {
   }
 
   render () {
-    const { request, permissionsDescriptions, domainMetadata, selectedIdentity, redirect } = this.props
+    const { request, permissionsDescriptions, domainMetadata, selectedIdentity, redirect, permissionRejected } = this.props
 
     const requestMetadata = request.metadata
 
@@ -134,6 +137,7 @@ export default class PermissionPageContainer extends Component {
           onPermissionToggle={this.onPermissionToggle}
           selectedAccount={selectedIdentity}
           redirect={redirect}
+          permissionRejected={permissionRejected}
         />
         { !redirect
           ? <PageContainerFooter

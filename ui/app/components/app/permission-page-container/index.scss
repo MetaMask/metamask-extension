@@ -138,6 +138,19 @@
         z-index: 1;
       }
 
+      &__reject {
+        background: white;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        i {
+          color: #D73A49;
+          transform: scale(3);
+        }
+      }
+
       &__broken-line {
         z-index: 0;
         position: absolute;

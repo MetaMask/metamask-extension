@@ -13,6 +13,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     onPermissionToggle: PropTypes.func.isRequired,
     selectedAccount: PropTypes.object.isRequired,
     redirect: PropTypes.bool,
+    permissionRejected: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -38,7 +39,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderPermissionApprovalVisual = () => {
     const {
-      requestMetadata, domainMetadata, selectedAccount, redirect,
+      requestMetadata, domainMetadata, selectedAccount, redirect, permissionRejected,
     } = this.props
 
     return (
@@ -61,7 +62,10 @@ export default class PermissionPageContainerContent extends PureComponent {
           { redirect ? null : <h1>{domainMetadata.name}</h1> }
           { redirect ? null : <h2>{requestMetadata.origin}</h2> }
         </section>
-        <span className="permission-approval-visual__check" />
+        { permissionRejected
+          ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
+          : <span className="permission-approval-visual__check" />
+        }
         <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
         <section>
           <div className="permission-approval-visual__identicon-container">
@@ -109,15 +113,24 @@ export default class PermissionPageContainerContent extends PureComponent {
   }
 
   render () {
-    const { domainMetadata, redirect } = this.props
+    const { domainMetadata, redirect, permissionRejected } = this.props
     const { t } = this.context
+
+    let titleArgs
+    if (redirect && permissionRejected) {
+      titleArgs = [ 'cancelledConnectionWithMetaMask' ]
+    } else if (redirect) {
+      titleArgs = [ 'connectingWithMetaMask' ]
+    } else {
+      titleArgs = [ 'likeToConnect', [domainMetadata.name] ]
+    }
 
     return (
       <div className={classnames('permission-approval-container__content', {
         'permission-approval-container__content--redirect': redirect,
       })}>
         <div className="permission-approval-container__title">
-          { redirect ? t('connectingWithMetaMask') : t('likeToConnect', [domainMetadata.name]) }
+          { t(...titleArgs) }
         </div>
         {this.renderPermissionApprovalVisual()}
         { !redirect
