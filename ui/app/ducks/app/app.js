@@ -90,6 +90,28 @@ export default function reduceApp (state, action) {
       })
 
     // sidebar methods
+    case actions.UPDATE_METAMASK_STATE:
+      const { metamask: was } = state
+      const { value: is } = action
+      const { sidebar, sidebar: { transactionId } } = appState
+
+      if (
+        sidebar &&
+        transactionId &&
+        was.transactions[transactionId].state === 'pending' &&
+        is.transactions[transactionId].state !== 'pending'
+      ) {
+        // close sidebar
+        return extend(appState, {
+          sidebar: {
+            ...appState.sidebar,
+            isOpen: false,
+          },
+        })
+      }
+
+      return appState
+
     case actions.SIDEBAR_OPEN:
       return extend(appState, {
         sidebar: {
