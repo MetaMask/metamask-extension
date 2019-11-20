@@ -26,7 +26,9 @@ function mapStateToProps (state) {
     },
   } = state
 
-  const originOfCurrentTab = tabIdOrigins[Object.keys(tabIdOrigins).find(id => openExternalTabs[id])]
+  const currentlyActiveExternalTabId = Object.entries(openExternalTabs)
+    .reduce((acc, [key, value]) => value.active ? key : acc, null)
+  const originOfCurrentTab = tabIdOrigins[currentlyActiveExternalTabId]
 
   return {
     selectedAddress,
