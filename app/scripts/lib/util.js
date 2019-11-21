@@ -148,6 +148,14 @@ function getRandomArrayItem (array) {
   return array[Math.floor((Math.random() * array.length))]
 }
 
+function mapObjectValues (object, cb) {
+  const objectClone = JSON.parse(JSON.stringify(object))
+  Object.keys(objectClone).forEach(key => {
+    objectClone[key] = cb(key, objectClone[key])
+  })
+  return objectClone
+}
+
 module.exports = {
   removeListeners,
   applyListeners,
@@ -159,4 +167,5 @@ module.exports = {
   bnToHex,
   BnMultiplyByFraction,
   getRandomArrayItem,
+  mapObjectValues,
 }

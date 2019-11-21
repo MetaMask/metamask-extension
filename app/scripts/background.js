@@ -33,6 +33,7 @@ const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
 const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+const { mapObjectValues } = require('./lib/util')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -64,7 +65,7 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
-const openNonMetamaskTabsIDs = {}
+let openNonMetamaskTabsIDs = {}
 const tabIdOriginMap = {}
 let previousTabId
 
@@ -390,9 +391,7 @@ function setupController (initState, initLangCode) {
         openMetamaskTabsIDs[tabId] = { opener: previousTabId || null }
         previousTabId = tabId
 
-        Object.keys(openNonMetamaskTabsIDs).forEach(key => {
-          openNonMetamaskTabsIDs[key] = { active: false }
-        })
+        openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId]
@@ -404,9 +403,7 @@ function setupController (initState, initLangCode) {
       if (remotePort.sender && remotePort.sender.tab) {
         const tabId = remotePort.sender.tab.id
 
-        Object.keys(openNonMetamaskTabsIDs).forEach(key => {
-          openNonMetamaskTabsIDs[key] = { active: false }
-        })
+        openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
         openNonMetamaskTabsIDs[tabId] = { active: true }
 
         previousTabId = tabId
@@ -515,9 +512,8 @@ extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 extension.tabs.onActivated.addListener(({ tabId }) => {
   if (previousTabId !== tabId) {
-    Object.keys(openNonMetamaskTabsIDs).forEach(key => {
-      openNonMetamaskTabsIDs[key] = { active: false }
-    })
+    openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
+
     if (openMetamaskTabsIDs[tabId]) {
       openMetamaskTabsIDs[tabId] = { opener: previousTabId }
       previousTabId = tabId
