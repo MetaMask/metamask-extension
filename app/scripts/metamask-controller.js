@@ -1604,15 +1604,16 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Causes the RPC engines associated with the connections to the given origin
    * to emit a notification event with the given payload.
-   * Ignores unknown origins.
+   * Does nothing if the extension is locked or the origin is unknown.
    *
    * @param {string} origin - The connection's origin string.
    * @param {any} payload - The event payload.
    */
   notifyConnections (origin, payload) {
 
+    const { isUnlocked } = this.getState()
     const connections = this.connections[origin]
-    if (!connections) {
+    if (!isUnlocked || !connections) {
       return
     }
 
@@ -1624,10 +1625,14 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
+   * Does nothing if the extension is locked.
    *
    * @param {any} payload - The event payload.
    */
   notifyAllConnections (payload) {
+
+    const { isUnlocked } = this.getState()
+    if (!isUnlocked) return
 
     Object.values(this.connections).forEach(origin => {
       Object.values(origin).forEach(conn => {
