@@ -393,6 +393,10 @@ function setupController (initState, initLangCode) {
         openMetamaskTabsIDs[tabId] = { opener: previousTabId || null }
         previousTabId = tabId
 
+        Object.keys(openNonMetamaskTabsIDs).forEach(key => {
+          openNonMetamaskTabsIDs[key] = { active: false }
+        })
+
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId]
           controller.isClientOpen = isClientOpenStatus()
@@ -514,13 +518,13 @@ extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 extension.tabs.onActivated.addListener(({ tabId }) => {
   if (previousTabId !== tabId) {
+    Object.keys(openNonMetamaskTabsIDs).forEach(key => {
+      openNonMetamaskTabsIDs[key] = { active: false }
+    })
     if (openMetamaskTabsIDs[tabId]) {
       openMetamaskTabsIDs[tabId] = { opener: previousTabId }
       previousTabId = tabId
     } else if (openNonMetamaskTabsIDs[tabId]) {
-      Object.keys(openNonMetamaskTabsIDs).forEach(key => {
-        openNonMetamaskTabsIDs[key] = { active: false }
-      })
       openNonMetamaskTabsIDs[tabId] = { active: true }
       previousTabId = tabId
     }
