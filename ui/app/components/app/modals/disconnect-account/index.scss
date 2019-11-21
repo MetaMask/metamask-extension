@@ -12,11 +12,7 @@
 
 .disconnect-account-modal-container {
   .modal-container__header-text {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 18px;
-    color: #24292E;
+    @extend %header--18;
   }
 
   .modal-container__content {
