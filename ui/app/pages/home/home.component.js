@@ -8,7 +8,6 @@ import DaiMigrationNotification from '../../components/app/dai-migration-compone
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
-import ProviderApproval from '../provider-approval'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -23,18 +22,21 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    unsetMigratedPrivacyMode: null,
     hasDaiV1Token: false,
+    activeTab: {},
   }
 
   static propTypes = {
+    activeTab: PropTypes.shape({
+      origin: PropTypes.string,
+      protocol: PropTypes.string,
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    providerRequests: PropTypes.array,
-    showPrivacyModeNotification: PropTypes.bool.isRequired,
-    unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
     threeBoxSynced: PropTypes.bool,
@@ -46,6 +48,7 @@ export default class Home extends PureComponent {
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
     hasDaiV1Token: PropTypes.bool,
+    permissionsRequests: PropTypes.array,
   }
 
   componentWillMount () {
@@ -87,11 +90,8 @@ export default class Home extends PureComponent {
     const { t } = this.context
     const {
       forgottenPassword,
-      providerRequests,
       history,
       hasDaiV1Token,
-      showPrivacyModeNotification,
-      unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
@@ -106,11 +106,6 @@ export default class Home extends PureComponent {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }
 
-    if (providerRequests && providerRequests.length > 0) {
-      return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
-      )
-    }
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
@@ -122,23 +117,6 @@ export default class Home extends PureComponent {
             ? (
               <TransactionView>
                 <MultipleNotifications>
-                  {
-                    showPrivacyModeNotification
-                      ? <HomeNotification
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          unsetMigratedPrivacyMode()
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                        }}
-                        ignoreText={t('dismiss')}
-                        onIgnore={() => {
-                          unsetMigratedPrivacyMode()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
                   {
                     shouldShowSeedPhraseReminder
                       ? <HomeNotification

@@ -51,6 +51,13 @@ const selectors = {
   getNumberOfTokens,
   getDaiV1Token,
   isEthereumNetwork,
+  getAllPermissions,
+  getPermissionsRequests,
+  getPermissionsDescriptions,
+  getPermissionsHistory,
+  getPermissionsLog,
+  getDomainMetadata,
+  getActiveTab,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
   getKnownMethodData,
@@ -351,6 +358,34 @@ function getUseNonceField (state) {
 
 function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
+}
+
+function getAllPermissions (state) {
+  return state.metamask.domains || {}
+}
+
+function getPermissionsDescriptions (state) {
+  return state.metamask.permissionsDescriptions
+}
+
+function getPermissionsRequests (state) {
+  return state.metamask.permissionsRequests
+}
+
+function getPermissionsHistory (state) {
+  return state.metamask.permissionsHistory
+}
+
+function getPermissionsLog (state) {
+  return state.metamask.permissionsLog
+}
+
+function getDomainMetadata (state) {
+  return state.metamask.domainMetadata
+}
+
+function getActiveTab (state) {
+  return state.activeTab
 }
 
 function getMetaMetricState (state) {
