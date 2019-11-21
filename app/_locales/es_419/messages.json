@@ -27,7 +27,7 @@
     "message": "Acerca de"
   },
   "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto."
+    "message": "Versión, centro de soporte técnico e información de contacto"
   },
   "acceleratingATransaction": {
     "message": "* Aumentar una transacción utilizando un precio de gas más alto aumenta sus posibilidades de ser procesada más rápido por la red, pero esto no siempre está garantizado."
@@ -63,7 +63,7 @@
     "message": "Avanzada"
   },
   "advancedSettingsDescription": {
-    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado."
+    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado"
   },
   "advancedOptions": {
     "message": "Opciones avanzadas"

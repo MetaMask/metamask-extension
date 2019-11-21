@@ -27,7 +27,7 @@
     "message": "Teave"
   },
   "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave."
+    "message": "Versioon, tugikeskus ja kontaktteave"
   },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
@@ -63,7 +63,7 @@
     "message": "Täpsemad"
   },
   "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine."
+    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"

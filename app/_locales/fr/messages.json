@@ -27,7 +27,7 @@
     "message": "À propos"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centre d'assistance et coordonnées."
+    "message": "Version, centre d'assistance et coordonnées"
   },
   "acceleratingATransaction": {
     "message": "* Accélérer une transaction en utilisant un prix de l'essence plus élevé augmente ses chances d'être traitée plus rapidement par le réseau, mais ce n'est pas toujours garanti."
@@ -63,7 +63,7 @@
     "message": "Paramètres avancés"
   },
   "advancedSettingsDescription": {
-    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC."
+    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC"
   },
   "advancedOptions": {
     "message": "Options avancées"

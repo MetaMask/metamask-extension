@@ -31,7 +31,7 @@
     "message": "Névjegy"
   },
   "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek."
+    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
   },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
@@ -67,7 +67,7 @@
     "message": "Speciális"
   },
   "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása."
+    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "advancedOptions": {
     "message": "Haladó beállítások"

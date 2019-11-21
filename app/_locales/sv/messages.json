@@ -31,7 +31,7 @@
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation."
+    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -67,7 +67,7 @@
     "message": "Avancerat"
   },
   "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC."
+    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
