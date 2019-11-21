@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Button from '../../ui/button'
+import IconWithFallBack from '../../ui/icon-with-fallback'
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -53,20 +54,8 @@ export default class ConnectedSitesList extends Component {
               >
                 <div className="connected-sites-list__domain-item" onClick={ () => this.handleDomainItemClick(domain.key) }>
                   <div className="connected-sites-list__domain-item-info-container">
-                    <div className="connected-sites-list__identicon-container">
-                      <div className="connected-sites-list__identicon-border" />
-                      {!this.state.iconError && domain.icon ? (
-                        <img
-                          className="connected-sites-list__identicon"
-                          src={domain.icon}
-                          onError={() => this.setState({ iconError: true })}
-                        />
-                      ) : (
-                        <i className="connected-sites-list__identicon--default">
-                          {domain.name.charAt(0).toUpperCase()}
-                        </i>
-                      )}
-                    </div>
+                    <IconWithFallBack icon={domain.icon} name={domain.name} />
+
                     <div className="connected-sites-list__domain-info">
                       <div className="connected-sites-list__domain-names">
                         <div className="connected-sites-list__domain-name">

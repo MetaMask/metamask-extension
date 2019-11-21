@@ -6,6 +6,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Tooltip from '../../ui/tooltip'
 import Identicon from '../../ui/identicon'
+import IconWithFallBack from '../../ui/icon-with-fallback'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../../helpers/constants/common'
 import {
@@ -112,18 +113,7 @@ export default class AccountMenu extends PureComponent {
           </div>
           { iconAndNameForOpenDomain
             ? <div className="account-menu__icon-list">
-              <div className="connected-sites-list__identicon-container">
-                <div className="connected-sites-list__identicon-border" />
-                { iconAndNameForOpenDomain.icon
-                  ? <img
-                    className="connected-sites-list__identicon"
-                    src={iconAndNameForOpenDomain.icon}
-                  />
-                  : <i className="connected-sites-list__identicon--default">
-                    {iconAndNameForOpenDomain.name.charAt(0).toUpperCase()}
-                  </i>
-                }
-              </div>
+              <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
             </div>
             : null
           }
