@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
+import IconWithFallBack from '../../../ui/icon-with-fallback'
 import classnames from 'classnames'
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -45,20 +46,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     return (
       <div className="permission-approval-visual">
         <section>
-          <div className="permission-approval-visual__identicon-container">
-            <div className="permission-approval-visual__identicon-border" />
-            {!this.state.iconError && domainMetadata.icon ? (
-              <img
-                className="permission-approval-visual__identicon"
-                src={domainMetadata.icon}
-                onError={() => this.setState({ iconError: true })}
-              />
-            ) : (
-              <i className="permission-approval-visual__identicon--default">
-                {domainMetadata.name.charAt(0).toUpperCase()}
-              </i>
-            )}
-          </div>
+          <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
           { redirect ? null : <h1>{domainMetadata.name}</h1> }
           { redirect ? null : <h2>{requestMetadata.origin}</h2> }
         </section>
