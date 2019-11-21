@@ -22,6 +22,7 @@ const selectors = {
   getTokenExchangeRate,
   conversionRateSelector,
   accountsWithSendEtherInfoSelector,
+  getAccountsWithLabels,
   getCurrentAccountWithSendEtherInfo,
   getGasIsLoading,
   getForceGasMin,
@@ -255,6 +256,21 @@ function accountsWithSendEtherInfoSelector (state) {
   })
 
   return accountsWithSendEtherInfo
+}
+
+function getAccountsWithLabels (state) {
+  const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
+  const accountsWithLabels = accountsWithoutLabel.map(account => {
+    const { address, name, balance } = account
+    return {
+      address,
+      truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
+      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+      label: name,
+      balance,
+    }
+  })
+  return accountsWithLabels
 }
 
 function getCurrentAccountWithSendEtherInfo (state) {
