@@ -2755,7 +2755,6 @@ function rejectPermissionsRequest (requestId) {
  */
 function removePermissionsFor (domains) {
   return () => {
-    console.log('actions.js domains', domains)
     background.removePermissionsFor(domains)
   }
 }
