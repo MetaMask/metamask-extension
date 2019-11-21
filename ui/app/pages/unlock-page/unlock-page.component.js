@@ -38,7 +38,7 @@ export default class UnlockPage extends Component {
   componentWillMount () {
     const { isUnlocked, history } = this.props
 
-    if (isUnlocked) {
+    if (isUnlocked && history) {
       history.push(DEFAULT_ROUTE)
     }
   }

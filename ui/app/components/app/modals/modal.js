@@ -24,7 +24,6 @@ import CancelTransaction from './cancel-transaction'
 
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
-import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
@@ -168,19 +167,6 @@ const MODALS = {
     laptopModalStyle: {
       width: '449px',
       top: 'calc(33% + 45px)',
-    },
-  },
-
-  CLEAR_APPROVED_ORIGINS: {
-    contents: h(ClearApprovedOrigins),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
