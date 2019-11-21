@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
 import {
-  accountsWithSendEtherInfoSelector,
   getFirstPermissionRequest,
   getNativeCurrency,
+  getAccountsWithLabels,
 } from '../../selectors/selectors'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal } from '../../store/actions'
 
@@ -13,23 +13,13 @@ const mapStateToProps = state => {
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
 
-  const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
-  const accountsWithLabel = accountsWithoutLabel.map(account => {
-    const { address, name, balance } = account
-    return {
-      address,
-      truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
-      label: name,
-      balance,
-    }
-  })
+  const accountsWithLabels = getAccountsWithLabels(state)
 
   return {
     permissionsRequest,
-    accounts: accountsWithLabel,
+    accounts: accountsWithLabels,
     originName: origin,
-    newAccountNumber: accountsWithLabel.length + 1,
+    newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
   }
 }
