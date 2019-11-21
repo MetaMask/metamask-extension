@@ -2,7 +2,6 @@ const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 import { DateTime } from 'luxon'
-import safeStringify from 'safe-json-stringify'
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
@@ -63,7 +62,6 @@ module.exports = {
   addressSlicer,
   isEthNetwork,
   isValidAddressHead,
-  stringify,
 }
 
 function isEthNetwork (netId) {
@@ -332,10 +330,4 @@ function isValidAddressHead (address) {
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
-}
-
-function stringify (val) {
-  if (typeof val === 'string') return val
-  if (typeof val === 'object') return safeStringify(val, null, 2)
-  return val.toString()
 }

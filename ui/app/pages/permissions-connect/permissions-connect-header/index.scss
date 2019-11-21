@@ -6,10 +6,8 @@
   align-items: flex-end;
 
   &__page-count {
+    @extend %content-text;
     margin-right: 30px;
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
     font-size: 12px;
     line-height: 17px;
     color: #6A737D;

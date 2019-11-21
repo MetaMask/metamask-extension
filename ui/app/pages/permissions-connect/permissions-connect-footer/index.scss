@@ -7,9 +7,7 @@
   bottom: 50px;
 
   &__text {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
+    @extend %content-text;
     font-size: 12px;
     line-height: 17px;
     color: #6A737D;

@@ -233,6 +233,7 @@ $xxlarge-spacing: 64px;
 %font {
   font-family: Roboto;
   font-style: normal;
+  font-weight: normal;
   color: $Grey-800;
 }
 
@@ -244,4 +245,14 @@ $xxlarge-spacing: 64px;
 %header--18 {
   @extend %font;
   font-size: 18px;
+}
+
+%header--24 {
+  @extend %font;
+  font-size: 18px;
+}
+
+%content-text {
+  @extend %font;
+  font-size: 14px;
 }
