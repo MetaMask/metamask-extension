@@ -93,13 +93,14 @@ export default function reduceApp (state, action) {
     case actions.UPDATE_METAMASK_STATE:
       const { metamask: was } = state
       const { value: is } = action
-      const { sidebar, sidebar: { transactionId } } = appState
+      const { sidebar, sidebar: { props: { transaction: { id: transactionId = null } = {} } } } = appState
 
       if (
         sidebar &&
         transactionId &&
-        was.transactions[transactionId].state === 'pending' &&
-        is.transactions[transactionId].state !== 'pending'
+        // consider reduce?
+        was.selectedAddressTxList.filter(({ id }) => id === transactionId).pop().status === 'submitted' &&
+        is.selectedAddressTxList.filter(({ id }) => id === transactionId).pop().status !== 'submitted'
       ) {
         // close sidebar
         return extend(appState, {
