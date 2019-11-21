@@ -157,7 +157,7 @@
         top: 43px;
       }
 
-      .icon-with-fallback__identicon {
+      &__identicon, .icon-with-fallback__identicon {
         width: 32px;
         height: 32px;
         z-index: 1;
@@ -176,7 +176,7 @@
         }
       }
 
-      .icon-with-fallback__identicon-container {
+      &__identicon-container, .icon-with-fallback__identicon-container {
           padding: 1rem;
           flex: 1;
           position: relative;
@@ -186,7 +186,7 @@
           align-items: center;
       }
 
-      .icon-with-fallback__identicon-border {
+      &__identicon-border, .icon-with-fallback__identicon-border {
           height: 64px;
           width: 64px;
           border-radius: 50%;
