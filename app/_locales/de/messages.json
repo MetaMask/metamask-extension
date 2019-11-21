@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "permissionsSettings": {
-    "message": "Genehmigungsdaten"
-  },
-  "permissionsDescription": {
-    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
-  },
-  "clearPermissions": {
-    "message": "Genehmigungsdaten löschen"
-  },
   "reject": {
     "message": "Ablehnen"
   },

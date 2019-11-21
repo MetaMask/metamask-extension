@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },
-  "clearPermissions": {
-    "message": "Išvalyti asmeninius duomenis"
-  },
   "reject": {
     "message": "Atmesti"
   },

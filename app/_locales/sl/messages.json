@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Interakcija s pogodbo"
   },
-  "permissionsSettings": {
-    "message": "Podatki o odobritvi"
-  },
-  "permissionsDescription": {
-    "message": "Počistite seznam odobrenih spletnih strani, tako da bodo morale ponovno zahtevati odobritev."
-  },
-  "clearPermissions": {
-    "message": "Počisti podatke o odobritvi"
-  },
   "reject": {
     "message": "Zavrni"
   },

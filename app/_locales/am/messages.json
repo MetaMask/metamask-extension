@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearPermissions": {
-    "message": "የግላዊነት ውሂብን አጥራ"
-  },
   "reject": {
     "message": "አይቀበሉ"
   },

@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearPermissions": {
-    "message": "Εκκαθάριση Δεδομένων Απορρήτου"
-  },
   "reject": {
     "message": "Απόρριψη"
   },

@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "permissionsSettings": {
-    "message": "Údaje o schválení"
-  },
-  "permissionsDescription": {
-    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
-  },
-  "clearPermissions": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
   },

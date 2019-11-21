@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearPermissions": {
-    "message": "Tühjenda privaatsusandmed"
-  },
   "reject": {
     "message": "Lükka tagasi"
   },

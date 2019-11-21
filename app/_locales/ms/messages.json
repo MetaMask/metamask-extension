@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
-  "clearPermissions": {
-    "message": "Kosongkan Data Privasi"
-  },
   "reject": {
     "message": "Tolak"
   },

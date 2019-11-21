@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
-  "permissionsSettings": {
-    "message": "Données d'approbation"
-  },
-  "permissionsDescription": {
-    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
-  },
-  "clearPermissions": {
-    "message": "Effacer les données d'approbation"
-  },
   "reject": {
     "message": "Rejeter"
   },

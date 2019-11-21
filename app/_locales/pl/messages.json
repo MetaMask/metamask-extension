@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
   },
-  "clearPermissions": {
-    "message": "Usuń dane poufne"
-  },
   "reject": {
     "message": "Odrzuć"
   },

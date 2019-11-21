@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
-  "permissionsSettings": {
-    "message": "Dati di approvazione"
-  },
-  "permissionsDescription": {
-    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
-  },
-  "clearPermissions": {
-    "message": "Cancella i dati di approvazione"
-  },
   "reject": {
     "message": "Annulla"
   },

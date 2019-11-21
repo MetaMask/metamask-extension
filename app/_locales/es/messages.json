@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "Interacción con contrato"
   },
-  "permissionsSettings": {
-    "message": "Datos de aprobación"
-  },
-  "permissionsDescription": {
-    "message": "Borrar la información privada de modo que todos los sitios deban volver a requerir acceso para acceder a los datos de la cuenta."
-  },
-  "clearPermissions": {
-    "message": "Borrar datos de aprobación"
-  },
   "reject": {
     "message": "Rechazar"
   },

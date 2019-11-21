@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },
-  "permissionsSettings": {
-    "message": "承認データ"
-  },
-  "permissionsDescription": {
-    "message": "承認されたウェブサイトのデータをクリアすると、すべてのサイトで承認を再度要求する必要があります"
-  },
-  "clearPermissions": {
-    "message": "承認データのクリア"
-  },
   "reject": {
     "message": "拒否"
   },

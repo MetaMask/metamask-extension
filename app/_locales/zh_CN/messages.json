@@ -8,15 +8,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "permissionsSettings": {
-    "message": "审批数据"
-  },
-  "permissionsDescription": {
-    "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
-  },
-  "clearPermissions": {
-    "message": "清除批准数据"
-  },
   "reject": {
     "message": "拒绝"
   },

@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },
-  "clearPermissions": {
-    "message": "গোপনীয়তার ডেটা মুছে পরিস্কার করুন"
-  },
   "reject": {
     "message": "প্রত্যাখ্যান"
   },
