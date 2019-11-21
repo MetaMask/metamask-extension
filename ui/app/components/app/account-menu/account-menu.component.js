@@ -25,20 +25,13 @@ export default class AccountMenu extends PureComponent {
 
   static propTypes = {
     accounts: PropTypes.object,
-    activeTab: PropTypes.shape({
-      origin: PropTypes.string,
-      protocol: PropTypes.string,
-      title: PropTypes.string,
-      url: PropTypes.string,
-    }),
     history: PropTypes.object,
     identities: PropTypes.object,
     isAccountMenuOpen: PropTypes.bool,
-    isUnlocked: PropTypes.bool,
+    prevIsAccountMenuOpen: PropTypes.bool,
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
-    selectApprovedAccount: PropTypes.func.isRequired,
     showAccountDetail: PropTypes.func,
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
@@ -49,23 +42,8 @@ export default class AccountMenu extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const {
-      isAccountMenuOpen: prevIsAccountMenuOpen,
-      isUnlocked: prevIsUnlocked,
-    } = prevProps
-
-    const {
-      activeTab, isAccountMenuOpen, isUnlocked, selectApprovedAccount,
-    } = this.props
-
-    // it would make sense to do this at e.g. UI initialization but we're
-    // anticipating the removal of globally selected accounts by doing it here
-    if (
-      !prevIsUnlocked && isUnlocked &&
-      activeTab && activeTab.origin
-    ) {
-      selectApprovedAccount(activeTab.origin)
-    }
+    const { prevIsAccountMenuOpen } = prevProps
+    const { isAccountMenuOpen } = this.props
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {
       this.setAtAccountListBottom()

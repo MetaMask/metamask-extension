@@ -328,6 +328,7 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
+  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -351,15 +352,9 @@ var actions = {
   createSpeedUpTransaction,
   createRetryTransaction,
 
-  // Permissions
-  approvePermissionsRequest,
-  clearPermissions,
-  clearPermissionsHistory,
-  clearPermissionsLog,
-  rejectPermissionsRequest,
-  removePermissionsFor,
-  selectApprovedAccount,
-  legacyExposeAccounts,
+  approveProviderRequestByOrigin,
+  rejectProviderRequestByOrigin,
+  clearApprovedOrigins,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -2703,91 +2698,23 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-// Permissions
-
-/**
- * @param {string} origin
- */
-function selectApprovedAccount (origin) {
-  return (dispatch) => {
-    background.getApprovedAccounts(origin, (err, accounts) => {
-      if (err) {
-        log.error(err)
-      } else if (Array.isArray(accounts) && accounts.length > 0) {
-        dispatch(actions.setSelectedAddress(accounts[0]))
-      }
-    })
-  }
-}
-
-/**
- * Approves the permission requests with the given IDs.
- * @param {string} requestId - The id of the permissions request.
- * @param {string[]} accounts - The accounts to expose, if any.
- */
-function approvePermissionsRequest (requestId, accounts) {
+function approveProviderRequestByOrigin (origin) {
   return () => {
-    background.approvePermissionsRequest(requestId, accounts)
+    background.approveProviderRequestByOrigin(origin)
   }
 }
 
-/**
- * Rejects the permission requests with the given IDs.
- * @param {Array} requestId
- */
-function rejectPermissionsRequest (requestId) {
+function rejectProviderRequestByOrigin (origin) {
   return () => {
-    background.rejectPermissionsRequest(requestId)
+    background.rejectProviderRequestByOrigin(origin)
   }
 }
 
-/**
- * Clears the given permissions for the given origin.
- */
-function removePermissionsFor (domains) {
+function clearApprovedOrigins () {
   return () => {
-    background.removePermissionsFor(domains)
+    background.clearApprovedOrigins()
   }
 }
-
-/**
- * Clears all permissions for all domains.
- */
-function clearPermissions () {
-  return () => {
-    background.clearPermissions()
-  }
-}
-
-/**
- * Clears the permission log.
- */
-function clearPermissionsHistory () {
-  return () => {
-    background.clearPermissionsHistory()
-  }
-}
-
-/**
- * Clears the permission log.
- */
-function clearPermissionsLog () {
-  return () => {
-    background.clearPermissionsLog()
-  }
-}
-
-/**
- * Exposes the given account(s) to the given origin.
- * Call ONLY as a result of direct user action.
- */
-function legacyExposeAccounts (origin, accounts) {
-  return () => {
-    background.legacyExposeAccounts(origin, accounts)
-  }
-}
-
-// ////
 
 function setFirstTimeFlowType (type) {
   return (dispatch) => {
@@ -2896,6 +2823,12 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
+  }
+}
+
+function unsetMigratedPrivacyMode () {
+  return () => {
+    background.unsetMigratedPrivacyMode()
   }
 }
 

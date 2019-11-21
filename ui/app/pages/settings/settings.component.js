@@ -4,17 +4,18 @@ import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
+import ConnectionsTab from './connections-tab'
 import NetworksTab from './networks-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
 import SecurityTab from './security-tab'
 import ContactListTab from './contact-list-tab'
-import PermissionsTab from './permissions-tab'
 import {
   DEFAULT_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  CONNECTIONS_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
@@ -25,7 +26,6 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
-  PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes'
 
 class SettingsPage extends PureComponent {
@@ -154,10 +154,10 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
+          { content: t('connections'), description: t('connectionsSettingsDescription'), key: CONNECTIONS_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('contacts'), description: t('contactsSettingsDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
-          { content: t('permissions'), description: t('permissionsSettingsDescription'), key: PERMISSIONS_ROUTE },
           { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
@@ -179,6 +179,11 @@ class SettingsPage extends PureComponent {
           exact
           path={GENERAL_ROUTE}
           component={SettingsTab}
+        />
+        <Route
+          exact
+          path={CONNECTIONS_ROUTE}
+          component={ConnectionsTab}
         />
         <Route
           exact
@@ -234,11 +239,6 @@ class SettingsPage extends PureComponent {
           exact
           path={`${CONTACT_MY_ACCOUNTS_EDIT_ROUTE}/:id`}
           component={ContactListTab}
-        />
-        <Route
-          exact
-          path={PERMISSIONS_ROUTE}
-          component={PermissionsTab}
         />
         <Route
           component={SettingsTab}
