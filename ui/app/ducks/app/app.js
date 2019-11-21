@@ -98,9 +98,8 @@ export default function reduceApp (state, action) {
       if (
         sidebar &&
         transactionId &&
-        // consider reduce?
-        was.selectedAddressTxList.filter(({ id }) => id === transactionId).pop().status === 'submitted' &&
-        is.selectedAddressTxList.filter(({ id }) => id === transactionId).pop().status !== 'submitted'
+        was.selectedAddressTxList.find(({ id }) => id === transactionId).status === 'submitted' &&
+        is.selectedAddressTxList.find(({ id }) => id === transactionId).status !== 'submitted'
       ) {
         // close sidebar
         return extend(appState, {
