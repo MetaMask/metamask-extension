@@ -41,6 +41,7 @@ const mapStateToProps = state => {
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
+    hasDaiV1Token: Boolean(getDaiV1Token(state)),
     permissionsRequests,
   }
 }

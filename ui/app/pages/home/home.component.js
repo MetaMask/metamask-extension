@@ -7,7 +7,6 @@ import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
-import PermissionApproval from '../permission-approval'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -22,6 +21,7 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
+    hasDaiV1Token: false,
     activeTab: {},
   }
 
@@ -46,6 +46,7 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
+    hasDaiV1Token: PropTypes.bool,
     permissionsRequests: PropTypes.array,
   }
 
@@ -89,6 +90,7 @@ export default class Home extends PureComponent {
     const {
       forgottenPassword,
       history,
+      hasDaiV1Token,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
@@ -102,12 +104,6 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
-    }
-
-    if (permissionsRequests && permissionsRequests.length > 0) {
-      return (
-        <PermissionApproval permissionsRequests = {permissionsRequests}/>
-      )
     }
 
     return (
