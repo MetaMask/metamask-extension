@@ -69,6 +69,7 @@ const selectors = {
   getRenderablePermissionsDomains,
   getPermissionsDomains,
   getAddressConnectedDomainMap,
+  getOriginOfCurrentTab,
 }
 
 module.exports = selectors
@@ -506,4 +507,17 @@ function getRenderablePermissionsDomains (state) {
   }, [])
 
   return renderableDomains
+}
+
+function getOriginOfCurrentTab (state) {
+  const {
+    appState: {
+      openExternalTabs = {},
+      tabIdOrigins = {},
+    },
+  } = state
+  const currentlyActiveExternalTabId = Object.entries(openExternalTabs)
+    .reduce((acc, [key, value]) => value.active ? key : acc, null)
+  const originOfCurrentTab = tabIdOrigins[currentlyActiveExternalTabId]
+  return originOfCurrentTab
 }
