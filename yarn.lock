@@ -18220,7 +18220,7 @@ mersenne-twister@^1.0.1:
 
 metamask-inpage-provider@MetaMask/metamask-inpage-provider#LoginPerSite:
   version "4.0.0"
-  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/feb2ccacb12a0af8f2c3a37dacb74f7c49920f04"
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/e9206fd688f2fbd821b312bf0517e1fb2b423225"
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"
