@@ -17,6 +17,11 @@ export default class PermissionPageContainerContent extends PureComponent {
     permissionRejected: PropTypes.bool,
   }
 
+  static defaultProps = {
+    redirect: null,
+    permissionRejected: null,
+  }
+
   static contextTypes = {
     t: PropTypes.func,
   }

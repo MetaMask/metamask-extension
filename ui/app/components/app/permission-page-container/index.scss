@@ -15,12 +15,8 @@
   }
 
   &__title {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
+    @extend %header--18;
     line-height: 25px;
-    color: #24292E;
     text-align: center;
     position: fixed;
     left: 0;
@@ -215,18 +211,13 @@
         align-items: center;
 
         &__label {
-          font-family: Roboto;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
+          @extend %content-text;
           line-height: 20px;
           color: #000000;
         }
 
         &__address {
-          font-family: Roboto;
-          font-style: normal;
-          font-weight: normal;
+          @extend %font;
           font-size: 12px;
           line-height: 17px;
           color: #6A737D;
@@ -242,10 +233,7 @@
   }
 
   &__permissions-header {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
+    @extend %content-text;
     line-height: 20px;
     color: #6A737D;
 

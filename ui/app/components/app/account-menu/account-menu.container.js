@@ -20,11 +20,7 @@ import {
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
-  const {
-    metamask: {
-      selectedAddress, isAccountMenuOpen, keyrings, identities,
-    },
-  } = state
+  const { metamask: { selectedAddress, isAccountMenuOpen, keyrings, identities } } = state
 
   return {
     selectedAddress,
