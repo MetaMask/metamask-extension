@@ -515,7 +515,7 @@ function getRenderablePermissionsDomains (state) {
         ? Object.values(permissionsHistoryForDomain).map(({ lastApproved }) => lastApproved)
         : []
       const lastConnectedTime = lastApprovedTimes.length
-        ? formatDate(lastApprovedTimes.sort()[0], 'd-M-yyyy')
+        ? formatDate(lastApprovedTimes.sort()[0], 'yyyy-M-d')
         : null
       return [ ...acc, {
         name,
