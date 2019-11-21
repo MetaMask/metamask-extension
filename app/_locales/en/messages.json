@@ -60,7 +60,7 @@
     "message": "About"
   },
   "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info."
+    "message": "Version, support center, and contact info"
   },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
@@ -100,7 +100,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
   },
   "advancedOptions": {
     "message": "Advanced Options"

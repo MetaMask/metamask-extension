@@ -27,7 +27,7 @@
     "message": "Über"
   },
   "aboutSettingsDescription": {
-    "message": "Version, Supportcenter und Kontaktinformationen."
+    "message": "Version, Supportcenter und Kontaktinformationen"
   },
   "acceleratingATransaction": {
     "message": "* Die Beschleunigung einer Transaktion durch die Verwendung eines höheren Gaspreises erhöht die Chancen einer schnelleren Verarbeitung durch das Netz, wofür es allerdings keine Garantie gibt."
@@ -60,7 +60,7 @@
     "message": "Erweitert"
   },
   "advancedSettingsDescription": {
-    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs."
+    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs"
   },
   "advancedOptions": {
     "message": "Erweiterte Optionen"

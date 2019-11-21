@@ -27,7 +27,7 @@
     "message": "Tungkol sa"
   },
   "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan."
+    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
   },
   "acceleratingATransaction": {
     "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
@@ -57,7 +57,7 @@
     "message": "Magdagdag ng Recipient"
   },
   "advancedSettingsDescription": {
-    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC."
+    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC"
   },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"

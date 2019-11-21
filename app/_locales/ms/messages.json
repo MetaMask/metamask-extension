@@ -27,7 +27,7 @@
     "message": "Mengenai"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan."
+    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -63,7 +63,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai."
+    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"

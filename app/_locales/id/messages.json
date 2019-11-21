@@ -31,7 +31,7 @@
     "message": "Tentang"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat dukungan, dan informasi kontak."
+    "message": "Versi, pusat dukungan, dan informasi kontak"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepat transaksi dengan menggunakan harga gas yang lebih tinggi meningkatkan peluangnya untuk lebih cepat diproses oleh jaringan, tetapi tak selalu terjamin pasti cepat."
@@ -67,7 +67,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom."
+    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom"
   },
   "advancedOptions": {
     "message": "Opsi Lanjutan"

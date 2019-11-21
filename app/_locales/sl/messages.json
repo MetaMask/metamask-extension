@@ -27,7 +27,7 @@
     "message": "O možnostih"
   },
   "aboutSettingsDescription": {
-    "message": "Različica, center za podporo in podatki za stik."
+    "message": "Različica, center za podporo in podatki za stik"
   },
   "acceleratingATransaction": {
     "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
@@ -63,7 +63,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri."
+    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri"
   },
   "advancedOptions": {
     "message": "Napredne možnosti"

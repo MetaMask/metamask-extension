@@ -27,7 +27,7 @@
     "message": "Despre"
   },
   "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact."
+    "message": "Versiune, centru de asistență și date de contact"
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -63,7 +63,7 @@
     "message": "Avansate"
   },
   "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat."
+    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"

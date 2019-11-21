@@ -31,7 +31,7 @@
     "message": "O opcijama"
   },
   "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt."
+    "message": "Inačica, centar za podršku i informacije za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
@@ -67,7 +67,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC."
+    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"

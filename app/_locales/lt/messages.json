@@ -27,7 +27,7 @@
     "message": "Apie"
   },
   "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija."
+    "message": "Versija, palaikymo centras ir kontaktinė informacija"
   },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
@@ -63,7 +63,7 @@
     "message": "Išplėstiniai"
   },
   "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC."
+    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"

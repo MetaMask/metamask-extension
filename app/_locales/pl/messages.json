@@ -27,7 +27,7 @@
     "message": "Informacje"
   },
   "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe."
+    "message": "Wersja, centrum wsparcia i dane kontaktowe"
   },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
@@ -63,7 +63,7 @@
     "message": "Zaawansowane"
   },
   "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC."
+    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"

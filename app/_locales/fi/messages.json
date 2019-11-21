@@ -27,7 +27,7 @@
     "message": "Tietoja asetuksista"
   },
   "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot."
+    "message": "Versio, tukikeskus ja yhteystiedot"
   },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
@@ -63,7 +63,7 @@
     "message": "Lisäasetukset"
   },
   "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä."
+    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"

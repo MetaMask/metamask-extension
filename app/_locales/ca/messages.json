@@ -27,7 +27,7 @@
     "message": "Informació"
   },
   "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte."
+    "message": "Versió, centre de suport, i informació de contacte"
   },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
@@ -63,7 +63,7 @@
     "message": "Configuració avançada"
   },
   "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC."
+    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "advancedOptions": {
     "message": "Opcions Avançades"

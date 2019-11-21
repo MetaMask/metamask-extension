@@ -27,7 +27,7 @@
     "message": "Informazioni"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centro di supporto e contatti."
+    "message": "Version, centro di supporto e contatti"
   },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
@@ -60,7 +60,7 @@
     "message": "Avanzate"
   },
   "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata."
+    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
   },
   "advancedOptions": {
     "message": "Opzioni Avanzate"

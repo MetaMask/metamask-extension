@@ -27,7 +27,7 @@
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation."
+    "message": "Version, supportcenter og kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
@@ -63,7 +63,7 @@
     "message": "Avanceret"
   },
   "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC."
+    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"

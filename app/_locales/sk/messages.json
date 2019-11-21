@@ -27,7 +27,7 @@
     "message": "Informácie"
   },
   "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie."
+    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -63,7 +63,7 @@
     "message": "Rozšírené"
   },
   "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC."
+    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"

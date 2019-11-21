@@ -27,7 +27,7 @@
     "message": "Info"
   },
   "aboutSettingsDescription": {
-    "message": "Versjon, brukerstøtte og kontaktinformasjon."
+    "message": "Versjon, brukerstøtte og kontaktinformasjon"
   },
   "acceleratingATransaction": {
     "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
@@ -63,7 +63,7 @@
     "message": "Avansert"
   },
   "advancedSettingsDescription": {
-    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC."
+    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
   },
   "advancedOptions": {
     "message": "Avanserte valg"
