@@ -15,12 +15,15 @@ export default class PermissionPageContainer extends Component {
     request: PropTypes.object,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
+    requestMetadata: PropTypes.object,
+    targetDomainMetadata: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     redirect: null,
     permissionRejected: null,
     request: {},
+    requestMetadata: {},
   };
 
   static contextTypes = {
@@ -28,14 +31,11 @@ export default class PermissionPageContainer extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      selectedPermissions: this.getRequestedMethodState(
-        this.getRequestedMethodNames(props)
-      ),
-      selectedAccount: props.selectedIdentity,
-    }
+  state = {
+    selectedPermissions: this.getRequestedMethodState(
+      this.getRequestedMethodNames(this.props)
+    ),
+    selectedAccount: this.props.selectedIdentity,
   }
 
   componentDidUpdate () {
@@ -77,7 +77,7 @@ export default class PermissionPageContainer extends Component {
       eventOpts: {
         category: 'Auth',
         action: 'Connect',
-        name: 'Popup Opened',
+        name: 'Tab Opened',
       },
     })
   }
@@ -118,14 +118,14 @@ export default class PermissionPageContainer extends Component {
   }
 
   render () {
-    const { request, permissionsDescriptions, domainMetadata, selectedIdentity, redirect, permissionRejected } = this.props
-
-    const requestMetadata = request.metadata
-
-    const targetDomainMetadata = (
-      domainMetadata[requestMetadata.origin] ||
-      { name: requestMetadata.origin, icon: null }
-    )
+    const {
+      requestMetadata,
+      targetDomainMetadata,
+      permissionsDescriptions,
+      selectedIdentity,
+      redirect,
+      permissionRejected,
+    } = this.props
 
     return (
       <div className="page-container permission-approval-container">

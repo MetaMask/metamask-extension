@@ -6,21 +6,12 @@
   align-items: center;
 
   &__title {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 25px;
-    color: #24292E;
+    @extend %header--18;
   }
 
   &__text {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
+    @extend %content-text;
     line-height: 25px;
-    color: #24292E;
   }
 
   &__accounts-list {
@@ -49,27 +40,19 @@
     }
 
     &__label {
-      font-family: Roboto;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 18px;
+      @extend %header--18;
       line-height: 25px;
       color: #000000;
     }
 
     &__balance {
-      font-family: Roboto;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 12px;
+      @extend %content-text;
       line-height: 17px;
       color: #6A737D;
     }
 
     &__last-connected {
-      font-family: Roboto;
-      font-style: normal;
-      font-weight: normal;
+      @extend %content-text;
       font-size: 10px;
       line-height: 140.62%;
       text-align: right;
@@ -79,10 +62,7 @@
   }
 
   &__new-account {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
+    @extend %content-text;
     line-height: 20px;
     color: #037DD6;
     margin-top: 24px;

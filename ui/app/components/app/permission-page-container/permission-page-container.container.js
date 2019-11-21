@@ -7,10 +7,20 @@ import {
   getDomainMetadata,
 } from '../../../selectors/selectors'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { request: { metadata: requestMetadata } = {} } = ownProps
+
+  const domainMetadata = getDomainMetadata(state)
+  const targetDomainMetadata = (
+    domainMetadata[requestMetadata.origin] ||
+    { name: requestMetadata.origin, icon: null }
+  )
+
   return {
     permissionsDescriptions: getPermissionsDescriptions(state),
-    domainMetadata: getDomainMetadata(state),
+    domainMetadata,
+    requestMetadata,
+    targetDomainMetadata,
   }
 }
 

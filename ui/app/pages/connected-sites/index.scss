@@ -32,10 +32,6 @@
   }
 
   &__title {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 24px;
-    color: #24292E;
+    @extend %header--24;
   }
 }
