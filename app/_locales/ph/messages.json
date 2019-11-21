@@ -2,15 +2,6 @@
   "confirmClear": {
     "message": "Sigurado ka bang gusto mong i-clear ang mga naaprubahang website?"
   },
-  "permissionsSettings": {
-    "message": "Data ng Pag-apruba"
-  },
-  "permissionsDescription": {
-    "message": "I-clear ang naaprubahang data ng website upang ang lahat ng site ay dapat humiling muli ng pag-apruba"
-  },
-  "clearPermissions": {
-    "message": "Tanggalin ang data ng pag-apruba"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"

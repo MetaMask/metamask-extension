@@ -2,15 +2,6 @@
   "confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
   },
-  "permissionsSettings": {
-    "message": "Dữ liệu phê duyệt"
-  },
-  "permissionsDescription": {
-    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
-  },
-  "clearPermissions": {
-    "message": "Xóa dữ liệu phê duyệt"
-  },
   "reject": {
     "message": "Từ chối"
   },

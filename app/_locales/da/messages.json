@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearPermissions": {
-    "message": "Ryd fortrolighedsdata"
-  },
   "reject": {
     "message": "Afvis"
   },

@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
   },
-  "clearPermissions": {
-    "message": "Futa Data za Faragha"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"

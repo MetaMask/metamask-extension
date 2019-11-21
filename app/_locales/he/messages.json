@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
   },
-  "clearPermissions": {
-    "message": "נקה נתוני פרטיות"
-  },
   "reject": {
     "message": "דחה"
   },

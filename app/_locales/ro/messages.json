@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
-  "clearPermissions": {
-    "message": "Ștergeți datele confidențiale"
-  },
   "reject": {
     "message": "Respingeți"
   },

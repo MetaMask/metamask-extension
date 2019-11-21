@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },
-  "clearPermissions": {
-    "message": "مسح بيانات الخصوصية"
-  },
   "reject": {
     "message": "رفض"
   },

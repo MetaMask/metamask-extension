@@ -2,15 +2,6 @@
   "confirmClear": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
   },
-  "permissionsSettings": {
-    "message": "ข้อมูลการอนุมัติ"
-  },
-  "permissionsDescription": {
-    "message": "ล้างข้อมูลเว็บไซต์ที่ได้รับการอนุมัติเพื่อให้ทุกไซต์ต้องขออนุมัติอีกครั้ง"
-  },
-  "clearPermissions": {
-    "message": "ล้างข้อมูลการอนุมัติ"
-  },
   "reject": {
     "message": "ปฏิเสธ"
   },

@@ -2,15 +2,6 @@
   "confirmClear": {
     "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
   },
-  "permissionsSettings": {
-    "message": "Onay Verileri"
-  },
-  "permissionsDescription": {
-    "message": "Onaylanan web sitesi verilerini temizle, tüm sitelerin tekrar onay isteğinde bulunması gerekir."
-  },
-  "clearPermissions": {
-    "message": "Onay verilerini temizle"
-  },
   "reject": {
     "message": "Reddetmek"
   },

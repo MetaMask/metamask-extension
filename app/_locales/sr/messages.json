@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearPermissions": {
-    "message": "Obrišite privatne podatke"
-  },
   "reject": {
     "message": "Одбиј"
   },

@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
-  "clearPermissions": {
-    "message": "حذف اطلاعات حریم خصوصی"
-  },
   "reject": {
     "message": "عدم پذیرش"
   },

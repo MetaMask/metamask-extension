@@ -2,15 +2,6 @@
   "confirmClear": {
     "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
   },
-  "permissionsSettings": {
-    "message": "Данные об утверждении"
-  },
-  "permissionsDescription": {
-    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
-  },
-  "clearPermissions": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
   },

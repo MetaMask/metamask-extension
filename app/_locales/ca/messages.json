@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Contractar Interacció"
   },
-  "clearPermissions": {
-    "message": "Elimina les dades de privacitat"
-  },
   "reject": {
     "message": "Rebutja"
   },

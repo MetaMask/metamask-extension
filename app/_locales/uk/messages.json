@@ -8,9 +8,6 @@
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
-  "clearPermissions": {
-    "message": "Очистити приватні дані"
-  },
   "reject": {
     "message": "Відхилити"
   },
