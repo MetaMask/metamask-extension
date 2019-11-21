@@ -32,7 +32,7 @@ export default class PageContainerFooter extends Component {
       submitButtonType,
       hideCancel,
       cancelButtonType,
-      buttonSizeLarge,
+      buttonSizeLarge = false,
     } = this.props
 
     return (
@@ -41,7 +41,7 @@ export default class PageContainerFooter extends Component {
         <header>
           {!hideCancel && <Button
             type={cancelButtonType || 'default'}
-            large={buttonSizeLarge === undefined ? false : buttonSizeLarge}
+            large={buttonSizeLarge}
             className="page-container__footer-button"
             onClick={e => onCancel(e)}
           >
@@ -50,7 +50,7 @@ export default class PageContainerFooter extends Component {
 
           <Button
             type={submitButtonType || 'secondary'}
-            large={buttonSizeLarge === undefined ? false : buttonSizeLarge}
+            large={buttonSizeLarge}
             className="page-container__footer-button"
             disabled={disabled}
             onClick={e => onSubmit(e)}
