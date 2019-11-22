@@ -53,7 +53,9 @@ module.exports = function createLoggerMiddleware ({
   }
 
   function addResponse (activityEntry, response, time) {
-    if (!response) return
+    if (!response) {
+      return
+    }
     activityEntry.response = cloneObj(response)
     activityEntry.responseTime = time
     activityEntry.success = !response.error
@@ -73,7 +75,9 @@ module.exports = function createLoggerMiddleware ({
       !request.params ||
       typeof request.params[0] !== 'object' ||
       Array.isArray(request.params[0])
-    ) return null
+    ) {
+      return null
+    }
     return Object.keys(request.params[0])
   }
 
@@ -139,12 +143,16 @@ function cloneObj (obj) {
 }
 
 function getAccountsFromPermission (perm) {
-  if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) return []
+  if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) {
+    return []
+  }
   const accounts = {}
   for (const c of perm.caveats) {
     if (c.type === 'filterResponse' && Array.isArray(c.value)) {
       for (const v of c.value) {
-        if (isValidAddress(v)) accounts[v] = true
+        if (isValidAddress(v)) {
+          accounts[v] = true
+        }
       }
     }
   }

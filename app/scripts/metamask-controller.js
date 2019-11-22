@@ -8,7 +8,6 @@ const assert = require('assert').strict
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
-const pify = require('pify')
 const extension = require('extensionizer')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
@@ -1632,7 +1631,9 @@ module.exports = class MetamaskController extends EventEmitter {
   notifyAllConnections (payload) {
 
     const { isUnlocked } = this.getState()
-    if (!isUnlocked) return
+    if (!isUnlocked) {
+      return
+    }
 
     Object.values(this.connections).forEach(origin => {
       Object.values(origin).forEach(conn => {

@@ -96,8 +96,11 @@ class PermissionsController {
       )
 
       function _end () {
-        if (res.error || !Array.isArray(res.result)) resolve([])
-        else resolve(res.result)
+        if (res.error || !Array.isArray(res.result)) {
+          resolve([])
+        } else {
+          resolve(res.result)
+        }
       }
     })
   }
@@ -118,8 +121,11 @@ class PermissionsController {
       )
 
       function _end (err) {
-        if (err || res.error) reject(err || res.error)
-        else resolve(res.result)
+        if (err || res.error) {
+          reject(err || res.error)
+        } else {
+          resolve(res.result)
+        }
       }
     })
   }
