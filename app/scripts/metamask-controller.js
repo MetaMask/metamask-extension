@@ -4,10 +4,12 @@
  * @license   MIT
  */
 
+const assert = require('assert').strict
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
 const pify = require('pify')
+const extension = require('extensionizer')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const createDnodeRemoteGetter = require('./lib/createDnodeRemoteGetter')
@@ -177,6 +179,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
+      preferencesController: this.preferencesController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -390,7 +393,7 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore.putState(publicState)
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding, provider }) {
+    function selectPublicState ({ isUnlocked, selectedAddress, network, provider }) {
       const isEnabled = checkIsEnabled()
       const isReady = isUnlocked && isEnabled
       const result = {
@@ -398,7 +401,6 @@ module.exports = class MetamaskController extends EventEmitter {
         isEnabled,
         selectedAddress: isReady ? selectedAddress : null,
         networkVersion: network,
-        onboardingcomplete: completedOnboarding,
         chainId: selectChainId({ network, provider }),
       }
       return result
@@ -1519,6 +1521,43 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
     )
+  }
+
+  onMessage (message, sender, sendResponse) {
+    if (!message || !message.type) {
+      log.debug(`Ignoring invalid message: '${JSON.stringify(message)}'`)
+      return
+    }
+
+    let handleMessage
+
+    try {
+      if (message.type === 'metamask:registerOnboarding') {
+        assert(sender.tab, 'Missing tab from sender')
+        assert(sender.tab.id && sender.tab.id !== extension.tabs.TAB_ID_NONE, 'Missing tab ID from sender')
+        assert(message.location, 'Missing location from message')
+
+        handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
+      } else {
+        throw new Error(`Unrecognized message type: '${message.type}'`)
+      }
+    } catch (error) {
+      console.error(error)
+      sendResponse(error)
+      return true
+    }
+
+    if (handleMessage) {
+      handleMessage
+        .then(() => {
+          sendResponse(null, true)
+        })
+        .catch((error) => {
+          console.error(error)
+          sendResponse(error)
+        })
+      return true
+    }
   }
 
   /**

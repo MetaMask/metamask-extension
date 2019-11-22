@@ -507,6 +507,10 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" will close this tab and direct back to $2",
+    "description": "Return the user to the site that initiated onboarding"
+  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
   },

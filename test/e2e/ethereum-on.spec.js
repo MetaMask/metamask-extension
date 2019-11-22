@@ -117,6 +117,11 @@ describe('MetaMask', function () {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
+      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButton.click()
+
+      await delay(regularDelayMs)
+
       await waitUntilXWindowHandles(driver, 3)
       const windowHandles = await driver.getAllWindowHandles()
 
@@ -132,9 +137,9 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('has not set the network within the dapp', async () => {
+    it('has the ganache network id within the dapp', async () => {
       const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '')
+      assert.equal(await networkDiv.getText(), '5777')
     })
 
     it('changes the network', async () => {

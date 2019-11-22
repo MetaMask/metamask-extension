@@ -4,6 +4,7 @@ const pump = require('pump')
 const log = require('loglevel')
 const Dnode = require('dnode')
 const querystring = require('querystring')
+const { Writable } = require('readable-stream')
 const LocalMessageDuplexStream = require('post-message-stream')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
@@ -84,6 +85,44 @@ async function setupStreams () {
     extensionStream,
     extensionMux,
     (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+  )
+
+  const onboardingStream = pageMux.createStream('onboarding')
+  const addCurrentTab = new Writable({
+    objectMode: true,
+    write: (chunk, _, callback) => {
+      if (!chunk) {
+        return callback(new Error('Malformed onboarding message'))
+      }
+
+      const handleSendMessageResponse = (error, success) => {
+        if (!error && !success) {
+          error = extension.runtime.lastError
+        }
+        if (error) {
+          log.error(`Failed to send ${chunk.type} message`, error)
+          return callback(error)
+        }
+        callback(null)
+      }
+
+      try {
+        if (chunk.type === 'registerOnboarding') {
+          extension.runtime.sendMessage({ type: 'metamask:registerOnboarding', location: window.location.href }, handleSendMessageResponse)
+        } else {
+          throw new Error(`Unrecognized onboarding message type: '${chunk.type}'`)
+        }
+      } catch (error) {
+        log.error(error)
+        return callback(error)
+      }
+    },
+  })
+
+  pump(
+    onboardingStream,
+    addCurrentTab,
+    error => console.error('MetaMask onboarding channel traffic failed', error),
   )
 
   // forward communication across inpage-background for these channels only
