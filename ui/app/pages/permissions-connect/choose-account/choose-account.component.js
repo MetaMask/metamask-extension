@@ -16,6 +16,11 @@ export default class ChooseAccount extends Component {
     selectAccount: PropTypes.func.isRequired,
     selectNewAccountViaModal: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
+    addressLastConnectedMap: PropTypes.object,
+  }
+
+  static defaultProps = {
+    addressLastConnectedMap: {},
   }
 
   static contextTypes = {
@@ -23,34 +28,39 @@ export default class ChooseAccount extends Component {
   };
 
   renderAccountsList = () => {
-    const { accounts, selectAccount, nativeCurrency } = this.props
+    const { accounts, selectAccount, nativeCurrency, addressLastConnectedMap } = this.props
     return (
       <div className="permissions-connect-choose-account__accounts-list">
         {
           accounts.map((account, index) => {
-            const { address, addressLabel, lastConnectedDate, balance } = account
+            const { address, addressLabel, balance } = account
             return (<div
               key={`permissions-connect-choose-account-${index}`}
               onClick={ () => selectAccount(address) }
               className="permissions-connect-choose-account__account"
             >
-              <Identicon
-                diameter={34}
-                address={address}
-              />
-              <div className="permissions-connect-choose-account__account__info">
-                <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
-                <UserPreferencedCurrencyDisplay
-                  className="permissions-connect-choose-account__account__balance"
-                  type={PRIMARY}
-                  value={balance}
-                  style={{ color: '#6A737D' }}
-                  suffix={nativeCurrency}
-                  hideLabel
+              <div className="permissions-connect-choose-account__account-info-wrapper">
+                <Identicon
+                  diameter={34}
+                  address={address}
                 />
+                <div className="permissions-connect-choose-account__account__info">
+                  <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
+                  <UserPreferencedCurrencyDisplay
+                    className="permissions-connect-choose-account__account__balance"
+                    type={PRIMARY}
+                    value={balance}
+                    style={{ color: '#6A737D' }}
+                    suffix={nativeCurrency}
+                    hideLabel
+                  />
+                </div>
               </div>
-              { lastConnectedDate
-                ? <div className="permissions-connect-choose-account__account__last-connected">{ lastConnectedDate }</div>
+              { addressLastConnectedMap[address]
+                ? <div className="permissions-connect-choose-account__account__last-connected">
+                  <span>{ this.context.t('lastConnected') }</span>
+                  { addressLastConnectedMap[address] }
+                </div>
                 : null
               }
             </div>)

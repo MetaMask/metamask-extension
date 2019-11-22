@@ -18,6 +18,7 @@ export default class PermissionConnect extends Component {
     newAccountNumber: PropTypes.number.isRequired,
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
+    addressLastConnectedMap: PropTypes.object,
   }
 
   static defaultProps = {
@@ -25,6 +26,7 @@ export default class PermissionConnect extends Component {
     nativeCurrency: '',
     permissionsRequest: {},
     currentMetaMaskTabOpenerId: null,
+    addressLastConnectedMap: {},
   }
 
   static contextTypes = {
@@ -79,6 +81,7 @@ export default class PermissionConnect extends Component {
       newAccountNumber,
       nativeCurrency,
       permissionsRequest,
+      addressLastConnectedMap,
     } = this.props
     const { page, selectedAccountAddress, permissionAccepted } = this.state
 
@@ -100,6 +103,7 @@ export default class PermissionConnect extends Component {
                 newAccountNumber,
               })
             }}
+            addressLastConnectedMap={addressLastConnectedMap}
           />
           : <div><PermissionPageContainer
             request={permissionsRequest}

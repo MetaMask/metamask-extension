@@ -734,6 +734,9 @@
   "max": {
     "message": "Max"
   },
+  "lastConnected": {
+    "message": "Last Connected"
+  },
   "learnMore": {
     "message": "Learn more"
   },

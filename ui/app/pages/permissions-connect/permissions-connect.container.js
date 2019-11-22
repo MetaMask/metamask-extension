@@ -4,7 +4,9 @@ import {
   getFirstPermissionRequest,
   getNativeCurrency,
   getAccountsWithLabels,
+  getLastConnectedInfo,
 } from '../../selectors/selectors'
+import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getOpenMetaMaskTabs, getCurrentWindowTab } from '../../store/actions'
 
 const mapStateToProps = state => {
@@ -18,6 +20,13 @@ const mapStateToProps = state => {
   const { openMetaMaskTabs = {}, currentWindowTab = {} } = state.appState
   const currentOpenMetaMaskTab = openMetaMaskTabs[currentWindowTab.id] || {}
 
+  const lastConnectedInfo = getLastConnectedInfo(state) || {}
+  const addressLastConnectedMap = lastConnectedInfo[origin] || {}
+
+  Object.keys(addressLastConnectedMap).forEach(key => {
+    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
+  })
+
   return {
     permissionsRequest,
     accounts: accountsWithLabels,
@@ -25,6 +34,7 @@ const mapStateToProps = state => {
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
     currentMetaMaskTabOpenerId: currentOpenMetaMaskTab.opener,
+    addressLastConnectedMap,
   }
 }
 
