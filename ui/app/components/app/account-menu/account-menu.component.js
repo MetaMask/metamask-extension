@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
 import Fuse from 'fuse.js'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
@@ -20,6 +21,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
 import TextField from '../../ui/text-field'
+import SearchIcon from '../../ui/search-icon'
 
 export default class AccountMenu extends Component {
   static contextTypes = {
@@ -81,6 +83,19 @@ export default class AccountMenu extends Component {
   }
 
   renderAccountsSearch () {
+    const inputAdornment = (
+      <InputAdornment
+        position="start"
+        style={{
+          maxHeight: 'none',
+          marginRight: 0,
+          marginLeft: '8px',
+        }}
+      >
+        <SearchIcon/>
+      </InputAdornment>
+    )
+
     return [
       <TextField
         key="search-text-field"
@@ -89,6 +104,7 @@ export default class AccountMenu extends Component {
         type="text"
         value={this.state.searchQuery}
         onChange={e => this.setSearchQuery(e.target.value)}
+        startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
       />,

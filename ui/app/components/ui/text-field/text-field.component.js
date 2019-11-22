@@ -28,11 +28,23 @@ const styles = {
     },
   },
   materialError: {},
-  materialWhitePaddedInputRoot: {
-    color: '#fff',
+  materialWhitePaddedRoot: {
+    color: '#aeaeae',
   },
   materialWhitePaddedInput: {
     padding: '8px',
+
+    '&::placeholder': {
+      color: '#aeaeae',
+    },
+  },
+  materialWhitePaddedFocused: {
+    color: '#fff',
+  },
+  materialWhitePaddedUnderline: {
+    '&:after': {
+      borderBottom: '2px solid #fff',
+    },
   },
   // Non-material styles
   formLabel: {
@@ -97,15 +109,16 @@ const getMaterialThemeInputProps = ({
 
 const getMaterialWhitePaddedThemeInputProps = ({
   dir,
-  classes: { materialWhitePaddedInputRoot, materialWhitePaddedInput, materialUnderline },
+  classes: { materialWhitePaddedRoot, materialWhitePaddedFocused, materialWhitePaddedInput, materialWhitePaddedUnderline },
   startAdornment,
 }) => ({
   InputProps: {
     startAdornment,
     classes: {
-      root: materialWhitePaddedInputRoot,
+      root: materialWhitePaddedRoot,
+      focused: materialWhitePaddedFocused,
       input: materialWhitePaddedInput,
-      underline: materialUnderline,
+      underline: materialWhitePaddedUnderline,
     },
     inputProps: {
       dir,
