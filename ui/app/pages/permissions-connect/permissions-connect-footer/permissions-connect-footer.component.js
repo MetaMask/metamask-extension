@@ -13,7 +13,12 @@ export default class PermissionsConnectFooter extends Component {
         <img src="/images/mm-secure.svg" />
         <div className="permissions-connect-footer__text">
           <div>{ t('onlyConnectTrust') }</div>
-          <div className="permissions-connect-footer__text--link">{ t('learnAboutRisks') }</div>
+          <div
+            className="permissions-connect-footer__text--link"
+            onClick={() => {
+              global.platform.openWindow({ url: 'https://medium.com/metamask/privacy-mode-is-now-enabled-by-default-1c1c957f4d57' })
+            }}
+          >{ t('learnAboutRisks') }</div>
         </div>
       </div>
     )

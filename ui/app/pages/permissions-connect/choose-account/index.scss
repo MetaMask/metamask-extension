@@ -20,6 +20,15 @@
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 36px;
+
+    @media screen and (max-width: 575px) {
+      width: 100%;
+    }
+  }
+
+  &__account-info-wrapper {
+    display: flex;
+    justify-content: flex-start;
   }
 
   &__account {
@@ -27,6 +36,11 @@
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #D2D8DD;
+    justify-content: space-between;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
 
     &:hover {
       background: aliceblue;
@@ -55,8 +69,9 @@
       @extend %content-text;
       font-size: 10px;
       line-height: 140.62%;
-      text-align: right;
-      vertical-align: bottom;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       color: #037DD6;
     }
   }
@@ -66,6 +81,7 @@
     line-height: 20px;
     color: #037DD6;
     margin-top: 24px;
+    cursor: pointer;
   }
 
 }
