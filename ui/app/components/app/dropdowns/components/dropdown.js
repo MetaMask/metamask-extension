@@ -1,6 +1,5 @@
-const Component = require('react').Component
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const MenuDroppo = require('../../menu-droppo')
 const extend = require('xtend')
 
@@ -23,31 +22,28 @@ class Dropdown extends Component {
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
 
-    return h(
-      MenuDroppo,
-      {
-        containerClassName,
-        useCssTransition,
-        isOpen,
-        zIndex: 55,
-        onClickOutside,
-        style,
-        innerStyle: innerStyleDefaults,
-      },
-      [
-        h(
-          'style',
-          `
-          li.dropdown-menu-item:hover {
-            color:rgb(225, 225, 225);
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-          }
-          li.dropdown-menu-item { color: rgb(185, 185, 185); }
-          `
-        ),
-        ...children,
-      ]
+    return (
+      <MenuDroppo
+        containerClassName={containerClassName}
+        useCssTransition={useCssTransition}
+        isOpen={isOpen}
+        zIndex={55}
+        onClickOutside={onClickOutside}
+        style={style}
+        innerStyle={innerStyleDefaults}
+      >
+        <style>
+          {`
+            li.dropdown-menu-item:hover {
+              color:rgb(225, 225, 225);
+              background-color: rgba(255, 255, 255, 0.05);
+              border-radius: 4px;
+            }
+            li.dropdown-menu-item { color: rgb(185, 185, 185); }
+          `}
+        </style>
+        { children }
+      </MenuDroppo>
     )
   }
 }
@@ -70,14 +66,14 @@ class DropdownMenuItem extends Component {
   render () {
     const { onClick, closeMenu, children, style } = this.props
 
-    return h(
-      'li.dropdown-menu-item',
-      {
-        onClick: () => {
+    return (
+      <li
+        className="dropdown-menu-item"
+        onClick={() => {
           onClick()
           closeMenu()
-        },
-        style: Object.assign({
+        }}
+        style={Object.assign({
           listStyle: 'none',
           padding: '8px 0px',
           fontSize: '18px',
@@ -87,9 +83,10 @@ class DropdownMenuItem extends Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
           color: 'white',
-        }, style),
-      },
-      children
+        }, style)}
+      >
+        {children}
+      </li>
     )
   }
 }
