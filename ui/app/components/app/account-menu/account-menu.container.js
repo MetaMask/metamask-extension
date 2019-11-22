@@ -16,8 +16,8 @@ import {
 import {
   getActiveTab,
   getAddressConnectedDomainMap,
-  getOriginOfCurrentTab,
   getMetaMaskAccounts,
+  getOriginOfCurrentTab,
 } from '../../../selectors/selectors'
 
 import AccountMenu from './account-menu.component'

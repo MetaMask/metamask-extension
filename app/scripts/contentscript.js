@@ -48,7 +48,6 @@ function injectScript (content) {
 async function start () {
   await setupStreams()
   await domIsReady()
-  extension.runtime.sendMessage({ type: 'notifyBackgroundOfTabIdAndOrigin' })
 }
 
 /**
