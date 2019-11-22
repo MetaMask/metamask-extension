@@ -23,14 +23,14 @@ export default class DisconnectAll extends PureComponent {
       <Modal
         headerText={t('disconnectAllAccountsQuestion')}
         onClose={() => hideModal()}
-        hideFooter={true}
+        hideFooter
       >
         <div className="disconnect-all-modal">
           <div className="disconnect-all-modal__description">
             { t('disconnectAllModalDescription') }
           </div>
           <Button
-            type={'danger'}
+            type="danger"
             onClick={ () => {
               disconnectAll()
               hideModal()
@@ -41,7 +41,7 @@ export default class DisconnectAll extends PureComponent {
             { t('disconnectAll') }
           </Button>
           <Button
-            type={'secondary'}
+            type="secondary"
             onClick={ () => hideModal() }
             className="disconnect-all-modal__cancel-button"
           >

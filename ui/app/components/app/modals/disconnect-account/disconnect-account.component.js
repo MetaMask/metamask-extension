@@ -22,14 +22,14 @@ export default class DisconnectAccount extends PureComponent {
       <Modal
         headerText={t('disconnectAccountQuestion')}
         onClose={() => hideModal()}
-        hideFooter={true}
+        hideFooter
       >
         <div className="disconnect-account-modal">
           <div className="disconnect-account-modal__description">
             { t('disconnectAccountModalDescription') }
           </div>
           <Button
-            type={'primary'}
+            type="primary"
             onClick={ () => {
               disconnectAccount()
               hideModal()
@@ -39,7 +39,7 @@ export default class DisconnectAccount extends PureComponent {
             { t('disconnectFromThisAccount') }
           </Button>
           <Button
-            type={'secondary'}
+            type="secondary"
             onClick={ () => hideModal() }
             className="disconnect-account-modal__cancel-button"
           >
