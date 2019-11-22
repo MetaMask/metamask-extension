@@ -55,6 +55,15 @@ class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
+    engine.push(createLoggerMiddleware({
+      walletPrefix: WALLET_METHOD_PREFIX,
+      restrictedMethods: [ ...Object.keys(this._restrictedMethods), 'eth_requestAccounts' ],
+      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
+      store: this.store,
+      logStoreKey: LOG_STORE_KEY,
+      historyStoreKey: HISTORY_STORE_KEY,
+    }))
+
     engine.push(createMethodMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
@@ -62,14 +71,6 @@ class PermissionsController {
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
-    }))
-
-    engine.push(createLoggerMiddleware({
-      walletPrefix: WALLET_METHOD_PREFIX,
-      restrictedMethods: Object.keys(this._restrictedMethods),
-      store: this.store,
-      logStoreKey: LOG_STORE_KEY,
-      historyStoreKey: HISTORY_STORE_KEY,
     }))
 
     engine.push(this.permissions.providerMiddlewareFunction.bind(
