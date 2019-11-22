@@ -76,6 +76,7 @@ const selectors = {
   getDomainToConnectedAddressMap,
   getOriginOfCurrentTab,
   getAddressConnectedToCurrentTab,
+  getLastConnectedInfo,
 }
 
 module.exports = selectors
@@ -542,13 +543,12 @@ function getRenderablePermissionsDomains (state) {
         name,
         icon,
       } = domainMetadata[domainKey]
-      const permissionsHistoryForDomain = permissionsHistory[domainKey]
-      const lastApprovedTimes = permissionsHistoryForDomain
-        ? Object.values(permissionsHistoryForDomain).map(({ lastApproved }) => lastApproved)
-        : []
-      const lastConnectedTime = lastApprovedTimes.length
-        ? formatDate(lastApprovedTimes.sort()[0], 'yyyy-M-d')
-        : null
+      const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
+      const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
+      const selectedAddressInfo = ethAccountsPermissionsForDomain.find(({ account }) => account === selectedAddress) || {}
+
+      const lastConnectedTime = formatDate(selectedAddressInfo.lastApproved, 'yyyy-M-d')
+
       return [ ...acc, {
         name,
         icon,
@@ -567,4 +567,20 @@ function getRenderablePermissionsDomains (state) {
 function getOriginOfCurrentTab (state) {
   const { appState: { currentActiveTab = {} } } = state
   return currentActiveTab.url && getOriginFromUrl(currentActiveTab.url)
+}
+
+function getLastConnectedInfo (state) {
+  const { permissionsHistory } = state.metamask
+  const lastConnectedInfoData = Object.keys(permissionsHistory).reduce((acc, origin) => {
+    const ethAccountsArray = permissionsHistory[origin]['eth_accounts']
+    const addressTimeMap = ethAccountsArray.reduce((acc2, { account, lastApproved }) => ({
+      ...acc2,
+      [account]: lastApproved,
+    }), {})
+    return {
+      ...acc,
+      [origin]: addressTimeMap,
+    }
+  }, {})
+  return lastConnectedInfoData
 }
