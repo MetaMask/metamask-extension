@@ -294,7 +294,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateGas when ', () => {
+    it('should call updateGas when selectedToken.address is changed', () => {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().componentDidUpdate({
