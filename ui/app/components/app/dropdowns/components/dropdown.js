@@ -58,7 +58,6 @@ Dropdown.defaultProps = {
 
 Dropdown.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object.isRequired,
   onClickOutside: PropTypes.func,
