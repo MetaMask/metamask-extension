@@ -9,18 +9,18 @@ const LOG_LIMIT = 100
  * permissions-related methods.
  */
 module.exports = function createLoggerMiddleware ({
-  walletPrefix, restrictedMethods, store, logStoreKey, historyStoreKey,
+  walletPrefix, restrictedMethods, store, logStoreKey, historyStoreKey, ignoreMethods,
 }) {
   return (req, res, next, _end) => {
-
     let activityEntry, requestedMethods
     const { origin, method } = req
     const isInternal = method.startsWith(walletPrefix)
-
-    if (isInternal || restrictedMethods.includes(method)) {
+    if ((isInternal || restrictedMethods.includes(method)) && !ignoreMethods.includes(method)) {
       activityEntry = logActivity(req, isInternal)
       if (method === `${walletPrefix}requestPermissions`) {
         requestedMethods = getRequestedMethods(req)
+      } else if (method === 'eth_requestAccounts') {
+        requestedMethods = [ 'eth_accounts' ]
       }
     } else {
       return next()
@@ -30,7 +30,7 @@ module.exports = function createLoggerMiddleware ({
       const time = Date.now()
       addResponse(activityEntry, res, time)
       if (!res.error && requestedMethods) {
-        logHistory(requestedMethods, origin, res.result, time)
+        logHistory(requestedMethods, origin, res.result, time, method === 'eth_requestAccounts')
       }
       cb()
     })
@@ -81,51 +81,50 @@ module.exports = function createLoggerMiddleware ({
     return Object.keys(request.params[0])
   }
 
-  function logHistory (requestedMethods, origin, result, time) {
-
-    let accounts
-    const entries = result
-      ? result.map(perm => {
-        if (perm.parentCapability === 'eth_accounts') {
-          accounts = getAccountsFromPermission(perm)
-        }
-        return perm.parentCapability
-      })
-        .reduce((acc, m) => {
-          if (requestedMethods.includes(m)) {
-            acc[m] = {
-              lastApproved: time,
-            }
-            if (m === 'eth_accounts') {
-              acc[m].accounts = accounts
-            }
+  function logHistory (requestedMethods, origin, result, time, isEthRequestAccounts) {
+    let accounts, entries
+    if (isEthRequestAccounts) {
+      accounts = result
+      entries = { 'eth_accounts': [ { account: accounts[0], lastApproved: time } ] }
+    } else {
+      entries = result
+        ? result.map(perm => {
+          if (perm.parentCapability === 'eth_accounts') {
+            accounts = getAccountsFromPermission(perm)
           }
-          return acc
-        }, {})
-      : {}
+          return perm.parentCapability
+        })
+          .reduce((acc, m) => {
+            if (requestedMethods.includes(m)) {
+              if (m === 'eth_accounts') {
+                acc[m] = accounts.map(account => ({ lastApproved: time, account }))
+              } else {
+                acc[m] = [ {
+                  lastApproved: time,
+                } ]
+              }
+            }
+            return acc
+          }, {})
+        : {}
+    }
 
     if (Object.keys(entries).length > 0) {
-      commitHistory(origin, entries, accounts)
+      commitHistory(origin, entries)
     }
   }
 
-  function commitHistory (origin, entries, accounts) {
-
+  function commitHistory (origin, entries) {
     const history = store.getState()[historyStoreKey]
-
-    if (Array.isArray(accounts)) {
-      if (history[origin] && history[origin]['eth_accounts']) {
-        history[origin]['eth_accounts']['accounts']
-          .filter(acc => !accounts.includes(acc))
-          .forEach(acc => accounts.unshift(acc))
+    if (history[origin] && history[origin]['eth_accounts'] && entries['eth_accounts'] && Array.isArray(entries['eth_accounts'])) {
+      history[origin]['eth_accounts'] = [ ...history[origin]['eth_accounts'], ...entries['eth_accounts'] ]
+    } else {
+      history[origin] = {
+        ...history[origin],
+        ...entries,
       }
-      accounts.sort()
     }
 
-    history[origin] = {
-      ...history[origin],
-      ...entries,
-    }
     store.updateState({ [historyStoreKey]: history })
   }
 }
