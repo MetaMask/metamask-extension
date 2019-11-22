@@ -33,7 +33,6 @@ const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
 const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
-const { mapObjectValues } = require('./lib/util')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -65,8 +64,6 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
-let openNonMetamaskTabsIDs = {}
-const tabIdOriginMap = {}
 let previousTabId
 
 // state persistence
@@ -254,12 +251,6 @@ function setupController (initState, initLangCode) {
     getOpenMetaMaskTabs: () => {
       return openMetamaskTabsIDs
     },
-    getTabIdOrigins: () => {
-      return tabIdOriginMap
-    },
-    getOpenExternalTabsIDs: () => {
-      return openNonMetamaskTabsIDs
-    },
   })
 
   const provider = controller.provider
@@ -392,9 +383,6 @@ function setupController (initState, initLangCode) {
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id
         openMetamaskTabsIDs[tabId] = { opener: previousTabId || null }
-        previousTabId = tabId
-
-        openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId]
@@ -402,17 +390,13 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
-      const portStream = new PortStream(remotePort)
       if (remotePort.sender && remotePort.sender.tab) {
         const tabId = remotePort.sender.tab.id
 
-        openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
-        openNonMetamaskTabsIDs[tabId] = { active: true }
-
-        previousTabId = tabId
-
-        endOfStream(portStream, () => {
-          delete openNonMetamaskTabsIDs[tabId]
+        remotePort.onMessage.addListener(msg => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            previousTabId = tabId
+          }
         })
       }
       connectExternal(remotePort)
@@ -502,27 +486,5 @@ function openPopup () {
 extension.runtime.onInstalled.addListener(({reason}) => {
   if ((reason === 'install') && (!METAMASK_DEBUG)) {
     platform.openExtensionInBrowser()
-  }
-})
-
-extension.runtime.onMessage.addListener((message, sender) => {
-  const senderIsMetaMaskExtension = sender.id === extension.runtime.id
-  if (senderIsMetaMaskExtension && message.type === 'notifyBackgroundOfTabIdAndOrigin' && sender.tab) {
-    const originMatch = sender.tab.url && sender.tab.url.match(/\/\/([^/:]+)\/?/)
-    tabIdOriginMap[sender.tab.id] = originMatch && originMatch.length && originMatch[1]
-  }
-})
-
-extension.tabs.onActivated.addListener(({ tabId }) => {
-  if (previousTabId !== tabId) {
-    openNonMetamaskTabsIDs = mapObjectValues(openNonMetamaskTabsIDs, () => ({ active: false }))
-
-    if (openMetamaskTabsIDs[tabId]) {
-      openMetamaskTabsIDs[tabId] = { opener: previousTabId }
-      previousTabId = tabId
-    } else if (openNonMetamaskTabsIDs[tabId]) {
-      openNonMetamaskTabsIDs[tabId] = { active: true }
-      previousTabId = tabId
-    }
   }
 })

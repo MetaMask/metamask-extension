@@ -403,12 +403,11 @@ var actions = {
 
   getOpenMetaMaskTabs,
   getCurrentWindowTab,
-  getTabIdOrigins,
-  getOpenExternalTabs,
-  SET_OPEN_EXTERNAL_TABS: 'SET_OPEN_EXTERNAL_TABS',
   SET_OPEN_METAMASK_TABS: 'SET_OPEN_METAMASK_TABS',
   SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
-  SET_TAB_ID_ORIGINS: 'SET_TAB_ID_ORIGINS',
+  setActiveTab,
+  SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
+  getActiveTab,
 }
 
 module.exports = actions
@@ -3081,34 +3080,6 @@ function getOpenMetaMaskTabs () {
   }
 }
 
-function setOpenExternalTabs (openExternalTabs) {
-  return {
-    type: actions.SET_OPEN_EXTERNAL_TABS,
-    value: openExternalTabs,
-  }
-}
-
-function getOpenExternalTabs () {
-  return async (dispatch) => {
-    const openExternalTabs = await pify(background.getOpenExternalTabs).call(background)
-    dispatch(setOpenExternalTabs(openExternalTabs))
-  }
-}
-
-function setTabIdOrigins (tabIdOrigins) {
-  return {
-    type: actions.SET_TAB_ID_ORIGINS,
-    value: tabIdOrigins,
-  }
-}
-
-function getTabIdOrigins () {
-  return async (dispatch) => {
-    const tabIdOrigins = await pify(background.getTabIdOrigins).call(background)
-    dispatch(setTabIdOrigins(tabIdOrigins))
-  }
-}
-
 function setCurrentWindowTab (currentWindowTab) {
   return {
     type: actions.SET_CURRENT_WINDOW_TAB,
@@ -3121,5 +3092,24 @@ function getCurrentWindowTab () {
   return async (dispatch) => {
     const currentWindowTab = await global.platform.currentTab()
     dispatch(setCurrentWindowTab(currentWindowTab))
+  }
+}
+
+function setActiveTab (activeTab) {
+  return {
+    type: actions.SET_ACTIVE_TAB,
+    value: activeTab,
+  }
+}
+
+function getActiveTab () {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      global.platform.queryTabs(tabs => {
+        const activeTab = tabs.find(tab => tab.active)
+        dispatch(setActiveTab(activeTab))
+        resolve(activeTab)
+      })
+    })
   }
 }

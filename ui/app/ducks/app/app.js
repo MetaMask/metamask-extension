@@ -76,9 +76,8 @@ export default function reduceApp (state, action) {
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
     openMetaMaskTabs: {},
-    openExternalTabs: {},
     currentWindowTab: {},
-    tabIdOrigins: {},
+    currentActiveTab: {},
   }, state.appState)
 
   switch (action.type) {
@@ -772,19 +771,14 @@ export default function reduceApp (state, action) {
         openMetaMaskTabs: action.value,
       })
 
-    case actions.SET_OPEN_EXTERNAL_TABS:
-      return extend(appState, {
-        openExternalTabs: action.value,
-      })
-
     case actions.SET_CURRENT_WINDOW_TAB:
       return extend(appState, {
         currentWindowTab: action.value,
       })
 
-    case actions.SET_TAB_ID_ORIGINS:
+    case actions.SET_ACTIVE_TAB:
       return extend(appState, {
-        tabIdOrigins: action.value,
+        currentActiveTab: action.value,
       })
 
     default:

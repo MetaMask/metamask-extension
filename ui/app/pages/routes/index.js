@@ -86,7 +86,7 @@ import {
 
 class Routes extends Component {
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD, getTabIdOrigins, getOpenExternalTabs } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD, getActiveTab } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -106,8 +106,7 @@ class Routes extends Component {
       }
     })
 
-    getTabIdOrigins()
-    getOpenExternalTabs()
+    getActiveTab()
   }
 
   componentDidUpdate (prevProps) {
@@ -370,8 +369,7 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
-  getTabIdOrigins: PropTypes.func,
-  getOpenExternalTabs: PropTypes.func,
+  getActiveTab: PropTypes.func,
   addressConnectedToCurrentTab: PropTypes.string,
   showAccountDetail: PropTypes.func,
 }
@@ -418,8 +416,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    getTabIdOrigins: () => dispatch(actions.getTabIdOrigins()),
-    getOpenExternalTabs: () => dispatch(actions.getOpenExternalTabs()),
+    getActiveTab: () => dispatch(actions.getActiveTab()),
     showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }

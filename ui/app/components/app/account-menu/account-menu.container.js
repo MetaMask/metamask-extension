@@ -13,8 +13,8 @@ import {
 } from '../../../store/actions'
 import {
   getAddressConnectedDomainMap,
-  getOriginOfCurrentTab,
   getMetaMaskAccounts,
+  getOriginOfCurrentTab,
 } from '../../../selectors/selectors'
 
 import AccountMenu from './account-menu.component'

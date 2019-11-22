@@ -10,6 +10,7 @@ import {
   addressSlicer,
   checksumAddress,
   formatDate,
+  getOriginFromUrl,
 } from '../helpers/utils/util'
 
 const selectors = {
@@ -564,14 +565,6 @@ function getRenderablePermissionsDomains (state) {
 }
 
 function getOriginOfCurrentTab (state) {
-  const {
-    appState: {
-      openExternalTabs = {},
-      tabIdOrigins = {},
-    },
-  } = state
-  const currentlyActiveExternalTabId = Object.entries(openExternalTabs)
-    .reduce((acc, [key, value]) => value.active ? key : acc, null)
-  const originOfCurrentTab = tabIdOrigins[currentlyActiveExternalTabId]
-  return originOfCurrentTab
+  const { appState: { currentActiveTab = {} } } = state
+  return currentActiveTab.url && getOriginFromUrl(currentActiveTab.url)
 }
