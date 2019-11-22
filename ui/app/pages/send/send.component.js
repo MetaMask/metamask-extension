@@ -165,6 +165,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
     if (selectedTokenAddress && prevTokenAddress !== selectedTokenAddress) {
       this.updateSendToken()
+      this.updateGas()
     }
   }
 
