@@ -260,4 +260,22 @@
   &__permissions-header-redirect {
     text-align: center;
   }
+
+  @media screen and (max-width: 575px) {
+    width: 100%;
+    margin-top: 25px;
+    padding: 10px;
+
+    &__title {
+      position: initial;
+    }
+
+    &__content-approval-visual {
+      margin-top: 16px;
+    }
+
+    .page-container__footer header {
+      padding: 0;
+    }
+  }
 }
