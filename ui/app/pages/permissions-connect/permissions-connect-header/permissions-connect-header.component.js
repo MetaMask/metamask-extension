@@ -13,7 +13,7 @@ export default class PermissionsConnectHeader extends Component {
     return (
       <div className="permissions-connect-header">
         <MetaFoxLogo
-          unsetIconHeight={true}
+          unsetIconHeight
           onClick={() => history.push(DEFAULT_ROUTE)}
         />
         <div className="permissions-connect-header__page-count">
