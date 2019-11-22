@@ -1,5 +1,4 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const formatBalance = require('../../helpers/utils/util').formatBalance
 
@@ -38,31 +37,38 @@ function fiatDisplay (fiatDisplayNumber, fiatSuffix, styleOveride = {}) {
   const { fontSize, color, fontFamily, lineHeight } = styleOveride
 
   if (fiatDisplayNumber !== 'N/A') {
-    return h('.flex-row', {
-      style: {
-        alignItems: 'flex-end',
-        lineHeight: lineHeight || '13px',
-        fontFamily: fontFamily || 'Montserrat Light',
-        textRendering: 'geometricPrecision',
-      },
-    }, [
-      h('div', {
-        style: {
-          width: '100%',
-          textAlign: 'right',
-          fontSize: fontSize || '12px',
-          color: color || '#333333',
-        },
-      }, fiatDisplayNumber),
-      h('div', {
-        style: {
-          color: color || '#AEAEAE',
-          marginLeft: '5px',
-          fontSize: fontSize || '12px',
-        },
-      }, fiatSuffix),
-    ])
+    return (
+      <div
+        className="flex-row"
+        style={{
+          alignItems: 'flex-end',
+          lineHeight: lineHeight || '13px',
+          fontFamily: fontFamily || 'Montserrat Light',
+          textRendering: 'geometricPrecision',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            textAlign: 'right',
+            fontSize: fontSize || '12px',
+            color: color || '#333333',
+          }}
+        >
+          {fiatDisplayNumber}
+        </div>
+        <div
+          style={{
+            color: color || '#AEAEAE',
+            marginLeft: '5px',
+            fontSize: fontSize || '12px',
+          }}
+        >
+          {fiatSuffix}
+        </div>
+      </div>
+    )
   } else {
-    return h('div')
+    return <div />
   }
 }
