@@ -50,12 +50,8 @@ function injectScript (content) {
 let tabId
 async function start () {
   await setupStreams()
-  const { target: { location: { origin } = {} } = {} } = await domIsReady()
-  extension.runtime.sendMessage({ type: 'notifyTabId', origin }, function (res) {
-    if (res) {
-      tabId = res.tabId
-    }
-  })
+  await domIsReady()
+  extension.runtime.sendMessage({ type: 'notifyBackgroundOfTabIdAndOrigin' })
 }
 
 extension.runtime.onMessage.addListener(function (message) {

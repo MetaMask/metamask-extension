@@ -505,11 +505,11 @@ extension.runtime.onInstalled.addListener(({reason}) => {
   }
 })
 
-extension.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'notifyTabId' && sender.tab) {
-    const originMatch = message.origin && message.origin.match(/\/\/([^/:]+)\/?/)
+extension.runtime.onMessage.addListener((message, sender) => {
+  const senderIsMetaMaskExtension = sender.id === extension.runtime.id
+  if (senderIsMetaMaskExtension && message.type === 'notifyBackgroundOfTabIdAndOrigin' && sender.tab) {
+    const originMatch = sender.tab.url && sender.tab.url.match(/\/\/([^/:]+)\/?/)
     tabIdOriginMap[sender.tab.id] = originMatch && originMatch.length && originMatch[1]
-    sendResponse({ tabId: sender.tab.id })
   }
 })
 
