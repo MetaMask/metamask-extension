@@ -1,4 +1,5 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
+import { mapObjectValues } from '../../../app/scripts/lib/util'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 
 const abi = require('human-standard-token-abi')
@@ -71,7 +72,9 @@ const selectors = {
   getRenderablePermissionsDomains,
   getPermissionsDomains,
   getAddressConnectedDomainMap,
+  getDomainToConnectedAddressMap,
   getOriginOfCurrentTab,
+  getAddressConnectedToCurrentTab,
 }
 
 module.exports = selectors
@@ -485,6 +488,34 @@ function getAddressConnectedDomainMap (state) {
   }
 
   return addressConnectedIconMap
+}
+
+function getDomainToConnectedAddressMap (state) {
+  const { domains = {} } = state.metamask
+
+  const domainToConnectedAddressMap = mapObjectValues(domains, (_, { permissions }) => {
+    const ethAccountsPermissions = permissions.filter(permission => permission.parentCapability === 'eth_accounts')
+    const ethAccountsPermissionsExposedAccountAddresses = ethAccountsPermissions.map(permission => {
+      const caveats = permission.caveats
+      const exposedAccountsCaveats = caveats.filter(caveat => caveat.name === 'exposedAccounts')
+      const exposedAccountsAddresses = exposedAccountsCaveats.map(caveat => caveat.value[0])
+      return exposedAccountsAddresses
+    })
+    const allAddressesConnectedToDomain = ethAccountsPermissionsExposedAccountAddresses.reduce((acc, arrayOfAddresses) => {
+      return [ ...acc, ...arrayOfAddresses ]
+    }, [])
+    return allAddressesConnectedToDomain
+  })
+
+  return domainToConnectedAddressMap
+}
+
+function getAddressConnectedToCurrentTab (state) {
+  const domainToConnectedAddressMap = getDomainToConnectedAddressMap(state)
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
+  const addressesConnectedToCurrentTab = domainToConnectedAddressMap[originOfCurrentTab]
+  const addressConnectedToCurrentTab = addressesConnectedToCurrentTab && addressesConnectedToCurrentTab[0]
+  return addressConnectedToCurrentTab
 }
 
 function getRenderablePermissionsDomains (state) {

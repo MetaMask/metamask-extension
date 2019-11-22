@@ -6,7 +6,12 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import { getNetworkIdentifier, preferencesSelector, hasPermissionRequests } from '../../selectors/selectors'
+import {
+  getNetworkIdentifier,
+  preferencesSelector,
+  hasPermissionRequests,
+  getAddressConnectedToCurrentTab,
+} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
@@ -103,6 +108,13 @@ class Routes extends Component {
 
     getTabIdOrigins()
     getOpenExternalTabs()
+  }
+
+  componentDidUpdate (prevProps) {
+    const { addressConnectedToCurrentTab, showAccountDetail } = this.props
+    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== prevProps.addressConnectedToCurrentTab) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
   }
 
   renderRoutes () {
@@ -360,6 +372,8 @@ Routes.propTypes = {
   autoLogoutTimeLimit: PropTypes.number,
   getTabIdOrigins: PropTypes.func,
   getOpenExternalTabs: PropTypes.func,
+  addressConnectedToCurrentTab: PropTypes.string,
+  showAccountDetail: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -393,6 +407,7 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
     hasPermissionsRequests: hasPermissionRequests(state),
+    addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }
 }
 
@@ -405,6 +420,7 @@ function mapDispatchToProps (dispatch) {
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
     getTabIdOrigins: () => dispatch(actions.getTabIdOrigins()),
     getOpenExternalTabs: () => dispatch(actions.getOpenExternalTabs()),
+    showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }
 
