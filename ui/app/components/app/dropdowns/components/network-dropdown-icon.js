@@ -37,6 +37,7 @@ function NetworkDropdownIcon (props) {
 
 NetworkDropdownIcon.defaultProps = {
   backgroundColor: undefined,
+  loading: false,
   innerBorder: 'none',
   diameter: '12',
   isSelected: false,
