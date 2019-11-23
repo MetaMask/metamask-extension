@@ -1,6 +1,5 @@
-const Component = require('react').Component
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const BigNumber = require('bignumber.js')
@@ -328,69 +327,72 @@ CustomizeGasModal.prototype.render = function () {
     toNumericBase: 'dec',
   })
 
-  return !gasIsLoading && h('div.send-v2__customize-gas', {}, [
-    h('div.send-v2__customize-gas__content', {
-    }, [
-      h('div.send-v2__customize-gas__header', {}, [
+  if (gasIsLoading) {
+    return null
+  }
 
-        h('div.send-v2__customize-gas__title', this.context.t('customGas')),
+  const { t } = this.context
 
-        h('div.send-v2__customize-gas__close', {
-          onClick: hideModal,
-        }),
-
-      ]),
-
-      h('div.send-v2__customize-gas__body', {}, [
-
-        h(GasModalCard, {
-          value: convertedGasPrice,
-          min: forceGasMin || MIN_GAS_PRICE_GWEI,
-          step: 1,
-          onChange: value => this.convertAndSetGasPrice(value),
-          title: this.context.t('gasPrice'),
-          copy: this.context.t('gasPriceCalculation'),
-          gasIsLoading,
-        }),
-
-        h(GasModalCard, {
-          value: convertedGasLimit,
-          min: 1,
-          step: 1,
-          onChange: value => this.convertAndSetGasLimit(value),
-          title: this.context.t('gasLimit'),
-          copy: this.context.t('gasLimitCalculation'),
-          gasIsLoading,
-        }),
-
-      ]),
-
-      h('div.send-v2__customize-gas__footer', {}, [
-
-        error && h('div.send-v2__customize-gas__error-message', [
-          error,
-        ]),
-
-        h('div.send-v2__customize-gas__revert', {
-          onClick: () => this.revert(),
-        }, [this.context.t('revert')]),
-
-        h('div.send-v2__customize-gas__buttons', [
-          h(Button, {
-            type: 'default',
-            className: 'send-v2__customize-gas__cancel',
-            onClick: this.props.hideModal,
-          }, [this.context.t('cancel')]),
-          h(Button, {
-            type: 'secondary',
-            className: 'send-v2__customize-gas__save',
-            onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
-            disabled: error,
-          }, [this.context.t('save')]),
-        ]),
-
-      ]),
-
-    ]),
-  ])
+  return (
+    <div className="send-v2__customize-gas">
+      <div className="send-v2__customize-gas__content">
+        <div className="send-v2__customize-gas__header">
+          <div className="send-v2__customize-gas__title">
+            {this.context.t('customGas')}
+          </div>
+          <div
+            className="send-v2__customize-gas__close"
+            onClick={hideModal}
+          />
+        </div>
+        <div className="send-v2__customize-gas__body">
+          <GasModalCard
+            value={convertedGasPrice}
+            min={forceGasMin || MIN_GAS_PRICE_GWEI}
+            step={1}
+            onChange={value => this.convertAndSetGasPrice(value)}
+            title={t('gasPrice')}
+            copy={t('gasPriceCalculation')}
+            gasIsLoading={gasIsLoading}
+          />
+          <GasModalCard
+            value={convertedGasLimit}
+            min={1}
+            step={1}
+            onChange={value => this.convertAndSetGasLimit(value)}
+            title={t('gasLimit')}
+            copy={t('gasLimitCalculation')}
+            gasIsLoading={gasIsLoading}
+          />
+        </div>
+        <div className="send-v2__customize-gas__footer">
+          {error && (
+            <div className="send-v2__customize-gas__error-message">
+              {error}
+            </div>
+          )}
+          <div className="send-v2__customize-gas__revert" onClick={() => this.revert()}>
+            {t('revert')}
+          </div>
+          <div className="send-v2__customize-gas__buttons">
+            <Button
+              type="default"
+              className="send-v2__customize-gas__cancel"
+              onClick={hideModal}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              type="secondary"
+              className="send-v2__customize-gas__save"
+              onClick={() => !error && this.save(newGasPrice, gasLimit, gasTotal)}
+              disabled={error}
+            >
+              {t('save')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
