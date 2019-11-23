@@ -19,7 +19,6 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
   padding: 46px 40.5px 26px;
   position: relative;
-  // top: -26px;
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
@@ -326,7 +325,6 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
     padding: 46px 40.5px 26px;
     position: relative;
-    // top: -26px;
     align-items: center;
     display: flex;
     flex-flow: column nowrap;
@@ -401,7 +399,6 @@
 
 .send-v2 {
   &__container {
-    // height: 701px;
     width: 380px;
     border-radius: 8px;
     background-color: $white;
