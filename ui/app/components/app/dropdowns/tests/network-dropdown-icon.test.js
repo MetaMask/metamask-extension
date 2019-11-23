@@ -7,12 +7,14 @@ describe('Network Dropdown Icon', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<NetworkDropdownIcon
-      backgroundColor="red"
-      isSelected={false}
-      innerBorder="none"
-      diameter="12"
-    />)
+    wrapper = shallow((
+      <NetworkDropdownIcon
+        backgroundColor="red"
+        isSelected={false}
+        innerBorder="none"
+        diameter="12"
+      />
+    ))
   })
 
   it('adds style props based on props', () => {
