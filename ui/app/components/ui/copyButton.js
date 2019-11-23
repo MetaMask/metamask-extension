@@ -15,7 +15,7 @@ class CopyButton extends Component {
   }
 
   static propTypes = {
-    value: PropTypes.any.isRequired,
+    value: PropTypes.string.isRequired,
     title: PropTypes.string,
   }
 
