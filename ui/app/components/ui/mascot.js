@@ -1,6 +1,5 @@
+import React, { Component } from 'react'
 const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
 const metamaskLogo = require('metamask-logo')
 const debounce = require('debounce')
 
@@ -20,15 +19,17 @@ function Mascot ({width = '200', height = '200'}) {
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
 
-Mascot.prototype.render = function () {
+Mascot.prototype.render = function Mascot () {
   // this is a bit hacky
   // the event emitter is on `this.props`
   // and we dont get that until render
   this.handleAnimationEvents()
-
-  return h('#metamask-mascot-container', {
-    style: { zIndex: 0 },
-  })
+  return (
+    <div
+      id="metamask-mascot-container"
+      style={{ zIndex: 0 }}
+    />
+  )
 }
 
 Mascot.prototype.componentDidMount = function () {
