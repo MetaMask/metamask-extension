@@ -116,10 +116,11 @@ class ConnectHardwareForm extends Component {
         }
       })
       .catch(e => {
-        if (e === 'Window blocked') {
+        const errorMessage = e.message
+        if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null})
-        } else if (e !== 'Window closed' && e !== 'Popup closed') {
-          this.setState({ error: e.toString() })
+        } else if (errorMessage !== 'Window closed' && errorMessage !== 'Popup closed') {
+          this.setState({ error: errorMessage })
         }
       })
   }
@@ -134,7 +135,7 @@ class ConnectHardwareForm extends Component {
           unlocked: false,
         })
       }).catch(e => {
-        this.setState({ error: e.toString() })
+        this.setState({ error: e.message })
       })
   }
 
@@ -162,10 +163,10 @@ class ConnectHardwareForm extends Component {
             name: 'Error connecting hardware wallet',
           },
           customVariables: {
-            error: e.toString(),
+            error: e.message,
           },
         })
-        this.setState({ error: e.toString() })
+        this.setState({ error: e.message })
       })
   }
 
