@@ -1,35 +1,19 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React from 'react'
 const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
+
+function SeedImportSubview (_, { t }) {
+  return (
+    <div>
+      {t('pasteSeed')}
+      <textarea />
+      <br />
+      <button>{t('submit')}</button>
+    </div>
+  )
+}
 
 SeedImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps)(SeedImportSubview)
-
-
-function mapStateToProps () {
-  return {}
-}
-
-inherits(SeedImportSubview, Component)
-function SeedImportSubview () {
-  Component.call(this)
-}
-
-SeedImportSubview.prototype.render = function () {
-  return (
-    h('div', {
-      style: {
-      },
-    }, [
-      this.context.t('pasteSeed'),
-      h('textarea'),
-      h('br'),
-      h('button', this.context.t('submit')),
-    ])
-  )
-}
+module.exports = SeedImportSubview
