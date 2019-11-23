@@ -867,9 +867,6 @@
     "message": "Čia įklijuokite asmeninio rakto eilutę:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Čia įklijuokite savo atkūrimo frazę!"
-  },
   "pending": {
     "message": "laukiama patvirtinimo"
   },
@@ -1182,9 +1179,6 @@
   },
   "storePhrase": {
     "message": "Laikykite šią frazę slaptažodžių tvarkyklėje kaip 1 slaptažodį."
-  },
-  "submit": {
-    "message": "Pateikti"
   },
   "submitted": {
     "message": "Pateikta"

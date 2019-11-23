@@ -857,9 +857,6 @@
     "message": "Lim inn din private nøkkelstreng her:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Lim inn seed-frasen din her!"
-  },
   "pending": {
     "message": "i påvente "
   },
@@ -1160,9 +1157,6 @@
   },
   "storePhrase": {
     "message": "Lagre denne frasen i en passordbehandler slik som 1Password."
-  },
-  "submit": {
-    "message": "Send"
   },
   "submitted": {
     "message": "Sendt inn"

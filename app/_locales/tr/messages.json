@@ -376,9 +376,6 @@
     "message": "Özel anahtar dizinizi buraya yapıştırın:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Kaynak ifadenizi buraya yapıştırın!"
-  },
   "personalAddressDetected": {
     "message": "Kişisel adres tespit edilidi. Jeton sözleşme adresini girin."
   },
@@ -490,9 +487,6 @@
   },
   "stateLogError": {
     "message": "Durum kayıtlarını alma hatası"
-  },
-  "submit": {
-    "message": "Gönder"
   },
   "submitted": {
     "message": "Gönderildi"

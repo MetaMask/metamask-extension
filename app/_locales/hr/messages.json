@@ -860,9 +860,6 @@
     "message": "Ovdje zalijepite svoj privatni niz ključa:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Ovdje zalijepite svoju početnu rečenicu!"
-  },
   "pending": {
     "message": "na čekanju"
   },
@@ -1175,9 +1172,6 @@
   },
   "storePhrase": {
     "message": "Spremite ovu rečenicu u upravitelj lozinkama poput aplikacije 1Password."
-  },
-  "submit": {
-    "message": "Pošalji"
   },
   "submitted": {
     "message": "Poslano"

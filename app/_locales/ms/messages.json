@@ -838,9 +838,6 @@
     "message": "Tampal rentetan kekunci persendirian anda di sini:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Tampal ungkapan benih anda di sini!"
-  },
   "pending": {
     "message": "menunggu"
   },
@@ -1153,9 +1150,6 @@
   },
   "storePhrase": {
     "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."
-  },
-  "submit": {
-    "message": "Serah"
   },
   "submitted": {
     "message": "Dihantar"

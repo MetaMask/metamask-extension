@@ -858,9 +858,6 @@
     "message": "Tutaj wklej swój prywatny klucz:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Tutaj wklej swoją frazę seed!"
-  },
   "pending": {
     "message": "oczekiwanie"
   },
@@ -1173,9 +1170,6 @@
   },
   "storePhrase": {
     "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."
-  },
-  "submit": {
-    "message": "Wyślij"
   },
   "submitted": {
     "message": "Wysłane"

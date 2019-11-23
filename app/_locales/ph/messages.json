@@ -249,9 +249,6 @@
     "message": "I-paste dito ang iyong private key string:",
     "description": "Para sa pag-import ng account mula sa private key"
   },
-  "pasteSeed": {
-    "message": "I-paste dito ang iyong seed phrase!"
-  },
   "privateKeyWarning": {
     "message": "Babala: Huwag sabihin sa kahit na sino ang key na ito. Maaring makuha at manakaw ng sinumang nakakaalam ng iyong private key ang mga assets sa iyong account."
   },
@@ -299,9 +296,6 @@
   },
   "sigRequest": {
     "message": "Hiling na Signature"
-  },
-  "submit": {
-    "message": "I-submit"
   },
   "toETHviaShapeShift": {
     "message": "$1 sa ETH sa pamamagitan ng ShapeShift",

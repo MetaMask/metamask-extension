@@ -698,9 +698,6 @@
     "message": "Pega tu clave privada aqui",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "¡Pega tu frase semilla aquí!"
-  },
   "pending": {
     "message": "pendiente"
   },
@@ -962,9 +959,6 @@
   },
   "step3HardwareWalletMsg": {
     "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
-  },
-  "submit": {
-    "message": "Enviar"
   },
   "submitted": {
     "message": "Enviado"

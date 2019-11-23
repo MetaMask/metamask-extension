@@ -851,9 +851,6 @@
     "message": "Klistra in din privata nyckel här:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Klistra in din nyckelfras här!"
-  },
   "pending": {
     "message": "väntar"
   },
@@ -1166,9 +1163,6 @@
   },
   "storePhrase": {
     "message": "Lagra denna fras i en lösenordshanterare såsom 1Password."
-  },
-  "submit": {
-    "message": "Skicka"
   },
   "submitted": {
     "message": "Inskickat"

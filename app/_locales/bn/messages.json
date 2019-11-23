@@ -867,9 +867,6 @@
     "message": "আপনার গোপনীয় কী স্ট্রিং এখানে পেস্ট করুন:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "আপনার সীড ফ্রেজ এখানে পেস্ট করুন!"
-  },
   "pending": {
     "message": "বাকি"
   },
@@ -1182,9 +1179,6 @@
   },
   "storePhrase": {
     "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "
-  },
-  "submit": {
-    "message": "জমা দিন"
   },
   "submitted": {
     "message": "জমা করা হয়েছে"

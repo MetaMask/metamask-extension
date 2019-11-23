@@ -858,9 +858,6 @@
     "message": "Ovde nalepite vaš niz privatnog ključa",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Nalepite ovde svoju početnu frazu!"
-  },
   "pending": {
     "message": "u toku"
   },
@@ -1173,9 +1170,6 @@
   },
   "storePhrase": {
     "message": "Čuvajte ovaj izraz u menadžeru šifri kao što je 1Password."
-  },
-  "submit": {
-    "message": "Пошаљи"
   },
   "submitted": {
     "message": "Prosleđeno"

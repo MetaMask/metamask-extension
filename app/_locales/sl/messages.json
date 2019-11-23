@@ -852,9 +852,6 @@
     "message": "Tukaj prilepite vaš zasebni ključ:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Tukaj prilepite seed phase!"
-  },
   "pending": {
     "message": "v obdelavi"
   },
@@ -1164,9 +1161,6 @@
   },
   "storePhrase": {
     "message": "To geslo shranite v upravitelja gesel, kot je 1Password."
-  },
-  "submit": {
-    "message": "Potrdi"
   },
   "submitted": {
     "message": "Potrjeno"

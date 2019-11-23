@@ -860,9 +860,6 @@
     "message": "Illessze be ide a privát kulcs karakterláncát:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Másolja be ide a seed mondatot!"
-  },
   "pending": {
     "message": "folyamatban"
   },
@@ -1175,9 +1172,6 @@
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."
-  },
-  "submit": {
-    "message": "Elküldés"
   },
   "submitted": {
     "message": "Elküldve"

@@ -867,9 +867,6 @@
     "message": "زنجیره کلید شخصی را در اینجا کاپی کنید:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "عبارت بازیاب تان را اینجا بگذارید!"
-  },
   "pending": {
     "message": "در حال تعلیق"
   },
@@ -1182,9 +1179,6 @@
   },
   "storePhrase": {
     "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."
-  },
-  "submit": {
-    "message": "ارائه"
   },
   "submitted": {
     "message": "ارائه شد"

@@ -852,9 +852,6 @@
     "message": "Copia y pega tu cadena de claves privada aquí:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "¡Copia y pega tu frase de inicialización aquí!"
-  },
   "pending": {
     "message": "pendiente"
   },
@@ -1167,9 +1164,6 @@
   },
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
-  },
-  "submit": {
-    "message": "Enviar"
   },
   "submitted": {
     "message": "Enviado"

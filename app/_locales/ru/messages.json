@@ -374,9 +374,6 @@
     "message": "Вставьте ваш закрытый ключ тут:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Вставьте вашу ключевую фразу!"
-  },
   "personalAddressDetected": {
     "message": "Обнаружен персональный адрес. Введите адрес контракта токена."
   },
@@ -488,9 +485,6 @@
   },
   "stateLogError": {
     "message": "Ошибка при получении журнала состояния."
-  },
-  "submit": {
-    "message": "Отправить"
   },
   "submitted": {
     "message": "Отправлена"

@@ -845,9 +845,6 @@
     "message": "Bandika uzi wako wa ufunguo binafsi hapa:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Bandika kirai kianzio chako hapa!"
-  },
   "pending": {
     "message": "inasubiri"
   },
@@ -1160,9 +1157,6 @@
   },
   "storePhrase": {
     "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."
-  },
-  "submit": {
-    "message": "Wasilisha"
   },
   "submitted": {
     "message": "Imewasilishwa"

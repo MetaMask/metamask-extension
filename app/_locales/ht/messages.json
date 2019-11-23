@@ -521,9 +521,6 @@
     "message": "Kole fraz prive ou a la:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Kole seed fraz ou a la!"
-  },
   "pending": {
     "message": "l ap mache"
   },
@@ -752,9 +749,6 @@
   },
   "step3HardwareWalletMsg": {
     "message": "Sèvi ak kont materyèl ou menm jan ou t ap fè pou kont Etherum. Ouvri sesyon an nan dApps, voye Eth, achte ak stòke ERC20 tokens ak e ki pake chanje tokens tankou CryptoKitties."
-  },
-  "submit": {
-    "message": "Soumèt"
   },
   "submitted": {
     "message": "Te Soumèt"

@@ -338,9 +338,6 @@
     "message": "Cole aqui a sua chave privada:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Cole aqui a sua frase seed!"
-  },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Introduza o endereço do contrato do token."
   },
@@ -443,9 +440,6 @@
   },
   "stateLogsDescription": {
     "message": "Registo de estado podem conter o seu endereço e transações enviadas da sua conta pública."
-  },
-  "submit": {
-    "message": "Submeter"
   },
   "supportCenter": {
     "message": "Visitar o nosso Centro de Suporte"
