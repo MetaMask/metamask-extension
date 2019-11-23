@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 const PropTypes = require('prop-types')
 const Tooltip = require('../ui/tooltip')
 const copyToClipboard = require('copy-to-clipboard')
-const connect = require('react-redux').connect
 
 class Copyable extends Component {
   static contextTypes = {
@@ -53,4 +52,4 @@ class Copyable extends Component {
   }
 }
 
-module.exports = connect()(Copyable)
+module.exports = Copyable
