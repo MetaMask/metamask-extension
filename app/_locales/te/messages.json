@@ -42,9 +42,6 @@
   "connect": {
     "message": "కనెక్ట్ చేయండి"
   },
-  "copy": {
-    "message": "కాపీ చెయ్యి"
-  },
   "copyToClipboard": {
     "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయి"
   },

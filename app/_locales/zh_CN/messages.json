@@ -294,9 +294,6 @@
   "copiedExclamation": {
     "message": "已复制"
   },
-  "copy": {
-    "message": "复制"
-  },
   "copyAddress": {
     "message": "将地址复制到剪贴板"
   },
