@@ -1,6 +1,5 @@
-const { Component } = require('react')
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getMetaMaskAccounts } = require('../../../selectors/selectors')
@@ -176,40 +175,53 @@ class ConnectHardwareForm extends Component {
 
   renderError () {
     return this.state.error
-      ? h('span.error', { style: { margin: '20px 20px 10px', display: 'block', textAlign: 'center' } }, this.state.error)
+      ? (
+        <span
+          className="error"
+          style={{ margin: '20px 20px 10px', display: 'block', textAlign: 'center' }}
+        >
+          {this.state.error}
+        </span>
+      )
       : null
   }
 
   renderContent () {
     if (!this.state.accounts.length) {
-      return h(ConnectScreen, {
-        connectToHardwareWallet: this.connectToHardwareWallet,
-        browserSupported: this.state.browserSupported,
-      })
+      return (
+        <ConnectScreen
+          connectToHardwareWallet={this.connectToHardwareWallet}
+          browserSupported={this.state.browserSupported}
+        />
+      )
     }
 
-    return h(AccountList, {
-      onPathChange: this.onPathChange,
-      selectedPath: this.props.defaultHdPaths[this.state.device],
-      device: this.state.device,
-      accounts: this.state.accounts,
-      selectedAccount: this.state.selectedAccount,
-      onAccountChange: this.onAccountChange,
-      network: this.props.network,
-      getPage: this.getPage,
-      history: this.props.history,
-      onUnlockAccount: this.onUnlockAccount,
-      onForgetDevice: this.onForgetDevice,
-      onCancel: this.onCancel,
-      onAccountRestriction: this.onAccountRestriction,
-    })
+    return (
+      <AccountList
+        onPathChange={this.onPathChange}
+        selectedPath={this.props.defaultHdPaths[this.state.device]}
+        device={this.state.device}
+        accounts={this.state.accounts}
+        selectedAccount={this.state.selectedAccount}
+        onAccountChange={this.onAccountChange}
+        network={this.props.network}
+        getPage={this.getPage}
+        history={this.props.history}
+        onUnlockAccount={this.onUnlockAccount}
+        onForgetDevice={this.onForgetDevice}
+        onCancel={this.onCancel}
+        onAccountRestriction={this.onAccountRestriction}
+      />
+    )
   }
 
   render () {
-    return h('div', [
-      this.renderError(),
-      this.renderContent(),
-    ])
+    return (
+      <div>
+        {this.renderError()}
+        {this.renderContent()}
+      </div>
+    )
   }
 }
 
