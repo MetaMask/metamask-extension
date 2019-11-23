@@ -291,9 +291,6 @@
   "copiedExclamation": {
     "message": "복사됨!"
   },
-  "copy": {
-    "message": "복사"
-  },
   "copyAddress": {
     "message": "클립보드로 주소 복사"
   },

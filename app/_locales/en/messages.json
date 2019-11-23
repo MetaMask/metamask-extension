@@ -357,9 +357,6 @@
   "copiedExclamation": {
     "message": "Copied!"
   },
-  "copy": {
-    "message": "Copy"
-  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },

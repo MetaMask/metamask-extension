@@ -42,9 +42,6 @@
   "connect": {
     "message": "കണക്‌റ്റുചെയ്യുക"
   },
-  "copy": {
-    "message": "പകര്‍ത്തുക"
-  },
   "copyToClipboard": {
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
   },
