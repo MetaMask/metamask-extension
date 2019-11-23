@@ -1,5 +1,5 @@
+import React from 'react'
 const render = require('react-dom').render
-const h = require('react-hyperscript')
 const Root = require('./app/pages')
 const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
@@ -96,11 +96,11 @@ async function startApp (metamaskState, backgroundConnection, opts) {
 
   // start app
   render(
-    h(Root, {
-      // inject initial state
-      store: store,
-    }
-    ), opts.container)
+    <Root
+      store={store}
+    />,
+    opts.container,
+  )
 
   return store
 }
