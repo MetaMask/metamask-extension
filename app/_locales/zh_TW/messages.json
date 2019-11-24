@@ -855,9 +855,6 @@
     "message": "請貼上您的私鑰字串:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "請貼上您的助憶詞！"
-  },
   "pending": {
     "message": "等待處理"
   },
@@ -1158,9 +1155,6 @@
   },
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
-  },
-  "submit": {
-    "message": "送出"
   },
   "submitted": {
     "message": "已送出"

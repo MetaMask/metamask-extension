@@ -328,9 +328,6 @@
     "message": "Plak hier uw privésleutelstring:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Plak je back-up woorden hier!"
-  },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
   },
@@ -433,9 +430,6 @@
   },
   "stateLogsDescription": {
     "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
-  },
-  "submit": {
-    "message": "voorleggen"
   },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"

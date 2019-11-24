@@ -833,9 +833,6 @@
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
-  },
   "pending": {
     "message": "prebieha"
   },
@@ -1142,9 +1139,6 @@
   },
   "storePhrase": {
     "message": "Túto frázu uložte do správcu hesiel ako 1Password."
-  },
-  "submit": {
-    "message": "Odeslat"
   },
   "submitted": {
     "message": "Odesláno"

@@ -863,9 +863,6 @@
     "message": "Поставете низ от личния си ключ тук:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Поставете тук ключовата си фраза!"
-  },
   "pending": {
     "message": "в изчакване"
   },
@@ -1178,9 +1175,6 @@
   },
   "storePhrase": {
     "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."
-  },
-  "submit": {
-    "message": "Изпращане"
   },
   "submitted": {
     "message": "Изпратен"

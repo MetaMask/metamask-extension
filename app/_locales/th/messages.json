@@ -440,9 +440,6 @@
     "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "วางคำชีดของคุณที่นี่!"
-  },
   "personalAddressDetected": {
     "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
   },
@@ -584,9 +581,6 @@
   },
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
-  },
-  "submit": {
-    "message": "ตกลง"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"

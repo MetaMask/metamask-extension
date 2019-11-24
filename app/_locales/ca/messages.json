@@ -851,9 +851,6 @@
     "message": "Enganxa la teva cadena clau privada aquí:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Enganxa la teva frase de seeds aquí!"
-  },
   "pending": {
     "message": "pendent"
   },
@@ -1160,9 +1157,6 @@
   },
   "storePhrase": {
     "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"
-  },
-  "submit": {
-    "message": "Envia"
   },
   "submitted": {
     "message": "Enviat"

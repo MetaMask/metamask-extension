@@ -845,9 +845,6 @@
     "message": "Tempelkan string kunci privat di sini:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Tempel frasa benih Anda di sini!"
-  },
   "pending": {
     "message": "tertunda"
   },
@@ -1160,9 +1157,6 @@
   },
   "storePhrase": {
     "message": "Simpan frasa ini dalam manajer sandi seperti 1Password."
-  },
-  "submit": {
-    "message": "Kirim"
   },
   "submitted": {
     "message": "Terkirim"

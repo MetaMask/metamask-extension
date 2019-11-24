@@ -830,9 +830,6 @@
     "message": "Incolla la tua chiave privata qui:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Incolla la tua frase seed qui!"
-  },
   "pending": {
     "message": "in corso"
   },
@@ -1145,9 +1142,6 @@
   },
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
-  },
-  "submit": {
-    "message": "Invia"
   },
   "submitted": {
     "message": "Inviata"

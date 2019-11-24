@@ -860,9 +860,6 @@
     "message": "الصق مقطع مفتاحك الخاص هنا:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "قم بلصق عبارة الأمان الخاصة بك هنا!"
-  },
   "pending": {
     "message": "قيد الانتظار"
   },
@@ -1175,9 +1172,6 @@
   },
   "storePhrase": {
     "message": "احتفظ بهذه الجملة في مدير كلمات مرور مثل 1Password."
-  },
-  "submit": {
-    "message": "إرسال"
   },
   "submitted": {
     "message": "المقدمة"

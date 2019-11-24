@@ -852,9 +852,6 @@
     "message": "Cole a string de sua chave particular aqui:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Cole sua seed phrase aqui!"
-  },
   "pending": {
     "message": "pendente"
   },
@@ -1167,9 +1164,6 @@
   },
   "storePhrase": {
     "message": "Guarde esta frase em um gerenciador de senhas como o 1Password."
-  },
-  "submit": {
-    "message": "Enviar"
   },
   "submitted": {
     "message": "Enviado"

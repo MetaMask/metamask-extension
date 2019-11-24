@@ -837,9 +837,6 @@
     "message": "Füge deine Private Key Zeichenfolge hier ein:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Füge deine Seed-Wörterfolge hier ein!"
-  },
   "pending": {
     "message": "ausstehend"
   },
@@ -1148,9 +1145,6 @@
   },
   "storePhrase": {
     "message": "Speichern Sie diesen Schlüssel in einem Passwortmanager wie 1Password."
-  },
-  "submit": {
-    "message": "Einreichen"
   },
   "submitted": {
     "message": "Abgeschickt"

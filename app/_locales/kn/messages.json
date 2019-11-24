@@ -867,9 +867,6 @@
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಪ್ರಮುಖ ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ!"
-  },
   "pending": {
     "message": "ಬಾಕಿಯಿರುವುದು"
   },
@@ -1182,9 +1179,6 @@
   },
   "storePhrase": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಪಾಸ್‌ವರ್ಡ್ ನಿರ್ವಾಹಕದಲ್ಲಿ 1Password ರೂಪದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ."
-  },
-  "submit": {
-    "message": "ಸಲ್ಲಿಸು"
   },
   "submitted": {
     "message": "ಸಲ್ಲಿಸಲಾಗಿದೆ"

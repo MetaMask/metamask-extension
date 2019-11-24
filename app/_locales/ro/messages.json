@@ -854,9 +854,6 @@
     "message": "Lipiți aici șirul de chei private:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Copiați-vă expresia seed aici!"
-  },
   "pending": {
     "message": "în așteptare"
   },
@@ -1169,9 +1166,6 @@
   },
   "storePhrase": {
     "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
-  },
-  "submit": {
-    "message": "Trimite"
   },
   "submitted": {
     "message": "Trimis"

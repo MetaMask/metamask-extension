@@ -281,9 +281,6 @@
     "message": "Dán dãy khóa cá nhân của bạn tại đây:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Dán Mật Khẩu Sinh Khoá (seed phrase) của bạn tại đây!"
-  },
   "privateKey": {
     "message": "Khóa Bí Mật",
     "description": "select this type of file to use to import an account"
@@ -344,9 +341,6 @@
   },
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
-  },
-  "submit": {
-    "message": "Gửi đi"
   },
   "testFaucet": {
     "message": "Vòi nhận tiền ETH ảo để thử nghiệm"

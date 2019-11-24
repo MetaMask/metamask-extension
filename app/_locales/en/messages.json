@@ -962,9 +962,6 @@
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Paste your seed phrase here!"
-  },
   "pending": {
     "message": "pending"
   },
@@ -1297,9 +1294,6 @@
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
-  },
-  "submit": {
-    "message": "Submit"
   },
   "submitted": {
     "message": "Submitted"

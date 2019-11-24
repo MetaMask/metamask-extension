@@ -864,9 +864,6 @@
     "message": "अपनी निजी कुंजी स्ट्रिंग यहां पेस्ट करें:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "अपना बीज वाक्यांश यहाँ पेस्ट करें!"
-  },
   "pending": {
     "message": "विलंबित"
   },
@@ -1176,9 +1173,6 @@
   },
   "storePhrase": {
     "message": "इस वाक्यांश को 1पासवर्ड जैसे पासवर्ड मैनेजर में संग्रहीत करें।"
-  },
-  "submit": {
-    "message": "सबमिट करें"
   },
   "submitted": {
     "message": "प्रस्तुत किया गया"

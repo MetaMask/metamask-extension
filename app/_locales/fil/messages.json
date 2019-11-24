@@ -792,9 +792,6 @@
     "message": "I-paste ang iyong private key string dito:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "I-paste ang iyong seed phrase dito!"
-  },
   "pending": {
     "message": "nakabinbin"
   },
@@ -1082,9 +1079,6 @@
   },
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."
-  },
-  "submit": {
-    "message": "Isumite"
   },
   "submitted": {
     "message": "Isinumite"

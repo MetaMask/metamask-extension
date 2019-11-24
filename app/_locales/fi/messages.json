@@ -864,9 +864,6 @@
     "message": "Liitä yksityisen avaimesi merkkijono tähän:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Liitä salaustekstisi tähän!"
-  },
   "pending": {
     "message": "odottaa"
   },
@@ -1179,9 +1176,6 @@
   },
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."
-  },
-  "submit": {
-    "message": "Lähetä"
   },
   "submitted": {
     "message": "Lähetetty"

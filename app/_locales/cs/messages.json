@@ -364,9 +364,6 @@
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
-  },
   "personalAddressDetected": {
     "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
   },
@@ -472,9 +469,6 @@
   },
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."
-  },
-  "submit": {
-    "message": "Odeslat"
   },
   "submitted": {
     "message": "Odesláno"

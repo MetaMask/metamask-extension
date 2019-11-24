@@ -845,9 +845,6 @@
     "message": "Indsæt din private nøglestreng her:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Indsæt din seed-sætning her!"
-  },
   "pending": {
     "message": "afventer"
   },
@@ -1157,9 +1154,6 @@
   },
   "storePhrase": {
     "message": "Gem denne sætning i en adgangskodeadministrator som 1Password."
-  },
-  "submit": {
-    "message": "Indsend"
   },
   "submitted": {
     "message": "Indsendt"

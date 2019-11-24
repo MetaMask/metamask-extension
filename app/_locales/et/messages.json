@@ -857,9 +857,6 @@
     "message": "Kleepige oma privaatne võtmestring siia:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Kleepige oma seemnefraas siia!"
-  },
   "pending": {
     "message": "ootel"
   },
@@ -1172,9 +1169,6 @@
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."
-  },
-  "submit": {
-    "message": "Esita"
   },
   "submitted": {
     "message": "Edastatud"

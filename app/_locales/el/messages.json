@@ -864,9 +864,6 @@
     "message": "Επικολλήστε τη συμβολοσειρά ιδιωτικού κλειδιού εδώ:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Επικολλήστε τη φράση επαναφοράς σας εδώ!"
-  },
   "pending": {
     "message": "σε εκκρεμότητα"
   },
@@ -1179,9 +1176,6 @@
   },
   "storePhrase": {
     "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."
-  },
-  "submit": {
-    "message": "Υποβολή"
   },
   "submitted": {
     "message": "Υποβλήθηκε"

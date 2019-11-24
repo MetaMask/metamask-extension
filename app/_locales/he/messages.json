@@ -864,9 +864,6 @@
     "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "הדבק/י את ה-seed phrase של כאן!"
-  },
   "pending": {
     "message": "בהמתנה"
   },
@@ -1176,9 +1173,6 @@
   },
   "storePhrase": {
     "message": "אחסנ/י צירוף זה במנהל ססמאות כמו 1Password."
-  },
-  "submit": {
-    "message": "שלח"
   },
   "submitted": {
     "message": "הוגש"

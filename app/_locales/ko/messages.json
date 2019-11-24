@@ -858,9 +858,6 @@
     "message": "개인키를 입력해주세요:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "시드 구문을 이곳에 붙여넣어 주세요!"
-  },
   "pending": {
     "message": "펜딩 중"
   },
@@ -1173,9 +1170,6 @@
   },
   "storePhrase": {
     "message": "이 구문을 1Password같은 암호 관리자에 저장하세요."
-  },
-  "submit": {
-    "message": "제출"
   },
   "submitted": {
     "message": "제출됨"

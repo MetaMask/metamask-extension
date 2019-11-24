@@ -413,9 +413,6 @@
     "message": "秘密鍵をここにペーストして下さい:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "パスフレーズをここにペーストして下さい!"
-  },
   "privacyMsg": {
     "message": "プライバシーポリシー"
   },
@@ -506,9 +503,6 @@
   },
   "sigRequest": {
     "message": "署名リクエスト"
-  },
-  "submit": {
-    "message": "送信"
   },
   "terms": {
     "message": "利用規約"

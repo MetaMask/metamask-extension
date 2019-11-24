@@ -864,9 +864,6 @@
     "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "የዘር ሐረግዎን እዚህ ይለጥፉ!"
-  },
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
   },
@@ -1179,9 +1176,6 @@
   },
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"
-  },
-  "submit": {
-    "message": "አስገባ"
   },
   "submitted": {
     "message": "የቀረበ"

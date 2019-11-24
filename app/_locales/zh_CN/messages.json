@@ -849,9 +849,6 @@
     "message": "请粘贴你的私钥:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "请粘贴你的助记词！"
-  },
   "pending": {
     "message": "待处理"
   },
@@ -1164,9 +1161,6 @@
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"
-  },
-  "submit": {
-    "message": "提交"
   },
   "submitted": {
     "message": "已提交"

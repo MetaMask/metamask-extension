@@ -863,9 +863,6 @@
     "message": "Ielīmējiet privātās atslēgas rindu šeit:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Iekopējiet savu atkopšanas frāzi šeit!"
-  },
   "pending": {
     "message": "gaida"
   },
@@ -1178,9 +1175,6 @@
   },
   "storePhrase": {
     "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."
-  },
-  "submit": {
-    "message": "Iesniegt"
   },
   "submitted": {
     "message": "Iesniegts"
