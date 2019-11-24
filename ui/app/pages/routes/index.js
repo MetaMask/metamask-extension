@@ -27,7 +27,7 @@ import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync')
+const MobileSyncPage = require('../mobile-sync').default
 const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
