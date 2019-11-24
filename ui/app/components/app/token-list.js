@@ -1,6 +1,5 @@
-const Component = require('react').Component
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
@@ -44,53 +43,60 @@ function TokenList () {
   Component.call(this)
 }
 
-TokenList.prototype.render = function () {
+TokenList.prototype.render = function TokenList () {
   const { userAddress, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
   if (isLoading) {
-    return this.message(this.context.t('loadingTokens'))
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: '250px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '30px',
+        }}
+      >
+        {this.context.t('loadingTokens')}
+      </div>
+    )
   }
 
   if (error) {
     log.error(error)
-    return h('.hotFix', {
-      style: {
+    return (
+      <div className="hotFix" style={{
         padding: '80px',
-      },
-    }, [
-      this.context.t('troubleTokenBalances'),
-      h('span.hotFix', {
-        style: {
-          color: 'rgba(247, 134, 28, 1)',
-          cursor: 'pointer',
-        },
-        onClick: () => {
-          global.platform.openWindow({
-            url: `https://ethplorer.io/address/${userAddress}`,
-          })
-        },
-      }, this.context.t('here')),
-    ])
+      }}>
+        {this.context.t('troubleTokenBalances')}
+        <span
+          className="hotFix" style={{
+            color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            global.platform.openWindow({
+              url: `https://ethplorer.io/address/${userAddress}`,
+            })
+          }}
+        >
+          {this.context.t('here')}
+        </span>
+      </div>
+    )
   }
 
-  return h('div', tokens.map((tokenData) => {
-    tokenData.image = assetImages[tokenData.address]
-    return h(TokenCell, tokenData)
-  }))
-
-}
-
-TokenList.prototype.message = function (body) {
-  return h('div', {
-    style: {
-      display: 'flex',
-      height: '250px',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '30px',
-    },
-  }, body)
+  return (
+    <div>
+      {tokens.map((tokenData, index) => {
+        tokenData.image = assetImages[tokenData.address]
+        return (
+          <TokenCell key={index} {...tokenData} />
+        )
+      })}
+    </div>
+  )
 }
 
 TokenList.prototype.componentDidMount = function () {
@@ -179,16 +185,3 @@ TokenList.prototype.componentWillUnmount = function () {
   this.tracker.removeListener('update', this.balanceUpdater)
   this.tracker.removeListener('error', this.showError)
 }
-
-// function uniqueMergeTokens (tokensA, tokensB = []) {
-//   const uniqueAddresses = []
-//   const result = []
-//   tokensA.concat(tokensB).forEach((token) => {
-//     const normal = normalizeAddress(token.address)
-//     if (!uniqueAddresses.includes(normal)) {
-//       uniqueAddresses.push(normal)
-//       result.push(token)
-//     }
-//   })
-//   return result
-// }
