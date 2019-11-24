@@ -10,7 +10,7 @@ export default class Sidebar extends Component {
   static propTypes = {
     sidebarOpen: PropTypes.bool,
     hideSidebar: PropTypes.func,
-    sidebarShouldClose: PropTypes.bool,
+    // sidebarShouldClose: PropTypes.bool,
     transitionName: PropTypes.string,
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
@@ -43,14 +43,14 @@ export default class Sidebar extends Component {
 
   }
 
-  componentDidUpdate (prevProps) {
-    if (!prevProps.sidebarShouldClose && this.props.sidebarShouldClose) {
-      this.props.hideSidebar()
-    }
-  }
+  // componentDidUpdate (prevProps) {
+  //   if (!prevProps.sidebarShouldClose && this.props.sidebarShouldClose) {
+  //     this.props.hideSidebar()
+  //   }
+  // }
 
   render () {
-    const { transitionName, sidebarOpen, sidebarShouldClose } = this.props
+    const { transitionName, sidebarOpen } = this.props
 
     return (
       <div>
@@ -59,9 +59,9 @@ export default class Sidebar extends Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={200}
         >
-          { sidebarOpen && !sidebarShouldClose ? this.renderSidebarContent() : null }
+          { sidebarOpen ? this.renderSidebarContent() : null }
         </ReactCSSTransitionGroup>
-        { sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null }
+        { sidebarOpen ? this.renderOverlay() : null }
       </div>
     )
   }
