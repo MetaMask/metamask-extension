@@ -69,7 +69,10 @@ function QrCodeView (props) {
 QrCodeView.propTypes = {
   warning: PropTypes.node,
   Qr: PropTypes.shape({
-    message: PropTypes.array,
+    message: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
 }
