@@ -6,11 +6,11 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const { stripHexPrefix } = require('ethereumjs-util')
 const actions = require('../../../store/actions')
-const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../../selectors/selectors')
 const ReadOnlyInput = require('../../ui/readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../../helpers/utils/util')
+import AccountModalContainer from './account-modal-container'
 import Button from '../../ui/button'
 
 function mapStateToPropsFactory () {
