@@ -17,7 +17,6 @@ export default class WalletView extends Component {
 
   static defaultProps = {
     responsiveDisplayClassname: '',
-    selectedAddress: null,
     selectedAccount: null,
     selectedTokenAddress: null,
   }
@@ -25,7 +24,7 @@ export default class WalletView extends Component {
   static propTypes = {
     selectedTokenAddress: PropTypes.string,
     selectedAccount: PropTypes.object,
-    selectedAddress: PropTypes.any,
+    selectedAddress: PropTypes.string.isRequired,
     keyrings: PropTypes.array.isRequired,
     responsiveDisplayClassname: PropTypes.string,
     identities: PropTypes.object.isRequired,
@@ -44,13 +43,10 @@ export default class WalletView extends Component {
       sidebarOpen,
     } = this.props
 
-    const selectedClass = selectedTokenAddress
-      ? ''
-      : 'wallet-balance-wrapper--active'
-    const className = `flex-column wallet-balance-wrapper ${selectedClass}`
-
     return (
-      <div className={className}>
+      <div className={classnames('flex-column', 'wallet-balance-wrapper', {
+        'wallet-balance-wrapper--active': Boolean(selectedTokenAddress),
+      })}>
         <div
           className="wallet-balance"
           onClick={() => {
@@ -102,10 +98,6 @@ export default class WalletView extends Component {
     } = this.props
 
     const checksummedAddress = checksumAddress(selectedAddress)
-
-    if (!selectedAddress) {
-      throw new Error('selectedAddress should not be ' + String(selectedAddress))
-    }
 
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(selectedAddress)
