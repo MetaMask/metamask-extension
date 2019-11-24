@@ -20,11 +20,11 @@ export default class MobileSyncPage extends Component {
   }
 
   static propTypes = {
-    history: PropTypes.object,
-    selectedAddress: PropTypes.string,
-    displayWarning: PropTypes.func,
-    fetchInfoToSync: PropTypes.func,
-    requestRevealSeedWords: PropTypes.func,
+    history: PropTypes.object.isRequired,
+    selectedAddress: PropTypes.string.isRequired,
+    displayWarning: PropTypes.func.isRequired,
+    fetchInfoToSync: PropTypes.func.isRequired,
+    requestRevealSeedWords: PropTypes.func.isRequired,
   }
 
 
