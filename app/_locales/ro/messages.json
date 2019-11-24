@@ -157,10 +157,6 @@
   "basic": {
     "message": "De bază"
   },
-  "betweenMinAndMax": {
-    "message": "trebuie să fie mai mare sau egal cu $1 și mai mic sau egal cu $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Explorator blocuri"
   },
@@ -533,10 +529,6 @@
   "getStarted": {
     "message": "Începe"
   },
-  "greaterThanMin": {
-    "message": "trebuie să fie mai mare sau egal cu $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Ne pare bine să vă vedem."
   },
@@ -651,10 +643,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
-  },
-  "lessThanMax": {
-    "message": "trebuie să fie mai mic sau egal cu $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Da, hai să configurăm!"

@@ -157,10 +157,6 @@
   "basic": {
     "message": "基本"
   },
-  "betweenMinAndMax": {
-    "message": "必須大於等於 $1 並且小於等於 $2 。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
   },
@@ -537,10 +533,6 @@
   "getStarted": {
     "message": "開始使用"
   },
-  "greaterThanMin": {
-    "message": "必須要大於等於 $1。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "我們很高興看到你。"
   },
@@ -658,10 +650,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "您必須使用最後的帳戶才能產生新帳戶"
-  },
-  "lessThanMax": {
-    "message": "必須小於等於 $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "好，我們開始吧！"

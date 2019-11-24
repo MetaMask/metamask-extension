@@ -145,10 +145,6 @@
   "basic": {
     "message": "Pangunahin"
   },
-  "betweenMinAndMax": {
-    "message": "dapat ay mas malaki sa o katumbas ng $1 at mas maliit sa o katumbas ng $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -503,10 +499,6 @@
   "getStarted": {
     "message": "Magsimula"
   },
-  "greaterThanMin": {
-    "message": "dapat ay mas malaki sa o katumbas ng $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Masaya kaming makita ka."
   },
@@ -605,10 +597,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
-  },
-  "lessThanMax": {
-    "message": "dapat ay mas mababa sa o katumbas ng $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"

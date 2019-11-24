@@ -157,10 +157,6 @@
   "basic": {
     "message": "Alapvető"
   },
-  "betweenMinAndMax": {
-    "message": "legyen nagyobb vagy egyenlő mint $1 és kisebb vagy egyenlő mint $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Explorer blokkolása"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "Első lépések"
   },
-  "greaterThanMin": {
-    "message": "legyen nagyobb vagy egyenlő mint $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Örülünk, hogy itt van. "
   },
@@ -657,10 +649,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
-  },
-  "lessThanMax": {
-    "message": "egyenlő vagy kevesebb kell legyen mint $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Igen, hozzuk létre!"

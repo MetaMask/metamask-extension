@@ -157,10 +157,6 @@
   "basic": {
     "message": "Основни"
   },
-  "betweenMinAndMax": {
-    "message": "трябва да бъде по-голям или равен на $1 и по-малък или равен на $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Блокиране на Explorer"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "Първи стъпки"
   },
-  "greaterThanMin": {
-    "message": "трябва да бъде по-голяма или равна на $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Радваме се да Ви видим."
   },
@@ -657,10 +649,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
-  },
-  "lessThanMax": {
-    "message": "трябва да бъде по-малко или равно на $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"

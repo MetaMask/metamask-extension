@@ -58,10 +58,6 @@
   "balanceIsInsufficientGas": {
     "message": "Toplam gas için yetersiz bakiye"
   },
-  "betweenMinAndMax": {
-    "message": "$1'e eşit veya daha büyük olmalı ve $2'den küçük veya eşit olmalı",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
   },
@@ -290,10 +286,6 @@
   },
   "learnMore": {
     "message": "Daha fazla bilgi."
-  },
-  "lessThanMax": {
-    "message": "$1'den az veya eşit olmalıdır.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Bu jetonlara adres eklemek ister misiniz?"

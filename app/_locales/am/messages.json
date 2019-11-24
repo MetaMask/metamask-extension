@@ -157,10 +157,6 @@
   "basic": {
     "message": "መሠረታዊ"
   },
-  "betweenMinAndMax": {
-    "message": "ከ$1መብለጥ ወይም እኩል እና ከ$2በታች ወይም እኩል መሆን አለበት።",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "ኤክስፕሎረር አግድ"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
   },
-  "greaterThanMin": {
-    "message": "ከ $1ጋር እኩል መሆን ወይም መብለጥ አለበት።",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "እርስዎን በማየታችን ደስተኛ ነን።"
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "አዲስ መለያ ከማከልዎ በፊት የመጨረሻውን መለያዎን መጠቀም አለብዎት።"
-  },
-  "lessThanMax": {
-    "message": "ከ $1ያነሰ ወይም እኩል መሆን አለበት።",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"

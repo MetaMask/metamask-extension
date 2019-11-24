@@ -157,10 +157,6 @@
   "basic": {
     "message": "প্রাথমিক"
   },
-  "betweenMinAndMax": {
-    "message": "অবশ্যই $1 এর বড় বা সমান এবং $2 এর ছোটো বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "এক্সপ্লোরার ব্লক করুন"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "শুরু করুন"
   },
-  "greaterThanMin": {
-    "message": "অবশ্যই $1 এর থেকে বড় বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "আপনাকে দেখে আমরা আনন্দিত।"
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
-  },
-  "lessThanMax": {
-    "message": "অবশ্যই $1 এর থেকে কম বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"

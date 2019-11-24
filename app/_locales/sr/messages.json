@@ -157,10 +157,6 @@
   "basic": {
     "message": "Основна"
   },
-  "betweenMinAndMax": {
-    "message": "mora biti veće od ili jednako $1 i manje od ili jednako $2",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blok istraživač"
   },
@@ -537,10 +533,6 @@
   "getStarted": {
     "message": "Започнимо"
   },
-  "greaterThanMin": {
-    "message": "mora biti veći od ili jednak $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Drago nam je da vas vidimo."
   },
@@ -658,10 +650,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Treba da koristite svoj poslednji nalog pre nego što budete mogli da dodate novi."
-  },
-  "lessThanMax": {
-    "message": "mora biti manje od ili jednako $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Da, hajde da sve podesimo!"

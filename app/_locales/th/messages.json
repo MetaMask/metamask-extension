@@ -64,10 +64,6 @@
   "balanceIsInsufficientGas": {
     "message": "ยอดคงเหลือไม่พอสำหรับจ่ายค่าแก๊สทั้งหมด"
   },
-  "betweenMinAndMax": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1 และน้อยกว่าหรือเท่ากับ $2",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "ใช้งาน Blockies Identicon"
   },
@@ -281,10 +277,6 @@
     "message": "รับอีเธอร์ที่ปล่อยจาก $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "ที่นี่",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -348,10 +340,6 @@
   },
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
-  },
-  "lessThanMax": {
-    "message": "ต้องน้อยกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"

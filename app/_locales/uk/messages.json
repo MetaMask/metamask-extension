@@ -157,10 +157,6 @@
   "basic": {
     "message": "Основні параметри"
   },
-  "betweenMinAndMax": {
-    "message": "має бути більшим або дорівнювати $1 і меншим або дорівнювати $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Блокувати Explorer"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "Почати"
   },
-  "greaterThanMin": {
-    "message": "має бути більшим або рівним $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Раді вас бачити."
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
-  },
-  "lessThanMax": {
-    "message": "має бути більшим або дорівнювати $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"

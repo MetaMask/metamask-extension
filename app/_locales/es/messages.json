@@ -145,10 +145,6 @@
   "basic": {
     "message": "Básico"
   },
-  "betweenMinAndMax": {
-    "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon (Iconos)"
   },
@@ -446,10 +442,6 @@
   "getHelp": {
     "message": "Pedir ayuda."
   },
-  "greaterThanMin": {
-    "message": "Debe ser mayor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardwareWalletConnected": {
     "message": "Se ha conectado el monedero físico"
   },
@@ -549,10 +541,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Hay que hacer uso de tu última cuenta antes de agregarle una nueva."
-  },
-  "lessThanMax": {
-    "message": "Debe ser menor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "¿Te gustaría agregar estos tokens?"

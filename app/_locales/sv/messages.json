@@ -157,10 +157,6 @@
   "basic": {
     "message": "Grunder"
   },
-  "betweenMinAndMax": {
-    "message": "måste vara större än/lika med $1, eller mindre än/lika med $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blockera Utforskaren"
   },
@@ -530,10 +526,6 @@
   "getStarted": {
     "message": "Komma igång"
   },
-  "greaterThanMin": {
-    "message": "måste vara större än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Vi är glada att se dig."
   },
@@ -651,10 +643,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
-  },
-  "lessThanMax": {
-    "message": "måste vara mindre än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ja, kör igång!"

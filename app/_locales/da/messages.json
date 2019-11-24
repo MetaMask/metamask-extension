@@ -157,10 +157,6 @@
   "basic": {
     "message": "Grundlæggende oplysninger"
   },
-  "betweenMinAndMax": {
-    "message": "skal være større end eller lig med $1 og mindre end eller lig med $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Block-udforsker"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "Kom godt i gang"
   },
-  "greaterThanMin": {
-    "message": "skal være større end eller lig med $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Vi er glade for at se dig."
   },
@@ -654,10 +646,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
-  },
-  "lessThanMax": {
-    "message": "skal være mindre end eller lig med $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ja, lad os komme i gang!"

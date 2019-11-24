@@ -46,10 +46,6 @@
   "balanceIsInsufficientGas": {
     "message": "Kulang ang balanse para sa kasalukuyang gas total"
   },
-  "betweenMinAndMax": {
-    "message": "dapat mas malaki o katumbas ng $1 at mas mababa o katumbas ng $2.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
-  },
   "buyCoinSwitch": {
     "message": "Bumili sa CoinSwitch"
   },
@@ -164,10 +160,6 @@
     "message": "Kumuha ng Ether mula sa faucet para sa $1",
     "description": "Ipinapakita ang pangalan ng network para sa Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "dapat mas malaki o katumbas ng $1.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
-  },
   "here": {
     "message": "i-click ito",
     "description": "tulad ng -i-click dito- para sa mas maraming impormasyon (kasama ng troubleTokenBalances)"
@@ -200,10 +192,6 @@
   },
   "invalidInput": {
     "message": "Invalid ang input."
-  },
-  "lessThanMax": {
-    "message": "dapat mas mababa o katumbas ng $1.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
   },
   "loading": {
     "message": "Naglo-load..."

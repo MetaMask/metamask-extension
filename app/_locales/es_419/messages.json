@@ -157,10 +157,6 @@
   "basic": {
     "message": "Básicas"
   },
-  "betweenMinAndMax": {
-    "message": "debe ser superior o igual a $1 e inferior o igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Bloquear Explorer"
   },
@@ -534,10 +530,6 @@
   "getStarted": {
     "message": "Comenzar"
   },
-  "greaterThanMin": {
-    "message": "debe ser superior o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Estamos encantados de verte."
   },
@@ -652,10 +644,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Necesitas utilizar tu cuenta anterior para agregar una nueva."
-  },
-  "lessThanMax": {
-    "message": "debe ser menor o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "¡Eso, pongámonos en marcha!"

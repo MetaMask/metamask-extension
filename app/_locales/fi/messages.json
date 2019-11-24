@@ -157,10 +157,6 @@
   "basic": {
     "message": "Perusvaihtoehdot"
   },
-  "betweenMinAndMax": {
-    "message": "tulee olla vähintään $1 ja korkeintaan $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Lohkonhallinta"
   },
@@ -537,10 +533,6 @@
   "getStarted": {
     "message": "Aloitusopas"
   },
-  "greaterThanMin": {
-    "message": "on oltava vähintään $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Meistä on mukava nähdä sinut."
   },
@@ -658,10 +650,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Sinun tarvitsee käyttää edellistä tiliäsi ennen kuin voit lisätä uuden."
-  },
-  "lessThanMax": {
-    "message": "tulee olla korkeintaan $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"

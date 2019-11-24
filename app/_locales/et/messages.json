@@ -157,10 +157,6 @@
   "basic": {
     "message": "Põhiseaded"
   },
-  "betweenMinAndMax": {
-    "message": "peab olema suurem või võrdne $1 ja väiksem või võrdne $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokeeri Explorer"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "Alustamine"
   },
-  "greaterThanMin": {
-    "message": "peab olema $1või suurem.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Meil on hea meel teid näha."
   },
@@ -654,10 +646,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
-  },
-  "lessThanMax": {
-    "message": "peab olema $1või väiksem.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"

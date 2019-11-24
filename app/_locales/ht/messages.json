@@ -79,10 +79,6 @@
   "balanceIsInsufficientGas": {
     "message": "Ensifizan balans pou total gaz aktyèl la"
   },
-  "betweenMinAndMax": {
-    "message": "dwe plis pase oswa egal a $ 1 mwens ke oswa egal a $ 2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Itilize Blockies Identicon"
   },
@@ -302,10 +298,6 @@
   "getHelp": {
     "message": "Jwenn èd."
   },
-  "greaterThanMin": {
-    "message": "dwe pi gran pase oswa egal a $ 1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -399,10 +391,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
-  },
-  "lessThanMax": {
-    "message": "dwe mwens pase oswa egal a $ 1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"

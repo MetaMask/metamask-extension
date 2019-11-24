@@ -157,10 +157,6 @@
   "basic": {
     "message": "Pamata"
   },
-  "betweenMinAndMax": {
-    "message": "jābūt lielākai par vai vienādai ar $1 un mazākai par vai vienādai ar $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Bloķēt Explorer"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "Sākt darbu"
   },
-  "greaterThanMin": {
-    "message": "jābūt lielākam par vai vienādam ar $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Priecājamies jūs redzēt!"
   },
@@ -657,10 +649,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
-  },
-  "lessThanMax": {
-    "message": "jābūt mazākam par vai vienādam ar $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"

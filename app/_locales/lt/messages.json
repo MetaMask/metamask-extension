@@ -157,10 +157,6 @@
   "basic": {
     "message": "Bendrieji"
   },
-  "betweenMinAndMax": {
-    "message": "turi būti ne mažiau kaip $1 ir ne daugiau kaip $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokuoti naršyklę"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "Darbo pradžia"
   },
-  "greaterThanMin": {
-    "message": "turi būti daugiau arba lygu $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Džiaugiamės jus matydami."
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Prieš įtraukdami naują, turite pasinaudoti paskutine paskyra."
-  },
-  "lessThanMax": {
-    "message": "turi būti mažiau arba lygu $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"

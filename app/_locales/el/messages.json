@@ -157,10 +157,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "betweenMinAndMax": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1 και μικρότερο ή ίσο με $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Εξερευνητής Μπλοκ"
   },
@@ -537,10 +533,6 @@
   "getStarted": {
     "message": "Έναρξη"
   },
-  "greaterThanMin": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Χαιρόμαστε που σας βλέπουμε."
   },
@@ -658,10 +650,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Πρέπει να χρησιμοποιήσετε τον τελευταίο σας λογαριασμό πριν προσθέσετε έναν νέο."
-  },
-  "lessThanMax": {
-    "message": "πρέπει να είναι μικρότερο από ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"

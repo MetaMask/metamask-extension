@@ -157,10 +157,6 @@
   "basic": {
     "message": "Osnovno"
   },
-  "betweenMinAndMax": {
-    "message": "mora biti večji ali enak $1 in manjši ali enak $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokiraj Explorer"
   },
@@ -534,10 +530,6 @@
   "getStarted": {
     "message": "Začnite"
   },
-  "greaterThanMin": {
-    "message": "mora biti večji ali enak $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Veseli nas, da ste nas spet obiskali."
   },
@@ -649,10 +641,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Za dodajanje novega računa morate uporabiti zadnji račun."
-  },
-  "lessThanMax": {
-    "message": "mora biti manjši ali enak $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Lotimo se nastavitev!"

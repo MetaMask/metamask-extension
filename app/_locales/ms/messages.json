@@ -157,10 +157,6 @@
   "basic": {
     "message": "Asas"
   },
-  "betweenMinAndMax": {
-    "message": "mestilah lebih besar atau sama dengan $1 dan kurang atau sama dengan $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Sekat Explorer"
   },
@@ -524,10 +520,6 @@
   "getStarted": {
     "message": "Bermula"
   },
-  "greaterThanMin": {
-    "message": "mestilah melebihi atau bersamaan dengan $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Kami gembira bertemu anda."
   },
@@ -641,10 +633,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
-  },
-  "lessThanMax": {
-    "message": "mestilah kurang atau bersamaan dengan $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"

@@ -157,10 +157,6 @@
   "basic": {
     "message": "Opcions bàsiques"
   },
-  "betweenMinAndMax": {
-    "message": "ha de ser igual o superior a $1 i menor o igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Bloqueja l'explorador"
   },
@@ -530,10 +526,6 @@
   "getStarted": {
     "message": "Comença"
   },
-  "greaterThanMin": {
-    "message": "ha de ser major o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Ens alegrem de veure't."
   },
@@ -645,10 +637,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
-  },
-  "lessThanMax": {
-    "message": "ha de ser igual o menor a $1 .",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Sí, posem-nos en marxa!"

@@ -154,10 +154,6 @@
   "basic": {
     "message": "Základné"
   },
-  "betweenMinAndMax": {
-    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -531,10 +527,6 @@
   "getStarted": {
     "message": "Začať"
   },
-  "greaterThanMin": {
-    "message": "musí být větší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Sme radi, že vás vidíme."
   },
@@ -639,10 +631,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
-  },
-  "lessThanMax": {
-    "message": "musí být menší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
