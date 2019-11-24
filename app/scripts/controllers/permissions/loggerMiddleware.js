@@ -85,7 +85,8 @@ module.exports = function createLoggerMiddleware ({
     let accounts, entries
     if (isEthRequestAccounts) {
       accounts = result
-      entries = { 'eth_accounts': [ { account: accounts[0], lastApproved: time } ] }
+      const accountToTimeMap = accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
+      entries = { 'eth_accounts': { accounts: accountToTimeMap, lastApproved: time } }
     } else {
       entries = result
         ? result.map(perm => {
@@ -97,11 +98,10 @@ module.exports = function createLoggerMiddleware ({
           .reduce((acc, m) => {
             if (requestedMethods.includes(m)) {
               if (m === 'eth_accounts') {
-                acc[m] = accounts.map(account => ({ lastApproved: time, account }))
+                const accountToTimeMap = accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
+                acc[m] = { lastApproved: time, accounts: accountToTimeMap }
               } else {
-                acc[m] = [ {
-                  lastApproved: time,
-                } ]
+                acc[m] = { lastApproved: time }
               }
             }
             return acc
@@ -115,15 +115,23 @@ module.exports = function createLoggerMiddleware ({
   }
 
   function commitHistory (origin, entries) {
-    const history = store.getState()[historyStoreKey]
-    if (history[origin] && history[origin]['eth_accounts'] && entries['eth_accounts'] && Array.isArray(entries['eth_accounts'])) {
-      history[origin]['eth_accounts'] = [ ...history[origin]['eth_accounts'], ...entries['eth_accounts'] ]
-    } else {
-      history[origin] = {
-        ...history[origin],
-        ...entries,
+    const history = store.getState()[historyStoreKey] || {}
+    const newOriginHistory = {
+      ...history[origin],
+      ...entries,
+    }
+
+    if (history[origin] && history[origin]['eth_accounts'] && entries['eth_accounts']) {
+      newOriginHistory['eth_accounts'] = {
+        lastApproved: entries['eth_accounts'].lastApproved,
+        accounts: {
+          ...history[origin]['eth_accounts'].accounts,
+          ...entries['eth_accounts'].accounts,
+        },
       }
     }
+
+    history[origin] = newOriginHistory
 
     store.updateState({ [historyStoreKey]: history })
   }

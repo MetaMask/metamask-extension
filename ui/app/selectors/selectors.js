@@ -545,9 +545,10 @@ function getRenderablePermissionsDomains (state) {
       } = domainMetadata[domainKey]
       const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
       const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
-      const selectedAddressInfo = ethAccountsPermissionsForDomain.find(({ account }) => account === selectedAddress) || {}
+      const accountsLastConnectedTime = ethAccountsPermissionsForDomain.accounts || {}
+      const selectedAddressLastConnectedTime = accountsLastConnectedTime[selectedAddress]
 
-      const lastConnectedTime = formatDate(selectedAddressInfo.lastApproved, 'yyyy-M-d')
+      const lastConnectedTime = formatDate(selectedAddressLastConnectedTime, 'yyyy-M-d')
 
       return [ ...acc, {
         name,
@@ -572,14 +573,10 @@ function getOriginOfCurrentTab (state) {
 function getLastConnectedInfo (state) {
   const { permissionsHistory } = state.metamask
   const lastConnectedInfoData = Object.keys(permissionsHistory).reduce((acc, origin) => {
-    const ethAccountsArray = permissionsHistory[origin]['eth_accounts']
-    const addressTimeMap = ethAccountsArray.reduce((acc2, { account, lastApproved }) => ({
-      ...acc2,
-      [account]: lastApproved,
-    }), {})
+    const ethAccountsHistory = permissionsHistory[origin]['eth_accounts']
     return {
       ...acc,
-      [origin]: addressTimeMap,
+      [origin]: ethAccountsHistory.accounts,
     }
   }, {})
   return lastConnectedInfoData
