@@ -17,4 +17,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
