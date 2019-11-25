@@ -157,10 +157,6 @@
   "basic": {
     "message": "Dasar"
   },
-  "betweenMinAndMax": {
-    "message": "harus lebih dari atau sama dengan $1 dan kurang dari atau sama dengan $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokir Penjelajah"
   },
@@ -527,10 +523,6 @@
   "getStarted": {
     "message": "Mulai"
   },
-  "greaterThanMin": {
-    "message": "harus lebih besar atau sama dengan $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Kami senang bertemu dengan Anda."
   },
@@ -648,10 +640,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akun terakhir sebelum dapat menambahkan akun baru."
-  },
-  "lessThanMax": {
-    "message": "harus kurang dari atau setara $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ya, ayo tata!"

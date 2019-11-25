@@ -157,10 +157,6 @@
   "basic": {
     "message": "پایه"
   },
-  "betweenMinAndMax": {
-    "message": "باید بزرگتر از یا مساوی به 1$1 و کوچکتر یا مساوی به 2$2 باشد.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "بلاک کردن براوزر"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "شروع به کار"
   },
-  "greaterThanMin": {
-    "message": "باید بزرگتر از یا مساوی به 1$1 باشد.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "از دیدن شما خوشحال هستیم."
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
-  },
-  "lessThanMax": {
-    "message": "باید کوچکتر از 1$1 یا مساوی با آن باشد.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "بلی، درست شد!"

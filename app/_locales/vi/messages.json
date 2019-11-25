@@ -49,10 +49,6 @@
   "balanceIsInsufficientGas": {
     "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
   },
-  "betweenMinAndMax": {
-    "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -176,10 +172,6 @@
     "message": "Lấy Ether từ vòi với giá $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "phải nhiều hơn hoặc bằng $1",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "tại đây",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -219,10 +211,6 @@
   },
   "kovan": {
     "message": "Mạng thử nghiệm Kovan"
-  },
-  "lessThanMax": {
-    "message": "phải ít hơn hoặc bằng $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "loading": {
     "message": "Đang tải..."

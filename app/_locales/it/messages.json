@@ -151,10 +151,6 @@
   "basic": {
     "message": "Base"
   },
-  "betweenMinAndMax": {
-    "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -519,10 +515,6 @@
   "getStarted": {
     "message": "Inizia"
   },
-  "greaterThanMin": {
-    "message": "deve essere maggiore o uguale a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Siamo contenti di vederti."
   },
@@ -637,10 +629,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
-  },
-  "lessThanMax": {
-    "message": "deve essere minore o uguale a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Si, iniziamo!"

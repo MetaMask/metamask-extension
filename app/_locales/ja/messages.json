@@ -136,10 +136,6 @@
   "balanceIsInsufficientGas": {
     "message": "現在のガス総量に対して残高が不足しています"
   },
-  "betweenMinAndMax": {
-    "message": " $1以上 $2以下にして下さい。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
   },
@@ -275,10 +271,6 @@
     "message": "フォーセットで $1のEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": " $1以上にして下さい。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "ここ",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -330,10 +322,6 @@
   },
   "learnMore": {
     "message": "詳細"
-  },
-  "lessThanMax": {
-    "message": " $1以下にして下さい。",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "トークンを追加しますか?"

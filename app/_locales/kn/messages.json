@@ -157,10 +157,6 @@
   "basic": {
     "message": "ಮೂಲ"
   },
-  "betweenMinAndMax": {
-    "message": " $1 ಗಿಂತಲೂ ಹೆಚ್ಚಾಗಿರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು ಮತ್ತು $2 ಗಿಂತಲೂ ಕಡಿಮೆ ಇರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕವನ್ನು ನಿರ್ಬಂಧಿಸಿ"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "ಪ್ರಾರಂಭಗೊಂಡಿದೆ"
   },
-  "greaterThanMin": {
-    "message": " $1 ಗಿಂತಲೂ ಹೆಚ್ಚಾಗಿರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "ನಿಮ್ಮನ್ನು ನೋಡಿ ನಮಗೆ ಸಂತೋಷವಾಗಿದೆ."
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "ನೀವು ಹೊಸದನ್ನು ಸೇರಿಸುವುದರ ಮೊದಲು ನಿಮ್ಮ ಹಿಂದಿನ ಖಾತೆಯನ್ನು ನೀವು ಬಳಸಬೇಕು."
-  },
-  "lessThanMax": {
-    "message": "$1 ಗಿಂತ ಕಡಿಮೆ ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"

@@ -58,10 +58,6 @@
   "balanceIsInsufficientGas": {
     "message": "Недостаточный баланс для текущего объема газа"
   },
-  "betweenMinAndMax": {
-    "message": "должно быть больше или равно $1 и меньше или равно $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
   },
@@ -227,10 +223,6 @@
     "message": "Получить Ether из крана для $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "должно быть больше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "тут",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -294,10 +286,6 @@
   },
   "learnMore": {
     "message": "Узнать больше."
-  },
-  "lessThanMax": {
-    "message": "должно быть меньше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Вы хотите добавить эти токены?"

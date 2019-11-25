@@ -157,10 +157,6 @@
   "basic": {
     "message": "בסיסי"
   },
-  "betweenMinAndMax": {
-    "message": "חייב להיות גדול או שווה ל-$1 ופחות או שווה ל-$2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "סייר בלוקים"
   },
@@ -540,10 +536,6 @@
   "getStarted": {
     "message": "תחילת העבודה"
   },
-  "greaterThanMin": {
-    "message": "חייב להיות גדול או שווה ל-$1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "אנו שמחים לראותך."
   },
@@ -661,10 +653,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
-  },
-  "lessThanMax": {
-    "message": "חייב להיות פחות או שווה ל- $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "כן, בוא נתקין!"

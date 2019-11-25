@@ -157,10 +157,6 @@
   "basic": {
     "message": "الأساسية"
   },
-  "betweenMinAndMax": {
-    "message": "يجب أن تكون أكبر من أو تساوي $1 وأقل من أو تساوي $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "متصفح Block Explorer"
   },
@@ -536,10 +532,6 @@
   "getStarted": {
     "message": "البدء"
   },
-  "greaterThanMin": {
-    "message": "يجب أن يكون أكبر من أو يساوي $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "نحن سعداء برؤيتك."
   },
@@ -654,10 +646,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
-  },
-  "lessThanMax": {
-    "message": "يجب أن يكون أقل من أو يساوي $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"

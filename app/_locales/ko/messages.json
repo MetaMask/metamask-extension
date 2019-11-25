@@ -154,10 +154,6 @@
   "balanceIsInsufficientGas": {
     "message": "현재 가스 총합에 대해 잔액이 부족합니다"
   },
-  "betweenMinAndMax": {
-    "message": "$1 이상 $2 이하여야 합니다.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "익스플로러 차단"
   },
@@ -537,10 +533,6 @@
   "getStarted": {
     "message": "시작하기"
   },
-  "greaterThanMin": {
-    "message": "$1 이상이어야 합니다.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardware": {
     "message": "하드웨어"
   },
@@ -655,10 +647,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
-  },
-  "lessThanMax": {
-    "message": "$1 이하여야합니다.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "네, 설정해볼게요!"

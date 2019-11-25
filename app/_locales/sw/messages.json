@@ -157,10 +157,6 @@
   "basic": {
     "message": "Msingi"
   },
-  "betweenMinAndMax": {
-    "message": "inapaswa kuwa kubwa kuliko au sawa na $1 na ndogo kuliko au sawa na $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Tazama akaunti kwenye $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -530,10 +526,6 @@
   "getStarted": {
     "message": "Anza"
   },
-  "greaterThanMin": {
-    "message": "inapaswa iwe kubwa kuliko au sawa na $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Tuna furaha kukuona"
   },
@@ -645,10 +637,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
-  },
-  "lessThanMax": {
-    "message": "inapaswa kuwa ndogo kuliko au sawa na $1. ",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"

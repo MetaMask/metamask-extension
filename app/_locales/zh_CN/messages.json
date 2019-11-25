@@ -157,10 +157,6 @@
   "basic": {
     "message": "基本"
   },
-  "betweenMinAndMax": {
-    "message": "必须大于等于 $1 并且小于等于 $2 。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "屏蔽管理器"
   },
@@ -534,10 +530,6 @@
   "getStarted": {
     "message": "开始使用"
   },
-  "greaterThanMin": {
-    "message": "必须要大于等于 $1。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "我们很高兴与您见面。"
   },
@@ -652,10 +644,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "请在新增账户前，确认添加上一个账户。"
-  },
-  "lessThanMax": {
-    "message": "必须小于或等于 $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "是的。立即开始设置！"

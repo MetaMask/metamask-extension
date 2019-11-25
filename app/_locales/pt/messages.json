@@ -55,10 +55,6 @@
   "balanceIsInsufficientGas": {
     "message": "Saldo insuficiente para a quantidade de gas total"
   },
-  "betweenMinAndMax": {
-    "message": "tem de ser maior ou igual a $1 e menor ou igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -200,10 +196,6 @@
     "message": "Obter Ether de um faucet por $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "tem de ser maior ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "aqui",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -261,10 +253,6 @@
   },
   "kovan": {
     "message": "Rede de Teste Kovan"
-  },
-  "lessThanMax": {
-    "message": "tem de ser menor ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Gostaria de adicionar estes tokens?"
