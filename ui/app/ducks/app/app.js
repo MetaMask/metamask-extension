@@ -2,6 +2,9 @@ const extend = require('xtend')
 const actions = require('../../store/actions')
 const txHelper = require('../../../lib/tx-helper')
 const log = require('loglevel')
+import {
+  submittedPendingTransactionsSelector,
+} from '../../selectors/transactions'
 
 // Actions
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
@@ -91,15 +94,17 @@ export default function reduceApp (state, action) {
 
     // sidebar methods
     case actions.UPDATE_METAMASK_STATE:
-      const { metamask: was } = state
-      const { value: is } = action
+      const { value } = action
       const { sidebar, sidebar: { props: { transaction: { id: transactionId = null } = {} } } } = appState
+
+      const submittedPendingTransactions = submittedPendingTransactionsSelector(state)
+      const newSubmittedPendingTransactions = submittedPendingTransactionsSelector({ metamask: value })
 
       if (
         sidebar &&
         transactionId &&
-        was.selectedAddressTxList.find(({ id }) => id === transactionId).status === 'submitted' &&
-        is.selectedAddressTxList.find(({ id }) => id === transactionId).status !== 'submitted'
+        submittedPendingTransactions.find(({ id }) => id === transactionId) &&
+        !newSubmittedPendingTransactions.length
       ) {
         // close sidebar
         return extend(appState, {
