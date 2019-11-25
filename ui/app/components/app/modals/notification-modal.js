@@ -4,6 +4,10 @@ import {connect} from 'react-redux'
 import { hideModal } from '../../../store/actions'
 
 class NotificationModal extends Component {
+  static contextProps = {
+    t: PropTypes.func.isRequired,
+  }
+
   render () {
     const {
       header,
@@ -13,6 +17,8 @@ class NotificationModal extends Component {
       hideModal,
       onConfirm,
     } = this.props
+
+    const { t } = this.context
 
     const showButtons = showCancelButton || showConfirmButton
 
@@ -35,7 +41,7 @@ class NotificationModal extends Component {
                   className="btn-default notification-modal__buttons__btn"
                   onClick={hideModal}
                 >
-                  Cancel
+                  {t('cancel')}
                 </div>
               )}
               {showConfirmButton && (
@@ -46,7 +52,7 @@ class NotificationModal extends Component {
                     hideModal()
                   }}
                 >
-                  Confirm
+                  {t('confirm')}
                 </div>
               )}
             </div>
