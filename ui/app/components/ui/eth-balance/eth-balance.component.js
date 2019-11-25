@@ -23,7 +23,7 @@ export default class EthBalance extends Component {
     conversionRate: PropTypes.any.isRequired,
     shorten: PropTypes.bool,
     incoming: PropTypes.bool,
-    currentCurrency: PropTypes.any.isRequired,
+    currentCurrency: PropTypes.string.isRequired,
     hideTooltip: PropTypes.bool,
     styleOverride: PropTypes.object,
     showFiat: PropTypes.bool,
