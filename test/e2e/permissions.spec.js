@@ -118,6 +118,9 @@ describe('MetaMask', function () {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
+      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButton.click()
+
       await waitUntilXWindowHandles(driver, 3)
       const windowHandles = await driver.getAllWindowHandles()
 
