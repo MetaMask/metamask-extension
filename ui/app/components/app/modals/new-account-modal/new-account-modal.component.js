@@ -62,8 +62,7 @@ export default class NewAccountModal extends Component {
           <Button
             type="primary"
             onClick={() => {
-              this.props.onSave()
-              this.props.hideModal()
+              this.props.onSave(this.state.alias).then(this.props.hideModal)
             }}
             disabled={!this.state.alias}
           >

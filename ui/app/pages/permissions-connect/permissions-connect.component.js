@@ -39,7 +39,7 @@ export default class PermissionConnect extends Component {
     permissionAccepted: null,
   }
 
-  selectAccount (address) {
+  selectAccount = (address) => {
     this.setState({
       page: 2,
       selectedAccountAddress: address,
