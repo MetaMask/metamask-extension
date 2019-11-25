@@ -104,7 +104,7 @@ export default function reduceApp (state, action) {
         sidebar &&
         transactionId &&
         submittedPendingTransactions.find(({ id }) => id === transactionId) &&
-        !newSubmittedPendingTransactions.length
+        !newSubmittedPendingTransactions.find(({ id }) => id === transactionId)
       ) {
         // close sidebar
         return extend(appState, {
