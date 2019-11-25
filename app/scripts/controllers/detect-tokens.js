@@ -1,4 +1,4 @@
-const Web3 = require('web3')
+const ethers = require('ethers')
 const contracts = require('eth-contract-metadata')
 const { warn } = require('loglevel')
 const { MAINNET } = require('./network/enums')
@@ -7,6 +7,7 @@ const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
 const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
+
 /**
  * A controller that polls for token exchange
  * rates based on a user's current token list
@@ -32,26 +33,28 @@ class DetectTokensController {
     if (!this.isActive) { return }
     if (this._network.store.getState().provider.type !== MAINNET) { return }
     const tokensToDetect = []
-    this.web3.setProvider(this._network._provider)
     for (const contractAddress in contracts) {
       if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
         tokensToDetect.push(contractAddress)
       }
     }
 
-    const ethContract = new this.web3.eth.Contract(SINGLE_CALL_BALANCES_ABI, SINGLE_CALL_BALANCES_ADDRESS)
-    ethContract.methods.balances([this.selectedAddress], tokensToDetect).call(null, (error, result) => { // eslint-disable-line
-      if (error) {
-        warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
-        return
-      }
+    const ethContract = new ethers.Contract(
+      SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ABI, this.ethersProvider
+    )
+    try {
+      const result = await ethContract.balances([this.selectedAddress], tokensToDetect)
       tokensToDetect.forEach((tokenAddress, index) => {
         const balance = result[index]
-        if (balance && balance !== '0') {
-          this._preferences.addToken(tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals)
+        if (balance && !balance.isZero()) {
+          this._preferences.addToken(
+            tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals
+          )
         }
       })
-    })
+    } catch (error) {
+      warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
+    }
   }
 
   /**
@@ -62,16 +65,19 @@ class DetectTokensController {
    *
    */
   async detectTokenBalance (contractAddress) {
-    const ethContract = new this.web3.eth.Contract(ERC20_ABI, contractAddress)
-    ethContract.methods.balanceOf(this.selectedAddress).call(null, (error, result) => { // eslint-disable-line
-      if (!error) {
-        if (result !== '0') {
-          this._preferences.addToken(contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals)
-        }
-      } else {
-        warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
+    const ethContract = new ethers.Contract(
+      contractAddress, ERC20_ABI, this.ethersProvider
+    )
+    try {
+      const result = await ethContract.balanceOf(this.selectedAddress)
+      if (!result.isZero()) {
+        this._preferences.addToken(
+          contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals
+        )
       }
-    })
+    } catch (error) {
+      warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
+    }
   }
 
   /**
@@ -116,7 +122,7 @@ class DetectTokensController {
   set network (network) {
     if (!network) { return }
     this._network = network
-    this.web3 = new Web3(network._provider)
+    this.ethersProvider = new ethers.providers.Web3Provider(network._provider)
   }
 
   /**
