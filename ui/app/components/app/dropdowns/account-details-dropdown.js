@@ -143,7 +143,7 @@ AccountDetailsDropdown.prototype.render = function () {
         history.push(CONNECTED_ROUTE)
       },
       text: this.context.t('connectedSites'),
-      icon: h(`img`, { src: 'images/icons/retweet.svg', style: { height: '15px' } }),
+      icon: h(`img`, { src: 'images/connect-white.svg', style: { height: '15px' } }),
     }),
     isRemovable ? h(Item, {
       onClick: (e) => {
