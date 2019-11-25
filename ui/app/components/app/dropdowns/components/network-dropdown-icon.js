@@ -45,7 +45,7 @@ NetworkDropdownIcon.defaultProps = {
 
 NetworkDropdownIcon.propTypes = {
   backgroundColor: PropTypes.string,
-  loading: PropTypes.boolean,
+  loading: PropTypes.bool,
   innerBorder: PropTypes.string,
   diameter: PropTypes.string,
   isSelected: PropTypes.bool,
