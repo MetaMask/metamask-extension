@@ -17,7 +17,7 @@ export default class ConnectedSitesList extends Component {
       lastConnectedTime: PropTypes.string,
       permissionDescriptions: PropTypes.array,
     })).isRequired,
-    domains: PropTypes.object.isRequired,
+    domains: PropTypes.object,
     showDisconnectAccountModal: PropTypes.func.isRequired,
     showDisconnectAllModal: PropTypes.func.isRequired,
   }
@@ -25,6 +25,7 @@ export default class ConnectedSitesList extends Component {
   state = {
     expandedDomain: '',
     iconError: '',
+    domains: {},
   }
 
   handleDomainItemClick (domainKey) {
