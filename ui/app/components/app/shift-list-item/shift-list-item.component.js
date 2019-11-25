@@ -5,7 +5,7 @@ const actions = require('../../../store/actions')
 const { formatDate, addressSummary } = require('../../../helpers/utils/util')
 
 const CopyButton = require('../../ui/copyButton')
-const EthBalance = require('../../ui/eth-balance')
+const EthBalance = require('../../ui/eth-balance').default
 const Tooltip = require('../../ui/tooltip')
 
 export default class ShiftListItem extends Component {
