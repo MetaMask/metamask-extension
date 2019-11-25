@@ -12,7 +12,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedPermissions: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
-    selectedAccount: PropTypes.object.isRequired,
+    selectedAccount: PropTypes.object,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
   }
@@ -20,6 +20,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   static defaultProps = {
     redirect: null,
     permissionRejected: null,
+    selectedAccount: {},
   }
 
   static contextTypes = {

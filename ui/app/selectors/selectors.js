@@ -522,7 +522,7 @@ function getAddressConnectedToCurrentTab (state) {
 
 function getRenderablePermissionsDomains (state) {
   const {
-    domains,
+    domains = {},
     domainMetadata,
     permissionsHistory,
     permissionsDescriptions,
@@ -571,9 +571,9 @@ function getOriginOfCurrentTab (state) {
 }
 
 function getLastConnectedInfo (state) {
-  const { permissionsHistory } = state.metamask
+  const { permissionsHistory = {} } = state.metamask
   const lastConnectedInfoData = Object.keys(permissionsHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = permissionsHistory[origin]['eth_accounts']
+    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
     return {
       ...acc,
       [origin]: ethAccountsHistory.accounts,

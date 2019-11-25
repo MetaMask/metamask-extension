@@ -9,7 +9,7 @@ export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    selectedIdentity: PropTypes.object.isRequired,
+    selectedIdentity: PropTypes.object,
     permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object.isRequired,
     request: PropTypes.object,
@@ -24,6 +24,7 @@ export default class PermissionPageContainer extends Component {
     permissionRejected: null,
     request: {},
     requestMetadata: {},
+    selectedIdentity: {},
   };
 
   static contextTypes = {
