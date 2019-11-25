@@ -128,7 +128,7 @@
     "lodash.shuffle": "^4.2.0",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
-    "metamask-inpage-provider": "MetaMask/metamask-inpage-provider#LoginPerSite",
+    "metamask-inpage-provider": "^4.0.1",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
     "multihashes": "^0.4.12",
