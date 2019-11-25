@@ -321,7 +321,7 @@ const initialize = () => {
 
     getAccountsButton.addEventListener('click', async () => {
       try {
-        const accounts = await ethereum.send({ method: 'eth_acounts' })
+        const accounts = await ethereum.send({ method: 'eth_accounts' })
         getAccountsResults.innerHTML = accounts[0] || 'Not able to get accounts'
       } catch (error) {
         console.error(error)
