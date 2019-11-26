@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट की बातचीत"
   },
-  "clearPermissions": {
-    "message": "गोपनीयता डेटा रिक्त करें"
-  },
   "reject": {
     "message": "अस्‍वीकार करें"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
-  },
-  "permissionsRequest": {
-    "message": "संपर्क अनुरोध"
   },
   "connectingTo": {
     "message": "$1 से कनेक्ट हो रहा है"

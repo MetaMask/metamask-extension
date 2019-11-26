@@ -11,18 +11,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "clearPermissionsSuccess": {
-    "message": "已批准的网站数据已成功清除。"
-  },
-  "permissionsSettings": {
-    "message": "审批数据"
-  },
-  "permissionsDescription": {
-    "message": "清除已批准的网站数据，以便所有网站都必须再次申请"
-  },
-  "clearPermissions": {
-    "message": "清除批准数据"
-  },
   "reject": {
     "message": "拒绝"
   },
@@ -260,9 +248,6 @@
   },
   "connect": {
     "message": "连接"
-  },
-  "permissionsRequest": {
-    "message": "关联请求"
   },
   "connectingTo": {
     "message": "正在连接 $1"

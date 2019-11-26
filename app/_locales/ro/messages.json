@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
-  "clearPermissions": {
-    "message": "Ștergeți datele confidențiale"
-  },
   "reject": {
     "message": "Respingeți"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Conectează-te"
-  },
-  "permissionsRequest": {
-    "message": "Solicitare de conectare"
   },
   "connectingTo": {
     "message": "Se conectează la $1"

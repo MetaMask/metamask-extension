@@ -11,18 +11,6 @@
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
-  "clearPermissionsSuccess": {
-    "message": "Dati del sito Web approvati cancellati correttamente."
-  },
-  "permissionsSettings": {
-    "message": "Dati di approvazione"
-  },
-  "permissionsDescription": {
-    "message": "Cancella i dati del sito web approvati, quindi tutti i siti devono richiedere nuovamente l'approvazione."
-  },
-  "clearPermissions": {
-    "message": "Cancella i dati di approvazione"
-  },
   "reject": {
     "message": "Annulla"
   },
@@ -239,9 +227,6 @@
   },
   "connect": {
     "message": "Connetti"
-  },
-  "permissionsRequest": {
-    "message": "Richiesta Connessione"
   },
   "connectingTo": {
     "message": "Connessione in corso a $1"

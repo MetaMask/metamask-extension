@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearPermissions": {
-    "message": "የግላዊነት ውሂብን አጥራ"
-  },
   "reject": {
     "message": "አይቀበሉ"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "ይገናኙ"
-  },
-  "permissionsRequest": {
-    "message": "የግንኙነት ጥያቄ"
   },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"

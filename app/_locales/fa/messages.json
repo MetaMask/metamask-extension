@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
-  "clearPermissions": {
-    "message": "حذف اطلاعات حریم خصوصی"
-  },
   "reject": {
     "message": "عدم پذیرش"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "اتصال"
-  },
-  "permissionsRequest": {
-    "message": "درخواست اتصال"
   },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"

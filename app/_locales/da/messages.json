@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearPermissions": {
-    "message": "Ryd fortrolighedsdata"
-  },
   "reject": {
     "message": "Afvis"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Få forbindelse"
-  },
-  "permissionsRequest": {
-    "message": "Tilslutningsanmodning"
   },
   "connectingTo": {
     "message": "Forbinder til $1"

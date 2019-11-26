@@ -11,18 +11,6 @@
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
-  "clearPermissionsSuccess": {
-    "message": "Les données de site Web approuvées ont été supprimées."
-  },
-  "permissionsSettings": {
-    "message": "Données d'approbation"
-  },
-  "permissionsDescription": {
-    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
-  },
-  "clearPermissions": {
-    "message": "Effacer les données d'approbation"
-  },
   "reject": {
     "message": "Rejeter"
   },
@@ -248,9 +236,6 @@
   },
   "connect": {
     "message": "Connecter"
-  },
-  "permissionsRequest": {
-    "message": "Demande de connexion"
   },
   "connectingTo": {
     "message": "Connexion à $1"

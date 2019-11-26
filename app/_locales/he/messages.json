@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
   },
-  "clearPermissions": {
-    "message": "נקה נתוני פרטיות"
-  },
   "reject": {
     "message": "דחה"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "התחברות"
-  },
-  "permissionsRequest": {
-    "message": "חבר/י בקשה"
   },
   "connectingTo": {
     "message": "מתחבר ל- $1 "

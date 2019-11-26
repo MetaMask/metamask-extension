@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
   },
-  "clearPermissions": {
-    "message": "Notīrīt konfidencialitātes datus"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Pievienošana"
-  },
-  "permissionsRequest": {
-    "message": "Savienojuma pieprasījums"
   },
   "connectingTo": {
     "message": "Pieslēdzas $1"

@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Contractar Interacció"
   },
-  "clearPermissions": {
-    "message": "Elimina les dades de privacitat"
-  },
   "reject": {
     "message": "Rebutja"
   },
@@ -248,9 +245,6 @@
   },
   "connect": {
     "message": "Connecta"
-  },
-  "permissionsRequest": {
-    "message": "Sol·licitud de connexió"
   },
   "connectingTo": {
     "message": "Connectant a $1 "

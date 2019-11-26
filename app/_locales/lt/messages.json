@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },
-  "clearPermissions": {
-    "message": "Išvalyti asmeninius duomenis"
-  },
   "reject": {
     "message": "Atmesti"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Prisijungti"
-  },
-  "permissionsRequest": {
-    "message": "Prijungimo užklausa"
   },
   "connectingTo": {
     "message": "Jungiamasi prie $1"

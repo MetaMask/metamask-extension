@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
-  "clearPermissions": {
-    "message": "Kosongkan Data Privasi"
-  },
   "reject": {
     "message": "Tolak"
   },
@@ -248,9 +245,6 @@
   },
   "connect": {
     "message": "Sambung"
-  },
-  "permissionsRequest": {
-    "message": "Sambungkan Permintaan"
   },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"

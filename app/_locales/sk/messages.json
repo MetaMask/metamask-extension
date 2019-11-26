@@ -11,18 +11,6 @@
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "clearPermissionsSuccess": {
-    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
-  },
-  "permissionsSettings": {
-    "message": "Údaje o schválení"
-  },
-  "permissionsDescription": {
-    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
-  },
-  "clearPermissions": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
   },
@@ -251,9 +239,6 @@
   },
   "connect": {
     "message": "Pripojenie"
-  },
-  "permissionsRequest": {
-    "message": "Požiadavka na pripojenie"
   },
   "connectingTo": {
     "message": "Pripája sa k $1"

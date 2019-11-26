@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Взаимодействие с договор"
   },
-  "clearPermissions": {
-    "message": "Изчистване на данните за поверителност"
-  },
   "reject": {
     "message": "Отхвърляне"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Свързване"
-  },
-  "permissionsRequest": {
-    "message": "Свържете заявка"
   },
   "connectingTo": {
     "message": "Свързване с $1"

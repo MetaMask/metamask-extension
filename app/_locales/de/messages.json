@@ -11,18 +11,6 @@
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "clearPermissionsSuccess": {
-    "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
-  },
-  "permissionsSettings": {
-    "message": "Genehmigungsdaten"
-  },
-  "permissionsDescription": {
-    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
-  },
-  "clearPermissions": {
-    "message": "Genehmigungsdaten löschen"
-  },
   "reject": {
     "message": "Ablehnen"
   },
@@ -248,9 +236,6 @@
   },
   "connect": {
     "message": "Verbinden"
-  },
-  "permissionsRequest": {
-    "message": "Verbindungsanfrage"
   },
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"

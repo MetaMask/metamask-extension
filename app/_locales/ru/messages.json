@@ -2,18 +2,6 @@
   "confirmClear": {
     "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
   },
-  "clearPermissionsSuccess": {
-    "message": "Утвержденные данные веб-сайта успешно удалены."
-  },
-  "permissionsSettings": {
-    "message": "Данные об утверждении"
-  },
-  "permissionsDescription": {
-    "message": "Очистите утвержденные данные веб-сайта, чтобы все сайты снова запросили подтверждение."
-  },
-  "clearPermissions": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
   },
@@ -739,9 +727,6 @@
   },
   "connect": {
     "message": "Подключиться"
-  },
-  "permissionsRequest": {
-    "message": "Запрос на подключение"
   },
   "connectingTo": {
     "message": "Подключение к $1"

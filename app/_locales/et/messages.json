@@ -11,9 +11,6 @@
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearPermissions": {
-    "message": "Tühjenda privaatsusandmed"
-  },
   "reject": {
     "message": "Lükka tagasi"
   },
@@ -251,9 +248,6 @@
   },
   "connect": {
     "message": "Ühendamine"
-  },
-  "permissionsRequest": {
-    "message": "Ühenduse taotlus"
   },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
