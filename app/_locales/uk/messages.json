@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Таблиця доступна тільки в мережах Ethereum."
   },
-  "confirmClear": {
-    "message": "Ви впевнені, що хочете очистити затверджені веб-сайти?"
-  },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },

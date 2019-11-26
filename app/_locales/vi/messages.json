@@ -1,7 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
-  },
   "reject": {
     "message": "Từ chối"
   },

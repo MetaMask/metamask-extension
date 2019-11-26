@@ -1,7 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar sites aprovados?"
-  },
   "reject": {
     "message": "Rejeitar"
   },

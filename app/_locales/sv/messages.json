@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
   },
-  "confirmClear": {
-    "message": "Är du säker på att du vill rensa godkända webbplatser?"
-  },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },

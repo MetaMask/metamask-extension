@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Graf je k dispozícii iba v sieťach Ethereum."
   },
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },

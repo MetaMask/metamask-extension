@@ -1,7 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
   "reject": {
     "message": "Odmítnout"
   },

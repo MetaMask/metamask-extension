@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Grafikon je dostupan samo na mrežama Ethereum."
   },
-  "confirmClear": {
-    "message": "Sigurno želite očistiti odobrena mrežna mjesta?"
-  },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },

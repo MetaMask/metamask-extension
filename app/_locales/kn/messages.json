@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
   },
-  "confirmClear": {
-    "message": "ನೀವು ಅನುಮೋದಿಸಿದ ವೆಬ್‌‌ಸೈಟ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಲು ಬಯಸುವಿರಾ?"
-  },
   "contractInteraction": {
     "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
   },

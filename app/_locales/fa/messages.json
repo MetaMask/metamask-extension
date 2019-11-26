@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "تنها قابل دسترس را در شبکه های ایتریوم جدول بندی نمایید"
   },
-  "confirmClear": {
-    "message": "آیا مطمئن هستید تا وب سایت های تصدیق شده را حذف کنید؟"
-  },
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },

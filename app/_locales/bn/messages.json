@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
   },
-  "confirmClear": {
-    "message": "আপনি কি অনুমোদিত ওয়েবসাইটগুলি মুছে পরিস্কার করার বিষয়ে নিশ্চিত?"
-  },
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },

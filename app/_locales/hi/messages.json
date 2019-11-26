@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "केवल ईथरअम नेटवर्क पर उपलब्ध चार्ट।"
   },
-  "confirmClear": {
-    "message": "क्या आप वाकई स्वीकृत वेबसाइटों को क्लियर करना चाहते हैं?"
-  },
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट की बातचीत"
   },

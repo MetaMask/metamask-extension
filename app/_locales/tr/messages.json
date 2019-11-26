@@ -1,7 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
-  },
   "reject": {
     "message": "Reddetmek"
   },

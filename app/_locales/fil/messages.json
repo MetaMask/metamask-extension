@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Available lang ang chart sa mga Ethereum network."
   },
-  "confirmClear": {
-    "message": "Sigurado ka bang gusto mong i-clear ang mga inaprubahang website?"
-  },
   "contractInteraction": {
     "message": "Paggamit sa Contract"
   },

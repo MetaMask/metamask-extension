@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "聊天功能仅对以太坊网络开放。"
   },
-  "confirmClear": {
-    "message": "您确定要清除已批准的网站吗？"
-  },
   "contractInteraction": {
     "message": "合约交互"
   },

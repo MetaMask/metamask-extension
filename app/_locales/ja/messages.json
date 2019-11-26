@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "チャートはEthereumネットワークでのみ利用可能です。"
   },
-  "confirmClear": {
-    "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
-  },
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },

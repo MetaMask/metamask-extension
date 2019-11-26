@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
   },
-  "confirmClear": {
-    "message": "የተፈቀዱ ድረ ገጾችን ለማጥራት እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },

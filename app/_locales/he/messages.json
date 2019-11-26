@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "טבלה זמינה רק ברשתות אתריום."
   },
-  "confirmClear": {
-    "message": "הנך בטוח/ה כי ברצונך למחוק אתרים שאושרו?"
-  },
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
   },
