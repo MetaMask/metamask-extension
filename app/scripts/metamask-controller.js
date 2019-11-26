@@ -99,10 +99,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
 
-    // network store
+    // next, we will initialize the controllers
+    // controller initializaiton order matters
+
     this.networkController = new NetworkController(initState.NetworkController)
 
-    // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
@@ -110,16 +111,13 @@ module.exports = class MetamaskController extends EventEmitter {
       network: this.networkController,
     })
 
-    // app-state controller
     this.appStateController = new AppStateController({
       preferencesStore: this.preferencesController.store,
       onInactiveTimeout: () => this.setLocked(),
     })
 
-    // currency controller
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
 
-    // infura controller
     this.infuraController = new InfuraController({
       initState: initState.InfuraController,
     })
@@ -127,7 +125,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.phishingController = new PhishingController()
 
-    // rpc provider
+    // now we can initialize the RPC provider, which other controllers require
     this.initializeProvider()
     this.provider = this.networkController.getProviderAndBlockTracker().provider
     this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker
@@ -156,7 +154,7 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.IncomingTransactionsController,
     })
 
-    // account tracker watches balances, nonces, and any code at their address.
+    // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -342,7 +340,8 @@ module.exports = class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: async ({ origin }) => {
         if (origin === 'metamask') {
-          return [this.preferencesController.getSelectedAddress()]
+          const selectedAddress = this.preferencesController.getSelectedAddress()
+          return selectedAddress ? [selectedAddress] : []
         } else if (
           this.keyringController.memStore.getState().isUnlocked
         ) {

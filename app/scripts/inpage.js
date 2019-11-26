@@ -36,7 +36,7 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
 
-// TODO:deprecate:2019-12-16
+// TODO:deprecate:2020-01-13
 require('web3/dist/web3.min.js')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 
@@ -60,10 +60,6 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-//
-// TODO:deprecate:2019-12-16
-//
-
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues
 const proxiedInpageProvider = new Proxy(inpageProvider, {
@@ -71,6 +67,10 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   // throw an error in strict mode
   deleteProperty: () => true,
 })
+
+//
+// TODO:deprecate:2020-01-13
+//
 
 // setup web3
 
@@ -94,7 +94,7 @@ proxiedInpageProvider._web3Ref = web3.eth
 setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 
 //
-// end deprecate:2019-12-16
+// end deprecate:2020-01-13
 //
 
 window.ethereum = proxiedInpageProvider
