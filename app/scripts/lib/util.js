@@ -149,11 +149,11 @@ function getRandomArrayItem (array) {
 }
 
 function mapObjectValues (object, cb) {
-  const objectClone = JSON.parse(JSON.stringify(object))
-  Object.keys(objectClone).forEach(key => {
-    objectClone[key] = cb(key, objectClone[key])
+  const mappedObject = {}
+  Object.keys(object).forEach(key => {
+    mappedObject[key] = cb(key, object[key])
   })
-  return objectClone
+  return mappedObject
 }
 
 module.exports = {
