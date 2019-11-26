@@ -40,7 +40,7 @@ AccountModalContainer.contextTypes = {
 AccountModalContainer.defaultProps = {
   showBackButton: false,
   children: null,
-  backButtonAction: _ => { /* no-op */ }
+  backButtonAction: _ => { /* no-op */ },
 }
 
 AccountModalContainer.propTypes = {
