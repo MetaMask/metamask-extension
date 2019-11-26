@@ -60,9 +60,10 @@ export default class PermissionConnect extends Component {
     setTimeout(() => {
       global.platform.currentTab()
         .then(({ id: currentTabId }) => {
-          global.platform.switchToTab(requestAccountTabs[originName], () => {
-            global.platform.closeTab(currentTabId)
-          })
+          global.platform.switchToTab(requestAccountTabs[originName])
+            .then(() => {
+              global.platform.closeTab(currentTabId)
+            })
         })
     }, 2000)
   }

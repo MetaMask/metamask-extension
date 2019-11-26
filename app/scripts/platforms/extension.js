@@ -66,9 +66,11 @@ class ExtensionPlatform {
     }
   }
 
-  queryTabs (cb) {
-    extension.tabs.query({}, tabs => {
-      cb(tabs)
+  queryTabs () {
+    return new Promise(resolve => {
+      extension.tabs.query({}, tabs => {
+        resolve(tabs)
+      })
     })
   }
 
@@ -80,8 +82,12 @@ class ExtensionPlatform {
     })
   }
 
-  switchToTab (tabId, cb) {
-    extension.tabs.update(tabId, {highlighted: true}, cb)
+  switchToTab (tabId) {
+    return new Promise(resolve => {
+      extension.tabs.update(tabId, {highlighted: true}, (tab) => {
+        resolve(tab)
+      })
+    })
   }
 
   closeTab (tabId) {
