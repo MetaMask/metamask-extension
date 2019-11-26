@@ -1,10 +1,13 @@
-import {Component} from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import transitionEvents from 'domkit/transitionEvents'
 import appendVendorPrefix from 'domkit/appendVendorPrefix'
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
+  getRef: function(willHidden) {
+    return 'content';
+  },
   show: {
     animationDuration: '0.3s',
     animationTimingFunction: 'ease-out',
@@ -96,6 +99,10 @@ class FadeModal extends Component {
     if (this.props.closeOnClick) {
       this.hide()
     }
+  }
+
+  hasHidden = () => {
+    return this.state.hidden
   }
 
   render () {
