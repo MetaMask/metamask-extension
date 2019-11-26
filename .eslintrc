@@ -44,6 +44,7 @@
   },
 
   "rules": {
+    "default-case": 2,
     "import/no-unresolved": ["error", { "commonjs": true }],
     "no-restricted-globals": ["error", "event"],
     "accessor-pairs": 2,
