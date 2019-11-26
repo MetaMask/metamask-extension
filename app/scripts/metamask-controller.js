@@ -111,6 +111,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       preferencesStore: this.preferencesController.store,
       onInactiveTimeout: () => this.setLocked(),
+      initState: initState.AppStateController,
     })
 
     // currency controller
