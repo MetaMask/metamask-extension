@@ -45,7 +45,7 @@ class AppStateController {
    * @private
    */
   _setInactiveTimeout (timeoutMinutes) {
-    this.store.putState({
+    this.store.updateState({
       timeoutMinutes,
     })
 
