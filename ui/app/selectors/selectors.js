@@ -54,7 +54,6 @@ const selectors = {
   getNumberOfAccounts,
   getNumberOfTokens,
   isEthereumNetwork,
-  getAllPermissions,
   getPermissionsRequests,
   getPermissionsDescriptions,
   getPermissionsHistory,
@@ -379,10 +378,6 @@ function getUseNonceField (state) {
 
 function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
-}
-
-function getAllPermissions (state) {
-  return state.metamask.domains || {}
 }
 
 function getPermissionsDescriptions (state) {
