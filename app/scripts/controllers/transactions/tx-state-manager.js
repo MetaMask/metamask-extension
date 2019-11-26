@@ -167,9 +167,9 @@ class TransactionStateManager extends EventEmitter {
         transactions.splice(index, 1)
       }
     }
-    const newTxIndex = transactions.findIndex((metaTx) => {
-      return metaTx.id === txMeta.id + 1
-    })
+    const newTxIndex = transactions
+      .findIndex((currentTxMeta) => currentTxMeta.id > txMeta.id)
+
     newTxIndex === -1
       ? transactions.push(txMeta)
       : transactions.splice(newTxIndex, 0, txMeta)
