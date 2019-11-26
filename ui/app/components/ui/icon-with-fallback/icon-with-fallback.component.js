@@ -7,12 +7,17 @@ export default class IconWithFallback extends PureComponent {
     name: PropTypes.string,
   }
 
+  static defaultProps = {
+    name: '',
+    icon: null,
+  }
+
   state = {
     iconError: false,
   }
 
   render () {
-    const { icon, name = '' } = this.props
+    const { icon, name } = this.props
 
     return (
       <div className="icon-with-fallback__identicon-container">
