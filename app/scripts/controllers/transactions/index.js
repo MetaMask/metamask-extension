@@ -135,7 +135,7 @@ class TransactionController extends EventEmitter {
   /**
   Adds a tx to the txlist
   @emits ${txMeta.id}:unapproved
-*/
+  */
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
     this.emit(`${txMeta.id}:unapproved`, txMeta)
@@ -150,18 +150,18 @@ class TransactionController extends EventEmitter {
   }
 
   /**
-  add a new unapproved transaction to the pipeline
-
-  @returns {Promise<string>} the hash of the transaction after being submitted to the network
-  @param txParams {object} - txParams for the transaction
-  @param opts {object} - with the key origin to put the origin on the txMeta
+  * Add a new unapproved transaction to the pipeline
+  *
+  * @returns {Promise<string>} the hash of the transaction after being submitted to the network
+  * @param txParams {object} - txParams for the transaction
+  * @param opts {object} - with the key origin to put the origin on the txMeta
   */
-
   async newUnapprovedTransaction (txParams, opts = {}) {
+
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
+
     const initialTxMeta = await this.addUnapprovedTransaction(txParams, opts.origin)
-    initialTxMeta.origin = opts.origin
-    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
+
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
@@ -180,32 +180,34 @@ class TransactionController extends EventEmitter {
   }
 
   /**
-  Validates and generates a txMeta with defaults and puts it in txStateManager
-  store
-
-  @returns {txMeta}
-  */
-
+   * Validates and generates a txMeta with defaults and puts it in txStateManager
+   * store.
+   *
+   * @returns {txMeta}
+   */
   async addUnapprovedTransaction (txParams, origin) {
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
-    // TODO:lps once, I saw 'origin' with a value of 'chrome-extension://...'
-    // for a transaction initiated from the UI.
-    // When would this happen? It's a problem if it does. I don't think we want to
-    // hard-code 'chrome-extension://' here
     if (origin === 'metamask') {
       // Assert the from address is the selected address
       if (normalizedTxParams.from !== this.getSelectedAddress()) {
-        throw ethErrors.rpc.internal(`Internally initiated transaction is using invalid account.`)
+        throw ethErrors.rpc.internal({
+          message: `Internally initiated transaction is using invalid account.`,
+          data: {
+            origin,
+            fromAddress: normalizedTxParams.from,
+            selectedAddress: this.getSelectedAddress(),
+          }
+        })
       }
     } else {
       // Assert that the origin has permissions to initiate transactions from
       // the specified address
       const permittedAddresses = await this.getPermittedAccounts(origin)
       if (!permittedAddresses.includes(normalizedTxParams.from)) {
-        throw ethErrors.provider.unauthorized()
+        throw ethErrors.provider.unauthorized({ data: { origin }})
       }
     }
 
@@ -216,6 +218,7 @@ class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPE_STANDARD,
       transactionCategory,
+      origin,
     })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
@@ -235,15 +238,16 @@ class TransactionController extends EventEmitter {
     txMeta.loadingDefaults = false
 
     // save txMeta
-    this.txStateManager.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.')
 
     return txMeta
   }
+
   /**
-  adds the tx gas defaults: gas && gasPrice
-  @param txMeta {Object} - the txMeta object
-  @returns {Promise<object>} resolves with txMeta
-*/
+   * Adds the tx gas defaults: gas && gasPrice
+   * @param txMeta {Object} - the txMeta object
+   * @returns {Promise<object>} resolves with txMeta
+   */
   async addTxGasDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
     // ensure value
