@@ -123,6 +123,8 @@ async function loadExtension (driver, extensionId) {
       await driver.get(`moz-extension://${extensionId}/home.html`)
       break
     }
+    default:
+      throw new Error('Unrecognized SELENIUM_BROWSER value')
   }
 }
 

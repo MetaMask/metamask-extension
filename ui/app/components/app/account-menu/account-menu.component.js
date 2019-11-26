@@ -156,9 +156,11 @@ export default class AccountMenu extends PureComponent {
       case 'Simple Key Pair':
         label = t('imported')
         break
+      default:
+        return null
     }
 
-    return label && (
+    return (
       <div className="keyring-label allcaps">
         { label }
       </div>
