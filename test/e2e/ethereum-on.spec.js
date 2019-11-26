@@ -147,6 +147,7 @@ describe('MetaMask', function () {
 
     it('has the ganache network id within the dapp', async () => {
       const networkDiv = await findElement(driver, By.css('#network'))
+      await delay(regularDelayMs)
       assert.equal(await networkDiv.getText(), '5777')
     })
 
