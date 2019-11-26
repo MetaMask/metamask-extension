@@ -75,7 +75,7 @@ export default function reduceApp (state, action) {
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
-    openMetaMaskTabs: {},
+    requestAccountTabs: {},
     currentWindowTab: {},
     currentActiveTab: {},
   }, state.appState)
@@ -766,9 +766,9 @@ export default function reduceApp (state, action) {
         threeBoxLastUpdated: action.value,
       })
 
-    case actions.SET_OPEN_METAMASK_TABS:
+    case actions.SET_REQUEST_ACCOUNT_TABS:
       return extend(appState, {
-        openMetaMaskTabs: action.value,
+        requestAccountTabs: action.value,
       })
 
     case actions.SET_CURRENT_WINDOW_TAB:

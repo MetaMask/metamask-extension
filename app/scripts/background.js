@@ -64,7 +64,7 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
-let previousTabId
+const requestAccountTabIds = {}
 
 // state persistence
 const localStore = new LocalStore()
@@ -248,8 +248,8 @@ function setupController (initState, initLangCode) {
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
-    getOpenMetaMaskTabs: () => {
-      return openMetamaskTabsIDs
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
     },
   })
 
@@ -382,7 +382,7 @@ function setupController (initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id
-        openMetamaskTabsIDs[tabId] = { opener: previousTabId || null }
+        openMetamaskTabsIDs[tabId] = true
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId]
@@ -390,12 +390,14 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
-      if (remotePort.sender && remotePort.sender.tab) {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
 
         remotePort.onMessage.addListener(msg => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
-            previousTabId = tabId
+            requestAccountTabIds[origin] = tabId
           }
         })
       }

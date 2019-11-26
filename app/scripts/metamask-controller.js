@@ -89,7 +89,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // platform-specific api
     this.platform = opts.platform
 
-    this.getOpenMetaMaskTabs = opts.getOpenMetaMaskTabs
+    this.getRequestAccountTabIds = opts.getRequestAccountTabIds
 
     // observable state store
     this.store = new ComposableObservableStore(initState)
@@ -562,7 +562,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateExposedAccounts: nodeify(permissionsController.updateExposedAccounts, permissionsController),
       legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
 
-      getOpenMetaMaskTabs: (cb) => cb(null, this.getOpenMetaMaskTabs()),
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
     }
   }
 
