@@ -1,4 +1,5 @@
 import Home from './home.component'
+import { DateTime } from 'luxon'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -26,6 +27,7 @@ const mapStateToProps = state => {
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
+    mkrMigrationReminderTimestamp,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
@@ -39,6 +41,7 @@ const mapStateToProps = state => {
     providerRequests,
     showPrivacyModeNotification: migratedPrivacyMode,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    shouldShowDaiNotification: DateTime.utc().toString() > mkrMigrationReminderTimestamp,
     isPopup,
     threeBoxSynced,
     showRestorePrompt,

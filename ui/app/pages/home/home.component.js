@@ -46,6 +46,7 @@ export default class Home extends PureComponent {
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
     hasDaiV1Token: PropTypes.bool,
+    shouldShowDaiNotification: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -100,6 +101,7 @@ export default class Home extends PureComponent {
       setShowRestorePromptToFalse,
       showRestorePrompt,
       threeBoxLastUpdated,
+      shouldShowDaiNotification,
     } = this.props
 
     if (forgottenPassword) {
@@ -177,7 +179,7 @@ export default class Home extends PureComponent {
                       : null
                   }
                   {
-                    hasDaiV1Token
+                    hasDaiV1Token && shouldShowDaiNotification
                       ? <DaiMigrationNotification />
                       : null
                   }
