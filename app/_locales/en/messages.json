@@ -758,7 +758,8 @@
     "message": "Would you like to add these tokens?"
   },
   "likeToConnect": {
-    "message": "$1 would like to connect to your Metamask account"
+    "message": "$1 would like to connect to your Metamask account",
+    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Links"
