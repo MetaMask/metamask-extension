@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Grafic disponibil numai pe rețelele Ethereum."
   },
-  "confirmClear": {
-    "message": "Sunteți sigur că doriți să ștergeți site-urile aprobate?"
-  },
   "contractInteraction": {
     "message": "Interacțiune contract"
   },

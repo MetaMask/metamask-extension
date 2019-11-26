@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Grafiks pieejams vienīgi Ethereum tīklos."
   },
-  "confirmClear": {
-    "message": "Vai tiešām vēlaties dzēst apstiprinātās vietnes?"
-  },
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
   },

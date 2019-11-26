@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Kaavio saatavilla vain Ethereum-verkoissa."
   },
-  "confirmClear": {
-    "message": "Haluatko varmasti tyhjentää hyväksytyt verkkosivustot?"
-  },
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },

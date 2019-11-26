@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "الرسم البياني متاح فقط على شبكات إيثيريوم."
   },
-  "confirmClear": {
-    "message": "هل أنت متأكد من أنك تريد مسح المواقع المعتمدة؟"
-  },
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },

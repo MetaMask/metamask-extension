@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "이더리움 네트워크에서만 사용 가능한 차트."
   },
-  "confirmClear": {
-    "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
-  },
   "contractInteraction": {
     "message": "계약 상호 작용"
   },

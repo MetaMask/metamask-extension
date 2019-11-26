@@ -1,7 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Sigurado ka bang gusto mong i-clear ang mga naaprubahang website?"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"

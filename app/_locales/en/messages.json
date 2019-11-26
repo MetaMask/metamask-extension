@@ -20,9 +20,6 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "confirmClear": {
-    "message": "Are you sure you want to remove all dapp/website permissions?"
-  },
   "connectedSites": {
     "message": "Connected Sites"
   },

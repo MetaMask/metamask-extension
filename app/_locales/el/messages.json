@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
   },
-  "confirmClear": {
-    "message": "Είστε βέβαιοι ότι θέλετε να διαγράψετε τους εγκεκριμένους ιστότοπους;"
-  },
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },

@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Диаграмата е достъпна само в мрежи на Ethereum."
   },
-  "confirmClear": {
-    "message": "Сигурни ли сте, че искате да изчистите одобрените уебсайтове?"
-  },
   "contractInteraction": {
     "message": "Взаимодействие с договор"
   },

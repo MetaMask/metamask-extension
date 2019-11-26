@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "圖表僅適用於以太坊網路。"
   },
-  "confirmClear": {
-    "message": "您確定要清除已批准的網站紀錄？"
-  },
   "contractInteraction": {
     "message": "合約互動"
   },

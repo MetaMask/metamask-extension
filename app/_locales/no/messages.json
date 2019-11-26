@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
   },
-  "confirmClear": {
-    "message": "Er du sikker på at du vil tømme godkjente nettsteder?"
-  },
   "contractInteraction": {
     "message": "Kontraktssamhandling"
   },

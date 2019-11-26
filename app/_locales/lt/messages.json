@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Diagramos yra tik „Ethereum“ tinkluose."
   },
-  "confirmClear": {
-    "message": "Ar tikrai norite panaikinti patvirtintas svetaines?"
-  },
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },

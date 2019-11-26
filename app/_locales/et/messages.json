@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Tabel on saadaval vaid Ethereumi võrkudes."
   },
-  "confirmClear": {
-    "message": "Kas soovite kindlasti kinnitatud veebisaidid kustutada?"
-  },
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },

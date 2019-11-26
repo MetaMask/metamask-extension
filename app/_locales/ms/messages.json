@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Carta hanya tersedia di rangkaian Ethereum."
   },
-  "confirmClear": {
-    "message": "Adakah anda pasti mahu mengosongkan tapak web diluluskan?"
-  },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },

@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Wykres dostępny tylko w sieciach Ethereum"
   },
-  "confirmClear": {
-    "message": "Czy na pewno chcesz usunąć zatwierdzone strony internetowe?"
-  },
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
   },

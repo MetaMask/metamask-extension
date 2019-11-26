@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "A diagram csak Ethereum hálózatokon érhető el"
   },
-  "confirmClear": {
-    "message": "Biztosan törölni szeretnéd a jóváhagyott weboldalakat?"
-  },
   "contractInteraction": {
     "message": "Szerződéses interakció"
   },

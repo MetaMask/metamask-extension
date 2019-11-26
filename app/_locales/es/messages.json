@@ -2,9 +2,6 @@
   "chartOnlyAvailableEth": {
     "message": "Tabla solo disponible en redes Ethereum."
   },
-  "confirmClear": {
-    "message": "¿Seguro que quieres borrar los sitios web aprobados?"
-  },
   "contractInteraction": {
     "message": "Interacción con contrato"
   },
