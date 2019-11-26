@@ -7,7 +7,7 @@ import {
   getLastConnectedInfo,
 } from '../../selectors/selectors'
 import { formatDate } from '../../helpers/utils/util'
-import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getOpenMetaMaskTabs, getCurrentWindowTab } from '../../store/actions'
+import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
 
 const mapStateToProps = state => {
   const permissionsRequest = getFirstPermissionRequest(state)
@@ -17,8 +17,7 @@ const mapStateToProps = state => {
 
   const accountsWithLabels = getAccountsWithLabels(state)
 
-  const { openMetaMaskTabs = {}, currentWindowTab = {} } = state.appState
-  const currentOpenMetaMaskTab = openMetaMaskTabs[currentWindowTab.id] || {}
+  const { requestAccountTabs = {} } = state.appState
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
@@ -33,7 +32,7 @@ const mapStateToProps = state => {
     originName: origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
-    currentMetaMaskTabOpenerId: currentOpenMetaMaskTab.opener,
+    requestAccountTabs,
     addressLastConnectedMap,
   }
 }
@@ -49,7 +48,7 @@ const mapDispatchToProps = dispatch => {
         newAccountNumber,
       }))
     },
-    getOpenMetaMaskTabs: () => dispatch(getOpenMetaMaskTabs()),
+    getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
     getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
   }
 }

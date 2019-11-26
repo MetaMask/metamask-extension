@@ -10,7 +10,7 @@ export default class PermissionConnect extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     currentMetaMaskTabOpenerId: PropTypes.number,
-    getOpenMetaMaskTabs: PropTypes.func.isRequired,
+    getRequestAccountTabIds: PropTypes.func.isRequired,
     getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
     originName: PropTypes.string,
@@ -19,6 +19,7 @@ export default class PermissionConnect extends Component {
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
     addressLastConnectedMap: PropTypes.object,
+    requestAccountTabs: PropTypes.object,
   }
 
   static defaultProps = {
@@ -27,6 +28,7 @@ export default class PermissionConnect extends Component {
     permissionsRequest: {},
     currentMetaMaskTabOpenerId: null,
     addressLastConnectedMap: {},
+    requestAccountTabs: {},
   }
 
   static contextTypes = {
@@ -37,6 +39,7 @@ export default class PermissionConnect extends Component {
     page: 1,
     selectedAccountAddress: '',
     permissionAccepted: null,
+    originName: this.props.originName,
   }
 
   selectAccount = (address) => {
@@ -47,15 +50,17 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { currentMetaMaskTabOpenerId } = this.props
+    const { requestAccountTabs } = this.props
+    const { originName } = this.state
     this.setState({
       page: null,
       permissionAccepted: accepted,
     })
+
     setTimeout(() => {
       global.platform.currentTab()
         .then(({ id: currentTabId }) => {
-          global.platform.switchToTab(currentMetaMaskTabOpenerId, () => {
+          global.platform.switchToTab(requestAccountTabs[originName], () => {
             global.platform.closeTab(currentTabId)
           })
         })
@@ -64,11 +69,11 @@ export default class PermissionConnect extends Component {
 
   componentDidMount () {
     const {
-      getOpenMetaMaskTabs,
       getCurrentWindowTab,
+      getRequestAccountTabIds,
     } = this.props
     getCurrentWindowTab()
-    getOpenMetaMaskTabs()
+    getRequestAccountTabIds()
   }
 
   render () {
@@ -76,14 +81,13 @@ export default class PermissionConnect extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       accounts,
-      originName,
       showNewAccountModal,
       newAccountNumber,
       nativeCurrency,
       permissionsRequest,
       addressLastConnectedMap,
     } = this.props
-    const { page, selectedAccountAddress, permissionAccepted } = this.state
+    const { page, selectedAccountAddress, permissionAccepted, originName } = this.state
 
     return (
       <div className="permissions-connect">

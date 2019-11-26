@@ -400,9 +400,9 @@ var actions = {
 
   tryReverseResolveAddress,
 
-  getOpenMetaMaskTabs,
+  getRequestAccountTabIds,
   getCurrentWindowTab,
-  SET_OPEN_METAMASK_TABS: 'SET_OPEN_METAMASK_TABS',
+  SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
   SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
   setActiveTab,
   SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
@@ -3045,17 +3045,17 @@ function getNextNonce () {
   }
 }
 
-function setOpenMetaMaskTabs (openMetaMaskTabs) {
+function setRequestAccountTabIds (requestAccountTabIds) {
   return {
-    type: actions.SET_OPEN_METAMASK_TABS,
-    value: openMetaMaskTabs,
+    type: actions.SET_REQUEST_ACCOUNT_TABS,
+    value: requestAccountTabIds,
   }
 }
 
-function getOpenMetaMaskTabs () {
+function getRequestAccountTabIds () {
   return async (dispatch) => {
-    const openMetaMaskTabs = await pify(background.getOpenMetaMaskTabs).call(background)
-    dispatch(setOpenMetaMaskTabs(openMetaMaskTabs))
+    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    dispatch(setRequestAccountTabIds(requestAccountTabIds))
   }
 }
 
