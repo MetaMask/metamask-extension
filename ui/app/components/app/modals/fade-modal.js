@@ -236,11 +236,11 @@ class FadeModal extends Component {
     }
   }
 
-  componentDidMount = () => {
+  UNSAFE_componentDidMount = () => {
     window.addEventListener('keydown', this.listenKeyboard, true)
   }
 
-  componentWillUnmount = () => {
+  UNSAFE_componentWillUnmount = () => {
     window.removeEventListener('keydown', this.listenKeyboard, true)
   }
 }

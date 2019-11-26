@@ -22,7 +22,7 @@ class ReactTooltip extends Component {
     space: 5
   };
 
-  componentDidMount = () => {
+  UNSAFE_componentDidMount = () => {
     this.container = this.props.container || document.body;
     this.componentEl = ReactDOM.findDOMNode(this);
     this.tooltipEl = document.createElement('div');
@@ -44,13 +44,13 @@ class ReactTooltip extends Component {
     this.componentEl.addEventListener('mouseleave', this.handleMouseOut);
   };
 
-  componentDidUpdate = () => {
+  UNSAFE_componentDidUpdate = () => {
     this.tooltipEl.className = 'tooltip ' + this.props.position;
     this.tooltipEl.childNodes[1].textContent = this.props.title;
   };
 
 
-  componentWillUnmount = () => {
+  UNSAFE_componentWillUnmount = () => {
     this.componentEl.removeEventListener(this.props.fixed ? 'mouseenter' : 'mousemove', this.handleMouseMove);
     this.componentEl.removeEventListener('mouseleave', this.handleMouseOut);
     this.container.removeChild(this.tooltipEl);
