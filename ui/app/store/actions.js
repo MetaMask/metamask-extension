@@ -3104,12 +3104,11 @@ function setActiveTab (activeTab) {
 
 function getActiveTab () {
   return (dispatch) => {
-    return new Promise((resolve) => {
-      global.platform.queryTabs(tabs => {
+    return global.platform.queryTabs()
+      .then(tabs => {
         const activeTab = tabs.find(tab => tab.active)
         dispatch(setActiveTab(activeTab))
-        resolve(activeTab)
+        return activeTab
       })
-    })
   }
 }
