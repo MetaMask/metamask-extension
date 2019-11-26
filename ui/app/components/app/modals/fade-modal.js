@@ -1,4 +1,4 @@
-import React from 'react'
+import {Component} from 'react'
 import PropTypes from 'prop-types'
 import transitionEvents from 'domkit/transitionEvents'
 import appendVendorPrefix from 'domkit/appendVendorPrefix'
@@ -47,7 +47,7 @@ const animation = {
   }),
 }
 
-class FadeModal extends React.Component {
+class FadeModal extends Component {
   static propTypes = {
     animation: PropTypes.object,
     backdrop: PropTypes.bool,
@@ -79,7 +79,7 @@ class FadeModal extends React.Component {
     hidden: true,
   }
 
-  addTransitionListener (node, handle) {
+  addTransitionListener = (node, handle) => {
     if (node) {
       var endListener = function (e) {
         if (e && e.target !== node) {
@@ -92,7 +92,7 @@ class FadeModal extends React.Component {
     }
   }
 
-  handleBackdropClick () {
+  handleBackdropClick = () => {
     if (this.props.closeOnClick) {
       this.hide()
     }
@@ -178,18 +178,18 @@ class FadeModal extends React.Component {
 
   }
 
-  leave () {
+  leave = () => {
     this.setState({
       hidden: true,
     })
     this.props.onHide(this.state.hideSource)
   }
 
-  enter () {
+  enter = () => {
     this.props.onShow()
   }
 
-  show () {
+  show = () => {
     if (!this.state.hidden) return
 
     this.setState({
@@ -204,7 +204,7 @@ class FadeModal extends React.Component {
     }.bind(this), 0)
   }
 
-  hide () {
+  hide = () => {
     if (this.hasHidden()) return
 
     this.setState({
@@ -212,7 +212,7 @@ class FadeModal extends React.Component {
     })
   }
 
-  toggle () {
+  toggle = () => {
     if (this.hasHidden()) {
       this.show()
     } else {
@@ -220,7 +220,7 @@ class FadeModal extends React.Component {
     }
   }
 
-  listenKeyboard (event) {
+  listenKeyboard = (event) => {
     if (typeof this.props.keyboard === 'function') {
       this.props.keyboard(event)
     } else {
@@ -228,7 +228,7 @@ class FadeModal extends React.Component {
     }
   }
 
-  closeOnEsc (event) {
+  closeOnEsc = (event) => {
     if (this.props.keyboard &&
       (event.key === 'Escape' ||
         event.keyCode === 27)) {
@@ -236,11 +236,11 @@ class FadeModal extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount = () => {
     window.addEventListener('keydown', this.listenKeyboard, true)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount = () => {
     window.removeEventListener('keydown', this.listenKeyboard, true)
   }
 }
