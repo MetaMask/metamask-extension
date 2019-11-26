@@ -19,9 +19,10 @@ module.exports = function createLoggerMiddleware ({
       activityEntry = logActivity(req, isInternal)
       if (method === `${walletPrefix}requestPermissions`) {
         requestedMethods = getRequestedMethods(req)
-      } else if (method === 'eth_requestAccounts') {
-        requestedMethods = [ 'eth_accounts' ]
       }
+    } else if (method === 'eth_requestAccounts') {
+      activityEntry = logActivity(req, isInternal)
+      requestedMethods = [ 'eth_accounts' ]
     } else {
       return next()
     }
@@ -89,12 +90,13 @@ module.exports = function createLoggerMiddleware ({
       entries = { 'eth_accounts': { accounts: accountToTimeMap, lastApproved: time } }
     } else {
       entries = result
-        ? result.map(perm => {
-          if (perm.parentCapability === 'eth_accounts') {
-            accounts = getAccountsFromPermission(perm)
-          }
-          return perm.parentCapability
-        })
+        ? result
+          .map(perm => {
+            if (perm.parentCapability === 'eth_accounts') {
+              accounts = getAccountsFromPermission(perm)
+            }
+            return perm.parentCapability
+          })
           .reduce((acc, m) => {
             if (requestedMethods.includes(m)) {
               if (m === 'eth_accounts') {

@@ -57,7 +57,7 @@ class PermissionsController {
 
     engine.push(createLoggerMiddleware({
       walletPrefix: WALLET_METHOD_PREFIX,
-      restrictedMethods: [ ...Object.keys(this._restrictedMethods), 'eth_requestAccounts' ],
+      restrictedMethods: Object.keys(this._restrictedMethods),
       ignoreMethods: [ 'wallet_sendDomainMetadata' ],
       store: this.store,
       logStoreKey: LOG_STORE_KEY,
@@ -154,7 +154,6 @@ class PermissionsController {
       }))
     }
 
-    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 
@@ -166,7 +165,6 @@ class PermissionsController {
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
     approval.reject(ethErrors.provider.userRejectedRequest())
-    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 
