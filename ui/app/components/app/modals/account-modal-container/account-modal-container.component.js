@@ -40,12 +40,13 @@ AccountModalContainer.contextTypes = {
 AccountModalContainer.defaultProps = {
   showBackButton: false,
   children: null,
+  backButtonAction: undefined,
 }
 
 AccountModalContainer.propTypes = {
   selectedIdentity: PropTypes.object.isRequired,
   showBackButton: PropTypes.bool,
-  backButtonAction: PropTypes.func.isRequired,
+  backButtonAction: PropTypes.func,
   hideModal: PropTypes.func.isRequired,
   children: PropTypes.node,
 }
