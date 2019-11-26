@@ -439,7 +439,8 @@
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
   "domainLastConnect": {
-    "message": "Last Connected: $1"
+    "message": "Last Connected: $1",
+    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -1358,7 +1359,8 @@
     "message": "Test Faucet"
   },
   "thisWillAllow": {
-    "message": "This will allow $1 to:"
+    "message": "This will allow $1 to:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
@@ -1373,7 +1375,8 @@
     "message": "To:"
   },
   "toConnectWith": {
-    "message": "To connect with $1"
+    "message": "To connect with $1",
+    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
