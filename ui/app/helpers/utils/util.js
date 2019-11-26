@@ -354,6 +354,7 @@ function isValidAddressHead (address) {
 }
 
 function getOriginFromUrl (url) {
-  const match = url.match(/\/\/([^/:]+)\/?/)
-  return match && match.length && match[1]
+  url = new URL(url)
+  const origin = url.hostname
+  return origin
 }
