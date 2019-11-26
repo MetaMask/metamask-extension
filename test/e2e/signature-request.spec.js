@@ -153,7 +153,6 @@ describe('MetaMask', function () {
 
       await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(dapp)
-      await delay(60000)
     })
 
     it('creates a sign typed data signature request', async () => {
