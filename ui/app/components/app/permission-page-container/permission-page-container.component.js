@@ -61,7 +61,7 @@ export default class PermissionPageContainer extends Component {
   }
 
   getRequestedMethodNames (props) {
-    return Object.keys(props.request.permissions)
+    return Object.keys(props.request.permissions || {})
   }
 
   onPermissionToggle = methodName => () => {

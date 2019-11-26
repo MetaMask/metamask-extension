@@ -110,7 +110,7 @@ export default class PermissionConnect extends Component {
             addressLastConnectedMap={addressLastConnectedMap}
           />
           : <div><PermissionPageContainer
-            request={permissionsRequest}
+            request={permissionsRequest || {}}
             approvePermissionsRequest={ (requestId, accounts) => {
               approvePermissionsRequest(requestId, accounts)
               this.redirectFlow(true)

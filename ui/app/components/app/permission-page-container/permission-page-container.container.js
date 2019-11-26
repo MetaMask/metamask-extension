@@ -8,7 +8,8 @@ import {
 } from '../../../selectors/selectors'
 
 const mapStateToProps = (state, ownProps) => {
-  const { request: { metadata: requestMetadata } = {} } = ownProps
+  const { request } = ownProps
+  const { metadata: requestMetadata = {} } = request || {}
 
   const domainMetadata = getDomainMetadata(state)
   const targetDomainMetadata = (
