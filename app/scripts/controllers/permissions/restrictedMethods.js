@@ -84,24 +84,6 @@ function getExternalRestrictedMethods (permissionsController) {
       },
     },
 
-    'readYourProfile': {
-      description: 'Read from your profile',
-      method: (_req, res, _next, end) => {
-        res.result = permissionsController.testProfile
-        end()
-      },
-    },
-
-    'writeToYourProfile': {
-      description: 'Write to your profile.',
-      method: (req, res, _next, end) => {
-        const [ key, value ] = req.params
-        permissionsController.testProfile[key] = value
-        res.result = permissionsController.testProfile
-        return end()
-      },
-    },
-
     'wallet_manageAssets': {
       description: 'Display custom assets in your wallet.',
       method: (req, res, _next, end, engine) => {

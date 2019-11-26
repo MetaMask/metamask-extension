@@ -28,10 +28,10 @@ function prefix (method) {
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, pluginsController, assetsController,
-    setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
+    openPopup, closePopup, keyringController, assetsController,
+    setupProvider, pluginRestrictedMethods, getApi,
   } = {},
-  restoredPermissions = {}, restoredState = {}
+  restoredState = {}
   ) {
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
@@ -41,14 +41,11 @@ class PermissionsController {
     this._openPopup = openPopup
     this._closePopup = closePopup
     this.keyringController = keyringController
-    this.pluginsController = pluginsController
     this.assetsController = assetsController
     this.setupProvider = setupProvider
     this.externalRestrictedMethods = getExternalRestrictedMethods(this)
     this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
-    this.metamaskEventMethods = metamaskEventMethods
-    this._initializePermissions(restoredPermissions)
   }
 
   createMiddleware (options) {
@@ -119,7 +116,7 @@ class PermissionsController {
   }
 
   /**
-   * Removes the given permissions for the given domain.
+   * Removes the given permissions for the given domains.
    * @param {object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
@@ -131,6 +128,18 @@ class PermissionsController {
         })
       )
     })
+  }
+
+  /**
+   * Removes all permissions for the given domains.
+   * @param {Array<string>} domainsToDelete - The domains to remove all permissions for.
+   */
+  removeAllPermissionsFor (domainsToDelete) {
+    const domains = this.permissions.getDomains()
+    domainsToDelete.forEach(d => {
+      delete domains[d]
+    })
+    this.permissions.setDomains(domains)
   }
 
   /**
@@ -219,12 +228,25 @@ class PermissionsController {
   }
 
   /**
-   * A convenience method for retrieving a login object
-   * or creating a new one if needed.
+   * Initializes the underlying CapabilitiesController.
+   * Exposed in case it must be called after constructor due to controller
+   * initialization order.
    *
-   * @param {string} origin = The origin string representing the domain.
+   * @param {Object} opts - The CapabilitiesController options.
+   * @param {Object} opts.metamaskEventMethods - Plugin-related internal event methods.
+   * @param {Object} opts.pluginRestrictedMethods - Restricted methods for plugins, if any.
+   * @param {Object} opts.restoredState - The restored state, if any.
    */
-  _initializePermissions (restoredState) {
+  initializePermissions ({
+    pluginsController,
+    metamaskEventMethods = {},
+    pluginRestrictedMethods = {},
+    restoredState = {},
+  } = {}) {
+
+    this.pluginsController = pluginsController
+    this.metamaskEventMethods = metamaskEventMethods
+    this.pluginRestrictedMethods = pluginRestrictedMethods
 
     const initState = Object.keys(restoredState)
       .filter(k => {
@@ -238,10 +260,6 @@ class PermissionsController {
         return acc
       }, {})
 
-    this.testProfile = {
-      name: 'Dan Finlay',
-    }
-
     this.pendingApprovals = {}
 
     const api = this.getApi()
@@ -254,7 +272,9 @@ class PermissionsController {
       getApprovedAccounts: this.getAccounts.bind(this),
     }
 
-    const pluginRestrictedMethods = Object.keys(externalMethodsToAddToRestricted).reduce((acc, methodKey) => {
+    const namespacedPluginRestrictedMethods = Object.keys(
+      externalMethodsToAddToRestricted
+    ).reduce((acc, methodKey) => {
       const hasDescription = externalMethodsToAddToRestricted[methodKey]
       if (!hasDescription) {
         return acc
@@ -277,7 +297,7 @@ class PermissionsController {
       methodPrefix: WALLET_METHOD_PREFIX,
 
       restrictedMethods: {
-        ...this.externalRestrictedMethods, ...pluginRestrictedMethods,
+        ...this.externalRestrictedMethods, ...namespacedPluginRestrictedMethods,
       },
 
       /**

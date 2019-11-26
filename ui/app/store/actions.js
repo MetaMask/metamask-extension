@@ -347,12 +347,14 @@ var actions = {
 
   // Permissions
   approvePermissionsRequest,
-  clearPermissions,
-  clearPermissionsHistory,
-  clearPermissionsLog,
   rejectPermissionsRequest,
   removePermissionsFor,
   selectApprovedAccount,
+  // clearing permission state
+  clearPermissions, // remove permissions only
+  clearPermissionsHistory,
+  clearPermissionsLog,
+  clearAllPermissionsData, // remove all of the above
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -390,8 +392,9 @@ var actions = {
   setRestoredFromThreeBoxToFalse,
   turnThreeBoxSyncingOn,
 
-  deletePlugin,
-  clearPluginState,
+  removePlugin,
+  removePlugins,
+  clearPlugins,
 }
 
 module.exports = actions
@@ -2715,6 +2718,17 @@ function removePermissionsFor (domains) {
 /**
  * Clears all permissions for all domains.
  */
+function clearAllPermissionsData () {
+  return () => {
+    background.clearPermissions()
+    background.clearPermissionsHistory()
+    background.clearPermissionsLog()
+  }
+}
+
+/**
+ * Clears all permissions for all domains.
+ */
 function clearPermissions () {
   return () => {
     background.clearPermissions()
@@ -2989,18 +3003,23 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
   }
 }
 
-
-function deletePlugin (pluginName) {
+function removePlugin (pluginName) {
   return () => {
-    background.deletePlugin(pluginName)
+    background.removePlugin(pluginName)
   }
 }
 
-function clearPluginState () {
+function removePlugins (pluginNames) {
+  return () => {
+    background.removePlugins(pluginNames)
+  }
+}
+
+function clearPlugins () {
   return () => {
     background.clearPluginState()
   }
 }
 
-window.deletePlugin = deletePlugin
+window.deletePlugin = removePlugin
 

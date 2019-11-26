@@ -198,6 +198,10 @@ export default class PermissionsList extends Component {
   }
 
   renderPermissionsListItem (permission, description) {
+
+    // state may lag behind props slightly
+    if (!this.state.permissions[permission.id]) return null
+
     return (
       <li key={permission.id} className="settings-page__content-list-item">
         <input

@@ -269,18 +269,6 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.AddressAuditController,
     })
 
-    this.pluginsController = new PluginsController({
-      setupProvider: this.setupProvider.bind(this),
-      _txController: this.txController,
-      _networkController: this.networkController,
-      _blockTracker: this.blockTracker,
-      _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
-      onUnlock: this._onUnlock.bind(this),
-      getApi: this.getPluginsApi.bind(this),
-      initState: initState.PluginsController,
-      getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
-    })
-
     this.assetsController = new AssetsController({
       // TODO: Persist asset state?
       // For now handled by plugin persistence.
@@ -292,19 +280,35 @@ module.exports = class MetamaskController extends EventEmitter {
       assetsController: this.assetsController,
       openPopup: opts.openPopup,
       closePopup: opts.closePopup,
-      pluginsController: this.pluginsController,
       provider: this.provider,
+      getApi: this.getPluginsApi.bind(this),
+    },
+    initState.PermissionsMetadata)
+
+    this.pluginsController = new PluginsController({
+      setupProvider: this.setupProvider.bind(this),
+      _txController: this.txController,
+      _networkController: this.networkController,
+      _blockTracker: this.blockTracker,
+      _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
+      _removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(this.permissionsController),
+      onUnlock: this._onUnlock.bind(this),
+      getApi: this.getPluginsApi.bind(this),
+      initState: initState.PluginsController,
+      getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
+    })
+
+    this.permissionsController.initializePermissions({
+      pluginsController: this.pluginsController,
+      restoredPermissions: initState.PermissionsController,
       pluginRestrictedMethods: {
         updatePluginState: this.pluginsController.updatePluginState.bind(this.pluginController),
         getPluginState: this.pluginsController.getPluginState.bind(this.pluginController),
         onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
         getTxById: this.txController.txStateManager.getTx.bind(this.txController.txStateManager),
       },
-      getApi: this.getPluginsApi.bind(this),
       metamaskEventMethods: this.pluginsController.generateMetaMaskListenerMethodsMap(),
-    },
-    initState.PermissionsController, initState.PermissionsMetadata)
-
+    })
     this.pluginsController.runExistingPlugins()
 
     this.store.updateStructure({
@@ -581,7 +585,8 @@ module.exports = class MetamaskController extends EventEmitter {
       removePermissionsFor: this.permissionsController.removePermissionsFor.bind(this.permissionsController),
 
       // plugins
-      deletePlugin: this.pluginsController.deletePlugin.bind(this.pluginsController),
+      removePlugin: this.pluginsController.removePlugin.bind(this.pluginsController),
+      removePlugins: this.pluginsController.removePlugins.bind(this.pluginsController),
       clearPluginState: this.pluginsController.clearPluginState.bind(this.pluginsController),
     }
   }

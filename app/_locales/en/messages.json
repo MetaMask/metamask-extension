@@ -14,9 +14,6 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "confirmClear": {
-    "message": "Are you sure you want to remove all dapp/website permissions?"
-  },
   "connections": {
     "message": "Connections"
   },
@@ -41,14 +38,47 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearPermissionsSuccess": {
-    "message": "Permissions cleared successfully."
+  "plugins": {
+    "message": "Snaps"
+  },
+  "pluginsDescription": {
+    "message": "All currently installed plugins. Deselect Snaps and click \"Update Snaps\" to remove them."
+  },
+  "pluginsSettingsDescription": {
+    "message": "Manage Snaps"
+  },
+  "clearPlugins": {
+    "message": "Clear Snaps"
+  },
+  "clearPluginsDescription": {
+    "message": "Remove all Snaps and their associated permissions."
+  },
+  "confirmClearPlugins": {
+    "message": "Are you sure you want to remove all Snaps and their associated permissions?"
+  },
+  "clearPluginsSuccess": {
+    "message": "Snaps cleared successfully."
+  },
+  "pluginsSettings": {
+    "message": "Manage Snaps"
+  },
+  "pluginsEmpty": {
+    "message": "No Snaps found."
+  },
+  "updatePlugins": {
+    "message": "Update Snaps"
   },
   "permissionsSettings": {
     "message": "Manage Permissions"
   },
   "permissionsDescription": {
     "message": "All currently granted permissions, by dapp/website. Deselect permissions and click \"Update Permissions\" to remove them."
+  },
+  "permissions": {
+    "message": "Permissions"
+  },
+  "permissionsSettingsDescription": {
+    "message": "Manage dapp/website permissions"
   },
   "permissionsEmpty": {
     "message": "No permissions found."
@@ -58,6 +88,12 @@
   },
   "clearPermissionsDescription": {
     "message": "Clear permissions so that all dapps/websites must request access again."
+  },
+  "confirmClearPermissions": {
+    "message": "Are you sure you want to remove all dapp/website permissions?"
+  },
+  "clearPermissionsSuccess": {
+    "message": "Permissions cleared successfully."
   },
   "updatePermissions": {
     "message": "Update Permissions"
@@ -77,6 +113,9 @@
   "clearPermissionsActivityDescription": {
     "message": "Clear the permissions activity log."
   },
+  "confirmClearPermissionsActivity": {
+    "message": "Are you sure you want to clear the permissions activity log?"
+  },
   "permissionsHistorySettings": {
     "message": "Permissions History"
   },
@@ -91,6 +130,9 @@
   },
   "clearPermissionsHistoryDescription": {
     "message": "Clear the permissions history."
+  },
+  "confirmClearPermissionsHistory": {
+    "message": "Are you sure you want to clear the permissions history?"
   },
   "reject": {
     "message": "Reject"
@@ -965,12 +1007,6 @@
   },
   "pending": {
     "message": "pending"
-  },
-  "permissions": {
-    "message": "Permissions"
-  },
-  "permissionsSettingsDescription": {
-    "message": "Manage dapp/website permissions."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

@@ -48,6 +48,7 @@ class PluginsController extends EventEmitter {
     this._networkController = opts._networkController
     this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
+    this._removeAllPermissionsFor = opts._removeAllPermissionsFor
     this.getApi = opts.getApi
     this.getAppKeyForDomain = opts.getAppKeyForDomain
     this.onUnlock = opts.onUnlock
@@ -69,7 +70,7 @@ class PluginsController extends EventEmitter {
       } catch (err) {
         console.warn(`failed to start '${pluginName}', deleting it`)
         // Clean up failed plugins:
-        this.deletePlugin(pluginName)
+        this.removePlugin(pluginName)
       }
     })
   }
@@ -78,7 +79,7 @@ class PluginsController extends EventEmitter {
     return this.store.getState().plugins[pluginName]
   }
 
-  // When a plugin is first created, where should it be executed?
+  // TODO:plugins When a plugin is first created, where should it be executed?
   // And how do we ensure that the same plugin is never executed twice?
 
   updatePluginState (pluginName, newPluginState) {
@@ -99,22 +100,40 @@ class PluginsController extends EventEmitter {
   clearPluginState () {
     this.rpcMessageHandlers.clear()
     this.apiRequestHandlers.clear()
+    const pluginDomains = Object.keys(this.store.getState().plugins)
     this.store.updateState({
       plugins: {},
       pluginStates: {},
     })
-    alert('Plugin state cleared.')
+    this._removeAllPermissionsFor(pluginDomains)
   }
 
-  deletePlugin (pluginName) {
+  removePlugin (pluginName) {
+    this.removePlugins([pluginName])
+  }
+
+  removePlugins (pluginNames) {
+
+    if (!Array.isArray(pluginNames)) {
+      throw new Error('Expected Array of plugin names.')
+    }
+
     const state = this.store.getState()
 
     const newPlugins = { ...state.plugins }
-    delete newPlugins[pluginName]
+    const newPluginStates = { ...state.pluginStates }
+    pluginNames.forEach(name => {
+      delete newPlugins[name]
+      delete newPluginStates[name]
+      this.rpcMessageHandlers.delete(name)
+      this.apiRequestHandlers.delete(name)
+    })
+    this._removeAllPermissionsFor(pluginNames)
 
     this.store.updateState({
       ...state,
       plugins: newPlugins,
+      pluginStates: newPluginStates,
     })
   }
 
@@ -344,7 +363,7 @@ class PluginsController extends EventEmitter {
       })
       sessedPlugin()
     } catch (err) {
-      this.deletePlugin(pluginName)
+      this.removePlugin(pluginName)
       throw err
     }
     this._setPluginToActive(pluginName)

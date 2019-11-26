@@ -31,7 +31,7 @@ export default class ClearPermissionsActivity extends PureComponent {
       >
         <ModalContent
           title={t('clearPermissionsActivity')}
-          description={t('confirmClear')}
+          description={t('confirmClearPermissionsActivity')}
         />
       </Modal>
     )

@@ -49,10 +49,11 @@ export default class Home extends PureComponent {
     threeBoxLastUpdated: PropTypes.string,
     threeBoxFeatureFlagIsTrue: PropTypes.bool,
     permissionsRequests: PropTypes.array,
-    deletePlugin: PropTypes.func,
-    clearPluginState: PropTypes.func,
-    clearPermissions: PropTypes.func,
-    clearPermissionsHistory: PropTypes.func,
+    removePlugin: PropTypes.func,
+    clearPlugins: PropTypes.func,
+    clearAllPermissionsData: PropTypes.func,
+    hasPermissionsData: PropTypes.bool,
+    hasPlugins: PropTypes.bool,
   }
 
   state = {
@@ -109,6 +110,8 @@ export default class Home extends PureComponent {
       threeBoxLastUpdated,
       threeBoxFeatureFlagIsTrue,
       permissionsRequests,
+      hasPermissionsData,
+      hasPlugins,
     } = this.props
 
     if (forgottenPassword) {
@@ -171,12 +174,24 @@ export default class Home extends PureComponent {
                     },
                   ]}/>
                 <div>
-                  <Button onClick={() => this.props.clearPluginState()} >{ 'Delete All Plugins' }</Button>
-                  <Button onClick={() => {
-                    this.props.clearPermissions()
-                    this.props.clearPermissionsHistory()
-                    alert('Permissions state cleared.')
-                  }} >{ 'Delete All Permissions' }</Button>
+
+                  <Button
+                    onClick={() => {
+                      this.props.clearPlugins()
+                    }}
+                    disabled={!hasPlugins}
+                  >
+                    { 'Delete All Plugins' }
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                      this.props.clearAllPermissionsData()
+                    }}
+                    disabled={!hasPermissionsData}
+                  >
+                    { 'Delete All Permissions' }
+                  </Button>
                 </div>
               </TransactionView>
             )

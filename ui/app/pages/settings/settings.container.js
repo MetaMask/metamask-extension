@@ -8,11 +8,13 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 
 import {
-  ADVANCED_ROUTE,
-  SECURITY_ROUTE,
-  GENERAL_ROUTE,
   ABOUT_US_ROUTE,
+  ADVANCED_ROUTE,
+  GENERAL_ROUTE,
   SETTINGS_ROUTE,
+  SECURITY_ROUTE,
+  PERMISSIONS_ROUTE,
+  PLUGINS_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -26,6 +28,8 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [PERMISSIONS_ROUTE]: 'permissions',
+  [PLUGINS_ROUTE]: 'plugins',
   [ABOUT_US_ROUTE]: 'about',
   [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_ADD_ROUTE]: 'newContact',
