@@ -168,7 +168,7 @@ class TransactionStateManager extends EventEmitter {
       }
     }
     const newTxIndex = transactions
-      .findIndex((currentTxMeta) => currentTxMeta.id > txMeta.id)
+      .findIndex((currentTxMeta) => currentTxMeta.time > txMeta.time)
 
     newTxIndex === -1
       ? transactions.push(txMeta)
