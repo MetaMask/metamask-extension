@@ -39,7 +39,7 @@
     "lint:fix": "eslint . --ext js,json --fix",
     "lint:changed": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint",
     "lint:changed:fix": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' --regexp='[.]json$' | tr '\\n' '\\0' | xargs -0 eslint --fix",
-    "lint:shellcheck:package": "jq -r '.scripts | keys[] as $key | .[$key]' < package.json > temp.sh && echo '#!/bin/bash' | cat - temp.sh > temp && mv temp temp.sh && shellcheck temp.sh && rm temp.sh",
+    "lint:shellcheck:package": "jq -r \".scripts | keys[] as $key | .[$key]\" < package.json > temp.sh && echo '#!/bin/bash' | cat - temp.sh > temp && mv temp temp.sh && shellcheck temp.sh && rm temp.sh",
     "lint:shellcheck": "yarn lint:shellcheck:package && shellcheck --version && find . -type f -name '*.sh' ! -path './node_modules/*' -print0 | xargs -0 shellcheck",
     "verify-locales": "node ./development/verify-locale-strings.js",
     "mozilla-lint": "addons-linter dist/firefox",
