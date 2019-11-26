@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Component} from 'react'
+import React, {Component} from 'react'
 // import ReactTooltip from 'react-tooltip-component'
 
 import ReactDOM from 'react-dom';
