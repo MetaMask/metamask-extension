@@ -33,8 +33,8 @@ Mascot.prototype.render = function Mascot () {
 }
 
 Mascot.prototype.componentDidMount = function () {
-  var targetDivId = 'metamask-mascot-container'
-  var container = document.getElementById(targetDivId)
+  const targetDivId = 'metamask-mascot-container'
+  const container = document.getElementById(targetDivId)
   container.appendChild(this.logo.container)
 }
 

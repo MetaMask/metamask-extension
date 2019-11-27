@@ -153,7 +153,7 @@ ConfirmTxScreen.prototype.render = function () {
     conversionRate,
   } = this.props
 
-  var txData = this.getTxData() || {}
+  const txData = this.getTxData() || {}
   const { msgParams, type, msgParams: { version } } = txData
   log.debug('msgParams detected, rendering pending msg')
 
@@ -186,7 +186,7 @@ ConfirmTxScreen.prototype.render = function () {
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   log.info('conf-tx.js: signing message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signMsg(params))
@@ -200,7 +200,7 @@ ConfirmTxScreen.prototype.stopPropagation = function (event) {
 
 ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   log.info('conf-tx.js: signing personal message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signPersonalMsg(params))
@@ -208,7 +208,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   log.info('conf-tx.js: signing typed message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signTypedMsg(params))

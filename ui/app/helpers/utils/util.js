@@ -12,7 +12,7 @@ function formatDate (date, format = 'M/d/y \'at\' T') {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
-var valueTable = {
+const valueTable = {
   wei: '1000000000000000000',
   kwei: '1000000000000000',
   mwei: '1000000000000',
@@ -25,8 +25,8 @@ var valueTable = {
   gether: '0.000000001',
   tether: '0.000000000001',
 }
-var bnTable = {}
-for (var currency in valueTable) {
+const bnTable = {}
+for (const currency in valueTable) {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
 }
 
@@ -97,12 +97,12 @@ function miniAddressSummary (address) {
   if (!address) {
     return ''
   }
-  var checked = checksumAddress(address)
+  const checked = checksumAddress(address)
   return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
 function isValidAddress (address) {
-  var prefixed = ethUtil.addHexPrefix(address)
+  const prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') {
     return false
   }
@@ -114,7 +114,7 @@ function isValidENSAddress (address) {
 }
 
 function isInvalidChecksumAddress (address) {
-  var prefixed = ethUtil.addHexPrefix(address)
+  const prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') {
     return false
   }
@@ -125,8 +125,8 @@ function isAllOneCase (address) {
   if (!address) {
     return true
   }
-  var lower = address.toLowerCase()
-  var upper = address.toUpperCase()
+  const lower = address.toLowerCase()
+  const upper = address.toUpperCase()
   return address === lower || address === upper
 }
 
@@ -135,18 +135,18 @@ function numericBalance (balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16)
   }
-  var stripped = ethUtil.stripHexPrefix(balance)
+  const stripped = ethUtil.stripHexPrefix(balance)
   return new ethUtil.BN(stripped, 16)
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
 function parseBalance (balance) {
-  var beforeDecimal, afterDecimal
+  let afterDecimal
   const wei = numericBalance(balance)
-  var weiString = wei.toString()
+  const weiString = wei.toString()
   const trailingZeros = /0+$/
 
-  beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
+  const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
   afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') {
     afterDecimal = '0'
@@ -157,14 +157,14 @@ function parseBalance (balance) {
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
 function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
-  var parsed = needsParse ? parseBalance(balance) : balance.split('.')
-  var beforeDecimal = parsed[0]
-  var afterDecimal = parsed[1]
-  var formatted = 'None'
+  const parsed = needsParse ? parseBalance(balance) : balance.split('.')
+  const beforeDecimal = parsed[0]
+  let afterDecimal = parsed[1]
+  let formatted = 'None'
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
-        var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
+        const sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
         if (sigFigs) {
           afterDecimal = sigFigs[0]
         }
@@ -182,11 +182,11 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ET
 
 
 function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
-  var balance = formattedBalance.split(' ')[0]
-  var label = formattedBalance.split(' ')[1]
-  var beforeDecimal = balance.split('.')[0]
-  var afterDecimal = balance.split('.')[1]
-  var shortBalance = shortenBalance(balance, decimalsToKeep)
+  let balance = formattedBalance.split(' ')[0]
+  const label = formattedBalance.split(' ')[1]
+  const beforeDecimal = balance.split('.')[0]
+  const afterDecimal = balance.split('.')[1]
+  const shortBalance = shortenBalance(balance, decimalsToKeep)
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') {
     // eslint-disable-next-line eqeqeq
@@ -203,8 +203,8 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
 }
 
 function shortenBalance (balance, decimalsToKeep = 1) {
-  var truncatedValue
-  var convertedBalance = parseFloat(balance)
+  let truncatedValue
+  const convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
     truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
     return `${truncatedValue}m`
@@ -216,7 +216,7 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   } else if (convertedBalance < 0.001) {
     return '<0.001'
   } else if (convertedBalance < 1) {
-    var stringBalance = convertedBalance.toString()
+    const stringBalance = convertedBalance.toString()
     if (stringBalance.split('.')[1].length > 3) {
       return convertedBalance.toFixed(3)
     } else {
@@ -228,7 +228,7 @@ function shortenBalance (balance, decimalsToKeep = 1) {
 }
 
 function dataSize (data) {
-  var size = data ? ethUtil.stripHexPrefix(data).length : 0
+  const size = data ? ethUtil.stripHexPrefix(data).length : 0
   return size + ' bytes'
 }
 
@@ -245,7 +245,7 @@ function normalizeEthStringToWei (str) {
   const parts = str.split('.')
   let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
   if (parts[1]) {
-    var decimal = parts[1]
+    let decimal = parts[1]
     while (decimal.length < 18) {
       decimal += '0'
     }
@@ -258,24 +258,24 @@ function normalizeEthStringToWei (str) {
   return eth
 }
 
-var multiple = new ethUtil.BN('10000', 10)
+const multiple = new ethUtil.BN('10000', 10)
 function normalizeNumberToWei (n, currency) {
-  var enlarged = n * 10000
-  var amount = new ethUtil.BN(String(enlarged), 10)
+  const enlarged = n * 10000
+  const amount = new ethUtil.BN(String(enlarged), 10)
   return normalizeToWei(amount, currency).div(multiple)
 }
 
 function readableDate (ms) {
-  var date = new Date(ms)
-  var month = date.getMonth()
-  var day = date.getDate()
-  var year = date.getFullYear()
-  var hours = date.getHours()
-  var minutes = '0' + date.getMinutes()
-  var seconds = '0' + date.getSeconds()
+  const date = new Date(ms)
+  const month = date.getMonth()
+  const day = date.getDate()
+  const year = date.getFullYear()
+  const hours = date.getHours()
+  const minutes = '0' + date.getMinutes()
+  const seconds = '0' + date.getSeconds()
 
-  var dateStr = `${month}/${day}/${year}`
-  var time = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
+  const dateStr = `${month}/${day}/${year}`
+  const time = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
   return `${dateStr} ${time}`
 }
 

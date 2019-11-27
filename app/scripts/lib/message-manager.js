@@ -109,9 +109,9 @@ module.exports = class MessageManager extends EventEmitter {
     }
     msgParams.data = normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = (new Date()).getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,

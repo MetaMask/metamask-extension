@@ -98,7 +98,7 @@ MenuDroppoComponent.prototype.componentDidMount = function () {
     this.globalClickHandler = this.globalClickOccurred.bind(this)
     document.body.addEventListener('click', this.globalClickHandler)
     // eslint-disable-next-line react/no-find-dom-node
-    var container = findDOMNode(this)
+    const container = findDOMNode(this)
     this.container = container
   }
 }
@@ -122,7 +122,7 @@ MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
 }
 
 function isDescendant (parent, child) {
-  var node = child.parentNode
+  let node = child.parentNode
   while (node !== null) {
     if (node === parent) {
       return true

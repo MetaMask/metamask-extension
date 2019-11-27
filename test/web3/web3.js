@@ -1,6 +1,6 @@
 /* eslint no-undef: 0 */
 
-var json = methods
+const json = methods
 
 web3.currentProvider.enable().then(() => {
 
