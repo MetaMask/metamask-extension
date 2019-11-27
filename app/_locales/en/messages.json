@@ -1307,6 +1307,9 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "submit": {
+    "message": "Submit"
+  },
   "submitted": {
     "message": "Submitted"
   },
