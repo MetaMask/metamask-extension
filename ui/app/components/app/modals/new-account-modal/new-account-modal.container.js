@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mergeProps (stateProps, dispatchProps, ownProps) {
+function mergeProps (stateProps, dispatchProps) {
   const {
     onCreateNewAccount,
   } = stateProps
@@ -34,7 +34,6 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
-    ...ownProps,
     onSave: (newAccountName) => {
       return createAccount(newAccountName)
         .then(newAccountAddress => onCreateNewAccount(newAccountAddress))

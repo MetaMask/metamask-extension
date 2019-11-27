@@ -19,7 +19,6 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     permissionsDescriptions: getPermissionsDescriptions(state),
-    domainMetadata,
     requestMetadata,
     targetDomainMetadata,
   }

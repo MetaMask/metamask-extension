@@ -57,8 +57,6 @@ const selectors = {
   isEthereumNetwork,
   getPermissionsRequests,
   getPermissionsDescriptions,
-  getPermissionsHistory,
-  getPermissionsLog,
   getDomainMetadata,
   getActiveTab,
   getMetaMetricState,
@@ -393,14 +391,6 @@ function getPermissionsDescriptions (state) {
 
 function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests
-}
-
-function getPermissionsHistory (state) {
-  return state.metamask.permissionsHistory
-}
-
-function getPermissionsLog (state) {
-  return state.metamask.permissionsLog
 }
 
 function getDomainMetadata (state) {
