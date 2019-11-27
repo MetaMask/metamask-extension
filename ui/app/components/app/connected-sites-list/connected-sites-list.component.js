@@ -60,7 +60,7 @@ export default class ConnectedSitesList extends Component {
                     <div className="connected-sites-list__domain-info">
                       <div className="connected-sites-list__domain-names">
                         <div className="connected-sites-list__domain-name">
-                          { domain.name }
+                          { domain.extensionId ? t('externalExtension') : domain.name }
                         </div>
                       </div>
                       { domain.lastConnectedTime
@@ -71,7 +71,7 @@ export default class ConnectedSitesList extends Component {
                       }
                       {domainIsExpanded
                         ? <div className="connected-sites-list__domain-origin">
-                          { domain.key }
+                          { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.key }
                         </div>
                         : null
                       }

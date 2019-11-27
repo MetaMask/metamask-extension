@@ -530,6 +530,7 @@ function getRenderablePermissionsDomains (state) {
       const {
         name,
         icon,
+        extensionId,
       } = domainMetadata[domainKey]
       const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
       const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
@@ -544,6 +545,7 @@ function getRenderablePermissionsDomains (state) {
         key: domainKey,
         lastConnectedTime,
         permissionDescriptions: permissionKeys.map(permissionKey => permissionsDescriptions[permissionKey]),
+        extensionId,
       }]
     } else {
       return acc
