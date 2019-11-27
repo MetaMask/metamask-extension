@@ -34,7 +34,6 @@ export default class DisconnectAccount extends PureComponent {
               disconnectAccount()
               hideModal()
             }}
-            className=""
           >
             { t('disconnectFromThisAccount') }
           </Button>

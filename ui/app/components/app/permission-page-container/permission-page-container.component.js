@@ -11,7 +11,6 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentity: PropTypes.object,
     permissionsDescriptions: PropTypes.object.isRequired,
-    domainMetadata: PropTypes.object.isRequired,
     request: PropTypes.object,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
@@ -36,7 +35,6 @@ export default class PermissionPageContainer extends Component {
     selectedPermissions: this.getRequestedMethodState(
       this.getRequestedMethodNames(this.props)
     ),
-    selectedAccount: this.props.selectedIdentity,
   }
 
   componentDidUpdate () {
@@ -89,15 +87,8 @@ export default class PermissionPageContainer extends Component {
   }
 
   onSubmit = () => {
-    // sanity validation
-    if (!this.state.selectedAccount) {
-      throw new Error(
-        'Fatal: no account selected'
-      )
-    }
-
     const {
-      request: _request, approvePermissionsRequest, rejectPermissionsRequest,
+      request: _request, approvePermissionsRequest, rejectPermissionsRequest, selectedIdentity,
     } = this.props
 
     const request = {
@@ -112,7 +103,7 @@ export default class PermissionPageContainer extends Component {
     })
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request, [this.state.selectedAccount.address])
+      approvePermissionsRequest(request, [selectedIdentity.address])
     } else {
       rejectPermissionsRequest(request.metadata.id)
     }
