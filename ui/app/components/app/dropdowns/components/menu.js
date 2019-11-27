@@ -38,10 +38,6 @@ function Item (props) {
   const itemClassName = classnames('menu__item', className, {
     'menu__item--clickable': Boolean(onClick),
   })
-  const iconComponent = icon ? <div className="menu__item__icon">{icon}</div> : null
-  const textComponent = text ? <div className="menu__item__text">{text}</div> : null
-  const subTextComponent = subText ? <div className="menu__item__subtext">{subText}</div> : null
-
   return children
     ? <div className={itemClassName} onClick={onClick}>{children}</div>
     : (
@@ -49,7 +45,9 @@ function Item (props) {
         className={itemClassName}
         onClick={onClick}
       >
-        {[ iconComponent, textComponent, subTextComponent ].filter(d => Boolean(d))}
+        {icon ? <div className="menu__item__icon">{icon}</div> : null}
+        {text ? <div className="menu__item__text">{text}</div> : null}
+        {subText ? <div className="menu__item__subtext">{subText}</div> : null}
       </div>
     )
 }
