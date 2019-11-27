@@ -12,7 +12,7 @@ const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums
 // Modal Components
 const DepositEtherModal = require('./deposit-ether-modal')
 import AccountDetailsModal from './account-details-modal'
-const ExportPrivateKeyModal = require('./export-private-key-modal')
+const ExportPrivateKeyModal = require('./export-private-key-modal').default
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
