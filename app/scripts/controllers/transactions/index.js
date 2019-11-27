@@ -192,13 +192,18 @@ class TransactionController extends EventEmitter {
       throw new Error(`Transaction from address isn't valid for this account`)
     }
     txUtils.validateTxParams(normalizedTxParams)
-    // construct txMeta
-    const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
+    /**
+    `generateTxMeta` adds the default txMeta properties to the passed object.
+    These include the tx's `id`. As we use the id for determining order of
+    txes in the tx-state-manager, it is necessary to call the asynchronous
+    method `this._determineTransactionCategory` after `generateTxMeta`.
+    */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPE_STANDARD,
-      transactionCategory,
     })
+    const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
+    txMeta.transactionCategory = transactionCategory
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
 
