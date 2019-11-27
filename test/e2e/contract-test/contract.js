@@ -314,7 +314,7 @@ const initialize = () => {
         if (err) {
           console.log(err)
         } else {
-          signTypedDataResults.innerHTML = result
+          signTypedDataResults.innerHTML = JSON.stringify(result)
         }
       })
     })
