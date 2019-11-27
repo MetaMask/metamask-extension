@@ -20,11 +20,13 @@ describe('SendHeader Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendHeader
-      clearSend={propsMethodSpies.clearSend}
-      history={historySpies}
-      titleKey="mockTitleKey"
-    />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+    wrapper = shallow((
+      <SendHeader
+        clearSend={propsMethodSpies.clearSend}
+        history={historySpies}
+        titleKey="mockTitleKey"
+      />
+    ), { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
   afterEach(() => {

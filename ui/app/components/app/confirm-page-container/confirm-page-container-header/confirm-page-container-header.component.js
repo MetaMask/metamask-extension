@@ -34,36 +34,40 @@ export default class ConfirmPageContainerHeader extends Component {
     return (
       <div className="confirm-page-container-header__row">
         { !showAccountInHeader
-          ? <div
-            className="confirm-page-container-header__back-button-container"
-            style={{
-              visibility: showEdit ? 'initial' : 'hidden',
-            }}
-          >
-            <img
-              src="/images/caret-left.svg"
-            />
-            <span
-              className="confirm-page-container-header__back-button"
-              onClick={() => onEdit()}
+          ? (
+            <div
+              className="confirm-page-container-header__back-button-container"
+              style={{
+                visibility: showEdit ? 'initial' : 'hidden',
+              }}
             >
-              { this.context.t('edit') }
-            </span>
-          </div>
+              <img
+                src="/images/caret-left.svg"
+              />
+              <span
+                className="confirm-page-container-header__back-button"
+                onClick={() => onEdit()}
+              >
+                { this.context.t('edit') }
+              </span>
+            </div>
+          )
           : null
         }
         { showAccountInHeader
-          ? <div className="confirm-page-container-header__address-container">
-            <div className="confirm-page-container-header__address-identicon">
-              <Identicon
-                address={accountAddress}
-                diameter={24}
-              />
+          ? (
+            <div className="confirm-page-container-header__address-container">
+              <div className="confirm-page-container-header__address-identicon">
+                <Identicon
+                  address={accountAddress}
+                  diameter={24}
+                />
+              </div>
+              <div className="confirm-page-container-header__address">
+                { addressSlicer(accountAddress) }
+              </div>
             </div>
-            <div className="confirm-page-container-header__address">
-              { addressSlicer(accountAddress) }
-            </div>
-          </div>
+          )
           : null
         }
         { !isFullScreen && <NetworkDisplay /> }

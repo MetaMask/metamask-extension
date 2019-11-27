@@ -67,29 +67,36 @@ export default class EthBalance extends Component {
     return (
       <TooltipComponent {...containerProps}>
         <div className="flex-column">
-          <div className="flex-row" style={{
-            alignItems: 'flex-end',
-            lineHeight: lineHeight || '13px',
-            fontFamily: fontFamily || 'Montserrat Light',
-            textRendering: 'geometricPrecision',
-          }}>
-            <div style={{
-              width: '100%',
-              textAlign: 'right',
-              fontSize: fontSize || 'inherit',
-              color: color || 'inherit',
-            }}>
+          <div
+            className="flex-row"
+            style={{
+              alignItems: 'flex-end',
+              lineHeight: lineHeight || '13px',
+              fontFamily: fontFamily || 'Montserrat Light',
+              textRendering: 'geometricPrecision',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                textAlign: 'right',
+                fontSize: fontSize || 'inherit',
+                color: color || 'inherit',
+              }}
+            >
               {
                 incoming
                   ? `+${balanceToRender}`
                   : balanceToRender
               }
             </div>
-            <div style={{
-              color: color || '#AEAEAE',
-              fontSize: fontSize || '12px',
-              marginLeft: '5px',
-            }}>
+            <div
+              style={{
+                color: color || '#AEAEAE',
+                fontSize: fontSize || '12px',
+                marginLeft: '5px',
+              }}
+            >
               {label}
             </div>
           </div>
@@ -120,7 +127,8 @@ export default class EthBalance extends Component {
         <div style={{
           display: 'inline',
           width,
-        }}>
+        }}
+        >
           {this.renderBalance(formattedValue)}
         </div>
       </div>

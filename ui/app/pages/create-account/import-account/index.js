@@ -46,7 +46,8 @@ AccountImportSubview.prototype.render = function () {
             global.platform.openWindow({
               url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
             })
-          }}>
+          }}
+        >
           {this.context.t('here')}
         </span>
       </div>

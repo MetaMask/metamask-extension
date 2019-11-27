@@ -66,12 +66,16 @@ TokenList.prototype.render = function TokenList () {
   if (error) {
     log.error(error)
     return (
-      <div className="hotFix" style={{
-        padding: '80px',
-      }}>
+      <div
+        className="hotFix"
+        style={{
+          padding: '80px',
+        }}
+      >
         {this.context.t('troubleTokenBalances')}
         <span
-          className="hotFix" style={{
+          className="hotFix"
+          style={{
             color: 'rgba(247, 134, 28, 1)',
             cursor: 'pointer',
           }}

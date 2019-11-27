@@ -55,24 +55,30 @@ export default class PageContainerHeader extends Component {
         { this.renderHeaderRow() }
 
         {
-          title && <div className="page-container__title">
-            { title }
-          </div>
+          title && (
+            <div className="page-container__title">
+              { title }
+            </div>
+          )
         }
 
         {
-          subtitle && <div className="page-container__subtitle">
-            { subtitle }
-          </div>
+          subtitle && (
+            <div className="page-container__subtitle">
+              { subtitle }
+            </div>
+          )
         }
 
         {
           onClose && headerCloseText
             ? <div className="page-container__header-close-text" onClick={() => onClose()}>{ headerCloseText }</div>
-            : onClose && <div
-              className="page-container__header-close"
-              onClick={() => onClose()}
-            />
+            : onClose && (
+              <div
+                className="page-container__header-close"
+                onClick={() => onClose()}
+              />
+            )
         }
 
         { this.renderTabs() }

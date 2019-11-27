@@ -84,7 +84,8 @@ export default class DepositEtherModal extends Component {
 
     return (
       <div
-        className="page-container page-container--full-width page-container--full-height">
+        className="page-container page-container--full-width page-container--full-height"
+      >
         <div className="page-container__header">
           <div className="page-container__title">
             {this.context.t('depositEther')}

@@ -176,7 +176,8 @@ class ConnectScreen extends Component {
         className="hw-tutorial"
         ref={node => {
           this.referenceNode = node
-        }}>
+        }}
+      >
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>

@@ -149,7 +149,7 @@ export default class ExportPrivateKeyModal extends Component {
           inputClass="qr-ellip-address ellip-address"
           value={checksumAddress(address)}
         />
-        <div className="account-modal-divider"/>
+        <div className="account-modal-divider" />
         <span className="modal-body-title">{this.context.t('showPrivateKeys')}</span>
         <div className="private-key-password">
           {this.renderPasswordLabel(privateKey)}

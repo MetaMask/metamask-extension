@@ -11,7 +11,7 @@ describe('Dropdown Menu Components', () => {
 
     beforeEach(() => {
       wrapper = shallow(
-        <Menu className="Test Class" isShowing/>
+        <Menu className="Test Class" isShowing />
       )
     })
 
@@ -73,9 +73,11 @@ describe('Dropdown Menu Components', () => {
     const onClickSpy = sinon.spy()
 
     beforeEach(() => {
-      wrapper = shallow(<CloseArea
-        onClick={onClickSpy}
-      />)
+      wrapper = shallow((
+        <CloseArea
+          onClick={onClickSpy}
+        />
+      ))
     })
 
     it('simulates click', () => {

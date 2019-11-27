@@ -18,15 +18,17 @@ describe('AmountMaxButton Component', function () {
   let instance
 
   beforeEach(() => {
-    wrapper = shallow(<AmountMaxButton
-      balance="mockBalance"
-      gasTotal="mockGasTotal"
-      maxModeOn={false}
-      selectedToken={ { address: 'mockTokenAddress' } }
-      setAmountToMax={propsMethodSpies.setAmountToMax}
-      setMaxModeTo={propsMethodSpies.setMaxModeTo}
-      tokenBalance="mockTokenBalance"
-    />, {
+    wrapper = shallow((
+      <AmountMaxButton
+        balance="mockBalance"
+        gasTotal="mockGasTotal"
+        maxModeOn={false}
+        selectedToken={ { address: 'mockTokenAddress' } }
+        setAmountToMax={propsMethodSpies.setAmountToMax}
+        setMaxModeTo={propsMethodSpies.setMaxModeTo}
+        tokenBalance="mockTokenBalance"
+      />
+    ), {
       context: {
         t: str => str + '_t',
         metricsEvent: () => {},

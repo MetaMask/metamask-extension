@@ -135,7 +135,7 @@ function startApp () {
           margin: '20px',
         }}
       >
-        <Root store={store}/>
+        <Root store={store} />
       </div>
     </div>,
     container,

@@ -3,51 +3,51 @@ import { storiesOf } from '@storybook/react'
 import TextField from '.'
 
 storiesOf('TextField', module)
-  .add('text', () =>
+  .add('text', () => (
     <TextField
       label="Text"
       type="text"
     />
-  )
-  .add('password', () =>
+  ))
+  .add('password', () => (
     <TextField
       label="Password"
       type="password"
     />
-  )
-  .add('error', () =>
+  ))
+  .add('error', () => (
     <TextField
       type="text"
       label="Name"
       error="Invalid value"
     />
-  )
-  .add('Mascara text', () =>
+  ))
+  .add('Mascara text', () => (
     <TextField
       label="Text"
       type="text"
       largeLabel
     />
-  )
-  .add('Material text', () =>
+  ))
+  .add('Material text', () => (
     <TextField
       label="Text"
       type="text"
       material
     />
-  )
-  .add('Material password', () =>
+  ))
+  .add('Material password', () => (
     <TextField
       label="Password"
       type="password"
       material
     />
-  )
-  .add('Material error', () =>
+  ))
+  .add('Material error', () => (
     <TextField
       type="text"
       label="Name"
       error="Invalid value"
       material
     />
-  )
+  ))
