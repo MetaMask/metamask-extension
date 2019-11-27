@@ -4,7 +4,7 @@ import transitionEvents from 'domkit/transitionEvents'
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
-  getRef: function (willHidden) {
+  getRef: function () {
     return 'content'
   },
   show: {
