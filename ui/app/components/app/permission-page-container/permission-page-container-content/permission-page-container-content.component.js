@@ -78,7 +78,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderRequestedPermissions () {
     const {
-      selectedPermissions, permissionsDescriptions,
+      selectedPermissions, permissionsDescriptions, onPermissionToggle,
     } = this.props
     const { t } = this.context
 
@@ -91,8 +91,14 @@ export default class PermissionPageContainerContent extends PureComponent {
       const description = permissionsDescriptions[methodName] || methodName
 
       return (
-        <div className="permission-approval-container__content__permission" key={methodName}>
-          <i className="fa fa-check-circle fa-sm" />
+        <div
+          className="permission-approval-container__content__permission" key={methodName}
+          onClick={() => onPermissionToggle(methodName)}
+        >
+          { selectedPermissions[methodName]
+            ? <i className="fa fa-check-circle fa-sm" />
+            : <i className="fa fa-circle fa-sm" />
+          }
           <label>{description}</label>
         </div>
       )
