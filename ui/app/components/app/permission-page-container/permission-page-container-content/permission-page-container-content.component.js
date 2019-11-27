@@ -115,6 +115,8 @@ export default class PermissionPageContainerContent extends PureComponent {
       titleArgs = [ 'cancelledConnectionWithMetaMask' ]
     } else if (redirect) {
       titleArgs = [ 'connectingWithMetaMask' ]
+    } else if (domainMetadata.extensionId) {
+      titleArgs = [ 'externalExtension', [domainMetadata.extensionId] ]
     } else {
       titleArgs = [ 'likeToConnect', [domainMetadata.name] ]
     }
@@ -130,7 +132,10 @@ export default class PermissionPageContainerContent extends PureComponent {
         { !redirect
           ? <section className="permission-approval-container__permissions-container">
             <div className="permission-approval-container__permissions-header">
-              { t('thisWillAllow', [domainMetadata.name]) }
+              { domainMetadata.extensionId
+                ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
+                : t('thisWillAllow', [domainMetadata.name])
+              }
             </div>
             { this.renderRequestedPermissions() }
           </section>

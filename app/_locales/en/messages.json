@@ -508,6 +508,13 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
+  "extensionId": {
+    "message": "Extension ID: $1",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to Metamask"
+  },
+  "externalExtension": {
+    "message": "External Extension"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
@@ -1372,6 +1379,10 @@
   "thisWillAllow": {
     "message": "This will allow $1 to:",
     "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
+  },
+  "thisWillAllowExternalExtension": {
+    "message": "This will allow an external extension with id $1 to:",
+    "description":  "$1 is a string of random letters that are the id of another extension connecting to Metamask"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
