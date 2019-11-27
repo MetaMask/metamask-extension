@@ -1,5 +1,5 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React, { Component } from 'react'
+
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
@@ -80,9 +80,7 @@ const accountModalStyle = {
 
 const MODALS = {
   DEPOSIT_ETHER: {
-    contents: [
-      h(DepositEtherModal, {}, []),
-    ],
+    contents: <DepositEtherModal />,
     onHide: (props) => props.hideWarning(),
     mobileModalStyle: {
       width: '100%',
@@ -115,9 +113,7 @@ const MODALS = {
   },
 
   ADD_TO_ADDRESSBOOK: {
-    contents: [
-      h(AddToAddressBookModal, {}, []),
-    ],
+    contents: <AddToAddressBookModal />,
     mobileModalStyle: {
       width: '95%',
       top: '10%',
@@ -144,23 +140,17 @@ const MODALS = {
   },
 
   ACCOUNT_DETAILS: {
-    contents: [
-      h(AccountDetailsModal, {}, []),
-    ],
+    contents: <AccountDetailsModal />,
     ...accountModalStyle,
   },
 
   EXPORT_PRIVATE_KEY: {
-    contents: [
-      h(ExportPrivateKeyModal, {}, []),
-    ],
+    contents: <ExportPrivateKeyModal />,
     ...accountModalStyle,
   },
 
   HIDE_TOKEN_CONFIRMATION: {
-    contents: [
-      h(HideTokenConfirmationModal, {}, []),
-    ],
+    contents: <HideTokenConfirmationModal />,
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -172,7 +162,7 @@ const MODALS = {
   },
 
   CLEAR_APPROVED_ORIGINS: {
-    contents: h(ClearApprovedOrigins),
+    contents: <ClearApprovedOrigins />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -185,7 +175,7 @@ const MODALS = {
   },
 
   METAMETRICS_OPT_IN_MODAL: {
-    contents: h(MetaMetricsOptInModal),
+    contents: <MetaMetricsOptInModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
       width: '100%',
@@ -202,12 +192,9 @@ const MODALS = {
   },
 
   GAS_PRICE_INFO_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'gasPriceNoDenom',
-        message: 'gasPriceInfoModalContent',
-      }),
-    ],
+    // TODO Remove this once our i18n unused messages script detection is better
+    // eslint-disable-next-line react/jsx-curly-brace-presence
+    contents: <NotifcationModal header={'gasPriceNoDenom'} message={'gasPriceInfoModalContent'} />,
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -219,12 +206,9 @@ const MODALS = {
   },
 
   GAS_LIMIT_INFO_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'gasLimit',
-        message: 'gasLimitInfoModalContent',
-      }),
-    ],
+    // TODO Remove this once our i18n unused messages script detection is better
+    // eslint-disable-next-line react/jsx-curly-brace-presence
+    contents: <NotifcationModal header={'gasLimit'} message={'gasLimitInfoModalContent'} />,
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -236,7 +220,7 @@ const MODALS = {
   },
 
   CONFIRM_RESET_ACCOUNT: {
-    contents: h(ConfirmResetAccount),
+    contents: <ConfirmResetAccount />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -249,7 +233,7 @@ const MODALS = {
   },
 
   CONFIRM_REMOVE_ACCOUNT: {
-    contents: h(ConfirmRemoveAccount),
+    contents: <ConfirmRemoveAccount />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -262,7 +246,7 @@ const MODALS = {
   },
 
   CONFIRM_DELETE_NETWORK: {
-    contents: h(ConfirmDeleteNetwork),
+    contents: <ConfirmDeleteNetwork />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -275,9 +259,7 @@ const MODALS = {
   },
 
   CUSTOMIZE_GAS: {
-    contents: [
-      h(ConfirmCustomizeGasModal),
-    ],
+    contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',
@@ -306,7 +288,7 @@ const MODALS = {
   },
 
   EDIT_APPROVAL_PERMISSION: {
-    contents: h(EditApprovalPermission),
+    contents: <EditApprovalPermission />,
     mobileModalStyle: {
       width: '95vw',
       height: '100vh',
@@ -332,7 +314,7 @@ const MODALS = {
 
   TRANSACTION_CONFIRMED: {
     disableBackdropClick: true,
-    contents: h(TransactionConfirmed),
+    contents: <TransactionConfirmed />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -345,7 +327,7 @@ const MODALS = {
   },
 
   QR_SCANNER: {
-    contents: h(QRScanner),
+    contents: <QRScanner />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -358,7 +340,7 @@ const MODALS = {
   },
 
   CANCEL_TRANSACTION: {
-    contents: h(CancelTransaction),
+    contents: <CancelTransaction />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -371,7 +353,7 @@ const MODALS = {
   },
 
   REJECT_TRANSACTIONS: {
-    contents: h(RejectTransactions),
+    contents: <RejectTransactions />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -430,25 +412,26 @@ Modal.prototype.render = function () {
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}
 
-  return h(FadeModal,
-    {
-      className: 'modal',
-      keyboard: false,
-      onHide: () => {
+  return (
+    <FadeModal
+      className="modal"
+      keyboard={false}
+      onHide={() => {
         if (modal.onHide) {
           modal.onHide(this.props)
         }
         this.onHide(modal.customOnHideOpts)
-      },
-      ref: (ref) => {
+      }}
+      ref={(ref) => {
         this.modalRef = ref
-      },
-      modalStyle,
-      contentStyle,
-      backdropStyle: BACKDROPSTYLE,
-      closeOnClick: !disableBackdropClick,
-    },
-    children,
+      }}
+      modalStyle={modalStyle}
+      contentStyle={contentStyle}
+      backdropStyle={BACKDROPSTYLE}
+      closeOnClick={!disableBackdropClick}
+    >
+      {children}
+    </FadeModal>
   )
 }
 
