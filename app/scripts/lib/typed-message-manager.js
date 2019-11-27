@@ -163,6 +163,8 @@ module.exports = class TypedMessageManager extends EventEmitter {
         const activeChainId = parseInt(this.networkController.getNetworkState())
         chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
         break
+      default:
+        assert.fail(`Unknown params.version ${params.version}`)
     }
   }
 
