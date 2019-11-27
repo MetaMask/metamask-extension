@@ -24,9 +24,14 @@ export default class NewAccountModal extends Component {
     })
   }
 
+  onSubmit = () => {
+    this.props.onSave(this.state.alias)
+      .then(this.props.hideModal)
+  }
+
   onKeyPress = e => {
     if (e.key === 'Enter' && this.state.alias) {
-      this.props.onSave()
+      this.onSubmit()
     }
   }
 
@@ -61,9 +66,7 @@ export default class NewAccountModal extends Component {
           </Button>
           <Button
             type="primary"
-            onClick={() => {
-              this.props.onSave(this.state.alias).then(this.props.hideModal)
-            }}
+            onClick={this.onSubmit}
             disabled={!this.state.alias}
           >
             {t('save')}
