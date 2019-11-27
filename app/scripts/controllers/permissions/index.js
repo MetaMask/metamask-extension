@@ -25,7 +25,7 @@ class PermissionsController {
 
   constructor (
     {
-      openPopup, closePopup, notifyDomain, notifyAllDomains, keyringController,
+      platform, notifyDomain, notifyAllDomains, keyringController,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -36,9 +36,8 @@ class PermissionsController {
     })
     this.notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this._openPopup = openPopup
-    this._closePopup = closePopup
     this.keyringController = keyringController
+    this._platform = platform
     this._restrictedMethods = getRestrictedMethods(this)
     this._initializePermissions(restoredPermissions)
   }
@@ -56,6 +55,15 @@ class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
+    engine.push(createLoggerMiddleware({
+      walletPrefix: WALLET_METHOD_PREFIX,
+      restrictedMethods: Object.keys(this._restrictedMethods),
+      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
+      store: this.store,
+      logStoreKey: LOG_STORE_KEY,
+      historyStoreKey: HISTORY_STORE_KEY,
+    }))
+
     engine.push(createMethodMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
@@ -63,14 +71,6 @@ class PermissionsController {
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
-    }))
-
-    engine.push(createLoggerMiddleware({
-      walletPrefix: WALLET_METHOD_PREFIX,
-      restrictedMethods: Object.keys(this._restrictedMethods),
-      store: this.store,
-      logStoreKey: LOG_STORE_KEY,
-      historyStoreKey: HISTORY_STORE_KEY,
     }))
 
     engine.push(this.permissions.providerMiddlewareFunction.bind(
@@ -154,7 +154,6 @@ class PermissionsController {
       }))
     }
 
-    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 
@@ -166,7 +165,6 @@ class PermissionsController {
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
     approval.reject(ethErrors.provider.userRejectedRequest())
-    this._closePopup && this._closePopup()
     delete this.pendingApprovals[id]
   }
 
@@ -398,7 +396,7 @@ class PermissionsController {
       requestUserApproval: async (req) => {
         const { metadata: { id } } = req
 
-        this._openPopup && this._openPopup()
+        this._platform.openExtensionInBrowser('connect')
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }

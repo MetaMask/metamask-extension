@@ -62,6 +62,7 @@ module.exports = {
   addressSlicer,
   isEthNetwork,
   isValidAddressHead,
+  getOriginFromUrl,
 }
 
 function isEthNetwork (netId) {
@@ -350,4 +351,10 @@ function isValidAddressHead (address) {
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
+}
+
+function getOriginFromUrl (url) {
+  url = new URL(url)
+  const origin = url.hostname
+  return origin
 }

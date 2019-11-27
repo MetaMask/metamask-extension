@@ -64,6 +64,7 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const requestAccountTabIds = {}
 
 // state persistence
 const localStore = new LocalStore()
@@ -247,6 +248,9 @@ function setupController (initState, initLangCode) {
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
+    },
   })
 
   const provider = controller.provider
@@ -386,6 +390,17 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
+
+        remotePort.onMessage.addListener(msg => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            requestAccountTabIds[origin] = tabId
+          }
+        })
+      }
       connectExternal(remotePort)
     }
   }

@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import Tooltip from '../../ui/tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
+import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 
 export default class AccountDetails extends Component {
   static contextTypes = {
@@ -22,6 +23,7 @@ export default class AccountDetails extends Component {
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   state = {
@@ -40,6 +42,11 @@ export default class AccountDetails extends Component {
     })
     this.setState({ hasCopied: true })
     setTimeout(() => this.setState({ hasCopied: false }), 3000)
+  }
+
+  showConnectedSites = () => {
+    const { history } = this.props
+    history.push(CONNECTED_ROUTE)
   }
 
   render () {
@@ -65,14 +72,19 @@ export default class AccountDetails extends Component {
           <div className="account-details__keyring-label allcaps">
             {label}
           </div>
-          <div className="flex-column flex-center account-details__name-container" onClick={showAccountDetailModal}>
-            <Identicon diameter={54} address={checksummedAddress} />
+          <div className="flex-column flex-center account-details__name-container">
+            <Identicon diameter={54} address={checksummedAddress} onClick={showAccountDetailModal} />
             <span className="account-details__account-name">
               {name}
             </span>
-            <button className="btn-secondary account-details__details-button">
-              {t('details')}
-            </button>
+            <div className="account-details__details-buttons">
+              <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
+                {t('details')}
+              </button>
+              <button className="btn-secondary account-details__details-button" onClick={this.showConnectedSites}>
+                {t('connectedSites')}
+              </button>
+            </div>
           </div>
         </div>
         <Tooltip

@@ -18218,9 +18218,10 @@ mersenne-twister@^1.0.1:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@MetaMask/metamask-inpage-provider#LoginPerSite:
-  version "4.0.0"
-  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/e9206fd688f2fbd821b312bf0517e1fb2b423225"
+metamask-inpage-provider@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.2.tgz#50d9e46b5fdd6610ce185a165004e3c6b762dbb3"
+  integrity sha512-GXoMa7rP+fx9CriCA+RPHjvJJpfy9531eRdMvbDKv0q95/1pvtzYkj6BdzjxtbM91n4zYl6tmeKDILu+le9Qog==
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"

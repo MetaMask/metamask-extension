@@ -1,24 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "Tryb prywatny jest domyślnie włączony"
-  },
   "chartOnlyAvailableEth": {
     "message": "Wykres dostępny tylko w sieciach Ethereum"
-  },
-  "confirmClear": {
-    "message": "Czy na pewno chcesz usunąć zatwierdzone strony internetowe?"
   },
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
   },
   "reject": {
     "message": "Odrzuć"
-  },
-  "providerRequest": {
-    "message": "$1 chce połączyć się z Twoim kontem"
-  },
-  "providerRequestInfo": {
-    "message": "Ta strona prosi o dostęp, aby zobaczyć adres Twojego aktualnego konta. Zawsze upewnij się, że ufasz stronom, z którymi wchodzisz w interakcję."
   },
   "about": {
     "message": "Informacje"
@@ -358,9 +346,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
-  },
-  "dismiss": {
-    "message": "Zamknij"
   },
   "done": {
     "message": "Gotowe"
