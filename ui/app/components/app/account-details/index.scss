@@ -31,6 +31,12 @@
     text-align: center;
   }
 
+  &__details-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 175px;
+  }
+
   &__details-button {
     font-size: 10px;
     border-radius: 17px;

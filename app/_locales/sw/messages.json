@@ -1,12 +1,6 @@
 {
-  "privacyModeDefault": {
-    "message": "Hali ya Faragha sasa imewezeshwa kwa chaguomsingi"
-  },
   "chartOnlyAvailableEth": {
     "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
-  },
-  "confirmClear": {
-    "message": "Una uhakika unataka kufuta tovuti zilizodihinishwa?"
   },
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
@@ -17,12 +11,6 @@
   },
   "reject": {
     "message": "Kataa"
-  },
-  "providerRequest": {
-    "message": "$1 ingependa kuunganishwa kwenye akaunti yako"
-  },
-  "providerRequestInfo": {
-    "message": "Tovuti hii inaomba idhini ya kuangalia anwani yako ya akaunti ya sasa. Daima hakikisha unaziamami tovuti ambazo unaingiliana nazo."
   },
   "about": {
     "message": "Kuhusu"
@@ -355,9 +343,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ikiwa tayari una sarafu kadhaa za Ether, njia rahisi ya kupata Ether kwenye waleti yako mpya kupitia kuweka moja kwa moja."
-  },
-  "dismiss": {
-    "message": "Ondoa"
   },
   "done": {
     "message": "Imekamilika"

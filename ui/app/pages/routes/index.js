@@ -6,7 +6,12 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {
+  getNetworkIdentifier,
+  preferencesSelector,
+  hasPermissionRequests,
+  getAddressConnectedToCurrentTab,
+} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
@@ -25,6 +30,8 @@ import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
+import PermissionsConnect from '../permissions-connect'
+import ConnectedSites from '../connected-sites'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
 const MobileSyncPage = require('../mobile-sync').default
@@ -67,6 +74,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -77,7 +86,7 @@ import {
 
 class Routes extends Component {
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD, getActiveTab } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -96,6 +105,15 @@ class Routes extends Component {
         })
       }
     })
+
+    getActiveTab()
+  }
+
+  componentDidUpdate (prevProps) {
+    const { addressConnectedToCurrentTab, showAccountDetail } = this.props
+    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== prevProps.addressConnectedToCurrentTab) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
   }
 
   renderRoutes () {
@@ -116,6 +134,8 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={CONNECT_ROUTE} component={PermissionsConnect} exact />
+        <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
@@ -141,13 +161,8 @@ class Routes extends Component {
     return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
   }
 
-  hasProviderRequests () {
-    const { providerRequests } = this.props
-    return Array.isArray(providerRequests) && providerRequests.length > 0
-  }
-
   hideAppHeader () {
-    const { location } = this.props
+    const { location, hasPermissionsRequests } = this.props
 
     const isInitializing = Boolean(matchPath(location.pathname, {
       path: INITIALIZE_ROUTE, exact: false,
@@ -162,7 +177,11 @@ class Routes extends Component {
     }
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasProviderRequests()
+      return this.onConfirmPage() || hasPermissionsRequests
+    }
+
+    if (hasPermissionsRequests) {
+      return true
     }
   }
 
@@ -348,12 +367,15 @@ Routes.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
-  providerRequests: PropTypes.array,
+  hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
+  getActiveTab: PropTypes.func,
+  addressConnectedToCurrentTab: PropTypes.string,
+  showAccountDetail: PropTypes.func,
 }
 
 function mapStateToProps (state) {
-  const { appState, metamask } = state
+  const { appState } = state
   const {
     sidebar,
     alertOpen,
@@ -382,7 +404,8 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-    providerRequests: metamask.providerRequests,
+    hasPermissionsRequests: hasPermissionRequests(state),
+    addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }
 }
 
@@ -393,6 +416,8 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
+    getActiveTab: () => dispatch(actions.getActiveTab()),
+    showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }
 
