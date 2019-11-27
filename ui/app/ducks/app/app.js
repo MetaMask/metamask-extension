@@ -75,6 +75,9 @@ export default function reduceApp (state, action) {
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
+    requestAccountTabs: {},
+    currentWindowTab: {},
+    currentActiveTab: {},
   }, state.appState)
 
   switch (action.type) {
@@ -761,6 +764,21 @@ export default function reduceApp (state, action) {
     case SET_THREEBOX_LAST_UPDATED:
       return extend(appState, {
         threeBoxLastUpdated: action.value,
+      })
+
+    case actions.SET_REQUEST_ACCOUNT_TABS:
+      return extend(appState, {
+        requestAccountTabs: action.value,
+      })
+
+    case actions.SET_CURRENT_WINDOW_TAB:
+      return extend(appState, {
+        currentWindowTab: action.value,
+      })
+
+    case actions.SET_ACTIVE_TAB:
+      return extend(appState, {
+        currentActiveTab: action.value,
       })
 
     default:

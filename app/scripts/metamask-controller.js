@@ -89,6 +89,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // platform-specific api
     this.platform = opts.platform
 
+    this.getRequestAccountTabIds = opts.getRequestAccountTabIds
+
     // observable state store
     this.store = new ComposableObservableStore(initState)
 
@@ -200,8 +202,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController({
       keyringController: this.keyringController,
-      openPopup: opts.openPopup,
-      closePopup: opts.closePopup,
+      platform: opts.platform,
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
     }, initState.PermissionsController, initState.PermissionsMetadata)
@@ -560,6 +561,8 @@ module.exports = class MetamaskController extends EventEmitter {
       getCaveat: permissionsController.getCaveat.bind(permissionsController),
       updateExposedAccounts: nodeify(permissionsController.updateExposedAccounts, permissionsController),
       legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
     }
   }
 

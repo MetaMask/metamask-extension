@@ -227,3 +227,32 @@ $xxlarge-spacing: 64px;
     border-color: $Blue-500;
   }
 }
+
+// Font mixin
+
+%font {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  color: $Grey-800;
+}
+
+%font--bold {
+  @extend %font;
+  font-weight: bold;
+}
+
+%header--18 {
+  @extend %font;
+  font-size: 18px;
+}
+
+%header--24 {
+  @extend %font;
+  font-size: 18px;
+}
+
+%content-text {
+  @extend %font;
+  font-size: 14px;
+}

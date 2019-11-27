@@ -1,24 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "Режим конфіденційності тепер увімкнено за замовчуванням"
-  },
   "chartOnlyAvailableEth": {
     "message": "Таблиця доступна тільки в мережах Ethereum."
-  },
-  "confirmClear": {
-    "message": "Ви впевнені, що хочете очистити затверджені веб-сайти?"
   },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
   "reject": {
     "message": "Відхилити"
-  },
-  "providerRequest": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
-  "providerRequestInfo": {
-    "message": "Цей сайт запитує доступ на перегляд вашої поточної адреси облікового запису. Завжди взаємодійте лише з веб-сайтами, яким довіряєте."
   },
   "about": {
     "message": "Про Google Chrome"
@@ -361,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
-  "dismiss": {
-    "message": "Відхилити"
   },
   "done": {
     "message": "Готово"

@@ -199,7 +199,7 @@ class TransactionController extends EventEmitter {
             origin,
             fromAddress: normalizedTxParams.from,
             selectedAddress: this.getSelectedAddress(),
-          }
+          },
         })
       }
     } else {

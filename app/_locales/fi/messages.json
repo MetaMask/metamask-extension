@@ -1,24 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "Yksityisyystila on nyt oletusarvoisesti käytössä"
-  },
   "chartOnlyAvailableEth": {
     "message": "Kaavio saatavilla vain Ethereum-verkoissa."
-  },
-  "confirmClear": {
-    "message": "Haluatko varmasti tyhjentää hyväksytyt verkkosivustot?"
   },
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
   "reject": {
     "message": "Hylkää"
-  },
-  "providerRequest": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
-  "providerRequestInfo": {
-    "message": "Tämä sivusto pyytää oikeuksia nähdä nykyisen tiliosoitteesi. Varmista aina, että luotat sivustoihin, joiden kanssa toimit."
   },
   "about": {
     "message": "Tietoja asetuksista"
@@ -358,9 +346,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
-  "dismiss": {
-    "message": "Piilota"
   },
   "done": {
     "message": "Valmis"
