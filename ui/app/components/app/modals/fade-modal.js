@@ -5,8 +5,8 @@ import appendVendorPrefix from 'domkit/appendVendorPrefix'
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
-  getRef: function(willHidden) {
-    return 'content';
+  getRef: function (willHidden) {
+    return 'content'
   },
   show: {
     animationDuration: '0.3s',
@@ -113,12 +113,12 @@ class FadeModal extends Component {
     const willHide = this.state.willHide
     const animation = this.props.animation
     const modalStyle = appendVendorPrefix({
-        zIndex: 1050,
-        position: 'fixed',
-        width: '500px',
-        transform: 'translate3d(-50%, -50%, 0)',
-        top: '50%',
-        left: '50%',
+      zIndex: 1050,
+      position: 'fixed',
+      width: '500px',
+      transform: 'translate3d(-50%, -50%, 0)',
+      top: '50%',
+      left: '50%',
     })
     const backdropStyle = appendVendorPrefix({
       position: 'fixed',
@@ -197,7 +197,9 @@ class FadeModal extends Component {
   }
 
   show = () => {
-    if (!this.state.hidden) return
+    if (!this.state.hidden) {
+      return
+    }
 
     this.setState({
       willHide: false,
@@ -212,7 +214,9 @@ class FadeModal extends Component {
   }
 
   hide = () => {
-    if (this.hasHidden()) return
+    if (this.hasHidden()) {
+      return
+    }
 
     this.setState({
       willHide: true,
