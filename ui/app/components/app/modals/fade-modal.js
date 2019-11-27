@@ -141,7 +141,6 @@ class FadeModal extends Component {
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }
     const ref = animation.getRef(willHide)
-    const sharp = animation.getSharp && animation.getSharp(willHide)
 
     // Apply custom style properties
     if (this.props.modalStyle) {
@@ -174,7 +173,6 @@ class FadeModal extends Component {
 
     return (<span>
       <div ref="modal" style={modalStyle} className={this.props.className}>
-        {sharp}
         <div ref="content" tabIndex="-1" style={contentStyle}>
           {this.props.children}
         </div>
