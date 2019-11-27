@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import TokenCell from './token-cell'
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
-const TokenCell = require('./token-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../../selectors/selectors')
 const log = require('loglevel')
