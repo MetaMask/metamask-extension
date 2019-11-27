@@ -528,8 +528,11 @@ function getRenderablePermissionsDomains (state) {
     const { permissions } = domains[domainKey]
     const permissionsWithCaveatsForSelectedAddress = permissions.filter(perm => {
       const caveats = perm.caveats || []
-      const caveatsValues = caveats.map(caveat => caveat.value)
-      return caveatsValues[0] === selectedAddress || (caveatsValues[0] && caveatsValues[0][0] === selectedAddress)
+      const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
+      const exposedAccountCaveatValue = exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length
+        ? exposedAccountCaveat.value[0]
+        : {}
+      return exposedAccountCaveatValue === selectedAddress
     })
 
     if (permissionsWithCaveatsForSelectedAddress.length) {
