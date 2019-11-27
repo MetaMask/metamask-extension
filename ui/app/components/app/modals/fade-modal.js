@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import transitionEvents from 'domkit/transitionEvents'
-import appendVendorPrefix from 'domkit/appendVendorPrefix'
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
@@ -112,15 +111,15 @@ class FadeModal extends Component {
 
     const willHide = this.state.willHide
     const animation = this.props.animation
-    const modalStyle = appendVendorPrefix({
+    const modalStyle = {
       zIndex: 1050,
       position: 'fixed',
       width: '500px',
       transform: 'translate3d(-50%, -50%, 0)',
       top: '50%',
       left: '50%',
-    })
-    const backdropStyle = appendVendorPrefix({
+    }
+    const backdropStyle = {
       position: 'fixed',
       top: 0,
       right: 0,
@@ -132,35 +131,35 @@ class FadeModal extends Component {
       animationDuration: '0.3s',
       animationName: willHide ? animation.hideBackdropAnimation : animation.showBackdropAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    })
-    const contentStyle = appendVendorPrefix({
+    }
+    const contentStyle = {
       margin: 0,
       backgroundColor: 'white',
       animationDuration: (willHide ? animation.hide : animation.show).animationDuration,
       animationFillMode: 'forwards',
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    })
+    }
     const ref = animation.getRef(willHide)
     const sharp = animation.getSharp && animation.getSharp(willHide)
 
     // Apply custom style properties
     if (this.props.modalStyle) {
-      var prefixedModalStyle = appendVendorPrefix(this.props.modalStyle)
+      var prefixedModalStyle = this.props.modalStyle
       for (const style in prefixedModalStyle) {
         modalStyle[style] = prefixedModalStyle[style]
       }
     }
 
     if (this.props.backdropStyle) {
-      const prefixedBackdropStyle = appendVendorPrefix(this.props.backdropStyle)
+      const prefixedBackdropStyle = this.props.backdropStyle
       for (const style in prefixedBackdropStyle) {
         backdropStyle[style] = prefixedBackdropStyle[style]
       }
     }
 
     if (this.props.contentStyle) {
-      const prefixedContentStyle = appendVendorPrefix(this.props.contentStyle)
+      const prefixedContentStyle = this.props.contentStyle
       for (const style in prefixedContentStyle) {
         contentStyle[style] = prefixedContentStyle[style]
       }
