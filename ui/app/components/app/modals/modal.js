@@ -192,9 +192,7 @@ const MODALS = {
   },
 
   GAS_PRICE_INFO_MODAL: {
-    // TODO Remove this once our i18n unused messages script detection is better
-    // eslint-disable-next-line react/jsx-curly-brace-presence
-    contents: <NotifcationModal header={'gasPriceNoDenom'} message={'gasPriceInfoModalContent'} />,
+    contents: <NotifcationModal header="gasPriceNoDenom" message="gasPriceInfoModalContent" />,
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -206,9 +204,7 @@ const MODALS = {
   },
 
   GAS_LIMIT_INFO_MODAL: {
-    // TODO Remove this once our i18n unused messages script detection is better
-    // eslint-disable-next-line react/jsx-curly-brace-presence
-    contents: <NotifcationModal header={'gasLimit'} message={'gasLimitInfoModalContent'} />,
+    contents: <NotifcationModal header="gasLimit" message="gasLimitInfoModalContent" />,
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
