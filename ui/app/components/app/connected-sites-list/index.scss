@@ -108,7 +108,17 @@
     cursor: pointer;
   }
 
+  &__bottom-buttons {
+    display: flex;
+    align-items: center;
+  }
+
   &__disconnect-all {
+    padding: 10px;
+    width: 50%;
+  }
+
+  &__connect-to {
     padding: 10px;
     width: 50%;
   }

@@ -4,16 +4,33 @@ import { compose } from 'recompose'
 import ConnectedSitesList from './connected-sites-list.component'
 import {
   showModal,
+  legacyExposeAccounts,
 } from '../../../store/actions'
 import {
   getRenderablePermissionsDomains,
   getPermissionsDomains,
+  getAddressConnectedToCurrentTab,
+  getSelectedAddress,
 } from '../../../selectors/selectors'
+import { getOriginFromUrl } from '../../../helpers/utils/util'
 
 const mapStateToProps = state => {
+  const addressConnectedToCurrentTab = getAddressConnectedToCurrentTab(state)
+  const { title, url } = state.appState.currentActiveTab || {}
+  let tabToConnect
+
+  if (!addressConnectedToCurrentTab && url && !url.match(/^chrome-extension:\/\/.+\/home.html#connected$/)) {
+    tabToConnect = {
+      title,
+      origin: getOriginFromUrl(url),
+    }
+  }
+
   return {
     domains: getPermissionsDomains(state),
     renderableDomains: getRenderablePermissionsDomains(state),
+    tabToConnect,
+    selectedAddress: getSelectedAddress(state),
   }
 }
 
@@ -24,6 +41,9 @@ const mapDispatchToProps = dispatch => {
     },
     showDisconnectAllModal: () => {
       dispatch(showModal({ name: 'DISCONNECT_ALL' }))
+    },
+    legacyExposeAccounts: (origin, account) => {
+      dispatch(legacyExposeAccounts(origin, [account]))
     },
   }
 }

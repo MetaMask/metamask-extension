@@ -356,6 +356,7 @@ var actions = {
   clearPermissions,
   rejectPermissionsRequest,
   removePermissionsFor,
+  legacyExposeAccounts,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -2738,6 +2739,16 @@ function approvePermissionsRequest (requestId, accounts) {
 function rejectPermissionsRequest (requestId) {
   return () => {
     background.rejectPermissionsRequest(requestId)
+  }
+}
+
+/**
+ * Exposes the given account(s) to the given origin.
+ * Call ONLY as a result of direct user action.
+ */
+function legacyExposeAccounts (origin, accounts) {
+  return () => {
+    return background.legacyExposeAccounts(origin, accounts)
   }
 }
 

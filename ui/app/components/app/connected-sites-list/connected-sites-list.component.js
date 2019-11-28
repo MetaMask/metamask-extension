@@ -20,12 +20,16 @@ export default class ConnectedSitesList extends Component {
     domains: PropTypes.object,
     showDisconnectAccountModal: PropTypes.func.isRequired,
     showDisconnectAllModal: PropTypes.func.isRequired,
+    tabToConnect: PropTypes.object,
+    legacyExposeAccounts: PropTypes.func.isRequired,
+    selectedAddress: PropTypes.string.isRequired,
   }
 
   state = {
     expandedDomain: '',
     iconError: '',
     domains: {},
+    tabToConnect: null,
   }
 
   handleDomainItemClick (domainKey) {
@@ -37,7 +41,15 @@ export default class ConnectedSitesList extends Component {
   }
 
   render () {
-    const { renderableDomains, domains, showDisconnectAccountModal, showDisconnectAllModal } = this.props
+    const {
+      renderableDomains,
+      domains,
+      showDisconnectAccountModal,
+      showDisconnectAllModal,
+      tabToConnect,
+      legacyExposeAccounts,
+      selectedAddress,
+    } = this.props
     const { expandedDomain } = this.state
     const { t } = this.context
 
@@ -110,10 +122,23 @@ export default class ConnectedSitesList extends Component {
             )
           })
         }
-        <div className="connected-sites-list__disconnect-all">
-          <Button onClick={showDisconnectAllModal} type="danger" >
-            { t('disconnectAll') }
-          </Button>
+        <div className="connected-sites-list__bottom-buttons">
+          <div className="connected-sites-list__disconnect-all">
+            <Button onClick={showDisconnectAllModal} type="danger" >
+              { t('disconnectAll') }
+            </Button>
+          </div>
+          { tabToConnect
+            ? <div className="connected-sites-list__connect-to">
+              <Button
+                onClick={() => legacyExposeAccounts(tabToConnect.origin, selectedAddress)}
+                type="primary"
+              >
+                { t('connectTo', [tabToConnect.title || tabToConnect.origin]) }
+              </Button>
+            </div>
+            : null
+          }
         </div>
       </div>
     )
