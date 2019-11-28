@@ -8,6 +8,9 @@
   "reject": {
     "message": "Lükka tagasi"
   },
+  "likeToConnect": {
+    "message": "$1 soovib teie kontoga ühenduse luua"
+  },
   "about": {
     "message": "Teave"
   },

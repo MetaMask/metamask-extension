@@ -8,6 +8,9 @@
   "reject": {
     "message": "Afvis"
   },
+  "likeToConnect": {
+    "message": "$1 ønsker at forbinde til din konto"
+  },
   "about": {
     "message": "Om"
   },
