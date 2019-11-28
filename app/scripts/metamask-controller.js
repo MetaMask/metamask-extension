@@ -4,7 +4,6 @@
  * @license   MIT
  */
 
-const assert = require('assert').strict
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
@@ -1472,45 +1471,6 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
     )
-  }
-
-  // manage external connections
-
-  onMessage (message, sender, sendResponse) {
-    if (!message || !message.type) {
-      log.debug(`Ignoring invalid message: '${JSON.stringify(message)}'`)
-      return
-    }
-
-    let handleMessage
-
-    try {
-      if (message.type === 'metamask:registerOnboarding') {
-        assert(sender.tab, 'Missing tab from sender')
-        assert(sender.tab.id && sender.tab.id !== extension.tabs.TAB_ID_NONE, 'Missing tab ID from sender')
-        assert(message.location, 'Missing location from message')
-
-        handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
-      } else {
-        throw new Error(`Unrecognized message type: '${message.type}'`)
-      }
-    } catch (error) {
-      console.error(error)
-      sendResponse(error)
-      return true
-    }
-
-    if (handleMessage) {
-      handleMessage
-        .then(() => {
-          sendResponse(null, true)
-        })
-        .catch((error) => {
-          console.error(error)
-          sendResponse(error)
-        })
-      return true
-    }
   }
 
   /**

@@ -316,7 +316,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
