@@ -537,7 +537,9 @@ function getRenderablePermissionsDomains (state) {
       const accountsLastConnectedTime = ethAccountsPermissionsForDomain.accounts || {}
       const selectedAddressLastConnectedTime = accountsLastConnectedTime[selectedAddress]
 
-      const lastConnectedTime = formatDate(selectedAddressLastConnectedTime, 'yyyy-M-d')
+      const lastConnectedTime = selectedAddressLastConnectedTime
+        ? formatDate(selectedAddressLastConnectedTime, 'yyyy-M-d')
+        : ''
 
       return [ ...acc, {
         name,

@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const mergeProps = (stateProps, dispatchProps) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     domainKey,
     domain,
@@ -29,6 +29,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   } = dispatchProps
 
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
     disconnectAccount: () => dispatchDisconnectAccount(domainKey, domain),
