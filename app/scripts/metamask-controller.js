@@ -1293,11 +1293,12 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} extensionId - The extension id of the sender, if the sender
    * is an extension
    */
-  setupUntrustedCommunication (connectionStream, senderUrl, extensionId) {
+  setupUntrustedCommunication (connectionStream, sender) {
+    const hostname = (new URL(sender.url)).hostname
     // Check if new connection is blacklisted
-    if (this.phishingController.test(senderUrl.hostname)) {
-      log.debug('MetaMask - sending phishing warning for', senderUrl.hostname)
-      this.sendPhishingWarning(connectionStream, senderUrl.hostname)
+    if (this.phishingController.test(hostname)) {
+      log.debug('MetaMask - sending phishing warning for', hostname)
+      this.sendPhishingWarning(connectionStream, hostname)
       return
     }
 
@@ -1305,7 +1306,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl, extensionId)
+    this.setupProviderConnection(mux.createStream('provider'), sender)
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
@@ -1319,12 +1320,12 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {URL} senderUrl - The URL requesting the connection,
    * used in logging and error reporting.
    */
-  setupTrustedCommunication (connectionStream, senderUrl) {
+  setupTrustedCommunication (connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl)
+    this.setupProviderConnection(mux.createStream('provider'), sender, true)
   }
 
   /**
@@ -1384,9 +1385,16 @@ module.exports = class MetamaskController extends EventEmitter {
    * resource is an extension.
    * @param {object} publicApi - The public API
    */
-  setupProviderConnection (outStream, senderUrl, extensionId) {
-    const origin = senderUrl.hostname
-    const engine = this.setupProviderEngine(senderUrl, extensionId)
+  setupProviderConnection (outStream, sender, internal) {
+    const origin = internal
+      ? 'metamask'
+      : (new URL(sender.url)).hostname
+    let extensionId
+    if (sender.id !== extension.runtime.id) {
+      extensionId = sender.id
+    }
+
+    const engine = this.setupProviderEngine({ origin, extensionId })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1415,9 +1423,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine (senderUrl, extensionId) {
-
-    const origin = senderUrl.hostname
+  setupProviderEngine ({ origin, extensionId }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider

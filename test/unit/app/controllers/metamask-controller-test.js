@@ -32,8 +32,15 @@ class ThreeBoxControllerMock {
   }
 }
 
+const ExtensionizerMock = {
+  runtime: {
+    id: 'fake-extension-id',
+  },
+}
+
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
   './controllers/threebox': ThreeBoxControllerMock,
+  'extensionizer': ExtensionizerMock,
 })
 
 const currentNetworkId = 42
@@ -805,7 +812,10 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = new URL('http://myethereumwalletntw.com')
+    const phishingMessageSender = {
+      url: 'http://myethereumwalletntw.com',
+      tab: {},
+    }
 
     afterEach(function () {
       streamTest.end()
@@ -820,11 +830,11 @@ describe('MetaMaskController', function () {
         if (chunk.name !== 'phishing') {
           return cb()
         }
-        assert.equal(chunk.data.hostname, phishingUrl.hostname)
+        assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
         resolve()
         cb()
       })
-      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+      metamaskController.setupUntrustedCommunication(streamTest, phishingMessageSender)
 
       await promise
     })
@@ -838,13 +848,17 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: {},
+      }
       streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()
       })
 
-      metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
+      metamaskController.setupTrustedCommunication(streamTest, messageSender)
     })
   })
 
