@@ -553,13 +553,9 @@ module.exports = class MetamaskController extends EventEmitter {
       // permissions
       approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
       clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
-      clearPermissionsHistory: permissionsController.clearHistory.bind(permissionsController),
-      clearPermissionsLog: permissionsController.clearLog.bind(permissionsController),
       getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
       rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
-      getCaveatsFor: permissionsController.getCaveatsFor.bind(permissionsController),
-      getCaveat: permissionsController.getCaveat.bind(permissionsController),
       updateExposedAccounts: nodeify(permissionsController.updateExposedAccounts, permissionsController),
       legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
 

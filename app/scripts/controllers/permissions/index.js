@@ -310,29 +310,6 @@ class PermissionsController {
   }
 
   /**
-   * Gets all caveats for the given origin and permission, or returns null
-   * if none exist.
-   *
-   * @param {string} permission - The name of the target permission.
-   * @param {string} origin - The origin that has the permission.
-   */
-  getCaveatsFor (permission, origin) {
-    return this.permissions.getCaveats(origin, permission) || null
-  }
-
-  /**
-   * Gets the caveat with the given name for the given permission of the
-   * given origin.
-   *
-   * @param {string} permission - The name of the target permission.
-   * @param {string} origin - The origin that has the permission.
-   * @param {string} caveatName - The name of the caveat to retrieve.
-   */
-  getCaveat (permission, origin, caveatName) {
-    return this.permissions.getCaveat(origin, permission, caveatName)
-  }
-
-  /**
    * Removes all known domains and their related permissions.
    */
   clearPermissions () {
@@ -340,24 +317,6 @@ class PermissionsController {
     this.notifyAllDomains({
       method: ACCOUNTS_CHANGED_NOTIFICATION,
       result: [],
-    })
-  }
-
-  /**
-   * Clears the permissions log.
-   */
-  clearLog () {
-    this.store.updateState({
-      [LOG_STORE_KEY]: [],
-    })
-  }
-
-  /**
-   * Clears the permissions history.
-   */
-  clearHistory () {
-    this.store.updateState({
-      [HISTORY_STORE_KEY]: {},
     })
   }
 
