@@ -251,6 +251,9 @@ function setupController (initState, initLangCode) {
     getRequestAccountTabIds: () => {
       return requestAccountTabIds
     },
+    getOpenMetamaskTabsIds: () => {
+      return openMetamaskTabsIDs
+    },
   })
 
   const provider = controller.provider
