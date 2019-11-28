@@ -186,8 +186,8 @@ class PermissionsController {
 
     let error
     try {
-      error = await new Promise((resolve) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err => resolve(err))
+      await new Promise((resolve, reject) => {
+        this.permissions.grantNewPermissions(origin, permissions, {}, err => err ? resolve() : reject(err))
       })
     } catch (err) {
       error = err
