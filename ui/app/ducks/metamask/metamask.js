@@ -322,7 +322,9 @@ function reduceMetamask (state, action) {
       let { selectedAddressTxList } = metamaskState
       selectedAddressTxList = selectedAddressTxList.map(tx => {
         if (tx.id === txId) {
-          tx.txParams = value
+          const newTx = Object.assign({}, tx)
+          newTx.txParams = value
+          return newTx
         }
         return tx
       })
