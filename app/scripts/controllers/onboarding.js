@@ -64,7 +64,7 @@ class OnboardingController {
    * @param {string} location - The location of the site registering
    * @param {string} tabId - The id of the tab registering
    */
-  async registerOnboarding (location, tabId) {
+  registerOnboarding = async (location, tabId) => {
     if (this.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return

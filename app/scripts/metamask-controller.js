@@ -19,6 +19,7 @@ const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
+import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
@@ -1393,8 +1394,12 @@ module.exports = class MetamaskController extends EventEmitter {
     if (sender.id !== extension.runtime.id) {
       extensionId = sender.id
     }
+    let tabId
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id
+    }
 
-    const engine = this.setupProviderEngine({ origin, extensionId })
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1423,7 +1428,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    **/
-  setupProviderEngine ({ origin, extensionId }) {
+  setupProviderEngine ({ origin, location, extensionId, tabId }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1440,6 +1445,11 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     // logging
     engine.push(createLoggerMiddleware({ origin }))
+    engine.push(createOnboardingMiddleware({
+      location,
+      tabId,
+      registerOnboarding: this.onboardingController.registerOnboarding,
+    }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
