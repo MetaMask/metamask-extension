@@ -12,6 +12,9 @@
   "reject": {
     "message": "Odbaci"
   },
+  "likeToConnect": {
+    "message": "Korisnik $1 želi se povezati na vaš račun"
+  },
   "about": {
     "message": "O opcijama"
   },

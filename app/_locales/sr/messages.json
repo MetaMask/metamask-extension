@@ -8,6 +8,9 @@
   "reject": {
     "message": "Одбиј"
   },
+  "likeToConnect": {
+    "message": "$1 bi hteo da se poveže sa vašim nalogom"
+  },
   "about": {
     "message": "Основни подаци"
   },
