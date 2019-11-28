@@ -8,6 +8,9 @@
   "reject": {
     "message": "አይቀበሉ"
   },
+  "likeToConnect": {
+    "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
+  },
   "about": {
     "message": "ስለ"
   },

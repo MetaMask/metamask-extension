@@ -542,6 +542,9 @@
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
   },
+  "likeToConnect": {
+    "message": "$1 запрашивает доступ к вашему аккаунту"
+  },
   "about": {
     "message": "О нас"
   },
