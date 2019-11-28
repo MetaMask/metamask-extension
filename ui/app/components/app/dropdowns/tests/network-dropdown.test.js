@@ -6,8 +6,7 @@ import NetworkDropdown from '../network-dropdown'
 import { DropdownMenuItem } from '../components/dropdown'
 import NetworkDropdownIcon from '../components/network-dropdown-icon'
 
-// TODO: come back to this
-describe.skip('Network Dropdown', () => {
+describe('Network Dropdown', () => {
   let wrapper
 
   describe('NetworkDropdown in appState in false', () => {

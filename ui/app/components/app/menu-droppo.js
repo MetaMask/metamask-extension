@@ -19,13 +19,11 @@ MenuDroppoComponent.prototype.render = function () {
 
   this.manageListeners()
 
-  const style = this.props.style || {}
+  const style = Object.assign({}, this.props.style)
   if (!('position' in style)) {
     style.position = 'fixed'
   }
-  if (!('zIndex' in style)) {
-    style.zIndex = zIndex
-  }
+  style.zIndex = zIndex
 
   return (
     <div style={style} className={`menu-droppo-container ${containerClassName}`}>
