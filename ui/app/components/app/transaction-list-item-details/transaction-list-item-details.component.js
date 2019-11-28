@@ -39,7 +39,6 @@ export default class TransactionListItemDetails extends PureComponent {
 
   state = {
     justCopied: false,
-    cancelDisabled: false,
   }
 
   handleEtherscanClick = () => {

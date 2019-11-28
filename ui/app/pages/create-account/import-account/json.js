@@ -12,13 +12,8 @@ import Button from '../../../components/ui/button'
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
 
 class JsonImportSubview extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      file: null,
-      fileContents: '',
-    }
+  state = {
+    fileContents: '',
   }
 
   render () {
@@ -73,8 +68,10 @@ class JsonImportSubview extends Component {
     )
   }
 
-  onLoad (event, file) {
-    this.setState({file: file, fileContents: event.target.result})
+  onLoad (event) {
+    this.setState({
+      fileContents: event.target.result,
+    })
   }
 
   createKeyringOnEnter (event) {
@@ -86,14 +83,7 @@ class JsonImportSubview extends Component {
 
   createNewKeychain () {
     const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
-    const state = this.state
-
-    if (!state) {
-      const message = this.context.t('validFileImport')
-      return displayWarning(message)
-    }
-
-    const { fileContents } = state
+    const { fileContents } = this.state
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')
