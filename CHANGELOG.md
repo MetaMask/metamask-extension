@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 7.7.0 Thu Nov 28 2019
 - [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
 
 ## 7.6.1 Tue Nov 19 2019
