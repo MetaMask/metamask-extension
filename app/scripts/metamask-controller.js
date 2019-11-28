@@ -1499,7 +1499,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide public config over.
    */
   setupPublicConfig (outStream) {
-    const configStore = this.createPublicConfigStore({})
+    const configStore = this.createPublicConfigStore()
     const configStream = asStream(configStore)
 
     pump(
