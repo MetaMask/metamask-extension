@@ -356,6 +356,7 @@ var actions = {
   clearPermissions,
   rejectPermissionsRequest,
   removePermissionsFor,
+  legacyExposeAccounts,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -404,6 +405,8 @@ var actions = {
   setActiveTab,
   SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
   getActiveTab,
+  getOpenMetamaskTabsIds,
+  SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
 
 module.exports = actions
@@ -2742,6 +2745,16 @@ function rejectPermissionsRequest (requestId) {
 }
 
 /**
+ * Exposes the given account(s) to the given origin.
+ * Call ONLY as a result of direct user action.
+ */
+function legacyExposeAccounts (origin, accounts) {
+  return () => {
+    return background.legacyExposeAccounts(origin, accounts)
+  }
+}
+
+/**
  * Clears the given permissions for the given origin.
  */
 function removePermissionsFor (domains) {
@@ -3030,6 +3043,20 @@ function getRequestAccountTabIds () {
   return async (dispatch) => {
     const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
     dispatch(setRequestAccountTabIds(requestAccountTabIds))
+  }
+}
+
+function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    value: openMetaMaskTabIDs,
+  }
+}
+
+function getOpenMetamaskTabsIds () {
+  return async (dispatch) => {
+    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
   }
 }
 
