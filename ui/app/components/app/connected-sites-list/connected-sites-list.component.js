@@ -23,6 +23,7 @@ export default class ConnectedSitesList extends Component {
     tabToConnect: PropTypes.object,
     legacyExposeAccounts: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
+    getOpenMetamaskTabsIds: PropTypes.func.isRequired,
   }
 
   state = {
@@ -30,6 +31,11 @@ export default class ConnectedSitesList extends Component {
     iconError: '',
     domains: {},
     tabToConnect: null,
+  }
+
+  componentWillMount () {
+    const { getOpenMetamaskTabsIds } = this.props
+    getOpenMetamaskTabsIds()
   }
 
   handleDomainItemClick (domainKey) {

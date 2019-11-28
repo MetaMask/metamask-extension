@@ -5,6 +5,7 @@ import ConnectedSitesList from './connected-sites-list.component'
 import {
   showModal,
   legacyExposeAccounts,
+  getOpenMetamaskTabsIds,
 } from '../../../store/actions'
 import {
   getRenderablePermissionsDomains,
@@ -16,10 +17,12 @@ import { getOriginFromUrl } from '../../../helpers/utils/util'
 
 const mapStateToProps = state => {
   const addressConnectedToCurrentTab = getAddressConnectedToCurrentTab(state)
-  const { title, url } = state.appState.currentActiveTab || {}
+  const { openMetaMaskTabs, currentActiveTab = {} } = state.appState
+  const { title, url, id } = currentActiveTab
+
   let tabToConnect
 
-  if (!addressConnectedToCurrentTab && url && !url.match(/^chrome-extension:\/\/.+\/home.html#connected$/)) {
+  if (!addressConnectedToCurrentTab && url && !openMetaMaskTabs[id]) {
     tabToConnect = {
       title,
       origin: getOriginFromUrl(url),
@@ -45,6 +48,7 @@ const mapDispatchToProps = dispatch => {
     legacyExposeAccounts: (origin, account) => {
       dispatch(legacyExposeAccounts(origin, [account]))
     },
+    getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
   }
 }
 

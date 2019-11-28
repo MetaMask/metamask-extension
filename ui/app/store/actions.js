@@ -405,6 +405,8 @@ var actions = {
   setActiveTab,
   SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
   getActiveTab,
+  getOpenMetamaskTabsIds,
+  SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
 
 module.exports = actions
@@ -3041,6 +3043,20 @@ function getRequestAccountTabIds () {
   return async (dispatch) => {
     const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
     dispatch(setRequestAccountTabIds(requestAccountTabIds))
+  }
+}
+
+function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    value: openMetaMaskTabIDs,
+  }
+}
+
+function getOpenMetamaskTabsIds () {
+  return async (dispatch) => {
+    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
   }
 }
 
