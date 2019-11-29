@@ -1,4 +1,5 @@
 import log from 'loglevel'
+import extension from 'extensionizer'
 
 /**
  * Returns a middleware that intercepts `wallet_registerOnboarding` messages
@@ -12,7 +13,7 @@ function createOnboardingMiddleware ({ location, tabId, registerOnboarding }) {
         next()
         return
       }
-      if (tabId) {
+      if (tabId && tabId !== extension.tabs.TAB_ID_NONE) {
         await registerOnboarding(location, tabId)
       } else {
         log.debug(`'wallet_registerOnboarding' message from ${location} ignored due to missing tabId`)
