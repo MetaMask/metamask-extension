@@ -1992,15 +1992,15 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
-"@metamask/forwarder@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.0.0.tgz#3e321022a36561cc6e7b7c84df25f600925f4d95"
-  integrity sha512-ufgPndhZz0oNhRrixiR6cXH/HwtFwurWvbrU8zAZsFnf1hB4L2VB2Wey/P1wStIx+BJJQjyROvCDyPDoz4ny1A==
+"@metamask/forwarder@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
+  integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/onboarding@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.1.2.tgz#d5126cbb5e593d782645d6236c497e27bd38d3c4"
-  integrity sha512-+85Z5OxckGuYr5cCoMlpxASu9geJBMYvwkNWqa5qDDEYKZ8eNXHsADcVYFsvBhxFcf87dC7ty1kWljYVEfTIIA==
+"@metamask/onboarding@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.0.tgz#9594f6a9a1c779083d71434b9f5e6a973af941f7"
+  integrity sha512-QoMV1Gf1j3LxFhSb5gxudHOIywQQ/su8vPQ1ByC7ocQCVlZb1JqZ/+TYyoIzR2OTi1NPelhYHT3UMdhPozIAhA==
   dependencies:
     bowser "^2.5.4"
 
