@@ -1286,13 +1286,16 @@ module.exports = class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * A runtime.MessageSender object, as provided by the browser:
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
+   * @typedef {Object} MessageSender
+   */
+
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {URL} senderUrl - The URL of the resource requesting the stream,
-   * which may trigger a blacklist reload.
-   * @param {string} extensionId - The extension id of the sender, if the sender
-   * is an extension
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
   setupUntrustedCommunication (connectionStream, sender) {
     const hostname = (new URL(sender.url)).hostname
@@ -1318,8 +1321,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * functions, like the ability to approve transactions or sign messages.
    *
    * @param {*} connectionStream - The duplex stream to connect to.
-   * @param {URL} senderUrl - The URL requesting the connection,
-   * used in logging and error reporting.
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
   setupTrustedCommunication (connectionStream, sender) {
     // setup multiplexing
@@ -1381,10 +1383,8 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {URL} senderUrl - The URI of the requesting resource.
-   * @param {string} extensionId - The id of the extension, if the requesting
-   * resource is an extension.
-   * @param {object} publicApi - The public API
+   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param {boolean} internal - True if this is a connection with an internal process
    */
   setupProviderConnection (outStream, sender, internal) {
     const origin = internal
@@ -1427,6 +1427,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
+   * @param {Object} options - Provider engine options
+   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.location - The full URL of the sender
+   * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
+   * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    **/
   setupProviderEngine ({ origin, location, extensionId, tabId }) {
     // setup json rpc engine stack
