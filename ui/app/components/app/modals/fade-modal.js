@@ -4,9 +4,6 @@ import transitionEvents from 'domkit/transitionEvents'
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
-  getRef: function () {
-    return 'content'
-  },
   show: {
     animationDuration: '0.3s',
     animationTimingFunction: 'ease-out',
@@ -145,7 +142,7 @@ class FadeModal extends Component {
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }
-    const ref = animation.getRef(willHide)
+    const ref = 'content'
 
     // Apply custom style properties
     if (this.props.modalStyle) {
@@ -172,6 +169,7 @@ class FadeModal extends Component {
     const backdrop = this.props.backdrop ? <div style={backdropStyle} onClick={this.props.closeOnClick ? this.handleBackdropClick : null} /> : undefined
 
     if (willHide) {
+      /* eslint-disable react/no-string-refs */
       const node = this.refs[ref]
       this.addTransitionListener(node, this.leave)
     }
@@ -209,7 +207,8 @@ class FadeModal extends Component {
     })
 
     setTimeout(function () {
-      var ref = this.props.animation.getRef()
+      var ref = 'content'
+      /* eslint-disable react/no-string-refs */
       var node = this.refs[ref]
       this.addTransitionListener(node, this.enter)
     }.bind(this), 0)

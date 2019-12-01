@@ -21,6 +21,8 @@ class ReactTooltip extends Component {
 
   componentDidMount = () => {
     this.container = this.props.container || document.body
+    // TODO: refactor this with refs
+    /* eslint-disable react/no-find-dom-node */
     this.componentEl = ReactDOM.findDOMNode(this)
     this.tooltipEl = document.createElement('div')
 
@@ -109,6 +111,10 @@ class ReactTooltip extends Component {
           cOffsetX = 0
           cOffsetY = componentHeight / 2
           break
+        default:
+          cOffsetX = componentWidth / 2
+          cOffsetY = 0
+          break
       }
       pointX = componentOffsetX + cOffsetX + (window.scrollX || window.pageXOffset)
       pointY = componentOffsetY + cOffsetY + (window.scrollY || window.pageYOffset)
@@ -143,6 +149,10 @@ class ReactTooltip extends Component {
         offsetY = Number(this.props.space)
         break
       case 'left':
+        offsetX = -(tooltipW + Number(this.props.space))
+        offsetY = -(tooltipH / 2)
+        break
+      default:
         offsetX = -(tooltipW + Number(this.props.space))
         offsetY = -(tooltipH / 2)
         break
