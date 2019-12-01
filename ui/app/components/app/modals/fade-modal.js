@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import transitionEvents from 'domkit/transitionEvents'
+// TODO: if we can get this out then we can drop domkit!
+// All this keyframing/animation and platform dependent stuff should go away into scss
 import insertKeyframesRule from 'domkit/insertKeyframesRule'
 
 const animation = {
@@ -44,6 +45,37 @@ const animation = {
       opacity: 0,
     },
   }),
+}
+
+const endEvents = ['transitionend', 'animationend']
+
+function addEventListener (node, eventName, eventListener) {
+  node.addEventListener(eventName, eventListener, false)
+}
+
+function removeEventListener (node, eventName, eventListener) {
+  node.removeEventListener(eventName, eventListener, false)
+}
+
+const removeEndEventListener = (node, eventListener) => {
+  if (endEvents.length === 0) {
+    return
+  }
+  endEvents.forEach(function (endEvent) {
+    removeEventListener(node, endEvent, eventListener)
+  })
+}
+
+const addEndEventListener = (node, eventListener) => {
+  if (endEvents.length === 0) {
+    // If CSS transitions are not supported, trigger an "end animation"
+    // event immediately.
+    window.setTimeout(eventListener, 0)
+    return
+  }
+  endEvents.forEach(function (endEvent) {
+    addEventListener(node, endEvent, eventListener)
+  })
 }
 
 class FadeModal extends Component {
@@ -94,10 +126,10 @@ class FadeModal extends Component {
         if (e && e.target !== node) {
           return
         }
-        transitionEvents.removeEndEventListener(node, endListener)
+        removeEndEventListener(node, endListener)
         handle()
       }
-      transitionEvents.addEndEventListener(node, endListener)
+      addEndEventListener(node, endListener)
     }
   }
 
