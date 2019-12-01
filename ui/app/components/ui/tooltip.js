@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-// import ReactTooltip from 'react-tooltip-component'
-
 import ReactDOM from 'react-dom'
 
-// TODO: replace this or consider making a pull request to react-tooltip-component upstream
 class ReactTooltip extends Component {
   static propTypes = {
     container: PropTypes.any,
@@ -22,7 +19,7 @@ class ReactTooltip extends Component {
     space: 5,
   };
 
-  UNSAFE_componentDidMount = () => {
+  componentDidMount = () => {
     this.container = this.props.container || document.body
     this.componentEl = ReactDOM.findDOMNode(this)
     this.tooltipEl = document.createElement('div')
@@ -44,13 +41,13 @@ class ReactTooltip extends Component {
     this.componentEl.addEventListener('mouseleave', this.handleMouseOut)
   };
 
-  UNSAFE_componentDidUpdate = () => {
+  componentDidUpdate = () => {
     this.tooltipEl.className = 'tooltip ' + this.props.position
     this.tooltipEl.childNodes[1].textContent = this.props.title
   };
 
 
-  UNSAFE_componentWillUnmount = () => {
+  componentWillUnmount = () => {
     this.componentEl.removeEventListener(this.props.fixed ? 'mouseenter' : 'mousemove', this.handleMouseMove)
     this.componentEl.removeEventListener('mouseleave', this.handleMouseOut)
     this.container.removeChild(this.tooltipEl)
@@ -160,8 +157,6 @@ class ReactTooltip extends Component {
     return this.props.children
   }
 }
-
-// export default Tooltip;
 
 function Tooltip ({ position, title, children }) {
   return (
