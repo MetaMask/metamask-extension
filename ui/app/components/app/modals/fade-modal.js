@@ -47,6 +47,11 @@ const animation = {
 }
 
 class FadeModal extends Component {
+  constructor (props) {
+    super(props)
+    this.content = null
+  }
+
   static propTypes = {
     animation: PropTypes.object,
     backdrop: PropTypes.bool,
@@ -111,8 +116,8 @@ class FadeModal extends Component {
       return null
     }
 
-    const willHide = this.state.willHide
-    const animation = this.props.animation
+    const { willHide } = this.state
+    const { animation } = this.props
     const modalStyle = {
       zIndex: 1050,
       position: 'fixed',
@@ -142,7 +147,6 @@ class FadeModal extends Component {
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }
-    const ref = 'content'
 
     // Apply custom style properties
     if (this.props.modalStyle) {
@@ -169,14 +173,12 @@ class FadeModal extends Component {
     const backdrop = this.props.backdrop ? <div style={backdropStyle} onClick={this.props.closeOnClick ? this.handleBackdropClick : null} /> : undefined
 
     if (willHide) {
-      /* eslint-disable react/no-string-refs */
-      const node = this.refs[ref]
-      this.addTransitionListener(node, this.leave)
+      this.addTransitionListener(this.content, this.leave)
     }
 
     return (<span>
       <div style={modalStyle} className={this.props.className}>
-        <div ref="content" tabIndex="-1" style={contentStyle}>
+        <div ref={el => (this.content = el)} tabIndex="-1" style={contentStyle}>
           {this.props.children}
         </div>
       </div>
@@ -207,10 +209,7 @@ class FadeModal extends Component {
     })
 
     setTimeout(function () {
-      var ref = 'content'
-      /* eslint-disable react/no-string-refs */
-      var node = this.refs[ref]
-      this.addTransitionListener(node, this.enter)
+      this.addTransitionListener(this.content, this.enter)
     }.bind(this), 0)
   }
 
