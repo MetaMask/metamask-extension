@@ -175,7 +175,7 @@ class FadeModal extends Component {
     }
 
     return (<span>
-      <div ref="modal" style={modalStyle} className={this.props.className}>
+      <div style={modalStyle} className={this.props.className}>
         <div ref="content" tabIndex="-1" style={contentStyle}>
           {this.props.children}
         </div>
