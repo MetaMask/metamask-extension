@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import Tooltip from '../../ui/tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
-import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 
 export default class AccountDetails extends Component {
   static contextTypes = {
@@ -20,6 +19,7 @@ export default class AccountDetails extends Component {
   static propTypes = {
     hideSidebar: PropTypes.func,
     showAccountDetailModal: PropTypes.func,
+    showConnectedSites: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -44,17 +44,13 @@ export default class AccountDetails extends Component {
     setTimeout(() => this.setState({ hasCopied: false }), 3000)
   }
 
-  showConnectedSites = () => {
-    const { history } = this.props
-    history.push(CONNECTED_ROUTE)
-  }
-
   render () {
     const { t } = this.context
 
     const {
       hideSidebar,
       showAccountDetailModal,
+      showConnectedSites,
       label,
       checksummedAddress,
       name,
@@ -81,7 +77,7 @@ export default class AccountDetails extends Component {
               <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
                 {t('details')}
               </button>
-              <button className="btn-secondary account-details__details-button" onClick={this.showConnectedSites}>
+              <button className="btn-secondary account-details__details-button" onClick={showConnectedSites}>
                 {t('connectedSites')}
               </button>
             </div>
