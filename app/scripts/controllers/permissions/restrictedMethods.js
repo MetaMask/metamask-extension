@@ -3,7 +3,7 @@ module.exports = function getRestrictedMethods (permissionsController) {
   return {
 
     'eth_accounts': {
-      description: 'View selected Ethereum account(s)',
+      description: 'View selected Ethereum account',
       method: (_, res, __, end) => {
         permissionsController.keyringController.getAccounts()
           .then((accounts) => {
