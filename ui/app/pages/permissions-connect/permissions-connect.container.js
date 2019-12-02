@@ -26,8 +26,11 @@ const mapStateToProps = state => {
     addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
   })
 
+  const permissionsRequestId = (permissionsRequest && permissionsRequest.metadata) ? permissionsRequest.metadata.id : null
+
   return {
     permissionsRequest,
+    permissionsRequestId,
     accounts: accountsWithLabels,
     originName: origin,
     newAccountNumber: accountsWithLabels.length + 1,

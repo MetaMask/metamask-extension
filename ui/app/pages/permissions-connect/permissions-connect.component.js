@@ -19,6 +19,7 @@ export default class PermissionConnect extends Component {
     permissionsRequest: PropTypes.object,
     addressLastConnectedMap: PropTypes.object,
     requestAccountTabs: PropTypes.object,
+    permissionsRequestId: PropTypes.string,
   }
 
   static defaultProps = {
@@ -27,6 +28,7 @@ export default class PermissionConnect extends Component {
     permissionsRequest: {},
     addressLastConnectedMap: {},
     requestAccountTabs: {},
+    permissionsRequestId: '',
   }
 
   static contextTypes = {
@@ -85,6 +87,7 @@ export default class PermissionConnect extends Component {
       nativeCurrency,
       permissionsRequest,
       addressLastConnectedMap,
+      permissionsRequestId,
     } = this.props
     const { page, selectedAccountAddress, permissionAccepted, originName } = this.state
 
@@ -107,6 +110,13 @@ export default class PermissionConnect extends Component {
               })
             }}
             addressLastConnectedMap={addressLastConnectedMap}
+            cancelPermissionsRequest={requestId => {
+              if (requestId) {
+                rejectPermissionsRequest(requestId)
+                this.redirectFlow(false)
+              }
+            }}
+            permissionsRequestId={permissionsRequestId}
           />
           : <div><PermissionPageContainer
             request={permissionsRequest || {}}
