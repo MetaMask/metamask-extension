@@ -459,15 +459,16 @@ function getAddressConnectedDomainMap (state) {
   if (domains) {
     Object.keys(domains).forEach(domainKey => {
       const { permissions } = domains[domainKey]
-      const { icon, name } = domainMetadata[domainKey]
+      const { icon, name } = domainMetadata[domainKey] || {}
       permissions.forEach(perm => {
         const caveats = perm.caveats || []
         const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
         if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
           exposedAccountCaveat.value.forEach(address => {
+            const nameToRender = name ? name : domainKey
             addressConnectedIconMap[address] = addressConnectedIconMap[address]
-              ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name } }
-              : { [domainKey]: { icon, name } }
+              ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
+              : { [domainKey]: { icon, name: nameToRender } }
           })
         }
       })
@@ -531,7 +532,7 @@ function getRenderablePermissionsDomains (state) {
         name,
         icon,
         extensionId,
-      } = domainMetadata[domainKey]
+      } = domainMetadata[domainKey] || {}
       const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
       const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
       const accountsLastConnectedTime = ethAccountsPermissionsForDomain.accounts || {}
@@ -542,7 +543,8 @@ function getRenderablePermissionsDomains (state) {
         : ''
 
       return [ ...acc, {
-        name,
+        name: name ? name : domainKey,
+        origin: name ? domainKey : '',
         icon,
         key: domainKey,
         lastConnectedTime,
