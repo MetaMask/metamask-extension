@@ -23,7 +23,7 @@ MenuDroppoComponent.prototype.render = function () {
     {},
     style,
     { zIndex },
-    !('position' in style) && { style: 'fixed' },
+    !('position' in style) && { position: 'fixed' },
   )
 
   return (
