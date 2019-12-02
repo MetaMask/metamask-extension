@@ -424,7 +424,7 @@
     "message": "Are you sure? You will be disconnected from all sites on all accounts."
   },
   "disconnectAccountModalDescription": {
-    "message": "Are you sure? You're account will be disconnected from this site."
+    "message": "Are you sure? Your account will be disconnected from this site."
   },
   "disconnectAccountQuestion": {
     "message": "Disconnect account?"
