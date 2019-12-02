@@ -76,12 +76,22 @@
     }
   }
 
-  &__new-account {
+  &__new-account, &__cancel {
     @extend %content-text;
     line-height: 20px;
     color: #037DD6;
     margin-top: 24px;
     cursor: pointer;
+  }
+
+  &__cancel {
+    color: $Red-400;
+  }
+
+  &__bottom-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 393px;
   }
 
 }

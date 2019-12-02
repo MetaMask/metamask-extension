@@ -17,6 +17,8 @@ export default class ChooseAccount extends Component {
     selectNewAccountViaModal: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
     addressLastConnectedMap: PropTypes.object,
+    cancelPermissionsRequest: PropTypes.func.isRequired,
+    permissionsRequestId: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -71,7 +73,7 @@ export default class ChooseAccount extends Component {
   }
 
   render () {
-    const { originName, selectNewAccountViaModal } = this.props
+    const { originName, selectNewAccountViaModal, permissionsRequestId, cancelPermissionsRequest } = this.props
     const { t } = this.context
     return (
       <div className="permissions-connect-choose-account">
@@ -82,11 +84,19 @@ export default class ChooseAccount extends Component {
           { t('toConnectWith', [originName]) }
         </div>
         { this.renderAccountsList() }
-        <div
-          onClick={ () => selectNewAccountViaModal() }
-          className="permissions-connect-choose-account__new-account"
-        >
-          { t('newAccount') }
+        <div className="permissions-connect-choose-account__bottom-buttons">
+          <div
+            onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
+            className="permissions-connect-choose-account__cancel"
+          >
+            { t('cancel') }
+          </div>
+          <div
+            onClick={ () => selectNewAccountViaModal() }
+            className="permissions-connect-choose-account__new-account"
+          >
+            { t('newAccount') }
+          </div>
         </div>
       </div>
     )
