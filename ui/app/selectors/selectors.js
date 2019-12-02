@@ -465,7 +465,7 @@ function getAddressConnectedDomainMap (state) {
         const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
         if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
           exposedAccountCaveat.value.forEach(address => {
-            const nameToRender = name ? name : domainKey
+            const nameToRender = name || domainKey
             addressConnectedIconMap[address] = addressConnectedIconMap[address]
               ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
               : { [domainKey]: { icon, name: nameToRender } }
@@ -543,7 +543,7 @@ function getRenderablePermissionsDomains (state) {
         : ''
 
       return [ ...acc, {
-        name: name ? name : domainKey,
+        name: name || domainKey,
         secondaryName: name ? domainKey : '',
         icon,
         key: domainKey,
