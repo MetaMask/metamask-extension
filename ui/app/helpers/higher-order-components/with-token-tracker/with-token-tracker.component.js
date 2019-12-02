@@ -71,7 +71,7 @@ export default function withTokenTracker (WrappedComponent) {
 
     setError = error => {
       this.setState({ error })
-    };
+    }
 
     updateBalance = (tokens = []) => {
       if (!this.tracker.running) {
@@ -79,7 +79,7 @@ export default function withTokenTracker (WrappedComponent) {
       }
       const [{ string, symbol, balance }] = tokens
       this.setState({ string, symbol, error: null, balance })
-    };
+    }
 
     removeListeners () {
       if (this.tracker) {
