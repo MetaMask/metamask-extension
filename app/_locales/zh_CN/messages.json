@@ -75,7 +75,7 @@
     "message": "添加推荐代币"
   },
   "addAcquiredTokens": {
-    "message": "在Metamask上添加已用的代币"
+    "message": "在MetaMask上添加已用的代币"
   },
   "amount": {
     "message": "数量"

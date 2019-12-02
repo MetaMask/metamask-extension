@@ -507,7 +507,7 @@
   },
   "extensionId": {
     "message": "Extension ID: $1",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to Metamask"
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -764,7 +764,7 @@
     "message": "Would you like to add these tokens?"
   },
   "likeToConnect": {
-    "message": "$1 would like to connect to your Metamask account",
+    "message": "$1 would like to connect to your MetaMask account",
     "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
@@ -1368,7 +1368,7 @@
   },
   "thisWillAllowExternalExtension": {
     "message": "This will allow an external extension with id $1 to:",
-    "description":  "$1 is a string of random letters that are the id of another extension connecting to Metamask"
+    "description":  "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
