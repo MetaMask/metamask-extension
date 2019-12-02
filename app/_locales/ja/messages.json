@@ -72,7 +72,7 @@
     "message": "推奨トークンを追加"
   },
   "addAcquiredTokens": {
-    "message": "Metamaskで獲得したトークンを追加する"
+    "message": "MetaMaskで獲得したトークンを追加する"
   },
   "amount": {
     "message": "金額"
