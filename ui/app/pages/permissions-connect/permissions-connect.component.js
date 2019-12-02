@@ -5,6 +5,7 @@ import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
+import { CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
 export default class PermissionConnect extends Component {
@@ -22,6 +23,8 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object,
     requestAccountTabs: PropTypes.object,
     permissionsRequestId: PropTypes.string,
+    domains: PropTypes.object,
+    history: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -31,6 +34,7 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: {},
     requestAccountTabs: {},
     permissionsRequestId: '',
+    domains: {},
   }
 
   static contextTypes = {
@@ -59,6 +63,24 @@ export default class PermissionConnect extends Component {
     }
   }
 
+  componentDidUpdate (prevProps) {
+    const { permissionsRequest, domains } = this.props
+    const { originName } = this.state
+
+    if (permissionsRequest === null && prevProps.permissionsRequest && prevProps.permissionsRequest.permissions) {
+      const permissionDataForDomain = domains && domains[originName] || {}
+      const permissionsForDomain = permissionDataForDomain.permissions || []
+      const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
+      const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
+      const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
+      if (addedAPermission) {
+        this.redirectFlow(true)
+      } else {
+        this.redirectFlow(false)
+      }
+    }
+  }
+
   selectAccount = (address) => {
     this.setState({
       page: 2,
@@ -67,22 +89,27 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { requestAccountTabs } = this.props
+    const { requestAccountTabs, history } = this.props
     const { originName } = this.state
+
     this.setState({
       page: null,
       permissionAccepted: accepted,
     })
     this.removeBeforeUnload()
 
-    setTimeout(async () => {
-      const { id: currentTabId } = await global.platform.currentTab()
-      try {
-        await global.platform.switchToTab(requestAccountTabs[originName])
-      } finally {
-        global.platform.closeTab(currentTabId)
-      }
-    }, 2000)
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+      setTimeout(async () => {
+        const { id: currentTabId } = await global.platform.currentTab()
+        try {
+          await global.platform.switchToTab(requestAccountTabs[originName])
+        } finally {
+          global.platform.closeTab(currentTabId)
+        }
+      }, 2000)
+    } else {
+      history.push(CONNECTED_ROUTE)
+    }
   }
 
   componentDidMount () {
@@ -143,11 +170,9 @@ export default class PermissionConnect extends Component {
             request={permissionsRequest || {}}
             approvePermissionsRequest={ (requestId, accounts) => {
               approvePermissionsRequest(requestId, accounts)
-              this.redirectFlow(true)
             }}
             rejectPermissionsRequest={requestId => {
               rejectPermissionsRequest(requestId)
-              this.redirectFlow(false)
             }}
             selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
             redirect={page === null}
