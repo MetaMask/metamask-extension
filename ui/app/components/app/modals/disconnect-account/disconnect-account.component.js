@@ -8,6 +8,7 @@ export default class DisconnectAccount extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
+    accountLabel: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
@@ -16,7 +17,7 @@ export default class DisconnectAccount extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { hideModal, disconnectAccount } = this.props
+    const { hideModal, disconnectAccount, accountLabel } = this.props
 
     return (
       <Modal
@@ -26,7 +27,7 @@ export default class DisconnectAccount extends PureComponent {
       >
         <div className="disconnect-account-modal">
           <div className="disconnect-account-modal__description">
-            { t('disconnectAccountModalDescription') }
+            { t('disconnectAccountModalDescription', [ accountLabel ]) }
           </div>
           <Button
             type="primary"
