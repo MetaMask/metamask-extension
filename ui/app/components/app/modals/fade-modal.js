@@ -126,7 +126,6 @@ class FadeModal extends Component {
   }
 
   static propTypes = {
-    animation: PropTypes.object,
     backdrop: PropTypes.bool,
     backdropStyle: PropTypes.object,
     className: PropTypes.string,
@@ -146,7 +145,6 @@ class FadeModal extends Component {
     className: '',
     onShow: function () {},
     onHide: function () {},
-    animation: animation,
     keyboard: true,
     backdrop: true,
     closeOnClick: true,
@@ -190,7 +188,6 @@ class FadeModal extends Component {
     }
 
     const { willHide } = this.state
-    const { animation } = this.props
     const modalStyle = {
       zIndex: 1050,
       position: 'fixed',
