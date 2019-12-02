@@ -1,8 +1,49 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-// TODO: if we can get this out then we can drop domkit!
+
 // All this keyframing/animation and platform dependent stuff should go away into scss
-import insertKeyframesRule from 'domkit/insertKeyframesRule'
+
+let index = 0
+let extraSheet
+
+const insertRule = css => {
+
+  if (!extraSheet) {
+    // First time, create an extra stylesheet for adding rules
+    extraSheet = document.createElement('style')
+    document.getElementsByTagName('head')[0].appendChild(extraSheet)
+    // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
+    extraSheet = extraSheet.sheet || extraSheet.styleSheet
+  }
+
+  var index = (extraSheet.cssRules || extraSheet.rules).length
+  extraSheet.insertRule(css, index)
+
+  return extraSheet
+}
+
+const insertKeyframesRule = keyframes => {
+  // random name
+  var name = 'anim_' + (++index) + (+new Date())
+  var css = '@' + 'keyframes ' + name + ' {'
+
+  for (var key in keyframes) {
+    css += key + ' {'
+
+    for (var property in keyframes[key]) {
+      var part = ':' + keyframes[key][property] + ';'
+      css += property + part
+    }
+
+    css += '}'
+  }
+
+  css += '}'
+
+  insertRule(css)
+
+  return name
+}
 
 const animation = {
   show: {

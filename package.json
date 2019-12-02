@@ -88,7 +88,6 @@
     "detect-node": "^2.0.3",
     "detectrtc": "^1.3.6",
     "dnode": "^1.2.2",
-    "domkit": "^0.0.1",
     "end-of-stream": "^1.1.0",
     "eth-block-tracker": "^4.4.2",
     "eth-contract-metadata": "^1.11.0",
