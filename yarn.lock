@@ -8932,11 +8932,6 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-domkit@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/domkit/-/domkit-0.0.1.tgz#88399d586794efc1154fec6c22cfe50f19bd4dbb"
-  integrity sha1-iDmdWGeU78EVT+xsIs/lDxm9Tbs=
-
 domutils@1.5, domutils@1.5.1, domutils@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/domutils/-/domutils-1.5.1.tgz#dcd8488a26f563d61079e48c9f7b7e32373682cf"
