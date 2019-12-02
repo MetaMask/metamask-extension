@@ -7,7 +7,7 @@ import AccountDetails from '../account-details'
 
 const { checksumAddress } = require('../../../helpers/utils/util')
 const TokenList = require('../token-list')
-const { ADD_TOKEN_ROUTE } = require('../../../helpers/constants/routes')
+const { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
 
 export default class WalletView extends Component {
   static contextTypes = {
@@ -91,6 +91,18 @@ export default class WalletView extends Component {
     )
   }
 
+  showConnectedSites = () => {
+    const {
+      sidebarOpen,
+      hideSidebar,
+      history,
+    } = this.props
+    history.push(CONNECTED_ROUTE)
+    if (sidebarOpen) {
+      hideSidebar()
+    }
+  }
+
   render () {
     const {
       responsiveDisplayClassname,
@@ -124,6 +136,7 @@ export default class WalletView extends Component {
           label={label}
           checksummedAddress={checksummedAddress}
           name={identities[selectedAddress].name}
+          showConnectedSites={this.showConnectedSites}
         />
         {this.renderWalletBalance()}
         <TokenList />
