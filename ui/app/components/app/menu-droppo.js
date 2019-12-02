@@ -19,7 +19,7 @@ MenuDroppoComponent.prototype.render = function () {
 
   this.manageListeners()
 
-  const _style = Object.assign(
+  const baseStyle = Object.assign(
     {},
     style,
     { zIndex },
@@ -27,7 +27,7 @@ MenuDroppoComponent.prototype.render = function () {
   )
 
   return (
-    <div style={_style} className={`menu-droppo-container ${containerClassName}`}>
+    <div style={baseStyle} className={`menu-droppo-container ${containerClassName}`}>
       <style>{`
           .menu-droppo-enter {
             transition: transform ${speed} ease-in-out;
