@@ -4,8 +4,12 @@ import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
-import { CONNECTED_ROUTE } from '../../helpers/constants/routes'
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../app/scripts/lib/enums'
+import { DEFAULT_ROUTE, CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
 export default class PermissionConnect extends Component {
@@ -30,7 +34,7 @@ export default class PermissionConnect extends Component {
   static defaultProps = {
     originName: '',
     nativeCurrency: '',
-    permissionsRequest: {},
+    permissionsRequest: undefined,
     addressLastConnectedMap: {},
     requestAccountTabs: {},
     permissionsRequestId: '',
@@ -64,10 +68,10 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { permissionsRequest, domains } = this.props
-    const { originName } = this.state
+    const { permissionsRequest, domains, permissionsRequestId } = this.props
+    const { originName, page } = this.state
 
-    if (permissionsRequest === null && prevProps.permissionsRequest && prevProps.permissionsRequest.permissions) {
+    if (!permissionsRequestId && prevProps.permissionsRequestId && page !== null) {
       const permissionDataForDomain = domains && domains[originName] || {}
       const permissionsForDomain = permissionDataForDomain.permissions || []
       const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
@@ -78,6 +82,11 @@ export default class PermissionConnect extends Component {
       } else {
         this.redirectFlow(false)
       }
+    } else if (permissionsRequestId && prevProps.permissionsRequestId && permissionsRequestId !== prevProps.permissionsRequestId) {
+      this.setState({
+        originName: this.props.originName,
+        page: 1,
+      })
     }
   }
 
@@ -107,7 +116,9 @@ export default class PermissionConnect extends Component {
           global.platform.closeTab(currentTabId)
         }
       }, 2000)
-    } else {
+    } else if (etEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      history.push(DEFAULT_ROUTE)
+    } else if (etEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
       history.push(CONNECTED_ROUTE)
     }
   }
@@ -170,9 +181,11 @@ export default class PermissionConnect extends Component {
             request={permissionsRequest || {}}
             approvePermissionsRequest={ (requestId, accounts) => {
               approvePermissionsRequest(requestId, accounts)
+              this.redirectFlow(true)
             }}
             rejectPermissionsRequest={requestId => {
               rejectPermissionsRequest(requestId)
+              this.redirectFlow(false)
             }}
             selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
             redirect={page === null}
