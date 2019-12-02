@@ -12,21 +12,22 @@ function MenuDroppoComponent () {
 }
 
 MenuDroppoComponent.prototype.render = function () {
-  const { containerClassName = '' } = this.props
+  const { containerClassName = '', style } = this.props
   const speed = this.props.speed || '300ms'
   const useCssTransition = this.props.useCssTransition
   const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
   this.manageListeners()
 
-  const style = Object.assign({}, this.props.style)
-  if (!('position' in style)) {
-    style.position = 'fixed'
-  }
-  style.zIndex = zIndex
+  const _style = Object.assign(
+    {},
+    style,
+    { zIndex },
+    !('position' in style) && { style: 'fixed' },
+  )
 
   return (
-    <div style={style} className={`menu-droppo-container ${containerClassName}`}>
+    <div style={_style} className={`menu-droppo-container ${containerClassName}`}>
       <style>{`
           .menu-droppo-enter {
             transition: transform ${speed} ease-in-out;
