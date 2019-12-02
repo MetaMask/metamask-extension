@@ -421,10 +421,10 @@
     "message": "Disconnect All"
   },
   "disconnectAllModalDescription": {
-    "message": "Are you sure? You will no longer be able to interact with any of these sites."
+    "message": "Are you sure? You will be disconnected from all sites on all accounts."
   },
   "disconnectAccountModalDescription": {
-    "message": "Are you sure? You will no longer be able to interact with this site."
+    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
   },
   "disconnectAccountQuestion": {
     "message": "Disconnect account?"
