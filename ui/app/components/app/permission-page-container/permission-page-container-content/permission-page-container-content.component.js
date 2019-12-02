@@ -89,11 +89,17 @@ export default class PermissionPageContainerContent extends PureComponent {
         console.warn(`Unknown permission requested: ${methodName}`)
       }
       const description = permissionsDescriptions[methodName] || methodName
+      // don't allow deselecting eth_accounts
+      const isDisabled = methodName === 'eth_accounts'
 
       return (
         <div
           className="permission-approval-container__content__permission" key={methodName}
-          onClick={() => onPermissionToggle(methodName)}
+          onClick={() => {
+            if (!isDisabled) {
+              onPermissionToggle(methodName)
+            }
+          }}
         >
           { selectedPermissions[methodName]
             ? <i className="fa fa-check-circle fa-sm" />
