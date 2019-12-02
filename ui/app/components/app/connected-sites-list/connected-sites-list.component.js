@@ -89,7 +89,7 @@ export default class ConnectedSitesList extends Component {
                       }
                       {domainIsExpanded
                         ? <div className="connected-sites-list__domain-origin">
-                          { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.origin }
+                          { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.secondaryName }
                         </div>
                         : null
                       }

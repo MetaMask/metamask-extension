@@ -544,7 +544,7 @@ function getRenderablePermissionsDomains (state) {
 
       return [ ...acc, {
         name: name ? name : domainKey,
-        origin: name ? domainKey : '',
+        secondaryName: name ? domainKey : '',
         icon,
         key: domainKey,
         lastConnectedTime,
