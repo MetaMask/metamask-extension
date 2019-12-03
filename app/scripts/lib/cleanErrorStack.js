@@ -4,10 +4,10 @@
  * @returns {Error} Error with clean stack trace.
  */
 function cleanErrorStack (err) {
-  var name = err.name
+  let name = err.name
   name = (name === undefined) ? 'Error' : String(name)
 
-  var msg = err.message
+  let msg = err.message
   msg = (msg === undefined) ? '' : String(msg)
 
   if (name === '') {

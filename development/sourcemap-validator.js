@@ -96,8 +96,8 @@ async function validateSourcemapForFile ({ buildName }) {
 }
 
 function indicesOf (substring, string) {
-  var a = []
-  var i = -1
+  const a = []
+  let i = -1
   while ((i = string.indexOf(substring, i + 1)) >= 0) {
     a.push(i)
   }

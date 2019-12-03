@@ -17,7 +17,7 @@ server.listen(8545, () => {
 })
 
 // logging util
-var log = require('loglevel')
+const log = require('loglevel')
 log.setDefaultLevel(5)
 global.log = log
 
@@ -62,7 +62,7 @@ function enableFailureOnUnhandledPromiseRejection () {
         throw evt.detail.reason
       })
     } else {
-      var oldOHR = window.onunhandledrejection
+      const oldOHR = window.onunhandledrejection
       window.onunhandledrejection = function (evt) {
         if (typeof oldOHR === 'function') {
           oldOHR.apply(this, arguments)

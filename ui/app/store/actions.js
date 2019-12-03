@@ -17,7 +17,7 @@ const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util
 const gasDuck = require('../ducks/gas/gas.duck')
 const WebcamUtils = require('../../lib/webcam-utils')
 
-var actions = {
+const actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
   GO_HOME: 'GO_HOME',
@@ -399,7 +399,7 @@ var actions = {
 
 module.exports = actions
 
-var background = null
+let background = null
 function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
@@ -2171,7 +2171,7 @@ function requestExportAccount () {
 }
 
 function exportAccount (password, address) {
-  var self = this
+  const self = this
 
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
@@ -2305,7 +2305,7 @@ function pairUpdate (coin) {
 }
 
 function shapeShiftSubview () {
-  var pair = 'btc_eth'
+  const pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -2334,7 +2334,7 @@ function coinShiftRquest (data, marketData) {
       if (response.error) {
         return dispatch(actions.displayWarning(response.error))
       }
-      var message = `
+      const message = `
         Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
       background.createShapeShiftTx(response.deposit, response.depositType)
@@ -2372,7 +2372,7 @@ function reshowQrCode (data, coin) {
         return dispatch(actions.displayWarning(mktResponse.error))
       }
 
-      var message = [
+      const message = [
         `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
@@ -2385,10 +2385,10 @@ function reshowQrCode (data, coin) {
 }
 
 function shapeShiftRequest (query, options = {}, cb) {
-  var queryResponse, method
+  let queryResponse, method
   options.method ? method = options.method : method = 'GET'
 
-  var requestListner = function () {
+  const requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
       if (cb) {
@@ -2403,12 +2403,12 @@ function shapeShiftRequest (query, options = {}, cb) {
     }
   }
 
-  var shapShiftReq = new XMLHttpRequest()
+  const shapShiftReq = new XMLHttpRequest()
   shapShiftReq.addEventListener('load', requestListner)
   shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
 
   if (options.method === 'POST') {
-    var jsonObj = JSON.stringify(options.data)
+    const jsonObj = JSON.stringify(options.data)
     shapShiftReq.setRequestHeader('Content-Type', 'application/json')
     return shapShiftReq.send(jsonObj)
   } else {

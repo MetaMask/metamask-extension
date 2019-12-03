@@ -5,7 +5,7 @@ const txUtils = require('../../../../../app/scripts/controllers/transactions/lib
 describe('txUtils', function () {
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
@@ -13,7 +13,7 @@ describe('txUtils', function () {
     })
 
     it('returns error for negative values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
