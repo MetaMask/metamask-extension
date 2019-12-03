@@ -42,18 +42,18 @@ export default class Home extends PureComponent {
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
     hasDaiV1Token: PropTypes.bool,
-    hasPermissionRequests: PropTypes.bool,
+    firstPermissionsRequestId: PropTypes.string,
   }
 
   componentWillMount () {
     const {
       history,
       unconfirmedTransactionsCount = 0,
-      hasPermissionRequests,
+      firstPermissionsRequestId,
     } = this.props
 
-    if (hasPermissionRequests) {
-      history.push(CONNECT_ROUTE)
+    if (firstPermissionsRequestId) {
+      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
     }
 
     if (unconfirmedTransactionsCount > 0) {
