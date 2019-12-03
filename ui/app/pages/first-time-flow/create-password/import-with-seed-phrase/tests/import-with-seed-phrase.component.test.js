@@ -29,7 +29,7 @@ describe('ImportWithSeedPhrase Component', () => {
         onSubmit: sinon.spy(),
       })
 
-      const {parseSeedPhrase} = root.instance()
+      const { parseSeedPhrase } = root.instance()
 
       assert.deepEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz')
     })
@@ -39,7 +39,7 @@ describe('ImportWithSeedPhrase Component', () => {
         onSubmit: sinon.spy(),
       })
 
-      const {parseSeedPhrase} = root.instance()
+      const { parseSeedPhrase } = root.instance()
 
       assert.deepEqual(parseSeedPhrase('  foo   bar   baz  '), 'foo bar baz')
     })
@@ -49,7 +49,7 @@ describe('ImportWithSeedPhrase Component', () => {
         onSubmit: sinon.spy(),
       })
 
-      const {parseSeedPhrase} = root.instance()
+      const { parseSeedPhrase } = root.instance()
 
       assert.deepEqual(parseSeedPhrase('   '), '')
     })
@@ -59,7 +59,7 @@ describe('ImportWithSeedPhrase Component', () => {
         onSubmit: sinon.spy(),
       })
 
-      const {parseSeedPhrase} = root.instance()
+      const { parseSeedPhrase } = root.instance()
 
       assert.deepEqual(parseSeedPhrase('$'), '')
     })
@@ -69,7 +69,7 @@ describe('ImportWithSeedPhrase Component', () => {
         onSubmit: sinon.spy(),
       })
 
-      const {parseSeedPhrase} = root.instance()
+      const { parseSeedPhrase } = root.instance()
 
       assert.deepEqual(parseSeedPhrase(undefined), '')
       assert.deepEqual(parseSeedPhrase(null), '')

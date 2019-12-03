@@ -27,7 +27,7 @@ describe('PendingTransactionTracker', function () {
       id: 2,
       history: [{}],
       status: 'submitted',
-      txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
+      txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d' },
     }
 
     providerResultStub = {}
@@ -51,7 +51,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     pendingTxTracker._getBlock = (blockNumber) => {
-      return {number: blockNumber, transactions: []}
+      return { number: blockNumber, transactions: [] }
     }
   })
 

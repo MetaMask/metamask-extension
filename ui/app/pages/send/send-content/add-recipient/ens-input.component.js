@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
 import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
-import {ellipsify} from '../../send.utils'
+import { ellipsify } from '../../send.utils'
 
 import debounce from 'debounce'
 import copyToClipboard from 'copy-to-clipboard/index'

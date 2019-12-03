@@ -219,7 +219,7 @@ class TransactionController extends EventEmitter {
       // the specified address
       const permittedAddresses = await this.getPermittedAccounts(origin)
       if (!permittedAddresses.includes(normalizedTxParams.from)) {
-        throw ethErrors.provider.unauthorized({ data: { origin }})
+        throw ethErrors.provider.unauthorized({ data: { origin } })
       }
     }
 
@@ -690,7 +690,7 @@ class TransactionController extends EventEmitter {
     // get the confirmed transactions nonce and from address
     const txMeta = this.txStateManager.getTx(txId)
     const { nonce, from } = txMeta.txParams
-    const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
+    const sameNonceTxs = this.txStateManager.getFilteredTxList({ nonce, from })
     if (!sameNonceTxs.length) {
       return
     }

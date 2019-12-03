@@ -96,15 +96,15 @@ describe('Transaction Controller', function () {
         'to': '0xc684832530fcbddae4b4230a47e991ddcec2831d',
       }
       txController.txStateManager._saveTxList([
-        {id: 0, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 2, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 4, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 5, status: 'approved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 6, status: 'signed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-        {id: 8, status: 'failed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 0, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 2, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 4, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 5, status: 'approved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 6, status: 'signed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        { id: 8, status: 'failed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
     })
 
@@ -226,7 +226,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should fail if the from address isn\'t the selected address', function (done) {
-      txController.addUnapprovedTransaction({from: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2'})
+      txController.addUnapprovedTransaction({ from: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
         .then(function () {
           assert.fail('transaction should not have been added')
           done()
@@ -448,7 +448,7 @@ describe('Transaction Controller', function () {
         { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
 
-      expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb'})
+      expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb' })
     })
 
     afterEach(() => {

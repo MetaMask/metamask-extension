@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 const classnames = require('classnames')
 const inherits = require('util').inherits

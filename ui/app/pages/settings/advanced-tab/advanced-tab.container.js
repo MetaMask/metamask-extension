@@ -13,7 +13,7 @@ import {
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
 } from '../../../store/actions'
-import {preferencesSelector} from '../../../selectors/selectors'
+import { preferencesSelector } from '../../../selectors/selectors'
 
 export const mapStateToProps = state => {
   const { appState: { warning }, metamask } = state

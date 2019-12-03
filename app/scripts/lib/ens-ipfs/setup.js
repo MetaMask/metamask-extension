@@ -10,7 +10,7 @@ function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame'] })
 
   // return api object
   return {
@@ -43,7 +43,7 @@ function setupEnsIpfsResolver ({ provider }) {
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
     try {
-      const {type, hash} = await resolveEnsToIpfsContentId({ provider, name })
+      const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
       if (type === 'ipfs-ns') {
         const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}${fragment || ''}`
         try {

@@ -150,7 +150,7 @@ export default function reduceApp (state, action) {
           state.appState.modal,
           { open: false },
           { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState},
+          { previousModalState: appState.modal.modalState },
         ),
       })
 
@@ -536,7 +536,7 @@ export default function reduceApp (state, action) {
 
     case actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
       const { device, path } = action.value
-      const newDefaults = {...appState.defaultHdPaths}
+      const newDefaults = { ...appState.defaultHdPaths }
       newDefaults[device] = path
 
       return extend(appState, {

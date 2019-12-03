@@ -1,1 +1,1 @@
-export {default} from './permission-page-container-content.component'
+export { default } from './permission-page-container-content.component'

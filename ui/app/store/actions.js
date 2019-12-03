@@ -731,7 +731,7 @@ function addNewAccount () {
     const oldIdentities = getState().metamask.identities
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addNewAccount((err, { identities: newIdentities}) => {
+      background.addNewAccount((err, { identities: newIdentities }) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -1378,7 +1378,7 @@ function cancelTx (txData) {
 function cancelTxs (txDataList) {
   return async (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    const txIds = txDataList.map(({id}) => id)
+    const txIds = txDataList.map(({ id }) => id)
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
       background.cancelTransaction(id, (err) => {
         if (err) {
@@ -1648,7 +1648,7 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage ({transForward = true, id}) {
+function showConfTxPage ({ transForward = true, id }) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
     transForward,
@@ -1774,7 +1774,7 @@ function removeSuggestedTokens () {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({ ...suggestedTokens })))
   }
 }
 
@@ -2138,7 +2138,7 @@ function showLoadingIndication (message) {
 function setHardwareWalletDefaultHdPath ({ device, path }) {
   return {
     type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-    value: {device, path},
+    value: { device, path },
   }
 }
 
@@ -2298,7 +2298,7 @@ function pairUpdate (coin) {
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     dispatch(actions.hideWarning())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
       if (mktResponse.error) {
         return dispatch(actions.displayWarning(mktResponse.error))
@@ -2317,7 +2317,7 @@ function shapeShiftSubview () {
   const pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair }, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
         if (mktResponse.error) {
@@ -2338,7 +2338,7 @@ function shapeShiftSubview () {
 function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
       dispatch(actions.hideLoadingIndication())
       if (response.error) {
         return dispatch(actions.displayWarning(response.error))
@@ -2354,7 +2354,7 @@ function coinShiftRquest (data, marketData) {
 
 function buyWithShapeShift (data) {
   return () => new Promise((resolve, reject) => {
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
       if (response.error) {
         return reject(response.error)
       }
@@ -2376,7 +2376,7 @@ function showQrView (data, message) {
 function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
       if (mktResponse.error) {
         return dispatch(actions.displayWarning(mktResponse.error))
       }
@@ -2406,7 +2406,7 @@ function shapeShiftRequest (query, options = {}, cb) {
       return queryResponse
     } catch (e) {
       if (cb) {
-        cb({error: e})
+        cb({ error: e })
       }
       return e
     }

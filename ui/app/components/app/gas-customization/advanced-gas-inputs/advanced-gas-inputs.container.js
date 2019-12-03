@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const {customGasPrice, customGasLimit, updateCustomGasPrice, updateCustomGasLimit} = ownProps
+  const { customGasPrice, customGasLimit, updateCustomGasPrice, updateCustomGasLimit } = ownProps
   return {
     ...ownProps,
     ...stateProps,

@@ -71,7 +71,7 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleCopyTxId = () => {
-    const { transactionGroup} = this.props
+    const { transactionGroup } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
 

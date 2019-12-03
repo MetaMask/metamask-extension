@@ -4,7 +4,7 @@ const { warn } = require('loglevel')
 const { MAINNET } = require('./network/enums')
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
-const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
+const ERC20_ABI = [{ 'constant': true, 'inputs': [{ 'name': '_owner', 'type': 'address' }], 'name': 'balanceOf', 'outputs': [{ 'name': 'balance', 'type': 'uint256' }], 'payable': false, 'type': 'function' }]
 const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
 /**

@@ -240,7 +240,7 @@ class Routes extends Component {
 
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {

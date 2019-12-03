@@ -4,7 +4,7 @@ const mockState = require('../../../data/mock-state.json')
 const Eth = require('ethjs')
 
 const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('Selectors', function () {
 

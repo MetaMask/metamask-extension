@@ -23,7 +23,7 @@ describe('DetectTokensController', () => {
       .get(/.*/)
       .reply(200)
 
-    keyringMemStore = new ObservableStore({ isUnlocked: false})
+    keyringMemStore = new ObservableStore({ isUnlocked: false })
     network = new NetworkController()
     preferences = new PreferencesController({ network })
     controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
@@ -90,8 +90,8 @@ describe('DetectTokensController', () => {
       .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-      {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [{ address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T' },
+      { address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK' }])
   })
 
   it('should not detect same token while in main network', async () => {
@@ -107,8 +107,8 @@ describe('DetectTokensController', () => {
       .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-      {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [{ address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T' },
+      { address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK' }])
   })
 
   it('should trigger detect new tokens when change address', async () => {

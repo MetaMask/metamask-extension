@@ -3,7 +3,7 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
 
 function createPendingNonceMiddleware ({ getPendingNonce }) {
   return createAsyncMiddleware(async (req, res, next) => {
-    const {method, params} = req
+    const { method, params } = req
     if (method !== 'eth_getTransactionCount') {
       return next()
     }
@@ -17,7 +17,7 @@ function createPendingNonceMiddleware ({ getPendingNonce }) {
 
 function createPendingTxMiddleware ({ getPendingTransactionByHash }) {
   return createAsyncMiddleware(async (req, res, next) => {
-    const {method, params} = req
+    const { method, params } = req
     if (method !== 'eth_getTransactionByHash') {
       return next()
     }

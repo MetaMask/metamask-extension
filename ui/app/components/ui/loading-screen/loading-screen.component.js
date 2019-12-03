@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
 const Spinner = require('../spinner')
 

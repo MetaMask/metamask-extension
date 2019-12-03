@@ -43,7 +43,7 @@ describe('SendContent Component', function () {
     })
 
     it('should render a SendRowErrorMessage with and errorType props if showError is true', () => {
-      wrapper.setProps({showError: true})
+      wrapper.setProps({ showError: true })
       assert.equal(wrapper.find(SendRowErrorMessage).length, 1)
 
       const expectedSendRowErrorMessage = wrapper.find('.send-v2__form-row > .send-v2__form-label').childAt(1)

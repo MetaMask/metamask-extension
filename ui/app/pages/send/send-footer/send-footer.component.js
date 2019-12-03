@@ -47,7 +47,7 @@ export default class SendFooter extends Component {
       amount,
       data,
       editingTransactionId,
-      from: {address: from},
+      from: { address: from },
       gasLimit: gas,
       gasPrice,
       selectedToken,

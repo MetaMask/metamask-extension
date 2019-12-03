@@ -13,7 +13,7 @@ import {
 
 export default class CreateAccountPage extends Component {
   renderTabs () {
-    const { history, location: { pathname }} = this.props
+    const { history, location: { pathname } } = this.props
     const getClassNames = path => classnames('new-account__tabs__tab', {
       'new-account__tabs__selected': matchPath(pathname, {
         path,
