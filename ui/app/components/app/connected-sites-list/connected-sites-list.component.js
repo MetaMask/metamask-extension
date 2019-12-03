@@ -28,9 +28,6 @@ export default class ConnectedSitesList extends Component {
 
   state = {
     expandedDomain: '',
-    iconError: '',
-    domains: {},
-    tabToConnect: null,
   }
 
   componentWillMount () {

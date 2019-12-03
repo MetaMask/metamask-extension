@@ -27,10 +27,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
-  state = {
-    iconError: false,
-  }
-
   renderAccountInfo = (account) => {
     return (
       <div className="permission-approval-visual__account-info">
