@@ -171,22 +171,26 @@ export default class SignatureRequestOriginal extends Component {
       <div className="request-signature__typed-container">
         {
           domain
-            ? <div>
-              <h1>
-                Domain
-              </h1>
-              <ObjectInspector data={domain} expandLevel={1} name="domain" />
-            </div>
+            ? (
+              <div>
+                <h1>
+                  Domain
+                </h1>
+                <ObjectInspector data={domain} expandLevel={1} name="domain" />
+              </div>
+            )
             : ''
         }
         {
           message
-            ? <div>
-              <h1>
-                Message
-              </h1>
-              <ObjectInspector data={message} expandLevel={1} name="message" />
-            </div>
+            ? (
+              <div>
+                <h1>
+                  Message
+                </h1>
+                <ObjectInspector data={message} expandLevel={1} name="message" />
+              </div>
+            )
             : ''
         }
       </div>
@@ -221,16 +225,18 @@ export default class SignatureRequestOriginal extends Component {
           { notice }
           {
             type === 'eth_sign'
-              ? <span
-                className="request-signature__help-link"
-                onClick={() => {
-                  global.platform.openWindow({
-                    url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
-                  })
-                }}
-              >
-                { this.context.t('learnMore') }
-              </span>
+              ? (
+                <span
+                  className="request-signature__help-link"
+                  onClick={() => {
+                    global.platform.openWindow({
+                      url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
+                    })
+                  }}
+                >
+                  { this.context.t('learnMore') }
+                </span>
+              )
               : null
           }
         </div>

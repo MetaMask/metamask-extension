@@ -253,12 +253,12 @@ export default class AccountMenu extends PureComponent {
             })
             history.push(NEW_ACCOUNT_ROUTE)
           }}
-          icon={
+          icon={(
             <img
               className="account-menu__item-icon"
               src="images/plus-btn-white.svg"
             />
-          }
+          )}
           text={t('createAccount')}
         />
         <Item
@@ -273,12 +273,12 @@ export default class AccountMenu extends PureComponent {
             })
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
-          icon={
+          icon={(
             <img
               className="account-menu__item-icon"
               src="images/import-account.svg"
             />
-          }
+          )}
           text={t('importAccount')}
         />
         <Item
@@ -297,12 +297,12 @@ export default class AccountMenu extends PureComponent {
               history.push(CONNECT_HARDWARE_ROUTE)
             }
           }}
-          icon={
+          icon={(
             <img
               className="account-menu__item-icon"
               src="images/connect-icon.svg"
             />
-          }
+          )}
           text={t('connectHardwareWallet')}
         />
         <Divider />
@@ -328,12 +328,12 @@ export default class AccountMenu extends PureComponent {
               },
             })
           }}
-          icon={
+          icon={(
             <img
               className="account-menu__item-icon"
               src="images/settings.svg"
             />
-          }
+          )}
           text={t('settings')}
         />
       </Menu>

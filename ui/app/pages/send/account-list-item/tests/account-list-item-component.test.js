@@ -23,17 +23,19 @@ describe('AccountListItem Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<AccountListItem
-      account={ { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' } }
-      className="mockClassName"
-      conversionRate={4}
-      currentCurrency="mockCurrentyCurrency"
-      nativeCurrency="ETH"
-      displayAddress={false}
-      displayBalance={false}
-      handleClick={propsMethodSpies.handleClick}
-      icon={<i className="mockIcon" />}
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow((
+      <AccountListItem
+        account={ { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' } }
+        className="mockClassName"
+        conversionRate={4}
+        currentCurrency="mockCurrentyCurrency"
+        nativeCurrency="ETH"
+        displayAddress={false}
+        displayBalance={false}
+        handleClick={propsMethodSpies.handleClick}
+        icon={<i className="mockIcon" />}
+      />
+    ), { context: { t: str => str + '_t' } })
   })
 
   afterEach(() => {

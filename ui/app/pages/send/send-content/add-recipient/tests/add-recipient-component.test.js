@@ -19,23 +19,25 @@ describe('AddRecipient Component', function () {
   let instance
 
   beforeEach(() => {
-    wrapper = shallow(<AddRecipient
-      closeToDropdown={propsMethodSpies.closeToDropdown}
-      inError={false}
-      inWarning={false}
-      network="mockNetwork"
-      openToDropdown={propsMethodSpies.openToDropdown}
-      to="mockTo"
-      toAccounts={['mockAccount']}
-      toDropdownOpen={false}
-      updateGas={propsMethodSpies.updateGas}
-      updateSendTo={propsMethodSpies.updateSendTo}
-      updateSendToError={propsMethodSpies.updateSendToError}
-      updateSendToWarning={propsMethodSpies.updateSendToWarning}
-      addressBook={[{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 5' }]}
-      nonContacts={[{ address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 7' }]}
-      contacts={[{ address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 6' }]}
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow((
+      <AddRecipient
+        closeToDropdown={propsMethodSpies.closeToDropdown}
+        inError={false}
+        inWarning={false}
+        network="mockNetwork"
+        openToDropdown={propsMethodSpies.openToDropdown}
+        to="mockTo"
+        toAccounts={['mockAccount']}
+        toDropdownOpen={false}
+        updateGas={propsMethodSpies.updateGas}
+        updateSendTo={propsMethodSpies.updateSendTo}
+        updateSendToError={propsMethodSpies.updateSendToError}
+        updateSendToWarning={propsMethodSpies.updateSendToWarning}
+        addressBook={[{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 5' }]}
+        nonContacts={[{ address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 7' }]}
+        contacts={[{ address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 6' }]}
+      />
+    ), { context: { t: str => str + '_t' } })
     instance = wrapper.instance()
   })
 

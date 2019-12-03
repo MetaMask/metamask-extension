@@ -18,7 +18,7 @@ describe('Identicon', () => {
 
   it('renders default eth_logo identicon with no props', () => {
     const wrapper = mount(
-      <Identicon store={store}/>
+      <Identicon store={store} />
     )
 
     assert.equal(wrapper.find('img.balance-icon').prop('src'), './images/eth_logo.svg')

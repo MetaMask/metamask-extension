@@ -18,18 +18,20 @@ describe('AdvancedTabContent Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<AdvancedTabContent
-      updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
-      updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
-      customModalGasPriceInHex="11"
-      customModalGasLimitInHex="23456"
-      timeRemaining="21500"
-      transactionFee="$0.25"
-      insufficientBalance={false}
-      customPriceIsSafe
-      isSpeedUp={false}
-      isEthereumNetwork
-    />)
+    wrapper = shallow((
+      <AdvancedTabContent
+        updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
+        updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
+        customModalGasPriceInHex="11"
+        customModalGasLimitInHex="23456"
+        timeRemaining="21500"
+        transactionFee="$0.25"
+        insufficientBalance={false}
+        customPriceIsSafe
+        isSpeedUp={false}
+        isEthereumNetwork
+      />
+    ))
   })
 
   afterEach(() => {

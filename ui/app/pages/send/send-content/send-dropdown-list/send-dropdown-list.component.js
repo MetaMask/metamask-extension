@@ -17,7 +17,7 @@ export default class SendDropdownList extends Component {
 
   getListItemIcon (accountAddress, activeAddress) {
     return accountAddress === activeAddress
-      ? <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } }/>
+      ? <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } } />
       : null
   }
 
@@ -29,24 +29,28 @@ export default class SendDropdownList extends Component {
       activeAddress,
     } = this.props
 
-    return (<div>
-      <div
-        className="send-v2__from-dropdown__close-area"
-        onClick={() => closeDropdown()}
-      />
-      <div className="send-v2__from-dropdown__list">
-        {accounts.map((account, index) => <AccountListItem
-          account={account}
-          className="account-list-item__dropdown"
-          handleClick={() => {
-            onSelect(account)
-            closeDropdown()
-          }}
-          icon={this.getListItemIcon(account.address, activeAddress)}
-          key={`send-dropdown-account-#${index}`}
-        />)}
+    return (
+      <div>
+        <div
+          className="send-v2__from-dropdown__close-area"
+          onClick={() => closeDropdown()}
+        />
+        <div className="send-v2__from-dropdown__list">
+          {accounts.map((account, index) => (
+            <AccountListItem
+              account={account}
+              className="account-list-item__dropdown"
+              handleClick={() => {
+                onSelect(account)
+                closeDropdown()
+              }}
+              icon={this.getListItemIcon(account.address, activeAddress)}
+              key={`send-dropdown-account-#${index}`}
+            />
+          ))}
+        </div>
       </div>
-    </div>)
+    )
   }
 
 }

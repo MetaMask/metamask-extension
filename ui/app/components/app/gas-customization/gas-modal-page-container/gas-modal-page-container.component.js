@@ -160,13 +160,14 @@ export default class GasModalPageContainer extends Component {
 
     return (
       <Tabs>
-        {tabsToRender.map(({ name, content }, i) => <Tab name={name} key={`gas-modal-tab-${i}`}>
-          <div className="gas-modal-content">
-            { content }
-            { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
-          </div>
-        </Tab>
-        )}
+        {tabsToRender.map(({ name, content }, i) => (
+          <Tab name={name} key={`gas-modal-tab-${i}`}>
+            <div className="gas-modal-content">
+              { content }
+              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
+            </div>
+          </Tab>
+        ))}
       </Tabs>
     )
   }

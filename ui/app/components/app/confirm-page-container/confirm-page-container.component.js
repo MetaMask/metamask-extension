@@ -133,15 +133,17 @@ export default class ConfirmPageContainer extends Component {
         >
           { hideSenderToRecipient
             ? null
-            : <SenderToRecipient
-              senderName={fromName}
-              senderAddress={fromAddress}
-              recipientName={toName}
-              recipientAddress={toAddress}
-              recipientEns={toEns}
-              recipientNickname={toNickname}
-              assetImage={renderAssetImage ? assetImage : undefined}
-            />
+            : (
+              <SenderToRecipient
+                senderName={fromName}
+                senderAddress={fromAddress}
+                recipientName={toName}
+                recipientAddress={toAddress}
+                recipientEns={toEns}
+                recipientNickname={toNickname}
+                assetImage={renderAssetImage ? assetImage : undefined}
+              />
+            )
           }
         </ConfirmPageContainerHeader>
         {

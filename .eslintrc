@@ -156,6 +156,25 @@
     "react/jsx-equals-spacing": 2,
     "react/no-deprecated": 0,
     "react/default-props-match-prop-types": 2,
+    "react/jsx-closing-tag-location": 2,
+    "react/jsx-no-duplicate-props": 2,
+    "react/jsx-closing-bracket-location": 2,
+    "react/jsx-first-prop-new-line": 2,
+    "react/jsx-max-props-per-line": [2, { "maximum": 1, "when": "multiline"} ],
+    "react/jsx-tag-spacing": [2, {
+      "closingSlash": "never",
+      "beforeSelfClosing": "always",
+      "afterOpening": "never"
+    }],
+    "react/jsx-wrap-multilines": [2, {
+      "declaration": "parens-new-line",
+      "assignment": "parens-new-line",
+      "return": "parens-new-line",
+      "arrow": "parens-new-line",
+      "condition": "parens-new-line",
+      "logical": "parens-new-line",
+      "prop": "parens-new-line"
+    }],
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],
     "space-before-blocks": [2, "always"],

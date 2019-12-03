@@ -25,12 +25,14 @@ function NetworkDropdownIcon (props) {
     )
     : (
       <div className={`menu-icon-circle${isSelected ? '--active' : ''}`}>
-        <div style={{
-          background: backgroundColor,
-          border: innerBorder,
-          height: `${diameter}px`,
-          width: `${diameter}px`,
-        }} />
+        <div
+          style={{
+            background: backgroundColor,
+            border: innerBorder,
+            height: `${diameter}px`,
+            width: `${diameter}px`,
+          }}
+        />
       </div>
     )
 }

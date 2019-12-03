@@ -49,16 +49,19 @@ export default class ContactListTab extends Component {
 
   renderAddButton () {
     const { history } = this.props
-    return <div
-      className="address-book-add-button__button"
-      onClick={() => {
-        history.push(CONTACT_ADD_ROUTE)
-      }}>
-      <img
-        className="account-menu__item-icon"
-        src="images/plus-btn-white.svg"
-      />
-    </div>
+    return (
+      <div
+        className="address-book-add-button__button"
+        onClick={() => {
+          history.push(CONTACT_ADD_ROUTE)
+        }}
+      >
+        <img
+          className="account-menu__item-icon"
+          src="images/plus-btn-white.svg"
+        />
+      </div>
+    )
   }
 
   renderMyAccountsButton () {
@@ -98,19 +101,23 @@ export default class ContactListTab extends Component {
       ContactContentComponent = AddContact
     }
 
-    return (ContactContentComponent && <div className="address-book-contact-content">
-      <ContactContentComponent />
-    </div>)
+    return (ContactContentComponent && (
+      <div className="address-book-contact-content">
+        <ContactContentComponent />
+      </div>
+    ))
   }
 
   renderAddressBookContent () {
     const { hideAddressBook, showingMyAccounts } = this.props
 
     if (!hideAddressBook && !showingMyAccounts) {
-      return (<div className="address-book">
-        { this.renderMyAccountsButton() }
-        { this.renderAddresses() }
-      </div>)
+      return (
+        <div className="address-book">
+          { this.renderMyAccountsButton() }
+          { this.renderAddresses() }
+        </div>
+      )
     } else if (!hideAddressBook && showingMyAccounts) {
       return (<MyAccounts />)
     }
@@ -123,9 +130,11 @@ export default class ContactListTab extends Component {
       <div className="address-book-wrapper">
         { this.renderAddressBookContent() }
         { this.renderContactContent() }
-        {!addingContact && <div className="address-book-add-button">
-          { this.renderAddButton() }
-        </div>}
+        {!addingContact && (
+          <div className="address-book-add-button">
+            { this.renderAddButton() }
+          </div>
+        )}
       </div>
     )
   }

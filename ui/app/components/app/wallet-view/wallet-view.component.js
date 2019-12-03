@@ -44,9 +44,11 @@ export default class WalletView extends Component {
     } = this.props
 
     return (
-      <div className={classnames('flex-column', 'wallet-balance-wrapper', {
-        'wallet-balance-wrapper--active': Boolean(selectedTokenAddress),
-      })}>
+      <div
+        className={classnames('flex-column', 'wallet-balance-wrapper', {
+          'wallet-balance-wrapper--active': Boolean(selectedTokenAddress),
+        })}
+      >
         <div
           className="wallet-balance"
           onClick={() => {

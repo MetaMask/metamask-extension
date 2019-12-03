@@ -83,17 +83,19 @@ export default class AdvancedTabContent extends Component {
             />
           </div>
           { isEthereumNetwork
-            ? <div>
-              <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
-              {!gasEstimatesLoading
-                ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
-                : <Loading />
-              }
-              <div className="advanced-tab__fee-chart__speed-buttons">
-                <span>{ t('slower') }</span>
-                <span>{ t('faster') }</span>
+            ? (
+              <div>
+                <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
+                {!gasEstimatesLoading
+                  ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
+                  : <Loading />
+                }
+                <div className="advanced-tab__fee-chart__speed-buttons">
+                  <span>{ t('slower') }</span>
+                  <span>{ t('faster') }</span>
+                </div>
               </div>
-            </div>
+            )
             : <div className="advanced-tab__fee-chart__title">{ t('chartOnlyAvailableEth') }</div>
           }
         </div>

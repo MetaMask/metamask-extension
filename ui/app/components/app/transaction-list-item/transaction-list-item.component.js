@@ -236,18 +236,22 @@ export default class TransactionListItem extends PureComponent {
             )}
           />
           { showEstimatedTime
-            ? <TransactionTimeRemaining
-              className="transaction-list-item__estimated-time"
-              transaction={ primaryTransaction }
-            />
+            ? (
+              <TransactionTimeRemaining
+                className="transaction-list-item__estimated-time"
+                transaction={ primaryTransaction }
+              />
+            )
             : null
           }
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
-        <div className={classnames('transaction-list-item__expander', {
-          'transaction-list-item__expander--show': showTransactionDetails,
-        })}>
+        <div
+          className={classnames('transaction-list-item__expander', {
+            'transaction-list-item__expander--show': showTransactionDetails,
+          })}
+        >
           {
             showTransactionDetails && (
               <div className="transaction-list-item__details-container">

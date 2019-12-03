@@ -49,7 +49,8 @@ export default class NewAccountCreateForm extends Component {
           {this.context.t('accountName')}
         </div>
         <div className="new-account-create-form__input-wrapper">
-          <input className="new-account-create-form__input"
+          <input
+            className="new-account-create-form__input"
             value={newAccountName}
             placeholder={defaultAccountName}
             onChange={event => this.setState({ newAccountName: event.target.value })}
@@ -61,13 +62,17 @@ export default class NewAccountCreateForm extends Component {
             large
             className="new-account-create-form__button"
             onClick={() => history.push(DEFAULT_ROUTE)}
-          >{this.context.t('cancel')}</Button>
+          >
+            {this.context.t('cancel')}
+          </Button>
           <Button
             type="secondary"
             large
             className="new-account-create-form__button"
             onClick={createClick}
-          >{this.context.t('create')}</Button>
+          >
+            {this.context.t('create')}
+          </Button>
         </div>
       </div>
     )
