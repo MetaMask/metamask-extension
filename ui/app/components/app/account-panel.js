@@ -13,12 +13,12 @@ function AccountPanel () {
 }
 
 AccountPanel.prototype.render = function () {
-  var state = this.props
-  var identity = state.identity || {}
-  var account = state.account || {}
-  var isFauceting = state.isFauceting
+  const state = this.props
+  const identity = state.identity || {}
+  const account = state.account || {}
+  const isFauceting = state.isFauceting
 
-  var panelState = {
+  const panelState = {
     key: `accountPanel${identity.address}`,
     identiconKey: identity.address,
     identiconLabel: identity.name || '',

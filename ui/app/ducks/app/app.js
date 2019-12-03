@@ -21,14 +21,14 @@ export default function reduceApp (state, action) {
     name = 'confTx'
   }
 
-  var defaultView = {
+  const defaultView = {
     name,
     detailView: null,
     context: selectedAddress,
   }
 
   // default state
-  var appState = extend({
+  const appState = extend({
     shouldClose: false,
     menuOpen: false,
     modal: {

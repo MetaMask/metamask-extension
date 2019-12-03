@@ -14,17 +14,17 @@ class EdgeEncryptor {
    * @returns {Promise<string>} Promise resolving to an object with ciphertext
    */
   encrypt (password, dataObject) {
-    var salt = this._generateSalt()
+    const salt = this._generateSalt()
     return this._keyFromPassword(password, salt)
       .then(function (key) {
-        var data = JSON.stringify(dataObject)
-        var dataBuffer = Unibabel.utf8ToBuffer(data)
-        var vector = global.crypto.getRandomValues(new Uint8Array(16))
-        var resultbuffer = asmcrypto.AES_GCM.encrypt(dataBuffer, key, vector)
+        const data = JSON.stringify(dataObject)
+        const dataBuffer = Unibabel.utf8ToBuffer(data)
+        const vector = global.crypto.getRandomValues(new Uint8Array(16))
+        const resultbuffer = asmcrypto.AES_GCM.encrypt(dataBuffer, key, vector)
 
-        var buffer = new Uint8Array(resultbuffer)
-        var vectorStr = Unibabel.bufferToBase64(vector)
-        var vaultStr = Unibabel.bufferToBase64(buffer)
+        const buffer = new Uint8Array(resultbuffer)
+        const vectorStr = Unibabel.bufferToBase64(vector)
+        const vaultStr = Unibabel.bufferToBase64(buffer)
         return JSON.stringify({
           data: vaultStr,
           iv: vectorStr,
@@ -48,7 +48,7 @@ class EdgeEncryptor {
         const encryptedData = Unibabel.base64ToBuffer(payload.data)
         const vector = Unibabel.base64ToBuffer(payload.iv)
         return new Promise((resolve, reject) => {
-          var result
+          let result
           try {
             result = asmcrypto.AES_GCM.decrypt(encryptedData, key, vector)
           } catch (err) {
@@ -72,12 +72,12 @@ class EdgeEncryptor {
    */
   _keyFromPassword (password, salt) {
 
-    var passBuffer = Unibabel.utf8ToBuffer(password)
-    var saltBuffer = Unibabel.base64ToBuffer(salt)
+    const passBuffer = Unibabel.utf8ToBuffer(password)
+    const saltBuffer = Unibabel.base64ToBuffer(salt)
     const iterations = 10000
     const length = 32 // SHA256 hash size
     return new Promise((resolve) => {
-      var key = asmcrypto.Pbkdf2HmacSha256(passBuffer, saltBuffer, iterations, length)
+      const key = asmcrypto.Pbkdf2HmacSha256(passBuffer, saltBuffer, iterations, length)
       resolve(key)
     })
   }
@@ -89,9 +89,9 @@ class EdgeEncryptor {
    * @returns {string} Randomized base64 encoded data
    */
   _generateSalt (byteCount = 32) {
-    var view = new Uint8Array(byteCount)
+    const view = new Uint8Array(byteCount)
     global.crypto.getRandomValues(view)
-    var b64encoded = btoa(String.fromCharCode.apply(null, view))
+    const b64encoded = btoa(String.fromCharCode.apply(null, view))
     return b64encoded
   }
 }

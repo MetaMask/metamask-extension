@@ -13,7 +13,7 @@ module.exports = launchMetamaskUi
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {
-  var {backgroundConnection} = opts
+  const {backgroundConnection} = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {

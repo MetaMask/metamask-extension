@@ -94,7 +94,7 @@ function modifyBackgroundConnection (backgroundConnectionModifier) {
 }
 
 // parse opts
-var store = configureStore(firstState)
+const store = configureStore(firstState)
 
 // start app
 startApp()

@@ -1,6 +1,6 @@
 /* eslint no-unused-vars: 0 */
 
-var params = {
+const params = {
   // diffrent params used in the methods
   param: [],
   blockHashParams: '0xb3b20624f8f0f86eb50dd04688409e5cea4bd02d700bf6e79e9384d47d6a5a35',
@@ -93,7 +93,7 @@ var params = {
   },
 }
 
-var methods = {
+const methods = {
   hexaNumberMethods: {
     // these are the methods which have output in the form of hexa decimal numbers
     eth_blockNumber: ['eth_blockNumber', params.param, 'Q'],

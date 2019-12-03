@@ -198,7 +198,7 @@ module.exports = class NetworkController extends EventEmitter {
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig
-    var settings = {
+    const settings = {
       ticker: 'ETH',
     }
     this.networkConfig.putState(settings)
@@ -221,7 +221,7 @@ module.exports = class NetworkController extends EventEmitter {
       nickname,
     }
     // setup networkConfig
-    var settings = {
+    let settings = {
       network: chainId,
     }
     settings = extend(settings, networks.networkList['rpc'])

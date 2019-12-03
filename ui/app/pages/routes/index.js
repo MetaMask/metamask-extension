@@ -260,7 +260,7 @@ class Routes extends Component {
   toggleMetamaskActive () {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
-      var passwordBox = document.querySelector('input[type=password]')
+      const passwordBox = document.querySelector('input[type=password]')
       if (!passwordBox) {
         return
       }

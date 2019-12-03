@@ -117,9 +117,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
     }
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = (new Date()).getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,
