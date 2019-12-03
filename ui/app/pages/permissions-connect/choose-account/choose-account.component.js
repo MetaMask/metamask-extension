@@ -36,36 +36,40 @@ export default class ChooseAccount extends Component {
         {
           accounts.map((account, index) => {
             const { address, addressLabel, balance } = account
-            return (<div
-              key={`permissions-connect-choose-account-${index}`}
-              onClick={ () => selectAccount(address) }
-              className="permissions-connect-choose-account__account"
-            >
-              <div className="permissions-connect-choose-account__account-info-wrapper">
-                <Identicon
-                  diameter={34}
-                  address={address}
-                />
-                <div className="permissions-connect-choose-account__account__info">
-                  <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
-                  <UserPreferencedCurrencyDisplay
-                    className="permissions-connect-choose-account__account__balance"
-                    type={PRIMARY}
-                    value={balance}
-                    style={{ color: '#6A737D' }}
-                    suffix={nativeCurrency}
-                    hideLabel
+            return (
+              <div
+                key={`permissions-connect-choose-account-${index}`}
+                onClick={ () => selectAccount(address) }
+                className="permissions-connect-choose-account__account"
+              >
+                <div className="permissions-connect-choose-account__account-info-wrapper">
+                  <Identicon
+                    diameter={34}
+                    address={address}
                   />
+                  <div className="permissions-connect-choose-account__account__info">
+                    <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
+                    <UserPreferencedCurrencyDisplay
+                      className="permissions-connect-choose-account__account__balance"
+                      type={PRIMARY}
+                      value={balance}
+                      style={{ color: '#6A737D' }}
+                      suffix={nativeCurrency}
+                      hideLabel
+                    />
+                  </div>
                 </div>
+                { addressLastConnectedMap[address]
+                  ? (
+                    <div className="permissions-connect-choose-account__account__last-connected">
+                      <span>{ this.context.t('lastConnected') }</span>
+                      { addressLastConnectedMap[address] }
+                    </div>
+                  )
+                  : null
+                }
               </div>
-              { addressLastConnectedMap[address]
-                ? <div className="permissions-connect-choose-account__account__last-connected">
-                  <span>{ this.context.t('lastConnected') }</span>
-                  { addressLastConnectedMap[address] }
-                </div>
-                : null
-              }
-            </div>)
+            )
           })
         }
       </div>

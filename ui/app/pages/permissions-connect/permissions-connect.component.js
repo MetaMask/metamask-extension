@@ -160,41 +160,47 @@ export default class PermissionConnect extends Component {
           : null
         }
         { page === 1
-          ? <ChooseAccount
-            accounts={accounts}
-            originName={originName}
-            nativeCurrency={nativeCurrency}
-            selectAccount={(address) => this.selectAccount(address)}
-            selectNewAccountViaModal={() => {
-              showNewAccountModal({
-                onCreateNewAccount: this.selectAccount,
-                newAccountNumber,
-              })
-            }}
-            addressLastConnectedMap={addressLastConnectedMap}
-            cancelPermissionsRequest={requestId => {
-              if (requestId) {
-                rejectPermissionsRequest(requestId)
-                this.redirectFlow(false)
-              }
-            }}
-            permissionsRequestId={permissionsRequestId}
-          />
-          : <div><PermissionPageContainer
-            request={permissionsRequest || {}}
-            approvePermissionsRequest={ (requestId, accounts) => {
-              approvePermissionsRequest(requestId, accounts)
-              this.redirectFlow(true)
-            }}
-            rejectPermissionsRequest={requestId => {
-              rejectPermissionsRequest(requestId)
-              this.redirectFlow(false)
-            }}
-            selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
-            redirect={page === null}
-            permissionRejected={ permissionAccepted === false }
-          />
-          <PermissionsConnectFooter /></div>
+          ? (
+            <ChooseAccount
+              accounts={accounts}
+              originName={originName}
+              nativeCurrency={nativeCurrency}
+              selectAccount={(address) => this.selectAccount(address)}
+              selectNewAccountViaModal={() => {
+                showNewAccountModal({
+                  onCreateNewAccount: this.selectAccount,
+                  newAccountNumber,
+                })
+              }}
+              addressLastConnectedMap={addressLastConnectedMap}
+              cancelPermissionsRequest={requestId => {
+                if (requestId) {
+                  rejectPermissionsRequest(requestId)
+                  this.redirectFlow(false)
+                }
+              }}
+              permissionsRequestId={permissionsRequestId}
+            />
+          )
+          : (
+            <div>
+              <PermissionPageContainer
+                request={permissionsRequest || {}}
+                approvePermissionsRequest={ (requestId, accounts) => {
+                  approvePermissionsRequest(requestId, accounts)
+                  this.redirectFlow(true)
+                }}
+                rejectPermissionsRequest={requestId => {
+                  rejectPermissionsRequest(requestId)
+                  this.redirectFlow(false)
+                }}
+                selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
+                redirect={page === null}
+                permissionRejected={ permissionAccepted === false }
+              />
+              <PermissionsConnectFooter />
+            </div>
+          )
         }
       </div>
     )

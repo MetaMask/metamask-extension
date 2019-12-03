@@ -132,15 +132,17 @@ export default class PermissionPageContainer extends Component {
           permissionRejected={permissionRejected}
         />
         { !redirect
-          ? <PageContainerFooter
-            cancelButtonType="primary"
-            onCancel={() => this.onCancel()}
-            cancelText={this.context.t('cancel')}
-            onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('submit')}
-            submitButtonType="confirm"
-            buttonSizeLarge={false}
-          />
+          ? (
+            <PageContainerFooter
+              cancelButtonType="primary"
+              onCancel={() => this.onCancel()}
+              cancelText={this.context.t('cancel')}
+              onSubmit={() => this.onSubmit()}
+              submitText={this.context.t('submit')}
+              submitButtonType="confirm"
+              buttonSizeLarge={false}
+            />
+          )
           : null
         }
       </div>

@@ -94,7 +94,8 @@ export default class PermissionPageContainerContent extends PureComponent {
 
       return (
         <div
-          className="permission-approval-container__content__permission" key={methodName}
+          className="permission-approval-container__content__permission"
+          key={methodName}
           onClick={() => {
             if (!isDisabled) {
               onPermissionToggle(methodName)
@@ -136,24 +137,29 @@ export default class PermissionPageContainerContent extends PureComponent {
     return (
       <div className={classnames('permission-approval-container__content', {
         'permission-approval-container__content--redirect': redirect,
-      })}>
+      })}
+      >
         <div className="permission-approval-container__title">
           { t(...titleArgs) }
         </div>
         {this.renderPermissionApprovalVisual()}
         { !redirect
-          ? <section className="permission-approval-container__permissions-container">
-            <div className="permission-approval-container__permissions-header">
-              { domainMetadata.extensionId
-                ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
-                : t('thisWillAllow', [domainMetadata.name])
-              }
+          ? (
+            <section className="permission-approval-container__permissions-container">
+              <div className="permission-approval-container__permissions-header">
+                { domainMetadata.extensionId
+                  ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
+                  : t('thisWillAllow', [domainMetadata.name])
+                }
+              </div>
+              { this.renderRequestedPermissions() }
+            </section>
+          )
+          : (
+            <div className="permission-approval-container__permissions-header-redirect">
+              { t('redirectingBackToDapp') }
             </div>
-            { this.renderRequestedPermissions() }
-          </section>
-          : <div className="permission-approval-container__permissions-header-redirect">
-            { t('redirectingBackToDapp') }
-          </div>
+          )
         }
       </div>
     )

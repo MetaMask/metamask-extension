@@ -82,15 +82,19 @@ export default class ConnectedSitesList extends Component {
                         </div>
                       </div>
                       { domain.lastConnectedTime
-                        ? <div className="connected-sites-list__domain-last-connected">
-                          { t('domainLastConnect', [domain.lastConnectedTime]) }
-                        </div>
+                        ? (
+                          <div className="connected-sites-list__domain-last-connected">
+                            { t('domainLastConnect', [domain.lastConnectedTime]) }
+                          </div>
+                        )
                         : null
                       }
                       {domainIsExpanded
-                        ? <div className="connected-sites-list__domain-origin">
-                          { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.secondaryName }
-                        </div>
+                        ? (
+                          <div className="connected-sites-list__domain-origin">
+                            { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.secondaryName }
+                          </div>
+                        )
                         : null
                       }
                     </div>
@@ -100,28 +104,30 @@ export default class ConnectedSitesList extends Component {
                   </div>
                 </div>
                 { domainIsExpanded
-                  ? <div className="connected-sites-list__permissions">
-                    <div className="connected-sites-list__permission-list">
-                      {
-                        domain.permissionDescriptions.map((description, pdIndex) => {
-                          return (
-                            <div className="connected-sites-list__permission" key={`permissionDescription-${pdIndex}`}>
-                              <i className="fa fa-check-square fa-sm" />
-                              <div className="connected-sites-list__permission-description">
-                                { description }
+                  ? (
+                    <div className="connected-sites-list__permissions">
+                      <div className="connected-sites-list__permission-list">
+                        {
+                          domain.permissionDescriptions.map((description, pdIndex) => {
+                            return (
+                              <div className="connected-sites-list__permission" key={`permissionDescription-${pdIndex}`}>
+                                <i className="fa fa-check-square fa-sm" />
+                                <div className="connected-sites-list__permission-description">
+                                  { description }
+                                </div>
                               </div>
-                            </div>
-                          )
-                        })
-                      }
+                            )
+                          })
+                        }
+                      </div>
+                      <div
+                        className="connected-sites-list__disconnect"
+                        onClick={ () => showDisconnectAccountModal(domain.key, domains[domain.key]) }
+                      >
+                        { t('disconnectAccount') }
+                      </div>
                     </div>
-                    <div
-                      className="connected-sites-list__disconnect"
-                      onClick={ () => showDisconnectAccountModal(domain.key, domains[domain.key]) }
-                    >
-                      { t('disconnectAccount') }
-                    </div>
-                  </div>
+                  )
                   : null
                 }
               </div>
@@ -135,14 +141,16 @@ export default class ConnectedSitesList extends Component {
             </Button>
           </div>
           { tabToConnect
-            ? <div className="connected-sites-list__connect-to">
-              <Button
-                onClick={() => legacyExposeAccounts(tabToConnect.origin, selectedAddress)}
-                type="primary"
-              >
-                { t('connectTo', [tabToConnect.title || tabToConnect.origin]) }
-              </Button>
-            </div>
+            ? (
+              <div className="connected-sites-list__connect-to">
+                <Button
+                  onClick={() => legacyExposeAccounts(tabToConnect.origin, selectedAddress)}
+                  type="primary"
+                >
+                  { t('connectTo', [tabToConnect.title || tabToConnect.origin]) }
+                </Button>
+              </div>
+            )
             : null
           }
         </div>

@@ -112,9 +112,11 @@ export default class AccountMenu extends PureComponent {
             />
           </div>
           { iconAndNameForOpenDomain
-            ? <div className="account-menu__icon-list">
-              <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
-            </div>
+            ? (
+              <div className="account-menu__icon-list">
+                <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
+              </div>
+            )
             : null
           }
           { this.renderKeyringType(keyring) }
