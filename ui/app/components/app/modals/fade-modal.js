@@ -191,21 +191,14 @@ class FadeModal extends Component {
       animationName: willHide ? animation.hideBackdropAnimation : animation.showBackdropAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }, this.props.backdropStyle)
-    const contentStyle = {
+    const contentStyle = Object.assign({}, {
       margin: 0,
       backgroundColor: 'white',
       animationDuration: (willHide ? animation.hide : animation.show).animationDuration,
       animationFillMode: 'forwards',
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }
-
-    if (this.props.contentStyle) {
-      const prefixedContentStyle = this.props.contentStyle
-      for (const style in prefixedContentStyle) {
-        contentStyle[style] = prefixedContentStyle[style]
-      }
-    }
+    }, this.props.contentStyle)
 
     const backdrop = this.props.backdrop
       ? <div
