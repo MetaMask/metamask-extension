@@ -17,8 +17,8 @@ module.exports = {
 
 // functions that handle normalizing of that key in txParams
 const normalizers = {
-  from: (from, LowerCase = true) => LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from),
-  to: (to, LowerCase = true) => LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
+  from: (from, LowerCase = true) => (LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
+  to: (to, LowerCase = true) => (LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
   nonce: nonce => addHexPrefix(nonce),
   value: value => addHexPrefix(value),
   data: data => addHexPrefix(data),

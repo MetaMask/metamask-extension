@@ -141,7 +141,7 @@ describe('GasModalPageContainer Component', function () {
           fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
         />
-      ), { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+      ), { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } })
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()

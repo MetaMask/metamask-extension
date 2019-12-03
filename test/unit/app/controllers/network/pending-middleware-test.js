@@ -30,7 +30,7 @@ describe('#createPendingNonceMiddleware', function () {
 
 describe('#createPendingTxMiddleware', function () {
   let returnUndefined = true
-  const getPendingTransactionByHash = () => returnUndefined ? undefined : txMetaStub
+  const getPendingTransactionByHash = () => (returnUndefined ? undefined : txMetaStub)
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
   const pendingTxMiddleware = createPendingTxMiddleware({ getPendingTransactionByHash })
   const spec = {
