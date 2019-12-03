@@ -86,7 +86,7 @@ import {
 
 class Routes extends Component {
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD, getActiveTab } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -105,8 +105,13 @@ class Routes extends Component {
         })
       }
     })
+  }
 
-    getActiveTab()
+  componentDidMount () {
+    const { addressConnectedToCurrentTab, showAccountDetail, selectedAddress } = this.props
+    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== selectedAddress) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -357,6 +362,7 @@ Routes.propTypes = {
   textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
+  selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
   currentView: PropTypes.object,
   sidebar: PropTypes.object,
@@ -373,9 +379,12 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
-  getActiveTab: PropTypes.func,
   addressConnectedToCurrentTab: PropTypes.string,
   showAccountDetail: PropTypes.func,
+}
+
+Routes.defaultProps = {
+  selectedAddress: undefined,
 }
 
 function mapStateToProps (state) {
@@ -403,6 +412,7 @@ function mapStateToProps (state) {
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
+    selectedAddress: state.metamask.selectedAddress,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
@@ -420,7 +430,6 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    getActiveTab: () => dispatch(actions.getActiveTab()),
     showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }

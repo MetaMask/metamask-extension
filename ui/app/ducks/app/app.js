@@ -78,7 +78,6 @@ export default function reduceApp (state, action) {
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
-    currentActiveTab: {},
   }, state.appState)
 
   switch (action.type) {
@@ -780,11 +779,6 @@ export default function reduceApp (state, action) {
     case actions.SET_CURRENT_WINDOW_TAB:
       return extend(appState, {
         currentWindowTab: action.value,
-      })
-
-    case actions.SET_ACTIVE_TAB:
-      return extend(appState, {
-        currentActiveTab: action.value,
       })
 
     default:

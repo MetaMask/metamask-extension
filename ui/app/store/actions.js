@@ -402,9 +402,6 @@ var actions = {
   getCurrentWindowTab,
   SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
   SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
-  setActiveTab,
-  SET_ACTIVE_TAB: 'SET_ACTIVE_TAB',
-  getActiveTab,
   getOpenMetamaskTabsIds,
   SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
@@ -3072,23 +3069,5 @@ function getCurrentWindowTab () {
   return async (dispatch) => {
     const currentWindowTab = await global.platform.currentTab()
     dispatch(setCurrentWindowTab(currentWindowTab))
-  }
-}
-
-function setActiveTab (activeTab) {
-  return {
-    type: actions.SET_ACTIVE_TAB,
-    value: activeTab,
-  }
-}
-
-function getActiveTab () {
-  return (dispatch) => {
-    return global.platform.queryTabs()
-      .then(tabs => {
-        const activeTab = tabs.find(tab => tab.active)
-        dispatch(setActiveTab(activeTab))
-        return activeTab
-      })
   }
 }
