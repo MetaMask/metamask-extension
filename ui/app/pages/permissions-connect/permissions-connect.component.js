@@ -82,7 +82,8 @@ export default class PermissionConnect extends Component {
       } else {
         this.redirectFlow(false)
       }
-    } else if (permissionsRequestId && prevProps.permissionsRequestId && permissionsRequestId !== prevProps.permissionsRequestId) {
+    } else if (permissionsRequestId && prevProps.permissionsRequestId && 
+      permissionsRequestId !== prevProps.permissionsRequestId && page !== null) {
       this.setState({
         originName: this.props.originName,
         page: 1,
