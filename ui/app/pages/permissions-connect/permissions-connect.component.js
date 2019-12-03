@@ -68,7 +68,7 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { permissionsRequest, domains, permissionsRequestId } = this.props
+    const { domains, permissionsRequestId } = this.props
     const { originName, page } = this.state
 
     if (!permissionsRequestId && prevProps.permissionsRequestId && page !== null) {
@@ -82,7 +82,7 @@ export default class PermissionConnect extends Component {
       } else {
         this.redirectFlow(false)
       }
-    } else if (permissionsRequestId && prevProps.permissionsRequestId && 
+    } else if (permissionsRequestId && prevProps.permissionsRequestId &&
       permissionsRequestId !== prevProps.permissionsRequestId && page !== null) {
       this.setState({
         originName: this.props.originName,
@@ -117,9 +117,9 @@ export default class PermissionConnect extends Component {
           global.platform.closeTab(currentTabId)
         }
       }, 2000)
-    } else if (etEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
       history.push(DEFAULT_ROUTE)
-    } else if (etEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
       history.push(CONNECTED_ROUTE)
     }
   }
