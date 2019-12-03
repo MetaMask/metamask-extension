@@ -536,9 +536,6 @@
   "usedByClients": {
     "message": "Farklı istemciler tarafından kullanılmakta"
   },
-  "validFileImport": {
-    "message": "Almak için geçerli bir dosya seçmelisiniz"
-  },
   "viewAccount": {
     "message": "Hesabı İncele"
   },

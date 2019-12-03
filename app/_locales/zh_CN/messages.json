@@ -1314,9 +1314,6 @@
   "userName": {
     "message": "用户名"
   },
-  "validFileImport": {
-    "message": "您必须选择一个有效的文件进行导入."
-  },
   "viewAccount": {
     "message": "查看账户"
   },

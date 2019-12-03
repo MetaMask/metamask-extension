@@ -1472,9 +1472,6 @@
   "userName": {
     "message": "Username"
   },
-  "validFileImport": {
-    "message": "You must select a valid file to import."
-  },
   "viewAccount": {
     "message": "View Account"
   },

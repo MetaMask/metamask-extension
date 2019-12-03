@@ -1223,9 +1223,6 @@
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang client"
   },
-  "validFileImport": {
-    "message": "Dapat kang pumili ng valid na file na ii-import."
-  },
   "viewAccount": {
     "message": "Tingnan ang Account"
   },

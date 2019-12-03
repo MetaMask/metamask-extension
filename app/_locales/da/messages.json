@@ -1301,9 +1301,6 @@
   "userName": {
     "message": "Brugernavn"
   },
-  "validFileImport": {
-    "message": "Du skal vælge en gyldig fil at importere."
-  },
   "viewAccount": {
     "message": "Vis konto"
   },

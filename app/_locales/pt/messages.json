@@ -473,9 +473,6 @@
   "usedByClients": {
     "message": "Utilizado por vários tipos de clientes"
   },
-  "validFileImport": {
-    "message": "Deve selecionar um ficheiro válido para importar."
-  },
   "viewAccount": {
     "message": "Ver Conta"
   },

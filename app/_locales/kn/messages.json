@@ -1335,9 +1335,6 @@
   "userName": {
     "message": "ಬಳಕೆದಾರಹೆಸರು"
   },
-  "validFileImport": {
-    "message": "ನೀವು ಆಮದು ಮಾಡಲು ಮಾನ್ಯ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
   "viewAccount": {
     "message": "ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
   },

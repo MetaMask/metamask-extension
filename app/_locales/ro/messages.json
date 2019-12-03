@@ -1316,9 +1316,6 @@
   "userName": {
     "message": "Nume utilizator"
   },
-  "validFileImport": {
-    "message": "Trebuie să selectați un fișier valabil pentru importare."
-  },
   "viewAccount": {
     "message": "Afișați contul"
   },

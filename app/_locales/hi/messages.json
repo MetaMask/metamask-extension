@@ -1329,9 +1329,6 @@
   "userName": {
     "message": "उपयोगकर्ता नाम"
   },
-  "validFileImport": {
-    "message": "आयात करने के लिए आपको एक मान्य फ़ाइल को चुनना होगा।"
-  },
   "viewAccount": {
     "message": "खाता देखें"
   },
