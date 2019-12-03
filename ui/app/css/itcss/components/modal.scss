@@ -7,6 +7,18 @@
   left: 50%;
 }
 
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #373A47;
+  animation-fill-mode: forwards;
+  animation-duration: 0.3s;
+}
+
 .modal > div:focus {
   outline: none !important;
 }

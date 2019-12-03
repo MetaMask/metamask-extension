@@ -187,19 +187,10 @@ class FadeModal extends Component {
 
     const { willHide } = this.state
     const { modalStyle } = this.props
-    const backdropStyle = {
-      position: 'fixed',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      zIndex: 1040,
-      backgroundColor: '#373A47',
-      animationFillMode: 'forwards',
-      animationDuration: '0.3s',
+    const backdropStyle = Object.assign({}, {
       animationName: willHide ? animation.hideBackdropAnimation : animation.showBackdropAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }
+    }, this.props.backdropStyle)
     const contentStyle = {
       margin: 0,
       backgroundColor: 'white',
@@ -209,13 +200,6 @@ class FadeModal extends Component {
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }
 
-    if (this.props.backdropStyle) {
-      const prefixedBackdropStyle = this.props.backdropStyle
-      for (const style in prefixedBackdropStyle) {
-        backdropStyle[style] = prefixedBackdropStyle[style]
-      }
-    }
-
     if (this.props.contentStyle) {
       const prefixedContentStyle = this.props.contentStyle
       for (const style in prefixedContentStyle) {
@@ -223,7 +207,14 @@ class FadeModal extends Component {
       }
     }
 
-    const backdrop = this.props.backdrop ? <div style={backdropStyle} onClick={this.props.closeOnClick ? this.handleBackdropClick : null} /> : undefined
+    const backdrop = this.props.backdrop
+      ? <div
+        className="backdrop"
+        style={backdropStyle}
+        onClick={this.props.closeOnClick
+          ? this.handleBackdropClick
+          : null}
+      /> : undefined
 
     if (willHide) {
       this.addTransitionListener(this.content, this.leave)
