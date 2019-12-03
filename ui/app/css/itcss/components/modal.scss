@@ -5,6 +5,12 @@
   transform: translate3d(-50%, -50%, 0);
   top: 50%;
   left: 50%;
+
+  .content {
+    margin: 0;
+    background-color: white;
+    animation-fill-mode: forwards;
+  }
 }
 
 .backdrop {

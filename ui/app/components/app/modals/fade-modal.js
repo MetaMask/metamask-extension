@@ -192,10 +192,7 @@ class FadeModal extends Component {
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }, this.props.backdropStyle)
     const contentStyle = Object.assign({}, {
-      margin: 0,
-      backgroundColor: 'white',
       animationDuration: (willHide ? animation.hide : animation.show).animationDuration,
-      animationFillMode: 'forwards',
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
     }, this.props.contentStyle)
@@ -215,7 +212,11 @@ class FadeModal extends Component {
 
     return (<span>
       <div className="modal" style={modalStyle}>
-        <div ref={el => (this.content = el)} tabIndex="-1" style={contentStyle}>
+        <div className="content"
+          ref={el => (this.content = el)}
+          tabIndex="-1"
+          style={contentStyle}
+        >
           {this.props.children}
         </div>
       </div>
