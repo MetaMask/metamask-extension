@@ -75,14 +75,13 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    setTimeout(() => {
-      global.platform.currentTab()
-        .then(({ id: currentTabId }) => {
-          global.platform.switchToTab(requestAccountTabs[originName])
-            .then(() => {
-              global.platform.closeTab(currentTabId)
-            })
-        })
+    setTimeout(async () => {
+      const { id: currentTabId } = await global.platform.currentTab()
+      try {
+        await global.platform.switchToTab(requestAccountTabs[originName])
+      } finally {
+        global.platform.closeTab(currentTabId)
+      }
     }, 2000)
   }
 
