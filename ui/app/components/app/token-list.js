@@ -4,14 +4,14 @@ import TokenCell from './token-cell'
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const connect = require('react-redux').connect
-const selectors = require('../../selectors/selectors')
+const { getSelectedAddress } = require('../../selectors/selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
-    userAddress: selectors.getSelectedAddress(state),
+    userAddress: getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
   }
 }
