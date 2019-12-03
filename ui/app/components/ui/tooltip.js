@@ -2,10 +2,6 @@ import PropTypes from 'prop-types'
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 
-// TODO: find a suitable replacement for this
-// either use tooltip-v2 or something else
-// alternatively we could consider landing these changes in `react-tooltip-component`?
-
 class ReactTooltip extends Component {
   static propTypes = {
     container: PropTypes.any,

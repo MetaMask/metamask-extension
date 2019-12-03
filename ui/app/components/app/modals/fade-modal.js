@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
-// All this keyframing/animation and platform dependent stuff should go away into scss
-
 let index = 0
 let extraSheet
 
