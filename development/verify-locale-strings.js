@@ -161,11 +161,11 @@ async function verifyEnglishLocale (fix = false) {
   const englishLocale = await getLocale('en')
   const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
 
-  const regex = /'(\w+)'/g
+  const regex = /'(\w+)'|"(\w+)"/g
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
     for (const match of matchAll.call(fileContents, regex)) {
-      usedMessages.add(match[1])
+      usedMessages.add(match[1] || match[2])
     }
   }
 

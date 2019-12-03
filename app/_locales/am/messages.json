@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "የግላዊነት ኩነት አሁን በንቡር ነቅቷል"
-  },
   "chartOnlyAvailableEth": {
     "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
-  },
-  "confirmClear": {
-    "message": "የተፈቀዱ ድረ ገጾችን ለማጥራት እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearApprovalData": {
-    "message": "የግላዊነት ውሂብን አጥራ"
-  },
   "reject": {
     "message": "አይቀበሉ"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
-  },
-  "providerRequestInfo": {
-    "message": "ይህ ድረ ገጽ የእርስዎን መለያ ወቅታዊ አድራሻ ለማየት እየጠየቀ ነው። ምንጊዜም ግንኙነት የሚያደርጉባቸውን ድረ ገጾች የሚያምኗቸው መሆኑን ያረጋግጡ።"
   },
   "about": {
     "message": "ስለ"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "መሠረታዊ"
   },
-  "betweenMinAndMax": {
-    "message": "ከ$1መብለጥ ወይም እኩል እና ከ$2በታች ወይም እኩል መሆን አለበት።",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "ኤክስፕሎረር አግድ"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectRequest": {
-    "message": "የግንኙነት ጥያቄ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "ተቀድቷል"
-  },
-  "copy": {
-    "message": "ቅዳ"
   },
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
-  },
-  "dismiss": {
-    "message": "አሰናብት"
   },
   "done": {
     "message": "ተጠናቅቋል"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
   },
-  "greaterThanMin": {
-    "message": "ከ $1ጋር እኩል መሆን ወይም መብለጥ አለበት።",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "እርስዎን በማየታችን ደስተኛ ነን።"
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "አዲስ መለያ ከማከልዎ በፊት የመጨረሻውን መለያዎን መጠቀም አለብዎት።"
-  },
-  "lessThanMax": {
-    "message": "ከ $1ያነሰ ወይም እኩል መሆን አለበት።",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
@@ -866,9 +833,6 @@
   "pastePrivateKey": {
     "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "የዘር ሐረግዎን እዚህ ይለጥፉ!"
   },
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
@@ -1183,9 +1147,6 @@
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"
   },
-  "submit": {
-    "message": "አስገባ"
-  },
   "submitted": {
     "message": "የቀረበ"
   },
@@ -1352,9 +1313,6 @@
   },
   "userName": {
     "message": "የተጣቃሚ ስም"
-  },
-  "validFileImport": {
-    "message": "የሚያስመጡትን ትክክለኛ ፋይል መምረጥ አለብዎ፡"
   },
   "viewAccount": {
     "message": "መለያን ይመልከቱ"

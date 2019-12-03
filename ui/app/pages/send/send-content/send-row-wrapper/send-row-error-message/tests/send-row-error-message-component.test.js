@@ -7,10 +7,12 @@ describe('SendRowErrorMessage Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendRowErrorMessage
-      errors={{ error1: 'abc', error2: 'def' }}
-      errorType="error3"
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow((
+      <SendRowErrorMessage
+        errors={{ error1: 'abc', error2: 'def' }}
+        errorType="error3"
+      />
+    ), { context: { t: str => str + '_t' } })
   })
 
   describe('render', () => {

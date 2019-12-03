@@ -40,33 +40,35 @@ describe('Send Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendTransactionScreen
-      amount="mockAmount"
-      amountConversionRate="mockAmountConversionRate"
-      blockGasLimit="mockBlockGasLimit"
-      conversionRate={10}
-      editingTransactionId="mockEditingTransactionId"
-      fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
-      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      from={ { address: 'mockAddress', balance: 'mockBalance' } }
-      gasLimit="mockGasLimit"
-      gasPrice="mockGasPrice"
-      gasTotal="mockGasTotal"
-      history={{ mockProp: 'history-abc'}}
-      network="3"
-      primaryCurrency="mockPrimaryCurrency"
-      recentBlocks={['mockBlock']}
-      selectedAddress="mockSelectedAddress"
-      selectedToken="mockSelectedToken"
-      showHexData
-      tokenBalance="mockTokenBalance"
-      tokenContract="mockTokenContract"
-      updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
-      updateSendErrors={propsMethodSpies.updateSendErrors}
-      updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
-      resetSendState={propsMethodSpies.resetSendState}
-      updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}
-    />)
+    wrapper = shallow((
+      <SendTransactionScreen
+        amount="mockAmount"
+        amountConversionRate="mockAmountConversionRate"
+        blockGasLimit="mockBlockGasLimit"
+        conversionRate={10}
+        editingTransactionId="mockEditingTransactionId"
+        fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        from={ { address: 'mockAddress', balance: 'mockBalance' } }
+        gasLimit="mockGasLimit"
+        gasPrice="mockGasPrice"
+        gasTotal="mockGasTotal"
+        history={{ mockProp: 'history-abc'}}
+        network="3"
+        primaryCurrency="mockPrimaryCurrency"
+        recentBlocks={['mockBlock']}
+        selectedAddress="mockSelectedAddress"
+        selectedToken={{ address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }}
+        showHexData
+        tokenBalance="mockTokenBalance"
+        tokenContract={{ method: 'mockTokenMethod' }}
+        updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
+        updateSendErrors={propsMethodSpies.updateSendErrors}
+        updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
+        resetSendState={propsMethodSpies.resetSendState}
+        updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}
+      />
+    ))
   })
 
   afterEach(() => {
@@ -79,6 +81,7 @@ describe('Send Component', function () {
     propsMethodSpies.updateAndSetGasLimit.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
+    propsMethodSpies.updateToNicknameIfNecessary.resetHistory()
   })
 
   it('should call componentDidMount', () => {
@@ -129,7 +132,7 @@ describe('Send Component', function () {
           prevBalance: '',
           prevGasTotal: undefined,
           prevTokenBalance: undefined,
-          selectedToken: 'mockSelectedToken',
+          selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
           tokenBalance: 'mockTokenBalance',
         }
       )
@@ -162,7 +165,7 @@ describe('Send Component', function () {
           conversionRate: 10,
           gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
-          selectedToken: 'mockSelectedToken',
+          selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
           tokenBalance: 'mockTokenBalance',
         }
       )
@@ -184,7 +187,7 @@ describe('Send Component', function () {
           conversionRate: 10,
           gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
-          selectedToken: 'mockSelectedToken',
+          selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
         }
       )
     })
@@ -225,7 +228,7 @@ describe('Send Component', function () {
 
     it('should call updateSendErrors with the expected params if selectedToken is truthy', () => {
       propsMethodSpies.updateSendErrors.resetHistory()
-      wrapper.setProps({ selectedToken: 'someToken' })
+      wrapper.setProps({ selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }})
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
@@ -246,6 +249,7 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
         network: '3',
+        selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
       assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 0)
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
@@ -260,6 +264,7 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
         network: '3',
+        selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
       assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 0)
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
@@ -273,13 +278,14 @@ describe('Send Component', function () {
           balance: 'balanceChanged',
         },
         network: '2',
+        selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
       })
       assert.equal(propsMethodSpies.updateSendTokenBalance.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendTokenBalance.getCall(0).args[0],
         {
-          selectedToken: 'mockSelectedToken',
-          tokenContract: 'mockTokenContract',
+          selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
+          tokenContract: { method: 'mockTokenMethod' },
           address: 'mockAddress',
         }
       )
@@ -288,6 +294,20 @@ describe('Send Component', function () {
         SendTransactionScreen.prototype.updateGas.getCall(0).args,
         []
       )
+    })
+
+    it('should call updateGas when selectedToken.address is changed', () => {
+      SendTransactionScreen.prototype.updateGas.resetHistory()
+      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+      wrapper.instance().componentDidUpdate({
+        from: {
+          balance: 'balancedChanged',
+        },
+        network: '3', // Make sure not to hit updateGas when changing network
+        selectedToken: { address: 'newSelectedToken' },
+      })
+      assert.equal(propsMethodSpies.updateToNicknameIfNecessary.callCount, 0) // Network did not change
+      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
     })
   })
 
@@ -305,7 +325,7 @@ describe('Send Component', function () {
           gasPrice: 'mockGasPrice',
           recentBlocks: ['mockBlock'],
           selectedAddress: 'mockSelectedAddress',
-          selectedToken: 'mockSelectedToken',
+          selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
           to: '',
           value: 'mockAmount',
           data: undefined,
@@ -431,9 +451,7 @@ describe('Send Component', function () {
     })
 
     it('should warn when send to a known token contract address', () => {
-      wrapper.setProps({
-        selectedToken: '0x888',
-      })
+      wrapper.setProps({ address: '0x888', decimals: 18, symbol: '888' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange('0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64')
 

@@ -67,7 +67,9 @@ window.getCleanAppState = function () {
 window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)
     cb(null, stateString)

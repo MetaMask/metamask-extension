@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Privatlivstilstand er nu som udgangspunkt aktiveret"
-  },
   "chartOnlyAvailableEth": {
     "message": "Skema kun tilgængeligt på Ethereum-netværk."
-  },
-  "confirmClear": {
-    "message": "Er du sikker på, at du vil rydde godkendte hjemmesider?"
   },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
-    "message": "Ryd fortrolighedsdata"
-  },
   "reject": {
     "message": "Afvis"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ønsker at forbinde til din konto"
-  },
-  "providerRequestInfo": {
-    "message": "Denne side anmoder om at se din nuværende kontoadresse. Sørg altid for, at du stoler på de sider du interagerer med."
   },
   "about": {
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation."
+    "message": "Version, supportcenter og kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
@@ -63,7 +51,7 @@
     "message": "Avanceret"
   },
   "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC."
+    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Grundlæggende oplysninger"
   },
-  "betweenMinAndMax": {
-    "message": "skal være større end eller lig med $1 og mindre end eller lig med $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Block-udforsker"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectRequest": {
-    "message": "Tilslutningsanmodning"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "Kopieret!"
-  },
-  "copy": {
-    "message": "Kopiér"
   },
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
-  },
-  "dismiss": {
-    "message": "Luk"
   },
   "done": {
     "message": "Færdig"
@@ -539,10 +514,6 @@
   "getStarted": {
     "message": "Kom godt i gang"
   },
-  "greaterThanMin": {
-    "message": "skal være større end eller lig med $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Vi er glade for at se dig."
   },
@@ -657,10 +628,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
-  },
-  "lessThanMax": {
-    "message": "skal være mindre end eller lig med $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ja, lad os komme i gang!"
@@ -847,9 +814,6 @@
   "pastePrivateKey": {
     "message": "Indsæt din private nøglestreng her:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Indsæt din seed-sætning her!"
   },
   "pending": {
     "message": "afventer"
@@ -1161,9 +1125,6 @@
   "storePhrase": {
     "message": "Gem denne sætning i en adgangskodeadministrator som 1Password."
   },
-  "submit": {
-    "message": "Indsend"
-  },
   "submitted": {
     "message": "Indsendt"
   },
@@ -1321,9 +1282,6 @@
   },
   "userName": {
     "message": "Brugernavn"
-  },
-  "validFileImport": {
-    "message": "Du skal vælge en gyldig fil at importere."
   },
   "viewAccount": {
     "message": "Vis konto"

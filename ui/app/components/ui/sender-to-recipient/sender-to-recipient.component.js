@@ -39,7 +39,6 @@ export default class SenderToRecipient extends PureComponent {
 
   state = {
     senderAddressCopied: false,
-    recipientAddressCopied: false,
   }
 
   renderSenderIdenticon () {
@@ -68,7 +67,7 @@ export default class SenderToRecipient extends PureComponent {
               ? <p>{t('copyAddress')}</p>
               : (
                 <p>
-                  {addressSlicer(checksummedSenderAddress)}<br/>
+                  {addressSlicer(checksummedSenderAddress)}<br />
                   {t('copyAddress')}
                 </p>
               )
@@ -112,7 +111,6 @@ export default class SenderToRecipient extends PureComponent {
       <div
         className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
-          this.setState({ recipientAddressCopied: true })
           copyToClipboard(checksummedRecipientAddress)
           if (onRecipientClick) {
             onRecipientClick()
@@ -129,14 +127,13 @@ export default class SenderToRecipient extends PureComponent {
                 ? <p>{t('copyAddress')}</p>
                 : (
                   <p>
-                    {addressSlicer(checksummedRecipientAddress)}<br/>
+                    {addressSlicer(checksummedRecipientAddress)}<br />
                     {t('copyAddress')}
                   </p>
                 )
           }
           wrapperClassName="sender-to-recipient__tooltip-wrapper"
           containerClassName="sender-to-recipient__tooltip-container"
-          onHidden={() => this.setState({ recipientAddressCopied: false })}
         >
           <div className="sender-to-recipient__name">
             <span>{ addressOnly ? `${t('to')}: ` : '' }</span>

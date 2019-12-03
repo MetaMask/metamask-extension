@@ -13,7 +13,7 @@ class DraggableSeed extends Component {
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
     draggingSeedIndex: PropTypes.number,
@@ -25,6 +25,7 @@ class DraggableSeed extends Component {
 
   static defaultProps = {
     className: '',
+    onClick: undefined,
   }
 
   componentWillReceiveProps (nextProps) {

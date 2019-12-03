@@ -755,7 +755,6 @@ describe('Actions', () => {
         'domain': {
           'name': 'Ether Mainl',
           'version': '1',
-          'chainId': 1,
           'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
         'message': {
@@ -773,11 +772,12 @@ describe('Actions', () => {
     }
 
     beforeEach(() => {
-      metamaskController.newUnsignedTypedMessage(msgParamsV3, 'V3')
+      metamaskController.newUnsignedTypedMessage(msgParamsV3, null, 'V3')
       messages = metamaskController.typedMessageManager.getUnapprovedMsgs()
       typedMessages = metamaskController.typedMessageManager.messages
       msgId = Object.keys(messages)[0]
       typedMessages[0].msgParams.metamaskId = parseInt(msgId)
+      signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
     })
 
     afterEach(() => {
@@ -786,7 +786,6 @@ describe('Actions', () => {
 
     it('calls signTypedMsg in background with no error', () => {
       const store = mockStore()
-      signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
 
       store.dispatch(actions.signTypedMsg(msgParamsV3))
       assert(signTypedMsgSpy.calledOnce)
@@ -800,8 +799,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
-
-      signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
 
       signTypedMsgSpy.callsFake((_, callback) => {
         callback(new Error('error'))

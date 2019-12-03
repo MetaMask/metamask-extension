@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "מצב פרטיות זמין עכשיו כברירת מחדל"
-  },
   "chartOnlyAvailableEth": {
     "message": "טבלה זמינה רק ברשתות אתריום."
-  },
-  "confirmClear": {
-    "message": "הנך בטוח/ה כי ברצונך למחוק אתרים שאושרו?"
   },
   "contractInteraction": {
     "message": "אינטראקציית חוזה"
   },
-  "clearApprovalData": {
-    "message": "נקה נתוני פרטיות"
-  },
   "reject": {
     "message": "דחה"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 מבקש להתחבר לחשבון שלך"
-  },
-  "providerRequestInfo": {
-    "message": "אתר זה מבקש גישה לצפייה בכתובת החשבון הנוכחית שלך. יש לוודא תמיד כי הנך בוטח/ת באתרים עמם הנך מתקשר/ת."
   },
   "about": {
     "message": "מידע כללי"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "בסיסי"
   },
-  "betweenMinAndMax": {
-    "message": "חייב להיות גדול או שווה ל-$1 ופחות או שווה ל-$2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "סייר בלוקים"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "התחברות"
   },
-  "connectRequest": {
-    "message": "חבר/י בקשה"
-  },
   "connectingTo": {
     "message": "מתחבר ל- $1 "
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "הועתק!"
-  },
-  "copy": {
-    "message": "העתק"
   },
   "copyAddress": {
     "message": "העתק כתובת ללוח"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "אם כבר יש ברשותך את'ר (Ether) , הדרך המהירה ביותר להכניס את'ר לארנק החדש שלך היא באמצעות הפקדה ישירה."
-  },
-  "dismiss": {
-    "message": "סגור"
   },
   "done": {
     "message": "סיום"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "תחילת העבודה"
   },
-  "greaterThanMin": {
-    "message": "חייב להיות גדול או שווה ל-$1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "אנו שמחים לראותך."
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
-  },
-  "lessThanMax": {
-    "message": "חייב להיות פחות או שווה ל- $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "כן, בוא נתקין!"
@@ -866,9 +833,6 @@
   "pastePrivateKey": {
     "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "הדבק/י את ה-seed phrase של כאן!"
   },
   "pending": {
     "message": "בהמתנה"
@@ -1180,9 +1144,6 @@
   "storePhrase": {
     "message": "אחסנ/י צירוף זה במנהל ססמאות כמו 1Password."
   },
-  "submit": {
-    "message": "שלח"
-  },
   "submitted": {
     "message": "הוגש"
   },
@@ -1349,9 +1310,6 @@
   },
   "userName": {
     "message": "שם משתמש"
-  },
-  "validFileImport": {
-    "message": "עליך לבחור קובץ חוקי לייבוא."
   },
   "viewAccount": {
     "message": "הצג חשבון"

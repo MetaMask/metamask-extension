@@ -12,15 +12,17 @@ describe('Page Container Header', () => {
     onBackButtonClick = sinon.spy()
     onClose = sinon.spy()
 
-    wrapper = shallow(<PageContainerHeader
-      showBackButton
-      onBackButtonClick={onBackButtonClick}
-      backButtonStyles={style}
-      title="Test Title"
-      subtitle="Test Subtitle"
-      tabs="Test Tab"
-      onClose={onClose}
-    />)
+    wrapper = shallow((
+      <PageContainerHeader
+        showBackButton
+        onBackButtonClick={onBackButtonClick}
+        backButtonStyles={style}
+        title="Test Title"
+        subtitle="Test Subtitle"
+        tabs="Test Tab"
+        onClose={onClose}
+      />
+    ))
   })
 
   describe('Render Header Row', () => {

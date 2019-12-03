@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Η Λειτουργία Απορρήτου είναι πλέον ενεργοποιημένη από προεπιλογή"
-  },
   "chartOnlyAvailableEth": {
     "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
-  },
-  "confirmClear": {
-    "message": "Είστε βέβαιοι ότι θέλετε να διαγράψετε τους εγκεκριμένους ιστότοπους;"
   },
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearApprovalData": {
-    "message": "Εκκαθάριση Δεδομένων Απορρήτου"
-  },
   "reject": {
     "message": "Απόρριψη"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "Αίτημα σύνδεσης στον λογαριασμό σας από $1"
-  },
-  "providerRequestInfo": {
-    "message": "Ο ιστότοπος ζητά πρόσβαση για προβολή της τρέχουσας διεύθυνσης του λογαριασμού σας. Να σιγουρεύεστε πάντα ότι εμπιστεύεστε τους ιστότοπους με τους οποίους αλληλεπιδράτε."
   },
   "about": {
     "message": "Σχετικά με"
   },
   "aboutSettingsDescription": {
-    "message": "Έκδοση, κέντρο υποστήριξης και πληροφορίες επικοινωνίας."
+    "message": "Έκδοση, κέντρο υποστήριξης και πληροφορίες επικοινωνίας"
   },
   "acceleratingATransaction": {
     "message": "* Η επιτάχυνση μιας συναλλαγής με τη χρήση υψηλότερης τιμής καυσίμου αυξάνει τις πιθανότητές της για ταχύτερη επεξεργασία από το δίκτυο, αλλά δεν είναι πάντοτε εγγυημένη."
@@ -63,7 +51,7 @@
     "message": "Σύνθετες"
   },
   "advancedSettingsDescription": {
-    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC."
+    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC"
   },
   "advancedOptions": {
     "message": "Σύνθετες Επιλογές"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "betweenMinAndMax": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1 και μικρότερο ή ίσο με $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Εξερευνητής Μπλοκ"
   },
@@ -249,9 +233,6 @@
   "connect": {
     "message": "Σύνδεση"
   },
-  "connectRequest": {
-    "message": "Αίτημα Σύνδεσης"
-  },
   "connectingTo": {
     "message": "Σύνδεση με $1"
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
-  },
-  "copy": {
-    "message": "Αντιγραφή"
   },
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Αν έχετε ήδη κάποια Ether, ο πιο γρήγορος τρόπος για να πάρετε τα Ether στο νέο σας πορτοφόλι με άμεση κατάθεση."
-  },
-  "dismiss": {
-    "message": "Παράβλεψη"
   },
   "done": {
     "message": "Τέλος"
@@ -540,10 +515,6 @@
   "getStarted": {
     "message": "Έναρξη"
   },
-  "greaterThanMin": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Χαιρόμαστε που σας βλέπουμε."
   },
@@ -661,10 +632,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Πρέπει να χρησιμοποιήσετε τον τελευταίο σας λογαριασμό πριν προσθέσετε έναν νέο."
-  },
-  "lessThanMax": {
-    "message": "πρέπει να είναι μικρότερο από ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
@@ -866,9 +833,6 @@
   "pastePrivateKey": {
     "message": "Επικολλήστε τη συμβολοσειρά ιδιωτικού κλειδιού εδώ:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Επικολλήστε τη φράση επαναφοράς σας εδώ!"
   },
   "pending": {
     "message": "σε εκκρεμότητα"
@@ -1183,9 +1147,6 @@
   "storePhrase": {
     "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."
   },
-  "submit": {
-    "message": "Υποβολή"
-  },
   "submitted": {
     "message": "Υποβλήθηκε"
   },
@@ -1349,9 +1310,6 @@
   },
   "userName": {
     "message": "Όνομα χρήστη"
-  },
-  "validFileImport": {
-    "message": "Πρέπει να επιλέξετε έναν έγκυρο φάκελο για εισαγωγή."
   },
   "viewAccount": {
     "message": "Προβολή λογαριασμού"

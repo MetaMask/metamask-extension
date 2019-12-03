@@ -75,7 +75,9 @@ export default class ConfirmTransaction extends Component {
       getTokenParams(to)
     }
     const txId = transactionId || paramsTransactionId
-    if (txId) this.props.setTransactionToConfirm(txId)
+    if (txId) {
+      this.props.setTransactionToConfirm(txId)
+    }
 
     if (trackABTest) {
       this.context.metricsEvent({

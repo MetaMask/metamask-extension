@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Yksityisyystila on nyt oletusarvoisesti käytössä"
-  },
   "chartOnlyAvailableEth": {
     "message": "Kaavio saatavilla vain Ethereum-verkoissa."
-  },
-  "confirmClear": {
-    "message": "Haluatko varmasti tyhjentää hyväksytyt verkkosivustot?"
   },
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
-  "clearApprovalData": {
-    "message": "Tyhjennä yksityisyystiedot"
-  },
   "reject": {
     "message": "Hylkää"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 haluaisi yhdistää tiliisi"
-  },
-  "providerRequestInfo": {
-    "message": "Tämä sivusto pyytää oikeuksia nähdä nykyisen tiliosoitteesi. Varmista aina, että luotat sivustoihin, joiden kanssa toimit."
   },
   "about": {
     "message": "Tietoja asetuksista"
   },
   "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot."
+    "message": "Versio, tukikeskus ja yhteystiedot"
   },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
@@ -63,7 +51,7 @@
     "message": "Lisäasetukset"
   },
   "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä."
+    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Perusvaihtoehdot"
   },
-  "betweenMinAndMax": {
-    "message": "tulee olla vähintään $1 ja korkeintaan $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Lohkonhallinta"
   },
@@ -249,9 +233,6 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectRequest": {
-    "message": "Yhdistämispyyntö"
-  },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "Kopioitu"
-  },
-  "copy": {
-    "message": "Kopioi"
   },
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
-  "dismiss": {
-    "message": "Piilota"
   },
   "done": {
     "message": "Valmis"
@@ -540,10 +515,6 @@
   "getStarted": {
     "message": "Aloitusopas"
   },
-  "greaterThanMin": {
-    "message": "on oltava vähintään $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Meistä on mukava nähdä sinut."
   },
@@ -661,10 +632,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Sinun tarvitsee käyttää edellistä tiliäsi ennen kuin voit lisätä uuden."
-  },
-  "lessThanMax": {
-    "message": "tulee olla korkeintaan $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
@@ -866,9 +833,6 @@
   "pastePrivateKey": {
     "message": "Liitä yksityisen avaimesi merkkijono tähän:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Liitä salaustekstisi tähän!"
   },
   "pending": {
     "message": "odottaa"
@@ -1183,9 +1147,6 @@
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."
   },
-  "submit": {
-    "message": "Lähetä"
-  },
   "submitted": {
     "message": "Lähetetty"
   },
@@ -1352,9 +1313,6 @@
   },
   "userName": {
     "message": "Käyttäjätunnus"
-  },
-  "validFileImport": {
-    "message": "Valittava tuotavaksi kelpaava tiedosto."
   },
   "viewAccount": {
     "message": "Näytä tili"

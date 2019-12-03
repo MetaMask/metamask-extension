@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearApprovalData": {
-    "message": "Limpar dados de aprovação"
-  },
   "reject": {
     "message": "Rejeitar"
-  },
-  "providerRequestInfo": {
-    "message": "O domínio listado abaixo está tentando solicitar acesso à API Ethereum para que ele possa interagir com o blockchain Ethereum. Sempre verifique se você está no site correto antes de aprovar o acesso à Ethereum."
   },
   "account": {
     "message": "Conta"
@@ -55,10 +46,6 @@
   "balanceIsInsufficientGas": {
     "message": "Saldo insuficiente para a quantidade de gas total"
   },
-  "betweenMinAndMax": {
-    "message": "tem de ser maior ou igual a $1 e menor ou igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -94,9 +81,6 @@
   },
   "copiedExclamation": {
     "message": "Copiado!"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyToClipboard": {
     "message": "Copiar para o clipboard"
@@ -203,10 +187,6 @@
     "message": "Obter Ether de um faucet por $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "tem de ser maior ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "aqui",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -264,10 +244,6 @@
   },
   "kovan": {
     "message": "Rede de Teste Kovan"
-  },
-  "lessThanMax": {
-    "message": "tem de ser menor ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Gostaria de adicionar estes tokens?"
@@ -340,9 +316,6 @@
   "pastePrivateKey": {
     "message": "Cole aqui a sua chave privada:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Cole aqui a sua frase seed!"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Introduza o endereço do contrato do token."
@@ -447,9 +420,6 @@
   "stateLogsDescription": {
     "message": "Registo de estado podem conter o seu endereço e transações enviadas da sua conta pública."
   },
-  "submit": {
-    "message": "Submeter"
-  },
   "supportCenter": {
     "message": "Visitar o nosso Centro de Suporte"
   },
@@ -493,9 +463,6 @@
   },
   "usedByClients": {
     "message": "Utilizado por vários tipos de clientes"
-  },
-  "validFileImport": {
-    "message": "Deve selecionar um ficheiro válido para importar."
   },
   "viewAccount": {
     "message": "Ver Conta"

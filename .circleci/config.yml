@@ -22,6 +22,7 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
+      - test-lint-shellcheck
       - test-e2e-chrome:
           requires:
             - prep-deps
@@ -49,6 +50,7 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
+            - test-lint-shellcheck
             - test-unit
             - test-unit-global
             - test-mozilla-lint
@@ -172,6 +174,16 @@ jobs:
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
+
+  test-lint-shellcheck:
+    docker:
+      - image: circleci/node:10.17-browsers
+    steps:
+      - checkout
+      - run: sudo apt-get install shellcheck
+      - run:
+          name: Shellcheck Lint
+          command: yarn lint:shellcheck
 
   test-deps:
     docker:

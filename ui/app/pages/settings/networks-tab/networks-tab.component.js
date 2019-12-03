@@ -114,9 +114,11 @@ export default class NetworksTab extends PureComponent {
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
         />
-        <div className={ classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
-        }) }>
+        <div
+          className={classnames('networks-tab__networks-list-name', {
+            'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+          })}
+        >
           { label || this.context.t(labelKey) }
         </div>
         <div className="networks-tab__networks-list-arrow" />
@@ -224,18 +226,20 @@ export default class NetworksTab extends PureComponent {
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
-          ? <div className="networks-tab__add-network-button-wrapper">
-            <Button
-              type="primary"
-              onClick={event => {
-                event.preventDefault()
-                setSelectedSettingsRpcUrl(null)
-                setNetworksTabAddMode(true)
-              }}
-            >
-              { this.context.t('addNetwork') }
-            </Button>
-          </div>
+          ? (
+            <div className="networks-tab__add-network-button-wrapper">
+              <Button
+                type="primary"
+                onClick={event => {
+                  event.preventDefault()
+                  setSelectedSettingsRpcUrl(null)
+                  setNetworksTabAddMode(true)
+                }}
+              >
+                { this.context.t('addNetwork') }
+              </Button>
+            </div>
+          )
           : null
         }
       </div>

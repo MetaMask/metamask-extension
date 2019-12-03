@@ -113,28 +113,42 @@ describe('MetaMask', function () {
     let extension
     let popup
     let dapp
-    it('switches to a dapp', async () => {
+
+    it('connects to the dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
+      await delay(regularDelayMs)
+
+      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButton.click()
+
       await delay(regularDelayMs)
 
       await waitUntilXWindowHandles(driver, 3)
       const windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+      dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
+      popup = windowHandles.find(handle => handle !== extension && handle !== dapp)
+
+      await driver.switchTo().window(popup)
 
       await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await approveButton.click()
 
+      const accountButton = await findElement(driver, By.css('.permissions-connect-choose-account__account'))
+      await accountButton.click()
+
+      const submitButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Submit')]`))
+      await submitButton.click()
+
+      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
     })
 
-    it('has not set the network within the dapp', async () => {
+    it('has the ganache network id within the dapp', async () => {
       const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '')
+      await delay(regularDelayMs)
+      assert.equal(await networkDiv.getText(), '5777')
     })
 
     it('changes the network', async () => {

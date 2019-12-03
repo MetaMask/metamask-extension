@@ -57,8 +57,6 @@ const mapStateToProps = (state, ownProps) => {
     identities,
     addressBook,
     currentCurrency,
-    selectedAddress,
-    selectedAddressTxList,
     assetImages,
     network,
     unapprovedTxs,
@@ -72,7 +70,7 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
-  const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList) || {}
+  const transaction = Object.values(unapprovedTxs).find(({ id }) => id === (transactionId || Number(paramsTransactionId))) || {}
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -84,8 +82,8 @@ const mapStateToProps = (state, ownProps) => {
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
-  const { balance } = accounts[selectedAddress]
-  const { name: fromName } = identities[selectedAddress]
+  const { balance } = accounts[fromAddress]
+  const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name

@@ -19,7 +19,6 @@ $wallet-view-bg: $alabaster;
 
 // Main container
 .main-container {
-  // position: absolute;
   z-index: $main-container-z-index;
   font-family: Roboto;
   display: flex;
@@ -129,7 +128,6 @@ $wallet-view-bg: $alabaster;
   }
 
   .main-container {
-    // margin-top: 6.9vh;
     width: 85vw;
     height: 90vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -138,7 +136,6 @@ $wallet-view-bg: $alabaster;
 
 @media screen and (min-width: 769px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 80vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -147,7 +144,6 @@ $wallet-view-bg: $alabaster;
 
 @media screen and (min-width: 1281px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 62vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);

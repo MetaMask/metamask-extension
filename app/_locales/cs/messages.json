@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "account": {
     "message": "Účet"
@@ -57,10 +48,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
-  "betweenMinAndMax": {
-    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
@@ -112,9 +99,6 @@
   },
   "copiedExclamation": {
     "message": "Zkopírováno!"
-  },
-  "copy": {
-    "message": "Kopírovat"
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
@@ -227,10 +211,6 @@
     "message": "Získejte Ether z faucetu za $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "musí být větší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -284,10 +264,6 @@
   },
   "learnMore": {
     "message": "Zjistěte více."
-  },
-  "lessThanMax": {
-    "message": "musí být menší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Chcete přidat tyto tokeny?"
@@ -366,9 +342,6 @@
   "pastePrivateKey": {
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
   },
   "personalAddressDetected": {
     "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
@@ -476,9 +449,6 @@
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."
   },
-  "submit": {
-    "message": "Odeslat"
-  },
   "submitted": {
     "message": "Odesláno"
   },
@@ -534,9 +504,6 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
-  },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
   },
   "viewAccount": {
     "message": "Zobrazit účet"

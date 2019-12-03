@@ -54,7 +54,7 @@ describe('DetectTokensController', () => {
     controller.isOpen = true
     controller.isUnlocked = true
 
-    var stub = sandbox.stub(controller, 'detectNewTokens')
+    const stub = sandbox.stub(controller, 'detectNewTokens')
 
     clock.tick(1)
     sandbox.assert.notCalled(stub)
@@ -70,7 +70,7 @@ describe('DetectTokensController', () => {
     controller.isOpen = true
     controller.isUnlocked = true
 
-    var stub = sandbox.stub(controller, 'detectTokenBalance')
+    const stub = sandbox.stub(controller, 'detectTokenBalance')
       .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4').returns(true)
       .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388').returns(true)
 
@@ -114,7 +114,7 @@ describe('DetectTokensController', () => {
   it('should trigger detect new tokens when change address', async () => {
     controller.isOpen = true
     controller.isUnlocked = true
-    var stub = sandbox.stub(controller, 'detectNewTokens')
+    const stub = sandbox.stub(controller, 'detectNewTokens')
     await preferences.setSelectedAddress('0xbc86727e770de68b1060c91f6bb6945c73e10388')
     sandbox.assert.called(stub)
   })
@@ -122,7 +122,7 @@ describe('DetectTokensController', () => {
   it('should trigger detect new tokens when submit password', async () => {
     controller.isOpen = true
     controller.selectedAddress = '0x0'
-    var stub = sandbox.stub(controller, 'detectNewTokens')
+    const stub = sandbox.stub(controller, 'detectNewTokens')
     await controller._keyringMemStore.updateState({ isUnlocked: true })
     sandbox.assert.called(stub)
   })
@@ -130,7 +130,7 @@ describe('DetectTokensController', () => {
   it('should not trigger detect new tokens when not open or not unlocked', async () => {
     controller.isOpen = true
     controller.isUnlocked = false
-    var stub = sandbox.stub(controller, 'detectTokenBalance')
+    const stub = sandbox.stub(controller, 'detectTokenBalance')
     clock.tick(180000)
     sandbox.assert.notCalled(stub)
     controller.isOpen = false

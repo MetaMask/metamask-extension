@@ -21,12 +21,16 @@ describe('ButtonGroup Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<ButtonGroup
-      defaultActiveButtonIndex={1}
-      disabled={false}
-      className="someClassName"
-      style={ { color: 'red' } }
-    >{mockButtons}</ButtonGroup>)
+    wrapper = shallow((
+      <ButtonGroup
+        defaultActiveButtonIndex={1}
+        disabled={false}
+        className="someClassName"
+        style={ { color: 'red' } }
+      >
+        {mockButtons}
+      </ButtonGroup>
+    ))
   })
 
   afterEach(() => {

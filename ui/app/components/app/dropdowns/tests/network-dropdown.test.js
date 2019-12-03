@@ -57,7 +57,7 @@ describe('Network Dropdown', () => {
 
     beforeEach(() => {
       wrapper = mountWithRouter(
-        <NetworkDropdown store={store}/>,
+        <NetworkDropdown store={store} />,
       )
     })
 

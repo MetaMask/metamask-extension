@@ -142,9 +142,13 @@ class TxGasUtil {
     const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
 
     // if initialGasLimit is above blockGasLimit, dont modify it
-    if (initialGasLimitBn.gt(upperGasLimitBn)) return bnToHex(initialGasLimitBn)
+    if (initialGasLimitBn.gt(upperGasLimitBn)) {
+      return bnToHex(initialGasLimitBn)
+    }
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-    if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
+    if (bufferedGasLimitBn.lt(upperGasLimitBn)) {
+      return bnToHex(bufferedGasLimitBn)
+    }
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
   }

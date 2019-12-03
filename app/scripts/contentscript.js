@@ -2,8 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
 const log = require('loglevel')
-const Dnode = require('dnode')
 const querystring = require('querystring')
+const { Writable } = require('readable-stream')
 const LocalMessageDuplexStream = require('post-message-stream')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
@@ -20,7 +20,7 @@ const inpageBundle = inpageContent + inpageSuffix
 // If we create a FireFox-only code path using that API,
 // MetaMask will be much faster loading and performant on Firefox.
 
-if (shouldInjectWeb3()) {
+if (shouldInjectProvider()) {
   injectScript(inpageBundle)
   start()
 }
@@ -39,7 +39,7 @@ function injectScript (content) {
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
   } catch (e) {
-    console.error('MetaMask script injection failed', e)
+    console.error('MetaMask provider injection failed.', e)
   }
 }
 
@@ -86,6 +86,44 @@ async function setupStreams () {
     (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
   )
 
+  const onboardingStream = pageMux.createStream('onboarding')
+  const addCurrentTab = new Writable({
+    objectMode: true,
+    write: (chunk, _, callback) => {
+      if (!chunk) {
+        return callback(new Error('Malformed onboarding message'))
+      }
+
+      const handleSendMessageResponse = (error, success) => {
+        if (!error && !success) {
+          error = extension.runtime.lastError
+        }
+        if (error) {
+          log.error(`Failed to send ${chunk.type} message`, error)
+          return callback(error)
+        }
+        callback(null)
+      }
+
+      try {
+        if (chunk.type === 'registerOnboarding') {
+          extension.runtime.sendMessage({ type: 'metamask:registerOnboarding', location: window.location.href }, handleSendMessageResponse)
+        } else {
+          throw new Error(`Unrecognized onboarding message type: '${chunk.type}'`)
+        }
+      } catch (error) {
+        log.error(error)
+        return callback(error)
+      }
+    },
+  })
+
+  pump(
+    onboardingStream,
+    addCurrentTab,
+    error => console.error('MetaMask onboarding channel traffic failed', error),
+  )
+
   // forward communication across inpage-background for these channels only
   forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
   forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
@@ -93,12 +131,6 @@ async function setupStreams () {
   // connect "phishing" channel to warning system
   const phishingStream = extensionMux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
-
-  // connect "publicApi" channel to submit page metadata
-  const publicApiStream = extensionMux.createStream('publicApi')
-  const background = await setupPublicApi(publicApiStream)
-
-  return { background }
 }
 
 function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
@@ -112,37 +144,6 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
   )
 }
 
-async function setupPublicApi (outStream) {
-  const api = {
-    getSiteMetadata: (cb) => cb(null, getSiteMetadata()),
-  }
-  const dnode = Dnode(api)
-  pump(
-    outStream,
-    dnode,
-    outStream,
-    (err) => {
-      // report any error
-      if (err) log.error(err)
-    }
-  )
-  const background = await new Promise(resolve => dnode.once('remote', resolve))
-  return background
-}
-
-/**
- * Gets site metadata and returns it
- *
- */
-function getSiteMetadata () {
-  // get metadata
-  const metadata = {
-    name: getSiteName(window),
-    icon: getSiteIcon(window),
-  }
-  return metadata
-}
-
 /**
  * Error handler for page to extension stream disconnections
  *
@@ -151,16 +152,18 @@ function getSiteMetadata () {
  */
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
-  if (err) warningMsg += '\n' + err.stack
+  if (err) {
+    warningMsg += '\n' + err.stack
+  }
   console.warn(warningMsg)
 }
 
 /**
- * Determines if Web3 should be injected
+ * Determines if the provider should be injected
  *
- * @returns {boolean} {@code true} if Web3 should be injected
+ * @returns {boolean} {@code true} if the provider should be injected
  */
-function shouldInjectWeb3 () {
+function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
     documentElementCheck() && !blacklistedDomainCheck()
 }
@@ -183,8 +186,8 @@ function doctypeCheck () {
  * Returns whether or not the extension (suffix) of the current document is prohibited
  *
  * This checks {@code window.location.pathname} against a set of file extensions
- * that should not have web3 injected into them. This check is indifferent of query parameters
- * in the location.
+ * that we should not inject the provider into. This check is indifferent of
+ * query parameters in the location.
  *
  * @returns {boolean} whether or not the extension of the current document is prohibited
  */
@@ -257,52 +260,14 @@ function redirectToPhishingWarning () {
   })}`
 }
 
-
-/**
- * Extracts a name for the site from the DOM
- */
-function getSiteName (window) {
-  const document = window.document
-  const siteName = document.querySelector('head > meta[property="og:site_name"]')
-  if (siteName) {
-    return siteName.content
-  }
-
-  const metaTitle = document.querySelector('head > meta[name="title"]')
-  if (metaTitle) {
-    return metaTitle.content
-  }
-
-  return document.title
-}
-
-/**
- * Extracts an icon for the site from the DOM
- */
-function getSiteIcon (window) {
-  const document = window.document
-
-  // Use the site's favicon if it exists
-  const shortcutIcon = document.querySelector('head > link[rel="shortcut icon"]')
-  if (shortcutIcon) {
-    return shortcutIcon.href
-  }
-
-  // Search through available icons in no particular order
-  const icon = Array.from(document.querySelectorAll('head > link[rel="icon"]')).find((icon) => Boolean(icon.href))
-  if (icon) {
-    return icon.href
-  }
-
-  return null
-}
-
 /**
  * Returns a promise that resolves when the DOM is loaded (does not wait for images to load)
  */
 async function domIsReady () {
   // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) return
+  if (['interactive', 'complete'].includes(document.readyState)) {
+    return
+  }
   // wait for load
-  await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+  return new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }

@@ -39,7 +39,6 @@ export default class TransactionListItemDetails extends PureComponent {
 
   state = {
     justCopied: false,
-    cancelDisabled: false,
   }
 
   handleEtherscanClick = () => {
@@ -192,15 +191,17 @@ export default class TransactionListItemDetails extends PureComponent {
               </Button>
             </Tooltip>
             {
-              showRetry && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
-                <Button
-                  type="raised"
-                  onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
-                >
-                  <i className="fa fa-refresh"></i>
-                </Button>
-              </Tooltip>
+              showRetry && (
+                <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+                  <Button
+                    type="raised"
+                    onClick={this.handleRetry}
+                    className="transaction-list-item-details__header-button"
+                  >
+                    <i className="fa fa-refresh"></i>
+                  </Button>
+                </Tooltip>
+              )
             }
           </div>
         </div>

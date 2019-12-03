@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "يتم تمكين وضع الخصوصية الآن بشكل افتراضي"
-  },
   "chartOnlyAvailableEth": {
     "message": "الرسم البياني متاح فقط على شبكات إيثيريوم."
-  },
-  "confirmClear": {
-    "message": "هل أنت متأكد من أنك تريد مسح المواقع المعتمدة؟"
   },
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },
-  "clearApprovalData": {
-    "message": "مسح بيانات الخصوصية"
-  },
   "reject": {
     "message": "رفض"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "يرغب $1 في الاتصال بحسابك"
-  },
-  "providerRequestInfo": {
-    "message": "يطلب هذا الموقع حق الوصول لعرض عنوان حسابك الحالي. تأكد دائماً من ثقتك في المواقع التي تتفاعل معها."
   },
   "about": {
     "message": "حول"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "الأساسية"
   },
-  "betweenMinAndMax": {
-    "message": "يجب أن تكون أكبر من أو تساوي $1 وأقل من أو تساوي $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "متصفح Block Explorer"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectRequest": {
-    "message": "طلب اتصال"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "تم النسخ."
-  },
-  "copy": {
-    "message": "نسخ"
   },
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
-  },
-  "dismiss": {
-    "message": "رفض"
   },
   "done": {
     "message": "تم"
@@ -539,10 +514,6 @@
   "getStarted": {
     "message": "البدء"
   },
-  "greaterThanMin": {
-    "message": "يجب أن يكون أكبر من أو يساوي $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "نحن سعداء برؤيتك."
   },
@@ -657,10 +628,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
-  },
-  "lessThanMax": {
-    "message": "يجب أن يكون أقل من أو يساوي $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
@@ -862,9 +829,6 @@
   "pastePrivateKey": {
     "message": "الصق مقطع مفتاحك الخاص هنا:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "قم بلصق عبارة الأمان الخاصة بك هنا!"
   },
   "pending": {
     "message": "قيد الانتظار"
@@ -1179,9 +1143,6 @@
   "storePhrase": {
     "message": "احتفظ بهذه الجملة في مدير كلمات مرور مثل 1Password."
   },
-  "submit": {
-    "message": "إرسال"
-  },
   "submitted": {
     "message": "المقدمة"
   },
@@ -1348,9 +1309,6 @@
   },
   "userName": {
     "message": "اسم المستخدم"
-  },
-  "validFileImport": {
-    "message": "يجب عليك تحديد ملف صالح للاستيراد."
   },
   "viewAccount": {
     "message": "عرض حساب"

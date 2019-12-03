@@ -17,20 +17,22 @@ describe('SendGasRow Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendGasRow
-      conversionRate={20}
-      convertedCurrency="mockConvertedCurrency"
-      gasFeeError="mockGasFeeError"
-      gasLoadingError={false}
-      gasTotal="mockGasTotal"
-      gasButtonGroupShown={false}
-      showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
-      resetGasButtons={propsMethodSpies.resetGasButtons}
-      gasPriceButtonGroupProps={{
-        someGasPriceButtonGroupProp: 'foo',
-        anotherGasPriceButtonGroupProp: 'bar',
-      }}
-    />, { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
+    wrapper = shallow((
+      <SendGasRow
+        conversionRate={20}
+        convertedCurrency="mockConvertedCurrency"
+        gasFeeError="mockGasFeeError"
+        gasLoadingError={false}
+        gasTotal="mockGasTotal"
+        gasButtonGroupShown={false}
+        showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
+        resetGasButtons={propsMethodSpies.resetGasButtons}
+        gasPriceButtonGroupProps={{
+          someGasPriceButtonGroupProp: 'foo',
+          anotherGasPriceButtonGroupProp: 'bar',
+        }}
+      />
+    ), { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
   })
 
   afterEach(() => {

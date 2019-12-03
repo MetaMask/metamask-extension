@@ -18,7 +18,7 @@
 // Constants and functions are declared inside the closure.
 // In this way, reactTriggerChange can be passed directly to executeScript in Selenium.
 module.exports = function reactTriggerChange (node) {
-  var supportedInputTypes = {
+  const supportedInputTypes = {
     color: true,
     date: true,
     datetime: true,
@@ -35,27 +35,27 @@ module.exports = function reactTriggerChange (node) {
     url: true,
     week: true,
   }
-  var nodeName = node.nodeName.toLowerCase()
-  var type = node.type
-  var event
-  var descriptor
-  var initialValue
-  var initialChecked
-  var initialCheckedRadio
+  const nodeName = node.nodeName.toLowerCase()
+  const type = node.type
+  let event
+  let descriptor
+  let initialValue
+  let initialChecked
+  let initialCheckedRadio
 
   // Do not try to delete non-configurable properties.
   // Value and checked properties on DOM elements are non-configurable in PhantomJS.
   function deletePropertySafe (elem, prop) {
-    var desc = Object.getOwnPropertyDescriptor(elem, prop)
+    const desc = Object.getOwnPropertyDescriptor(elem, prop)
     if (desc && desc.configurable) {
       delete elem[prop]
     }
   }
 
   function getCheckedRadio (radio) {
-    var name = radio.name
-    var radios
-    var i
+    const name = radio.name
+    let radios
+    let i
     if (name) {
       radios = document.querySelectorAll('input[type="radio"][name="' + name + '"]')
       for (i = 0; i < radios.length; i += 1) {

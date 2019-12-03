@@ -23,15 +23,15 @@ export default class CreateAccountPage extends Component {
 
     return (
       <div className="new-account__tabs">
-        <div className={getClassNames(NEW_ACCOUNT_ROUTE)} onClick={() => history.push(NEW_ACCOUNT_ROUTE)}>{
-          this.context.t('create')
-        }</div>
-        <div className={getClassNames(IMPORT_ACCOUNT_ROUTE)} onClick={() => history.push(IMPORT_ACCOUNT_ROUTE)}>{
-          this.context.t('import')
-        }</div>
-        <div className={getClassNames(CONNECT_HARDWARE_ROUTE)} onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}>{
-          this.context.t('connect')
-        }</div>
+        <div className={getClassNames(NEW_ACCOUNT_ROUTE)} onClick={() => history.push(NEW_ACCOUNT_ROUTE)}>
+          {this.context.t('create')}
+        </div>
+        <div className={getClassNames(IMPORT_ACCOUNT_ROUTE)} onClick={() => history.push(IMPORT_ACCOUNT_ROUTE)}>
+          {this.context.t('import')}
+        </div>
+        <div className={getClassNames(CONNECT_HARDWARE_ROUTE)} onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}>
+          {this.context.t('connect')}
+        </div>
       </div>
     )
   }

@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim privatnosti je podrazumevano omogućen"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon dostupan jedino na mrežama Ethereum."
-  },
-  "confirmClear": {
-    "message": "Da li ste sigurni da želite da obrišete odobrene veb lokacije?"
   },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearApprovalData": {
-    "message": "Obrišite privatne podatke"
-  },
   "reject": {
     "message": "Одбиј"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 bi hteo da se poveže sa vašim nalogom"
-  },
-  "providerRequestInfo": {
-    "message": "Ovaj sajt traži pristup kako bi video vašu trenutnu adresu naloga. Uvek budite sigurni da verujete sajtovima s kojima komunicirate."
   },
   "about": {
     "message": "Основни подаци"
   },
   "aboutSettingsDescription": {
-    "message": "Verzija, centar za podršku i podaci za kontakt."
+    "message": "Verzija, centar za podršku i podaci za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Time što se ubrzava transakcija koristeći veću gas cenu, povećavaju se šanse da se procesuira brže od strane mreže, ali to nije uvek zagarantovano."
@@ -63,7 +51,7 @@
     "message": "Напредне опције"
   },
   "advancedSettingsDescription": {
-    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC."
+    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC"
   },
   "advancedOptions": {
     "message": "Dodatne opcije"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Основна"
   },
-  "betweenMinAndMax": {
-    "message": "mora biti veće od ili jednako $1 i manje od ili jednako $2",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blok istraživač"
   },
@@ -249,9 +233,6 @@
   "connect": {
     "message": "Повезивање"
   },
-  "connectRequest": {
-    "message": "Zahtev za povezivanjem"
-  },
   "connectingTo": {
     "message": "Povezuje se na $1"
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "Kopirano!"
-  },
-  "copy": {
-    "message": "Копирај"
   },
   "copyAddress": {
     "message": "Kopirajte adresu u ostavu"
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako već imate neki Ether, najbrži način da preuzmete Ether u svoj novi novčanik jeste direktnim deponovanjem."
-  },
-  "dismiss": {
-    "message": "Одбаци"
   },
   "done": {
     "message": "Gotovo"
@@ -540,10 +515,6 @@
   "getStarted": {
     "message": "Започнимо"
   },
-  "greaterThanMin": {
-    "message": "mora biti veći od ili jednak $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Drago nam je da vas vidimo."
   },
@@ -661,10 +632,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Treba da koristite svoj poslednji nalog pre nego što budete mogli da dodate novi."
-  },
-  "lessThanMax": {
-    "message": "mora biti manje od ili jednako $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Da, hajde da sve podesimo!"
@@ -860,9 +827,6 @@
   "pastePrivateKey": {
     "message": "Ovde nalepite vaš niz privatnog ključa",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Nalepite ovde svoju početnu frazu!"
   },
   "pending": {
     "message": "u toku"
@@ -1177,9 +1141,6 @@
   "storePhrase": {
     "message": "Čuvajte ovaj izraz u menadžeru šifri kao što je 1Password."
   },
-  "submit": {
-    "message": "Пошаљи"
-  },
   "submitted": {
     "message": "Prosleđeno"
   },
@@ -1340,9 +1301,6 @@
   },
   "userName": {
     "message": "Корисничко име"
-  },
-  "validFileImport": {
-    "message": "Morate odabrati važeću datoteku da biste ih uvezli."
   },
   "viewAccount": {
     "message": "Прикажи налог"

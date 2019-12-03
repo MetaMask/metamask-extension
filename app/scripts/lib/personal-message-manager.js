@@ -1,7 +1,7 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
 const log = require('loglevel')
@@ -65,7 +65,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+      .reduce((result, msg) => {
+        result[msg.id] = msg; return result
+      }, {})
   }
 
   /**
@@ -89,7 +91,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(rpcErrors.eth.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
           default:
             return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
@@ -110,12 +112,14 @@ module.exports = class PersonalMessageManager extends EventEmitter {
   addUnapprovedMessage (msgParams, req) {
     log.debug(`PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // add origin from request
-    if (req) msgParams.origin = req.origin
+    if (req) {
+      msgParams.origin = req.origin
+    }
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = (new Date()).getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,
@@ -229,7 +233,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+    if (!msg) {
+      throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)

@@ -40,6 +40,8 @@ function newVersionFrom (manifest, bumpType) {
     case 'patch':
       segments[2] += 1
       break
+    default:
+      throw new Error(`invalid bumpType ${bumpType}`)
   }
 
   return segments.map(String).join('.')

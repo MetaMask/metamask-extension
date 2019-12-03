@@ -11,7 +11,7 @@ describe('Dropdown Menu Components', () => {
 
     beforeEach(() => {
       wrapper = shallow(
-        <Menu className="Test Class" isShowing/>
+        <Menu className="Test Class" isShowing />
       )
     })
 
@@ -31,14 +31,14 @@ describe('Dropdown Menu Components', () => {
         <Item
           icon="test icon"
           text="test text"
-          className="test className"
+          className="test foo1"
           onClick={onClickSpy}
         />
       )
     })
 
     it('add className based on props', () => {
-      assert.equal(wrapper.find('.menu__item').prop('className'), 'menu__item menu__item test className menu__item--clickable')
+      assert.equal(wrapper.find('.menu__item').prop('className'), 'menu__item test foo1 menu__item--clickable')
     })
 
     it('simulates onClick called', () => {
@@ -73,9 +73,11 @@ describe('Dropdown Menu Components', () => {
     const onClickSpy = sinon.spy()
 
     beforeEach(() => {
-      wrapper = shallow(<CloseArea
-        onClick={onClickSpy}
-      />)
+      wrapper = shallow((
+        <CloseArea
+          onClick={onClickSpy}
+        />
+      ))
     })
 
     it('simulates click', () => {

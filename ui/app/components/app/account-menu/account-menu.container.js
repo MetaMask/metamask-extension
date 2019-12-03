@@ -11,7 +11,12 @@ import {
   showInfoPage,
   showModal,
 } from '../../../store/actions'
-import { getMetaMaskAccounts } from '../../../selectors/selectors'
+import {
+  getAddressConnectedDomainMap,
+  getMetaMaskAccounts,
+  getOriginOfCurrentTab,
+} from '../../../selectors/selectors'
+
 import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
@@ -23,6 +28,8 @@ function mapStateToProps (state) {
     keyrings,
     identities,
     accounts: getMetaMaskAccounts(state),
+    addressConnectedDomainMap: getAddressConnectedDomainMap(state),
+    originOfCurrentTab: getOriginOfCurrentTab(state),
   }
 }
 

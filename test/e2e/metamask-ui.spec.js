@@ -432,23 +432,35 @@ describe('MetaMask', function () {
       await delay(largeDelayMs)
     })
 
-    it('starts a send transaction inside the dapp', async () => {
+    it('connects the dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
+      await delay(regularDelayMs)
+
+      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButton.click()
+
       await delay(regularDelayMs)
 
       await waitUntilXWindowHandles(driver, 3)
       windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+      dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
+      popup = windowHandles.find(handle => handle !== extension && handle !== dapp)
+
+      await driver.switchTo().window(popup)
 
       await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await approveButton.click()
 
+      const accountButton = await findElement(driver, By.css('.permissions-connect-choose-account__account'))
+      await accountButton.click()
+
+      const submitButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Submit')]`))
+      await submitButton.click()
+
+      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(dapp)
-      await delay(2000)
+      await delay(regularDelayMs)
     })
 
     it('initiates a send from the dapp', async () => {

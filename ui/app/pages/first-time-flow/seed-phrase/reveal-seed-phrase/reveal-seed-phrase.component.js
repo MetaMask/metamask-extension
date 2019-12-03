@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
+import Snackbar from '../../../../components/ui/snackbar'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
+import { returnToOnboardingInitiator } from '../../onboarding-initiator-util'
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -17,6 +19,10 @@ export default class RevealSeedPhrase extends PureComponent {
     seedPhrase: PropTypes.string,
     setSeedPhraseBackedUp: PropTypes.func,
     setCompletedOnboarding: PropTypes.func,
+    onboardingInitiator: PropTypes.exact({
+      location: PropTypes.string,
+      tabId: PropTypes.number,
+    }),
   }
 
   state = {
@@ -27,8 +33,7 @@ export default class RevealSeedPhrase extends PureComponent {
     exportAsFile('MetaMask Secret Backup Phrase', this.props.seedPhrase, 'text/plain')
   }
 
-  handleNext = event => {
-    event.preventDefault()
+  handleNext = () => {
     const { isShowingSeedPhrase } = this.state
     const { history } = this.props
 
@@ -47,9 +52,8 @@ export default class RevealSeedPhrase extends PureComponent {
     history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE)
   }
 
-  handleSkip = event => {
-    event.preventDefault()
-    const { history, setSeedPhraseBackedUp, setCompletedOnboarding } = this.props
+  handleSkip = async () => {
+    const { history, setSeedPhraseBackedUp, setCompletedOnboarding, onboardingInitiator } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -59,10 +63,12 @@ export default class RevealSeedPhrase extends PureComponent {
       },
     })
 
-    Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
-      .then(() => {
-        history.push(DEFAULT_ROUTE)
-      })
+    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
+
+    if (onboardingInitiator) {
+      await returnToOnboardingInitiator(onboardingInitiator)
+    }
+    history.push(DEFAULT_ROUTE)
   }
 
   renderSecretWordsContainer () {
@@ -72,10 +78,12 @@ export default class RevealSeedPhrase extends PureComponent {
 
     return (
       <div className="reveal-seed-phrase__secret">
-        <div className={classnames(
-          'reveal-seed-phrase__secret-words notranslate',
-          { 'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase }
-        )}>
+        <div
+          className={classnames(
+            'reveal-seed-phrase__secret-words notranslate', {
+              'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase,
+            })}
+        >
           { seedPhrase }
         </div>
         {
@@ -111,6 +119,7 @@ export default class RevealSeedPhrase extends PureComponent {
   render () {
     const { t } = this.context
     const { isShowingSeedPhrase } = this.state
+    const { onboardingInitiator } = this.props
 
     return (
       <div className="reveal-seed-phrase">
@@ -143,7 +152,8 @@ export default class RevealSeedPhrase extends PureComponent {
             <div className="first-time-flow__text-block">
               <a
                 className="reveal-seed-phrase__export-text"
-                onClick={this.handleExport}>
+                onClick={this.handleExport}
+              >
                 { t('downloadSecretBackup') }
               </a>
             </div>
@@ -166,6 +176,15 @@ export default class RevealSeedPhrase extends PureComponent {
             { t('next') }
           </Button>
         </div>
+        {
+          onboardingInitiator ?
+            (
+              <Snackbar
+                content={t('onboardingReturnNotice', [t('remindMeLater'), onboardingInitiator.location])}
+              />
+            ) :
+            null
+        }
       </div>
     )
   }

@@ -1,6 +1,6 @@
+const React = require('react')
 const assert = require('assert')
 
-const h = require('react-hyperscript')
 const sinon = require('sinon')
 const path = require('path')
 const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'app', 'dropdowns', 'index.js')).Dropdown
@@ -39,23 +39,19 @@ describe('Dropdown components', function () {
     onClick = sinon.spy()
 
     store = createMockStore(mockState)
-    component = mountWithStore(h(
-      Dropdown,
-      dropdownComponentProps,
-      [
-        h('style', `
-          .drop-menu-item:hover { background:rgb(235, 235, 235); }
-          .drop-menu-item i { margin: 11px; }
-        `),
-        h('li', {
-          closeMenu,
-          onClick,
-        }, 'Item 1'),
-        h('li', {
-          closeMenu,
-          onClick,
-        }, 'Item 2'),
-      ]
+    component = mountWithStore((
+      <Dropdown {...dropdownComponentProps}>
+        <style>
+          {
+            `
+              .drop-menu-item:hover { background:rgb(235, 235, 235); }
+              .drop-menu-item i { margin: 11px; }
+            `
+          }
+        </style>
+        <li closeMenu={closeMenu} onClick={onClick}>Item 1</li>
+        <li closeMenu={closeMenu} onClick={onClick}>Item 2</li>
+      </Dropdown>
     ), store)
     dropdownComponent = component
   })

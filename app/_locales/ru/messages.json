@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearApprovalData": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
-  },
-  "providerRequestInfo": {
-    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
   },
   "account": {
     "message": "Счет"
@@ -57,10 +48,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Недостаточный баланс для текущего объема газа"
-  },
-  "betweenMinAndMax": {
-    "message": "должно быть больше или равно $1 и меньше или равно $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
@@ -115,9 +102,6 @@
   },
   "copiedExclamation": {
     "message": "Скопировано!"
-  },
-  "copy": {
-    "message": "Скопировать"
   },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
@@ -230,10 +214,6 @@
     "message": "Получить Ether из крана для $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "должно быть больше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "тут",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -297,10 +277,6 @@
   },
   "learnMore": {
     "message": "Узнать больше."
-  },
-  "lessThanMax": {
-    "message": "должно быть меньше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Вы хотите добавить эти токены?"
@@ -376,9 +352,6 @@
   "pastePrivateKey": {
     "message": "Вставьте ваш закрытый ключ тут:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Вставьте вашу ключевую фразу!"
   },
   "personalAddressDetected": {
     "message": "Обнаружен персональный адрес. Введите адрес контракта токена."
@@ -492,9 +465,6 @@
   "stateLogError": {
     "message": "Ошибка при получении журнала состояния."
   },
-  "submit": {
-    "message": "Отправить"
-  },
   "submitted": {
     "message": "Отправлена"
   },
@@ -548,9 +518,6 @@
   "usedByClients": {
     "message": "Используется различными клиентами"
   },
-  "validFileImport": {
-    "message": "Вам нужно выбрать правильный файл для импорта."
-  },
   "viewAccount": {
     "message": "Посмотреть счет"
   },
@@ -569,16 +536,13 @@
   "youSign": {
     "message": "Вы подписываете"
   },
-  "privacyModeDefault": {
-    "message": "Режим конфиденциальности теперь включен по умолчанию"
-  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмма доступна только в сетях Ethereum."
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 запрашивает доступ к вашему аккаунту"
   },
   "about": {
@@ -731,9 +695,6 @@
   "connect": {
     "message": "Подключиться"
   },
-  "connectRequest": {
-    "message": "Запрос на подключение"
-  },
   "connectingTo": {
     "message": "Подключение к $1"
   },
@@ -775,9 +736,6 @@
   },
   "deleteAccount": {
     "message": "Удалить аккаунт"
-  },
-  "dismiss": {
-    "message": "Отклюнить"
   },
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"

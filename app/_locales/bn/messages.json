@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "গোপনীয়তার মোড এখন ডিফল্ট হিসাবে সক্রিয় করা আছে"
-  },
   "chartOnlyAvailableEth": {
     "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
-  },
-  "confirmClear": {
-    "message": "আপনি কি অনুমোদিত ওয়েবসাইটগুলি মুছে পরিস্কার করার বিষয়ে নিশ্চিত?"
   },
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },
-  "clearApprovalData": {
-    "message": "গোপনীয়তার ডেটা মুছে পরিস্কার করুন"
-  },
   "reject": {
     "message": "প্রত্যাখ্যান"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 আপনার অ্যাকাউন্টের সাথে সংযোগ করতে চায়"
-  },
-  "providerRequestInfo": {
-    "message": "এই সাইটটি আপনার বর্তমান অ্যাকাউন্টের ঠিকানা দেখার অ্যাক্সেসের জন্য অনুরোধ জানাচ্ছে। সবসময় নিশ্চিত হয়ে নেবেন যে আপনি যে সাইটের সাথে যোগাযোগ করছেন সেটি বিশ্বাসযোগ্য কিনা।"
   },
   "about": {
     "message": "সম্পর্কে"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "প্রাথমিক"
   },
-  "betweenMinAndMax": {
-    "message": "অবশ্যই $1 এর বড় বা সমান এবং $2 এর ছোটো বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "এক্সপ্লোরার ব্লক করুন"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "সংযুক্ত করুন"
   },
-  "connectRequest": {
-    "message": "সংযোগের অনুরোধ"
-  },
   "connectingTo": {
     "message": " $1 এর সাথে সংযোগ করছে"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "কপি করা হয়েছে!"
-  },
-  "copy": {
-    "message": "অনুলিপি"
   },
   "copyAddress": {
     "message": "ক্লিপবোর্ডে ঠিকানা কপি করুন"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
-  },
-  "dismiss": {
-    "message": "খারিজ"
   },
   "done": {
     "message": "সম্পন্ন "
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "শুরু করুন"
   },
-  "greaterThanMin": {
-    "message": "অবশ্যই $1 এর থেকে বড় বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "আপনাকে দেখে আমরা আনন্দিত।"
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
-  },
-  "lessThanMax": {
-    "message": "অবশ্যই $1 এর থেকে কম বা সমান হতে হবে।",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"
@@ -869,9 +836,6 @@
   "pastePrivateKey": {
     "message": "আপনার গোপনীয় কী স্ট্রিং এখানে পেস্ট করুন:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "আপনার সীড ফ্রেজ এখানে পেস্ট করুন!"
   },
   "pending": {
     "message": "বাকি"
@@ -1186,9 +1150,6 @@
   "storePhrase": {
     "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "
   },
-  "submit": {
-    "message": "জমা দিন"
-  },
   "submitted": {
     "message": "জমা করা হয়েছে"
   },
@@ -1355,9 +1316,6 @@
   },
   "userName": {
     "message": "ইউজারনেম"
-  },
-  "validFileImport": {
-    "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি বৈধ ফাইল নির্বাচন করতে হবে।"
   },
   "viewAccount": {
     "message": "আ্যাকাউন্ট দেখুন"
