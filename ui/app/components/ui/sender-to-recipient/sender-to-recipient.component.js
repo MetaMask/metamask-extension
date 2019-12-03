@@ -67,7 +67,7 @@ export default class SenderToRecipient extends PureComponent {
               ? <p>{t('copyAddress')}</p>
               : (
                 <p>
-                  {addressSlicer(checksummedSenderAddress)}<br/>
+                  {addressSlicer(checksummedSenderAddress)}<br />
                   {t('copyAddress')}
                 </p>
               )
@@ -127,7 +127,7 @@ export default class SenderToRecipient extends PureComponent {
                 ? <p>{t('copyAddress')}</p>
                 : (
                   <p>
-                    {addressSlicer(checksummedRecipientAddress)}<br/>
+                    {addressSlicer(checksummedRecipientAddress)}<br />
                     {t('copyAddress')}
                   </p>
                 )

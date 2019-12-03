@@ -68,7 +68,7 @@ export default class ProviderPageContainerContent extends PureComponent {
           <h1>{t('providerRequest', [title])}</h1>
           <p>
             {t('providerRequestInfo')}
-            <br/>
+            <br />
             <a
               href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
               target="_blank"

@@ -38,12 +38,16 @@ export default class GasFeeDisplay extends Component {
             </div>
           )
           : gasLoadingError
-            ? <div className="currency-display.currency-display--message">
-              {this.context.t('setGasPrice')}
-            </div>
-            : <div className="currency-display">
-              {this.context.t('loading')}
-            </div>
+            ? (
+              <div className="currency-display.currency-display--message">
+                {this.context.t('setGasPrice')}
+              </div>
+            )
+            : (
+              <div className="currency-display">
+                {this.context.t('loading')}
+              </div>
+            )
         }
         <button
           className="gas-fee-reset"

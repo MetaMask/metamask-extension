@@ -69,7 +69,8 @@ InputNumber.prototype.render = function InputNumber () {
       />
       <span className="gas-tooltip-input-detail">{unitLabel}</span>
       <div className="gas-tooltip-input-arrows">
-        <div className="gas-tooltip-input-arrow-wrapper"
+        <div
+          className="gas-tooltip-input-arrow-wrapper"
           onClick={() => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' }))}
         >
           <i className="fa fa-angle-up" />

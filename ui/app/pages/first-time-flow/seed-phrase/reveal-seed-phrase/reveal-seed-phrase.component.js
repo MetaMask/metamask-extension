@@ -78,10 +78,12 @@ export default class RevealSeedPhrase extends PureComponent {
 
     return (
       <div className="reveal-seed-phrase__secret">
-        <div className={classnames(
-          'reveal-seed-phrase__secret-words notranslate',
-          { 'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase }
-        )}>
+        <div
+          className={classnames(
+            'reveal-seed-phrase__secret-words notranslate', {
+              'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase,
+            })}
+        >
           { seedPhrase }
         </div>
         {
@@ -150,7 +152,8 @@ export default class RevealSeedPhrase extends PureComponent {
             <div className="first-time-flow__text-block">
               <a
                 className="reveal-seed-phrase__export-text"
-                onClick={this.handleExport}>
+                onClick={this.handleExport}
+              >
                 { t('downloadSecretBackup') }
               </a>
             </div>
@@ -175,9 +178,11 @@ export default class RevealSeedPhrase extends PureComponent {
         </div>
         {
           onboardingInitiator ?
-            <Snackbar
-              content={t('onboardingReturnNotice', [t('remindMeLater'), onboardingInitiator.location])}
-            /> :
+            (
+              <Snackbar
+                content={t('onboardingReturnNotice', [t('remindMeLater'), onboardingInitiator.location])}
+              />
+            ) :
             null
         }
       </div>

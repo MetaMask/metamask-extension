@@ -38,9 +38,13 @@ export default class MultipleNotifications extends PureComponent {
           className="home-notification-wrapper__i-container"
           onClick={() => this.setState({ showAll: !showAll })}
         >
-          {childrenToRender.length > 1 ? <i className={classnames('fa fa-sm fa-sort-amount-asc', {
-            'flipped': !showAll,
-          })} /> : null}
+          {childrenToRender.length > 1 ? (
+            <i
+              className={classnames('fa fa-sm fa-sort-amount-asc', {
+                'flipped': !showAll,
+              })}
+            />
+          ) : null}
         </div>
       </div>
     )
