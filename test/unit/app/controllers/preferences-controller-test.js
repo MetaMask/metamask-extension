@@ -1,6 +1,7 @@
 const assert = require('assert')
 const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
+const { addInternalMethodPrefix } = require('../../../../app/scripts/controllers/permissions')
 const sinon = require('sinon')
 
 describe('preferences controller', function () {
@@ -375,7 +376,7 @@ describe('preferences controller', function () {
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.called(stubEnd)
       sandbox.assert.notCalled(stubNext)
-      req.method = 'wallet_watchAsset'
+      req.method = addInternalMethodPrefix('watchAsset')
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.calledTwice(stubEnd)

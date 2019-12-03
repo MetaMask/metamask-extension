@@ -24,11 +24,13 @@ import CancelTransaction from './cancel-transaction'
 
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
-import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
 import EditApprovalPermission from './edit-approval-permission'
+import NewAccountModal from './new-account-modal'
+import DisconnectAccount from './disconnect-account'
+import DisconnectAll from './disconnect-all'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -139,6 +141,87 @@ const MODALS = {
     },
   },
 
+  NEW_ACCOUNT: {
+    contents: <NewAccountModal />,
+    mobileModalStyle: {
+      width: '95%',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
+    },
+  },
+
+  DISCONNECT_ACCOUNT: {
+    contents: <DisconnectAccount />,
+    mobileModalStyle: {
+      width: '95%',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
+    },
+  },
+
+  DISCONNECT_ALL: {
+    contents: <DisconnectAll />,
+    mobileModalStyle: {
+      width: '95%',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
+    },
+  },
+
   ACCOUNT_DETAILS: {
     contents: <AccountDetailsModal />,
     ...accountModalStyle,
@@ -158,19 +241,6 @@ const MODALS = {
     laptopModalStyle: {
       width: '449px',
       top: 'calc(33% + 45px)',
-    },
-  },
-
-  CLEAR_APPROVED_ORIGINS: {
-    contents: <ClearApprovedOrigins />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 

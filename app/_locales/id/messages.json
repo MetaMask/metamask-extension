@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Modus Privasi kini aktif secara default"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafik hanya tersedia pada jaringan Ethereum."
   },
-  "confirmClear": {
-    "message": "Yakin ingin mengosongkan website yang disetujui?"
-  },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
-  },
-  "clearApprovalData": {
-    "message": "Bersihkan Data Privasi"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,11 +12,8 @@
   "reject": {
     "message": "Tolak"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ingin menghubungkan ke akun Anda"
-  },
-  "providerRequestInfo": {
-    "message": "Situs ini meminta akses untuk melihat alamat akun Anda saat ini. Selalu pastikan bahwa Anda bisa mempercayai situs yang berinteraksi dengan Anda."
   },
   "about": {
     "message": "Tentang"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Sambungkan"
   },
-  "connectRequest": {
-    "message": "Permintaan Sambungan"
-  },
   "connectingTo": {
     "message": "Menghubungkan ke $1"
   },
@@ -361,9 +346,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika Anda sudah memiliki Ether, cara tercepat mendapatkan Ether di dompet baru lewat deposit langsung."
-  },
-  "dismiss": {
-    "message": "Tutup"
   },
   "done": {
     "message": "Selesai"

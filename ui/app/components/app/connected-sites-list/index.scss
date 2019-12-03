@@ -1,0 +1,125 @@
+.connected-sites-list {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+
+  &__domain, &__domain--expanded {
+    border-bottom: 1px solid #c4c4c4;
+  }
+
+  &__domain {
+    cursor: pointer;
+  }
+
+  &__domain--expanded {
+    background: #FAFBFC;
+    cursor: initial;
+  }
+
+  &__domain-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+
+  &__domain-item-info-container {
+    display: flex;
+  }
+
+  &__identicon-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    width: 32px;
+  }
+
+  &__identicon-border {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border: 1px solid #F2F3F4;
+    position: absolute;
+    background: #FFFFFF;
+  }
+
+  &__identicon {
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+
+    &--default {
+      z-index: 1;
+      color: black;
+    }
+  }
+
+  &__domain-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+  }
+
+  &__domain-names {
+    display: flex;
+    align-items: center;
+  }
+
+  &__domain-name {
+    font-size: 18px;
+    color: #24292E;
+  }
+
+  &__domain-origin, &__domain-last-connected {
+    font-size: 12px;
+    color: #6A737D;
+  }
+
+  &__domain-last-connected {
+    margin-top: 2px;
+  }
+
+  &__expand-arrow {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  &__permissions {
+    padding-left: 16px;
+    padding-bottom: 24px;
+  }
+
+  &__permission {
+    display: flex;
+    align-items: center;
+    color: #6A737D;
+    margin-left: 16px;
+  }
+
+  &__permission-description {
+    margin-left: 18px;
+  }
+
+  &__disconnect {
+    margin-top: 24px;
+    color: #D73A49;
+    cursor: pointer;
+  }
+
+  &__bottom-buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  &__disconnect-all {
+    padding: 10px;
+    width: 50%;
+  }
+
+  &__connect-to {
+    padding: 10px;
+    width: 50%;
+  }
+}

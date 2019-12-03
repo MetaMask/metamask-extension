@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Режимът на поверителност вече е активиран по подразбиране"
-  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмата е достъпна само в мрежи на Ethereum."
-  },
-  "confirmClear": {
-    "message": "Сигурни ли сте, че искате да изчистите одобрените уебсайтове?"
   },
   "contractInteraction": {
     "message": "Взаимодействие с договор"
   },
-  "clearApprovalData": {
-    "message": "Изчистване на данните за поверителност"
-  },
   "reject": {
     "message": "Отхвърляне"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 би искал да се свърже с вашия акаунт"
-  },
-  "providerRequestInfo": {
-    "message": "Този сайт иска достъп за преглед на адреса на текущия ви акаунт. Винаги се уверявайте, че се доверявате на сайтовете, с които взаимодействате."
   },
   "about": {
     "message": "Информация"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Свързване"
   },
-  "connectRequest": {
-    "message": "Свържете заявка"
-  },
   "connectingTo": {
     "message": "Свързване с $1"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ако вече имате някакъв етер, най-бързият начин да получите етер в новия си портфейл е чрез директен депозит."
-  },
-  "dismiss": {
-    "message": "Отхвърляне"
   },
   "done": {
     "message": "Готово"

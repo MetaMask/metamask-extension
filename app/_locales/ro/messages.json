@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Modul de confidențialitate este activat acum în mod implicit"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafic disponibil numai pe rețelele Ethereum."
-  },
-  "confirmClear": {
-    "message": "Sunteți sigur că doriți să ștergeți site-urile aprobate?"
   },
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
-  "clearApprovalData": {
-    "message": "Ștergeți datele confidențiale"
-  },
   "reject": {
     "message": "Respingeți"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ar dori să se conecteze la contul dvs."
-  },
-  "providerRequestInfo": {
-    "message": "Acest site solicită acces pentru a vedea adresa curentă a contului dvs. Asigurați-vă întotdeauna că aveți încredere în site-urile cu care interacționați."
   },
   "about": {
     "message": "Despre"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectRequest": {
-    "message": "Solicitare de conectare"
-  },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
-  },
-  "dismiss": {
-    "message": "Închide"
   },
   "done": {
     "message": "Efectuat"

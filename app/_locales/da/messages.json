@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Privatlivstilstand er nu som udgangspunkt aktiveret"
-  },
   "chartOnlyAvailableEth": {
     "message": "Skema kun tilgængeligt på Ethereum-netværk."
-  },
-  "confirmClear": {
-    "message": "Er du sikker på, at du vil rydde godkendte hjemmesider?"
   },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
-    "message": "Ryd fortrolighedsdata"
-  },
   "reject": {
     "message": "Afvis"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ønsker at forbinde til din konto"
-  },
-  "providerRequestInfo": {
-    "message": "Denne side anmoder om at se din nuværende kontoadresse. Sørg altid for, at du stoler på de sider du interagerer med."
   },
   "about": {
     "message": "Om"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectRequest": {
-    "message": "Tilslutningsanmodning"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
-  },
-  "dismiss": {
-    "message": "Luk"
   },
   "done": {
     "message": "Færdig"

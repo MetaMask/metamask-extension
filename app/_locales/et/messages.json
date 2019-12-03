@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Privaatsusrežiim on nüüd vaikimisi lubatud"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabel on saadaval vaid Ethereumi võrkudes."
-  },
-  "confirmClear": {
-    "message": "Kas soovite kindlasti kinnitatud veebisaidid kustutada?"
   },
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearApprovalData": {
-    "message": "Tühjenda privaatsusandmed"
-  },
   "reject": {
     "message": "Lükka tagasi"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 soovib teie kontoga ühenduse luua"
-  },
-  "providerRequestInfo": {
-    "message": "See sait taotleb juurdepääsu teie praeguse konto aadressi vaatamiseks. Veenduge alati, et usaldate saite, millega suhtlete."
   },
   "about": {
     "message": "Teave"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectRequest": {
-    "message": "Ühenduse taotlus"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
@@ -368,9 +353,6 @@
   "directDepositEtherExplainer": {
     "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
   },
-  "dismiss": {
-    "message": "Loobu"
-  },
   "done": {
     "message": "Valmis"
   },
@@ -420,7 +402,7 @@
     "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "Metamask ei saa teie seemnefraasi taastada. Lisateave."
+    "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
   },
   "endOfFlowMessage9": {
     "message": "Lisateave."
@@ -1180,7 +1162,7 @@
     "message": "Saate sünkroonida oma kontod ja teabe oma mobiiliseadmega. Avage MetaMaski mobiilirakendus, avage \"Settings\" (Seaded) ja puudutage valikut \"Sync from Browser Extension\" (Sünkroonimine lehitseja laiendusest)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Järgige Metamaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
+    "message": "Järgige MetaMaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
   },
   "syncWithMobileScanThisCode": {
     "message": "Skanneerige see kood MetaMaski mobiilirakendusega"

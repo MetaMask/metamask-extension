@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params
   const {
     confirmTransaction,
-    metamask: { currentCurrency, conversionRate, selectedAddressTxList, approvedOrigins, selectedAddress },
+    metamask: { currentCurrency, conversionRate, selectedAddressTxList, domainMetadata = {}, selectedAddress },
   } = state
 
   const {
@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
     ? origin[0].toUpperCase() + origin.slice(1)
     : ''
 
-  const { siteImage } = approvedOrigins[origin] || {}
+  const { icon: siteImage = '' } = domainMetadata[origin] || {}
   return {
     toAddress,
     tokenAddress,

@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearApprovalData": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
-  },
-  "providerRequestInfo": {
-    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
   },
   "account": {
     "message": "Счет"
@@ -545,16 +536,13 @@
   "youSign": {
     "message": "Вы подписываете"
   },
-  "privacyModeDefault": {
-    "message": "Режим конфиденциальности теперь включен по умолчанию"
-  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмма доступна только в сетях Ethereum."
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 запрашивает доступ к вашему аккаунту"
   },
   "about": {
@@ -707,9 +695,6 @@
   "connect": {
     "message": "Подключиться"
   },
-  "connectRequest": {
-    "message": "Запрос на подключение"
-  },
   "connectingTo": {
     "message": "Подключение к $1"
   },
@@ -751,9 +736,6 @@
   },
   "deleteAccount": {
     "message": "Удалить аккаунт"
-  },
-  "dismiss": {
-    "message": "Отклюнить"
   },
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"

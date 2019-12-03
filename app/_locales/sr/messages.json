@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim privatnosti je podrazumevano omogućen"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon dostupan jedino na mrežama Ethereum."
-  },
-  "confirmClear": {
-    "message": "Da li ste sigurni da želite da obrišete odobrene veb lokacije?"
   },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearApprovalData": {
-    "message": "Obrišite privatne podatke"
-  },
   "reject": {
     "message": "Одбиј"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 bi hteo da se poveže sa vašim nalogom"
-  },
-  "providerRequestInfo": {
-    "message": "Ovaj sajt traži pristup kako bi video vašu trenutnu adresu naloga. Uvek budite sigurni da verujete sajtovima s kojima komunicirate."
   },
   "about": {
     "message": "Основни подаци"
@@ -245,9 +233,6 @@
   "connect": {
     "message": "Повезивање"
   },
-  "connectRequest": {
-    "message": "Zahtev za povezivanjem"
-  },
   "connectingTo": {
     "message": "Povezuje se na $1"
   },
@@ -364,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako već imate neki Ether, najbrži način da preuzmete Ether u svoj novi novčanik jeste direktnim deponovanjem."
-  },
-  "dismiss": {
-    "message": "Одбаци"
   },
   "done": {
     "message": "Gotovo"
