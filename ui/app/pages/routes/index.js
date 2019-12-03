@@ -180,7 +180,11 @@ class Routes extends Component {
       return this.onConfirmPage() || hasPermissionsRequests
     }
 
-    if (hasPermissionsRequests) {
+    const isHandlingPermissionsRequest = Boolean(matchPath(location.pathname, {
+      path: CONNECT_ROUTE, exact: false,
+    }))
+
+    if (hasPermissionsRequests || isHandlingPermissionsRequest) {
       return true
     }
   }

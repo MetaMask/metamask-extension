@@ -1,10 +1,13 @@
 import { connect } from 'react-redux'
+import { compose } from 'recompose'
+import { withRouter } from 'react-router-dom'
 import PermissionApproval from './permissions-connect.component'
 import {
   getFirstPermissionRequest,
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
+  getPermissionsDomains,
 } from '../../selectors/selectors'
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
@@ -37,6 +40,7 @@ const mapStateToProps = state => {
     nativeCurrency,
     requestAccountTabs,
     addressLastConnectedMap,
+    domains: getPermissionsDomains(state),
   }
 }
 
@@ -56,4 +60,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PermissionApproval)
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(PermissionApproval)
