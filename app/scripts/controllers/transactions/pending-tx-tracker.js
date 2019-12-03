@@ -164,11 +164,12 @@ class PendingTransactionTracker extends EventEmitter {
       if (typeof this.droppedBuffer[txHash] !== 'number') {
         this.droppedBuffer[txHash] = 0
       }
+
+      // 3 block count buffer
       if (dropped && this.droppedBuffer[txHash] < 3) {
         dropped = false
+        ++this.droppedBuffer[txHash]
       }
-      ++this.droppedBuffer[txHash]
-
 
       if (dropped && this.droppedBuffer[txHash] === 3) {
         // clean up
