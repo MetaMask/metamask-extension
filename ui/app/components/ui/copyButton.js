@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 
 const copyToClipboard = require('copy-to-clipboard')
 const Tooltip = require('./tooltip')
@@ -63,4 +62,4 @@ class CopyButton extends Component {
   }
 }
 
-module.exports = connect()(CopyButton)
+module.exports = CopyButton
