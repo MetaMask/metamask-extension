@@ -480,7 +480,6 @@ Modal.prototype.render = function () {
 
   return (
     <FadeModal
-      className="modal"
       keyboard={false}
       onHide={() => {
         if (modal.onHide) {

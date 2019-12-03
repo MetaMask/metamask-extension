@@ -128,7 +128,6 @@ class FadeModal extends Component {
   static propTypes = {
     backdrop: PropTypes.bool,
     backdropStyle: PropTypes.object,
-    className: PropTypes.string,
     closeOnClick: PropTypes.bool,
     contentStyle: PropTypes.object,
     keyboard: PropTypes.bool,
@@ -142,7 +141,6 @@ class FadeModal extends Component {
   }
 
   static defaultProps = {
-    className: '',
     onShow: function () {},
     onHide: function () {},
     keyboard: true,
@@ -188,14 +186,7 @@ class FadeModal extends Component {
     }
 
     const { willHide } = this.state
-    const modalStyle = {
-      zIndex: 1050,
-      position: 'fixed',
-      width: '500px',
-      transform: 'translate3d(-50%, -50%, 0)',
-      top: '50%',
-      left: '50%',
-    }
+    const { modalStyle } = this.props
     const backdropStyle = {
       position: 'fixed',
       top: 0,
@@ -216,14 +207,6 @@ class FadeModal extends Component {
       animationFillMode: 'forwards',
       animationName: willHide ? animation.hideContentAnimation : animation.showContentAnimation,
       animationTimingFunction: (willHide ? animation.hide : animation.show).animationTimingFunction,
-    }
-
-    // Apply custom style properties
-    if (this.props.modalStyle) {
-      var prefixedModalStyle = this.props.modalStyle
-      for (const style in prefixedModalStyle) {
-        modalStyle[style] = prefixedModalStyle[style]
-      }
     }
 
     if (this.props.backdropStyle) {
@@ -247,7 +230,7 @@ class FadeModal extends Component {
     }
 
     return (<span>
-      <div style={modalStyle} className={this.props.className}>
+      <div className="modal" style={modalStyle}>
         <div ref={el => (this.content = el)} tabIndex="-1" style={contentStyle}>
           {this.props.children}
         </div>
