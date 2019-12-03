@@ -1955,7 +1955,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
     background.delCustomRpc(oldRpc, (err) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
+        return dispatch(actions.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
       background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
@@ -1992,7 +1992,7 @@ function delRpcTarget (oldRpc) {
       background.delCustomRpc(oldRpc, (err) => {
         if (err) {
           log.error(err)
-          dispatch(self.displayWarning('Had a problem removing network!'))
+          dispatch(actions.displayWarning('Had a problem removing network!'))
           return reject(err)
         }
         dispatch(actions.setSelectedToken())
@@ -2180,32 +2180,29 @@ function requestExportAccount () {
 }
 
 function exportAccount (password, address) {
-  const self = this
-
   return function (dispatch) {
-    dispatch(self.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
           log.error('Error in submiting password.')
-          dispatch(self.hideLoadingIndication())
-          dispatch(self.displayWarning('Incorrect Password.'))
+          dispatch(actions.hideLoadingIndication())
+          dispatch(actions.displayWarning('Incorrect Password.'))
           return reject(err)
         }
         log.debug(`background.exportAccount`)
         return background.exportAccount(address, function (err, result) {
-          dispatch(self.hideLoadingIndication())
+          dispatch(actions.hideLoadingIndication())
 
           if (err) {
             log.error(err)
-            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            dispatch(actions.displayWarning('Had a problem exporting the account.'))
             return reject(err)
           }
 
-          // dispatch(self.exportAccountComplete())
-          dispatch(self.showPrivateKey(result))
+          dispatch(actions.showPrivateKey(result))
 
           return resolve(result)
         })
