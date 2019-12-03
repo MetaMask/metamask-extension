@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Zasebnostni način je zdaj privzeto omogočen"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon na voljo le v glavnih omrežjih."
-  },
-  "confirmClear": {
-    "message": "Ste prepričani da želite počistiti odobrene spletne strani?"
   },
   "contractInteraction": {
     "message": "Interakcija s pogodbo"
   },
-  "clearApprovalData": {
-    "message": "Počisti podatke o odobritvi"
-  },
   "reject": {
     "message": "Zavrni"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 se želi povezati z vašim računom."
-  },
-  "providerRequestInfo": {
-    "message": "Domena zahteva dostop do verige blokov in ogled vašega računa. Pred potrditvjo vedno preverite ali ste na želeni spletni strani."
   },
   "about": {
     "message": "O možnostih"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Poveži"
   },
-  "connectRequest": {
-    "message": "Zahteva za povezavo"
-  },
   "connectingTo": {
     "message": "Povezovanje na $1"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
-  },
-  "dismiss": {
-    "message": "Opusti"
   },
   "done": {
     "message": "Končano"

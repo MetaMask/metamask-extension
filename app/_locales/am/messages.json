@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "የግላዊነት ኩነት አሁን በንቡር ነቅቷል"
-  },
   "chartOnlyAvailableEth": {
     "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
-  },
-  "confirmClear": {
-    "message": "የተፈቀዱ ድረ ገጾችን ለማጥራት እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearApprovalData": {
-    "message": "የግላዊነት ውሂብን አጥራ"
-  },
   "reject": {
     "message": "አይቀበሉ"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
-  },
-  "providerRequestInfo": {
-    "message": "ይህ ድረ ገጽ የእርስዎን መለያ ወቅታዊ አድራሻ ለማየት እየጠየቀ ነው። ምንጊዜም ግንኙነት የሚያደርጉባቸውን ድረ ገጾች የሚያምኗቸው መሆኑን ያረጋግጡ።"
   },
   "about": {
     "message": "ስለ"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectRequest": {
-    "message": "የግንኙነት ጥያቄ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
-  },
-  "dismiss": {
-    "message": "አሰናብት"
   },
   "done": {
     "message": "ተጠናቅቋል"

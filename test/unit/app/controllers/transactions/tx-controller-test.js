@@ -48,6 +48,7 @@ describe('Transaction Controller', function () {
         ethTx.sign(fromAccount.key)
         resolve()
       }),
+      getPermittedAccounts: () => {},
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
@@ -176,13 +177,15 @@ describe('Transaction Controller', function () {
   describe('#addUnapprovedTransaction', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
 
-    let getSelectedAddress
+    let getSelectedAddress, getPermittedAccounts
     beforeEach(function () {
       getSelectedAddress = sinon.stub(txController, 'getSelectedAddress').returns(selectedAddress)
+      getPermittedAccounts = sinon.stub(txController, 'getPermittedAccounts').returns([selectedAddress])
     })
 
     afterEach(function () {
       getSelectedAddress.restore()
+      getPermittedAccounts.restore()
     })
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {

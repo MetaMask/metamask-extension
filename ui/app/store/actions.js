@@ -328,7 +328,6 @@ const actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -352,9 +351,12 @@ const actions = {
   createSpeedUpTransaction,
   createRetryTransaction,
 
-  approveProviderRequestByOrigin,
-  rejectProviderRequestByOrigin,
-  clearApprovedOrigins,
+  // Permissions
+  approvePermissionsRequest,
+  clearPermissions,
+  rejectPermissionsRequest,
+  removePermissionsFor,
+  legacyExposeAccounts,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -395,6 +397,13 @@ const actions = {
   turnThreeBoxSyncingOnAndInitialize,
 
   tryReverseResolveAddress,
+
+  getRequestAccountTabIds,
+  getCurrentWindowTab,
+  SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
+  SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
+  getOpenMetamaskTabsIds,
+  SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
 
 module.exports = actions
@@ -2709,23 +2718,58 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequestByOrigin (origin) {
+// Permissions
+
+/**
+ * Approves the permission requests with the given IDs.
+ * @param {string} requestId - The id of the permissions request.
+ * @param {string[]} accounts - The accounts to expose, if any.
+ */
+function approvePermissionsRequest (requestId, accounts) {
   return () => {
-    background.approveProviderRequestByOrigin(origin)
+    background.approvePermissionsRequest(requestId, accounts)
   }
 }
 
-function rejectProviderRequestByOrigin (origin) {
+/**
+ * Rejects the permission requests with the given IDs.
+ * @param {Array} requestId
+ */
+function rejectPermissionsRequest (requestId) {
   return () => {
-    background.rejectProviderRequestByOrigin(origin)
+    background.rejectPermissionsRequest(requestId)
   }
 }
 
-function clearApprovedOrigins () {
+/**
+ * Exposes the given account(s) to the given origin.
+ * Call ONLY as a result of direct user action.
+ */
+function legacyExposeAccounts (origin, accounts) {
   return () => {
-    background.clearApprovedOrigins()
+    return background.legacyExposeAccounts(origin, accounts)
   }
 }
+
+/**
+ * Clears the given permissions for the given origin.
+ */
+function removePermissionsFor (domains) {
+  return () => {
+    background.removePermissionsFor(domains)
+  }
+}
+
+/**
+ * Clears all permissions for all domains.
+ */
+function clearPermissions () {
+  return () => {
+    background.clearPermissions()
+  }
+}
+
+// ////
 
 function setFirstTimeFlowType (type) {
   return (dispatch) => {
@@ -2844,12 +2888,6 @@ function getTokenParams (tokenAddress) {
         dispatch(actions.addToken(tokenAddress, symbol, decimals))
         dispatch(actions.loadingTokenParamsFinished())
       })
-  }
-}
-
-function unsetMigratedPrivacyMode () {
-  return () => {
-    background.unsetMigratedPrivacyMode()
   }
 }
 
@@ -2988,5 +3026,48 @@ function getNextNonce () {
         resolve(nextNonce)
       })
     })
+  }
+}
+
+function setRequestAccountTabIds (requestAccountTabIds) {
+  return {
+    type: actions.SET_REQUEST_ACCOUNT_TABS,
+    value: requestAccountTabIds,
+  }
+}
+
+function getRequestAccountTabIds () {
+  return async (dispatch) => {
+    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    dispatch(setRequestAccountTabIds(requestAccountTabIds))
+  }
+}
+
+function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    value: openMetaMaskTabIDs,
+  }
+}
+
+function getOpenMetamaskTabsIds () {
+  return async (dispatch) => {
+    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
+  }
+}
+
+function setCurrentWindowTab (currentWindowTab) {
+  return {
+    type: actions.SET_CURRENT_WINDOW_TAB,
+    value: currentWindowTab,
+  }
+}
+
+
+function getCurrentWindowTab () {
+  return async (dispatch) => {
+    const currentWindowTab = await global.platform.currentTab()
+    dispatch(setCurrentWindowTab(currentWindowTab))
   }
 }

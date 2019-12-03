@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Privātais režīms tagad ieslēgts pēc noklusējuma"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafiks pieejams vienīgi Ethereum tīklos."
   },
-  "confirmClear": {
-    "message": "Vai tiešām vēlaties dzēst apstiprinātās vietnes?"
-  },
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
-  },
-  "clearApprovalData": {
-    "message": "Notīrīt konfidencialitātes datus"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,11 +12,8 @@
   "reject": {
     "message": "Noraidīt"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 vēlas izveidot savienojumu ar jūsu kontu"
-  },
-  "providerRequestInfo": {
-    "message": "Šī lapa pieprasa piekļuvi jūsu pašreizēja konta adreses informācijai. Vienmēr pārliecinieties, ka uzticaties lapām, kuras apmeklējat."
   },
   "about": {
     "message": "Par"
@@ -248,9 +236,6 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectRequest": {
-    "message": "Savienojuma pieprasījums"
-  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
@@ -367,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
-  },
-  "dismiss": {
-    "message": "Noraidīt"
   },
   "done": {
     "message": "Pabeigts"

@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Η Λειτουργία Απορρήτου είναι πλέον ενεργοποιημένη από προεπιλογή"
-  },
   "chartOnlyAvailableEth": {
     "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
-  },
-  "confirmClear": {
-    "message": "Είστε βέβαιοι ότι θέλετε να διαγράψετε τους εγκεκριμένους ιστότοπους;"
   },
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearApprovalData": {
-    "message": "Εκκαθάριση Δεδομένων Απορρήτου"
-  },
   "reject": {
     "message": "Απόρριψη"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "Αίτημα σύνδεσης στον λογαριασμό σας από $1"
-  },
-  "providerRequestInfo": {
-    "message": "Ο ιστότοπος ζητά πρόσβαση για προβολή της τρέχουσας διεύθυνσης του λογαριασμού σας. Να σιγουρεύεστε πάντα ότι εμπιστεύεστε τους ιστότοπους με τους οποίους αλληλεπιδράτε."
   },
   "about": {
     "message": "Σχετικά με"
@@ -245,9 +233,6 @@
   "connect": {
     "message": "Σύνδεση"
   },
-  "connectRequest": {
-    "message": "Αίτημα Σύνδεσης"
-  },
   "connectingTo": {
     "message": "Σύνδεση με $1"
   },
@@ -364,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Αν έχετε ήδη κάποια Ether, ο πιο γρήγορος τρόπος για να πάρετε τα Ether στο νέο σας πορτοφόλι με άμεση κατάθεση."
-  },
-  "dismiss": {
-    "message": "Παράβλεψη"
   },
   "done": {
     "message": "Τέλος"

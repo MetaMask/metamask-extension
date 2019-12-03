@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "プライバシーモードがデフォルトで有効になりました"
-  },
   "chartOnlyAvailableEth": {
     "message": "チャートはEthereumネットワークでのみ利用可能です。"
-  },
-  "confirmClear": {
-    "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
   },
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },
-  "clearApprovalData": {
-    "message": "承認データのクリア"
-  },
   "reject": {
     "message": "拒否"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 はあなたのアカウントにアクセスしようとしています。"
-  },
-  "providerRequestInfo": {
-    "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
   },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
@@ -84,7 +72,7 @@
     "message": "推奨トークンを追加"
   },
   "addAcquiredTokens": {
-    "message": "Metamaskで獲得したトークンを追加する"
+    "message": "MetaMaskで獲得したトークンを追加する"
   },
   "amount": {
     "message": "金額"

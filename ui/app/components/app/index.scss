@@ -38,7 +38,7 @@
 
 @import '../../pages/index';
 
-@import 'provider-page-container/index';
+@import 'permission-page-container/index';
 
 @import 'selected-account/index';
 
@@ -64,15 +64,9 @@
 
 @import 'transaction-status/index';
 
-@import 'app-header/index';
-
 @import 'sidebars/index';
 
 @import '../ui/unit-input/index';
-
-@import 'gas-customization/gas-modal-page-container/index';
-
-@import 'gas-customization/gas-modal-page-container/index';
 
 @import 'gas-customization/gas-modal-page-container/index';
 
@@ -87,3 +81,7 @@
 @import 'multiple-notifications/index';
 
 @import 'signature-request/index';
+
+@import 'connected-sites-list/index';
+
+@import '../ui/icon-with-fallback/index';

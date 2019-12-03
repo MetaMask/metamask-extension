@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 const PropTypes = require('prop-types')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
+const { CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
 const genAccountLink = require('../../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
@@ -12,7 +15,7 @@ AccountDetailsDropdown.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsDropdown)
+module.exports = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)
 
 function mapStateToProps (state) {
   return {
@@ -58,6 +61,7 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
     viewOnEtherscan,
     showRemoveAccountConfirmationModal,
     rpcPrefs,
+    history,
   } = this.props
 
   const address = selectedIdentity.address
@@ -132,6 +136,23 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
         }
         icon={(
           <img src="images/open-etherscan.svg" style={{ height: '15px' }} alt="" />
+        )}
+      />
+      <Item
+        onClick={(e) => {
+          e.stopPropagation()
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Account Options',
+              name: 'Opened Connected Sites',
+            },
+          })
+          history.push(CONNECTED_ROUTE)
+        }}
+        text={this.context.t('connectedSites')}
+        icon={(
+          <img src="images/connect-white.svg" style={{ height: '15px' }} alt="" />
         )}
       />
       {

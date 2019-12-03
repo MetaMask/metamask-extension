@@ -14,47 +14,33 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "cancelledConnectionWithMetaMask": {
+    "message": "Cancelled Connection With MetaMask"
+  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "confirmClear": {
-    "message": "Are you sure you want to clear approved websites?"
+  "connectedSites": {
+    "message": "Connected Sites"
   },
-  "connections": {
-    "message": "Connections"
+  "connectingWithMetaMask": {
+    "message": "Connecting With MetaMask..."
   },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
+  "connectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
+  "chooseAnAcount": {
+    "message": "Choose an account"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearApprovalData": {
-    "message": "Remove all sites"
-  },
   "reject": {
     "message": "Reject"
   },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
+  "redirectingBackToDapp": {
+    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
@@ -305,9 +291,6 @@
   "connect": {
     "message": "Connect"
   },
-  "connectRequest": {
-    "message": "Connect Request"
-  },
   "connectingTo": {
     "message": "Connecting to $1"
   },
@@ -431,14 +414,36 @@
   "details": {
     "message": "Details"
   },
+  "disconnectAccount": {
+    "message": "Disconnect account"
+  },
+  "disconnectAll": {
+    "message": "Disconnect All"
+  },
+  "disconnectAllModalDescription": {
+    "message": "Are you sure? You will be disconnected from all sites on all accounts."
+  },
+  "disconnectAccountModalDescription": {
+    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
+  },
+  "disconnectAccountQuestion": {
+    "message": "Disconnect account?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "Disconnect from this account?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "Disconnect all accounts?"
+  },
   "directDepositEther": {
     "message": "Directly Deposit Ether"
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
-  "dismiss": {
-    "message": "Dismiss"
+  "domainLastConnect": {
+    "message": "Last Connected: $1",
+    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -499,6 +504,13 @@
   },
   "endOfFlowMessage10": {
     "message": "All Done"
+  },
+  "extensionId": {
+    "message": "Extension ID: $1",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+  },
+  "externalExtension": {
+    "message": "External Extension"
   },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
@@ -733,8 +745,14 @@
   "max": {
     "message": "Max"
   },
+  "lastConnected": {
+    "message": "Last Connected"
+  },
   "learnMore": {
     "message": "Learn more"
+  },
+  "learnAboutRisks": {
+    "message": "Learn about the risks here."
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
@@ -744,6 +762,10 @@
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
+  },
+  "likeToConnect": {
+    "message": "$1 would like to connect to your MetaMask account",
+    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Links"
@@ -875,6 +897,9 @@
   },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "onlyConnectTrust": {
+    "message": "Only connect with sites you trust."
   },
   "optionalChainId": {
     "message": "ChainID (optional)"
@@ -1077,6 +1102,9 @@
   },
   "readyToConnect": {
     "message": "Ready to Connect?"
+  },
+  "revokeInPermissions": {
+    "message": "* You can view and revoke permissions in MetaMask settings."
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -1283,6 +1311,9 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "submit": {
+    "message": "Submit"
+  },
   "submitted": {
     "message": "Submitted"
   },
@@ -1331,6 +1362,14 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "thisWillAllow": {
+    "message": "This will allow $1 to:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
+  },
+  "thisWillAllowExternalExtension": {
+    "message": "This will allow an external extension with id $1 to:",
+    "description":  "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
   },
@@ -1342,6 +1381,10 @@
   },
   "toWithColon": {
     "message": "To:"
+  },
+  "toConnectWith": {
+    "message": "To connect with $1",
+    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
