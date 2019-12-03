@@ -29,7 +29,6 @@ export default class AccountMenu extends PureComponent {
     history: PropTypes.object,
     identities: PropTypes.object,
     isAccountMenuOpen: PropTypes.bool,
-    prevIsAccountMenuOpen: PropTypes.bool,
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
@@ -45,7 +44,7 @@ export default class AccountMenu extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const { prevIsAccountMenuOpen } = prevProps
+    const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps
     const { isAccountMenuOpen } = this.props
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {

@@ -42,8 +42,8 @@ AccountPanel.prototype.render = function () {
         <span className="font-small">{panelState.identiconLabel.substring(0, 7) + '...'}</span>
       </div>
       <div className="identity-data flex-column flex-justify-center flex-grow select-none">
-        {panelState.attributes.map((attr) => (
-          <div className="flex-row flex-space-between" key={'' + Math.round(Math.random() * 1000000)}>
+        {panelState.attributes.map((attr, index) => (
+          <div className="flex-row flex-space-between" key={index}>
             <label className="font-small no-select">{attr.key}</label>
             <span className="font-small">{attr.value}</span>
           </div>

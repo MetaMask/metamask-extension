@@ -1,5 +1,5 @@
 import assert from 'assert'
-import selectors from '../selectors.js'
+import * as selectors from '../selectors'
 const {
   getAddressBook,
 } = selectors

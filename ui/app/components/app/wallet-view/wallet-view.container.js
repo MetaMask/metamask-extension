@@ -3,17 +3,17 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import WalletView from './wallet-view.component'
 import {showSendPage, hideSidebar, setSelectedToken, showAddTokenPage} from '../../../store/actions'
-import * as selectors from '../../../selectors/selectors'
+import { getMetaMaskAccounts, getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
-    accounts: selectors.getMetaMaskAccounts(state),
+    accounts: getMetaMaskAccounts(state),
     keyrings: state.metamask.keyrings,
-    selectedAddress: selectors.getSelectedAddress(state),
-    selectedAccount: selectors.getSelectedAccount(state),
+    selectedAddress: getSelectedAddress(state),
+    selectedAccount: getSelectedAccount(state),
     selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
 }
