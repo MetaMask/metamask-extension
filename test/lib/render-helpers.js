@@ -39,7 +39,11 @@ function mountWithRouter (node) {
     childContextTypes: { router: shape({}), t: () => {} },
   })
 
-  return mount(<BrowserRouter>
-    {node}
-  </BrowserRouter>, createContext())
+  const Wrapper = () => (
+    <BrowserRouter>
+      {node}
+    </BrowserRouter>
+  )
+
+  return mount(<Wrapper />, createContext())
 }
