@@ -14,7 +14,7 @@ const insertRule = css => {
     extraSheet = extraSheet.sheet || extraSheet.styleSheet
   }
 
-  var index = (extraSheet.cssRules || extraSheet.rules).length
+  const index = (extraSheet.cssRules || extraSheet.rules).length
   extraSheet.insertRule(css, index)
 
   return extraSheet
@@ -22,14 +22,14 @@ const insertRule = css => {
 
 const insertKeyframesRule = keyframes => {
   // random name
-  var name = 'anim_' + (++index) + (+new Date())
-  var css = '@' + 'keyframes ' + name + ' {'
+  const name = 'anim_' + (++index) + (+new Date())
+  let css = '@' + 'keyframes ' + name + ' {'
 
-  for (var key in keyframes) {
+  for (const key in keyframes) {
     css += key + ' {'
 
-    for (var property in keyframes[key]) {
-      var part = ':' + keyframes[key][property] + ';'
+    for (const property in keyframes[key]) {
+      const part = ':' + keyframes[key][property] + ';'
       css += property + part
     }
 
@@ -157,7 +157,7 @@ class FadeModal extends Component {
 
   addTransitionListener = (node, handle) => {
     if (node) {
-      var endListener = function (e) {
+      const endListener = function (e) {
         if (e && e.target !== node) {
           return
         }
@@ -196,30 +196,35 @@ class FadeModal extends Component {
     }, this.props.contentStyle)
 
     const backdrop = this.props.backdrop
-      ? <div
-        className="backdrop"
-        style={backdropStyle}
-        onClick={this.props.closeOnClick
-          ? this.handleBackdropClick
-          : null}
-      /> : undefined
+      ? (
+        <div
+          className="backdrop"
+          style={backdropStyle}
+          onClick={this.props.closeOnClick
+            ? this.handleBackdropClick
+            : null}
+        />
+      ) : undefined
 
     if (willHide) {
       this.addTransitionListener(this.content, this.leave)
     }
 
-    return (<span>
-      <div className="modal" style={modalStyle}>
-        <div className="content"
-          ref={el => (this.content = el)}
-          tabIndex="-1"
-          style={contentStyle}
-        >
-          {this.props.children}
+    return (
+      <span>
+        <div className="modal" style={modalStyle}>
+          <div
+            className="content"
+            ref={el => (this.content = el)}
+            tabIndex="-1"
+            style={contentStyle}
+          >
+            {this.props.children}
+          </div>
         </div>
-      </div>
-      {backdrop}
-    </span>)
+        {backdrop}
+      </span>
+    )
 
   }
 
