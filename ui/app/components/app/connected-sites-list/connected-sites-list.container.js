@@ -17,8 +17,8 @@ import { getOriginFromUrl } from '../../../helpers/utils/util'
 
 const mapStateToProps = state => {
   const addressConnectedToCurrentTab = getAddressConnectedToCurrentTab(state)
-  const { openMetaMaskTabs, currentActiveTab = {} } = state.appState
-  const { title, url, id } = currentActiveTab
+  const { openMetaMaskTabs } = state.appState
+  const { title, url, id } = state.activeTab
 
   let tabToConnect
 
