@@ -53,7 +53,8 @@ class SimpleDropdown extends Component {
                 'simple-dropdown__option--selected': option.value === selectedOption,
               })}
               key={option.value}
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation()
                 if (option.value !== selectedOption) {
                   onSelect(option.value)
                 }
