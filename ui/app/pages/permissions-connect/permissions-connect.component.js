@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
 export default class PermissionConnect extends Component {
@@ -42,6 +44,21 @@ export default class PermissionConnect extends Component {
     originName: this.props.originName,
   }
 
+  beforeUnload = () => {
+    const { permissionsRequestId, rejectPermissionsRequest } = this.props
+    const { permissionAccepted } = this.state
+
+    if (permissionAccepted === null && permissionsRequestId) {
+      rejectPermissionsRequest(permissionsRequestId)
+    }
+  }
+
+  removeBeforeUnload = () => {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+      window.removeEventListener('beforeunload', this.beforeUnload)
+    }
+  }
+
   selectAccount = (address) => {
     this.setState({
       page: 2,
@@ -56,6 +73,7 @@ export default class PermissionConnect extends Component {
       page: null,
       permissionAccepted: accepted,
     })
+    this.removeBeforeUnload()
 
     setTimeout(() => {
       global.platform.currentTab()
@@ -75,6 +93,10 @@ export default class PermissionConnect extends Component {
     } = this.props
     getCurrentWindowTab()
     getRequestAccountTabIds()
+
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+      window.addEventListener('beforeunload', this.beforeUnload)
+    }
   }
 
   render () {
