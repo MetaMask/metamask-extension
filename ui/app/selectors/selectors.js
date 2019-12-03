@@ -561,7 +561,7 @@ function getRenderablePermissionsDomains (state) {
 
 function getOriginOfCurrentTab (state) {
   const { activeTab } = state
-  return activeTab.url && getOriginFromUrl(activeTab.url)
+  return activeTab && activeTab.url && getOriginFromUrl(activeTab.url)
 }
 
 function getLastConnectedInfo (state) {
