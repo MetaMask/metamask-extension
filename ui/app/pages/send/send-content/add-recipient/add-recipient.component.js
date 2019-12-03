@@ -64,7 +64,6 @@ export default class AddRecipient extends Component {
 
   state = {
     isShowingTransfer: false,
-    isShowingAllRecent: false,
   }
 
   selectRecipient = (to, nickname = '') => {

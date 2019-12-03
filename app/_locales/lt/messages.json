@@ -1335,9 +1335,6 @@
   "userName": {
     "message": "Vartotojo vardas"
   },
-  "validFileImport": {
-    "message": "Turite pasirinkti galiojantį failą, kurį pageidaujate importuoti."
-  },
   "viewAccount": {
     "message": "Žiūrėti paskyrą"
   },

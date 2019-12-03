@@ -37,10 +37,9 @@ export default class EnsInput extends Component {
   }
 
   state = {
-    recipient: null,
     input: '',
     toError: null,
-    toWarning: null,
+    ensResolution: undefined,
   }
 
   componentDidMount () {
@@ -234,7 +233,7 @@ export default class EnsInput extends Component {
   }
 
   ensIconContents () {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
+    const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
     if (toError) {
       return

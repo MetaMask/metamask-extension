@@ -1325,9 +1325,6 @@
   "userName": {
     "message": "Felhasználónév"
   },
-  "validFileImport": {
-    "message": "Ki kell választanod egy érvényes fájlt az importáláshoz."
-  },
   "viewAccount": {
     "message": "Fiók megtekintése"
   },

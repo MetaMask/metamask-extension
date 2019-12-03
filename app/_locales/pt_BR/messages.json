@@ -1314,9 +1314,6 @@
   "userName": {
     "message": "Nome de usuário"
   },
-  "validFileImport": {
-    "message": "Você precisa selecionar um arquivo válido para importar."
-  },
   "viewAccount": {
     "message": "Visualizar conta"
   },

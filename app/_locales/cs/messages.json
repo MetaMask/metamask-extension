@@ -514,9 +514,6 @@
   "usedByClients": {
     "message": "Používána různými klienty"
   },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
-  },
   "viewAccount": {
     "message": "Zobrazit účet"
   },

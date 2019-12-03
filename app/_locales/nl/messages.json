@@ -463,9 +463,6 @@
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
   },
-  "validFileImport": {
-    "message": "U moet een geldig bestand selecteren om te importeren."
-  },
   "viewAccount": {
     "message": "Bekijk account"
   },

@@ -1317,9 +1317,6 @@
   "userName": {
     "message": "Uporabniško ime"
   },
-  "validFileImport": {
-    "message": "Za uvoz morate izbrati pravilno datoteko."
-  },
   "viewAccount": {
     "message": "Poglej račun"
   },

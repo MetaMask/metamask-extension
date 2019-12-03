@@ -1320,9 +1320,6 @@
   "userName": {
     "message": "Nazwa użytkownika"
   },
-  "validFileImport": {
-    "message": "Należy wybrać prawidłowy plik do zaimportowania."
-  },
   "viewAccount": {
     "message": "Zobacz konto"
   },

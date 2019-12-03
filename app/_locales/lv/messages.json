@@ -1331,9 +1331,6 @@
   "userName": {
     "message": "Lietotājvārds"
   },
-  "validFileImport": {
-    "message": "Importēšanai jāatlasa derīga datne."
-  },
   "viewAccount": {
     "message": "Skatīt kontu"
   },

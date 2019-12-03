@@ -23,7 +23,7 @@ export default class AddContact extends PureComponent {
   }
 
   state = {
-    nickname: '',
+    newName: '',
     ethAddress: '',
     ensAddress: '',
     error: '',

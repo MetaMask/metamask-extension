@@ -1304,9 +1304,6 @@
   "userName": {
     "message": "Nama Pengguna"
   },
-  "validFileImport": {
-    "message": "Anda harus memilih berkas yang sah untuk diimpor."
-  },
   "viewAccount": {
     "message": "Lihat Akun"
   },

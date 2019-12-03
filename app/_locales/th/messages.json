@@ -641,9 +641,6 @@
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
   },
-  "validFileImport": {
-    "message": "คุณต้องเลือกไฟล์ที่ถูกต้องเพื่อนำเข้า"
-  },
   "viewAccount": {
     "message": "ดูบัญชี"
   },

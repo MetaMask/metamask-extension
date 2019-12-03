@@ -1332,9 +1332,6 @@
   "userName": {
     "message": "የተጣቃሚ ስም"
   },
-  "validFileImport": {
-    "message": "የሚያስመጡትን ትክክለኛ ፋይል መምረጥ አለብዎ፡"
-  },
   "viewAccount": {
     "message": "መለያን ይመልከቱ"
   },

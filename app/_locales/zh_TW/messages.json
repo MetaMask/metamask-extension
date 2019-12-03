@@ -1308,9 +1308,6 @@
   "userName": {
     "message": "使用者名稱"
   },
-  "validFileImport": {
-    "message": "您必須選擇一個合法的檔案來匯入."
-  },
   "viewAccount": {
     "message": "查看帳戶"
   },

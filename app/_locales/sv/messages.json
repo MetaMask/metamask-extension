@@ -1310,9 +1310,6 @@
   "userName": {
     "message": "Användarnamn"
   },
-  "validFileImport": {
-    "message": "Du måste välja en giltig fil för att importera."
-  },
   "viewAccount": {
     "message": "Visa konto"
   },

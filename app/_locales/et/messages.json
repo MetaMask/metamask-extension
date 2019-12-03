@@ -1325,9 +1325,6 @@
   "userName": {
     "message": "Kasutajanimi"
   },
-  "validFileImport": {
-    "message": "Peate valima importimiseks sobiva faili."
-  },
   "viewAccount": {
     "message": "Kuva konto"
   },

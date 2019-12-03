@@ -527,9 +527,6 @@
   "usedByClients": {
     "message": "Используется различными клиентами"
   },
-  "validFileImport": {
-    "message": "Вам нужно выбрать правильный файл для импорта."
-  },
   "viewAccount": {
     "message": "Посмотреть счет"
   },
