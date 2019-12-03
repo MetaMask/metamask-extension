@@ -4,7 +4,12 @@ import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../app/scripts/lib/enums'
+import { DEFAULT_ROUTE, CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
 export default class PermissionConnect extends Component {
@@ -22,15 +27,18 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object,
     requestAccountTabs: PropTypes.object,
     permissionsRequestId: PropTypes.string,
+    domains: PropTypes.object,
+    history: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     originName: '',
     nativeCurrency: '',
-    permissionsRequest: {},
+    permissionsRequest: undefined,
     addressLastConnectedMap: {},
     requestAccountTabs: {},
     permissionsRequestId: '',
+    domains: {},
   }
 
   static contextTypes = {
@@ -59,6 +67,30 @@ export default class PermissionConnect extends Component {
     }
   }
 
+  componentDidUpdate (prevProps) {
+    const { domains, permissionsRequestId } = this.props
+    const { originName, page } = this.state
+
+    if (!permissionsRequestId && prevProps.permissionsRequestId && page !== null) {
+      const permissionDataForDomain = domains && domains[originName] || {}
+      const permissionsForDomain = permissionDataForDomain.permissions || []
+      const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
+      const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
+      const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
+      if (addedAPermission) {
+        this.redirectFlow(true)
+      } else {
+        this.redirectFlow(false)
+      }
+    } else if (permissionsRequestId && prevProps.permissionsRequestId &&
+      permissionsRequestId !== prevProps.permissionsRequestId && page !== null) {
+      this.setState({
+        originName: this.props.originName,
+        page: 1,
+      })
+    }
+  }
+
   selectAccount = (address) => {
     this.setState({
       page: 2,
@@ -67,22 +99,29 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { requestAccountTabs } = this.props
+    const { requestAccountTabs, history } = this.props
     const { originName } = this.state
+
     this.setState({
       page: null,
       permissionAccepted: accepted,
     })
     this.removeBeforeUnload()
 
-    setTimeout(async () => {
-      const { id: currentTabId } = await global.platform.currentTab()
-      try {
-        await global.platform.switchToTab(requestAccountTabs[originName])
-      } finally {
-        global.platform.closeTab(currentTabId)
-      }
-    }, 2000)
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+      setTimeout(async () => {
+        const { id: currentTabId } = await global.platform.currentTab()
+        try {
+          await global.platform.switchToTab(requestAccountTabs[originName])
+        } finally {
+          global.platform.closeTab(currentTabId)
+        }
+      }, 2000)
+    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+      history.push(DEFAULT_ROUTE)
+    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+      history.push(CONNECTED_ROUTE)
+    }
   }
 
   componentDidMount () {
