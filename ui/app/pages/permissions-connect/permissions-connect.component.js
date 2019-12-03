@@ -110,11 +110,13 @@ export default class PermissionConnect extends Component {
 
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
       setTimeout(async () => {
-        const { id: currentTabId } = await global.platform.currentTab()
+        const currentTab = await global.platform.currentTab()
         try {
-          await global.platform.switchToTab(requestAccountTabs[originName])
+          if (currentTab.active) {
+            await global.platform.switchToTab(requestAccountTabs[originName])
+          }
         } finally {
-          global.platform.closeTab(currentTabId)
+          global.platform.closeTab(currentTab.id)
         }
       }, 2000)
     } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
