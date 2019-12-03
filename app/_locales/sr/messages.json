@@ -1320,9 +1320,6 @@
   "userName": {
     "message": "Корисничко име"
   },
-  "validFileImport": {
-    "message": "Morate odabrati važeću datoteku da biste ih uvezli."
-  },
   "viewAccount": {
     "message": "Прикажи налог"
   },

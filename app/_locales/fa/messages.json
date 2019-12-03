@@ -1335,9 +1335,6 @@
   "userName": {
     "message": "نام کاربری"
   },
-  "validFileImport": {
-    "message": "شما باید یک فایل معتبر را جهت وارد سازی انتخاب کنید."
-  },
   "viewAccount": {
     "message": "مشاهده حساب"
   },

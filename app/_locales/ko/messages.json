@@ -1326,9 +1326,6 @@
   "userName": {
     "message": "사용자이름"
   },
-  "validFileImport": {
-    "message": "가져오기 위해 유효한 파일을 선택해야 합니다."
-  },
   "viewAccount": {
     "message": "계정 보기"
   },

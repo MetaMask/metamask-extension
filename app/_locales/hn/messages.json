@@ -476,9 +476,6 @@
   "usedByClients": {
     "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
-  "validFileImport": {
-    "message": "आयात करने के लिए आपको एक वैध फ़ाइल चुननी होगी।"
-  },
   "viewAccount": {
     "message": "खाता देखें"
   },

@@ -1328,9 +1328,6 @@
   "userName": {
     "message": "اسم المستخدم"
   },
-  "validFileImport": {
-    "message": "يجب عليك تحديد ملف صالح للاستيراد."
-  },
   "viewAccount": {
     "message": "عرض حساب"
   },

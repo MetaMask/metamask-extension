@@ -1329,9 +1329,6 @@
   "userName": {
     "message": "שם משתמש"
   },
-  "validFileImport": {
-    "message": "עליך לבחור קובץ חוקי לייבוא."
-  },
   "viewAccount": {
     "message": "הצג חשבון"
   },

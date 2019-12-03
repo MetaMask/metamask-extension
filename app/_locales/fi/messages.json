@@ -1332,9 +1332,6 @@
   "userName": {
     "message": "Käyttäjätunnus"
   },
-  "validFileImport": {
-    "message": "Valittava tuotavaksi kelpaava tiedosto."
-  },
   "viewAccount": {
     "message": "Näytä tili"
   },

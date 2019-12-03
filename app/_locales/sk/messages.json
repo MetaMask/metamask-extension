@@ -1289,9 +1289,6 @@
   "userName": {
     "message": "Meno používateľa"
   },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
-  },
   "viewAccount": {
     "message": "Zobrazit účet"
   },
