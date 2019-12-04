@@ -287,7 +287,7 @@ export default class SignatureRequestOriginal extends Component {
           }}
         >
           { this.context.t('cancel') }
-        </Button>,
+        </Button>
         <Button
           type="secondary"
           large
