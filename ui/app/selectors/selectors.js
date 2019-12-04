@@ -131,7 +131,7 @@ export const getMetaMaskAccountsOrdered = createSelector(
   (keyrings, identities, accounts) => keyrings
     .reduce((list, keyring) => list.concat(keyring.accounts), [])
     .filter(address => !!identities[address])
-    .map(address => ({ ...identities[address], ...accounts[address]}))
+    .map(address => ({ ...identities[address], ...accounts[address] }))
 )
 
 export function isBalanceCached (state) {
