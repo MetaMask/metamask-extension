@@ -1,6 +1,7 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const ObservableStore = require('obs-store')
+const log = require('loglevel')
 const RpcCap = require('rpc-cap').CapabilitiesController
 const { ethErrors } = require('eth-json-rpc-errors')
 
@@ -141,6 +142,11 @@ class PermissionsController {
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
 
+    if (!approval) {
+      log.warn(`Permissions request with id '${id}' not found`)
+      return
+    }
+
     try {
 
       // attempt to finalize the request and resolve it
@@ -165,6 +171,12 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
+
+    if (!approval) {
+      log.warn(`Permissions request with id '${id}' not found`)
+      return
+    }
+
     approval.reject(ethErrors.provider.userRejectedRequest())
     delete this.pendingApprovals[id]
   }
