@@ -264,7 +264,7 @@ export default class AccountMenu extends Component {
 
     const shouldShowScrollButton = canScroll && !atAccountListBottom
 
-    this.setState({ shouldShowScrollButton})
+    this.setState({ shouldShowScrollButton })
   }
 
   onScroll = debounce(this.setShouldShowScrollButton, 25)

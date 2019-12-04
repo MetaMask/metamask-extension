@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose, withProps } from 'recompose'
+import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import {
   toggleAccountMenu,
@@ -27,6 +27,7 @@ const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5
 
 function mapStateToProps (state) {
   const { metamask: { isAccountMenuOpen } } = state
+  const accounts = getMetaMaskAccountsOrdered(state)
 
   return {
     isAccountMenuOpen,
@@ -34,7 +35,8 @@ function mapStateToProps (state) {
     originOfCurrentTab: getOriginOfCurrentTab(state),
     selectedAddress: getSelectedAddress(state),
     keyrings: getMetaMaskKeyrings(state),
-    accounts: getMetaMaskAccountsOrdered(state),
+    accounts,
+    shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
   }
 }
 
@@ -71,5 +73,4 @@ function mapDispatchToProps (dispatch) {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  withProps(({ accounts }) => ({ shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT}))
 )(AccountMenu)
