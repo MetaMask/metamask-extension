@@ -2718,19 +2718,19 @@ function setPendingTokens (pendingTokens) {
 // Permissions
 
 /**
- * Approves the permission requests with the given IDs.
- * @param {string} requestId - The id of the permissions request.
+ * Approves the permissions request.
+ * @param {Object} request - The permissions request to approve
  * @param {string[]} accounts - The accounts to expose, if any.
  */
-function approvePermissionsRequest (requestId, accounts) {
+function approvePermissionsRequest (request, accounts) {
   return () => {
-    background.approvePermissionsRequest(requestId, accounts)
+    background.approvePermissionsRequest(request, accounts)
   }
 }
 
 /**
- * Rejects the permission requests with the given IDs.
- * @param {Array} requestId
+ * Rejects the permissions request with the given ID.
+ * @param {string} requestId - The id of the request to be rejected
  */
 function rejectPermissionsRequest (requestId) {
   return () => {

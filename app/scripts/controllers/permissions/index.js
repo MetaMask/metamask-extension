@@ -133,7 +133,8 @@ class PermissionsController {
   /**
    * User approval callback. The request can fail if the request is invalid.
    *
-   * @param {object} approved the approved request object
+   * @param {object} approved - the approved request object
+   * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
 
