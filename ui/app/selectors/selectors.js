@@ -1,6 +1,7 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { mapObjectValues } from '../../../app/scripts/lib/util'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+import { createSelector } from 'reselect'
 
 import abi from 'human-standard-token-abi'
 import { multiplyCurrencies } from '../helpers/utils/conversion-util'
@@ -58,6 +59,28 @@ export function getCurrentNetworkId (state) {
   return state.metamask.network
 }
 
+export const getMetaMaskAccounts = createSelector(
+  getMetaMaskAccountsRaw,
+  getMetaMaskCachedBalances,
+  (currentAccounts, cachedBalances) => Object.entries(currentAccounts).reduce((selectedAccounts, [accountID, account]) => {
+    if (account.balance === null || account.balance === undefined) {
+      return {
+        ...selectedAccounts,
+        [accountID]: {
+          ...account,
+          balance: cachedBalances && cachedBalances[accountID],
+        },
+
+      }
+    } else {
+      return {
+        ...selectedAccounts,
+        [accountID]: account,
+      }
+    }
+  }, {})
+)
+
 export function getSelectedAddress (state) {
   const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
@@ -80,24 +103,36 @@ export function getNumberOfTokens (state) {
   return tokens ? tokens.length : 0
 }
 
-export function getMetaMaskAccounts (state) {
-  const currentAccounts = state.metamask.accounts
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
-  const selectedAccounts = {}
-
-  Object.keys(currentAccounts).forEach(accountID => {
-    const account = currentAccounts[accountID]
-    if (account && account.balance === null || account.balance === undefined) {
-      selectedAccounts[accountID] = {
-        ...account,
-        balance: cachedBalances && cachedBalances[accountID],
-      }
-    } else {
-      selectedAccounts[accountID] = account
-    }
-  })
-  return selectedAccounts
+export function getMetaMaskKeyrings (state) {
+  return state.metamask.keyrings
 }
+
+export function getMetaMaskIdentities (state) {
+  return state.metamask.identities
+}
+
+export function getMetaMaskAccountsRaw (state) {
+  return state.metamask.accounts
+}
+
+export function getMetaMaskCachedBalances (state) {
+  const network = getCurrentNetworkId(state)
+
+  return state.metamask.cachedBalances[network]
+}
+
+/**
+ * Get ordered (by keyrings) accounts with identity and balance
+ */
+export const getMetaMaskAccountsOrdered = createSelector(
+  getMetaMaskKeyrings,
+  getMetaMaskIdentities,
+  getMetaMaskAccounts,
+  (keyrings, identities, accounts) => keyrings
+    .reduce((list, keyring) => list.concat(keyring.accounts), [])
+    .filter(address => !!identities[address])
+    .map(address => ({ ...identities[address], ...accounts[address]}))
+)
 
 export function isBalanceCached (state) {
   const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance

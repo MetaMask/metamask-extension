@@ -1199,6 +1199,12 @@
   "searchTokens": {
     "message": "Search Tokens"
   },
+  "searchAccounts": {
+    "message": "Search Accounts"
+  },
+  "noAccountsFound": {
+    "message": "No accounts found for the given search query"
+  },
   "selectAnAccount": {
     "message": "Select an Account"
   },
