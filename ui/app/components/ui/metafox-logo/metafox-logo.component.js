@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class MetaFoxLogo extends PureComponent {
   static propTypes = {
@@ -7,23 +8,30 @@ export default class MetaFoxLogo extends PureComponent {
     unsetIconHeight: PropTypes.bool,
   }
 
+  static defaultProps = {
+    onClick: undefined,
+  }
+
   render () {
-    const iconProps = this.props.unsetIconHeight ? {} : { height: 42, width: 42 }
+    const { onClick, unsetIconHeight } = this.props
+    const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 }
 
     return (
       <div
-        onClick={this.props.onClick}
-        className="app-header__logo-container"
+        onClick={onClick}
+        className={classnames('app-header__logo-container', {
+          'app-header__logo-container--clickable': Boolean(onClick),
+        })}
       >
         <img
           height={30}
           src="/images/logo/metamask-logo-horizontal.svg"
-          className="app-header__metafox-logo app-header__metafox-logo--horizontal"
+          className={classnames('app-header__metafox-logo', 'app-header__metafox-logo--horizontal')}
         />
         <img
           {...iconProps}
           src="/images/logo/metamask-fox.svg"
-          className="app-header__metafox-logo app-header__metafox-logo--icon"
+          className={classnames('app-header__metafox-logo', 'app-header__metafox-logo--icon')}
         />
       </div>
     )
