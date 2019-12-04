@@ -186,8 +186,8 @@ export default class PermissionConnect extends Component {
             <div>
               <PermissionPageContainer
                 request={permissionsRequest || {}}
-                approvePermissionsRequest={ (requestId, accounts) => {
-                  approvePermissionsRequest(requestId, accounts)
+                approvePermissionsRequest={(request, accounts) => {
+                  approvePermissionsRequest(request, accounts)
                   this.redirectFlow(true)
                 }}
                 rejectPermissionsRequest={requestId => {

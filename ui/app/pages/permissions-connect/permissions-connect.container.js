@@ -46,7 +46,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    approvePermissionsRequest: (requestId, accounts) => dispatch(approvePermissionsRequest(requestId, accounts)),
+    approvePermissionsRequest: (request, accounts) => dispatch(approvePermissionsRequest(request, accounts)),
     rejectPermissionsRequest: requestId => dispatch(rejectPermissionsRequest(requestId)),
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(showModal({
