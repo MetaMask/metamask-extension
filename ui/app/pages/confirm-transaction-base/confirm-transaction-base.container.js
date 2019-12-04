@@ -40,10 +40,10 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {})
 
 let customNonceValue = ''
-const customNonceMerge = txData => customNonceValue ? ({
+const customNonceMerge = txData => (customNonceValue ? ({
   ...txData,
   customNonceValue,
-}) : txData
+}) : txData)
 
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps

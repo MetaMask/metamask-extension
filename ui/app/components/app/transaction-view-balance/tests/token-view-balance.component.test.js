@@ -15,7 +15,7 @@ const historySpies = {
   push: sinon.spy(),
 }
 
-const t = (str1, str2) => str2 ? str1 + str2 : str1
+const t = (str1, str2) => (str2 ? str1 + str2 : str1)
 const metricsEvent = () => ({})
 
 describe('TransactionViewBalance Component', () => {
