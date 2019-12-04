@@ -15,8 +15,8 @@ const storage = {
     },
     PreferencesController: {
       frequentRpcListDetail: [
-        {chainId: 'fail', nickname: '', rpcUrl: 'http://127.0.0.1:8545', ticker: ''},
-        {chainId: '1', nickname: '', rpcUrl: 'https://api.myetherwallet.com/eth', ticker: 'ETH'},
+        { chainId: 'fail', nickname: '', rpcUrl: 'http://127.0.0.1:8545', ticker: '' },
+        { chainId: '1', nickname: '', rpcUrl: 'https://api.myetherwallet.com/eth', ticker: 'ETH' },
       ],
     },
   },

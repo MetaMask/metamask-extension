@@ -1,4 +1,4 @@
-import {validateMnemonic} from 'bip39'
+import { validateMnemonic } from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -175,7 +175,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
-  onTermsKeyPress = ({key}) => {
+  onTermsKeyPress = ({ key }) => {
     if (key === ' ' || key === 'Enter') {
       this.toggleTermsCheck()
     }

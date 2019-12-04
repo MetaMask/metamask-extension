@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 import NetworkDisplay from '../../network-display'
 
 export default class PermissionPageContainerHeader extends PureComponent {

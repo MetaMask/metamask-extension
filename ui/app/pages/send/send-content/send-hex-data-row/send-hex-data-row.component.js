@@ -15,15 +15,15 @@ export default class SendHexDataRow extends Component {
   };
 
   onInput = (event) => {
-    const {updateSendHexData, updateGas} = this.props
+    const { updateSendHexData, updateGas } = this.props
     const data = event.target.value.replace(/\n/g, '') || null
     updateSendHexData(data)
     updateGas({ data })
   }
 
   render () {
-    const {inError} = this.props
-    const {t} = this.context
+    const { inError } = this.props
+    const { t } = this.context
 
     return (
       <SendRowWrapper

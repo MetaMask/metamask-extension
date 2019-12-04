@@ -32,7 +32,7 @@ describe('App State', () => {
 
   it('sets networkd dropdown to false', () => {
     const dropdown = { networkDropdowopen: true }
-    const state = {...metamaskState, ...dropdown}
+    const state = { ...metamaskState, ...dropdown }
     const newState = reduceApp(state, {
       type: actions.NETWORK_DROPDOWN_CLOSE,
     })
@@ -55,8 +55,8 @@ describe('App State', () => {
   })
 
   it('closes sidebar', () => {
-    const openSidebar = { sidebar: { isOpen: true }}
-    const state = {...metamaskState, ...openSidebar}
+    const openSidebar = { sidebar: { isOpen: true } }
+    const state = { ...metamaskState, ...openSidebar }
 
     const newState = reduceApp(state, {
       type: actions.SIDEBAR_CLOSE,
@@ -77,7 +77,7 @@ describe('App State', () => {
 
   it('closes alert', () => {
     const alert = { alertOpen: true, alertMessage: 'test message' }
-    const state = {...metamaskState, ...alert}
+    const state = { ...metamaskState, ...alert }
     const newState = reduceApp(state, {
       type: actions.ALERT_CLOSE,
     })
@@ -451,7 +451,7 @@ describe('App State', () => {
       },
     }
     const oldState = {
-      metamask: {...metamaskState.metamask, ...txs},
+      metamask: { ...metamaskState.metamask, ...txs },
     }
     const state = reduceApp(oldState, {
       type: actions.SHOW_CONF_TX_PAGE,
@@ -480,7 +480,7 @@ describe('App State', () => {
     }
 
     const oldState = {
-      metamask: {...metamaskState, ...msgs},
+      metamask: { ...metamaskState, ...msgs },
     }
 
     const state = reduceApp(oldState, {
@@ -508,7 +508,7 @@ describe('App State', () => {
     }
 
     const oldState = {
-      metamask: {...metamaskState, ...txs},
+      metamask: { ...metamaskState, ...txs },
     }
 
     const state = reduceApp(oldState, {
@@ -538,8 +538,8 @@ describe('App State', () => {
   it('proceeds to change current view context in confTx', () => {
 
     const oldState = {
-      metamask: {metamaskState},
-      appState: {currentView: {context: 0}},
+      metamask: { metamaskState },
+      appState: { currentView: { context: 0 } },
     }
 
     const state = reduceApp(oldState, {
@@ -565,7 +565,7 @@ describe('App State', () => {
 
 
     const oldState = {
-      metamask: {...metamaskState, ...txs},
+      metamask: { ...metamaskState, ...txs },
     }
 
     const state = reduceApp(oldState, {
@@ -592,7 +592,7 @@ describe('App State', () => {
 
 
     const oldState = {
-      metamask: {...metamaskState, ...txs},
+      metamask: { ...metamaskState, ...txs },
     }
 
     const state = reduceApp(oldState, {
@@ -633,7 +633,7 @@ describe('App State', () => {
 
   it('sets warning to empty string when unlock succeeds', () => {
     const errorState = { warning: 'errors' }
-    const oldState = {...metamaskState, ...errorState}
+    const oldState = { ...metamaskState, ...errorState }
     const state = reduceApp(oldState, {
       type: actions.UNLOCK_SUCCEEDED,
     })
@@ -668,8 +668,8 @@ describe('App State', () => {
   })
 
   it('hides loading message', () => {
-    const loadingState = { isLoading: true}
-    const oldState = {...metamaskState, ...loadingState}
+    const loadingState = { isLoading: true }
+    const oldState = { ...metamaskState, ...loadingState }
 
     const state = reduceApp(oldState, {
       type: actions.HIDE_LOADING,
@@ -687,7 +687,7 @@ describe('App State', () => {
   })
 
   it('hides sub loading indicator', () => {
-    const oldState = {...metamaskState, isSubLoading: true }
+    const oldState = { ...metamaskState, isSubLoading: true }
     const state = reduceApp(oldState, {
       type: actions.HIDE_SUB_LOADING_INDICATION,
     })
@@ -706,8 +706,8 @@ describe('App State', () => {
   })
 
   it('hides warning', () => {
-    const displayWarningState = { warning: 'warning'}
-    const oldState = {...metamaskState, ...displayWarningState}
+    const displayWarningState = { warning: 'warning' }
+    const oldState = { ...metamaskState, ...displayWarningState }
     const state = reduceApp(oldState, {
       type: actions.HIDE_WARNING,
     })
@@ -732,7 +732,7 @@ describe('App State', () => {
         accountExport: 'progress',
       },
     }
-    const oldState = {...metamaskState, ...requestAccountExportState}
+    const oldState = { ...metamaskState, ...requestAccountExportState }
     const state = reduceApp(oldState, {
       type: actions.EXPORT_ACCOUNT,
     })
@@ -789,7 +789,7 @@ describe('App State', () => {
         },
       },
     }
-    const oldState = {...metamaskState, ...appState}
+    const oldState = { ...metamaskState, ...appState }
     const state = reduceApp(oldState, {
       type: actions.COINBASE_SUBVIEW,
     })
@@ -830,7 +830,7 @@ describe('App State', () => {
       },
     }
 
-    const oldState = {...metamaskState, ...appState}
+    const oldState = { ...metamaskState, ...appState }
 
     const state = reduceApp(oldState, {
       type: actions.SHAPESHIFT_SUBVIEW,
@@ -881,7 +881,7 @@ describe('App State', () => {
       maxLimit: 0.76617432,
     }
 
-    const oldState = {...metamaskState, ...appState}
+    const oldState = { ...metamaskState, ...appState }
 
     const state = reduceApp(oldState, {
       type: actions.PAIR_UPDATE,
@@ -922,7 +922,7 @@ describe('App State', () => {
       },
     }
 
-    const oldState = {...metamaskState, ...appState}
+    const oldState = { ...metamaskState, ...appState }
     const state = reduceApp(oldState, {
       type: actions.SHOW_QR_VIEW,
       value: {
@@ -957,7 +957,7 @@ describe('App State', () => {
 
   it('unsets gas loading', () => {
     const gasLoadingState = { gasIsLoading: true }
-    const oldState = {...metamaskState, ...gasLoadingState}
+    const oldState = { ...metamaskState, ...gasLoadingState }
     const state = reduceApp(oldState, {
       type: actions.GAS_LOADING_FINISHED,
     })

@@ -1,4 +1,4 @@
-import React, { Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
 import genAccountLink from '../../../../../lib/account-link.js'

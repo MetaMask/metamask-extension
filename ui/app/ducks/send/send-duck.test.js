@@ -52,7 +52,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: true}, mockState.send)
+        Object.assign({ fromDropdownOpen: true }, mockState.send)
       )
     })
 
@@ -66,7 +66,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: false}, mockState.send)
+        Object.assign({ fromDropdownOpen: false }, mockState.send)
       )
     })
 
@@ -75,7 +75,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: true}, mockState.send)
+        Object.assign({ toDropdownOpen: true }, mockState.send)
       )
     })
 
@@ -84,7 +84,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: false}, mockState.send)
+        Object.assign({ toDropdownOpen: false }, mockState.send)
       )
     })
 
@@ -93,7 +93,7 @@ describe('Send Duck', () => {
         SendReducer(Object.assign({}, mockState, { gasButtonGroupShown: false }), {
           type: SHOW_GAS_BUTTON_GROUP,
         }),
-        Object.assign({gasButtonGroupShown: true}, mockState.send)
+        Object.assign({ gasButtonGroupShown: true }, mockState.send)
       )
     })
 
@@ -102,7 +102,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: HIDE_GAS_BUTTON_GROUP,
         }),
-        Object.assign({gasButtonGroupShown: false}, mockState.send)
+        Object.assign({ gasButtonGroupShown: false }, mockState.send)
       )
     })
 

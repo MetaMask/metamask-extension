@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const { withRouter } = require('react-router-dom')

@@ -29,7 +29,7 @@ const stubMigrations = [
     },
   },
 ]
-const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
+const versionedData = { meta: { version: 0 }, data: { hello: 'world' } }
 
 const firstTimeState = {
   meta: { version: 0 },
@@ -62,7 +62,7 @@ describe('Migrator', () => {
       throw new Error('test')
     } } ] })
     migrator.on('error', () => done())
-    migrator.migrateData({ meta: {version: 0} })
+    migrator.migrateData({ meta: { version: 0 } })
       .then(() => {
       }).catch(done)
   })

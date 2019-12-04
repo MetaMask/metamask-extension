@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {getNetworkDisplayName} from '../../../../../../app/scripts/controllers/network/util'
+import React, { Component } from 'react'
+import { getNetworkDisplayName } from '../../../../../../app/scripts/controllers/network/util'
 import Button from '../../../ui/button'
 
 export default class DepositEtherModal extends Component {

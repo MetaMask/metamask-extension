@@ -11,7 +11,7 @@ module.exports = function createMethodMiddleware ({
   return createAsyncMiddleware(async (req, res, next) => {
 
     if (typeof req.method !== 'string') {
-      res.error = ethErrors.rpc.invalidRequest({ data: req})
+      res.error = ethErrors.rpc.invalidRequest({ data: req })
       return
     }
 

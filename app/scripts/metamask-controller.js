@@ -21,7 +21,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const EnsController = require('./controllers/ens')
 const NetworkController = require('./controllers/network')
@@ -45,9 +45,9 @@ const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
 const selectChainId = require('./lib/select-chain-id')
-const {Mutex} = require('await-semaphore')
-const {version} = require('../manifest.json')
-const {BN} = require('ethereumjs-util')
+const { Mutex } = require('await-semaphore')
+const { version } = require('../manifest.json')
+const { BN } = require('ethereumjs-util')
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
@@ -929,8 +929,8 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    const {identities} = this.preferencesController.store.getState()
-    return {...keyState, identities}
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
   }
 
   /**
@@ -1652,8 +1652,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate (state) {
-    const {isUnlocked, keyrings} = state
-    const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+    const { isUnlocked, keyrings } = state
+    const addresses = keyrings.reduce((acc, { accounts }) => acc.concat(accounts), [])
 
     if (!addresses.length) {
       return

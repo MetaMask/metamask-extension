@@ -53,7 +53,7 @@ describe('Send Component', function () {
         gasLimit="mockGasLimit"
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
-        history={{ mockProp: 'history-abc'}}
+        history={{ mockProp: 'history-abc' }}
         network="3"
         primaryCurrency="mockPrimaryCurrency"
         recentBlocks={['mockBlock']}
@@ -228,7 +228,7 @@ describe('Send Component', function () {
 
     it('should call updateSendErrors with the expected params if selectedToken is truthy', () => {
       propsMethodSpies.updateSendErrors.resetHistory()
-      wrapper.setProps({ selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }})
+      wrapper.setProps({ selectedToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' } })
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',

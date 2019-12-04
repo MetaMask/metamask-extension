@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
-import {Tooltip as ReactTippy} from 'react-tippy'
+import { Tooltip as ReactTippy } from 'react-tippy'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
 

@@ -23,11 +23,11 @@ class WebcamUtils {
               environmentReady,
             })
           } else {
-            reject({type: 'NO_WEBCAM_FOUND'})
+            reject({ type: 'NO_WEBCAM_FOUND' })
           }
         })
       } catch (e) {
-        reject({type: 'UNKNOWN_ERROR'})
+        reject({ type: 'UNKNOWN_ERROR' })
       }
     })
   }

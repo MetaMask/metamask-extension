@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import WalletView from './wallet-view.component'
-import {showSendPage, hideSidebar, setSelectedToken, showAddTokenPage} from '../../../store/actions'
+import { showSendPage, hideSidebar, setSelectedToken, showAddTokenPage } from '../../../store/actions'
 import { getMetaMaskAccounts, getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'
 
 function mapStateToProps (state) {

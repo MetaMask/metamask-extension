@@ -29,7 +29,7 @@ class ConnectHardwareForm extends Component {
       a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
       return a
     })
-    this.setState({accounts: newAccounts})
+    this.setState({ accounts: newAccounts })
   }
 
 
@@ -41,7 +41,7 @@ class ConnectHardwareForm extends Component {
     ['trezor', 'ledger'].forEach(async device => {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
-        this.setState({unlocked: true})
+        this.setState({ unlocked: true })
         this.getPage(device, 0, this.props.defaultHdPaths[device])
       }
     })
@@ -57,16 +57,16 @@ class ConnectHardwareForm extends Component {
   }
 
   onPathChange = (path) => {
-    this.props.setHardwareWalletDefaultHdPath({device: this.state.device, path})
+    this.props.setHardwareWalletDefaultHdPath({ device: this.state.device, path })
     this.getPage(this.state.device, 0, path)
   }
 
   onAccountChange = (account) => {
-    this.setState({selectedAccount: account.toString(), error: null})
+    this.setState({ selectedAccount: account.toString(), error: null })
   }
 
   onAccountRestriction = () => {
-    this.setState({error: this.context.t('ledgerAccountRestriction') })
+    this.setState({ error: this.context.t('ledgerAccountRestriction') })
   }
 
   showTemporaryAlert () {
@@ -117,7 +117,7 @@ class ConnectHardwareForm extends Component {
       .catch(e => {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
-          this.setState({ browserSupported: false, error: null})
+          this.setState({ browserSupported: false, error: null })
         } else if (errorMessage !== 'Window closed' && errorMessage !== 'Popup closed') {
           this.setState({ error: errorMessage })
         }
@@ -266,8 +266,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setHardwareWalletDefaultHdPath: ({device, path}) => {
-      return dispatch(actions.setHardwareWalletDefaultHdPath({device, path}))
+    setHardwareWalletDefaultHdPath: ({ device, path }) => {
+      return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }))
     },
     connectHardware: (deviceName, page, hdPath) => {
       return dispatch(actions.connectHardware(deviceName, page, hdPath))

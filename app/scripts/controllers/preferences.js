@@ -258,7 +258,7 @@ class PreferencesController {
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
-      ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
+      ids[address] = { name: `Account ${index + 1}`, address, ...oldId }
       return ids
     }, {})
     const accountTokens = addresses.reduce((tokens, address) => {
@@ -474,7 +474,7 @@ class PreferencesController {
       throw new Error('setAccountLabel requires a valid address, got ' + String(account))
     }
     const address = normalizeAddress(account)
-    const {identities} = this.store.getState()
+    const { identities } = this.store.getState()
     identities[address] = identities[address] || {}
     identities[address].name = label
     this.store.updateState({ identities })

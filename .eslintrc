@@ -147,6 +147,7 @@
     "no-var": 2,
     "no-whitespace-before-property": 2,
     "no-with": 2,
+    "object-curly-spacing": [2, "always"],
     "one-var": [2, { "initialized": "never" }],
     "operator-linebreak": [2, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
     "padded-blocks": "off",

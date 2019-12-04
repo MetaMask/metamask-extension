@@ -127,7 +127,7 @@ function mapDispatchToProps (dispatch) {
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
       if (isValidENSAddress(toNickname)) {
-        const addressBookEntry = addressBook.find(({ address}) => to === address) || {}
+        const addressBookEntry = addressBook.find(({ address }) => to === address) || {}
         if (!addressBookEntry.name !== toNickname) {
           dispatch(updateSendTo(to, addressBookEntry.name || ''))
         }

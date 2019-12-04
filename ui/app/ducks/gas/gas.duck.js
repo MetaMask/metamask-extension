@@ -386,7 +386,7 @@ export function fetchGasEstimates (blockTime) {
         'referrerPolicy': 'no-referrer-when-downgrade',
         'body': null,
         'method': 'GET',
-        'mode': 'cors'}
+        'mode': 'cors' }
       )
         .then(r => r.json())
         .then(r => {

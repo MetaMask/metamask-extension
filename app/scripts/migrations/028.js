@@ -30,7 +30,7 @@ function transformState (state) {
       const tokens = newState.PreferencesController.tokens
       newState.PreferencesController.accountTokens = {}
       for (const identity in identities) {
-        newState.PreferencesController.accountTokens[identity] = {'mainnet': tokens}
+        newState.PreferencesController.accountTokens[identity] = { 'mainnet': tokens }
       }
       newState.PreferencesController.tokens = []
     }

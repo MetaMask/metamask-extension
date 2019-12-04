@@ -128,7 +128,7 @@ export default class NewAccount extends PureComponent {
     }))
   }
 
-  onTermsKeyPress = ({key}) => {
+  onTermsKeyPress = ({ key }) => {
     if (key === ' ' || key === 'Enter') {
       this.toggleTermsCheck()
     }

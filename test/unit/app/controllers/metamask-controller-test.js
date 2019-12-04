@@ -193,8 +193,8 @@ describe('MetaMaskController', function () {
               recentBlocks: [
                 { gasPrices: [ '0x3b9aca00', '0x174876e800'] },
                 { gasPrices: [ '0x3b9aca00', '0x174876e800'] },
-                { gasPrices: [ '0x174876e800', '0x174876e800' ]},
-                { gasPrices: [ '0x174876e800', '0x174876e800' ]},
+                { gasPrices: [ '0x174876e800', '0x174876e800' ] },
+                { gasPrices: [ '0x174876e800', '0x174876e800' ] },
               ],
             }
           },
@@ -610,10 +610,10 @@ describe('MetaMaskController', function () {
       getNetworkstub.returns(42)
 
       metamaskController.txController.txStateManager._saveTxList([
-        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} }),
-        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} }),
+        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
+        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
         createTxMeta({ id: 2, status: 'rejected', metamaskNetworkId: 32 }),
-        createTxMeta({ id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4'} }),
+        createTxMeta({ id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' } }),
       ])
     })
 
@@ -876,7 +876,7 @@ describe('MetaMaskController', function () {
       })
 
       const oldState = metamaskController.getState()
-      await metamaskController._onKeyringControllerUpdate({keyrings: []})
+      await metamaskController._onKeyringControllerUpdate({ keyrings: [] })
 
       assert.ok(addAddresses.notCalled)
       assert.ok(syncWithAddresses.notCalled)

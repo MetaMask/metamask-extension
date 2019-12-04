@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
-import {Tooltip as ReactTippy} from 'react-tippy'
+import React, { PureComponent } from 'react'
+import { Tooltip as ReactTippy } from 'react-tippy'
 
 export default class Tooltip extends PureComponent {
   static defaultProps = {
@@ -39,7 +39,7 @@ export default class Tooltip extends PureComponent {
   }
 
   render () {
-    const {arrow, children, containerClassName, disabled, position, html, size, title, trigger, onHidden, wrapperClassName, style } = this.props
+    const { arrow, children, containerClassName, disabled, position, html, size, title, trigger, onHidden, wrapperClassName, style } = this.props
 
     if (!title && !html) {
       return (

@@ -7,8 +7,8 @@ class AppStateController {
    * @param opts
    */
   constructor (opts = {}) {
-    const {initState, onInactiveTimeout, preferencesStore} = opts
-    const {preferences} = preferencesStore.getState()
+    const { initState, onInactiveTimeout, preferencesStore } = opts
+    const { preferences } = preferencesStore.getState()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
     this.store = new ObservableStore(extend({
@@ -62,7 +62,7 @@ class AppStateController {
    * @private
    */
   _resetTimer () {
-    const {timeoutMinutes} = this.store.getState()
+    const { timeoutMinutes } = this.store.getState()
 
     if (this.timer) {
       clearTimeout(this.timer)

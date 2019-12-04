@@ -40,17 +40,17 @@ while (transactions.length <= 100) {
   if (!deletableTxStates.find((s) => s === status)) {
     nonDeletableCount++
   }
-  transactions.push({status})
+  transactions.push({ status })
 }
 
 while (transactions40.length < 40) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  transactions40.push({status})
+  transactions40.push({ status })
 }
 
 while (transactions20.length < 20) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  transactions20.push({status})
+  transactions20.push({ status })
 }
 
 

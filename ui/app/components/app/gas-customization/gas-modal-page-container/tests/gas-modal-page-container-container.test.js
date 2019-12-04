@@ -249,7 +249,7 @@ describe('gas-modal-page-container container', () => {
       ]
 
       let result
-      tests.forEach(({ mockState, mockOwnProps, expectedResult}) => {
+      tests.forEach(({ mockState, mockOwnProps, expectedResult }) => {
         result = mapStateToProps(mockState, mockOwnProps)
         assert.deepEqual(result, expectedResult)
       })
