@@ -1,9 +1,18 @@
 {
+  "privacyModeDefault": {
+    "message": "Privātais režīms tagad ieslēgts pēc noklusējuma"
+  },
   "chartOnlyAvailableEth": {
     "message": "Grafiks pieejams vienīgi Ethereum tīklos."
   },
+  "confirmClear": {
+    "message": "Vai tiešām vēlaties dzēst apstiprinātās vietnes?"
+  },
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
+  },
+  "clearApprovalData": {
+    "message": "Notīrīt konfidencialitātes datus"
   },
   "appName": {
     "message": "MetaMask",
@@ -12,8 +21,11 @@
   "reject": {
     "message": "Noraidīt"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 vēlas izveidot savienojumu ar jūsu kontu"
+  },
+  "providerRequestInfo": {
+    "message": "Šī lapa pieprasa piekļuvi jūsu pašreizēja konta adreses informācijai. Vienmēr pārliecinieties, ka uzticaties lapām, kuras apmeklējat."
   },
   "about": {
     "message": "Par"
@@ -55,7 +67,7 @@
     "message": "Papildu"
   },
   "advancedSettingsDescription": {
-    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus"
+    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus."
   },
   "advancedOptions": {
     "message": "Papildu opcijas"
@@ -144,6 +156,10 @@
   },
   "basic": {
     "message": "Pamata"
+  },
+  "betweenMinAndMax": {
+    "message": "jābūt lielākai par vai vienādai ar $1 un mazākai par vai vienādai ar $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Bloķēt Explorer"
@@ -236,6 +252,9 @@
   "connect": {
     "message": "Pievienošana"
   },
+  "connectRequest": {
+    "message": "Savienojuma pieprasījums"
+  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
@@ -274,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Nokopēts!"
+  },
+  "copy": {
+    "message": "Kopēt"
   },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
@@ -352,6 +374,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
+  },
+  "dismiss": {
+    "message": "Noraidīt"
   },
   "done": {
     "message": "Pabeigts"
@@ -514,6 +539,10 @@
   "getStarted": {
     "message": "Sākt darbu"
   },
+  "greaterThanMin": {
+    "message": "jābūt lielākam par vai vienādam ar $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Priecājamies jūs redzēt!"
   },
@@ -631,6 +660,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
+  },
+  "lessThanMax": {
+    "message": "jābūt mazākam par vai vienādam ar $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"
@@ -832,6 +865,9 @@
   "pastePrivateKey": {
     "message": "Ielīmējiet privātās atslēgas rindu šeit:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Iekopējiet savu atkopšanas frāzi šeit!"
   },
   "pending": {
     "message": "gaida"
@@ -1146,6 +1182,9 @@
   "storePhrase": {
     "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."
   },
+  "submit": {
+    "message": "Iesniegt"
+  },
   "submitted": {
     "message": "Iesniegts"
   },
@@ -1312,6 +1351,9 @@
   },
   "userName": {
     "message": "Lietotājvārds"
+  },
+  "validFileImport": {
+    "message": "Importēšanai jāatlasa derīga datne."
   },
   "viewAccount": {
     "message": "Skatīt kontu"

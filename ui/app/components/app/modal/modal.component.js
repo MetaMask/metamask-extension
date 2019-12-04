@@ -16,7 +16,6 @@ export default class Modal extends PureComponent {
     submitType: PropTypes.string,
     submitText: PropTypes.string,
     submitDisabled: PropTypes.bool,
-    hideFooter: PropTypes.bool,
     // Cancel button (left button)
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
@@ -42,7 +41,6 @@ export default class Modal extends PureComponent {
       cancelText,
       contentClass,
       containerClass,
-      hideFooter,
     } = this.props
 
     return (
@@ -63,32 +61,27 @@ export default class Modal extends PureComponent {
         <div className={classnames('modal-container__content', contentClass)}>
           { children }
         </div>
-        { !hideFooter
-          ? (
-            <div className="modal-container__footer">
-              {
-                onCancel && (
-                  <Button
-                    type={cancelType}
-                    onClick={onCancel}
-                    className="modal-container__footer-button"
-                  >
-                    { cancelText }
-                  </Button>
-                )
-              }
+        <div className="modal-container__footer">
+          {
+            onCancel && (
               <Button
-                type={submitType}
-                onClick={onSubmit}
-                disabled={submitDisabled}
+                type={cancelType}
+                onClick={onCancel}
                 className="modal-container__footer-button"
               >
-                { submitText }
+                { cancelText }
               </Button>
-            </div>
-          )
-          : null
-        }
+            )
+          }
+          <Button
+            type={submitType}
+            onClick={onSubmit}
+            disabled={submitDisabled}
+            className="modal-container__footer-button"
+          >
+            { submitText }
+          </Button>
+        </div>
       </div>
     )
   }

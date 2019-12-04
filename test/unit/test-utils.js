@@ -10,9 +10,7 @@ async function assertRejects (asyncFn, regExp) {
   try {
     await asyncFn()
   } catch (error) {
-    f = () => {
-      throw error
-    }
+    f = () => { throw error }
   } finally {
     assert.throws(f, regExp)
   }

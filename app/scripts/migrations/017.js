@@ -31,9 +31,7 @@ function transformState (state) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.status === 'failed') {
-        return txMeta
-      }
+      if (!txMeta.status === 'failed') return txMeta
       if (txMeta.retryCount > 0 && txMeta.retryCount < 2) {
         txMeta.status = 'submitted'
         delete txMeta.err

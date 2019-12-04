@@ -1,6 +1,15 @@
 {
+  "confirmClear": {
+    "message": "Weet je zeker dat je goedgekeurde websites wilt wissen?"
+  },
+  "clearApprovalData": {
+    "message": "Gegevens over goedkeuring wissen"
+  },
   "reject": {
     "message": "Afwijzen"
+  },
+  "providerRequestInfo": {
+    "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."
   },
   "accountDetails": {
     "message": "Accountgegevens"
@@ -43,6 +52,10 @@
   "balanceIsInsufficientGas": {
     "message": "Onvoldoende saldo voor huidig ​​gastotaal"
   },
+  "betweenMinAndMax": {
+    "message": "moet groter zijn dan of gelijk zijn aan $1 en kleiner dan of gelijk aan $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -78,6 +91,9 @@
   },
   "copiedExclamation": {
     "message": "Gekopieerde!"
+  },
+  "copy": {
+    "message": "Kopiëren"
   },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
@@ -181,6 +197,10 @@
     "message": "Haal Ether uit een kraan voor de $1",
     "description": "Displays network name for Ether faucet"
   },
+  "greaterThanMin": {
+    "message": "moet groter zijn dan of gelijk zijn aan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -238,6 +258,10 @@
   },
   "kovan": {
     "message": "Kovan-testnetwerk"
+  },
+  "lessThanMax": {
+    "message": "moet kleiner zijn dan of gelijk zijn aan $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Wil je deze tokens toevoegen?"
@@ -306,6 +330,9 @@
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Plak je back-up woorden hier!"
   },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
@@ -410,6 +437,9 @@
   "stateLogsDescription": {
     "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
   },
+  "submit": {
+    "message": "voorleggen"
+  },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
@@ -453,6 +483,9 @@
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
+  },
+  "validFileImport": {
+    "message": "U moet een geldig bestand selecteren om te importeren."
   },
   "viewAccount": {
     "message": "Bekijk account"

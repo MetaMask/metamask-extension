@@ -64,7 +64,6 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
-const requestAccountTabIds = {}
 
 // state persistence
 const localStore = new LocalStore()
@@ -75,6 +74,7 @@ initialize().catch(log.error)
 
 // setup metamask mesh testing container
 const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
+
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -248,12 +248,6 @@ function setupController (initState, initLangCode) {
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
-    getRequestAccountTabIds: () => {
-      return requestAccountTabIds
-    },
-    getOpenMetamaskTabsIds: () => {
-      return openMetamaskTabsIDs
-    },
   })
 
   const provider = controller.provider
@@ -266,9 +260,7 @@ function setupController (initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') {
-      return
-    }
+    if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
     try {
       reportFailedTxToSentry({ sentry, txMeta })
@@ -320,7 +312,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -393,17 +384,6 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
-      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-        const tabId = remotePort.sender.tab.id
-        const url = new URL(remotePort.sender.url)
-        const origin = url.hostname
-
-        remotePort.onMessage.addListener(msg => {
-          if (msg.data && msg.data.method === 'eth_requestAccounts') {
-            requestAccountTabIds[origin] = tabId
-          }
-        })
-      }
       connectExternal(remotePort)
     }
   }
@@ -428,7 +408,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.permissionsController.permissions.subscribe(updateBadge)
+  controller.providerApprovalController.memStore.on('update', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -440,8 +420,8 @@ function setupController (initState, initLangCode) {
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingPermissionRequests
+    const pendingProviderRequests = controller.providerApprovalController.memStore.getState().providerRequests.length
+    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests
     if (count) {
       label = String(count)
     }

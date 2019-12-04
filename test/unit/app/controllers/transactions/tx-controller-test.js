@@ -38,9 +38,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
-      getGasPrice: function () {
-        return '0xee6b2800'
-      },
+      getGasPrice: function () { return '0xee6b2800' },
       networkStore: netStore,
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
@@ -48,7 +46,6 @@ describe('Transaction Controller', function () {
         ethTx.sign(fromAccount.key)
         resolve()
       }),
-      getPermittedAccounts: () => {},
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
@@ -165,11 +162,8 @@ describe('Transaction Controller', function () {
 
       txController.newUnapprovedTransaction(txParams)
         .catch((err) => {
-          if (err.message === 'MetaMask Tx Signature: User denied transaction signature.') {
-            done()
-          } else {
-            done(err)
-          }
+          if (err.message === 'MetaMask Tx Signature: User denied transaction signature.') done()
+          else done(err)
         })
     })
   })
@@ -177,15 +171,13 @@ describe('Transaction Controller', function () {
   describe('#addUnapprovedTransaction', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
 
-    let getSelectedAddress, getPermittedAccounts
+    let getSelectedAddress
     beforeEach(function () {
       getSelectedAddress = sinon.stub(txController, 'getSelectedAddress').returns(selectedAddress)
-      getPermittedAccounts = sinon.stub(txController, 'getPermittedAccounts').returns([selectedAddress])
     })
 
     afterEach(function () {
       getSelectedAddress.restore()
-      getPermittedAccounts.restore()
     })
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
@@ -217,11 +209,8 @@ describe('Transaction Controller', function () {
       txController.networkStore = new ObservableStore(1)
       txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
         .catch((err) => {
-          if (err.message === 'Recipient is a public account') {
-            done()
-          } else {
-            done(err)
-          }
+          if (err.message === 'Recipient is a public account') done()
+          else done(err)
         })
     })
 
@@ -250,11 +239,8 @@ describe('Transaction Controller', function () {
       txController.networkStore = new ObservableStore('loading')
       txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
         .catch((err) => {
-          if (err.message === 'MetaMask is having trouble connecting to the network') {
-            done()
-          } else {
-            done(err)
-          }
+          if (err.message === 'MetaMask is having trouble connecting to the network') done()
+          else done(err)
         })
     })
   })
@@ -417,9 +403,7 @@ describe('Transaction Controller', function () {
           assert.equal(status, 'rejected', 'status should e rejected')
           assert.equal(txId, 0, 'id should e 0')
           done()
-        } catch (e) {
-          done(e)
-        }
+        } catch (e) { done(e) }
       })
 
       txController.cancelTransaction(0)
@@ -514,9 +498,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should ignore the error "Transaction Failed: known transaction" and be as usual', async function () {
-      providerResultStub['eth_sendRawTransaction'] = async (_, __, ___, end) => {
-        end('Transaction Failed: known transaction')
-      }
+      providerResultStub['eth_sendRawTransaction'] = async (_, __, ___, end) => { end('Transaction Failed: known transaction') }
       const rawTx = '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a'
       txController.txStateManager.addTx(txMeta)
       await txController.publishTransaction(txMeta.id, rawTx)
@@ -635,9 +617,7 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
-          return '0xee6b2800'
-        },
+        getGasPrice: function () { return '0xee6b2800' },
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
@@ -667,9 +647,7 @@ describe('Transaction Controller', function () {
       _blockTrackerStub.getLatestBlock = noop
       const _txController = new TransactionController({
         provider: _provider,
-        getGasPrice: function () {
-          return '0xee6b2800'
-        },
+        getGasPrice: function () { return '0xee6b2800' },
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,

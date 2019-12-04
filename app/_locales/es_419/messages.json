@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "El modo de privacidad está habilitado de manera predeterminada"
+  },
   "chartOnlyAvailableEth": {
     "message": "Chart está disponible únicamente en las redes de Ethereum."
+  },
+  "confirmClear": {
+    "message": "¿Estás seguro de que deseas borrar los sitios web aprobados?"
   },
   "contractInteraction": {
     "message": "Interacción contractual"
   },
+  "clearApprovalData": {
+    "message": "Borrar datos de privacidad"
+  },
   "reject": {
     "message": "Rechazar"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 desea conectarse a tu cuenta"
+  },
+  "providerRequestInfo": {
+    "message": "Este sitio está solicitando acceso para ver la dirección de tu cuenta corriente. Asegúrate siempre de que confías en los sitios con los que interactúas."
   },
   "about": {
     "message": "Acerca de"
   },
   "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto"
+    "message": "Versión, centro de soporte técnico e información de contacto."
   },
   "acceleratingATransaction": {
     "message": "* Aumentar una transacción utilizando un precio de gas más alto aumenta sus posibilidades de ser procesada más rápido por la red, pero esto no siempre está garantizado."
@@ -51,7 +63,7 @@
     "message": "Avanzada"
   },
   "advancedSettingsDescription": {
-    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado"
+    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado."
   },
   "advancedOptions": {
     "message": "Opciones avanzadas"
@@ -145,6 +157,10 @@
   "basic": {
     "message": "Básicas"
   },
+  "betweenMinAndMax": {
+    "message": "debe ser superior o igual a $1 e inferior o igual a $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockExplorerUrl": {
     "message": "Bloquear Explorer"
   },
@@ -233,6 +249,9 @@
   "connect": {
     "message": "Conectar"
   },
+  "connectRequest": {
+    "message": "Solicitud de conexión"
+  },
   "connectingTo": {
     "message": "Conexión con $1"
   },
@@ -271,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Copiado"
+  },
+  "copy": {
+    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar la dirección al portapapeles"
@@ -349,6 +371,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ya tienes algunos Ethers, la forma más rápida de ingresarlos en tu nueva billetera es a través de un depósito directo."
+  },
+  "dismiss": {
+    "message": "Rechazar"
   },
   "done": {
     "message": "Listo"
@@ -512,6 +537,10 @@
   "getStarted": {
     "message": "Comenzar"
   },
+  "greaterThanMin": {
+    "message": "debe ser superior o igual a $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Estamos encantados de verte."
   },
@@ -626,6 +655,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Necesitas utilizar tu cuenta anterior para agregar una nueva."
+  },
+  "lessThanMax": {
+    "message": "debe ser menor o igual a $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "¡Eso, pongámonos en marcha!"
@@ -821,6 +854,9 @@
   "pastePrivateKey": {
     "message": "Copia y pega tu cadena de claves privada aquí:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "¡Copia y pega tu frase de inicialización aquí!"
   },
   "pending": {
     "message": "pendiente"
@@ -1135,6 +1171,9 @@
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
   },
+  "submit": {
+    "message": "Enviar"
+  },
   "submitted": {
     "message": "Enviado"
   },
@@ -1295,6 +1334,9 @@
   },
   "userName": {
     "message": "Nombre de usuario"
+  },
+  "validFileImport": {
+    "message": "Selecciona un archivo válido para importar."
   },
   "viewAccount": {
     "message": "Ver cuenta"

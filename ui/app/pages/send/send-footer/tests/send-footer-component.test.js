@@ -25,30 +25,28 @@ describe('SendFooter Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
-      <SendFooter
-        addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
-        amount="mockAmount"
-        clearSend={propsMethodSpies.clearSend}
-        disabled
-        editingTransactionId="mockEditingTransactionId"
-        errors={{}}
-        from={ { address: 'mockAddress', balance: 'mockBalance' } }
-        gasLimit="mockGasLimit"
-        gasPrice="mockGasPrice"
-        gasTotal="mockGasTotal"
-        history={historySpies}
-        inError={false}
-        selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
-        sign={propsMethodSpies.sign}
-        to="mockTo"
-        toAccounts={['mockAccount']}
-        tokenBalance="mockTokenBalance"
-        unapprovedTxs={['mockTx']}
-        update={propsMethodSpies.update}
-        sendErrors={{}}
-      />
-    ), { context: { t: str => str, metricsEvent: () => ({}) } })
+    wrapper = shallow(<SendFooter
+      addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
+      amount="mockAmount"
+      clearSend={propsMethodSpies.clearSend}
+      disabled
+      editingTransactionId="mockEditingTransactionId"
+      errors={{}}
+      from={ { address: 'mockAddress', balance: 'mockBalance' } }
+      gasLimit="mockGasLimit"
+      gasPrice="mockGasPrice"
+      gasTotal="mockGasTotal"
+      history={historySpies}
+      inError={false}
+      selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+      sign={propsMethodSpies.sign}
+      to="mockTo"
+      toAccounts={['mockAccount']}
+      tokenBalance="mockTokenBalance"
+      unapprovedTxs={['mockTx']}
+      update={propsMethodSpies.update}
+      sendErrors={{}}
+    />, { context: { t: str => str, metricsEvent: () => ({}) } })
   })
 
   afterEach(() => {
@@ -184,29 +182,27 @@ describe('SendFooter Component', function () {
   describe('render', () => {
     beforeEach(() => {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns('formShouldBeDisabledReturn')
-      wrapper = shallow((
-        <SendFooter
-          addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
-          amount="mockAmount"
-          clearSend={propsMethodSpies.clearSend}
-          disabled
-          editingTransactionId="mockEditingTransactionId"
-          errors={{}}
-          from={ { address: 'mockAddress', balance: 'mockBalance' } }
-          gasLimit="mockGasLimit"
-          gasPrice="mockGasPrice"
-          gasTotal="mockGasTotal"
-          history={historySpies}
-          inError={false}
-          selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
-          sign={propsMethodSpies.sign}
-          to="mockTo"
-          toAccounts={['mockAccount']}
-          tokenBalance="mockTokenBalance"
-          unapprovedTxs={['mockTx']}
-          update={propsMethodSpies.update}
-        />
-      ), { context: { t: str => str, metricsEvent: () => ({}) } })
+      wrapper = shallow(<SendFooter
+        addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
+        amount="mockAmount"
+        clearSend={propsMethodSpies.clearSend}
+        disabled
+        editingTransactionId="mockEditingTransactionId"
+        errors={{}}
+        from={ { address: 'mockAddress', balance: 'mockBalance' } }
+        gasLimit="mockGasLimit"
+        gasPrice="mockGasPrice"
+        gasTotal="mockGasTotal"
+        history={historySpies}
+        inError={false}
+        selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+        sign={propsMethodSpies.sign}
+        to="mockTo"
+        toAccounts={['mockAccount']}
+        tokenBalance="mockTokenBalance"
+        unapprovedTxs={['mockTx']}
+        update={propsMethodSpies.update}
+      />, { context: { t: str => str, metricsEvent: () => ({}) } })
     })
 
     afterEach(() => {

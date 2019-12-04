@@ -13,13 +13,11 @@ module.exports = getBuyEthUrl
  */
 function getBuyEthUrl ({ network, amount, address, service }) {
   // default service by network if not specified
-  if (!service) {
-    service = getDefaultServiceForNetwork(network)
-  }
+  if (!service) service = getDefaultServiceForNetwork(network)
 
   switch (service) {
     case 'wyre':
-      return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2`
+      return `https://dash.sendwyre.com/sign-up`
     case 'coinswitch':
       return `https://metamask.coinswitch.co/?address=${address}&to=eth`
     case 'coinbase':
@@ -32,9 +30,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
       return 'https://github.com/kovan-testnet/faucet'
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/'
-    default:
-      throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
   }
+  throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
 }
 
 function getDefaultServiceForNetwork (network) {
@@ -49,7 +46,6 @@ function getDefaultServiceForNetwork (network) {
       return 'kovan-faucet'
     case '5':
       return 'goerli-faucet'
-    default:
-      throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
   }
+  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }

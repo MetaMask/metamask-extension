@@ -45,9 +45,7 @@ class TransactionStateManager extends EventEmitter {
   */
   generateTxMeta (opts) {
     const netId = this.getNetwork()
-    if (netId === 'loading') {
-      throw new Error('MetaMask is having trouble connecting to the network')
-    }
+    if (netId === 'loading') throw new Error('MetaMask is having trouble connecting to the network')
     return extend({
       id: createId(),
       time: (new Date()).getTime(),
@@ -91,9 +89,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getApprovedTransactions (address) {
     const opts = { status: 'approved' }
-    if (address) {
-      opts.from = address
-    }
+    if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
 
@@ -104,9 +100,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getPendingTransactions (address) {
     const opts = { status: 'submitted' }
-    if (address) {
-      opts.from = address
-    }
+    if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
 
@@ -117,9 +111,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getConfirmedTransactions (address) {
     const opts = { status: 'confirmed' }
-    if (address) {
-      opts.from = address
-    }
+    if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
 
@@ -167,12 +159,7 @@ class TransactionStateManager extends EventEmitter {
         transactions.splice(index, 1)
       }
     }
-    const newTxIndex = transactions
-      .findIndex((currentTxMeta) => currentTxMeta.time > txMeta.time)
-
-    newTxIndex === -1
-      ? transactions.push(txMeta)
-      : transactions.splice(newTxIndex, 0, txMeta)
+    transactions.push(txMeta)
     this._saveTxList(transactions)
     return txMeta
   }
@@ -249,14 +236,10 @@ class TransactionStateManager extends EventEmitter {
       // validate types
       switch (key) {
         case 'chainId':
-          if (typeof value !== 'number' && typeof value !== 'string') {
-            throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
-          }
+          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
           break
         default:
-          if (typeof value !== 'string') {
-            throw new Error(`${key} in txParams is not a string. got: (${value})`)
-          }
+          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
           break
       }
     })

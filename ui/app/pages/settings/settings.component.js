@@ -4,6 +4,7 @@ import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
+import ConnectionsTab from './connections-tab'
 import NetworksTab from './networks-tab'
 import AdvancedTab from './advanced-tab'
 import InfoTab from './info-tab'
@@ -14,6 +15,7 @@ import {
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  CONNECTIONS_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
@@ -133,19 +135,13 @@ class SettingsPage extends PureComponent {
         <div
           className={c({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
           onClick={() => initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)}
-        >
-          {subheaderText}
-        </div>
-        {breadCrumbTextKey && (
-          <div className="settings-page__subheader--break">
-            <span>{' > '}</span>{t(breadCrumbTextKey)}
-          </div>
-        )}
-        {isAddressEntryPage && (
-          <div className="settings-page__subheader--break">
-            <span>{' > '}</span>{addressName}
-          </div>
-        )}
+        >{subheaderText}</div>
+        {breadCrumbTextKey && <div
+          className="settings-page__subheader--break"
+        ><span>{' > '}</span>{t(breadCrumbTextKey)}</div>}
+        {isAddressEntryPage && <div
+          className="settings-page__subheader--break"
+        ><span>{' > '}</span>{addressName}</div>}
       </div>
     )
   }
@@ -158,6 +154,7 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
+          { content: t('connections'), description: t('connectionsSettingsDescription'), key: CONNECTIONS_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
           { content: t('contacts'), description: t('contactsSettingsDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
@@ -182,6 +179,11 @@ class SettingsPage extends PureComponent {
           exact
           path={GENERAL_ROUTE}
           component={SettingsTab}
+        />
+        <Route
+          exact
+          path={CONNECTIONS_ROUTE}
+          component={ConnectionsTab}
         />
         <Route
           exact

@@ -8,9 +8,7 @@ function createDnodeRemoteGetter (dnode) {
   })
 
   async function getRemote () {
-    if (remote) {
-      return remote
-    }
+    if (remote) return remote
     return await new Promise(resolve => dnode.once('remote', resolve))
   }
 

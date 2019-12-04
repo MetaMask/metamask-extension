@@ -48,11 +48,9 @@ describe('GasPriceButtonGroup Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
-      <GasPriceButtonGroup
-        {...mockGasPriceButtonGroupProps}
-      />
-    ))
+    wrapper = shallow(<GasPriceButtonGroup
+      {...mockGasPriceButtonGroupProps}
+    />)
   })
 
   afterEach(() => {

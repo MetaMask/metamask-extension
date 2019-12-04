@@ -11,16 +11,14 @@ describe('Page Footer', () => {
   const onSubmit = sinon.spy()
 
   beforeEach(() => {
-    wrapper = shallow((
-      <PageFooter
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-        cancelText="Cancel"
-        submitText="Submit"
-        disabled={false}
-        submitButtonType="Test Type"
-      />
-    ))
+    wrapper = shallow(<PageFooter
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+      cancelText="Cancel"
+      submitText="Submit"
+      disabled={false}
+      submitButtonType="Test Type"
+    />)
   })
 
   it('renders page container footer', () => {

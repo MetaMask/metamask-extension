@@ -15,7 +15,7 @@ PersistentForm.prototype.componentDidMount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
   const store = this.getPersistentStore()
 
-  for (let i = 0; i < fields.length; i++) {
+  for (var i = 0; i < fields.length; i++) {
     const field = fields[i]
     const key = field.getAttribute('data-persistent-formid')
     const cached = store[key]
@@ -52,7 +52,7 @@ PersistentForm.prototype.persistentFieldDidUpdate = function (event) {
 
 PersistentForm.prototype.componentWillUnmount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
-  for (let i = 0; i < fields.length; i++) {
+  for (var i = 0; i < fields.length; i++) {
     const field = fields[i]
     field.removeEventListener(eventName, this.persistentFieldDidUpdate.bind(this))
   }

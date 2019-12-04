@@ -1,9 +1,5 @@
 const promiseToCallback = require('promise-to-callback')
-const callbackNoop = function (err) {
-  if (err) {
-    throw err
-  }
-}
+const callbackNoop = function (err) { if (err) throw err }
 
 /**
  * A generator that returns a function which, when passed a promise, can treat that promise as a node style callback.

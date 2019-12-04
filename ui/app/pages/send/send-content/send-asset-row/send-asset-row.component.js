@@ -128,8 +128,7 @@ export default class SendAssetRow extends Component {
 
     return (
       <div
-        key={address}
-        className="send-v2__asset-dropdown__asset"
+        key={address} className="send-v2__asset-dropdown__asset"
         onClick={() => this.selectToken(address)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">

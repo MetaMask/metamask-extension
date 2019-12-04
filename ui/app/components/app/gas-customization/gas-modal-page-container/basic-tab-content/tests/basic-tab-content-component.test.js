@@ -38,11 +38,9 @@ describe('BasicTabContent Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
-      <BasicTabContent
-        gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-      />
-    ))
+    wrapper = shallow(<BasicTabContent
+      gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+    />)
   })
 
   describe('render', () => {

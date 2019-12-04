@@ -42,6 +42,9 @@
   "connect": {
     "message": "કનેક્ટ કરો"
   },
+  "copy": {
+    "message": "કૉપિ કરો"
+  },
   "copyToClipboard": {
     "message": "ક્લિપબોર્ડ પર કૉપિ કરો"
   },
@@ -53,6 +56,9 @@
   },
   "details": {
     "message": "વિગતો"
+  },
+  "dismiss": {
+    "message": "કાઢી નાખો"
   },
   "done": {
     "message": "થઈ ગયું"
@@ -124,6 +130,9 @@
   },
   "settings": {
     "message": "સેટિંગ્સ"
+  },
+  "submit": {
+    "message": "સબમિટ કરો"
   },
   "tryAgain": {
     "message": "ફરી પ્રયાસ કરો"

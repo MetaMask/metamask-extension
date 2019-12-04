@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
 const inherits = require('util').inherits
+const Component = require('react').Component
+const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
@@ -9,7 +10,7 @@ const log = require('loglevel')
 const R = require('ramda')
 
 const SignatureRequest = require('../../components/app/signature-request').default
-const SignatureRequestOriginal = require('../../components/app/signature-request-original').default
+const SignatureRequestOriginal = require('../../components/app/signature-request-original')
 const Loading = require('../../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
@@ -147,46 +148,40 @@ ConfirmTxScreen.prototype.signatureSelect = function (type, version) {
 }
 
 ConfirmTxScreen.prototype.render = function () {
+  const props = this.props
   const {
     currentCurrency,
     blockGasLimit,
     conversionRate,
-  } = this.props
+  } = props
 
-  const txData = this.getTxData() || {}
+  var txData = this.getTxData() || {}
   const { msgParams, type, msgParams: { version } } = txData
   log.debug('msgParams detected, rendering pending msg')
 
-  if (!msgParams) {
-    return (
-      <Loading />
-    )
-  }
-
-  const SigComponent = this.signatureSelect(type, version)
-  return (
-    <SigComponent
-      txData={txData}
-      key={txData.id}
-      selectedAddress={this.props.selectedAddress}
-      accounts={this.props.accounts}
-      identities={this.props.identities}
-      conversionRate={conversionRate}
-      currentCurrency={currentCurrency}
-      blockGasLimit={blockGasLimit}
-      signMessage={this.signMessage.bind(this, txData)}
-      signPersonalMessage={this.signPersonalMessage.bind(this, txData)}
-      signTypedMessage={this.signTypedMessage.bind(this, txData)}
-      cancelMessage={this.cancelMessage.bind(this, txData)}
-      cancelPersonalMessage={this.cancelPersonalMessage.bind(this, txData)}
-      cancelTypedMessage={this.cancelTypedMessage.bind(this, txData)}
-    />
-  )
+  return msgParams ? h(this.signatureSelect(type, version), {
+    // Properties
+    txData: txData,
+    key: txData.id,
+    selectedAddress: props.selectedAddress,
+    accounts: props.accounts,
+    identities: props.identities,
+    conversionRate,
+    currentCurrency,
+    blockGasLimit,
+    // Actions
+    signMessage: this.signMessage.bind(this, txData),
+    signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+    signTypedMessage: this.signTypedMessage.bind(this, txData),
+    cancelMessage: this.cancelMessage.bind(this, txData),
+    cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+    cancelTypedMessage: this.cancelTypedMessage.bind(this, txData),
+  }) : h(Loading)
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   log.info('conf-tx.js: signing message')
-  const params = msgData.msgParams
+  var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signMsg(params))
@@ -200,7 +195,7 @@ ConfirmTxScreen.prototype.stopPropagation = function (event) {
 
 ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   log.info('conf-tx.js: signing personal message')
-  const params = msgData.msgParams
+  var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signPersonalMsg(params))
@@ -208,7 +203,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   log.info('conf-tx.js: signing typed message')
-  const params = msgData.msgParams
+  var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   return this.props.dispatch(actions.signTypedMsg(params))

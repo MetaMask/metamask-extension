@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+const Component = require('react').Component
+const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 module.exports = ReadOnlyInput
@@ -8,7 +9,7 @@ function ReadOnlyInput () {
   Component.call(this)
 }
 
-ReadOnlyInput.prototype.render = function ReadOnlyInput () {
+ReadOnlyInput.prototype.render = function () {
   const {
     wrapperClass = '',
     inputClass = '',
@@ -17,18 +18,16 @@ ReadOnlyInput.prototype.render = function ReadOnlyInput () {
     onClick,
   } = this.props
 
-  const InputType = textarea ? 'textarea' : 'input'
+  const inputType = textarea ? 'textarea' : 'input'
 
-  return (
-    <div className={wrapperClass}>
-      <InputType
-        className={inputClass}
-        value={value}
-        readOnly
-        onFocus={event => event.target.select()}
-        onClick={onClick}
-      />
-    </div>
-  )
+  return h('div', {className: wrapperClass}, [
+    h(inputType, {
+      className: inputClass,
+      value,
+      readOnly: true,
+      onFocus: event => event.target.select(),
+      onClick,
+    }),
+  ])
 }
 

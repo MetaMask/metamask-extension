@@ -1,15 +1,27 @@
 {
+  "privacyModeDefault": {
+    "message": "وضعیت محرمیت حالا بصورت خودکار فعال است"
+  },
   "chartOnlyAvailableEth": {
     "message": "تنها قابل دسترس را در شبکه های ایتریوم جدول بندی نمایید"
+  },
+  "confirmClear": {
+    "message": "آیا مطمئن هستید تا وب سایت های تصدیق شده را حذف کنید؟"
   },
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
+  "clearApprovalData": {
+    "message": "حذف اطلاعات حریم خصوصی"
+  },
   "reject": {
     "message": "عدم پذیرش"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "1$1 میخواهید تا با حساب تان وصل شوید"
+  },
+  "providerRequestInfo": {
+    "message": "این سایت در حال درخواست دسترسی است تا آدرس فعلی حساب تان را مشاهده نماید. همیشه متوجه باشید که بالای سایتی که با آن معامله میکنید، اعتماد دارید یا خیر."
   },
   "about": {
     "message": "درباره"
@@ -145,6 +157,10 @@
   "basic": {
     "message": "پایه"
   },
+  "betweenMinAndMax": {
+    "message": "باید بزرگتر از یا مساوی به 1$1 و کوچکتر یا مساوی به 2$2 باشد.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockExplorerUrl": {
     "message": "بلاک کردن براوزر"
   },
@@ -236,6 +252,9 @@
   "connect": {
     "message": "اتصال"
   },
+  "connectRequest": {
+    "message": "درخواست اتصال"
+  },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
@@ -274,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "کپی شد!"
+  },
+  "copy": {
+    "message": "کپی"
   },
   "copyAddress": {
     "message": "کاپی آدرس به کلیپ بورد"
@@ -352,6 +374,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
+  },
+  "dismiss": {
+    "message": "لغو کردن"
   },
   "done": {
     "message": "تمام"
@@ -518,6 +543,10 @@
   "getStarted": {
     "message": "شروع به کار"
   },
+  "greaterThanMin": {
+    "message": "باید بزرگتر از یا مساوی به 1$1 باشد.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "از دیدن شما خوشحال هستیم."
   },
@@ -635,6 +664,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
+  },
+  "lessThanMax": {
+    "message": "باید کوچکتر از 1$1 یا مساوی با آن باشد.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
@@ -836,6 +869,9 @@
   "pastePrivateKey": {
     "message": "زنجیره کلید شخصی را در اینجا کاپی کنید:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "عبارت بازیاب تان را اینجا بگذارید!"
   },
   "pending": {
     "message": "در حال تعلیق"
@@ -1150,6 +1186,9 @@
   "storePhrase": {
     "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."
   },
+  "submit": {
+    "message": "ارائه"
+  },
   "submitted": {
     "message": "ارائه شد"
   },
@@ -1316,6 +1355,9 @@
   },
   "userName": {
     "message": "نام کاربری"
+  },
+  "validFileImport": {
+    "message": "شما باید یک فایل معتبر را جهت وارد سازی انتخاب کنید."
   },
   "viewAccount": {
     "message": "مشاهده حساب"
