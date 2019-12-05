@@ -10,7 +10,7 @@ function reduceMetamask (state, action) {
   let newState
 
   // clone + defaults
-  var metamaskState = extend({
+  const metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
@@ -25,6 +25,7 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
+    customNonceValue: '',
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -57,6 +58,7 @@ function reduceMetamask (state, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
+    nextNonce: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -97,7 +99,7 @@ function reduceMetamask (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var stringId = String(action.id)
+      const stringId = String(action.id)
       newState = extend(metamaskState, {
         unapprovedTxs: {},
         unapprovedMsgs: {},
@@ -188,7 +190,10 @@ function reduceMetamask (state, action) {
           gasLimit: action.value,
         },
       })
-
+    case actions.UPDATE_CUSTOM_NONCE:
+      return extend(metamaskState, {
+        customNonceValue: action.value,
+      })
     case actions.UPDATE_GAS_PRICE:
       return extend(metamaskState, {
         send: {
@@ -317,7 +322,9 @@ function reduceMetamask (state, action) {
       let { selectedAddressTxList } = metamaskState
       selectedAddressTxList = selectedAddressTxList.map(tx => {
         if (tx.id === txId) {
-          tx.txParams = value
+          const newTx = Object.assign({}, tx)
+          newTx.txParams = value
+          return newTx
         }
         return tx
       })
@@ -377,7 +384,7 @@ function reduceMetamask (state, action) {
 
     case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
-        currentLocale: action.value,
+        currentLocale: action.value.locale,
       })
 
     case actions.SET_PENDING_TOKENS:
@@ -409,6 +416,12 @@ function reduceMetamask (state, action) {
     case actions.SET_FIRST_TIME_FLOW_TYPE: {
       return extend(metamaskState, {
         firstTimeFlowType: action.value,
+      })
+    }
+
+    case actions.SET_NEXT_NONCE: {
+      return extend(metamaskState, {
+        nextNonce: action.value,
       })
     }
 

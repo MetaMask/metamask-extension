@@ -10,7 +10,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
 import HTML5Backend from 'react-dnd-html5-backend'
-import {DragDropContextProvider} from 'react-dnd'
+import { DragDropContextProvider } from 'react-dnd'
 import MetaFoxLogo from '../../../components/ui/metafox-logo'
 
 export default class SeedPhrase extends PureComponent {

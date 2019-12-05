@@ -12,21 +12,25 @@ sinon.spy(ButtonGroup.prototype, 'handleButtonClick')
 sinon.spy(ButtonGroup.prototype, 'renderButtons')
 
 const mockButtons = [
-  <button onClick={childButtonSpies.onClick} key={'a'}><div className="mockClass" /></button>,
-  <button onClick={childButtonSpies.onClick} key={'b'}></button>,
-  <button onClick={childButtonSpies.onClick} key={'c'}></button>,
+  <button onClick={childButtonSpies.onClick} key="a"><div className="mockClass" /></button>,
+  <button onClick={childButtonSpies.onClick} key="b"></button>,
+  <button onClick={childButtonSpies.onClick} key="c"></button>,
 ]
 
 describe('ButtonGroup Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<ButtonGroup
-      defaultActiveButtonIndex={1}
-      disabled={false}
-      className="someClassName"
-      style={ { color: 'red' } }
-    >{mockButtons}</ButtonGroup>)
+    wrapper = shallow((
+      <ButtonGroup
+        defaultActiveButtonIndex={1}
+        disabled={false}
+        className="someClassName"
+        style={ { color: 'red' } }
+      >
+        {mockButtons}
+      </ButtonGroup>
+    ))
   })
 
   afterEach(() => {

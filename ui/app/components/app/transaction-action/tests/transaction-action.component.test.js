@@ -35,11 +35,13 @@ describe('TransactionAction Component', () => {
         },
       }
 
-      const wrapper = shallow(<TransactionAction
-        methodData={methodData}
-        transaction={transaction}
-        className="transaction-action"
-      />, { context: { t }})
+      const wrapper = shallow((
+        <TransactionAction
+          methodData={methodData}
+          transaction={transaction}
+          className="transaction-action"
+        />
+      ), { context: { t } })
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
       wrapper.setState({ transactionAction: 'sentEther' })
@@ -106,7 +108,7 @@ describe('TransactionAction Component', () => {
           transaction={transaction}
           className="test-class"
         />,
-        { context: { t }}
+        { context: { t } }
       )
 
       assert.ok(wrapper)

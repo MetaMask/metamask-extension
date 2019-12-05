@@ -130,7 +130,7 @@ describe('CurrencyInput Component', () => {
             fiatSuffix="USD"
             nativeSuffix="ETH"
             useFiat
-            hideFiat={true}
+            hideFiat
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common'
@@ -38,12 +38,16 @@ export default class GasFeeDisplay extends Component {
             </div>
           )
           : gasLoadingError
-            ? <div className="currency-display.currency-display--message">
-              {this.context.t('setGasPrice')}
-            </div>
-            : <div className="currency-display">
-              {this.context.t('loading')}
-            </div>
+            ? (
+              <div className="currency-display.currency-display--message">
+                {this.context.t('setGasPrice')}
+              </div>
+            )
+            : (
+              <div className="currency-display">
+                {this.context.t('loading')}
+              </div>
+            )
         }
         <button
           className="gas-fee-reset"

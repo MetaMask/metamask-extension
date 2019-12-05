@@ -5,3 +5,9 @@
 @import 'confirm-detail-row/index';
 
 @import 'confirm-page-container-navigation/index';
+
+.page-container {
+  &__content-component-wrapper {
+    height: 100%;
+  }
+}

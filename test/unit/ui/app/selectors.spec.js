@@ -1,10 +1,10 @@
 const assert = require('assert')
-const selectors = require('../../../../ui/app/selectors/selectors')
+import * as selectors from '../../../../ui/app/selectors/selectors'
 const mockState = require('../../../data/mock-state.json')
 const Eth = require('ethjs')
 
 const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('Selectors', function () {
 
@@ -109,12 +109,6 @@ describe('Selectors', function () {
     assert.equal(currentAccountwithSendEther.name, 'Test Account')
   })
 
-  describe('#transactionSelector', function () {
-    it('returns transactions from state', function () {
-      selectors.transactionsSelector(mockState)
-    })
-  })
-
   it('#getGasIsLoading', () => {
     const gasIsLoading = selectors.getGasIsLoading(mockState)
     assert.equal(gasIsLoading, false)
@@ -152,16 +146,10 @@ describe('Selectors', function () {
     assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 
-  describe('#getSelectedTokenContract', () => {
-
-    beforeEach(() => {
-      global.eth = new Eth(provider)
-    })
-
-    it('', () => {
-      const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
-      assert(selectedTokenContract.abi)
-    })
+  it('#getSelectedTokenContract', () => {
+    global.eth = new Eth(provider)
+    const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
+    assert(selectedTokenContract.abi)
   })
 
   it('#getCurrentViewContext', () => {

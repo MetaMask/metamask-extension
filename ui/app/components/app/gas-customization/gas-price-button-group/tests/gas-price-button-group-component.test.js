@@ -48,9 +48,11 @@ describe('GasPriceButtonGroup Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<GasPriceButtonGroup
-      {...mockGasPriceButtonGroupProps}
-    />)
+    wrapper = shallow((
+      <GasPriceButtonGroup
+        {...mockGasPriceButtonGroupProps}
+      />
+    ))
   })
 
   afterEach(() => {
@@ -156,15 +158,15 @@ describe('GasPriceButtonGroup Component', function () {
   })
 
   describe('renderButtonContent', () => {
-    it('should render a label if passed a labelKey', () => {
+    it('should render a label if passed a gasEstimateType', () => {
       const renderButtonContentResult = wrapper.instance().renderButtonContent({
-        labelKey: 'mockLabelKey',
+        gasEstimateType: 'SLOW',
       }, {
         className: 'someClass',
       })
       const wrappedRenderButtonContentResult = shallow(renderButtonContentResult)
       assert.equal(wrappedRenderButtonContentResult.childAt(0).children().length, 1)
-      assert.equal(wrappedRenderButtonContentResult.find('.someClass__label').text(), 'mockLabelKey')
+      assert.equal(wrappedRenderButtonContentResult.find('.someClass__label').text(), 'slow')
     })
 
     it('should render a feeInPrimaryCurrency if passed a feeInPrimaryCurrency', () => {
@@ -211,7 +213,7 @@ describe('GasPriceButtonGroup Component', function () {
 
     it('should render all elements if all args passed', () => {
       const renderButtonContentResult = wrapper.instance().renderButtonContent({
-        labelKey: 'mockLabel',
+        gasEstimateType: 'SLOW',
         feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
         feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
         timeEstimate: 'mockTimeEstimate',

@@ -2,8 +2,8 @@ const assert = require('assert')
 
 const EdgeEncryptor = require('../../../app/scripts/edge-encryptor')
 
-var password = 'passw0rd1'
-var data = 'some random data'
+const password = 'passw0rd1'
+const data = 'some random data'
 
 global.crypto = global.crypto || {
   getRandomValues: function (array) {

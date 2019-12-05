@@ -11,7 +11,7 @@ describe('ErrorMessage Component', () => {
       <ErrorMessage
         errorMessage="This is an error."
       />,
-      { context: { t }}
+      { context: { t } }
     )
 
     assert.ok(wrapper)
@@ -25,7 +25,7 @@ describe('ErrorMessage Component', () => {
       <ErrorMessage
         errorKey="testKey"
       />,
-      { context: { t }}
+      { context: { t } }
     )
 
     assert.ok(wrapper)

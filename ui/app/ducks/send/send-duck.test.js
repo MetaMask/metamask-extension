@@ -6,7 +6,6 @@ import SendReducer, {
   updateSendErrors,
   showGasButtonGroup,
   hideGasButtonGroup,
-  updateSendWarnings,
 } from './send.duck.js'
 
 describe('Send Duck', () => {
@@ -20,14 +19,12 @@ describe('Send Duck', () => {
     toDropdownOpen: false,
     errors: {},
     gasButtonGroupShown: true,
-    warnings: {},
   }
   const OPEN_FROM_DROPDOWN = 'metamask/send/OPEN_FROM_DROPDOWN'
   const CLOSE_FROM_DROPDOWN = 'metamask/send/CLOSE_FROM_DROPDOWN'
   const OPEN_TO_DROPDOWN = 'metamask/send/OPEN_TO_DROPDOWN'
   const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN'
   const UPDATE_SEND_ERRORS = 'metamask/send/UPDATE_SEND_ERRORS'
-  const UPDATE_SEND_WARNINGS = 'metamask/send/UPDATE_SEND_WARNINGS'
   const RESET_SEND_STATE = 'metamask/send/RESET_SEND_STATE'
   const SHOW_GAS_BUTTON_GROUP = 'metamask/send/SHOW_GAS_BUTTON_GROUP'
   const HIDE_GAS_BUTTON_GROUP = 'metamask/send/HIDE_GAS_BUTTON_GROUP'
@@ -55,7 +52,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: true}, mockState.send)
+        Object.assign({ fromDropdownOpen: true }, mockState.send)
       )
     })
 
@@ -69,7 +66,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: false}, mockState.send)
+        Object.assign({ fromDropdownOpen: false }, mockState.send)
       )
     })
 
@@ -78,7 +75,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: true}, mockState.send)
+        Object.assign({ toDropdownOpen: true }, mockState.send)
       )
     })
 
@@ -87,7 +84,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: false}, mockState.send)
+        Object.assign({ toDropdownOpen: false }, mockState.send)
       )
     })
 
@@ -96,7 +93,7 @@ describe('Send Duck', () => {
         SendReducer(Object.assign({}, mockState, { gasButtonGroupShown: false }), {
           type: SHOW_GAS_BUTTON_GROUP,
         }),
-        Object.assign({gasButtonGroupShown: true}, mockState.send)
+        Object.assign({ gasButtonGroupShown: true }, mockState.send)
       )
     })
 
@@ -105,7 +102,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: HIDE_GAS_BUTTON_GROUP,
         }),
-        Object.assign({gasButtonGroupShown: false}, mockState.send)
+        Object.assign({ gasButtonGroupShown: false }, mockState.send)
       )
     })
 
@@ -173,13 +170,6 @@ describe('Send Duck', () => {
     assert.deepEqual(
       updateSendErrors('mockErrorObject'),
       { type: UPDATE_SEND_ERRORS, value: 'mockErrorObject' }
-    )
-  })
-
-  describe('updateSendWarnings', () => {
-    assert.deepEqual(
-      updateSendWarnings('mockWarningObject'),
-      { type: UPDATE_SEND_WARNINGS, value: 'mockWarningObject' }
     )
   })
 

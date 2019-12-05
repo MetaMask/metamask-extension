@@ -13,6 +13,7 @@ const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
@@ -202,7 +203,7 @@ function doesAmountErrorRequireUpdate ({
 async function estimateGas ({
   selectedAddress,
   selectedToken,
-  blockGasLimit,
+  blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
   data,
@@ -242,12 +243,17 @@ async function estimateGas ({
   }
 
   // if not, fall back to block gasLimit
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit || '0x5208', 0.95, {
+  if (!blockGasLimit) {
+    blockGasLimit = MIN_GAS_LIMIT_HEX
+  }
+
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',
     toNumericBase: 'hex',
   }))
+
   // run tx
   return new Promise((resolve, reject) => {
     return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
@@ -287,18 +293,24 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
   if (conversionGreaterThan(
     { value: initialGasLimitHex, fromNumericBase: 'hex' },
     { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) return initialGasLimitHex
+  )) {
+    return initialGasLimitHex
+  }
   // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
   if (conversionLessThan(
     { value: bufferedGasLimit, fromNumericBase: 'hex' },
     { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) return bufferedGasLimit
+  )) {
+    return bufferedGasLimit
+  }
   // otherwise use blockGasLimit
   return upperGasLimit
 }
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
-  if (!selectedToken) return
+  if (!selectedToken) {
+    return
+  }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
     x => ('00' + x.toString(16)).slice(-2)
@@ -319,7 +331,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }

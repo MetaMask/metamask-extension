@@ -33,7 +33,9 @@ describe('nodeify', function () {
   })
 
   it('no callback - should asyncly throw an error if underlying function does', function (done) {
-    const nodified = nodeify(async () => { throw new Error('boom!') }, obj)
+    const nodified = nodeify(async () => {
+      throw new Error('boom!')
+    }, obj)
     process.prependOnceListener('uncaughtException', function (err) {
       assert.ok(err, 'got expected error')
       assert.ok(err.message.includes('boom!'), 'got expected error message')
@@ -50,7 +52,9 @@ describe('nodeify', function () {
     const nodified = nodeify(() => 42)
     try {
       nodified((err, result) => {
-        if (err) return done(new Error(`should not have thrown any error: ${err.message}`))
+        if (err) {
+          return done(new Error(`should not have thrown any error: ${err.message}`))
+        }
         assert.equal(42, result, 'got expected result')
       })
       done()
@@ -60,10 +64,14 @@ describe('nodeify', function () {
   })
 
   it('sync functions - handles errors', function (done) {
-    const nodified = nodeify(() => { throw new Error('boom!') })
+    const nodified = nodeify(() => {
+      throw new Error('boom!')
+    })
     try {
       nodified((err, result) => {
-        if (result) return done(new Error('should not have returned any result'))
+        if (result) {
+          return done(new Error('should not have returned any result'))
+        }
         assert.ok(err, 'got expected error')
         assert.ok(err.message.includes('boom!'), 'got expected error message')
       })

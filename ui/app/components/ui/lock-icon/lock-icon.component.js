@@ -12,7 +12,7 @@ export default function LockIcon (props) {
       width="401.998px"
       height="401.998px"
       viewBox="0 0 401.998 401.998"
-      style={{enableBackground: 'new 0 0 401.998 401.998'}}
+      style={{ enableBackground: 'new 0 0 401.998 401.998' }}
       xmlSpace="preserve"
       {...props}
     >

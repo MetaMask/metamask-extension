@@ -2,7 +2,7 @@
   position: fixed;
   z-index: 100;
   top: 58px;
-  width: 310px;
+  width: 320px;
 
   @media screen and (max-width: 575px) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -51,20 +51,25 @@
     height: 16px;
   }
 
-  &__accounts {
+  &__accounts-container {
     display: flex;
-    flex-flow: column nowrap;
-    overflow-y: auto;
-    max-height: 256px;
-    position: relative;
+    flex-direction: column;
     z-index: 200;
+    scrollbar-width: none;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    max-height: 256px;
 
     @media screen and (max-width: 575px) {
       max-height: 228px;
+    }
+  }
+
+  &__accounts {
+    overflow-y: auto;
+    position: relative;
+
+    &::-webkit-scrollbar {
+      display: none;
     }
 
     .keyring-label {
@@ -74,6 +79,11 @@
       font-weight: normal;
       letter-spacing: .5px;
     }
+  }
+
+  &__no-accounts {
+    font-size: 0.8em;
+    padding: 16px 14px;
   }
 
   &__account {
@@ -173,5 +183,9 @@
     &:hover {
       opacity: 1;
     }
+  }
+
+  &__icon-list {
+    display: flex;
   }
 }

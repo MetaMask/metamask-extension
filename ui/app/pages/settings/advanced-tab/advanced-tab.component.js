@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from '../../../components/ui/toggle-button'
 import TextField from '../../../components/ui/text-field'
@@ -13,6 +14,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   static propTypes = {
+    setUseNonceField: PropTypes.func,
+    useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
     setRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
@@ -26,9 +29,15 @@ export default class AdvancedTab extends PureComponent {
     autoLogoutTimeLimit: PropTypes.number,
     setAutoLogoutTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
+    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
+    threeBoxDisabled: PropTypes.bool.isRequired,
   }
 
-  state = { autoLogoutTimeLimit: this.props.autoLogoutTimeLimit }
+  state = {
+    autoLogoutTimeLimit: this.props.autoLogoutTimeLimit,
+    logoutTimeError: '',
+  }
 
   renderMobileSync () {
     const { t } = this.context
@@ -79,7 +88,7 @@ export default class AdvancedTab extends PureComponent {
                   if (err) {
                     displayWarning(t('stateLogError'))
                   } else {
-                    exportAsFile('MetaMask State Logs.json', result)
+                    exportAsFile(`${t('stateLogFileName')}.json`, result)
                   }
                 })
               }}
@@ -208,8 +217,53 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderUseNonceOptIn () {
+    const { t } = this.context
+    const { useNonceField, setUseNonceField } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ this.context.t('nonceField') }</span>
+          <div className="settings-page__content-description">
+            { t('nonceFieldDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useNonceField}
+              onToggle={value => setUseNonceField(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  handleLogoutChange (time) {
+    const { t } = this.context
+    const autoLogoutTimeLimit = Math.max(Number(time), 0)
+
+    this.setState(() => {
+      let logoutTimeError = ''
+
+      if (autoLogoutTimeLimit > 10080) {
+        logoutTimeError = t('logoutTimeTooGreat')
+      }
+
+      return {
+        autoLogoutTimeLimit,
+        logoutTimeError,
+      }
+    })
+  }
+
   renderAutoLogoutTimeLimit () {
     const { t } = this.context
+    const { logoutTimeError } = this.state
     const {
       autoLogoutTimeLimit,
       setAutoLogoutTimeLimit,
@@ -231,19 +285,67 @@ export default class AdvancedTab extends PureComponent {
               placeholder="5"
               value={this.state.autoLogoutTimeLimit}
               defaultValue={autoLogoutTimeLimit}
-              onChange={e => this.setState({ autoLogoutTimeLimit: Math.max(Number(e.target.value), 0) })}
+              onChange={e => this.handleLogoutChange(e.target.value)}
+              error={logoutTimeError}
               fullWidth
               margin="dense"
               min={0}
             />
-            <button
-              className="button btn-primary settings-tab__rpc-save-button"
+            <Button
+              type="primary"
+              className="settings-tab__rpc-save-button"
+              disabled={logoutTimeError !== ''}
               onClick={() => {
                 setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
               }}
             >
               { t('save') }
-            </button>
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderThreeBoxControl () {
+    const { t } = this.context
+    const {
+      threeBoxSyncingAllowed,
+      setThreeBoxSyncingPermission,
+      threeBoxDisabled,
+    } = this.props
+
+    let allowed = threeBoxSyncingAllowed
+    let description = t('syncWithThreeBoxDescription')
+
+    if (threeBoxDisabled) {
+      allowed = false
+      description = t('syncWithThreeBoxDisabled')
+    }
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithThreeBox') }</span>
+          <div className="settings-page__content-description">
+            { description }
+          </div>
+        </div>
+        <div
+          className={classnames('settings-page__content-item', {
+            'settings-page__content-item--disabled': threeBoxDisabled,
+          })}
+        >
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={allowed}
+              onToggle={value => {
+                if (!threeBoxDisabled) {
+                  setThreeBoxSyncingPermission(!value)
+                }
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
           </div>
         </div>
       </div>
@@ -262,7 +364,9 @@ export default class AdvancedTab extends PureComponent {
         { this.renderAdvancedGasInputInline() }
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
+        { this.renderUseNonceOptIn() }
         { this.renderAutoLogoutTimeLimit() }
+        { this.renderThreeBoxControl() }
       </div>
     )
   }

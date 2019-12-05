@@ -81,12 +81,12 @@ export default class QrScanner extends Component {
               this.props.qrCodeDetected(result)
               this.stopAndClose()
             } else {
-              this.setState({msg: this.context.t('unknownQrCode')})
+              this.setState({ msg: this.context.t('unknownQrCode') })
             }
           })
           .catch(err => {
             if (err && err.name === 'NotAllowedError') {
-              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+              this.setState({ msg: this.context.t('youNeedToAllowCameraAccess') })
               clearTimeout(this.permissionChecker)
               this.needsToReinit = true
               this.checkPermisisions()
@@ -110,16 +110,16 @@ export default class QrScanner extends Component {
     if (content.split('ethereum:').length > 1) {
 
       type = 'address'
-      values = {'address': content.split('ethereum:')[1] }
+      values = { 'address': content.split('ethereum:')[1] }
 
     // Regular ethereum addresses - fox ex. 0x.....1111
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
 
       type = 'address'
-      values = {'address': content }
+      values = { 'address': content }
 
     }
-    return {type, values}
+    return { type, values }
   }
 
 
@@ -142,14 +142,14 @@ export default class QrScanner extends Component {
 
   renderVideo () {
     return (
-      <div className={'qr-scanner__content__video-wrapper'}>
+      <div className="qr-scanner__content__video-wrapper">
         <video
           id="video"
           style={{
             display: this.state.ready ? 'block' : 'none',
           }}
         />
-        { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
+        { !this.state.ready ? <Spinner color="#F7C06C" /> : null}
       </div>
     )
   }
@@ -172,12 +172,12 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
 
         <div className="qr-scanner__image">
-          <img src={'images/webcam.svg'} width={70} height={70} />
+          <img src="images/webcam.svg" width={70} height={70} />
         </div>
         <div className="qr-scanner__title">
           { title }
         </div>
-        <div className={'qr-scanner__error'}>
+        <div className="qr-scanner__error">
           {msg}
         </div>
         <PageContainerFooter
@@ -207,7 +207,7 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__content">
           { this.renderVideo() }
         </div>
-        <div className={'qr-scanner__status'}>
+        <div className="qr-scanner__status">
           {this.state.msg}
         </div>
       </div>

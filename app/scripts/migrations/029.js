@@ -24,4 +24,3 @@ module.exports = {
     return isApproved && now - createdTime > unacceptableDelay
   }),
 }
-

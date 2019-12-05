@@ -108,7 +108,7 @@ export default class SendAmountRow extends Component {
       <SendRowWrapper
         label={`${this.context.t('amount')}:`}
         showError={inError}
-        errorType={'amount'}
+        errorType="amount"
       >
         {gasTotal && <AmountMaxButton inError={inError} />}
         { this.renderInput() }

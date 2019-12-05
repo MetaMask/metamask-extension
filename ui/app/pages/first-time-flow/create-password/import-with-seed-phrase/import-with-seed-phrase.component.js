@@ -1,4 +1,4 @@
-import {validateMnemonic} from 'bip39'
+import { validateMnemonic } from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -18,6 +18,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     history: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
     setSeedPhraseBackedUp: PropTypes.func,
+    initializeThreeBox: PropTypes.func,
   }
 
   state = {
@@ -49,7 +50,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   componentWillMount () {
-    window.onbeforeunload = () => this.context.metricsEvent({
+    this._onBeforeUnload = () => this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
         action: 'Import Seed Phrase',
@@ -60,6 +61,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
         errorMessage: this.state.seedPhraseError,
       },
     })
+    window.addEventListener('beforeunload', this._onBeforeUnload)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this._onBeforeUnload)
   }
 
   handleSeedPhraseChange (seedPhrase) {
@@ -127,7 +133,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }
 
     const { password, seedPhrase } = this.state
-    const { history, onSubmit, setSeedPhraseBackedUp } = this.props
+    const { history, onSubmit, setSeedPhraseBackedUp, initializeThreeBox } = this.props
 
     try {
       await onSubmit(password, this.parseSeedPhrase(seedPhrase))
@@ -140,6 +146,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       })
 
       setSeedPhraseBackedUp(true).then(() => {
+        initializeThreeBox()
         history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       })
     } catch (error) {
@@ -168,6 +175,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
+  onTermsKeyPress = ({ key }) => {
+    if (key === ' ' || key === 'Enter') {
+      this.toggleTermsCheck()
+    }
+  }
+
   toggleTermsCheck = () => {
     this.context.metricsEvent({
       eventOpts: {
@@ -176,7 +189,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
         name: 'Check ToS',
       },
     })
-
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))
@@ -260,11 +272,19 @@ export default class ImportWithSeedPhrase extends PureComponent {
           largeLabel
         />
         <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
-          <div className="first-time-flow__checkbox">
+          <div
+            className="first-time-flow__checkbox"
+            tabIndex="0"
+            role="checkbox"
+            onKeyPress={this.onTermsKeyPress}
+            aria-checked={termsChecked}
+            aria-labelledby="ftf-chk1-label"
+          >
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
-          <span className="first-time-flow__checkbox-label">
-            I have read and agree to the <a
+          <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
+            I have read and agree to the&nbsp;
+            <a
               href="https://metamask.io/terms.html"
               target="_blank"
               rel="noopener noreferrer"

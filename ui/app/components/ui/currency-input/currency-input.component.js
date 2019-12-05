@@ -79,7 +79,7 @@ export default class CurrencyInput extends PureComponent {
 
   swap = () => {
     const { isSwapped, decimalValue } = this.state
-    this.setState({isSwapped: !isSwapped}, () => {
+    this.setState({ isSwapped: !isSwapped }, () => {
       this.handleChange(decimalValue)
     })
   }

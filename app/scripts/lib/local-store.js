@@ -1,5 +1,6 @@
 const extension = require('extensionizer')
 const log = require('loglevel')
+const { checkForError } = require('./util')
 
 /**
  * A wrapper around the extension's storage local API
@@ -20,7 +21,9 @@ module.exports = class ExtensionStore {
    * @return {Promise<*>}
    */
   async get () {
-    if (!this.isSupported) return undefined
+    if (!this.isSupported) {
+      return undefined
+    }
     const result = await this._get()
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -49,7 +52,7 @@ module.exports = class ExtensionStore {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.get(null, (/** @type {any} */ result) => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {
@@ -69,7 +72,7 @@ module.exports = class ExtensionStore {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {

@@ -16,11 +16,16 @@ const manifest = require('./app/manifest.json')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
-const stylefmt = require('gulp-stylefmt')
-const uglify = require('gulp-uglify-es').default
+const terser = require('gulp-terser-js')
 const pify = require('pify')
+const rtlcss = require('gulp-rtlcss')
+const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
+const sesify = require('sesify')
+const mkdirp = require('mkdirp')
+const imagemin = require('gulp-imagemin')
+const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
@@ -28,11 +33,14 @@ const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
 
-const uiDependenciesToBundle = [
-  ...materialUIDependencies,
-  ...reactDepenendencies,
-  ...d3Dependencies,
-]
+const externalDependenciesMap = {
+  background: [
+    '3box',
+  ],
+  ui: [
+    ...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies,
+  ],
+}
 
 function gulpParallel (...args) {
   return function spawnGulpChildProcess (cb) {
@@ -44,7 +52,6 @@ const browserPlatforms = [
   'firefox',
   'chrome',
   'brave',
-  'edge',
   'opera',
 ]
 const commonPlatforms = [
@@ -183,9 +190,8 @@ gulp.task('manifest:production', function () {
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/brave/manifest.json',
-    './dist/edge/manifest.json',
     './dist/opera/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
@@ -202,14 +208,61 @@ gulp.task('manifest:testing', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
+      return json
+    }))
+
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+const scriptsToExcludeFromBackgroundDevBuild = {
+  'bg-libs.js': true,
+}
+
+gulp.task('manifest:testing-local', function () {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+  ], { base: './dist/' })
+
+    .pipe(jsoneditor(function (json) {
+      json.background = {
+        ...json.background,
+        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+      }
+      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
+      return json
+    }))
+
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+
+gulp.task('manifest:dev', function () {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+  ], { base: './dist/' })
+
+    .pipe(jsoneditor(function (json) {
+      json.background = {
+        ...json.background,
+        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+      }
       json.permissions = [...json.permissions, 'webRequestBlocking']
       return json
     }))
 
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+gulp.task('optimize:images', function () {
+  return gulp.src('./dist/**/images/**', { base: './dist/' })
+    .pipe(imagemin())
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
@@ -225,6 +278,7 @@ gulp.task('copy',
 gulp.task('dev:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
+    'manifest:dev',
     'manifest:chrome',
     'manifest:opera'
   )
@@ -235,7 +289,7 @@ gulp.task('test:copy',
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
     'manifest:opera',
-    'manifest:testing'
+    'manifest:testing-local'
   )
 )
 
@@ -274,12 +328,19 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
       .pipe(sourcemaps.write())
       .pipe(autoprefixer())
       .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dest))
   }
 
   function buildScss () {
     return gulp.src(src)
       .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+      .pipe(rtlcss())
+      .pipe(rename({ suffix: '-rtl' }))
       .pipe(gulp.dest(dest))
   }
 }
@@ -295,12 +356,6 @@ gulp.task('lint-scss', function () {
     }))
 })
 
-gulp.task('fmt-scss', function () {
-  return gulp.src('ui/app/css/itcss/**/*.scss')
-    .pipe(stylefmt())
-    .pipe(gulp.dest('ui/app/css/itcss'))
-})
-
 // build js
 
 const buildJsFiles = [
@@ -312,15 +367,15 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
-createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, filename: 'libs' })
+createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' })
+createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
-function createTasksForBuildJsUIDeps ({ filename }) {
+function createTasksForBuildJsDeps ({ key, filename }) {
   const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
-
 
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
@@ -329,12 +384,12 @@ function createTasksForBuildJsUIDeps ({ filename }) {
     devMode: false,
   })
 
-  gulp.task('build:extension:js:uideps', bundleTask(Object.assign({
+  gulp.task(`build:extension:js:deps:${key}`, bundleTask(Object.assign({
     label: filename,
     filename: `${filename}.js`,
     destinations,
     buildLib: true,
-    dependenciesToBundle: uiDependenciesToBundle,
+    dependenciesToBundle: externalDependenciesMap[key],
   }, bundleTaskOpts)))
 }
 
@@ -366,14 +421,16 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
-      externalDependencies: jsFile === 'ui' && !bundleTaskOpts.devMode && uiDependenciesToBundle,
+      externalDependencies: bundleTaskOpts.devMode ? undefined : externalDependenciesMap[jsFile],
       destinations,
     }, bundleTaskOpts)))
   })
   // compose into larger task
   const subtasks = []
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
-  if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
+  if (buildPhase2.length) {
+    subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
+  }
 
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
@@ -387,23 +444,10 @@ gulp.task('clean', function clean () {
 // zip tasks for distribution
 gulp.task('zip:chrome', zipTask('chrome'))
 gulp.task('zip:firefox', zipTask('firefox'))
-gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 // high level tasks
-
-gulp.task('dev',
-  gulp.series(
-    'clean',
-    'dev:scss',
-    gulp.parallel(
-      'dev:extension:js',
-      'dev:copy',
-      'dev:reload'
-    )
-  )
-)
 
 gulp.task('dev:test',
   gulp.series(
@@ -434,10 +478,12 @@ gulp.task('build',
     'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:uideps',
+      'build:extension:js:deps:background',
+      'build:extension:js:deps:ui',
       'build:extension:js',
       'copy'
-    )
+    ),
+    'optimize:images'
   )
 )
 
@@ -446,22 +492,12 @@ gulp.task('build:test',
     'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:uideps',
+      'build:extension:js:deps:background',
+      'build:extension:js:deps:ui',
       'build:test:extension:js',
       'copy'
     ),
     'manifest:testing'
-  )
-)
-
-gulp.task('build:extension',
-  gulp.series(
-    'clean',
-    'build:scss',
-    gulp.parallel(
-      'build:extension:js',
-      'copy'
-    )
   )
 )
 
@@ -484,10 +520,25 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    plugin: 'browserify-derequire',
+    plugin: [],
+    transform: [],
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
+
+  const bundleName = opts.filename.split('.')[0]
+
+  // activate sesify
+  const activateAutoConfig = Boolean(process.env.SESIFY_AUTOGEN)
+  // const activateSesify = activateAutoConfig
+  const activateSesify = activateAutoConfig && ['background'].includes(bundleName)
+  if (activateSesify) {
+    configureBundleForSesify({ browserifyOpts, bundleName })
+  }
+
+  if (!activateSesify) {
+    browserifyOpts.plugin.push('browserify-derequire')
+  }
 
   if (!opts.buildLib) {
     if (opts.devMode && opts.filename === 'ui.js') {
@@ -499,6 +550,16 @@ function generateBundler (opts, performBundle) {
 
   let bundler = browserify(browserifyOpts)
     .transform('babelify')
+    // Transpile any dependencies using the object spread/rest operator
+    // because it is incompatible with `esprima`, which is used by `envify`
+    // See https://github.com/jquery/esprima/issues/1927
+    .transform('babelify', {
+      only: [
+        './**/node_modules/libp2p',
+      ],
+      global: true,
+      plugins: ['@babel/plugin-proposal-object-rest-spread'],
+    })
     .transform('brfs')
 
   if (opts.buildLib) {
@@ -509,7 +570,7 @@ function generateBundler (opts, performBundle) {
     bundler = bundler.external(opts.externalDependencies)
   }
 
-  // inject variables into bundle
+  // Inject variables into bundle
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
     NODE_ENV: opts.devMode ? 'development' : 'production',
@@ -534,13 +595,19 @@ function generateBundler (opts, performBundle) {
 }
 
 function bundleTask (opts) {
-  const bundler = generateBundler(opts, performBundle)
-  // output build logs to terminal
-  bundler.on('log', gutil.log)
+  let bundler
 
   return performBundle
 
   function performBundle () {
+    // initialize bundler if not available yet
+    // dont create bundler until task is actually run
+    if (!bundler) {
+      bundler = generateBundler(opts, performBundle)
+      // output build logs to terminal
+      bundler.on('log', gutil.log)
+    }
+
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -570,7 +637,7 @@ function bundleTask (opts) {
     // Minification
     if (opts.minifyBuild) {
       buildStream = buildStream
-        .pipe(uglify({
+        .pipe(terser({
           mangle: {
             reserved: [ 'MetamaskInpageProvider' ],
           },
@@ -598,6 +665,37 @@ function bundleTask (opts) {
     return buildStream
 
   }
+}
+
+function configureBundleForSesify ({
+  browserifyOpts,
+  bundleName,
+}) {
+  // add in sesify args for better globalRef usage detection
+  Object.assign(browserifyOpts, sesify.args)
+
+  // ensure browserify uses full paths
+  browserifyOpts.fullPaths = true
+
+  // record dependencies used in bundle
+  mkdirp.sync('./sesify')
+  browserifyOpts.plugin.push(['deps-dump', {
+    filename: `./sesify/deps-${bundleName}.json`,
+  }])
+
+  const sesifyConfigPath = `./sesify/${bundleName}.json`
+
+  // add sesify plugin
+  browserifyOpts.plugin.push([sesify, {
+    writeAutoConfig: sesifyConfigPath,
+  }])
+
+  // remove html comments that SES is alergic to
+  const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, _, cb) => {
+    const result = content.split('-->').join('-- >')
+    cb(null, result)
+  })
+  browserifyOpts.transform.push([removeHtmlComment, { global: true }])
 }
 
 function beep () {
