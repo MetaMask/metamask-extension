@@ -46,7 +46,7 @@ function upload_bundle {
 
   filename="$( basename "${filepath}" )"
 
-  printf 'Uploading %s' "${filename}"
+  printf 'Uploading %s\n' "${filename}"
   sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload "${filepath}" "metamask/${filename}"
 }
 
