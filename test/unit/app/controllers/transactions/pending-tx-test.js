@@ -74,16 +74,14 @@ describe('PendingTransactionTracker', function () {
         value: '0x01',
         hash: '0xbad',
         status: 'confirmed',
-        nonce: '0x01',
-      }, { count: 1 })
+      }, { count: 1, fromNonce: '0x01' })
 
       const pending = txGen.generate({
         id: '123',
         value: '0x02',
-        hash: '0xfad',
+        hash: '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
         status: 'submitted',
-        nonce: '0x01',
-      }, { count: 1 })[0]
+      }, { count: 1, fromNonce: '0x01' })[0]
 
       stub = sinon.stub(pendingTxTracker, 'getCompletedTransactions')
         .returns(txGen.txs)
@@ -112,7 +110,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker._checkPendingTx(txMetaNoHash)
     })
 
-    it('should emit tx:dropped with the txMetas id only after the second call', function (done) {
+    it('should emit tx:dropped with the txMetas id only after the fourth call', function (done) {
       txMeta = {
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
@@ -126,20 +124,32 @@ describe('PendingTransactionTracker', function () {
         rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       }
 
+      let counter = 0
       providerResultStub['eth_getTransactionCount'] = '0x02'
-      providerResultStub['eth_getTransactionByHash'] = {}
+      providerResultStub['eth_getTransactionReceipt'] = {}
       pendingTxTracker.once('tx:dropped', (id) => {
         if (id === txMeta.id) {
           delete providerResultStub['eth_getTransactionCount']
-          delete providerResultStub['eth_getTransactionByHash']
-          return done()
+          delete providerResultStub['eth_getTransactionReceipt']
+          if (counter === 3) {
+            return done()
+          } else {
+            return done(new Error(`Counter does not equal 3 got ${counter} instead`))
+          }
         } else {
           done(new Error('wrong tx Id'))
         }
       })
 
       pendingTxTracker._checkPendingTx(txMeta).then(() => {
-        pendingTxTracker._checkPendingTx(txMeta).catch(done)
+        ++counter
+        pendingTxTracker._checkPendingTx(txMeta).then(() => {
+          ++counter
+          pendingTxTracker._checkPendingTx(txMeta).then(() => {
+            ++counter
+            pendingTxTracker._checkPendingTx(txMeta)
+          })
+        })
       }).catch(done)
     })
 
@@ -344,8 +354,8 @@ describe('PendingTransactionTracker', function () {
     }
     it('should return false when the nonce is the suggested network nonce', (done) => {
       providerResultStub['eth_getTransactionCount'] = '0x01'
-      providerResultStub['eth_getTransactionByHash'] = {}
-      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+      providerResultStub['eth_getTransactionReceipt'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta, {}).then((dropped) => {
         assert(!dropped, 'should be false')
         done()
       }).catch(done)
@@ -353,8 +363,8 @@ describe('PendingTransactionTracker', function () {
 
     it('should return true when the network nonce is higher then the txMeta nonce', function (done) {
       providerResultStub['eth_getTransactionCount'] = '0x02'
-      providerResultStub['eth_getTransactionByHash'] = {}
-      pendingTxTracker._checkIftxWasDropped(txMeta).then((dropped) => {
+      providerResultStub['eth_getTransactionReceipt'] = {}
+      pendingTxTracker._checkIftxWasDropped(txMeta, {}).then((dropped) => {
         assert(dropped, 'should be true')
         done()
       }).catch(done)
