@@ -11,6 +11,7 @@ import {
   formatDate,
   getOriginFromUrl,
 } from '../helpers/utils/util'
+import { permittedAccountsSelector } from './permissions'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -86,6 +87,23 @@ export function getSelectedAddress (state) {
 
   return selectedAddress
 }
+
+function lastSelectedAddressSelector (state, origin) {
+  return state.metamask.selectedAddressHistory[origin] || null
+}
+
+// not using reselect here since the returns are contingent;
+// we have no reasons to recompute the permitted accounts if there
+// exists a lastSelectedAddress
+export function getLastSelectedAddress (state, origin) {
+  return (
+    lastSelectedAddressSelector(state, origin) ||
+    permittedAccountsSelector(state, origin)[0] || // always returns array
+    getSelectedAddress(state)
+  )
+}
+
+export const getPermittedAccounts = (state, origin) => permittedAccountsSelector(state, origin)
 
 export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)

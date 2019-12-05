@@ -17,6 +17,8 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  // getLastSelectedAddress,
+  // getPermittedAccounts,
 } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 
@@ -28,12 +30,23 @@ const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5
 function mapStateToProps (state) {
   const { metamask: { isAccountMenuOpen } } = state
   const accounts = getMetaMaskAccountsOrdered(state)
+  const origin = getOriginOfCurrentTab(state)
+  const selectedAddress = getSelectedAddress(state)
+
+  /**
+   * TODO:LoginPerSite
+   * - dispatch background.newAccountSelected() if selectedAddress !== lastSelectedAddress
+   * - propagate the relevant props below after computing them
+   */
+  // const lastSelectedAddress = getLastSelectedAddress(state, origin)
+  // const permittedAccounts = getPermittedAccounts(state, origin)
+  // const selectedAccountIsPermitted = permittedAccounts.includes(selectedAddress)
 
   return {
     isAccountMenuOpen,
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
-    originOfCurrentTab: getOriginOfCurrentTab(state),
-    selectedAddress: getSelectedAddress(state),
+    originOfCurrentTab: origin,
+    selectedAddress: selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,

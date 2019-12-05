@@ -4,19 +4,21 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
+
 import getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
-import createLoggerMiddleware from './loggerMiddleware'
+import PermissionsLogController from './permissionsLog'
 
 // Methods that do not require any permissions to use:
-import SAFE_METHODS from './permissions-safe-methods.json'
-
-// some constants
-const METADATA_STORE_KEY = 'domainMetadata'
-const LOG_STORE_KEY = 'permissionsLog'
-const HISTORY_STORE_KEY = 'permissionsHistory'
-const WALLET_METHOD_PREFIX = 'wallet_'
-const ACCOUNTS_CHANGED_NOTIFICATION = 'wallet_accountsChanged'
+import {
+  SAFE_METHODS, // methods that do not require any permissions to use
+  WALLET_PREFIX,
+  METADATA_STORE_KEY,
+  LOG_STORE_KEY,
+  HISTORY_STORE_KEY,
+  CAVEAT_NAMES,
+  NOTIFICATION_NAMES,
+} from './enums'
 
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
@@ -26,20 +28,30 @@ export class PermissionsController {
 
   constructor (
     {
-      platform, notifyDomain, notifyAllDomains, keyringController,
+      platform, notifyDomain, notifyAllDomains, getKeyringAccounts,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
+
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
-    this.notifyDomain = notifyDomain
+
+    this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this.keyringController = keyringController
+    this.getKeyringAccounts = getKeyringAccounts
     this._platform = platform
     this._restrictedMethods = getRestrictedMethods(this)
+    this.permissionsLogController = new PermissionsLogController({
+      walletPrefix: WALLET_PREFIX,
+      restrictedMethods: Object.keys(this._restrictedMethods),
+      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
+      store: this.store,
+      logStoreKey: LOG_STORE_KEY,
+      historyStoreKey: HISTORY_STORE_KEY,
+    })
     this._initializePermissions(restoredPermissions)
   }
 
@@ -56,14 +68,7 @@ export class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
-    engine.push(createLoggerMiddleware({
-      walletPrefix: WALLET_METHOD_PREFIX,
-      restrictedMethods: Object.keys(this._restrictedMethods),
-      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
-      store: this.store,
-      logStoreKey: LOG_STORE_KEY,
-      historyStoreKey: HISTORY_STORE_KEY,
-    }))
+    engine.push(this.permissionsLogController.createMiddleware())
 
     engine.push(createMethodMiddleware({
       store: this.store,
@@ -99,31 +104,6 @@ export class PermissionsController {
       function _end () {
         if (res.error || !Array.isArray(res.result)) {
           resolve([])
-        } else {
-          resolve(res.result)
-        }
-      }
-    })
-  }
-
-  /**
-   * Submits a permissions request to rpc-cap. Internal use only.
-   *
-   * @param {string} origin - The origin string.
-   * @param {IRequestedPermissions} permissions - The requested permissions.
-   */
-  _requestPermissions (origin, permissions) {
-    return new Promise((resolve, reject) => {
-
-      const req = { method: 'wallet_requestPermissions', params: [permissions] }
-      const res = {}
-      this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
-      )
-
-      function _end (err) {
-        if (err || res.error) {
-          reject(err || res.error)
         } else {
           resolve(res.result)
         }
@@ -182,6 +162,65 @@ export class PermissionsController {
   }
 
   /**
+   * Finalizes a permissions request.
+   * Throws if request validation fails.
+   *
+   * @param {Object} requestedPermissions - The requested permissions.
+   * @param {string[]} accounts - The accounts to expose, if any.
+   */
+  async finalizePermissionsRequest (requestedPermissions, accounts) {
+
+    const { eth_accounts: ethAccounts } = requestedPermissions
+
+    if (ethAccounts) {
+
+      await this.validatePermittedAccounts(accounts)
+
+      if (!ethAccounts.caveats) {
+        ethAccounts.caveats = []
+      }
+
+      // caveat names are unique, and we will only construct this caveat here
+      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
+        c.name !== CAVEAT_NAMES.exposedAccounts
+      ))
+
+      ethAccounts.caveats.push(
+        {
+          type: 'filterResponse',
+          value: accounts,
+          name: CAVEAT_NAMES.exposedAccounts,
+        },
+      )
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given domain.
+   * @param {object} domains { origin: [permissions] }
+   */
+  removePermissionsFor (domains) {
+
+    Object.entries(domains).forEach(([origin, perms]) => {
+
+      this.permissions.removePermissionsFor(
+        origin,
+        perms.map(methodName => {
+
+          if (methodName === 'eth_accounts') {
+            this.notifyDomain(
+              origin,
+              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
+            )
+          }
+
+          return { parentCapability: methodName }
+        })
+      )
+    })
+  }
+
+  /**
    * Grants the given origin the eth_accounts permission for the given account(s).
    * This method should ONLY be called as a result of direct user action in the UI,
    * with the intention of supporting legacy dapps that don't support EIP 1102.
@@ -222,58 +261,28 @@ export class PermissionsController {
   }
 
   /**
-   * Update the accounts exposed to the given origin.
+   * Update the accounts exposed to the given origin. Changes the eth_accounts
+   * permissions and emits accountsChanged.
+   * At least one account must be exposed. If no accounts are to be exposed, the
+   * eth_accounts permissions should be removed completely.
+   *
    * Throws error if the update fails.
    *
    * @param {string} origin - The origin to change the exposed accounts for.
    * @param {string[]} accounts - The new account(s) to expose.
    */
-  async updateExposedAccounts (origin, accounts) {
+  async updatePermittedAccounts (origin, accounts) {
 
-    await this.validateExposedAccounts(accounts)
+    await this.validatePermittedAccounts(accounts)
 
     this.permissions.updateCaveatFor(
       origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
     )
 
     this.notifyDomain(origin, {
-      method: ACCOUNTS_CHANGED_NOTIFICATION,
+      method: NOTIFICATION_NAMES.accountsChanged,
       result: accounts,
     })
-  }
-
-  /**
-   * Finalizes a permissions request.
-   * Throws if request validation fails.
-   *
-   * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
-   */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
-
-    const { eth_accounts: ethAccounts } = requestedPermissions
-
-    if (ethAccounts) {
-
-      await this.validateExposedAccounts(accounts)
-
-      if (!ethAccounts.caveats) {
-        ethAccounts.caveats = []
-      }
-
-      // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
-        c.name !== CAVEAT_NAMES.exposedAccounts
-      ))
-
-      ethAccounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: accounts,
-          name: CAVEAT_NAMES.exposedAccounts,
-        },
-      )
-    }
   }
 
   /**
@@ -282,14 +291,14 @@ export class PermissionsController {
    *
    * @param {string[]} accounts - An array of addresses.
    */
-  async validateExposedAccounts (accounts) {
+  async validatePermittedAccounts (accounts) {
 
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
 
     // assert accounts exist
-    const allAccounts = await this.keyringController.getAccounts()
+    const allAccounts = await this.getKeyringAccounts()
     accounts.forEach(acc => {
       if (!allAccounts.includes(acc)) {
         throw new Error(`Unknown account: ${acc}`)
@@ -297,29 +306,50 @@ export class PermissionsController {
     })
   }
 
-  /**
-   * Removes the given permissions for the given domain.
-   * @param {Object} domains { origin: [permissions] }
-   */
-  removePermissionsFor (domains) {
+  notifyDomain (origin, payload) {
 
-    Object.entries(domains).forEach(([origin, perms]) => {
-
-      this.permissions.removePermissionsFor(
-        origin,
-        perms.map(methodName => {
-
-          if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: ACCOUNTS_CHANGED_NOTIFICATION, result: [] }
-            )
-          }
-
-          return { parentCapability: methodName }
-        })
+    // if the accounts changed from the perspective of the dapp,
+    // update "last seen" time for the origin and account(s)
+    // exception: no accounts -> no times to update
+    if (
+      payload.method === NOTIFICATION_NAMES.accountsChanged &&
+      Array.isArray(payload.result)
+    ) {
+      this.permissionsLogController.updateAccountsHistory(
+        origin, payload.result
       )
-    })
+    }
+
+    this._notifyDomain(origin, payload)
+
+    // NOTE:
+    // we don't check for accounts changing in the notifyAllDomains case,
+    // because the log only records when accounts were last seen,
+    // and the accounts only change for all domains at once when permissions
+    // are removed
+  }
+
+  /**
+   * When a new account is selected in the UI for 'origin', emit accountsChanged
+   * to 'origin' if the selected account is permitted.
+   * @param {string} origin - The origin.
+   * @param {string} account - The newly selected account's address.
+   */
+  async handleNewAccountSelected (origin, account) {
+
+    const permittedAccounts = await this.getAccounts(origin)
+
+    if (!account || !permittedAccounts.includes(account)) {
+      return
+    }
+
+    const newPermittedAccounts = [account].concat(
+      permittedAccounts.filter(_account => _account !== account)
+    )
+
+    // update permitted accounts to ensure that accounts are returned
+    // in the same order every time
+    this.updatePermittedAccounts(origin, newPermittedAccounts)
   }
 
   /**
@@ -328,8 +358,33 @@ export class PermissionsController {
   clearPermissions () {
     this.permissions.clearDomains()
     this.notifyAllDomains({
-      method: ACCOUNTS_CHANGED_NOTIFICATION,
+      method: NOTIFICATION_NAMES.accountsChanged,
       result: [],
+    })
+  }
+
+  /**
+   * Submits a permissions request to rpc-cap. Internal, background use only.
+   *
+   * @param {string} origin - The origin string.
+   * @param {IRequestedPermissions} permissions - The requested permissions.
+   */
+  _requestPermissions (origin, permissions) {
+    return new Promise((resolve, reject) => {
+
+      const req = { method: 'wallet_requestPermissions', params: [permissions] }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+
+      function _end (err) {
+        if (err || res.error) {
+          reject(err || res.error)
+        } else {
+          resolve(res.result)
+        }
+      }
     })
   }
 
@@ -352,7 +407,7 @@ export class PermissionsController {
       safeMethods: SAFE_METHODS,
 
       // optional prefix for internal methods
-      methodPrefix: WALLET_METHOD_PREFIX,
+      methodPrefix: WALLET_PREFIX,
 
       restrictedMethods: this._restrictedMethods,
 
@@ -379,5 +434,5 @@ export class PermissionsController {
 }
 
 export function addInternalMethodPrefix (method) {
-  return WALLET_METHOD_PREFIX + method
+  return WALLET_PREFIX + method
 }
