@@ -5,9 +5,11 @@ import classnames from 'classnames'
 import NewAccountCreateForm from './new-account.container'
 import NewAccountImportForm from './import-account'
 import ConnectTrustVaultForm from './connect-software/trustvault'
+import ConnectHardwareForm from './connect-hardware'
 import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
   CONNECT_TRUSTVAULT_ROUTE
 } from '../../helpers/constants/routes'
 
@@ -29,7 +31,7 @@ export default class CreateAccountPage extends Component {
         <div className={getClassNames(IMPORT_ACCOUNT_ROUTE)} onClick={() => history.push(IMPORT_ACCOUNT_ROUTE)}>
           {this.context.t('import')}
         </div>
-        <div className={getClassNames(CONNECT_TRUSTVAULT_ROUTE)} onClick={() => history.push(CONNECT_TRUSTVAULT_ROUTE)}>
+        <div className={getClassNames(CONNECT_HARDWARE_ROUTE)} onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}>
           {this.context.t('connect')}
         </div>
       </div>
@@ -55,6 +57,11 @@ export default class CreateAccountPage extends Component {
               exact
               path={IMPORT_ACCOUNT_ROUTE}
               component={NewAccountImportForm}
+            />
+            <Route
+              exact
+              path={CONNECT_HARDWARE_ROUTE}
+              component={ConnectHardwareForm}
             />
             <Route
               exact
