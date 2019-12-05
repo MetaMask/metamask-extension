@@ -69,7 +69,7 @@ function main {
         if [[ -z $2 ]]
         then
           printf "'release' option requires an argument.\\n" >&2
-          printf "%s\\n" "${__SEE_HELP_MESSAGE__}" >&2
+          printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
           exit 1
         fi
         release="${2}"
