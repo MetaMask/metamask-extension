@@ -185,7 +185,8 @@ class PinScreen extends PureComponent {
     return h("div.sw-pin-connect-btn", { style }, [
       h(
         Button,
-        {
+        { 
+          width: "80%", 
           type: "primary",
           large: true,
           className: "sw-connect__connect-btn",

@@ -8,7 +8,7 @@ const { getCurrentViewContext } = require('../../selectors/selectors')
 const classnames = require('classnames')
 const NewAccountCreateForm = require('./new-account')
 const NewAccountImportForm = require('./import-account')
-// const ConnectHardwareForm = require('./connect-hardware')
+const ConnectHardwareForm = require('./connect-hardware')
 const ConnectTrustVaultForm = require('./connect-software/trustvault')
 const {
   NEW_ACCOUNT_ROUTE,
@@ -31,7 +31,7 @@ class CreateAccountPage extends Component {
         onClick: () => history.push(NEW_ACCOUNT_ROUTE)
       }, [
         this.context.t('create'),
-      ]),
+    ]),
 
       h('div.new-account__tabs__tab', {
         className: classnames('new-account__tabs__tab', {
@@ -43,29 +43,20 @@ class CreateAccountPage extends Component {
       }, [
         this.context.t('import'),
       ]),
-      // h(
-      //   'div.new-account__tabs__tab',
-      //   {
-      //     className: classnames('new-account__tabs__tab', {
-      //       'new-account__tabs__selected': matchPath(location.pathname, {
-      //         path: CONNECT_HARDWARE_ROUTE,
-      //         exact: true,
-      //       }),
-      //     }),
-      //     onClick: () => history.push(CONNECT_HARDWARE_ROUTE),
-      //   },
-      //   this.context.t('connect')
-      // ),
-      h('div.new-account__tabs__tab', {
-        className: classnames('new-account__tabs__tab', {
-          'new-account__tabs__selected': matchPath(location.pathname, {
-            path: CONNECT_TRUSTVAULT_ROUTE, exact: true,
+      h(
+        'div.new-account__tabs__tab',
+        {
+          className: classnames('new-account__tabs__tab', {
+            'new-account__tabs__selected': matchPath(location.pathname, {
+              path: CONNECT_HARDWARE_ROUTE,
+              exact: true,
+            }),
           }),
-        }),
-        onClick: () => history.push(CONNECT_TRUSTVAULT_ROUTE)
-      }, [
-        this.context.t('connect'),
-      ]),
+          onClick: () => {
+            history.push(CONNECT_HARDWARE_ROUTE)},
+        },
+        this.context.t('connect')
+      ),
     ])
   }
 
@@ -87,15 +78,14 @@ class CreateAccountPage extends Component {
             path: IMPORT_ACCOUNT_ROUTE,
             component: NewAccountImportForm,
           }),
-          // h(Route, {
-          //   exact: true,
-          //   path: CONNECT_HARDWARE_ROUTE,
-          //   component: ConnectHardwareForm
-          // }),
           h(Route, {
             exact: true,
+            path: CONNECT_HARDWARE_ROUTE,
+            component: ConnectHardwareForm
+          }),h(Route, {
+            exact: true,
             path: CONNECT_TRUSTVAULT_ROUTE,
-            component: ConnectTrustVaultForm,
+            component: ConnectTrustVaultForm
           })
         ])
       ])
