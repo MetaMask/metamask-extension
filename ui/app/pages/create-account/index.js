@@ -19,8 +19,12 @@ const {
 
 class CreateAccountPage extends Component {
   renderTabs () {
+    debugger;
     const { history, location } = this.props
-
+    let hardWareRoute = "/new-account/connect"
+    if(location && location.pathname){
+     hardWareRoute =  (location.pathname === "/new-account/connect"|| location.pathname === "/new-account/connect/trustvault") ? location.pathname : "/new-account/connect"
+    }
     return h('div.new-account__tabs', [
       h('div.new-account__tabs__tab', {
         className: classnames('new-account__tabs__tab', {
@@ -48,7 +52,7 @@ class CreateAccountPage extends Component {
         {
           className: classnames('new-account__tabs__tab', {
             'new-account__tabs__selected': matchPath(location.pathname, {
-              path: CONNECT_HARDWARE_ROUTE,
+              path: hardWareRoute,
               exact: true,
             }),
           }),

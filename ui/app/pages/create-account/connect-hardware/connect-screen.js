@@ -47,7 +47,7 @@ class ConnectScreen extends Component {
         `button.sw-connect__btn${this.state.selectedDevice === 'trustvault' ? '.selected' : ''}`,
         { onClick: _ => this.setState({selectedDevice: 'trustvault'}) },
         h('img.sw-connect__btn__img', {
-          src: 'images/trustvault-logo.png',
+          src: 'images/trustologyLogo.png',
         })
       )
     }
