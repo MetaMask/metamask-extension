@@ -1,5 +1,5 @@
 // next version number
-const version = 39
+const version = 41
 const { getFinalStates, containsFinalStates } = require('../controllers/transactions/lib/util')
 const { DEFAULT_TX_HISTORY_LIMIT } = require('../controllers/transactions/enums')
 
