@@ -28,6 +28,8 @@ const CONNECT_TRUSTVAULT_ROUTE = '/new-account/connect/trustvault'
 const TRUSTVAULT_EMAIL_ROUTE = '/new-account/connect/trustvault/email'
 const TRUSTVAULT_PIN_ROUTE = '/new-account/connect/trustvault/pin'
 const SEND_ROUTE = '/send'
+const CONNECT_ROUTE = '/connect'
+const CONNECTED_ROUTE = '/connected'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -100,4 +102,6 @@ module.exports = {
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 }

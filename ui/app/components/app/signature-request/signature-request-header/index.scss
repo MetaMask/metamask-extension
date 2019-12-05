@@ -1,0 +1,25 @@
+.signature-request-header {
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid $geyser;
+  justify-content: space-between;
+  font-size: .75rem;
+
+  &--account, &--network {
+    flex: 1;
+  }
+
+  &--account {
+    display: flex;
+    align-items: center;
+
+    .account-list-item__account-name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .account-list-item__top-row {
+      margin: 0px;
+    }
+  }
+}

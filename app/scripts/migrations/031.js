@@ -3,7 +3,7 @@ const version = 31
 const clone = require('clone')
 
 /*
-  * The purpose of this migration is to properly set the completedOnboarding flag baesd on the state
+  * The purpose of this migration is to properly set the completedOnboarding flag based on the state
   * of the KeyringController.
   */
 module.exports = {

@@ -33,7 +33,9 @@ function transformState (state) {
     const transactions = newState.TransactionController.transactions
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.err) return txMeta
+      if (!txMeta.err) {
+        return txMeta
+      }
       if (txMeta.err === 'transaction with the same hash was already imported.') {
         txMeta.status = 'submitted'
         delete txMeta.err

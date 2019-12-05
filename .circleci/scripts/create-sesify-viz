@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x
+set -e
+set -u
+set -o pipefail
+
+# prepare artifacts dir
+mkdir -p ./build-artifacts/deps-viz/
+
+# generate viz
+SESIFY_AUTOGEN=1 npx gulp build:extension:js:background
+npx sesify-viz --deps sesify/deps-background.json --config sesify/background.json --dest ./build-artifacts/deps-viz/background

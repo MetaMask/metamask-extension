@@ -13,7 +13,7 @@ class DraggableSeed extends Component {
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
     draggingSeedIndex: PropTypes.number,
@@ -25,7 +25,7 @@ class DraggableSeed extends Component {
 
   static defaultProps = {
     className: '',
-    onClick () {},
+    onClick: undefined,
   }
 
   componentWillReceiveProps (nextProps) {
@@ -52,7 +52,7 @@ class DraggableSeed extends Component {
     return connectDropTarget(connectDragSource(
       <div
         key={index}
-        className={classnames('btn-secondary confirm-seed-phrase__seed-word', className, {
+        className={classnames('btn-secondary notranslate confirm-seed-phrase__seed-word', className, {
           'confirm-seed-phrase__seed-word--selected btn-primary': selected,
           'confirm-seed-phrase__seed-word--dragging': isDragging,
           'confirm-seed-phrase__seed-word--empty': !word,

@@ -3,7 +3,7 @@ const {
   queryAsync,
   findAsync,
 } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/fetch-mocks.js')
+const fetchMockResponses = require('../../e2e/fetch-mocks.json')
 
 QUnit.module('tx list items')
 

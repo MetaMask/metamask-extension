@@ -35,7 +35,9 @@ function normalizeTxParams (txParams, LowerCase) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
   for (const key in normalizers) {
-    if (txParams[key]) normalizedTxParams[key] = normalizers[key](txParams[key], LowerCase)
+    if (txParams[key]) {
+      normalizedTxParams[key] = normalizers[key](txParams[key], LowerCase)
+    }
   }
   return normalizedTxParams
 }
@@ -64,8 +66,12 @@ function validateTxParams (txParams) {
   @param txParams {object}
  */
 function validateFrom (txParams) {
-  if (!(typeof txParams.from === 'string')) throw new Error(`Invalid from address ${txParams.from} not a string`)
-  if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
+  if (!(typeof txParams.from === 'string')) {
+    throw new Error(`Invalid from address ${txParams.from} not a string`)
+  }
+  if (!isValidAddress(txParams.from)) {
+    throw new Error('Invalid from address')
+  }
 }
 
 /**

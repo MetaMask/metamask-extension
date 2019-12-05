@@ -1,17 +1,12 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
+import classnames from 'classnames'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
 class Alert extends Component {
-
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      visble: false,
-      msg: false,
-      className: '',
-    }
+  state = {
+    visible: false,
+    msg: false,
+    className: '',
   }
 
   componentWillReceiveProps (nextProps) {
@@ -26,14 +21,14 @@ class Alert extends Component {
     this.setState({
       msg: props.msg,
       visible: true,
-      className: '.visible',
+      className: 'visible',
     })
   }
 
   animateOut () {
     this.setState({
       msg: null,
-      className: '.hidden',
+      className: 'hidden',
     })
 
     setTimeout(_ => {
@@ -45,9 +40,9 @@ class Alert extends Component {
   render () {
     if (this.state.visible) {
       return (
-        h(`div.global-alert${this.state.className}`, {},
-          h('a.msg', {}, this.state.msg)
-        )
+        <div className={classnames('global-alert', this.state.className)}>
+          <a className="msg">{this.state.msg}</a>
+        </div>
       )
     }
     return null

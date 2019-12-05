@@ -8,7 +8,7 @@ module.exports = function (api) {
           targets: {
             browsers: [
               'chrome >= 58',
-              'firefox >= 60',
+              'firefox >= 56.2',
             ],
           },
         },

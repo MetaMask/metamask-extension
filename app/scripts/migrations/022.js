@@ -33,7 +33,9 @@ function transformState (state) {
     const transactions = newState.TransactionController.transactions
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (txMeta.status !== 'submitted' || txMeta.submittedTime) return txMeta
+      if (txMeta.status !== 'submitted' || txMeta.submittedTime) {
+        return txMeta
+      }
       txMeta.submittedTime = (new Date()).getTime()
       return txMeta
     })

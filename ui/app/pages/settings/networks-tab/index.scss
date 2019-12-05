@@ -38,6 +38,10 @@
       cursor: pointer;
       position: absolute;
       margin-left: 10px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -190,6 +194,10 @@
       position: absolute;
       width: 24px;
       height: 24px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 

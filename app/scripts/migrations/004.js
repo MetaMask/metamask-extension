@@ -9,7 +9,9 @@ module.exports = {
     const safeVersionedData = clone(versionedData)
     safeVersionedData.meta.version = version
     try {
-      if (safeVersionedData.data.config.provider.type !== 'rpc') return Promise.resolve(safeVersionedData)
+      if (safeVersionedData.data.config.provider.type !== 'rpc') {
+        return Promise.resolve(safeVersionedData)
+      }
       switch (safeVersionedData.data.config.provider.rpcTarget) {
         case 'https://testrpc.metamask.io/':
           safeVersionedData.data.config.provider = {
@@ -21,6 +23,7 @@ module.exports = {
             type: 'mainnet',
           }
           break
+        // No default
       }
     } catch (_) {}
     return Promise.resolve(safeVersionedData)

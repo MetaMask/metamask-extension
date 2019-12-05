@@ -1,7 +1,7 @@
 {
-  "name": "TrustVault",
-  "short_name": "TrustVault",
-  "version": "7.2.6",
+  "name": "__MSG_appName__",
+  "short_name": "__MSG_appName__",
+  "version": "7.7.0",
   "manifest_version": 2,
   "author": "https://trustology.io",
   "description": "TrustVault Ethereum Browser Extension",
@@ -17,23 +17,37 @@
   },
   "icons": {
     "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
+    "19": "images/icon-19.png",
+    "32": "images/icon-32.png",
+    "38": "images/icon-38.png",
+    "64": "images/icon-64.png",
+    "128": "images/icon-128.png",
+    "512": "images/icon-512.png"
   },
   "applications": {
     "gecko": {
       "id": "webextension@metamask.io",
-      "strict_min_version": "60.0"
+      "strict_min_version": "56.0"
     }
   },
   "default_locale": "en",
   "background": {
-    "scripts": ["chromereload.js", "background.js"],
+    "scripts": [
+      "chromereload.js",
+      "bg-libs.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
     "default_icon": {
+      "16": "images/icon-16.png",
       "19": "images/icon-19.png",
-      "38": "images/icon-38.png"
+      "32": "images/icon-32.png",
+      "38": "images/icon-38.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png",
+      "512": "images/icon-512.png"
     },
     "default_title": "TrustVault",
     "default_popup": "popup.html"

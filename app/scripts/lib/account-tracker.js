@@ -15,7 +15,7 @@ const Web3 = require('web3')
 const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 
 const { bnToHex } = require('./util')
-const { MAINNET_CODE, RINKEYBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
+const { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
 const { SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN, SINGLE_CALL_BALANCES_ADDRESS_KOVAN } = require('../controllers/network/contract-addresses')
 
 
@@ -124,7 +124,9 @@ class AccountTracker {
     // save accounts state
     this.store.updateState({ accounts })
     // fetch balances for the accounts if there is block number ready
-    if (!this._currentBlockNumber) return
+    if (!this._currentBlockNumber) {
+      return
+    }
     this._updateAccounts()
   }
 
@@ -158,7 +160,9 @@ class AccountTracker {
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
     const currentBlock = await this._query.getBlockByNumber(blockNumber, false)
-    if (!currentBlock) return
+    if (!currentBlock) {
+      return
+    }
     const currentBlockGasLimit = currentBlock.gasLimit
     this.store.updateState({ currentBlockGasLimit })
 
@@ -186,7 +190,7 @@ class AccountTracker {
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
         break
 
-      case RINKEYBY_CODE:
+      case RINKEBY_CODE:
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
         break
 
@@ -218,7 +222,9 @@ class AccountTracker {
     // update accounts state
     const { accounts } = this.store.getState()
     // only populate if the entry is still present
-    if (!accounts[address]) return
+    if (!accounts[address]) {
+      return
+    }
     accounts[address] = result
     this.store.updateState({ accounts })
   }

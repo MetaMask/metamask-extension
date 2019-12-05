@@ -63,23 +63,25 @@ describe('GasModalPageContainer Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<GasModalPageContainer
-      cancelAndClose={propsMethodSpies.cancelAndClose}
-      onSubmit={propsMethodSpies.onSubmit}
-      fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
-      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
-      updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-      customGasPrice={21}
-      customGasLimit={54321}
-      gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-      infoRowProps={mockInfoRowProps}
-      currentTimeEstimate={'1 min 31 sec'}
-      customGasPriceInHex={'mockCustomGasPriceInHex'}
-      customGasLimitInHex={'mockCustomGasLimitInHex'}
-      insufficientBalance={false}
-      disableSave={false}
-    />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+    wrapper = shallow((
+      <GasModalPageContainer
+        cancelAndClose={propsMethodSpies.cancelAndClose}
+        onSubmit={propsMethodSpies.onSubmit}
+        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+        updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+        customGasPrice={21}
+        customGasLimit={54321}
+        gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+        infoRowProps={mockInfoRowProps}
+        currentTimeEstimate="1 min 31 sec"
+        customGasPriceInHex="mockCustomGasPriceInHex"
+        customGasLimitInHex="mockCustomGasLimitInHex"
+        insufficientBalance={false}
+        disableSave={false}
+      />
+    ))
   })
 
   afterEach(() => {
@@ -134,10 +136,12 @@ describe('GasModalPageContainer Component', function () {
 
     it('should pass the correct renderTabs property to PageContainer', () => {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
-      const renderTabsWrapperTester = shallow(<GasModalPageContainer
-        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
-        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+      const renderTabsWrapperTester = shallow((
+        <GasModalPageContainer
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        />
+      ), { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()
@@ -158,10 +162,7 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should render a Tabs component with "Basic" and "Advanced" tabs', () => {
-      const renderTabsResult = wrapper.instance().renderTabs(mockInfoRowProps, {
-        gasPriceButtonGroupProps: mockGasPriceButtonGroupProps,
-        otherProps: 'mockAdvancedTabProps',
-      })
+      const renderTabsResult = wrapper.instance().renderTabs()
       const renderedTabs = shallow(renderTabsResult)
       assert.equal(renderedTabs.props().className, 'tabs')
 
@@ -175,23 +176,10 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(tabs.at(1).childAt(0).props().className, 'gas-modal-content')
     })
 
-    it('should call renderBasicTabContent and renderAdvancedTabContent with the expected props', () => {
-      assert.equal(GP.renderBasicTabContent.callCount, 0)
-      assert.equal(GP.renderAdvancedTabContent.callCount, 0)
-
-      wrapper.instance().renderTabs(mockInfoRowProps, { gasPriceButtonGroupProps: mockGasPriceButtonGroupProps, otherProps: 'mockAdvancedTabProps' })
-
-      assert.equal(GP.renderBasicTabContent.callCount, 1)
-      assert.equal(GP.renderAdvancedTabContent.callCount, 1)
-
-      assert.deepEqual(GP.renderBasicTabContent.getCall(0).args[0], mockGasPriceButtonGroupProps)
-      assert.deepEqual(GP.renderAdvancedTabContent.getCall(0).args[0], { transactionFee: 'mockTransactionFee', otherProps: 'mockAdvancedTabProps' })
-    })
-
     it('should call renderInfoRows with the expected props', () => {
       assert.equal(GP.renderInfoRows.callCount, 0)
 
-      wrapper.instance().renderTabs(mockInfoRowProps, { gasPriceButtonGroupProps: mockGasPriceButtonGroupProps, otherProps: 'mockAdvancedTabProps' })
+      wrapper.instance().renderTabs()
 
       assert.equal(GP.renderInfoRows.callCount, 2)
 
@@ -200,11 +188,27 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should not render the basic tab if hideBasic is true', () => {
-      const renderTabsResult = wrapper.instance().renderTabs(mockInfoRowProps, {
-        gasPriceButtonGroupProps: mockGasPriceButtonGroupProps,
-        otherProps: 'mockAdvancedTabProps',
-        hideBasic: true,
-      })
+      wrapper = shallow((
+        <GasModalPageContainer
+          cancelAndClose={propsMethodSpies.cancelAndClose}
+          onSubmit={propsMethodSpies.onSubmit}
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+          updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+          updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+          customGasPrice={21}
+          customGasLimit={54321}
+          gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+          infoRowProps={mockInfoRowProps}
+          currentTimeEstimate="1 min 31 sec"
+          customGasPriceInHex="mockCustomGasPriceInHex"
+          customGasLimitInHex="mockCustomGasLimitInHex"
+          insufficientBalance={false}
+          disableSave={false}
+          hideBasic
+        />
+      ))
+      const renderTabsResult = wrapper.instance().renderTabs()
 
       const renderedTabs = shallow(renderTabsResult)
       const tabs = renderedTabs.find(Tab)
@@ -221,28 +225,6 @@ describe('GasModalPageContainer Component', function () {
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,
         mockGasPriceButtonGroupProps
       )
-    })
-  })
-
-  describe('renderAdvancedTabContent', () => {
-    it('should render with the correct props', () => {
-      const renderAdvancedTabContentResult = wrapper.instance().renderAdvancedTabContent({
-        convertThenUpdateCustomGasPrice: () => 'mockConvertThenUpdateCustomGasPrice',
-        convertThenUpdateCustomGasLimit: () => 'mockConvertThenUpdateCustomGasLimit',
-        customGasPrice: 123,
-        customGasLimit: 456,
-        newTotalFiat: '$0.30',
-        currentTimeEstimate: '1 min 31 sec',
-        gasEstimatesLoading: 'mockGasEstimatesLoading',
-      })
-      const advancedTabContentProps = renderAdvancedTabContentResult.props
-      assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockConvertThenUpdateCustomGasPrice')
-      assert.equal(advancedTabContentProps.updateCustomGasLimit(), 'mockConvertThenUpdateCustomGasLimit')
-      assert.equal(advancedTabContentProps.customGasPrice, 123)
-      assert.equal(advancedTabContentProps.customGasLimit, 456)
-      assert.equal(advancedTabContentProps.timeRemaining, '1 min 31 sec')
-      assert.equal(advancedTabContentProps.totalFee, '$0.30')
-      assert.equal(advancedTabContentProps.gasEstimatesLoading, 'mockGasEstimatesLoading')
     })
   })
 

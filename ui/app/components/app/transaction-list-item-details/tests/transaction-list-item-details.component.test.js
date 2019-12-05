@@ -70,7 +70,7 @@ describe('TransactionListItemDetails Component', () => {
     const wrapper = shallow(
       <TransactionListItemDetails
         transactionGroup={transactionGroup}
-        showRetry={true}
+        showSpeedUp
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
     )

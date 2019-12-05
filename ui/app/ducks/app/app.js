@@ -3,10 +3,10 @@ const actions = require('../../store/actions')
 const txHelper = require('../../../lib/tx-helper')
 const log = require('loglevel')
 
-module.exports = reduceApp
+// Actions
+const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
-
-function reduceApp (state, action) {
+export default function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
@@ -21,14 +21,14 @@ function reduceApp (state, action) {
     name = 'confTx'
   }
 
-  var defaultView = {
+  const defaultView = {
     name,
     detailView: null,
     context: selectedAddress,
   }
 
   // default state
-  var appState = extend({
+  const appState = extend({
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -73,6 +73,11 @@ function reduceApp (state, action) {
     networksTabSelectedRpcUrl: '',
     networksTabIsInAddMode: false,
     loadingMethodData: false,
+    show3BoxModalAfterImport: false,
+    threeBoxLastUpdated: null,
+    requestAccountTabs: {},
+    openMetaMaskTabs: {},
+    currentWindowTab: {},
   }, state.appState)
 
   switch (action.type) {
@@ -761,11 +766,40 @@ function reduceApp (state, action) {
         loadingMethodData: false,
       })
 
+    case SET_THREEBOX_LAST_UPDATED:
+      return extend(appState, {
+        threeBoxLastUpdated: action.value,
+      })
+
+    case actions.SET_REQUEST_ACCOUNT_TABS:
+      return extend(appState, {
+        requestAccountTabs: action.value,
+      })
+
+    case actions.SET_OPEN_METAMASK_TAB_IDS:
+      return extend(appState, {
+        openMetaMaskTabs: action.value,
+      })
+
+    case actions.SET_CURRENT_WINDOW_TAB:
+      return extend(appState, {
+        currentWindowTab: action.value,
+      })
+
     default:
       return appState
   }
 }
 
+// Action Creators
+export function setThreeBoxLastUpdated (lastUpdated) {
+  return {
+    type: SET_THREEBOX_LAST_UPDATED,
+    value: lastUpdated,
+  }
+}
+
+// Helpers
 function checkUnconfActions (state) {
   const unconfActionList = getUnconfActionList(state)
   const hasUnconfActions = unconfActionList.length > 0

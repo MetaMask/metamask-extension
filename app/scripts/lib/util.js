@@ -1,3 +1,4 @@
+const extension = require('extensionizer')
 const ethUtil = require('ethereumjs-util')
 const assert = require('assert')
 const BN = require('bn.js')
@@ -38,7 +39,7 @@ const getEnvironmentType = (url = window.location.href) => {
   const parsedUrl = new URL(url)
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
-  } else if (parsedUrl.pathname === '/home.html') {
+  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
@@ -144,28 +145,35 @@ function removeListeners (listeners, emitter) {
   })
 }
 
-function fetchWithTimeout ({ timeout = 120000 } = {}) {
-  return async function _fetch (url, opts) {
-    const abortController = new AbortController()
-    const abortSignal = abortController.signal
-    const f = fetch(url, {
-      ...opts,
-      signal: abortSignal,
-    })
-
-    const timer = setTimeout(() => abortController.abort(), timeout)
-
-    try {
-      const res = await f
-      clearTimeout(timer)
-      return res
-    } catch (e) {
-      clearTimeout(timer)
-      throw e
-    }
-  }
+function getRandomArrayItem (array) {
+  return array[Math.floor((Math.random() * array.length))]
 }
 
+function mapObjectValues (object, cb) {
+  const mappedObject = {}
+  Object.keys(object).forEach(key => {
+    mappedObject[key] = cb(key, object[key])
+  })
+  return mappedObject
+}
+
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) {
+    return
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message)
+}
 
 module.exports = {
   removeListeners,
@@ -177,5 +185,7 @@ module.exports = {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
-  fetchWithTimeout,
+  getRandomArrayItem,
+  mapObjectValues,
+  checkForError,
 }

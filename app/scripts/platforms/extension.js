@@ -1,7 +1,7 @@
 const extension = require('extensionizer')
 const {createExplorerLink: explorerLink} = require('etherscan-link')
 
-const {getEnvironmentType} = require('../lib/util')
+const { getEnvironmentType, checkForError } = require('../lib/util')
 const {ENVIRONMENT_TYPE_BACKGROUND} = require('../lib/enums')
 
 class ExtensionPlatform {
@@ -64,6 +64,58 @@ class ExtensionPlatform {
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  queryTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({}, tabs => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tabs)
+        }
+      })
+    })
+  }
+
+  currentTab () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.getCurrent(tab => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  switchToTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.update(tabId, {highlighted: true}, (tab) => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  closeTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.remove(tabId, () => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
   }
 
   _showConfirmedTransaction (txMeta) {

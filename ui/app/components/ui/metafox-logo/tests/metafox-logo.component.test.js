@@ -16,7 +16,7 @@ describe('MetaFoxLogo', () => {
 
   it('does not set icon height and width when unsetIconHeight is true', () => {
     const wrapper = mount(
-      <MetaFoxLogo unsetIconHeight={true} />
+      <MetaFoxLogo unsetIconHeight />
     )
 
     assert.equal(wrapper.find('img.app-header__metafox-logo--icon').prop('width'), null)

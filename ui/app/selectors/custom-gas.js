@@ -21,6 +21,8 @@ import {
 } from '../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 
+import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
+
 const selectors = {
   formatTimeEstimate,
   getAveragePriceEstimateInHexWEI,
@@ -250,7 +252,7 @@ function getRenderableBasicEstimateData (state, gasLimit) {
 
   return [
     {
-      labelKey: 'slow',
+      gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
       feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate)
@@ -259,7 +261,7 @@ function getRenderableBasicEstimateData (state, gasLimit) {
       priceInHexWei: getGasPriceInHexWei(safeLow),
     },
     {
-      labelKey: 'average',
+      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
       feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
@@ -268,7 +270,7 @@ function getRenderableBasicEstimateData (state, gasLimit) {
       priceInHexWei: getGasPriceInHexWei(average),
     },
     {
-      labelKey: 'fast',
+      gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
       feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
@@ -302,7 +304,7 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
 
   return [
     {
-      labelKey: 'slow',
+      gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate)
         : '',
@@ -310,7 +312,7 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
       priceInHexWei: getGasPriceInHexWei(safeLow, true),
     },
     {
-      labelKey: 'average',
+      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate)
         : '',
@@ -318,7 +320,7 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
       priceInHexWei: getGasPriceInHexWei(average, true),
     },
     {
-      labelKey: 'fast',
+      gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate)
         : '',
