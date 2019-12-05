@@ -368,7 +368,7 @@ class PermissionsController {
       requestUserApproval: async (req) => {
         const { metadata: { id } } = req
 
-        this._platform.openExtensionInBrowser('connect')
+        this._platform.openExtensionInBrowser(`connect/${id}`)
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }

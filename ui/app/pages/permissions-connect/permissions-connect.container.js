@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import PermissionApproval from './permissions-connect.component'
 import {
-  getFirstPermissionRequest,
+  getPermissionsRequests,
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -12,8 +12,13 @@ import {
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
 
-const mapStateToProps = state => {
-  const permissionsRequest = getFirstPermissionRequest(state)
+const mapStateToProps = (state, ownProps) => {
+  const { match: { params: { id: permissionsRequestId } } } = ownProps
+  const permissionsRequests = getPermissionsRequests(state)
+
+  const permissionsRequest = permissionsRequests
+    .find(permissionsRequest => permissionsRequest.metadata.id === permissionsRequestId)
+
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
@@ -28,8 +33,6 @@ const mapStateToProps = state => {
   Object.keys(addressLastConnectedMap).forEach(key => {
     addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
   })
-
-  const permissionsRequestId = (permissionsRequest && permissionsRequest.metadata) ? permissionsRequest.metadata.id : null
 
   return {
     permissionsRequest,
@@ -60,7 +63,17 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default compose(
-  withRouter,
+const PermissionApprovalContainer = compose(
   connect(mapStateToProps, mapDispatchToProps)
 )(PermissionApproval)
+
+PermissionApprovalContainer.propTypes = {
+  history: PropTypes.object.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
+}
+
+export default PermissionApprovalContainer

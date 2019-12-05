@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token, hasPermissionRequests } from '../../selectors/selectors'
+import { getCurrentEthBalance, getDaiV1Token, getFirstPermissionRequest } from '../../selectors/selectors'
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
@@ -28,6 +28,10 @@ const mapStateToProps = state => {
   const { forgottenPassword, threeBoxLastUpdated } = appState
 
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+  const firstPermissionsRequest = getFirstPermissionRequest(state)
+  const firstPermissionsRequestId = (firstPermissionsRequest && firstPermissionsRequest.metadata)
+    ? firstPermissionsRequest.metadata.id
+    : null
 
   return {
     forgottenPassword,
@@ -41,7 +45,7 @@ const mapStateToProps = state => {
     selectedAddress,
     threeBoxLastUpdated,
     hasDaiV1Token: Boolean(getDaiV1Token(state)),
-    hasPermissionRequests: hasPermissionRequests(state),
+    firstPermissionsRequestId,
   }
 }
 

@@ -68,10 +68,10 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequestId } = this.props
+    const { domains, permissionsRequest } = this.props
     const { originName, page } = this.state
 
-    if (!permissionsRequestId && prevProps.permissionsRequestId && page !== null) {
+    if (!permissionsRequest && prevProps.permissionsRequest && page !== null) {
       const permissionDataForDomain = domains && domains[originName] || {}
       const permissionsForDomain = permissionDataForDomain.permissions || []
       const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
@@ -82,12 +82,6 @@ export default class PermissionConnect extends Component {
       } else {
         this.redirectFlow(false)
       }
-    } else if (permissionsRequestId && prevProps.permissionsRequestId &&
-      permissionsRequestId !== prevProps.permissionsRequestId && page !== null) {
-      this.setState({
-        originName: this.props.originName,
-        page: 1,
-      })
     }
   }
 
@@ -130,9 +124,15 @@ export default class PermissionConnect extends Component {
     const {
       getCurrentWindowTab,
       getRequestAccountTabIds,
+      permissionsRequest,
+      history,
     } = this.props
     getCurrentWindowTab()
     getRequestAccountTabIds()
+
+    if (!permissionsRequest) {
+      return history.push(DEFAULT_ROUTE)
+    }
 
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
       window.addEventListener('beforeunload', this.beforeUnload)
