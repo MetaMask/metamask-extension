@@ -543,7 +543,27 @@
 
 .sw-connect{
   width: 100%;
+  &__list {
+    overflow-y: auto;
 
+    &__link {
+      @extend %link;
+      @extend %row-nowrap;
+      padding: 1rem;
+      font-size: 1rem;
+      border-bottom: 1px solid $alto;
+      align-items: center;
+    }
+
+    &__back-caret {
+      @extend %bg-contain;
+      display: block;
+      background-image: url('/images/caret-left.svg');
+      width: 18px;
+      height: 18px;
+      margin-right: .1rem;
+    }
+  }
   &__header {
     &__title {
       margin-top: 5px;
@@ -554,8 +574,6 @@
     &__msg {
       font-size: 16px;
       color: #4d4d4d;
-      margin-top: 10px;
-      margin-bottom: 20px;
     }
   }
 

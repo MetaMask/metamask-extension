@@ -2,7 +2,7 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 import Button from '../../../components/ui/button'
-import {CONNECT_TRUSTVAULT_ROUTE} from "../../../helpers/constants/routes"
+import { CONNECT_TRUSTVAULT_ROUTE } from "../../../helpers/constants/routes"
 class ConnectScreen extends Component {
   constructor (props) {
     super(props)

@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 import Button from '../../../../../components/ui/button'
 import TextField from '../../../../../components/ui/text-field'
+import { CONNECT_HARDWARE_ROUTE } from "../../../../../helpers/constants/routes"
 const ENTER_KEY = 13
 class EmailScreen extends PureComponent {
   constructor(props) {
@@ -11,6 +12,18 @@ class EmailScreen extends PureComponent {
       email: null,
       error: null
     }
+    this.history = this.props.history
+  }
+
+  renderBackButton (){
+   const style = {
+    "display": "flex",
+    "marginRight": "310px"
+   }
+   return h('div',{style,   onClick: _=> this.history.push(CONNECT_HARDWARE_ROUTE)},[ 
+     h('div.sw-connect__list__back-caret', {}, ),
+     h('div.sw-connect__list', {style: { "marginTop": "-2px", "color":"#037DD6"}},this.context.t("back") )
+  ])
   }
 
   renderNextButton () {
@@ -188,12 +201,13 @@ class EmailScreen extends PureComponent {
 
   renderEmailScreen () {
     return h('div.new-account-connect-form', {}, [
+      this.renderBackButton(),
       this.renderTrustVaultLogo(),
       this.renderHeader(),
       this.renderEmailInputBox(),
       this.renderTrustVaultInfoBox(),
       this.renderNextButton(),
-      this.renderLearnMoreLink()
+      this.renderLearnMoreLink(),
     ])
   }
 
@@ -208,6 +222,7 @@ class EmailScreen extends PureComponent {
 EmailScreen.propTypes = {
   browserSupported: PropTypes.bool.isRequired,
   getTrustVaultPinChallenge: PropTypes.func.isRequired,
+  history: PropTypes.object
 }
 
 EmailScreen.contextTypes = {
