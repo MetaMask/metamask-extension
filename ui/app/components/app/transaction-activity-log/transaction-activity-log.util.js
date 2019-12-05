@@ -55,7 +55,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
     id,
     hash,
     history = [],
-    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice},
+    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice },
     xReceipt: { status } = {},
     type,
   } = transaction

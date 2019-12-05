@@ -5,7 +5,7 @@ const txUtils = require('../../../../../app/scripts/controllers/transactions/lib
 describe('txUtils', function () {
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
@@ -13,7 +13,7 @@ describe('txUtils', function () {
     })
 
     it('returns error for negative values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
@@ -66,7 +66,9 @@ describe('txUtils', function () {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0x',
       }
-      assert.throws(() => { txUtils.validateRecipient(zeroRecipientTxParams) }, Error, 'Invalid recipient address')
+      assert.throws(() => {
+        txUtils.validateRecipient(zeroRecipientTxParams)
+      }, Error, 'Invalid recipient address')
     })
   })
 
@@ -76,19 +78,27 @@ describe('txUtils', function () {
 
       // where from is undefined
       const txParams = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is array
       txParams.from = []
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is a object
       txParams.from = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is a invalid address
       txParams.from = 'im going to fail'
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address`)
 
       // should run
       txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d'

@@ -1,7 +1,7 @@
 const assert = require('assert')
 const migration26 = require('../../../app/scripts/migrations/026')
 const oldStorage = {
-  'meta': {'version': 25},
+  'meta': { 'version': 25 },
   'data': {
     'PreferencesController': {},
     'KeyringController': {
@@ -19,8 +19,8 @@ describe('migration #26', () => {
       .then((newStorage) => {
         const identities = newStorage.data.PreferencesController.identities
         assert.deepEqual(identities, {
-          '0x1e77e2': {name: 'Test Account 1', address: '0x1e77e2'},
-          '0x7e57e2': {name: 'Test Account 2', address: '0x7e57e2'},
+          '0x1e77e2': { name: 'Test Account 1', address: '0x1e77e2' },
+          '0x7e57e2': { name: 'Test Account 2', address: '0x7e57e2' },
         })
         assert.strictEqual(newStorage.data.KeyringController.walletNicknames, undefined)
         done()

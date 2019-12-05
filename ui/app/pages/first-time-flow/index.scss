@@ -73,6 +73,8 @@
   }
 
   &__textarea {
+    /*rtl:ignore*/
+    direction: ltr;
     font-size: 1rem;
     font-family: Roboto;
     height: 190px;
@@ -118,7 +120,7 @@
 
   &__button {
     margin: 35px 0 14px;
-    width: 140px;
+    width: 170px;
     height: 44px;
   }
 

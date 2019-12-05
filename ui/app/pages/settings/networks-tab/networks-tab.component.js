@@ -20,7 +20,7 @@ export default class NetworksTab extends PureComponent {
     location: PropTypes.object.isRequired,
     networkIsSelected: PropTypes.bool,
     networksTabIsInAddMode: PropTypes.bool,
-    networksToRender: PropTypes.array.isRequired,
+    networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
     selectedNetwork: PropTypes.object,
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
@@ -114,9 +114,11 @@ export default class NetworksTab extends PureComponent {
           backgroundColor={iconColor || 'white'}
           innerBorder={border}
         />
-        <div className={ classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
-        }) }>
+        <div
+          className={classnames('networks-tab__networks-list-name', {
+            'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+          })}
+        >
           { label || this.context.t(labelKey) }
         </div>
         <div className="networks-tab__networks-list-arrow" />
@@ -177,6 +179,7 @@ export default class NetworksTab extends PureComponent {
       editRpc,
       networkDefaultedToProvider,
       providerUrl,
+      networksToRender,
     } = this.props
 
     const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -189,6 +192,7 @@ export default class NetworksTab extends PureComponent {
           shouldRenderNetworkForm
             ? (
               <NetworkForm
+                rpcUrls={networksToRender.map(network => network.rpcUrl)}
                 setRpcTarget={setRpcTarget}
                 editRpc={editRpc}
                 networkName={label || labelKey && t(labelKey) || ''}
@@ -222,18 +226,20 @@ export default class NetworksTab extends PureComponent {
         {this.renderSubHeader()}
         {this.renderNetworksTabContent()}
         {!networkIsSelected && !networksTabIsInAddMode
-          ? <div className="networks-tab__add-network-button-wrapper">
-            <Button
-              type="primary"
-              onClick={event => {
-                event.preventDefault()
-                setSelectedSettingsRpcUrl(null)
-                setNetworksTabAddMode(true)
-              }}
-            >
-              { this.context.t('addNetwork') }
-            </Button>
-          </div>
+          ? (
+            <div className="networks-tab__add-network-button-wrapper">
+              <Button
+                type="primary"
+                onClick={event => {
+                  event.preventDefault()
+                  setSelectedSettingsRpcUrl(null)
+                  setNetworksTabAddMode(true)
+                }}
+              >
+                { this.context.t('addNetwork') }
+              </Button>
+            </div>
+          )
           : null
         }
       </div>

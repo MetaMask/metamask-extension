@@ -33,7 +33,7 @@ describe('TransactionListItemDetails Component', () => {
       <TransactionListItemDetails
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -70,9 +70,9 @@ describe('TransactionListItemDetails Component', () => {
     const wrapper = shallow(
       <TransactionListItemDetails
         transactionGroup={transactionGroup}
-        showRetry={true}
+        showSpeedUp
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -104,7 +104,7 @@ describe('TransactionListItemDetails Component', () => {
       <TransactionListItemDetails
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -139,7 +139,7 @@ describe('TransactionListItemDetails Component', () => {
       <TransactionListItemDetails
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))

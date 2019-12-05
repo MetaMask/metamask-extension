@@ -1,6 +1,5 @@
+import React, { Component } from 'react'
 const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const PropTypes = require('prop-types')
@@ -44,47 +43,49 @@ function PrivateKeyImportView () {
   Component.call(this)
 }
 
-PrivateKeyImportView.prototype.render = function () {
+PrivateKeyImportView.prototype.render = function PrivateKeyImportView () {
   const { error, displayWarning } = this.props
 
   return (
-    h('div.new-account-import-form__private-key', [
-
-      h('span.new-account-create-form__instruction', this.context.t('pastePrivateKey')),
-
-      h('div.new-account-import-form__private-key-password-container', [
-
-        h('input.new-account-import-form__input-password', {
-          type: 'password',
-          id: 'private-key-box',
-          onKeyPress: e => this.createKeyringOnEnter(e),
-        }),
-
-      ]),
-
-      h('div.new-account-import-form__buttons', {}, [
-
-        h(Button, {
-          type: 'default',
-          large: true,
-          className: 'new-account-create-form__button',
-          onClick: () => {
+    <div className="new-account-import-form__private-key">
+      <span className="new-account-create-form__instruction">
+        {this.context.t('pastePrivateKey')}
+      </span>
+      <div className="new-account-import-form__private-key-password-container">
+        <input
+          className="new-account-import-form__input-password"
+          type="password"
+          id="private-key-box"
+          onKeyPress={e => this.createKeyringOnEnter(e)}
+        />
+      </div>
+      <div className="new-account-import-form__buttons">
+        <Button
+          type="default"
+          large
+          className="new-account-create-form__button"
+          onClick={() => {
             displayWarning(null)
             this.props.history.push(DEFAULT_ROUTE)
-          },
-        }, [this.context.t('cancel')]),
-
-        h(Button, {
-          type: 'secondary',
-          large: true,
-          className: 'new-account-create-form__button',
-          onClick: () => this.createNewKeychain(),
-        }, [this.context.t('import')]),
-
-      ]),
-
-      error ? h('span.error', error) : null,
-    ])
+          }}
+        >
+          {this.context.t('cancel')}
+        </Button>
+        <Button
+          type="secondary"
+          large
+          className="new-account-create-form__button"
+          onClick={() => this.createNewKeychain()}
+        >
+          {this.context.t('import')}
+        </Button>
+      </div>
+      {
+        error
+          ? <span className="error">{error}</span>
+          : null
+      }
+    </div>
   )
 }
 

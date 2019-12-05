@@ -1,6 +1,6 @@
 /* eslint no-unused-vars: 0 */
 
-var params = {
+const params = {
   // diffrent params used in the methods
   param: [],
   blockHashParams: '0xb3b20624f8f0f86eb50dd04688409e5cea4bd02d700bf6e79e9384d47d6a5a35',
@@ -30,7 +30,7 @@ var params = {
     value: '0x9184e72a',
     data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
   },
-  filterGetLogs: [{'blockHash': '0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70', 'topics': ['0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80']}],
+  filterGetLogs: [{ 'blockHash': '0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70', 'topics': ['0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80'] }],
   block: {
     __required: [],
     number: 'Q',
@@ -93,7 +93,7 @@ var params = {
   },
 }
 
-var methods = {
+const methods = {
   hexaNumberMethods: {
     // these are the methods which have output in the form of hexa decimal numbers
     eth_blockNumber: ['eth_blockNumber', params.param, 'Q'],

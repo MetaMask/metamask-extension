@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-export default class AdvancedTabContent extends Component {
+export default class GasSlider extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     lowLabel: PropTypes.string,
@@ -36,7 +36,7 @@ export default class AdvancedTabContent extends Component {
           onChange={event => onChange(event.target.value)}
         />
         <div className="gas-slider__bar">
-          <div className="gas-slider__colored"/>
+          <div className="gas-slider__colored" />
         </div>
         <div className="gas-slider__labels">
           <span>{lowLabel}</span>

@@ -6,9 +6,9 @@ const copyToClipboard = require('copy-to-clipboard')
 // Sub-Reducers take in the complete state and return their sub-state
 //
 const reduceMetamask = require('./metamask/metamask')
-const reduceApp = require('./app/app')
 const reduceLocale = require('./locale/locale')
 const reduceSend = require('./send/send.duck').default
+import reduceApp from './app/app'
 import reduceConfirmTransaction from './confirm-transaction/confirm-transaction.duck'
 import reduceGas from './gas/gas.duck'
 
@@ -67,7 +67,9 @@ window.getCleanAppState = function () {
 window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)
     cb(null, stateString)

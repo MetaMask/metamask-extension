@@ -5,7 +5,7 @@ import * as actions from '../../../../../ui/app/store/actions'
 describe('MetaMask Reducers', () => {
 
   it('init state', () => {
-    const initState = reduceMetamask({metamask: {}}, {})
+    const initState = reduceMetamask({ metamask: {} }, {})
     assert(initState)
   })
 
@@ -456,7 +456,7 @@ describe('MetaMask Reducers', () => {
   it('sets current locale', () => {
     const state = reduceMetamask({}, {
       type: actions.SET_CURRENT_LOCALE,
-      value: 'ge',
+      value: { locale: 'ge' },
     })
 
     assert.equal(state.currentLocale, 'ge')

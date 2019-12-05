@@ -303,6 +303,9 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { to: '0xaa' }
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+      filterParams = { status: (status) => status !== 'confirmed' }
+      assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+
     })
   })
 
@@ -351,13 +354,13 @@ describe('TransactionStateManager', function () {
 
   describe('#_removeTx', function () {
     it('should remove the transaction from the storage', () => {
-      txStateManager._saveTxList([ {id: 1} ])
+      txStateManager._saveTxList([ { id: 1 } ])
       txStateManager._removeTx(1)
       assert(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
     it('should only remove the transaction with ID 1 from the storage', () => {
-      txStateManager._saveTxList([ {id: 1}, {id: 2} ])
+      txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
       txStateManager._removeTx(1)
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })

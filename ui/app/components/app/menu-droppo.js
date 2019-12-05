@@ -1,5 +1,4 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const findDOMNode = require('react-dom').findDOMNode
 const ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGroup')
@@ -27,41 +26,44 @@ MenuDroppoComponent.prototype.render = function () {
   style.zIndex = zIndex
 
   return (
-    h('div', {
-      style,
-      className: `.menu-droppo-container ${containerClassName}`,
-    }, [
-      h('style', `
-        .menu-droppo-enter {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
+    <div style={style} className={`menu-droppo-container ${containerClassName}`}>
+      <style>{`
+          .menu-droppo-enter {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(-200%);
+          }
 
-        .menu-droppo-enter.menu-droppo-enter-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
+          .menu-droppo-enter.menu-droppo-enter-active {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(0%);
+          }
 
-        .menu-droppo-leave {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
+          .menu-droppo-leave {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(0%);
+          }
 
-        .menu-droppo-leave.menu-droppo-leave-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-      `),
-
-      useCssTransition
-        ? h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'menu-droppo',
-          transitionEnterTimeout: parseInt(speed),
-          transitionLeaveTimeout: parseInt(speed),
-        }, this.renderPrimary())
-        : this.renderPrimary(),
-    ])
+          .menu-droppo-leave.menu-droppo-leave-active {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(-200%);
+          }
+        `}
+      </style>
+      {
+        useCssTransition
+          ? (
+            <ReactCSSTransitionGroup
+              className="css-transition-group"
+              transitionName="menu-droppo"
+              transitionEnterTimeout={parseInt(speed)}
+              transitionLeaveTimeout={parseInt(speed)}
+            >
+              {this.renderPrimary()}
+            </ReactCSSTransitionGroup>
+          )
+          : this.renderPrimary()
+      }
+    </div>
   )
 }
 
@@ -74,11 +76,9 @@ MenuDroppoComponent.prototype.renderPrimary = function () {
   const innerStyle = this.props.innerStyle || {}
 
   return (
-    h('.menu-droppo', {
-      key: 'menu-droppo-drawer',
-      style: innerStyle,
-    },
-    [ this.props.children ])
+    <div className="menu-droppo" key="menu-droppo-drawer" style={innerStyle}>
+      {this.props.children}
+    </div>
   )
 }
 
@@ -98,7 +98,7 @@ MenuDroppoComponent.prototype.componentDidMount = function () {
     this.globalClickHandler = this.globalClickOccurred.bind(this)
     document.body.addEventListener('click', this.globalClickHandler)
     // eslint-disable-next-line react/no-find-dom-node
-    var container = findDOMNode(this)
+    const container = findDOMNode(this)
     this.container = container
   }
 }
@@ -122,7 +122,7 @@ MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
 }
 
 function isDescendant (parent, child) {
-  var node = child.parentNode
+  let node = child.parentNode
   while (node !== null) {
     if (node === parent) {
       return true

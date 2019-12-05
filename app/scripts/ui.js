@@ -1,3 +1,10 @@
+
+// this must run before anything else
+require('./lib/freezeGlobals')
+
+// polyfills
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
 const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } = require('./lib/enums')
@@ -6,14 +13,14 @@ const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupSentry = require('./lib/setupSentry')
-const {EventEmitter} = require('events')
+const { EventEmitter } = require('events')
 const Dnode = require('dnode')
 const Eth = require('ethjs')
 const EthQuery = require('eth-query')
 const urlUtil = require('url')
 const launchMetaMaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const log = require('loglevel')
 
 start().catch(log.error)
@@ -89,9 +96,9 @@ async function queryCurrentActiveTab (windowType) {
       return
     }
 
-    extension.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const [activeTab] = tabs
-      const {title, url} = activeTab
+      const { title, url } = activeTab
       const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
       resolve({
         title, origin, protocol, url,

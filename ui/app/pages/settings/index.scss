@@ -50,6 +50,11 @@
     color: #037DD6;
   }
 
+  &__subheader--break {
+    margin-right: 4px;
+    padding-right: 4px;
+  }
+
   &__sub-header {
     height: 72px;
     border-bottom: 1px solid #D8D8D8;
@@ -90,6 +95,10 @@
       background-position: center;
       margin-right: 16px;
       cursor: pointer;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -166,6 +175,11 @@
     &--without-height {
       height: initial;
     }
+
+    &--disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
   }
 
   &__content-label {
@@ -189,10 +203,6 @@
     }
   }
 
-  &__copyable-address {
-    display: flex;
-  }
-
   &__copy-icon {
     padding-left: 4px;
   }
@@ -203,13 +213,6 @@
   }
 
   &__address-book-button {
-      //align-self: flex-end;
-      //padding: 5px;
-      //text-transform: uppercase;
-      //cursor: pointer;
-      //width: 25%;
-      //min-width: 80px;
-      //height: 33px;
     font-size: 1rem;
     line-height: 1.1875rem;
     padding: 0;
@@ -235,6 +238,14 @@
           }
         }
       }
+    }
+  }
+
+  .toggle-button {
+    /*rtl:ignore*/
+    direction: ltr;
+    [dir='rtl'] & {
+      justify-content: flex-end;
     }
   }
 }

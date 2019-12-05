@@ -1,4 +1,5 @@
 const ObservableStore = require('obs-store')
+const { addInternalMethodPrefix } = require('./permissions')
 const normalizeAddress = require('eth-sig-util').normalize
 const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
 const extend = require('xtend')
@@ -17,6 +18,7 @@ class PreferencesController {
    * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
+   * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
@@ -35,13 +37,15 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
+      useNonceField: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
       // for convenient testing of pre-release features, and should never
       // perform sensitive operations.
       featureFlags: {
-        privacyMode: true,
+        showIncomingTransactions: true,
+        transactionTime: false,
       },
       knownMethodData: {},
       participateInMetaMetrics: null,
@@ -54,7 +58,6 @@ class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
-      migratedPrivacyMode: false,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
     }, opts.initState)
@@ -87,6 +90,16 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  /**
+   * Setter for the `useNonceField` property
+   *
+   * @param {boolean} val Whether or not the user prefers to set nonce
+   *
+   */
+  setUseNonceField (val) {
+    this.store.updateState({ useNonceField: val })
   }
 
   /**
@@ -174,7 +187,10 @@ class PreferencesController {
    * @param {Function} - end
    */
   async requestWatchAsset (req, res, next, end) {
-    if (req.method === 'metamask_watchAsset' || req.method === 'wallet_watchAsset') {
+    if (
+      req.method === 'metamask_watchAsset' ||
+      req.method === addInternalMethodPrefix('watchAsset')
+    ) {
       const { type, options } = req.params
       switch (type) {
         case 'ERC20':
@@ -205,13 +221,28 @@ class PreferencesController {
   }
 
   /**
+   * Getter for the `getUseNonceField` property
+   *
+   * @returns {boolean} this.store.getUseNonceField
+   *
+   */
+  getUseNonceField () {
+    return this.store.getState().useNonceField
+  }
+
+  /**
    * Setter for the `currentLocale` property
    *
    * @param {string} key he preferred language locale key
    *
    */
   setCurrentLocale (key) {
-    this.store.updateState({ currentLocale: key })
+    const textDirection = (['ar', 'dv', 'fa', 'he', 'ku'].includes(key)) ? 'rtl' : 'auto'
+    this.store.updateState({
+      currentLocale: key,
+      textDirection: textDirection,
+    })
+    return textDirection
   }
 
   /**
@@ -227,7 +258,7 @@ class PreferencesController {
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
-      ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
+      ids[address] = { name: `Account ${index + 1}`, address, ...oldId }
       return ids
     }, {})
     const accountTokens = addresses.reduce((tokens, address) => {
@@ -275,7 +306,9 @@ class PreferencesController {
     const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
       // skip if already exists
-      if (identities[address]) return
+      if (identities[address]) {
+        return
+      }
       // add missing identity
       const identityCount = Object.keys(identities).length
 
@@ -307,7 +340,9 @@ class PreferencesController {
     if (Object.keys(newlyLost).length > 0) {
 
       // Notify our servers:
-      if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
+      if (this.diagnostics) {
+        this.diagnostics.reportOrphans(newlyLost)
+      }
 
       // store lost accounts
       for (const key in newlyLost) {
@@ -435,9 +470,11 @@ class PreferencesController {
    * @return {Promise<string>}
    */
   setAccountLabel (account, label) {
-    if (!account) throw new Error('setAccountLabel requires a valid address, got ' + String(account))
+    if (!account) {
+      throw new Error('setAccountLabel requires a valid address, got ' + String(account))
+    }
     const address = normalizeAddress(account)
-    const {identities} = this.store.getState()
+    const { identities } = this.store.getState()
     identities[address] = identities[address] || {}
     identities[address].name = label
     this.store.updateState({ identities })
@@ -472,7 +509,9 @@ class PreferencesController {
 
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === newRpcDetails.rpcUrl })
+    const index = rpcList.findIndex((element) => {
+      return element.rpcUrl === newRpcDetails.rpcUrl
+    })
     if (index > -1) {
       const rpcDetail = rpcList[index]
       const updatedRpc = extend(rpcDetail, newRpcDetails)
@@ -496,7 +535,9 @@ class PreferencesController {
    */
   addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
+    const index = rpcList.findIndex((element) => {
+      return element.rpcUrl === url
+    })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
@@ -520,7 +561,9 @@ class PreferencesController {
    */
   removeFromFrequentRpcList (url) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
+    const index = rpcList.findIndex((element) => {
+      return element.rpcUrl === url
+    })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
@@ -604,13 +647,6 @@ class PreferencesController {
     return Promise.resolve(true)
   }
 
-  unsetMigratedPrivacyMode () {
-    this.store.updateState({
-      migratedPrivacyMode: false,
-    })
-    return Promise.resolve()
-  }
-
   //
   // PRIVATE METHODS
   //
@@ -659,10 +695,16 @@ class PreferencesController {
    */
   _getTokenRelatedStates (selectedAddress) {
     const accountTokens = this.store.getState().accountTokens
-    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
+    if (!selectedAddress) {
+      selectedAddress = this.store.getState().selectedAddress
+    }
     const providerType = this.network.providerStore.getState().type
-    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
-    if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
+    if (!(selectedAddress in accountTokens)) {
+      accountTokens[selectedAddress] = {}
+    }
+    if (!(providerType in accountTokens[selectedAddress])) {
+      accountTokens[selectedAddress][providerType] = []
+    }
     const tokens = accountTokens[selectedAddress][providerType]
     return { tokens, accountTokens, providerType, selectedAddress }
   }
@@ -699,13 +741,19 @@ class PreferencesController {
    */
   _validateERC20AssetParams (opts) {
     const { rawAddress, symbol, decimals } = opts
-    if (!rawAddress || !symbol || typeof decimals === 'undefined') throw new Error(`Cannot suggest token without address, symbol, and decimals`)
-    if (!(symbol.length < 7)) throw new Error(`Invalid symbol ${symbol} more than six characters`)
+    if (!rawAddress || !symbol || typeof decimals === 'undefined') {
+      throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    }
+    if (!(symbol.length < 7)) {
+      throw new Error(`Invalid symbol ${symbol} more than six characters`)
+    }
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
       throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
     }
-    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
+    if (!isValidAddress(rawAddress)) {
+      throw new Error(`Invalid address ${rawAddress}`)
+    }
   }
 }
 

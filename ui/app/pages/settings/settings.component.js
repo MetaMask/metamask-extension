@@ -133,9 +133,19 @@ class SettingsPage extends PureComponent {
         <div
           className={c({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
           onClick={() => initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)}
-        >{subheaderText}</div>
-        {breadCrumbTextKey && <div><span>{'> '}</span>{t(breadCrumbTextKey)}</div>}
-        {isAddressEntryPage && <div><span>{' > '}</span>{addressName}</div>}
+        >
+          {subheaderText}
+        </div>
+        {breadCrumbTextKey && (
+          <div className="settings-page__subheader--break">
+            <span>{' > '}</span>{t(breadCrumbTextKey)}
+          </div>
+        )}
+        {isAddressEntryPage && (
+          <div className="settings-page__subheader--break">
+            <span>{' > '}</span>{addressName}
+          </div>
+        )}
       </div>
     )
   }
@@ -149,7 +159,7 @@ class SettingsPage extends PureComponent {
         tabs={[
           { content: t('general'), description: t('generalSettingsDescription'), key: GENERAL_ROUTE },
           { content: t('advanced'), description: t('advancedSettingsDescription'), key: ADVANCED_ROUTE },
-          { content: t('contactList'), description: t('contactListDescription'), key: CONTACT_LIST_ROUTE },
+          { content: t('contacts'), description: t('contactsSettingsDescription'), key: CONTACT_LIST_ROUTE },
           { content: t('securityAndPrivacy'), description: t('securitySettingsDescription'), key: SECURITY_ROUTE },
           { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },

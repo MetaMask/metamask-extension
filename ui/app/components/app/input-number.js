@@ -1,5 +1,5 @@
+import React from 'react'
 const Component = require('react').Component
-const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const {
   addCurrencies,
@@ -28,7 +28,9 @@ function removeLeadingZeroes (str) {
 
 InputNumber.prototype.setValue = function (newValue) {
   newValue = removeLeadingZeroes(newValue)
-  if (newValue && !isValidInput(newValue)) return
+  if (newValue && !isValidInput(newValue)) {
+    return
+  }
   const { fixed, min = -1, max = Infinity, onChange } = this.props
 
   newValue = fixed ? newValue.toFixed(4) : newValue
@@ -50,32 +52,36 @@ InputNumber.prototype.setValue = function (newValue) {
   }
 }
 
-InputNumber.prototype.render = function () {
+InputNumber.prototype.render = function InputNumber () {
   const { unitLabel, step = 1, placeholder, value } = this.props
 
-  return h('div.customize-gas-input-wrapper', {}, [
-    h('input', {
-      className: 'customize-gas-input',
-      value,
-      placeholder,
-      type: 'number',
-      onChange: e => {
-        this.setValue(e.target.value)
-      },
-      min: 0,
-    }),
-    h('span.gas-tooltip-input-detail', {}, [unitLabel]),
-    h('div.gas-tooltip-input-arrows', {}, [
-      h('div.gas-tooltip-input-arrow-wrapper', {
-        onClick: () => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
-      }, [
-        h('i.fa.fa-angle-up'),
-      ]),
-      h('div.gas-tooltip-input-arrow-wrapper', {
-        onClick: () => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' })),
-      }, [
-        h('i.fa.fa-angle-down'),
-      ]),
-    ]),
-  ])
+  return (
+    <div className="customize-gas-input-wrapper">
+      <input
+        className="customize-gas-input"
+        value={value}
+        placeholder={placeholder}
+        type="number"
+        onChange={e => {
+          this.setValue(e.target.value)
+        }}
+        min={0}
+      />
+      <span className="gas-tooltip-input-detail">{unitLabel}</span>
+      <div className="gas-tooltip-input-arrows">
+        <div
+          className="gas-tooltip-input-arrow-wrapper"
+          onClick={() => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' }))}
+        >
+          <i className="fa fa-angle-up" />
+        </div>
+        <div
+          className="gas-tooltip-input-arrow-wrapper"
+          onClick={() => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' }))}
+        >
+          <i className="fa fa-angle-down" />
+        </div>
+      </div>
+    </div>
+  )
 }

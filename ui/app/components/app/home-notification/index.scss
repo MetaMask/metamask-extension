@@ -8,7 +8,7 @@
   background: rgba(36, 41, 46, 0.9);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
-  height: 116px;
+  min-height: 116px;
   padding: 16px;
 
   @media screen and (min-width: 576px) {
@@ -27,6 +27,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  &__icon {
+    height: 16px;
+    align-self: center;
   }
 
   &__text {
@@ -95,6 +100,7 @@
   &__buttons {
     display: flex;
     width: 100%;
+    margin-top: 10px;
     justify-content: flex-start;
     flex-direction: row-reverse;
   }

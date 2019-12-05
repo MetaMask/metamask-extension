@@ -1,4 +1,4 @@
-var fakeWallet = {
+const fakeWallet = {
   privKey: '0x123456788890abcdef',
   address: '0xfedcba0987654321',
 }
@@ -6,7 +6,9 @@ const type = 'Simple Key Pair'
 
 module.exports = class MockSimpleKeychain {
 
-  static type () { return type }
+  static type () {
+    return type
+  }
 
   constructor (opts) {
     this.type = type
@@ -26,7 +28,7 @@ module.exports = class MockSimpleKeychain {
   }
 
   addAccounts (n = 1) {
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       this.wallets.push(fakeWallet)
     }
   }

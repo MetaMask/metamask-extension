@@ -170,7 +170,6 @@
     },
     "currentBlockGasLimit": "0x731e25",
     "selectedAddressTxList": [],
-    "computedBalances": {},
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},

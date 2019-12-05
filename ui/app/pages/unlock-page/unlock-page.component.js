@@ -165,7 +165,7 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
-              material
+              theme="material"
               fullWidth
             />
           </form>
