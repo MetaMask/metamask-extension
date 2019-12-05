@@ -54,6 +54,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
+const TrustvaultKeyring = require('../scripts/eth-trustvault-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const nanoid = require('nanoid')
@@ -192,7 +193,8 @@ module.exports = class MetamaskController extends EventEmitter {
       this.accountTracker._updateAccounts()
     })
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    // key mgmt
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, TrustvaultKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -466,6 +468,11 @@ module.exports = class MetamaskController extends EventEmitter {
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
 
+      // software wallets
+      connectSoftware: nodeify(this.connectSoftware, this),
+      getPartialPinChallenge: nodeify(this.getPartialPinChallenge, this),
+      submitPartialPinChallenge: nodeify(this.submitPartialPinChallenge, this),
+
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
 
@@ -716,10 +723,11 @@ module.exports = class MetamaskController extends EventEmitter {
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
+      hd: hdAccounts.filter((item, pos) => hdAccounts.indexOf(item) === pos).map(address => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
+      trustvault: [],
     }
 
     // transactions
@@ -796,10 +804,10 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   //
-  // Hardware
+  // Hardware / Software
   //
 
-  async getKeyringForDevice (deviceName, hdPath = null) {
+  async getKeyringForDevice (deviceName, hdPath = null, auth = null) {
     let keyringName = null
     switch (deviceName) {
       case 'trezor':
@@ -808,15 +816,21 @@ module.exports = class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type
         break
+      case 'trustvault':
+        keyringName = TrustvaultKeyring.type
+        break
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(keyringName)
+      keyring = await this.keyringController.addNewKeyring(keyringName, { auth })
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath)
+    }
+    if (auth && keyring.updateAuthKey) {
+      keyring.updateAuthKey(auth)
     }
 
     keyring.network = this.networkController.getProviderConfig().type
@@ -848,6 +862,23 @@ module.exports = class MetamaskController extends EventEmitter {
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts()
     const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+    this.accountTracker.syncWithAddresses(accountsToTrack)
+    return accounts
+  }
+
+  /**
+   * Fetch account list from a TrustVault wallet
+   *
+   * @returns [] accounts
+   */
+  async connectSoftware( deviceName, auth, hdPath = null) {
+    await this.keyringController.removeEmptyKeyrings()
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath, auth)
+
+    // Merge with existing accounts
+    // and make sure addresses are not repeated
+    const [accounts, oldAccounts] = await Promise.all([keyring.getAccounts(), this.keyringController.getAccounts()])
+    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.toLowerCase())))]
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
   }
@@ -900,6 +931,45 @@ module.exports = class MetamaskController extends EventEmitter {
     return { ...keyState, identities }
   }
 
+  /**
+   * Get TrustVault partial pin challenge
+   *
+   * @typedef {Object} PartialPinChallenge
+   * @property {string} firstPinDigitPosition - position of the first pin digit challenge
+   * @property {string} secondPinDigitPosition - position of the second pin digit challenge
+   * @property {string} sessionToken - sessionToken unique to the partial pin challenge
+   *
+   * @param {string} email
+   * @returns {PartialPinChallenge}
+   */
+  async getPartialPinChallenge (email, deviceName = 'trustvault', hdPath = null) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+    if (keyring && keyring.getPartialPinChallenge) {
+      return keyring.getPartialPinChallenge(email)
+    } else {
+      throw new Error('Failed to load a valid keyring')
+    }
+  }
+
+  /**
+   * Respond to TrustVault partial pin challenge
+   *
+   * @param {string} email - TrustVault user email
+   * @param {string} firstPinDigit - pin digit for the first partial pin challenge
+   * @param {string} secondPinDigit - pin digit for the second partial pin challenge
+   * @param {string} sessionToken - sessionToken from the partial pin challenge
+   * @param {string} deviceName
+   * @returns {Object} auth - TrustVault authentication object
+   */
+  async submitPartialPinChallenge (firstPinDigit, secondPinDigit, deviceName = 'trustvault') {
+    const hdPath = null
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+    if (keyring && keyring.submitPartialPinChallenge) {
+      return keyring.submitPartialPinChallenge(firstPinDigit, secondPinDigit)
+    } else {
+      throw new Error('Failed to load a valid keyring')
+    }
+  }
 
   //
   // Account Management
@@ -1658,9 +1728,14 @@ module.exports = class MetamaskController extends EventEmitter {
     if (!addresses.length) {
       return
     }
+    let map = {}
+    const [trustvaultKeyring] = this.keyringController.getKeyringsByType('TrustVault')
+    if (trustvaultKeyring) {
+      map = trustvaultKeyring.getAccountNames()
+    }
 
     // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.addAddresses(addresses)
+    this.preferencesController.addAddresses(addresses, map)
     this.accountTracker.syncWithAddresses(addresses)
 
     const wasLocked = !isUnlocked

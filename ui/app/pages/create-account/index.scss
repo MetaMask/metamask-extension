@@ -1,0 +1,40 @@
+%circle-input {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+
+  transition: background-color 0.1s ease-in-out;
+  border-color: red;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: none;
+  margin: 5px;
+  color: rgba(0, 0, 0, 0);
+}
+
+.background-filled {
+  background-color: red;
+}
+
+.background-empty {
+  background-color: inherit;
+}
+
+.inline-block-child {
+  display: inline-block;
+}
+
+.circular-input {
+  @extend %circle-input;
+}
+
+.star-placeholder {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  margin: auto;
+}
+
+.inline-block-child {
+  display: inline-block;
+}

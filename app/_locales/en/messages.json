@@ -288,6 +288,9 @@
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
+  "connectTrustVault": {
+    "message": "Connect TrustVault"
+  },
   "connect": {
     "message": "Connect"
   },
@@ -311,6 +314,18 @@
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
+  },
+  "connectingToUnknown": {
+    "message": "Connecting to Unknown Network"
+  },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
+  },
+  "connectToTrustVault": {
+    "message": "Connect to TrustVault"
   },
   "contacts": {
     "message": "Contacts"
@@ -471,6 +486,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "emailAddress": {
+    "message": "Email address"
   },
   "emailUs": {
     "message": "Email us!"
@@ -639,6 +657,9 @@
   "hardware": {
     "message": "hardware"
   },
+  "trustvault": {
+    "message": "trustvault"
+  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
@@ -654,6 +675,12 @@
   "here": {
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "FAQ": {
+    "message": "FAQ"
+  },
+  "hereList": {
+    "message": "Here's a list!!!!"
   },
   "hexData": {
     "message": "Hex Data"
@@ -882,6 +909,9 @@
   },
   "newToMetaMask": {
     "message": "New to MetaMask?"
+  },
+  "next": {
+    "message": "Next"
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
@@ -1455,6 +1485,30 @@
   },
   "transferFrom": {
     "message": "Transfer From"
+  },
+  "transfers": {
+    "message": "Transfers"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
+  },
+  "trustVaultWelcome": {
+    "message": "Welcome to TrustVault"
+  },
+  "trustVaultEnterEmail": {
+    "message": "Please enter your email to continue"
+  },
+  "trustVaultEnterPin": {
+    "message": "Please enter the following characters of your PIN"
+  },
+  "trustVaultIncorrectPin": {
+    "message": "Invalid PIN. Please try again"
+  },
+  "trustVaultGetStarted": {
+    "message": "Not a TrustVault user? Get started "
+  },
+  "trustVaultLearnMore": {
+    "message": "Learn More "
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",

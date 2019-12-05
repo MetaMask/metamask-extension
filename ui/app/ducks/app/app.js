@@ -542,6 +542,11 @@ export default function reduceApp (state, action) {
       return extend(appState, {
         defaultHdPaths: newDefaults,
       })
+    
+    case actions.TRUSTVAULT_PIN_CHALLENGE:
+      return extend(appState, {
+        trustVault: { ...appState.trustVault, pinChallenge: action.value }
+      })
 
     case actions.SHOW_LOADING:
       return extend(appState, {

@@ -301,7 +301,7 @@ class PreferencesController {
    * @param {string[]} addresses An array of hex addresses
    *
    */
-  addAddresses (addresses) {
+  addAddresses (addresses, namesMap = []) {
     const identities = this.store.getState().identities
     const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
@@ -310,10 +310,16 @@ class PreferencesController {
         return
       }
       // add missing identity
+      let name;
       const identityCount = Object.keys(identities).length
-
+      if (namesMap && namesMap.length > 0) {
+         const matchedAddressEntry = namesMap.find(a => a.address.toLowerCase() === address.toLowerCase())
+         name = matchedAddressEntry ? matchedAddressEntry.name : `Account ${identityCount + 1 - namesMap.length}`
+      } else {
+        name = `Account ${identityCount + 1}`
+      }
       accountTokens[address] = {}
-      identities[address] = { name: `Account ${identityCount + 1}`, address }
+      identities[address] = { name, address }
     })
     this.store.updateState({ identities, accountTokens })
   }
