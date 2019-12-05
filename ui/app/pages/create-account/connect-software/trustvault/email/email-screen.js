@@ -49,17 +49,56 @@ class EmailScreen extends PureComponent {
             }
           }
         }),
-        h('span', {style: {
-          fontSize: '10px',
-          color: 'grey',
-
-        }}, this.context.t('trustVaultGetStarted')),
-        h('span', {
+      ]
+    )
+  }
+  renderTrustVaultInfoBox () {
+    return h('div.sw-trustvault-info-box', { style: { width: "80%", display: "flex" } },
+      [
+        h(`img`, { src: 'images/tvInfo.png', style: { height: '15px', marginTop: '10px', marginLeft: '10px' } }),
+        h('div', {
           style: {
-            cursor: 'pointer',
             fontSize: '10px',
-            textDecoration: 'underline',
             color: 'grey',
+            marginTop: '10px',
+            marginLeft: '35px',
+            width: '160px',
+            height: '20px',
+            position: 'fixed'
+          }
+        }, this.context.t('trustVaultNotUser')),
+        h('div', {
+          style: {
+            fontSize: '10px',
+            color: 'grey',
+            width: '250px',
+            height: '20px',
+            position: 'fixed',
+            marginTop: '22px',
+            marginLeft: '35px',
+          }
+        }, this.context.t('trustVaultIos')),
+        h('div', {
+          style: {
+            fontSize: '10px',
+            color: 'grey',
+            width: '160px',
+            height: '20px',
+            position: 'fixed',
+            marginTop: '34px',
+            marginLeft: '35px',
+          }
+        }, this.context.t('trustVaultGetStarted')),
+
+        h('div', {
+          style: {
+            fontSize: '10px',
+            color: 'red',
+            width: '160px',
+            height: '20px',
+            position: 'fixed',
+            marginTop: '34px',
+            marginLeft: '90px',
           },
           onClick: () => {
             global.platform.openWindow({
@@ -71,24 +110,25 @@ class EmailScreen extends PureComponent {
     )
   }
 
+
+
   renderLearnMoreLink () {
     return h(
       'div.lear-more-link', {}, [
         h('span', {style: {
-          fontSize: '10px',
-          color: 'grey',
-
-        }}, this.context.t('trustVaultLearnMore')),
+            fontSize: '10px',
+            color: 'grey',
+          }}, this.context.t('trustVaultLearnMore')),
         h('span', {
           style: {
-            cursor: 'pointer',  
+            cursor: 'pointer',
             textDecoration: 'underline',
             fontSize: '10px',
             color: 'grey',
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://app.intercom.io/a/apps/jbjnxu3c/articles/articles/3350608/show',
+              url: 'https://help.trustology.io/en/',
             })
           },
         }, this.context.t('FAQ'))
@@ -151,10 +191,9 @@ class EmailScreen extends PureComponent {
       this.renderTrustVaultLogo(),
       this.renderHeader(),
       this.renderEmailInputBox(),
+      this.renderTrustVaultInfoBox(),
       this.renderNextButton(),
       this.renderLearnMoreLink()
-      
-      
     ])
   }
 
