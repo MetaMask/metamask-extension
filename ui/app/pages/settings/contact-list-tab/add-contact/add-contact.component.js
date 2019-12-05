@@ -23,7 +23,7 @@ export default class AddContact extends PureComponent {
   }
 
   state = {
-    newName: '',
+    nickname: '',
     ethAddress: '',
     ensAddress: '',
     error: '',
@@ -63,9 +63,7 @@ export default class AddContact extends PureComponent {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => {
-          this.props.scanQrCode()
-        }}
+        scanQrCode={_ => { this.props.scanQrCode() }}
         onChange={this.dValidate}
         onPaste={text => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
@@ -85,14 +83,12 @@ export default class AddContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
-        {this.state.ensAddress && (
-          <div className="address-book__view-contact__group">
-            <Identicon address={this.state.ensAddress} diameter={60} />
-            <div className="address-book__view-contact__group__value">
-              { this.state.ensAddress }
-            </div>
+        {this.state.ensAddress && <div className="address-book__view-contact__group">
+          <Identicon address={this.state.ensAddress} diameter={60} />
+          <div className="address-book__view-contact__group__value">
+            { this.state.ensAddress }
           </div>
-        )}
+        </div>}
         <div className="address-book__add-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">

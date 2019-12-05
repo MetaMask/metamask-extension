@@ -81,9 +81,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) {
-      this.lookupNetwork()
-    }
+    if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
   getNetworkState () {
@@ -198,7 +196,7 @@ module.exports = class NetworkController extends EventEmitter {
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig
-    const settings = {
+    var settings = {
       ticker: 'ETH',
     }
     this.networkConfig.putState(settings)
@@ -221,7 +219,7 @@ module.exports = class NetworkController extends EventEmitter {
       nickname,
     }
     // setup networkConfig
-    let settings = {
+    var settings = {
       network: chainId,
     }
     settings = extend(settings, networks.networkList['rpc'])

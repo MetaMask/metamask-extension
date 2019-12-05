@@ -1,9 +1,18 @@
 {
+  "privacyModeDefault": {
+    "message": "Hali ya Faragha sasa imewezeshwa kwa chaguomsingi"
+  },
   "chartOnlyAvailableEth": {
     "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
   },
+  "confirmClear": {
+    "message": "Una uhakika unataka kufuta tovuti zilizodihinishwa?"
+  },
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
+  },
+  "clearApprovalData": {
+    "message": "Futa Data za Faragha"
   },
   "appName": {
     "message": "MetaMask",
@@ -12,14 +21,17 @@
   "reject": {
     "message": "Kataa"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 ingependa kuunganishwa kwenye akaunti yako"
+  },
+  "providerRequestInfo": {
+    "message": "Tovuti hii inaomba idhini ya kuangalia anwani yako ya akaunti ya sasa. Daima hakikisha unaziamami tovuti ambazo unaingiliana nazo."
   },
   "about": {
     "message": "Kuhusu"
   },
   "aboutSettingsDescription": {
-    "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano"
+    "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano."
   },
   "acceleratingATransaction": {
     "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
@@ -55,7 +67,7 @@
     "message": "Mipangilio ya kina"
   },
   "advancedSettingsDescription": {
-    "message": "Vipengele vya idhini ya msanidi, Kumbukumbu za Hali ya kupakua, Kufuta Akaunti, mitando ya majaribio ya kuweka mipangilio na RPC maalumu"
+    "message": "Vipengele vya idhini ya msanidi, Kumbukumbu za Hali ya kupakua, Kufuta Akaunti, mitando ya majaribio ya kuweka mipangilio na RPC maalumu."
   },
   "advancedOptions": {
     "message": "Machaguo ya Juu"
@@ -145,6 +157,10 @@
   "basic": {
     "message": "Msingi"
   },
+  "betweenMinAndMax": {
+    "message": "inapaswa kuwa kubwa kuliko au sawa na $1 na ndogo kuliko au sawa na $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockExplorerView": {
     "message": "Tazama akaunti kwenye $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -230,6 +246,9 @@
   "connect": {
     "message": "Unganisha"
   },
+  "connectRequest": {
+    "message": "Unganisha Ombi"
+  },
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"
   },
@@ -268,6 +287,9 @@
   },
   "copiedExclamation": {
     "message": "Imenakiliwa!"
+  },
+  "copy": {
+    "message": "Nakili"
   },
   "copyAddress": {
     "message": "Nakili anwani kwenye ubao wa kunakilia"
@@ -346,6 +368,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ikiwa tayari una sarafu kadhaa za Ether, njia rahisi ya kupata Ether kwenye waleti yako mpya kupitia kuweka moja kwa moja."
+  },
+  "dismiss": {
+    "message": "Ondoa"
   },
   "done": {
     "message": "Imekamilika"
@@ -508,6 +533,10 @@
   "getStarted": {
     "message": "Anza"
   },
+  "greaterThanMin": {
+    "message": "inapaswa iwe kubwa kuliko au sawa na $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Tuna furaha kukuona"
   },
@@ -619,6 +648,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
+  },
+  "lessThanMax": {
+    "message": "inapaswa kuwa ndogo kuliko au sawa na $1. ",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"
@@ -814,6 +847,9 @@
   "pastePrivateKey": {
     "message": "Bandika uzi wako wa ufunguo binafsi hapa:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Bandika kirai kianzio chako hapa!"
   },
   "pending": {
     "message": "inasubiri"
@@ -1128,6 +1164,9 @@
   "storePhrase": {
     "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."
   },
+  "submit": {
+    "message": "Wasilisha"
+  },
   "submitted": {
     "message": "Imewasilishwa"
   },
@@ -1294,6 +1333,9 @@
   },
   "userName": {
     "message": "Jina la mtumiaji"
+  },
+  "validFileImport": {
+    "message": "Ni lazima uchague faili halali ili uhamishe."
   },
   "viewAccount": {
     "message": "Angalia Akaunti"

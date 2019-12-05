@@ -163,9 +163,7 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
-    newTxs.forEach(tx => {
-      newIncomingTransactions[tx.hash] = tx
-    })
+    newTxs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
 
     this.store.updateState({
       incomingTxLastFetchedBlocksByNetwork: {

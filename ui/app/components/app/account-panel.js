@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
 const inherits = require('util').inherits
+const Component = require('react').Component
+const h = require('react-hyperscript')
 import Identicon from '../ui/identicon'
 const formatBalance = require('../../helpers/utils/util').formatBalance
 const addressSummary = require('../../helpers/utils/util').addressSummary
@@ -13,12 +14,12 @@ function AccountPanel () {
 }
 
 AccountPanel.prototype.render = function () {
-  const state = this.props
-  const identity = state.identity || {}
-  const account = state.account || {}
-  const isFauceting = state.isFauceting
+  var state = this.props
+  var identity = state.identity || {}
+  var account = state.account || {}
+  var isFauceting = state.isFauceting
 
-  const panelState = {
+  var panelState = {
     key: `accountPanel${identity.address}`,
     identiconKey: identity.address,
     identiconLabel: identity.name || '',
@@ -32,24 +33,39 @@ AccountPanel.prototype.render = function () {
   }
 
   return (
-    <div
-      className="identity-panel flex-row flex-space-between"
-      style={{ flex: '1 0 auto', cursor: panelState.onClick ? 'pointer' : undefined }}
-      onClick={panelState.onClick}
-    >
-      <div className="identicon-wrapper flex-column select-none">
-        <Identicon address={panelState.identiconKey} imageify={state.imageifyIdenticons} />
-        <span className="font-small">{panelState.identiconLabel.substring(0, 7) + '...'}</span>
-      </div>
-      <div className="identity-data flex-column flex-justify-center flex-grow select-none">
-        {panelState.attributes.map((attr) => (
-          <div className="flex-row flex-space-between" key={'' + Math.round(Math.random() * 1000000)}>
-            <label className="font-small no-select">{attr.key}</label>
-            <span className="font-small">{attr.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+
+    h('.identity-panel.flex-row.flex-space-between', {
+      style: {
+        flex: '1 0 auto',
+        cursor: panelState.onClick ? 'pointer' : undefined,
+      },
+      onClick: panelState.onClick,
+    }, [
+
+      // account identicon
+      h('.identicon-wrapper.flex-column.select-none', [
+        h(Identicon, {
+          address: panelState.identiconKey,
+          imageify: state.imageifyIdenticons,
+        }),
+        h('span.font-small', panelState.identiconLabel.substring(0, 7) + '...'),
+      ]),
+
+      // account address, balance
+      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
+
+        panelState.attributes.map((attr) => {
+          return h('.flex-row.flex-space-between', {
+            key: '' + Math.round(Math.random() * 1000000),
+          }, [
+            h('label.font-small.no-select', attr.key),
+            h('span.font-small', attr.value),
+          ])
+        }),
+      ]),
+
+    ])
+
   )
 }
 

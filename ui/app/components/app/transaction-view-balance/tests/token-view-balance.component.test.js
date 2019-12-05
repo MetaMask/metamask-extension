@@ -25,16 +25,14 @@ describe('TransactionViewBalance Component', () => {
   })
 
   it('should render ETH balance properly', () => {
-    const wrapper = shallow((
-      <TransactionViewBalance
-        showDepositModal={propsMethodSpies.showDepositModal}
-        history={historySpies}
-        network="3"
-        ethBalance={123}
-        fiatBalance={456}
-        currentCurrency="usd"
-      />
-    ), { context: { t, metricsEvent } })
+    const wrapper = shallow(<TransactionViewBalance
+      showDepositModal={propsMethodSpies.showDepositModal}
+      history={historySpies}
+      network="3"
+      ethBalance={123}
+      fiatBalance={456}
+      currentCurrency="usd"
+    />, { context: { t, metricsEvent } })
 
     assert.equal(wrapper.find('.transaction-view-balance').length, 1)
     assert.equal(wrapper.find('.transaction-view-balance__button').length, 2)
@@ -57,17 +55,15 @@ describe('TransactionViewBalance Component', () => {
       symbol: 'ABC',
     }
 
-    const wrapper = shallow((
-      <TransactionViewBalance
-        showDepositModal={propsMethodSpies.showDepositModal}
-        history={historySpies}
-        network="3"
-        ethBalance={123}
-        fiatBalance={456}
-        currentCurrency="usd"
-        selectedToken={token}
-      />
-    ), { context: { t } })
+    const wrapper = shallow(<TransactionViewBalance
+      showDepositModal={propsMethodSpies.showDepositModal}
+      history={historySpies}
+      network="3"
+      ethBalance={123}
+      fiatBalance={456}
+      currentCurrency="usd"
+      selectedToken={token}
+    />, { context: { t } })
 
     assert.equal(wrapper.find('.transaction-view-balance').length, 1)
     assert.equal(wrapper.find('.transaction-view-balance__button').length, 1)

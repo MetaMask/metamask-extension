@@ -175,12 +175,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
-  onTermsKeyPress = ({key}) => {
-    if (key === ' ' || key === 'Enter') {
-      this.toggleTermsCheck()
-    }
-  }
-
   toggleTermsCheck = () => {
     this.context.metricsEvent({
       eventOpts: {
@@ -189,6 +183,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
         name: 'Check ToS',
       },
     })
+
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))
@@ -272,19 +267,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
           largeLabel
         />
         <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
-          <div
-            className="first-time-flow__checkbox"
-            tabIndex="0"
-            role="checkbox"
-            onKeyPress={this.onTermsKeyPress}
-            aria-checked={termsChecked}
-            aria-labelledby="ftf-chk1-label"
-          >
+          <div className="first-time-flow__checkbox">
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
-          <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-            I have read and agree to the&nbsp;
-            <a
+          <span className="first-time-flow__checkbox-label">
+            I have read and agree to the <a
               href="https://metamask.io/terms.html"
               target="_blank"
               rel="noopener noreferrer"

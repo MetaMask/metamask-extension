@@ -30,7 +30,7 @@ describe('Using MetaMask with an existing account', function () {
     await delay(largeDelayMs)
     const [results] = await findElements(driver, By.css('#results'))
     const resulttext = await results.getText()
-    const parsedData = JSON.parse(resulttext)
+    var parsedData = JSON.parse(resulttext)
 
     return (parsedData)
 
@@ -126,11 +126,6 @@ describe('Using MetaMask with an existing account', function () {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
-      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await connectButton.click()
-
-      await delay(regularDelayMs)
-
       await waitUntilXWindowHandles(driver, 3)
       const windowHandles = await driver.getAllWindowHandles()
 
@@ -153,14 +148,14 @@ describe('Using MetaMask with an existing account', function () {
     it('testing hexa methods', async () => {
 
 
-      const List = await driver.findElements(By.className('hexaNumberMethods'))
+      var List = await driver.findElements(By.className('hexaNumberMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
 
-          const parsedData = await button(List[i])
+          var parsedData = await button(List[i])
           console.log(parsedData)
-          const result = parseInt(parsedData.result, 16)
+          var result = parseInt(parsedData.result, 16)
 
           assert.equal((typeof result === 'number'), true)
           await delay(regularDelayMs)
@@ -174,14 +169,14 @@ describe('Using MetaMask with an existing account', function () {
 
     it('testing booleanMethods', async () => {
 
-      const List = await driver.findElements(By.className('booleanMethods'))
+      var List = await driver.findElements(By.className('booleanMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
 
-          const parsedData = await button(List[i])
+          var parsedData = await button(List[i])
           console.log(parsedData)
-          const result = parsedData.result
+          var result = parsedData.result
 
           assert.equal(result, false)
           await delay(regularDelayMs)
@@ -197,16 +192,16 @@ describe('Using MetaMask with an existing account', function () {
 
     it('testing  transactionMethods', async () => {
 
-      const List = await driver.findElements(By.className('transactionMethods'))
+      var List = await driver.findElements(By.className('transactionMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
 
-          const parsedData = await button(List[i])
+          var parsedData = await button(List[i])
 
           console.log(parsedData.result.blockHash)
 
-          const result = []
+          var result = []
           result.push(parseInt(parsedData.result.blockHash, 16))
           result.push(parseInt(parsedData.result.blockNumber, 16))
           result.push(parseInt(parsedData.result.gas, 16))
@@ -239,17 +234,17 @@ describe('Using MetaMask with an existing account', function () {
 
     it('testing blockMethods', async () => {
 
-      const List = await driver.findElements(By.className('blockMethods'))
+      var List = await driver.findElements(By.className('blockMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
 
-          const parsedData = await button(List[i])
+          var parsedData = await button(List[i])
           console.log(JSON.stringify(parsedData) + i)
 
           console.log(parsedData.result.parentHash)
 
-          const result = parseInt(parsedData.result.parentHash, 16)
+          var result = parseInt(parsedData.result.parentHash, 16)
 
           assert.equal((typeof result === 'number'), true)
           await delay(regularDelayMs)
@@ -265,9 +260,9 @@ describe('Using MetaMask with an existing account', function () {
 
     it('testing methods', async () => {
 
-      const List = await driver.findElements(By.className('methods'))
-      let parsedData
-      let result
+      var List = await driver.findElements(By.className('methods'))
+      var parsedData
+      var result
 
       for (let i = 0; i < List.length; i++) {
         try {

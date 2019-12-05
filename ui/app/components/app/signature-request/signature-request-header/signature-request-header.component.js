@@ -14,12 +14,10 @@ export default class SignatureRequestHeader extends PureComponent {
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {selectedAccount && (
-            <AccountListItem
-              displayBalance={false}
-              account={selectedAccount}
-            />
-          )}
+          {selectedAccount && <AccountListItem
+            displayBalance={false}
+            account={selectedAccount}
+          />}
           {name}
         </div>
         <div className="signature-request-header--network">

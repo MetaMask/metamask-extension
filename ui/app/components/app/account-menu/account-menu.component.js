@@ -6,7 +6,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Tooltip from '../../ui/tooltip'
 import Identicon from '../../ui/identicon'
-import IconWithFallBack from '../../ui/icon-with-fallback'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../../helpers/constants/common'
 import {
@@ -36,8 +35,6 @@ export default class AccountMenu extends PureComponent {
     showAccountDetail: PropTypes.func,
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
-    addressConnectedDomainMap: PropTypes.object,
-    originOfCurrentTab: PropTypes.string,
   }
 
   state = {
@@ -60,8 +57,6 @@ export default class AccountMenu extends PureComponent {
       selectedAddress,
       keyrings,
       showAccountDetail,
-      addressConnectedDomainMap,
-      originOfCurrentTab,
     } = this.props
 
     const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
@@ -76,8 +71,6 @@ export default class AccountMenu extends PureComponent {
       const keyring = keyrings.find(kr => {
         return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
       })
-      const addressDomains = addressConnectedDomainMap[identity.address] || {}
-      const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab]
 
       return (
         <div
@@ -111,14 +104,6 @@ export default class AccountMenu extends PureComponent {
               type={PRIMARY}
             />
           </div>
-          { iconAndNameForOpenDomain
-            ? (
-              <div className="account-menu__icon-list">
-                <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
-              </div>
-            )
-            : null
-          }
           { this.renderKeyringType(keyring) }
           { this.renderRemoveAccount(keyring, identity) }
         </div>
@@ -171,11 +156,9 @@ export default class AccountMenu extends PureComponent {
       case 'Simple Key Pair':
         label = t('imported')
         break
-      default:
-        return null
     }
 
-    return (
+    return label && (
       <div className="keyring-label allcaps">
         { label }
       </div>
@@ -268,12 +251,12 @@ export default class AccountMenu extends PureComponent {
             })
             history.push(NEW_ACCOUNT_ROUTE)
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/plus-btn-white.svg"
             />
-          )}
+          }
           text={t('createAccount')}
         />
         <Item
@@ -288,12 +271,12 @@ export default class AccountMenu extends PureComponent {
             })
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/import-account.svg"
             />
-          )}
+          }
           text={t('importAccount')}
         />
         <Item
@@ -312,12 +295,12 @@ export default class AccountMenu extends PureComponent {
               history.push(CONNECT_HARDWARE_ROUTE)
             }
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/connect-icon.svg"
             />
-          )}
+          }
           text={t('connectHardwareWallet')}
         />
         <Divider />
@@ -343,12 +326,12 @@ export default class AccountMenu extends PureComponent {
               },
             })
           }}
-          icon={(
+          icon={
             <img
               className="account-menu__item-icon"
               src="images/settings.svg"
             />
-          )}
+          }
           text={t('settings')}
         />
       </Menu>

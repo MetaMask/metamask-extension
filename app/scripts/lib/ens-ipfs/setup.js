@@ -23,18 +23,14 @@ function setupEnsIpfsResolver ({ provider }) {
   async function webRequestDidFail (details) {
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
-    if (tabId === -1) {
-      return
-    }
+    if (tabId === -1) return
     // parse ens name
     const urlData = urlUtil.parse(url)
     const { hostname: name, path, search } = urlData
     const domainParts = name.split('.')
     const topLevelDomain = domainParts[domainParts.length - 1]
     // if unsupported TLD, abort
-    if (!supportedTopLevelDomains.includes(topLevelDomain)) {
-      return
-    }
+    if (!supportedTopLevelDomains.includes(topLevelDomain)) return
     // otherwise attempt resolve
     attemptResolve({ tabId, name, path, search })
   }
@@ -49,9 +45,7 @@ function setupEnsIpfsResolver ({ provider }) {
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })
-          if (response.status === 200) {
-            url = resolvedUrl
-          }
+          if (response.status === 200) url = resolvedUrl
         } catch (err) {
           console.warn(err)
         }

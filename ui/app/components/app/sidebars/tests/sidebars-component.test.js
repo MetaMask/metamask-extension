@@ -16,14 +16,12 @@ describe('Sidebar Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
-      <Sidebar
-        sidebarOpen={false}
-        hideSidebar={propsMethodSpies.hideSidebar}
-        transitionName="someTransition"
-        type="wallet-view"
-      />
-    ))
+    wrapper = shallow(<Sidebar
+      sidebarOpen={false}
+      hideSidebar={propsMethodSpies.hideSidebar}
+      transitionName="someTransition"
+      type="wallet-view"
+    />)
   })
 
   afterEach(() => {

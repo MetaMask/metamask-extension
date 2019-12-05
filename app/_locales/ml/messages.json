@@ -42,6 +42,9 @@
   "connect": {
     "message": "കണക്‌റ്റുചെയ്യുക"
   },
+  "copy": {
+    "message": "പകര്‍ത്തുക"
+  },
   "copyToClipboard": {
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
   },
@@ -53,6 +56,9 @@
   },
   "details": {
     "message": "വിശദാംശങ്ങൾ‌"
+  },
+  "dismiss": {
+    "message": "ബഹിഷ്‌ക്കരിക്കുക"
   },
   "done": {
     "message": "പൂർത്തിയാക്കി"
@@ -124,6 +130,9 @@
   },
   "settings": {
     "message": "ക്രമീകരണങ്ങള്‍"
+  },
+  "submit": {
+    "message": "സമര്‍പ്പിക്കൂ"
   },
   "tryAgain": {
     "message": "വീണ്ടും ശ്രമിക്കുക"

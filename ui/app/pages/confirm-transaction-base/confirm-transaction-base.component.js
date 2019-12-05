@@ -255,17 +255,15 @@ export default class ConfirmTransactionBase extends Component {
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
             {advancedInlineGasShown
-              ? (
-                <AdvancedGasInputs
-                  updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                  updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
-                  customGasPrice={customGas.gasPrice}
-                  customGasLimit={customGas.gasLimit}
-                  insufficientBalance={insufficientBalance}
-                  customPriceIsSafe
-                  isSpeedUp={false}
-                />
-              )
+              ? <AdvancedGasInputs
+                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                customGasPrice={customGas.gasPrice}
+                customGasLimit={customGas.gasLimit}
+                insufficientBalance={insufficientBalance}
+                customPriceIsSafe
+                isSpeedUp={false}
+              />
               : null
             }
           </div>
@@ -280,33 +278,31 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
-          {useNonceField ? (
-            <div>
-              <div className="confirm-detail-row">
-                <div className="confirm-detail-row__label">
-                  { this.context.t('nonceFieldHeading') }
-                </div>
-                <div className="custom-nonce-input">
-                  <TextField
-                    type="number"
-                    min="0"
-                    placeholder={ nextNonce ? nextNonce.toString() : null }
-                    onChange={({ target: { value } }) => {
-                      if (!value.length || Number(value) < 0) {
-                        updateCustomNonce('')
-                      } else {
-                        updateCustomNonce(String(Math.floor(value)))
-                      }
-                      getNextNonce()
-                    }}
-                    fullWidth
-                    margin="dense"
-                    value={ customNonceValue || '' }
-                  />
-                </div>
+          {useNonceField ? <div>
+            <div className="confirm-detail-row">
+              <div className="confirm-detail-row__label">
+                { this.context.t('nonceFieldHeading') }
+              </div>
+              <div className="custom-nonce-input">
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder={ nextNonce ? nextNonce.toString() : null }
+                  onChange={({ target: { value } }) => {
+                    if (!value.length || Number(value) < 0) {
+                      updateCustomNonce('')
+                    } else {
+                      updateCustomNonce(String(Math.floor(value)))
+                    }
+                    getNextNonce()
+                  }}
+                  fullWidth
+                  margin="dense"
+                  value={ customNonceValue || '' }
+                />
               </div>
             </div>
-          ) : null}
+          </div> : null}
         </div>
       )
     )

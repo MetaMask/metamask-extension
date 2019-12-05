@@ -119,40 +119,28 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('successfuly signs typed data', () => {
+  describe('provider listening for events', () => {
     let extension
     let popup
     let dapp
     let windowHandles
-
-    it('connects to the dapp', async () => {
+    it('switches to a dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
-      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await connectButton.click()
-
-      await delay(regularDelayMs)
-
       await waitUntilXWindowHandles(driver, 3)
-      const windowHandles = await driver.getAllWindowHandles()
+      windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
-      popup = windowHandles.find(handle => handle !== extension && handle !== dapp)
-
-      await driver.switchTo().window(popup)
+      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
+      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
 
       await delay(regularDelayMs)
+      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await approveButton.click()
 
-      const accountButton = await findElement(driver, By.css('.permissions-connect-choose-account__account'))
-      await accountButton.click()
-
-      const submitButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Submit')]`))
-      await submitButton.click()
-
-      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
     })
 
     it('creates a sign typed data signature request', async () => {
@@ -160,7 +148,6 @@ describe('MetaMask', function () {
       await signTypedMessage.click()
       await delay(largeDelayMs)
 
-      await delay(regularDelayMs)
       windowHandles = await driver.getAllWindowHandles()
       await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
       await delay(regularDelayMs)

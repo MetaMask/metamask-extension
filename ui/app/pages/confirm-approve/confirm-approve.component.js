@@ -81,27 +81,25 @@ export default class ConfirmApprove extends Component {
         identiconAddress={tokenAddress}
         showAccountInHeader
         title={tokensText}
-        contentComponent={(
-          <ConfirmApproveContent
-            siteImage={siteImage}
-            tokenAddress={tokenAddress}
-            setCustomAmount={(newAmount) => {
-              this.setState({ customPermissionAmount: newAmount })
-            }}
-            customTokenAmount={String(customPermissionAmount)}
-            tokenAmount={String(tokenAmount)}
-            origin={origin}
-            tokenSymbol={tokenSymbol}
-            tokenBalance={tokenBalance}
-            showCustomizeGasModal={() => showCustomizeGasModal(txData)}
-            showEditApprovalPermissionModal={showEditApprovalPermissionModal}
-            data={data}
-            toAddress={toAddress}
-            currentCurrency={currentCurrency}
-            ethTransactionTotal={ethTransactionTotal}
-            fiatTransactionTotal={fiatTransactionTotal}
-          />
-        )}
+        contentComponent={<ConfirmApproveContent
+          siteImage={siteImage}
+          tokenAddress={tokenAddress}
+          setCustomAmount={(newAmount) => {
+            this.setState({ customPermissionAmount: newAmount })
+          }}
+          customTokenAmount={String(customPermissionAmount)}
+          tokenAmount={String(tokenAmount)}
+          origin={origin}
+          tokenSymbol={tokenSymbol}
+          tokenBalance={tokenBalance}
+          showCustomizeGasModal={() => showCustomizeGasModal(txData)}
+          showEditApprovalPermissionModal={showEditApprovalPermissionModal}
+          data={data}
+          toAddress={toAddress}
+          currentCurrency={currentCurrency}
+          ethTransactionTotal={ethTransactionTotal}
+          fiatTransactionTotal={fiatTransactionTotal}
+        />}
         hideSenderToRecipient
         customTxParamsData={customPermissionAmount
           ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })

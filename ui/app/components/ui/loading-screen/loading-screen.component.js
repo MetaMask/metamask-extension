@@ -1,33 +1,31 @@
-import React, {Component} from 'react'
+const { Component } = require('react')
+const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const Spinner = require('../spinner')
 
 class LoadingScreen extends Component {
-  static defaultProps = {
-    loadingMessage: null,
-  }
-
-  static propTypes = {
-    loadingMessage: PropTypes.string,
-  }
-
   renderMessage () {
     const { loadingMessage } = this.props
-    return loadingMessage
-      ? <span>{loadingMessage}</span>
-      : null
+    return loadingMessage && h('span', loadingMessage)
   }
 
   render () {
     return (
-      <div className="loading-overlay">
-        <div className="loading-overlay__container">
-          <Spinner color="#F7C06C" />
-          {this.renderMessage()}
-        </div>
-      </div>
+      h('.loading-overlay', [
+        h('.loading-overlay__container', [
+          h(Spinner, {
+            color: '#F7C06C',
+          }),
+
+          this.renderMessage(),
+        ]),
+      ])
     )
   }
+}
+
+LoadingScreen.propTypes = {
+  loadingMessage: PropTypes.string,
 }
 
 module.exports = LoadingScreen

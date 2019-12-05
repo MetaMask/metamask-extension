@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "Tryb prywatny jest domyślnie włączony"
+  },
   "chartOnlyAvailableEth": {
     "message": "Wykres dostępny tylko w sieciach Ethereum"
+  },
+  "confirmClear": {
+    "message": "Czy na pewno chcesz usunąć zatwierdzone strony internetowe?"
   },
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
   },
+  "clearApprovalData": {
+    "message": "Usuń dane poufne"
+  },
   "reject": {
     "message": "Odrzuć"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 chce połączyć się z Twoim kontem"
+  },
+  "providerRequestInfo": {
+    "message": "Ta strona prosi o dostęp, aby zobaczyć adres Twojego aktualnego konta. Zawsze upewnij się, że ufasz stronom, z którymi wchodzisz w interakcję."
   },
   "about": {
     "message": "Informacje"
   },
   "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
+    "message": "Wersja, centrum wsparcia i dane kontaktowe."
   },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
@@ -51,7 +63,7 @@
     "message": "Zaawansowane"
   },
   "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
+    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC."
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
@@ -145,6 +157,10 @@
   "basic": {
     "message": "Podstawy"
   },
+  "betweenMinAndMax": {
+    "message": "musi być większe lub równe $1 i mniejsze lub równe $2,",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockExplorerUrl": {
     "message": "Przeglądaj blok"
   },
@@ -233,6 +249,9 @@
   "connect": {
     "message": "Połącz"
   },
+  "connectRequest": {
+    "message": "Potwierdź żądanie"
+  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
@@ -271,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Skopiowane!"
+  },
+  "copy": {
+    "message": "Skopiuj"
   },
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
@@ -349,6 +371,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
+  },
+  "dismiss": {
+    "message": "Zamknij"
   },
   "done": {
     "message": "Gotowe"
@@ -515,6 +540,10 @@
   "getStarted": {
     "message": "Rozpocznij"
   },
+  "greaterThanMin": {
+    "message": "musi być większe lub równe $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Cieszymy się, że tu jesteś."
   },
@@ -632,6 +661,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
+  },
+  "lessThanMax": {
+    "message": "musi być mniejsze lub równe $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Tak, zacznijmy od początku!"
@@ -827,6 +860,9 @@
   "pastePrivateKey": {
     "message": "Tutaj wklej swój prywatny klucz:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Tutaj wklej swoją frazę seed!"
   },
   "pending": {
     "message": "oczekiwanie"
@@ -1141,6 +1177,9 @@
   "storePhrase": {
     "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."
   },
+  "submit": {
+    "message": "Wyślij"
+  },
   "submitted": {
     "message": "Wysłane"
   },
@@ -1301,6 +1340,9 @@
   },
   "userName": {
     "message": "Nazwa użytkownika"
+  },
+  "validFileImport": {
+    "message": "Należy wybrać prawidłowy plik do zaimportowania."
   },
   "viewAccount": {
     "message": "Zobacz konto"

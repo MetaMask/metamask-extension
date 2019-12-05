@@ -124,9 +124,7 @@ class AccountTracker {
     // save accounts state
     this.store.updateState({ accounts })
     // fetch balances for the accounts if there is block number ready
-    if (!this._currentBlockNumber) {
-      return
-    }
+    if (!this._currentBlockNumber) return
     this._updateAccounts()
   }
 
@@ -160,9 +158,7 @@ class AccountTracker {
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
     const currentBlock = await this._query.getBlockByNumber(blockNumber, false)
-    if (!currentBlock) {
-      return
-    }
+    if (!currentBlock) return
     const currentBlockGasLimit = currentBlock.gasLimit
     this.store.updateState({ currentBlockGasLimit })
 
@@ -222,9 +218,7 @@ class AccountTracker {
     // update accounts state
     const { accounts } = this.store.getState()
     // only populate if the entry is still present
-    if (!accounts[address]) {
-      return
-    }
+    if (!accounts[address]) return
     accounts[address] = result
     this.store.updateState({ accounts })
   }

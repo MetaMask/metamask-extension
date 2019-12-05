@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+const Component = require('react').Component
 const PropTypes = require('prop-types')
+const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const connect = require('react-redux').connect
@@ -12,66 +13,71 @@ import Button from '../../../components/ui/button'
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
 
 class JsonImportSubview extends Component {
-  state = {
-    fileContents: '',
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      file: null,
+      fileContents: '',
+    }
   }
 
   render () {
     const { error } = this.props
 
     return (
-      <div className="new-account-import-form__json">
-        <p>{this.context.t('usedByClients')}</p>
-        <a className="warning" href={HELP_LINK} target="_blank">{this.context.t('fileImportFail')}</a>
-        <FileInput
-          readAs="text"
-          onLoad={this.onLoad.bind(this)}
-          style={{
+      h('div.new-account-import-form__json', [
+
+        h('p', this.context.t('usedByClients')),
+        h('a.warning', {
+          href: HELP_LINK,
+          target: '_blank',
+        }, this.context.t('fileImportFail')),
+
+        h(FileInput, {
+          readAs: 'text',
+          onLoad: this.onLoad.bind(this),
+          style: {
             padding: '20px 0px 12px 15%',
             fontSize: '15px',
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
-          }}
-        />
-        <input
-          className="new-account-import-form__input-password"
-          type="password"
-          placeholder={this.context.t('enterPassword')}
-          id="json-password-box"
-          onKeyPress={this.createKeyringOnEnter.bind(this)}
-        />
-        <div className="new-account-create-form__buttons">
-          <Button
-            type="default"
-            large
-            className="new-account-create-form__button"
-            onClick={() => this.props.history.push(DEFAULT_ROUTE)}
-          >
-            {this.context.t('cancel')}
-          </Button>
-          <Button
-            type="secondary"
-            large
-            className="new-account-create-form__button"
-            onClick={() => this.createNewKeychain()}
-          >
-            {this.context.t('import')}
-          </Button>
-        </div>
-        {
-          error
-            ? <span className="error">{error}</span>
-            : null
-        }
-      </div>
+          },
+        }),
+
+        h('input.new-account-import-form__input-password', {
+          type: 'password',
+          placeholder: this.context.t('enterPassword'),
+          id: 'json-password-box',
+          onKeyPress: this.createKeyringOnEnter.bind(this),
+        }),
+
+        h('div.new-account-create-form__buttons', {}, [
+
+          h(Button, {
+            type: 'default',
+            large: true,
+            className: 'new-account-create-form__button',
+            onClick: () => this.props.history.push(DEFAULT_ROUTE),
+          }, [this.context.t('cancel')]),
+
+          h(Button, {
+            type: 'secondary',
+            large: true,
+            className: 'new-account-create-form__button',
+            onClick: () => this.createNewKeychain(),
+          }, [this.context.t('import')]),
+
+        ]),
+
+        error ? h('span.error', error) : null,
+      ])
     )
   }
 
-  onLoad (event) {
-    this.setState({
-      fileContents: event.target.result,
-    })
+  onLoad (event, file) {
+    this.setState({file: file, fileContents: event.target.result})
   }
 
   createKeyringOnEnter (event) {
@@ -83,7 +89,14 @@ class JsonImportSubview extends Component {
 
   createNewKeychain () {
     const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
-    const { fileContents } = this.state
+    const state = this.state
+
+    if (!state) {
+      const message = this.context.t('validFileImport')
+      return displayWarning(message)
+    }
+
+    const { fileContents } = state
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')

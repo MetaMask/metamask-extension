@@ -42,6 +42,9 @@
   "connect": {
     "message": "कनेक्‍ट करा"
   },
+  "copy": {
+    "message": "कॉपी करा"
+  },
   "copyToClipboard": {
     "message": "क्लिपबोर्डवर कॉपी करा"
   },
@@ -53,6 +56,9 @@
   },
   "details": {
     "message": "तपशील"
+  },
+  "dismiss": {
+    "message": "डिसमिस करा"
   },
   "done": {
     "message": "पूर्ण झाले"
@@ -124,6 +130,9 @@
   },
   "settings": {
     "message": "सेटिंग्ज"
+  },
+  "submit": {
+    "message": "सबमिट करा"
   },
   "tryAgain": {
     "message": "पुन्हा प्रयत्न करा"

@@ -2,19 +2,6 @@
 
 ## Current Develop Branch
 
-## 7.7.0 Thu Nov 28 2019
-- [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Connect distinct accounts per site
-- [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
-- [#7482](https://github.com/MetaMask/metamask-extension/pull/7482): Update Wyre ETH purchase url
-- [#7484](https://github.com/MetaMask/metamask-extension/pull/7484): Ensure transactions are shown in the order they are received
-- [#7491](https://github.com/MetaMask/metamask-extension/pull/7491): Update gas when token is changed on the send screen
-- [#7501](https://github.com/MetaMask/metamask-extension/pull/7501): Fix accessibility of first-time-flow terms checkboxes
-- [#7502](https://github.com/MetaMask/metamask-extension/pull/7502): Fix chainId for non standard networks
-- [#7579](https://github.com/MetaMask/metamask-extension/pull/7579): Fix timing of DAI migration notifications after dismissal
-- [#7519](https://github.com/MetaMask/metamask-extension/pull/7519): Fixing hardware connect error display
-- [#7558](https://github.com/MetaMask/metamask-extension/pull/7558): Use localized messages for NotificationModal buttons
-- [#7488](https://github.com/MetaMask/metamask-extension/pull/7488): Fix text overlap when expanding transaction
-
 ## 7.6.1 Tue Nov 19 2019
 - [#7475](https://github.com/MetaMask/metamask-extension/pull/7475): Add 'Remind Me Later' to the Maker notification
 - [#7436](https://github.com/MetaMask/metamask-extension/pull/7436): Add additional rpcUrl verification

@@ -19,11 +19,9 @@ export default class AccountDetails extends Component {
   static propTypes = {
     hideSidebar: PropTypes.func,
     showAccountDetailModal: PropTypes.func,
-    showConnectedSites: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    history: PropTypes.object.isRequired,
   }
 
   state = {
@@ -50,7 +48,6 @@ export default class AccountDetails extends Component {
     const {
       hideSidebar,
       showAccountDetailModal,
-      showConnectedSites,
       label,
       checksummedAddress,
       name,
@@ -68,19 +65,14 @@ export default class AccountDetails extends Component {
           <div className="account-details__keyring-label allcaps">
             {label}
           </div>
-          <div className="flex-column flex-center account-details__name-container">
-            <Identicon diameter={54} address={checksummedAddress} onClick={showAccountDetailModal} />
+          <div className="flex-column flex-center account-details__name-container" onClick={showAccountDetailModal}>
+            <Identicon diameter={54} address={checksummedAddress} />
             <span className="account-details__account-name">
               {name}
             </span>
-            <div className="account-details__details-buttons">
-              <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
-                {t('details')}
-              </button>
-              <button className="btn-secondary account-details__details-button" onClick={showConnectedSites}>
-                {t('connectedSites')}
-              </button>
-            </div>
+            <button className="btn-secondary account-details__details-button">
+              {t('details')}
+            </button>
           </div>
         </div>
         <Tooltip

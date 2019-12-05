@@ -28,9 +28,7 @@ class TokenRatesController {
    * Updates exchange rates for all tokens
    */
   async updateExchangeRates () {
-    if (!this.isActive) {
-      return
-    }
+    if (!this.isActive) { return }
     const contractExchangeRates = {}
     const nativeCurrency = this.currency ? this.currency.state.nativeCurrency.toLowerCase() : 'eth'
     const pairs = this._tokens.map(token => token.address).join(',')
@@ -55,12 +53,8 @@ class TokenRatesController {
    */
   set interval (interval) {
     this._handle && clearInterval(this._handle)
-    if (!interval) {
-      return
-    }
-    this._handle = setInterval(() => {
-      this.updateExchangeRates()
-    }, interval)
+    if (!interval) { return }
+    this._handle = setInterval(() => { this.updateExchangeRates() }, interval)
   }
 
   /**
@@ -68,14 +62,10 @@ class TokenRatesController {
    */
   set preferences (preferences) {
     this._preferences && this._preferences.unsubscribe()
-    if (!preferences) {
-      return
-    }
+    if (!preferences) { return }
     this._preferences = preferences
     this.tokens = preferences.getState().tokens
-    preferences.subscribe(({ tokens = [] }) => {
-      this.tokens = tokens
-    })
+    preferences.subscribe(({ tokens = [] }) => { this.tokens = tokens })
   }
 
   /**
