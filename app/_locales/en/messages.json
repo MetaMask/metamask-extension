@@ -810,6 +810,12 @@
   "trustvault": {
     "message": "trustvault"
   },
+  "trustVaultNotUser": {
+    "message": "Not a TrustVault user?"
+  },
+  "trustVaultIos": {
+    "message": "You require the TrustVault iOS App."
+  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
@@ -1824,7 +1830,7 @@
     "message": "Invalid PIN. Please try again"
   },
   "trustVaultGetStarted": {
-    "message": "Not a TrustVault user? Get started "
+    "message": "Get started "
   },
   "trustVaultLearnMore": {
     "message": "Learn More "

@@ -19,7 +19,6 @@ const {
 
 class CreateAccountPage extends Component {
   renderTabs () {
-    debugger;
     const { history, location } = this.props
     let hardWareRoute = "/new-account/connect"
     if(location && location.pathname){

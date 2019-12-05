@@ -64,7 +64,7 @@ class EmailScreen extends PureComponent {
             marginLeft: '35px',
             width: '160px',
             height: '20px',
-            position: 'fixed'
+            position: 'absolute'
           }
         }, this.context.t('trustVaultNotUser')),
         h('div', {
@@ -73,7 +73,7 @@ class EmailScreen extends PureComponent {
             color: 'grey',
             width: '250px',
             height: '20px',
-            position: 'fixed',
+            position: 'absolute',
             marginTop: '22px',
             marginLeft: '35px',
           }
@@ -84,7 +84,7 @@ class EmailScreen extends PureComponent {
             color: 'grey',
             width: '160px',
             height: '20px',
-            position: 'fixed',
+            position: 'absolute',
             marginTop: '34px',
             marginLeft: '35px',
           }
@@ -96,7 +96,7 @@ class EmailScreen extends PureComponent {
             color: 'red',
             width: '160px',
             height: '20px',
-            position: 'fixed',
+            position: 'absolute',
             marginTop: '34px',
             marginLeft: '90px',
           },
