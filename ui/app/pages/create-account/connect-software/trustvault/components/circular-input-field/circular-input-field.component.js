@@ -16,16 +16,16 @@ export default class CircularInputField extends PureComponent {
     maxLength: PropTypes.number,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div>
         <input
           className={classnames(
-            "circle-input",
+            'circle-input',
             CLASSNAME_CIRCULAR_INPUT,
             CLASSNAME_INLINE_BLOCK,
             this.props.filled()

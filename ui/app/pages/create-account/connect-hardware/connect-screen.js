@@ -2,7 +2,7 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 import Button from '../../../components/ui/button'
-import { CONNECT_TRUSTVAULT_ROUTE } from "../../../helpers/constants/routes"
+import { CONNECT_TRUSTVAULT_ROUTE } from '../../../helpers/constants/routes'
 class ConnectScreen extends Component {
   constructor (props) {
     super(props)
@@ -13,10 +13,10 @@ class ConnectScreen extends Component {
   }
 
     connect = () => {
-      if (this.state.selectedDevice === 'trustvault') {       
-          this.history.push(CONNECT_TRUSTVAULT_ROUTE);
-        
-      }else{
+      if (this.state.selectedDevice === 'trustvault') {
+        this.history.push(CONNECT_TRUSTVAULT_ROUTE)
+
+      } else {
         this.props.connectToHardwareWallet(this.state.selectedDevice)
       }
       return null
@@ -58,8 +58,8 @@ class ConnectScreen extends Component {
           h('div.hw-connect__btn-wrapper', {}, [
             this.renderConnectToLedgerButton(),
             this.renderConnectToTrezorButton(),
-          ]),h('div.sw-connect__btn-wrapper', {}, [
-            this.renderConnectToTrustVaultButton()
+          ]), h('div.sw-connect__btn-wrapper', {}, [
+            this.renderConnectToTrustVaultButton(),
           ]),
           h(Button, {
             type: 'primary',
@@ -203,7 +203,7 @@ class ConnectScreen extends Component {
 ConnectScreen.propTypes = {
   connectToHardwareWallet: PropTypes.func.isRequired,
   browserSupported: PropTypes.bool.isRequired,
-  history: PropTypes.object
+  history: PropTypes.object,
 }
 
 ConnectScreen.contextTypes = {

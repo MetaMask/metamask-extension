@@ -3,27 +3,27 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 import Button from '../../../../../components/ui/button'
 import TextField from '../../../../../components/ui/text-field'
-import { CONNECT_HARDWARE_ROUTE } from "../../../../../helpers/constants/routes"
+import { CONNECT_HARDWARE_ROUTE } from '../../../../../helpers/constants/routes'
 const ENTER_KEY = 13
 class EmailScreen extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       email: null,
-      error: null
+      error: null,
     }
     this.history = this.props.history
   }
 
-  renderBackButton (){
-   const style = {
-    "display": "flex",
-    "marginRight": "310px"
-   }
-   return h('div',{style,   onClick: _=> this.history.push(CONNECT_HARDWARE_ROUTE)},[ 
-     h('div.sw-connect__list__back-caret', {}, ),
-     h('div.sw-connect__list', {style: { "marginTop": "-2px", "color":"#037DD6"}},this.context.t("back") )
-  ])
+  renderBackButton () {
+    const style = {
+      'display': 'flex',
+      'marginRight': '310px',
+    }
+    return h('div', {style, onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE)}, [
+      h('div.sw-connect__list__back-caret', {},),
+      h('div.sw-connect__list', {style: { 'marginTop': '-2px', 'color': '#037DD6'}}, this.context.t('back')),
+    ])
   }
 
   renderNextButton () {
@@ -47,7 +47,7 @@ class EmailScreen extends PureComponent {
   renderEmailInputBox () {
     return h(
       'div.sw-connect-email-field',
-      { style: { width: "80%" } },
+      { style: { width: '80%' } },
       [
         h(TextField, {
           autoFocus: true,
@@ -60,13 +60,13 @@ class EmailScreen extends PureComponent {
             if (event.keyCode === ENTER_KEY) {
               this.props.getTrustVaultPinChallenge(this.state.email)
             }
-          }
+          },
         }),
       ]
     )
   }
   renderTrustVaultInfoBox () {
-    return h('div.sw-trustvault-info-box', { style: { width: "80%", display: "flex" } },
+    return h('div.sw-trustvault-info-box', { style: { width: '80%', display: 'flex' } },
       [
         h(`img`, { src: 'images/tvInfo.png', style: { height: '15px', marginTop: '10px', marginLeft: '10px' } }),
         h('div', {
@@ -77,8 +77,8 @@ class EmailScreen extends PureComponent {
             marginLeft: '35px',
             width: '160px',
             height: '20px',
-            position: 'absolute'
-          }
+            position: 'absolute',
+          },
         }, this.context.t('trustVaultNotUser')),
         h('div', {
           style: {
@@ -89,7 +89,7 @@ class EmailScreen extends PureComponent {
             position: 'absolute',
             marginTop: '22px',
             marginLeft: '35px',
-          }
+          },
         }, this.context.t('trustVaultIos')),
         h('div', {
           style: {
@@ -100,7 +100,7 @@ class EmailScreen extends PureComponent {
             position: 'absolute',
             marginTop: '34px',
             marginLeft: '35px',
-          }
+          },
         }, this.context.t('trustVaultGetStarted')),
 
         h('div', {
@@ -118,20 +118,19 @@ class EmailScreen extends PureComponent {
               url: 'https://trustology.io/get-started/',
             })
           },
-        }, this.context.t('here'))
+        }, this.context.t('here')),
       ]
     )
   }
-
 
 
   renderLearnMoreLink () {
     return h(
       'div.lear-more-link', {}, [
         h('span', {style: {
-            fontSize: '10px',
-            color: 'grey',
-          }}, this.context.t('trustVaultLearnMore')),
+          fontSize: '10px',
+          color: 'grey',
+        }}, this.context.t('trustVaultLearnMore')),
         h('span', {
           style: {
             cursor: 'pointer',
@@ -144,7 +143,7 @@ class EmailScreen extends PureComponent {
               url: 'https://help.trustology.io/en/',
             })
           },
-        }, this.context.t('FAQ'))
+        }, this.context.t('FAQ')),
       ])
   }
 
@@ -156,7 +155,7 @@ class EmailScreen extends PureComponent {
           'p.hw-connect__msg',
           {},
           this.context.t('chromeRequiredForHardwareWallets')
-        )
+        ),
       ]),
       h(
         Button,
@@ -165,11 +164,11 @@ class EmailScreen extends PureComponent {
           large: true,
           onClick: () =>
             global.platform.openWindow({
-              url: 'https://google.com/chrome'
-            })
+              url: 'https://google.com/chrome',
+            }),
         },
         this.context.t('downloadGoogleChrome')
-      )
+      ),
     ])
   }
 
@@ -180,7 +179,7 @@ class EmailScreen extends PureComponent {
         {},
         this.context.t(`trustVaultWelcome`)
       ),
-      h('p.hw-connect__header__msg', {}, this.context.t(`trustVaultEnterEmail`))
+      h('p.hw-connect__header__msg', {}, this.context.t(`trustVaultEnterEmail`)),
     ])
   }
 
@@ -188,15 +187,15 @@ class EmailScreen extends PureComponent {
     return h(
       'div.trustvault-log',
       {
-        style: { margin: '30px' }
+        style: { margin: '30px' },
       },
       [
         h('img.sw-connect__btn__img', {
           src: 'images/trustvault-logo.png',
-          style: { width: 100, height: 100 }
-        })
+          style: { width: 100, height: 100 },
+        }),
       ]
-    );
+    )
   }
 
   renderEmailScreen () {
@@ -222,7 +221,7 @@ class EmailScreen extends PureComponent {
 EmailScreen.propTypes = {
   browserSupported: PropTypes.bool.isRequired,
   getTrustVaultPinChallenge: PropTypes.func.isRequired,
-  history: PropTypes.object
+  history: PropTypes.object,
 }
 
 EmailScreen.contextTypes = {

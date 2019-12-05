@@ -20,9 +20,9 @@ const {
 class CreateAccountPage extends Component {
   renderTabs () {
     const { history, location } = this.props
-    let hardWareRoute = "/new-account/connect"
-    if(location && location.pathname){
-     hardWareRoute =  (location.pathname === "/new-account/connect"|| location.pathname === "/new-account/connect/trustvault") ? location.pathname : "/new-account/connect"
+    let hardWareRoute = '/new-account/connect'
+    if (location && location.pathname) {
+      hardWareRoute = (location.pathname === '/new-account/connect' || location.pathname === '/new-account/connect/trustvault') ? location.pathname : '/new-account/connect'
     }
     return h('div.new-account__tabs', [
       h('div.new-account__tabs__tab', {
@@ -31,10 +31,10 @@ class CreateAccountPage extends Component {
             path: NEW_ACCOUNT_ROUTE, exact: true,
           }),
         }),
-        onClick: () => history.push(NEW_ACCOUNT_ROUTE)
+        onClick: () => history.push(NEW_ACCOUNT_ROUTE),
       }, [
         this.context.t('create'),
-    ]),
+      ]),
 
       h('div.new-account__tabs__tab', {
         className: classnames('new-account__tabs__tab', {
@@ -42,7 +42,7 @@ class CreateAccountPage extends Component {
             path: IMPORT_ACCOUNT_ROUTE, exact: true,
           }),
         }),
-        onClick: () => history.push(IMPORT_ACCOUNT_ROUTE)
+        onClick: () => history.push(IMPORT_ACCOUNT_ROUTE),
       }, [
         this.context.t('import'),
       ]),
@@ -56,7 +56,8 @@ class CreateAccountPage extends Component {
             }),
           }),
           onClick: () => {
-            history.push(CONNECT_HARDWARE_ROUTE)},
+            history.push(CONNECT_HARDWARE_ROUTE)
+          },
         },
         this.context.t('connect')
       ),
@@ -67,7 +68,7 @@ class CreateAccountPage extends Component {
     return h('div.new-account', {}, [
       h('div.new-account__header', [
         h('div.new-account__title', this.context.t('newAccount')),
-        this.renderTabs()
+        this.renderTabs(),
       ]),
       h('div.new-account__form', [
         h(Switch, [
@@ -84,14 +85,14 @@ class CreateAccountPage extends Component {
           h(Route, {
             exact: true,
             path: CONNECT_HARDWARE_ROUTE,
-            component: ConnectHardwareForm
-          }),h(Route, {
+            component: ConnectHardwareForm,
+          }), h(Route, {
             exact: true,
             path: CONNECT_TRUSTVAULT_ROUTE,
-            component: ConnectTrustVaultForm
-          })
-        ])
-      ])
+            component: ConnectTrustVaultForm,
+          }),
+        ]),
+      ]),
     ])
   }
 }

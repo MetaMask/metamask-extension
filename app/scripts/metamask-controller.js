@@ -762,8 +762,10 @@ module.exports = class MetamaskController extends EventEmitter {
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
-    if (!keyring) {
+    if (!keyring && deviceName === 'trustvault') {
       keyring = await this.keyringController.addNewKeyring(keyringName, { auth })
+    } else if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(keyringName)
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath)
@@ -810,7 +812,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns [] accounts
    */
-  async connectSoftware( deviceName, auth, hdPath = null) {
+  async connectSoftware (deviceName, auth, hdPath = null) {
     await this.keyringController.removeEmptyKeyrings()
     const keyring = await this.getKeyringForDevice(deviceName, hdPath, auth)
 
@@ -1568,14 +1570,14 @@ module.exports = class MetamaskController extends EventEmitter {
     if (!addresses.length) {
       return
     }
-    let map = {}
+    const map = {}
     const [trustvaultKeyring] = this.keyringController.getKeyringsByType('TrustVault')
-    if (trustvaultKeyring) {
-      map = trustvaultKeyring.getAccountNames()
-    }
-
     // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.addAddresses(addresses, map)
+    if (trustvaultKeyring) {
+      this.preferencesController.addAddresses(addresses, map)
+    } else {
+      this.preferencesController.addAddresses(addresses)
+    }
     this.accountTracker.syncWithAddresses(addresses)
 
     const wasLocked = !isUnlocked

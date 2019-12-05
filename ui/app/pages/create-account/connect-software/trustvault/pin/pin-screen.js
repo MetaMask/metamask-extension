@@ -6,12 +6,12 @@ import CircularInputField from '../components/circular-input-field'
 import StarPlaceholder from '../components/star-placeholder'
 
 class PinScreen extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       selectedDevice: null,
       firstPin: null,
-      secondPin: null
+      secondPin: null,
     }
     this.firstPinInput = null
   }
@@ -22,17 +22,17 @@ class PinScreen extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.focusFirstPinInput()
   }
 
-  renderPinInputField() {
+  renderPinInputField () {
     const { firstPinDigitPosition, secondPinDigitPosition } = this.props.pinChallenge
     const firstPinDigitIndex = this._convertPositionToIndex(firstPinDigitPosition)
     const secondPinDigitIndex = this._convertPositionToIndex(secondPinDigitPosition)
 
     const pinLength = 6
-    const inputField = new Array(pinLength).fill("").map((_, index) => {
+    const inputField = new Array(pinLength).fill('').map((_, index) => {
       const key = index.toString()
       let component = h(StarPlaceholder, { key })
       if (index === firstPinDigitIndex) {
@@ -45,13 +45,13 @@ class PinScreen extends PureComponent {
     })
 
     const style = {
-      display: "grid",
-      gridColumnGap: "5px",
-      margin: "10px",
-      marginBottom: "50px",
-      gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr"
+      display: 'grid',
+      gridColumnGap: '5px',
+      margin: '10px',
+      marginBottom: '50px',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
     }
-    return h("div.pin-input", { style }, inputField)
+    return h('div.pin-input', { style }, inputField)
   }
 
   getFirstPinInputField = (key) => {
@@ -66,7 +66,7 @@ class PinScreen extends PureComponent {
       maxLength: 2,
       setRef: (element) => this.firstPinInput = element,
       keyPress: e => {
-        if (e.key === "Enter" && this.state.firstPin && this.state.secondPin) {
+        if (e.key === 'Enter' && this.state.firstPin && this.state.secondPin) {
           this.submitPinChallenge()
         }
       },
@@ -83,87 +83,87 @@ class PinScreen extends PureComponent {
     })
   }
 
-  _convertPositionToIndex(positionIntString) {
+  _convertPositionToIndex (positionIntString) {
     if (!this._isIntString(positionIntString)) {
       // throw err? failed to get position?
     }
     return parseInt(positionIntString, 10) - 1
   }
 
-  _isIntString(string) {
+  _isIntString (string) {
     return Number.isInteger(parseFloat(string))
   }
 
-  renderUnsupportedBrowser() {
-    return h("div.new-account-connect-form.unsupported-browser", {}, [
-      h("div.hw-connect", [
-        h("h3.hw-connect__title", {}, this.context.t("browserNotSupported")),
+  renderUnsupportedBrowser () {
+    return h('div.new-account-connect-form.unsupported-browser', {}, [
+      h('div.hw-connect', [
+        h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
         h(
-          "p.hw-connect__msg",
+          'p.hw-connect__msg',
           {},
-          this.context.t("chromeRequiredForHardwareWallets")
-        )
+          this.context.t('chromeRequiredForHardwareWallets')
+        ),
       ]),
       h(
         Button,
         {
-          type: "primary",
+          type: 'primary',
           large: true,
           onClick: () =>
             global.platform.openWindow({
-              url: "https://google.com/chrome"
-            })
+              url: 'https://google.com/chrome',
+            }),
         },
-        this.context.t("downloadGoogleChrome")
-      )
+        this.context.t('downloadGoogleChrome')
+      ),
     ])
   }
 
-  renderHeader() {
+  renderHeader () {
     const style = {
-      marginTop: "100px",
-      marginBottom: "20px"
+      marginTop: '100px',
+      marginBottom: '20px',
     }
     const {
       firstPinDigitPosition,
-      secondPinDigitPosition
+      secondPinDigitPosition,
     } = this.props.pinChallenge
-    return h("div.sw-connect__header", { style }, [
-      h("p.sw-connect__header__msg", {}, "Please enter characters"),
+    return h('div.sw-connect__header', { style }, [
+      h('p.sw-connect__header__msg', {}, 'Please enter characters'),
       h(
-        "p.sw-connect__header__msg",
+        'p.sw-connect__header__msg',
         {
           style: {
-            margin: "auto",
-            textAlign: "center"
-          }
+            margin: 'auto',
+            textAlign: 'center',
+          },
         },
         `${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`
-      )
+      ),
     ])
   }
 
-  renderFooter() {
+  renderFooter () {
     const style = {
-      width: "100%",
-      padding: "10px",
-      display: "flex",
+      width: '100%',
+      padding: '10px',
+      display: 'flex',
     }
-    return h("div.sw-connect__footer", { style }, [
+    return h('div.sw-connect__footer', { style }, [
       h(
-        "span.sw-connect__footer_msg",
+        'span.sw-connect__footer_msg',
         {
           style: {
-            color: "grey",
-            fontSize: "80%",
-            textAlign: "center",
-            margin: "0 auto",
-            padding: "10px"
+            color: 'grey',
+            fontSize: '80%',
+            textAlign: 'center',
+            margin: '0 auto',
+            padding: '10px',
           },
-          onClick: _ => this.props.onCancelLogin()
+          onClick: _ => this.props.onCancelLogin(),
         },
-        `${this.context.t("not")} ${this.props.email}?`
-      )
+        `${this.context.t('not')} ${this.props.email}?`
+      ),
     ])
   }
 
@@ -178,37 +178,37 @@ class PinScreen extends PureComponent {
     }
   }
 
-  renderConnectToTrustVaultButton() {
+  renderConnectToTrustVaultButton () {
     const style = {
-      width: "80%"
+      width: '80%',
     }
-    return h("div.sw-pin-connect-btn", { style }, [
+    return h('div.sw-pin-connect-btn', { style }, [
       h(
         Button,
         {
-          type: "primary",
+          type: 'primary',
           large: true,
-          className: "sw-connect__connect-btn",
+          className: 'sw-connect__connect-btn',
           onClick: this.submitPinChallenge,
           disabled: !(
             Boolean(this.state.firstPin) && Boolean(this.state.secondPin)
-          )
+          ),
         },
-        this.context.t("connectToTrustVault")
-      )
+        this.context.t('connectToTrustVault')
+      ),
     ])
   }
 
-  renderPinScreen() {
-    return h("div.new-account-connect-form", {}, [
+  renderPinScreen () {
+    return h('div.new-account-connect-form', {}, [
       this.renderHeader(),
       this.renderPinInputField(),
       this.renderConnectToTrustVaultButton(),
-      this.renderFooter()
+      this.renderFooter(),
     ])
   }
 
-  render() {
+  render () {
     if (this.props.browserSupported) {
       return this.renderPinScreen()
     }

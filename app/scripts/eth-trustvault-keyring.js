@@ -18,7 +18,7 @@ class TrustvaultKeyring extends EventEmitter {
     this.deserialize(opts)
     this.pinChallenge = {
       email: null,
-      sessionToken: null
+      sessionToken: null,
     }
   }
 
@@ -41,7 +41,7 @@ class TrustvaultKeyring extends EventEmitter {
   }
 
   isUnlocked () {
-    return !!this.auth 
+    return !!this.auth
   }
 
   unlock () {
@@ -84,7 +84,8 @@ class TrustvaultKeyring extends EventEmitter {
     } catch (err) {
       log.error('Error getting accounts', err)
       return []
-ˆ   }
+      ˆ
+    }
 
     return this.accounts
   }
@@ -118,7 +119,7 @@ class TrustvaultKeyring extends EventEmitter {
     alert(UNSUPPORTED_SIGNING_METHOD)
   }
 
-  getAccountNames(){
+  getAccountNames () {
     return this.addressNameMap
   }
 
@@ -148,7 +149,7 @@ class TrustvaultKeyring extends EventEmitter {
     const { data, error } = await this.trustVaultBridgeRequest({ query })
     if (error) {
       // TODO: read code and convert code to a message key that can be translated
-      throw new Error(error.message);
+      throw new Error(error.message)
     }
     const pinChallenge = data && data.getPartialPinChallenge
     // Set pinChallenge details
@@ -162,10 +163,10 @@ class TrustvaultKeyring extends EventEmitter {
 
   /**
    * If the pinChallenge fails, an error as well as a new pinChallenge is returned
-   * @param {*} email 
-   * @param {*} firstPinDigit 
-   * @param {*} secondPinDigit 
-   * @param {*} sessionToken 
+   * @param {*} email
+   * @param {*} firstPinDigit
+   * @param {*} secondPinDigit
+   * @param {*} sessionToken
    */
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
@@ -190,27 +191,27 @@ class TrustvaultKeyring extends EventEmitter {
   }
 
   async _request (constructQuery, queryContext) {
-      const query = constructQuery(this.auth, queryContext)
-      const { data, error } = await this.trustVaultBridgeRequest({ query })
-      if (error) {
-        if (error.errorType.includes('INVALID_SESSION_TOKEN')) {
-          try {
-            const query = this._refreshAuthTokensQuery(this.auth)
-            const { data } = await this.trustVaultBridgeRequest({ query })
-            this.auth = data.refreshAuthenticationTokens
-            return this._request(constructQuery, queryContext)
-          } catch (error) {
-            log.warn('TrustVault session has expired. Connect to TrustVault again', error)
-            this.accounts = []
-            this.auth = null
-            throw new Error('TrustVault session has expired. Connect to TrustVault again')
-          }
-        } else {
-          throw new Error(error.message)
+    const query = constructQuery(this.auth, queryContext)
+    const { data, error } = await this.trustVaultBridgeRequest({ query })
+    if (error) {
+      if (error.errorType.includes('INVALID_SESSION_TOKEN')) {
+        try {
+          const query = this._refreshAuthTokensQuery(this.auth)
+          const { data } = await this.trustVaultBridgeRequest({ query })
+          this.auth = data.refreshAuthenticationTokens
+          return this._request(constructQuery, queryContext)
+        } catch (error) {
+          log.warn('TrustVault session has expired. Connect to TrustVault again', error)
+          this.accounts = []
+          this.auth = null
+          throw new Error('TrustVault session has expired. Connect to TrustVault again')
         }
+      } else {
+        throw new Error(error.message)
       }
-      return data
     }
+    return data
+  }
 
   async _signTransaction (address, tx, transactionDigest) {
     let transactionId
@@ -241,7 +242,7 @@ class TrustvaultKeyring extends EventEmitter {
       to: this._normalize(tx.to),
       value: tx.value.length > 0 ? this._normalizeNum(tx.value) : 0,
       chainId: tx._chainId,
-      v: tx._chainId
+      v: tx._chainId,
     }
     if (this._normalize(tx.data) !== '0x') {
       transaction.data = this._normalize(tx.data).toString()
@@ -250,18 +251,17 @@ class TrustvaultKeyring extends EventEmitter {
     return transaction
   }
 
-  async _pollTransaction (transactionId, retryCount = 0, errorCount=0) {
+  async _pollTransaction (transactionId, retryCount = 0, errorCount = 0) {
     try {
       const result = await this._request(this._getTransactionInfoQuery, { transactionId })
       const { status, signedTransaction } = result.userWallet.getTransactionInfo
       if (status === 'SIGNED') {
         return signedTransaction
-      }else if(status === 'USER_CANCELLED') {
+      } else if (status === 'USER_CANCELLED') {
         return Promise.reject('Transaction cancelled by user')
-      }else if(status === 'ERROR'){
+      } else if (status === 'ERROR') {
         return Promise.reject('Signing the transaction errored')
-      } 
-      else {
+      } else {
         if (retryCount > 600) {
           throw new Error('Timeout on waiting for signatures')
         }
@@ -272,7 +272,7 @@ class TrustvaultKeyring extends EventEmitter {
     } catch (e) {
       await this._timeout(5000)
       log.error(`Polling errored with `, e)
-      if(errorCount > 3) {
+      if (errorCount > 3) {
         return Promise.reject(e)
       }
       this._pollTransaction(transactionId, retryCount, errorCount++)
@@ -282,9 +282,9 @@ class TrustvaultKeyring extends EventEmitter {
   async trustVaultBridgeRequest (body) {
     const options = {
       uri: trustVaultBridgeUrl,
-      method: "POST",
+      method: 'POST',
       headers: {
-        "x-api-key": apiKey,
+        'x-api-key': apiKey,
       },
       body: JSON.stringify(body),
     }
@@ -294,7 +294,7 @@ class TrustvaultKeyring extends EventEmitter {
     const { data, errors } = JSON.parse(response)
     return {
       data,
-      error: errors && errors[0]
+      error: errors && errors[0],
     }
   }
 
@@ -385,8 +385,8 @@ class TrustvaultKeyring extends EventEmitter {
             value: "${tx.value}",
             fromAddress: "${address}",
             ${
-              tx.data ? `data: "${tx.data}",` : ""
-            }
+  tx.data ? `data: "${tx.data}",` : ''
+}
             to: "${tx.to}",
             v:${tx.v}
           },

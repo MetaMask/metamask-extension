@@ -157,8 +157,8 @@ export default class AccountMenu extends PureComponent {
         label = t('imported')
         break
       case 'TrustVault':
-        label = t("trustvault");
-        break;
+        label = t('trustvault')
+        break
     }
 
     return label && (

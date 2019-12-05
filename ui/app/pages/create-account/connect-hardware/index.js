@@ -184,7 +184,7 @@ class ConnectHardwareForm extends Component {
       return h(ConnectScreen, {
         connectToHardwareWallet: this.connectToHardwareWallet,
         browserSupported: this.state.browserSupported,
-        history: this.props.history
+        history: this.props.history,
       })
     }
 

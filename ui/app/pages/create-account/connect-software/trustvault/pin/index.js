@@ -43,16 +43,16 @@ class ConnectTrustVaultPinForm extends PureComponent {
   renderError () {
     return this.state.error
       ? h(
-          'span.error',
-          {
-            style: {
-              margin: '20px 20px 10px',
-              display: 'block',
-              textAlign: 'center',
-            }
+        'span.error',
+        {
+          style: {
+            margin: '20px 20px 10px',
+            display: 'block',
+            textAlign: 'center',
           },
-          this.state.error,
-        )
+        },
+        this.state.error,
+      )
       : null
   }
 
@@ -83,7 +83,7 @@ ConnectTrustVaultPinForm.propTypes = {
   pinChallenge: PropTypes.object,
   onNewPinChallenge: PropTypes.func,
   onErrors: PropTypes.func,
-};
+}
 
 const mapStateToProps = state => ({
   network: state.metamask.network,

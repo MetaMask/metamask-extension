@@ -251,7 +251,7 @@ var actions = {
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
   updateProviderType,
-  // Software Wallet 
+  // Software Wallet
   getTrustVaultPinChallenge,
   submitTrustVaultPinChallenge,
   TRUSTVAULT_PIN_CHALLENGE: 'TRUSTVAULT_PIN_CHALLENGE',
@@ -752,7 +752,7 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectSoftware(deviceName, auth) {
+function connectSoftware (deviceName, auth) {
   log.debug('background.connectSoftware', deviceName, auth)
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())

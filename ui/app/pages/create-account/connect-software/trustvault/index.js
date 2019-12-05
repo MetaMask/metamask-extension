@@ -10,11 +10,11 @@ const ConnectTrustVaultPinForm = require('./pin')
 const {
   TRUSTVAULT_EMAIL_ROUTE,
   TRUSTVAULT_PIN_ROUTE,
-  DEFAULT_ROUTE
-} = require("../../../../helpers/constants/routes")
+  DEFAULT_ROUTE,
+} = require('../../../../helpers/constants/routes')
 
 class ConnectTrustVaultForm extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       error: null,
@@ -48,16 +48,16 @@ class ConnectTrustVaultForm extends PureComponent {
   renderError () {
     return this.state.error
       ? h(
-          "span.error",
-          {
-            style: {
-              margin: "20px 20px 10px",
-              display: "block",
-              textAlign: "center"
-            }
+        'span.error',
+        {
+          style: {
+            margin: '20px 20px 10px',
+            display: 'block',
+            textAlign: 'center',
           },
-          this.state.error,
-        )
+        },
+        this.state.error,
+      )
       : null
   }
 
@@ -90,12 +90,12 @@ class ConnectTrustVaultForm extends PureComponent {
       onCancelLogin: this.onCancelLogin,
       goToHomePage: this.goToHomePage,
       onNewPinChallenge: this.onNewPinChallenge,
-    });
+    })
   }
 
   render = () => {
-    return h("div.new-account__header", [
-      h("div.trustvault-connect", [
+    return h('div.new-account__header', [
+      h('div.trustvault-connect', [
         this.renderError(),
         !this.state.pinChallenge ? this.renderEmailForm() : this.renderPinForm(),
         h(Switch, [
@@ -109,8 +109,8 @@ class ConnectTrustVaultForm extends PureComponent {
             path: TRUSTVAULT_PIN_ROUTE,
             component: ConnectTrustVaultPinForm,
           }),
-        ])
-      ])
+        ]),
+      ]),
     ])
   }
 }
