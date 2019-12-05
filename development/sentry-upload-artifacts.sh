@@ -11,7 +11,7 @@ readonly __SEE_HELP_MESSAGE__="See '${__SCRIPT_NAME__} --help' for more informat
 function die {
   local message="${1}"
 
-  printf "ERROR: %s\\n" "${message}" >&2
+  printf 'ERROR: %s\n' "${message}" >&2
 
   exit 1
 }
