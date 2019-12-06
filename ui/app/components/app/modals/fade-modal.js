@@ -261,14 +261,6 @@ class FadeModal extends Component {
     })
   }
 
-  toggle = () => {
-    if (this.hasHidden()) {
-      this.show()
-    } else {
-      this.hide()
-    }
-  }
-
   listenKeyboard = (event) => {
     if (typeof this.props.keyboard === 'function') {
       this.props.keyboard(event)
