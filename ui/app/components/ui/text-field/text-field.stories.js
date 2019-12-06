@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import TextField from '.'
+import TextField from './text-field.component'
 
 storiesOf('TextField', module)
   .add('text', () => (

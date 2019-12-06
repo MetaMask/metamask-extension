@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import Button from '.'
+import Button from './button.component'
 import { text, boolean } from '@storybook/addon-knobs/react'
 
 // ', 'secondary', 'default', 'warning', 'danger', 'danger-primary', 'link'], 'primary')}
