@@ -473,7 +473,7 @@
     "message": "Download State Logs"
   },
   "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
+    "message": "Don’t have a wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -670,10 +670,10 @@
     "message": "Hardware wallet connected"
   },
   "hardwareWallets": {
-    "message": "Connect a hardware wallet"
+    "message": "Connect a wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a wallet you'd like to use with MetaMask"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -984,7 +984,10 @@
     "message": "of"
   },
   "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+    "message": "Non-custodial wallets: Order a Trezor or Ledger and keep your funds in cold storage"
+  },
+  "orderTrustVaultHere": {
+    "message": "Custodial wallets: Start setting up your TrustVault account here"
   },
   "origin": {
     "message": "Origin"
