@@ -175,12 +175,14 @@ class ConnectScreen extends Component {
   }
 
   renderLearnMore () {
-    return (
-      <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
-        {this.context.t('learnMore')}
-        <img className="hw-connect__learn-more__arrow" src="images/caret-right.svg" alt="" />
-      </p>
-    )
+    if (this.state.selectedDevice)  {
+      return (
+        <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
+          {this.context.t('learnMore')}
+          <img className="hw-connect__learn-more__arrow" src="images/caret-right.svg" alt="" />
+        </p>
+      )
+    }
   }
   renderTrustVaultTutorialSteps () {
     const steps = [
@@ -262,7 +264,6 @@ class ConnectScreen extends Component {
  
 
   renderTutorialSteps () {
-    this.renderLearnMore()
     if(this.state.selectedDevice === "trezor"|| this.state.selectedDevice === "ledger"){
       return this.renderHardwareTutorialSteps();
     }
@@ -294,6 +295,7 @@ class ConnectScreen extends Component {
         {this.renderHeader()}
         {this.renderButtons()}
         {this.renderTrezorAffiliateLink()}
+        {this.renderLearnMore()}
         {this.renderTutorialSteps()}
         {this.renderFooter()}
       </div>
