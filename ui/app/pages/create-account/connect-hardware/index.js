@@ -192,7 +192,7 @@ class ConnectHardwareForm extends Component {
         <ConnectScreen
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
-          history={thus.props.history}
+          history={this.props.history}
         />
       )
     }

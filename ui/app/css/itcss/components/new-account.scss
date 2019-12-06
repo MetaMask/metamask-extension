@@ -50,7 +50,6 @@
       color: $curious-blue;
       border-bottom: 3px solid $curious-blue;
       cursor: initial;
-      pointer-events: none;
     }
   }
 }
@@ -542,6 +541,15 @@
   }
 }
 
+.sw-tutorial {
+  width: 375px;
+  border-top: 1px solid #D2D8DD;
+  border-bottom: 1px solid #D2D8DD;
+  overflow: visible;
+  display: block;
+  padding: 15px 30px;
+}
+
 .sw-connect{
   width: 100%;
   &__list {
@@ -608,7 +616,8 @@
     border-radius: 5px;
 
     &__img {
-      width: 95px;
+      width: 100px;
+      height: 30px;
     }
   }
 
@@ -620,10 +629,12 @@
   &__btn:first-child {
     margin-right: 15px;
     margin-left: 20px;
+    margin-top: 15px
   }
 
   &__btn:last-child {
     margin-right: 20px;
+    margin-top: 15px
   }
 
   &__hdPath {

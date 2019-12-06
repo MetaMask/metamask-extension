@@ -28,12 +28,19 @@ class ConnectScreen extends Component {
   }
 
   renderConnectToTrustVaultButton () {
-    return h(
-      `button.sw-connect__btn${this.state.selectedDevice === 'trustvault' ? '.selected' : ''}`,
-      { onClick: _ => this.setState({selectedDevice: 'trustvault'}) },
-      h('img.sw-connect__btn__img', {
-        src: 'images/trustologyLogo.png',
-      })
+    return (
+      <button
+        className={classnames('sw-connect__btn', {
+          'selected': this.state.selectedDevice === 'trustvault',
+        })}
+        onClick={_ => this.setState({selectedDevice: 'trustvault'})}
+      >
+        <img
+          className="sw-connect__btn__img"
+          src="images/trustvaultByTrustology.png"
+          alt=""
+        />
+      </button>
     )
   }
 
@@ -49,6 +56,8 @@ class ConnectScreen extends Component {
           className="hw-connect__btn__img"
           src="images/trezor-logo.svg"
           alt=""
+          height="30px"
+          width = "100px"
         />
       </button>
     )
@@ -164,8 +173,46 @@ class ConnectScreen extends Component {
       </p>
     )
   }
+  renderTrustVaultTutorialSteps () {
+    const steps = [
+      {
+        asset: 'tv-wallet-step-1',
+        dimensions: {width: '225px', height: '103px'},
+        title: this.context.t('step1SoftwareWallet'),
+        message: this.context.t('step1SoftwareWalletMsg'),
+      },
+      {
+        asset: 'tv-wallet-step-2',
+        dimensions: {width: '300px', height: '130px'},
+        title: this.context.t('step2SoftwareWallet'),
+        message: this.context.t('step2SoftwareWalletMsg'),
+      },
+      {
+        asset: 'tv-wallet-step-3',
+        dimensions: {width: '120px', height: '78px'},
+        title: this.context.t('step3SoftwareWallet'),
+        message: this.context.t('step3SoftwareWalletMsg'),
+      },
+    ]
+    return (
+      <div
+        className="sw-tutorial"
+        ref={node => {
+          this.referenceNode = node
+        }}
+      >
+        {steps.map((step, index) => (
+          <div className="sw-connect" key={index}>
+            <h3 className="sw-connect__title">{step.title}</h3>
+            <p className="sw-connect__msg">{step.message}</p>
+            <img className="sw-connect__step-asset" src={`images/${step.asset}.png`} {...step.dimensions} alt="" />
+          </div>
+        ))}
+      </div>
+    )
+  }
 
-  renderTutorialSteps () {
+  renderHardwareTutorialSteps () {
     const steps = [
       {
         asset: 'hardware-wallet-step-1',
@@ -186,7 +233,6 @@ class ConnectScreen extends Component {
         message: this.context.t('step3HardwareWalletMsg'),
       },
     ]
-
     return (
       <div
         className="hw-tutorial"
@@ -203,6 +249,16 @@ class ConnectScreen extends Component {
         ))}
       </div>
     )
+  }
+ 
+
+  renderTutorialSteps () {
+    if(this.state.selectedDevice !=="trustvault"){
+      return this.renderHardwareTutorialSteps();
+    }
+    else {
+      return this.renderTrustVaultTutorialSteps();
+    }
   }
 
   renderFooter () {

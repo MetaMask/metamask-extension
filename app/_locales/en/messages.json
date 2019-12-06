@@ -1332,10 +1332,22 @@
   "step1HardwareWalletMsg": {
     "message": "Connect your hardware wallet directly to your computer."
   },
+  "step1SoftwareWallet": {
+    "message": "1. Login to your TrustVault account"
+  },
+  "step1SoftwareWalletMsg": {
+    "message": "Enter the email address you used to sign up for the TrustVault app and solve the pin challenge."
+  },
   "step2HardwareWallet": {
     "message": "2. Select an Account"
   },
   "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step2SoftwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2SoftwareWalletMsg": {
     "message": "Select the account you want to view. You can only choose one at a time."
   },
   "step3HardwareWallet": {
@@ -1343,6 +1355,12 @@
   },
   "step3HardwareWalletMsg": {
     "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+  },
+  "step3SoftwareWallet": {
+    "message": "3. You are now ready to securely interact with any DApp."
+  },
+  "step3SoftwareWalletMsg": {
+    "message": "As soon as you initiate a transaction, use your TrustVault app to sign it."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
