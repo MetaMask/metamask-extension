@@ -51,7 +51,7 @@ class Alert extends Component {
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
-  msg: PropTypes.string,
+  msg: PropTypes.string, /* eslint-disable-line react/no-unused-prop-types */
 }
 module.exports = Alert
 
