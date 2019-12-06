@@ -40,6 +40,8 @@ class ConnectScreen extends Component {
           className="sw-connect__btn__img"
           src="images/trustvaultByTrustology.png"
           alt=""
+          width= "150px"
+          height= "45px"
         />
       </button>
     )
@@ -57,8 +59,6 @@ class ConnectScreen extends Component {
           className="hw-connect__btn__img"
           src="images/trezor-logo.svg"
           alt=""
-          height="30px"
-          width="100px"
         />
       </button>
     )
