@@ -64,31 +64,31 @@ import {
 
 function mapStateToProps (state) {
   return {
+    addressBook: getAddressBook(state),
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
     editingTransactionId: getSendEditingTransactionId(state),
+    ensResolution: getSendEnsResolution(state),
+    ensResolutionError: getSendEnsResolutionError(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
+    qrCodeData: getQrCodeData(state),
     recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
-    ensResolution: getSendEnsResolution(state),
-    ensResolutionError: getSendEnsResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
-    qrCodeData: getQrCodeData(state),
-    addressBook: getAddressBook(state),
   }
 }
 

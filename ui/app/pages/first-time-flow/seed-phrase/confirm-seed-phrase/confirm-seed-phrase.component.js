@@ -24,11 +24,14 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   static propTypes = {
+    hideSeedPhraseBackupAfterOnboarding: PropTypes.func,
     history: PropTypes.object,
     onSubmit: PropTypes.func,
     seedPhrase: PropTypes.string,
     selectedAddress: PropTypes.string,
     initializeThreeBox: PropTypes.func,
+    setSeedPhraseBackedUp: PropTypes.func,
+    showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
   }
 
   state = {
