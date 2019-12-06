@@ -85,7 +85,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 
 class Routes extends Component {
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {

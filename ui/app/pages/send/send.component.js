@@ -76,7 +76,7 @@ export default class SendTransactionScreen extends PersistentForm {
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
@@ -184,7 +184,7 @@ export default class SendTransactionScreen extends PersistentForm {
       })
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.updateSendToken()
 
     // Show QR Scanner modal  if ?scan=true

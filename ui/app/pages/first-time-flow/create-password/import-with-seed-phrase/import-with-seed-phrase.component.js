@@ -49,7 +49,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return words.join(' ')
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this._onBeforeUnload = () => this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
