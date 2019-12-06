@@ -84,7 +84,6 @@ export default class ConfirmApprove extends Component {
         contentComponent={(
           <ConfirmApproveContent
             siteImage={siteImage}
-            tokenAddress={tokenAddress}
             setCustomAmount={(newAmount) => {
               this.setState({ customPermissionAmount: newAmount })
             }}

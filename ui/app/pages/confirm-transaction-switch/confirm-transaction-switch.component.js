@@ -23,8 +23,6 @@ import {
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
     txData: PropTypes.object,
-    isEtherTransaction: PropTypes.bool,
-    isTokenMethod: PropTypes.bool,
   }
 
   redirectToTransaction () {

@@ -26,7 +26,6 @@ export default class EnsInput extends Component {
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
-    updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,

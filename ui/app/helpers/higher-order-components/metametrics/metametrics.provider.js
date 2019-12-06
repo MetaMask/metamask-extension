@@ -68,7 +68,6 @@ class MetaMetricsProvider extends Component {
             ...config,
             previousPath,
             currentPath,
-            pathname,
             excludeMetaMetricsId: isSendFlow && !sendCountIsTrackable(props.metaMetricsSendCount + 1),
             ...overrides,
           })

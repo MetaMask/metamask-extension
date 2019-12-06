@@ -324,13 +324,11 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   renderAddRecipient () {
-    const { scanQrCode } = this.props
     const { toError, toWarning } = this.state
 
     return (
       <AddRecipient
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
-        scanQrCode={scanQrCode}
         query={this.state.query}
         toError={toError}
         toWarning={toWarning}
@@ -339,13 +337,12 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   renderSendContent () {
-    const { history, showHexData, scanQrCode } = this.props
+    const { history, showHexData } = this.props
 
     return [
       <SendContent
         key="send-content"
         updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
-        scanQrCode={scanQrCode}
         showHexData={showHexData}
       />,
       <SendFooter key="send-footer" history={history} />,

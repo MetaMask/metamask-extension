@@ -16,11 +16,9 @@ class DraggableSeed extends Component {
     onClick: PropTypes.func,
     setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
-    draggingSeedIndex: PropTypes.number,
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
-    droppable: PropTypes.bool,
   }
 
   static defaultProps = {

@@ -18,7 +18,6 @@ import {
   getRecentBlocks,
   getSelectedToken,
   getSelectedTokenContract,
-  getSelectedTokenToFiatRate,
   getSendAmount,
   getSendEditingTransactionId,
   getSendHexDataFeatureFlagState,
@@ -88,7 +87,6 @@ function mapStateToProps (state) {
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
-    tokenToFiatRate: getSelectedTokenToFiatRate(state),
   }
 }
 

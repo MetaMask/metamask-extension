@@ -71,7 +71,6 @@ export default class CreateAccountPage extends Component {
 CreateAccountPage.propTypes = {
   location: PropTypes.object,
   history: PropTypes.object,
-  t: PropTypes.func,
 }
 
 CreateAccountPage.contextTypes = {

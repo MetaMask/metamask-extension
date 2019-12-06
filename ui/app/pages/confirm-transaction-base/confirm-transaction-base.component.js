@@ -27,23 +27,13 @@ export default class ConfirmTransactionBase extends Component {
 
   static propTypes = {
     // react-router props
-    match: PropTypes.object,
     history: PropTypes.object,
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
-    clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
-    editTransaction: PropTypes.func,
-    ethTransactionAmount: PropTypes.string,
-    ethTransactionFee: PropTypes.string,
-    ethTransactionTotal: PropTypes.string,
-    fiatTransactionAmount: PropTypes.string,
-    fiatTransactionFee: PropTypes.string,
-    fiatTransactionTotal: PropTypes.string,
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,

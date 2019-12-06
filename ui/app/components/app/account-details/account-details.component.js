@@ -23,7 +23,6 @@ export default class AccountDetails extends Component {
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    history: PropTypes.object.isRequired,
   }
 
   state = {
