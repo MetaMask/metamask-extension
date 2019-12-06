@@ -189,7 +189,7 @@ class ConnectScreen extends Component {
     const steps = [
       {
         asset: 'tv-wallet-step-1',
-        dimensions: {width: '225px', height: '103px'},
+        dimensions: {width: '337.5', height: '154px'},
         title: this.context.t('step1SoftwareWallet'),
         message: this.context.t('step1SoftwareWalletMsg'),
       },
@@ -201,7 +201,7 @@ class ConnectScreen extends Component {
       },
       {
         asset: 'tv-wallet-step-3',
-        dimensions: {width: '120px', height: '78px'},
+        dimensions: {width: '240px', height: '156px'},
         title: this.context.t('step3SoftwareWallet'),
         message: this.context.t('step3SoftwareWalletMsg'),
       },
