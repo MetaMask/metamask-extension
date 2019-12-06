@@ -45,8 +45,8 @@ const Icon = props => {
       alignItems: 'center',
       justifyContent: 'center',
       border: `${borderWidth}px solid ${color}`,
-      width: `${width}px`,
-      height: `${height}px`,
+      width: width,
+      height: height,
       borderRadius: `${borderRadius}px`,
     }}
     >
@@ -56,7 +56,7 @@ const Icon = props => {
 }
 
 Icon.propTypes = {
-  type: PropTypes.string,
+  type: PropTypes.string.isRequired,
   width: PropTypes.number,
   height: PropTypes.number,
   color: PropTypes.string,
