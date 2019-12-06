@@ -38,7 +38,8 @@ export default class CircularInputField extends PureComponent {
           autoFocus={this.props.autoFocus}
           ref={this.props.setRef}
           onKeyPress={this.props.keyPress}
-        ></input>
+        >
+        </input>
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import debounce from "lodash.debounce";
+import debounce from 'lodash.debounce'
 import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
@@ -39,7 +39,7 @@ export default class AccountMenu extends PureComponent {
     addressConnectedDomainMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
   }
-  
+
   state = {
     atAccountListBottom: false,
   }
@@ -65,13 +65,13 @@ export default class AccountMenu extends PureComponent {
     } = this.props
 
     const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
-    
+
     return accountOrder.filter(address => !!identities[address]).map(address => {
       const identity = identities[address]
       const isSelected = identity.address === selectedAddress
 
-      const balanceValue = accounts[address] ? accounts[address].balance : "";
-      const simpleAddress = identity.address.substring(2).toLowerCase();
+      const balanceValue = accounts[address] ? accounts[address].balance : ''
+      const simpleAddress = identity.address.substring(2).toLowerCase()
 
       const keyring = keyrings.find(kr => {
         return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
@@ -105,11 +105,11 @@ export default class AccountMenu extends PureComponent {
             <div className="account-menu__name">
               { identity.name || '' }
             </div>
-              <UserPreferencedCurrencyDisplay 
-              className="account-menu__balance" 
-              value={balanceValue} 
-              type={PRIMARY} 
-              />
+            <UserPreferencedCurrencyDisplay
+              className="account-menu__balance"
+              value={balanceValue}
+              type={PRIMARY}
+            />
           </div>
           { iconAndNameForOpenDomain
             ? (
@@ -172,7 +172,7 @@ export default class AccountMenu extends PureComponent {
         label = t('imported')
         break
       case 'TrustVault':
-        label = t("trustvault")
+        label = t('trustvault')
         break
       default:
         return null
@@ -320,7 +320,7 @@ export default class AccountMenu extends PureComponent {
               className="account-menu__item-icon"
               src="images/connect-icon.svg"
             />
-           )}
+          )}
           text={t('connectHardwareWallet')}
         />
         <Divider />

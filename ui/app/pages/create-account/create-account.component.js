@@ -10,7 +10,7 @@ import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
-  CONNECT_TRUSTVAULT_ROUTE
+  CONNECT_TRUSTVAULT_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class CreateAccountPage extends Component {
@@ -22,7 +22,7 @@ export default class CreateAccountPage extends Component {
     }
     const getClassNames = path => classnames('new-account__tabs__tab', {
       'new-account__tabs__selected': matchPath(pathname, {
-        path: path === CONNECT_HARDWARE_ROUTE? hardWareRoute:path,
+        path: path === CONNECT_HARDWARE_ROUTE ? hardWareRoute : path,
         exact: true,
       }),
     })
@@ -88,8 +88,5 @@ CreateAccountPage.propTypes = {
 CreateAccountPage.contextTypes = {
   t: PropTypes.func,
 }
-
-
-
 
 

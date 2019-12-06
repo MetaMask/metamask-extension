@@ -57,7 +57,7 @@ class ConnectScreen extends Component {
           src="images/trezor-logo.svg"
           alt=""
           height="30px"
-          width = "100px"
+          width="100px"
         />
       </button>
     )
@@ -136,7 +136,7 @@ class ConnectScreen extends Component {
     const links = {
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
-      trustvault:`<a class='sw-connect__get-sw__link' href='https://trustology.io/get-started/'>here</a>` 
+      trustvault: `<a class='sw-connect__get-sw__link' href='https://trustology.io/get-started/'>here</a>`,
     }
 
     const text = this.context.t('orderOneHere')
@@ -175,7 +175,7 @@ class ConnectScreen extends Component {
   }
 
   renderLearnMore () {
-    if (this.state.selectedDevice)  {
+    if (this.state.selectedDevice) {
       return (
         <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
           {this.context.t('learnMore')}
@@ -261,19 +261,18 @@ class ConnectScreen extends Component {
       </div>
     )
   }
- 
+
 
   renderTutorialSteps () {
-    if(this.state.selectedDevice === "trezor"|| this.state.selectedDevice === "ledger"){
-      return this.renderHardwareTutorialSteps();
-    }
-    else if (this.state.selectedDevice === "trustvault")  {
-      return this.renderTrustVaultTutorialSteps();
+    if (this.state.selectedDevice === 'trezor' || this.state.selectedDevice === 'ledger') {
+      return this.renderHardwareTutorialSteps()
+    } else if (this.state.selectedDevice === 'trustvault') {
+      return this.renderTrustVaultTutorialSteps()
     }
   }
 
   renderFooter () {
-    if (this.state.selectedDevice){
+    if (this.state.selectedDevice) {
       return (
         <div className="hw-connect__footer">
           <h3 className="hw-connect__footer__title">{this.context.t('readyToConnect')}</h3>
