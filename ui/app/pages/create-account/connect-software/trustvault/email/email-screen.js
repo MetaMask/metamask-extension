@@ -21,8 +21,8 @@ class EmailScreen extends PureComponent {
       'marginRight': '310px',
     }
     return h('div', {style, onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE)}, [
-      h('div.sw-connect__list__back-caret', {},),
-      h('div.sw-connect__list', {style: { 'marginTop': '-2px', 'color': '#037DD6'}}, this.context.t('back')),
+      h('div.sw-connect__list__back-caret',{},),
+      h('div.sw-connect__list__back-caret__back', {}, this.context.t('back')),
     ])
   }
 
@@ -30,6 +30,7 @@ class EmailScreen extends PureComponent {
     const style = {
       width: '80%',
       'marginTop': '50px',
+      'marginBottom': '0px'
     }
     return h(
       Button,

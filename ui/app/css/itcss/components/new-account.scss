@@ -572,6 +572,15 @@
       width: 18px;
       height: 18px;
       margin-right: .1rem;
+      
+      &__back{
+        margin-top: -2px;
+        color: #037DD6
+      }
+      &__back:hover{
+        margin-top: -2px;
+        color: #2f9ae0
+      }
     }
   }
   &__header {

@@ -286,7 +286,7 @@
     "message": "Congratulations"
   },
   "connectHardwareWallet": {
-    "message": "Connect Hardware Wallet"
+    "message": "Connect External Wallet"
   },
   "connectTrustVault": {
     "message": "Connect TrustVault"
@@ -974,6 +974,9 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
+  "not": {
+    "message": "Not"
+  },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
@@ -1297,6 +1300,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "softwareWalletConnected": {
+    "message": "Software wallet successfully connected"
   },
   "speedUp": {
     "message": "Speed Up"
