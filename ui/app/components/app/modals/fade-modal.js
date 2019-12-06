@@ -118,10 +118,7 @@ const addEndEventListener = (node, eventListener) => {
 }
 
 class FadeModal extends Component {
-  constructor (props) {
-    super(props)
-    this.content = null
-  }
+  content = null
 
   static propTypes = {
     backdrop: PropTypes.bool,

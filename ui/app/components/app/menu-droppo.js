@@ -20,10 +20,9 @@ MenuDroppoComponent.prototype.render = function () {
   this.manageListeners()
 
   const baseStyle = Object.assign(
-    {},
+    { position: 'fixed' },
     style,
     { zIndex },
-    !('position' in style) && { position: 'fixed' },
   )
 
   return (
