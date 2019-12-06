@@ -2,7 +2,6 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 
-let mapStateToProps
 let mapDispatchToProps
 
 const actionSpies = {
@@ -15,22 +14,10 @@ const duckActionSpies = {
 
 proxyquire('../send-amount-row.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
-      mapStateToProps = ms
+    connect: (_, md) => {
       mapDispatchToProps = md
       return () => ({})
     },
-  },
-  '../../send.selectors': {
-    getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
-    getSendAmount: (s) => `mockAmount:${s}`,
-    getSendFromBalance: (s) => `mockBalance:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
   './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': {
@@ -42,25 +29,6 @@ proxyquire('../send-amount-row.container.js', {
 })
 
 describe('send-amount-row container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
-      assert.deepEqual(mapStateToProps('mockState'), {
-        amount: 'mockAmount:mockState',
-        amountConversionRate: 'mockAmountConversionRate:mockState',
-        balance: 'mockBalance:mockState',
-        conversionRate: 'mockConversionRate:mockState',
-        convertedCurrency: 'mockConvertedCurrency:mockState',
-        gasTotal: 'mockGasTotal:mockState',
-        inError: 'mockInError:mockState',
-        primaryCurrency: 'mockPrimaryCurrency:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
-        tokenBalance: 'mockTokenBalance:mockState',
-      })
-    })
-
-  })
 
   describe('mapDispatchToProps()', () => {
     let dispatchSpy
