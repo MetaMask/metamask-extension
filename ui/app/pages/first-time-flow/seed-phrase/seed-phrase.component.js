@@ -52,9 +52,9 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE}
-              render={props => (
+              render={routeProps => (
                 <ConfirmSeedPhrase
-                  { ...props }
+                  { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
@@ -62,9 +62,9 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_SEED_PHRASE_ROUTE}
-              render={props => (
+              render={routeProps => (
                 <RevealSeedPhrase
-                  { ...props }
+                  { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
@@ -72,9 +72,9 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
-              render={props => (
+              render={routeProps => (
                 <RevealSeedPhrase
-                  { ...props }
+                  { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />
               )}
