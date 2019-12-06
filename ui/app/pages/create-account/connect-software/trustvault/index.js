@@ -14,6 +14,9 @@ const {
 } = require('../../../../helpers/constants/routes')
 
 class ConnectTrustVaultForm extends PureComponent {
+  static propTypes = {
+    getTrustVaultPinChallenge: PropTypes.func,
+  }
   constructor (props) {
     super(props)
     this.state = {

@@ -122,7 +122,6 @@ export default class WalletView extends Component {
     if (keyring) {
       type = keyring.type
       if (type !== 'HD Key Tree') {
-        debugger
         if (type.toLowerCase().search('hardware') !== -1) {
           label = this.context.t('hardware')
         } else if (type.toLowerCase().search('trustvault') !== -1) {

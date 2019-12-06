@@ -10,7 +10,6 @@ class EmailScreen extends PureComponent {
     super(props)
     this.state = {
       email: null,
-      error: null,
     }
     this.history = this.props.history
   }

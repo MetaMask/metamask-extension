@@ -51,12 +51,10 @@ class TrustvaultKeyring extends EventEmitter {
     return Promise.resolve('already unlocked')
   }
 
-  setAccountToUnlock (index) {
-    log.log('setAccountToUnlock')
+  setAccountToUnlock () {
   }
 
-  addAccounts (n = 1) {
-    log.log('addAccounts')
+  addAccounts () {
   }
 
   updateAuthKey (auth) {
@@ -84,7 +82,6 @@ class TrustvaultKeyring extends EventEmitter {
     } catch (err) {
       log.error('Error getting accounts', err)
       return []
-      ˆ
     }
 
     return this.accounts

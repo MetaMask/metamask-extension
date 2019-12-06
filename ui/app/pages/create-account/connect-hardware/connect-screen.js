@@ -11,6 +11,7 @@ class ConnectScreen extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
+    history: PropTypes.object,
   }
 
   state = {

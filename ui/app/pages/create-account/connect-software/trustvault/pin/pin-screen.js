@@ -9,7 +9,6 @@ class PinScreen extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      selectedDevice: null,
       firstPin: null,
       secondPin: null,
     }
@@ -65,9 +64,9 @@ class PinScreen extends PureComponent {
       filled: () => Boolean(this.state.firstPin),
       maxLength: 2,
       setRef: (element) => this.firstPinInput = element,
-      keyPress: e => {
+      keyPress: (e) => {
         if (e.key === 'Enter' && this.state.firstPin && this.state.secondPin) {
-          this.submitPinChallenge()
+          return this.submitPinChallenge()
         }
       },
     })

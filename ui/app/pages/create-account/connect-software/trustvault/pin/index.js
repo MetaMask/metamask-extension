@@ -6,12 +6,16 @@ const actions = require('../../../../../store/actions')
 const PinScreen = require('./pin-screen')
 
 class ConnectTrustVaultPinForm extends PureComponent {
+  static propTypes = {
+    goToHomePage: PropTypes.func,
+    onCancelLogin: PropTypes.func,
+    email: PropTypes.string,
+  }
   constructor (props) {
     super(props)
     this.state = {
       error: null,
       browserSupported: true,
-      authenticated: false,
       pinChallenge: this.props.pinChallenge,
     }
   }
