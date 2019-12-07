@@ -29,24 +29,23 @@ const getSVG = (type, color) => {
   return svgs[type]
 }
 
-const Icon = props => {
-  const {
-    type,
-    width,
-    height,
-    borderWidth,
-    borderRadius,
-    color,
-  } = props
+const Icon = ({
+  type,
+  width,
+  height,
+  borderWidth,
+  borderRadius,
+  color,
+}) => {
 
   return (
     <div style={{
+      width,
+      height,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       border: `${borderWidth}px solid ${color}`,
-      width: width,
-      height: height,
       borderRadius: `${borderRadius}px`,
     }}
     >
