@@ -15,6 +15,7 @@ const pump = require('pump')
 const debounce = require('debounce-stream')
 const log = require('loglevel')
 const extension = require('extensionizer')
+const ReadOnlyNetworkStore = require('./lib/network-store')
 const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
@@ -67,7 +68,10 @@ const openMetamaskTabsIDs = {}
 const requestAccountTabIds = {}
 
 // state persistence
-const localStore = new LocalStore()
+const inTest = process.env.IN_TEST === 'true'
+const localStore = inTest
+  ? new ReadOnlyNetworkStore()
+  : new LocalStore()
 let versionedData
 
 // initialization flow
