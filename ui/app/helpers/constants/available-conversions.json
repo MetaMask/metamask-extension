@@ -16,6 +16,10 @@
     "name": "Indonesian Rupiah"
   },
   {
+    "code": "inr",
+    "name": "Indian Rupee"
+  },
+  {
     "code": "php",
     "name": "Philippine Peso"
   },
