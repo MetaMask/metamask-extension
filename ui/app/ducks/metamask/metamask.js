@@ -342,16 +342,6 @@ function reduceMetamask (state, action) {
         },
       })
 
-    case actions.SHAPESHIFT_SUBVIEW:
-      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [ssMarketInfo.pair]: ssMarketInfo,
-        },
-        coinOptions,
-      })
-
     case actions.SET_PARTICIPATE_IN_METAMETRICS:
       return extend(metamaskState, {
         participateInMetaMetrics: action.value,
@@ -370,11 +360,6 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_FEATURE_FLAGS:
       return extend(metamaskState, {
         featureFlags: action.value,
-      })
-
-    case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
-      return extend(metamaskState, {
-        networkEndpointType: action.value,
       })
 
     case actions.CLOSE_WELCOME_SCREEN:
