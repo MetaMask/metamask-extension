@@ -57,7 +57,6 @@ const actions = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
-  markAccountsFound,
   // intialize screen
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
@@ -1801,11 +1800,6 @@ function goBackToInitView () {
   return {
     type: actions.BACK_TO_INIT_MENU,
   }
-}
-
-function markAccountsFound () {
-  log.debug(`background.markAccountsFound`)
-  return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
 function retryTransaction (txId, gasPrice) {
