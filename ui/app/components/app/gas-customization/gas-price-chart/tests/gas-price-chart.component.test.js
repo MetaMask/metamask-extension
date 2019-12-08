@@ -93,11 +93,10 @@ describe('GasPriceChart Component', function () {
   })
 
   describe('componentDidMount', () => {
-    it('should call this.renderChart with the components props', () => {
+    it('should call this.renderChart', () => {
       assert(GasPriceChart.prototype.renderChart.callCount, 1)
       wrapper.instance().componentDidMount()
       assert(GasPriceChart.prototype.renderChart.callCount, 2)
-      assert.deepEqual(GasPriceChart.prototype.renderChart.getCall(1).args, [{ ...testProps }])
     })
   })
 

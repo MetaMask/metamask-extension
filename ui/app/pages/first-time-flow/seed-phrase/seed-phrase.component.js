@@ -15,7 +15,6 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo'
 
 export default class SeedPhrase extends PureComponent {
   static propTypes = {
-    address: PropTypes.string,
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
     verifySeedPhrase: PropTypes.func,

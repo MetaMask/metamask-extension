@@ -11,7 +11,6 @@ import { ellipsify } from '../../send.utils'
 export default class AddRecipient extends Component {
 
   static propTypes = {
-    className: PropTypes.string,
     query: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
@@ -21,9 +20,6 @@ export default class AddRecipient extends Component {
     toError: PropTypes.string,
     toWarning: PropTypes.string,
     ensResolutionError: PropTypes.string,
-    selectedToken: PropTypes.object,
-    hasHexData: PropTypes.bool,
-    tokens: PropTypes.array,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,

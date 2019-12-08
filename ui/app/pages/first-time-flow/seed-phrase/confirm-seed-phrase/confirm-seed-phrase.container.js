@@ -5,14 +5,12 @@ import {
   hideSeedPhraseBackupAfterOnboarding,
   initializeThreeBox,
 } from '../../../../store/actions'
-import { getSelectedAddress } from '../../../../selectors/selectors'
 
 const mapStateToProps = state => {
   const { appState: { showingSeedPhraseBackupAfterOnboarding } } = state
 
   return {
     showingSeedPhraseBackupAfterOnboarding,
-    selectedAddress: getSelectedAddress(state),
   }
 }
 

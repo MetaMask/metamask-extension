@@ -80,14 +80,9 @@ export default class NewAccountCreateForm extends Component {
 }
 
 NewAccountCreateForm.propTypes = {
-  hideModal: PropTypes.func,
-  showImportPage: PropTypes.func,
-  showConnectPage: PropTypes.func,
   createAccount: PropTypes.func,
-  numberOfExistingAccounts: PropTypes.number,
   newAccountNumber: PropTypes.number,
   history: PropTypes.object,
-  t: PropTypes.func,
 }
 
 NewAccountCreateForm.contextTypes = {

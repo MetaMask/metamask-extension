@@ -206,7 +206,6 @@ class ConnectHardwareForm extends Component {
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
-        history={this.props.history}
         onUnlockAccount={this.onUnlockAccount}
         onForgetDevice={this.onForgetDevice}
         onCancel={this.onCancel}
@@ -226,9 +225,6 @@ class ConnectHardwareForm extends Component {
 }
 
 ConnectHardwareForm.propTypes = {
-  hideModal: PropTypes.func,
-  showImportPage: PropTypes.func,
-  showConnectPage: PropTypes.func,
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
   forgetDevice: PropTypes.func,
@@ -236,9 +232,7 @@ ConnectHardwareForm.propTypes = {
   hideAlert: PropTypes.func,
   unlockHardwareWalletAccount: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
-  numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
-  t: PropTypes.func,
   network: PropTypes.string,
   accounts: PropTypes.object,
   address: PropTypes.string,
@@ -247,10 +241,9 @@ ConnectHardwareForm.propTypes = {
 
 const mapStateToProps = state => {
   const {
-    metamask: { network, selectedAddress, identities = {} },
+    metamask: { network, selectedAddress },
   } = state
   const accounts = getMetaMaskAccounts(state)
-  const numberOfExistingAccounts = Object.keys(identities).length
   const {
     appState: { defaultHdPaths },
   } = state
@@ -259,7 +252,6 @@ const mapStateToProps = state => {
     network,
     accounts,
     address: selectedAddress,
-    numberOfExistingAccounts,
     defaultHdPaths,
   }
 }
@@ -281,8 +273,6 @@ const mapDispatchToProps = dispatch => {
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
       return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
     },
-    showImportPage: () => dispatch(actions.showImportPage()),
-    showConnectPage: () => dispatch(actions.showConnectPage()),
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   }

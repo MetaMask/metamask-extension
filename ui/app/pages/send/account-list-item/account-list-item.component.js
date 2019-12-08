@@ -12,8 +12,6 @@ export default class AccountListItem extends Component {
   static propTypes = {
     account: PropTypes.object,
     className: PropTypes.string,
-    conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
     displayAddress: PropTypes.bool,
     displayBalance: PropTypes.bool,
     handleClick: PropTypes.func,

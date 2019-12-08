@@ -3,7 +3,6 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  updateAndSetCustomRpc,
   displayWarning,
   setFeatureFlag,
   showModal,
@@ -43,7 +42,6 @@ export const mapStateToProps = state => {
 export const mapDispatchToProps = dispatch => {
   return {
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),

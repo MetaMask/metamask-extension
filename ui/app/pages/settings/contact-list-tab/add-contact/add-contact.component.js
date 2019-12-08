@@ -18,7 +18,7 @@ export default class AddContact extends PureComponent {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
-    qrCodeData: PropTypes.object,
+    qrCodeData: PropTypes.object, /* eslint-disable-line react/no-unused-prop-types */
     qrCodeDetected: PropTypes.func,
   }
 

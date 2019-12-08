@@ -34,9 +34,7 @@ export default class SettingsTab extends PureComponent {
   static propTypes = {
     setUseBlockie: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
-    displayWarning: PropTypes.func,
     warning: PropTypes.string,
-    history: PropTypes.object,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,

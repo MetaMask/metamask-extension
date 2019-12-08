@@ -12,13 +12,10 @@ export default class GasModalPageContainer extends Component {
   }
 
   static propTypes = {
-    hideModal: PropTypes.func,
     hideBasic: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
     currentTimeEstimate: PropTypes.string,
-    customGasPrice: PropTypes.number,
-    customGasLimit: PropTypes.number,
     insufficientBalance: PropTypes.bool,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
@@ -35,7 +32,6 @@ export default class GasModalPageContainer extends Component {
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
-    transactionFee: PropTypes.string,
     blockTime: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,

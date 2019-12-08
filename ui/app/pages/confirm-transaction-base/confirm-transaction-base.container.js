@@ -10,7 +10,6 @@ import {
 
 import {
   updateCustomNonce,
-  clearSend,
   cancelTx,
   cancelTxs,
   updateAndApproveTx,
@@ -56,7 +55,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    currentCurrency,
     assetImages,
     network,
     unapprovedTxs,
@@ -101,12 +99,6 @@ const mapStateToProps = (state, ownProps) => {
   const transactionStatus = transaction ? transaction.status : ''
 
   const {
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -150,12 +142,6 @@ const mapStateToProps = (state, ownProps) => {
     toEns,
     toName,
     toNickname,
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -164,7 +150,6 @@ const mapStateToProps = (state, ownProps) => {
     methodData,
     tokenProps,
     isTxReprice,
-    currentCurrency,
     conversionRate,
     transactionStatus,
     nonce,
@@ -198,7 +183,6 @@ export const mapDispatchToProps = dispatch => {
       dispatch(updateCustomNonce(value))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },

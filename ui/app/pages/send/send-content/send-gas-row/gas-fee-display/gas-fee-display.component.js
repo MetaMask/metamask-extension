@@ -6,9 +6,6 @@ import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common'
 export default class GasFeeDisplay extends Component {
 
   static propTypes = {
-    conversionRate: PropTypes.number,
-    primaryCurrency: PropTypes.string,
-    convertedCurrency: PropTypes.string,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     onReset: PropTypes.func,

@@ -11,15 +11,15 @@ class Alert extends Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (!this.props.visible && nextProps.visible) {
-      this.animateIn(nextProps)
+      this.animateIn(nextProps.msg)
     } else if (this.props.visible && !nextProps.visible) {
       this.animateOut()
     }
   }
 
-  animateIn (props) {
+  animateIn (msg) {
     this.setState({
-      msg: props.msg,
+      msg: msg,
       visible: true,
       className: 'visible',
     })
@@ -51,7 +51,7 @@ class Alert extends Component {
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
-  msg: PropTypes.string,
+  msg: PropTypes.string, /* eslint-disable-line react/no-unused-prop-types */
 }
 module.exports = Alert
 

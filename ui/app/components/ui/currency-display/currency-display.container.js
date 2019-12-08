@@ -14,8 +14,8 @@ const mapStateToProps = state => {
   }
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { nativeCurrency, currentCurrency, conversionRate, ...restStateProps } = stateProps
+const mergeProps = (stateProps, _, ownProps) => {
+  const { nativeCurrency, currentCurrency, conversionRate } = stateProps
   const {
     value,
     numberOfDecimals = 2,
@@ -42,8 +42,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const suffix = propsSuffix || (hideLabel ? undefined : toCurrency.toUpperCase())
 
   return {
-    ...restStateProps,
-    ...dispatchProps,
     ...restOwnProps,
     displayValue,
     suffix,

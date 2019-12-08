@@ -70,7 +70,6 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
-  t: PropTypes.func,
 }
 
 const mapDispatchToProps = dispatch => {

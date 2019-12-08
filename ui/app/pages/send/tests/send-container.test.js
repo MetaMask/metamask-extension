@@ -2,7 +2,6 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 
-let mapStateToProps
 let mapDispatchToProps
 
 const actionSpies = {
@@ -17,45 +16,13 @@ const duckActionSpies = {
 
 proxyquire('../send.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
-      mapStateToProps = ms
+    connect: (_, md) => {
       mapDispatchToProps = md
       return () => ({})
     },
   },
   'react-router-dom': { withRouter: () => {} },
   'recompose': { compose: (_, arg2) => () => arg2() },
-  './send.selectors': {
-    getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
-    getBlockGasLimit: (s) => `mockBlockGasLimit:${s}`,
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentNetwork: (s) => `mockNetwork:${s}`,
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
-    getRecentBlocks: (s) => `mockRecentBlocks:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
-    getSelectedTokenContract: (s) => `mockTokenContract:${s}`,
-    getSelectedTokenToFiatRate: (s) => `mockTokenToFiatRate:${s}`,
-    getSendHexDataFeatureFlagState: (s) => `mockSendHexDataFeatureFlagState:${s}`,
-    getSendAmount: (s) => `mockAmount:${s}`,
-    getSendTo: (s) => `mockTo:${s}`,
-    getSendToNickname: (s) => `mockToNickname:${s}`,
-    getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
-    getSendFromObject: (s) => `mockFrom:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
-    getQrCodeData: (s) => `mockQrCodeData:${s}`,
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-  },
-  './send-content/add-recipient/add-recipient.selectors': {
-    getTokens: s => `mockTokens:${s}`,
-  },
-  '../../selectors/selectors': {
-    getAddressBook: (s) => `mockAddressBook:${s}`,
-    getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
-  },
   '../../store/actions': actionSpies,
   '../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
@@ -65,40 +32,6 @@ proxyquire('../send.container.js', {
 })
 
 describe('send container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
-      assert.deepEqual(mapStateToProps('mockState'), {
-        amount: 'mockAmount:mockState',
-        amountConversionRate: 'mockAmountConversionRate:mockState',
-        blockGasLimit: 'mockBlockGasLimit:mockState',
-        conversionRate: 'mockConversionRate:mockState',
-        editingTransactionId: 'mockEditingTransactionId:mockState',
-        from: 'mockFrom:mockState',
-        gasLimit: 'mockGasLimit:mockState',
-        gasPrice: 'mockGasPrice:mockState',
-        gasTotal: 'mockGasTotal:mockState',
-        network: 'mockNetwork:mockState',
-        primaryCurrency: 'mockPrimaryCurrency:mockState',
-        recentBlocks: 'mockRecentBlocks:mockState',
-        selectedAddress: 'mockSelectedAddress:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
-        showHexData: 'mockSendHexDataFeatureFlagState:mockState',
-        to: 'mockTo:mockState',
-        tokenBalance: 'mockTokenBalance:mockState',
-        tokenContract: 'mockTokenContract:mockState',
-        tokenToFiatRate: 'mockTokenToFiatRate:mockState',
-        qrCodeData: 'mockQrCodeData:mockState',
-        tokens: 'mockTokens:mockState',
-        ensResolution: 'mockSendEnsResolution:mockState',
-        ensResolutionError: 'mockSendEnsResolutionError:mockState',
-        toNickname: 'mockToNickname:mockState',
-        addressBook: 'mockAddressBook:mockState',
-      })
-    })
-
-  })
 
   describe('mapDispatchToProps()', () => {
     let dispatchSpy

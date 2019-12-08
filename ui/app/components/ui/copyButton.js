@@ -29,11 +29,9 @@ class CopyButton extends Component {
   }
 
   render () {
-    const state = this.state
-    const props = this.props
-    const value = props.value
-    const copied = state.copied
-    const message = copied ? this.context.t('copiedButton') : props.title || this.context.t('copyButton')
+    const { title, value } = this.props
+    const { copied } = this.state
+    const message = copied ? this.context.t('copiedButton') : title || this.context.t('copyButton')
 
     return (
       <div
