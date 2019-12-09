@@ -40,8 +40,8 @@ class ConnectScreen extends Component {
           className="sw-connect__btn__img"
           src="images/trustvaultByTrustology.png"
           alt=""
-          width= "150px"
-          height= "45px"
+          width="120px"
+          height="30px"
         />
       </button>
     )
