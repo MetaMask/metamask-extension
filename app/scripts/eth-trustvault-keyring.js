@@ -5,8 +5,8 @@ const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
 const log = require('loglevel')
 const BigNumber = require('bignumber.js')
-const trustVaultBridgeUrl = 'https://7l0jff171g.execute-api.eu-west-1.amazonaws.com/dev/graphql'
-const apiKey = 'da2-3ckh5m2vabdkzfvvkrn3h4trra'
+const trustVaultBridgeUrl = 'https://t1tl7x0ii7.execute-api.eu-west-1.amazonaws.com/production/graphql'
+const apiKey = 'da2-ekziyghfhzda7hsapyziwdurwm'
 const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
