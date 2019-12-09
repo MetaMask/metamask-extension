@@ -472,6 +472,9 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
+  "downloadTrustVaultHere": {
+    "message": "Custodial wallets: Start setting up your TrustVault account here"
+  },
   "dontHaveAHardwareWallet": {
     "message": "Don’t have a wallet?"
   },
@@ -985,9 +988,6 @@
   },
   "orderOneHere": {
     "message": "Non-custodial wallets: Order a Trezor or Ledger and keep your funds in cold storage"
-  },
-  "orderTrustVaultHere": {
-    "message": "Custodial wallets: Start setting up your TrustVault account here"
   },
   "origin": {
     "message": "Origin"

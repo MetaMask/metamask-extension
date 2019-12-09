@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from '../../../components/ui/button'
 import { CONNECT_TRUSTVAULT_ROUTE } from '../../../helpers/constants/routes'
+const TRUSTVAULT =  'trustvault'
 class ConnectScreen extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -20,7 +21,7 @@ class ConnectScreen extends Component {
   history = this.props.history
 
   connect = () => {
-    if (this.state.selectedDevice === 'trustvault') {
+    if (this.state.selectedDevice === TRUSTVAULT) {
       this.history.push(CONNECT_TRUSTVAULT_ROUTE)
     } else if (this.state.selectedDevice) {
       this.props.connectToHardwareWallet(this.state.selectedDevice)
@@ -32,9 +33,9 @@ class ConnectScreen extends Component {
     return (
       <button
         className={classnames('sw-connect__btn', {
-          'selected': this.state.selectedDevice === 'trustvault',
+          'selected': this.state.selectedDevice === TRUSTVAULT,
         })}
-        onClick={_ => this.setState({selectedDevice: 'trustvault'})}
+        onClick={_ => this.setState({selectedDevice: TRUSTVAULT})}
       >
         <img
           className="sw-connect__btn__img"
@@ -142,7 +143,7 @@ class ConnectScreen extends Component {
 
     const text = this.context.t('orderOneHere')
     const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
-    const trustVaultText = this.context.t('orderTrustVaultHere')
+    const trustVaultText = this.context.t('downloadTrustVaultHere')
     const trustVaultResponse = trustVaultText.replace('here', links.trustvault)
 
     return (
@@ -267,7 +268,7 @@ class ConnectScreen extends Component {
   renderTutorialSteps () {
     if (this.state.selectedDevice === 'trezor' || this.state.selectedDevice === 'ledger') {
       return this.renderHardwareTutorialSteps()
-    } else if (this.state.selectedDevice === 'trustvault') {
+    } else if (this.state.selectedDevice === TRUSTVAULT) {
       return this.renderTrustVaultTutorialSteps()
     }
   }

@@ -8,7 +8,7 @@ import AccountDetails from '../account-details'
 const { checksumAddress } = require('../../../helpers/utils/util')
 const TokenList = require('../token-list')
 const { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
-
+const TRUSTVAULT =  'trustvault'
 export default class WalletView extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -124,8 +124,8 @@ export default class WalletView extends Component {
       if (type !== 'HD Key Tree') {
         if (type.toLowerCase().search('hardware') !== -1) {
           label = this.context.t('hardware')
-        } else if (type.toLowerCase().search('trustvault') !== -1) {
-          label = this.context.t('trustvault')
+        } else if (type.toLowerCase().search(TRUSTVAULT) !== -1) {
+          label = this.context.t(TRUSTVAULT)
         } else {
           label = this.context.t('imported')
         }

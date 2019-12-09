@@ -66,7 +66,7 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
-
+const TRUSTVAULT =  'trustvault'
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -816,14 +816,14 @@ module.exports = class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type
         break
-      case 'trustvault':
+      case TRUSTVAULT:
         keyringName = TrustvaultKeyring.type
         break
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
-    if (!keyring && deviceName === 'trustvault') {
+    if (!keyring && deviceName === TRUSTVAULT) {
       keyring = await this.keyringController.addNewKeyring(keyringName, { auth })
     } else if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName)
