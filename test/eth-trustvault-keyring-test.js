@@ -50,24 +50,14 @@ describe('TrustVault Keyring Tests', () => {
     })
   })
 
-  describe('deserialize', () => {
-    it('serializes what it deserializes', async () => {
-      const trustVaultKeyring = new TrustvaultKeyring({})
-      assert.equal(typeof trustVaultKeyring, 'object')
-      const accounts = await trustVaultKeyring.getAccounts()
-      assert.equal(Array.isArray(accounts), true)
-
-    })
-  })
-
   describe('isUnlocked', async () => {
-    it('should return false if we have not authentication tokens setup', async () => {
+    it('should return false if we do not authentication tokens setup', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({})
       const result = await trustVaultKeyring.isUnlocked()
       assert.equal(result, false)
     })
 
-    it('should return true if we have not authentication tokens setup', async () => {
+    it('should return true if we have authentication tokens setup', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       const result = await trustVaultKeyring.isUnlocked()
       assert.equal(result, true)
@@ -75,14 +65,14 @@ describe('TrustVault Keyring Tests', () => {
   })
 
   describe('unlock', function () {
-    it('should resolve if we authentication tokens', async () => {
+    it('should resolve if we have authentication tokens', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       const result = await trustVaultKeyring.unlock()
       assert.equal(result, 'already unlocked')
     })
-    it('should reject if we authentication tokens', async (done) => {
+    it('should reject if we do not have authentication tokens', (done) => {
       const trustVaultKeyring = new TrustvaultKeyring({})
-      await trustVaultKeyring.unlock()
+      trustVaultKeyring.unlock()
         .then(result => {
           assert.fail(`test failed due to unexpected behaviour, result: ${result}`)
         })
@@ -117,13 +107,12 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(accounts.length, 0)
     })
 
-    it('should cache the getaccounts result if was called within the last 5 minutes', async () => {
+    it('should cache the _getAccounts result if was called within the last 5 minutes', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       getAccountsStub.resolves([{name: 'test', address: '0xC668a5116A045e9162902795021907Cb15aa2620'}])
       await trustVaultKeyring.getAccounts()
       await trustVaultKeyring.getAccounts()
       assert.ok(getAccountsStub.calledOnce)
-
     })
   })
 
@@ -243,7 +232,7 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.pinChallenge.secondPinDigitPosition, 2)
     })
 
-    it('should throw error partial pin request returns error', (done) => {
+    it('should throw an error if partial pin request returns error', (done) => {
       sandbox.stub(TrustvaultKeyring.prototype, 'trustVaultBridgeRequest').resolves({error: { message: 'Invalid Request' } })
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       trustVaultKeyring._getPartialPinChallenge('test@test.com')
@@ -302,7 +291,7 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result[1], '0x02')
     })
 
-    it('should return accountName map after gettin the accounts', async () => {
+    it('should return accountName map after getting the accounts', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       await trustVaultKeyring._getAccounts('test@test.com', 1, 2, 'sessionToken')
       const result = await trustVaultKeyring.getAccountNames()
@@ -400,7 +389,7 @@ describe('TrustVault Keyring Tests', () => {
     afterEach(() => {
       sandbox.restore()
     })
-    it('should return r,s,v values for the signed transaction ', async () => {
+    it('should return r,s,v values for the signed transaction', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({ requestSignature: {transactionId: 'transactionId'}})
       sandbox.stub(TrustvaultKeyring.prototype, '_pollTransaction').resolves({ transaction: {v: 'v', r: 'r', s: 's'}})
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
@@ -479,6 +468,4 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(signedTransaction, 'signedTransaction')
     })
   })
-
-
 })
