@@ -42,15 +42,7 @@ class PinScreen extends PureComponent {
       }
       return component
     })
-
-    const style = {
-      display: 'grid',
-      gridColumnGap: '5px',
-      margin: '10px',
-      marginBottom: '50px',
-      gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
-    }
-    return h('div.pin-input', { style }, inputField)
+    return h('div.sw-connect__pin-input', inputField)
   }
 
   getFirstPinInputField = (key) => {
@@ -121,46 +113,24 @@ class PinScreen extends PureComponent {
   }
 
   renderHeader () {
-    const style = {
-      marginTop: '100px',
-      marginBottom: '20px',
-    }
     const {
       firstPinDigitPosition,
       secondPinDigitPosition,
     } = this.props.pinChallenge
-    return h('div.sw-connect__header', { style }, [
+    return h('div.sw-connect__pin-input__header', [
       h('p.sw-connect__header__msg', {}, 'Please enter characters'),
       h(
-        'p.sw-connect__header__msg',
-        {
-          style: {
-            margin: 'auto',
-            textAlign: 'center',
-          },
-        },
+        'p.sw-connect__pin-input__header__msg',
         `${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`
       ),
     ])
   }
 
   renderFooter () {
-    const style = {
-      width: '100%',
-      padding: '10px',
-      display: 'flex',
-    }
-    return h('div.sw-connect__footer', { style }, [
+    return h('div.sw-connect__pin-input__footer', [
       h(
-        'span.sw-connect__footer_msg',
+        'span.sw-connect__pin-input__footer__msg',
         {
-          style: {
-            color: 'grey',
-            fontSize: '80%',
-            textAlign: 'center',
-            margin: '0 auto',
-            padding: '10px',
-          },
           onClick: _ => this.props.onCancelLogin(),
         },
         `${this.context.t('not')} ${this.props.email}?`
@@ -180,10 +150,7 @@ class PinScreen extends PureComponent {
   }
 
   renderConnectToTrustVaultButton () {
-    const style = {
-      width: '80%',
-    }
-    return h('div.sw-pin-connect-btn', { style }, [
+    return h('div.sw-connect__pin-input__connect-btn', [
       h(
         Button,
         {

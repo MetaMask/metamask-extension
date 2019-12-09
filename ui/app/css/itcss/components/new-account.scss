@@ -571,6 +571,11 @@
   &__email-field {
     width: 80%
   }
+  &__error {
+    margin: 20px 20px 10px;
+    display: block;
+    text-align: center;
+  }
   &__info-box {    
     width: 80%;
     display: flex;
@@ -819,8 +824,44 @@
     }
   }
 
+  &__pin-input {
+    display: grid;
+    grid-column-gap: 5px;
+    margin: 10px;
+    margin-bottom: 50px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    &__header{
+      margin-top: 100px;
+      margin-bottom: 20px;
+      &__msg{
+        margin: auto;
+        text-align: center;
+      }
+    }
+    &__footer{
+      width: 100%;
+      padding: 10px;
+      display: flex;
+      
+      &__msg{
+        color: grey;
+        font-size: 80%;
+        text-align: center;
+        margin: 0 auto;
+        padding: 0px;
+      }
+    }
+    &__connect-btn {
+      width :100%;
+      margin-left: 70px;
+    }
+  }
+
   &__step-asset {
     margin: 0px auto 20px;
     display: flex;
   }
+  
+
 }
