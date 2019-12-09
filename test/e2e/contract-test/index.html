@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <title>E2E Test Dapp</title>
-  <script src="node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js"></script>
+  <script src="node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js" defer></script>
   <script src="contract.js" defer></script>
 </head>
 <body>
@@ -12,14 +12,14 @@
   <main>
     <section>
       <h2>Connect</h2>
-      <button id="connectButton">Connect</button>
+      <button id="connectButton" disabled></button>
     </section>
     <section>
       <h2>Contract</h2>
       <div>
-        <button id="deployButton">Deploy Contract</button>
-        <button id="depositButton">Deposit</button>
-        <button id="withdrawButton">Withdraw</button>
+        <button id="deployButton" disabled>Deploy Contract</button>
+        <button id="depositButton" disabled>Deposit</button>
+        <button id="withdrawButton" disabled>Withdraw</button>
       </div>
       <div>
         Contract Status: <span id="contractStatus">Not clicked</span>
@@ -27,7 +27,7 @@
     </section>
     <section>
       <h2>Send Eth</h2>
-      <button id="sendButton">Send</button>
+      <button id="sendButton" disabled>Send</button>
     </section>
     <section>
       <h2>Send Tokens</h2>
@@ -35,11 +35,11 @@
         Token: <span id="tokenAddress"></span>
       </div>
       <div>
-        <button id="createToken">Create Token</button>
-        <button id="transferTokens">Transfer Tokens</button>
-        <button id="approveTokens">Approve Tokens</button>
-        <button id="transferTokensWithoutGas">Transfer Tokens Without Gas</button>
-        <button id="approveTokensWithoutGas">Approve Tokens Without Gas</button>
+        <button id="createToken" disabled>Create Token</button>
+        <button id="transferTokens" disabled>Transfer Tokens</button>
+        <button id="approveTokens" disabled>Approve Tokens</button>
+        <button id="transferTokensWithoutGas" disabled>Transfer Tokens Without Gas</button>
+        <button id="approveTokensWithoutGas" disabled>Approve Tokens Without Gas</button>
       </div>
     </section>
     <section>
@@ -61,7 +61,7 @@
     </section>
     <section>
       <h2>Sign Typed Data</h2>
-      <button id="signTypedData">Sign</button>
+      <button id="signTypedData" disabled>Sign</button>
       <div>Sign Typed Data Result: <span id="signTypedDataResult"></span></div>
     </section>
   </main>

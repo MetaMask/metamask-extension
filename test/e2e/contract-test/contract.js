@@ -77,11 +77,8 @@ const initialize = () => {
     approveTokens,
     transferTokensWithoutGas,
     approveTokensWithoutGas,
+    signTypedData,
   ]
-
-  for (const button of accountButtons) {
-    button.disabled = true
-  }
 
   const isMetaMaskConnected = () => accounts && accounts.length > 0
 
@@ -105,11 +102,13 @@ const initialize = () => {
       deployButton.disabled = false
       sendButton.disabled = false
       createToken.disabled = false
+      signTypedData.disabled = false
     }
 
     if (!isMetaMaskInstalled()) {
       onboardButton.innerText = 'Click here to install MetaMask!'
       onboardButton.onclick = onClickInstall
+      onboardButton.disabled = false
     } else if (isMetaMaskConnected()) {
       onboardButton.innerText = 'Connected'
       onboardButton.disabled = true
@@ -119,6 +118,7 @@ const initialize = () => {
     } else {
       onboardButton.innerText = 'Connect'
       onboardButton.onclick = onClickConnect
+      onboardButton.disabled = false
     }
   }
 
@@ -314,7 +314,7 @@ const initialize = () => {
         if (err) {
           console.log(err)
         } else {
-          signTypedDataResults.innerHTML = result
+          signTypedDataResults.innerHTML = JSON.stringify(result)
         }
       })
     })
