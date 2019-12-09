@@ -396,7 +396,7 @@ function setupController (initState, initLangCode) {
         const origin = url.hostname
 
         remotePort.onMessage.addListener((msg) => {
-          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+          if (msg.data && ['eth_requestAccounts', 'eth_sendTransaction'].includes(msg.data.method)) {
             requestAccountTabIds[origin] = tabId
           }
         })

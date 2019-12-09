@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
 import { isBalanceSufficient } from '../send/send.utils'
@@ -97,6 +97,8 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    returnTab: PropTypes.number,
+    getRequestAccountTabIds: PropTypes.func.isRequired,
   }
 
   state = {
@@ -445,6 +447,7 @@ export default class ConfirmTransactionBase extends Component {
       setMetaMetricsSendCount,
       methodData = {},
       updateCustomNonce,
+      returnTab,
     } = this.props
     const { submitting } = this.state
 
@@ -486,9 +489,21 @@ export default class ConfirmTransactionBase extends Component {
                 clearConfirmTransaction()
                 this.setState({
                   submitting: false,
-                }, () => {
-                  history.push(DEFAULT_ROUTE)
+                }, async () => {
                   updateCustomNonce('')
+                  if (returnTab && getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+                    const currentTab = await global.platform.currentTab()
+                    try {
+                      if (currentTab.active) {
+                        await global.platform.switchToTab(returnTab)
+                      }
+                    } finally {
+                      global.platform.closeTab(currentTab.id)
+                    }
+                  } else {
+                    history.push(DEFAULT_ROUTE)
+                  }
+
                 })
               })
               .catch((error) => {
@@ -590,8 +605,11 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   componentDidMount () {
-    const { toAddress, txData: { origin } = {}, getNextNonce, tryReverseResolveAddress } = this.props
+    const { toAddress, txData: { origin } = {}, getNextNonce, tryReverseResolveAddress, getRequestAccountTabIds } = this.props
     const { metricsEvent } = this.context
+
+    getRequestAccountTabIds()
+
     metricsEvent({
       eventOpts: {
         category: 'Transactions',

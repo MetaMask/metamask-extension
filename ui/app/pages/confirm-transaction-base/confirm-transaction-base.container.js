@@ -17,6 +17,7 @@ import {
   updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
+  getRequestAccountTabIds,
 } from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -66,7 +67,7 @@ const mapStateToProps = (state, ownProps) => {
     tokenProps,
     nonce,
   } = confirmTransaction
-  const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
+  const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory, origin } = txData
   const transaction = Object.values(unapprovedTxs).find(
     ({ id }) => id === (transactionId || Number(paramsTransactionId))
   ) || {}
@@ -134,6 +135,8 @@ const mapStateToProps = (state, ownProps) => {
     }
   }
 
+  const { requestAccountTabs = {} } = state.appState
+
   return {
     balance,
     fromAddress,
@@ -170,6 +173,7 @@ const mapStateToProps = (state, ownProps) => {
     metaMetricsSendCount,
     transactionCategory,
     nextNonce,
+    returnTab: requestAccountTabs[origin],
   }
 }
 
@@ -200,6 +204,7 @@ export const mapDispatchToProps = (dispatch) => {
     sendTransaction: (txData) => dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
+    getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
   }
 }
 
