@@ -14,7 +14,7 @@ export default class CircularInputField extends PureComponent {
     setRef: PropTypes.func,
     filled: PropTypes.func,
     maxLength: PropTypes.number,
-    keyPress: PropTypes.object,
+    keyPress: PropTypes.func,
   }
 
   render () {
