@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 7.7.1 Mon Dec 9 2019
+- [#7672](https://github.com/MetaMask/metamask-extension/pull/7672): Custom tokens must have between 0 and 12 characters 
+
 ## 7.7.0 Thu Nov 28 2019
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Connect distinct accounts per site
 - [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
