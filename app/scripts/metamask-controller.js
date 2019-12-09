@@ -443,7 +443,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
@@ -1206,44 +1205,6 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(null, this.getState())
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // MetaMask Version 3 Migration Account Restauration Methods
-
-  /**
-   * A legacy method (probably dead code) that was used when we swapped out our
-   * key management library that we depended on.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * @deprecated
-   * @param  {} migratorOutput
-   */
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-      .then(() => migratorOutput)
-  }
-
-  /**
-   * A legacy method used to record user confirmation that they understand
-   * that some of their accounts have been recovered but should be backed up.
-   * This function no longer does anything and will be removed.
-   *
-   * @deprecated
-   * @param {Function} cb - A callback function called with a full state update.
-   */
-  markAccountsFound (cb) {
-    // TODO Remove me
-    cb(null, this.getState())
-  }
-
-  /**
-   * An account object
-   * @typedef Account
-   * @property string privateKey - The private key of the account.
-   */
 
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
