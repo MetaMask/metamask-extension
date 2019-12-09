@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_SEED_PHRASE_ROUTE,
-  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes'
 import TextField from '../../../../components/ui/text-field'
@@ -115,13 +114,6 @@ export default class NewAccount extends PureComponent {
     }
   }
 
-  handleImportWithSeedPhrase = event => {
-    const { history } = this.props
-
-    event.preventDefault()
-    history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
-  }
-
   toggleTermsCheck = () => {
     this.context.metricsEvent({
       eventOpts: {
@@ -134,6 +126,12 @@ export default class NewAccount extends PureComponent {
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))
+  }
+
+  onTermsKeyPress = ({key}) => {
+    if (key === ' ' || key === 'Enter') {
+      this.toggleTermsCheck()
+    }
   }
 
   render () {
@@ -195,10 +193,17 @@ export default class NewAccount extends PureComponent {
             largeLabel
           />
           <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
-            <div className="first-time-flow__checkbox">
+            <div
+              className="first-time-flow__checkbox"
+              tabIndex="0"
+              role="checkbox"
+              onKeyPress={this.onTermsKeyPress}
+              aria-checked={termsChecked}
+              aria-labelledby="ftf-chk1-label"
+            >
               {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
             </div>
-            <span className="first-time-flow__checkbox-label">
+            <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
               I have read and agree to the <a
                 href="https://metamask.io/terms.html"
                 target="_blank"

@@ -5,6 +5,10 @@ const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 
 class NotificationModal extends Component {
+  static contextProps = {
+    t: PropTypes.func.isRequired,
+  }
+
   render () {
     const {
       header,
@@ -14,6 +18,8 @@ class NotificationModal extends Component {
       hideModal,
       onConfirm,
     } = this.props
+
+    const { t } = this.context
 
     const showButtons = showCancelButton || showConfirmButton
 
@@ -39,14 +45,14 @@ class NotificationModal extends Component {
 
           showCancelButton && h('div.btn-default.notification-modal__buttons__btn', {
             onClick: hideModal,
-          }, 'Cancel'),
+          }, t('cancel')),
 
           showConfirmButton && h('div.button.btn-secondary.notification-modal__buttons__btn', {
             onClick: () => {
               onConfirm()
               hideModal()
             },
-          }, 'Confirm'),
+          }, t('confirm')),
 
         ]),
 
