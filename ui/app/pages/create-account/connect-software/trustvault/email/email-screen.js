@@ -15,26 +15,16 @@ class EmailScreen extends PureComponent {
   }
 
   renderBackButton () {
-    const style = {
-      'display': 'flex',
-      'marginRight': '310px',
-    }
-    return h('div', {style, onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE)}, [
+    return h('div.sw-connect__back', { onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE)}, [
       h('div.sw-connect__list__back-caret', {},),
       h('div.sw-connect__list__back-caret__back', {}, this.context.t('back')),
     ])
   }
 
   renderNextButton () {
-    const style = {
-      width: '80%',
-      'marginTop': '50px',
-      'marginBottom': '0px',
-    }
     return h(
       Button,
       {
-        style,
         type: 'primary',
         className: 'sw-connect__connect-btn',
         onClick: _ => this.props.getTrustVaultPinChallenge(this.state.email),
@@ -46,8 +36,7 @@ class EmailScreen extends PureComponent {
 
   renderEmailInputBox () {
     return h(
-      'div.sw-connect-email-field',
-      { style: { width: '80%' } },
+      'div.sw-connect__email-field',
       [
         h(TextField, {
           autoFocus: true,
@@ -66,53 +55,13 @@ class EmailScreen extends PureComponent {
     )
   }
   renderTrustVaultInfoBox () {
-    return h('div.sw-trustvault-info-box', { style: { width: '80%', display: 'flex' } },
+    return h('div.sw-connect__info-box',
       [
-        h(`img`, { src: 'images/tvInfo.png', style: { height: '15px', marginTop: '10px', marginLeft: '10px' } }),
-        h('div', {
-          style: {
-            fontSize: '10px',
-            color: 'grey',
-            marginTop: '10px',
-            marginLeft: '35px',
-            width: '160px',
-            height: '20px',
-            position: 'absolute',
-          },
-        }, this.context.t('trustVaultNotUser')),
-        h('div', {
-          style: {
-            fontSize: '10px',
-            color: 'grey',
-            width: '250px',
-            height: '20px',
-            position: 'absolute',
-            marginTop: '22px',
-            marginLeft: '35px',
-          },
-        }, this.context.t('trustVaultIos')),
-        h('div', {
-          style: {
-            fontSize: '10px',
-            color: 'grey',
-            width: '160px',
-            height: '20px',
-            position: 'absolute',
-            marginTop: '34px',
-            marginLeft: '35px',
-          },
-        }, this.context.t('trustVaultGetStarted')),
-
-        h('div', {
-          style: {
-            fontSize: '10px',
-            color: 'red',
-            width: '160px',
-            height: '20px',
-            position: 'absolute',
-            marginTop: '34px',
-            marginLeft: '90px',
-          },
+        h(`img.sw-connect__info-box__info-icon`, { src: 'images/tvInfo.png' }),
+        h('div.sw-connect__info-box__not-user', this.context.t('trustVaultNotUser')),
+        h('div.sw-connect__info-box__ios', this.context.t('trustVaultIos')),
+        h('div.sw-connect__info-box__get-started', this.context.t('trustVaultGetStarted')),
+        h('div.sw-connect__info-box__link', {
           onClick: () => {
             global.platform.openWindow({
               url: 'https://trustology.io/get-started/',
@@ -126,18 +75,9 @@ class EmailScreen extends PureComponent {
 
   renderLearnMoreLink () {
     return h(
-      'div.lear-more-link', {}, [
-        h('span', {style: {
-          fontSize: '10px',
-          color: 'grey',
-        }}, this.context.t('trustVaultLearnMore')),
-        h('span', {
-          style: {
-            cursor: 'pointer',
-            textDecoration: 'underline',
-            fontSize: '10px',
-            color: 'grey',
-          },
+      'div.sw-connect__learn-more', {}, [
+        h('span.sw-connect__learn-more__text', this.context.t('trustVaultLearnMore')),
+        h('span.sw-connect__learn-more__link', {
           onClick: () => {
             global.platform.openWindow({
               url: 'https://help.trustology.io/en/',
@@ -185,14 +125,10 @@ class EmailScreen extends PureComponent {
 
   renderTrustVaultLogo () {
     return h(
-      'div.trustvault-log',
-      {
-        style: { margin: '30px' },
-      },
+      'div.sw-connect__trustvault-logo',
       [
-        h('img.sw-connect__btn__img', {
-          src: 'images/trustvault-logo.png',
-          style: { width: 100, height: 100 },
+        h('img.sw-connect__trustvault-logo__img', {
+          src: 'images/trustvault-logo.png'
         }),
       ]
     )
