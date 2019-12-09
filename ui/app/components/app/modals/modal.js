@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const FadeModal = require('boron').FadeModal
 const actions = require('../../../store/actions')
 const { resetCustomData: resetCustomGasData } = require('../../../ducks/gas/gas.duck')
 const isMobileView = require('../../../../lib/is-mobile-view')
@@ -22,6 +21,7 @@ import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
 
+import FadeModal from './fade-modal'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
@@ -480,7 +480,6 @@ Modal.prototype.render = function () {
 
   return (
     <FadeModal
-      className="modal"
       keyboard={false}
       onHide={() => {
         if (modal.onHide) {
@@ -501,7 +500,7 @@ Modal.prototype.render = function () {
   )
 }
 
-Modal.prototype.componentWillReceiveProps = function (nextProps) {
+Modal.prototype.UNSAFE_componentWillReceiveProps = function (nextProps) {
   if (nextProps.active) {
     this.show()
   } else if (this.props.active) {

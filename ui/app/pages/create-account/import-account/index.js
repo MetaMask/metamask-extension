@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 const inherits = require('util').inherits
 const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
 import Select from 'react-select'
 
 // Subviews
@@ -13,7 +12,7 @@ AccountImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect()(AccountImportSubview)
+module.exports = AccountImportSubview
 
 
 inherits(AccountImportSubview, Component)

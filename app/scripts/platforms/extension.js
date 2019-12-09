@@ -1,8 +1,8 @@
 const extension = require('extensionizer')
-const {createExplorerLink: explorerLink} = require('etherscan-link')
+const { createExplorerLink: explorerLink } = require('etherscan-link')
 
 const { getEnvironmentType, checkForError } = require('../lib/util')
-const {ENVIRONMENT_TYPE_BACKGROUND} = require('../lib/enums')
+const { ENVIRONMENT_TYPE_BACKGROUND } = require('../lib/enums')
 
 class ExtensionPlatform {
 
@@ -94,7 +94,7 @@ class ExtensionPlatform {
 
   switchToTab (tabId) {
     return new Promise((resolve, reject) => {
-      extension.tabs.update(tabId, {highlighted: true}, (tab) => {
+      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
         const err = checkForError()
         if (err) {
           reject(err)

@@ -17,7 +17,10 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
+
+const ganacheServer = new Ganache()
 
 describe('MetaMask', function () {
   let driver
@@ -32,6 +35,7 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
+    await ganacheServer.start()
     const result = await prepareExtensionForTesting()
     driver = result.driver
     await setupFetchMocking(driver)
@@ -52,6 +56,7 @@ describe('MetaMask', function () {
   })
 
   after(async function () {
+    await ganacheServer.quit()
     await driver.quit()
   })
 

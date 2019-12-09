@@ -123,13 +123,11 @@ class JsonImportSubview extends Component {
 
 JsonImportSubview.propTypes = {
   error: PropTypes.string,
-  goHome: PropTypes.func,
   displayWarning: PropTypes.func,
   firstAddress: PropTypes.string,
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
   setSelectedAddress: PropTypes.func,
-  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -141,7 +139,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    goHome: () => dispatch(actions.goHome()),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),

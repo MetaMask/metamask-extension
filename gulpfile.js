@@ -191,7 +191,7 @@ gulp.task('manifest:production', function () {
     './dist/chrome/manifest.json',
     './dist/brave/manifest.json',
     './dist/opera/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
@@ -208,7 +208,7 @@ gulp.task('manifest:testing', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
@@ -227,7 +227,7 @@ gulp.task('manifest:testing-local', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
     .pipe(jsoneditor(function (json) {
       json.background = {
@@ -246,7 +246,7 @@ gulp.task('manifest:dev', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], {base: './dist/'})
+  ], { base: './dist/' })
 
     .pipe(jsoneditor(function (json) {
       json.background = {
@@ -261,7 +261,7 @@ gulp.task('manifest:dev', function () {
 })
 
 gulp.task('optimize:images', function () {
-  return gulp.src('./dist/**/images/**', {base: './dist/'})
+  return gulp.src('./dist/**/images/**', { base: './dist/' })
     .pipe(imagemin())
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })

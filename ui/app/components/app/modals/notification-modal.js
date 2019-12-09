@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { hideModal } from '../../../store/actions'
 
 class NotificationModal extends Component {
@@ -70,7 +70,6 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
-  t: PropTypes.func,
 }
 
 const mapDispatchToProps = dispatch => {

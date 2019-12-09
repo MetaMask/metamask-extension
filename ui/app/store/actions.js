@@ -57,7 +57,6 @@ const actions = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
-  markAccountsFound,
   // intialize screen
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
@@ -736,7 +735,7 @@ function addNewAccount () {
     const oldIdentities = getState().metamask.identities
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addNewAccount((err, { identities: newIdentities}) => {
+      background.addNewAccount((err, { identities: newIdentities }) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -1404,7 +1403,7 @@ function cancelTx (txData) {
 function cancelTxs (txDataList) {
   return async (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    const txIds = txDataList.map(({id}) => id)
+    const txIds = txDataList.map(({ id }) => id)
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
       background.cancelTransaction(id, (err) => {
         if (err) {
@@ -1674,7 +1673,7 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage ({transForward = true, id}) {
+function showConfTxPage ({ transForward = true, id }) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
     transForward,
@@ -1800,7 +1799,7 @@ function removeSuggestedTokens () {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({ ...suggestedTokens })))
   }
 }
 
@@ -1827,11 +1826,6 @@ function goBackToInitView () {
   return {
     type: actions.BACK_TO_INIT_MENU,
   }
-}
-
-function markAccountsFound () {
-  log.debug(`background.markAccountsFound`)
-  return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
 function retryTransaction (txId, gasPrice) {
@@ -2031,7 +2025,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
     background.delCustomRpc(oldRpc, (err) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
+        return dispatch(actions.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
       background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
@@ -2068,7 +2062,7 @@ function delRpcTarget (oldRpc) {
       background.delCustomRpc(oldRpc, (err) => {
         if (err) {
           log.error(err)
-          dispatch(self.displayWarning('Had a problem removing network!'))
+          dispatch(actions.displayWarning('Had a problem removing network!'))
           return reject(err)
         }
         dispatch(actions.setSelectedToken())
@@ -2214,7 +2208,7 @@ function showLoadingIndication (message) {
 function setHardwareWalletDefaultHdPath ({ device, path }) {
   return {
     type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-    value: {device, path},
+    value: { device, path },
   }
 }
 
@@ -2256,32 +2250,29 @@ function requestExportAccount () {
 }
 
 function exportAccount (password, address) {
-  const self = this
-
   return function (dispatch) {
-    dispatch(self.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
           log.error('Error in submiting password.')
-          dispatch(self.hideLoadingIndication())
-          dispatch(self.displayWarning('Incorrect Password.'))
+          dispatch(actions.hideLoadingIndication())
+          dispatch(actions.displayWarning('Incorrect Password.'))
           return reject(err)
         }
         log.debug(`background.exportAccount`)
         return background.exportAccount(address, function (err, result) {
-          dispatch(self.hideLoadingIndication())
+          dispatch(actions.hideLoadingIndication())
 
           if (err) {
             log.error(err)
-            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            dispatch(actions.displayWarning('Had a problem exporting the account.'))
             return reject(err)
           }
 
-          // dispatch(self.exportAccountComplete())
-          dispatch(self.showPrivateKey(result))
+          dispatch(actions.showPrivateKey(result))
 
           return resolve(result)
         })
@@ -2374,7 +2365,7 @@ function pairUpdate (coin) {
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     dispatch(actions.hideWarning())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
       if (mktResponse.error) {
         return dispatch(actions.displayWarning(mktResponse.error))
@@ -2393,7 +2384,7 @@ function shapeShiftSubview () {
   const pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair }, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
         if (mktResponse.error) {
@@ -2414,7 +2405,7 @@ function shapeShiftSubview () {
 function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
       dispatch(actions.hideLoadingIndication())
       if (response.error) {
         return dispatch(actions.displayWarning(response.error))
@@ -2430,7 +2421,7 @@ function coinShiftRquest (data, marketData) {
 
 function buyWithShapeShift (data) {
   return () => new Promise((resolve, reject) => {
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
       if (response.error) {
         return reject(response.error)
       }
@@ -2452,7 +2443,7 @@ function showQrView (data, message) {
 function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
       if (mktResponse.error) {
         return dispatch(actions.displayWarning(mktResponse.error))
       }
@@ -2482,7 +2473,7 @@ function shapeShiftRequest (query, options = {}, cb) {
       return queryResponse
     } catch (e) {
       if (cb) {
-        cb({error: e})
+        cb({ error: e })
       }
       return e
     }
@@ -2797,19 +2788,19 @@ function setPendingTokens (pendingTokens) {
 // Permissions
 
 /**
- * Approves the permission requests with the given IDs.
- * @param {string} requestId - The id of the permissions request.
+ * Approves the permissions request.
+ * @param {Object} request - The permissions request to approve
  * @param {string[]} accounts - The accounts to expose, if any.
  */
-function approvePermissionsRequest (requestId, accounts) {
+function approvePermissionsRequest (request, accounts) {
   return () => {
-    background.approvePermissionsRequest(requestId, accounts)
+    background.approvePermissionsRequest(request, accounts)
   }
 }
 
 /**
- * Rejects the permission requests with the given IDs.
- * @param {Array} requestId
+ * Rejects the permissions request with the given ID.
+ * @param {string} requestId - The id of the request to be rejected
  */
 function rejectPermissionsRequest (requestId) {
   return () => {

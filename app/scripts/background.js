@@ -488,7 +488,7 @@ function openPopup () {
 }
 
 // On first install, open a new tab with MetaMask
-extension.runtime.onInstalled.addListener(({reason}) => {
+extension.runtime.onInstalled.addListener(({ reason }) => {
   if ((reason === 'install') && (!METAMASK_DEBUG)) {
     platform.openExtensionInBrowser()
   }

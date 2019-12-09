@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 
 const copyToClipboard = require('copy-to-clipboard')
 const Tooltip = require('./tooltip')
@@ -30,11 +29,9 @@ class CopyButton extends Component {
   }
 
   render () {
-    const state = this.state
-    const props = this.props
-    const value = props.value
-    const copied = state.copied
-    const message = copied ? this.context.t('copiedButton') : props.title || this.context.t('copyButton')
+    const { title, value } = this.props
+    const { copied } = this.state
+    const message = copied ? this.context.t('copiedButton') : title || this.context.t('copyButton')
 
     return (
       <div
@@ -63,4 +60,4 @@ class CopyButton extends Component {
   }
 }
 
-module.exports = connect()(CopyButton)
+module.exports = CopyButton

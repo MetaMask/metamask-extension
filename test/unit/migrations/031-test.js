@@ -7,7 +7,7 @@ describe('migration #31', () => {
       'meta': {},
       'data': {
         'PreferencesController': {
-          'tokens': [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}],
+          'tokens': [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }],
           'identities': {
             '0x6d14': {},
             '0x3695': {},
@@ -36,7 +36,7 @@ describe('migration #31', () => {
       'meta': {},
       'data': {
         'PreferencesController': {
-          'tokens': [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}],
+          'tokens': [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }],
           'identities': {
             '0x6d14': {},
             '0x3695': {},

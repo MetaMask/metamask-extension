@@ -85,7 +85,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 
 class Routes extends Component {
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
@@ -139,7 +139,7 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated path={CONNECT_ROUTE} component={PermissionsConnect} exact />
+        <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} exact />
         <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
@@ -239,7 +239,7 @@ class Routes extends Component {
 
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {

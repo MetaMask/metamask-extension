@@ -1,10 +1,10 @@
 const assert = require('assert')
-const selectors = require('../../../../ui/app/selectors/selectors')
+import * as selectors from '../../../../ui/app/selectors/selectors'
 const mockState = require('../../../data/mock-state.json')
 const Eth = require('ethjs')
 
 const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('Selectors', function () {
 

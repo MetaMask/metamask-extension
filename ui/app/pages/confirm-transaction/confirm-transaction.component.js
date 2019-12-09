@@ -30,11 +30,8 @@ export default class ConfirmTransaction extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    match: PropTypes.object,
     send: PropTypes.object,
-    unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
-    confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
@@ -45,7 +42,6 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
     fullScreenVsPopupTestGroup: PropTypes.string,
     trackABTest: PropTypes.bool,
-    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {

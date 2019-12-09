@@ -1,6 +1,7 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const ObservableStore = require('obs-store')
+const log = require('loglevel')
 const RpcCap = require('rpc-cap').CapabilitiesController
 const { ethErrors } = require('eth-json-rpc-errors')
 
@@ -133,12 +134,18 @@ class PermissionsController {
   /**
    * User approval callback. The request can fail if the request is invalid.
    *
-   * @param {object} approved the approved request object
+   * @param {object} approved - the approved request object
+   * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
 
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
+
+    if (!approval) {
+      log.warn(`Permissions request with id '${id}' not found`)
+      return
+    }
 
     try {
 
@@ -164,6 +171,12 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
+
+    if (!approval) {
+      log.warn(`Permissions request with id '${id}' not found`)
+      return
+    }
+
     approval.reject(ethErrors.provider.userRejectedRequest())
     delete this.pendingApprovals[id]
   }
@@ -187,7 +200,7 @@ class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err => err ? resolve() : reject(err))
+        this.permissions.grantNewPermissions(origin, permissions, {}, err => (err ? resolve() : reject(err)))
       })
     } catch (err) {
       error = err
@@ -355,7 +368,7 @@ class PermissionsController {
       requestUserApproval: async (req) => {
         const { metadata: { id } } = req
 
-        this._platform.openExtensionInBrowser('connect')
+        this._platform.openExtensionInBrowser(`connect/${id}`)
 
         return new Promise((resolve, reject) => {
           this.pendingApprovals[id] = { resolve, reject }

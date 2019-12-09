@@ -5,7 +5,7 @@ const oldStorage = {
   'meta': {},
   'data': {
     'PreferencesController': {
-      'tokens': [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}],
+      'tokens': [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }],
       'identities': {
         '0x6d14': {},
         '0x3695': {},
@@ -21,7 +21,7 @@ describe('migration #28', () => {
         const newTokens = newStorage.data.PreferencesController.tokens
         const newAccountTokens = newStorage.data.PreferencesController.accountTokens
 
-        const testTokens = [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}]
+        const testTokens = [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }]
         assert.equal(newTokens.length, 0, 'tokens is expected to have the length of 0')
         assert.equal(newAccountTokens['0x6d14']['mainnet'].length, 2, 'tokens for address is expected to have the length of 2')
         assert.equal(newAccountTokens['0x3695']['mainnet'].length, 2, 'tokens for address is expected to have the length of 2')

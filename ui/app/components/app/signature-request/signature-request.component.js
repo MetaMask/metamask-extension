@@ -51,7 +51,7 @@ export default class SignatureRequest extends PureComponent {
   render () {
     const {
       selectedAccount,
-      txData: { msgParams: { data, origin, from: senderWallet }},
+      txData: { msgParams: { data, origin, from: senderWallet } },
       cancel,
       sign,
     } = this.props

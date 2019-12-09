@@ -26,7 +26,7 @@ describe('SendHeader Component', function () {
         history={historySpies}
         titleKey="mockTitleKey"
       />
-    ), { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+    ), { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } })
   })
 
   afterEach(() => {

@@ -18,7 +18,7 @@ export default class AddContact extends PureComponent {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
-    qrCodeData: PropTypes.object,
+    qrCodeData: PropTypes.object, /* eslint-disable-line react/no-unused-prop-types */
     qrCodeDetected: PropTypes.func,
   }
 
@@ -35,7 +35,7 @@ export default class AddContact extends PureComponent {
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 
 export default class AddTokenButton extends PureComponent {
   static contextTypes = {

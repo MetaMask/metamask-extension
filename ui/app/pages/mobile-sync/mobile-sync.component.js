@@ -72,7 +72,7 @@ export default class MobileSyncPage extends Component {
   generateCipherKeyAndChannelName () {
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
-    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
+    this.setState({ cipherKey: this.cipherKey, channelName: this.channelName })
   }
 
   initWithCipherKeyAndChannelName (cipherKey, channelName) {
@@ -93,7 +93,7 @@ export default class MobileSyncPage extends Component {
 
     this.pubnubListener = {
       message: (data) => {
-        const {channel, message} = data
+        const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
           return false
@@ -108,7 +108,7 @@ export default class MobileSyncPage extends Component {
           this.initWebsockets()
         } else if (message.event === 'end-sync') {
           this.disconnectWebsockets()
-          this.setState({syncing: false, completed: true})
+          this.setState({ syncing: false, completed: true })
         }
       },
     }
@@ -171,7 +171,7 @@ export default class MobileSyncPage extends Component {
       return false
     }
     this.syncing = true
-    this.setState({syncing: true})
+    this.setState({ syncing: true })
 
     const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
 
@@ -194,7 +194,7 @@ export default class MobileSyncPage extends Component {
       }
     } catch (e) {
       this.props.displayWarning('Sync failed :(')
-      this.setState({syncing: false})
+      this.setState({ syncing: false })
       this.syncing = false
       this.notifyError(e.toString())
     }

@@ -191,7 +191,6 @@ AccountList.propTypes = {
   getPage: PropTypes.func.isRequired,
   network: PropTypes.string,
   selectedAccount: PropTypes.string,
-  history: PropTypes.object,
   onUnlockAccount: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,

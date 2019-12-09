@@ -7,7 +7,7 @@ describe('#createPendingNonceMiddleware', function () {
   const pendingNonceMiddleware = createPendingNonceMiddleware({ getPendingNonce })
 
   it('should call next if not a eth_getTransactionCount request', (done) => {
-    const req = {method: 'eth_getBlockByNumber'}
+    const req = { method: 'eth_getBlockByNumber' }
     const res = {}
     pendingNonceMiddleware(req, res, () => done())
   })
@@ -30,7 +30,7 @@ describe('#createPendingNonceMiddleware', function () {
 
 describe('#createPendingTxMiddleware', function () {
   let returnUndefined = true
-  const getPendingTransactionByHash = () => returnUndefined ? undefined : txMetaStub
+  const getPendingTransactionByHash = () => (returnUndefined ? undefined : txMetaStub)
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
   const pendingTxMiddleware = createPendingTxMiddleware({ getPendingTransactionByHash })
   const spec = {
@@ -50,7 +50,7 @@ describe('#createPendingTxMiddleware', function () {
     's': '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   }
   it('should call next if not a eth_getTransactionByHash request', (done) => {
-    const req = {method: 'eth_getBlockByNumber'}
+    const req = { method: 'eth_getBlockByNumber' }
     const res = {}
     pendingTxMiddleware(req, res, () => done())
   })

@@ -161,7 +161,7 @@ describe('Gas Duck', () => {
         GasReducer(mockState, {
           type: BASIC_GAS_ESTIMATE_LOADING_STARTED,
         }),
-        Object.assign({basicEstimateIsLoading: true}, mockState.gas)
+        Object.assign({ basicEstimateIsLoading: true }, mockState.gas)
       )
     })
 
@@ -170,7 +170,7 @@ describe('Gas Duck', () => {
         GasReducer(mockState, {
           type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
         }),
-        Object.assign({basicEstimateIsLoading: false}, mockState.gas)
+        Object.assign({ basicEstimateIsLoading: false }, mockState.gas)
       )
     })
 
@@ -179,7 +179,7 @@ describe('Gas Duck', () => {
         GasReducer(mockState, {
           type: GAS_ESTIMATE_LOADING_STARTED,
         }),
-        Object.assign({gasEstimatesLoading: true}, mockState.gas)
+        Object.assign({ gasEstimatesLoading: true }, mockState.gas)
       )
     })
 
@@ -188,7 +188,7 @@ describe('Gas Duck', () => {
         GasReducer(mockState, {
           type: GAS_ESTIMATE_LOADING_FINISHED,
         }),
-        Object.assign({gasEstimatesLoading: false}, mockState.gas)
+        Object.assign({ gasEstimatesLoading: false }, mockState.gas)
       )
     })
 
@@ -203,7 +203,7 @@ describe('Gas Duck', () => {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: { someProp: 'someData123' },
         }),
-        Object.assign({basicEstimates: {someProp: 'someData123'} }, mockState.gas)
+        Object.assign({ basicEstimates: { someProp: 'someData123' } }, mockState.gas)
       )
     })
 
@@ -213,7 +213,7 @@ describe('Gas Duck', () => {
           type: SET_PRICE_AND_TIME_ESTIMATES,
           value: { someProp: 'someData123' },
         }),
-        Object.assign({priceAndTimeEstimates: {someProp: 'someData123'} }, mockState.gas)
+        Object.assign({ priceAndTimeEstimates: { someProp: 'someData123' } }, mockState.gas)
       )
     })
 
@@ -223,7 +223,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_PRICE,
           value: 4321,
         }),
-        Object.assign({customData: {price: 4321} }, mockState.gas)
+        Object.assign({ customData: { price: 4321 } }, mockState.gas)
       )
     })
 
@@ -233,7 +233,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_LIMIT,
           value: 9876,
         }),
-        Object.assign({customData: {limit: 9876} }, mockState.gas)
+        Object.assign({ customData: { limit: 9876 } }, mockState.gas)
       )
     })
 
@@ -243,7 +243,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_TOTAL,
           value: 10000,
         }),
-        Object.assign({customData: {total: 10000} }, mockState.gas)
+        Object.assign({ customData: { total: 10000 } }, mockState.gas)
       )
     })
 
@@ -273,7 +273,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_ERRORS,
           value: { someError: 'error_error' },
         }),
-        Object.assign({errors: {someError: 'error_error'} }, mockState.gas)
+        Object.assign({ errors: { someError: 'error_error' } }, mockState.gas)
       )
     })
 
@@ -316,7 +316,7 @@ describe('Gas Duck', () => {
       ) }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
         global.fetch.getCall(0).args,
@@ -379,7 +379,7 @@ describe('Gas Duck', () => {
       ) }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.ok(global.fetch.notCalled)
       assert.deepEqual(
@@ -415,7 +415,7 @@ describe('Gas Duck', () => {
       ) }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
         global.fetch.getCall(0).args,
@@ -469,7 +469,7 @@ describe('Gas Duck', () => {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
         global.fetch.getCall(0).args,
@@ -546,7 +546,7 @@ describe('Gas Duck', () => {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.ok(global.fetch.notCalled)
 
@@ -590,7 +590,7 @@ describe('Gas Duck', () => {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
         global.fetch.getCall(0).args,
@@ -651,7 +651,7 @@ describe('Gas Duck', () => {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
         global.fetch.getCall(0).args,
@@ -705,7 +705,7 @@ describe('Gas Duck', () => {
       }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
-        [{ type: GAS_ESTIMATE_LOADING_STARTED} ]
+        [{ type: GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.equal(global.fetch.callCount, 0)
 

@@ -34,7 +34,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
     const rawContentHash = contentLookupResult[0]
     const decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
-    return {type: type, hash: decodedContentHash}
+    return { type: type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
     // lookup content id
@@ -43,7 +43,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
     if (hexValueIsEmpty(content)) {
       throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
     }
-    return {type: 'swarm-ns', hash: content.slice(2)}
+    return { type: 'swarm-ns', hash: content.slice(2) }
   }
   throw new Error(`EnsIpfsResolver - the resolver for name "${name}" is not standard, it should either supports contenthash() or content()`)
 }

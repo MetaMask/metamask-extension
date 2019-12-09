@@ -34,12 +34,10 @@ class SettingsPage extends PureComponent {
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
     isPopupView: PropTypes.bool,
-    location: PropTypes.object,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
-    t: PropTypes.func,
   }
 
   static contextTypes = {

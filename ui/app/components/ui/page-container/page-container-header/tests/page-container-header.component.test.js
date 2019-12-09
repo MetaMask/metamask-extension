@@ -8,7 +8,7 @@ describe('Page Container Header', () => {
   let wrapper, style, onBackButtonClick, onClose
 
   beforeEach(() => {
-    style = {test: 'style'}
+    style = { test: 'style' }
     onBackButtonClick = sinon.spy()
     onClose = sinon.spy()
 

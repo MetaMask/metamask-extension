@@ -21,7 +21,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const EnsController = require('./controllers/ens')
 const NetworkController = require('./controllers/network')
@@ -45,9 +45,9 @@ const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
 const selectChainId = require('./lib/select-chain-id')
-const {Mutex} = require('await-semaphore')
-const {version} = require('../manifest.json')
-const {BN} = require('ethereumjs-util')
+const { Mutex } = require('await-semaphore')
+const { version } = require('../manifest.json')
+const { BN } = require('ethereumjs-util')
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
@@ -445,7 +445,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
@@ -1001,8 +1000,8 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    const {identities} = this.preferencesController.store.getState()
-    return {...keyState, identities}
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
   }
 
   /**
@@ -1278,44 +1277,6 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(null, this.getState())
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // MetaMask Version 3 Migration Account Restauration Methods
-
-  /**
-   * A legacy method (probably dead code) that was used when we swapped out our
-   * key management library that we depended on.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * @deprecated
-   * @param  {} migratorOutput
-   */
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-      .then(() => migratorOutput)
-  }
-
-  /**
-   * A legacy method used to record user confirmation that they understand
-   * that some of their accounts have been recovered but should be backed up.
-   * This function no longer does anything and will be removed.
-   *
-   * @deprecated
-   * @param {Function} cb - A callback function called with a full state update.
-   */
-  markAccountsFound (cb) {
-    // TODO Remove me
-    cb(null, this.getState())
-  }
-
-  /**
-   * An account object
-   * @typedef Account
-   * @property string privateKey - The private key of the account.
-   */
 
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
@@ -1724,8 +1685,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate (state) {
-    const {isUnlocked, keyrings} = state
-    const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+    const { isUnlocked, keyrings } = state
+    const addresses = keyrings.reduce((acc, { accounts }) => acc.concat(accounts), [])
 
     if (!addresses.length) {
       return

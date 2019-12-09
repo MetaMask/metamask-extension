@@ -17,7 +17,6 @@ export default class AdvancedTab extends PureComponent {
     setUseNonceField: PropTypes.func,
     useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
-    setRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,

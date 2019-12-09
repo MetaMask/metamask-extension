@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
 

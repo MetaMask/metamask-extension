@@ -172,8 +172,8 @@ function composeUrl (config) {
   return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
 }
 
-export function sendMetaMetricsEvent (config, permissionPreferences) {
-  return fetch(composeUrl(config, permissionPreferences), {
+export function sendMetaMetricsEvent (config) {
+  return fetch(composeUrl(config), {
     'headers': {},
     'method': 'GET',
   })

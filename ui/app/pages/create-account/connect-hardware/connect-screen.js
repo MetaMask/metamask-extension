@@ -54,7 +54,7 @@ class ConnectScreen extends Component {
         className={classnames('hw-connect__btn', {
           'selected': this.state.selectedDevice === 'trezor',
         })}
-        onClick={_ => this.setState({selectedDevice: 'trezor'})}
+        onClick={_ => this.setState({ selectedDevice: 'trezor' })}
       >
         <img
           className="hw-connect__btn__img"
@@ -71,7 +71,7 @@ class ConnectScreen extends Component {
         className={classnames('hw-connect__btn', {
           'selected': this.state.selectedDevice === 'ledger',
         })}
-        onClick={_ => this.setState({selectedDevice: 'ledger'})}
+        onClick={_ => this.setState({ selectedDevice: 'ledger' })}
       >
         <img
           className="hw-connect__btn__img"
@@ -172,7 +172,7 @@ class ConnectScreen extends Component {
 
   scrollToTutorial = () => {
     if (this.referenceNode) {
-      this.referenceNode.scrollIntoView({behavior: 'smooth'})
+      this.referenceNode.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -229,19 +229,19 @@ class ConnectScreen extends Component {
     const steps = [
       {
         asset: 'hardware-wallet-step-1',
-        dimensions: {width: '225px', height: '75px'},
+        dimensions: { width: '225px', height: '75px' },
         title: this.context.t('step1HardwareWallet'),
         message: this.context.t('step1HardwareWalletMsg'),
       },
       {
         asset: 'hardware-wallet-step-2',
-        dimensions: {width: '300px', height: '100px'},
+        dimensions: { width: '300px', height: '100px' },
         title: this.context.t('step2HardwareWallet'),
         message: this.context.t('step2HardwareWalletMsg'),
       },
       {
         asset: 'hardware-wallet-step-3',
-        dimensions: {width: '120px', height: '90px'},
+        dimensions: { width: '120px', height: '90px' },
         title: this.context.t('step3HardwareWallet'),
         message: this.context.t('step3HardwareWalletMsg'),
       },

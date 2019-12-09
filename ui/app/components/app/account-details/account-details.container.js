@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { hideSidebar, showModal } from '../../../store/actions'
 import AccountDetails from './account-details.component'
@@ -15,7 +14,6 @@ function mapDispatchToProps (dispatch) {
 }
 
 const AccountDetailsContainer = compose(
-  withRouter,
   connect(null, mapDispatchToProps)
 )(AccountDetails)
 
