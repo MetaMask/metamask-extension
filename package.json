@@ -50,7 +50,7 @@
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
-    "build:storybook": "build-storybook -c .storybook -o .out",
+    "build:storybook": "build-storybook -c .storybook -o docs/storybook",
     "update-changelog": "./development/auto-changelog.sh",
     "rollback": "./development/rollback.sh"
   },
