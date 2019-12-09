@@ -1,4 +1,4 @@
-const TrustvaultKeyring = require('../app/scripts/eth-trustvault-keyring')
+const TrustvaultKeyring = require('../../../app/scripts/eth-trustvault-keyring')
 const assert = require('assert')
 const sinon = require('sinon')
 const EthereumTx = require('ethereumjs-tx')
@@ -417,12 +417,12 @@ describe('TrustVault Keyring Tests', () => {
     it('should construct a Trustoloy Transaction given an EthereumTx object.', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       const transaction = trustVaultKeyring._constructTrustTransaction(fakeTx)
-      assert.equal(transaction.chainId,3)
-      assert.equal(transaction.gasLimit,"21000")
-      assert.equal(transaction.gasPrice,"6000000000")
-      assert.equal(transaction.nonce,"7")
-      assert.equal(transaction.to,"0x357e214c002bd6356cb891164e93e39dee28cced")
-      assert.equal(transaction.value,"480304000000000") 
+      assert.equal(transaction.chainId, 3)
+      assert.equal(transaction.gasLimit, '21000')
+      assert.equal(transaction.gasPrice, '6000000000')
+      assert.equal(transaction.nonce, '7')
+      assert.equal(transaction.to, '0x357e214c002bd6356cb891164e93e39dee28cced')
+      assert.equal(transaction.value, '480304000000000')
     })
   })
 
@@ -433,16 +433,16 @@ describe('TrustVault Keyring Tests', () => {
       sandbox.restore()
     })
     it('should return singed transaction if transaction status is signed', async () => {
-      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status:"SIGNED", signedTransaction: "signedTransaction"}}})
+      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status: 'SIGNED', signedTransaction: 'signedTransaction'}}})
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
       const signedTransaction = await trustVaultKeyring._pollTransaction(() => {}, {})
       assert.equal(signedTransaction, 'signedTransaction')
     })
 
     it('should return "Transaction cancelled by user" transaction if transaction status is USER_CANCELLED', (done) => {
-      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status:"USER_CANCELLED", signedTransaction: "signedTransaction"}}})
+      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status: 'USER_CANCELLED', signedTransaction: 'signedTransaction'}}})
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
-      trustVaultKeyring._pollTransaction("txID")
+      trustVaultKeyring._pollTransaction('txID')
         .then(result => assert.fail(`Expected to fail returned with result ${result}`))
         .catch(e => {
           assert.equal(e, 'Transaction cancelled by user')
@@ -450,9 +450,9 @@ describe('TrustVault Keyring Tests', () => {
         })
     })
     it('should return Error transaction if transaction status is ERROR', (done) => {
-      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status:"ERROR", signedTransaction: "signedTransaction"}}})
+      sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({userWallet: {getTransactionInfo: {status: 'ERROR', signedTransaction: 'signedTransaction'}}})
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
-      trustVaultKeyring._pollTransaction("txID")
+      trustVaultKeyring._pollTransaction('txID')
         .then(result => assert.fail(`Expected to fail returned with result ${result}`))
         .catch(e => {
           assert.equal(e, 'Signing the transaction errored')
@@ -461,10 +461,10 @@ describe('TrustVault Keyring Tests', () => {
     })
     it('should poll again if transaction status is not there.', async () => {
       const trustVaultBridgeRequestStub = sandbox.stub(TrustvaultKeyring.prototype, '_request')
-      trustVaultBridgeRequestStub.onCall(0).resolves({userWallet:{getTransactionInfo:{}}})
-      trustVaultBridgeRequestStub.onCall(1).resolves({userWallet: {getTransactionInfo: {status:"SIGNED", signedTransaction: "signedTransaction"}}})
+      trustVaultBridgeRequestStub.onCall(0).resolves({userWallet: {getTransactionInfo: {}}})
+      trustVaultBridgeRequestStub.onCall(1).resolves({userWallet: {getTransactionInfo: {status: 'SIGNED', signedTransaction: 'signedTransaction'}}})
       const trustVaultKeyring = new TrustvaultKeyring({auth: 'test'})
-      const signedTransaction = await trustVaultKeyring._pollTransaction("txID")
+      const signedTransaction = await trustVaultKeyring._pollTransaction('txID')
       assert.equal(signedTransaction, 'signedTransaction')
     })
   })

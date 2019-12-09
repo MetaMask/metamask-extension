@@ -916,9 +916,6 @@
   "newToMetaMask": {
     "message": "New to MetaMask?"
   },
-  "next": {
-    "message": "Next"
-  },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },

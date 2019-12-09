@@ -63,7 +63,9 @@ class PinScreen extends PureComponent {
       key,
       filled: () => Boolean(this.state.firstPin),
       maxLength: 2,
-      setRef: (element) => this.firstPinInput = element,
+      setRef: (element) => {
+        this.firstPinInput = element
+      },
       keyPress: (e) => {
         if (e.key === 'Enter' && this.state.firstPin && this.state.secondPin) {
           return this.submitPinChallenge()
