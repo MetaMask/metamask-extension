@@ -42,7 +42,9 @@ describe('liveMigrations require list', () => {
     const fileNames = await pify(cb => fs.readdir('./app/scripts/migrations/', cb))()
     const migrationNumbers = fileNames.reduce((agg, filename) => {
       const name = filename.split('.')[0]
-      if (/^\d+$/.test(name)) agg.push(name)
+      if (/^\d+$/.test(name)) {
+        agg.push(name)
+      }
       return agg
     }, []).map((num) => parseInt(num))
 
