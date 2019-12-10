@@ -29,7 +29,6 @@ const rawFirstTimeState = require('./first-time-state')
 const setupSentry = require('./lib/setupSentry')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
 const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
@@ -54,12 +53,6 @@ global.METAMASK_NOTIFIER = notificationManager
 // setup sentry error reporting
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
-
-// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// Internet Explorer 6-11
-const isIE = !!document.documentMode
-// Edge 20+
-const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
 let notificationIsOpen = false
@@ -247,7 +240,6 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
-    encryptor: isEdge ? new EdgeEncryptor() : undefined,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds
     },
