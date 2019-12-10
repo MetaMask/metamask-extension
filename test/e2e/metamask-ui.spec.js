@@ -2,12 +2,10 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
-  delay,
-} = require('./func')
-const {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
+  delay,
   findElement,
   findElements,
   openNewPage,
