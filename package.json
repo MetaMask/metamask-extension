@@ -153,7 +153,6 @@
     "react-dnd": "^3.0.2",
     "react-dnd-html5-backend": "^7.4.4",
     "react-dom": "^16.12.0",
-    "react-hyperscript": "^3.0.0",
     "react-idle-timer": "^4.2.5",
     "react-inspector": "^2.3.0",
     "react-media": "^1.8.0",
