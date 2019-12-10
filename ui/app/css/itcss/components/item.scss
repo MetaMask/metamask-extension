@@ -58,6 +58,24 @@
   h2 {
     font-size: 16px;
     line-height: 160%;
+    position: relative;
+
+    // again these styles should be part of a seperate prelaoder stylesheet
+    span {
+      display: inline-block;
+      position: absolute;
+      top: 2px;
+      width: 16px;
+      height: 16px;
+      margin-left: 8px;
+
+      svg {
+        animation-name: spin;
+        animation-duration: 500ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
+    }
   }
 
   h3 {
@@ -68,5 +86,14 @@
   .amount {
     margin: 0 0 0 auto;
     text-align: right;
+  }
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
   }
 }
