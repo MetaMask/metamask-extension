@@ -2,10 +2,8 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
-  delay,
-} = require('./func')
-const {
   checkBrowserForConsoleErrors,
+  delay,
   verboseReportOnFailure,
   findElement,
   findElements,
