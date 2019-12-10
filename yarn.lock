@@ -22402,11 +22402,6 @@ react-hotkeys@2.0.0-pre4:
   dependencies:
     prop-types "^15.6.1"
 
-react-hyperscript@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-hyperscript/-/react-hyperscript-3.0.0.tgz#3c16010b33175de6bc01fd1ebad0a16a9a6dc9ab"
-  integrity sha1-PBYBCzMXXea8Af0eutChapptyas=
-
 react-idle-timer@^4.2.5:
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/react-idle-timer/-/react-idle-timer-4.2.5.tgz#eb7d6e1b318f7755b5e0ee810254a8e95a2271b7"
