@@ -16,12 +16,13 @@
   color: #6A737D;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: stretch;
 
   .icon {
-    margin-top: 10px;
-    width: 10%;
+    .Icon {
+      margin: 10px 14px 0 0;
+    }
   }
 
   .col {
@@ -64,11 +65,7 @@
     line-height: 14px;
   }
 
-  .main {
-    width: 60%;
-  }
-
   .amount {
-    text-align: right;
+    margin: 0 0 0 auto;
   }
 }

@@ -17,17 +17,10 @@ const Item = ({ className, icon, title, subtitle, more }) => {
   return (
     <div className={className}>
       <div className="col icon">
-        <Icon
-          type="send"
-          width={28}
-          height={28}
-          color="#2F80ED"
-          borderWidth={1}
-          borderRadius={18}
-        />
+        {icon}
       </div>
       <div className="col main">
-        <h2>Send Dai</h2>
+        <h2>Send DAI</h2>
         <h3>Sept 20 · To: 00X4...3058</h3>
         <div className="more">
           <button>Speed up</button>
@@ -44,8 +37,8 @@ const Item = ({ className, icon, title, subtitle, more }) => {
 
 Item.propTypes = {
   className: PropTypes.string,
-  icon: PropTypes.number,
-  title: PropTypes.number,
+  icon: PropTypes.node,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
   more: PropTypes.number,
 }
