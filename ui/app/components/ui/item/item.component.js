@@ -12,11 +12,11 @@ const Subtitle = component => (
 )
 const More = () => ({}) */
 
-const Item = ({ icon, title, subtitle, more }) => {
+const Item = ({ className, icon, title, subtitle, more }) => {
   console.log(icon, title, subtitle, more)
   return (
-    <div className="Item__flex-grid">
-      <div className="col">
+    <div className={className}>
+      <div className="col icon">
         <Icon
           type="send"
           width={28}
@@ -26,19 +26,24 @@ const Item = ({ icon, title, subtitle, more }) => {
           borderRadius={18}
         />
       </div>
-      <div className="col">
+      <div className="col main">
         <h2>Send Dai</h2>
         <h3>Sept 20 · To: 00X4...3058</h3>
+        <div className="more">
+          <button>Speed up</button>
+          <button>Cancel</button>
+        </div>
       </div>
-      <div className="col">
-        <div></div>
+      <div className="col amount">
+        <h2>- 0.0732 DAI</h2>
+        <h3>- $6.04 USD</h3>
       </div>
     </div>
   )
 }
 
 Item.propTypes = {
-  // cols: PropTypes.string,
+  className: PropTypes.string,
   icon: PropTypes.number,
   title: PropTypes.number,
   subtitle: PropTypes.string,
