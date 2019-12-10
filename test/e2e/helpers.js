@@ -91,8 +91,6 @@ async function setupFetchMocking (driver) {
         return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
       } else if (url.match(/chromeextensionmm/)) {
         return { json: async () => clone(fetchMockResponses.metametrics) }
-      } else if (url === 'https://dev.blockscale.net/api/gasexpress.json') {
-        return { json: async () => clone(fetchMockResponses.gasExpress) }
       }
       return window.origFetch(...args)
     }
