@@ -1,7 +1,74 @@
 .Item__flex-grid {
-  width: 374px;
-  height: 86px;
+  width: 100%;
+  min-width: 374px;
+  min-height: 86px;
+  margin: 0 20px;
+
   left: 0px;
   top: 497px;
   background: #FFFFFF;
+  padding: 24px 16px;
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
+  color: #6A737D;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+
+  .icon {
+    margin-top: 10px;
+    width: 10%;
+  }
+
+  .col {
+    align-self: flex-start;
+
+    // these will need to be broken out into other components
+    .more {
+      button {
+        border: 1px solid #6A737D;
+        color: #6A737D;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background: transparent;
+        font-family: 'Roboto', sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 12px;
+
+        padding: 6px 16px 7px;
+
+        margin-top: 12px;
+        margin-right: 8px;
+
+        &:hover {
+          color: #037DD6;
+          border-color: #037DD6;
+        }
+      }
+    }
+  }
+
+  h2 {
+    font-size: 16px;
+    line-height: 160%;
+  }
+
+  h3 {
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  .main {
+    width: 60%;
+  }
+
+  .amount {
+    text-align: right;
+  }
 }
