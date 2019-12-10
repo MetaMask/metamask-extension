@@ -1,7 +1,6 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import Icon from '../icon'
 
 /* const Icon = () => ({})
 const Title = () => (
@@ -12,6 +11,8 @@ const Subtitle = component => (
 )
 const More = () => ({}) */
 
+import Preloader from '../preloader'
+
 const Item = ({ className, icon, title, subtitle, more }) => {
   console.log(icon, title, subtitle, more)
   return (
@@ -20,7 +21,7 @@ const Item = ({ className, icon, title, subtitle, more }) => {
         {icon}
       </div>
       <div className="col main">
-        <h2>Send DAI</h2>
+        <h2>Send DAI <span><Preloader className="preloader" /></span></h2>
         <h3>Sept 20 · To: 00X4...3058</h3>
         <div className="more">
           <button>Speed up</button>
