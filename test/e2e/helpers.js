@@ -25,10 +25,8 @@ module.exports = {
   closeAllWindowHandlesExcept,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   switchToWindowWithTitle,
-  switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
   setupFetchMocking,
@@ -109,21 +107,6 @@ async function setupFetchMocking (driver) {
   const fetchMockResponsesJson = JSON.stringify(fetchMockResponses)
   // eval the fetchMocking script in the browser
   await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
-}
-
-async function loadExtension (driver, extensionId) {
-  switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
-    }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
-    }
-    default:
-      throw new Error('Unrecognized SELENIUM_BROWSER value')
-  }
 }
 
 async function checkBrowserForConsoleErrors (driver) {
@@ -242,20 +225,4 @@ async function assertElementNotPresent (webdriver, driver, by) {
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
   assert.ok(!dataTab, 'Found element that should not be present')
-}
-
-async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
-  if (!windowHandles) {
-    windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window that matches: ' + regexp)
-  }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const windowUrl = await driver.getCurrentUrl()
-  if (windowUrl.match(regexp)) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
-  }
 }
