@@ -17,7 +17,7 @@ storiesOf('Item', module)
   .add('Item - Send', () => (
     <Item
       className="Item__flex-grid"
-      icon={SendIcon}
+      icon={<SendIcon />}
       title="Title"
       subtitle="Subtitle"
     />
