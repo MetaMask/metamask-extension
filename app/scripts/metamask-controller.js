@@ -941,6 +941,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @property {string} sessionToken - sessionToken unique to the partial pin challenge
    *
    * @param {string} email
+   * @param {string} deviceName
+   * @param {string} hdPath
    * @returns {PartialPinChallenge}
    */
   async getPartialPinChallenge (email, deviceName = 'trustvault', hdPath = null) {
@@ -955,10 +957,8 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Respond to TrustVault partial pin challenge
    *
-   * @param {string} email - TrustVault user email
    * @param {string} firstPinDigit - pin digit for the first partial pin challenge
    * @param {string} secondPinDigit - pin digit for the second partial pin challenge
-   * @param {string} sessionToken - sessionToken from the partial pin challenge
    * @param {string} deviceName
    * @returns {Object} auth - TrustVault authentication object
    */
