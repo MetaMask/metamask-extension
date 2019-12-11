@@ -2,14 +2,14 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Item from './item.component'
 import Icon from '../icon'
-import { color, number } from '@storybook/addon-knobs/react'
+// import { color, number } from '@storybook/addon-knobs/react'
 
 const SendIcon = () => (
   <Icon
     type="send"
-    width={number('width', 28,)}
-    height={number('height', 28)}
-    color={color('color', '#2F80ED')}
+    width={28}
+    height={28}
+    color="#2F80ED"
   />
 )
 
