@@ -285,6 +285,7 @@
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.0.1",
+    "selenium-webdriver": "^3.6.0",
     "serve-handler": "^6.1.2",
     "sesify": "^4.2.1",
     "sesify-viz": "^3.0.5",
