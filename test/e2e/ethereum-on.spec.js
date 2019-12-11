@@ -1,28 +1,25 @@
-const assert = require('assert')
-const webdriver = require('selenium-webdriver')
-const { By, until } = webdriver
+import assert from 'assert'
+
 const {
-  delay,
-} = require('./func')
-const {
-  checkBrowserForConsoleErrors,
-  findElement,
-  openNewPage,
+  // checkBrowserForConsoleErrors,
   verboseReportOnFailure,
-  waitUntilXWindowHandles,
-  switchToWindowWithTitle,
-  setupFetchMocking,
+  // setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
+const {
+  connect,
+  connectRequest,
+  ropsten,
+} = require('../../app/_locales/en/messages.json')
+
+import { firstTimeFlow } from './lib/features/first-time-flow'
+import { switchAccount } from './view/account-menu/index'
 
 describe('MetaMask', function () {
-  let driver
-  let publicAddress
+  let driver, page, dapp, popup
 
-  const tinyDelayMs = 200
-  const regularDelayMs = tinyDelayMs * 2
-  const largeDelayMs = regularDelayMs * 2
+  const testAccount1 = '0x0cc5261ab8ce458dc977078a3623e2badd27afd3'
+  const testAccount2 = '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59'
 
   this.timeout(0)
   this.bail(true)
@@ -30,146 +27,119 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    await setupFetchMocking(driver)
+    const pages = await driver.pages()
+    page = pages[0]
+    // await setupFetchMocking(driver) // Find alternative for this in puppeteer
   })
 
   afterEach(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await checkBrowserForConsoleErrors(driver)
-      if (errors.length) {
-        const errorReports = errors.map(err => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
-        console.error(new Error(errorMessage))
-      }
-    }
+    // if (process.env.SELENIUM_BROWSER === 'chrome') {
+    //   const errors = await checkBrowserForConsoleErrors(driver)
+    //   if (errors.length) {
+    //     const errorReports = errors.map(err => err.message)
+    //     const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+    //     console.error(new Error(errorMessage))
+    //   }
+    // }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await verboseReportOnFailure(page, this.currentTest)
     }
   })
 
   after(async function () {
-    await driver.quit()
+    await driver.close()
   })
 
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
-    it('clicks the continue button on the welcome screen', async () => {
-      await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      welcomeScreenBtn.click()
-      await delay(largeDelayMs)
+    it('first time flow', async () => {
+      await firstTimeFlow(page, 'import')
     })
-
-    it('clicks the "Create New Wallet" option', async () => {
-      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      customRpcButton.click()
-      await delay(largeDelayMs)
-    })
-
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await findElement(driver, By.css('.btn-default'))
-      optOutButton.click()
-      await delay(largeDelayMs)
-    })
-
-    it('accepts a secure password', async () => {
-      const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
-      const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
-      const button = await findElement(driver, By.css('.first-time-flow__form button'))
-
-      await passwordBox.sendKeys('correct horse battery staple')
-      await passwordBoxConfirm.sendKeys('correct horse battery staple')
-
-      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
-      await tosCheckBox.click()
-
-      await button.click()
-      await delay(largeDelayMs)
-    })
-
-    it('skips the seed phrase challenge', async () => {
-      const button = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
-      await button.click()
-      await delay(regularDelayMs)
-
-      const detailsButton = await findElement(driver, By.css('.account-details__details-button'))
-      await detailsButton.click()
-      await delay(regularDelayMs)
-    })
-
-    it('gets the current accounts address', async () => {
-      const addressInput = await findElement(driver, By.css('.qr-ellip-address'))
-      publicAddress = await addressInput.getAttribute('value')
-      const accountModal = await driver.findElement(By.css('span .modal'))
-
-      await driver.executeScript("document.querySelector('.account-modal-close').click()")
-
-      await driver.wait(until.stalenessOf(accountModal))
-      await delay(regularDelayMs)
-    })
-
   })
 
-  describe('provider listening for events', () => {
-    let extension
-    let popup
-    let dapp
+  describe('puppeter listening for events', () => {
     it('switches to a dapp', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:8080/')
-      await delay(regularDelayMs)
-
-      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await connectButton.click()
-
-      await delay(regularDelayMs)
-
-      await waitUntilXWindowHandles(driver, 3)
-      const windowHandles = await driver.getAllWindowHandles()
-
-      extension = windowHandles[0]
-      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
-
-      await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await approveButton.click()
-
-      await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
+      dapp = await driver.newPage()
+      await dapp.goto('localhost:8080')
+      const dappElement = `//h1[contains(text(), 'E2E Test Dapp')]`
+      await dapp.waitFor(dappElement)
     })
 
-    it('has the ganache network id within the dapp', async () => {
-      const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '5777')
-    })
-
-    it('changes the network', async () => {
-      await driver.switchTo().window(extension)
-
-      const networkDropdown = await findElement(driver, By.css('.network-name'))
-      await networkDropdown.click()
-      await delay(regularDelayMs)
-
-      const ropstenButton = await findElement(driver, By.xpath(`//span[contains(text(), 'Ropsten')]`))
-      await ropstenButton.click()
-      await delay(largeDelayMs)
-    })
-
-    it('sets the network div within the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '3')
-    })
-
-    it('sets the chainId div within the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      const chainIdDiv = await findElement(driver, By.css('#chainId'))
-      assert.equal(await chainIdDiv.getText(), '0x3')
-    })
-
-    it('sets the account div within the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      const accountsDiv = await findElement(driver, By.css('#accounts'))
-      assert.equal(await accountsDiv.getText(), publicAddress.toLowerCase())
+    it('click connect', async () => {
+      const connectElement = `//button[contains(text(), '${connect.message}')]`
+      const connectButton = await dapp.$x(connectElement)
+      await connectButton[0].click()
     })
   })
+
+  describe('connect popup screen', () => {
+    it('connects to popup screen', async () => {
+      const newPagePromise = new Promise(x => driver.once('targetcreated', target => x(target.page())))
+      popup = await newPagePromise
+
+      const connectRequestElement = `//h2[contains(text(), '${connectRequest.message}')]`
+      await popup.waitFor(connectRequestElement)
+
+      const connectElement = `//button[contains(text(), '${connect.message}')]`
+      const connectButton = await popup.$x(connectElement)
+      await connectButton[0].click()
+    })
+  })
+
+  describe('Ethereum.on network, chainId, account changing', () => {
+
+    describe('Network changing', () => {
+
+      it('changes network', async () => {
+        await page.bringToFront()
+        await page.waitFor(500)
+
+        await page.evaluate(() => document.querySelector('.network-indicator').click())
+        await page.waitFor('.menu-droppo')
+
+        const ropstenElement = `//span[contains(text(), '${ropsten.message}')]`
+        const ropstenButton = await page.$x(ropstenElement)
+        await ropstenButton[0].click()
+      })
+
+      it('updates the network to Ropsten within dapp', async () => {
+        await dapp.bringToFront()
+        await dapp.waitFor(1000)
+
+        const dappNetwork = await dapp.evaluate(() => document.querySelector('#network').innerText)
+        assert.equal(dappNetwork, '3')
+      })
+
+      it('updates the chainId to Ropsten within dapp', async () => {
+        const dappChainId = await dapp.evaluate(() => document.querySelector('#chainId').innerText)
+        assert.equal(dappChainId, '0x3')
+      })
+
+    })
+
+    describe('Account Changing', () => {
+
+      it('confirms account is provided to dapp', async () => {
+        const dappAccount = await dapp.evaluate(() => document.querySelector('#accounts').innerText)
+        assert.equal(dappAccount, testAccount1)
+      })
+
+      it('switches to account 2', async () => {
+        await page.bringToFront()
+        await page.waitFor(500)
+
+        const account2 = 'Account 2'
+        await switchAccount(page, account2)
+      })
+
+      it('update the account on the dapp', async () => {
+        await dapp.bringToFront()
+        await page.waitFor(500)
+        const dappAccount = await dapp.evaluate(() => document.querySelector('#accounts').innerText)
+        assert.equal(dappAccount, testAccount2)
+      })
+
+    })
+
+  })
+
 })

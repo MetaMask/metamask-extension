@@ -3,20 +3,20 @@ require('geckodriver')
 const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
-const pify = require('pify')
-const prependFile = pify(require('prepend-file'))
+import puppeteer from 'puppeteer'
+import pptrFirefox from 'puppeteer-firefox'
+// const pptrFirefox = require('puppeteer-firefox')
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
 const By = webdriver.By
 
 module.exports = {
   delay,
-  createModifiedTestBuild,
-  setupBrowserAndExtension,
   verboseReportOnFailure,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
   installWebExt,
+  getExtensionIdPuppeteer,
   getExtensionIdChrome,
   getExtensionIdFirefox,
 }
@@ -25,62 +25,51 @@ function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
-async function createModifiedTestBuild ({ browser, srcPath }) {
-  // copy build to test-builds directory
-  const extPath = path.resolve(`test-builds/${browser}`)
-  await fs.ensureDir(extPath)
-  await fs.copy(srcPath, extPath)
-  // inject METAMASK_TEST_CONFIG setting default test network
-  const config = { NetworkController: { provider: { type: 'localhost' } } }
-  await prependFile(`${extPath}/background.js`, `window.METAMASK_TEST_CONFIG=${JSON.stringify(config)};\n`)
-  return { extPath }
-}
-
-async function setupBrowserAndExtension ({ browser, extPath }) {
-  let driver, extensionId, extensionUri
-
-  if (browser === 'chrome') {
-    driver = buildChromeWebDriver(extPath)
-    extensionId = await getExtensionIdChrome(driver)
-    extensionUri = `chrome-extension://${extensionId}/home.html`
-  } else if (browser === 'firefox') {
-    driver = buildFirefoxWebdriver()
-    await installWebExt(driver, extPath)
-    await delay(700)
-    extensionId = await getExtensionIdFirefox(driver)
-    extensionUri = `moz-extension://${extensionId}/home.html`
-  } else {
-    throw new Error(`Unknown Browser "${browser}"`)
-  }
-
-  return { driver, extensionId, extensionUri }
-}
-
-function buildChromeWebDriver (extPath, opts = {}) {
+async function buildChromeWebDriver (extPath, opts = {}) {
   const tmpProfile = fs.mkdtempSync(path.join(os.tmpdir(), 'mm-chrome-profile'))
   const args = [
-    `load-extension=${extPath}`,
-    `user-data-dir=${tmpProfile}`,
+    `--disable-extensions-except=${extPath}`,
+    `--load-extension=${extPath}`,
+    `--user-data-dir=${tmpProfile}`,
   ]
   if (opts.responsive) {
     args.push('--auto-open-devtools-for-tabs')
   }
-  return new webdriver.Builder()
-    .withCapabilities({
-      chromeOptions: {
-        args,
-        binary: process.env.SELENIUM_CHROME_BINARY,
-      },
-    })
-    .build()
+  const driver = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    args,
+  })
+
+  return driver
 }
 
-function buildFirefoxWebdriver (opts = {}) {
-  const driver = new webdriver.Builder().build()
-  if (opts.responsive) {
-    driver.manage().window().setSize(320, 600)
-  }
+async function buildFirefoxWebdriver (extPath, opts = {}) {
+  const args = [
+    // `--disable-extensions-except=${extPath}`,
+    `--load-extension=${extPath}`,
+    // `--user-data-dir=${tmpProfile}`,
+  ]
+  const driver = await pptrFirefox.launch({
+    headless: false,
+    defaultViewport: null,
+    args,
+  })
+  // if (opts.responsive) {
+  //   driver.manage().window().setSize(320, 600)
+  // }
   return driver
+}
+
+async function getExtensionIdPuppeteer (browser) {
+  const targets = await browser.targets()
+  const backgroundPageTarget = targets.find(target => target.type() === 'background_page')
+  const url = await backgroundPageTarget.url()
+  const extensionId = url.split('/')[2]
+
+  const page = await browser.newPage()
+  await page.goto(`chrome-extension://${extensionId}/home.html`)
+  await page.waitFor(2000) // Waiting for pages to load
 }
 
 async function getExtensionIdChrome (driver) {

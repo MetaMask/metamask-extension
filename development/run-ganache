@@ -5,7 +5,7 @@ set -u
 set -o pipefail
 
 ganache_cli="$(npm bin)/ganache-cli"
-seed_phrase="${GANACHE_SEED_PHRASE:-phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent}"
+seed_phrase="${GANACHE_SEED_PHRASE:-forum vessel pink push lonely enact gentle tail admit parrot grunt dress}"
 
 _term () {
     printf '%s\n' "Received SIGTERM, sending SIGKILL to Ganache"

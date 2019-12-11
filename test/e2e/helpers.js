@@ -6,8 +6,10 @@ const assert = require('assert')
 
 const {
   delay,
+  getExtensionIdPuppeteer,
   getExtensionIdChrome,
   getExtensionIdFirefox,
+  buildPuppeteerDriver,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
   installWebExt,
@@ -25,7 +27,6 @@ module.exports = {
   closeAllWindowHandlesExcept,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   switchToWindowWithTitle,
   switchToWindowWithUrlThatMatches,
@@ -40,43 +41,28 @@ module.exports = {
 
 
 async function prepareExtensionForTesting ({ responsive } = {}) {
-  let driver, extensionId, extensionUrl
-  const targetBrowser = process.env.SELENIUM_BROWSER
+  let driver, extensionId
+  const targetBrowser = process.env.BROWSER
+
   switch (targetBrowser) {
-    case 'chrome': {
+    case 'chrome':
       const extPath = path.resolve('dist/chrome')
-      driver = buildChromeWebDriver(extPath, { responsive })
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdChrome(driver)
-      extensionUrl = `chrome-extension://${extensionId}/home.html`
+      driver = await buildChromeWebDriver(extPath)
+      extensionId = await getExtensionIdPuppeteer(driver)
       break
-    }
-    case 'firefox': {
-      const extPath = path.resolve('dist/firefox')
-      driver = buildFirefoxWebdriver({ responsive })
-      await installWebExt(driver, extPath)
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdFirefox(driver)
-      extensionUrl = `moz-extension://${extensionId}/home.html`
-      break
-    }
     default: {
       throw new Error(`prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`)
     }
   }
-  // Depending on the state of the application built into the above directory (extPath) and the value of
-  // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
-  // are closing any extraneous windows to reset us to a single window before continuing.
-
-  // wait an extra long time so any slow popups can trigger
-  await delay(4 * largeDelayMs)
-
-  const [tab1] = await driver.getAllWindowHandles()
-  await closeAllWindowHandlesExcept(driver, [tab1])
-  await driver.switchTo().window(tab1)
-  await driver.get(extensionUrl)
-
-  return { driver, extensionId, extensionUrl }
+  switch (targetBrowser) {
+    case 'chrome':
+      const pages = await driver.pages()
+      await pages[0].close()
+      await pages[1].close()
+      return { driver, extensionId }
+    default:
+      throw new Error('Select chrome')
+  }
 }
 
 async function setupFetchMocking (driver) {
@@ -113,21 +99,6 @@ async function setupFetchMocking (driver) {
   await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
 }
 
-async function loadExtension (driver, extensionId) {
-  switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
-    }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
-    }
-    default:
-      throw new Error('Unrecognized SELENIUM_BROWSER value')
-  }
-}
-
 async function checkBrowserForConsoleErrors (driver) {
   const ignoredLogTypes = ['WARNING']
   const ignoredErrorMessages = [
@@ -147,18 +118,35 @@ async function checkBrowserForConsoleErrors (driver) {
 }
 
 async function verboseReportOnFailure (driver, test) {
-  let artifactDir
-  if (process.env.SELENIUM_BROWSER === 'chrome') {
-    artifactDir = `./test-artifacts/chrome/${test.title}`
-  } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-    artifactDir = `./test-artifacts/firefox/${test.title}`
-  }
+  let screenshot
+
+  const artifactDir = `./test-artifacts/${test.title}`
   const filepathBase = `${artifactDir}/test-failure`
   await pify(mkdirp)(artifactDir)
-  const screenshot = await driver.takeScreenshot()
-  await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-  const htmlSource = await driver.getPageSource()
-  await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+
+  switch (process.env.BROWSER) {
+    case 'chrome':
+      screenshot = await driver.screenshot({ path: `${filepathBase}-screenshot.png`, fullPage: true })
+      await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+      // const htmlSource = await driver.getPageSource()
+      // await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+      // artifactDir = `./test-artifacts/${test.title}`
+      // const filepathBase = `${artifactDir}/test-failure`
+      break
+    default:
+      break
+  }
+  // if (process.env.SELENIUM_BROWSER === 'chrome') {
+  //   artifactDir = `./test-artifacts/chrome/${test.title}`
+  // } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+  //   artifactDir = `./test-artifacts/firefox/${test.title}`
+  // }
+  // const filepathBase = `${artifactDir}/test-failure`
+  // await pify(mkdirp)(artifactDir)
+  // const screenshot = await driver.takeScreenshot()
+  // await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  // const htmlSource = await driver.getPageSource()
+  // await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
 }
 
 async function findElement (driver, by, timeout = 10000) {

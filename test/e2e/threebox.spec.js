@@ -5,7 +5,7 @@ const {
   delay,
 } = require('./func')
 const {
-  checkBrowserForConsoleErrors,
+  // checkBrowserForConsoleErrors,
   findElement,
   findElements,
   verboseReportOnFailure,
@@ -13,11 +13,16 @@ const {
   prepareExtensionForTesting,
 } = require('./helpers')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
+import firstTimeFlow from './lib/features/first-time-flow'
+import balanceChecker from './lib/helpers'
+import enableThreebox from './lib/features/enable-threebox'
+
 
 describe('MetaMask', function () {
-  let driver
+  let driver, page
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
+  const testPassword = 'correct horse battery staple'
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
@@ -28,97 +33,50 @@ describe('MetaMask', function () {
   before(async function () {
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    await setupFetchMocking(driver)
+    // await setupFetchMocking(driver) // TODO: Find alternative Puppeteer implementation
+    const pages = await driver.pages()
+    page = pages[0]
   })
 
   afterEach(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await checkBrowserForConsoleErrors(driver)
-      if (errors.length) {
-        const errorReports = errors.map(err => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
-        console.error(new Error(errorMessage))
-      }
-    }
+    // if (process.env.SELENIUM_BROWSER === 'chrome') {
+    //   const errors = await checkBrowserForConsoleErrors(driver)
+    //   if (errors.length) {
+    //     const errorReports = errors.map(err => err.message)
+    //     const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+    //     console.error(new Error(errorMessage))
+    //   }
+    // }
     if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(driver, this.currentTest)
     }
+
+    // TODO: checkBrowserForConsoleErrors find alternative to driver.manage().logs()
+    // https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#class-consolemessage
   })
 
   after(async function () {
-    await driver.quit()
+    await driver.close()
   })
 
   describe('set up data to be restored by 3box', () => {
 
     describe('First time flow starting from an existing seed phrase', () => {
-      it('clicks the continue button on the welcome screen', async () => {
-        await findElement(driver, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-        welcomeScreenBtn.click()
-        await delay(largeDelayMs)
+
+      it('ftf with existing account', async () => {
+        await firstTimeFlow(page, 'import')
       })
 
-      it('clicks the "Import Wallet" option', async () => {
-        const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
-        customRpcButton.click()
-        await delay(largeDelayMs)
-      })
-
-      it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-        const optOutButton = await findElement(driver, By.css('.btn-default'))
-        optOutButton.click()
-        await delay(largeDelayMs)
-      })
-
-      it('imports a seed phrase', async () => {
-        const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
-        await seedTextArea.sendKeys(testSeedPhrase)
-        await delay(regularDelayMs)
-
-        const [password] = await findElements(driver, By.id('password'))
-        await password.sendKeys('correct horse battery staple')
-        const [confirmPassword] = await findElements(driver, By.id('confirm-password'))
-        confirmPassword.sendKeys('correct horse battery staple')
-
-        const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
-        await tosCheckBox.click()
-
-        const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
-        await importButton.click()
-        await delay(regularDelayMs)
-      })
-
-      it('clicks through the success screen', async () => {
-        await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-        const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
-        await doneButton.click()
-        await delay(regularDelayMs)
-      })
-
-      it('balance renders', async () => {
-        const balance = await findElement(driver, By.css('.balance-display .token-amount'))
-        await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
-        await delay(regularDelayMs)
+      it('check balance', async () => {
+        const expectedBalance = '25 ETH'
+        const selector = '.balance-display .token-amount'
+        await balanceChecker(page, selector, expectedBalance)
       })
     })
 
     describe('turns on threebox syncing', () => {
-      it('goes to the settings screen', async () => {
-        await driver.findElement(By.css('.account-menu__icon')).click()
-        await delay(regularDelayMs)
-
-        const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
-        settingsButton.click()
-      })
-
       it('turns on threebox syncing', async () => {
-        const advancedButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Advanced')]`))
-        await advancedButton.click()
-
-        const threeBoxToggle = await findElements(driver, By.css('.toggle-button'))
-        const threeBoxToggleButton = await threeBoxToggle[4].findElement(By.css('div'))
-        await threeBoxToggleButton.click()
+        await enableThreebox()
       })
 
     })
