@@ -145,7 +145,6 @@ class TrustvaultKeyring extends EventEmitter {
     const query = this._getPartialPinChallengeQuery(email)
     const { data, error } = await this.trustVaultBridgeRequest({ query })
     if (error) {
-      // TODO: read code and convert code to a message key that can be translated
       throw new Error(error.message)
     }
     const pinChallenge = data && data.getPartialPinChallenge
@@ -173,7 +172,6 @@ class TrustvaultKeyring extends EventEmitter {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
     }
     if (error) {
-      // TODO: read code and convert code to a message key that can be translated
       const err = new Error(error.message)
       err.data = pinChallenge && { pinChallenge }
       throw err

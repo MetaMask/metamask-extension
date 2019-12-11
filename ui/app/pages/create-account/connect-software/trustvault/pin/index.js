@@ -54,7 +54,6 @@ class ConnectTrustVaultPinForm extends PureComponent {
   }
 
   renderContent = () => {
-    // TODO: handle if pinChallenge is undefined?
     return h(PinScreen, {
       browserSupported: this.state.browserSupported,
       submitTrustVaultPinChallenge: this.submitTrustVaultPinChallenge,
