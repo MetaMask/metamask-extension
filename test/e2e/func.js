@@ -4,9 +4,6 @@ const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 import puppeteer from 'puppeteer'
-const webdriver = require('selenium-webdriver')
-const Command = require('selenium-webdriver/lib/command').Command
-const By = webdriver.By
 
 module.exports = {
   delay,

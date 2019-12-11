@@ -1,9 +1,4 @@
-const assert = require('assert')
-const webdriver = require('selenium-webdriver')
-const { By, until } = webdriver
-const {
-  delay,
-} = require('./func')
+import assert from 'assert'
 const {
   // checkBrowserForConsoleErrors,
   findElement,
