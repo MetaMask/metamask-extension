@@ -83,7 +83,7 @@ describe('MetaMask', function () {
       const expectedBalance = '1 ETH'
       const selector = '.currency-display-component.token-amount'
       // Wait to receive
-      await page.waitFor(2000)
+      await page.waitFor(5000)
       await balanceChecker(page, selector, expectedBalance)
     })
 
