@@ -57,7 +57,24 @@
       @extend %header--18;
       line-height: 25px;
       color: #000000;
+      display: grid;
+      width: 310px;
+      grid-template-columns: 1fr 1fr;
+      &__type{
+
+        margin-top: 5px;
+        font-size: 8px;
+        line-height: 8px;
+        background: rgba(70, 68, 68, 0.4);
+        color: #fff;
+        border-radius: 10px;
+        padding: 4px;
+        text-align: center;
+        height: 15px;
+        justify-self: end;
+      }
     }
+    
 
     &__balance {
       @extend %content-text;

@@ -35,7 +35,7 @@ export default class ChooseAccount extends Component {
       <div className="permissions-connect-choose-account__accounts-list">
         {
           accounts.map((account, index) => {
-            const { address, addressLabel, balance } = account
+            const { address, addressLabel, balance, accountType } = account
             return (
               <div
                 key={`permissions-connect-choose-account-${index}`}
@@ -48,7 +48,16 @@ export default class ChooseAccount extends Component {
                     address={address}
                   />
                   <div className="permissions-connect-choose-account__account__info">
-                    <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
+                    <div className="permissions-connect-choose-account__account__label">{ addressLabel }
+                    {
+                      accountType === "TRUSTVAULT"
+                      ? (
+                      <div className="permissions-connect-choose-account__account__label__type">{ accountType }</div>
+                      )
+                      :null
+                    }
+                    </div>
+
                     <UserPreferencedCurrencyDisplay
                       className="permissions-connect-choose-account__account__balance"
                       type={PRIMARY}

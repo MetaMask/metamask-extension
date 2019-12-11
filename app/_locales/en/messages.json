@@ -1532,7 +1532,7 @@
     "message": "Please enter your email to continue"
   },
   "trustVaultEnterPin": {
-    "message": "Please enter the following characters of your PIN"
+    "message": "Please enter the following digits of your PIN"
   },
   "trustVaultIncorrectPin": {
     "message": "Invalid PIN. Please try again"
