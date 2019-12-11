@@ -363,7 +363,9 @@ export default class AdvancedTab extends PureComponent {
 
       try {
         const urlObj = new URL(url) // check if is valid url
-        if (!urlObj.host) throw new Error('invalid url : no host')
+        if (!urlObj.host) {
+          throw new Error('invalid url : no host')
+        }
       } catch (error) {
         ipfsGatewayError = t('invalidIpfsGateway')
       }
