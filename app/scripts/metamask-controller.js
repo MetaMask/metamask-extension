@@ -1384,10 +1384,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
    * @param {MessageSender} sender - The sender of the messages on this stream
-   * @param {boolean} internal - True if this is a connection with an internal process
+   * @param {boolean} isInternal - True if this is a connection with an internal process
    */
-  setupProviderConnection (outStream, sender, internal) {
-    const origin = internal
+  setupProviderConnection (outStream, sender, isInternal) {
+    const origin = isInternal
       ? 'metamask'
       : (new URL(sender.url)).hostname
     let extensionId
