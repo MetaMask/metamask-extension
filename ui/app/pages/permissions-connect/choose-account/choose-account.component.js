@@ -49,13 +49,13 @@ export default class ChooseAccount extends Component {
                   />
                   <div className="permissions-connect-choose-account__account__info">
                     <div className="permissions-connect-choose-account__account__label">{ addressLabel }
-                    {
-                      accountType === "TRUSTVAULT"
-                      ? (
-                      <div className="permissions-connect-choose-account__account__label__type">{ accountType }</div>
-                      )
-                      :null
-                    }
+                      {
+                        accountType === 'TRUSTVAULT'
+                          ? (
+                            <div className="permissions-connect-choose-account__account__label__type">{ accountType }</div>
+                          )
+                          : null
+                      }
                     </div>
 
                     <UserPreferencedCurrencyDisplay
