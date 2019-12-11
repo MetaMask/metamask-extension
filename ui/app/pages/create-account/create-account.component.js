@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import NewAccountCreateForm from './new-account.container'
 import NewAccountImportForm from './import-account'
-import ConnectTrustVaultForm from './connect-software/trustvault'
+import ConnectTrustVaultForm from './connect-custodial/trustvault'
 import ConnectHardwareForm from './connect-hardware'
 import {
   NEW_ACCOUNT_ROUTE,

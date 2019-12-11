@@ -919,6 +919,9 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
+  "not": {
+    "message": "Not"
+  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
@@ -1298,8 +1301,8 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
-  "softwareWalletConnected": {
-    "message": "Software wallet successfully connected"
+  "custodialWalletConnected": {
+    "message": "Custodial wallet successfully connected"
   },
   "speedUp": {
     "message": "Speed Up"
@@ -1338,10 +1341,10 @@
   "step1HardwareWalletMsg": {
     "message": "Connect your hardware wallet directly to your computer."
   },
-  "step1SoftwareWallet": {
+  "step1CustodialWallet": {
     "message": "1. Login to your TrustVault account"
   },
-  "step1SoftwareWalletMsg": {
+  "step1CustodialWalletMsg": {
     "message": "Enter the email address you used to sign up for the TrustVault app and solve the pin challenge."
   },
   "step2HardwareWallet": {
@@ -1350,10 +1353,10 @@
   "step2HardwareWalletMsg": {
     "message": "Select the account you want to view. You can only choose one at a time."
   },
-  "step2SoftwareWallet": {
+  "step2CustodialWallet": {
     "message": "2. Select an Account"
   },
-  "step2SoftwareWalletMsg": {
+  "step2CustodialWalletMsg": {
     "message": "Select the account you want to view. You can only choose one at a time."
   },
   "step3HardwareWallet": {
@@ -1362,10 +1365,10 @@
   "step3HardwareWalletMsg": {
     "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
-  "step3SoftwareWallet": {
+  "step3CustodialWallet": {
     "message": "3. You are now ready to securely interact with any DApp."
   },
-  "step3SoftwareWalletMsg": {
+  "step3CustodialWalletMsg": {
     "message": "As soon as you initiate a transaction, use your TrustVault app to sign it."
   },
   "storePhrase": {

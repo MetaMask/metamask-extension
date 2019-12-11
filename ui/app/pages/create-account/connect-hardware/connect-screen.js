@@ -191,20 +191,20 @@ class ConnectScreen extends Component {
       {
         asset: 'tv-wallet-step-1',
         dimensions: { width: '337.5', height: '154px' },
-        title: this.context.t('step1SoftwareWallet'),
-        message: this.context.t('step1SoftwareWalletMsg'),
+        title: this.context.t('step1CustodialWallet'),
+        message: this.context.t('step1CustodialWalletMsg'),
       },
       {
         asset: 'tv-wallet-step-2',
         dimensions: { width: '300px', height: '130px' },
-        title: this.context.t('step2SoftwareWallet'),
-        message: this.context.t('step2SoftwareWalletMsg'),
+        title: this.context.t('step2CustodialWallet'),
+        message: this.context.t('step2CustodialWalletMsg'),
       },
       {
         asset: 'tv-wallet-step-3',
         dimensions: { width: '240px', height: '156px' },
-        title: this.context.t('step3SoftwareWallet'),
-        message: this.context.t('step3SoftwareWalletMsg'),
+        title: this.context.t('step3CustodialWallet'),
+        message: this.context.t('step3CustodialWalletMsg'),
       },
     ]
     return (

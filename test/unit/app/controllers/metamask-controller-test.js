@@ -404,7 +404,7 @@ describe('MetaMaskController', function () {
 
     it('should add the TrustVault keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
-      await metamaskController.connectHardware('trustvault', 0).catch(() => null)
+      await metamaskController.connectCustodialWallet('trustvault', 0).catch(() => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'TrustVault'
       )

@@ -22,7 +22,7 @@ class ConnectTrustVaultPinForm extends PureComponent {
 
   showWalletConnectedAlert () {
     this.props.goToHomePage()
-    this.props.showAlert(this.context.t('softwareWalletConnected'))
+    this.props.showAlert(this.context.t('custodialWalletConnected'))
     // Autohide the alert after 1.5 seconds and redirect to home page
     setTimeout(_ => {
       this.props.hideAlert()
@@ -33,7 +33,7 @@ class ConnectTrustVaultPinForm extends PureComponent {
     const deviceName = 'TrustVault'
     try {
       const auth = await this.props.submitTrustVaultPinChallenge(firstPin, secondPin)
-      const accounts = await this.props.connectSoftware(deviceName, auth)
+      const accounts = await this.props.connectCustodialWallet(deviceName, auth)
       this.showWalletConnectedAlert()
       return accounts
     } catch (err) {
@@ -72,7 +72,7 @@ ConnectTrustVaultPinForm.propTypes = {
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
   submitTrustVaultPinChallenge: PropTypes.func,
-  connectSoftware: PropTypes.func,
+  connectCustodialWallet: PropTypes.func,
   pinChallenge: PropTypes.object,
   onNewPinChallenge: PropTypes.func,
 }
@@ -85,7 +85,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   showAlert: msg => dispatch(actions.showAlert(msg)),
   hideAlert: () => dispatch(actions.hideAlert()),
-  connectSoftware: (deviceName, auth) => dispatch(actions.connectSoftware(deviceName, auth)),
+  connectCustodialWallet: (deviceName, auth) => dispatch(actions.connectCustodialWallet(deviceName, auth)),
   submitTrustVaultPinChallenge: (email, firstPin, secondPin, sessionToken) =>
     dispatch(actions.submitTrustVaultPinChallenge(email, firstPin, secondPin, sessionToken)),
 })

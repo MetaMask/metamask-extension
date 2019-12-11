@@ -467,8 +467,8 @@ module.exports = class MetamaskController extends EventEmitter {
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
 
-      // software wallets
-      connectSoftware: nodeify(this.connectSoftware, this),
+      // custodial wallets
+      connectCustodialWallet: nodeify(this.connectCustodialWallet, this),
       getPartialPinChallenge: nodeify(this.getPartialPinChallenge, this),
       submitPartialPinChallenge: nodeify(this.submitPartialPinChallenge, this),
 
@@ -872,7 +872,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns [] accounts
    */
-  async connectSoftware (deviceName, auth, hdPath = null) {
+  async connectCustodialWallet (deviceName, auth, hdPath = null) {
     await this.keyringController.removeEmptyKeyrings()
     const keyring = await this.getKeyringForDevice(deviceName, hdPath, auth)
 

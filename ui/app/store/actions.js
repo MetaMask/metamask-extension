@@ -88,7 +88,7 @@ const actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
-  connectSoftware,
+  connectCustodialWallet,
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
@@ -793,12 +793,12 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectSoftware (deviceName, auth) {
-  log.debug('background.connectSoftware', deviceName, auth)
+function connectCustodialWallet (deviceName, auth) {
+  log.debug('background.connectCustodialWallet', deviceName, auth)
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.connectSoftware('trustvault', auth, (err, accounts) => {
+      background.connectCustodialWallet('trustvault', auth, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
