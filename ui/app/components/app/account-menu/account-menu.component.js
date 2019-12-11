@@ -195,7 +195,7 @@ export default class AccountMenu extends Component {
     const { t } = this.context
     // Any account that's not from the HD wallet Keyring can be removed
     const { type } = keyring
-    const isRemovable = !(type === "HD Key Tree" || type === "TrustVault");
+    const isRemovable = !(type === 'HD Key Tree' || type === 'TrustVault')
 
     return isRemovable && (
       <Tooltip

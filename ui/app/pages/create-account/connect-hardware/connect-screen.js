@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from '../../../components/ui/button'
 import { CONNECT_TRUSTVAULT_ROUTE } from '../../../helpers/constants/routes'
-const TRUSTVAULT =  'trustvault'
+const TRUSTVAULT = 'trustvault'
 class ConnectScreen extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -35,7 +35,7 @@ class ConnectScreen extends Component {
         className={classnames('sw-connect__btn', {
           'selected': this.state.selectedDevice === TRUSTVAULT,
         })}
-        onClick={_ => this.setState({selectedDevice: TRUSTVAULT})}
+        onClick={_ => this.setState({ selectedDevice: TRUSTVAULT })}
       >
         <img
           className="sw-connect__btn__img"
@@ -150,11 +150,11 @@ class ConnectScreen extends Component {
       <div>
         <div
           className="hw-connect__get-hw__msg"
-          dangerouslySetInnerHTML={{__html: response }}
+          dangerouslySetInnerHTML={{ __html: response }}
         />
         <div
           className="sw-connect__get-sw__msg"
-          dangerouslySetInnerHTML={{__html: trustVaultResponse }}
+          dangerouslySetInnerHTML={{ __html: trustVaultResponse }}
         />
       </div>
     )
@@ -190,19 +190,19 @@ class ConnectScreen extends Component {
     const steps = [
       {
         asset: 'tv-wallet-step-1',
-        dimensions: {width: '337.5', height: '154px'},
+        dimensions: { width: '337.5', height: '154px' },
         title: this.context.t('step1SoftwareWallet'),
         message: this.context.t('step1SoftwareWalletMsg'),
       },
       {
         asset: 'tv-wallet-step-2',
-        dimensions: {width: '300px', height: '130px'},
+        dimensions: { width: '300px', height: '130px' },
         title: this.context.t('step2SoftwareWallet'),
         message: this.context.t('step2SoftwareWalletMsg'),
       },
       {
         asset: 'tv-wallet-step-3',
-        dimensions: {width: '240px', height: '156px'},
+        dimensions: { width: '240px', height: '156px' },
         title: this.context.t('step3SoftwareWallet'),
         message: this.context.t('step3SoftwareWalletMsg'),
       },

@@ -15,7 +15,7 @@ class EmailScreen extends PureComponent {
   }
 
   renderBackButton () {
-    return h('div.sw-connect__back', { onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE)}, [
+    return h('div.sw-connect__back', { onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE) }, [
       h('div.sw-connect__list__back-caret', {},),
       h('div.sw-connect__list__back-caret__back', {}, this.context.t('back')),
     ])
@@ -128,7 +128,7 @@ class EmailScreen extends PureComponent {
       'div.sw-connect__trustvault-logo',
       [
         h('img.sw-connect__trustvault-logo__img', {
-          src: 'images/trustvault-logo.png'
+          src: 'images/trustvault-logo.png',
         }),
       ]
     )

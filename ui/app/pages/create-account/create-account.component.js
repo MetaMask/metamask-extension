@@ -15,7 +15,7 @@ import {
 
 export default class CreateAccountPage extends Component {
   renderTabs () {
-    const { history, location: { pathname }} = this.props
+    const { history, location: { pathname } } = this.props
     let hardWareRoute = '/new-account/connect'
     if (location && pathname) {
       hardWareRoute = (pathname === '/new-account/connect' || pathname === '/new-account/connect/trustvault') ? pathname : '/new-account/connect'

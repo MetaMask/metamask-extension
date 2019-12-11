@@ -70,16 +70,12 @@ class ConnectTrustVaultPinForm extends PureComponent {
 }
 
 ConnectTrustVaultPinForm.propTypes = {
-  t: PropTypes.func,
-  network: PropTypes.string,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
-  history: PropTypes.object.isRequired,
   submitTrustVaultPinChallenge: PropTypes.func,
   connectSoftware: PropTypes.func,
   pinChallenge: PropTypes.object,
   onNewPinChallenge: PropTypes.func,
-  onErrors: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
@@ -96,7 +92,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 ConnectTrustVaultPinForm.contextTypes = {
-  t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
 

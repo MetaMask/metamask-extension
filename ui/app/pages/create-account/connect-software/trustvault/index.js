@@ -113,11 +113,6 @@ class ConnectTrustVaultForm extends PureComponent {
 
 ConnectTrustVaultForm.propTypes = {
   history: PropTypes.object,
-  t: PropTypes.func,
-}
-
-ConnectTrustVaultForm.contextTypes = {
-  t: PropTypes.func,
 }
 
 const mapStateToProps = state => ({

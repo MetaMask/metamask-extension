@@ -46,7 +46,7 @@ class TrustvaultKeyring extends EventEmitter {
 
   unlock () {
     if (!this.auth) {
-      return Promise.reject({ message: 'TrustVault tokens have expired. Connect to TrustVault again.'})
+      return Promise.reject({ message: 'TrustVault tokens have expired. Connect to TrustVault again.' })
     }
     return Promise.resolve('already unlocked')
   }

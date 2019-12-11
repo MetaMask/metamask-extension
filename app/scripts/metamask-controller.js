@@ -66,7 +66,7 @@ const {
   PhishingController,
 } = require('gaba')
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
-const TRUSTVAULT =  'trustvault'
+const TRUSTVAULT = 'trustvault'
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -1691,7 +1691,6 @@ module.exports = class MetamaskController extends EventEmitter {
     if (!addresses.length) {
       return
     }
-    const map = {}
     const [trustvaultKeyring] = this.keyringController.getKeyringsByType('TrustVault')
     // Ensure preferences + identities controller know about all addresses
     if (trustvaultKeyring) {

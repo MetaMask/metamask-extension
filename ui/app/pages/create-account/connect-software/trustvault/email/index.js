@@ -37,12 +37,8 @@ class ConnectTrustVaultEmailForm extends PureComponent {
 }
 
 ConnectTrustVaultEmailForm.propTypes = {
-  t: PropTypes.func,
-  network: PropTypes.string,
   getTrustVaultPinChallenge: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  showAlert: PropTypes.func,
-  hideAlert: PropTypes.func,
 }
 
 const mapStateToProps = ({ metamask: { network } }) => ({ network })
@@ -53,7 +49,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 ConnectTrustVaultEmailForm.contextTypes = {
-  t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
 

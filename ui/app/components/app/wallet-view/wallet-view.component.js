@@ -8,7 +8,7 @@ import AccountDetails from '../account-details'
 const { checksumAddress } = require('../../../helpers/utils/util')
 const TokenList = require('../token-list')
 const { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
-const TRUSTVAULT =  'trustvault'
+const TRUSTVAULT = 'trustvault'
 export default class WalletView extends Component {
   static contextTypes = {
     t: PropTypes.func,
