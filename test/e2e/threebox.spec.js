@@ -17,7 +17,6 @@ describe('MetaMask', function () {
   let driver, page
 
   const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
-  const testPassword = 'correct horse battery staple'
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
@@ -76,7 +75,7 @@ describe('MetaMask', function () {
 
     })
 
-    describe('updates settings and address book', () => {
+    xdescribe('updates settings and address book', () => {
       it('adds an address to the contact list', async () => {
         const generalButton = await findElement(driver, By.xpath(`//div[contains(text(), 'General')]`))
         await generalButton.click()

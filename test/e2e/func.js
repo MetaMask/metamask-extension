@@ -9,11 +9,8 @@ module.exports = {
   delay,
   verboseReportOnFailure,
   buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
   getExtensionIdPuppeteer,
   getExtensionIdChrome,
-  getExtensionIdFirefox,
 }
 
 function delay (time) {
@@ -39,23 +36,6 @@ async function buildChromeWebDriver (extPath, opts = {}) {
   return driver
 }
 
-async function buildFirefoxWebdriver (extPath, opts = {}) {
-  const args = [
-    // `--disable-extensions-except=${extPath}`,
-    `--load-extension=${extPath}`,
-    // `--user-data-dir=${tmpProfile}`,
-  ]
-  const driver = await pptrFirefox.launch({
-    headless: false,
-    defaultViewport: null,
-    args,
-  })
-  // if (opts.responsive) {
-  //   driver.manage().window().setSize(320, 600)
-  // }
-  return driver
-}
-
 async function getExtensionIdPuppeteer (browser) {
   const targets = await browser.targets()
   const backgroundPageTarget = targets.find(target => target.type() === 'background_page')
@@ -71,23 +51,6 @@ async function getExtensionIdChrome (driver) {
   await driver.get('chrome://extensions')
   const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
   return extensionId
-}
-
-async function getExtensionIdFirefox (driver) {
-  await driver.get('about:debugging#addons')
-  const extensionId = await driver.wait(webdriver.until.elementLocated(By.xpath('//dl/div[contains(., \'Internal UUID\')]/dd')), 1000).getText()
-  return extensionId
-}
-
-async function installWebExt (driver, extension) {
-  const cmd = await new Command('moz-install-web-ext')
-    .setParameter('path', path.resolve(extension))
-    .setParameter('temporary', true)
-
-  await driver.getExecutor()
-    .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
-
-  return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
 }
 
 async function verboseReportOnFailure ({ browser, driver, title }) {

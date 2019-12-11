@@ -7,12 +7,7 @@ const assert = require('assert')
 const {
   delay,
   getExtensionIdPuppeteer,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
-  buildPuppeteerDriver,
   buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
 } = require('./func')
 const { until } = require('selenium-webdriver')
 const fetchMockResponses = require('./fetch-mocks.json')
@@ -47,7 +42,7 @@ async function prepareExtensionForTesting ({ responsive } = {}) {
   switch (targetBrowser) {
     case 'chrome':
       const extPath = path.resolve('dist/chrome')
-      driver = await buildChromeWebDriver(extPath)
+      driver = await buildChromeWebDriver(extPath, responsive)
       extensionId = await getExtensionIdPuppeteer(driver)
       break
     default: {
