@@ -71,16 +71,6 @@ class RecentBlocksController {
   }
 
   /**
-   * Sets store.recentBlocks to an empty array
-   *
-   */
-  resetState () {
-    this.store.updateState({
-      recentBlocks: [],
-    })
-  }
-
-  /**
    * Receives a new block and modifies it with this.mapTransactionsToPrices. Then adds that block to the recentBlocks
    * array in storage. If the recentBlocks array contains the maximum number of blocks, the oldest block is removed.
    *

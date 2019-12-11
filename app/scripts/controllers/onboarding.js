@@ -54,10 +54,6 @@ class OnboardingController {
     })
   }
 
-  getSeedPhraseBackedUp () {
-    return this.store.getState().seedPhraseBackedUp
-  }
-
   /**
    * Registering a site as having initiated onboarding
    *

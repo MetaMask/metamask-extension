@@ -15,17 +15,6 @@ const {
 } = require('./enums')
 
 /**
- * Generates an example stack trace
- *
- * @returns {string} A stack trace
- *
- */
-function getStack () {
-  const stack = new Error('Stack trace generator - not an error').stack
-  return stack
-}
-
-/**
  * Used to determine the window type through which the app is being viewed.
  *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
  *  - 'responsive' refers to the main browser window
@@ -133,12 +122,6 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function applyListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
-    emitter.on(key, listeners[key])
-  })
-}
-
 function removeListeners (listeners, emitter) {
   Object.keys(listeners).forEach((key) => {
     emitter.removeListener(key, listeners[key])
@@ -177,9 +160,7 @@ function checkForError () {
 
 module.exports = {
   removeListeners,
-  applyListeners,
   getPlatform,
-  getStack,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
