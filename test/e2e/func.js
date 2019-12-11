@@ -4,8 +4,6 @@ const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 import puppeteer from 'puppeteer'
-import pptrFirefox from 'puppeteer-firefox'
-// const pptrFirefox = require('puppeteer-firefox')
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
 const By = webdriver.By
