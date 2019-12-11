@@ -1,12 +1,10 @@
 const fs = require('fs')
-const path = require('path')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-const os = require('os')
-const { By, Builder, until } = require('selenium-webdriver')
-const { Command } = require('selenium-webdriver/lib/command')
+const { until } = require('selenium-webdriver')
 
+const { buildWebDriver } = require('./webdriver')
 const fetchMockResponses = require('./fetch-mocks.json')
 
 const tinyDelayMs = 200
@@ -33,30 +31,10 @@ module.exports = {
 
 
 async function prepareExtensionForTesting ({ responsive } = {}) {
-  let driver, extensionId, extensionUrl
-  const targetBrowser = process.env.SELENIUM_BROWSER
-  switch (targetBrowser) {
-    case 'chrome': {
-      const extPath = path.resolve('dist/chrome')
-      driver = buildChromeWebDriver(extPath, { responsive })
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdChrome(driver)
-      extensionUrl = `chrome-extension://${extensionId}/home.html`
-      break
-    }
-    case 'firefox': {
-      const extPath = path.resolve('dist/firefox')
-      driver = buildFirefoxWebdriver({ responsive })
-      await installWebExt(driver, extPath)
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdFirefox(driver)
-      extensionUrl = `moz-extension://${extensionId}/home.html`
-      break
-    }
-    default: {
-      throw new Error(`prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`)
-    }
-  }
+  const browser = process.env.SELENIUM_BROWSER
+  const extensionPath = `dist/${browser}`
+  const { driver, extensionId, extensionUrl } = await buildWebDriver({ browser, extensionPath, responsive })
+
   // Depending on the state of the application built into the above directory (extPath) and the value of
   // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
   // are closing any extraneous windows to reset us to a single window before continuing.
@@ -102,56 +80,6 @@ async function setupFetchMocking (driver) {
   const fetchMockResponsesJson = JSON.stringify(fetchMockResponses)
   // eval the fetchMocking script in the browser
   await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
-}
-
-function buildChromeWebDriver (extPath, opts = {}) {
-  const tmpProfile = fs.mkdtempSync(path.join(os.tmpdir(), 'mm-chrome-profile'))
-  const args = [
-    `load-extension=${extPath}`,
-    `user-data-dir=${tmpProfile}`,
-  ]
-  if (opts.responsive) {
-    args.push('--auto-open-devtools-for-tabs')
-  }
-  return new Builder()
-    .withCapabilities({
-      chromeOptions: {
-        args,
-        binary: process.env.SELENIUM_CHROME_BINARY,
-      },
-    })
-    .build()
-}
-
-function buildFirefoxWebdriver (opts = {}) {
-  const driver = new Builder().build()
-  if (opts.responsive) {
-    driver.manage().window().setSize(320, 600)
-  }
-  return driver
-}
-
-async function getExtensionIdChrome (driver) {
-  await driver.get('chrome://extensions')
-  const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
-  return extensionId
-}
-
-async function getExtensionIdFirefox (driver) {
-  await driver.get('about:debugging#addons')
-  const extensionId = await driver.wait(until.elementLocated(By.xpath('//dl/div[contains(., \'Internal UUID\')]/dd')), 1000).getText()
-  return extensionId
-}
-
-async function installWebExt (driver, extension) {
-  const cmd = await new Command('moz-install-web-ext')
-    .setParameter('path', path.resolve(extension))
-    .setParameter('temporary', true)
-
-  await driver.getExecutor()
-    .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
-
-  return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
 }
 
 async function checkBrowserForConsoleErrors (driver) {
