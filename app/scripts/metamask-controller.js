@@ -1695,7 +1695,8 @@ module.exports = class MetamaskController extends EventEmitter {
     const [trustvaultKeyring] = this.keyringController.getKeyringsByType('TrustVault')
     // Ensure preferences + identities controller know about all addresses
     if (trustvaultKeyring) {
-      this.preferencesController.addAddresses(addresses, map)
+      const namesMap = trustvaultKeyring.getAccountNames()
+      this.preferencesController.addAddresses(addresses, namesMap)
     } else {
       this.preferencesController.addAddresses(addresses)
     }
