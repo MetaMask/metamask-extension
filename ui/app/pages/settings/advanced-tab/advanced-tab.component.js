@@ -108,6 +108,9 @@ export default class AdvancedTab extends PureComponent {
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{ t('resetAccount') }</span>
+          <span className="settings-page__content-description">
+            { t('resetAccountDescription') }
+          </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
