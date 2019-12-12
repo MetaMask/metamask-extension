@@ -191,15 +191,6 @@ export default function reduceApp (state, action) {
         transForward: action.value,
       })
 
-    case actions.SHOW_IMPORT_PAGE:
-      return extend(appState, {
-        currentView: {
-          name: 'import-menu',
-        },
-        transForward: true,
-        warning: null,
-      })
-
     case actions.SET_NEW_ACCOUNT_FORM:
       return extend(appState, {
         currentView: {
@@ -252,17 +243,6 @@ export default function reduceApp (state, action) {
       return extend(appState, {
         currentView: defaultView,
         transForward: false,
-        warning: null,
-      })
-
-      // reveal seed words
-
-    case actions.REVEAL_SEED_CONFIRMATION:
-      return extend(appState, {
-        currentView: {
-          name: 'reveal-seed-conf',
-        },
-        transForward: true,
         warning: null,
       })
 

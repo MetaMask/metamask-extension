@@ -35,15 +35,6 @@ describe('MetaMask Reducers', () => {
     assert.equal(lockMetaMask.isUnlocked, false)
   })
 
-  it('sets frequent rpc list', () => {
-    const state = reduceMetamask({}, {
-      type: actions.SET_RPC_LIST,
-      value: 'https://custom.rpc',
-    })
-
-    assert.equal(state.frequentRpcList, 'https://custom.rpc')
-  })
-
   it('sets rpc target', () => {
     const state = reduceMetamask({}, {
       type: actions.SET_RPC_TARGET,

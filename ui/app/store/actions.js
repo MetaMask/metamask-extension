@@ -58,7 +58,6 @@ const actions = {
   markPasswordForgotten,
   unMarkPasswordForgotten,
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
@@ -80,7 +79,6 @@ const actions = {
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   closeWelcomeScreen,
   // seed recovery actions
-  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',

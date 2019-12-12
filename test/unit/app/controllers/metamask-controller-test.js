@@ -541,26 +541,6 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#createShapeshifttx', function () {
-    let depositAddress, depositType, shapeShiftTxList
-
-    beforeEach(function () {
-      nock('https://shapeshift.io')
-        .get('/txStat/3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc')
-        .reply(200, '{"status": "no_deposits", "address": "3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc"}')
-
-      depositAddress = '3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc'
-      depositType = 'ETH'
-      shapeShiftTxList = metamaskController.shapeshiftController.state.shapeShiftTxList
-    })
-
-    it('creates a shapeshift tx', async function () {
-      metamaskController.createShapeShiftTx(depositAddress, depositType)
-      assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
-    })
-
-  })
-
   describe('#addNewAccount', function () {
     let addNewAccount
 

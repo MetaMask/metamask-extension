@@ -166,16 +166,6 @@ describe('App State', () => {
     assert.equal(state.transForward, true)
   })
 
-  it('shows import page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_IMPORT_PAGE,
-    })
-
-    assert.equal(state.currentView.name, 'import-menu')
-    assert.equal(state.transForward, true)
-    assert.equal(state.warning, null)
-  })
-
   it('sets new account form', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_NEW_ACCOUNT_FORM,
@@ -237,16 +227,6 @@ describe('App State', () => {
     assert.equal(state.currentView.name, 'accountDetail')
     assert.equal(state.currentView.context, '0xAddress')
     assert.equal(state.transForward, false)
-    assert.equal(state.warning, null)
-  })
-
-  it('reveals seed words', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.REVEAL_SEED_CONFIRMATION,
-    })
-
-    assert.equal(state.currentView.name, 'reveal-seed-conf')
-    assert.equal(state.transForward, true)
     assert.equal(state.warning, null)
   })
 

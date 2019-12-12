@@ -450,8 +450,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // coinbase
       buyEth: this.buyEth.bind(this),
-      // shapeshift
-      createShapeShiftTx: this.createShapeShiftTx.bind(this),
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
@@ -1753,15 +1751,6 @@ module.exports = class MetamaskController extends EventEmitter {
     if (url) {
       this.platform.openWindow({ url })
     }
-  }
-
-  /**
-   * A method for triggering a shapeshift currency transfer.
-   * @param {string} depositAddress - The address to deposit to.
-   * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
-   */
-  createShapeShiftTx (depositAddress, depositType) {
-    this.shapeshiftController.createTransaction(depositAddress, depositType)
   }
 
   // network
