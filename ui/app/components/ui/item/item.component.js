@@ -2,46 +2,57 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-/* const Icon = () => ({})
-const Title = () => (
-  <h2>Send Dai</h2>
-)
-const Subtitle = component => (
-  <h3>Sept 20 · To: 00X4...3058</h3>
-)
-const More = () => ({}) */
-
-import Preloader from '../preloader'
-
-const Item = ({ className, icon, title, subtitle, more }) => {
-  console.log(icon, title, subtitle, more)
-  return (
-    <div className={className}>
-      <div className="col icon">
-        {icon}
-      </div>
-      <div className="col main">
-        <h2>Send DAI <span><Preloader className="preloader" /></span></h2>
-        <h3>Sept 20 · To: 00X4...3058</h3>
-        <div className="more">
-          <button>Speed up</button>
-          <button>Cancel</button>
-        </div>
-      </div>
-      <div className="col amount">
-        <h2>- 0.0732 DAI</h2>
-        <h3>- $6.04 USD</h3>
-      </div>
+const Item = ({
+  className,
+  icon,
+  title,
+  subtitle,
+  more,
+  crypto,
+  cash,
+}) => (
+  <div className={className}>
+    <div className="col icon">
+      {icon}
     </div>
-  )
-}
+    <div className="col main">
+      {typeof title === 'string' ? (
+        <h2>{ title }</h2>
+      ) : (
+        title
+      )}
+      {typeof subtitle === 'string' ? (
+        <h3>{ subtitle }</h3>
+      ) : (
+        subtitle
+      )}
+      {more && (
+        <div className="more">
+          { more }
+        </div>
+      )}
+    </div>
+    <div className="col amount">
+      <h2>{crypto}</h2>
+      <h3>{cash}</h3>
+    </div>
+  </div>
+)
 
 Item.propTypes = {
   className: PropTypes.string,
   icon: PropTypes.node,
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]).isRequired,
+  subtitle: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]).isRequired,
   more: PropTypes.number,
+  crypto: PropTypes.string,
+  cash: PropTypes.string,
 }
 
 export default Item
