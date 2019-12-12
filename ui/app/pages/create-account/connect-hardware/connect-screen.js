@@ -56,6 +56,9 @@ class ConnectScreen extends Component {
             // this.renderConnectToLedgerButton(),
             this.renderConnectToTrezorButton(),
           ]),
+          // h('div.hw-connect__btn-wrapper', {}, [
+          //   this.renderConnectToCoolWalletButton(),
+          // ]),
           h(Button, {
             type: 'primary',
             large: true,

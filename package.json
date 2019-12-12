@@ -95,7 +95,7 @@
     "eth-json-rpc-middleware": "^4.2.0",
     "eth-keyring-controller": "^5.3.0",
     "eth-ledger-bridge-keyring": "^0.2.0",
-    "eth-cws-keyring":"file:../../coolwalletS/eth-cws-keyring",
+    "eth-cws-keyring": "file:../../coolwalletS/eth-cws-keyring",
     "eth-method-registry": "^1.2.0",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
