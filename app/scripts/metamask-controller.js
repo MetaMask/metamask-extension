@@ -20,6 +20,7 @@ import createFilterMiddleware from 'eth-json-rpc-filters'
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
+import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils.js'
@@ -1627,11 +1628,14 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }))
+    // append tabId to each request if it exists
+    if (tabId) {
+      engine.push(createTabIdMiddleware({ tabId }))
+    }
     // logging
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(createOnboardingMiddleware({
       location,
-      tabId,
       registerOnboarding: this.onboardingController.registerOnboarding,
     }))
     // filter and subscription polyfills
