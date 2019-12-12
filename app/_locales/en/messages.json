@@ -735,6 +735,18 @@
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
   },
+  "ipfsGateway": {
+    "message": "IPFS Gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "invalidIpfsGateway": {
+    "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -1336,7 +1348,7 @@
     "message": "Sync data with 3Box (experimental)"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box. This feature is currenty experimental; use at your own risk."
+    "message": "Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk."
   },
   "syncWithThreeBoxDisabled": {
     "message": "3Box has been disabled due to an error during the initial sync"
@@ -1360,7 +1372,7 @@
     "message": "Make sure nobody else is looking at your screen when you scan this code"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
+    "message": "Your data has been synced successfully. Enjoy the MetaMask mobile app!"
   },
   "terms": {
     "message": "Terms of Use"

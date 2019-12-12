@@ -16,7 +16,7 @@ describe('AdvancedTab Component', () => {
       }
     )
 
-    assert.equal(root.find('.settings-page__content-row').length, 9)
+    assert.equal(root.find('.settings-page__content-row').length, 10)
   })
 
   it('should update autoLogoutTimeLimit', () => {

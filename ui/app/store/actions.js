@@ -304,6 +304,8 @@ const actions = {
   setUseNonceField,
   UPDATE_CUSTOM_NONCE: 'UPDATE_CUSTOM_NONCE',
   updateCustomNonce,
+  SET_IPFS_GATEWAY: 'SET_IPFS_GATEWAY',
+  setIpfsGateway,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
@@ -2656,6 +2658,24 @@ function setUseNonceField (val) {
     dispatch({
       type: actions.SET_USE_NONCEFIELD,
       value: val,
+    })
+  }
+}
+
+function setIpfsGateway (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setIpfsGateway`)
+    background.setIpfsGateway(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      } else {
+        dispatch({
+          type: actions.SET_IPFS_GATEWAY,
+          value: val,
+        })
+      }
     })
   }
 }

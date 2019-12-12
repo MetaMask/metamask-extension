@@ -32,8 +32,13 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   if (isEIP1577Compliant[0]) {
     const contentLookupResult = await Resolver.contenthash(hash)
     const rawContentHash = contentLookupResult[0]
-    const decodedContentHash = contentHash.decode(rawContentHash)
+    let decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
+
+    if (type === 'ipfs-ns') {
+      decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
+    }
+
     return { type: type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
