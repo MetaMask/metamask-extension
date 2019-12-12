@@ -161,11 +161,22 @@ async function verifyEnglishLocale (fix = false) {
   const englishLocale = await getLocale('en')
   const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
 
-  const regex = /'(\w+)'|"(\w+)"/g
+  // match "t(`...`)" because constructing message keys from template strings
+  // prevents this script from finding the messages
+  const templateStringRegex = /\bt\(`.*`\)/g
+
+  // match the keys from the locale file
+  const keyRegex = /'(\w+)'|"(\w+)"/g
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
-    for (const match of matchAll.call(fileContents, regex)) {
+    for (const match of matchAll.call(fileContents, keyRegex)) {
       usedMessages.add(match[1] || match[2])
+    }
+
+    const templateUsage = fileContents.match(templateStringRegex)
+    if (templateUsage) {
+      log.error(`Template string passed to 't' function:\n${templateUsage[0]}`)
+      process.exit(1)
     }
   }
 
