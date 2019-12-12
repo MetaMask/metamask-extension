@@ -26,7 +26,7 @@ export default class ConfirmResetAccount extends PureComponent {
         onCancel={() => this.props.hideModal()}
         submitText={t('reset')}
         cancelText={t('nevermind')}
-        submitType="secondary"
+        submitType="danger"
       >
         <ModalContent
           title={`${t('resetAccount')}?`}
