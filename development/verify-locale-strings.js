@@ -200,7 +200,7 @@ async function verifyEnglishLocale (fix = false) {
   if (templateUsage.length) {
     log.info(`Forbidden use of template strings in 't' function:`)
     templateUsage.forEach(function (occurrence) {
-      log.info(` - ${occurrence}`) 
+      log.info(` - ${occurrence}`)
     })
   }
 
