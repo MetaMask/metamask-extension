@@ -739,10 +739,13 @@
     "message": "IPFS Gateway"
   },
   "ipfsGatewayDescription": {
-    "message": "Enter the URL of the ipfs gateway to use for ENS content resolution"
+    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
   },
   "invalidIpfsGateway": {
-    "message": "Invalid IPFS Gateway : the value must be a valid URL"
+    "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
   "jsonFile": {
     "message": "JSON File",

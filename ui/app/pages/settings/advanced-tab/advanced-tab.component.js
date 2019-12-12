@@ -38,7 +38,7 @@ export default class AdvancedTab extends PureComponent {
   state = {
     autoLogoutTimeLimit: this.props.autoLogoutTimeLimit,
     logoutTimeError: '',
-    ipfsGateway: `https://${this.props.ipfsGateway}`,
+    ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
   }
 
@@ -362,12 +362,23 @@ export default class AdvancedTab extends PureComponent {
       let ipfsGatewayError = ''
 
       try {
-        const urlObj = new URL(url) // check if is valid url
+
+        const urlObj = new URL(addUrlProtocolPrefix(url))
         if (!urlObj.host) {
-          throw new Error('invalid url : no host')
+          throw new Error()
         }
+
+        // don't allow the use of this gateway
+        if (urlObj.host === 'gateway.ipfs.io') {
+          throw new Error('Forbidden gateway')
+        }
+
       } catch (error) {
-        ipfsGatewayError = t('invalidIpfsGateway')
+        ipfsGatewayError = (
+          error.message === 'Forbidden gateway'
+            ? t('forbiddenIpfsGateway')
+            : t('invalidIpfsGateway')
+        )
       }
 
       return {
@@ -378,15 +389,16 @@ export default class AdvancedTab extends PureComponent {
   }
 
   handleIpfsGatewaySave () {
-    const url = new URL(this.state.ipfsGateway)
+
+    const url = new URL(addUrlProtocolPrefix(this.state.ipfsGateway))
     const host = url.host
+
     this.props.setIpfsGateway(host)
   }
 
   renderIpfsGatewayControl () {
     const { t } = this.context
     const { ipfsGatewayError } = this.state
-    const { ipfsGateway } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -401,7 +413,6 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="text"
               value={this.state.ipfsGateway}
-              defaultValue={ipfsGateway}
               onChange={e => this.handleIpfsGatewayChange(e.target.value)}
               error={ipfsGatewayError}
               fullWidth
@@ -410,7 +421,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="primary"
               className="settings-tab__rpc-save-button"
-              disabled={ ipfsGatewayError !== '' }
+              disabled={Boolean(ipfsGatewayError)}
               onClick={() => {
                 this.handleIpfsGatewaySave()
               }}
@@ -446,4 +457,13 @@ export default class AdvancedTab extends PureComponent {
   render () {
     return this.renderContent()
   }
+}
+
+function addUrlProtocolPrefix (urlString) {
+  if (!urlString.match(
+    /(^http:\/\/)|(^https:\/\/)/
+  )) {
+    return 'https://' + urlString
+  }
+  return urlString
 }

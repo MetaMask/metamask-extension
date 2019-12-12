@@ -2670,11 +2670,12 @@ function setIpfsGateway (val) {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
+      } else {
+        dispatch({
+          type: actions.SET_IPFS_GATEWAY,
+          value: val,
+        })
       }
-    })
-    dispatch({
-      type: actions.SET_IPFS_GATEWAY,
-      value: val,
     })
   }
 }
