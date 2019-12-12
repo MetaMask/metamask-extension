@@ -121,20 +121,12 @@ class PreferencesController {
     return metaMetricsId
   }
 
-  getMetaMetricsId () {
-    return this.store.getState().metaMetricsId
-  }
-
   getParticipateInMetaMetrics () {
     return this.store.getState().participateInMetaMetrics
   }
 
   setMetaMetricsSendCount (val) {
     this.store.updateState({ metaMetricsSendCount: val })
-  }
-
-  getMetaMetricsSendCount () {
-    return this.store.getState().metaMetricsSendCount
   }
 
   /**
@@ -208,26 +200,6 @@ class PreferencesController {
     } else {
       next()
     }
-  }
-
-  /**
-   * Getter for the `useBlockie` property
-   *
-   * @returns {boolean} this.store.useBlockie
-   *
-   */
-  getUseBlockie () {
-    return this.store.getState().useBlockie
-  }
-
-  /**
-   * Getter for the `getUseNonceField` property
-   *
-   * @returns {boolean} this.store.getUseNonceField
-   *
-   */
-  getUseNonceField () {
-    return this.store.getState().useNonceField
   }
 
   /**
@@ -599,17 +571,6 @@ class PreferencesController {
     this.store.updateState({ featureFlags: updatedFeatureFlags })
 
     return Promise.resolve(updatedFeatureFlags)
-  }
-
-  /**
-   * A getter for the `featureFlags` property
-   *
-   * @returns {object} A key-boolean map, where keys refer to features and booleans to whether the
-   * user wishes to see that feature
-   *
-   */
-  getFeatureFlags () {
-    return this.store.getState().featureFlags
   }
 
   /**

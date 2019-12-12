@@ -11,7 +11,6 @@ const EthQuery = require('eth-query')
 
 const threeBoxSpies = {
   init: sinon.spy(),
-  getThreeBoxAddress: sinon.spy(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
   turnThreeBoxSyncingOn: sinon.spy(),
   _registerUpdates: sinon.spy(),
@@ -25,7 +24,6 @@ class ThreeBoxControllerMock {
       getState: () => ({}),
     }
     this.init = threeBoxSpies.init
-    this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
     this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
     this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
     this._registerUpdates = threeBoxSpies._registerUpdates
