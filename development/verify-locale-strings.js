@@ -161,11 +161,24 @@ async function verifyEnglishLocale (fix = false) {
   const englishLocale = await getLocale('en')
   const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
 
-  const regex = /'(\w+)'|"(\w+)"/g
+  // match "t(`...`)" because constructing message keys from template strings
+  // prevents this script from finding the messages, and then inappropriately
+  // deletes them
+  const templateStringRegex = /\bt\(`.*`\)/g
+  const templateUsage = []
+
+  // match the keys from the locale file
+  const keyRegex = /'(\w+)'|"(\w+)"/g
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
-    for (const match of matchAll.call(fileContents, regex)) {
+    for (const match of matchAll.call(fileContents, keyRegex)) {
       usedMessages.add(match[1] || match[2])
+    }
+
+    const templateMatches = fileContents.match(templateStringRegex)
+    if (templateMatches) {
+      // concat doesn't work here for some reason
+      templateMatches.forEach(match => templateUsage.push(match))
     }
   }
 
@@ -176,16 +189,24 @@ async function verifyEnglishLocale (fix = false) {
   const unusedMessages = englishMessages
     .filter(message => !messageExceptions.includes(message) && !usedMessages.has(message))
 
-
   if (unusedMessages.length) {
     console.log(`**en**: ${unusedMessages.length} unused messages`)
     log.info(`Messages not present in UI:`)
     unusedMessages.forEach(function (key) {
       log.info(`  - [ ] ${key}`)
     })
-  } else {
+  }
+
+  if (templateUsage.length) {
+    log.info(`Forbidden use of template strings in 't' function:`)
+    templateUsage.forEach(function (occurrence) {
+      log.info(` - ${occurrence}`)
+    })
+  }
+
+  if (!unusedMessages.length && !templateUsage.length) {
     log.info('Full coverage  : )')
-    return false
+    return false // failed === false
   }
 
   if (unusedMessages.length > 0 && fix) {
@@ -196,7 +217,7 @@ async function verifyEnglishLocale (fix = false) {
     await writeLocale('en', newLocale)
   }
 
-  return true
+  return true // failed === true
 }
 
 async function findJavascriptFiles (rootDir) {
