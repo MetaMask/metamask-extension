@@ -121,7 +121,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="warning"
               large
-              className="settings-tab__button--orange"
+              className="settings-tab__button--red"
               onClick={event => {
                 event.preventDefault()
                 this.context.metricsEvent({
