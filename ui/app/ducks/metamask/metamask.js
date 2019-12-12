@@ -78,11 +78,6 @@ function reduceMetamask (state, action) {
         isUnlocked: false,
       })
 
-    case actions.SET_RPC_LIST:
-      return extend(metamaskState, {
-        frequentRpcList: action.value,
-      })
-
     case actions.SET_RPC_TARGET:
       return extend(metamaskState, {
         provider: {
@@ -114,22 +109,6 @@ function reduceMetamask (state, action) {
           newState.unapprovedMsgs[id] = metamaskState.unapprovedMsgs[id]
         }
       }
-      return newState
-
-    case actions.EDIT_TX:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          editingTransactionId: action.value,
-        },
-      })
-
-    case actions.CLEAR_SEED_WORD_CACHE:
-      newState = extend(metamaskState, {
-        isUnlocked: true,
-        isInitialized: true,
-        selectedAddress: action.value,
-      })
       return newState
 
     case actions.SHOW_ACCOUNT_DETAIL:
@@ -231,14 +210,6 @@ function reduceMetamask (state, action) {
         },
       })
 
-    case actions.UPDATE_SEND_FROM:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          from: action.value,
-        },
-      })
-
     case actions.UPDATE_SEND_TO:
       return extend(metamaskState, {
         send: {
@@ -253,14 +224,6 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           amount: action.value,
-        },
-      })
-
-    case actions.UPDATE_SEND_MEMO:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          memo: action.value,
         },
       })
 
@@ -342,16 +305,6 @@ function reduceMetamask (state, action) {
         },
       })
 
-    case actions.SHAPESHIFT_SUBVIEW:
-      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [ssMarketInfo.pair]: ssMarketInfo,
-        },
-        coinOptions,
-      })
-
     case actions.SET_PARTICIPATE_IN_METAMETRICS:
       return extend(metamaskState, {
         participateInMetaMetrics: action.value,
@@ -370,11 +323,6 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_FEATURE_FLAGS:
       return extend(metamaskState, {
         featureFlags: action.value,
-      })
-
-    case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
-      return extend(metamaskState, {
-        networkEndpointType: action.value,
       })
 
     case actions.CLOSE_WELCOME_SCREEN:

@@ -29,7 +29,6 @@ const actions = {
   hideModal: hideModal,
   // notification state
   CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
-  closeNotifacationWindow: closeNotifacationWindow,
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -47,41 +46,24 @@ const actions = {
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
   showNetworkDropdown: showNetworkDropdown,
   hideNetworkDropdown: hideNetworkDropdown,
-  // menu state/
-  getNetworkStatus: 'getNetworkStatus',
   // transition state
   TRANSITION_FORWARD: 'TRANSITION_FORWARD',
-  TRANSITION_BACKWARD: 'TRANSITION_BACKWARD',
   transitionForward,
-  transitionBackward,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
-  // intialize screen
-  CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
-  SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
-  SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   fetchInfoToSync,
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
   markPasswordForgotten,
   unMarkPasswordForgotten,
-  SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
-  SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   unlockSucceeded,
-  showCreateVault: showCreateVault,
-  showRestoreVault: showRestoreVault,
-  showInitializeMenu: showInitializeMenu,
-  showImportPage,
-  showNewAccountPage,
   setNewAccountForm,
   createNewVaultAndRestore: createNewVaultAndRestore,
-  createNewVaultInProgress: createNewVaultInProgress,
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   addNewKeyring,
@@ -91,16 +73,12 @@ const actions = {
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
-  NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
-  navigateToNewAccountScreen,
   resetAccount,
   removeAccount,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   closeWelcomeScreen,
   // seed recovery actions
-  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
-  revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -117,13 +95,11 @@ const actions = {
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
   // accounts screen
-  SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
   setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
-  SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   showQrScanner,
   setCurrentCurrency,
@@ -133,17 +109,11 @@ const actions = {
   showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   showSendTokenPage,
-  ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
-  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
   removeFromAddressBook: removeFromAddressBook,
-  REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
-  requestExportAccount: requestExportAccount,
-  EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
-  exportAccountComplete,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
   setAccountLabel,
   updateNetworkNonce,
@@ -151,16 +121,12 @@ const actions = {
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
-  NEXT_TX: 'NEXT_TX',
-  PREVIOUS_TX: 'PREV_TX',
-  EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
   signTypedMsg,
   cancelTypedMsg,
-  sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
   updateTransaction,
@@ -169,33 +135,22 @@ const actions = {
   cancelTxs,
   completedTx: completedTx,
   txError: txError,
-  nextTx: nextTx,
-  editTx,
-  previousTx: previousTx,
-  cancelAllTx: cancelAllTx,
-  viewPendingTx: viewPendingTx,
-  VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
-  setNextNonce,
   SET_NEXT_NONCE: 'SET_NEXT_NONCE',
   getNextNonce,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
-  UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
   UPDATE_SEND_HEX_DATA: 'UPDATE_SEND_HEX_DATA',
   UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
-  UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
-  OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
-  CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
@@ -206,12 +161,10 @@ const actions = {
   setGasPrice,
   updateGasData,
   setGasTotal,
-  setSendTokenBalance,
   updateSendTokenBalance,
   updateSendHexData,
   updateSendTo,
   updateSendAmount,
-  updateSendMemo,
   setMaxModeTo,
   updateSend,
   updateSendErrors,
@@ -221,21 +174,16 @@ const actions = {
   gasLoadingFinished,
   // app messages
   showAccountDetail: showAccountDetail,
-  BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
-  backToAccountDetail: backToAccountDetail,
   showAccountsPage: showAccountsPage,
   showConfTxPage: showConfTxPage,
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
-  SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
-  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
-  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
@@ -257,20 +205,10 @@ const actions = {
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
   // buy Eth with coinbase
-  onboardingBuyEthView,
-  ONBOARDING_BUY_ETH_VIEW: 'ONBOARDING_BUY_ETH_VIEW',
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
-  buyEthView: buyEthView,
-  buyWithShapeShift,
-  BUY_ETH_VIEW: 'BUY_ETH_VIEW',
-  COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
-  coinBaseSubview: coinBaseSubview,
-  SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
-  shapeShiftSubview: shapeShiftSubview,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
-  coinShiftRquest: coinShiftRquest,
   SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
@@ -280,17 +218,7 @@ const actions = {
   showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
-  // FORGOT PASSWORD:
-  BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
-  goBackToInitView: goBackToInitView,
-  RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
-  BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
-  backToUnlockView: backToUnlockView,
-  // SHOWING KEYCHAIN
-  SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
-  showNewKeychain: showNewKeychain,
 
-  callBackgroundThenUpdate,
   forceUpdateMetamaskState,
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
@@ -316,7 +244,7 @@ const actions = {
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   setCurrentLocale,
   updateCurrentLocale,
-  //
+
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
@@ -339,9 +267,6 @@ const actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  updateNetworkEndpointType,
-  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
-
   retryTransaction,
   SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
@@ -368,7 +293,6 @@ const actions = {
   setNetworksTabAddMode,
 
   // AppStateController-related actions
-  SET_LAST_ACTIVE_TIME: 'SET_LAST_ACTIVE_TIME',
   setLastActiveTime,
   setMkrMigrationReminderTimestamp,
 
@@ -387,7 +311,6 @@ const actions = {
   setSeedPhraseBackedUp,
   verifySeedPhrase,
   hideSeedPhraseBackupAfterOnboarding,
-  SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
 
   initializeThreeBox,
   restoreFromThreeBox,
@@ -471,12 +394,6 @@ function transitionForward () {
   }
 }
 
-function transitionBackward () {
-  return {
-    type: this.TRANSITION_BACKWARD,
-  }
-}
-
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -537,12 +454,6 @@ function unlockAndGetSeedPhrase (password) {
       dispatch(actions.displayWarning(error.message))
       throw new Error(error.message)
     }
-  }
-}
-
-function revealSeedConfirmation () {
-  return {
-    type: this.REVEAL_SEED_CONFIRMATION,
   }
 }
 
@@ -717,12 +628,6 @@ function importNewAccount (strategy, args) {
       })
     }
     return newState
-  }
-}
-
-function navigateToNewAccountScreen () {
-  return {
-    type: this.NEW_ACCOUNT_SCREEN,
   }
 }
 
@@ -1102,13 +1007,6 @@ function updateCustomNonce (value) {
   }
 }
 
-function updateSendMemo (memo) {
-  return {
-    type: actions.UPDATE_SEND_MEMO,
-    value: memo,
-  }
-}
-
 function setMaxModeTo (bool) {
   return {
     type: actions.UPDATE_MAX_MODE,
@@ -1140,26 +1038,6 @@ function updateSendEnsResolutionError (errorMessage) {
   return {
     type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,
-  }
-}
-
-
-function sendTx (txData) {
-  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch, getState) => {
-    log.debug(`actions calling background.approveTransaction`)
-    background.approveTransaction(txData.id, (err) => {
-      if (err) {
-        dispatch(actions.txError(err))
-        return log.error(err.message)
-      }
-      dispatch(actions.completedTx(txData.id))
-
-      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-        !hasUnconfirmedTransactions(getState())) {
-        return global.platform.closeCurrentWindow()
-      }
-    })
   }
 }
 
@@ -1407,39 +1285,6 @@ function cancelTxs (txDataList) {
   }
 }
 
-/**
- * @deprecated
- * @param {Array<object>} txsData
- * @return {Function}
- */
-function cancelAllTx (txsData) {
-  return (dispatch) => {
-    txsData.forEach((txData, i) => {
-      background.cancelTransaction(txData.id, () => {
-        dispatch(actions.completedTx(txData.id))
-        if (i === txsData.length - 1) {
-          dispatch(actions.goHome())
-        }
-      })
-    })
-  }
-}
-//
-// initialize screen
-//
-
-function showCreateVault () {
-  return {
-    type: actions.SHOW_CREATE_VAULT,
-  }
-}
-
-function showRestoreVault () {
-  return {
-    type: actions.SHOW_RESTORE_VAULT,
-  }
-}
-
 function markPasswordForgotten () {
   return (dispatch) => {
     return background.markPasswordForgotten(() => {
@@ -1469,24 +1314,6 @@ function forgotPassword (forgotPasswordState = true) {
   }
 }
 
-function showInitializeMenu () {
-  return {
-    type: actions.SHOW_INIT_MENU,
-  }
-}
-
-function showImportPage () {
-  return {
-    type: actions.SHOW_IMPORT_PAGE,
-  }
-}
-
-function showNewAccountPage (formToSelect) {
-  return {
-    type: actions.SHOW_NEW_ACCOUNT_PAGE,
-    formToSelect,
-  }
-}
 
 function setNewAccountForm (formToSelect) {
   return {
@@ -1495,27 +1322,9 @@ function setNewAccountForm (formToSelect) {
   }
 }
 
-function createNewVaultInProgress () {
-  return {
-    type: actions.CREATE_NEW_VAULT_IN_PROGRESS,
-  }
-}
-
 function closeWelcomeScreen () {
   return {
     type: actions.CLOSE_WELCOME_SCREEN,
-  }
-}
-
-function backToUnlockView () {
-  return {
-    type: actions.BACK_TO_UNLOCK_VIEW,
-  }
-}
-
-function showNewKeychain () {
-  return {
-    type: actions.SHOW_NEW_KEYCHAIN,
   }
 }
 
@@ -1636,13 +1445,6 @@ function showAccountDetail (address) {
   }
 }
 
-function backToAccountDetail (address) {
-  return {
-    type: actions.BACK_TO_ACCOUNT_DETAIL,
-    value: address,
-  }
-}
-
 function showAccountsPage () {
   return {
     type: actions.SHOW_ACCOUNTS_PAGE,
@@ -1657,32 +1459,6 @@ function showConfTxPage ({ transForward = true, id }) {
   }
 }
 
-function nextTx () {
-  return {
-    type: actions.NEXT_TX,
-  }
-}
-
-function viewPendingTx (txId) {
-  return {
-    type: actions.VIEW_PENDING_TX,
-    value: txId,
-  }
-}
-
-function previousTx () {
-  return {
-    type: actions.PREVIOUS_TX,
-  }
-}
-
-function editTx (txId) {
-  return {
-    type: actions.EDIT_TX,
-    value: txId,
-  }
-}
-
 function showConfigPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
@@ -1693,13 +1469,6 @@ function showConfigPage (transitionForward = true) {
 function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
-  }
-}
-
-function showAddSuggestedTokenPage (transitionForward = true) {
-  return {
-    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
     value: transitionForward,
   }
 }
@@ -1795,12 +1564,6 @@ function updateTokens (newTokens) {
 function clearPendingTokens () {
   return {
     type: actions.CLEAR_PENDING_TOKENS,
-  }
-}
-
-function goBackToInitView () {
-  return {
-    type: actions.BACK_TO_INIT_MENU,
   }
 }
 
@@ -2169,12 +1932,6 @@ function hideWarning () {
   }
 }
 
-function requestExportAccount () {
-  return {
-    type: actions.REQUEST_ACCOUNT_EXPORT,
-  }
-}
-
 function exportAccount (password, address) {
   return function (dispatch) {
     dispatch(actions.showLoadingIndication())
@@ -2204,12 +1961,6 @@ function exportAccount (password, address) {
         })
       })
     })
-  }
-}
-
-function exportAccountComplete () {
-  return {
-    type: actions.EXPORT_ACCOUNT,
   }
 }
 
@@ -2267,26 +2018,6 @@ function buyEth (opts) {
   }
 }
 
-function onboardingBuyEthView (address) {
-  return {
-    type: actions.ONBOARDING_BUY_ETH_VIEW,
-    value: address,
-  }
-}
-
-function buyEthView (address) {
-  return {
-    type: actions.BUY_ETH_VIEW,
-    value: address,
-  }
-}
-
-function coinBaseSubview () {
-  return {
-    type: actions.COINBASE_SUBVIEW,
-  }
-}
-
 function pairUpdate (coin) {
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
@@ -2304,57 +2035,6 @@ function pairUpdate (coin) {
       })
     })
   }
-}
-
-function shapeShiftSubview () {
-  const pair = 'btc_eth'
-  return (dispatch) => {
-    dispatch(actions.showSubLoadingIndication())
-    shapeShiftRequest('marketinfo', { pair }, (mktResponse) => {
-      shapeShiftRequest('getcoins', {}, (response) => {
-        dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) {
-          return dispatch(actions.displayWarning(mktResponse.error))
-        }
-        dispatch({
-          type: actions.SHAPESHIFT_SUBVIEW,
-          value: {
-            marketinfo: mktResponse,
-            coinOptions: response,
-          },
-        })
-      })
-    })
-  }
-}
-
-function coinShiftRquest (data, marketData) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
-      dispatch(actions.hideLoadingIndication())
-      if (response.error) {
-        return dispatch(actions.displayWarning(response.error))
-      }
-      const message = `
-        Deposit your ${response.depositType} to the address below:`
-      log.debug(`background.createShapeShiftTx`)
-      background.createShapeShiftTx(response.deposit, response.depositType)
-      dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
-    })
-  }
-}
-
-function buyWithShapeShift (data) {
-  return () => new Promise((resolve, reject) => {
-    shapeShiftRequest('shift', { method: 'POST', data }, (response) => {
-      if (response.error) {
-        return reject(response.error)
-      }
-      background.createShapeShiftTx(response.deposit, response.depositType)
-      return resolve(response)
-    })
-  })
 }
 
 function showQrView (data, message) {
@@ -2551,19 +2231,6 @@ function callBackgroundThenUpdateNoSpinner (method, ...args) {
   }
 }
 
-function callBackgroundThenUpdate (method, ...args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    method.call(background, ...args, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      forceUpdateMetamaskState(dispatch)
-    })
-  }
-}
-
 function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   return new Promise((resolve, reject) => {
@@ -2709,13 +2376,6 @@ function setCurrentLocale (locale, messages) {
   }
 }
 
-function updateNetworkEndpointType (networkEndpointType) {
-  return {
-    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
-    value: networkEndpointType,
-  }
-}
-
 function setPendingTokens (pendingTokens) {
   const { customToken = {}, selectedTokens = {} } = pendingTokens
   const { address, symbol, decimals } = customToken
@@ -2779,8 +2439,6 @@ function clearPermissions () {
     background.clearPermissions()
   }
 }
-
-// ////
 
 function setFirstTimeFlowType (type) {
   return (dispatch) => {

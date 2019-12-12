@@ -35,15 +35,6 @@ describe('MetaMask Reducers', () => {
     assert.equal(lockMetaMask.isUnlocked, false)
   })
 
-  it('sets frequent rpc list', () => {
-    const state = reduceMetamask({}, {
-      type: actions.SET_RPC_LIST,
-      value: 'https://custom.rpc',
-    })
-
-    assert.equal(state.frequentRpcList, 'https://custom.rpc')
-  })
-
   it('sets rpc target', () => {
     const state = reduceMetamask({}, {
       type: actions.SET_RPC_TARGET,
@@ -258,15 +249,6 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.toNickname, 'nickname')
   })
 
-  it('update send from', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_SEND_FROM,
-      value: '0xAddress',
-    })
-
-    assert.equal(state.send.from, '0xAddress')
-  })
-
   it('update send amount', () => {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_AMOUNT,
@@ -274,15 +256,6 @@ describe('MetaMask Reducers', () => {
     })
 
     assert.equal(state.send.amount, '0xAmount')
-  })
-
-  it('update send memo', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_SEND_MEMO,
-      value: '0xMemo',
-    })
-
-    assert.equal(state.send.memo, '0xMemo')
   })
 
   it('updates max mode', () => {
@@ -399,23 +372,6 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.tokenExchangeRates['test pair'].pair, 'test pair')
   })
 
-  it('upates pair and coin options for shapeshift subview', () => {
-    const state = reduceMetamask({}, {
-      type: actions.SHAPESHIFT_SUBVIEW,
-      value: {
-        marketinfo: {
-          pair: 'test pair',
-        },
-        coinOptions: {
-          foo: 'bar',
-        },
-      },
-    })
-
-    assert.equal(state.coinOptions.foo, 'bar')
-    assert.equal(state.tokenExchangeRates['test pair'].pair, 'test pair')
-  })
-
   it('sets blockies', () => {
     const state = reduceMetamask({}, {
       type: actions.SET_USE_BLOCKIE,
@@ -434,15 +390,6 @@ describe('MetaMask Reducers', () => {
     })
 
     assert.equal(state.featureFlags.foo, true)
-  })
-
-  it('updates network endpoint type', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
-      value: 'endpoint',
-    })
-
-    assert.equal(state.networkEndpointType, 'endpoint')
   })
 
   it('close welcome screen', () => {
