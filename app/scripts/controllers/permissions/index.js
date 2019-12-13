@@ -236,13 +236,13 @@ class PermissionsController {
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]
-    const reject = approval.reject
-    reject(false)
 
     delete this.pendingApprovals[id]
     if (Object.keys(this.pendingApprovals).length === 0) {
       this._closePopup && this._closePopup()
     }
+
+    approval.reject(false)
   }
 
   /**

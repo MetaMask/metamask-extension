@@ -60,7 +60,12 @@ class PluginsController extends EventEmitter {
 
   runExistingPlugins () {
     const plugins = this.store.getState().plugins
-    console.log('running existing plugins', plugins)
+    if (Object.keys(plugins).length > 0) {
+      console.log('running existing plugins', plugins)
+    } else {
+      console.log('no plugins found on boot')
+      return
+    }
 
     Object.values(plugins).forEach(({ pluginName, approvedPermissions, sourceCode }) => {
       console.log(`running: ${pluginName}`)

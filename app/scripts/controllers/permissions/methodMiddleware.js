@@ -133,11 +133,13 @@ module.exports = function createRequestMiddleware ({
 
         // request the permissions
 
+        let requestedPermissions
         try {
           // we expect the params to be the same as wallet_requestPermissions
-          result.permissions = await requestPermissions(
-            await preprocessRequestPermissions(req.params[0])
+          requestedPermissions = await preprocessRequestPermissions(
+            req.params[0]
           )
+          result.permissions = await requestPermissions(requestedPermissions)
         } catch (err) {
           // if this fails, reject the entire request
           res.error = err
@@ -149,7 +151,12 @@ module.exports = function createRequestMiddleware ({
         // get the names of the approved plugins
         const pluginPrefixRegex = new RegExp(`^${PLUGIN_PREFIX}`)
         const requestedPlugins = result.permissions
-          .filter(p => p.parentCapability.startsWith(PLUGIN_PREFIX))
+          // requestPermissions returns all permissions for the domain,
+          // so we're filtering out non-plugin and existing permissions
+          .filter(p => (
+            p.parentCapability.startsWith(PLUGIN_PREFIX) &&
+            p.parentCapability in requestedPermissions
+          ))
           .map(p => p.parentCapability.replace(pluginPrefixRegex, ''))
           .reduce((acc, pluginName) => {
             acc[pluginName] = {}
