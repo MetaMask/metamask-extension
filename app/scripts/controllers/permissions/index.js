@@ -52,6 +52,8 @@ class PermissionsController {
     this.getApi = getApi
   }
 
+  // Middleware-related methods
+
   createMiddleware ({ origin, extensionId, isPlugin }) {
 
     if (extensionId) {
@@ -108,77 +110,8 @@ class PermissionsController {
   }
 
   /**
-   * @param {string} origin - The external domain id.
-   * @param {Object} requestedPlugins - The names of the requested plugin permissions.
-   */
-  async installPlugins (origin, requestedPlugins) {
-
-    const existingPerms = this.permissions.getPermissionsForDomain(origin).reduce(
-      (acc, p) => {
-        acc[p.parentCapability] = true
-        return acc
-      }, {}
-    )
-
-    const result = {}
-
-    // use a for-loop so that we can return an object and await the resolution
-    // of each call to processRequestedPlugin
-    await Promise.all(Object.keys(requestedPlugins).map(async pluginName => {
-
-      const permissionName = PLUGIN_PREFIX + pluginName
-      result[pluginName] = {
-        permission: permissionName,
-      }
-
-      // only allow the installation of permitted plugins
-      if (!existingPerms[permissionName]) {
-
-        result[pluginName].error = ethErrors.provider.unauthorized(
-          `Not authorized to install plugin '${pluginName}'. Please request the permission for the plugin before attempting to install it.`
-        )
-      } else {
-
-        // attempt to install and run the plugin, storing any errors that
-        // occur during the process
-        result[pluginName] = {
-          ...result[pluginName],
-          ...(await this.pluginsController.processRequestedPlugin(pluginName)),
-        }
-      }
-    }))
-    return result
-  }
-
-  /**
-   * Returns the accounts that should be exposed for the given origin domain,
-   * if any. This method exists for when a trusted context needs to know
-   * which accounts are exposed to a given domain.
-   *
-   * Do not use in untrusted contexts; just send an RPC request.
-   *
-   * @param {string} origin
-   */
-  getAccounts (origin) {
-    return new Promise((resolve, _) => {
-      const req = { method: 'eth_accounts' }
-      const res = {}
-      this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
-      )
-
-      function _end () {
-        if (res.error || !Array.isArray(res.result)) {
-          resolve([])
-        } else {
-          resolve(res.result)
-        }
-      }
-    })
-  }
-
-  /**
    * Submits a permissions request to rpc-cap. Internal use only.
+   * Other modules should send an RPC request.
    *
    * @param {string} origin - The origin string.
    * @param {IRequestedPermissions} permissions - The requested permissions.
@@ -201,6 +134,8 @@ class PermissionsController {
       }
     })
   }
+
+  // Permission-related methods
 
   /**
    * User approval callback.
@@ -243,6 +178,135 @@ class PermissionsController {
     }
 
     approval.reject(false)
+  }
+
+  /**
+   * Finalizes a permissions request.
+   * Throws if request validation fails.
+   *
+   * @param {Object} requestedPermissions - The requested permissions.
+   * @param {string[]} accounts - The accounts to expose, if any.
+   */
+  async finalizePermissionsRequest (requestedPermissions, accounts) {
+
+    const { eth_accounts: ethAccounts } = requestedPermissions
+
+    if (ethAccounts) {
+
+      await this.validateExposedAccounts(accounts)
+
+      if (!ethAccounts.caveats) {
+        ethAccounts.caveats = []
+      }
+
+      // caveat names are unique, and we will only construct this caveat here
+      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
+        c.name !== CAVEAT_NAMES.exposedAccounts
+      ))
+
+      ethAccounts.caveats.push(
+        {
+          type: 'filterResponse',
+          value: accounts,
+          name: CAVEAT_NAMES.exposedAccounts,
+        },
+      )
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given domain.
+   * @param {object} domains { origin: [permissions] }
+   */
+  removePermissionsFor (domains) {
+
+    Object.entries(domains).forEach(([origin, perms]) => {
+
+      this.permissions.removePermissionsFor(
+        origin,
+        perms.map(methodName => {
+
+          if (methodName === 'eth_accounts') {
+            this.notifyDomain(
+              origin,
+              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
+            )
+          }
+
+          return { parentCapability: methodName }
+        })
+      )
+    })
+  }
+
+  /**
+   * Removes all permissions for the given domains.
+   * @param {Array<string>} domainsToDelete - The domains to remove all permissions for.
+   */
+  removeAllPermissionsFor (domainsToDelete) {
+    const domains = this.permissions.getDomains()
+    domainsToDelete.forEach(d => {
+      delete domains[d]
+      this.notifyDomain(d, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        result: [],
+      })
+    })
+    this.permissions.setDomains(domains)
+  }
+
+  // Caveat-related methods
+
+  /**
+   * Gets all caveats for the given origin and permission, or returns null
+   * if none exist.
+   *
+   * @param {string} permission - The name of the target permission.
+   * @param {string} origin - The origin that has the permission.
+   */
+  getCaveatsFor (permission, origin) {
+    return this.permissions.getCaveats(origin, permission) || null
+  }
+
+  /**
+   * Gets the caveat with the given name for the given permission of the
+   * given origin.
+   *
+   * @param {string} permission - The name of the target permission.
+   * @param {string} origin - The origin that has the permission.
+   * @param {string} caveatName - The name of the caveat to retrieve.
+   */
+  getCaveat (permission, origin, caveatName) {
+    return this.permissions.getCaveat(origin, permission, caveatName)
+  }
+
+  // Account-related methods
+
+  /**
+   * Returns the accounts that should be exposed for the given origin domain,
+   * if any. This method exists for when a trusted context needs to know
+   * which accounts are exposed to a given domain.
+   *
+   * Do not use in untrusted contexts; just send an RPC request.
+   *
+   * @param {string} origin
+   */
+  getAccounts (origin) {
+    return new Promise((resolve, _) => {
+      const req = { method: 'eth_accounts' }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+
+      function _end () {
+        if (res.error || !Array.isArray(res.result)) {
+          resolve([])
+        } else {
+          resolve(res.result)
+        }
+      }
+    })
   }
 
   /**
@@ -307,40 +371,6 @@ class PermissionsController {
   }
 
   /**
-   * Finalizes a permissions request.
-   * Throws if request validation fails.
-   *
-   * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
-   */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
-
-    const { eth_accounts: ethAccounts } = requestedPermissions
-
-    if (ethAccounts) {
-
-      await this.validateExposedAccounts(accounts)
-
-      if (!ethAccounts.caveats) {
-        ethAccounts.caveats = []
-      }
-
-      // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
-        c.name !== CAVEAT_NAMES.exposedAccounts
-      ))
-
-      ethAccounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: accounts,
-          name: CAVEAT_NAMES.exposedAccounts,
-        },
-      )
-    }
-  }
-
-  /**
    * Validate an array of accounts representing accounts to be exposed
    * to a domain. Throws error if validation fails.
    *
@@ -361,69 +391,52 @@ class PermissionsController {
     })
   }
 
-  /**
-   * Removes the given permissions for the given domain.
-   * @param {object} domains { origin: [permissions] }
-   */
-  removePermissionsFor (domains) {
-
-    Object.entries(domains).forEach(([origin, perms]) => {
-
-      this.permissions.removePermissionsFor(
-        origin,
-        perms.map(methodName => {
-
-          if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
-            )
-          }
-
-          return { parentCapability: methodName }
-        })
-      )
-    })
-  }
+  // Plugin-related methods
 
   /**
-   * Removes all permissions for the given domains.
-   * @param {Array<string>} domainsToDelete - The domains to remove all permissions for.
+   * @param {string} origin - The external domain id.
+   * @param {Object} requestedPlugins - The names of the requested plugin permissions.
    */
-  removeAllPermissionsFor (domainsToDelete) {
-    const domains = this.permissions.getDomains()
-    domainsToDelete.forEach(d => {
-      delete domains[d]
-      this.notifyDomain(d, {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        result: [],
-      })
-    })
-    this.permissions.setDomains(domains)
+  async installPlugins (origin, requestedPlugins) {
+
+    const existingPerms = this.permissions.getPermissionsForDomain(origin).reduce(
+      (acc, p) => {
+        acc[p.parentCapability] = true
+        return acc
+      }, {}
+    )
+
+    const result = {}
+
+    // use a for-loop so that we can return an object and await the resolution
+    // of each call to processRequestedPlugin
+    await Promise.all(Object.keys(requestedPlugins).map(async pluginName => {
+
+      const permissionName = PLUGIN_PREFIX + pluginName
+      result[pluginName] = {
+        permission: permissionName,
+      }
+
+      // only allow the installation of permitted plugins
+      if (!existingPerms[permissionName]) {
+
+        result[pluginName].error = ethErrors.provider.unauthorized(
+          `Not authorized to install plugin '${pluginName}'. Please request the permission for the plugin before attempting to install it.`
+        )
+      } else {
+
+        // attempt to install and run the plugin, storing any errors that
+        // occur during the process
+        result[pluginName] = {
+          ...result[pluginName],
+          ...(await this.pluginsController.processRequestedPlugin(pluginName)),
+        }
+      }
+    }))
+    return result
   }
 
-  /**
-   * Gets all caveats for the given origin and permission, or returns null
-   * if none exist.
-   *
-   * @param {string} permission - The name of the target permission.
-   * @param {string} origin - The origin that has the permission.
-   */
-  getCaveatsFor (permission, origin) {
-    return this.permissions.getCaveats(origin, permission) || null
-  }
-
-  /**
-   * Gets the caveat with the given name for the given permission of the
-   * given origin.
-   *
-   * @param {string} permission - The name of the target permission.
-   * @param {string} origin - The origin that has the permission.
-   * @param {string} caveatName - The name of the caveat to retrieve.
-   */
-  getCaveat (permission, origin, caveatName) {
-    return this.permissions.getCaveat(origin, permission, caveatName)
-  }
+  // State-related methods
 
   /**
    * Removes all known domains and their related permissions.
@@ -453,6 +466,8 @@ class PermissionsController {
       [HISTORY_STORE_KEY]: {},
     })
   }
+
+  // rpc-cap-related methods
 
   /**
    * Initializes the underlying CapabilitiesController.
@@ -549,7 +564,6 @@ class PermissionsController {
       },
     }, initState)
   }
-
 }
 
 module.exports = {
