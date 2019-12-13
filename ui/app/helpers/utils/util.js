@@ -1,11 +1,6 @@
 const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
-const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 import { DateTime } from 'luxon'
-
-const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
-const GWEI_FACTOR = new ethUtil.BN(1e9)
-const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 function formatDate (date, format = 'M/d/y \'at\' T') {
@@ -33,16 +28,12 @@ for (const currency in valueTable) {
 module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
-  miniAddressSummary: miniAddressSummary,
-  isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
   isValidENSAddress,
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
   generateBalanceObject: generateBalanceObject,
-  dataSize: dataSize,
-  readableDate: readableDate,
   normalizeToWei: normalizeToWei,
   normalizeEthStringToWei: normalizeEthStringToWei,
   normalizeNumberToWei: normalizeNumberToWei,
@@ -50,13 +41,8 @@ module.exports = {
   bnTable: bnTable,
   isHex: isHex,
   formatDate,
-  bnMultiplyByFraction,
-  getTxFeeBn,
-  shortenBalance,
   getContractAtAddress,
   exportAsFile: exportAsFile,
-  isInvalidChecksumAddress,
-  allNull,
   getTokenAddressFromTokenObject,
   checksumAddress,
   addressSlicer,
@@ -94,14 +80,6 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
   return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
 }
 
-function miniAddressSummary (address) {
-  if (!address) {
-    return ''
-  }
-  const checked = checksumAddress(address)
-  return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
-}
-
 function isValidAddress (address) {
   const prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') {
@@ -112,14 +90,6 @@ function isValidAddress (address) {
 
 function isValidENSAddress (address) {
   return address.match(/^.{3,}\.(eth|test|xyz)$/)
-}
-
-function isInvalidChecksumAddress (address) {
-  const prefixed = ethUtil.addHexPrefix(address)
-  if (address === '0x0000000000000000000000000000000000000000') {
-    return false
-  }
-  return !isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed) && ethUtil.isValidAddress(prefixed)
 }
 
 function isAllOneCase (address) {
@@ -228,11 +198,6 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   }
 }
 
-function dataSize (data) {
-  const size = data ? ethUtil.stripHexPrefix(data).length : 0
-  return size + ' bytes'
-}
-
 // Takes a BN and an ethereum currency name,
 // returns a BN in wei
 function normalizeToWei (amount, currency) {
@@ -266,36 +231,8 @@ function normalizeNumberToWei (n, currency) {
   return normalizeToWei(amount, currency).div(multiple)
 }
 
-function readableDate (ms) {
-  const date = new Date(ms)
-  const month = date.getMonth()
-  const day = date.getDate()
-  const year = date.getFullYear()
-  const hours = date.getHours()
-  const minutes = '0' + date.getMinutes()
-  const seconds = '0' + date.getSeconds()
-
-  const dateStr = `${month}/${day}/${year}`
-  const time = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
-  return `${dateStr} ${time}`
-}
-
 function isHex (str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
-}
-
-function bnMultiplyByFraction (targetBN, numerator, denominator) {
-  const numBN = new ethUtil.BN(numerator)
-  const denomBN = new ethUtil.BN(denominator)
-  return targetBN.mul(numBN).div(denomBN)
-}
-
-function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16)) {
-  const gasBn = hexToBn(gas)
-  const gasPriceBn = hexToBn(gasPrice)
-  const txFeeBn = gasBn.mul(gasPriceBn)
-
-  return txFeeBn.toString(16)
 }
 
 function getContractAtAddress (tokenAddress) {
@@ -316,10 +253,6 @@ function exportAsFile (filename, data, type = 'text/csv') {
     elem.click()
     document.body.removeChild(elem)
   }
-}
-
-function allNull (obj) {
-  return Object.entries(obj).every(([_, value]) => value === null)
 }
 
 function getTokenAddressFromTokenObject (token) {
