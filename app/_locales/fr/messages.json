@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Le mode conversation privée est maintenant activé par défaut"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tableau disponible uniquement sur les réseaux Ethereum."
   },
-  "confirmClear": {
-    "message": "Êtes-vous sûr de vouloir supprimer les sites Web approuvés?"
-  },
   "contractInteraction": {
     "message": "Interaction avec un contrat"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Les données de site Web approuvées ont été supprimées."
   },
   "permissionsSettings": {
     "message": "Données d'approbation"
@@ -26,17 +17,11 @@
   "reject": {
     "message": "Rejeter"
   },
-  "providerRequest": {
-    "message": "$1 voudrait se connecter à votre compte"
-  },
-  "providerRequestInfo": {
-    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ethereum pour pouvoir interagir avec la chaîne de blocs Ethereum. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ethereum."
-  },
   "about": {
     "message": "À propos"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centre d'assistance et coordonnées."
+    "message": "Version, centre d'assistance et coordonnées"
   },
   "acceleratingATransaction": {
     "message": "* Accélérer une transaction en utilisant un prix de l'essence plus élevé augmente ses chances d'être traitée plus rapidement par le réseau, mais ce n'est pas toujours garanti."
@@ -72,7 +57,7 @@
     "message": "Paramètres avancés"
   },
   "advancedSettingsDescription": {
-    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC."
+    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC"
   },
   "advancedOptions": {
     "message": "Options avancées"
@@ -249,7 +234,7 @@
   "connect": {
     "message": "Connecter"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Demande de connexion"
   },
   "connectingTo": {
@@ -371,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
-  },
-  "dismiss": {
-    "message": "Ignorer"
   },
   "done": {
     "message": "Terminé"
@@ -1317,7 +1299,7 @@
   "updatedWithDate": {
     "message": "Mis à jour $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Les URLs requièrent un préfixe HTTP/HTTPS approprié."
   },
   "usedByClients": {

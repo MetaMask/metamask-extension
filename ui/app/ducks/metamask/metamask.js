@@ -25,6 +25,7 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
+    customNonceValue: '',
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -57,6 +58,7 @@ function reduceMetamask (state, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
+    nextNonce: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -188,7 +190,10 @@ function reduceMetamask (state, action) {
           gasLimit: action.value,
         },
       })
-
+    case actions.UPDATE_CUSTOM_NONCE:
+      return extend(metamaskState, {
+        customNonceValue: action.value,
+      })
     case actions.UPDATE_GAS_PRICE:
       return extend(metamaskState, {
         send: {
@@ -409,6 +414,12 @@ function reduceMetamask (state, action) {
     case actions.SET_FIRST_TIME_FLOW_TYPE: {
       return extend(metamaskState, {
         firstTimeFlowType: action.value,
+      })
+    }
+
+    case actions.SET_NEXT_NONCE: {
+      return extend(metamaskState, {
+        nextNonce: action.value,
       })
     }
 

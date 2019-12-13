@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Modul de confidențialitate este activat acum în mod implicit"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafic disponibil numai pe rețelele Ethereum."
-  },
-  "confirmClear": {
-    "message": "Sunteți sigur că doriți să ștergeți site-urile aprobate?"
   },
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Ștergeți datele confidențiale"
   },
   "reject": {
     "message": "Respingeți"
   },
-  "providerRequest": {
-    "message": "$1 ar dori să se conecteze la contul dvs."
-  },
-  "providerRequestInfo": {
-    "message": "Acest site solicită acces pentru a vedea adresa curentă a contului dvs. Asigurați-vă întotdeauna că aveți încredere în site-urile cu care interacționați."
-  },
   "about": {
     "message": "Despre"
   },
   "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact."
+    "message": "Versiune, centru de asistență și date de contact"
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -63,7 +51,7 @@
     "message": "Avansate"
   },
   "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat."
+    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Solicitare de conectare"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
-  },
-  "dismiss": {
-    "message": "Închide"
   },
   "done": {
     "message": "Efectuat"
@@ -1328,7 +1313,7 @@
   "updatedWithDate": {
     "message": "Actualizat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
   },
   "usedByClients": {

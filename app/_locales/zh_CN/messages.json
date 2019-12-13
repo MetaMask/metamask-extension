@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "现已默认启用隐私模式"
-  },
   "chartOnlyAvailableEth": {
     "message": "聊天功能仅对以太坊网络开放。"
   },
-  "confirmClear": {
-    "message": "您确定要清除已批准的网站吗？"
-  },
   "contractInteraction": {
     "message": "合约交互"
-  },
-  "clearPermissionsSuccess": {
-    "message": "已批准的网站数据已成功清除。"
   },
   "permissionsSettings": {
     "message": "审批数据"
@@ -25,12 +16,6 @@
   },
   "reject": {
     "message": "拒绝"
-  },
-  "providerRequest": {
-    "message": "$1 希望关联您的账户"
-  },
-  "providerRequestInfo": {
-    "message": "下面列出的域正在尝试请求访问Ethereum API，以便它可以与以太坊区块链进行交互。在批准Ethereum访问之前，请务必仔细检查您是否在正确的站点上。"
   },
   "about": {
     "message": "关于"
@@ -261,7 +246,7 @@
   "connect": {
     "message": "连接"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "关联请求"
   },
   "connectingTo": {
@@ -383,9 +368,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 Ether 的最快捷方式。"
-  },
-  "dismiss": {
-    "message": "关闭"
   },
   "done": {
     "message": "完成"

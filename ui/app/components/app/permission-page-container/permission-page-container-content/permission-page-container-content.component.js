@@ -110,7 +110,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           {this.renderPermissionApprovalVisual()}
           <section>
             <h1>{siteMetadata.name}</h1>
-            <h2>{'Would like to:'}</h2>
+            <h2>Would like to:</h2>
             {this.renderRequestedPermissions()}
             <br/>
             <a

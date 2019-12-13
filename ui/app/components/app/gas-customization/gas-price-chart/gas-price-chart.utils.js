@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
 import c3 from 'c3'
-import BigNumber from 'bignumber.js'
-
-const newBigSigDig = n => (new BigNumber(n.toPrecision(15)))
-const createOp = (a, b, op) => (newBigSigDig(a))[op](newBigSigDig(b))
-const bigNumMinus = (a = 0, b = 0) => createOp(a, b, 'minus')
-const bigNumDiv = (a = 0, b = 1) => createOp(a, b, 'div')
+import {
+  extrapolateY,
+  getAdjacentGasPrices,
+  newBigSigDig,
+  bigNumMinus,
+  bigNumDiv,
+} from '../../../../helpers/utils/gas-time-estimates.util'
 
 export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes, chart }) {
   const { currentPosValue, newTimeEstimate } = getNewXandTimeEstimate({
@@ -65,25 +66,6 @@ export function handleChartUpdate ({ chart, gasPrices, newPrice, cssId }) {
     hideDataUI(chart, cssId)
   }
 }
-
-export function getAdjacentGasPrices ({ gasPrices, priceToPosition }) {
-  const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => e <= priceToPosition && a[i + 1] >= priceToPosition)
-  const closestHigherValueIndex = gasPrices.findIndex((e) => e > priceToPosition)
-  return {
-    closestLowerValueIndex,
-    closestHigherValueIndex,
-    closestHigherValue: gasPrices[closestHigherValueIndex],
-    closestLowerValue: gasPrices[closestLowerValueIndex],
-  }
-}
-
-export function extrapolateY ({ higherY = 0, lowerY = 0, higherX = 0, lowerX = 0, xForExtrapolation = 0 }) {
-  const slope = bigNumMinus(higherY, lowerY).div(bigNumMinus(higherX, lowerX))
-  const newTimeEstimate = slope.times(bigNumMinus(higherX, xForExtrapolation)).minus(newBigSigDig(higherY)).negated()
-
-  return newTimeEstimate.toNumber()
-}
-
 
 export function getNewXandTimeEstimate ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes }) {
   const chartMouseXPos = bigNumMinus(xMousePos, chartXStart)
@@ -232,7 +214,9 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         tick: {
           values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
           outer: false,
-          format: function (val) { return val + ' GWEI' },
+          format: function (val) {
+            return val + ' GWEI'
+          },
         },
         padding: {left: gasPricesMax / 50, right: gasPricesMax / 50},
         label: {

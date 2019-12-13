@@ -1,39 +1,21 @@
 {
+  "migrateSai": {
+    "message": "A message from Maker: The new Multi-Collateral Dai token has been released. Your old tokens are now called Sai. Please upgrade your Sai tokens to the new Dai."
+  },
+  "migrateSaiInfo": {
+    "message": "To dismiss this notification you can migrate your tokens or hide SAI from the token list."
+  },
+  "migrate": {
+    "message": "Migrate"
+  },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
   },
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
-  "caveat_filterParams": {
-    "message": "Only with: "
-  },
-  "caveat_filterResponse": {
-    "message": "Only: "
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
-  },
-  "connections": {
-    "message": "Connections"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
-  },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
@@ -56,9 +38,6 @@
   "confirmClearPlugins": {
     "message": "Are you sure you want to remove all Snaps and their associated permissions?"
   },
-  "clearPluginsSuccess": {
-    "message": "Snaps cleared successfully."
-  },
   "pluginsSettings": {
     "message": "Manage Snaps"
   },
@@ -74,12 +53,6 @@
   "permissionsDescription": {
     "message": "All currently granted permissions, by dapp/website. Deselect permissions and click \"Update Permissions\" to remove them."
   },
-  "permissions": {
-    "message": "Permissions"
-  },
-  "permissionsSettingsDescription": {
-    "message": "Manage dapp/website permissions"
-  },
   "permissionsEmpty": {
     "message": "No permissions found."
   },
@@ -91,9 +64,6 @@
   },
   "confirmClearPermissions": {
     "message": "Are you sure you want to remove all dapp/website permissions?"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Permissions cleared successfully."
   },
   "updatePermissions": {
     "message": "Update Permissions"
@@ -137,20 +107,18 @@
   "reject": {
     "message": "Reject"
   },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
-  },
   "about": {
     "message": "About"
   },
   "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info."
+    "message": "Version, support center, and contact info"
   },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 may access and spend up to this max amount",
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
@@ -183,7 +151,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -209,8 +177,19 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
+  "allowOriginSpendToken": {
+    "message": "Allow $1 to spend your $2?",
+    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  },
+  "allowWithdrawAndSpend": {
+    "message": "Allow $1 to withdraw and spend up to the following amount:",
+    "description": "The url of the site that requested permission to 'withdraw and spend'"
+  },
   "amount": {
     "message": "Amount"
+  },
+  "amountWithColon": {
+    "message": "Amount:"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -290,6 +269,15 @@
   },
   "blockiesIdenticon": {
     "message": "Use Blockies Identicon"
+  },
+  "nonceField": {
+    "message": "Customize transaction nonce"
+  },
+  "nonceFieldHeading": {
+    "message": "Custom Nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
   },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
@@ -471,6 +459,9 @@
   "customRPC": {
     "message": "Custom RPC"
   },
+  "customSpendLimit": {
+    "message": "Custom Spend Limit"
+  },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
   },
@@ -504,9 +495,6 @@
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
-  "dismiss": {
-    "message": "Dismiss"
-  },
   "done": {
     "message": "Done"
   },
@@ -530,6 +518,9 @@
   },
   "editContact": {
     "message": "Edit Contact"
+  },
+  "editPermission": {
+    "message": "Edit Permission"
   },
   "emailUs": {
     "message": "Email us!"
@@ -564,6 +555,10 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" will close this tab and direct back to $2",
+    "description": "Return the user to the site that initiated onboarding"
+  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
   },
@@ -572,6 +567,9 @@
   },
   "enterAnAlias": {
     "message": "Enter an alias"
+  },
+  "enterMaxSpendLimit": {
+    "message": "Enter Max Spend Limit"
   },
   "enterPassword": {
     "message": "Enter password"
@@ -603,6 +601,9 @@
   "faster": {
     "message": "Faster"
   },
+  "feeAssociatedRequest": {
+    "message": "A fee is associated with this request."
+  },
   "fiat": {
     "message": "Fiat",
     "description": "Exchange type"
@@ -619,6 +620,9 @@
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
+  },
+  "functionApprove": {
+    "message": "Function: Approve"
   },
   "functionType": {
     "message": "Function Type"
@@ -828,6 +832,9 @@
   "logout": {
     "message": "Log out"
   },
+  "logoutTimeTooGreat": {
+    "message": "Logout time is too great"
+  },
   "mainnet": {
     "message": "Main Ethereum Network"
   },
@@ -947,6 +954,10 @@
   "next": {
     "message": "Next"
   },
+  "nextNonceWarning": {
+    "message": "Nonce is higher than suggested nonce of $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
   "noAddressForName": {
     "message": "No address has been set for this name."
   },
@@ -1008,6 +1019,12 @@
   "pending": {
     "message": "pending"
   },
+  "permissions": {
+    "message": "Permissions"
+  },
+  "permissionsSettingsDescription": {
+    "message": "Manage dapp/website permissions"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -1032,6 +1049,9 @@
   },
   "privateNetwork": {
     "message": "Private Network"
+  },
+  "proposedApprovalLimit": {
+    "message": "Proposed Approval Limit"
   },
   "qrCode": {
     "message": "Show QR Code"
@@ -1268,6 +1288,9 @@
   "signatureRequest": {
     "message": "Signature Request"
   },
+  "signatureRequest1": {
+    "message": "Message"
+  },
   "signed": {
     "message": "Signed"
   },
@@ -1289,8 +1312,18 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
+  "spendLimitPermission": {
+    "message": "Spend limit permission"
+  },
+  "spendLimitRequestedBy": {
+    "message": "Spend limit requested by $1",
+    "description": "Origin of the site requesting the spend limit"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
+  },
+  "stateLogFileName": {
+    "message": "MetaMask State Logs"
   },
   "stateLogs": {
     "message": "State Logs"
@@ -1338,10 +1371,10 @@
     "message": "Symbol must be between 0 and 12 characters."
   },
   "syncWithThreeBox": {
-    "message": "Sync data with 3Box"
+    "message": "Sync data with 3Box (experimental)"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box"
+    "message": "Turn on to have your settings backed up with 3Box. This feature is currenty experimental; use at your own risk."
   },
   "syncWithThreeBoxDisabled": {
     "message": "3Box has been disabled due to an error during the initial sync"
@@ -1381,6 +1414,9 @@
   },
   "to": {
     "message": "To"
+  },
+  "toWithColon": {
+    "message": "To:"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
@@ -1456,6 +1492,10 @@
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "trustSiteApprovePermission": {
+    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
+    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+  },
   "tryAgain": {
     "message": "Try again"
   },
@@ -1483,6 +1523,9 @@
   "unknownCameraError": {
     "message": "There was an error while trying to access your camera. Please try again..."
   },
+  "unlimited": {
+    "message": "Unlimited"
+  },
   "unlock": {
     "message": "Unlock"
   },
@@ -1492,8 +1535,11 @@
   "updatedWithDate": {
     "message": "Updated $1"
   },
-  "uriErrorMsg": {
-    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+  "urlErrorMsg": {
+    "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlExistsErrorMsg": {
+    "message": "URL is already present in existing list of networks"
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
@@ -1518,6 +1564,9 @@
   },
   "viewOnEtherscan": {
     "message": "View on Etherscan"
+  },
+  "retryTransaction": {
+    "message": "Retry Transaction"
   },
   "visitWebSite": {
     "message": "Visit our web site"

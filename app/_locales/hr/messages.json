@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Način se Privatnost sada zadano omogućava"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon je dostupan samo na mrežama Ethereum."
-  },
-  "confirmClear": {
-    "message": "Sigurno želite očistiti odobrena mrežna mjesta?"
   },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Očisti podatke o privatnosti"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Odbaci"
   },
-  "providerRequest": {
-    "message": "Korisnik $1 želi se povezati na vaš račun"
-  },
-  "providerRequestInfo": {
-    "message": "Na ovom se mjestu zahtijeva pristup za pregledavanje vaše trenutačne adrese računa. Uvijek pazite da vjerujete mrežnim mjestima s kojima rukujete."
-  },
   "about": {
     "message": "O opcijama"
   },
   "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt."
+    "message": "Inačica, centar za podršku i informacije za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
@@ -67,7 +55,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC."
+    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Povežite se"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Zahtjev za povezivanjem"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
-  },
-  "dismiss": {
-    "message": "Odbaci"
   },
   "done": {
     "message": "Gotovo"
@@ -1337,7 +1322,7 @@
   "updatedWithDate": {
     "message": "Ažurirano $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
   },
   "usedByClients": {

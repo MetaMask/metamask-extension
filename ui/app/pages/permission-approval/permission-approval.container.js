@@ -4,7 +4,7 @@ import { approvePermissionsRequest, rejectPermissionsRequest } from '../../store
 
 function mapDispatchToProps (dispatch) {
   return {
-    approvePermissionsRequest: requestId => dispatch(approvePermissionsRequest(requestId)),
+    approvePermissionsRequest: (requestId, accounts) => dispatch(approvePermissionsRequest(requestId, accounts)),
     rejectPermissionsRequest: requestId => dispatch(rejectPermissionsRequest(requestId)),
   }
 }

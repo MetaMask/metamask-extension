@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Privaatsusrežiim on nüüd vaikimisi lubatud"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabel on saadaval vaid Ethereumi võrkudes."
-  },
-  "confirmClear": {
-    "message": "Kas soovite kindlasti kinnitatud veebisaidid kustutada?"
   },
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tühjenda privaatsusandmed"
   },
   "reject": {
     "message": "Lükka tagasi"
   },
-  "providerRequest": {
-    "message": "$1 soovib teie kontoga ühenduse luua"
-  },
-  "providerRequestInfo": {
-    "message": "See sait taotleb juurdepääsu teie praeguse konto aadressi vaatamiseks. Veenduge alati, et usaldate saite, millega suhtlete."
-  },
   "about": {
     "message": "Teave"
   },
   "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave."
+    "message": "Versioon, tugikeskus ja kontaktteave"
   },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
@@ -63,7 +51,7 @@
     "message": "Täpsemad"
   },
   "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine."
+    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Ühenduse taotlus"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
-  },
-  "dismiss": {
-    "message": "Loobu"
   },
   "done": {
     "message": "Valmis"
@@ -1337,7 +1322,7 @@
   "updatedWithDate": {
     "message": "Värskendatud $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."
   },
   "usedByClients": {

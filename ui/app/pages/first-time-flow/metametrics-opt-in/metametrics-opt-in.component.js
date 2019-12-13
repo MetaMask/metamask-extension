@@ -104,7 +104,7 @@ export default class MetaMetricsOptIn extends Component {
                       })
                   })
               }}
-              cancelText={'No Thanks'}
+              cancelText="No Thanks"
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true)
@@ -137,8 +137,8 @@ export default class MetaMetricsOptIn extends Component {
                       })
                   })
               }}
-              submitText={'I agree'}
-              submitButtonType={'primary'}
+              submitText="I agree"
+              submitButtonType="primary"
               disabled={false}
             />
             <div className="metametrics-opt-in__bottom-text">

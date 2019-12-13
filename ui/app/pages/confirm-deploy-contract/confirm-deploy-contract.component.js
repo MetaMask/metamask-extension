@@ -56,7 +56,7 @@ export default class ConfirmDeployContract extends Component {
   render () {
     return (
       <ConfirmTransactionBase
-        actionKey={'contractDeployment'}
+        actionKey="contractDeployment"
         dataComponent={this.renderData()}
       />
     )

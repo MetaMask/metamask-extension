@@ -16,7 +16,7 @@ describe('SendContent Component', function () {
   beforeEach(() => {
     wrapper = shallow(
       <SendContent
-        showHexData={true}
+        showHexData
       />,
       { context: { t: str => str + '_t' } }
     )

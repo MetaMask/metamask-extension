@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Èske ou sèten ou vle klè sitwèb apwouve?"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Done sou sit wèb apwouve yo te klarifye avèk siksè."
-  },
   "permissionsSettings": {
     "message": "Done sou vi prive"
   },
@@ -13,9 +7,6 @@
   },
   "clearPermissions": {
     "message": "Klè Done sou vi prive"
-  },
-  "providerRequestInfo": {
-    "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ethereum ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
   },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
@@ -860,7 +851,7 @@
   "updatedWithDate": {
     "message": "Mete ajou $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
   },
   "usedByClients": {

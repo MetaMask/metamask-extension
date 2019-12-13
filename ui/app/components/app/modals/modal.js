@@ -31,6 +31,7 @@ import ClearPlugins from './clear-plugins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
+import EditApprovalPermission from './edit-approval-permission'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -343,6 +344,31 @@ const MODALS = {
     customOnHideOpts: {
       action: resetCustomGasData,
       args: [],
+    },
+  },
+
+  EDIT_APPROVAL_PERMISSION: {
+    contents: h(EditApprovalPermission),
+    mobileModalStyle: {
+      width: '95vw',
+      height: '100vh',
+      top: '50px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 

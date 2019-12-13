@@ -11,7 +11,7 @@ describe('Dropdown Menu Components', () => {
 
     beforeEach(() => {
       wrapper = shallow(
-        <Menu className = {'Test Class'} isShowing = {true}/>
+        <Menu className="Test Class" isShowing/>
       )
     })
 
@@ -29,10 +29,10 @@ describe('Dropdown Menu Components', () => {
     beforeEach(() => {
       wrapper = shallow(
         <Item
-          icon = {'test icon'}
-          text = {'test text'}
-          className = {'test className'}
-          onClick = {onClickSpy}
+          icon="test icon"
+          text="test text"
+          className="test className"
+          onClick={onClickSpy}
         />
       )
     })
@@ -74,7 +74,7 @@ describe('Dropdown Menu Components', () => {
 
     beforeEach(() => {
       wrapper = shallow(<CloseArea
-        onClick = {onClickSpy}
+        onClick={onClickSpy}
       />)
     })
 

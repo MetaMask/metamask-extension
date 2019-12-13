@@ -15,13 +15,15 @@ const h = require('react-hyperscript')
 const Root = require('../ui/app/pages')
 const configureStore = require('../ui/app/store/store')
 const actions = require('../ui/app/store/actions')
-const states = require('./states')
 const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
 const Selector = require('./selector')
 const MetamaskController = require('../app/scripts/metamask-controller')
 const firstTimeState = require('../app/scripts/first-time-state')
 const ExtensionPlatform = require('../app/scripts/platforms/extension')
 const noop = function () {}
+
+// the states file is generated before this file is run, but after `lint` is run
+const states = require('./states') /* eslint-disable-line import/no-unresolved */
 
 const log = require('loglevel')
 window.log = log

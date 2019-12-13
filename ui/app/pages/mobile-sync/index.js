@@ -170,7 +170,9 @@ class MobileSyncPage extends Component {
   }
 
   async startSyncing () {
-    if (this.syncing) return false
+    if (this.syncing) {
+      return false
+    }
     this.syncing = true
     this.setState({syncing: true})
 

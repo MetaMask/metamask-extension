@@ -33,7 +33,7 @@
       "always",
       {
         "ignore": [
-          "after-comment",
+          "after-comment"
         ]
       }
     ],

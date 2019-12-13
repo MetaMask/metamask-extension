@@ -17,7 +17,9 @@ function launchMetamaskUi (opts, cb) {
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
         cb(null, store)
@@ -27,7 +29,9 @@ function launchMetamaskUi (opts, cb) {
 
 async function startApp (metamaskState, backgroundConnection, opts) {
   // parse opts
-  if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
+  if (!metamaskState.featureFlags) {
+    metamaskState.featureFlags = {}
+  }
 
   const currentLocaleMessages = metamaskState.currentLocale
     ? await fetchLocale(metamaskState.currentLocale)

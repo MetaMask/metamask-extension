@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 import {
+  getDaiV1Token,
   getCurrentEthBalance,
   getAllPermissions,
   getAllPlugins,
@@ -14,10 +15,10 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
-  setRestoredFromThreeBoxToFalse,
   removePlugin,
   clearPlugins,
   clearAllPermissionsData,
+  setShowRestorePromptToFalse,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -30,9 +31,8 @@ const mapStateToProps = state => {
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
-    restoredFromThreeBox,
+    showRestorePrompt,
     selectedAddress,
-    featureFlags,
     permissionsRequests,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
@@ -56,10 +56,10 @@ const mapStateToProps = state => {
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     threeBoxSynced,
-    restoredFromThreeBox,
+    showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
-    threeBoxFeatureFlagIsTrue: featureFlags.threeBox,
+    hasDaiV1Token: Boolean(getDaiV1Token(state)),
     permissionsRequests,
     // TODO:plugins:prod remove
     hasPermissionsData,
@@ -75,13 +75,13 @@ const mapDispatchToProps = (dispatch) => ({
         if (lastUpdated) {
           dispatch(setThreeBoxLastUpdated(lastUpdated))
         } else {
-          dispatch(setRestoredFromThreeBoxToFalse())
+          dispatch(setShowRestorePromptToFalse())
           dispatch(turnThreeBoxSyncingOn())
         }
       })
   },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
-  setRestoredFromThreeBoxToFalse: () => dispatch(setRestoredFromThreeBoxToFalse()),
+  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   removePlugin: (pluginName) => dispatch(removePlugin(pluginName)),
   clearPlugins: () => dispatch(clearPlugins()),
   clearAllPermissionsData: () => dispatch(clearAllPermissionsData()),

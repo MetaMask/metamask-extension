@@ -4,7 +4,7 @@
 //
 // usage:
 //
-//     node app/scripts/verify-locale-strings.js [<locale>] [--fix]
+//     node app/scripts/verify-locale-strings.js [<locale>] [--fix] [--quiet]
 //
 // This script will validate that locales have no unused messages. It will check
 // the English locale against string literals found under `ui/`, and it will check
@@ -16,40 +16,44 @@
 // The if the optional '--fix' parameter is given, locales will be automatically
 // updated to remove any unused messages.
 //
+// The optional '--quiet' parameter reduces the verbosity of the output, printing
+// just a single summary of results for each locale verified
+//
 // //////////////////////////////////////////////////////////////////////////////
 
 const fs = require('fs')
 const path = require('path')
 const { promisify } = require('util')
+const log = require('loglevel')
 const matchAll = require('string.prototype.matchall').getPolyfill()
 const localeIndex = require('../app/_locales/index.json')
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 
-console.log('Locale Verification')
+log.setDefaultLevel('info')
 
 let fix = false
 let specifiedLocale
-if (process.argv[2] === '--fix') {
-  fix = true
-  specifiedLocale = process.argv[3]
-} else {
-  specifiedLocale = process.argv[2]
-  if (process.argv[3] === '--fix') {
+for (const arg of process.argv.slice(2)) {
+  if (arg === '--fix') {
     fix = true
+  } else if (arg === '--quiet') {
+    log.setLevel('error')
+  } else {
+    specifiedLocale = arg
   }
 }
 
 main(specifiedLocale, fix)
   .catch(error => {
-    console.error(error)
+    log.error(error)
     process.exit(1)
   })
 
 async function main (specifiedLocale, fix) {
   if (specifiedLocale) {
-    console.log(`Verifying selected locale "${specifiedLocale}":\n\n`)
+    log.info(`Verifying selected locale "${specifiedLocale}":\n`)
     const locale = localeIndex.find(localeMeta => localeMeta.code === specifiedLocale)
     const failed = locale.code === 'en' ?
       await verifyEnglishLocale(fix) :
@@ -58,16 +62,16 @@ async function main (specifiedLocale, fix) {
       process.exit(1)
     }
   } else {
-    console.log('Verifying all locales:\n\n')
+    log.info('Verifying all locales:\n')
     let failed = await verifyEnglishLocale(fix)
     const localeCodes = localeIndex
       .filter(localeMeta => localeMeta.code !== 'en')
       .map(localeMeta => localeMeta.code)
 
     for (const code of localeCodes) {
+      log.info() // Separate each locale report by a newline when not in '--quiet' mode
       const localeFailed = await verifyLocale(code, fix)
       failed = failed || localeFailed
-      console.log('\n')
     }
 
     if (failed) {
@@ -87,9 +91,9 @@ async function getLocale (code) {
     return JSON.parse(fileContents)
   } catch (e) {
     if (e.code === 'ENOENT') {
-      console.log('Locale file not found')
+      log.error('Locale file not found')
     } else {
-      console.log(`Error opening your locale ("${code}") file: `, e)
+      log.error(`Error opening your locale ("${code}") file: `, e)
     }
     process.exit(1)
   }
@@ -101,9 +105,9 @@ async function writeLocale (code, locale) {
     return writeFile(localeFilePath, JSON.stringify(locale, null, 2) + '\n', 'utf8')
   } catch (e) {
     if (e.code === 'ENOENT') {
-      console.log('Locale file not found')
+      log.error('Locale file not found')
     } else {
-      console.log(`Error writing your locale ("${code}") file: `, e)
+      log.error(`Error writing your locale ("${code}") file: `, e)
     }
     process.exit(1)
   }
@@ -119,28 +123,26 @@ async function verifyLocale (code, fix = false) {
   const englishEntryCount = Object.keys(englishLocale).length
   const coveragePercent = 100 * (englishEntryCount - missingItems.length) / englishEntryCount
 
-  console.log(`Status of **${code}** ${coveragePercent.toFixed(2)}% coverage:`)
-
   if (extraItems.length) {
-    console.log('\nExtra items that should not be localized:')
+    console.log(`**${code}**: ${extraItems.length} unused messages`)
+    log.info('Extra items that should not be localized:')
     extraItems.forEach(function (key) {
-      console.log(`  - [ ] ${key}`)
+      log.info(`  - [ ] ${key}`)
     })
   } else {
-    // console.log(`  all ${counter} strings declared in your locale ("${code}") were found in the english one`)
+    log.info(`**${code}**: ${extraItems.length} unused messages`)
   }
 
+  log.info(`${coveragePercent.toFixed(2)}% coverage`)
   if (missingItems.length) {
-    console.log(`\nMissing items not present in localized file:`)
+    log.info(`Missing items not present in localized file:`)
     missingItems.forEach(function (key) {
-      console.log(`  - [ ] ${key}`)
+      log.info(`  - [ ] ${key}`)
     })
-  } else {
-    // console.log(`  all ${counter} english strings were found in your locale ("${code}")!`)
   }
 
   if (!extraItems.length && !missingItems.length) {
-    console.log('Full coverage  : )')
+    log.info('Full coverage  : )')
   }
 
   if (extraItems.length > 0) {
@@ -174,17 +176,17 @@ async function verifyEnglishLocale (fix = false) {
   const unusedMessages = englishMessages
     .filter(message => !messageExceptions.includes(message) && !usedMessages.has(message))
 
-  console.log(`Status of **English (en)** ${unusedMessages.length} unused messages:`)
 
-  if (unusedMessages.length === 0) {
-    console.log('Full coverage  : )')
+  if (unusedMessages.length) {
+    console.log(`**en**: ${unusedMessages.length} unused messages`)
+    log.info(`Messages not present in UI:`)
+    unusedMessages.forEach(function (key) {
+      log.info(`  - [ ] ${key}`)
+    })
+  } else {
+    log.info('Full coverage  : )')
     return false
   }
-
-  console.log(`\nMessages not present in UI:`)
-  unusedMessages.forEach(function (key) {
-    console.log(`  - [ ] ${key}`)
-  })
 
   if (unusedMessages.length > 0 && fix) {
     const newLocale = Object.assign({}, englishLocale)

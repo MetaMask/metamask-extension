@@ -76,8 +76,12 @@ export default class PermissionsActivity extends Component {
   }
 
   renderRpcResponse (e) {
-    if (!e.response) return 'This request did not produce a response.'
-    if (!e.success) return this.renderRpcError(e.response.error)
+    if (!e.response || !e.response.result) {
+      return 'This request did not produce a result.'
+    }
+    if (!e.success) {
+      return this.renderRpcError(e.response.error)
+    }
     if (e.methodType === 'internal') {
       if (
         e.method.endsWith('getPermissions') ||

@@ -21,7 +21,9 @@ describe('AssetsController', () => {
     assets.addAsset(domain, sampleAsset)
     const result = assets.assets[assetCount]
     Object.keys(result).forEach((key) => {
-      if (key === 'fromDomain') return
+      if (key === 'fromDomain') {
+        return
+      }
       assert.equal(result[key], sampleAsset[key], `${key} should be same`)
     })
   })
@@ -35,7 +37,9 @@ describe('AssetsController', () => {
     assets.updateAsset(domain, result)
 
     Object.keys(result).forEach((key) => {
-      if (key === 'fromDomain') return
+      if (key === 'fromDomain') {
+        return
+      }
       if (key === 'balance') {
         assert.notEqual(result[key], sampleAsset[key], `${key} should be updated`)
       } else {

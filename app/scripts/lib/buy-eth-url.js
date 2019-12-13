@@ -13,11 +13,13 @@ module.exports = getBuyEthUrl
  */
 function getBuyEthUrl ({ network, amount, address, service }) {
   // default service by network if not specified
-  if (!service) service = getDefaultServiceForNetwork(network)
+  if (!service) {
+    service = getDefaultServiceForNetwork(network)
+  }
 
   switch (service) {
     case 'wyre':
-      return `https://dash.sendwyre.com/sign-up`
+      return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2`
     case 'coinswitch':
       return `https://metamask.coinswitch.co/?address=${address}&to=eth`
     case 'coinbase':

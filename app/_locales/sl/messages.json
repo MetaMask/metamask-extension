@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Zasebnostni način je zdaj privzeto omogočen"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon na voljo le v glavnih omrežjih."
   },
-  "confirmClear": {
-    "message": "Ste prepričani da želite počistiti odobrene spletne strani?"
-  },
   "contractInteraction": {
     "message": "Interakcija s pogodbo"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Odobrene spletne strani uspešno počiščene."
   },
   "permissionsSettings": {
     "message": "Podatki o odobritvi"
@@ -26,17 +17,11 @@
   "reject": {
     "message": "Zavrni"
   },
-  "providerRequest": {
-    "message": "$1 se želi povezati z vašim računom."
-  },
-  "providerRequestInfo": {
-    "message": "Domena zahteva dostop do verige blokov in ogled vašega računa. Pred potrditvjo vedno preverite ali ste na želeni spletni strani."
-  },
   "about": {
     "message": "O možnostih"
   },
   "aboutSettingsDescription": {
-    "message": "Različica, center za podporo in podatki za stik."
+    "message": "Različica, center za podporo in podatki za stik"
   },
   "acceleratingATransaction": {
     "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
@@ -72,7 +57,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri."
+    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri"
   },
   "advancedOptions": {
     "message": "Napredne možnosti"
@@ -261,7 +246,7 @@
   "connect": {
     "message": "Poveži"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Zahteva za povezavo"
   },
   "connectingTo": {
@@ -383,9 +368,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
-  },
-  "dismiss": {
-    "message": "Opusti"
   },
   "done": {
     "message": "Končano"
@@ -1338,7 +1320,7 @@
   "updatedWithDate": {
     "message": "Posodobljeno $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
   },
   "usedByClients": {

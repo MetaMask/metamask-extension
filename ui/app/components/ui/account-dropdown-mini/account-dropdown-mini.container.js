@@ -42,7 +42,9 @@ class AccountDropdownMiniContainer extends Component {
         selectedAccount={selectedAccount}
         onSelect={account => {
           this.setState({ selectedAccount: account })
-          if (onSelect) onSelect(account)
+          if (onSelect) {
+            onSelect(account)
+          }
         }}
         dropdownOpen={this.state.accountDropdownOpen}
         openDropdown={() => this.setState({ accountDropdownOpen: true })}

@@ -16,14 +16,13 @@ export default class PluginsTab extends Component {
     t: PropTypes.func,
   }
 
-  renderClearButton (messageKey, clickHandler, isDisabled) {
-    const { t } = this.context
+  renderClearButton (mainMessage, descriptionMessage, clickHandler, isDisabled) {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t(messageKey) }</span>
+          <span>{ mainMessage }</span>
           <span className="settings-page__content-description">
-            { t(`${messageKey}Description`) }
+            { descriptionMessage }
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -38,7 +37,7 @@ export default class PluginsTab extends Component {
                 clickHandler()
               }}
             >
-              { t(messageKey) }
+              { mainMessage }
             </Button>
           </div>
         </div>
@@ -47,6 +46,7 @@ export default class PluginsTab extends Component {
   }
 
   render () {
+    const { t } = this.context
     const { warning } = this.props
     const hasPlugins = Object.keys(this.props.plugins).length > 0
 
@@ -59,7 +59,8 @@ export default class PluginsTab extends Component {
         />
         {
           this.renderClearButton(
-            'clearPlugins',
+            t('clearPlugins'),
+            t('clearPluginsDescription'),
             this.props.showClearPluginsModal,
             !hasPlugins
           )

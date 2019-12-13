@@ -18,7 +18,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
     it('should pass all props to the CurrencyDisplay child component', () => {
       const wrapper = shallow(
         <UserPreferencedCurrencyDisplay
-          prop1={true}
+          prop1
           prop2="test"
           prop3={1}
         />

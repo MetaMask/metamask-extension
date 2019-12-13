@@ -46,7 +46,9 @@ Mascot.prototype.componentWillUnmount = function () {
 
 Mascot.prototype.handleAnimationEvents = function () {
   // only setup listeners once
-  if (this.animations) return
+  if (this.animations) {
+    return
+  }
   this.animations = this.props.animationEventEmitter
   this.animations.on('point', this.lookAt.bind(this))
   this.animations.on('setFollowMouse', this.logo.setFollowMouse.bind(this.logo))

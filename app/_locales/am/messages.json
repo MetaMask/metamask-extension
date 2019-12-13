@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "የግላዊነት ኩነት አሁን በንቡር ነቅቷል"
-  },
   "chartOnlyAvailableEth": {
     "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
-  },
-  "confirmClear": {
-    "message": "የተፈቀዱ ድረ ገጾችን ለማጥራት እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "የግላዊነት ውሂብን አጥራ"
   },
   "reject": {
     "message": "አይቀበሉ"
-  },
-  "providerRequest": {
-    "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
-  },
-  "providerRequestInfo": {
-    "message": "ይህ ድረ ገጽ የእርስዎን መለያ ወቅታዊ አድራሻ ለማየት እየጠየቀ ነው። ምንጊዜም ግንኙነት የሚያደርጉባቸውን ድረ ገጾች የሚያምኗቸው መሆኑን ያረጋግጡ።"
   },
   "about": {
     "message": "ስለ"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "የግንኙነት ጥያቄ"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
-  },
-  "dismiss": {
-    "message": "አሰናብት"
   },
   "done": {
     "message": "ተጠናቅቋል"
@@ -1344,7 +1329,7 @@
   "updatedWithDate": {
     "message": "የዘመነ $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
   },
   "usedByClients": {

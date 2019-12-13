@@ -3,7 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
@@ -54,6 +54,7 @@ const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
   @param {Object}  opts.blockTracker - An instance of eth-blocktracker
   @param {Object}  opts.provider - A network provider.
   @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
+  @param {object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
   @param {Function}  [opts.getGasPrice] - optional gas price calculator
   @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
   @param {Number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
@@ -66,6 +67,7 @@ class TransactionController extends EventEmitter {
     this.networkStore = opts.networkStore || new ObservableStore({})
     this.preferencesStore = opts.preferencesStore || new ObservableStore({})
     this.provider = opts.provider
+    this.getPermittedAccounts = opts.getPermittedAccounts
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.getGasPrice = opts.getGasPrice
@@ -157,7 +159,7 @@ class TransactionController extends EventEmitter {
 
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    const initialTxMeta = await this.addUnapprovedTransaction(txParams, opts.origin)
     initialTxMeta.origin = opts.origin
     this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
@@ -167,11 +169,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(cleanErrorStack(rpcErrors.eth.userRejectedRequest('MetaMask Tx Signature: User denied transaction signature.')))
+            return reject(cleanErrorStack(ethErrors.provider.userRejectedRequest('MetaMask Tx Signature: User denied transaction signature.')))
           case 'failed':
-            return reject(cleanErrorStack(rpcErrors.internal(finishedTxMeta.err.message)))
+            return reject(cleanErrorStack(ethErrors.rpc.internal(finishedTxMeta.err.message)))
           default:
-            return reject(cleanErrorStack(rpcErrors.internal(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
+            return reject(cleanErrorStack(ethErrors.rpc.internal(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })
@@ -184,13 +186,29 @@ class TransactionController extends EventEmitter {
   @returns {txMeta}
   */
 
-  async addUnapprovedTransaction (txParams) {
+  async addUnapprovedTransaction (txParams, origin) {
+
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
-    // Assert the from address is the selected address
-    if (normalizedTxParams.from !== this.getSelectedAddress()) {
-      throw new Error(`Transaction from address isn't valid for this account`)
+
+    // TODO:lps once, I saw 'origin' with a value of 'chrome-extension://...'
+    // for a transaction initiated from the UI.
+    // When would this happen? It's a problem if it does. I don't think we want to
+    // hard-code 'chrome-extension://' here
+    if (origin === 'metamask') {
+      // Assert the from address is the selected address
+      if (normalizedTxParams.from !== this.getSelectedAddress()) {
+        throw ethErrors.rpc.internal(`Internally initiated transaction is using invalid account.`)
+      }
+    } else {
+      // Assert that the origin has permissions to initiate transactions from
+      // the specified address
+      const permittedAddresses = await this.getPermittedAccounts(origin)
+      if (!permittedAddresses.includes(normalizedTxParams.from)) {
+        throw ethErrors.provider.unauthorized()
+      }
     }
+
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
@@ -373,14 +391,21 @@ class TransactionController extends EventEmitter {
       const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
+      let { customNonceValue = null } = txMeta
+      customNonceValue = Number(customNonceValue)
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
+      const customOrNonce = customNonceValue || nonce
+
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
+      if (customNonceValue) {
+        txMeta.nonceDetails.customNonceValue = customNonceValue
+      }
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
       // sign transaction
       const rawTx = await this.signTransaction(txId)
@@ -395,7 +420,9 @@ class TransactionController extends EventEmitter {
         log.error(err)
       }
       // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) nonceLock.releaseLock()
+      if (nonceLock) {
+        nonceLock.releaseLock()
+      }
       // continue with error chain
       throw err
     } finally {
@@ -417,6 +444,15 @@ class TransactionController extends EventEmitter {
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+
+    // add r,s,v values for provider request purposes see createMetamaskMiddleware
+    // and JSON rpc standard for further explanation
+    txMeta.r = ethUtil.bufferToHex(ethTx.r)
+    txMeta.s = ethUtil.bufferToHex(ethTx.s)
+    txMeta.v = ethUtil.bufferToHex(ethTx.v)
+
+    this.txStateManager.updateTx(txMeta, 'transactions#signTransaction: add r, s, v values')
+
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
@@ -433,8 +469,19 @@ class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
-    const txHash = await this.query.sendRawTransaction(rawTx)
+    let txHash
+    try {
+      txHash = await this.query.sendRawTransaction(rawTx)
+    } catch (error) {
+      if (error.message.toLowerCase().includes('known transaction')) {
+        txHash = ethUtil.sha3(ethUtil.addHexPrefix(rawTx)).toString('hex')
+        txHash = ethUtil.addHexPrefix(txHash)
+      } else {
+        throw error
+      }
+    }
     this.setTxHash(txId, txHash)
+
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
@@ -577,7 +624,9 @@ class TransactionController extends EventEmitter {
       }
     })
     this.pendingTxTracker.on('tx:retry', (txMeta) => {
-      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+      if (!('retryCount' in txMeta)) {
+        txMeta.retryCount = 0
+      }
       txMeta.retryCount++
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
@@ -597,21 +646,21 @@ class TransactionController extends EventEmitter {
     ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
 
     let result
-    let code
-    if (!txParams.data) {
-      result = SEND_ETHER_ACTION_KEY
-    } else if (tokenMethodName) {
+    if (txParams.data && tokenMethodName) {
       result = tokenMethodName
-    } else if (!to) {
+    } else if (txParams.data && !to) {
       result = DEPLOY_CONTRACT_ACTION_KEY
-    } else {
+    }
+
+    let code
+    if (!result) {
       try {
         code = await this.query.getCode(to)
       } catch (e) {
         code = null
         log.warn(e)
       }
-      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
 
       result = codeIsEmpty ? SEND_ETHER_ACTION_KEY : CONTRACT_INTERACTION_KEY
@@ -631,10 +680,14 @@ class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     const { nonce, from } = txMeta.txParams
     const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
-    if (!sameNonceTxs.length) return
+    if (!sameNonceTxs.length) {
+      return
+    }
     // mark all same nonce transactions as dropped and give i a replacedBy hash
     sameNonceTxs.forEach((otherTxMeta) => {
-      if (otherTxMeta.id === txId) return
+      if (otherTxMeta.id === txId) {
+        return
+      }
       otherTxMeta.replacedBy = txMeta.hash
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
       this.txStateManager.setTxStatusDropped(otherTxMeta.id)

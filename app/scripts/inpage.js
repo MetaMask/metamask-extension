@@ -63,14 +63,6 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   // straight up lie that we deleted the property so that it doesnt
   // throw an error in strict mode
   deleteProperty: () => true,
-  // TODO:temp
-  isPluginsBeta: () => true,
 })
 
 window.ethereum = proxiedInpageProvider
-
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  if (state.onboardingcomplete) {
-    window.postMessage('onboardingcomplete', '*')
-  }
-})

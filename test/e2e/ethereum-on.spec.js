@@ -7,7 +7,6 @@ const {
 const {
   checkBrowserForConsoleErrors,
   findElement,
-  findElements,
   openNewPage,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
@@ -15,6 +14,7 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
   let driver
@@ -54,7 +54,7 @@ describe('MetaMask', function () {
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
@@ -87,8 +87,8 @@ describe('MetaMask', function () {
     })
 
     it('skips the seed phrase challenge', async () => {
-      const buttons = await findElements(driver, By.css('.first-time-flow__button'))
-      await buttons[0].click()
+      const button = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
+      await button.click()
       await delay(regularDelayMs)
 
       const detailsButton = await findElement(driver, By.css('.account-details__details-button'))
@@ -117,6 +117,11 @@ describe('MetaMask', function () {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
+      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButton.click()
+
+      await delay(regularDelayMs)
+
       await waitUntilXWindowHandles(driver, 3)
       const windowHandles = await driver.getAllWindowHandles()
 
@@ -132,9 +137,9 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('has not set the network within the dapp', async () => {
+    it('has the ganache network id within the dapp', async () => {
       const networkDiv = await findElement(driver, By.css('#network'))
-      assert.equal(await networkDiv.getText(), '')
+      assert.equal(await networkDiv.getText(), '5777')
     })
 
     it('changes the network', async () => {

@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Dados aprovados do website foram limpos com sucesso."
-  },
   "permissionsSettings": {
     "message": "Dados de aprovação"
   },
@@ -16,9 +10,6 @@
   },
   "reject": {
     "message": "Rejeitar"
-  },
-  "providerRequestInfo": {
-    "message": "O domínio listado abaixo está tentando solicitar acesso à API Ethereum para que ele possa interagir com o blockchain Ethereum. Sempre verifique se você está no site correto antes de aprovar o acesso à Ethereum."
   },
   "account": {
     "message": "Conta"
@@ -497,7 +488,7 @@
   "unknownNetwork": {
     "message": "Rede Privada Desconhecida"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Links requerem o prefixo HTTP/HTTPS apropriado."
   },
   "usedByClients": {

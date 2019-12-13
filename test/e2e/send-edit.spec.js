@@ -12,6 +12,7 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('Using MetaMask with an existing account', function () {
   let driver
@@ -51,7 +52,7 @@ describe('Using MetaMask with an existing account', function () {
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
@@ -88,7 +89,7 @@ describe('Using MetaMask with an existing account', function () {
 
     it('clicks through the success screen', async () => {
       await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await doneButton.click()
       await delay(regularDelayMs)
     })
@@ -113,7 +114,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
@@ -130,6 +131,8 @@ describe('Using MetaMask with an existing account', function () {
       await delay(50)
 
       await gasLimitInput.sendKeys('25000')
+
+      await delay(1000)
 
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
@@ -170,7 +173,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
       await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await delay(50)
 
@@ -186,6 +189,8 @@ describe('Using MetaMask with an existing account', function () {
       await delay(50)
 
       await gasLimitInput.sendKeys('100000')
+
+      await delay(1000)
 
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
@@ -213,8 +218,10 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 1)
+      await driver.wait(async () => {
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 1
+      }, 10000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)

@@ -78,7 +78,9 @@ export default class PluginsList extends Component {
             if (
               Object.keys(plugins).length === 0 ||
               !this.state.plugins[pluginName] // state may lag behind props slightly
-            ) return null
+            ) {
+              return null
+            }
 
             // TODO: these elements look like trash and their CSS is placeholder only
             return (

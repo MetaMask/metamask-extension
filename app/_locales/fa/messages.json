@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "وضعیت محرمیت حالا بصورت خودکار فعال است"
-  },
   "chartOnlyAvailableEth": {
     "message": "تنها قابل دسترس را در شبکه های ایتریوم جدول بندی نمایید"
-  },
-  "confirmClear": {
-    "message": "آیا مطمئن هستید تا وب سایت های تصدیق شده را حذف کنید؟"
   },
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "حذف اطلاعات حریم خصوصی"
   },
   "reject": {
     "message": "عدم پذیرش"
-  },
-  "providerRequest": {
-    "message": "1$1 میخواهید تا با حساب تان وصل شوید"
-  },
-  "providerRequestInfo": {
-    "message": "این سایت در حال درخواست دسترسی است تا آدرس فعلی حساب تان را مشاهده نماید. همیشه متوجه باشید که بالای سایتی که با آن معامله میکنید، اعتماد دارید یا خیر."
   },
   "about": {
     "message": "درباره"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "درخواست اتصال"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
-  },
-  "dismiss": {
-    "message": "لغو کردن"
   },
   "done": {
     "message": "تمام"
@@ -1347,7 +1332,7 @@
   "updatedWithDate": {
     "message": "بروزرسانی شد 1$1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URl ها نیازمند پیشوند مناسب HTTP/HTTPS اند."
   },
   "usedByClients": {

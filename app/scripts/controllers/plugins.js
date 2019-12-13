@@ -4,7 +4,7 @@ const extend = require('xtend')
 const {
   pluginRestrictedMethodDescriptions,
 } = require('./permissions/restrictedMethods')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 
 const isTest = process.env.IN_TEST === 'true' || process.env.METAMASK_ENV === 'test'
 const SES = (
@@ -64,7 +64,9 @@ class PluginsController extends EventEmitter {
 
     Object.values(plugins).forEach(({ pluginName, approvedPermissions, sourceCode }) => {
       console.log(`running: ${pluginName}`)
-      const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+      const ethereumProvider = this.setupProvider({ hostname: pluginName }, async () => {
+        return { name: pluginName }
+      }, true)
       try {
         this._startPlugin(pluginName, approvedPermissions, sourceCode, ethereumProvider)
       } catch (err) {
@@ -138,6 +140,37 @@ class PluginsController extends EventEmitter {
   }
 
   /**
+   * Adds, authorizes, and runs plugins with a plugin provider.
+   */
+  async processRequestedPlugin (pluginName) {
+
+    const result = {}
+
+    try {
+
+      await this.add(pluginName)
+      const plugin = await this.authorize(pluginName)
+      const { sourceCode, approvedPermissions } = plugin
+
+      const ethereumProvider = this.setupProvider(
+        { hostname: pluginName }, async () => {
+          return {name: pluginName }
+        }, true
+      )
+
+      await this.run(
+        pluginName, approvedPermissions, sourceCode, ethereumProvider
+      )
+    } catch (err) {
+
+      console.warn(`Error when adding plugin:`, err)
+      result.error = err
+    }
+
+    return result
+  }
+
+  /**
    * Returns a promise representing the complete installation of the requested plugin.
    * If the plugin is already being installed, the previously pending promise will be returned.
    */
@@ -170,7 +203,7 @@ class PluginsController extends EventEmitter {
       console.log(`Fetching ${sourceUrl}`)
       const pluginSource = await fetch(sourceUrl)
       const pluginJson = await pluginSource.json()
-      console.log(`Destructuring ${pluginJson}`)
+      console.log(`Destructuring`, pluginJson)
       const { web3Wallet: { bundle, initialPermissions } } = pluginJson
       console.log(`Fetching bundle ${bundle.url}`)
       const pluginBundle = await fetch(bundle.url)
@@ -215,7 +248,9 @@ class PluginsController extends EventEmitter {
     const pluginState = this.store.getState().plugins
     const plugin = pluginState[pluginName]
     const { sourceCode, initialPermissions } = plugin
-    const ethereumProvider = this.setupProvider(pluginName, async () => { return {name: pluginName } }, true)
+    const ethereumProvider = this.setupProvider({ hostname: pluginName }, async () => {
+      return {name: pluginName }
+    }, true)
 
     return new Promise((resolve, reject) => {
 
@@ -230,7 +265,9 @@ class PluginsController extends EventEmitter {
         jsonrpc: '2.0',
         params: [ initialPermissions, { sourceCode, ethereumProvider }],
       }, (err1, res1) => {
-        if (err1) reject(err1)
+        if (err1) {
+          reject(err1)
+        }
 
         const approvedPermissions = res1.result.map(perm => perm.parentCapability)
 
@@ -260,7 +297,9 @@ class PluginsController extends EventEmitter {
   async apiRequest (plugin, origin) {
     const handler = this.apiRequestHandlers.get(plugin)
     if (!handler) {
-      throw rpcErrors.methodNotFound('apiRequest: ' + plugin)
+      throw ethErrors.rpc.methodNotFound({
+        message: 'Method Not Found: Plugin apiRequest: ' + plugin,
+      })
     }
 
     return handler(origin)
@@ -336,15 +375,28 @@ class PluginsController extends EventEmitter {
   }
 
   _startPlugin (pluginName, approvedPermissions, sourceCode, ethereumProvider) {
-    console.log(`starting plugin ${pluginName}`)
+
+    console.log(`starting plugin '${pluginName}'`)
+
     const apisToProvide = this._generateApisToProvide(approvedPermissions, pluginName)
     Object.assign(ethereumProvider, apisToProvide)
+
     try {
+
       const sessedPlugin = this.rootRealm.evaluate(sourceCode, {
+
         wallet: ethereumProvider,
         console, // Adding console for now for logging purposes.
         BigInt,
         setTimeout,
+        crypto,
+        SubtleCrypto,
+        fetch,
+        XMLHttpRequest,
+        WebSocket,
+        Buffer,
+        Date,
+
         window: {
           crypto,
           SubtleCrypto,
@@ -353,19 +405,15 @@ class PluginsController extends EventEmitter {
           XMLHttpRequest,
           WebSocket,
         },
-        crypto,
-        SubtleCrypto,
-        fetch,
-        XMLHttpRequest,
-        WebSocket,
-        Buffer,
-        Date,
       })
       sessedPlugin()
     } catch (err) {
+
+      console.log(`error encountered trying to run plugin '${pluginName}', removing it`)
       this.removePlugin(pluginName)
       throw err
     }
+
     this._setPluginToActive(pluginName)
     return true
   }

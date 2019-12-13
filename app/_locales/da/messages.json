@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Privatlivstilstand er nu som udgangspunkt aktiveret"
-  },
   "chartOnlyAvailableEth": {
     "message": "Skema kun tilgængeligt på Ethereum-netværk."
-  },
-  "confirmClear": {
-    "message": "Er du sikker på, at du vil rydde godkendte hjemmesider?"
   },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Ryd fortrolighedsdata"
   },
   "reject": {
     "message": "Afvis"
   },
-  "providerRequest": {
-    "message": "$1 ønsker at forbinde til din konto"
-  },
-  "providerRequestInfo": {
-    "message": "Denne side anmoder om at se din nuværende kontoadresse. Sørg altid for, at du stoler på de sider du interagerer med."
-  },
   "about": {
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation."
+    "message": "Version, supportcenter og kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
@@ -63,7 +51,7 @@
     "message": "Avanceret"
   },
   "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC."
+    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Tilslutningsanmodning"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
-  },
-  "dismiss": {
-    "message": "Luk"
   },
   "done": {
     "message": "Færdig"
@@ -1313,7 +1298,7 @@
   "updatedWithDate": {
     "message": "Opdaterede $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
   },
   "usedByClients": {

@@ -1,5 +1,5 @@
 
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 
 const pluginRestrictedMethodDescriptions = {
   onNewTx: 'Take action whenever a new transaction is created',
@@ -101,7 +101,9 @@ function getExternalRestrictedMethods (permissionsController) {
               res.result = assetsController.removeAsset(requestor, opts)
               return end()
             default:
-              res.error = rpcErrors.methodNotFound(null, `${req.method}:${method}`)
+              res.error = ethErrors.rpc.methodNotFound({
+                data: `${req.method}:${method}`,
+              })
               end(res.error)
           }
         } catch (err) {
@@ -144,7 +146,9 @@ function getExternalRestrictedMethods (permissionsController) {
           // Here is where we would invoke the message on that plugin iff possible.
           const handler = permissionsController.pluginsController.rpcMessageHandlers.get(origin)
           if (!handler) {
-            res.error = rpcErrors.methodNotFound(`Plugin RPC message handler not found.`, req.method)
+            res.error = ethErrors.methodNotFound({
+              message: `Plugin RPC message handler not found.`, data: req.method,
+            })
             return end(res.error)
           }
 

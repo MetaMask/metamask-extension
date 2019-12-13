@@ -16,7 +16,6 @@ const manifest = require('./app/manifest.json')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
-const stylefmt = require('gulp-stylefmt')
 const terser = require('gulp-terser-js')
 const pify = require('pify')
 const rtlcss = require('gulp-rtlcss')
@@ -357,12 +356,6 @@ gulp.task('lint-scss', function () {
     }))
 })
 
-gulp.task('fmt-scss', function () {
-  return gulp.src('ui/app/css/itcss/**/*.scss')
-    .pipe(stylefmt())
-    .pipe(gulp.dest('ui/app/css/itcss'))
-})
-
 // build js
 
 const buildJsFiles = [
@@ -435,7 +428,9 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   // compose into larger task
   const subtasks = []
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
-  if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
+  if (buildPhase2.length) {
+    subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
+  }
 
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
@@ -453,18 +448,6 @@ gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 // high level tasks
-
-gulp.task('dev',
-  gulp.series(
-    'clean',
-    'dev:scss',
-    gulp.parallel(
-      'dev:extension:js',
-      'dev:copy',
-      'dev:reload'
-    )
-  )
-)
 
 gulp.task('dev:test',
   gulp.series(
@@ -514,20 +497,7 @@ gulp.task('build:test',
       'build:test:extension:js',
       'copy'
     ),
-    'optimize:images',
     'manifest:testing'
-  )
-)
-
-gulp.task('build:extension',
-  gulp.series(
-    'clean',
-    'build:scss',
-    gulp.parallel(
-      'build:extension:js',
-      'copy'
-    ),
-    'optimize:images'
   )
 )
 

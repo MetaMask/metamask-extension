@@ -53,7 +53,9 @@ module.exports = function createLoggerMiddleware ({
   }
 
   function addResponse (activityEntry, response, time) {
-    if (!response) return
+    if (!response) {
+      return
+    }
     activityEntry.response = cloneObj(response)
     activityEntry.responseTime = time
     activityEntry.success = !response.error
@@ -73,7 +75,9 @@ module.exports = function createLoggerMiddleware ({
       !request.params ||
       typeof request.params[0] !== 'object' ||
       Array.isArray(request.params[0])
-    ) return null
+    ) {
+      return null
+    }
     return Object.keys(request.params[0])
   }
 
@@ -81,23 +85,24 @@ module.exports = function createLoggerMiddleware ({
 
     let accounts
     const entries = result
-      .map(perm => {
+      ? result.map(perm => {
         if (perm.parentCapability === 'eth_accounts') {
           accounts = getAccountsFromPermission(perm)
         }
         return perm.parentCapability
       })
-      .reduce((acc, m) => {
-        if (requestedMethods.includes(m)) {
-          acc[m] = {
-            lastApproved: time,
+        .reduce((acc, m) => {
+          if (requestedMethods.includes(m)) {
+            acc[m] = {
+              lastApproved: time,
+            }
+            if (m === 'eth_accounts') {
+              acc[m].accounts = accounts
+            }
           }
-          if (m === 'eth_accounts') {
-            acc[m].accounts = accounts
-          }
-        }
-        return acc
-      }, {})
+          return acc
+        }, {})
+      : {}
 
     if (Object.keys(entries).length > 0) {
       commitHistory(origin, entries, accounts)
@@ -138,12 +143,16 @@ function cloneObj (obj) {
 }
 
 function getAccountsFromPermission (perm) {
-  if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) return []
+  if (perm.parentCapability !== 'eth_accounts' || !perm.caveats) {
+    return []
+  }
   const accounts = {}
   for (const c of perm.caveats) {
     if (c.type === 'filterResponse' && Array.isArray(c.value)) {
       for (const v of c.value) {
-        if (isValidAddress(v)) accounts[v] = true
+        if (isValidAddress(v)) {
+          accounts[v] = true
+        }
       }
     }
   }

@@ -25,10 +25,10 @@ describe('AccountListItem Component', function () {
   beforeEach(() => {
     wrapper = shallow(<AccountListItem
       account={ { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' } }
-      className={'mockClassName'}
+      className="mockClassName"
       conversionRate={4}
-      currentCurrency={'mockCurrentyCurrency'}
-      nativeCurrency={'ETH'}
+      currentCurrency="mockCurrentyCurrency"
+      nativeCurrency="ETH"
       displayAddress={false}
       displayBalance={false}
       handleClick={propsMethodSpies.handleClick}

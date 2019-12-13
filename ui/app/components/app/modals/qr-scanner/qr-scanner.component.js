@@ -142,14 +142,14 @@ export default class QrScanner extends Component {
 
   renderVideo () {
     return (
-      <div className={'qr-scanner__content__video-wrapper'}>
+      <div className="qr-scanner__content__video-wrapper">
         <video
           id="video"
           style={{
             display: this.state.ready ? 'block' : 'none',
           }}
         />
-        { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
+        { !this.state.ready ? <Spinner color="#F7C06C" /> : null}
       </div>
     )
   }
@@ -172,12 +172,12 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
 
         <div className="qr-scanner__image">
-          <img src={'images/webcam.svg'} width={70} height={70} />
+          <img src="images/webcam.svg" width={70} height={70} />
         </div>
         <div className="qr-scanner__title">
           { title }
         </div>
-        <div className={'qr-scanner__error'}>
+        <div className="qr-scanner__error">
           {msg}
         </div>
         <PageContainerFooter
@@ -207,7 +207,7 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__content">
           { this.renderVideo() }
         </div>
-        <div className={'qr-scanner__status'}>
+        <div className="qr-scanner__status">
           {this.state.msg}
         </div>
       </div>

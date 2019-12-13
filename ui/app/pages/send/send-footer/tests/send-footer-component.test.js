@@ -27,22 +27,22 @@ describe('SendFooter Component', function () {
   beforeEach(() => {
     wrapper = shallow(<SendFooter
       addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
-      amount={'mockAmount'}
+      amount="mockAmount"
       clearSend={propsMethodSpies.clearSend}
-      disabled={true}
-      editingTransactionId={'mockEditingTransactionId'}
+      disabled
+      editingTransactionId="mockEditingTransactionId"
       errors={{}}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
-      gasLimit={'mockGasLimit'}
-      gasPrice={'mockGasPrice'}
-      gasTotal={'mockGasTotal'}
+      gasLimit="mockGasLimit"
+      gasPrice="mockGasPrice"
+      gasTotal="mockGasTotal"
       history={historySpies}
       inError={false}
       selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
       sign={propsMethodSpies.sign}
-      to={'mockTo'}
+      to="mockTo"
       toAccounts={['mockAccount']}
-      tokenBalance={'mockTokenBalance'}
+      tokenBalance="mockTokenBalance"
       unapprovedTxs={['mockTx']}
       update={propsMethodSpies.update}
       sendErrors={{}}
@@ -184,22 +184,22 @@ describe('SendFooter Component', function () {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns('formShouldBeDisabledReturn')
       wrapper = shallow(<SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
-        amount={'mockAmount'}
+        amount="mockAmount"
         clearSend={propsMethodSpies.clearSend}
-        disabled={true}
-        editingTransactionId={'mockEditingTransactionId'}
+        disabled
+        editingTransactionId="mockEditingTransactionId"
         errors={{}}
         from={ { address: 'mockAddress', balance: 'mockBalance' } }
-        gasLimit={'mockGasLimit'}
-        gasPrice={'mockGasPrice'}
-        gasTotal={'mockGasTotal'}
+        gasLimit="mockGasLimit"
+        gasPrice="mockGasPrice"
+        gasTotal="mockGasTotal"
         history={historySpies}
         inError={false}
         selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
         sign={propsMethodSpies.sign}
-        to={'mockTo'}
+        to="mockTo"
         toAccounts={['mockAccount']}
-        tokenBalance={'mockTokenBalance'}
+        tokenBalance="mockTokenBalance"
         unapprovedTxs={['mockTx']}
         update={propsMethodSpies.update}
       />, { context: { t: str => str, metricsEvent: () => ({}) } })

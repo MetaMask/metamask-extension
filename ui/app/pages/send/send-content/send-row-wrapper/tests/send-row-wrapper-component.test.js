@@ -10,8 +10,8 @@ describe('SendContent Component', function () {
 
   beforeEach(() => {
     wrapper = shallow(<SendRowWrapper
-      errorType={'mockErrorType'}
-      label={'mockLabel'}
+      errorType="mockErrorType"
+      label="mockLabel"
       showError={false}
     >
       <span>Mock Form Field</span>
@@ -54,8 +54,8 @@ describe('SendContent Component', function () {
 
     it('should render its second child as a child of the send-v2__form-field, if it has two children', () => {
       wrapper = shallow(<SendRowWrapper
-        errorType={'mockErrorType'}
-        label={'mockLabel'}
+        errorType="mockErrorType"
+        label="mockLabel"
         showError={false}
       >
         <span>Mock Custom Label Content</span>
@@ -66,8 +66,8 @@ describe('SendContent Component', function () {
 
     it('should render its first child as the last child of the send-v2__form-label, if it has two children', () => {
       wrapper = shallow(<SendRowWrapper
-        errorType={'mockErrorType'}
-        label={'mockLabel'}
+        errorType="mockErrorType"
+        label="mockLabel"
         showError={false}
       >
         <span>Mock Custom Label Content</span>

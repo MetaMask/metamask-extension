@@ -91,7 +91,7 @@ async function getExtensionIdChrome (driver) {
 
 async function getExtensionIdFirefox (driver) {
   await driver.get('about:debugging#addons')
-  const extensionId = await driver.findElement(By.css('dd.addon-target-info-content:nth-child(6) > span:nth-child(1)')).getText()
+  const extensionId = await driver.wait(webdriver.until.elementLocated(By.xpath('//dl/div[contains(., \'Internal UUID\')]/dd')), 1000).getText()
   return extensionId
 }
 

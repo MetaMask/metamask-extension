@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Hali ya Faragha sasa imewezeshwa kwa chaguomsingi"
-  },
   "chartOnlyAvailableEth": {
     "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
-  },
-  "confirmClear": {
-    "message": "Una uhakika unataka kufuta tovuti zilizodihinishwa?"
   },
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Futa Data za Faragha"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Kataa"
   },
-  "providerRequest": {
-    "message": "$1 ingependa kuunganishwa kwenye akaunti yako"
-  },
-  "providerRequestInfo": {
-    "message": "Tovuti hii inaomba idhini ya kuangalia anwani yako ya akaunti ya sasa. Daima hakikisha unaziamami tovuti ambazo unaingiliana nazo."
-  },
   "about": {
     "message": "Kuhusu"
   },
   "aboutSettingsDescription": {
-    "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano."
+    "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano"
   },
   "acceleratingATransaction": {
     "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
@@ -67,7 +55,7 @@
     "message": "Mipangilio ya kina"
   },
   "advancedSettingsDescription": {
-    "message": "Vipengele vya idhini ya msanidi, Kumbukumbu za Hali ya kupakua, Kufuta Akaunti, mitando ya majaribio ya kuweka mipangilio na RPC maalumu."
+    "message": "Vipengele vya idhini ya msanidi, Kumbukumbu za Hali ya kupakua, Kufuta Akaunti, mitando ya majaribio ya kuweka mipangilio na RPC maalumu"
   },
   "advancedOptions": {
     "message": "Machaguo ya Juu"
@@ -246,7 +234,7 @@
   "connect": {
     "message": "Unganisha"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Unganisha Ombi"
   },
   "connectingTo": {
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ikiwa tayari una sarafu kadhaa za Ether, njia rahisi ya kupata Ether kwenye waleti yako mpya kupitia kuweka moja kwa moja."
-  },
-  "dismiss": {
-    "message": "Ondoa"
   },
   "done": {
     "message": "Imekamilika"
@@ -1325,7 +1310,7 @@
   "updatedWithDate": {
     "message": "Imesasishwa $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
   "usedByClients": {

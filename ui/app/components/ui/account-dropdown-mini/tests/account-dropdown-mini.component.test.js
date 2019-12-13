@@ -62,7 +62,7 @@ describe('AccountDropdownMini', () => {
       <AccountDropdownMini
         selectedAccount={{ address: '0x1', name: 'account1', balance: '0x1' }}
         accounts={accounts}
-        dropdownOpen={true}
+        dropdownOpen
       />
     )
 
@@ -94,7 +94,7 @@ describe('AccountDropdownMini', () => {
         selectedAccount={{ address: '0x1', name: 'account1', balance: '0x1' }}
         accounts={accounts}
         dropdownOpen={false}
-        disabled={true}
+        disabled
       />
     )
 

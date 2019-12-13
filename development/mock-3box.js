@@ -28,7 +28,9 @@ class Mock3Box {
   static openBox (address) {
     this.address = address
     return Promise.resolve({
-      onSyncDone: cb => { setTimeout(cb, 200) },
+      onSyncDone: cb => {
+        setTimeout(cb, 200)
+      },
       openSpace: async (spaceName, config) => {
         const { onSyncDone } = config
         this.spaceName = spaceName
@@ -54,6 +56,13 @@ class Mock3Box {
       },
       logout: () => {},
     })
+  }
+
+  static async getConfig (address) {
+    const backup = await loadFromMock3Box(`${address}-metamask-metamaskBackup`)
+    return backup
+      ? { spaces: { metamask: {} } }
+      : {}
   }
 }
 

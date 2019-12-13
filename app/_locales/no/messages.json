@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Personvernmodus er nå aktivert som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
-  },
-  "confirmClear": {
-    "message": "Er du sikker på at du vil tømme godkjente nettsteder?"
   },
   "contractInteraction": {
     "message": "Kontraktssamhandling"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tøm personvernsdata"
   },
   "reject": {
     "message": "Avslå"
   },
-  "providerRequest": {
-    "message": "$1 ønsker å forbindes med kontoen din "
-  },
-  "providerRequestInfo": {
-    "message": "Dette nettstedet ber om tilgang til å vise din nåværende kontoadresse. Alltid kontroller at du stoler på nettstedene du samhandler med."
-  },
   "about": {
     "message": "Info"
   },
   "aboutSettingsDescription": {
-    "message": "Versjon, brukerstøtte og kontaktinformasjon."
+    "message": "Versjon, brukerstøtte og kontaktinformasjon"
   },
   "acceleratingATransaction": {
     "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
@@ -63,7 +51,7 @@
     "message": "Avansert"
   },
   "advancedSettingsDescription": {
-    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC."
+    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
   },
   "advancedOptions": {
     "message": "Avanserte valg"
@@ -249,7 +237,7 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Kontaktforespørsel "
   },
   "connectingTo": {
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
-  },
-  "dismiss": {
-    "message": "Lukk"
   },
   "done": {
     "message": "Ferdig"
@@ -1319,7 +1304,7 @@
   "updatedWithDate": {
     "message": "Oppdatert $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
   },
   "usedByClients": {

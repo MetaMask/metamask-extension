@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "El mode de privacitat ara està activat per defecte"
-  },
   "chartOnlyAvailableEth": {
     "message": "Mostra només els disponibles a les xarxes Ethereum."
-  },
-  "confirmClear": {
-    "message": "Estàs segur que vols eliminar totes les pàgines web aprovades?"
   },
   "contractInteraction": {
     "message": "Contractar Interacció"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Elimina les dades de privacitat"
   },
   "reject": {
     "message": "Rebutja"
   },
-  "providerRequest": {
-    "message": "a $1 li agradaria connectar-se al teu compte"
-  },
-  "providerRequestInfo": {
-    "message": "Aquesta pàgina està demanant accès a la teva adreça"
-  },
   "about": {
     "message": "Informació"
   },
   "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte."
+    "message": "Versió, centre de suport, i informació de contacte"
   },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
@@ -63,7 +51,7 @@
     "message": "Configuració avançada"
   },
   "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC."
+    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
@@ -249,7 +237,7 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Sol·licitud de connexió"
   },
   "connectingTo": {
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
-  "dismiss": {
-    "message": "Omet"
   },
   "done": {
     "message": "Fet"
@@ -1316,7 +1301,7 @@
   "updatedWithDate": {
     "message": "Actualitzat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
   },
   "usedByClients": {

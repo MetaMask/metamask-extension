@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
-  },
-  "clearPermissionsSuccess": {
-    "message": "อนุมัติข้อมูลเว็บไซต์ที่ได้รับอนุมัติแล้ว"
-  },
   "permissionsSettings": {
     "message": "ข้อมูลการอนุมัติ"
   },
@@ -16,12 +10,6 @@
   },
   "reject": {
     "message": "ปฏิเสธ"
-  },
-  "providerRequest": {
-    "message": "$1 ต้องการเชื่อมต่อกับบัญชีของคุณ"
-  },
-  "providerRequestInfo": {
-    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ethereum เพื่อให้สามารถโต้ตอบกับบล็อค Ethereum ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ethereum เสมอ"
   },
   "about": {
     "message": "เกี่ยวกับ"
@@ -199,9 +187,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
-  },
-  "dismiss": {
-    "message": "ปิด"
   },
   "done": {
     "message": "เสร็จสิ้น"
@@ -665,7 +650,7 @@
   "updatedWithDate": {
     "message": "อัปเดต $1 แล้ว"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
   },
   "usedByClients": {

@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Der Datenschutzmodus ist jetzt standardmäßig aktiviert"
-  },
   "chartOnlyAvailableEth": {
     "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
   },
-  "confirmClear": {
-    "message": "Möchten Sie die genehmigten Websites wirklich löschen?"
-  },
   "contractInteraction": {
     "message": "Vertragsinteraktion"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
   },
   "permissionsSettings": {
     "message": "Genehmigungsdaten"
@@ -26,17 +17,11 @@
   "reject": {
     "message": "Ablehnen"
   },
-  "providerRequest": {
-    "message": "$1 möchte sich mit deinem Account verbinden"
-  },
-  "providerRequestInfo": {
-    "message": "Diese Website fordert Zugriff auf Ihre aktuelle Kontoadresse. Stellen Sie immer sicher, dass Sie den Websites vertrauen, mit denen Sie interagieren."
-  },
   "about": {
     "message": "Über"
   },
   "aboutSettingsDescription": {
-    "message": "Version, Supportcenter und Kontaktinformationen."
+    "message": "Version, Supportcenter und Kontaktinformationen"
   },
   "acceleratingATransaction": {
     "message": "* Die Beschleunigung einer Transaktion durch die Verwendung eines höheren Gaspreises erhöht die Chancen einer schnelleren Verarbeitung durch das Netz, wofür es allerdings keine Garantie gibt."
@@ -69,7 +54,7 @@
     "message": "Erweitert"
   },
   "advancedSettingsDescription": {
-    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs."
+    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs"
   },
   "advancedOptions": {
     "message": "Erweiterte Optionen"
@@ -249,7 +234,7 @@
   "connect": {
     "message": "Verbinden"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Verbindungsanfrage"
   },
   "connectingTo": {
@@ -368,9 +353,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
-  },
-  "dismiss": {
-    "message": "Schließen"
   },
   "done": {
     "message": "Fertig"
@@ -1313,7 +1295,7 @@
   "updatedWithDate": {
     "message": "$1 aktualisiert"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs benötigen die korrekten HTTP/HTTPS Präfixe."
   },
   "usedByClients": {

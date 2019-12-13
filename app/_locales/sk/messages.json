@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim súkromia je povolený. Je prednastavený automaticky"
-  },
   "chartOnlyAvailableEth": {
     "message": "Graf je k dispozícii iba v sieťach Ethereum."
   },
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
   "contractInteraction": {
     "message": "Zmluvná interakcia"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
   },
   "permissionsSettings": {
     "message": "Údaje o schválení"
@@ -26,17 +17,11 @@
   "reject": {
     "message": "Odmítnout"
   },
-  "providerRequest": {
-    "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
-  },
   "about": {
     "message": "Informácie"
   },
   "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie."
+    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -72,7 +57,7 @@
     "message": "Rozšírené"
   },
   "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC."
+    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
@@ -252,7 +237,7 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Požiadavka na pripojenie"
   },
   "connectingTo": {
@@ -374,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
-  },
-  "dismiss": {
-    "message": "Zatvoriť"
   },
   "done": {
     "message": "Hotovo"
@@ -1310,7 +1292,7 @@
   "updatedWithDate": {
     "message": "Aktualizované $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
   "usedByClients": {

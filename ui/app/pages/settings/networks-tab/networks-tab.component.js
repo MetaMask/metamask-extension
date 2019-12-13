@@ -20,7 +20,7 @@ export default class NetworksTab extends PureComponent {
     location: PropTypes.object.isRequired,
     networkIsSelected: PropTypes.bool,
     networksTabIsInAddMode: PropTypes.bool,
-    networksToRender: PropTypes.array.isRequired,
+    networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
     selectedNetwork: PropTypes.object,
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
@@ -177,6 +177,7 @@ export default class NetworksTab extends PureComponent {
       editRpc,
       networkDefaultedToProvider,
       providerUrl,
+      networksToRender,
     } = this.props
 
     const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -189,6 +190,7 @@ export default class NetworksTab extends PureComponent {
           shouldRenderNetworkForm
             ? (
               <NetworkForm
+                rpcUrls={networksToRender.map(network => network.rpcUrl)}
                 setRpcTarget={setRpcTarget}
                 editRpc={editRpc}
                 networkName={label || labelKey && t(labelKey) || ''}

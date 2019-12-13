@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Integritetsläge är nu aktiverat som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
-  },
-  "confirmClear": {
-    "message": "Är du säker på att du vill rensa godkända webbplatser?"
   },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Rensa personlig data"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Avvisa"
   },
-  "providerRequest": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
-  "providerRequestInfo": {
-    "message": "Den här sidan begär åtkomst till din aktuella kontoadress. Se till att du kan lita på de sidor du använder dig av."
-  },
   "about": {
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation."
+    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -67,7 +55,7 @@
     "message": "Avancerat"
   },
   "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC."
+    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
@@ -246,7 +234,7 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Anslutningsförfrågan"
   },
   "connectingTo": {
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
-  "dismiss": {
-    "message": "Ta bort permanent"
   },
   "done": {
     "message": "Klart"
@@ -1322,7 +1307,7 @@
   "updatedWithDate": {
     "message": "Uppdaterat $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },
   "usedByClients": {

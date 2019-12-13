@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Yksityisyystila on nyt oletusarvoisesti käytössä"
-  },
   "chartOnlyAvailableEth": {
     "message": "Kaavio saatavilla vain Ethereum-verkoissa."
-  },
-  "confirmClear": {
-    "message": "Haluatko varmasti tyhjentää hyväksytyt verkkosivustot?"
   },
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Tyhjennä yksityisyystiedot"
   },
   "reject": {
     "message": "Hylkää"
   },
-  "providerRequest": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
-  "providerRequestInfo": {
-    "message": "Tämä sivusto pyytää oikeuksia nähdä nykyisen tiliosoitteesi. Varmista aina, että luotat sivustoihin, joiden kanssa toimit."
-  },
   "about": {
     "message": "Tietoja asetuksista"
   },
   "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot."
+    "message": "Versio, tukikeskus ja yhteystiedot"
   },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
@@ -63,7 +51,7 @@
     "message": "Lisäasetukset"
   },
   "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä."
+    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"
@@ -249,7 +237,7 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Yhdistämispyyntö"
   },
   "connectingTo": {
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
-  "dismiss": {
-    "message": "Piilota"
   },
   "done": {
     "message": "Valmis"
@@ -1344,7 +1329,7 @@
   "updatedWithDate": {
     "message": "$1 päivitetty"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
   },
   "usedByClients": {

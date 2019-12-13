@@ -21,10 +21,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const { memo, name } = getAddressBookEntry(state, address) || state.metamask.identities[address]
 
+  const chainId = state.metamask.network
+
   const showingMyAccounts = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 
   return {
     address,
+    chainId,
     name,
     memo,
     viewRoute: showingMyAccounts ? CONTACT_MY_ACCOUNTS_VIEW_ROUTE : CONTACT_VIEW_ROUTE,
@@ -36,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     addToAddressBook: (recipient, nickname, memo) => dispatch(addToAddressBook(recipient, nickname, memo)),
-    removeFromAddressBook: (addressToRemove) => dispatch(removeFromAddressBook(addressToRemove)),
+    removeFromAddressBook: (chainId, addressToRemove) => dispatch(removeFromAddressBook(chainId, addressToRemove)),
     setAccountLabel: (address, label) => dispatch(setAccountLabel(address, label)),
   }
 }

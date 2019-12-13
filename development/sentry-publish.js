@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const pify = require('pify')
 const exec = pify(require('child_process').exec, { multiArgs: true })
-const VERSION = require('../dist/chrome/manifest.json').version
+const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
 

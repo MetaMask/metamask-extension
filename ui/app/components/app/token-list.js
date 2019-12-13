@@ -121,7 +121,9 @@ TokenList.prototype.createFreshTokenTracker = function () {
     this.tracker.removeListener('error', this.showError)
   }
 
-  if (!global.ethereumProvider) return
+  if (!global.ethereumProvider) {
+    return
+  }
   const { userAddress } = this.props
 
   this.tracker = new TokenTracker({
@@ -170,7 +172,9 @@ TokenList.prototype.componentDidUpdate = function (prevProps) {
   const oldTokensLength = tokens ? tokens.length : 0
   const tokensLengthUnchanged = oldTokensLength === newTokens.length
 
-  if (tokensLengthUnchanged && shouldUpdateTokens) return
+  if (tokensLengthUnchanged && shouldUpdateTokens) {
+    return
+  }
 
   this.setState({ isLoading: true })
   this.createFreshTokenTracker()
@@ -184,7 +188,9 @@ TokenList.prototype.updateBalances = function (tokens) {
 }
 
 TokenList.prototype.componentWillUnmount = function () {
-  if (!this.tracker) return
+  if (!this.tracker) {
+    return
+  }
   this.tracker.stop()
   this.tracker.removeListener('update', this.balanceUpdater)
   this.tracker.removeListener('error', this.showError)

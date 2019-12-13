@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim privatnosti je podrazumevano omogućen"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon dostupan jedino na mrežama Ethereum."
-  },
-  "confirmClear": {
-    "message": "Da li ste sigurni da želite da obrišete odobrene veb lokacije?"
   },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Obrišite privatne podatke"
   },
   "reject": {
     "message": "Одбиј"
   },
-  "providerRequest": {
-    "message": "$1 bi hteo da se poveže sa vašim nalogom"
-  },
-  "providerRequestInfo": {
-    "message": "Ovaj sajt traži pristup kako bi video vašu trenutnu adresu naloga. Uvek budite sigurni da verujete sajtovima s kojima komunicirate."
-  },
   "about": {
     "message": "Основни подаци"
   },
   "aboutSettingsDescription": {
-    "message": "Verzija, centar za podršku i podaci za kontakt."
+    "message": "Verzija, centar za podršku i podaci za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Time što se ubrzava transakcija koristeći veću gas cenu, povećavaju se šanse da se procesuira brže od strane mreže, ali to nije uvek zagarantovano."
@@ -63,7 +51,7 @@
     "message": "Напредне опције"
   },
   "advancedSettingsDescription": {
-    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC."
+    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC"
   },
   "advancedOptions": {
     "message": "Dodatne opcije"
@@ -249,7 +237,7 @@
   "connect": {
     "message": "Повезивање"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Zahtev za povezivanjem"
   },
   "connectingTo": {
@@ -371,9 +359,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako već imate neki Ether, najbrži način da preuzmete Ether u svoj novi novčanik jeste direktnim deponovanjem."
-  },
-  "dismiss": {
-    "message": "Одбаци"
   },
   "done": {
     "message": "Gotovo"
@@ -1332,7 +1317,7 @@
   "updatedWithDate": {
     "message": "Ažuriran $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
   },
   "usedByClients": {

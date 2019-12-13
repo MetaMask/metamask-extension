@@ -22,22 +22,53 @@ export default class TransactionList extends PureComponent {
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
+    fetchBasicGasAndTimeEstimates: PropTypes.func,
+    fetchGasEstimates: PropTypes.func,
+    transactionTimeFeatureActive: PropTypes.bool,
+    firstPendingTransactionId: PropTypes.number,
   }
 
   componentDidMount () {
-    this.props.updateNetworkNonce()
+    const {
+      pendingTransactions,
+      updateNetworkNonce,
+      fetchBasicGasAndTimeEstimates,
+      fetchGasEstimates,
+      transactionTimeFeatureActive,
+    } = this.props
+
+    updateNetworkNonce()
+
+    if (transactionTimeFeatureActive && pendingTransactions.length) {
+      fetchBasicGasAndTimeEstimates()
+        .then(({ blockTime }) => fetchGasEstimates(blockTime))
+    }
   }
 
   componentDidUpdate (prevProps) {
     const { pendingTransactions: prevPendingTransactions = [] } = prevProps
-    const { pendingTransactions = [], updateNetworkNonce } = this.props
+    const {
+      pendingTransactions = [],
+      updateNetworkNonce,
+      fetchBasicGasAndTimeEstimates,
+      fetchGasEstimates,
+      transactionTimeFeatureActive,
+    } = this.props
 
     if (pendingTransactions.length > prevPendingTransactions.length) {
       updateNetworkNonce()
     }
+
+    const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
+    const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0
+
+    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && (transactionTimeFeatureWasActivated || pendingTransactionAdded)) {
+      fetchBasicGasAndTimeEstimates()
+        .then(({ blockTime }) => fetchGasEstimates(blockTime))
+    }
   }
 
-  shouldShowRetry = (transactionGroup, isEarliestNonce) => {
+  shouldShowSpeedUp = (transactionGroup, isEarliestNonce) => {
     const { transactions = [], hasRetried } = transactionGroup
     const [earliestTransaction = {}] = transactions
     const { submittedTime } = earliestTransaction
@@ -87,7 +118,7 @@ export default class TransactionList extends PureComponent {
   }
 
   renderTransaction (transactionGroup, index, isPendingTx = false) {
-    const { selectedToken, assetImages } = this.props
+    const { selectedToken, assetImages, firstPendingTransactionId } = this.props
     const { transactions = [] } = transactionGroup
 
     return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
@@ -100,11 +131,12 @@ export default class TransactionList extends PureComponent {
         <TransactionListItem
           transactionGroup={transactionGroup}
           key={`${transactionGroup.nonce}:${index}`}
-          showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
+          showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
           showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
           isEarliestNonce={isPendingTx && index === 0}
           token={selectedToken}
           assetImages={assetImages}
+          firstPendingTransactionId={firstPendingTransactionId}
         />
       )
   }

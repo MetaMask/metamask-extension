@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "이제 프라이버시 모드가 기본 설정으로 활성화됐습니다"
-  },
   "chartOnlyAvailableEth": {
     "message": "이더리움 네트워크에서만 사용 가능한 차트."
   },
-  "confirmClear": {
-    "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
-  },
   "contractInteraction": {
     "message": "계약 상호 작용"
-  },
-  "clearPermissionsSuccess": {
-    "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
   },
   "permissionsSettings": {
     "message": "승인 데이터"
@@ -26,17 +17,11 @@
   "reject": {
     "message": "거부"
   },
-  "providerRequest": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
-  "providerRequestInfo": {
-    "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
-  },
   "about": {
     "message": "정보"
   },
   "aboutSettingsDescription": {
-    "message": "버전, 지원 센터, 그리고 연락처 정보."
+    "message": "버전, 지원 센터, 그리고 연락처 정보"
   },
   "acceleratingATransaction": {
     "message": "* 더 높은 가스 요금을 사용하여 트랜잭션을 가속화하면 네트워크에 의해 더 빨리 처리될 가능성이 증가하지만 항상 빠른 처리가 보장되는 것은 아닙니다."
@@ -72,7 +57,7 @@
     "message": "고급"
   },
   "advancedSettingsDescription": {
-    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정."
+    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정"
   },
   "advancedOptions": {
     "message": "고급 옵션"
@@ -258,7 +243,7 @@
   "connect": {
     "message": "연결"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "연결 요청"
   },
   "connectingTo": {
@@ -380,9 +365,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "약간의 이더를 이미 보유하고 있다면, 새로 만든 지갑에 직접 입금하여 이더를 보유할 수 있습니다."
-  },
-  "dismiss": {
-    "message": "숨기기"
   },
   "done": {
     "message": "완료"
@@ -1347,7 +1329,7 @@
   "updatedWithDate": {
     "message": "$1에 업데이트 됨"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI는 HTTP/HTTPS로 시작해야 합니다."
   },
   "usedByClients": {

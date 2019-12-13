@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import deepEqual from 'fast-deep-equal'
 import { PermissionPageContainerContent, PermissionPageContainerHeader } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
 
@@ -13,6 +12,8 @@ export default class PermissionPageContainer extends Component {
     permissionsDescriptions: PropTypes.object.isRequired,
     siteMetadata: PropTypes.object.isRequired,
     requests: PropTypes.array.isRequired,
+    showLoadingIndication: PropTypes.func.isRequired,
+    hideLoadingIndication: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -30,14 +31,21 @@ export default class PermissionPageContainer extends Component {
     }
   }
 
-  componentDidUpdate () {
-    const newMethodNames = this.getRequestedMethodNames(this.props)
+  componentDidUpdate (prevProps) {
 
-    if (!deepEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
-      // this should be a new request, so just overwrite
+    const prevRequest = prevProps.requests[0]
+    const request = this.props.requests[0]
+
+    if (
+      prevRequest && request &&
+      prevRequest.metadata.id !== request.metadata.id
+    ) {
+      const newMethodNames = this.getRequestedMethodNames(this.props)
+      // this is a new request, so just overwrite
       this.setState({
         selectedPermissions: this.getRequestedMethodState(newMethodNames),
       })
+      this.props.hideLoadingIndication()
     }
   }
 
@@ -75,11 +83,14 @@ export default class PermissionPageContainer extends Component {
   }
 
   onCancel = () => {
+    this.props.showLoadingIndication()
     const { requests, rejectPermissionsRequest } = this.props
     rejectPermissionsRequest(requests[0].metadata.id)
   }
 
   onSubmit = () => {
+
+    this.props.showLoadingIndication()
 
     // sanity validation
     if (!this.state.selectedAccount) {
@@ -101,22 +112,13 @@ export default class PermissionPageContainer extends Component {
       }
     })
 
-    // TODO:lps:review do we have any concerns about caveat creation occuring
-    // here? perhaps we should have a factory method somewhere else?
+    let accounts = null
     if ('eth_accounts' in request.permissions) {
-      if (!request.permissions.eth_accounts.caveats) {
-        request.permissions.eth_accounts.caveats = []
-      }
-      request.permissions.eth_accounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: [this.state.selectedAccount.address],
-        },
-      )
+      accounts = [this.state.selectedAccount.address]
     }
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request)
+      approvePermissionsRequest(request, accounts)
     } else {
       rejectPermissionsRequest(request.metadata.id)
     }

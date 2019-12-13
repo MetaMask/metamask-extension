@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "গোপনীয়তার মোড এখন ডিফল্ট হিসাবে সক্রিয় করা আছে"
-  },
   "chartOnlyAvailableEth": {
     "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
-  },
-  "confirmClear": {
-    "message": "আপনি কি অনুমোদিত ওয়েবসাইটগুলি মুছে পরিস্কার করার বিষয়ে নিশ্চিত?"
   },
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "গোপনীয়তার ডেটা মুছে পরিস্কার করুন"
   },
   "reject": {
     "message": "প্রত্যাখ্যান"
-  },
-  "providerRequest": {
-    "message": "$1 আপনার অ্যাকাউন্টের সাথে সংযোগ করতে চায়"
-  },
-  "providerRequestInfo": {
-    "message": "এই সাইটটি আপনার বর্তমান অ্যাকাউন্টের ঠিকানা দেখার অ্যাক্সেসের জন্য অনুরোধ জানাচ্ছে। সবসময় নিশ্চিত হয়ে নেবেন যে আপনি যে সাইটের সাথে যোগাযোগ করছেন সেটি বিশ্বাসযোগ্য কিনা।"
   },
   "about": {
     "message": "সম্পর্কে"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "সংযুক্ত করুন"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "সংযোগের অনুরোধ"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
-  },
-  "dismiss": {
-    "message": "খারিজ"
   },
   "done": {
     "message": "সম্পন্ন "
@@ -1347,7 +1332,7 @@
   "updatedWithDate": {
     "message": "আপডেট করা $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
   },
   "usedByClients": {

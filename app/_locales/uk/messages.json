@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Режим конфіденційності тепер увімкнено за замовчуванням"
-  },
   "chartOnlyAvailableEth": {
     "message": "Таблиця доступна тільки в мережах Ethereum."
-  },
-  "confirmClear": {
-    "message": "Ви впевнені, що хочете очистити затверджені веб-сайти?"
   },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Очистити приватні дані"
   },
   "reject": {
     "message": "Відхилити"
   },
-  "providerRequest": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
-  "providerRequestInfo": {
-    "message": "Цей сайт запитує доступ на перегляд вашої поточної адреси облікового запису. Завжди взаємодійте лише з веб-сайтами, яким довіряєте."
-  },
   "about": {
     "message": "Про Google Chrome"
   },
   "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація."
+    "message": "Версія, центр підтримки та контактна інформація"
   },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
@@ -63,7 +51,7 @@
     "message": "Розширені"
   },
   "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC."
+    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
   },
   "advancedOptions": {
     "message": "Додаткові параметри"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Під’єднатися"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Запит на з'єднання"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
-  "dismiss": {
-    "message": "Відхилити"
   },
   "done": {
     "message": "Готово"
@@ -1347,7 +1332,7 @@
   "updatedWithDate": {
     "message": "Оновлено $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
   },
   "usedByClients": {

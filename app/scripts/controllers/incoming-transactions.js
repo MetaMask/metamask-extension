@@ -163,7 +163,9 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
-    newTxs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
+    newTxs.forEach(tx => {
+      newIncomingTransactions[tx.hash] = tx
+    })
 
     this.store.updateState({
       incomingTxLastFetchedBlocksByNetwork: {
@@ -207,8 +209,8 @@ class IncomingTransactionsController {
     }
   }
 
-  _processTxFetchResponse ({ status, result, address, currentNetworkID }) {
-    if (status !== '0' && result.length > 0) {
+  _processTxFetchResponse ({ status, result = [], address, currentNetworkID }) {
+    if (status === '1' && Array.isArray(result) && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []
       result.forEach((tx) => {

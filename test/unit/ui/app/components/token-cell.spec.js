@@ -44,39 +44,37 @@ describe('Token Cell', () => {
   const mockStore = configureMockStore(middlewares)
   const store = mockStore(state)
 
-  describe('normal tokens', () => {
-    beforeEach(() => {
-      wrapper = mount(
-        <Provider store={store}>
-          <TokenCell
-            address={'0xAnotherToken'}
-            symbol={'TEST'}
-            string={'5.000'}
-            network={22}
-            currentCurrency={'usd'}
-            image={'./test-image'}
-          />
-        </Provider>
-      )
-    })
+  beforeEach(() => {
+    wrapper = mount(
+      <Provider store={store}>
+        <TokenCell
+          address="0xAnotherToken"
+          symbol="TEST"
+          string="5.000"
+          network={22}
+          currentCurrency="usd"
+          image="./test-image"
+        />
+      </Provider>
+    )
+  })
 
-    it('renders Identicon with props from token cell', () => {
-      assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
-      assert.equal(wrapper.find(Identicon).prop('network'), 'test')
-      assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
-    })
+  it('renders Identicon with props from token cell', () => {
+    assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
+    assert.equal(wrapper.find(Identicon).prop('network'), 'test')
+    assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
+  })
 
-    it('renders token balance', () => {
-      assert.equal(wrapper.find('.token-list-item__token-balance').text(), '5.000')
-    })
+  it('renders token balance', () => {
+    assert.equal(wrapper.find('.token-list-item__token-balance').text(), '5.000')
+  })
 
-    it('renders token symbol', () => {
-      assert.equal(wrapper.find('.token-list-item__token-symbol').text(), 'TEST')
-    })
+  it('renders token symbol', () => {
+    assert.equal(wrapper.find('.token-list-item__token-symbol').text(), 'TEST')
+  })
 
-    it('renders converted fiat amount', () => {
-      assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
-    })
+  it('renders converted fiat amount', () => {
+    assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
   })
 
   describe('custom tokens as from a plugin', () => {
@@ -84,11 +82,11 @@ describe('Token Cell', () => {
       wrapper = mount(
         <Provider store={store}>
           <TokenCell
-            address={'0xAnotherToken'}
-            symbol={'TEST'}
-            string={'5.000'}
-            currentCurrency={'usd'}
-            image={'./test-image'}
+            address="0xAnotherToken"
+            symbol="TEST"
+            string="5.000"
+            currentCurrency="usd"
+            image="./test-image"
             onClick={registerClick}
           />
         </Provider>,

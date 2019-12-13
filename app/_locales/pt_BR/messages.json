@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "O Modo de Privacidade está ativado por padrão"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabela disponível apenas em redes de Ethereum."
-  },
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar os sites aprovados?"
   },
   "contractInteraction": {
     "message": "Interação do Contrato"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Limpar Dados de Privacidade"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Rejeitar"
   },
-  "providerRequest": {
-    "message": "$1 gostaria de se conectar à sua conta"
-  },
-  "providerRequestInfo": {
-    "message": "Este site está solicitando acesso para visualizar o seu endereço de conta atual. Certifique-se sempre de confiar nos sites com os quais você interage."
-  },
   "about": {
     "message": "Sobre"
   },
   "aboutSettingsDescription": {
-    "message": "Versão, centro de apoio e informações de contato."
+    "message": "Versão, centro de apoio e informações de contato"
   },
   "acceleratingATransaction": {
     "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta suas chances de a rede processá-la de forma mais rápida, mas isso nem sempre é garantido."
@@ -67,7 +55,7 @@
     "message": "Avançado"
   },
   "advancedSettingsDescription": {
-    "message": "Acesse recursos do desenvolvedor, baixe registros de estado, redefina a conta, configure testnets e personalize RPC."
+    "message": "Acesse recursos do desenvolvedor, baixe registros de estado, redefina a conta, configure testnets e personalize RPC"
   },
   "advancedOptions": {
     "message": "Opções avançadas"
@@ -246,7 +234,7 @@
   "connect": {
     "message": "Conectar-se"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Solicitação de Conexão"
   },
   "connectingTo": {
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se você já tem Ether, a forma mais rápida de colocá-lo em sua nova carteira é o depósito direto."
-  },
-  "dismiss": {
-    "message": "Dispensar"
   },
   "done": {
     "message": "Concluído"
@@ -1326,7 +1311,7 @@
   "updatedWithDate": {
     "message": "$1 atualizado"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URIs exigem o devido prefixo HTTP/HTTPS."
   },
   "usedByClients": {

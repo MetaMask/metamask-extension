@@ -124,7 +124,9 @@ export default class PermissionsList extends Component {
     this.props.removePermissionsFor(
       Object.values(this.state.permissions).reduce((acc, permState) => {
         if (!permState.selected) {
-          if (!acc[permState.domain]) acc[permState.domain] = []
+          if (!acc[permState.domain]) {
+            acc[permState.domain] = []
+          }
           acc[permState.domain].push(permState.methodName)
         }
         return acc
@@ -141,7 +143,9 @@ export default class PermissionsList extends Component {
             if (
               permissions[domain].permissions.length === 0 ||
               !this.state.domains[domain] // state may lag behind props slightly
-            ) return null
+            ) {
+              return null
+            }
 
             const targetMetadata = (
               siteMetadata[domain] ||
@@ -200,7 +204,9 @@ export default class PermissionsList extends Component {
   renderPermissionsListItem (permission, description) {
 
     // state may lag behind props slightly
-    if (!this.state.permissions[permission.id]) return null
+    if (!this.state.permissions[permission.id]) {
+      return null
+    }
 
     return (
       <li key={permission.id} className="settings-page__content-list-item">

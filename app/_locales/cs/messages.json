@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
-  },
   "permissionsSettings": {
     "message": "Údaje o schválení"
   },
@@ -16,9 +10,6 @@
   },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "account": {
     "message": "Účet"
@@ -538,7 +529,7 @@
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
   "usedByClients": {

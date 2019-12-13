@@ -24,14 +24,13 @@ export default class PermissionsTab extends Component {
     t: PropTypes.func,
   }
 
-  renderClearButton (messageKey, clickHandler, isDisabled) {
-    const { t } = this.context
+  renderClearButton (mainMessage, descriptionMessage, clickHandler, isDisabled) {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t(messageKey) }</span>
+          <span>{ mainMessage }</span>
           <span className="settings-page__content-description">
-            { t(`${messageKey}Description`) }
+            { descriptionMessage }
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -46,7 +45,7 @@ export default class PermissionsTab extends Component {
                 clickHandler()
               }}
             >
-              { t(messageKey) }
+              { mainMessage }
             </Button>
           </div>
         </div>
@@ -55,6 +54,7 @@ export default class PermissionsTab extends Component {
   }
 
   render () {
+    const { t } = this.context
     const { warning } = this.props
     const hasPermissions = Object.keys(this.props.permissions).length > 0
     const hasPermissionsActivity = this.props.permissionsLog.length > 0
@@ -71,7 +71,8 @@ export default class PermissionsTab extends Component {
         />
         {
           this.renderClearButton(
-            'clearPermissions',
+            t('clearPermissions'),
+            t('clearPermissionsDescription'),
             this.props.showClearPermissionsModal,
             !hasPermissions
           )
@@ -81,7 +82,8 @@ export default class PermissionsTab extends Component {
         />
         {
           this.renderClearButton(
-            'clearPermissionsHistory',
+            t('clearPermissionsHistory'),
+            t('clearPermissionsHistoryDescription'),
             this.props.showClearPermissionsHistoryModal,
             !hasPermissionsHistory
           )
@@ -91,7 +93,8 @@ export default class PermissionsTab extends Component {
         />
         {
           this.renderClearButton(
-            'clearPermissionsActivity',
+            t('clearPermissionsActivity'),
+            t('clearPermissionsActivityDescription'),
             this.props.showClearPermissionsActivityModal,
             !hasPermissionsActivity
           )

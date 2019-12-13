@@ -23,6 +23,10 @@ import {
 } from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
+  static contextTypes = {
+    metricsEvent: PropTypes.func,
+  }
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -39,6 +43,9 @@ export default class ConfirmTransaction extends Component {
     paramsTransactionId: PropTypes.string,
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
+    fullScreenVsPopupTestGroup: PropTypes.string,
+    trackABTest: PropTypes.bool,
+    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {
@@ -53,6 +60,8 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
+      fullScreenVsPopupTestGroup,
+      trackABTest,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -66,7 +75,19 @@ export default class ConfirmTransaction extends Component {
       getTokenParams(to)
     }
     const txId = transactionId || paramsTransactionId
-    if (txId) this.props.setTransactionToConfirm(txId)
+    if (txId) {
+      this.props.setTransactionToConfirm(txId)
+    }
+
+    if (trackABTest) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'abtesting',
+          action: 'fullScreenVsPopup',
+          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
+        },
+      })
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -100,7 +121,6 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-
     return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>

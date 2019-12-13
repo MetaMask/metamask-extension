@@ -6,6 +6,14 @@ import {
   getPermissionsRequests,
   getSiteMetadata,
 } from '../../../selectors/selectors'
+import { hideLoadingIndication, showLoadingIndication } from '../../../store/actions'
+
+const mapDispatchToProps = dispatch => {
+  return {
+    hideLoadingIndication: () => dispatch(hideLoadingIndication),
+    showLoadingIndication: () => dispatch(showLoadingIndication),
+  }
+}
 
 const mapStateToProps = (state) => {
   const requests = getPermissionsRequests(state) || []
@@ -41,4 +49,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(PermissionPageContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(PermissionPageContainer)

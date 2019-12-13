@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Dabar privatumo režimas suaktyvintas pagal numatytąją nuostatą"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagramos yra tik „Ethereum“ tinkluose."
-  },
-  "confirmClear": {
-    "message": "Ar tikrai norite panaikinti patvirtintas svetaines?"
   },
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Išvalyti asmeninius duomenis"
   },
   "reject": {
     "message": "Atmesti"
   },
-  "providerRequest": {
-    "message": "$1 norėtų prisijungti prie jūsų paskyros"
-  },
-  "providerRequestInfo": {
-    "message": "Ši svetainė prašo prieigos peržiūrėti jūsų dabartinės paskyros adresą. Visada patikrinkite, ar pasitikite svetainėmis, su kuriomis sąveikaujate."
-  },
   "about": {
     "message": "Apie"
   },
   "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija."
+    "message": "Versija, palaikymo centras ir kontaktinė informacija"
   },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
@@ -63,7 +51,7 @@
     "message": "Išplėstiniai"
   },
   "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC."
+    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Prijungimo užklausa"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
-  },
-  "dismiss": {
-    "message": "Atsisakyti"
   },
   "done": {
     "message": "Atlikta"
@@ -1347,7 +1332,7 @@
   "updatedWithDate": {
     "message": "Atnaujinta $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
   },
   "usedByClients": {

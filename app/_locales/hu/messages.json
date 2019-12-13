@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Az adatvédelmi mód mostantól alapbeállításként engedélyezve van"
-  },
   "chartOnlyAvailableEth": {
     "message": "A diagram csak Ethereum hálózatokon érhető el"
-  },
-  "confirmClear": {
-    "message": "Biztosan törölni szeretnéd a jóváhagyott weboldalakat?"
   },
   "contractInteraction": {
     "message": "Szerződéses interakció"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Adatvédelmi adatok törlése"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Elutasítás"
   },
-  "providerRequest": {
-    "message": "$1 szeretne kapcsolódni az ön fiókjához"
-  },
-  "providerRequestInfo": {
-    "message": "A webhely hozzáférést kér az ön jelenlegi fiókcímének megtekintéséhez. Mindig győződjön meg arról, hogy megbízható webhellyel létesít kapcsolatot."
-  },
   "about": {
     "message": "Névjegy"
   },
   "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek."
+    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
   },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
@@ -67,7 +55,7 @@
     "message": "Speciális"
   },
   "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása."
+    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Csatlakozási kérelem"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Amennyiben már rendelkezik némi Ether-rel, a közvetlen letéttel gyorsan elhelyezheti azt új pénztárcájában."
-  },
-  "dismiss": {
-    "message": "Elvetés"
   },
   "done": {
     "message": "Kész"
@@ -1337,7 +1322,7 @@
   "updatedWithDate": {
     "message": "$1 frissítve"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
   },
   "usedByClients": {

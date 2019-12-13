@@ -5,7 +5,7 @@ import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
-import { checksumAddress } from '../../../helpers/utils/util'
+import { checksumAddress, addressSlicer } from '../../../helpers/utils/util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -18,6 +18,7 @@ export default class SenderToRecipient extends PureComponent {
     senderName: PropTypes.string,
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
+    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientNickname: PropTypes.string,
     t: PropTypes.func,
@@ -61,14 +62,28 @@ export default class SenderToRecipient extends PureComponent {
     return (
       <Tooltip
         position="bottom"
-        title={this.state.senderAddressCopied ? t('copiedExclamation') : t('copyAddress')}
+        html={
+          this.state.senderAddressCopied
+            ? <p>{t('copiedExclamation')}</p>
+            : addressOnly
+              ? <p>{t('copyAddress')}</p>
+              : (
+                <p>
+                  {addressSlicer(checksummedSenderAddress)}<br/>
+                  {t('copyAddress')}
+                </p>
+              )
+        }
         wrapperClassName="sender-to-recipient__tooltip-wrapper"
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => this.setState({ senderAddressCopied: false })}
       >
         <div className="sender-to-recipient__name">
-          <span>{ addressOnly ? `${t('from')}: ` : '' }</span>
-          { addressOnly ? checksummedSenderAddress : senderName }
+          {
+            addressOnly
+              ? <span>{`${t('from')}: ${checksummedSenderAddress}`}</span>
+              : senderName
+          }
         </div>
       </Tooltip>
     )
@@ -91,7 +106,9 @@ export default class SenderToRecipient extends PureComponent {
 
   renderRecipientWithAddress () {
     const { t } = this.context
-    const { recipientName, recipientAddress, recipientNickname, addressOnly, onRecipientClick, audit = {} } = this.props
+    const {
+      recipientEns, recipientName, recipientAddress, recipientNickname, addressOnly, onRecipientClick, audit = {},
+    } = this.props
     const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
@@ -111,7 +128,18 @@ export default class SenderToRecipient extends PureComponent {
           { this.renderRecipientIdenticon() }
           <Tooltip
             position="bottom"
-            title={this.state.recipientAddressCopied ? t('copiedExclamation') : t('copyAddress')}
+            html={
+              this.state.senderAddressCopied
+                ? <p>{t('copiedExclamation')}</p>
+                : (addressOnly && !recipientNickname && !recipientEns)
+                  ? <p>{t('copyAddress')}</p>
+                  : (
+                    <p>
+                      {addressSlicer(checksummedRecipientAddress)}<br/>
+                      {t('copyAddress')}
+                    </p>
+                  )
+            }
             wrapperClassName="sender-to-recipient__tooltip-wrapper"
             containerClassName="sender-to-recipient__tooltip-container"
             onHidden={() => this.setState({ recipientAddressCopied: false })}
@@ -120,8 +148,8 @@ export default class SenderToRecipient extends PureComponent {
               <span>{ addressOnly ? `${t('to')}: ` : '' }</span>
               {
                 addressOnly
-                  ? checksummedRecipientAddress
-                  : (recipientNickname || recipientName || this.context.t('newContract'))
+                  ? (recipientNickname || recipientEns || checksummedRecipientAddress)
+                  : (recipientNickname || recipientEns || recipientName || this.context.t('newContract'))
               }
             </div>
           </Tooltip>

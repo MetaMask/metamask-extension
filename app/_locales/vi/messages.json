@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
-  },
-  "clearPermissionsSuccess": {
-    "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
-  },
   "permissionsSettings": {
     "message": "Dữ liệu phê duyệt"
   },
@@ -16,9 +10,6 @@
   },
   "reject": {
     "message": "Từ chối"
-  },
-  "providerRequestInfo": {
-    "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
   },
   "account": {
     "message": "Tài khoản"

@@ -12,6 +12,7 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('MetaMask', function () {
   let driver
@@ -51,15 +52,9 @@ describe('MetaMask', function () {
   describe('set up data to be restored by 3box', () => {
 
     describe('First time flow starting from an existing seed phrase', () => {
-      it('turns on the threebox feature flag', async () => {
-        await delay(largeDelayMs)
-        await driver.executeScript('window.metamask.setFeatureFlag("threeBox", true)')
-        await delay(largeDelayMs)
-      })
-
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
+        const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         welcomeScreenBtn.click()
         await delay(largeDelayMs)
       })
@@ -96,7 +91,7 @@ describe('MetaMask', function () {
 
       it('clicks through the success screen', async () => {
         await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-        const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+        const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await doneButton.click()
         await delay(regularDelayMs)
       })
@@ -108,13 +103,30 @@ describe('MetaMask', function () {
       })
     })
 
-    describe('updates settings and address book', () => {
+    describe('turns on threebox syncing', () => {
       it('goes to the settings screen', async () => {
         await driver.findElement(By.css('.account-menu__icon')).click()
         await delay(regularDelayMs)
 
         const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
         settingsButton.click()
+      })
+
+      it('turns on threebox syncing', async () => {
+        const advancedButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Advanced')]`))
+        await advancedButton.click()
+
+        const threeBoxToggle = await findElements(driver, By.css('.toggle-button'))
+        const threeBoxToggleButton = await threeBoxToggle[4].findElement(By.css('div'))
+        await threeBoxToggleButton.click()
+      })
+
+    })
+
+    describe('updates settings and address book', () => {
+      it('adds an address to the contact list', async () => {
+        const generalButton = await findElement(driver, By.xpath(`//div[contains(text(), 'General')]`))
+        await generalButton.click()
       })
 
       it('turns on use of blockies', async () => {
@@ -163,15 +175,9 @@ describe('MetaMask', function () {
     })
 
     describe('First time flow starting from an existing seed phrase', () => {
-      it('turns on the threebox feature flag', async () => {
-        await delay(largeDelayMs)
-        await driver2.executeScript('window.metamask.setFeatureFlag("threeBox", true)')
-        await delay(largeDelayMs)
-      })
-
       it('clicks the continue button on the welcome screen', async () => {
         await findElement(driver2, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(driver2, By.css('.first-time-flow__button'))
+        const welcomeScreenBtn = await findElement(driver2, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         welcomeScreenBtn.click()
         await delay(largeDelayMs)
       })
@@ -208,7 +214,7 @@ describe('MetaMask', function () {
 
       it('clicks through the success screen', async () => {
         await findElement(driver2, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-        const doneButton = await findElement(driver2, By.css('button.first-time-flow__button'))
+        const doneButton = await findElement(driver2, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await doneButton.click()
         await delay(regularDelayMs)
       })

@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Mod Privasi kini diaktifkan secara lalai"
-  },
   "chartOnlyAvailableEth": {
     "message": "Carta hanya tersedia di rangkaian Ethereum."
-  },
-  "confirmClear": {
-    "message": "Adakah anda pasti mahu mengosongkan tapak web diluluskan?"
   },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Kosongkan Data Privasi"
   },
   "reject": {
     "message": "Tolak"
   },
-  "providerRequest": {
-    "message": "$1 ingin menyambung kepada akaun anda"
-  },
-  "providerRequestInfo": {
-    "message": "Tapak ini meminta akses untuk melihat alamat akaun semasa anda. Sentiasa pastikan anda mempercayai tapak web yang anda berinteraksi."
-  },
   "about": {
     "message": "Mengenai"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan."
+    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -63,7 +51,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai."
+    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
@@ -249,7 +237,7 @@
   "connect": {
     "message": "Sambung"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Sambungkan Permintaan"
   },
   "connectingTo": {
@@ -365,9 +353,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
-  },
-  "dismiss": {
-    "message": "Singkirkan"
   },
   "done": {
     "message": "Selesai"
@@ -1315,7 +1300,7 @@
   "updatedWithDate": {
     "message": "Dikemaskini $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "usedByClients": {

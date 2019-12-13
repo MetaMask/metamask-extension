@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "يتم تمكين وضع الخصوصية الآن بشكل افتراضي"
-  },
   "chartOnlyAvailableEth": {
     "message": "الرسم البياني متاح فقط على شبكات إيثيريوم."
-  },
-  "confirmClear": {
-    "message": "هل أنت متأكد من أنك تريد مسح المواقع المعتمدة؟"
   },
   "contractInteraction": {
     "message": "التفاعل على العقد"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "مسح بيانات الخصوصية"
   },
   "reject": {
     "message": "رفض"
-  },
-  "providerRequest": {
-    "message": "يرغب $1 في الاتصال بحسابك"
-  },
-  "providerRequestInfo": {
-    "message": "يطلب هذا الموقع حق الوصول لعرض عنوان حسابك الحالي. تأكد دائماً من ثقتك في المواقع التي تتفاعل معها."
   },
   "about": {
     "message": "حول"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "طلب اتصال"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
-  },
-  "dismiss": {
-    "message": "رفض"
   },
   "done": {
     "message": "تم"
@@ -1340,7 +1325,7 @@
   "updatedWithDate": {
     "message": "تم تحديث $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."
   },
   "usedByClients": {

@@ -76,7 +76,9 @@ export default class PermissionsHistory extends Component {
   }
 
   renderAccountsList (historyEntry) {
-    if (!historyEntry.accounts) return ''
+    if (!historyEntry.accounts) {
+      return ''
+    }
     return (
       <li className="settings-page__content-list-item__nested">
         {'Accounts Seen'}

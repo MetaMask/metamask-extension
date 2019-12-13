@@ -52,7 +52,9 @@ async function validateSourcemapForFile ({ buildName }) {
   const consumer = await new SourceMapConsumer(rawSourceMap)
 
   const hasContentsOfAllSources = consumer.hasContentsOfAllSources()
-  if (!hasContentsOfAllSources) console.warn('SourcemapValidator - missing content of some sources...')
+  if (!hasContentsOfAllSources) {
+    console.warn('SourcemapValidator - missing content of some sources...')
+  }
 
   console.log(`  sampling from ${consumer.sources.length} files`)
   let sampleCount = 0
@@ -96,6 +98,8 @@ async function validateSourcemapForFile ({ buildName }) {
 function indicesOf (substring, string) {
   var a = []
   var i = -1
-  while ((i = string.indexOf(substring, i + 1)) >= 0) a.push(i)
+  while ((i = string.indexOf(substring, i + 1)) >= 0) {
+    a.push(i)
+  }
   return a
 }

@@ -10,7 +10,7 @@ function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns })
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
 
   // return api object
   return {
@@ -23,14 +23,18 @@ function setupEnsIpfsResolver ({ provider }) {
   async function webRequestDidFail (details) {
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
-    if (tabId === -1) return
+    if (tabId === -1) {
+      return
+    }
     // parse ens name
     const urlData = urlUtil.parse(url)
     const { hostname: name, path, search } = urlData
     const domainParts = name.split('.')
     const topLevelDomain = domainParts[domainParts.length - 1]
     // if unsupported TLD, abort
-    if (!supportedTopLevelDomains.includes(topLevelDomain)) return
+    if (!supportedTopLevelDomains.includes(topLevelDomain)) {
+      return
+    }
     // otherwise attempt resolve
     attemptResolve({ tabId, name, path, search })
   }
@@ -45,7 +49,9 @@ function setupEnsIpfsResolver ({ provider }) {
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })
-          if (response.status === 200) url = resolvedUrl
+          if (response.status === 200) {
+            url = resolvedUrl
+          }
         } catch (err) {
           console.warn(err)
         }
@@ -53,6 +59,8 @@ function setupEnsIpfsResolver ({ provider }) {
         url = `https://swarm-gateways.net/bzz:/${hash}${path}${search || ''}`
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${path}${search || ''}`
+      } else if (type === 'zeronet') {
+        url = `http://127.0.0.1:43110/${hash}${path}${search || ''}`
       }
     } catch (err) {
       console.warn(err)

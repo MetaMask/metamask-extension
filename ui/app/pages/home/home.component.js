@@ -4,6 +4,7 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import HomeNotification from '../../components/app/home-notification'
+import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
@@ -23,7 +24,7 @@ export default class Home extends PureComponent {
   }
 
   static defaultProps = {
-    activeTab: {},
+    hasDaiV1Token: false,
   }
 
   static propTypes = {
@@ -42,12 +43,12 @@ export default class Home extends PureComponent {
     threeBoxSynced: PropTypes.bool,
     setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
-    restoredFromThreeBox: PropTypes.bool,
+    showRestorePrompt: PropTypes.bool,
     selectedAddress: PropTypes.string,
     restoreFromThreeBox: PropTypes.func,
-    setRestoredFromThreeBoxToFalse: PropTypes.func,
-    threeBoxLastUpdated: PropTypes.string,
-    threeBoxFeatureFlagIsTrue: PropTypes.bool,
+    setShowRestorePromptToFalse: PropTypes.func,
+    threeBoxLastUpdated: PropTypes.number,
+    hasDaiV1Token: PropTypes.bool,
     permissionsRequests: PropTypes.array,
     removePlugin: PropTypes.func,
     clearPlugins: PropTypes.func,
@@ -87,10 +88,10 @@ export default class Home extends PureComponent {
     const {
       threeBoxSynced,
       setupThreeBox,
-      restoredFromThreeBox,
+      showRestorePrompt,
       threeBoxLastUpdated,
     } = this.props
-    if (threeBoxSynced && restoredFromThreeBox === null && threeBoxLastUpdated === null) {
+    if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox()
     }
   }
@@ -100,15 +101,15 @@ export default class Home extends PureComponent {
     const {
       forgottenPassword,
       history,
+      hasDaiV1Token,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
       restoreFromThreeBox,
       turnThreeBoxSyncingOn,
-      setRestoredFromThreeBoxToFalse,
-      restoredFromThreeBox,
+      setShowRestorePromptToFalse,
+      showRestorePrompt,
       threeBoxLastUpdated,
-      threeBoxFeatureFlagIsTrue,
       permissionsRequests,
       hasPermissionsData,
       hasPlugins,
@@ -120,7 +121,7 @@ export default class Home extends PureComponent {
 
     if (permissionsRequests && permissionsRequests.length > 0) {
       return (
-        <PermissionApproval permissionsRequests = {permissionsRequests}/>
+        <PermissionApproval permissionsRequests={permissionsRequests}/>
       )
     }
 
@@ -134,12 +135,10 @@ export default class Home extends PureComponent {
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
               <TransactionView>
-                <MultipleNotifications
-                  className
-                  notifications={[
-                    {
-                      shouldBeRendered: shouldShowSeedPhraseReminder,
-                      component: <HomeNotification
+                <MultipleNotifications>
+                  {
+                    shouldShowSeedPhraseReminder
+                      ? <HomeNotification
                         descriptionText={t('backupApprovalNotice')}
                         acceptText={t('backupNow')}
                         onAccept={() => {
@@ -151,12 +150,13 @@ export default class Home extends PureComponent {
                         }}
                         infoText={t('backupApprovalInfo')}
                         key="home-backupApprovalNotice"
-                      />,
-                    },
-                    {
-                      shouldBeRendered: threeBoxFeatureFlagIsTrue && threeBoxLastUpdated && restoredFromThreeBox === null,
-                      component: <HomeNotification
-                        descriptionText={t('restoreWalletPreferences', [ formatDate(parseInt(threeBoxLastUpdated), 'M/d/y') ])}
+                      />
+                      : null
+                  }
+                  {
+                    threeBoxLastUpdated && showRestorePrompt
+                      ? <HomeNotification
+                        descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
                         acceptText={t('restore')}
                         ignoreText={t('noThanks')}
                         infoText={t('dataBackupFoundInfo')}
@@ -167,12 +167,18 @@ export default class Home extends PureComponent {
                             })
                         }}
                         onIgnore={() => {
-                          setRestoredFromThreeBoxToFalse()
+                          setShowRestorePromptToFalse()
                         }}
                         key="home-privacyModeDefault"
-                      />,
-                    },
-                  ]}/>
+                      />
+                      : null
+                  }
+                  {
+                    hasDaiV1Token
+                      ? <DaiMigrationNotification />
+                      : null
+                  }
+                </MultipleNotifications>
                 <div>
 
                   <Button

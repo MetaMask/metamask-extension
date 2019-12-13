@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Modus Privasi kini aktif secara default"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafik hanya tersedia pada jaringan Ethereum."
-  },
-  "confirmClear": {
-    "message": "Yakin ingin mengosongkan website yang disetujui?"
   },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Bersihkan Data Privasi"
   },
   "appName": {
@@ -21,17 +15,11 @@
   "reject": {
     "message": "Tolak"
   },
-  "providerRequest": {
-    "message": "$1 ingin menghubungkan ke akun Anda"
-  },
-  "providerRequestInfo": {
-    "message": "Situs ini meminta akses untuk melihat alamat akun Anda saat ini. Selalu pastikan bahwa Anda bisa mempercayai situs yang berinteraksi dengan Anda."
-  },
   "about": {
     "message": "Tentang"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat dukungan, dan informasi kontak."
+    "message": "Versi, pusat dukungan, dan informasi kontak"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepat transaksi dengan menggunakan harga gas yang lebih tinggi meningkatkan peluangnya untuk lebih cepat diproses oleh jaringan, tetapi tak selalu terjamin pasti cepat."
@@ -67,7 +55,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom."
+    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom"
   },
   "advancedOptions": {
     "message": "Opsi Lanjutan"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Sambungkan"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Permintaan Sambungan"
   },
   "connectingTo": {
@@ -368,9 +356,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika Anda sudah memiliki Ether, cara tercepat mendapatkan Ether di dompet baru lewat deposit langsung."
-  },
-  "dismiss": {
-    "message": "Tutup"
   },
   "done": {
     "message": "Selesai"
@@ -1316,7 +1301,7 @@
   "updatedWithDate": {
     "message": "Diperbarui $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "usedByClients": {

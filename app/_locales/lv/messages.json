@@ -1,17 +1,11 @@
 {
-  "privacyModeDefault": {
-    "message": "Privātais režīms tagad ieslēgts pēc noklusējuma"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafiks pieejams vienīgi Ethereum tīklos."
-  },
-  "confirmClear": {
-    "message": "Vai tiešām vēlaties dzēst apstiprinātās vietnes?"
   },
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
   },
-  "clearApprovalData": {
+  "clearPermissions": {
     "message": "Notīrīt konfidencialitātes datus"
   },
   "appName": {
@@ -20,12 +14,6 @@
   },
   "reject": {
     "message": "Noraidīt"
-  },
-  "providerRequest": {
-    "message": "$1 vēlas izveidot savienojumu ar jūsu kontu"
-  },
-  "providerRequestInfo": {
-    "message": "Šī lapa pieprasa piekļuvi jūsu pašreizēja konta adreses informācijai. Vienmēr pārliecinieties, ka uzticaties lapām, kuras apmeklējat."
   },
   "about": {
     "message": "Par"
@@ -67,7 +55,7 @@
     "message": "Papildu"
   },
   "advancedSettingsDescription": {
-    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus."
+    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus"
   },
   "advancedOptions": {
     "message": "Papildu opcijas"
@@ -252,7 +240,7 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectRequest": {
+  "permissionsRequest": {
     "message": "Savienojuma pieprasījums"
   },
   "connectingTo": {
@@ -374,9 +362,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
-  },
-  "dismiss": {
-    "message": "Noraidīt"
   },
   "done": {
     "message": "Pabeigts"
@@ -1343,7 +1328,7 @@
   "updatedWithDate": {
     "message": "Atjaunināts $1"
   },
-  "uriErrorMsg": {
+  "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
   },
   "usedByClients": {
