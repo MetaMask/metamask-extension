@@ -21,7 +21,7 @@
 
   .icon {
     .Icon {
-      margin: 10px 14px 0 0;
+      margin: 8px 14px 0 0;
     }
   }
 
@@ -81,6 +81,20 @@
   h3 {
     font-size: 12px;
     line-height: 14px;
+
+    span {
+      &.unapproved {
+        color: #F56821;
+      }
+    }
+  }
+
+  .main, .amount {
+    &.active {
+      h2 {
+        color: #24292E;
+      }
+    }
   }
 
   .amount {

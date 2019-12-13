@@ -14,6 +14,25 @@ const SendIcon = () => (
   />
 )
 
+// Status should likely determine these?
+const InteractionIcon = () => (
+  <Icon
+    type="interaction"
+    width={28}
+    height={28}
+    color="#2F80ED"
+  />
+)
+
+const ApproveIcon = () => (
+  <Icon
+    type="approve"
+    width={28}
+    height={28}
+    color="#2F80ED"
+  />
+)
+
 storiesOf('Item', module)
   .add('Item - Send', () => (
     <Item
@@ -33,5 +52,27 @@ storiesOf('Item', module)
       }
       crypto={text('crypto', '- 0.0732 DAI')}
       cash={text('cash', '- $6.04 USD')}
+    />
+  ))
+  .add('Item - Hatch Turtles', () => (
+    <Item
+      title={text('title', 'Hatch Turtles')}
+      className="Item__flex-grid"
+      status="unapproved"
+      icon={<InteractionIcon />}
+      subtitle={text('subtitle', 'Turtlefarm.com')}
+      crypto={text('crypto', '- 0.0732 ETH')}
+      cash={text('cash', '- $6.00 USD')}
+    />
+  ))
+  .add('Item - Approve', () => (
+    <Item
+      title={text('title', 'Approve spend limit')}
+      className="Item__flex-grid"
+      status="approved"
+      icon={<ApproveIcon />}
+      subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
+      crypto={text('crypto', '0.00070 DAI')}
+      cash={text('cash', '$0.02 USD')}
     />
   ))
