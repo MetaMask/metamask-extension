@@ -14,7 +14,7 @@ const SendIcon = () => (
   />
 )
 
-// Status should likely determine these?
+// "status" should likely determine these?
 const InteractionIcon = () => (
   <Icon
     type="interaction"
@@ -37,6 +37,7 @@ storiesOf('Item', module)
   .add('Item - Send', () => (
     <Item
       title={
+        // "status" should also determine if we need a Preloader
         <h2>Send DAI <span><Preloader className="preloader" /></span></h2>
       }
       className="Item__flex-grid"
@@ -58,6 +59,8 @@ storiesOf('Item', module)
     <Item
       title={text('title', 'Hatch Turtles')}
       className="Item__flex-grid"
+      // everything should just key off this
+      // should honestly create a constants and match it with what's in mm
       status="unapproved"
       icon={<InteractionIcon />}
       subtitle={text('subtitle', 'Turtlefarm.com')}
