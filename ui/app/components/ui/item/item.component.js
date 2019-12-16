@@ -2,6 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Icon from '../icon'
+import Preloader from '../preloader'
 
 const SendIcon = () => (
   <Icon
@@ -30,6 +31,15 @@ const ApproveIcon = () => (
   />
 )
 
+const FailIcon = () => (
+  <Icon
+    type="interaction"
+    width={28}
+    height={28}
+    color="#D73A49"
+  />
+)
+
 const Item = ({
   className,
   status,
@@ -41,11 +51,20 @@ const Item = ({
 }) => {
   const isApproved = status === 'approved'
   const isPending = status === 'pending'
+  const isFailed = status === 'failed'
 
   if (status === 'unapproved') {
     subtitle = (
       <h3>
         <span className="unapproved">Unapproved</span> · {subtitle}
+      </h3>
+    )
+  }
+
+  if (isFailed) {
+    subtitle = (
+      <h3>
+        <span className="failed">Failed</span> · {subtitle}
       </h3>
     )
   }
@@ -57,13 +76,15 @@ const Item = ({
           <ApproveIcon />
         ) : isPending ? (
           <InteractionIcon />
+        ) : isFailed ? (
+          <FailIcon />
         ) : (
           <SendIcon />
         )}
       </div>
       <div className={`col main${isApproved ? ' approved' : ''}`}>
         {typeof title === 'string' ? (
-          <h2>{ title }</h2>
+          <h2>{ title } {isPending && <span><Preloader className="preloader" /></span>}</h2>
         ) : (
           title
         )}

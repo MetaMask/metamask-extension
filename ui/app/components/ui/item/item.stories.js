@@ -1,16 +1,12 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Item from './item.component'
-import Preloader from '../preloader'
 import { text } from '@storybook/addon-knobs/react'
 
 storiesOf('Item', module)
   .add('Item - Send', () => (
     <Item
-      title={
-        // "status" should also determine if we need a Preloader
-        <h2>Send DAI <span><Preloader className="preloader" /></span></h2>
-      }
+      title={text('title', 'Send DAI')}
       className="Item__flex-grid"
       status="pending"
       subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
@@ -45,5 +41,15 @@ storiesOf('Item', module)
       subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
       crypto={text('crypto', '0.00070 DAI')}
       cash={text('cash', '$0.02 USD')}
+    />
+  ))
+  .add('Item - Failed', () => (
+    <Item
+      title={text('title', 'Hatch Turtles')}
+      className="Item__flex-grid"
+      status="failed"
+      subtitle={text('subtitle', 'Turtlefarm.com')}
+      crypto={text('crypto', '- 0.0732 ETH')}
+      cash={text('cash', '- $6.00 USD')}
     />
   ))
