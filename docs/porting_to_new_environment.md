@@ -36,7 +36,7 @@ filterMiddleware.destroy()
 
 Only use this if you intend to construct the [metamask-inpage-provider](https://github.com/MetaMask/metamask-inpage-provider) over a stream!
 
-The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [port-stream](../app/scripts/lib/port-stream.js) is just a thin wrapper around the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), and a similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
+The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [extension-port-stream](https://github.com/MetaMask/extension-port-stream) is just a thin wrapper around the [Port postMessage API](https://developer.chrome.com/extensions/runtime#property-Port-postMessage) (see the [Chrome documentation for extension message passing](https://developer.chrome.com/extensions/messaging#connect) for more information). A similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
 
 ### The MetaMask Controller
 
@@ -123,4 +123,3 @@ If streams seem new and confusing to you, that's ok, they can seem strange at fi
 ## Conclusion
 
 I hope this has been helpful to you! If you have any other questions, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
-
