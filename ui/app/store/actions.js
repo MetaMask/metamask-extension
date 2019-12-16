@@ -70,6 +70,7 @@ const actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
+  connectCustodialWallet,
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
@@ -199,6 +200,10 @@ const actions = {
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
   updateProviderType,
+  // Software Wallet
+  getTrustVaultPinChallenge,
+  submitTrustVaultPinChallenge,
+  TRUSTVAULT_PIN_CHALLENGE: 'TRUSTVAULT_PIN_CHALLENGE',
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -690,6 +695,27 @@ function forgetDevice (deviceName) {
 
         forceUpdateMetamaskState(dispatch)
         return resolve()
+      })
+    })
+  }
+}
+
+function connectCustodialWallet (deviceName, auth) {
+  log.debug('background.connectCustodialWallet', deviceName, auth)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.connectCustodialWallet('trustvault', auth, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(accounts)
       })
     })
   }
@@ -1675,6 +1701,56 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
+  }
+}
+
+
+function getTrustVaultPinChallenge (email) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.getPartialPinChallenge(email, (err, response) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning('Had a problem getting pin challenge'))
+          return reject(err)
+        }
+        const { pinChallenge } = response
+        dispatch(setTrustVaultPartialPinChallenge(pinChallenge))
+        dispatch(actions.hideLoadingIndication())
+        return resolve(pinChallenge)
+      })
+    })
+  }
+}
+
+function submitTrustVaultPinChallenge (firstPinDigit, secondPinDigit) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.submitPartialPinChallenge(firstPinDigit, secondPinDigit, (err, response) => {
+        if (err) {
+          log.error(err)
+          if (err.data && err.data.pinChallenge) {
+            dispatch(setTrustVaultPartialPinChallenge(err.data.pinChallenge))
+            dispatch(actions.displayWarning('Invalid PIN, please try again'))
+          } else {
+            dispatch(actions.displayWarning('Had a problem authenticating'))
+          }
+          return reject(err)
+        }
+        dispatch(actions.hideLoadingIndication())
+        resolve(response.authentication)
+      })
+    })
+  }
+}
+
+
+function setTrustVaultPartialPinChallenge (pinChallenge) {
+  return {
+    type: actions.TRUSTVAULT_PIN_CHALLENGE,
+    value: pinChallenge,
   }
 }
 

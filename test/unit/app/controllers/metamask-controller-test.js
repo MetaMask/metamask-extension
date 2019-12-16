@@ -400,6 +400,15 @@ describe('MetaMaskController', function () {
       assert.equal(keyrings.length, 1)
     })
 
+    it('should add the TrustVault keyring', async function () {
+      sinon.spy(metamaskController.keyringController, 'addNewKeyring')
+      await metamaskController.connectCustodialWallet('trustvault', 0).catch(() => null)
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'TrustVault'
+      )
+      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args[0], 'TrustVault')
+      assert.equal(keyrings.length, 1)
+    })
   })
 
   describe('checkHardwareStatus', function () {
@@ -884,7 +893,7 @@ describe('MetaMaskController', function () {
       })
 
       assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
-      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2'] ]])
       assert.deepEqual(setSelectedAddress.args, [['0x1']])
       assert.deepEqual(metamaskController.getState(), oldState)
     })

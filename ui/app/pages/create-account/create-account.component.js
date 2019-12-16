@@ -4,19 +4,25 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import NewAccountCreateForm from './new-account.container'
 import NewAccountImportForm from './import-account'
+import ConnectTrustVaultForm from './connect-custodial/trustvault'
 import ConnectHardwareForm from './connect-hardware'
 import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  CONNECT_TRUSTVAULT_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class CreateAccountPage extends Component {
   renderTabs () {
     const { history, location: { pathname } } = this.props
+    let hardWareRoute = '/new-account/connect'
+    if (location && pathname) {
+      hardWareRoute = (pathname === '/new-account/connect' || pathname === '/new-account/connect/trustvault') ? pathname : '/new-account/connect'
+    }
     const getClassNames = path => classnames('new-account__tabs__tab', {
       'new-account__tabs__selected': matchPath(pathname, {
-        path,
+        path: path === CONNECT_HARDWARE_ROUTE ? hardWareRoute : path,
         exact: true,
       }),
     })
@@ -61,6 +67,11 @@ export default class CreateAccountPage extends Component {
               path={CONNECT_HARDWARE_ROUTE}
               component={ConnectHardwareForm}
             />
+            <Route
+              exact
+              path={CONNECT_TRUSTVAULT_ROUTE}
+              component={ConnectTrustVaultForm}
+            />
           </Switch>
         </div>
       </div>
@@ -76,3 +87,5 @@ CreateAccountPage.propTypes = {
 CreateAccountPage.contextTypes = {
   t: PropTypes.func,
 }
+
+

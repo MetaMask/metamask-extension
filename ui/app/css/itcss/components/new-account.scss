@@ -50,7 +50,6 @@
       color: $curious-blue;
       border-bottom: 3px solid $curious-blue;
       cursor: initial;
-      pointer-events: none;
     }
   }
 }
@@ -325,6 +324,7 @@
     &__msg {
       font-size: 14px;
       color: #9b9b9b;
+      margin-top: 10px
     }
 
     &__link {
@@ -540,4 +540,329 @@
     width: 150px;
     min-width: initial;
   }
+}
+
+.sw-tutorial {
+  width: 375px;
+  border-top: 1px solid #D2D8DD;
+  border-bottom: 1px solid #D2D8DD;
+  overflow: visible;
+  display: block;
+  padding: 15px 30px;
+}
+
+.sw-trustVaultGetStarted{
+  font-size: 10px;
+  color: grey;
+  width: 160px;
+  height: 20px;
+  position: absolute;
+  margin-top: 34px;
+  margin-left: 35px;
+}
+
+
+.sw-connect{
+  width: 100%;
+  &__back{
+    display: flex;
+    margin-right: 310px
+  }
+  &__email-field {
+    width: 80%
+  }
+  &__error {
+    margin: 20px 20px 10px;
+    display: block;
+    text-align: center;
+    color: #eab775;
+  }
+  &__info-box {    
+    width: 80%;
+    display: flex;
+    margin-bottom: 20px;
+    
+    &__info-icon {
+      height: 15px;
+      margin-top: 10px;
+      margin-left: 10px
+    }
+    &__not-user{
+      font-size: 10px;
+      color: grey;
+      margin-top: 10px;
+      margin-left: 35px;
+      width: 160px;
+      height: 20px;
+      position: absolute;
+    
+    }
+    &__ios{
+      font-size: 10px;
+      color: grey;
+      width: 250px;
+      height: 20px;
+      position: absolute;
+      margin-top: 22px;
+      margin-left: 35px;
+    }
+    &__get-started{
+      font-size: 10px;
+      color: grey;
+      width: 160px;
+      height: 20px;
+      position: absolute;
+      margin-top: 34px;
+      margin-left: 35px;
+    }
+    &__link{
+      font-size: 10px;
+      color: red;
+      width: 160px;
+      height: 20px;
+      position: absolute;
+      margin-top: 34px;
+      margin-left: 90px;
+    }
+  }
+  &__learn-more {
+    font-size: 10px;
+    color: grey;
+    margin-top: 10px;
+    
+    &__link{
+      font-size: 10px;
+      color: grey;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  &__list {
+    overflow-y: auto;
+
+    &__link {
+      @extend %link;
+      @extend %row-nowrap;
+      padding: 1rem;
+      font-size: 1rem;
+      border-bottom: 1px solid $alto;
+      align-items: center;
+    }
+
+    &__back-caret {
+      @extend %bg-contain;
+      display: block;
+      background-image: url('/images/caret-left.svg');
+      width: 18px;
+      height: 18px;
+      margin-right: .1rem;
+      
+      &__back{
+        margin-top: -2px;
+        color: #037DD6
+      }
+      &__back:hover{
+        margin-top: -2px;
+        color: #2f9ae0
+      }
+    }
+  }
+  &__header {
+    &__title {
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    &__msg {
+      font-size: 16px;
+      color: #4d4d4d;
+    }
+  }
+
+  &__btn-wrapper {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+    width: max-content;
+    margin-top: 4%; 
+  }
+
+  &__connect-btn {
+    width: 80%;
+    margin-top: 20px;
+    margin-bottom: 0px
+  }
+
+  &__connect-btn.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+
+  &__btn {
+    background: #fbfbfb;
+    border: 1px solid #e5e5e5;
+    height: 100px;
+    width: 150px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+
+    &__img {
+      width: 120px;
+      height: 30px;
+    }
+  }
+
+  &__btn.selected {
+    border: 2px solid #00a8ee;
+    width: 149px;
+  }
+
+  &__btn:first-child {
+    margin-right: 15px;
+    margin-left: 20px;
+    margin-top: 15px
+  }
+
+  &__btn:last-child {
+    margin-right: 20px;
+    margin-top: 15px
+  }
+
+  &__hdPath {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    font-size: 14px;
+
+    &__title {
+      display: flex;
+      margin-top: 10px;
+      margin-right: 15px;
+    }
+
+    &__select {
+      display: flex;
+      flex: 1;
+    }
+  }
+  &__title {
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 18px;
+  }
+  &__trustvault-logo {
+    margin-top: 35px;
+    &__img{
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+  &__unlock-title {
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  &__msg {
+    font-size: 14px;
+    color: #9b9b9b;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+  &__link {
+    color: #2f9ae0;
+  }
+
+  &__footer {
+    &__title {
+      padding-top: 15px;
+      padding-bottom: 12px;
+      font-weight: 400;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    &__msg {
+      font-size: 14px;
+      color: #9b9b9b;
+      margin-top: 12px;
+      margin-bottom: 27px;
+      width: 100%;
+      display: block;
+      margin-left: 20px;
+    }
+
+    &__link {
+      color: #2f9ae0;
+      margin-left: 5px;
+    }
+  }
+
+  &__get-sw {
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+    &__msg {
+      font-size: 14px;
+      color: #9b9b9b;
+      margin-top: 10px
+    }
+
+    &__link {
+      font-size: 14px;
+      text-align: center;
+      color: #2f9ae0;
+      cursor: pointer;
+    }
+  }
+
+  &__pin-input {
+    display: grid;
+    grid-column-gap: 5px;
+    margin: 10px;
+    margin-bottom: 50px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    &__header{
+      margin-top: 100px;
+      margin-bottom: 20px;
+      &__msg{
+        margin: auto;
+        text-align: center;
+      }
+    }
+    &__footer{
+      width: 100%;
+      padding: 10px;
+      display: flex;
+      
+      &__msg{
+        color: grey;
+        font-size: 80%;
+        text-align: center;
+        margin: 0 auto;
+        padding: 0px;
+      }
+    }
+    &__connect-btn {
+      width :100%;
+      margin-left: 70px;
+    }
+  }
+
+  &__step-asset {
+    margin: 0px auto 20px;
+    display: flex;
+  }
+  
+
 }

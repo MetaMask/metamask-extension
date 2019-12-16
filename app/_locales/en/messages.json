@@ -286,7 +286,10 @@
     "message": "Congratulations"
   },
   "connectHardwareWallet": {
-    "message": "Connect Hardware Wallet"
+    "message": "Connect External Wallet"
+  },
+  "connectTrustVault": {
+    "message": "Connect TrustVault"
   },
   "connect": {
     "message": "Connect"
@@ -311,6 +314,18 @@
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
+  },
+  "connectingToUnknown": {
+    "message": "Connecting to Unknown Network"
+  },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
+  },
+  "connectToTrustVault": {
+    "message": "Connect to TrustVault"
   },
   "contacts": {
     "message": "Contacts"
@@ -457,8 +472,11 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
+  "downloadTrustVaultHere": {
+    "message": "Custodial wallets: Start setting up your TrustVault account here"
+  },
   "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
+    "message": "Don’t have a wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -471,6 +489,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "emailAddress": {
+    "message": "Email address"
   },
   "emailUs": {
     "message": "Email us!"
@@ -639,14 +660,23 @@
   "hardware": {
     "message": "hardware"
   },
+  "trustvault": {
+    "message": "trustvault"
+  },
+  "trustVaultNotUser": {
+    "message": "Not a TrustVault user?"
+  },
+  "trustVaultIos": {
+    "message": "You require the TrustVault iOS App."
+  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
   "hardwareWallets": {
-    "message": "Connect a hardware wallet"
+    "message": "Connect a wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a wallet you'd like to use with MetaMask"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -654,6 +684,9 @@
   "here": {
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "FAQ": {
+    "message": "FAQ"
   },
   "hexData": {
     "message": "Hex Data"
@@ -898,6 +931,9 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
+  "not": {
+    "message": "Not"
+  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
@@ -960,7 +996,7 @@
     "message": "of"
   },
   "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+    "message": "Non-custodial wallets: Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "origin": {
     "message": "Origin"
@@ -1277,6 +1313,9 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
+  "custodialWalletConnected": {
+    "message": "Custodial wallet successfully connected"
+  },
   "speedUp": {
     "message": "Speed Up"
   },
@@ -1314,10 +1353,22 @@
   "step1HardwareWalletMsg": {
     "message": "Connect your hardware wallet directly to your computer."
   },
+  "step1CustodialWallet": {
+    "message": "1. Login to your TrustVault account"
+  },
+  "step1CustodialWalletMsg": {
+    "message": "Enter the email address you used to sign up for the TrustVault app and solve the pin challenge."
+  },
   "step2HardwareWallet": {
     "message": "2. Select an Account"
   },
   "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step2CustodialWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2CustodialWalletMsg": {
     "message": "Select the account you want to view. You can only choose one at a time."
   },
   "step3HardwareWallet": {
@@ -1325,6 +1376,12 @@
   },
   "step3HardwareWalletMsg": {
     "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+  },
+  "step3CustodialWallet": {
+    "message": "3. You are now ready to securely interact with any DApp."
+  },
+  "step3CustodialWalletMsg": {
+    "message": "As soon as you initiate a transaction, use your TrustVault app to sign it."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1473,6 +1530,30 @@
   },
   "transferFrom": {
     "message": "Transfer From"
+  },
+  "transfers": {
+    "message": "Transfers"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
+  },
+  "trustVaultWelcome": {
+    "message": "Welcome to TrustVault"
+  },
+  "trustVaultEnterEmail": {
+    "message": "Please enter your email to continue"
+  },
+  "trustVaultEnterPin": {
+    "message": "Please enter the following digits of your PIN"
+  },
+  "trustVaultIncorrectPin": {
+    "message": "Invalid PIN. Please try again"
+  },
+  "trustVaultGetStarted": {
+    "message": "Get started "
+  },
+  "trustVaultLearnMore": {
+    "message": "Learn More "
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",

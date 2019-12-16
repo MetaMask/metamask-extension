@@ -43,11 +43,23 @@ export function getAccountType (state) {
     case 'Trezor Hardware':
     case 'Ledger Hardware':
       return 'hardware'
+    case 'TrustVault':
+      return 'trustvault'
     case 'Simple Key Pair':
       return 'imported'
     default:
       return 'default'
   }
+}
+
+export function getSelectedAccountType (state, address) {
+  let accountType
+  state.metamask.keyrings.forEach(keyrings => {
+    if (keyrings.accounts.includes(address)) {
+      accountType = keyrings.type
+    }
+  })
+  return accountType.toUpperCase()
 }
 
 export function getSelectedAsset (state) {
@@ -232,12 +244,14 @@ export function getAccountsWithLabels (state) {
   const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
   const accountsWithLabels = accountsWithoutLabel.map(account => {
     const { address, name, balance } = account
+    const accountType = getSelectedAccountType(state, address)
     return {
       address,
       truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
       addressLabel: `${name} (...${address.slice(address.length - 4)})`,
       label: name,
       balance,
+      accountType,
     }
   })
   return accountsWithLabels
