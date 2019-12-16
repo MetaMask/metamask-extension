@@ -35,7 +35,7 @@ function migrateFromSnapshotsToDiffs (longHistory) {
   with the first entry having the note and a timestamp when the change took place
   @param previousState {object} - the previous state of the object
   @param newState {object} - the update object
-  @param note {string} - a optional note for the state change
+  @param {string} [note] - a optional note for the state change
   @returns {array}
 */
 function generateHistoryEntry (previousState, newState, note) {
