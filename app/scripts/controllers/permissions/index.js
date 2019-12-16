@@ -112,6 +112,31 @@ export class PermissionsController {
   }
 
   /**
+   * Submits a permissions request to rpc-cap. Internal, background use only.
+   *
+   * @param {string} origin - The origin string.
+   * @param {IRequestedPermissions} permissions - The requested permissions.
+   */
+  _requestPermissions (origin, permissions) {
+    return new Promise((resolve, reject) => {
+
+      const req = { method: 'wallet_requestPermissions', params: [permissions] }
+      const res = {}
+      this.permissions.providerMiddlewareFunction(
+        { origin }, req, res, () => {}, _end
+      )
+
+      function _end (err) {
+        if (err || res.error) {
+          reject(err || res.error)
+        } else {
+          resolve(res.result)
+        }
+      }
+    })
+  }
+
+  /**
    * User approval callback. The request can fail if the request is invalid.
    *
    * @param {Object} approved - the approved request object
@@ -159,65 +184,6 @@ export class PermissionsController {
 
     approval.reject(ethErrors.provider.userRejectedRequest())
     delete this.pendingApprovals[id]
-  }
-
-  /**
-   * Finalizes a permissions request.
-   * Throws if request validation fails.
-   *
-   * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
-   */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
-
-    const { eth_accounts: ethAccounts } = requestedPermissions
-
-    if (ethAccounts) {
-
-      await this.validatePermittedAccounts(accounts)
-
-      if (!ethAccounts.caveats) {
-        ethAccounts.caveats = []
-      }
-
-      // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
-        c.name !== CAVEAT_NAMES.exposedAccounts
-      ))
-
-      ethAccounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: accounts,
-          name: CAVEAT_NAMES.exposedAccounts,
-        },
-      )
-    }
-  }
-
-  /**
-   * Removes the given permissions for the given domain.
-   * @param {object} domains { origin: [permissions] }
-   */
-  removePermissionsFor (domains) {
-
-    Object.entries(domains).forEach(([origin, perms]) => {
-
-      this.permissions.removePermissionsFor(
-        origin,
-        perms.map(methodName => {
-
-          if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
-            )
-          }
-
-          return { parentCapability: methodName }
-        })
-      )
-    })
   }
 
   /**
@@ -286,6 +252,40 @@ export class PermissionsController {
   }
 
   /**
+   * Finalizes a permissions request.
+   * Throws if request validation fails.
+   *
+   * @param {Object} requestedPermissions - The requested permissions.
+   * @param {string[]} accounts - The accounts to expose, if any.
+   */
+  async finalizePermissionsRequest (requestedPermissions, accounts) {
+
+    const { eth_accounts: ethAccounts } = requestedPermissions
+
+    if (ethAccounts) {
+
+      await this.validatePermittedAccounts(accounts)
+
+      if (!ethAccounts.caveats) {
+        ethAccounts.caveats = []
+      }
+
+      // caveat names are unique, and we will only construct this caveat here
+      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
+        c.name !== CAVEAT_NAMES.exposedAccounts
+      ))
+
+      ethAccounts.caveats.push(
+        {
+          type: 'filterResponse',
+          value: accounts,
+          name: CAVEAT_NAMES.exposedAccounts,
+        },
+      )
+    }
+  }
+
+  /**
    * Validate an array of accounts representing accounts to be exposed
    * to a domain. Throws error if validation fails.
    *
@@ -330,6 +330,31 @@ export class PermissionsController {
   }
 
   /**
+   * Removes the given permissions for the given domain.
+   * @param {object} domains { origin: [permissions] }
+   */
+  removePermissionsFor (domains) {
+
+    Object.entries(domains).forEach(([origin, perms]) => {
+
+      this.permissions.removePermissionsFor(
+        origin,
+        perms.map(methodName => {
+
+          if (methodName === 'eth_accounts') {
+            this.notifyDomain(
+              origin,
+              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
+            )
+          }
+
+          return { parentCapability: methodName }
+        })
+      )
+    })
+  }
+
+  /**
    * When a new account is selected in the UI for 'origin', emit accountsChanged
    * to 'origin' if the selected account is permitted.
    * @param {string} origin - The origin.
@@ -360,31 +385,6 @@ export class PermissionsController {
     this.notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
       result: [],
-    })
-  }
-
-  /**
-   * Submits a permissions request to rpc-cap. Internal, background use only.
-   *
-   * @param {string} origin - The origin string.
-   * @param {IRequestedPermissions} permissions - The requested permissions.
-   */
-  _requestPermissions (origin, permissions) {
-    return new Promise((resolve, reject) => {
-
-      const req = { method: 'wallet_requestPermissions', params: [permissions] }
-      const res = {}
-      this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
-      )
-
-      function _end (err) {
-        if (err || res.error) {
-          reject(err || res.error)
-        } else {
-          resolve(res.result)
-        }
-      }
     })
   }
 
