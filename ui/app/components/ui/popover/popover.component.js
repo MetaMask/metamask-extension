@@ -46,6 +46,28 @@ const PopOver = () => (
             <h4>0x may spend up to:<br /> 071,992.54744099 DAI</h4>
           </div>
         </div>
+        <div className="details">
+          <div className="details-amounts">
+            <div className="col">
+              Amount<br />
+              Transaction Fee
+            </div>
+            <div className="col">
+              $0.00<br />
+              $0.04
+            </div>
+          </div>
+          <hr />
+          <div className="details-totals">
+            <div className="col">
+              <h3>Total amount</h3>
+            </div>
+            <div className="col">
+              <h3>$0.04</h3>
+              <p>0.000185 ETH</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <a className="popover-bg" onClick={close} />

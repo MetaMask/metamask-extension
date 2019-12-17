@@ -62,13 +62,17 @@
 
   .container {
     padding: 0 16px;
+
     .popover-item {
       display: flex;
       justify-content: flex-start;
       align-items: stretch;
-      line-height: 150%;
-      border-bottom: 1px solid #E5E5E5;
+      border-top: 1px solid #E5E5E5;
       padding: 10px 0;
+
+      &:first-child {
+        border-top: none;
+      }
 
       .col {
         align-self: flex-start;
@@ -85,7 +89,7 @@
 
         h3 {
           font-size: 10px;
-          line-height: 150.6%;
+          line-height: 180%;
           /* or 15px */
 
           text-transform: uppercase;
@@ -98,6 +102,45 @@
         h4 {
           font-size: 12px;
           line-height: 160%;
+          color: #24292E;
+        }
+      }
+    }
+
+    .details {
+      border: 1px solid #D2D8DD;
+      border-radius: 8px;
+      padding: 16px;
+
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 180%;
+
+      hr {
+        border: none;
+        border-bottom: 1px solid #D2D8DD;
+        margin: 16px 0;
+      }
+
+      .details-amounts, .details-totals {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+
+        .col {
+          align-self: flex-start;
+          &:last-child {
+            margin: 0 0 0 auto;
+            text-align: right;
+          }
+        }
+      }
+
+      .details-totals {
+        h3 {
+          font-weight: bold;
           color: #24292E;
         }
       }
