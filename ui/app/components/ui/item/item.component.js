@@ -122,7 +122,7 @@ Item.propTypes = {
     PropTypes.string,
     PropTypes.node,
   ]).isRequired,
-  more: PropTypes.number,
+  more: PropTypes.node,
   crypto: PropTypes.string,
   cash: PropTypes.string,
 }
