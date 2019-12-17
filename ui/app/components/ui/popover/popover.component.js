@@ -24,10 +24,9 @@ const Activity = () => (
       <h3>Activity</h3>
     </div>
     <ul>
-      <div className="line" />
       {
         activities.map(item => (
-          <li><span>{item}</span></li>
+          <li><div className="line" /><span>{item}</span></li>
         ))
       }
     </ul>

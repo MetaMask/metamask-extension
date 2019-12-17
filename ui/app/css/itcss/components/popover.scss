@@ -177,15 +177,7 @@
         list-style-type: disc;
         padding: 0 0 0 18px;
         color: #037DD6;
-        position: relative;
-        div {
-          width: 1px;
-          height: 216px;
-          background: #D2D8DD;
-          position: absolute;
-          left: 4px;
-          top: 7px;
-        }
+        // position: relative;
 
         li {
           position: relative;
@@ -193,6 +185,19 @@
           font-size: 12px;
           line-height: 125%;
           margin-bottom: 16px;
+          z-index: 2;
+          &:last-child div {
+            display: none;
+          }
+          div {
+            width: 1px;
+            height: 42px;
+            background: #D2D8DD;
+            position: absolute;
+            left: -13px;
+            top: 10px;
+            z-index: 1;
+          }
           span {
             color: #6A737D;
           }
