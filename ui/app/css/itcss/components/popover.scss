@@ -1,4 +1,17 @@
+
+
 .popover-content {
+  // not sure how this is gonna work in other browsers?
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #C4C4C4;
+  }
+
   position: relative;
   width: 328px;
   height: 564px;
@@ -29,7 +42,6 @@
       height: 18px;
       display: block;
       padding: 20px;
-      cursor: pointer;
 
       > div {
         // border: 1px solid red;
@@ -61,7 +73,12 @@
   }
 
   .container {
-    padding: 0 16px;
+    padding: 0 5px 0 16px;
+    margin-top: 5px;
+    margin-bottom: -10px;
+    margin-right: 5px;
+    height: calc(100% - 66px - 10px);
+    overflow-y: scroll;
 
     .popover-item {
       display: flex;
@@ -79,12 +96,6 @@
         &:last-child {
           margin: 0 0 0 auto;
           text-align: right;
-        }
-
-        h3, h4 {
-          font-family: Roboto;
-          font-style: normal;
-          font-weight: normal;
         }
 
         h3 {
@@ -142,6 +153,49 @@
         h3 {
           font-weight: bold;
           color: #24292E;
+        }
+      }
+    }
+
+    .activity {
+      .header {
+        margin: 16px 0;
+        h3 {
+          font-weight: bold;
+          font-size: 14px;
+          line-height: 20px;
+        }
+        .etherscan {
+          float: right;
+          font-size: 12px;
+          line-height: 17px;
+          color: #037DD6;
+          clear: both;
+        }
+      }
+      ul {
+        list-style-type: disc;
+        padding: 0 0 0 18px;
+        color: #037DD6;
+        position: relative;
+        div {
+          width: 1px;
+          height: 216px;
+          background: #D2D8DD;
+          position: absolute;
+          left: 4px;
+          top: 7px;
+        }
+
+        li {
+          position: relative;
+          padding-left: 0px;
+          font-size: 12px;
+          line-height: 125%;
+          margin-bottom: 16px;
+          span {
+            color: #6A737D;
+          }
         }
       }
     }

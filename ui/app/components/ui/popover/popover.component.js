@@ -1,14 +1,17 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 
-const close = e => console.log(e)
+const close = e => {
+  e.preventDefault()
+  console.log(e)
+}
 
 const PopOver = () => (
   <div>
     <div className="popover-content">
       <div className="header">
         <h2>Approve spend limit</h2>
-        <a className="close" onClick={close}>
+        <a href="#" className="close" onClick={close}>
           <div>
             <div className="line a"></div>
             <div className="line b"></div>
@@ -68,9 +71,26 @@ const PopOver = () => (
             </div>
           </div>
         </div>
+        <div className="activity">
+          <div className="header">
+            <a href="#" onClick={e => e.preventDefault()}className="etherscan">
+              View on Etherscan
+            </a>
+            <h3>Activity</h3>
+          </div>
+          <ul>
+            <div className="line" />
+            <li><span>Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.</span></li>
+            <li><span>Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.</span></li>
+            <li><span>Transaction confirmed at 09:45 on 8/8/2019.</span></li>
+            <li><span>Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.</span></li>
+            <li><span>Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.</span></li>
+            <li><span>Transaction confirmed at 09:45 on 8/8/2019.</span></li>
+          </ul>
+        </div>
       </div>
     </div>
-    <a className="popover-bg" onClick={close} />
+    <a href="#" className="popover-bg" onClick={close} />
   </div>
 )
 
