@@ -7,12 +7,12 @@ const containerStyle = {
   width: 800,
   height: 600,
   background: 'pink',
-  position: 'relative'
+  position: 'relative',
 }
 
 storiesOf('PopOver', module)
   .add('PopOver - Approve', () => (
     <div style={containerStyle}>
-        <PopOver />
+      <PopOver />
     </div>
   ))

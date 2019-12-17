@@ -9,6 +9,55 @@
   z-index: 2;
   left: calc(50% - 328px/2);
   top: 10px;
+  .header {
+    h2 {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 25px;
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #DDDEE9;
+    }
+    .close {
+      position: absolute;
+      top: 13px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      display: block;
+      padding: 20px;
+      cursor: pointer;
+
+      > div {
+        // border: 1px solid red;
+        width: 18px;
+        height: 18px;
+        transform: rotate(45deg);
+        pointer-events: none;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+
+      .line {
+        width: 18px;
+        height: 2px;
+        background: #4A4A4A;
+        position: absolute;
+        border-radius: 2px;
+
+        &.a, &.b {
+          top: calc(18px / 2);
+        }
+
+        &.b {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
 }
 
 .popover-bg {
