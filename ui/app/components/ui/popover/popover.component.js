@@ -7,12 +7,12 @@ const close = e => {
 }
 
 const activities = [
-  "Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.",
-  "Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.",
-  "Transaction confirmed at 09:45 on 8/8/2019.",
-  "Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.",
-  "Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.",
-  "Transaction confirmed at 09:45 on 8/8/2019.",
+  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
+  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
+  'Transaction confirmed at 09:45 on 8/8/2019.',
+  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
+  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
+  'Transaction confirmed at 09:45 on 8/8/2019.',
 ]
 
 const Activity = () => (
@@ -25,8 +25,8 @@ const Activity = () => (
     </div>
     <ul>
       {
-        activities.map(item => (
-          <li><div className="line" /><span>{item}</span></li>
+        activities.map((item, index) => (
+          <li key={index}><div className="line" /><span>{item}</span></li>
         ))
       }
     </ul>
