@@ -15,12 +15,11 @@ export default function withTokenTracker (WrappedComponent) {
       this.state = {
         string: '',
         symbol: '',
+        balance: '',
         error: null,
       }
 
       this.tracker = null
-      this.updateBalance = this.updateBalance.bind(this)
-      this.setError = this.setError.bind(this)
     }
 
     componentDidMount () {
@@ -70,16 +69,16 @@ export default function withTokenTracker (WrappedComponent) {
         .catch(error => this.setState({ error: error.message }))
     }
 
-    setError (error) {
+    setError = error => {
       this.setState({ error })
     }
 
-    updateBalance (tokens = []) {
+    updateBalance = (tokens = []) => {
       if (!this.tracker.running) {
         return
       }
-      const [{ string, symbol }] = tokens
-      this.setState({ string, symbol, error: null })
+      const [{ string, symbol, balance }] = tokens
+      this.setState({ string, symbol, error: null, balance })
     }
 
     removeListeners () {
@@ -91,13 +90,13 @@ export default function withTokenTracker (WrappedComponent) {
     }
 
     render () {
-      const { string, symbol, error } = this.state
-
+      const { balance, string, symbol, error } = this.state
       return (
         <WrappedComponent
           { ...this.props }
           string={string}
           symbol={symbol}
+          tokenTrackerBalance={balance}
           error={error}
         />
       )

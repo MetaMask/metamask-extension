@@ -23,14 +23,15 @@ import {
 } from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
+  static contextTypes = {
+    metricsEvent: PropTypes.func,
+  }
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    match: PropTypes.object,
     send: PropTypes.object,
-    unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
-    confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
@@ -39,11 +40,8 @@ export default class ConfirmTransaction extends Component {
     paramsTransactionId: PropTypes.string,
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
-  }
-
-  getParamsTransactionId () {
-    const { match: { params: { id } = {} } } = this.props
-    return id || null
+    fullScreenVsPopupTestGroup: PropTypes.string,
+    trackABTest: PropTypes.bool,
   }
 
   componentDidMount () {
@@ -58,6 +56,8 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
+      fullScreenVsPopupTestGroup,
+      trackABTest,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -70,7 +70,20 @@ export default class ConfirmTransaction extends Component {
     if (isTokenMethodAction) {
       getTokenParams(to)
     }
-    this.props.setTransactionToConfirm(transactionId || paramsTransactionId)
+    const txId = transactionId || paramsTransactionId
+    if (txId) {
+      this.props.setTransactionToConfirm(txId)
+    }
+
+    if (trackABTest) {
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'abtesting',
+          action: 'fullScreenVsPopup',
+          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
+        },
+      })
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -104,7 +117,6 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-
     return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
       ? (
         <Switch>

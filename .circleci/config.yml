@@ -1,7 +1,6 @@
-version: 2
+version: 2.1
 
 workflows:
-  version: 2
   test_and_release:
     jobs:
       - create_release_pull_request:
@@ -14,13 +13,6 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - create_github_release:
-          requires:
-            - prep-build
-          filters:
-            branches:
-              only:
-                - develop
       # - prep-docs:
       #    requires:
       #      - prep-deps
@@ -30,6 +22,7 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
+      - test-lint-shellcheck
       - test-e2e-chrome:
           requires:
             - prep-deps
@@ -37,6 +30,9 @@ workflows:
           requires:
             - prep-deps
       - test-unit:
+          requires:
+            - prep-deps
+      - test-unit-global:
           requires:
             - prep-deps
       - test-mozilla-lint:
@@ -54,7 +50,9 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
+            - test-lint-shellcheck
             - test-unit
+            - test-unit-global
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
@@ -81,7 +79,7 @@ workflows:
 jobs:
   create_release_pull_request:
     docker:
-      - image: circleci/node:8.15.1-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -93,21 +91,26 @@ jobs:
 
   prep-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
           name: Install deps
           command: |
-           yarn --frozen-lockfile
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - persist_to_workspace:
           root: .
           paths:
           - node_modules
+          - build-artifacts
 
   prep-build:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -126,7 +129,7 @@ jobs:
 
   prep-docs:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -141,7 +144,7 @@ jobs:
 
   prep-scss:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -160,18 +163,31 @@ jobs:
 
   test-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Test
+          name: Lint
           command: yarn lint
+      - run:
+          name: Verify locales
+          command: yarn verify-locales --quiet
+
+  test-lint-shellcheck:
+    docker:
+      - image: circleci/node:10.17-browsers
+    steps:
+      - checkout
+      - run: sudo apt-get install shellcheck
+      - run:
+          name: Shellcheck Lint
+          command: yarn lint:shellcheck
 
   test-deps:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -182,7 +198,7 @@ jobs:
 
   test-e2e-chrome:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -197,7 +213,7 @@ jobs:
 
   test-e2e-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - run:
@@ -215,11 +231,14 @@ jobs:
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: build:source-map-explorer
+          command: ./development/source-map-explorer.sh
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
@@ -229,13 +248,20 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate sesify viz AFTER uploading builds as artifacts
+      - run:
+          name: build:sesify-viz
+          command: ./.circleci/scripts/create-sesify-viz
+      - store_artifacts:
+          path: build-artifacts
+          destination: build-artifacts
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -243,6 +269,13 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: yarn sentry:publish
+      - run:
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release
+      - run:
+          name: Create GitHub Pull Request to sync master with develop
+          command: .circleci/scripts/release-create-master-pr
       # - run:
       #    name: github gh-pages docs publish
       #    command: >
@@ -252,7 +285,7 @@ jobs:
 
   test-unit:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -265,9 +298,19 @@ jobs:
           paths:
             - .nyc_output
             - coverage
+  test-unit-global:
+    docker:
+      - image: circleci/node:10.17-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:unit:global
+          command: yarn test:unit:global
   test-mozilla-lint:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -278,7 +321,7 @@ jobs:
 
   test-integration-flat-firefox:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -294,7 +337,7 @@ jobs:
     environment:
       browsers: '["Chrome"]'
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -305,7 +348,7 @@ jobs:
 
   all-tests-pass:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - run:
           name: All Tests Passed
@@ -313,7 +356,7 @@ jobs:
 
   coveralls-upload:
     docker:
-      - image: circleci/node:10.16-browsers
+      - image: circleci/node:10.17-browsers
     steps:
       - checkout
       - attach_workspace:
@@ -321,15 +364,3 @@ jobs:
       - run:
           name: Coveralls upload
           command: yarn test:coveralls-upload
-
-  create_github_release:
-    docker:
-      - image: circleci/node:8.15.1-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Create GitHub release
-          command: |
-            .circleci/scripts/release-create-gh-release

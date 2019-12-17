@@ -10,13 +10,14 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../helpers/utils/i18n-helper')
 const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
 const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
+import switchDirection from '../helpers/utils/switch-direction'
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
 const gasDuck = require('../ducks/gas/gas.duck')
 const WebcamUtils = require('../../lib/webcam-utils')
 
-var actions = {
+const actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
   GO_HOME: 'GO_HOME',
@@ -28,7 +29,6 @@ var actions = {
   hideModal: hideModal,
   // notification state
   CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
-  closeNotifacationWindow: closeNotifacationWindow,
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -46,42 +46,24 @@ var actions = {
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
   showNetworkDropdown: showNetworkDropdown,
   hideNetworkDropdown: hideNetworkDropdown,
-  // menu state/
-  getNetworkStatus: 'getNetworkStatus',
   // transition state
   TRANSITION_FORWARD: 'TRANSITION_FORWARD',
-  TRANSITION_BACKWARD: 'TRANSITION_BACKWARD',
   transitionForward,
-  transitionBackward,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
-  markAccountsFound,
-  // intialize screen
-  CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
-  SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
-  SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   fetchInfoToSync,
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
   markPasswordForgotten,
   unMarkPasswordForgotten,
-  SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
-  SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   unlockSucceeded,
-  showCreateVault: showCreateVault,
-  showRestoreVault: showRestoreVault,
-  showInitializeMenu: showInitializeMenu,
-  showImportPage,
-  showNewAccountPage,
   setNewAccountForm,
   createNewVaultAndRestore: createNewVaultAndRestore,
-  createNewVaultInProgress: createNewVaultInProgress,
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   addNewKeyring,
@@ -91,16 +73,12 @@ var actions = {
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
-  NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
-  navigateToNewAccountScreen,
   resetAccount,
   removeAccount,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   closeWelcomeScreen,
   // seed recovery actions
-  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
-  revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -117,13 +95,11 @@ var actions = {
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
   // accounts screen
-  SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
   setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
-  SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   showQrScanner,
   setCurrentCurrency,
@@ -133,17 +109,11 @@ var actions = {
   showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   showSendTokenPage,
-  ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
-  REMOVE_FROM_ADDRESS_BOOK: 'REMOVE_FROM_ADDRESS_BOOK',
   removeFromAddressBook: removeFromAddressBook,
-  REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
-  requestExportAccount: requestExportAccount,
-  EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
-  exportAccountComplete,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
   setAccountLabel,
   updateNetworkNonce,
@@ -151,16 +121,12 @@ var actions = {
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
-  NEXT_TX: 'NEXT_TX',
-  PREVIOUS_TX: 'PREV_TX',
-  EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
   signTypedMsg,
   cancelTypedMsg,
-  sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
   updateTransaction,
@@ -169,31 +135,22 @@ var actions = {
   cancelTxs,
   completedTx: completedTx,
   txError: txError,
-  nextTx: nextTx,
-  editTx,
-  previousTx: previousTx,
-  cancelAllTx: cancelAllTx,
-  viewPendingTx: viewPendingTx,
-  VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
+  SET_NEXT_NONCE: 'SET_NEXT_NONCE',
+  getNextNonce,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
-  UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
   UPDATE_SEND_HEX_DATA: 'UPDATE_SEND_HEX_DATA',
   UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
-  UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
-  UPDATE_SEND_WARNINGS: 'UPDATE_SEND_WARNINGS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
-  OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
-  CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
@@ -204,37 +161,29 @@ var actions = {
   setGasPrice,
   updateGasData,
   setGasTotal,
-  setSendTokenBalance,
   updateSendTokenBalance,
   updateSendHexData,
   updateSendTo,
   updateSendAmount,
-  updateSendMemo,
   setMaxModeTo,
   updateSend,
   updateSendErrors,
-  updateSendWarnings,
   clearSend,
   setSelectedAddress,
   gasLoadingStarted,
   gasLoadingFinished,
   // app messages
   showAccountDetail: showAccountDetail,
-  BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
-  backToAccountDetail: backToAccountDetail,
   showAccountsPage: showAccountsPage,
   showConfTxPage: showConfTxPage,
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
-  SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
-  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
-  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
@@ -256,20 +205,10 @@ var actions = {
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
   // buy Eth with coinbase
-  onboardingBuyEthView,
-  ONBOARDING_BUY_ETH_VIEW: 'ONBOARDING_BUY_ETH_VIEW',
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
-  buyEthView: buyEthView,
-  buyWithShapeShift,
-  BUY_ETH_VIEW: 'BUY_ETH_VIEW',
-  COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
-  coinBaseSubview: coinBaseSubview,
-  SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
-  shapeShiftSubview: shapeShiftSubview,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
-  coinShiftRquest: coinShiftRquest,
   SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
@@ -279,17 +218,7 @@ var actions = {
   showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
-  // FORGOT PASSWORD:
-  BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
-  goBackToInitView: goBackToInitView,
-  RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
-  BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
-  backToUnlockView: backToUnlockView,
-  // SHOWING KEYCHAIN
-  SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
-  showNewKeychain: showNewKeychain,
 
-  callBackgroundThenUpdate,
   forceUpdateMetamaskState,
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
@@ -299,6 +228,12 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
+  SET_USE_NONCEFIELD: 'SET_USE_NONCEFIELD',
+  setUseNonceField,
+  UPDATE_CUSTOM_NONCE: 'UPDATE_CUSTOM_NONCE',
+  updateCustomNonce,
+  SET_IPFS_GATEWAY: 'SET_IPFS_GATEWAY',
+  setIpfsGateway,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
@@ -307,11 +242,9 @@ var actions = {
 
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
-  SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
   setCurrentLocale,
   updateCurrentLocale,
-  setLocaleMessages,
-  //
+
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
@@ -324,7 +257,6 @@ var actions = {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
   setAutoLogoutTimeLimit,
-  unsetMigratedPrivacyMode,
 
   // Onboarding
   setCompletedOnboarding,
@@ -335,9 +267,6 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  updateNetworkEndpointType,
-  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
-
   retryTransaction,
   SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
@@ -346,10 +275,14 @@ var actions = {
 
   createCancelTransaction,
   createSpeedUpTransaction,
+  createRetryTransaction,
 
-  approveProviderRequestByOrigin,
-  rejectProviderRequestByOrigin,
-  clearApprovedOrigins,
+  // Permissions
+  approvePermissionsRequest,
+  clearPermissions,
+  rejectPermissionsRequest,
+  removePermissionsFor,
+  legacyExposeAccounts,
 
   setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
@@ -360,8 +293,8 @@ var actions = {
   setNetworksTabAddMode,
 
   // AppStateController-related actions
-  SET_LAST_ACTIVE_TIME: 'SET_LAST_ACTIVE_TIME',
   setLastActiveTime,
+  setMkrMigrationReminderTimestamp,
 
   getContractMethodData,
   loadingMethoDataStarted,
@@ -377,12 +310,29 @@ var actions = {
 
   setSeedPhraseBackedUp,
   verifySeedPhrase,
-  SET_SEED_PHRASE_BACKED_UP_TO_TRUE: 'SET_SEED_PHRASE_BACKED_UP_TO_TRUE',
+  hideSeedPhraseBackupAfterOnboarding,
+
+  initializeThreeBox,
+  restoreFromThreeBox,
+  getThreeBoxLastUpdated,
+  setThreeBoxSyncingPermission,
+  setShowRestorePromptToFalse,
+  turnThreeBoxSyncingOn,
+  turnThreeBoxSyncingOnAndInitialize,
+
+  tryReverseResolveAddress,
+
+  getRequestAccountTabIds,
+  getCurrentWindowTab,
+  SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
+  SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
+  getOpenMetamaskTabsIds,
+  SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
 
 module.exports = actions
 
-var background = null
+let background = null
 function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
@@ -444,23 +394,17 @@ function transitionForward () {
   }
 }
 
-function transitionBackward () {
-  return {
-    type: this.TRANSITION_BACKWARD,
-  }
-}
-
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
-
+    let vault
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err) => {
+      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
         if (err) {
           return reject(err)
         }
-
+        vault = _vault
         resolve()
       })
     })
@@ -468,6 +412,7 @@ function createNewVaultAndRestore (password, seed) {
       .then(() => {
         dispatch(actions.showAccountsPage())
         dispatch(actions.hideLoadingIndication())
+        return vault
       })
       .catch(err => {
         dispatch(actions.displayWarning(err.message))
@@ -509,12 +454,6 @@ function unlockAndGetSeedPhrase (password) {
       dispatch(actions.displayWarning(error.message))
       throw new Error(error.message)
     }
-  }
-}
-
-function revealSeedConfirmation () {
-  return {
-    type: this.REVEAL_SEED_CONFIRMATION,
   }
 }
 
@@ -584,6 +523,19 @@ function requestRevealSeedWords (password) {
   }
 }
 
+function tryReverseResolveAddress (address) {
+  return () => {
+    return new Promise((resolve) => {
+      background.tryReverseResolveAddress(address, (err) => {
+        if (err) {
+          log.error(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
 function fetchInfoToSync () {
   return dispatch => {
     log.debug(`background.fetchInfoToSync`)
@@ -645,7 +597,9 @@ function addNewKeyring (type, opts) {
     log.debug(`background.addNewKeyring`)
     background.addNewKeyring(type, opts, (err) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
       dispatch(actions.showAccountsPage())
     })
   }
@@ -677,19 +631,13 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function navigateToNewAccountScreen () {
-  return {
-    type: this.NEW_ACCOUNT_SCREEN,
-  }
-}
-
 function addNewAccount () {
   log.debug(`background.addNewAccount`)
   return (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addNewAccount((err, { identities: newIdentities}) => {
+      background.addNewAccount((err, { identities: newIdentities }) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -841,8 +789,6 @@ function signMsg (msgData) {
   log.debug('action - signMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
-
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signMessage`)
       background.signMessage(msgData, (err, newState) => {
@@ -869,7 +815,6 @@ function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signPersonalMessage`)
       background.signPersonalMessage(msgData, (err, newState) => {
@@ -896,7 +841,6 @@ function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signTypedMessage`)
       background.signTypedMessage(msgData, (err, newState) => {
@@ -1028,13 +972,6 @@ function updateSendErrors (errorObject) {
   }
 }
 
-function updateSendWarnings (warningObject) {
-  return {
-    type: actions.UPDATE_SEND_WARNINGS,
-    value: warningObject,
-  }
-}
-
 function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
@@ -1063,10 +1000,10 @@ function updateSendAmount (amount) {
   }
 }
 
-function updateSendMemo (memo) {
+function updateCustomNonce (value) {
   return {
-    type: actions.UPDATE_SEND_MEMO,
-    value: memo,
+    type: actions.UPDATE_CUSTOM_NONCE,
+    value: value,
   }
 }
 
@@ -1101,27 +1038,6 @@ function updateSendEnsResolutionError (errorMessage) {
   return {
     type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,
-  }
-}
-
-
-function sendTx (txData) {
-  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch, getState) => {
-    log.debug(`actions calling background.approveTransaction`)
-    window.onbeforeunload = null
-    background.approveTransaction(txData.id, (err) => {
-      if (err) {
-        dispatch(actions.txError(err))
-        return log.error(err.message)
-      }
-      dispatch(actions.completedTx(txData.id))
-
-      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-        !hasUnconfirmedTransactions(getState())) {
-        return global.platform.closeCurrentWindow()
-      }
-    })
   }
 }
 
@@ -1186,7 +1102,6 @@ function updateAndApproveTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
         dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
@@ -1196,7 +1111,7 @@ function updateAndApproveTx (txData) {
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
           log.error(err.message)
-          reject(err)
+          return reject(err)
         }
 
         resolve(txData)
@@ -1208,6 +1123,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.updateCustomNonce(''))
         dispatch(closeCurrentNotificationWindow())
 
         return txData
@@ -1244,7 +1160,6 @@ function txError (err) {
 function cancelMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`background.cancelMessage`)
       background.cancelMessage(msgData.id, (err, newState) => {
@@ -1267,7 +1182,6 @@ function cancelMsg (msgData) {
 function cancelPersonalMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
@@ -1290,7 +1204,6 @@ function cancelPersonalMsg (msgData) {
 function cancelTypedMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelTypedMessage(id, (err, newState) => {
@@ -1314,7 +1227,6 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, err => {
         if (err) {
@@ -1344,9 +1256,8 @@ function cancelTx (txData) {
  */
 function cancelTxs (txDataList) {
   return async (dispatch) => {
-    window.onbeforeunload = null
     dispatch(actions.showLoadingIndication())
-    const txIds = txDataList.map(({id}) => id)
+    const txIds = txDataList.map(({ id }) => id)
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
       background.cancelTransaction(id, (err) => {
         if (err) {
@@ -1371,39 +1282,6 @@ function cancelTxs (txDataList) {
     if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
       return global.platform.closeCurrentWindow()
     }
-  }
-}
-
-/**
- * @deprecated
- * @param {Array<object>} txsData
- * @return {Function}
- */
-function cancelAllTx (txsData) {
-  return (dispatch) => {
-    txsData.forEach((txData, i) => {
-      background.cancelTransaction(txData.id, () => {
-        dispatch(actions.completedTx(txData.id))
-        if (i === txsData.length - 1) {
-          dispatch(actions.goHome())
-        }
-      })
-    })
-  }
-}
-//
-// initialize screen
-//
-
-function showCreateVault () {
-  return {
-    type: actions.SHOW_CREATE_VAULT,
-  }
-}
-
-function showRestoreVault () {
-  return {
-    type: actions.SHOW_RESTORE_VAULT,
   }
 }
 
@@ -1436,24 +1314,6 @@ function forgotPassword (forgotPasswordState = true) {
   }
 }
 
-function showInitializeMenu () {
-  return {
-    type: actions.SHOW_INIT_MENU,
-  }
-}
-
-function showImportPage () {
-  return {
-    type: actions.SHOW_IMPORT_PAGE,
-  }
-}
-
-function showNewAccountPage (formToSelect) {
-  return {
-    type: actions.SHOW_NEW_ACCOUNT_PAGE,
-    formToSelect,
-  }
-}
 
 function setNewAccountForm (formToSelect) {
   return {
@@ -1462,27 +1322,9 @@ function setNewAccountForm (formToSelect) {
   }
 }
 
-function createNewVaultInProgress () {
-  return {
-    type: actions.CREATE_NEW_VAULT_IN_PROGRESS,
-  }
-}
-
 function closeWelcomeScreen () {
   return {
     type: actions.CLOSE_WELCOME_SCREEN,
-  }
-}
-
-function backToUnlockView () {
-  return {
-    type: actions.BACK_TO_UNLOCK_VIEW,
-  }
-}
-
-function showNewKeychain () {
-  return {
-    type: actions.SHOW_NEW_KEYCHAIN,
   }
 }
 
@@ -1603,50 +1445,17 @@ function showAccountDetail (address) {
   }
 }
 
-function backToAccountDetail (address) {
-  return {
-    type: actions.BACK_TO_ACCOUNT_DETAIL,
-    value: address,
-  }
-}
-
 function showAccountsPage () {
   return {
     type: actions.SHOW_ACCOUNTS_PAGE,
   }
 }
 
-function showConfTxPage ({transForward = true, id}) {
+function showConfTxPage ({ transForward = true, id }) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
     transForward,
     id,
-  }
-}
-
-function nextTx () {
-  return {
-    type: actions.NEXT_TX,
-  }
-}
-
-function viewPendingTx (txId) {
-  return {
-    type: actions.VIEW_PENDING_TX,
-    value: txId,
-  }
-}
-
-function previousTx () {
-  return {
-    type: actions.PREVIOUS_TX,
-  }
-}
-
-function editTx (txId) {
-  return {
-    type: actions.EDIT_TX,
-    value: txId,
   }
 }
 
@@ -1664,13 +1473,6 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
-function showAddSuggestedTokenPage (transitionForward = true) {
-  return {
-    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
-    value: transitionForward,
-  }
-}
-
 function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -1679,7 +1481,7 @@ function addToken (address, symbol, decimals, image) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1696,7 +1498,7 @@ function removeToken (address) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateTokens(tokens))
         resolve(tokens)
@@ -1728,7 +1530,6 @@ function addTokens (tokens) {
 function removeSuggestedTokens () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve) => {
       background.removeSuggestedTokens((err, suggestedTokens) => {
         dispatch(actions.hideLoadingIndication())
@@ -1743,7 +1544,7 @@ function removeSuggestedTokens () {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+      .then(suggestedTokens => dispatch(actions.updateMetamaskState({ ...suggestedTokens })))
   }
 }
 
@@ -1766,17 +1567,6 @@ function clearPendingTokens () {
   }
 }
 
-function goBackToInitView () {
-  return {
-    type: actions.BACK_TO_INIT_MENU,
-  }
-}
-
-function markAccountsFound () {
-  log.debug(`background.markAccountsFound`)
-  return callBackgroundThenUpdate(background.markAccountsFound)
-}
-
 function retryTransaction (txId, gasPrice) {
   log.debug(`background.retryTransaction`)
   let newTxId
@@ -1786,7 +1576,7 @@ function retryTransaction (txId, gasPrice) {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1809,7 +1599,7 @@ function createCancelTransaction (txId, customGasPrice) {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1832,7 +1622,29 @@ function createSpeedUpTransaction (txId, customGasPrice) {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        resolve(newState)
+      })
+    })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTx)
+  }
+}
+
+function createRetryTransaction (txId, customGasPrice) {
+  log.debug('background.createRetryTransaction')
+  let newTx
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
         }
 
         const { selectedAddressTxList } = newState
@@ -1902,7 +1714,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
     background.delCustomRpc(oldRpc, (err) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem removing network!'))
+        return dispatch(actions.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
       background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
@@ -1939,7 +1751,7 @@ function delRpcTarget (oldRpc) {
       background.delCustomRpc(oldRpc, (err) => {
         if (err) {
           log.error(err)
-          dispatch(self.displayWarning('Had a problem removing network!'))
+          dispatch(actions.displayWarning('Had a problem removing network!'))
           return reject(err)
         }
         dispatch(actions.setSelectedToken())
@@ -1973,11 +1785,11 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
  * @description Calls the addressBookController to remove an existing address.
  * @param {String} addressToRemove - Address of the entry to remove from the address book
  */
-function removeFromAddressBook (addressToRemove) {
+function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
   return () => {
-    background.removeFromAddressBook(checksumAddress(addressToRemove))
+    background.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 
@@ -2085,7 +1897,7 @@ function showLoadingIndication (message) {
 function setHardwareWalletDefaultHdPath ({ device, path }) {
   return {
     type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-    value: {device, path},
+    value: { device, path },
   }
 }
 
@@ -2120,50 +1932,35 @@ function hideWarning () {
   }
 }
 
-function requestExportAccount () {
-  return {
-    type: actions.REQUEST_ACCOUNT_EXPORT,
-  }
-}
-
 function exportAccount (password, address) {
-  var self = this
-
   return function (dispatch) {
-    dispatch(self.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
           log.error('Error in submiting password.')
-          dispatch(self.hideLoadingIndication())
-          dispatch(self.displayWarning('Incorrect Password.'))
+          dispatch(actions.hideLoadingIndication())
+          dispatch(actions.displayWarning('Incorrect Password.'))
           return reject(err)
         }
         log.debug(`background.exportAccount`)
         return background.exportAccount(address, function (err, result) {
-          dispatch(self.hideLoadingIndication())
+          dispatch(actions.hideLoadingIndication())
 
           if (err) {
             log.error(err)
-            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            dispatch(actions.displayWarning('Had a problem exporting the account.'))
             return reject(err)
           }
 
-          // dispatch(self.exportAccountComplete())
-          dispatch(self.showPrivateKey(result))
+          dispatch(actions.showPrivateKey(result))
 
           return resolve(result)
         })
       })
     })
-  }
-}
-
-function exportAccountComplete () {
-  return {
-    type: actions.EXPORT_ACCOUNT,
   }
 }
 
@@ -2185,7 +1982,7 @@ function setAccountLabel (account, label) {
 
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         dispatch({
@@ -2221,33 +2018,15 @@ function buyEth (opts) {
   }
 }
 
-function onboardingBuyEthView (address) {
-  return {
-    type: actions.ONBOARDING_BUY_ETH_VIEW,
-    value: address,
-  }
-}
-
-function buyEthView (address) {
-  return {
-    type: actions.BUY_ETH_VIEW,
-    value: address,
-  }
-}
-
-function coinBaseSubview () {
-  return {
-    type: actions.COINBASE_SUBVIEW,
-  }
-}
-
 function pairUpdate (coin) {
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     dispatch(actions.hideWarning())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
-      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
+      if (mktResponse.error) {
+        return dispatch(actions.displayWarning(mktResponse.error))
+      }
       dispatch({
         type: actions.PAIR_UPDATE,
         value: {
@@ -2256,53 +2035,6 @@ function pairUpdate (coin) {
       })
     })
   }
-}
-
-function shapeShiftSubview () {
-  var pair = 'btc_eth'
-  return (dispatch) => {
-    dispatch(actions.showSubLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
-      shapeShiftRequest('getcoins', {}, (response) => {
-        dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
-        dispatch({
-          type: actions.SHAPESHIFT_SUBVIEW,
-          value: {
-            marketinfo: mktResponse,
-            coinOptions: response,
-          },
-        })
-      })
-    })
-  }
-}
-
-function coinShiftRquest (data, marketData) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      dispatch(actions.hideLoadingIndication())
-      if (response.error) return dispatch(actions.displayWarning(response.error))
-      var message = `
-        Deposit your ${response.depositType} to the address below:`
-      log.debug(`background.createShapeShiftTx`)
-      background.createShapeShiftTx(response.deposit, response.depositType)
-      dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
-    })
-  }
-}
-
-function buyWithShapeShift (data) {
-  return () => new Promise((resolve, reject) => {
-    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      if (response.error) {
-        return reject(response.error)
-      }
-      background.createShapeShiftTx(response.deposit, response.depositType)
-      return resolve(response)
-    })
-  })
 }
 
 function showQrView (data, message) {
@@ -2317,10 +2049,12 @@ function showQrView (data, message) {
 function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
+    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
+      if (mktResponse.error) {
+        return dispatch(actions.displayWarning(mktResponse.error))
+      }
 
-      var message = [
+      const message = [
         `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
@@ -2333,10 +2067,10 @@ function reshowQrCode (data, coin) {
 }
 
 function shapeShiftRequest (query, options = {}, cb) {
-  var queryResponse, method
+  let queryResponse, method
   options.method ? method = options.method : method = 'GET'
 
-  var requestListner = function () {
+  const requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
       if (cb) {
@@ -2345,18 +2079,18 @@ function shapeShiftRequest (query, options = {}, cb) {
       return queryResponse
     } catch (e) {
       if (cb) {
-        cb({error: e})
+        cb({ error: e })
       }
       return e
     }
   }
 
-  var shapShiftReq = new XMLHttpRequest()
+  const shapShiftReq = new XMLHttpRequest()
   shapShiftReq.addEventListener('load', requestListner)
   shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
 
   if (options.method === 'POST') {
-    var jsonObj = JSON.stringify(options.data)
+    const jsonObj = JSON.stringify(options.data)
     shapShiftReq.setRequestHeader('Content-Type', 'application/json')
     return shapShiftReq.send(jsonObj)
   } else {
@@ -2497,19 +2231,6 @@ function callBackgroundThenUpdateNoSpinner (method, ...args) {
   }
 }
 
-function callBackgroundThenUpdate (method, ...args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    method.call(background, ...args, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      forceUpdateMetamaskState(dispatch)
-    })
-  }
-}
-
 function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   return new Promise((resolve, reject) => {
@@ -2591,42 +2312,67 @@ function setUseBlockie (val) {
   }
 }
 
+function setUseNonceField (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseNonceField`)
+    background.setUseNonceField(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_NONCEFIELD,
+      value: val,
+    })
+  }
+}
+
+function setIpfsGateway (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setIpfsGateway`)
+    background.setIpfsGateway(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      } else {
+        dispatch({
+          type: actions.SET_IPFS_GATEWAY,
+          value: val,
+        })
+      }
+    })
+  }
+}
+
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
-        background.setCurrentLocale(key, (err) => {
-          dispatch(actions.hideLoadingIndication())
+        background.setCurrentLocale(key, (err, textDirection) => {
           if (err) {
+            dispatch(actions.hideLoadingIndication())
             return dispatch(actions.displayWarning(err.message))
           }
-          dispatch(actions.setCurrentLocale(key))
-          dispatch(actions.setLocaleMessages(localeMessages))
+          switchDirection(textDirection)
+          dispatch(actions.setCurrentLocale(key, localeMessages))
+          dispatch(actions.hideLoadingIndication())
         })
       })
   }
 }
 
-function setCurrentLocale (key) {
+function setCurrentLocale (locale, messages) {
   return {
     type: actions.SET_CURRENT_LOCALE,
-    value: key,
-  }
-}
-
-function setLocaleMessages (localeMessages) {
-  return {
-    type: actions.SET_LOCALE_MESSAGES,
-    value: localeMessages,
-  }
-}
-
-function updateNetworkEndpointType (networkEndpointType) {
-  return {
-    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
-    value: networkEndpointType,
+    value: {
+      locale,
+      messages,
+    },
   }
 }
 
@@ -2643,21 +2389,54 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequestByOrigin (origin) {
+// Permissions
+
+/**
+ * Approves the permissions request.
+ * @param {Object} request - The permissions request to approve
+ * @param {string[]} accounts - The accounts to expose, if any.
+ */
+function approvePermissionsRequest (request, accounts) {
   return () => {
-    background.approveProviderRequestByOrigin(origin)
+    background.approvePermissionsRequest(request, accounts)
   }
 }
 
-function rejectProviderRequestByOrigin (origin) {
+/**
+ * Rejects the permissions request with the given ID.
+ * @param {string} requestId - The id of the request to be rejected
+ */
+function rejectPermissionsRequest (requestId) {
   return () => {
-    background.rejectProviderRequestByOrigin(origin)
+    background.rejectPermissionsRequest(requestId)
   }
 }
 
-function clearApprovedOrigins () {
+/**
+ * Exposes the given account(s) to the given origin.
+ * Call ONLY as a result of direct user action.
+ */
+function legacyExposeAccounts (origin, accounts) {
   return () => {
-    background.clearApprovedOrigins()
+    return background.legacyExposeAccounts(origin, accounts)
+  }
+}
+
+/**
+ * Clears the given permissions for the given origin.
+ */
+function removePermissionsFor (domains) {
+  return () => {
+    background.removePermissionsFor(domains)
+  }
+}
+
+/**
+ * Clears all permissions for all domains.
+ */
+function clearPermissions () {
+  return () => {
+    background.clearPermissions()
   }
 }
 
@@ -2693,6 +2472,16 @@ function setNetworksTabAddMode (isInAddMode) {
 function setLastActiveTime () {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+  }
+}
+
+function setMkrMigrationReminderTimestamp (timestamp) {
+  return (dispatch) => {
+    background.setMkrMigrationReminderTimestamp(timestamp, (err) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
@@ -2771,12 +2560,6 @@ function getTokenParams (tokenAddress) {
   }
 }
 
-function unsetMigratedPrivacyMode () {
-  return () => {
-    background.unsetMigratedPrivacyMode()
-  }
-}
-
 function setSeedPhraseBackedUp (seedPhraseBackupState) {
   return (dispatch) => {
     log.debug(`background.setSeedPhraseBackedUp`)
@@ -2786,8 +2569,174 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
-        return forceUpdateMetamaskState(dispatch).then(() => resolve())
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
+  }
+}
+
+function hideSeedPhraseBackupAfterOnboarding () {
+  return {
+    type: actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
+  }
+}
+
+function initializeThreeBox () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.initializeThreeBox((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function setShowRestorePromptToFalse () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setShowRestorePromptToFalse((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function turnThreeBoxSyncingOn () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.turnThreeBoxSyncingOn((err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function restoreFromThreeBox (accountAddress) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.restoreFromThreeBox(accountAddress, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function getThreeBoxLastUpdated () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.getThreeBoxLastUpdated((err, lastUpdated) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve(lastUpdated)
+      })
+    })
+  }
+}
+
+function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+}
+
+function turnThreeBoxSyncingOnAndInitialize () {
+  return async (dispatch) => {
+    await dispatch(setThreeBoxSyncingPermission(true))
+    await dispatch(turnThreeBoxSyncingOn())
+    await dispatch(initializeThreeBox(true))
+  }
+}
+
+function setNextNonce (nextNonce) {
+  return {
+    type: actions.SET_NEXT_NONCE,
+    value: nextNonce,
+  }
+}
+
+function getNextNonce () {
+  return (dispatch, getState) => {
+    const address = getState().metamask.selectedAddress
+    return new Promise((resolve, reject) => {
+      background.getNextNonce(address, (err, nextNonce) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(setNextNonce(nextNonce))
+        resolve(nextNonce)
+      })
+    })
+  }
+}
+
+function setRequestAccountTabIds (requestAccountTabIds) {
+  return {
+    type: actions.SET_REQUEST_ACCOUNT_TABS,
+    value: requestAccountTabIds,
+  }
+}
+
+function getRequestAccountTabIds () {
+  return async (dispatch) => {
+    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    dispatch(setRequestAccountTabIds(requestAccountTabIds))
+  }
+}
+
+function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    value: openMetaMaskTabIDs,
+  }
+}
+
+function getOpenMetamaskTabsIds () {
+  return async (dispatch) => {
+    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
+  }
+}
+
+function setCurrentWindowTab (currentWindowTab) {
+  return {
+    type: actions.SET_CURRENT_WINDOW_TAB,
+    value: currentWindowTab,
+  }
+}
+
+
+function getCurrentWindowTab () {
+  return async (dispatch) => {
+    const currentWindowTab = await global.platform.currentTab()
+    dispatch(setCurrentWindowTab(currentWindowTab))
   }
 }

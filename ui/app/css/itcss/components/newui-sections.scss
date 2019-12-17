@@ -19,7 +19,6 @@ $wallet-view-bg: $alabaster;
 
 // Main container
 .main-container {
-  // position: absolute;
   z-index: $main-container-z-index;
   font-family: Roboto;
   display: flex;
@@ -56,6 +55,13 @@ $wallet-view-bg: $alabaster;
   background: $wallet-view-bg;
   z-index: 200;
   position: relative;
+
+  [dir='rtl'] & i.fa.fa-clipboard {
+    /*rtl:ignore*/
+    margin-left: 0 !important;
+    /*rtl:ignore*/
+    margin-right: 8px !important;
+  }
 
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
@@ -103,6 +109,11 @@ $wallet-view-bg: $alabaster;
   box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
   height: calc(100% - 56px);
+
+  [dir='rtl'] & {
+    /* rtl:ignore */
+    left: 15%;
+  }
 }
 
 // main-container media queries
@@ -117,7 +128,6 @@ $wallet-view-bg: $alabaster;
   }
 
   .main-container {
-    // margin-top: 6.9vh;
     width: 85vw;
     height: 90vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -126,7 +136,6 @@ $wallet-view-bg: $alabaster;
 
 @media screen and (min-width: 769px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 80vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -135,7 +144,6 @@ $wallet-view-bg: $alabaster;
 
 @media screen and (min-width: 1281px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 62vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);

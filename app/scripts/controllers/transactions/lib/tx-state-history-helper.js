@@ -18,7 +18,9 @@ function migrateFromSnapshotsToDiffs (longHistory) {
     longHistory
     // convert non-initial history entries into diffs
       .map((entry, index) => {
-        if (index === 0) return entry
+        if (index === 0) {
+          return entry
+        }
         return generateHistoryEntry(longHistory[index - 1], entry)
       })
   )
@@ -40,7 +42,9 @@ function generateHistoryEntry (previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)
   // Add a note to the first op, since it breaks if we append it to the entry
   if (entry[0]) {
-    if (note) entry[0].note = note
+    if (note) {
+      entry[0].note = note
+    }
 
     entry[0].timestamp = Date.now()
   }

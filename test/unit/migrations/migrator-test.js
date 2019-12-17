@@ -1,5 +1,7 @@
+const fs = require('fs')
 const assert = require('assert')
 const clone = require('clone')
+const pify = require('pify')
 const Migrator = require('../../../app/scripts/lib/migrator/')
 const liveMigrations = require('../../../app/scripts/migrations/')
 const stubMigrations = [
@@ -29,12 +31,29 @@ const stubMigrations = [
     },
   },
 ]
-const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
+const versionedData = { meta: { version: 0 }, data: { hello: 'world' } }
 
 const firstTimeState = {
   meta: { version: 0 },
   data: require('../../../app/scripts/first-time-state'),
 }
+describe('liveMigrations require list', () => {
+  it('should include all the migrations', async () => {
+    const fileNames = await pify(cb => fs.readdir('./app/scripts/migrations/', cb))()
+    const migrationNumbers = fileNames.reduce((agg, filename) => {
+      const name = filename.split('.')[0]
+      if (/^\d+$/.test(name)) {
+        agg.push(name)
+      }
+      return agg
+    }, []).map((num) => parseInt(num))
+
+    migrationNumbers.forEach((num) => {
+      const migration = liveMigrations.find((m) => m.version === num)
+      assert(migration, `migration should be include in the index missing migration ${num}`)
+    })
+  })
+})
 
 describe('Migrator', () => {
   const migrator = new Migrator({ migrations: stubMigrations })
@@ -58,9 +77,11 @@ describe('Migrator', () => {
 
   it('should emit an error', function (done) {
     this.timeout(15000)
-    const migrator = new Migrator({ migrations: [{ version: 1, migrate: async () => { throw new Error('test') } } ] })
+    const migrator = new Migrator({ migrations: [{ version: 1, migrate: async () => {
+      throw new Error('test')
+    } } ] })
     migrator.on('error', () => done())
-    migrator.migrateData({ meta: {version: 0} })
+    migrator.migrateData({ meta: { version: 0 } })
       .then(() => {
       }).catch(done)
   })

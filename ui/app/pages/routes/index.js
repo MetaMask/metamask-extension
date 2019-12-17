@@ -6,13 +6,18 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {
+  getNetworkIdentifier,
+  preferencesSelector,
+  hasPermissionRequests,
+  getAddressConnectedToCurrentTab,
+} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
-const SendTransactionScreen = require('../send/send.container')
+import SendTransactionScreen from '../send'
 const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
@@ -25,13 +30,15 @@ import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
+import PermissionsConnect from '../permissions-connect'
+import ConnectedSites from '../connected-sites'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync')
+const MobileSyncPage = require('../mobile-sync').default
 const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
-const CreateAccountPage = require('../create-account')
+import CreateAccountPage from '../create-account'
 
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
@@ -67,6 +74,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -76,7 +85,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 
 class Routes extends Component {
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
@@ -98,6 +107,20 @@ class Routes extends Component {
     })
   }
 
+  componentDidMount () {
+    const { addressConnectedToCurrentTab, showAccountDetail, selectedAddress } = this.props
+    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== selectedAddress) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    const { addressConnectedToCurrentTab, showAccountDetail } = this.props
+    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== prevProps.addressConnectedToCurrentTab) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
+  }
+
   renderRoutes () {
     const { autoLogoutTimeLimit, setLastActiveTime } = this.props
 
@@ -116,6 +139,8 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} exact />
+        <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
@@ -141,13 +166,8 @@ class Routes extends Component {
     return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
   }
 
-  hasProviderRequests () {
-    const { providerRequests } = this.props
-    return Array.isArray(providerRequests) && providerRequests.length > 0
-  }
-
   hideAppHeader () {
-    const { location } = this.props
+    const { location, hasPermissionsRequests } = this.props
 
     const isInitializing = Boolean(matchPath(location.pathname, {
       path: INITIALIZE_ROUTE, exact: false,
@@ -162,7 +182,15 @@ class Routes extends Component {
     }
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasProviderRequests()
+      return this.onConfirmPage() || hasPermissionsRequests
+    }
+
+    const isHandlingPermissionsRequest = Boolean(matchPath(location.pathname, {
+      path: CONNECT_ROUTE, exact: false,
+    }))
+
+    if (hasPermissionsRequests || isHandlingPermissionsRequest) {
+      return true
     }
   }
 
@@ -170,6 +198,7 @@ class Routes extends Component {
     const {
       isLoading,
       alertMessage,
+      textDirection,
       loadingMessage,
       network,
       provider,
@@ -205,9 +234,14 @@ class Routes extends Component {
       }
       : null
 
+    const sidebarShouldClose = sidebarTransaction &&
+      !sidebarTransaction.status === 'failed' &&
+      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
+        dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
           if (e.keyCode === 9) {
@@ -230,7 +264,7 @@ class Routes extends Component {
         }
         <Sidebar
           sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)}
+          sidebarShouldClose={sidebarShouldClose}
           hideSidebar={this.props.hideSidebar}
           transitionName={sidebarTransitionName}
           type={sidebarType}
@@ -254,8 +288,10 @@ class Routes extends Component {
   toggleMetamaskActive () {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
-      var passwordBox = document.querySelector('input[type=password]')
-      if (!passwordBox) return
+      const passwordBox = document.querySelector('input[type=password]')
+      if (!passwordBox) {
+        return
+      }
       passwordBox.focus()
     } else {
       // currently active: deactivate
@@ -323,8 +359,10 @@ Routes.propTypes = {
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
   alertMessage: PropTypes.string,
+  textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
+  selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
   currentView: PropTypes.object,
   sidebar: PropTypes.object,
@@ -339,12 +377,18 @@ Routes.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
-  providerRequests: PropTypes.array,
+  hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
+  addressConnectedToCurrentTab: PropTypes.string,
+  showAccountDetail: PropTypes.func,
+}
+
+Routes.defaultProps = {
+  selectedAddress: undefined,
 }
 
 function mapStateToProps (state) {
-  const { appState, metamask } = state
+  const { appState } = state
   const {
     sidebar,
     alertOpen,
@@ -360,6 +404,7 @@ function mapStateToProps (state) {
     sidebar,
     alertOpen,
     alertMessage,
+    textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
@@ -367,12 +412,14 @@ function mapStateToProps (state) {
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
+    selectedAddress: state.metamask.selectedAddress,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-    providerRequests: metamask.providerRequests,
+    hasPermissionsRequests: hasPermissionRequests(state),
+    addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }
 }
 
@@ -383,6 +430,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
+    showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }
 

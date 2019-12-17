@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
 import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
-import {ellipsify} from '../../send.utils'
+import { ellipsify } from '../../send.utils'
 
 import debounce from 'debounce'
 import copyToClipboard from 'copy-to-clipboard/index'
@@ -26,7 +26,6 @@ export default class EnsInput extends Component {
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
-    updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
@@ -37,10 +36,9 @@ export default class EnsInput extends Component {
   }
 
   state = {
-    recipient: null,
     input: '',
     toError: null,
-    toWarning: null,
+    ensResolution: undefined,
   }
 
   componentDidMount () {
@@ -86,8 +84,12 @@ export default class EnsInput extends Component {
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens.lookup(recipient)
       .then((address) => {
-        if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
-        if (address === ZERO_X_ERROR_ADDRESS) throw new Error(this.context.t('ensRegistrationError'))
+        if (address === ZERO_ADDRESS) {
+          throw new Error(this.context.t('noAddressForName'))
+        }
+        if (address === ZERO_X_ERROR_ADDRESS) {
+          throw new Error(this.context.t('ensRegistrationError'))
+        }
         this.props.updateEnsResolution(address)
       })
       .catch((reason) => {
@@ -155,6 +157,7 @@ export default class EnsInput extends Component {
           <input
             className="ens-input__wrapper__input"
             type="text"
+            dir="auto"
             placeholder={t('recipientAddressPlaceholder')}
             onChange={this.onChange}
             onPaste={this.onPaste}
@@ -229,9 +232,11 @@ export default class EnsInput extends Component {
   }
 
   ensIconContents () {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
+    const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
-    if (toError) return
+    if (toError) {
+      return
+    }
 
     if (loadingEns) {
       return (

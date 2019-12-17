@@ -32,9 +32,14 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   if (isEIP1577Compliant[0]) {
     const contentLookupResult = await Resolver.contenthash(hash)
     const rawContentHash = contentLookupResult[0]
-    const decodedContentHash = contentHash.decode(rawContentHash)
+    let decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
-    return {type: type, hash: decodedContentHash}
+
+    if (type === 'ipfs-ns') {
+      decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
+    }
+
+    return { type: type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
     // lookup content id
@@ -43,7 +48,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
     if (hexValueIsEmpty(content)) {
       throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
     }
-    return {type: 'swarm-ns', hash: content.slice(2)}
+    return { type: 'swarm-ns', hash: content.slice(2) }
   }
   throw new Error(`EnsIpfsResolver - the resolver for name "${name}" is not standard, it should either supports contenthash() or content()`)
 }
@@ -66,5 +71,7 @@ function getRegistryForChainId (chainId) {
     // goerli
     case 5:
       return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
+    default:
+      return null
   }
 }

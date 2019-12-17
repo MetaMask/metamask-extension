@@ -19,6 +19,7 @@ export default class AccountDetails extends Component {
   static propTypes = {
     hideSidebar: PropTypes.func,
     showAccountDetailModal: PropTypes.func,
+    showConnectedSites: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -48,6 +49,7 @@ export default class AccountDetails extends Component {
     const {
       hideSidebar,
       showAccountDetailModal,
+      showConnectedSites,
       label,
       checksummedAddress,
       name,
@@ -65,18 +67,23 @@ export default class AccountDetails extends Component {
           <div className="account-details__keyring-label allcaps">
             {label}
           </div>
-          <div className="flex-column flex-center account-details__name-container" onClick={showAccountDetailModal}>
-            <Identicon diameter={54} address={checksummedAddress} />
+          <div className="flex-column flex-center account-details__name-container">
+            <Identicon diameter={54} address={checksummedAddress} onClick={showAccountDetailModal} />
             <span className="account-details__account-name">
               {name}
             </span>
-            <button className="btn-secondary account-details__details-button">
-              {t('details')}
-            </button>
+            <div className="account-details__details-buttons">
+              <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
+                {t('details')}
+              </button>
+              <button className="btn-secondary account-details__details-button" onClick={showConnectedSites}>
+                {t('connectedSites')}
+              </button>
+            </div>
           </div>
         </div>
         <Tooltip
-          position={'bottom'}
+          position="bottom"
           title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
           wrapperClassName="account-details__tooltip"
         >

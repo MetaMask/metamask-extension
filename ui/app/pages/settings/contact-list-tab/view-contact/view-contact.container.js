@@ -3,7 +3,6 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntry } from '../../../../selectors/selectors'
-import { removeFromAddressBook } from '../../../../store/actions'
 import { checksumAddress } from '../../../../helpers/utils/util'
 import {
   CONTACT_EDIT_ROUTE,
@@ -31,13 +30,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    removeFromAddressBook: (addressToRemove) => dispatch(removeFromAddressBook(addressToRemove)),
-  }
-}
-
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps)
 )(ViewContact)

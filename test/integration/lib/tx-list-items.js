@@ -3,7 +3,7 @@ const {
   queryAsync,
   findAsync,
 } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/fetch-mocks.js')
+const fetchMockResponses = require('../../e2e/fetch-mocks.json')
 
 QUnit.module('tx list items')
 
@@ -32,8 +32,6 @@ async function runTxListItemsTest (assert) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
     } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
-    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
-      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
     } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }

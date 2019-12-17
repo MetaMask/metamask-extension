@@ -9,13 +9,15 @@ describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendRowWrapper
-      errorType={'mockErrorType'}
-      label={'mockLabel'}
-      showError={false}
-    >
-      <span>Mock Form Field</span>
-    </SendRowWrapper>)
+    wrapper = shallow((
+      <SendRowWrapper
+        errorType="mockErrorType"
+        label="mockLabel"
+        showError={false}
+      >
+        <span>Mock Form Field</span>
+      </SendRowWrapper>
+    ))
   })
 
   describe('render', () => {
@@ -41,7 +43,7 @@ describe('SendContent Component', function () {
     })
 
     it('should render a SendRowErrorMessage with and errorType props if showError is true', () => {
-      wrapper.setProps({showError: true})
+      wrapper.setProps({ showError: true })
       assert.equal(wrapper.find(SendRowErrorMessage).length, 1)
 
       const expectedSendRowErrorMessage = wrapper.find('.send-v2__form-row > .send-v2__form-label').childAt(1)
@@ -53,26 +55,30 @@ describe('SendContent Component', function () {
     })
 
     it('should render its second child as a child of the send-v2__form-field, if it has two children', () => {
-      wrapper = shallow(<SendRowWrapper
-        errorType={'mockErrorType'}
-        label={'mockLabel'}
-        showError={false}
-      >
-        <span>Mock Custom Label Content</span>
-        <span>Mock Form Field</span>
-      </SendRowWrapper>)
+      wrapper = shallow((
+        <SendRowWrapper
+          errorType="mockErrorType"
+          label="mockLabel"
+          showError={false}
+        >
+          <span>Mock Custom Label Content</span>
+          <span>Mock Form Field</span>
+        </SendRowWrapper>
+      ))
       assert.equal(wrapper.find('.send-v2__form-row > .send-v2__form-field').childAt(0).text(), 'Mock Form Field')
     })
 
     it('should render its first child as the last child of the send-v2__form-label, if it has two children', () => {
-      wrapper = shallow(<SendRowWrapper
-        errorType={'mockErrorType'}
-        label={'mockLabel'}
-        showError={false}
-      >
-        <span>Mock Custom Label Content</span>
-        <span>Mock Form Field</span>
-      </SendRowWrapper>)
+      wrapper = shallow((
+        <SendRowWrapper
+          errorType="mockErrorType"
+          label="mockLabel"
+          showError={false}
+        >
+          <span>Mock Custom Label Content</span>
+          <span>Mock Form Field</span>
+        </SendRowWrapper>
+      ))
       assert.equal(wrapper.find('.send-v2__form-row > .send-v2__form-label').childAt(1).text(), 'Mock Custom Label Content')
     })
   })

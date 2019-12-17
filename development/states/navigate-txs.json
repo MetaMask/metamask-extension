@@ -170,7 +170,6 @@
     },
     "currentBlockGasLimit": "0x731e25",
     "selectedAddressTxList": [],
-    "computedBalances": {},
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
@@ -277,7 +276,6 @@
   },
   "localeMessages": {},
   "send": {
-    "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {},
     "warnings": {}

@@ -18,8 +18,8 @@ const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 /**
 * returns a provider restricted to the requesting domain
 **/
-function incomingConnection (domain, getSiteMetadata) {
-  const engine = metamaskController.setupProviderEngine(domain, getSiteMetadata)
+function incomingConnection (domain) {
+  const engine = metamaskController.setupProviderEngine(domain)
   const provider = providerFromEngine(engine)
   return provider
 }
@@ -31,15 +31,6 @@ Please note if you take this approach, you are responsible for cleaning up the f
 const filterMiddleware = engine._middleware.filter(mid => mid.name === 'filterMiddleware')[0]
 filterMiddleware.destroy()
 ```
-
-### getSiteMetadata()
-
-This method is used to enhance our confirmation screens with images and text representing the requesting domain.
-
-It should return a promise that resolves with an object with the following properties:
-
-- `name`: The requesting site's name.
-- `icon`: A URI representing the site's logo.
 
 ### Using the Streams Interface
 

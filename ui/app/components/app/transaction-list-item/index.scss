@@ -13,18 +13,20 @@
     width: 100%;
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 45px 1fr 1fr 1fr;
+    grid-template-columns: 45px 1fr 1fr 1fr 1fr;
     grid-template-areas:
-      "identicon action status primary-amount"
-      "identicon nonce status secondary-amount";
+      "identicon action status estimated-time primary-amount"
+      "identicon nonce status estimated-time secondary-amount";
+    grid-template-rows: 24px;
 
     @media screen and (max-width: $break-small) {
       padding: .5rem 1rem;
       grid-template-columns: 45px 5fr 3fr;
       grid-template-areas:
-        "nonce nonce nonce"
-        "identicon action primary-amount"
-        "identicon status secondary-amount";
+        "nonce nonce nonce nonce"
+        "identicon action estimated-time primary-amount"
+        "identicon status estimated-time secondary-amount";
+      grid-template-rows: auto 24px;
     }
 
     &:hover {
@@ -60,6 +62,18 @@
 
     @media screen and (max-width: $break-small) {
       grid-row: 3;
+    }
+  }
+
+  &__estimated-time {
+    grid-area: estimated-time;
+    grid-row: 1 / span 2;
+    align-self: center;
+
+    @media screen and (max-width: $break-small) {
+      grid-row: 3;
+      grid-column: 4;
+      font-size: small;
     }
   }
 
@@ -125,6 +139,7 @@
   &__expander {
     max-height: 0px;
     width: 100%;
+    overflow: hidden;
 
     &--show {
       max-height: 1000px;

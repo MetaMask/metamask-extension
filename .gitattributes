@@ -1,3 +1,4 @@
+* text=auto
 CHANGELOG.md merge=union
 
 # Reviewing the lockfile contents is an important step in verifying that

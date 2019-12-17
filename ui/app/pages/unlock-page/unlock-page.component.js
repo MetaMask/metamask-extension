@@ -35,7 +35,7 @@ export default class UnlockPage extends Component {
     this.animationEventEmitter = new EventEmitter()
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { isUnlocked, history } = this.props
 
     if (isUnlocked) {
@@ -165,7 +165,7 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
-              material
+              theme="material"
               fullWidth
             />
           </form>

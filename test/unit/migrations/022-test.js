@@ -8,7 +8,7 @@ const storage = {
       'transactions': [
         { 'status': 'submitted' },
         { 'status': 'submitted', 'submittedTime': properTime },
-        {'status': 'confirmed'},
+        { 'status': 'confirmed' },
       ],
     },
   },

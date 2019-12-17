@@ -17,20 +17,22 @@ describe('SendGasRow Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendGasRow
-      conversionRate={20}
-      convertedCurrency={'mockConvertedCurrency'}
-      gasFeeError={'mockGasFeeError'}
-      gasLoadingError={false}
-      gasTotal={'mockGasTotal'}
-      gasButtonGroupShown={false}
-      showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
-      resetGasButtons={propsMethodSpies.resetGasButtons}
-      gasPriceButtonGroupProps={{
-        someGasPriceButtonGroupProp: 'foo',
-        anotherGasPriceButtonGroupProp: 'bar',
-      }}
-    />, { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
+    wrapper = shallow((
+      <SendGasRow
+        conversionRate={20}
+        convertedCurrency="mockConvertedCurrency"
+        gasFeeError="mockGasFeeError"
+        gasLoadingError={false}
+        gasTotal="mockGasTotal"
+        gasButtonGroupShown={false}
+        showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
+        resetGasButtons={propsMethodSpies.resetGasButtons}
+        gasPriceButtonGroupProps={{
+          someGasPriceButtonGroupProp: 'foo',
+          anotherGasPriceButtonGroupProp: 'bar',
+        }}
+      />
+    ), { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
   })
 
   afterEach(() => {
@@ -58,16 +60,12 @@ describe('SendGasRow Component', function () {
       assert(wrapper.find(SendRowWrapper).childAt(0).is(GasFeeDisplay))
     })
 
-    it('should render the GasFeeDisplay with the correct props', () => {
+    it('should render the GasFeeDisplay', () => {
       const {
-        conversionRate,
-        convertedCurrency,
         gasLoadingError,
         gasTotal,
         onReset,
       } = wrapper.find(SendRowWrapper).childAt(0).props()
-      assert.equal(conversionRate, 20)
-      assert.equal(convertedCurrency, 'mockConvertedCurrency')
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)

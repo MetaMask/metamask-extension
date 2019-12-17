@@ -2,7 +2,7 @@ module.exports = {
   'metamask': {
     'isInitialized': true,
     'isUnlocked': true,
-    'featureFlags': {'sendHexData': true},
+    'featureFlags': { 'sendHexData': true },
     'rpcTarget': 'https://rawtestrpc.metamask.io/',
     'identities': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -56,13 +56,17 @@ module.exports = {
         'address': '0xd85a4b6a394794842887b8284293d69163007bbb',
       },
     },
-    'addressBook': [
-      {
-        'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
-        'name': 'Address Book Account 1',
-        'chainId': '3',
+    'addressBook': {
+      '3': {
+        '0x06195827297c7a80a443b6894d3bdb8824b43896': {
+          'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
+          'chainId': '3',
+          'isEns': false,
+          'memo': '',
+          'name': 'Address Book Account 1',
+        },
       },
-    ],
+    },
     'tokens': [
       {
         'address': '0x1a195821297c7a80a433b6894d3bdb8824b43896',

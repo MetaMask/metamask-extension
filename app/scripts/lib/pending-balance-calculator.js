@@ -32,7 +32,9 @@ class PendingBalanceCalculator {
     ])
 
     const [ balance, pending ] = results
-    if (!balance) return undefined
+    if (!balance) {
+      return undefined
+    }
 
     const pendingValue = pending.reduce((total, tx) => {
       return total.add(this.calculateMaxCost(tx))

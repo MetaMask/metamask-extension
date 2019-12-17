@@ -15,9 +15,9 @@ const transactions = []
 
 
 while (transactions.length < 9) {
-  transactions.push({status: 'rejected'})
-  transactions.push({status: 'unapproved'})
-  transactions.push({status: 'approved'})
+  transactions.push({ status: 'rejected' })
+  transactions.push({ status: 'unapproved' })
+  transactions.push({ status: 'approved' })
 }
 
 
@@ -30,7 +30,9 @@ describe('migration #27', () => {
         const newTransactions = newStorage.data.TransactionController.transactions
         assert.equal(newTransactions.length, 6, 'transactions is expected to have the length of 6')
         newTransactions.forEach((txMeta) => {
-          if (txMeta.status === 'rejected') done(new Error('transaction was found with a status of rejected'))
+          if (txMeta.status === 'rejected') {
+            done(new Error('transaction was found with a status of rejected'))
+          }
         })
         done()
       })

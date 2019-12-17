@@ -2,7 +2,6 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 
-let mapStateToProps
 let mapDispatchToProps
 let mergeProps
 
@@ -25,27 +24,11 @@ const gasDuckSpies = {
 
 proxyquire('../send-gas-row.container.js', {
   'react-redux': {
-    connect: (ms, md, mp) => {
-      mapStateToProps = ms
+    connect: (_, md, mp) => {
       mapDispatchToProps = md
       mergeProps = mp
       return () => ({})
     },
-  },
-  '../../../../selectors/selectors': {
-    getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
-    getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
-    getSelectedToken: () => false,
-  },
-  '../../send.selectors.js': {
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getSendAmount: (s) => `mockSendAmount:${s}`,
-    getSendFromBalance: (s) => `mockBalance:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
   '../send-amount-row/amount-max-button/amount-max-button.selectors': {
     getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
@@ -59,51 +42,12 @@ proxyquire('../send-gas-row.container.js', {
     }) => `${amount}:${gasTotal}:${balance}:${conversionRate}`,
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
-  './send-gas-row.selectors.js': {
-    getGasLoadingError: (s) => `mockGasLoadingError:${s}`,
-    gasFeeIsInError: (s) => `mockGasFeeError:${s}`,
-    getGasButtonGroupShown: (s) => `mockGetGasButtonGroupShown:${s}`,
-  },
   '../../../../store/actions': actionSpies,
-  '../../../../selectors/custom-gas': {
-    getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
-    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => `mockGasButtonInfo:${s}`,
-    getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
-  },
   '../../../../ducks/send/send.duck': sendDuckSpies,
   '../../../../ducks/gas/gas.duck': gasDuckSpies,
 })
 
 describe('send-gas-row container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
-      assert.deepEqual(mapStateToProps('mockState'), {
-        balance: 'mockBalance:mockState',
-        conversionRate: 'mockConversionRate:mockState',
-        convertedCurrency: 'mockConvertedCurrency:mockState',
-        gasTotal: 'mockGasTotal:mockState',
-        gasFeeError: 'mockGasFeeError:mockState',
-        gasLoadingError: 'mockGasLoadingError:mockState',
-        gasPriceButtonGroupProps: {
-          buttonDataLoading: `mockBasicGasEstimateLoadingStatus:mockState`,
-          defaultActiveButtonIndex: 1,
-          newActiveButtonIndex: 49,
-          gasButtonInfo: `mockGasButtonInfo:mockState`,
-        },
-        gasButtonGroupShown: `mockGetGasButtonGroupShown:mockState`,
-        advancedInlineGasShown: 'mockAdvancedInlineGasShown:mockState',
-        gasLimit: 'mockGasLimit:mockState',
-        gasPrice: 'mockGasPrice:mockState',
-        insufficientBalance: false,
-        maxModeOn: 'mockMaxModeOn:mockState',
-        selectedToken: false,
-        tokenBalance: 'mockTokenBalance:mockState',
-      })
-    })
-
-  })
 
   describe('mapDispatchToProps()', () => {
     let dispatchSpy

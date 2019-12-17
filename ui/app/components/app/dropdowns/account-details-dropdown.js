@@ -1,10 +1,12 @@
-const Component = require('react').Component
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
+const { CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
 const genAccountLink = require('../../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
@@ -13,7 +15,7 @@ AccountDetailsDropdown.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsDropdown)
+module.exports = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)
 
 function mapStateToProps (state) {
   return {
@@ -50,7 +52,7 @@ AccountDetailsDropdown.prototype.onClose = function (e) {
   this.props.onClose()
 }
 
-AccountDetailsDropdown.prototype.render = function () {
+AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
   const {
     selectedIdentity,
     network,
@@ -59,6 +61,7 @@ AccountDetailsDropdown.prototype.render = function () {
     viewOnEtherscan,
     showRemoveAccountConfirmationModal,
     rpcPrefs,
+    history,
   } = this.props
 
   const address = selectedIdentity.address
@@ -69,71 +72,104 @@ AccountDetailsDropdown.prototype.render = function () {
 
   const isRemovable = keyring.type !== 'HD Key Tree'
 
-  return h(Menu, { className: 'account-details-dropdown', isShowing: true }, [
-    h(CloseArea, {
-      onClick: this.onClose,
-    }),
-    h(Item, {
-      onClick: (e) => {
-        e.stopPropagation()
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Account Options',
-            name: 'Clicked Expand View',
-          },
-        })
-        global.platform.openExtensionInBrowser()
-        this.props.onClose()
-      },
-      text: this.context.t('expandView'),
-      icon: h(`img`, { src: 'images/expand.svg', style: { height: '15px' } }),
-    }),
-    h(Item, {
-      onClick: (e) => {
-        e.stopPropagation()
-        showAccountDetailModal()
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Account Options',
-            name: 'Viewed Account Details',
-          },
-        })
-        this.props.onClose()
-      },
-      text: this.context.t('accountDetails'),
-      icon: h(`img`, { src: 'images/info.svg', style: { height: '15px' } }),
-    }),
-    h(Item, {
-      onClick: (e) => {
-        e.stopPropagation()
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Account Options',
-            name: 'Clicked View on Etherscan',
-          },
-        })
-        viewOnEtherscan(address, network, rpcPrefs)
-        this.props.onClose()
-      },
-      text: (rpcPrefs.blockExplorerUrl
-        ? this.context.t('viewinExplorer')
-        : this.context.t('viewOnEtherscan')),
-      subText: (rpcPrefs.blockExplorerUrl
-        ? rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]
-        : null),
-      icon: h(`img`, { src: 'images/open-etherscan.svg', style: { height: '15px' } }),
-    }),
-    isRemovable ? h(Item, {
-      onClick: (e) => {
-        e.stopPropagation()
-        showRemoveAccountConfirmationModal(selectedIdentity)
-        this.props.onClose()
-      },
-      text: this.context.t('removeAccount'),
-      icon: h(`img`, { src: 'images/hide.svg', style: { height: '15px' } }),
-    }) : null,
-  ])
+  return (
+    <Menu className="account-details-dropdown" isShowing>
+      <CloseArea onClick={this.onClose} />
+      <Item
+        onClick={(e) => {
+          e.stopPropagation()
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Account Options',
+              name: 'Clicked Expand View',
+            },
+          })
+          global.platform.openExtensionInBrowser()
+          this.props.onClose()
+        }}
+        text={this.context.t('expandView')}
+        icon={(
+          <img alt="" src="images/expand.svg" style={{ height: '15px' }} />
+        )}
+      />
+      <Item
+        onClick={(e) => {
+          e.stopPropagation()
+          showAccountDetailModal()
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Account Options',
+              name: 'Viewed Account Details',
+            },
+          })
+          this.props.onClose()
+        }}
+        text={this.context.t('accountDetails')}
+        icon={(
+          <img src="images/info.svg" style={{ height: '15px' }} alt="" />
+        )}
+      />
+      <Item
+        onClick={(e) => {
+          e.stopPropagation()
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Account Options',
+              name: 'Clicked View on Etherscan',
+            },
+          })
+          viewOnEtherscan(address, network, rpcPrefs)
+          this.props.onClose()
+        }}
+        text={
+          rpcPrefs.blockExplorerUrl
+            ? this.context.t('viewinExplorer')
+            : this.context.t('viewOnEtherscan')
+        }
+        subText={
+          rpcPrefs.blockExplorerUrl
+            ? rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]
+            : null
+        }
+        icon={(
+          <img src="images/open-etherscan.svg" style={{ height: '15px' }} alt="" />
+        )}
+      />
+      <Item
+        onClick={(e) => {
+          e.stopPropagation()
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Account Options',
+              name: 'Opened Connected Sites',
+            },
+          })
+          history.push(CONNECTED_ROUTE)
+        }}
+        text={this.context.t('connectedSites')}
+        icon={(
+          <img src="images/connect-white.svg" style={{ height: '15px' }} alt="" />
+        )}
+      />
+      {
+        isRemovable
+          ? (
+            <Item
+              onClick={(e) => {
+                e.stopPropagation()
+                showRemoveAccountConfirmationModal(selectedIdentity)
+                this.props.onClose()
+              }}
+              text={this.context.t('removeAccount')}
+              icon={<img src="images/hide.svg" style={{ height: '15px' }} alt="" />}
+            />
+          )
+          : null
+      }
+    </Menu>
+  )
 }

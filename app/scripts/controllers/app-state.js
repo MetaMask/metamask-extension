@@ -7,12 +7,13 @@ class AppStateController {
    * @param opts
    */
   constructor (opts = {}) {
-    const {initState, onInactiveTimeout, preferencesStore} = opts
-    const {preferences} = preferencesStore.getState()
+    const { initState, onInactiveTimeout, preferencesStore } = opts
+    const { preferences } = preferencesStore.getState()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
     this.store = new ObservableStore(extend({
       timeoutMinutes: 0,
+      mkrMigrationReminderTimestamp: null,
     }, initState))
     this.timer = null
 
@@ -21,6 +22,12 @@ class AppStateController {
     })
 
     this._setInactiveTimeout(preferences.autoLogoutTimeLimit)
+  }
+
+  setMkrMigrationReminderTimestamp (timestamp) {
+    this.store.updateState({
+      mkrMigrationReminderTimestamp: timestamp,
+    })
   }
 
   /**
@@ -38,7 +45,7 @@ class AppStateController {
    * @private
    */
   _setInactiveTimeout (timeoutMinutes) {
-    this.store.putState({
+    this.store.updateState({
       timeoutMinutes,
     })
 
@@ -55,7 +62,7 @@ class AppStateController {
    * @private
    */
   _resetTimer () {
-    const {timeoutMinutes} = this.store.getState()
+    const { timeoutMinutes } = this.store.getState()
 
     if (this.timer) {
       clearTimeout(this.timer)

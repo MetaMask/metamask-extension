@@ -6,9 +6,7 @@ export default class TokenBalance extends PureComponent {
   static propTypes = {
     string: PropTypes.string,
     symbol: PropTypes.string,
-    error: PropTypes.string,
     className: PropTypes.string,
-    withSymbol: PropTypes.bool,
   }
 
   render () {

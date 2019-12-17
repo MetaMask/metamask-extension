@@ -10,7 +10,7 @@ function reduceMetamask (state, action) {
   let newState
 
   // clone + defaults
-  var metamaskState = extend({
+  const metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
@@ -25,6 +25,7 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
+    customNonceValue: '',
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -57,6 +58,7 @@ function reduceMetamask (state, action) {
     knownMethodData: {},
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
+    nextNonce: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -76,11 +78,6 @@ function reduceMetamask (state, action) {
         isUnlocked: false,
       })
 
-    case actions.SET_RPC_LIST:
-      return extend(metamaskState, {
-        frequentRpcList: action.value,
-      })
-
     case actions.SET_RPC_TARGET:
       return extend(metamaskState, {
         provider: {
@@ -97,7 +94,7 @@ function reduceMetamask (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var stringId = String(action.id)
+      const stringId = String(action.id)
       newState = extend(metamaskState, {
         unapprovedTxs: {},
         unapprovedMsgs: {},
@@ -112,22 +109,6 @@ function reduceMetamask (state, action) {
           newState.unapprovedMsgs[id] = metamaskState.unapprovedMsgs[id]
         }
       }
-      return newState
-
-    case actions.EDIT_TX:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          editingTransactionId: action.value,
-        },
-      })
-
-    case actions.CLEAR_SEED_WORD_CACHE:
-      newState = extend(metamaskState, {
-        isUnlocked: true,
-        isInitialized: true,
-        selectedAddress: action.value,
-      })
       return newState
 
     case actions.SHOW_ACCOUNT_DETAIL:
@@ -188,7 +169,10 @@ function reduceMetamask (state, action) {
           gasLimit: action.value,
         },
       })
-
+    case actions.UPDATE_CUSTOM_NONCE:
+      return extend(metamaskState, {
+        customNonceValue: action.value,
+      })
     case actions.UPDATE_GAS_PRICE:
       return extend(metamaskState, {
         send: {
@@ -226,14 +210,6 @@ function reduceMetamask (state, action) {
         },
       })
 
-    case actions.UPDATE_SEND_FROM:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          from: action.value,
-        },
-      })
-
     case actions.UPDATE_SEND_TO:
       return extend(metamaskState, {
         send: {
@@ -248,14 +224,6 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           amount: action.value,
-        },
-      })
-
-    case actions.UPDATE_SEND_MEMO:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          memo: action.value,
         },
       })
 
@@ -317,7 +285,9 @@ function reduceMetamask (state, action) {
       let { selectedAddressTxList } = metamaskState
       selectedAddressTxList = selectedAddressTxList.map(tx => {
         if (tx.id === txId) {
-          tx.txParams = value
+          const newTx = Object.assign({}, tx)
+          newTx.txParams = value
+          return newTx
         }
         return tx
       })
@@ -333,16 +303,6 @@ function reduceMetamask (state, action) {
           ...metamaskState.tokenExchangeRates,
           [pairMarketInfo.pair]: pairMarketInfo,
         },
-      })
-
-    case actions.SHAPESHIFT_SUBVIEW:
-      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [ssMarketInfo.pair]: ssMarketInfo,
-        },
-        coinOptions,
       })
 
     case actions.SET_PARTICIPATE_IN_METAMETRICS:
@@ -365,11 +325,6 @@ function reduceMetamask (state, action) {
         featureFlags: action.value,
       })
 
-    case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
-      return extend(metamaskState, {
-        networkEndpointType: action.value,
-      })
-
     case actions.CLOSE_WELCOME_SCREEN:
       return extend(metamaskState, {
         welcomeScreenSeen: true,
@@ -377,7 +332,7 @@ function reduceMetamask (state, action) {
 
     case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
-        currentLocale: action.value,
+        currentLocale: action.value.locale,
       })
 
     case actions.SET_PENDING_TOKENS:
@@ -409,6 +364,12 @@ function reduceMetamask (state, action) {
     case actions.SET_FIRST_TIME_FLOW_TYPE: {
       return extend(metamaskState, {
         firstTimeFlowType: action.value,
+      })
+    }
+
+    case actions.SET_NEXT_NONCE: {
+      return extend(metamaskState, {
+        nextNonce: action.value,
       })
     }
 

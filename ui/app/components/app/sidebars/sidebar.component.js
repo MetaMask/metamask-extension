@@ -20,13 +20,15 @@ export default class Sidebar extends Component {
   renderOverlay () {
     const { onOverlayClose } = this.props
 
-    return <div
-      className="sidebar-overlay"
-      onClick={() => {
-        onOverlayClose && onOverlayClose()
-        this.props.hideSidebar()
-      }
-      } />
+    return (
+      <div
+        className="sidebar-overlay"
+        onClick={() => {
+          onOverlayClose && onOverlayClose()
+          this.props.hideSidebar()
+        }}
+      />
+    )
   }
 
   renderSidebarContent () {
@@ -34,9 +36,9 @@ export default class Sidebar extends Component {
     const { transaction = {} } = sidebarProps
     switch (type) {
       case WALLET_VIEW_SIDEBAR:
-        return <WalletView responsiveDisplayClassname={'sidebar-right' } />
+        return <WalletView responsiveDisplayClassname="sidebar-right" />
       case 'customize-gas':
-        return <div className={'sidebar-left'}><CustomizeGas transaction={transaction} /></div>
+        return <div className="sidebar-left"><CustomizeGas transaction={transaction} /></div>
       default:
         return null
     }

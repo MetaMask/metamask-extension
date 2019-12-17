@@ -8,7 +8,17 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
-import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount, updateTransaction } from '../../store/actions'
+import {
+  updateCustomNonce,
+  cancelTx,
+  cancelTxs,
+  updateAndApproveTx,
+  showModal,
+  setMetaMetricsSendCount,
+  updateTransaction,
+  getNextNonce,
+  tryReverseResolveAddress,
+} from '../../store/actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -18,7 +28,7 @@ import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
+import { getMetaMaskAccounts, getCustomNonceValue, getUseNonceField, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -28,23 +38,28 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   }
 }, {})
 
+let customNonceValue = ''
+const customNonceMerge = txData => (customNonceValue ? ({
+  ...txData,
+  customNonceValue,
+}) : txData)
+
 const mapStateToProps = (state, ownProps) => {
-  const { toAddress: propsToAddress, match: { params = {} } } = ownProps
+  const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {
+    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
-    currentCurrency,
-    selectedAddress,
-    selectedAddressTxList,
     assetImages,
     network,
     unapprovedTxs,
     metaMetricsSendCount,
+    nextNonce,
   } = metamask
   const {
     tokenData,
@@ -53,7 +68,7 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
-  const transaction = R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(selectedAddressTxList) || {}
+  const transaction = Object.values(unapprovedTxs).find(({ id }) => id === (transactionId || Number(paramsTransactionId))) || {}
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -65,8 +80,8 @@ const mapStateToProps = (state, ownProps) => {
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
-  const { balance } = accounts[selectedAddress]
-  const { name: fromName } = identities[selectedAddress]
+  const { balance } = accounts[fromAddress]
+  const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name
@@ -76,18 +91,14 @@ const mapStateToProps = (state, ownProps) => {
         : addressSlicer(checksumAddress(toAddress))
     )
 
-  const addressBookObject = addressBook[checksumAddress(toAddress)]
+  const checksummedAddress = checksumAddress(toAddress)
+  const addressBookObject = addressBook[checksummedAddress]
+  const toEns = ensResolutionsByAddress[checksummedAddress] || ''
   const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
 
   const {
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -112,28 +123,33 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {}
 
+  let fullTxData = { ...txData, ...transaction }
+  if (customTxParamsData) {
+    fullTxData = {
+      ...fullTxData,
+      txParams: {
+        ...fullTxData.txParams,
+        data: customTxParamsData,
+      },
+    }
+  }
+
   return {
     balance,
     fromAddress,
     fromName,
     toAddress,
+    toEns,
     toName,
     toNickname,
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
-    txData: { ...txData, ...transaction },
+    txData: fullTxData,
     tokenData,
     methodData,
     tokenProps,
     isTxReprice,
-    currentCurrency,
     conversionRate,
     transactionStatus,
     nonce,
@@ -146,18 +162,27 @@ const mapStateToProps = (state, ownProps) => {
       gasPrice,
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
+    useNonceField: getUseNonceField(state),
+    customNonceValue: getCustomNonceValue(state),
     insufficientBalance,
     hideSubtitle: (!isMainnet && !showFiatInTestnets),
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
     metaMetricsSendCount,
     transactionCategory,
+    nextNonce,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = dispatch => {
   return {
+    tryReverseResolveAddress: (address) => {
+      return dispatch(tryReverseResolveAddress(address))
+    },
+    updateCustomNonce: value => {
+      customNonceValue = value
+      dispatch(updateCustomNonce(value))
+    },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
@@ -172,8 +197,9 @@ const mapDispatchToProps = dispatch => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: txData => dispatch(updateAndApproveTx(txData)),
+    sendTransaction: txData => dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
+    getNextNonce: () => dispatch(getNextNonce()),
   }
 }
 

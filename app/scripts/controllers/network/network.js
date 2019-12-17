@@ -81,7 +81,9 @@ module.exports = class NetworkController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) this.lookupNetwork()
+    if (this.isNetworkLoading()) {
+      this.lookupNetwork()
+    }
   }
 
   getNetworkState () {
@@ -190,10 +192,13 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({ network: type })
+    const networkClient = createInfuraClient({
+      network: type,
+      onRequest: (req) => this.emit('rpc-req', { network: type, req }),
+    })
     this._setNetworkClient(networkClient)
     // setup networkConfig
-    var settings = {
+    const settings = {
       ticker: 'ETH',
     }
     this.networkConfig.putState(settings)
@@ -216,7 +221,7 @@ module.exports = class NetworkController extends EventEmitter {
       nickname,
     }
     // setup networkConfig
-    var settings = {
+    let settings = {
       network: chainId,
     }
     settings = extend(settings, networks.networkList['rpc'])
@@ -248,10 +253,5 @@ module.exports = class NetworkController extends EventEmitter {
     // set new provider and blockTracker
     this._provider = provider
     this._blockTracker = blockTracker
-  }
-
-  _logBlock (block) {
-    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    this.verifyNetwork()
   }
 }

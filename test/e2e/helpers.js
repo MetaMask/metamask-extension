@@ -2,34 +2,84 @@ const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-const { delay } = require('./func')
 const { until } = require('selenium-webdriver')
+
+const { buildWebDriver } = require('./webdriver')
+const fetchMockResponses = require('./fetch-mocks.json')
+
+const tinyDelayMs = 200
+const regularDelayMs = tinyDelayMs * 2
+const largeDelayMs = regularDelayMs * 2
 
 module.exports = {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
+  delay,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   switchToWindowWithTitle,
-  switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  setupFetchMocking,
+  prepareExtensionForTesting,
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
 }
 
-async function loadExtension (driver, extensionId) {
-  switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
+
+async function prepareExtensionForTesting ({ responsive } = {}) {
+  const browser = process.env.SELENIUM_BROWSER
+  const extensionPath = `dist/${browser}`
+  const { driver, extensionId, extensionUrl } = await buildWebDriver({ browser, extensionPath, responsive })
+
+  // Depending on the state of the application built into the above directory (extPath) and the value of
+  // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
+  // are closing any extraneous windows to reset us to a single window before continuing.
+
+  // wait an extra long time so any slow popups can trigger
+  await delay(4 * largeDelayMs)
+
+  const [tab1] = await driver.getAllWindowHandles()
+  await closeAllWindowHandlesExcept(driver, [tab1])
+  await driver.switchTo().window(tab1)
+  await driver.get(extensionUrl)
+
+  return { driver, extensionId, extensionUrl }
+}
+
+async function setupFetchMocking (driver) {
+  // define fetchMocking script, to be evaluated in the browser
+  function fetchMocking (fetchMockResponses) {
+    window.origFetch = window.fetch.bind(window)
+    window.fetch = async (...args) => {
+      const url = args[0]
+      if (url === 'https://ethgasstation.info/json/ethgasAPI.json') {
+        return { json: async () => clone(fetchMockResponses.ethGasBasic) }
+      } else if (url === 'https://ethgasstation.info/json/predictTable.json') {
+        return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
+      } else if (url.match(/chromeextensionmm/)) {
+        return { json: async () => clone(fetchMockResponses.metametrics) }
+      }
+      return window.origFetch(...args)
     }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
+    if (window.chrome && window.chrome.webRequest) {
+      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, { urls: ['https://*.infura.io/*'] }, ['blocking'])
+    }
+    function cancelInfuraRequest (requestDetails) {
+      console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
+      return { cancel: true }
+    }
+    function clone (obj) {
+      return JSON.parse(JSON.stringify(obj))
     }
   }
+  // fetchMockResponses are parsed last minute to ensure that objects are uniquely instantiated
+  const fetchMockResponsesJson = JSON.stringify(fetchMockResponses)
+  // eval the fetchMocking script in the browser
+  await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
 }
 
 async function checkBrowserForConsoleErrors (driver) {
@@ -63,6 +113,10 @@ async function verboseReportOnFailure (driver, test) {
   await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
   const htmlSource = await driver.getPageSource()
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+}
+
+function delay (time) {
+  return new Promise(resolve => setTimeout(resolve, time))
 }
 
 async function findElement (driver, by, timeout = 10000) {
@@ -148,20 +202,4 @@ async function assertElementNotPresent (webdriver, driver, by) {
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
   assert.ok(!dataTab, 'Found element that should not be present')
-}
-
-async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
-  if (!windowHandles) {
-    windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window that matches: ' + regexp)
-  }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const windowUrl = await driver.getCurrentUrl()
-  if (windowUrl.match(regexp)) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
-  }
 }

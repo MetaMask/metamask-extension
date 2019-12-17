@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import { DropdownMenuItem } from '../components/dropdown.js'
 
-describe('', () => {
+describe('Dropdown', () => {
   let wrapper
   const onClickSpy = sinon.spy()
   const closeMenuSpy = sinon.spy()
@@ -12,9 +12,9 @@ describe('', () => {
   beforeEach(() => {
     wrapper = shallow(
       <DropdownMenuItem
-        onClick = {onClickSpy}
-        style = {{test: 'style'}}
-        closeMenu = {closeMenuSpy}
+        onClick={onClickSpy}
+        style={{ test: 'style' }}
+        closeMenu={closeMenuSpy}
       >
       </DropdownMenuItem>
     )

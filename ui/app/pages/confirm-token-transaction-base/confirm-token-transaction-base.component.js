@@ -28,6 +28,10 @@ export default class ConfirmTokenTransactionBase extends Component {
     currentCurrency: PropTypes.string,
   }
 
+  static defaultProps = {
+    tokenAmount: 0,
+  }
+
   getFiatTransactionAmount () {
     const { tokenAmount, currentCurrency, conversionRate, contractExchangeRate } = this.props
 

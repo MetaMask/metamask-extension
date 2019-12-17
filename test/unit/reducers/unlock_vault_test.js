@@ -1,11 +1,11 @@
 // var jsdom = require('mocha-jsdom')
-var assert = require('assert')
+const assert = require('assert')
 // var freeze = require('deep-freeze-strict')
-var path = require('path')
-var sinon = require('sinon')
+const path = require('path')
+const sinon = require('sinon')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+const actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
+const reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
 
 describe('#unlockMetamask(selectedAccount)', function () {
   beforeEach(function () {

@@ -106,7 +106,9 @@ describe('Transaction state history helper', function () {
       assert.equal(result[0].path, expectedEntry1.path)
       assert.equal(result[0].value, expectedEntry1.value)
       assert.equal(result[0].value, expectedEntry1.value)
-      if (note) { assert.equal(result[0].note, note) }
+      if (note) {
+        assert.equal(result[0].note, note)
+      }
 
       assert.ok(result[0].timestamp >= before && result[0].timestamp <= after)
 

@@ -20,7 +20,13 @@ import ConfirmTransaction from './confirm-transaction.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask: { send, unapprovedTxs }, confirmTransaction } = state
+  const {
+    metamask: {
+      send,
+      unapprovedTxs,
+      abTests: { fullScreenVsPopup },
+    },
+  } = state
   const { match: { params = {} } } = ownProps
   const { id } = params
 
@@ -31,17 +37,19 @@ const mapStateToProps = (state, ownProps) => {
     : {}
   const { id: transactionId, transactionCategory } = transaction
 
+  const trackABTest = false
+
   return {
     totalUnapprovedCount: totalUnconfirmed,
     send,
-    confirmTransaction,
     unapprovedTxs,
     id,
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
-    unconfirmedTransactions,
     transaction,
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
+    trackABTest,
+    fullScreenVsPopupTestGroup: fullScreenVsPopup,
   }
 }
 

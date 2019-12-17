@@ -98,6 +98,8 @@
 
         &--copy-icon {
           padding-left: 4px;
+          width: 30px;
+          height: 20px;
         }
       }
 
@@ -197,6 +199,10 @@
       width: 30px;
       opacity: .5;
       background-repeat: no-repeat;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 }

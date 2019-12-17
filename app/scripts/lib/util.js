@@ -1,3 +1,4 @@
+const extension = require('extensionizer')
 const ethUtil = require('ethereumjs-util')
 const assert = require('assert')
 const BN = require('bn.js')
@@ -14,17 +15,6 @@ const {
 } = require('./enums')
 
 /**
- * Generates an example stack trace
- *
- * @returns {string} A stack trace
- *
- */
-function getStack () {
-  const stack = new Error('Stack trace generator - not an error').stack
-  return stack
-}
-
-/**
  * Used to determine the window type through which the app is being viewed.
  *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
  *  - 'responsive' refers to the main browser window
@@ -38,7 +28,7 @@ const getEnvironmentType = (url = window.location.href) => {
   const parsedUrl = new URL(url)
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
-  } else if (parsedUrl.pathname === '/home.html') {
+  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
@@ -132,26 +122,51 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function applyListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
-    emitter.on(key, listeners[key])
-  })
-}
-
 function removeListeners (listeners, emitter) {
   Object.keys(listeners).forEach((key) => {
     emitter.removeListener(key, listeners[key])
   })
 }
 
+function getRandomArrayItem (array) {
+  return array[Math.floor((Math.random() * array.length))]
+}
+
+function mapObjectValues (object, cb) {
+  const mappedObject = {}
+  Object.keys(object).forEach(key => {
+    mappedObject[key] = cb(key, object[key])
+  })
+  return mappedObject
+}
+
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) {
+    return
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message)
+}
+
 module.exports = {
   removeListeners,
-  applyListeners,
   getPlatform,
-  getStack,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
+  getRandomArrayItem,
+  mapObjectValues,
+  checkForError,
 }
