@@ -1,7 +1,7 @@
 const assert = require('assert')
 let id = 0
 const migration41 = require('../../../app/scripts/migrations/040')
-const nullStorage = {meta: { version: 0 }, data: {}}
+const nullStorage = { meta: { version: 0 }, data: {} }
 const storage = {
   meta: {},
   data: { TransactionController: {
@@ -30,11 +30,16 @@ const transactions60 = []
 
 do {
   ++id
-  if (counts[currentStatus] === 20) currentStatus = status.pop()
+  if (counts[currentStatus] === 20) {
+    currentStatus = status.pop()
+  }
   transactions160.push(generateTxMeta(id, nets[netIdIndex], currentStatus))
 
-  if (!counts[currentStatus]) counts[currentStatus] = 1
-  else counts[currentStatus] += 1
+  if (!counts[currentStatus]) {
+    counts[currentStatus] = 1
+  } else {
+    counts[currentStatus] += 1
+  }
 
   if (id % 5 === 0) {
     if (netIdIndex === 4) {
@@ -64,15 +69,28 @@ status = [
 do {
   ++id
   // i only want unapproved
-  if (id % 10 === 0) currentStatus = status.pop()
-  if (counts60[currentStatus] === 5 && currentStatus === 'unapproved') currentStatus = status.pop()
-  if (counts60[currentStatus] === 5 && currentStatus === 'approved') currentStatus = status.pop()
-  if (counts60[currentStatus] === 4 && currentStatus === 'submitted') currentStatus = status.pop()
-  if (counts60[currentStatus] === 6 && currentStatus === 'failed') currentStatus = status.pop()
+  if (id % 10 === 0) {
+    currentStatus = status.pop()
+  }
+  if (counts60[currentStatus] === 5 && currentStatus === 'unapproved') {
+    currentStatus = status.pop()
+  }
+  if (counts60[currentStatus] === 5 && currentStatus === 'approved') {
+    currentStatus = status.pop()
+  }
+  if (counts60[currentStatus] === 4 && currentStatus === 'submitted') {
+    currentStatus = status.pop()
+  }
+  if (counts60[currentStatus] === 6 && currentStatus === 'failed') {
+    currentStatus = status.pop()
+  }
 
   transactions60.push(generateTxMeta(id, nets[netIdIndex], currentStatus))
-  if (!counts60[currentStatus]) counts60[currentStatus] = 1
-  else counts60[currentStatus] += 1
+  if (!counts60[currentStatus]) {
+    counts60[currentStatus] = 1
+  } else {
+    counts60[currentStatus] += 1
+  }
 
   if (id % 5 === 0) {
     if (netIdIndex === 4) {
