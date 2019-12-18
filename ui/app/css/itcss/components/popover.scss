@@ -77,9 +77,10 @@
       display: flex;
       justify-content: flex-start;
       align-items: stretch;
+      flex-direction: row;
 
       .react-tabs__tab {
-        width: 50%;
+        flex-grow: 1;
         text-align: center;
         font-weight: 500;
         font-size: 14px;
@@ -106,6 +107,12 @@
     height: calc(100% - 66px - 10px);
     overflow-y: scroll;
 
+    > h3 {
+      font-size: 12px;
+      line-height: 17px;
+      color: #000;
+      margin: 16px 0;
+    }
     .popover-item {
       display: flex;
       justify-content: flex-start;

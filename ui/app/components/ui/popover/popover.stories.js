@@ -122,6 +122,7 @@ storiesOf('PopOver', module)
 
           <TabPanel>
             <div className="container">
+              <h3>Select a higher fee to accelerate your transaction.</h3>
               <Details />
             </div>
           </TabPanel>
