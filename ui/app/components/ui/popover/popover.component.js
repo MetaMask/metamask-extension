@@ -13,9 +13,7 @@ const PopOver = ({ title, children, onClose }) => (
           </div>
         </a>
       </div>
-      <div className="container">
-        {children}
-      </div>
+      {children}
     </div>
     <a href="#" className="popover-bg" onClick={onClose} />
   </div>

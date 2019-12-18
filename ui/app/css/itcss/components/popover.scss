@@ -72,6 +72,32 @@
     }
   }
 
+  .react-tabs {
+    .react-tabs__tab-list {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      .react-tabs__tab {
+        width: 50%;
+        text-align: center;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 140%;
+        display: block;
+        padding: 14px 0;
+        color: #6A737D;
+        border-bottom: 1px solid #C4C4C4;
+        // cursor: pointer;
+      }
+
+      .react-tabs__tab--selected {
+        color: #037DD6;
+        border-color: #037DD6;
+      }
+    }
+  }
+
   .container {
     padding: 0 5px 0 16px;
     margin-top: 5px;
