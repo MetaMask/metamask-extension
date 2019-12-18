@@ -1,6 +1,6 @@
 const assert = require('assert')
 let id = 0
-const migration41 = require('../../../app/scripts/migrations/040')
+const migration41 = require('../../../app/scripts/migrations/041')
 const nullStorage = { meta: { version: 0 }, data: {} }
 const storage = {
   meta: {},
