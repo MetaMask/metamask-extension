@@ -22,9 +22,12 @@ const PopOver = ({ title, children, onClose }) => (
 )
 
 PopOver.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.children,
-  onClose: PropTypes.func,
+  title: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+  onClose: PropTypes.func.isRequired,
 }
 
 export default PopOver
