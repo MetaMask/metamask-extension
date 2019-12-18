@@ -73,6 +73,12 @@
   }
 
   .react-tabs {
+    height: calc(100% - 66px);
+
+    .react-tabs__tab-panel {
+      height: 100%;
+    }
+
     .react-tabs__tab-list {
       display: flex;
       justify-content: flex-start;
@@ -107,7 +113,28 @@
     margin-right: 5px;
     height: calc(100% - 66px - 10px);
     overflow-y: scroll;
-
+    position: relative;
+    display: flex;
+    // align-items: stretch;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    .save {
+      background: #037DD6;
+      border-radius: 6px;
+      display: block;
+      margin-top: auto;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      padding: 12px 0;
+      color: #FFFFFF;
+      text-align: center;
+    }
     > h3 {
       font-size: 12px;
       line-height: 17px;

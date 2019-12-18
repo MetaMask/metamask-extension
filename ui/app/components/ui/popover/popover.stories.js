@@ -154,6 +154,7 @@ storiesOf('PopOver', module)
               <h3>Select a higher fee to accelerate your transaction.</h3>
               <Fees />
               <Details />
+              <button className="save">Save</button>
             </div>
           </TabPanel>
           <TabPanel>
