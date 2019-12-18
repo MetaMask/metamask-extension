@@ -95,6 +95,7 @@
       .react-tabs__tab--selected {
         color: #037DD6;
         border-color: #037DD6;
+        border-width: 2px;
       }
     }
   }
@@ -112,6 +113,52 @@
       line-height: 17px;
       color: #000;
       margin: 16px 0;
+    }
+    .fees {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex-direction: row;
+      margin-bottom: 16px;
+      .fees__option {
+        padding: 12px;
+        border: 1px solid #D2D8DD;
+        border-radius: 6px;
+        margin-right: 10px;
+        flex-grow: 1;
+        width: calc(100% / 3);
+        * { pointer-events: none; }
+        &.selected {
+          background: #F7FCFF;
+          border-color: #037DD6;
+        }
+        h3 {
+          font-size: 10px;
+          line-height: 12px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #6A737D;
+        }
+        h4 {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          color: #24292E;
+          margin: 6px 0;
+        }
+        p {
+          font-size: 10px;
+          line-height: 160%;
+          color: #24292E;
+          .eth {
+            color: #6A737D;
+            display: inline-block;
+          }
+        }
+        &:last-child {
+          margin-right: 0;
+        }
+      }
     }
     .popover-item {
       display: flex;
