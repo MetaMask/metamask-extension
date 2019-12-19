@@ -31,9 +31,9 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = LOCALHOST
+  defaultProviderConfigType = MAINNET
 } else if (METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigType = RINKEBY
+  defaultProviderConfigType = MAINNET
 } else {
   defaultProviderConfigType = MAINNET
 }
@@ -176,11 +176,11 @@ module.exports = class NetworkController extends EventEmitter {
   _configureProvider (opts) {
     const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    if (isInfura) {
+    // const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    // if (isInfura) {
       // this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
-    } else if (type === 'mainnet') {
+    if (true || type === 'mainnet') {
       this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: "CFX", nickname: "conflux-mainnet" })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()

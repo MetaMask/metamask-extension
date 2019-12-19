@@ -1,5 +1,16 @@
 const ConfluxWeb = require("conflux-web");
 
+class FakeContract {
+  constructor(cfx, abi) {
+    this.cfx = cfx;
+    this.abi = abi;
+  }
+
+  at(address) {
+    return this.cfx.Contract.call(this.cfx, { abi: this.abi, address });
+  }
+}
+
 module.exports = class Web3 extends ConfluxWeb {
   constructor() {
     if (arguments[0] && arguments[0]._confluxWebProvider) {
@@ -19,5 +30,13 @@ module.exports = class Web3 extends ConfluxWeb {
     } else {
       return ConfluxWeb.prototype.setProvider.call(this, ...arguments);
     }
+  }
+
+  get eth() {
+    return {
+      contract: abi => {
+        return new FakeContract(this, abi);
+      }
+    };
   }
 };
