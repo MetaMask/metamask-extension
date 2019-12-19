@@ -9,18 +9,14 @@ export default function withTokenTracker (WrappedComponent) {
       token: PropTypes.object.isRequired,
     }
 
-    constructor (props) {
-      super(props)
-
-      this.state = {
-        string: '',
-        symbol: '',
-        balance: '',
-        error: null,
-      }
-
-      this.tracker = null
+    state = {
+      string: '',
+      symbol: '',
+      balance: '',
+      error: null,
     }
+
+    tracker = null
 
     componentDidMount () {
       this.createFreshTokenTracker()

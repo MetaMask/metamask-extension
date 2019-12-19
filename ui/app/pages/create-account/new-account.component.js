@@ -4,14 +4,15 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
 export default class NewAccountCreateForm extends Component {
-  constructor (props, context) {
-    super(props)
-    const { newAccountNumber = 0 } = props
+  static defaultProps = {
+    newAccountNumber: 0,
+  }
 
-    this.state = {
-      newAccountName: '',
-      defaultAccountName: context.t('newAccountNumberName', [newAccountNumber]),
-    }
+  state = {
+    newAccountName: '',
+    defaultAccountName: this.context.t('newAccountNumberName', [
+      this.props.newAccountNumber,
+    ]),
   }
 
   render () {
