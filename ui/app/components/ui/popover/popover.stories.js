@@ -99,6 +99,10 @@ const Details = () => (
   </div>
 )
 
+const Chart = () => (
+  <div className="chart"></div>
+)
+
 storiesOf('PopOver', module)
   .add('PopOver - Approve', () => (
     <div style={containerStyle}>
@@ -159,7 +163,23 @@ storiesOf('PopOver', module)
           </TabPanel>
           <TabPanel>
             <div className="container">
-              <h2>Any content 2</h2>
+              <div className="advanced-input-controls">
+                <div className="col">
+                  <div className="advanced-gas-inputs__gas-edit-row__label">Gas Price (GWEI)<i className="fa fa-info-circle"></i></div>
+                  <div className="">
+                    <input defaultValue="8" type="number" id="tentacles" name="tentacles" min="8" max="100" />
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="advanced-gas-inputs__gas-edit-row__label">Gas Price (GWEI)<i className="fa fa-info-circle"></i></div>
+                  <div className="">
+                    <input defaultValue="2100" type="number" id="tentacles" name="tentacles" min="8" max="100" />
+                  </div>
+                </div>
+              </div>
+              <Chart />
+              <Details />
+              <button className="save">Save</button>
             </div>
           </TabPanel>
         </Tabs>
