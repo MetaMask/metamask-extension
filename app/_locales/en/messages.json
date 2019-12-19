@@ -1513,6 +1513,12 @@
   "transferFrom": {
     "message": "Transfer From"
   },
+  "trustVaultWelcome": {
+    "message": "Welcome to TrustVault"
+  },
+  "trustVaultEnterEmail": {
+    "message": "Please enter your email to continue"
+  },
   "trustVaultIncorrectPin": {
     "message": "Invalid PIN. Please try again"
   },

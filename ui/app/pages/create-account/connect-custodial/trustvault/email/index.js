@@ -16,7 +16,7 @@ class ConnectTrustVaultEmailForm extends PureComponent {
   renderError () {
     return (
       this.state.error ? (
-        <span className="sw-connect__error" >
+        <span className='sw-connect__error' >
           {this.state.error}
         </span>
       ) : null

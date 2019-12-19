@@ -42,7 +42,7 @@ class PinScreen extends PureComponent {
       return component
     })
     return (
-      <div className="sw-connect__pin-input">
+      <div className='sw-connect__pin-input'>
         {inputField}
       </div>
     )
@@ -100,19 +100,19 @@ class PinScreen extends PureComponent {
 
   renderUnsupportedBrowser () {
     return (
-      <div className="new-account-connect-form.unsupported-browser">
-        <div className="hw-connect">
-          <h3 className="hw-connect__title">
+      <div className='new-account-connect-form.unsupported-browser'>
+        <div className='hw-connect'>
+          <h3 className='hw-connect__title'>
             {this.context.t('browserNotSupported')}
           </h3>
-          <p className="hw-connect__msg">
+          <p className='hw-connect__msg'>
             {this.context.t('chromeRequiredForHardwareWallets')}
           </p>
 
         </div>
         <div>
           <Button
-            type="primary"
+            type='primary'
             large
             onClick={() => {
               global.platform.openWindow({
@@ -133,11 +133,11 @@ class PinScreen extends PureComponent {
       secondPinDigitPosition,
     } = this.props.pinChallenge
     return (
-      <div className="sw-connect__pin-input__header">
-        <p className="sw-connect__header__msg">
+      <div className='sw-connect__pin-input__header'>
+        <p className='sw-connect__header__msg'>
           {'Please enter characters'}
         </p>
-        <p className="sw-connect__pin-input__header__msg">
+        <p className='sw-connect__pin-input__header__msg'>
           {`${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`}
         </p>
 
@@ -147,9 +147,9 @@ class PinScreen extends PureComponent {
 
   renderFooter () {
     return (
-      <div className="sw-connect__pin-input__footer">
+      <div className='sw-connect__pin-input__footer'>
         <span
-          className="sw-connect__pin-input__footer__msg"
+          className='sw-connect__pin-input__footer__msg'
           onClick={ _ => this.props.onCancelLogin()}
         >
           {`${this.context.t('not')} ${this.props.email}?`}
@@ -171,11 +171,11 @@ class PinScreen extends PureComponent {
 
   renderConnectToTrustVaultButton () {
     return (
-      <div className="sw-connect__pin-input__connect-btn">
+      <div className='sw-connect__pin-input__connect-btn'>
         <Button
-          type="primary"
+          type='primary'
           large
-          className="sw-connect__connect-btn"
+          className='sw-connect__connect-btn'
           onClick={this.submitPinChallenge}
           disabled={ !(
             Boolean(this.state.firstPin) && Boolean(this.state.secondPin)
@@ -189,7 +189,7 @@ class PinScreen extends PureComponent {
 
   renderPinScreen () {
     return (
-      <div className="new-account-connect-form">
+      <div className='new-account-connect-form'>
         {this.renderHeader()}
         {this.renderPinInputField()}
         {this.renderConnectToTrustVaultButton()}
