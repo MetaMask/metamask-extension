@@ -22,13 +22,12 @@ class ConnectTrustVaultPinForm extends PureComponent {
 
   showWalletConnectedAlert () {
     this.props.goToHomePage()
-    this.props.showAlert('Custodial wallet successfully connected')
+    this.props.showAlert(this.context.t('custodialWalletConnected'))
     // Autohide the alert after 1.5 seconds and redirect to home page
     setTimeout(_ => {
       this.props.hideAlert()
     }, 2500)
   }
-
   submitTrustVaultPinChallenge = async (firstPin, secondPin) => {
     const deviceName = 'TrustVault'
     try {

@@ -375,6 +375,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "custodialWalletConnected": {
+    "message": "Custodial wallet successfully connected"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
