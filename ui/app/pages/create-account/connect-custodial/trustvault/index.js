@@ -49,7 +49,7 @@ class ConnectTrustVaultForm extends PureComponent {
 
   renderError () {
     return (this.state.error ? (
-      <span className='sw-connect__error'>
+      <span className="sw-connect__error">
         {this.state.error}
       </span>
     ) : null)
@@ -98,8 +98,8 @@ class ConnectTrustVaultForm extends PureComponent {
 
   render = () => {
     return (
-      <div className='new-account__header'>
-        <div className='trustvault-connect'>
+      <div className="new-account__header">
+        <div className="trustvault-connect">
           {this.renderError()}
           {!this.state.pinChallenge ? this.renderEmailForm() : this.renderPinForm()}
           <Switch>
