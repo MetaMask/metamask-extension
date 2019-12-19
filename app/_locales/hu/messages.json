@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Gratulálunk"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Hardverpénztárca csatlakoztatása"
   },
   "connect": {

@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Selamat"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Hubungkan Dompet Peranti Keras"
   },
   "connect": {

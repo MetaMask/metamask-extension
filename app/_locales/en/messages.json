@@ -285,11 +285,8 @@
   "congratulations": {
     "message": "Congratulations"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Connect External Wallet"
-  },
-  "connectTrustVault": {
-    "message": "Connect TrustVault"
   },
   "connect": {
     "message": "Connect"
@@ -314,15 +311,6 @@
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
-  },
-  "connectingToUnknown": {
-    "message": "Connecting to Unknown Network"
-  },
-  "connectToLedger": {
-    "message": "Connect to Ledger"
-  },
-  "connectToTrezor": {
-    "message": "Connect to Trezor"
   },
   "connectToTrustVault": {
     "message": "Connect to TrustVault"
@@ -489,9 +477,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "emailAddress": {
-    "message": "Email address"
   },
   "emailUs": {
     "message": "Email us!"
@@ -1313,9 +1298,6 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
-  "custodialWalletConnected": {
-    "message": "Custodial wallet successfully connected"
-  },
   "speedUp": {
     "message": "Speed Up"
   },
@@ -1443,7 +1425,7 @@
   },
   "thisWillAllowExternalExtension": {
     "message": "This will allow an external extension with id $1 to:",
-    "description":  "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
@@ -1530,21 +1512,6 @@
   },
   "transferFrom": {
     "message": "Transfer From"
-  },
-  "transfers": {
-    "message": "Transfers"
-  },
-  "trezorHardwareWallet": {
-    "message": "TREZOR Hardware Wallet"
-  },
-  "trustVaultWelcome": {
-    "message": "Welcome to TrustVault"
-  },
-  "trustVaultEnterEmail": {
-    "message": "Please enter your email to continue"
-  },
-  "trustVaultEnterPin": {
-    "message": "Please enter the following digits of your PIN"
   },
   "trustVaultIncorrectPin": {
     "message": "Invalid PIN. Please try again"

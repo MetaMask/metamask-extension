@@ -227,7 +227,7 @@
   "congratulations": {
     "message": "恭喜"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "連線硬體錢包"
   },
   "connect": {

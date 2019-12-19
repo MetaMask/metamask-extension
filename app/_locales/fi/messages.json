@@ -227,7 +227,7 @@
   "congratulations": {
     "message": "Onneksi olkoon"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Yhdistä laitteistokukkaro"
   },
   "connect": {

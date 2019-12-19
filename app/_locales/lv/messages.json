@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Apsveicam"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Pieslēgt aparatūras maku"
   },
   "connect": {

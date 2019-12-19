@@ -187,7 +187,7 @@
   "congratulations": {
     "message": "Enhorabuena"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Conectar Monedero Físico"
   },
   "connect": {

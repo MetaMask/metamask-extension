@@ -224,7 +224,7 @@
   "congratulations": {
     "message": "Gratulerar"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Anslut hårdvaruplånbok"
   },
   "connect": {

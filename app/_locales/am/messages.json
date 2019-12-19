@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "እንኳን ደስ አለዎት"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
   },
   "connect": {

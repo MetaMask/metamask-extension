@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Palju õnne!"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Ühendage riistvara rahakott"
   },
   "connect": {

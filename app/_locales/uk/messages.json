@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Вітаємо!"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Приєднайте апаратний гаманець"
   },
   "connect": {

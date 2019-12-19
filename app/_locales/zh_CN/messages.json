@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "恭喜"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "链接硬件钱包"
   },
   "connect": {

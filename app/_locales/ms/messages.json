@@ -227,7 +227,7 @@
   "congratulations": {
     "message": "Tahniah"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Sambungkan Dompet Perkakasan"
   },
   "connect": {

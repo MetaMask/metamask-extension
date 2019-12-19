@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "बधाई हो"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "हार्डवेयर वॉलेट कनेक्ट करें"
   },
   "connect": {

@@ -227,7 +227,7 @@
   "congratulations": {
     "message": "축하합니다."
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "하드웨어 지갑 연결"
   },
   "connect": {

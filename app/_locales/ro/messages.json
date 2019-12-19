@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Felicitări"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Conectare portofel hardware"
   },
   "connect": {

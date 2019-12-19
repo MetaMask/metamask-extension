@@ -115,7 +115,7 @@
   "confirmPassword": {
     "message": "Konfime Modpas"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Konekte Materyèl Wallet"
   },
   "connect": {

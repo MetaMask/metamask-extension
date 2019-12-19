@@ -218,7 +218,7 @@
   "congratulations": {
     "message": "Glückwunsch"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Hardware-Wallet verknüpfen"
   },
   "connect": {

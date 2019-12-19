@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Поздравления"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Свържете хардуерен портфейл"
   },
   "connect": {

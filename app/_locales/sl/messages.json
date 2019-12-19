@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Čestitamo"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Poveži strojno denarnico"
   },
   "connect": {

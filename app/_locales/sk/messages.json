@@ -221,7 +221,7 @@
   "congratulations": {
     "message": "Blahoželáme"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Pripojiť hardvérovú peňaženku"
   },
   "connect": {

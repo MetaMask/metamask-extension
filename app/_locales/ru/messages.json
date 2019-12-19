@@ -689,7 +689,7 @@
   "congratulations": {
     "message": "Поздравляю!"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Подключите аппаратный кошелек"
   },
   "connect": {

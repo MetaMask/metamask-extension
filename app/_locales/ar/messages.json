@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "تهانينا"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "ربط محفظة الأجهزة"
   },
   "connect": {

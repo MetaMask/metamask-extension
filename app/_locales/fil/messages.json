@@ -206,7 +206,7 @@
   "congratulations": {
     "message": "Binabati kita"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Magkonekta ng Hardware Wallet"
   },
   "connect": {

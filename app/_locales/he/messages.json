@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "מזל טוב"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "חבר ארנק חומרה"
   },
   "connect": {

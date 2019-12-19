@@ -227,7 +227,7 @@
   "congratulations": {
     "message": "Felicitaciones"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Conectar billetera de hardware"
   },
   "connect": {

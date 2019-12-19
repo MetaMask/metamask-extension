@@ -209,7 +209,7 @@
   "congratulations": {
     "message": "Congratulazioni"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Connetti Portafoglio Hardware"
   },
   "connect": {

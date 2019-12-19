@@ -404,7 +404,7 @@ export default class AccountMenu extends Component {
               src="images/connect-icon.svg"
             />
           )}
-          text={t('connectHardwareWallet')}
+          text={t('connectExternalWallet')}
         />
         <Divider />
         <Item

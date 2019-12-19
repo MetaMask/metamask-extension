@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "تبریک"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "اتصال کیف سخت افزار"
   },
   "connect": {

@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Sveikiname"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
   },
   "connect": {

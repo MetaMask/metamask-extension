@@ -230,7 +230,7 @@
   "congratulations": {
     "message": "Tillykke"
   },
-  "connectHardwareWallet": {
+  "connectExternalWallet": {
     "message": "Forbind Hardwarepung"
   },
   "connect": {
