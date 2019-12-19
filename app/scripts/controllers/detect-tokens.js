@@ -1,4 +1,4 @@
-const Web3 = require('web3')
+const Web3 = require('./ConfluxWeb/index');
 const contracts = require('eth-contract-metadata')
 const { warn } = require('loglevel')
 const { MAINNET } = require('./network/enums')
@@ -39,6 +39,7 @@ class DetectTokensController {
       }
     }
 
+    debugger;
     const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(SINGLE_CALL_BALANCES_ADDRESS)
     ethContract.balances([this.selectedAddress], tokensToDetect, (error, result) => {
       if (error) {

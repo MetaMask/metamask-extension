@@ -7,7 +7,7 @@ const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
-const EthQuery = require('eth-query')
+const EthQuery = require('../../../app/eth-query')
 
 const threeBoxSpies = {
   init: sinon.spy(),
@@ -708,7 +708,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets the type to eth_sign', function () {
-      assert.equal(metamaskMsgs[msgId].type, 'eth_sign')
+      assert.equal(metamaskMsgs[msgId].type, 'cfx_sign')
     })
 
     it('rejects the message', function () {

@@ -1,6 +1,6 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const EthQuery = require('eth-query')
+const EthQuery = require('../eth-query')
 const log = require('loglevel')
 const pify = require('pify')
 const {

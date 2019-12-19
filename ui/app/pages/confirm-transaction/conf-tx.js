@@ -140,7 +140,7 @@ ConfirmTxScreen.prototype.getTxData = function () {
 
 ConfirmTxScreen.prototype.signatureSelect = function (type, version) {
   // Temporarily direct only v3 and v4 requests to new code.
-  if (type === 'eth_signTypedData' && (version === 'V3' || version === 'V4')) {
+  if (type === 'cfx_signTypedData' && (version === 'V3' || version === 'V4')) {
     return SignatureRequest
   }
 

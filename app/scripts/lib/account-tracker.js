@@ -7,7 +7,7 @@
  * on each new block.
  */
 
-const EthQuery = require('eth-query')
+const EthQuery = require('../eth-query')
 const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const pify = require('pify')
@@ -213,7 +213,7 @@ class AccountTracker {
    */
   async _updateAccount (address) {
     // query balance
-    const balance = await this._query.getBalance(address)
+    const balance = await this._query.getBalance(address, 'latest_state')
     const result = { address, balance }
     // update accounts state
     const { accounts } = this.store.getState()

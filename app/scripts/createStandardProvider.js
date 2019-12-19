@@ -28,7 +28,7 @@ class StandardProvider {
 
   _subscribe () {
     this._provider.on('data', (error, { method, params }) => {
-      if (!error && method === 'eth_subscription') {
+      if (!error && method === 'cfx_subscription') {
         this._provider.emit('notification', params.result)
       }
     })

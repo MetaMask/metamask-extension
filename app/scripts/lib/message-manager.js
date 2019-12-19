@@ -5,7 +5,7 @@ const { errors: rpcErrors } = require('eth-json-rpc-errors')
 const createId = require('./random-id')
 
 /**
- * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
+ * Represents, and contains data about, an 'cfx_sign' type signature request. These are created when a signature for
  * an eth_sign call is requested.
  *
  * @see {@link https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign}
@@ -18,7 +18,7 @@ const createId = require('./random-id')
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
  * @property {string} type The json-prc signing method for which a signature request has been made. A 'Message' with
- * always have a 'eth_sign' type.
+ * always have a 'cfx_sign' type.
  *
  */
 
@@ -112,7 +112,7 @@ module.exports = class MessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_sign',
+      type: 'cfx_sign',
     }
     this.addMsg(msgData)
 

@@ -75,7 +75,7 @@ Set 'ethereum.autoRefreshOnNetworkChange' to 'false' to silence this warning: ht
     warnedOfAutoRefreshDeprecation = true
   }
   return new Promise((resolve, reject) => {
-    inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
+    inpageProvider.sendAsync({ method: 'cfx_requestAccounts', params: [force] }, (error, response) => {
       if (error || response.error) {
         reject(error || response.error)
       } else {

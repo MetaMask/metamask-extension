@@ -54,7 +54,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
-const EthQuery = require('eth-query')
+const EthQuery = require('./eth-query')
 const ethUtil = require('ethereumjs-util')
 const contractMap = require('eth-contract-metadata')
 const {

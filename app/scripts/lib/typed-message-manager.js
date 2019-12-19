@@ -8,7 +8,7 @@ const log = require('loglevel')
 const jsonschema = require('jsonschema')
 
 /**
- * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
+ * Represents, and contains data about, an 'cfx_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
  *
  * @typedef {Object} TypedMessage
@@ -21,7 +21,7 @@ const jsonschema = require('jsonschema')
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed', 'rejected', or 'errored'
  * @property {string} type The json-prc signing method for which a signature request has been made. A 'Message' will
- * always have a 'eth_signTypedData' type.
+ * always have a 'cfx_signTypedData' type.
  *
  */
 
@@ -114,7 +114,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_signTypedData',
+      type: 'cfx_signTypedData',
     }
     this.addMsg(msgData)
 

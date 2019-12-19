@@ -2,7 +2,7 @@ const assert = require('assert')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
-const EthQuery = require('eth-query')
+const EthQuery = require('../../eth-query')
 const JsonRpcEngine = require('json-rpc-engine')
 const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const log = require('loglevel')
@@ -22,7 +22,9 @@ const {
   LOCALHOST,
   GOERLI,
 } = require('./enums')
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+// const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+const INFURA_PROVIDER_TYPES = []
+const CONFLUX_TEST_NET = "http://13.67.73.51:12537";
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -117,7 +119,7 @@ module.exports = class NetworkController extends EventEmitter {
     const { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
     const initialNetwork = this.getNetworkState()
-    ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+    ethQuery.sendAsync({ method: 'cfx_epochNumber' }, (err, network) => {
       const currentNetwork = this.getNetworkState()
       if (initialNetwork === currentNetwork) {
         if (err) {
@@ -176,8 +178,10 @@ module.exports = class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
-      this._configureInfuraProvider(opts)
+      // this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
+    } else if (type === 'mainnet') {
+      this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: "CFX", nickname: "conflux-mainnet" })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
@@ -188,19 +192,19 @@ module.exports = class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider ({ type }) {
-    log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({
-      network: type,
-      onRequest: (req) => this.emit('rpc-req', { network: type, req }),
-    })
-    this._setNetworkClient(networkClient)
-    // setup networkConfig
-    var settings = {
-      ticker: 'ETH',
-    }
-    this.networkConfig.putState(settings)
-  }
+  // _configureInfuraProvider ({ type }) {
+  //   log.info('NetworkController - configureInfuraProvider', type)
+  //   const networkClient = createInfuraClient({
+  //     network: type,
+  //     onRequest: (req) => this.emit('rpc-req', { network: type, req }),
+  //   })
+  //   this._setNetworkClient(networkClient)
+  //   // setup networkConfig
+  //   var settings = {
+  //     ticker: 'ETH',
+  //   }
+  //   this.networkConfig.putState(settings)
+  // }
 
   _configureLocalhostProvider () {
     log.info('NetworkController - configureLocalhostProvider')
@@ -227,12 +231,14 @@ module.exports = class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _setNetworkClient ({ networkMiddleware, blockTracker }) {
+  _setNetworkClient ({ networkMiddleware, blockTracker, rpcUrl }) {
     const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
     const engine = new JsonRpcEngine()
+    engine._rpcUrl = rpcUrl;
     engine.push(metamaskMiddleware)
     engine.push(networkMiddleware)
     const provider = providerFromEngine(engine)
+    provider._confluxWebProvider = { url:rpcUrl };
     this._setProviderAndBlockTracker({ provider, blockTracker })
   }
 

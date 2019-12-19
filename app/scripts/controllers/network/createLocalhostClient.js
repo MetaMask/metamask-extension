@@ -21,7 +21,7 @@ function createLocalhostClient () {
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     fetchMiddleware,
   ])
-  return { networkMiddleware, blockTracker }
+  return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:8545/'}
 }
 
 function delay (time) {
@@ -31,7 +31,7 @@ function delay (time) {
 
 function createEstimateGasMiddleware () {
   return createAsyncMiddleware(async (req, _, next) => {
-    if (req.method === 'eth_estimateGas' && inTest) {
+    if (req.method === 'cfx_estimateGas' && inTest) {
       await delay(2000)
     }
     return next()

@@ -65,10 +65,10 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   if (type === 'personal_sign') {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === 'cfx_signTypedData') {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  } else if (type === 'eth_sign') {
+  } else if (type === 'cfx_sign') {
     cancel = cancelMessage
     sign = signMessage
   }
@@ -253,9 +253,9 @@ SignatureRequest.prototype.renderBody = function () {
 
   if (type === 'personal_sign') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === 'cfx_signTypedData') {
     rows = data
-  } else if (type === 'eth_sign') {
+  } else if (type === 'cfx_sign') {
     rows = [{ name: this.context.t('message'), value: data }]
     notice = [this.context.t('signNotice'),
       h('span.request-signature__help-link', {
@@ -275,8 +275,8 @@ SignatureRequest.prototype.renderBody = function () {
 
     h('div.request-signature__notice', {
       className: classnames({
-        'request-signature__notice': type === 'personal_sign' || type === 'eth_signTypedData',
-        'request-signature__warning': type === 'eth_sign',
+        'request-signature__notice': type === 'personal_sign' || type === 'cfx_signTypedData',
+        'request-signature__warning': type === 'cfx_sign',
       }),
     }, [notice]),
 

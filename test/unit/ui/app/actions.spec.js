@@ -9,7 +9,7 @@ const nock = require('nock')
 const fetchMock = require('fetch-mock')
 const configureStore = require('redux-mock-store').default
 const thunk = require('redux-thunk').default
-const EthQuery = require('eth-query')
+const EthQuery = require('../../../app/eth-query')
 const Eth = require('ethjs')
 const KeyringController = require('eth-keyring-controller')
 
