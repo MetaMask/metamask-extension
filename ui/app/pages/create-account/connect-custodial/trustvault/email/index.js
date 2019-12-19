@@ -1,6 +1,5 @@
-const { PureComponent } = require('react')
+import React, { PureComponent } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../../../store/actions')
 const EmailScreen = require('./email-screen')
@@ -15,24 +14,33 @@ class ConnectTrustVaultEmailForm extends PureComponent {
   }
 
   renderError () {
-    return this.state.error
-      ? h(
-        'span.sw-connect__error',
-        this.state.error,
-      )
-      : null
+    return (
+      this.state.error ? (
+        <span className="sw-connect__error" >
+          {this.state.error}
+        </span>
+      ) : null
+    )
+  }
+  renderContent () {
+    return (
+      <EmailScreen
+        history={this.props.history}
+        browserSupported={this.state.browserSupported}
+        getTrustVaultPinChallenge={this.props.getTrustVaultPinChallenge}
+      >
+
+      </EmailScreen>)
   }
 
-  renderContent () {
-    return h(EmailScreen, {
-      history: this.props.history,
-      browserSupported: this.state.browserSupported,
-      getTrustVaultPinChallenge: this.props.getTrustVaultPinChallenge,
-    })
-  }
 
   render () {
-    return h('div', [this.renderError(), this.renderContent()])
+    return (
+      <div>
+        {this.renderError()}
+        {this.renderContent()}
+      </div>
+    )
   }
 }
 

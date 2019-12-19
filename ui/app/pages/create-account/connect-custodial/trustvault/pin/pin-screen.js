@@ -1,6 +1,5 @@
-const { PureComponent } = require('react')
+import React, { PureComponent } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 import Button from '../../../../../components/ui/button'
 import CircularInputField from '../components/circular-input-field'
 import StarPlaceholder from '../components/star-placeholder'
@@ -33,7 +32,7 @@ class PinScreen extends PureComponent {
     const pinLength = 6
     const inputField = new Array(pinLength).fill('').map((_, index) => {
       const key = index.toString()
-      let component = h(StarPlaceholder, { key })
+      let component = <StarPlaceholder key={key}></StarPlaceholder>
       if (index === firstPinDigitIndex) {
         component = this.getFirstPinInputField(key)
       }
@@ -42,38 +41,50 @@ class PinScreen extends PureComponent {
       }
       return component
     })
-    return h('div.sw-connect__pin-input', inputField)
+    return (
+      <div className="sw-connect__pin-input">
+        {inputField}
+      </div>
+    )
   }
 
   getFirstPinInputField = (key) => {
-    return h(CircularInputField, {
-      autoFocus: true,
-      handleChange: (event) => {
-        const [firstPin, secondPin] = event.target.value
-        this.setState({ firstPin, secondPin })
-      },
-      key,
-      filled: () => Boolean(this.state.firstPin),
-      maxLength: 2,
-      setRef: (element) => {
-        this.firstPinInput = element
-      },
-      keyPress: (e) => {
-        if (e.key === 'Enter' && this.state.firstPin && this.state.secondPin) {
-          return this.submitPinChallenge()
-        }
-      },
-    })
+    return (
+      <CircularInputField
+        autoFocus
+        handleChange={(event) => {
+          const [firstPin, secondPin] = event.target.value
+          this.setState({ firstPin, secondPin })
+
+        }}
+        key={key}
+        filled={ () => Boolean(this.state.firstPin)}
+        maxLength={2}
+        setRef={(element => {
+          this.firstPinInput = element
+        })}
+        keyPress={(e) => {
+          if (e.key === 'Enter' && this.state.firstPin && this.state.secondPin) {
+            return this.submitPinChallenge()
+          }
+        }}
+      >
+      </CircularInputField>
+    )
   }
 
 
   // NOTE: its only used as display feedback all PIN input is handled by firstPinInputField
   getSecondPinInputField = (key) => {
-    return h(CircularInputField, {
-      key,
-      filled: () => Boolean(this.state.secondPin),
-      maxLength: 0,
-    })
+    return (
+      <CircularInputField
+        key={key}
+        filled={() => Boolean(this.state.secondPin)}
+        maxLength={0}
+      >
+
+      </CircularInputField>
+    )
   }
 
   _convertPositionToIndex (positionIntString) {
@@ -88,28 +99,32 @@ class PinScreen extends PureComponent {
   }
 
   renderUnsupportedBrowser () {
-    return h('div.new-account-connect-form.unsupported-browser', {}, [
-      h('div.hw-connect', [
-        h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
-        h(
-          'p.hw-connect__msg',
-          {},
-          this.context.t('chromeRequiredForHardwareWallets')
-        ),
-      ]),
-      h(
-        Button,
-        {
-          type: 'primary',
-          large: true,
-          onClick: () =>
-            global.platform.openWindow({
-              url: 'https://google.com/chrome',
-            }),
-        },
-        this.context.t('downloadGoogleChrome')
-      ),
-    ])
+    return (
+      <div className="new-account-connect-form.unsupported-browser">
+        <div className="hw-connect">
+          <h3 className="hw-connect__title">
+            {this.context.t('browserNotSupported')}
+          </h3>
+          <p className="hw-connect__msg">
+            {this.context.t('chromeRequiredForHardwareWallets')}
+          </p>
+
+        </div>
+        <div>
+          <Button
+            type="primary"
+            large
+            onClick={() => {
+              global.platform.openWindow({
+                url: 'https://google.com/chrome',
+              })
+            }}
+          >
+            {this.context.t('downloadGoogleChrome')}
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   renderHeader () {
@@ -117,25 +132,30 @@ class PinScreen extends PureComponent {
       firstPinDigitPosition,
       secondPinDigitPosition,
     } = this.props.pinChallenge
-    return h('div.sw-connect__pin-input__header', [
-      h('p.sw-connect__header__msg', {}, 'Please enter characters'),
-      h(
-        'p.sw-connect__pin-input__header__msg',
-        `${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`
-      ),
-    ])
+    return (
+      <div className="sw-connect__pin-input__header">
+        <p className="sw-connect__header__msg">
+          {'Please enter characters'}
+        </p>
+        <p className="sw-connect__pin-input__header__msg">
+          {`${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`}
+        </p>
+
+      </div>)
+
   }
 
   renderFooter () {
-    return h('div.sw-connect__pin-input__footer', [
-      h(
-        'span.sw-connect__pin-input__footer__msg',
-        {
-          onClick: _ => this.props.onCancelLogin(),
-        },
-        `${this.context.t('not')} ${this.props.email}?`
-      ),
-    ])
+    return (
+      <div className="sw-connect__pin-input__footer">
+        <span
+          className="sw-connect__pin-input__footer__msg"
+          onClick={ _ => this.props.onCancelLogin()}
+        >
+          {`${this.context.t('not')} ${this.props.email}?`}
+        </span>
+      </div>)
+
   }
 
   submitPinChallenge = async () => {
@@ -150,30 +170,32 @@ class PinScreen extends PureComponent {
   }
 
   renderConnectToTrustVaultButton () {
-    return h('div.sw-connect__pin-input__connect-btn', [
-      h(
-        Button,
-        {
-          type: 'primary',
-          large: true,
-          className: 'sw-connect__connect-btn',
-          onClick: this.submitPinChallenge,
-          disabled: !(
+    return (
+      <div className="sw-connect__pin-input__connect-btn">
+        <Button
+          type="primary"
+          large
+          className="sw-connect__connect-btn"
+          onClick={this.submitPinChallenge}
+          disabled={ !(
             Boolean(this.state.firstPin) && Boolean(this.state.secondPin)
-          ),
-        },
-        this.context.t('connectToTrustVault')
-      ),
-    ])
+          )}
+        >
+          {this.context.t('connectToTrustVault')}
+        </Button>
+
+      </div>)
   }
 
   renderPinScreen () {
-    return h('div.new-account-connect-form', {}, [
-      this.renderHeader(),
-      this.renderPinInputField(),
-      this.renderConnectToTrustVaultButton(),
-      this.renderFooter(),
-    ])
+    return (
+      <div className="new-account-connect-form">
+        {this.renderHeader()}
+        {this.renderPinInputField()}
+        {this.renderConnectToTrustVaultButton()}
+        {this.renderFooter()}
+      </div>
+    )
   }
 
   render () {

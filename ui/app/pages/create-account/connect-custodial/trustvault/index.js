@@ -1,7 +1,6 @@
-const { PureComponent } = require('react')
+import React, { PureComponent } from 'react'
 const { Switch, Route } = require('react-router-dom')
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../../store/actions')
 const { getCurrentViewContext } = require('../../../../selectors/selectors')
@@ -49,12 +48,12 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 
   renderError () {
-    return this.state.error
-      ? h(
-        'span.sw-connect__error',
-        this.state.error,
-      )
-      : null
+    return (this.state.error ? (
+      <span className="sw-connect__error">
+        {this.state.error}
+      </span>
+    ) : null)
+
   }
 
   goToHomePage = () => {
@@ -70,44 +69,52 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 
   renderEmailForm = () => {
-    return h(ConnectTrustVaultEmailForm, {
-      history: this.props.history,
-      getTrustVaultPinChallenge: this.getTrustVaultPinChallenge,
-    })
+    return (
+      <ConnectTrustVaultEmailForm
+        history={this.props.history}
+        getTrustVaultPinChallenge={this.getTrustVaultPinChallenge}
+      >
+      </ConnectTrustVaultEmailForm>
+    )
   }
 
   renderPinForm = () => {
     // Remove the error message
-    return h(ConnectTrustVaultPinForm, {
-      browserSupported: this.state.browserSupported,
-      history: this.props.history,
-      pinChallenge: this.state.pinChallenge,
-      email: this.state.email,
-      onCancelLogin: this.onCancelLogin,
-      goToHomePage: this.goToHomePage,
-      onNewPinChallenge: this.onNewPinChallenge,
-    })
+    return (
+      <ConnectTrustVaultPinForm
+        browserSupported={this.state.browserSupported}
+        history={this.props.history}
+        pinChallenge={this.state.pinChallenge}
+        email={this.state.email}
+        onCancelLogin={this.onCancelLogin}
+        goToHomePage={this.goToHomePage}
+        onNewPinChallenge={this.onNewPinChallenge}
+      >
+
+      </ConnectTrustVaultPinForm>
+    )
+
   }
 
   render = () => {
-    return h('div.new-account__header', [
-      h('div.trustvault-connect', [
-        this.renderError(),
-        !this.state.pinChallenge ? this.renderEmailForm() : this.renderPinForm(),
-        h(Switch, [
-          h(Route, {
-            exact: true,
-            path: TRUSTVAULT_EMAIL_ROUTE,
-            component: ConnectTrustVaultEmailForm,
-          }),
-          h(Route, {
-            exact: true,
-            path: TRUSTVAULT_PIN_ROUTE,
-            component: ConnectTrustVaultPinForm,
-          }),
-        ]),
-      ]),
-    ])
+    return (
+      <div className="new-account__header">
+        <div className="trustvault-connect">
+          {this.renderError()},
+          {!this.state.pinChallenge ? this.renderEmailForm() : this.renderPinForm()}
+          <Switch>
+            <Route exact path={TRUSTVAULT_EMAIL_ROUTE} component={ConnectTrustVaultEmailForm} >
+
+            </Route>
+            <Route exact path={TRUSTVAULT_PIN_ROUTE} component={ConnectTrustVaultPinForm} >
+
+            </Route>
+          </Switch>
+
+        </div>
+
+      </div>
+    )
   }
 }
 
@@ -127,3 +134,4 @@ module.exports = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(ConnectTrustVaultForm)
+

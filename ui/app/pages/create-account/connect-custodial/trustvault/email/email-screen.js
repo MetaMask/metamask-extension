@@ -1,6 +1,5 @@
-import { PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 import Button from '../../../../../components/ui/button'
 import TextField from '../../../../../components/ui/text-field'
 import { CONNECT_HARDWARE_ROUTE } from '../../../../../helpers/constants/routes'
@@ -15,135 +14,156 @@ class EmailScreen extends PureComponent {
   }
 
   renderBackButton () {
-    return h('div.sw-connect__back', { onClick: _ => this.history.push(CONNECT_HARDWARE_ROUTE) }, [
-      h('div.sw-connect__list__back-caret', {},),
-      h('div.sw-connect__list__back-caret__back', {}, this.context.t('back')),
-    ])
+    return (
+      <div className="sw-connect__back" onClick={_ => this.history.push(CONNECT_HARDWARE_ROUTE) }>
+        <div className="sw-connect__list__back-caret"></div>
+        <div className="sw-connect__list__back-caret__back">
+          {this.context.t('back')}
+        </div>
+      </div>
+    )
   }
 
   renderNextButton () {
-    return h(
-      Button,
-      {
-        type: 'primary',
-        className: 'sw-connect__connect-btn',
-        onClick: _ => this.props.getTrustVaultPinChallenge(this.state.email),
-        disabled: !this.state.email,
-      },
-      this.context.t('next'),
+    return (
+      <Button
+        className="sw-connect__connect-btn"
+        type="primary"
+        onClick={_ => this.props.getTrustVaultPinChallenge(this.state.email)}
+        disabled={!this.state.email}
+      >
+        {this.context.t('next')}
+      </Button>
     )
   }
 
   renderEmailInputBox () {
-    return h(
-      'div.sw-connect__email-field',
-      [
-        h(TextField, {
-          autoFocus: true,
-          type: 'text',
-          placeholder: 'Email address',
-          largeLabel: true,
-          fullWidth: true,
-          onChange: event => this.setState({ email: event.target.value }),
-          onKeyDown: event => {
+    return (
+      <div className="sw-connect__email-field">
+        <TextField
+          autoFocus
+          type="text"
+          placeholder="Email address"
+          largeLabel
+          fullWidth
+          onChange={event => this.setState({ email: event.target.value })}
+          onKeyDown={event => {
             if (event.keyCode === ENTER_KEY) {
               this.props.getTrustVaultPinChallenge(this.state.email)
             }
-          },
-        }),
-      ]
-    )
+          }}
+        >
+        </TextField>
+
+      </div>)
   }
   renderTrustVaultInfoBox () {
-    return h('div.sw-connect__info-box',
-      [
-        h(`img.sw-connect__info-box__info-icon`, { src: 'images/tvInfo.png' }),
-        h('div.sw-connect__info-box__not-user', this.context.t('trustVaultNotUser')),
-        h('div.sw-connect__info-box__ios', this.context.t('trustVaultIos')),
-        h('div.sw-connect__info-box__get-started', this.context.t('trustVaultGetStarted')),
-        h('div.sw-connect__info-box__link', {
-          onClick: () => {
+    return (
+      <div className="sw-connect__info-box">
+        <img className="sw-connect__info-box__info-icon" src="images/tvInfo.png" >
+
+        </img>
+        <div className="sw-connect__info-box__not-user">
+          {this.context.t('trustVaultNotUser')}
+        </div>
+        <div className="sw-connect__info-box__ios">
+          {this.context.t('trustVaultIos')}
+        </div>
+        <div className="sw-connect__info-box__get-started">
+          {this.context.t('trustVaultGetStarted')}
+        </div>
+        <div
+          className="sw-connect__info-box__link"
+          onClick={() => {
             global.platform.openWindow({
               url: 'https://trustology.io/get-started/',
             })
-          },
-        }, this.context.t('here')),
-      ]
+          }}
+        >
+          {this.context.t('here')}
+        </div>
+      </div>
     )
   }
 
 
   renderLearnMoreLink () {
-    return h(
-      'div.sw-connect__learn-more', {}, [
-        h('span.sw-connect__learn-more__text', this.context.t('trustVaultLearnMore')),
-        h('span.sw-connect__learn-more__link', {
-          onClick: () => {
+    return (
+      <div className="sw-connect__learn-more">
+        <span className="sw-connect__learn-more__text">
+          {this.context.t('trustVaultLearnMore')}
+        </span>
+        <span
+          className="sw-connect__learn-more__link"
+          onClick={() => {
             global.platform.openWindow({
               url: 'https://help.trustology.io/en/',
             })
-          },
-        }, this.context.t('FAQ')),
-      ])
+          }}
+        >
+          {this.context.t('FAQ')}
+        </span>
+      </div>
+    )
   }
 
   renderUnsupportedBrowser () {
-    return h('div.new-account-connect-form.unsupported-browser', {}, [
-      h('div.hw-connect', [
-        h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
-        h(
-          'p.hw-connect__msg',
-          {},
-          this.context.t('chromeRequiredForHardwareWallets')
-        ),
-      ]),
-      h(
-        Button,
-        {
-          type: 'primary',
-          large: true,
-          onClick: () =>
-            global.platform.openWindow({
-              url: 'https://google.com/chrome',
-            }),
-        },
-        this.context.t('downloadGoogleChrome')
-      ),
-    ])
+    return (
+      <div className="new-account-connect-form.unsupported-browser">
+        <div className="hw-connect">
+          <h3 className="hw-connect__title">
+            {this.context.t('browserNotSupported')}
+          </h3>
+          <p className="hw-connect__msg">
+            {this.context.t('chromeRequiredForHardwareWallets')}
+          </p>
+        </div>
+        <Button
+          type="primary"
+          large
+          onClick={() => {
+            global.platform.openWindow({ url: 'https://google.com/chrome' })
+          }}
+        >
+          {this.context.t('downloadGoogleChrome')}
+        </Button>
+
+      </div>
+    )
   }
 
   renderHeader () {
-    return h('div.sw-connect__header', {}, [
-      h(
-        'h3.hw-connect__header__title',
-        {},
-        this.context.t(`trustVaultWelcome`)
-      ),
-      h('p.hw-connect__header__msg', {}, this.context.t(`trustVaultEnterEmail`)),
-    ])
+    return (
+      <div className="sw-connect__header">
+        <h3 className="hw-connect__header__title" >{ this.context.t(`trustVaultWelcome`)}</h3>
+        <p className="hw-connect__header__msg" >{ this.context.t(`trustVaultEnterEmail`)}</p>
+      </div>
+    )
   }
 
   renderTrustVaultLogo () {
-    return h(
-      'div.sw-connect__trustvault-logo',
-      [
-        h('img.sw-connect__trustvault-logo__img', {
-          src: 'images/trustvault-logo.png',
-        }),
-      ]
+    return (
+      <div className="sw-connect__trustvault-logo">
+        <img className="sw-connect__trustvault-logo__img" src="images/trustvault-logo.png">
+
+
+        </img>
+      </div>
     )
   }
 
   renderEmailScreen () {
-    return h('div.new-account-connect-form', {}, [
-      this.renderBackButton(),
-      this.renderTrustVaultLogo(),
-      this.renderHeader(),
-      this.renderEmailInputBox(),
-      this.renderTrustVaultInfoBox(),
-      this.renderNextButton(),
-      this.renderLearnMoreLink(),
-    ])
+    return (
+      <div className="new-account-connect-form">
+        {this.renderBackButton()}
+        {this.renderTrustVaultLogo()}
+        {this.renderHeader()}
+        {this.renderEmailInputBox()}
+        {this.renderTrustVaultInfoBox()}
+        {this.renderNextButton()}
+        {this.renderLearnMoreLink()}
+      </div>
+    )
   }
 
   render () {

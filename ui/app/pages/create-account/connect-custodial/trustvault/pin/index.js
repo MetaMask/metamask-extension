@@ -1,6 +1,5 @@
-const { PureComponent } = require('react')
+import React, { PureComponent } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../../../store/actions')
 const PinScreen = require('./pin-screen')
@@ -10,6 +9,7 @@ class ConnectTrustVaultPinForm extends PureComponent {
     goToHomePage: PropTypes.func,
     onCancelLogin: PropTypes.func,
     email: PropTypes.string,
+    showAlert: PropTypes.func,
   }
   constructor (props) {
     super(props)
@@ -22,7 +22,7 @@ class ConnectTrustVaultPinForm extends PureComponent {
 
   showWalletConnectedAlert () {
     this.props.goToHomePage()
-    this.props.showAlert(this.context.t('custodialWalletConnected'))
+    this.props.showAlert('Custodial wallet successfully connected')
     // Autohide the alert after 1.5 seconds and redirect to home page
     setTimeout(_ => {
       this.props.hideAlert()
@@ -45,26 +45,34 @@ class ConnectTrustVaultPinForm extends PureComponent {
   }
 
   renderError () {
-    return this.state.error
-      ? h(
-        'span.sw-connect__error',
-        this.state.error,
-      )
-      : null
+    return this.state.error ?
+      (
+        <span className="sw-connect__error" >
+          {this.state.error}
+        </span>
+      ) : null
   }
 
   renderContent = () => {
-    return h(PinScreen, {
-      browserSupported: this.state.browserSupported,
-      submitTrustVaultPinChallenge: this.submitTrustVaultPinChallenge,
-      pinChallenge: this.state.pinChallenge,
-      onCancelLogin: this.props.onCancelLogin,
-      email: this.props.email,
-    })
+    return (
+      <PinScreen
+        browserSupported={this.state.browserSupported}
+        submitTrustVaultPinChallenge={this.submitTrustVaultPinChallenge}
+        pinChallenge={this.state.pinChallenge}
+        onCancelLogin={this.props.onCancelLogin}
+        email={this.props.email}
+      >
+      </PinScreen>
+    )
   }
 
   render () {
-    return h('div', [this.renderError(), this.renderContent()])
+    return (
+      <div>
+        {this.renderError()}
+        {this.renderContent()}
+      </div>
+    )
   }
 }
 
