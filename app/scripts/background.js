@@ -318,7 +318,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -358,10 +357,7 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      // construct fake URL for identifying internal messages
-      const metamaskUrl = new URL(window.location)
-      metamaskUrl.hostname = 'metamask'
-      controller.setupTrustedCommunication(portStream, metamaskUrl)
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -408,13 +404,8 @@ function setupController (initState, initLangCode) {
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const senderUrl = new URL(remotePort.sender.url)
-    let extensionId
-    if (remotePort.sender.id !== extension.runtime.id) {
-      extensionId = remotePort.sender.id
-    }
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //

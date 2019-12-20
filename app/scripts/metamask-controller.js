@@ -4,7 +4,6 @@
  * @license   MIT
  */
 
-const assert = require('assert').strict
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
@@ -20,6 +19,7 @@ const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
+import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
@@ -1285,19 +1285,23 @@ module.exports = class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * A runtime.MessageSender object, as provided by the browser:
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
+   * @typedef {Object} MessageSender
+   */
+
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {URL} senderUrl - The URL of the resource requesting the stream,
-   * which may trigger a blacklist reload.
-   * @param {string} extensionId - The extension id of the sender, if the sender
-   * is an extension
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupUntrustedCommunication (connectionStream, senderUrl, extensionId) {
+  setupUntrustedCommunication (connectionStream, sender) {
+    const hostname = (new URL(sender.url)).hostname
     // Check if new connection is blacklisted
-    if (this.phishingController.test(senderUrl.hostname)) {
-      log.debug('MetaMask - sending phishing warning for', senderUrl.hostname)
-      this.sendPhishingWarning(connectionStream, senderUrl.hostname)
+    if (this.phishingController.test(hostname)) {
+      log.debug('MetaMask - sending phishing warning for', hostname)
+      this.sendPhishingWarning(connectionStream, hostname)
       return
     }
 
@@ -1305,7 +1309,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl, extensionId)
+    this.setupProviderConnection(mux.createStream('provider'), sender)
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
@@ -1316,15 +1320,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * functions, like the ability to approve transactions or sign messages.
    *
    * @param {*} connectionStream - The duplex stream to connect to.
-   * @param {URL} senderUrl - The URL requesting the connection,
-   * used in logging and error reporting.
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupTrustedCommunication (connectionStream, senderUrl) {
+  setupTrustedCommunication (connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl)
+    this.setupProviderConnection(mux.createStream('provider'), sender, true)
   }
 
   /**
@@ -1379,14 +1382,23 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {URL} senderUrl - The URI of the requesting resource.
-   * @param {string} extensionId - The id of the extension, if the requesting
-   * resource is an extension.
-   * @param {object} publicApi - The public API
+   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param {boolean} isInternal - True if this is a connection with an internal process
    */
-  setupProviderConnection (outStream, senderUrl, extensionId) {
-    const origin = senderUrl.hostname
-    const engine = this.setupProviderEngine(senderUrl, extensionId)
+  setupProviderConnection (outStream, sender, isInternal) {
+    const origin = isInternal
+      ? 'metamask'
+      : (new URL(sender.url)).hostname
+    let extensionId
+    if (sender.id !== extension.runtime.id) {
+      extensionId = sender.id
+    }
+    let tabId
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id
+    }
+
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1414,10 +1426,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
+   * @param {Object} options - Provider engine options
+   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.location - The full URL of the sender
+   * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
+   * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    **/
-  setupProviderEngine (senderUrl, extensionId) {
-
-    const origin = senderUrl.hostname
+  setupProviderEngine ({ origin, location, extensionId, tabId }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1434,6 +1449,11 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     // logging
     engine.push(createLoggerMiddleware({ origin }))
+    engine.push(createOnboardingMiddleware({
+      location,
+      tabId,
+      registerOnboarding: this.onboardingController.registerOnboarding,
+    }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
@@ -1471,45 +1491,6 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
     )
-  }
-
-  // manage external connections
-
-  onMessage (message, sender, sendResponse) {
-    if (!message || !message.type) {
-      log.debug(`Ignoring invalid message: '${JSON.stringify(message)}'`)
-      return
-    }
-
-    let handleMessage
-
-    try {
-      if (message.type === 'metamask:registerOnboarding') {
-        assert(sender.tab, 'Missing tab from sender')
-        assert(sender.tab.id && sender.tab.id !== extension.tabs.TAB_ID_NONE, 'Missing tab ID from sender')
-        assert(message.location, 'Missing location from message')
-
-        handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
-      } else {
-        throw new Error(`Unrecognized message type: '${message.type}'`)
-      }
-    } catch (error) {
-      console.error(error)
-      sendResponse(error)
-      return true
-    }
-
-    if (handleMessage) {
-      handleMessage
-        .then(() => {
-          sendResponse(null, true)
-        })
-        .catch((error) => {
-          console.error(error)
-          sendResponse(error)
-        })
-      return true
-    }
   }
 
   /**
