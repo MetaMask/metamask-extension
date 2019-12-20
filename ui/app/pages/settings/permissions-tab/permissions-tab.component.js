@@ -17,7 +17,7 @@ export default class PermissionsTab extends Component {
     showClearPermissionsModal: PropTypes.func.isRequired,
     showClearPermissionsActivityModal: PropTypes.func.isRequired,
     showClearPermissionsHistoryModal: PropTypes.func.isRequired,
-    siteMetadata: PropTypes.object,
+    domainMetadata: PropTypes.object,
   }
 
   static contextTypes = {
@@ -67,7 +67,7 @@ export default class PermissionsTab extends Component {
           permissions={this.props.permissions}
           permissionsDescriptions={this.props.permissionsDescriptions}
           removePermissionsFor={this.props.removePermissionsFor}
-          siteMetadata={this.props.siteMetadata}
+          domainMetadata={this.props.domainMetadata}
         />
         {
           this.renderClearButton(

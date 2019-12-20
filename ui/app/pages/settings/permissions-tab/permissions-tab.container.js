@@ -9,7 +9,7 @@ import {
 import {
   getAllPermissions,
   getPermissionsDescriptions,
-  getSiteMetadata,
+  getDomainMetadata,
   getPermissionsHistory,
   getPermissionsLog,
 } from '../../../selectors/selectors'
@@ -21,7 +21,7 @@ const mapStateToProps = state => {
     warning,
     permissions: getAllPermissions(state),
     permissionsDescriptions: getPermissionsDescriptions(state),
-    siteMetadata: getSiteMetadata(state),
+    domainMetadata: getDomainMetadata(state),
     permissionsHistory: getPermissionsHistory(state),
     permissionsLog: getPermissionsLog(state),
   }

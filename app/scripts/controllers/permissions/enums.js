@@ -1,6 +1,10 @@
+
+const pluginPrefix = 'wallet_plugin_'
+
 module.exports = {
   WALLET_PREFIX: 'wallet_',
-  PLUGIN_PREFIX: 'wallet_plugin_',
+  PLUGIN_PREFIX: pluginPrefix,
+  PLUGIN_PREFIX_REGEX: new RegExp(`^${pluginPrefix}`),
   HISTORY_STORE_KEY: 'permissionsHistory',
   LOG_STORE_KEY: 'permissionsLog',
   METADATA_STORE_KEY: 'domainMetadata',

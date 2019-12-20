@@ -1,5 +1,5 @@
 const ObservableStore = require('obs-store')
-const { addInternalMethodPrefix } = require('./permissions')
+const { INTERNAL_METHOD_PREFIX } = require('./permissions')
 const normalizeAddress = require('eth-sig-util').normalize
 const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
 const extend = require('xtend')
@@ -190,7 +190,7 @@ class PreferencesController {
   async requestWatchAsset (req, res, next, end) {
     if (
       req.method === 'metamask_watchAsset' ||
-      req.method === addInternalMethodPrefix('watchAsset')
+      req.method === INTERNAL_METHOD_PREFIX + 'watchAsset'
     ) {
       const { type, options } = req.params
       switch (type) {

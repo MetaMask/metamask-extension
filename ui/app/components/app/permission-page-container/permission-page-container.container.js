@@ -4,7 +4,7 @@ import {
   getSelectedIdentity,
   getPermissionsDescriptions,
   getPermissionsRequests,
-  getSiteMetadata,
+  getDomainMetadata,
 } from '../../../selectors/selectors'
 import { hideLoadingIndication, showLoadingIndication } from '../../../store/actions'
 
@@ -45,7 +45,7 @@ const mapStateToProps = (state) => {
     requests,
     selectedIdentity: getSelectedIdentity(state),
     permissionsDescriptions: requestedPermissionsDescriptions,
-    siteMetadata: getSiteMetadata(state),
+    domainMetadata: getDomainMetadata(state),
   }
 }
 

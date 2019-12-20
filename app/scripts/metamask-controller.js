@@ -301,11 +301,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.pluginsController = new PluginsController({
       setupProvider: this.setupProvider.bind(this),
-      _txController: this.txController,
-      _networkController: this.networkController,
-      _blockTracker: this.blockTracker,
+      _metaMaskEventEmitters: this.getAttenuatedEventEmitters([
+        this.txController,
+        this.networkController,
+        this.blockTracker,
+      ]),
       _getAccounts: this.keyringController.getAccounts.bind(this.keyringController),
       _removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(this.permissionsController),
+      _getPermissionsFor: this.permissionsController.getPermissionsFor.bind(this.permissionsController),
+      closeAllConnections: this.closeAllConnections.bind(this),
       getApi: this.getPluginsApi.bind(this),
       initState: initState.PluginsController,
       getAppKeyForDomain: this.getAppKeyForDomain.bind(this),
@@ -320,7 +324,7 @@ module.exports = class MetamaskController extends EventEmitter {
         onNewTx: this.txController.on.bind(this.txController, 'newUnapprovedTx'),
         getTxById: this.txController.txStateManager.getTx.bind(this.txController.txStateManager),
       },
-      metamaskEventMethods: this.pluginsController.generateMetaMaskListenerMethodsMap(),
+      metamaskEventMethods: this.pluginsController.getListenerMethods(),
     })
     this.pluginsController.runExistingPlugins()
 
@@ -443,6 +447,20 @@ module.exports = class MetamaskController extends EventEmitter {
         chainId: selectChainId({ network, provider }),
       }
     }
+  }
+
+  /**
+   * Constructor helper: attenuate controllers before passing them to
+   * contexts that only require some of their event emitter functionality.
+   */
+  getAttenuatedEventEmitters (eventEmitters) {
+    return eventEmitters.map(emitter => {
+      return {
+        eventNames: emitter.eventNames.bind(emitter),
+        on: emitter.on.bind(emitter),
+        removeListener: emitter.removeListener.bind(emitter),
+      }
+    })
   }
 
   //=============================================================================
@@ -607,6 +625,7 @@ module.exports = class MetamaskController extends EventEmitter {
       clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
       clearPermissionsHistory: permissionsController.clearHistory.bind(permissionsController),
       clearPermissionsLog: permissionsController.clearLog.bind(permissionsController),
+      clearDomainMetadata: permissionsController.clearDomainMetadata.bind(permissionsController),
       getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
       rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
@@ -618,7 +637,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // plugins
       removePlugin: this.pluginsController.removePlugin.bind(this.pluginsController),
       removePlugins: this.pluginsController.removePlugins.bind(this.pluginsController),
-      clearPluginState: this.pluginsController.clearPluginState.bind(this.pluginsController),
+      clearPluginState: this.pluginsController.clearState.bind(this.pluginsController),
     }
   }
 
@@ -1611,7 +1630,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine })
 
-    const connectionId = this.addConnection(origin, { engine })
+    const connectionId = this.addConnection(origin, { engine, providerStream })
 
     pump(
       outStream,
@@ -1620,10 +1639,11 @@ module.exports = class MetamaskController extends EventEmitter {
       (err) => {
         // handle any middleware cleanup
         engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
+          if (typeof mid.destroy === 'function') {
             mid.destroy()
           }
         })
+        // in some cases, the stream is destroyed to a call to closeConnection
         connectionId && this.removeConnection(origin, connectionId)
         if (err) {
           log.error(err)
@@ -1658,9 +1678,9 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  setupProvider (senderUrl, getSiteMetadata, isPlugin) {
+  setupProvider (senderUrl, getDomainMetadata, isPlugin) {
     const { clientSide, serverSide } = makeDuplexPair()
-    this.setupUntrustedCommunication(serverSide, senderUrl, getSiteMetadata, isPlugin)
+    this.setupUntrustedCommunication(serverSide, senderUrl, getDomainMetadata, isPlugin)
     const provider = new MetamaskInpageProvider(clientSide)
     return provider
   }
@@ -1796,8 +1816,8 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Deletes a reference to a connection, by origin and id.
-   * Ignores unknown origins.
+   * Deletes the reference to the connection with the given origin and id.
+   * Ignores unknown origins and ids.
    *
    * @param {string} origin - The connection's origin string.
    * @param {string} id - The connection's id, as returned from addConnection.
@@ -1814,6 +1834,55 @@ module.exports = class MetamaskController extends EventEmitter {
     if (Object.keys(connections.length === 0)) {
       delete this.connections[origin]
     }
+  }
+
+  /**
+   * Closes the connection with the given origin and id, and removes the
+   * reference to it.
+   * Ignores unknown origins and ids.
+   *
+   * @param {string} origin - The connection's origin string.
+   * @param {string} id - The connection's id, as returned from addConnection.
+   */
+  closeConnection (origin, id) {
+
+    const connections = this.connections[origin]
+    if (!connections) {
+      return
+    }
+
+    const { providerStream } = connections[id]
+    if (
+      providerStream && !providerStream.destroyed &&
+      typeof providerStream.destroy === 'function'
+    ) {
+      try {
+        // removeConnection will be called during stream teardown after the
+        // providerStream is destroyed
+        providerStream.destroy()
+      } catch (err) {
+        log.error('Error when destroying stream: ', err)
+      }
+    }
+  }
+
+  /**
+   * Closes all connections for the given origin, and removes the references
+   * to them.
+   * Ignores unknown origins.
+   *
+   * @param {string} origin - The origin string.
+   */
+  closeAllConnections (origin) {
+
+    const connections = this.connections[origin]
+    if (!connections) {
+      return
+    }
+
+    Object.keys(connections).forEach(id => {
+      this.closeConnection(origin, id)
+    })
   }
 
   /**

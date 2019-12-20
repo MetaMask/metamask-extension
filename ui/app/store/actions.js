@@ -2794,6 +2794,7 @@ function clearAllPermissionsData () {
     background.clearPermissions()
     background.clearPermissionsHistory()
     background.clearPermissionsLog()
+    background.clearDomainMetadata()
   }
 }
 

@@ -9,12 +9,13 @@ const LOG_LIMIT = 100
  * permissions-related methods.
  */
 module.exports = function createLoggerMiddleware ({
-  walletPrefix, restrictedMethods, store, logStoreKey, historyStoreKey,
+  origin, walletPrefix, restrictedMethods, store,
+  logStoreKey, historyStoreKey,
 }) {
   return (req, res, next, _end) => {
 
     let activityEntry, requestedMethods
-    const { origin, method } = req
+    const { method } = req
     const isInternal = method.startsWith(walletPrefix)
 
     if (isInternal || restrictedMethods.includes(method)) {
@@ -41,7 +42,7 @@ module.exports = function createLoggerMiddleware ({
       id: request.id,
       method: request.method,
       methodType: isInternal ? 'internal' : 'restricted',
-      origin: request.origin,
+      origin,
       request: cloneObj(request),
       requestTime: Date.now(),
       response: null,
@@ -109,7 +110,7 @@ module.exports = function createLoggerMiddleware ({
     }
   }
 
-  function commitHistory (origin, entries, accounts) {
+  function commitHistory (entries, accounts) {
 
     const history = store.getState()[historyStoreKey]
 

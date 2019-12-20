@@ -57,7 +57,7 @@ const selectors = {
   getPermissionsDescriptions,
   getPermissionsHistory,
   getPermissionsLog,
-  getSiteMetadata,
+  getDomainMetadata,
   getActiveTab,
   getMetaMetricState,
   getRpcPrefsForCurrentProvider,
@@ -377,8 +377,8 @@ function getPermissionsLog (state) {
   return state.metamask.permissionsLog || {}
 }
 
-function getSiteMetadata (state) {
-  return state.metamask.siteMetadata || {}
+function getDomainMetadata (state) {
+  return state.metamask.domainMetadata || {}
 }
 
 function getActiveTab (state) {

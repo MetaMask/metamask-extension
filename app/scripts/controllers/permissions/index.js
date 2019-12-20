@@ -3,7 +3,7 @@ const asMiddleware = require('json-rpc-engine/src/asMiddleware')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const ObservableStore = require('obs-store')
 const RpcCap = require('rpc-cap').CapabilitiesController
-const { ethErrors } = require('eth-json-rpc-errors')
+const { ethErrors, serializeError } = require('eth-json-rpc-errors')
 
 const {
   getExternalRestrictedMethods,
@@ -16,6 +16,7 @@ const {
   SAFE_METHODS, // methods that do not require any permissions to use
   WALLET_PREFIX,
   PLUGIN_PREFIX,
+  PLUGIN_PREFIX_REGEX,
   METADATA_STORE_KEY,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
@@ -23,15 +24,16 @@ const {
   NOTIFICATION_NAMES,
 } = require('./enums')
 
-function prefix (method) {
-  return WALLET_PREFIX + method
-}
+// TODO:plugins standardize errors
+const pluginNotInstalledError = serializeError(
+  new Error('Plugin permitted but not installed.')
+)
 
 class PermissionsController {
 
   constructor ({
     openPopup, closePopup, keyringController, assetsController,
-    setupProvider, pluginRestrictedMethods, getApi, notifyDomain,
+    setupProvider, getApi, notifyDomain,
     notifyAllDomains,
   } = {}, restoredState = {}
   ) {
@@ -48,15 +50,26 @@ class PermissionsController {
     this.assetsController = assetsController
     this.setupProvider = setupProvider
     this.externalRestrictedMethods = getExternalRestrictedMethods(this)
-    this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
+    this.pluginRestrictedMethods = {}
   }
 
+  //=============================================================================
   // Middleware-related methods
+  //=============================================================================
 
+  /**
+   * Create the primary permissions middleware, for use in the extension's RPC
+   * middleware stack.
+   *
+   * @param {Object} opts - The options object.
+   * @param {string} opts.origin - The requesting origin.
+   * @param {string} opts.extensionId - The origin's extensionId, if any.
+   * @param {boolean} opts.isPlugin - Whether the requesting origin is a plugin.
+   */
   createMiddleware ({ origin, extensionId, isPlugin }) {
 
-    if (extensionId) {
+    if (extensionId && !isPlugin) {
       this.store.updateState({
         [METADATA_STORE_KEY]: {
           ...this.store.getState()[METADATA_STORE_KEY],
@@ -67,14 +80,20 @@ class PermissionsController {
 
     const engine = new JsonRpcEngine()
     engine.push(this.createPluginMethodRestrictionMiddleware(isPlugin))
+
     engine.push(createMethodMiddleware({
+      origin,
+      isPlugin,
       store: this.store,
-      storeKey: METADATA_STORE_KEY,
+      metadataStoreKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
       requestPermissions: this._requestPermissions.bind(this, origin),
-      installPlugins: this.installPlugins.bind(this),
+      installPlugins: this.installPlugins.bind(this, origin),
+      getPlugins: this.getPermittedPlugins.bind(this, origin),
     }))
+
     engine.push(createLoggerMiddleware({
+      origin,
       walletPrefix: WALLET_PREFIX,
       restrictedMethods: (
         Object.keys(this.externalRestrictedMethods)
@@ -84,14 +103,19 @@ class PermissionsController {
       logStoreKey: LOG_STORE_KEY,
       historyStoreKey: HISTORY_STORE_KEY,
     }))
+
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
+
     return asMiddleware(engine)
   }
 
   /**
-   * Create middleware for prevent non-plugins from accessing methods only available to plugins
+   * Create middleware for prevent non-plugins from accessing methods only
+   * available to plugins.
+   *
+   * @param {boolean} isPlugin - Whether the requesting origin is a plugin.
    */
   createPluginMethodRestrictionMiddleware (isPlugin) {
     return createAsyncMiddleware(async (req, res, next) => {
@@ -135,10 +159,13 @@ class PermissionsController {
     })
   }
 
+  //=============================================================================
   // Permission-related methods
+  //=============================================================================
 
   /**
    * User approval callback.
+   *
    * @param {object} approved the approved request object
    */
   async approvePermissionsRequest (approved, accounts) {
@@ -167,6 +194,7 @@ class PermissionsController {
 
   /**
    * User rejection callback.
+   *
    * @param {string} id the id of the rejected request
    */
   async rejectPermissionsRequest (id) {
@@ -215,7 +243,17 @@ class PermissionsController {
   }
 
   /**
+   * Gets all granted permissions for the given domain, if any.
+   *
+   * @param {string} origin - The origin to get permissions for.
+   */
+  getPermissionsFor (origin) {
+    return this.permissions.getPermissionsForDomain(origin)
+  }
+
+  /**
    * Removes the given permissions for the given domain.
+   *
    * @param {object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
@@ -241,6 +279,7 @@ class PermissionsController {
 
   /**
    * Removes all permissions for the given domains.
+   *
    * @param {Array<string>} domainsToDelete - The domains to remove all permissions for.
    */
   removeAllPermissionsFor (domainsToDelete) {
@@ -255,7 +294,9 @@ class PermissionsController {
     this.permissions.setDomains(domains)
   }
 
+  //=============================================================================
   // Caveat-related methods
+  //=============================================================================
 
   /**
    * Gets all caveats for the given origin and permission, or returns null
@@ -280,7 +321,9 @@ class PermissionsController {
     return this.permissions.getCaveat(origin, permission, caveatName)
   }
 
+  //=============================================================================
   // Account-related methods
+  //=============================================================================
 
   /**
    * Returns the accounts that should be exposed for the given origin domain,
@@ -391,17 +434,23 @@ class PermissionsController {
     })
   }
 
+  //=============================================================================
   // Plugin-related methods
+  //=============================================================================
 
   /**
+   * Install the requested plugins, if the origin has their corresponding
+   * permissions.
+   * For use with the wallet_installPlugins and wallet_enable RPC methods.
+   *
    * @param {string} origin - The external domain id.
    * @param {Object} requestedPlugins - The names of the requested plugin permissions.
    */
   async installPlugins (origin, requestedPlugins) {
 
-    const existingPerms = this.permissions.getPermissionsForDomain(origin).reduce(
-      (acc, p) => {
-        acc[p.parentCapability] = true
+    const existingPerms = this.getPermissionsFor(origin).reduce(
+      (acc, perm) => {
+        acc[perm.parentCapability] = true
         return acc
       }, {}
     )
@@ -413,9 +462,6 @@ class PermissionsController {
     await Promise.all(Object.keys(requestedPlugins).map(async pluginName => {
 
       const permissionName = PLUGIN_PREFIX + pluginName
-      result[pluginName] = {
-        permission: permissionName,
-      }
 
       // only allow the installation of permitted plugins
       if (!existingPerms[permissionName]) {
@@ -428,7 +474,6 @@ class PermissionsController {
         // attempt to install and run the plugin, storing any errors that
         // occur during the process
         result[pluginName] = {
-          ...result[pluginName],
           ...(await this.pluginsController.processRequestedPlugin(pluginName)),
         }
       }
@@ -436,7 +481,34 @@ class PermissionsController {
     return result
   }
 
+  /**
+   * Get the permitted plugins for the given origin, by plugin name.
+   * Recall that plugin names !== permission names.
+   *
+   * @param {string} origin - The origin to get the permitted plugins for.
+   */
+  getPermittedPlugins (origin) {
+
+    return this.getPermissionsFor(origin).reduce(
+      (acc, perm) => {
+
+        if (perm.parentCapability.startsWith(PLUGIN_PREFIX)) {
+
+          const pluginName = perm.parentCapability.replace(PLUGIN_PREFIX_REGEX, '')
+          const plugin = this.pluginsController.getSerializable(pluginName)
+
+          acc[pluginName] = plugin || {
+            error: pluginNotInstalledError,
+          }
+        }
+        return acc
+      }, {}
+    )
+  }
+
+  //=============================================================================
   // State-related methods
+  //=============================================================================
 
   /**
    * Removes all known domains and their related permissions.
@@ -467,7 +539,18 @@ class PermissionsController {
     })
   }
 
+  /**
+   * Clears domain metadata.
+   */
+  clearDomainMetadata () {
+    this.store.updateState({
+      [METADATA_STORE_KEY]: {},
+    })
+  }
+
+  //=============================================================================
   // rpc-cap-related methods
+  //=============================================================================
 
   /**
    * Initializes the underlying CapabilitiesController.
@@ -475,19 +558,18 @@ class PermissionsController {
    * initialization order.
    *
    * @param {Object} opts - The CapabilitiesController options.
-   * @param {Object} opts.metamaskEventMethods - Plugin-related internal event methods.
+   * @param {Array<string>} opts.metamaskEventMethods - Plugin-related internal event method names.
    * @param {Object} opts.pluginRestrictedMethods - Restricted methods for plugins, if any.
    * @param {Object} opts.restoredPermissions - The restored permissions state, if any.
    */
   initializePermissions ({
     pluginsController,
-    metamaskEventMethods = {},
+    metamaskEventMethods = [],
     pluginRestrictedMethods = {},
     restoredPermissions = {},
   } = {}) {
 
     this.pluginsController = pluginsController
-    this.metamaskEventMethods = metamaskEventMethods
     this.pluginRestrictedMethods = pluginRestrictedMethods
 
     const initState = Object.keys(restoredPermissions)
@@ -509,7 +591,10 @@ class PermissionsController {
     const externalMethodsToAddToRestricted = {
       ...this.pluginRestrictedMethods,
       ...api,
-      ...this.metamaskEventMethods,
+      ...metamaskEventMethods.reduce(
+        (acc, methodName) => ({ ...acc, [methodName]: true }),
+        {}
+      ),
       removePermissionsFor: this.removePermissionsFor.bind(this),
       getApprovedAccounts: this.getAccounts.bind(this),
     }
@@ -517,14 +602,14 @@ class PermissionsController {
     const namespacedPluginRestrictedMethods = Object.keys(
       externalMethodsToAddToRestricted
     ).reduce((acc, methodKey) => {
-      const hasDescription = externalMethodsToAddToRestricted[methodKey]
-      if (!hasDescription) {
+      // ignore methods without descriptions; they are not for plugins
+      if (!pluginRestrictedMethodDescriptions[methodKey]) {
         return acc
       }
       return {
         ...acc,
         ['metamask_' + methodKey]: {
-          description: pluginRestrictedMethodDescriptions[methodKey] || methodKey,
+          description: pluginRestrictedMethodDescriptions[methodKey],
           method: 'metamask_' + externalMethodsToAddToRestricted[methodKey],
         },
       }
@@ -568,5 +653,5 @@ class PermissionsController {
 
 module.exports = {
   PermissionsController,
-  addInternalMethodPrefix: prefix,
+  INTERNAL_METHOD_PREFIX: WALLET_PREFIX,
 }
