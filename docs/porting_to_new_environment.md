@@ -36,7 +36,7 @@ filterMiddleware.destroy()
 
 Only use this if you intend to construct the [metamask-inpage-provider](https://github.com/MetaMask/metamask-inpage-provider) over a stream!
 
-The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [port-stream](../app/scripts/lib/port-stream.js) is just a thin wrapper around the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), and a similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
+The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [extension-port-stream](https://github.com/MetaMask/extension-port-stream) is just a thin wrapper around the [Port postMessage API](https://developer.chrome.com/extensions/runtime#property-Port-postMessage) (see the [Chrome documentation for extension message passing](https://developer.chrome.com/extensions/messaging#connect) for more information). A similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
 
 ### The MetaMask Controller
 
@@ -116,11 +116,10 @@ If you are making a MetaMask-powered browser for a new platform, one of the tric
 
 To see how we do that, you can refer to the [inpage script](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/inpage.js) that we inject into every website. There you can see it creates a multiplex stream to the background, and uses it to initialize what we call the [MetamaskInpageProvider](https://github.com/MetaMask/metamask-inpage-provider/blob/master/index.js), which you can see stubs a few methods out, but mostly just passes calls to `sendAsync` through the stream it's passed! That's really all the magic that's needed to create a web3-like API in a remote context, once you have a stream to MetaMask available.
 
-In `inpage.js` you can see we create a `PortStream`, that's just a class we use to wrap WebExtension ports as streams, so we can reuse our favorite stream abstraction over the more irregular API surface of the WebExtension. In a new platform, you will probably need to construct this stream differently. The key is that you need to construct a stream that talks from the site context to the background. Once you have that set up, it works like magic!
+In `inpage.js` you can see we create a [`postMessage Stream`](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/inpage.js#L52), that's just a class we use to wrap WebExtension postMessage as streams, so we can reuse our favorite stream abstraction over the more irregular API surface of the WebExtension. In a new platform, you will probably need to construct this stream differently. The key is that you need to construct a stream that talks from the site context to the background. Once you have that set up, it works like magic!
 
 If streams seem new and confusing to you, that's ok, they can seem strange at first. To help learn them, we highly recommend reading Substack's [Stream Handbook](https://github.com/substack/stream-handbook), or going through NodeSchool's interactive command-line class [Stream Adventure](https://github.com/workshopper/stream-adventure), also maintained by Substack.
 
 ## Conclusion
 
 I hope this has been helpful to you! If you have any other questions, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
-

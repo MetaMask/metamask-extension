@@ -9,16 +9,13 @@ const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { formatBalance } = require('../../../helpers/utils/util')
 
 class ConnectHardwareForm extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      error: null,
-      selectedAccount: null,
-      accounts: [],
-      browserSupported: true,
-      unlocked: false,
-      device: null,
-    }
+  state = {
+    error: null,
+    selectedAccount: null,
+    accounts: [],
+    browserSupported: true,
+    unlocked: false,
+    device: null,
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {

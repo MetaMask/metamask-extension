@@ -34,7 +34,7 @@ function injectScript (content) {
   try {
     const container = document.head || document.documentElement
     const scriptTag = document.createElement('script')
-    scriptTag.setAttribute('async', false)
+    scriptTag.setAttribute('async', 'false')
     scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)

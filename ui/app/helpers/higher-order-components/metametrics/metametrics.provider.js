@@ -42,17 +42,17 @@ class MetaMetricsProvider extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-      previousPath: '',
-      currentPath: window.location.href,
-    }
-
     props.history.listen(() => {
-      this.setState({
-        previousPath: this.state.currentPath,
+      this.setState((prevState) => ({
+        previousPath: prevState.currentPath,
         currentPath: window.location.href,
-      })
+      }))
     })
+  }
+
+  state = {
+    previousPath: '',
+    currentPath: window.location.href,
   }
 
   getChildContext () {
