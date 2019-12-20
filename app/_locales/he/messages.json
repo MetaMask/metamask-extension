@@ -1154,7 +1154,7 @@
     "message": "סמל"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "על הסמל להכיל בין 0 ל-12 תווים."
+    "message": "הסמל חייב להיות 11 תווים או פחות."
   },
   "syncWithMobile": {
     "message": "סנכרן עם הנייד"

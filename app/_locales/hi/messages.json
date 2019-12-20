@@ -1154,7 +1154,7 @@
     "message": "सिम्बल"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "सिंबल को 0 से 12 अक्षरों के मध्य का होना चाहिए।"
+    "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
   "syncWithMobile": {
     "message": "मोबाइल से सिंक करें"

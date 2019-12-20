@@ -1063,7 +1063,7 @@
     "message": "Simbolo"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Ang simbolo ay dapat na nasa pagitan ng 0 at 12 character."
+    "message": "Ang simbolo ay dapat na 11 character o mas kaunti."
   },
   "syncWithMobile": {
     "message": "I-sync sa mobile"

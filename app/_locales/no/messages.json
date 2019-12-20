@@ -1135,7 +1135,7 @@
     "message": "Besøk brukerstøtte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symboler må være på mellom 0 og 12 tegn. "
+    "message": "Symbolet må være 11 tegn eller færre."
   },
   "syncWithMobile": {
     "message": "Synkroniser med mobil "
