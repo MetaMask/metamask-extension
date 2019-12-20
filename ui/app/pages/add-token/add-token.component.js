@@ -191,7 +191,7 @@ class AddToken extends Component {
     const symbolLength = customSymbol.length
     let customSymbolError = null
 
-    if (symbolLength <= 0 || symbolLength > 12) {
+    if (symbolLength <= 0 || symbolLength >= 12) {
       customSymbolError = this.context.t('symbolBetweenZeroTwelve')
     }
 
