@@ -61,6 +61,12 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch - это однонаправленное место для обмена более 300 криптоконверсий по наилучшей цене."
   },
+  "buyFlyp": {
+    "message": "Купить на Flyp.me"
+  },
+  "buyFlypExplainer": {
+    "message": "Flyp.me позволяет обменивать крипту на крипту мгновенно без регистрации. Полная анонимность и фиксированные тарифы."
+  },
   "ok": {
     "message": "ОК"
   },
@@ -90,6 +96,9 @@
   },
   "continueToCoinSwitch": {
     "message": "Продолжить в CoinSwitch"
+  },
+  "continueToFlyp": {
+    "message": "Продолжить в Flyp.me"
   },
   "contractDeployment": {
     "message": "Развертывание контракта"

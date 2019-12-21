@@ -170,6 +170,12 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch ist die One-Stop-Destination, um mehr als 300 Kryptowährungen zum besten Preis zu tauschen."
   },
+  "buyFlyp": {
+    "message": "Bei Flyp.me kaufen"
+  },
+  "buyFlypExplainer": {
+    "message": "Sofort und ohne Konto Kryptowährungen umtauschen. Maximale Privatsphäre und fixe Wechselkurse."
+  },
   "off": {
     "message": "Aus"
   },
@@ -250,6 +256,9 @@
   },
   "continueToCoinSwitch": {
     "message": "Zu CoinSwitch fortfahren"
+  },
+  "continueToFlyp": {
+    "message": "Weiter zu Flyp.me"
   },
   "contractDeployment": {
     "message": "Smart Contract Ausführung"

@@ -148,6 +148,12 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch es el destino de una sola parada para intercambiar más de 300 criptomonedas al mejor precio."
   },
+  "buyFlyp": {
+    "message": "Comprar en Flyp.me"
+  },
+  "buyFlypExplainer": {
+    "message": "Flyp.me te permite intercambiar cryptomonedas instantáneamente sin registrarte. Máxima privacidad y tipo de cambio fijo."
+  },
   "cancel": {
     "message": "Cancelar"
   },
@@ -219,6 +225,9 @@
   },
   "continueToCoinSwitch": {
     "message": "Continuar a CoinSwitch"
+  },
+  "continueToFlyp": {
+    "message": "Continuar a Flyp.me"
   },
   "contractDeployment": {
     "message": "Desplegar (Deploy) contrato"

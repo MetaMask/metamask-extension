@@ -173,6 +173,12 @@
   "buyCoinSwitchExplainer": {
     "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
   },
+  "buyFlyp": {
+    "message": "在Flyp.me上购买"
+  },
+  "buyFlypExplainer": {
+    "message": "你可以在Flyp.me兑换比特幣加各種貨幣 Flyp.me不收取个人私信息"
+  },
   "bytes": {
     "message": "字节"
   },
@@ -262,6 +268,9 @@
   },
   "continueToCoinSwitch": {
     "message": "继续访问 CoinSwitch"
+  },
+  "continueToFlyp": {
+    "message": "继续访问 Flyp.me"
   },
   "contractDeployment": {
     "message": "合约部署"

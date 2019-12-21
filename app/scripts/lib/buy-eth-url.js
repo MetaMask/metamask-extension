@@ -22,6 +22,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
       return `https://dash.sendwyre.com/sign-up`
     case 'coinswitch':
       return `https://metamask.coinswitch.co/?address=${address}&to=eth`
+    case 'flyp':
+      return `https://metamask.flyp.me/#/?address=${address}`
     case 'coinbase':
       return `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
     case 'metamask-faucet':

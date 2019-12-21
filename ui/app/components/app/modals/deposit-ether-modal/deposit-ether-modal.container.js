@@ -17,6 +17,9 @@ function mapDispatchToProps (dispatch) {
     toCoinSwitch: (address) => {
       dispatch(buyEth({ service: 'coinswitch', address }))
     },
+    toFlyp: (address) => {
+      dispatch(buyEth({ service: 'flyp', address }))
+    },
     hideModal: () => {
       dispatch(hideModal())
     },
