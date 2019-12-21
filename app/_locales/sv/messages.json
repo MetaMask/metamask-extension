@@ -1141,7 +1141,7 @@
     "message": "Besök vårt supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolen måste vara mellan 0 och 12 tecken."
+    "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "syncWithMobile": {
     "message": "Synka med mobil"

@@ -456,7 +456,7 @@
     "message": "Navštivte naše centrum podpory"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+    "message": "Symbol musí mít 11 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"

@@ -1142,7 +1142,7 @@
     "message": "符号"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "符号应该有0-12个字符."
+    "message": "符号不得超过11个字符。"
   },
   "syncWithMobile": {
     "message": "使用移动设备进行同步"

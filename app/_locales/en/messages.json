@@ -1342,7 +1342,7 @@
     "message": "Symbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be between 0 and 12 characters."
+    "message": "Symbol must be 11 characters or fewer."
   },
   "syncWithThreeBox": {
     "message": "Sync data with 3Box (experimental)"

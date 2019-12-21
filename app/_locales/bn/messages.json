@@ -1160,7 +1160,7 @@
     "message": "প্রতীক"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "প্রতীক অবশ্যই 0 এবং 12 অক্ষরের মধ্যে হতে হবে।"
+    "message": "প্রতীকটি 11 টি অক্ষর বা তার চেয়ে কম হতে হবে।"
   },
   "syncWithMobile": {
     "message": "মোবাইল দিয়ে সিঙ্ক করুন"
