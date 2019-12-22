@@ -32,7 +32,7 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
-const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+// const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -53,7 +53,7 @@ global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
 const release = platform.getVersion()
-const sentry = setupSentry({ release })
+// const sentry = setupSentry({ release })
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // Internet Explorer 6-11
@@ -184,21 +184,21 @@ async function loadStateFromPersistence () {
   // this should never happen but new error reporting suggests that it has
   // for a small number of users
   // https://github.com/metamask/metamask-extension/issues/3919
-  if (versionedData && !versionedData.data) {
-    // unable to recover, clear state
-    versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
-  }
+  // if (versionedData && !versionedData.data) {
+  //   // unable to recover, clear state
+  //   versionedData = migrator.generateInitialState(firstTimeState)
+  //   sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
+  // }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
-    // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData)
-    sentry.captureException(err, {
-      // "extra" key is required by Sentry
-      extra: { vaultStructure },
-    })
-  })
+  // migrator.on('error', (err) => {
+  //   // get vault structure without secrets
+  //   const vaultStructure = getObjStructure(versionedData)
+  //   sentry.captureException(err, {
+  //     // "extra" key is required by Sentry
+  //     extra: { vaultStructure },
+  //   })
+  // })
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
@@ -250,8 +250,8 @@ function setupController (initState, initLangCode) {
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
 
-  const provider = controller.provider
-  setupEnsIpfsResolver({ provider })
+  // const provider = controller.provider
+  // setupEnsIpfsResolver({ provider })
 
   // submit rpc requests to mesh-metrics
   controller.networkController.on('rpc-req', (data) => {
@@ -262,11 +262,16 @@ function setupController (initState, initLangCode) {
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    try {
-      reportFailedTxToSentry({ sentry, txMeta })
-    } catch (e) {
-      console.error(e)
+    const errorMessage = 'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
+    if(errorMessage) {
+      console.error(errorMessage);
     }
+
+    // try {
+    //   reportFailedTxToSentry({ sentry, txMeta })
+    // } catch (e) {
+    //   console.error(e)
+    // }
   })
 
   // setup state persistence
