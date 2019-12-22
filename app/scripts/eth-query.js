@@ -1,4 +1,6 @@
-const EthQuery = require("eth-query");
+const OriginalEthQuery = require("eth-query");
+
+class EthQuery extends OriginalEthQuery {}
 
 EthQuery.prototype.blockNumber = generateFnFor("eth_epochNumber");
 EthQuery.prototype.getUncleCountByBlockNumber = generateFnFor(

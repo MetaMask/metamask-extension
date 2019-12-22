@@ -39,7 +39,6 @@ class DetectTokensController {
       }
     }
 
-    debugger;
     const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(SINGLE_CALL_BALANCES_ADDRESS)
     ethContract.balances([this.selectedAddress], tokensToDetect, (error, result) => {
       if (error) {
