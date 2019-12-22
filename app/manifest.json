@@ -79,6 +79,7 @@
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
+    "http://localhost:12537/",
     "https://*.infura.io/",
     "activeTab",
     "webRequest",
