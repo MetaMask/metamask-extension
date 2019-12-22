@@ -7,7 +7,7 @@ const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache
 const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const createInfuraMiddleware = require('eth-json-rpc-infura')
-const BlockTracker = require('eth-block-tracker')
+const BlockTracker = require('./eth-block-tracker')
 
 module.exports = createInfuraClient
 

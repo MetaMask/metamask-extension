@@ -1,6 +1,6 @@
 const assert = require('assert')
 const ObservableStore = require('obs-store')
-const PollingBlockTracker = require('eth-block-tracker')
+const PollingBlockTracker = require('../../../../app/scripts/controllers/network/eth-block-tracker');
 
 const BalanceController = require('../../../../app/scripts/controllers/balance')
 const AccountTracker = require('../../../../app/scripts/lib/account-tracker')

@@ -4,7 +4,8 @@ const createBlockRefRewriteMiddleware = require('eth-json-rpc-middleware/block-r
 const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
-const BlockTracker = require('eth-block-tracker')
+const BlockTracker = require('./eth-block-tracker')
+const { createCfxRewriteRequestMiddle } = require('./createCfxMiddle');
 
 const inTest = process.env.IN_TEST === 'true'
 
@@ -19,6 +20,7 @@ function createLocalhostClient () {
     createEstimateGasMiddleware(),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
+    createCfxRewriteRequestMiddle(),
     fetchMiddleware,
   ])
   return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12537'}
