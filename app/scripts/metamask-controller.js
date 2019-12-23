@@ -1457,10 +1457,10 @@ module.exports = class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
-    // permissions
-    engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    // permissions
+    engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
