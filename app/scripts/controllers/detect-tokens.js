@@ -1,4 +1,4 @@
-const Web3 = require('./ConfluxWeb/index');
+const Web3 = require('./ConfluxWeb/index')
 const contracts = require('eth-contract-metadata')
 const { warn } = require('loglevel')
 const { MAINNET } = require('./network/enums')
@@ -40,18 +40,18 @@ class DetectTokensController {
     }
 
     const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(SINGLE_CALL_BALANCES_ADDRESS)
-    ethContract.balances([this.selectedAddress], tokensToDetect, (error, result) => {
-      if (error) {
-        warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
-        return
-      }
+    try {
+      const balances = await ethContract.balances([this.selectedAddress], tokensToDetect)
       tokensToDetect.forEach((tokenAddress, index) => {
-        const balance = result[index]
+        const balance = balances[index]
         if (balance && !balance.isZero()) {
           this._preferences.addToken(tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals)
         }
       })
-    })
+    } catch (error) {
+      warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
+      return
+    }
   }
 
   /**
