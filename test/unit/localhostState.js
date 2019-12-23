@@ -12,8 +12,10 @@ const initialState = {
   config: {},
   NetworkController: {
     provider: {
-      type: 'rpc',
-      rpcTarget: 'http://localhost:8545',
+      // type: 'rpc',
+      // rpcTarget: 'http://localhost:8545',
+      // TODO: use our own version of ganache
+      type: 'cfx_test',
     },
   },
 }

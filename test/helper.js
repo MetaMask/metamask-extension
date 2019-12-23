@@ -1,20 +1,22 @@
-const Ganache = require('ganache-core')
+// const Ganache = require('ganache-core')
 const nock = require('nock')
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
+// TODO: use our own version of ganache
+nock.enableNetConnect('13.67.73.51')
 
 Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
 enableFailureOnUnhandledPromiseRejection()
 
 // ganache server
-const server = Ganache.server()
-server.listen(8545, () => {
-  console.log('Ganache Testrpc is running on "http://localhost:8545"')
-})
+// const server = Ganache.server()
+// server.listen(8545, () => {
+//   console.log('Ganache Testrpc is running on "http://localhost:8545"')
+// })
 
 // logging util
 var log = require('loglevel')

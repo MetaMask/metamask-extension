@@ -7,8 +7,9 @@ class PollingBlockTracker extends OriginalPollingBlockTracker {
       jsonrpc: '2.0',
       id: 1,
       method: 'cfx_epochNumber',
-      params: [],
+      params: ['latest_state'],
     }
+
     if (this._setSkipCacheFlag) req.skipCache = true
     const res = await pify(cb => this._provider.sendAsync(req, cb))()
     if (res.error) {

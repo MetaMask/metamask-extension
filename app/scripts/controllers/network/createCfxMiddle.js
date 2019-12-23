@@ -2,6 +2,14 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
 
 module.exports = { createCfxRewriteRequestMiddle }
 
+const MethodsWithDefaultEpochParameter = {
+  cfx_getTransactionCount: 1,
+  cfx_getBalance: 1,
+  cfx_getBlockByEpochNumber: 0,
+  cfx_epochNumber: 0,
+  cfx_getBlocksByEpoch: 0,
+}
+
 function createCfxRewriteRequestMiddle () {
   // eslint-disable-next-line no-unused-vars
   return createAsyncMiddleware(async (req, res, next) => {
@@ -16,6 +24,20 @@ function createCfxRewriteRequestMiddle () {
       )
       req.method = req.method.replace('cfx_blockNumber', 'cfx_epochNumber')
     }
+    if (
+      MethodsWithDefaultEpochParameter[req.method] !== undefined &&
+      (!Array.isArray(req.params) ||
+        req.params[MethodsWithDefaultEpochParameter[req.method]] ===
+          undefined ||
+        req.params[MethodsWithDefaultEpochParameter[req.method]] ===
+          'latest_mined')
+    ) {
+      if (!Array.isArray(req.params)) {
+        req.params = []
+      }
+      req.params[MethodsWithDefaultEpochParameter[req.method]] = 'latest_state'
+    }
+
     await next()
   })
 }
