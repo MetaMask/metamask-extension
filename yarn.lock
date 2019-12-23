@@ -10045,9 +10045,6 @@ eth-contract-metadata@^1.11.0:
 
 "eth-cws-keyring@file:../../coolwalletS/eth-cws-keyring":
   version "1.0.1"
-  dependencies:
-    ethereumjs-util "^5.1.0"
-    rlp "^2.0.0"
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
@@ -10498,7 +10495,7 @@ ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0, ethereumjs-util@^4.4.0:
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.0, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereumjs-util@^5.1.3, ethereumjs-util@^5.1.5, ethereumjs-util@^5.2.0:
+ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereumjs-util@^5.1.3, ethereumjs-util@^5.1.5, ethereumjs-util@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.2.0.tgz#3e0c0d1741471acf1036052d048623dee54ad642"
   integrity sha512-CJAKdI0wgMbQFLlLRtZKGcy/L6pzVRgelIZqRqNbuVFM3K9VEnyfbcvz0ncWMRNCe4kaHWjwRYQcYMucmwsnWA==
