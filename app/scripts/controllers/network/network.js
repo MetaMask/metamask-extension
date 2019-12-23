@@ -7,7 +7,7 @@ const JsonRpcEngine = require('json-rpc-engine')
 const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const log = require('loglevel')
 const createMetamaskMiddleware = require('./createMetamaskMiddleware')
-const createInfuraClient = require('./createInfuraClient')
+// const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
@@ -15,16 +15,16 @@ const extend = require('extend')
 const networks = { networkList: {} }
 
 const {
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
+  // ROPSTEN,
+  // RINKEBY,
+  // KOVAN,
   MAINNET,
   LOCALHOST,
-  GOERLI,
+  // GOERLI,
 } = require('./enums')
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 const INFURA_PROVIDER_TYPES = []
-const CONFLUX_TEST_NET = "http://13.67.73.51:12537";
+const CONFLUX_TEST_NET = 'http://13.67.73.51:12537'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -178,10 +178,10 @@ module.exports = class NetworkController extends EventEmitter {
     // infura type-based endpoints
     // const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     // if (isInfura) {
-      // this._configureInfuraProvider(opts)
+    //   this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
     if (true || type === 'mainnet') {
-      this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: "CFX", nickname: "conflux-mainnet" })
+      this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: 'CFX', nickname: 'conflux-mainnet' })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
@@ -234,11 +234,11 @@ module.exports = class NetworkController extends EventEmitter {
   _setNetworkClient ({ networkMiddleware, blockTracker, rpcUrl }) {
     const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
     const engine = new JsonRpcEngine()
-    engine._rpcUrl = rpcUrl;
+    engine._rpcUrl = rpcUrl
     engine.push(metamaskMiddleware)
     engine.push(networkMiddleware)
     const provider = providerFromEngine(engine)
-    provider._confluxWebProvider = { url:rpcUrl };
+    provider._confluxWebProvider = { url: rpcUrl }
     this._setProviderAndBlockTracker({ provider, blockTracker })
   }
 

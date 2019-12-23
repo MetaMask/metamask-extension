@@ -11,7 +11,7 @@ const EthQuery = require('../eth-query')
 const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const pify = require('pify')
-const Web3 = require('../controllers/ConfluxWeb');
+const Web3 = require('../controllers/ConfluxWeb')
 const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 
 const { bnToHex } = require('./util')

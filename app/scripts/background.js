@@ -26,12 +26,12 @@ const createStreamSink = require('./lib/createStreamSink')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const rawFirstTimeState = require('./first-time-state')
-const setupSentry = require('./lib/setupSentry')
-const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
+// const setupSentry = require('./lib/setupSentry')
+// const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
-const getObjStructure = require('./lib/getObjStructure')
+// const getObjStructure = require('./lib/getObjStructure')
 // const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
 
 const {
@@ -52,7 +52,7 @@ const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
-const release = platform.getVersion()
+// const release = platform.getVersion()
 // const sentry = setupSentry({ release })
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
@@ -262,10 +262,7 @@ function setupController (initState, initLangCode) {
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    const errorMessage = 'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
-    if(errorMessage) {
-      console.error(errorMessage);
-    }
+    if (txMeta.err && txMeta.err.message) console.error(txMeta.err)
 
     // try {
     //   reportFailedTxToSentry({ sentry, txMeta })

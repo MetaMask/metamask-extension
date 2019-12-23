@@ -1,31 +1,31 @@
-const OriginalEthQuery = require("eth-query");
+const OriginalEthQuery = require('eth-query')
 
 class EthQuery extends OriginalEthQuery {}
 
-EthQuery.prototype.blockNumber = generateFnFor("eth_epochNumber");
+EthQuery.prototype.blockNumber = generateFnFor('eth_epochNumber')
 EthQuery.prototype.getUncleCountByBlockNumber = generateFnFor(
-  "eth_getUncleCountByEpochNumber"
-);
+  'eth_getUncleCountByEpochNumber'
+)
 EthQuery.prototype.getTransactionByBlockNumberAndIndex = generateFnFor(
-  "eth_getTransactionByEpochNumberAndIndex"
-);
+  'eth_getTransactionByEpochNumberAndIndex'
+)
 EthQuery.prototype.getUncleByBlockNumberAndIndex = generateFnFor(
-  "eth_getUncleByEpochNumberAndIndex"
-);
+  'eth_getUncleByEpochNumberAndIndex'
+)
 
-function generateFnFor(methodName) {
-  return function() {
-    const self = this;
-    var args = [].slice.call(arguments);
-    var cb = args.pop();
+function generateFnFor (methodName) {
+  return function () {
+    const self = this
+    var args = [].slice.call(arguments)
+    var cb = args.pop()
     self.sendAsync(
       {
         method: methodName,
-        params: args
+        params: args,
       },
       cb
-    );
-  };
+    )
+  }
 }
 
-module.exports = EthQuery;
+module.exports = EthQuery

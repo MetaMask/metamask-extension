@@ -1,42 +1,40 @@
-const ConfluxWeb = require("conflux-web");
+const ConfluxWeb = require('conflux-web')
 
 class FakeContract {
-  constructor(cfx, abi) {
-    this.cfx = cfx;
-    this.abi = abi;
+  constructor (cfx, abi) {
+    this.cfx = cfx
+    this.abi = abi
   }
 
-  at(address) {
-    return this.cfx.Contract.call(this.cfx, { abi: this.abi, address });
+  at (address) {
+    return this.cfx.Contract(this.cfx, { abi: this.abi, address })
   }
 }
 
 module.exports = class Web3 extends ConfluxWeb {
-  constructor() {
+  constructor () {
     if (arguments[0] && arguments[0]._confluxWebProvider) {
-      super(arguments[0]._confluxWebProvider);
+      super(arguments[0]._confluxWebProvider)
     } else {
-      super(...arguments);
+      super(...arguments)
     }
   }
 
-  setProvider() {
+  setProvider () {
     if (arguments[0] && arguments[0]._confluxWebProvider) {
       return ConfluxWeb.prototype.setProvider.call(
         this,
         arguments[0]._confluxWebProvider.url,
         { ...arguments[0]._confluxWebProvider }
-      );
+      )
     } else {
-      return ConfluxWeb.prototype.setProvider.call(this, ...arguments);
+      return ConfluxWeb.prototype.setProvider.call(this, ...arguments)
     }
   }
 
-  get eth() {
+  get eth () {
     return {
-      contract: abi => {
-        return new FakeContract(this, abi);
-      }
-    };
+      contract: abi => new FakeContract(this, abi),
+    }
   }
-};
+}

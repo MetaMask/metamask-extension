@@ -5,7 +5,7 @@ const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/b
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const BlockTracker = require('./eth-block-tracker')
-const { createCfxRewriteRequestMiddle } = require('./createCfxMiddle');
+const { createCfxRewriteRequestMiddle } = require('./createCfxMiddle')
 
 const inTest = process.env.IN_TEST === 'true'
 
