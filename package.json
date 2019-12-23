@@ -16,6 +16,7 @@
     "sendwithprivatedapp": "static-server test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:global": "mocha test/unit-global/*",
+    "test:debug:single": "cross-env METAMASK_ENV=test mocha --exit --no-timeouts --require test/setup.js",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "yarn test:integration:build && yarn test:flat",
     "test:integration:build": "gulp build:scss",
