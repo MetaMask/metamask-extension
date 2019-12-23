@@ -6,7 +6,7 @@ const log = require('loglevel')
 const migrations = require('../migrations/')
 const Migrator = require('../lib/migrator')
 const JsonRpcEngine = require('json-rpc-engine')
-const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
+const providerFromEngine = require('@yqrashawn/eth-json-rpc-middleware/providerFromEngine')
 const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
 const createOriginMiddleware = require('../lib/createOriginMiddleware')
 
