@@ -19,17 +19,19 @@ describe('DetectTokensController', () => {
   beforeEach(async () => {
 
 
-    nock('https://api.infura.io')
+    // nock('https://api.infura.io')
+    //   .get(/.*/)
+    //   .reply(200)
+    nock('http://13.67.73.51:12537')
       .get(/.*/)
       .reply(200)
 
     keyringMemStore = new ObservableStore({ isUnlocked: false})
     network = new NetworkController()
-    preferences = new PreferencesController({ network })
-    controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-
     network.initializeProvider(networkControllerProviderConfig)
 
+    preferences = new PreferencesController({ network })
+    controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
   })
 
   after(() => {

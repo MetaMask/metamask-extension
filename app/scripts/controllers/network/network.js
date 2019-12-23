@@ -18,12 +18,15 @@ const {
   // ROPSTEN,
   // RINKEBY,
   // KOVAN,
+  CFX_TEST,
   MAINNET,
   LOCALHOST,
   // GOERLI,
 } = require('./enums')
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 const INFURA_PROVIDER_TYPES = []
+// TODO: add main net endpoint
+const CONFLUX_MAINNET = 'http://13.67.73.51:12537'
 const CONFLUX_TEST_NET = 'http://13.67.73.51:12537'
 
 const env = process.env.METAMASK_ENV
@@ -31,9 +34,9 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = MAINNET
+  defaultProviderConfigType = LOCALHOST
 } else if (METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigType = MAINNET
+  defaultProviderConfigType = CFX_TEST
 } else {
   defaultProviderConfigType = MAINNET
 }
@@ -180,8 +183,10 @@ module.exports = class NetworkController extends EventEmitter {
     // if (isInfura) {
     //   this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
-    if (true || type === 'mainnet') {
-      this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: 'CFX', nickname: 'conflux-mainnet' })
+    if (type === MAINNET) {
+      this._configureStandardProvider({ rpcUrl: CONFLUX_MAINNET, chainId: 1, ticker: 'CFX', nickname: 'conflux-main-net' })
+    } else if (type === CFX_TEST) {
+      this._configureStandardProvider({ rpcUrl: CONFLUX_TEST_NET, chainId: 1, ticker: 'CFX', nickname: 'conflux-test-net' })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints

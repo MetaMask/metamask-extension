@@ -4,6 +4,7 @@ const KOVAN = 'kovan'
 const MAINNET = 'mainnet'
 const LOCALHOST = 'localhost'
 const GOERLI = 'goerli'
+const CFX_TEST = 'cfx_test'
 
 const MAINNET_CODE = 1
 const ROPSTEN_CODE = 3
@@ -18,6 +19,7 @@ const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 const GOERLI_DISPLAY_NAME = 'Goerli'
 
 module.exports = {
+  CFX_TEST,
   ROPSTEN,
   RINKEBY,
   KOVAN,
