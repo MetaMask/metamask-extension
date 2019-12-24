@@ -34,7 +34,6 @@ class Alert extends Component {
     setTimeout(_ => {
       this.setState({ visible: false })
     }, 500)
-
   }
 
   render () {
@@ -51,7 +50,6 @@ class Alert extends Component {
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
-  msg: PropTypes.string, /* eslint-disable-line react/no-unused-prop-types */
+  msg: PropTypes.string /* eslint-disable-line react/no-unused-prop-types */,
 }
 module.exports = Alert
-

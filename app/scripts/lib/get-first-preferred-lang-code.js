@@ -2,16 +2,16 @@ const extension = require('extensionizer')
 const promisify = require('pify')
 const allLocales = require('../../_locales/index.json')
 
-const getPreferredLocales = extension.i18n ? promisify(
-  extension.i18n.getAcceptLanguages,
-  { errorFirst: false }
-) : async () => []
+const getPreferredLocales = extension.i18n
+  ? promisify(extension.i18n.getAcceptLanguages, { errorFirst: false })
+  : async () => []
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
 allLocales.forEach(locale => {
   if (locale && locale.code) {
-    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] = locale.code
+    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
+      locale.code
   }
 })
 
@@ -46,4 +46,3 @@ async function getFirstPreferredLangCode () {
 }
 
 module.exports = getFirstPreferredLangCode
-

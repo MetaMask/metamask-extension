@@ -21,21 +21,22 @@ class EditableLabel extends Component {
       return
     }
 
-    Promise.resolve(this.props.onSubmit(value))
-      .then(() => this.setState({ isEditing: false }))
+    Promise.resolve(this.props.onSubmit(value)).then(() =>
+      this.setState({ isEditing: false })
+    )
   }
 
   renderEditing () {
     const { value } = this.state
 
-    return [(
+    return [
       <input
         key={1}
         type="text"
         required
         dir="auto"
         value={this.state.value}
-        onKeyPress={(event) => {
+        onKeyPress={event => {
           if (event.key === 'Enter') {
             this.handleSubmit()
           }
@@ -44,22 +45,28 @@ class EditableLabel extends Component {
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error': value === '',
         })}
-      />
-    ), (
+      />,
       <div className="editable-label__icon-wrapper" key={2}>
-        <i className="fa fa-check editable-label__icon" onClick={() => this.handleSubmit()} />
-      </div>
-    )]
+        <i
+          className="fa fa-check editable-label__icon"
+          onClick={() => this.handleSubmit()}
+        />
+      </div>,
+    ]
   }
 
   renderReadonly () {
-    return [(
-      <div key={1} className="editable-label__value">{this.state.value}</div>
-    ), (
+    return [
+      <div key={1} className="editable-label__value">
+        {this.state.value}
+      </div>,
       <div key={2} className="editable-label__icon-wrapper">
-        <i className="fa fa-pencil editable-label__icon" onClick={() => this.setState({ isEditing: true })} />
-      </div>
-    )]
+        <i
+          className="fa fa-pencil editable-label__icon"
+          onClick={() => this.setState({ isEditing: true })}
+        />
+      </div>,
+    ]
   }
 
   render () {
@@ -68,11 +75,7 @@ class EditableLabel extends Component {
 
     return (
       <div className={classnames('editable-label', className)}>
-        {
-          isEditing
-            ? this.renderEditing()
-            : this.renderReadonly()
-        }
+        {isEditing ? this.renderEditing() : this.renderReadonly()}
       </div>
     )
   }

@@ -26,7 +26,7 @@ export default class SecurityTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('revealSeedWords') }</span>
+          <span>{t('revealSeedWords')}</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -45,7 +45,7 @@ export default class SecurityTab extends PureComponent {
                 history.push(REVEAL_SEED_ROUTE)
               }}
             >
-              { t('revealSeedWords') }
+              {t('revealSeedWords')}
             </Button>
           </div>
         </div>
@@ -60,9 +60,9 @@ export default class SecurityTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('participateInMetaMetrics') }</span>
+          <span>{t('participateInMetaMetrics')}</span>
           <div className="settings-page__content-description">
-            <span>{ t('participateInMetaMetricsDescription') }</span>
+            <span>{t('participateInMetaMetricsDescription')}</span>
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -81,14 +81,17 @@ export default class SecurityTab extends PureComponent {
 
   renderIncomingTransactionsOptIn () {
     const { t } = this.context
-    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } = this.props
+    const {
+      showIncomingTransactions,
+      setShowIncomingTransactionsFeatureFlag,
+    } = this.props
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showIncomingTransactions') }</span>
+          <span>{t('showIncomingTransactions')}</span>
           <div className="settings-page__content-description">
-            { t('showIncomingTransactionsDescription') }
+            {t('showIncomingTransactionsDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -110,10 +113,10 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderSeedWords() }
-        { this.renderIncomingTransactionsOptIn() }
-        { this.renderMetaMetricsOptIn() }
+        {warning && <div className="settings-tab__error">{warning}</div>}
+        {this.renderSeedWords()}
+        {this.renderIncomingTransactionsOptIn()}
+        {this.renderMetaMetricsOptIn()}
       </div>
     )
   }

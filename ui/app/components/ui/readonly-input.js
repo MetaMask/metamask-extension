@@ -31,4 +31,3 @@ ReadOnlyInput.prototype.render = function ReadOnlyInput () {
     </div>
   )
 }
-

@@ -19,7 +19,6 @@ module.exports = compose(
   connect(mapStateToProps, mapDispatchToProps)
 )(PrivateKeyImportView)
 
-
 function mapStateToProps (state) {
   return {
     error: state.appState.warning,
@@ -29,11 +28,13 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    importNewAccount: (strategy, [ privateKey ]) => {
-      return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
+    importNewAccount: (strategy, [privateKey]) => {
+      return dispatch(actions.importNewAccount(strategy, [privateKey]))
     },
-    displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
-    setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
+    displayWarning: message =>
+      dispatch(actions.displayWarning(message || null)),
+    setSelectedAddress: address =>
+      dispatch(actions.setSelectedAddress(address)),
   }
 }
 
@@ -80,11 +81,7 @@ PrivateKeyImportView.prototype.render = function PrivateKeyImportView () {
           {this.context.t('import')}
         </Button>
       </div>
-      {
-        error
-          ? <span className="error">{error}</span>
-          : null
-      }
+      {error ? <span className="error">{error}</span> : null}
     </div>
   )
 }
@@ -99,9 +96,15 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
-  const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+  const {
+    importNewAccount,
+    history,
+    displayWarning,
+    setSelectedAddress,
+    firstAddress,
+  } = this.props
 
-  importNewAccount('Private Key', [ privateKey ])
+  importNewAccount('Private Key', [privateKey])
     .then(({ selectedAddress }) => {
       if (selectedAddress) {
         this.context.metricsEvent({

@@ -8,19 +8,13 @@ import {
 import { getBasicGasEstimateLoadingStatus } from '../../../../../selectors/custom-gas'
 import { getMaxModeOn } from './amount-max-button.selectors.js'
 import { calcMaxAmount } from './amount-max-button.utils.js'
-import {
-  updateSendAmount,
-  setMaxModeTo,
-} from '../../../../../store/actions'
+import { updateSendAmount, setMaxModeTo } from '../../../../../store/actions'
 import AmountMaxButton from './amount-max-button.component'
-import {
-  updateSendErrors,
-} from '../../../../../ducks/send/send.duck'
+import { updateSendErrors } from '../../../../../ducks/send/send.duck'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmountMaxButton)
 
 function mapStateToProps (state) {
-
   return {
     balance: getSendFromBalance(state),
     buttonDataLoading: getBasicGasEstimateLoadingStatus(state),

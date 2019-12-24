@@ -13,9 +13,9 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-const AccountDetailsContainer = compose(
-  connect(null, mapDispatchToProps)
-)(AccountDetails)
+const AccountDetailsContainer = compose(connect(null, mapDispatchToProps))(
+  AccountDetails
+)
 
 AccountDetailsContainer.propTypes = {
   label: PropTypes.string.isRequired,

@@ -2,7 +2,7 @@
  * Switch the CSS stylesheet used between 'rtl' and 'ltr'
  * @param {('ltr' | 'rtl')} direction Text direction, either left-to-right (ltr) or right-to-left (rtl)
  */
-const switchDirection = async (direction) => {
+const switchDirection = async direction => {
   if (direction === 'auto') {
     direction = 'ltr'
   }
@@ -22,7 +22,8 @@ const switchDirection = async (direction) => {
       updatedLink.onload = () => {
         resolve()
       }
-      updatedLink.onerror = () => reject(new Error(`Failed to load '${direction}' stylesheet`))
+      updatedLink.onerror = () =>
+        reject(new Error(`Failed to load '${direction}' stylesheet`))
     })
   }
 }

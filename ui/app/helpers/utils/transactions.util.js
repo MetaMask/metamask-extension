@@ -34,12 +34,15 @@ export function getTokenData (data = '') {
 }
 
 async function getMethodFrom4Byte (fourBytePrefix) {
-  const fourByteResponse = (await fetchWithCache(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
-    referrerPolicy: 'no-referrer-when-downgrade',
-    body: null,
-    method: 'GET',
-    mode: 'cors',
-  }))
+  const fourByteResponse = await fetchWithCache(
+    `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
+    {
+      referrerPolicy: 'no-referrer-when-downgrade',
+      body: null,
+      method: 'GET',
+      mode: 'cors',
+    }
+  )
 
   if (fourByteResponse.count === 1) {
     return fourByteResponse.results[0].text_signature
@@ -57,7 +60,7 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
  */
 export async function getMethodDataAsync (fourBytePrefix) {
   try {
-    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch(e => {
       log.error(e)
       return null
     })
@@ -102,11 +105,11 @@ export function getFourBytePrefix (data = '') {
 }
 
 /**
-  * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
-  *
-  * @param {string} transactionCategory - The category of transaction being evaluated
-  * @returns {boolean} - whether the transaction is calling an erc20 token method
-  */
+ * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
+ *
+ * @param {string} transactionCategory - The category of transaction being evaluated
+ * @returns {boolean} - whether the transaction is calling an erc20 token method
+ */
 export function isTokenMethodAction (transactionCategory) {
   return [
     TOKEN_METHOD_TRANSFER,
@@ -140,7 +143,8 @@ export function getTransactionActionKey (transaction) {
   }
 
   const isTokenAction = isTokenMethodAction(transactionCategory)
-  const isNonTokenSmartContract = transactionCategory === CONTRACT_INTERACTION_KEY
+  const isNonTokenSmartContract =
+    transactionCategory === CONTRACT_INTERACTION_KEY
 
   if (isTokenAction || isNonTokenSmartContract) {
     switch (transactionCategory) {
@@ -160,7 +164,10 @@ export function getTransactionActionKey (transaction) {
   }
 }
 
-export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0') {
+export function getLatestSubmittedTxWithNonce (
+  transactions = [],
+  nonce = '0x0'
+) {
   if (!transactions.length) {
     return {}
   }
@@ -170,7 +177,9 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
 
     if (currentNonce === nonce) {
       return acc.submittedTime
-        ? submittedTime > acc.submittedTime ? current : acc
+        ? submittedTime > acc.submittedTime
+          ? current
+          : acc
         : current
     } else {
       return acc
@@ -203,14 +212,21 @@ export function sumHexes (...args) {
  * @returns {string}
  */
 export function getStatusKey (transaction) {
-  const { txReceipt: { status: receiptStatus } = {}, type, status } = transaction
+  const {
+    txReceipt: { status: receiptStatus } = {},
+    type,
+    status,
+  } = transaction
 
   // There was an on-chain failure
   if (receiptStatus === '0x0') {
     return 'failed'
   }
 
-  if (status === TRANSACTION_STATUS_CONFIRMED && type === TRANSACTION_TYPE_CANCEL) {
+  if (
+    status === TRANSACTION_STATUS_CONFIRMED &&
+    type === TRANSACTION_TYPE_CANCEL
+  ) {
     return 'cancelled'
   }
 

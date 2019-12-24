@@ -7,7 +7,7 @@
     "isUnlocked": true,
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
-    "shapeShiftTxList":[
+    "shapeShiftTxList": [
       {
         "depositAddress": "1L8BJCR6KHkCiVceDqibt7zJscqPpH7pFw",
         "depositType": "BTC",
@@ -41,7 +41,8 @@
         }
       }
     ],
-    "transactions": [      {
+    "transactions": [
+      {
         "id": 1467921503489592,
         "txParams": {
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -83,7 +84,8 @@
         "time": 1467921503489,
         "status": "confirmed",
         "containsDelegateCall": false
-      }],
+      }
+    ],
     "identities": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "name": "Wallet 1",

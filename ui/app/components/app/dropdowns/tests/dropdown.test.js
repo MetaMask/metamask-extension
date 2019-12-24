@@ -33,5 +33,4 @@ describe('Dropdown', () => {
     assert.equal(onClickSpy.callCount, 1)
     assert.equal(closeMenuSpy.callCount, 1)
   })
-
 })

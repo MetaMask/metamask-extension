@@ -1,4 +1,3 @@
-
 const version = 19
 
 /*
@@ -31,41 +30,51 @@ function transformState (state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-
     const transactions = newState.TransactionController.transactions
 
-    newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
-      if (txMeta.status !== 'submitted') {
+    newState.TransactionController.transactions = transactions.map(
+      (txMeta, _, txList) => {
+        if (txMeta.status !== 'submitted') {
+          return txMeta
+        }
+
+        const confirmedTxs = txList
+          .filter(tx => tx.status === 'confirmed')
+          .filter(tx => tx.txParams.from === txMeta.txParams.from)
+          .filter(
+            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+          )
+        const highestConfirmedNonce = getHighestNonce(confirmedTxs)
+
+        const pendingTxs = txList
+          .filter(tx => tx.status === 'submitted')
+          .filter(tx => tx.txParams.from === txMeta.txParams.from)
+          .filter(
+            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+          )
+        const highestContinuousNonce = getHighestContinuousFrom(
+          pendingTxs,
+          highestConfirmedNonce
+        )
+
+        const maxNonce = Math.max(highestContinuousNonce, highestConfirmedNonce)
+
+        if (parseInt(txMeta.txParams.nonce, 16) > maxNonce + 1) {
+          txMeta.status = 'failed'
+          txMeta.err = {
+            message: 'nonce too high',
+            note: 'migration 019 custom error',
+          }
+        }
         return txMeta
       }
-
-      const confirmedTxs = txList.filter((tx) => tx.status === 'confirmed')
-        .filter((tx) => tx.txParams.from === txMeta.txParams.from)
-        .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
-      const highestConfirmedNonce = getHighestNonce(confirmedTxs)
-
-      const pendingTxs = txList.filter((tx) => tx.status === 'submitted')
-        .filter((tx) => tx.txParams.from === txMeta.txParams.from)
-        .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
-      const highestContinuousNonce = getHighestContinuousFrom(pendingTxs, highestConfirmedNonce)
-
-      const maxNonce = Math.max(highestContinuousNonce, highestConfirmedNonce)
-
-      if (parseInt(txMeta.txParams.nonce, 16) > maxNonce + 1) {
-        txMeta.status = 'failed'
-        txMeta.err = {
-          message: 'nonce too high',
-          note: 'migration 019 custom error',
-        }
-      }
-      return txMeta
-    })
+    )
   }
   return newState
 }
 
 function getHighestContinuousFrom (txList, startPoint) {
-  const nonces = txList.map((txMeta) => {
+  const nonces = txList.map(txMeta => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce, 16)
   })
@@ -79,11 +88,10 @@ function getHighestContinuousFrom (txList, startPoint) {
 }
 
 function getHighestNonce (txList) {
-  const nonces = txList.map((txMeta) => {
+  const nonces = txList.map(txMeta => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce || '0x0', 16)
   })
   const highestNonce = Math.max.apply(null, nonces)
   return highestNonce
 }
-

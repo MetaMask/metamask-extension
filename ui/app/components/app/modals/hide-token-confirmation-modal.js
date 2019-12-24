@@ -17,10 +17,9 @@ function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: address => {
-      dispatch(actions.removeToken(address))
-        .then(() => {
-          dispatch(actions.hideModal())
-        })
+      dispatch(actions.removeToken(address)).then(() => {
+        dispatch(actions.hideModal())
+      })
     },
   }
 }
@@ -36,8 +35,10 @@ HideTokenConfirmationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmationModal)
-
+module.exports = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HideTokenConfirmationModal)
 
 HideTokenConfirmationModal.prototype.render = function HideTokenConfirmationModal () {
   const { token, network, hideToken, hideModal, assetImages } = this.props

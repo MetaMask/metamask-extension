@@ -20,12 +20,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showHideTokenConfirmationModal: (token) => {
+    showHideTokenConfirmationModal: token => {
       dispatch(actions.showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
     },
   }
 }
-
 
 inherits(TokenMenuDropdown, Component)
 function TokenMenuDropdown () {
@@ -46,7 +45,7 @@ TokenMenuDropdown.prototype.render = function TokenMenuDropdown () {
     <Menu className="token-menu-dropdown" isShowing>
       <CloseArea onClick={this.onClose} />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
           showHideTokenConfirmationModal(this.props.token)
           this.props.onClose()
@@ -54,9 +53,12 @@ TokenMenuDropdown.prototype.render = function TokenMenuDropdown () {
         text={this.context.t('hideToken')}
       />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
-          const url = genAccountLink(this.props.token.address, this.props.network)
+          const url = genAccountLink(
+            this.props.token.address,
+            this.props.network
+          )
           global.platform.openWindow({ url })
           this.props.onClose()
         }}

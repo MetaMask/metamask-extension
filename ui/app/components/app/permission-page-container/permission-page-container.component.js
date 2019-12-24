@@ -5,7 +5,6 @@ import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
 
 export default class PermissionPageContainer extends Component {
-
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
@@ -16,7 +15,7 @@ export default class PermissionPageContainer extends Component {
     permissionRejected: PropTypes.bool,
     requestMetadata: PropTypes.object,
     targetDomainMetadata: PropTypes.object.isRequired,
-  };
+  }
 
   static defaultProps = {
     redirect: null,
@@ -24,12 +23,12 @@ export default class PermissionPageContainer extends Component {
     request: {},
     requestMetadata: {},
     selectedIdentity: {},
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   state = {
     selectedPermissions: this.getRequestedMethodState(
@@ -40,7 +39,9 @@ export default class PermissionPageContainer extends Component {
   componentDidUpdate () {
     const newMethodNames = this.getRequestedMethodNames(this.props)
 
-    if (!deepEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
+    if (
+      !deepEqual(Object.keys(this.state.selectedPermissions), newMethodNames)
+    ) {
       // this should be a new request, so just overwrite
       this.setState({
         selectedPermissions: this.getRequestedMethodState(newMethodNames),
@@ -49,13 +50,10 @@ export default class PermissionPageContainer extends Component {
   }
 
   getRequestedMethodState (methodNames) {
-    return methodNames.reduce(
-      (acc, methodName) => {
-        acc[methodName] = true
-        return acc
-      },
-      {}
-    )
+    return methodNames.reduce((acc, methodName) => {
+      acc[methodName] = true
+      return acc
+    }, {})
   }
 
   getRequestedMethodNames (props) {
@@ -88,7 +86,10 @@ export default class PermissionPageContainer extends Component {
 
   onSubmit = () => {
     const {
-      request: _request, approvePermissionsRequest, rejectPermissionsRequest, selectedIdentity,
+      request: _request,
+      approvePermissionsRequest,
+      rejectPermissionsRequest,
+      selectedIdentity,
     } = this.props
 
     const request = {
@@ -131,20 +132,17 @@ export default class PermissionPageContainer extends Component {
           redirect={redirect}
           permissionRejected={permissionRejected}
         />
-        { !redirect
-          ? (
-            <PageContainerFooter
-              cancelButtonType="primary"
-              onCancel={() => this.onCancel()}
-              cancelText={this.context.t('cancel')}
-              onSubmit={() => this.onSubmit()}
-              submitText={this.context.t('submit')}
-              submitButtonType="confirm"
-              buttonSizeLarge={false}
-            />
-          )
-          : null
-        }
+        {!redirect ? (
+          <PageContainerFooter
+            cancelButtonType="primary"
+            onCancel={() => this.onCancel()}
+            cancelText={this.context.t('cancel')}
+            onSubmit={() => this.onSubmit()}
+            submitText={this.context.t('submit')}
+            submitButtonType="confirm"
+            buttonSizeLarge={false}
+          />
+        ) : null}
       </div>
     )
   }

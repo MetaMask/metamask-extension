@@ -11,9 +11,7 @@ class ExportTextContainer extends Component {
     return (
       <div className="export-text-container">
         <div className="export-text-container__text-container">
-          <div className="export-text-container__text notranslate">
-            {text}
-          </div>
+          <div className="export-text-container__text notranslate">{text}</div>
         </div>
         <div className="export-text-container__buttons-container">
           <div

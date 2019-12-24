@@ -85,4 +85,3 @@ NotificationModal.contextTypes = {
 }
 
 module.exports = connect(null, mapDispatchToProps)(NotificationModal)
-

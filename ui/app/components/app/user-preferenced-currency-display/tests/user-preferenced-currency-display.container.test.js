@@ -193,9 +193,12 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       ]
 
       tests.forEach(({ stateProps, ownProps, result }) => {
-        assert.deepEqual(mergeProps({ ...stateProps }, mockDispatchProps, { ...ownProps }), {
-          ...result,
-        })
+        assert.deepEqual(
+          mergeProps({ ...stateProps }, mockDispatchProps, { ...ownProps }),
+          {
+            ...result,
+          }
+        )
       })
     })
   })

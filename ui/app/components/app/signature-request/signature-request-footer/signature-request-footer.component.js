@@ -16,8 +16,12 @@ export default class SignatureRequestFooter extends PureComponent {
     const { cancelAction, signAction } = this.props
     return (
       <div className="signature-request-footer">
-        <Button onClick={cancelAction} type="default" large>{this.context.t('cancel')}</Button>
-        <Button onClick={signAction} type="primary" large>{this.context.t('sign')}</Button>
+        <Button onClick={cancelAction} type="default" large>
+          {this.context.t('cancel')}
+        </Button>
+        <Button onClick={signAction} type="primary" large>
+          {this.context.t('sign')}
+        </Button>
       </div>
     )
   }

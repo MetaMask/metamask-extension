@@ -7,9 +7,12 @@ const DAI_V1_TOKEN_SYMBOL = 'DAI'
 const SAI_TOKEN_SYMBOL = 'SAI'
 
 function isOldDai (token = {}) {
-  return token && typeof token === 'object' &&
+  return (
+    token &&
+    typeof token === 'object' &&
     token.symbol === DAI_V1_TOKEN_SYMBOL &&
     ethUtil.toChecksumAddress(token.address) === DAI_V1_CONTRACT_ADDRESS
+  )
 }
 
 /**

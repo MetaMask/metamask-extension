@@ -23,13 +23,11 @@ const CAVEAT_NAMES = {
 const ACCOUNTS_CHANGED_NOTIFICATION = 'wallet_accountsChanged'
 
 class PermissionsController {
-
   constructor (
-    {
-      platform, notifyDomain, notifyAllDomains, keyringController,
-    } = {},
+    { platform, notifyDomain, notifyAllDomains, keyringController } = {},
     restoredPermissions = {},
-    restoredState = {}) {
+    restoredState = {}
+  ) {
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
@@ -44,7 +42,6 @@ class PermissionsController {
   }
 
   createMiddleware ({ origin, extensionId }) {
-
     if (extensionId) {
       this.store.updateState({
         [METADATA_STORE_KEY]: {
@@ -56,27 +53,33 @@ class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
-    engine.push(createLoggerMiddleware({
-      walletPrefix: WALLET_METHOD_PREFIX,
-      restrictedMethods: Object.keys(this._restrictedMethods),
-      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
-      store: this.store,
-      logStoreKey: LOG_STORE_KEY,
-      historyStoreKey: HISTORY_STORE_KEY,
-    }))
+    engine.push(
+      createLoggerMiddleware({
+        walletPrefix: WALLET_METHOD_PREFIX,
+        restrictedMethods: Object.keys(this._restrictedMethods),
+        ignoreMethods: ['wallet_sendDomainMetadata'],
+        store: this.store,
+        logStoreKey: LOG_STORE_KEY,
+        historyStoreKey: HISTORY_STORE_KEY,
+      })
+    )
 
-    engine.push(createMethodMiddleware({
-      store: this.store,
-      storeKey: METADATA_STORE_KEY,
-      getAccounts: this.getAccounts.bind(this, origin),
-      requestAccountsPermission: this._requestPermissions.bind(
-        this, origin, { eth_accounts: {} }
-      ),
-    }))
+    engine.push(
+      createMethodMiddleware({
+        store: this.store,
+        storeKey: METADATA_STORE_KEY,
+        getAccounts: this.getAccounts.bind(this, origin),
+        requestAccountsPermission: this._requestPermissions.bind(this, origin, {
+          eth_accounts: {},
+        }),
+      })
+    )
 
-    engine.push(this.permissions.providerMiddlewareFunction.bind(
-      this.permissions, { origin }
-    ))
+    engine.push(
+      this.permissions.providerMiddlewareFunction.bind(this.permissions, {
+        origin,
+      })
+    )
     return asMiddleware(engine)
   }
 
@@ -89,11 +92,14 @@ class PermissionsController {
    */
   getAccounts (origin) {
     return new Promise((resolve, _) => {
-
       const req = { method: 'eth_accounts' }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
+        { origin },
+        req,
+        res,
+        () => {},
+        _end
       )
 
       function _end () {
@@ -114,11 +120,14 @@ class PermissionsController {
    */
   _requestPermissions (origin, permissions) {
     return new Promise((resolve, reject) => {
-
       const req = { method: 'wallet_requestPermissions', params: [permissions] }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
+        { origin },
+        req,
+        res,
+        () => {},
+        _end
       )
 
       function _end (err) {
@@ -138,7 +147,6 @@ class PermissionsController {
    * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
-
     const { id } = approved.metadata
     const approval = this.pendingApprovals[id]
 
@@ -148,17 +156,17 @@ class PermissionsController {
     }
 
     try {
-
       // attempt to finalize the request and resolve it
       await this.finalizePermissionsRequest(approved.permissions, accounts)
       approval.resolve(approved.permissions)
-
     } catch (err) {
-
       // if finalization fails, reject the request
-      approval.reject(ethErrors.rpc.invalidRequest({
-        message: err.message, data: err,
-      }))
+      approval.reject(
+        ethErrors.rpc.invalidRequest({
+          message: err.message,
+          data: err,
+        })
+      )
     }
 
     delete this.pendingApprovals[id]
@@ -190,7 +198,6 @@ class PermissionsController {
    * @param {Array<string>} accounts - The account(s) to expose.
    */
   async legacyExposeAccounts (origin, accounts) {
-
     const permissions = {
       eth_accounts: {},
     }
@@ -200,7 +207,9 @@ class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err => (err ? resolve() : reject(err)))
+        this.permissions.grantNewPermissions(origin, permissions, {}, err =>
+          (err ? resolve() : reject(err))
+        )
       })
     } catch (err) {
       error = err
@@ -229,11 +238,13 @@ class PermissionsController {
    * @param {string[]} accounts - The new account(s) to expose.
    */
   async updateExposedAccounts (origin, accounts) {
-
     await this.validateExposedAccounts(accounts)
 
     this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
+      origin,
+      'eth_accounts',
+      CAVEAT_NAMES.exposedAccounts,
+      accounts
     )
 
     this.notifyDomain(origin, {
@@ -250,11 +261,9 @@ class PermissionsController {
    * @param {string[]} accounts - The accounts to expose, if any.
    */
   async finalizePermissionsRequest (requestedPermissions, accounts) {
-
     const { eth_accounts: ethAccounts } = requestedPermissions
 
     if (ethAccounts) {
-
       await this.validateExposedAccounts(accounts)
 
       if (!ethAccounts.caveats) {
@@ -262,17 +271,15 @@ class PermissionsController {
       }
 
       // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
-        c.name !== CAVEAT_NAMES.exposedAccounts
-      ))
-
-      ethAccounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: accounts,
-          name: CAVEAT_NAMES.exposedAccounts,
-        },
+      ethAccounts.caveats = ethAccounts.caveats.filter(
+        c => c.name !== CAVEAT_NAMES.exposedAccounts
       )
+
+      ethAccounts.caveats.push({
+        type: 'filterResponse',
+        value: accounts,
+        name: CAVEAT_NAMES.exposedAccounts,
+      })
     }
   }
 
@@ -283,7 +290,6 @@ class PermissionsController {
    * @param {string[]} accounts - An array of addresses.
    */
   async validateExposedAccounts (accounts) {
-
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
@@ -302,18 +308,15 @@ class PermissionsController {
    * @param {object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
-
     Object.entries(domains).forEach(([origin, perms]) => {
-
       this.permissions.removePermissionsFor(
         origin,
         perms.map(methodName => {
-
           if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: ACCOUNTS_CHANGED_NOTIFICATION, result: [] }
-            )
+            this.notifyDomain(origin, {
+              method: ACCOUNTS_CHANGED_NOTIFICATION,
+              result: [],
+            })
           }
 
           return { parentCapability: methodName }
@@ -340,41 +343,44 @@ class PermissionsController {
    * @param {string} origin = The origin string representing the domain.
    */
   _initializePermissions (restoredState) {
-
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
 
     this.pendingApprovals = {}
 
-    this.permissions = new RpcCap({
+    this.permissions = new RpcCap(
+      {
+        // Supports passthrough methods:
+        safeMethods: SAFE_METHODS,
 
-      // Supports passthrough methods:
-      safeMethods: SAFE_METHODS,
+        // optional prefix for internal methods
+        methodPrefix: WALLET_METHOD_PREFIX,
 
-      // optional prefix for internal methods
-      methodPrefix: WALLET_METHOD_PREFIX,
+        restrictedMethods: this._restrictedMethods,
 
-      restrictedMethods: this._restrictedMethods,
+        /**
+         * A promise-returning callback used to determine whether to approve
+         * permissions requests or not.
+         *
+         * Currently only returns a boolean, but eventually should return any
+         * specific parameters or amendments to the permissions.
+         *
+         * @param {string} req - The internal rpc-cap user request object.
+         */
+        requestUserApproval: async req => {
+          const {
+            metadata: { id },
+          } = req
 
-      /**
-       * A promise-returning callback used to determine whether to approve
-       * permissions requests or not.
-       *
-       * Currently only returns a boolean, but eventually should return any
-       * specific parameters or amendments to the permissions.
-       *
-       * @param {string} req - The internal rpc-cap user request object.
-       */
-      requestUserApproval: async (req) => {
-        const { metadata: { id } } = req
+          this._platform.openExtensionInBrowser(`connect/${id}`)
 
-        this._platform.openExtensionInBrowser(`connect/${id}`)
-
-        return new Promise((resolve, reject) => {
-          this.pendingApprovals[id] = { resolve, reject }
-        })
+          return new Promise((resolve, reject) => {
+            this.pendingApprovals[id] = { resolve, reject }
+          })
+        },
       },
-    }, initState)
+      initState
+    )
   }
 }
 
@@ -383,7 +389,6 @@ module.exports = {
   addInternalMethodPrefix: prefix,
   CAVEAT_NAMES,
 }
-
 
 function prefix (method) {
   return WALLET_METHOD_PREFIX + method

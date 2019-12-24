@@ -51,7 +51,8 @@ function updateQueryParams (newView) {
   const params = qs.stringify(queryString)
   const locationPaths = window.location.href.split('#')
   const routerPath = locationPaths[1] || ''
-  const newPath = locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
+  const newPath =
+    locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
 
   if (window.location.href !== newPath) {
     window.location.href = newPath
@@ -89,7 +90,11 @@ actions.update = function (stateName) {
 }
 
 function modifyBackgroundConnection (backgroundConnectionModifier) {
-  const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
+  const modifiedBackgroundConnection = Object.assign(
+    {},
+    controller.getApi(),
+    backgroundConnectionModifier
+  )
   actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
 
@@ -108,7 +113,7 @@ function startApp () {
   render(
     <div className="super-dev-container">
       <button
-        onClick={(ev) => {
+        onClick={ev => {
           ev.preventDefault()
           store.dispatch(actions.update('terms'))
         }}
@@ -138,6 +143,6 @@ function startApp () {
         <Root store={store} />
       </div>
     </div>,
-    container,
+    container
   )
 }

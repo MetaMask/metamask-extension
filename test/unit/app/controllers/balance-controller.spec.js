@@ -18,14 +18,16 @@ const accounts = {
 }
 
 describe('Balance Controller', () => {
-
   let balanceController
 
   it('errors when address, accountTracker, txController, or blockTracker', function () {
     try {
       balanceController = new BalanceController()
     } catch (error) {
-      assert.equal(error.message, 'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.')
+      assert.equal(
+        error.message,
+        'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.'
+      )
     }
   })
 

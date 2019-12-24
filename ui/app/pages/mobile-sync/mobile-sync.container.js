@@ -1,20 +1,23 @@
 import { connect } from 'react-redux'
-import { displayWarning, requestRevealSeedWords, fetchInfoToSync } from '../../store/actions'
+import {
+  displayWarning,
+  requestRevealSeedWords,
+  fetchInfoToSync,
+} from '../../store/actions'
 import MobileSyncPage from './mobile-sync.component'
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
+    requestRevealSeedWords: password =>
+      dispatch(requestRevealSeedWords(password)),
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
-    displayWarning: (message) => dispatch(displayWarning(message || null)),
+    displayWarning: message => dispatch(displayWarning(message || null)),
   }
 }
 
 const mapStateToProps = state => {
   const {
-    metamask: {
-      selectedAddress,
-    },
+    metamask: { selectedAddress },
   } = state
 
   return {

@@ -60,10 +60,7 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -75,9 +72,7 @@
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0xd85a4b6a394794842887b8284293d69163007bbb"
-        ]
+        "accounts": ["0xd85a4b6a394794842887b8284293d69163007bbb"]
       }
     ],
     "selectedAddress": "0xd85a4b6a394794842887b8284293d69163007bbb",

@@ -15,7 +15,10 @@ function Mascot ({ width = '200', height = '200' }) {
     height,
   })
 
-  this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
+  this.refollowMouse = debounce(
+    this.logo.setFollowMouse.bind(this.logo, true),
+    1000
+  )
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
 
@@ -24,12 +27,7 @@ Mascot.prototype.render = function Mascot () {
   // the event emitter is on `this.props`
   // and we dont get that until render
   this.handleAnimationEvents()
-  return (
-    <div
-      id="metamask-mascot-container"
-      style={{ zIndex: 0 }}
-    />
-  )
+  return <div id="metamask-mascot-container" style={{ zIndex: 0 }} />
 }
 
 Mascot.prototype.componentDidMount = function () {

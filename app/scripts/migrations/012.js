@@ -27,7 +27,7 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  newState.NoticeController.noticesList.forEach((notice) => {
+  newState.NoticeController.noticesList.forEach(notice => {
     if (notice.read) {
       notice.body = ''
     }

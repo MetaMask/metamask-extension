@@ -10,7 +10,7 @@ module.exports = class ExtensionStore {
    * @constructor
    */
   constructor () {
-    this.isSupported = !!(extension.storage.local)
+    this.isSupported = !!extension.storage.local
     if (!this.isSupported) {
       log.error('Storage local API not available.')
     }

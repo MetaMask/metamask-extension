@@ -1,7 +1,4 @@
-const {
-  addHexPrefix,
-  isValidAddress,
-} = require('ethereumjs-util')
+const { addHexPrefix, isValidAddress } = require('ethereumjs-util')
 
 /**
 @module
@@ -14,11 +11,12 @@ module.exports = {
   getFinalStates,
 }
 
-
 // functions that handle normalizing of that key in txParams
 const normalizers = {
-  from: (from, LowerCase = true) => (LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
-  to: (to, LowerCase = true) => (LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
+  from: (from, LowerCase = true) =>
+    (LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
+  to: (to, LowerCase = true) =>
+    (LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
   nonce: nonce => addHexPrefix(nonce),
   value: value => addHexPrefix(value),
   data: data => addHexPrefix(data),
@@ -52,11 +50,15 @@ function validateTxParams (txParams) {
   if ('value' in txParams) {
     const value = txParams.value.toString()
     if (value.includes('-')) {
-      throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+      throw new Error(
+        `Invalid transaction value of ${txParams.value} not a positive number.`
+      )
     }
 
     if (value.includes('.')) {
-      throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
+      throw new Error(
+        `Invalid transaction value of ${txParams.value} number must be in wei`
+      )
     }
   }
 }
@@ -102,4 +104,3 @@ function getFinalStates () {
     'dropped', // the tx nonce was already used
   ]
 }
-

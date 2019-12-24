@@ -3,31 +3,25 @@ import PropTypes from 'prop-types'
 import AccountListItem from '../../account-list-item'
 
 export default class SendDropdownList extends Component {
-
   static propTypes = {
     accounts: PropTypes.array,
     closeDropdown: PropTypes.func,
     onSelect: PropTypes.func,
     activeAddress: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   getListItemIcon (accountAddress, activeAddress) {
-    return accountAddress === activeAddress
-      ? <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } } />
-      : null
+    return accountAddress === activeAddress ? (
+      <i className="fa fa-check fa-lg" style={{ color: '#02c9b1' }} />
+    ) : null
   }
 
   render () {
-    const {
-      accounts,
-      closeDropdown,
-      onSelect,
-      activeAddress,
-    } = this.props
+    const { accounts, closeDropdown, onSelect, activeAddress } = this.props
 
     return (
       <div>
@@ -52,5 +46,4 @@ export default class SendDropdownList extends Component {
       </div>
     )
   }
-
 }

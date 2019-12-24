@@ -15,9 +15,7 @@ describe('Personal Message Manager', function () {
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
-    it('should also return transactions from local storage if any', function () {
-
-    })
+    it('should also return transactions from local storage if any', function () {})
   })
 
   describe('#addMsg', function () {
@@ -33,7 +31,11 @@ describe('Personal Message Manager', function () {
 
   describe('#setMsgStatusApproved', function () {
     it('sets the Msg status to approved', function () {
-      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      const Msg = {
+        id: 1,
+        status: 'unapproved',
+        metamaskNetworkId: 'unit test',
+      }
       messageManager.addMsg(Msg)
       messageManager.setMsgStatusApproved(1)
       const result = messageManager.messages
@@ -45,7 +47,11 @@ describe('Personal Message Manager', function () {
 
   describe('#rejectMsg', function () {
     it('sets the Msg status to rejected', function () {
-      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      const Msg = {
+        id: 1,
+        status: 'unapproved',
+        metamaskNetworkId: 'unit test',
+      }
       messageManager.addMsg(Msg)
       messageManager.rejectMsg(1)
       const result = messageManager.messages
@@ -57,9 +63,22 @@ describe('Personal Message Manager', function () {
 
   describe('#_updateMsg', function () {
     it('replaces the Msg with the same id', function () {
-      messageManager.addMsg({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' })
-      messageManager.addMsg({ id: '2', status: 'approved', metamaskNetworkId: 'unit test' })
-      messageManager._updateMsg({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: 'unit test' })
+      messageManager.addMsg({
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: 'unit test',
+      })
+      messageManager.addMsg({
+        id: '2',
+        status: 'approved',
+        metamaskNetworkId: 'unit test',
+      })
+      messageManager._updateMsg({
+        id: '1',
+        status: 'blah',
+        hash: 'foo',
+        metamaskNetworkId: 'unit test',
+      })
       const result = messageManager.getMsg('1')
       assert.equal(result.hash, 'foo')
     })
@@ -67,8 +86,16 @@ describe('Personal Message Manager', function () {
 
   describe('#getUnapprovedMsgs', function () {
     it('returns unapproved Msgs in a hash', function () {
-      messageManager.addMsg({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' })
-      messageManager.addMsg({ id: '2', status: 'approved', metamaskNetworkId: 'unit test' })
+      messageManager.addMsg({
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: 'unit test',
+      })
+      messageManager.addMsg({
+        id: '2',
+        status: 'approved',
+        metamaskNetworkId: 'unit test',
+      })
       const result = messageManager.getUnapprovedMsgs()
       assert.equal(typeof result, 'object')
       assert.equal(result['1'].status, 'unapproved')
@@ -78,8 +105,16 @@ describe('Personal Message Manager', function () {
 
   describe('#getMsg', function () {
     it('returns a Msg with the requested id', function () {
-      messageManager.addMsg({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' })
-      messageManager.addMsg({ id: '2', status: 'approved', metamaskNetworkId: 'unit test' })
+      messageManager.addMsg({
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: 'unit test',
+      })
+      messageManager.addMsg({
+        id: '2',
+        status: 'approved',
+        metamaskNetworkId: 'unit test',
+      })
       assert.equal(messageManager.getMsg('1').status, 'unapproved')
       assert.equal(messageManager.getMsg('2').status, 'approved')
     })

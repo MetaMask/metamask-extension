@@ -5,7 +5,10 @@ const { withRouter } = require('react-router-dom')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
-const { getSelectedIdentity, getRpcPrefsForCurrentProvider } = require('../../../selectors/selectors')
+const {
+  getSelectedIdentity,
+  getRpcPrefsForCurrentProvider,
+} = require('../../../selectors/selectors')
 const { CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
 const genAccountLink = require('../../../../lib/account-link.js')
 const { Menu, Item, CloseArea } = require('./components/menu')
@@ -15,7 +18,10 @@ AccountDetailsDropdown.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(AccountDetailsDropdown)
 
 function mapStateToProps (state) {
   return {
@@ -32,10 +38,14 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
     viewOnEtherscan: (address, network, rpcPrefs) => {
-      global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
+      global.platform.openWindow({
+        url: genAccountLink(address, network, rpcPrefs),
+      })
     },
-    showRemoveAccountConfirmationModal: (identity) => {
-      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
+    showRemoveAccountConfirmationModal: identity => {
+      return dispatch(
+        actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity })
+      )
     },
   }
 }
@@ -66,7 +76,7 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
 
   const address = selectedIdentity.address
 
-  const keyring = keyrings.find((kr) => {
+  const keyring = keyrings.find(kr => {
     return kr.accounts.includes(address)
   })
 
@@ -76,7 +86,7 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
     <Menu className="account-details-dropdown" isShowing>
       <CloseArea onClick={this.onClose} />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
           this.context.metricsEvent({
             eventOpts: {
@@ -89,12 +99,10 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
           this.props.onClose()
         }}
         text={this.context.t('expandView')}
-        icon={(
-          <img alt="" src="images/expand.svg" style={{ height: '15px' }} />
-        )}
+        icon={<img alt="" src="images/expand.svg" style={{ height: '15px' }} />}
       />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
           showAccountDetailModal()
           this.context.metricsEvent({
@@ -107,12 +115,10 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
           this.props.onClose()
         }}
         text={this.context.t('accountDetails')}
-        icon={(
-          <img src="images/info.svg" style={{ height: '15px' }} alt="" />
-        )}
+        icon={<img src="images/info.svg" style={{ height: '15px' }} alt="" />}
       />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
           this.context.metricsEvent({
             eventOpts: {
@@ -134,12 +140,18 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
             ? rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]
             : null
         }
-        icon={(
-          <img src="images/open-etherscan.svg" style={{ height: '15px' }} alt="" />
-        )}
+        icon={
+          (
+            <img
+              src="images/open-etherscan.svg"
+              style={{ height: '15px' }}
+              alt=""
+            />
+          )
+        }
       />
       <Item
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation()
           this.context.metricsEvent({
             eventOpts: {
@@ -151,25 +163,27 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
           history.push(CONNECTED_ROUTE)
         }}
         text={this.context.t('connectedSites')}
-        icon={(
-          <img src="images/connect-white.svg" style={{ height: '15px' }} alt="" />
-        )}
-      />
-      {
-        isRemovable
-          ? (
-            <Item
-              onClick={(e) => {
-                e.stopPropagation()
-                showRemoveAccountConfirmationModal(selectedIdentity)
-                this.props.onClose()
-              }}
-              text={this.context.t('removeAccount')}
-              icon={<img src="images/hide.svg" style={{ height: '15px' }} alt="" />}
+        icon={
+          (
+            <img
+              src="images/connect-white.svg"
+              style={{ height: '15px' }}
+              alt=""
             />
           )
-          : null
-      }
+        }
+      />
+      {isRemovable ? (
+        <Item
+          onClick={e => {
+            e.stopPropagation()
+            showRemoveAccountConfirmationModal(selectedIdentity)
+            this.props.onClose()
+          }}
+          text={this.context.t('removeAccount')}
+          icon={<img src="images/hide.svg" style={{ height: '15px' }} alt="" />}
+        />
+      ) : null}
     </Menu>
   )
 }

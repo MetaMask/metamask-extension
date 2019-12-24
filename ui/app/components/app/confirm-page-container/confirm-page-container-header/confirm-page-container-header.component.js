@@ -24,7 +24,8 @@ export default class ConfirmPageContainerHeader extends Component {
   renderTop () {
     const { onEdit, showEdit, accountAddress, showAccountInHeader } = this.props
     const windowType = window.METAMASK_UI_TYPE
-    const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    const isFullScreen =
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       windowType !== ENVIRONMENT_TYPE_POPUP
 
     if (!showEdit && isFullScreen) {
@@ -33,44 +34,33 @@ export default class ConfirmPageContainerHeader extends Component {
 
     return (
       <div className="confirm-page-container-header__row">
-        { !showAccountInHeader
-          ? (
-            <div
-              className="confirm-page-container-header__back-button-container"
-              style={{
-                visibility: showEdit ? 'initial' : 'hidden',
-              }}
+        {!showAccountInHeader ? (
+          <div
+            className="confirm-page-container-header__back-button-container"
+            style={{
+              visibility: showEdit ? 'initial' : 'hidden',
+            }}
+          >
+            <img src="/images/caret-left.svg" />
+            <span
+              className="confirm-page-container-header__back-button"
+              onClick={() => onEdit()}
             >
-              <img
-                src="/images/caret-left.svg"
-              />
-              <span
-                className="confirm-page-container-header__back-button"
-                onClick={() => onEdit()}
-              >
-                { this.context.t('edit') }
-              </span>
+              {this.context.t('edit')}
+            </span>
+          </div>
+        ) : null}
+        {showAccountInHeader ? (
+          <div className="confirm-page-container-header__address-container">
+            <div className="confirm-page-container-header__address-identicon">
+              <Identicon address={accountAddress} diameter={24} />
             </div>
-          )
-          : null
-        }
-        { showAccountInHeader
-          ? (
-            <div className="confirm-page-container-header__address-container">
-              <div className="confirm-page-container-header__address-identicon">
-                <Identicon
-                  address={accountAddress}
-                  diameter={24}
-                />
-              </div>
-              <div className="confirm-page-container-header__address">
-                { addressSlicer(accountAddress) }
-              </div>
+            <div className="confirm-page-container-header__address">
+              {addressSlicer(accountAddress)}
             </div>
-          )
-          : null
-        }
-        { !isFullScreen && <NetworkDisplay /> }
+          </div>
+        ) : null}
+        {!isFullScreen && <NetworkDisplay />}
       </div>
     )
   }
@@ -80,8 +70,8 @@ export default class ConfirmPageContainerHeader extends Component {
 
     return (
       <div className="confirm-page-container-header">
-        { this.renderTop() }
-        { children }
+        {this.renderTop()}
+        {children}
       </div>
     )
   }

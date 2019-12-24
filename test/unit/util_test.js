@@ -3,7 +3,16 @@ const sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
 
 const path = require('path')
-const util = require(path.join(__dirname, '..', '..', 'ui', 'app', 'helpers', 'utils', 'util.js'))
+const util = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'ui',
+  'app',
+  'helpers',
+  'utils',
+  'util.js'
+))
 
 describe('util', function () {
   let ethInWei = '1'
@@ -135,7 +144,9 @@ describe('util', function () {
     })
 
     it('should return eth as string followed by ETH', function () {
-      const input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
+      const input = new ethUtil.BN(ethInWei, 10)
+        .div(new ethUtil.BN('2', 10))
+        .toJSON()
       const result = util.formatBalance(input, 3)
       assert.equal(result, '0.500 ETH')
     })
@@ -186,7 +197,13 @@ describe('util', function () {
         for (const currency in valueTable) {
           const value = new ethUtil.BN(valueTable[currency], 10)
           const output = util.normalizeToWei(value, currency)
-          assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
+          assert.equal(
+            output.toString(10),
+            valueTable.wei,
+            `value of ${output.toString(
+              10
+            )} ${currency} should convert to ${oneEthBn}`
+          )
         }
       })
     })
@@ -232,27 +249,39 @@ describe('util', function () {
 
       it('should convert a ether number to the appropriate equivalent wei', function () {
         const result = util.normalizeNumberToWei(1.111, 'ether')
-        assert.equal(result.toString(10), '1111000000000000000', 'accepts decimals')
+        assert.equal(
+          result.toString(10),
+          '1111000000000000000',
+          'accepts decimals'
+        )
       })
     })
     describe('#isHex', function () {
       it('should return true when given a hex string', function () {
-        const result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        const result = util.isHex(
+          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2'
+        )
         assert(result)
       })
 
       it('should return false when given a non-hex string', function () {
-        const result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal')
+        const result = util.isHex(
+          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal'
+        )
         assert(!result)
       })
 
       it('should return false when given a string containing a non letter/number character', function () {
-        const result = util.isHex('c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal')
+        const result = util.isHex(
+          'c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal'
+        )
         assert(!result)
       })
 
       it('should return true when given a hex string with hex-prefix', function () {
-        const result = util.isHex('0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        const result = util.isHex(
+          '0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2'
+        )
         assert(result)
       })
     })

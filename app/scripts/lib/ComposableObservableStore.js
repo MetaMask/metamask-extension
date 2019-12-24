@@ -25,7 +25,7 @@ class ComposableObservableStore extends ObservableStore {
     this.config = config
     this.removeAllListeners()
     for (const key in config) {
-      config[key].subscribe((state) => {
+      config[key].subscribe(state => {
         this.updateState({ [key]: state })
       })
     }
@@ -41,7 +41,9 @@ class ComposableObservableStore extends ObservableStore {
     let flatState = {}
     for (const key in this.config) {
       const controller = this.config[key]
-      const state = controller.getState ? controller.getState() : controller.state
+      const state = controller.getState
+        ? controller.getState()
+        : controller.state
       flatState = { ...flatState, ...state }
     }
     return flatState

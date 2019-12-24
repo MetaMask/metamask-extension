@@ -20,7 +20,7 @@ describe('Token Cell', () => {
       contractExchangeRates: {
         '0xAnotherToken': 0.015,
       },
-      conversionRate: 7.00,
+      conversionRate: 7.0,
     },
     appState: {
       sidebar: {
@@ -55,7 +55,10 @@ describe('Token Cell', () => {
   })
 
   it('renders token balance', () => {
-    assert.equal(wrapper.find('.token-list-item__token-balance').text(), '5.000')
+    assert.equal(
+      wrapper.find('.token-list-item__token-balance').text(),
+      '5.000'
+    )
   })
 
   it('renders token symbol', () => {
@@ -63,7 +66,9 @@ describe('Token Cell', () => {
   })
 
   it('renders converted fiat amount', () => {
-    assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
+    assert.equal(
+      wrapper.find('.token-list-item__fiat-amount').text(),
+      '0.52 USD'
+    )
   })
-
 })

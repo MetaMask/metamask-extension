@@ -29,7 +29,7 @@ class SimpleDropdown extends Component {
   }
 
   toggleOpen () {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       isOpen: !prevState.isOpen,
     }))
   }
@@ -47,13 +47,14 @@ class SimpleDropdown extends Component {
           }}
         />
         <div className="simple-dropdown__options">
-          {options.map((option) => (
+          {options.map(option => (
             <div
               className={classnames('simple-dropdown__option', {
-                'simple-dropdown__option--selected': option.value === selectedOption,
+                'simple-dropdown__option--selected':
+                  option.value === selectedOption,
               })}
               key={option.value}
-              onClick={(event) => {
+              onClick={event => {
                 event.stopPropagation()
                 if (option.value !== selectedOption) {
                   onSelect(option.value)
@@ -76,7 +77,9 @@ class SimpleDropdown extends Component {
 
     return (
       <div className="simple-dropdown" onClick={() => this.toggleOpen()}>
-        <div className="simple-dropdown__selected">{this.getDisplayValue() || placeholder || 'Select'}</div>
+        <div className="simple-dropdown__selected">
+          {this.getDisplayValue() || placeholder || 'Select'}
+        </div>
         <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
         {isOpen && this.renderOptions()}
       </div>

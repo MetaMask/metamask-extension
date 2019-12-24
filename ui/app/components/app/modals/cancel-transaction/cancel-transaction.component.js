@@ -61,13 +61,13 @@ export default class CancelTransaction extends PureComponent {
       >
         <div>
           <div className="cancel-transaction__title">
-            { t('cancellationGasFee') }
+            {t('cancellationGasFee')}
           </div>
           <div className="cancel-transaction__cancel-transaction-gas-fee-container">
             <CancelTransactionGasFee value={newGasFee} />
           </div>
           <div className="cancel-transaction__description">
-            { t('attemptToCancelDescription') }
+            {t('attemptToCancelDescription')}
           </div>
         </div>
       </Modal>

@@ -13,7 +13,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const domainMetadata = getDomainMetadata(state)
   const origin = requestMetadata.origin || cachedOrigin
-  const targetDomainMetadata = (domainMetadata[origin] || { name: origin, icon: null })
+  const targetDomainMetadata = domainMetadata[origin] || {
+    name: origin,
+    icon: null,
+  }
 
   return {
     permissionsDescriptions: getPermissionsDescriptions(state),

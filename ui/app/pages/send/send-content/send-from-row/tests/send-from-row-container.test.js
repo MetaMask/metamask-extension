@@ -11,7 +11,7 @@ proxyquire('../send-from-row.container.js', {
     },
   },
   '../../send.selectors.js': {
-    getSendFromObject: (s) => `mockFrom:${s}`,
+    getSendFromObject: s => `mockFrom:${s}`,
   },
 })
 

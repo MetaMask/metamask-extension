@@ -28,7 +28,9 @@ IconFactory.prototype.iconForAddress = function (address, diameter) {
 IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
   const cacheId = `${address}:${diameter}`
   // check cache, lazily generate and populate cache
-  const identicon = this.cache[cacheId] || (this.cache[cacheId] = this.generateNewIdenticon(address, diameter))
+  const identicon =
+    this.cache[cacheId] ||
+    (this.cache[cacheId] = this.generateNewIdenticon(address, diameter))
   // create a clean copy so you can modify it
   const cleanCopy = identicon.cloneNode(true)
   return cleanCopy
@@ -44,7 +46,9 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 // util
 
 function iconExistsFor (address) {
-  return contractMap[address] && isValidAddress(address) && contractMap[address].logo
+  return (
+    contractMap[address] && isValidAddress(address) && contractMap[address].logo
+  )
 }
 
 function imageElFor (address) {
@@ -62,4 +66,3 @@ function jsNumberForAddress (address) {
   const seed = parseInt(addr, 16)
   return seed
 }
-

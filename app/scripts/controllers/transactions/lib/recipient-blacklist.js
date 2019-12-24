@@ -1,5 +1,5 @@
 module.exports = {
-  'blacklist': [
+  blacklist: [
     // IDEX phisher
     '0x9bcb0A9d99d815Bb87ee3191b1399b1Bcc46dc77',
     // Ganache default seed phrases

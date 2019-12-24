@@ -17,7 +17,7 @@ describe('SendGasRow Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
+    wrapper = shallow(
       <SendGasRow
         conversionRate={20}
         convertedCurrency="mockConvertedCurrency"
@@ -31,8 +31,9 @@ describe('SendGasRow Component', function () {
           someGasPriceButtonGroupProp: 'foo',
           anotherGasPriceButtonGroupProp: 'bar',
         }}
-      />
-    ), { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
+      />,
+      { context: { t: str => str + '_t', metricsEvent: () => ({}) } }
+    )
   })
 
   afterEach(() => {
@@ -45,11 +46,9 @@ describe('SendGasRow Component', function () {
     })
 
     it('should pass the correct props to SendRowWrapper', () => {
-      const {
-        label,
-        showError,
-        errorType,
-      } = wrapper.find(SendRowWrapper).props()
+      const { label, showError, errorType } = wrapper
+        .find(SendRowWrapper)
+        .props()
 
       assert.equal(label, 'transactionFee_t:')
       assert.equal(showError, 'mockGasFeeError')
@@ -57,15 +56,19 @@ describe('SendGasRow Component', function () {
     })
 
     it('should render a GasFeeDisplay as a child of the SendRowWrapper', () => {
-      assert(wrapper.find(SendRowWrapper).childAt(0).is(GasFeeDisplay))
+      assert(
+        wrapper
+          .find(SendRowWrapper)
+          .childAt(0)
+          .is(GasFeeDisplay)
+      )
     })
 
     it('should render the GasFeeDisplay', () => {
-      const {
-        gasLoadingError,
-        gasTotal,
-        onReset,
-      } = wrapper.find(SendRowWrapper).childAt(0).props()
+      const { gasLoadingError, gasTotal, onReset } = wrapper
+        .find(SendRowWrapper)
+        .childAt(0)
+        .props()
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)
@@ -82,8 +85,14 @@ describe('SendGasRow Component', function () {
       assert(gasPriceButtonGroup.is(GasPriceButtonGroup))
       assert(gasPriceButtonGroup.hasClass('gas-price-button-group--small'))
       assert.equal(gasPriceButtonGroup.props().showCheck, false)
-      assert.equal(gasPriceButtonGroup.props().someGasPriceButtonGroupProp, 'foo')
-      assert.equal(gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp, 'bar')
+      assert.equal(
+        gasPriceButtonGroup.props().someGasPriceButtonGroupProp,
+        'foo'
+      )
+      assert.equal(
+        gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp,
+        'bar'
+      )
     })
 
     it('should render an advanced options button if gasButtonGroupShown is true', () => {

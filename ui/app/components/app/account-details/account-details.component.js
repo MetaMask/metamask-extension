@@ -55,28 +55,34 @@ export default class AccountDetails extends Component {
       name,
     } = this.props
 
-    const {
-      hasCopied,
-      copyToClipboardPressed,
-    } = this.state
+    const { hasCopied, copyToClipboardPressed } = this.state
 
     return (
       <div>
         <div className="flex-column account-details">
-          <div className="account-details__sidebar-close" onClick={hideSidebar} />
-          <div className="account-details__keyring-label allcaps">
-            {label}
-          </div>
+          <div
+            className="account-details__sidebar-close"
+            onClick={hideSidebar}
+          />
+          <div className="account-details__keyring-label allcaps">{label}</div>
           <div className="flex-column flex-center account-details__name-container">
-            <Identicon diameter={54} address={checksummedAddress} onClick={showAccountDetailModal} />
-            <span className="account-details__account-name">
-              {name}
-            </span>
+            <Identicon
+              diameter={54}
+              address={checksummedAddress}
+              onClick={showAccountDetailModal}
+            />
+            <span className="account-details__account-name">{name}</span>
             <div className="account-details__details-buttons">
-              <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
+              <button
+                className="btn-secondary account-details__details-button"
+                onClick={showAccountDetailModal}
+              >
                 {t('details')}
               </button>
-              <button className="btn-secondary account-details__details-button" onClick={showConnectedSites}>
+              <button
+                className="btn-secondary account-details__details-button"
+                onClick={showConnectedSites}
+              >
                 {t('connectedSites')}
               </button>
             </div>

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Modal from '../../modal'
 import Button from '../../../ui/button'
 
-
 export default class DisconnectAccount extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
@@ -27,23 +26,23 @@ export default class DisconnectAccount extends PureComponent {
       >
         <div className="disconnect-account-modal">
           <div className="disconnect-account-modal__description">
-            { t('disconnectAccountModalDescription', [ accountLabel ]) }
+            {t('disconnectAccountModalDescription', [accountLabel])}
           </div>
           <Button
             type="primary"
-            onClick={ () => {
+            onClick={() => {
               disconnectAccount()
               hideModal()
             }}
           >
-            { t('disconnectFromThisAccount') }
+            {t('disconnectFromThisAccount')}
           </Button>
           <Button
             type="secondary"
-            onClick={ () => hideModal() }
+            onClick={() => hideModal()}
             className="disconnect-account-modal__cancel-button"
           >
-            { t('cancel') }
+            {t('cancel')}
           </Button>
         </div>
       </Modal>

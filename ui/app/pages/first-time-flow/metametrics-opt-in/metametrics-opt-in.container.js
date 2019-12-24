@@ -5,22 +5,24 @@ import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
-  'import': 'Selected Import Wallet',
+  import: 'Selected Import Wallet',
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { firstTimeFlowType, participateInMetaMetrics } = state.metamask
 
   return {
     nextRoute: getFirstTimeFlowTypeRoute(state),
-    firstTimeSelectionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],
+    firstTimeSelectionMetaMetricsName:
+      firstTimeFlowTypeNameMap[firstTimeFlowType],
     participateInMetaMetrics,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    setParticipateInMetaMetrics: val =>
+      dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 

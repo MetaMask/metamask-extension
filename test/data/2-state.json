@@ -1,4 +1,5 @@
-{ "isInitialized": true,
+{
+  "isInitialized": true,
   "provider": { "type": "rpc", "rpcTarget": "http://localhost:8545" },
   "network": "loading",
   "accounts": {
@@ -21,20 +22,17 @@
   "unapprovedTypedMessages": {},
   "unapprovedTypedMessagesCount": 0,
   "isUnlocked": true,
-  "keyringTypes": [ "Simple Key Pair", "HD Key Tree" ],
-  "keyrings":[
-    { "type": "HD Key Tree",
-      "accounts": [
-        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-      ]
+  "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
+  "keyrings": [
+    {
+      "type": "HD Key Tree",
+      "accounts": ["0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"]
     },
     {
       "type": "Simple Key Pair",
-      "accounts": [
-        "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-      ]
+      "accounts": ["0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"]
     }
-    ],
+  ],
   "frequentRpcList": [],
   "currentAccountTab": "history",
   "tokens": [],

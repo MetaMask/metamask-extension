@@ -13,9 +13,7 @@ class LoadingScreen extends Component {
 
   renderMessage () {
     const { loadingMessage } = this.props
-    return loadingMessage
-      ? <span>{loadingMessage}</span>
-      : null
+    return loadingMessage ? <span>{loadingMessage}</span> : null
   }
 
   render () {

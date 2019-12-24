@@ -28,7 +28,7 @@ function transformState (state) {
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
       const transactions = newState.TransactionController.transactions
-      newState.TransactionController.transactions = transactions.map((txMeta) => {
+      newState.TransactionController.transactions = transactions.map(txMeta => {
         if (txMeta.status !== 'unapproved') {
           return txMeta
         }
@@ -55,7 +55,7 @@ function normalizeTxParams (txParams) {
 
   // apply only keys in the whiteList
   const normalizedTxParams = {}
-  Object.keys(whiteList).forEach((key) => {
+  Object.keys(whiteList).forEach(key => {
     if (txParams[key]) {
       normalizedTxParams[key] = whiteList[key](txParams[key])
     }

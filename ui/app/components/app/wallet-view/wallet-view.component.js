@@ -7,7 +7,10 @@ import AccountDetails from '../account-details'
 
 const { checksumAddress } = require('../../../helpers/utils/util')
 const TokenList = require('../token-list')
-const { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
+const {
+  ADD_TOKEN_ROUTE,
+  CONNECTED_ROUTE,
+} = require('../../../helpers/constants/routes')
 
 export default class WalletView extends Component {
   static contextTypes = {
@@ -65,11 +68,7 @@ export default class WalletView extends Component {
   }
 
   renderAddToken () {
-    const {
-      sidebarOpen,
-      hideSidebar,
-      history,
-    } = this.props
+    const { sidebarOpen, hideSidebar, history } = this.props
     const { metricsEvent } = this.context
 
     return (
@@ -92,11 +91,7 @@ export default class WalletView extends Component {
   }
 
   showConnectedSites = () => {
-    const {
-      sidebarOpen,
-      hideSidebar,
-      history,
-    } = this.props
+    const { sidebarOpen, hideSidebar, history } = this.props
     history.push(CONNECTED_ROUTE)
     if (sidebarOpen) {
       hideSidebar()
@@ -113,7 +108,7 @@ export default class WalletView extends Component {
 
     const checksummedAddress = checksumAddress(selectedAddress)
 
-    const keyring = keyrings.find((kr) => {
+    const keyring = keyrings.find(kr => {
       return kr.accounts.includes(selectedAddress)
     })
 
@@ -131,7 +126,13 @@ export default class WalletView extends Component {
     }
 
     return (
-      <div className={classnames('wallet-view', 'flex-column', responsiveDisplayClassname)}>
+      <div
+        className={classnames(
+          'wallet-view',
+          'flex-column',
+          responsiveDisplayClassname
+        )}
+      >
         <AccountDetails
           label={label}
           checksummedAddress={checksummedAddress}

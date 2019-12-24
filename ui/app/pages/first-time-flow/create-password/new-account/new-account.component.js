@@ -123,7 +123,7 @@ export default class NewAccount extends PureComponent {
       },
     })
 
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       termsChecked: !prevState.termsChecked,
     }))
   }
@@ -136,7 +136,13 @@ export default class NewAccount extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { password, confirmPassword, passwordError, confirmPasswordError, termsChecked } = this.state
+    const {
+      password,
+      confirmPassword,
+      passwordError,
+      confirmPasswordError,
+      termsChecked,
+    } = this.state
 
     return (
       <div>
@@ -158,13 +164,8 @@ export default class NewAccount extends PureComponent {
             {`< Back`}
           </a>
         </div>
-        <div className="first-time-flow__header">
-          { t('createPassword') }
-        </div>
-        <form
-          className="first-time-flow__form"
-          onSubmit={this.handleCreate}
-        >
+        <div className="first-time-flow__header">{t('createPassword')}</div>
+        <form className="first-time-flow__form" onSubmit={this.handleCreate}>
           <TextField
             id="create-password"
             label={t('newPassword')}
@@ -185,14 +186,19 @@ export default class NewAccount extends PureComponent {
             type="password"
             className="first-time-flow__input"
             value={confirmPassword}
-            onChange={event => this.handleConfirmPasswordChange(event.target.value)}
+            onChange={event =>
+              this.handleConfirmPasswordChange(event.target.value)
+            }
             error={confirmPasswordError}
             autoComplete="confirm-password"
             margin="normal"
             fullWidth
             largeLabel
           />
-          <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+          <div
+            className="first-time-flow__checkbox-container"
+            onClick={this.toggleTermsCheck}
+          >
             <div
               className="first-time-flow__checkbox"
               tabIndex="0"
@@ -203,7 +209,10 @@ export default class NewAccount extends PureComponent {
             >
               {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
             </div>
-            <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
+            <span
+              id="ftf-chk1-label"
+              className="first-time-flow__checkbox-label"
+            >
               I have read and agree to the&nbsp;
               <a
                 href="https://metamask.io/terms.html"
@@ -211,7 +220,7 @@ export default class NewAccount extends PureComponent {
                 rel="noopener noreferrer"
               >
                 <span className="first-time-flow__link-text">
-                  { 'Terms of Use' }
+                  {'Terms of Use'}
                 </span>
               </a>
             </span>
@@ -222,7 +231,7 @@ export default class NewAccount extends PureComponent {
             disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}
           >
-            { t('create') }
+            {t('create')}
           </Button>
         </form>
       </div>

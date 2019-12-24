@@ -7,7 +7,7 @@ import { removePermissionsFor } from '../../../../store/actions'
 
 const mapStateToProps = state => {
   return {
-    ...state.appState.modal.modalState.props || {},
+    ...(state.appState.modal.modalState.props || {}),
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
   }
 }
@@ -15,20 +15,17 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     disconnectAccount: (domainKey, domain) => {
-      const permissionMethodNames = domain.permissions.map(perm => perm.parentCapability)
+      const permissionMethodNames = domain.permissions.map(
+        perm => perm.parentCapability
+      )
       dispatch(removePermissionsFor({ [domainKey]: permissionMethodNames }))
     },
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const {
-    domainKey,
-    domain,
-  } = stateProps
-  const {
-    disconnectAccount: dispatchDisconnectAccount,
-  } = dispatchProps
+  const { domainKey, domain } = stateProps
+  const { disconnectAccount: dispatchDisconnectAccount } = dispatchProps
 
   return {
     ...ownProps,

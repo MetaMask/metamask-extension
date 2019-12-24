@@ -1,5 +1,10 @@
 import { connect } from 'react-redux'
-import { buyEth, hideModal, showModal, hideWarning } from '../../../../store/actions'
+import {
+  buyEth,
+  hideModal,
+  showModal,
+  hideWarning,
+} from '../../../../store/actions'
 import DepositEtherModal from './deposit-ether-modal.component'
 
 function mapStateToProps (state) {
@@ -11,10 +16,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toWyre: (address) => {
+    toWyre: address => {
       dispatch(buyEth({ service: 'wyre', address, amount: 0 }))
     },
-    toCoinSwitch: (address) => {
+    toCoinSwitch: address => {
       dispatch(buyEth({ service: 'coinswitch', address }))
     },
     hideModal: () => {
@@ -29,6 +34,5 @@ function mapDispatchToProps (dispatch) {
     toFaucet: network => dispatch(buyEth({ network })),
   }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(DepositEtherModal)

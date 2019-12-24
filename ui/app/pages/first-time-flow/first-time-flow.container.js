@@ -7,13 +7,20 @@ import {
   unlockAndGetSeedPhrase,
   verifySeedPhrase,
 } from '../../store/actions'
-import {
-  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-} from '../../helpers/constants/routes'
+import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../helpers/constants/routes'
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked, seedPhraseBackedUp } } = state
-  const showingSeedPhraseBackupAfterOnboarding = Boolean(ownProps.location.pathname.match(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE))
+  const {
+    metamask: {
+      completedOnboarding,
+      isInitialized,
+      isUnlocked,
+      seedPhraseBackedUp,
+    },
+  } = state
+  const showingSeedPhraseBackupAfterOnboarding = Boolean(
+    ownProps.location.pathname.match(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+  )
 
   return {
     completedOnboarding,
@@ -27,7 +34,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createNewAccount: password => dispatch(createNewVaultAndGetSeedPhrase(password)),
+    createNewAccount: password =>
+      dispatch(createNewVaultAndGetSeedPhrase(password)),
     createNewAccountFromSeed: (password, seedPhrase) => {
       return dispatch(createNewVaultAndRestore(password, seedPhrase))
     },

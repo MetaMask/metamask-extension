@@ -6,14 +6,11 @@ const chrome = require('selenium-webdriver/chrome')
  */
 class ChromeDriver {
   static async build ({ extensionPath, responsive }) {
-    const args = [
-      `load-extension=${extensionPath}`,
-    ]
+    const args = [`load-extension=${extensionPath}`]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }
-    const options = new chrome.Options()
-      .addArguments(args)
+    const options = new chrome.Options().addArguments(args)
     const driver = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options)

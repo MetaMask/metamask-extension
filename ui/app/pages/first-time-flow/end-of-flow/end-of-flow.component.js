@@ -23,7 +23,12 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   onComplete = async () => {
-    const { history, completeOnboarding, completionMetaMetricsName, onboardingInitiator } = this.props
+    const {
+      history,
+      completeOnboarding,
+      completionMetaMetricsName,
+      onboardingInitiator,
+    } = this.props
 
     await completeOnboarding()
     this.context.metricsEvent({
@@ -48,32 +53,30 @@ export default class EndOfFlowScreen extends PureComponent {
       <div className="end-of-flow">
         <MetaFoxLogo />
         <div className="end-of-flow__emoji">🎉</div>
-        <div className="first-time-flow__header">
-          { t('congratulations') }
-        </div>
+        <div className="first-time-flow__header">{t('congratulations')}</div>
         <div className="first-time-flow__text-block end-of-flow__text-1">
-          { t('endOfFlowMessage1') }
+          {t('endOfFlowMessage1')}
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-2">
-          { t('endOfFlowMessage2') }
+          {t('endOfFlowMessage2')}
         </div>
         <div className="end-of-flow__text-3">
-          { '• ' + t('endOfFlowMessage3') }
+          {'• ' + t('endOfFlowMessage3')}
         </div>
         <div className="end-of-flow__text-3">
-          { '• ' + t('endOfFlowMessage4') }
+          {'• ' + t('endOfFlowMessage4')}
         </div>
         <div className="end-of-flow__text-3">
-          { '• ' + t('endOfFlowMessage5') }
+          {'• ' + t('endOfFlowMessage5')}
         </div>
         <div className="end-of-flow__text-3">
-          { '• ' + t('endOfFlowMessage6') }
+          {'• ' + t('endOfFlowMessage6')}
         </div>
         <div className="end-of-flow__text-3">
-          { '• ' + t('endOfFlowMessage7') }
+          {'• ' + t('endOfFlowMessage7')}
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-4">
-          { '*' + t('endOfFlowMessage8') }&nbsp;
+          {'*' + t('endOfFlowMessage8')}&nbsp;
           <a
             href="https://metamask.zendesk.com/hc/en-us/articles/360015489591-Basic-Safety-Tips"
             target="_blank"
@@ -89,15 +92,16 @@ export default class EndOfFlowScreen extends PureComponent {
           className="first-time-flow__button"
           onClick={this.onComplete}
         >
-          { t('endOfFlowMessage10') }
+          {t('endOfFlowMessage10')}
         </Button>
-        {
-          onboardingInitiator ? (
-            <Snackbar
-              content={t('onboardingReturnNotice', [t('endOfFlowMessage10'), onboardingInitiator.location])}
-            />
-          ) : null
-        }
+        {onboardingInitiator ? (
+          <Snackbar
+            content={t('onboardingReturnNotice', [
+              t('endOfFlowMessage10'),
+              onboardingInitiator.location,
+            ])}
+          />
+        ) : null}
       </div>
     )
   }

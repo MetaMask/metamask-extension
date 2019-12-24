@@ -2,7 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-
 // these need to run before anything else
 require('./lib/freezeGlobals')
 require('./lib/setupFetchDebugging')()
@@ -41,7 +40,11 @@ const {
 } = require('./lib/enums')
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
-const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
+const firstTimeState = Object.assign(
+  {},
+  rawFirstTimeState,
+  global.METAMASK_TEST_CONFIG
+)
 
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
@@ -62,9 +65,7 @@ const requestAccountTabIds = {}
 
 // state persistence
 const inTest = process.env.IN_TEST === 'true'
-const localStore = inTest
-  ? new ReadOnlyNetworkStore()
-  : new LocalStore()
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
 let versionedData
 
 // initialization flow
@@ -174,8 +175,8 @@ async function loadStateFromPersistence () {
 
   // read from disk
   // first from preferred, async API:
-  versionedData = (await localStore.get()) ||
-                  migrator.generateInitialState(firstTimeState)
+  versionedData =
+    (await localStore.get()) || migrator.generateInitialState(firstTimeState)
 
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
@@ -188,7 +189,7 @@ async function loadStateFromPersistence () {
   }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
+  migrator.on('error', err => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(versionedData)
     sentry.captureException(err, {
@@ -253,12 +254,14 @@ function setupController (initState, initLangCode) {
   })
 
   setupEnsIpfsResolver({
-    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
+    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
+      controller.preferencesController
+    ),
     provider: controller.provider,
   })
 
   // submit rpc requests to mesh-metrics
-  controller.networkController.on('rpc-req', (data) => {
+  controller.networkController.on('rpc-req', data => {
     submitMeshMetricsEntry({ type: 'rpc', data })
   })
 
@@ -281,7 +284,7 @@ function setupController (initState, initLangCode) {
     debounce(1000),
     storeTransform(versionifyData),
     createStreamSink(persistData),
-    (error) => {
+    error => {
       log.error('MetaMask - Persistence pipeline failed', error)
     }
   )
@@ -325,12 +328,14 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
-    'trezor-connect',
-  ]
+  const metamaskBlacklistedPorts = ['trezor-connect']
 
   const isClientOpenStatus = () => {
-    return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
+    return (
+      popupIsOpen ||
+      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+      notificationIsOpen
+    )
   }
 
   /**
@@ -427,10 +432,19 @@ function setupController (initState, initLangCode) {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingPermissionRequests
+    const unapprovedPersonalMsgs =
+      controller.personalMessageManager.unapprovedPersonalMsgCount
+    const unapprovedTypedMsgs =
+      controller.typedMessageManager.unapprovedTypedMessagesCount
+    const pendingPermissionRequests = Object.keys(
+      controller.permissionsController.permissions.state.permissionsRequests
+    ).length
+    const count =
+      unapprovedTxCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgs +
+      unapprovedTypedMsgs +
+      pendingPermissionRequests
     if (count) {
       label = String(count)
     }
@@ -450,7 +464,9 @@ function setupController (initState, initLangCode) {
  */
 function triggerUi () {
   extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+    const currentlyActiveMetamaskTab = Boolean(
+      tabs.find(tab => openMetamaskTabsIDs[tab.id])
+    )
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
       notificationIsOpen = true
@@ -464,21 +480,19 @@ function triggerUi () {
  */
 function openPopup () {
   triggerUi()
-  return new Promise(
-    (resolve) => {
-      const interval = setInterval(() => {
-        if (!notificationIsOpen) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    }
-  )
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (!notificationIsOpen) {
+        clearInterval(interval)
+        resolve()
+      }
+    }, 1000)
+  })
 }
 
 // On first install, open a new tab with MetaMask
 extension.runtime.onInstalled.addListener(({ reason }) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+  if (reason === 'install' && !METAMASK_DEBUG) {
     platform.openExtensionInBrowser()
   }
 })

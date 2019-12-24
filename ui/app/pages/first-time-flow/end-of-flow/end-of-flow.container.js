@@ -5,11 +5,13 @@ import { getOnboardingInitiator } from '../first-time-flow.selectors'
 
 const firstTimeFlowTypeNameMap = {
   create: 'New Wallet Created',
-  'import': 'New Wallet Imported',
+  import: 'New Wallet Imported',
 }
 
-const mapStateToProps = (state) => {
-  const { metamask: { firstTimeFlowType } } = state
+const mapStateToProps = state => {
+  const {
+    metamask: { firstTimeFlowType },
+  } = state
 
   return {
     completionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],

@@ -21,7 +21,10 @@ module.exports = {
 }
 
 function transformState (state) {
-  if (state.PreferencesController && state.PreferencesController.seedWords !== undefined) {
+  if (
+    state.PreferencesController &&
+    state.PreferencesController.seedWords !== undefined
+  ) {
     delete state.PreferencesController.seedWords
   }
   return state

@@ -44,7 +44,7 @@ export default class AccountMenu extends Component {
     originOfCurrentTab: PropTypes.string,
   }
 
-  accountsRef;
+  accountsRef
 
   state = {
     shouldShowScrollButton: false,
@@ -130,7 +130,11 @@ export default class AccountMenu extends Component {
     }
 
     if (filteredIdentities.length === 0) {
-      return <p className="account-menu__no-accounts">{this.context.t('noAccountsFound')}</p>
+      return (
+        <p className="account-menu__no-accounts">
+          {this.context.t('noAccountsFound')}
+        </p>
+      )
     }
 
     return filteredIdentities.map(identity => {
@@ -139,7 +143,10 @@ export default class AccountMenu extends Component {
       const simpleAddress = identity.address.substring(2).toLowerCase()
 
       const keyring = keyrings.find(kr => {
-        return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
+        return (
+          kr.accounts.includes(simpleAddress) ||
+          kr.accounts.includes(identity.address)
+        )
       })
       const addressDomains = addressConnectedDomainMap[identity.address] || {}
       const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab]
@@ -160,32 +167,27 @@ export default class AccountMenu extends Component {
           key={identity.address}
         >
           <div className="account-menu__check-mark">
-            { isSelected && <div className="account-menu__check-mark-icon" /> }
+            {isSelected && <div className="account-menu__check-mark-icon" />}
           </div>
-          <Identicon
-            address={identity.address}
-            diameter={24}
-          />
+          <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
-            <div className="account-menu__name">
-              { identity.name || '' }
-            </div>
+            <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
               value={identity.balance}
               type={PRIMARY}
             />
           </div>
-          { iconAndNameForOpenDomain
-            ? (
-              <div className="account-menu__icon-list">
-                <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
-              </div>
-            )
-            : null
-          }
-          { this.renderKeyringType(keyring) }
-          { this.renderRemoveAccount(keyring, identity) }
+          {iconAndNameForOpenDomain ? (
+            <div className="account-menu__icon-list">
+              <IconWithFallBack
+                icon={iconAndNameForOpenDomain.icon}
+                name={iconAndNameForOpenDomain.name}
+              />
+            </div>
+          ) : null}
+          {this.renderKeyringType(keyring)}
+          {this.renderRemoveAccount(keyring, identity)}
         </div>
       )
     })
@@ -197,16 +199,15 @@ export default class AccountMenu extends Component {
     const { type } = keyring
     const isRemovable = type !== 'HD Key Tree'
 
-    return isRemovable && (
-      <Tooltip
-        title={t('removeAccount')}
-        position="bottom"
-      >
-        <a
-          className="remove-account-icon"
-          onClick={e => this.removeAccount(e, identity)}
-        />
-      </Tooltip>
+    return (
+      isRemovable && (
+        <Tooltip title={t('removeAccount')} position="bottom">
+          <a
+            className="remove-account-icon"
+            onClick={e => this.removeAccount(e, identity)}
+          />
+        </Tooltip>
+      )
     )
   }
 
@@ -240,11 +241,7 @@ export default class AccountMenu extends Component {
         return null
     }
 
-    return (
-      <div className="keyring-label allcaps">
-        { label }
-      </div>
-    )
+    return <div className="keyring-label allcaps">{label}</div>
   }
 
   resetSearchQuery () {
@@ -281,18 +278,20 @@ export default class AccountMenu extends Component {
   renderScrollButton () {
     const { shouldShowScrollButton } = this.state
 
-    return shouldShowScrollButton && (
-      <div
-        className="account-menu__scroll-button"
-        onClick={this.handleScrollDown}
-      >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width={28}
-          height={28}
-          alt="scroll down"
-        />
-      </div>
+    return (
+      shouldShowScrollButton && (
+        <div
+          className="account-menu__scroll-button"
+          onClick={this.handleScrollDown}
+        >
+          <img
+            src="./images/icons/down-arrow.svg"
+            width={28}
+            height={28}
+            alt="scroll down"
+          />
+        </div>
+      )
     )
   }
 
@@ -307,13 +306,10 @@ export default class AccountMenu extends Component {
     } = this.props
 
     return (
-      <Menu
-        className="account-menu"
-        isShowing={isAccountMenuOpen}
-      >
+      <Menu className="account-menu" isShowing={isAccountMenuOpen}>
         <CloseArea onClick={toggleAccountMenu} />
         <Item className="account-menu__header">
-          { t('myAccounts') }
+          {t('myAccounts')}
           <button
             className="account-menu__logout-button"
             onClick={() => {
@@ -321,7 +317,7 @@ export default class AccountMenu extends Component {
               history.push(DEFAULT_ROUTE)
             }}
           >
-            { t('logout') }
+            {t('logout')}
           </button>
         </Item>
         <Divider />
@@ -334,9 +330,9 @@ export default class AccountMenu extends Component {
               this.accountsRef = ref
             }}
           >
-            { this.renderAccounts() }
+            {this.renderAccounts()}
           </div>
-          { this.renderScrollButton() }
+          {this.renderScrollButton()}
         </div>
         <Divider />
         <Item
@@ -351,12 +347,14 @@ export default class AccountMenu extends Component {
             })
             history.push(NEW_ACCOUNT_ROUTE)
           }}
-          icon={(
-            <img
-              className="account-menu__item-icon"
-              src="images/plus-btn-white.svg"
-            />
-          )}
+          icon={
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/plus-btn-white.svg"
+              />
+            )
+          }
           text={t('createAccount')}
         />
         <Item
@@ -371,12 +369,14 @@ export default class AccountMenu extends Component {
             })
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
-          icon={(
-            <img
-              className="account-menu__item-icon"
-              src="images/import-account.svg"
-            />
-          )}
+          icon={
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/import-account.svg"
+              />
+            )
+          }
           text={t('importAccount')}
         />
         <Item
@@ -389,18 +389,23 @@ export default class AccountMenu extends Component {
                 name: 'Clicked Connect Hardware',
               },
             })
-            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+            if (
+              getEnvironmentType(window.location.href) ===
+              ENVIRONMENT_TYPE_POPUP
+            ) {
               global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
             } else {
               history.push(CONNECT_HARDWARE_ROUTE)
             }
           }}
-          icon={(
-            <img
-              className="account-menu__item-icon"
-              src="images/connect-icon.svg"
-            />
-          )}
+          icon={
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/connect-icon.svg"
+              />
+            )
+          }
           text={t('connectHardwareWallet')}
         />
         <Divider />
@@ -409,9 +414,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu()
             history.push(ABOUT_US_ROUTE)
           }}
-          icon={
-            <img src="images/mm-info-icon.svg" />
-          }
+          icon={<img src="images/mm-info-icon.svg" />}
           text={t('infoHelp')}
         />
         <Item
@@ -426,12 +429,14 @@ export default class AccountMenu extends Component {
               },
             })
           }}
-          icon={(
-            <img
-              className="account-menu__item-icon"
-              src="images/settings.svg"
-            />
-          )}
+          icon={
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/settings.svg"
+              />
+            )
+          }
           text={t('settings')}
         />
       </Menu>

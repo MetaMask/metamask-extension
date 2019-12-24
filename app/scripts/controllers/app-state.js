@@ -11,10 +11,15 @@ class AppStateController {
     const { preferences } = preferencesStore.getState()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(extend({
-      timeoutMinutes: 0,
-      mkrMigrationReminderTimestamp: null,
-    }, initState))
+    this.store = new ObservableStore(
+      extend(
+        {
+          timeoutMinutes: 0,
+          mkrMigrationReminderTimestamp: null,
+        },
+        initState
+      )
+    )
     this.timer = null
 
     preferencesStore.subscribe(state => {
@@ -72,9 +77,11 @@ class AppStateController {
       return
     }
 
-    this.timer = setTimeout(() => this.onInactiveTimeout(), timeoutMinutes * 60 * 1000)
+    this.timer = setTimeout(
+      () => this.onInactiveTimeout(),
+      timeoutMinutes * 60 * 1000
+    )
   }
 }
 
 module.exports = AppStateController
-

@@ -3,14 +3,25 @@ const assert = require('assert')
 
 const sinon = require('sinon')
 const path = require('path')
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'app', 'dropdowns', 'index.js')).Dropdown
+const Dropdown = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'components',
+  'app',
+  'dropdowns',
+  'index.js'
+)).Dropdown
 
 const { createMockStore } = require('redux-test-utils')
 const { mountWithStore } = require('../../../lib/render-helpers')
 
 const mockState = {
-  metamask: {
-  },
+  metamask: {},
 }
 
 describe('Dropdown components', function () {
@@ -39,20 +50,23 @@ describe('Dropdown components', function () {
     onClick = sinon.spy()
 
     store = createMockStore(mockState)
-    component = mountWithStore((
+    component = mountWithStore(
       <Dropdown {...dropdownComponentProps}>
         <style>
-          {
-            `
+          {`
               .drop-menu-item:hover { background:rgb(235, 235, 235); }
               .drop-menu-item i { margin: 11px; }
-            `
-          }
+            `}
         </style>
-        <li closeMenu={closeMenu} onClick={onClick}>Item 1</li>
-        <li closeMenu={closeMenu} onClick={onClick}>Item 2</li>
-      </Dropdown>
-    ), store)
+        <li closeMenu={closeMenu} onClick={onClick}>
+          Item 1
+        </li>
+        <li closeMenu={closeMenu} onClick={onClick}>
+          Item 2
+        </li>
+      </Dropdown>,
+      store
+    )
     dropdownComponent = component
   })
 

@@ -24,7 +24,6 @@ function mountWithStore (component, store) {
 }
 
 function mountWithRouter (node) {
-
   // Instantiate router context
   const router = {
     history: new BrowserRouter().history,
@@ -39,11 +38,7 @@ function mountWithRouter (node) {
     childContextTypes: { router: shape({}), t: () => {} },
   })
 
-  const Wrapper = () => (
-    <BrowserRouter>
-      {node}
-    </BrowserRouter>
-  )
+  const Wrapper = () => <BrowserRouter>{node}</BrowserRouter>
 
   return mount(<Wrapper />, createContext())
 }

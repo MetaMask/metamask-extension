@@ -10,15 +10,7 @@ function GasModalCard () {
 }
 
 GasModalCard.prototype.render = function GasModalCard () {
-  const {
-    onChange,
-    unitLabel,
-    value,
-    min,
-    step,
-    title,
-    copy,
-  } = this.props
+  const { onChange, unitLabel, value, min, step, title, copy } = this.props
 
   return (
     <div className="send-v2__gas-modal-card">
@@ -35,4 +27,3 @@ GasModalCard.prototype.render = function GasModalCard () {
     </div>
   )
 }
-

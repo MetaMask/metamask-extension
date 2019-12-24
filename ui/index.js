@@ -20,10 +20,9 @@ function launchMetamaskUi (opts, cb) {
     if (err) {
       return cb(err)
     }
-    startApp(metamaskState, backgroundConnection, opts)
-      .then((store) => {
-        cb(null, store)
-      })
+    startApp(metamaskState, backgroundConnection, opts).then(store => {
+      cb(null, store)
+    })
   })
 }
 
@@ -61,12 +60,20 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   })
 
   // if unconfirmed txs, start on txConf page
-  const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.unapprovedTypedMessages, metamaskState.network)
+  const unapprovedTxsAll = txHelper(
+    metamaskState.unapprovedTxs,
+    metamaskState.unapprovedMsgs,
+    metamaskState.unapprovedPersonalMsgs,
+    metamaskState.unapprovedTypedMessages,
+    metamaskState.network
+  )
   const numberOfUnapprivedTx = unapprovedTxsAll.length
   if (numberOfUnapprivedTx > 0) {
-    store.dispatch(actions.showConfTxPage({
-      id: unapprovedTxsAll[numberOfUnapprivedTx - 1].id,
-    }))
+    store.dispatch(
+      actions.showConfTxPage({
+        id: unapprovedTxsAll[numberOfUnapprivedTx - 1].id,
+      })
+    )
   }
 
   backgroundConnection.on('update', function (metamaskState) {
@@ -83,10 +90,10 @@ async function startApp (metamaskState, backgroundConnection, opts) {
 
   // global metamask api - used by tooling
   global.metamask = {
-    updateCurrentLocale: (code) => {
+    updateCurrentLocale: code => {
       store.dispatch(actions.updateCurrentLocale(code))
     },
-    setProviderType: (type) => {
+    setProviderType: type => {
       store.dispatch(actions.setProviderType(type))
     },
     setFeatureFlag: (key, value) => {
@@ -95,12 +102,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   // start app
-  render(
-    <Root
-      store={store}
-    />,
-    opts.container,
-  )
+  render(<Root store={store} />, opts.container)
 
   return store
 }

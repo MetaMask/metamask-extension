@@ -12,7 +12,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    removeAccount: (address) => dispatch(removeAccount(address)),
+    removeAccount: address => dispatch(removeAccount(address)),
   }
 }
 

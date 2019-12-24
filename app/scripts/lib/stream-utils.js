@@ -12,15 +12,10 @@ module.exports = {
  */
 function setupMultiplex (connectionStream) {
   const mux = new ObjectMultiplex()
-  pump(
-    connectionStream,
-    mux,
-    connectionStream,
-    (err) => {
-      if (err) {
-        console.error(err)
-      }
+  pump(connectionStream, mux, connectionStream, err => {
+    if (err) {
+      console.error(err)
     }
-  )
+  })
   return mux
 }

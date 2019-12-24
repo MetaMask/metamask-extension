@@ -12,7 +12,7 @@ describe('Page Container Header', () => {
     onBackButtonClick = sinon.spy()
     onClose = sinon.spy()
 
-    wrapper = shallow((
+    wrapper = shallow(
       <PageContainerHeader
         showBackButton
         onBackButtonClick={onBackButtonClick}
@@ -22,18 +22,20 @@ describe('Page Container Header', () => {
         tabs="Test Tab"
         onClose={onClose}
       />
-    ))
+    )
   })
 
   describe('Render Header Row', () => {
-
     it('renders back button', () => {
       assert.equal(wrapper.find('.page-container__back-button').length, 1)
       assert.equal(wrapper.find('.page-container__back-button').text(), 'Back')
     })
 
     it('ensures style prop', () => {
-      assert.equal(wrapper.find('.page-container__back-button').props().style, style)
+      assert.equal(
+        wrapper.find('.page-container__back-button').props().style,
+        style
+      )
     })
 
     it('should call back button when click is simulated', () => {
@@ -80,5 +82,4 @@ describe('Page Container Header', () => {
       assert.equal(onClose.callCount, 1)
     })
   })
-
 })

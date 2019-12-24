@@ -1,4 +1,3 @@
-
 /* eslint-disable no-native-reassign */
 
 // this is what we're testing
@@ -7,7 +6,6 @@ require('../../app/scripts/lib/freezeGlobals')
 const assert = require('assert')
 
 describe('Promise global is immutable', () => {
-
   it('throws when reassinging promise (syntax 1)', () => {
     try {
       Promise = {}

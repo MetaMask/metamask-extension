@@ -5,7 +5,6 @@ const ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGro
 
 module.exports = MenuDroppoComponent
 
-
 inherits(MenuDroppoComponent, Component)
 function MenuDroppoComponent () {
   Component.call(this)
@@ -15,19 +14,19 @@ MenuDroppoComponent.prototype.render = function () {
   const { containerClassName = '', style } = this.props
   const speed = this.props.speed || '300ms'
   const useCssTransition = this.props.useCssTransition
-  const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
+  const zIndex = 'zIndex' in this.props ? this.props.zIndex : 0
 
   this.manageListeners()
 
-  const baseStyle = Object.assign(
-    { position: 'fixed' },
-    style,
-    { zIndex },
-  )
+  const baseStyle = Object.assign({ position: 'fixed' }, style, { zIndex })
 
   return (
-    <div style={baseStyle} className={`menu-droppo-container ${containerClassName}`}>
-      <style>{`
+    <div
+      style={baseStyle}
+      className={`menu-droppo-container ${containerClassName}`}
+    >
+      <style>
+        {`
           .menu-droppo-enter {
             transition: transform ${speed} ease-in-out;
             transform: translateY(-200%);
@@ -49,20 +48,18 @@ MenuDroppoComponent.prototype.render = function () {
           }
         `}
       </style>
-      {
-        useCssTransition
-          ? (
-            <ReactCSSTransitionGroup
-              className="css-transition-group"
-              transitionName="menu-droppo"
-              transitionEnterTimeout={parseInt(speed)}
-              transitionLeaveTimeout={parseInt(speed)}
-            >
-              {this.renderPrimary()}
-            </ReactCSSTransitionGroup>
-          )
-          : this.renderPrimary()
-      }
+      {useCssTransition ? (
+        <ReactCSSTransitionGroup
+          className="css-transition-group"
+          transitionName="menu-droppo"
+          transitionEnterTimeout={parseInt(speed)}
+          transitionLeaveTimeout={parseInt(speed)}
+        >
+          {this.renderPrimary()}
+        </ReactCSSTransitionGroup>
+      ) : (
+        this.renderPrimary()
+      )}
     </div>
   )
 }
@@ -114,9 +111,11 @@ MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
   // eslint-disable-next-line react/no-find-dom-node
   const container = findDOMNode(this)
 
-  if (target !== container &&
+  if (
+    target !== container &&
     !isDescendant(this.container, event.target) &&
-    this.outsideClickHandler) {
+    this.outsideClickHandler
+  ) {
     this.outsideClickHandler(event)
   }
 }

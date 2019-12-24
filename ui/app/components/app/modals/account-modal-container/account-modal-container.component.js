@@ -15,15 +15,14 @@ export default function AccountModalContainer (props, context) {
     <div style={{ borderRadius: '4px' }}>
       <div className="account-modal-container">
         <div>
-          <Identicon
-            address={selectedIdentity.address}
-            diameter={64}
-          />
+          <Identicon address={selectedIdentity.address} diameter={64} />
         </div>
         {showBackButton && (
           <div className="account-modal-back" onClick={backButtonAction}>
             <i className="fa fa-angle-left fa-lg" />
-            <span className="account-modal-back__text">{' ' + context.t('back')}</span>
+            <span className="account-modal-back__text">
+              {' ' + context.t('back')}
+            </span>
           </div>
         )}
         <div className="account-modal-close" onClick={hideModal} />

@@ -3,12 +3,11 @@ import assert from 'assert'
 import shallow from '../../../../../lib/shallow-with-context'
 import SignatureRequest from '../signature-request.component'
 
-
 describe('Signature Request Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
+    wrapper = shallow(
       <SignatureRequest
         txData={{
           msgParams: {
@@ -17,7 +16,7 @@ describe('Signature Request Component', function () {
           },
         }}
       />
-    ))
+    )
   })
 
   describe('render', () => {

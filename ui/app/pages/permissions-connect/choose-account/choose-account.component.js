@@ -6,12 +6,14 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 
 export default class ChooseAccount extends Component {
   static propTypes = {
-    accounts: PropTypes.arrayOf(PropTypes.shape({
-      address: PropTypes.string,
-      addressLabel: PropTypes.string,
-      lastConnectedDate: PropTypes.string,
-      balance: PropTypes.string,
-    })).isRequired,
+    accounts: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string,
+        addressLabel: PropTypes.string,
+        lastConnectedDate: PropTypes.string,
+        balance: PropTypes.string,
+      })
+    ).isRequired,
     originName: PropTypes.string.isRequired,
     selectAccount: PropTypes.func.isRequired,
     selectNewAccountViaModal: PropTypes.func.isRequired,
@@ -27,79 +29,83 @@ export default class ChooseAccount extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   renderAccountsList = () => {
-    const { accounts, selectAccount, nativeCurrency, addressLastConnectedMap } = this.props
+    const {
+      accounts,
+      selectAccount,
+      nativeCurrency,
+      addressLastConnectedMap,
+    } = this.props
     return (
       <div className="permissions-connect-choose-account__accounts-list">
-        {
-          accounts.map((account, index) => {
-            const { address, addressLabel, balance } = account
-            return (
-              <div
-                key={`permissions-connect-choose-account-${index}`}
-                onClick={ () => selectAccount(address) }
-                className="permissions-connect-choose-account__account"
-              >
-                <div className="permissions-connect-choose-account__account-info-wrapper">
-                  <Identicon
-                    diameter={34}
-                    address={address}
-                  />
-                  <div className="permissions-connect-choose-account__account__info">
-                    <div className="permissions-connect-choose-account__account__label">{ addressLabel }</div>
-                    <UserPreferencedCurrencyDisplay
-                      className="permissions-connect-choose-account__account__balance"
-                      type={PRIMARY}
-                      value={balance}
-                      style={{ color: '#6A737D' }}
-                      suffix={nativeCurrency}
-                      hideLabel
-                    />
+        {accounts.map((account, index) => {
+          const { address, addressLabel, balance } = account
+          return (
+            <div
+              key={`permissions-connect-choose-account-${index}`}
+              onClick={() => selectAccount(address)}
+              className="permissions-connect-choose-account__account"
+            >
+              <div className="permissions-connect-choose-account__account-info-wrapper">
+                <Identicon diameter={34} address={address} />
+                <div className="permissions-connect-choose-account__account__info">
+                  <div className="permissions-connect-choose-account__account__label">
+                    {addressLabel}
                   </div>
+                  <UserPreferencedCurrencyDisplay
+                    className="permissions-connect-choose-account__account__balance"
+                    type={PRIMARY}
+                    value={balance}
+                    style={{ color: '#6A737D' }}
+                    suffix={nativeCurrency}
+                    hideLabel
+                  />
                 </div>
-                { addressLastConnectedMap[address]
-                  ? (
-                    <div className="permissions-connect-choose-account__account__last-connected">
-                      <span>{ this.context.t('lastConnected') }</span>
-                      { addressLastConnectedMap[address] }
-                    </div>
-                  )
-                  : null
-                }
               </div>
-            )
-          })
-        }
+              {addressLastConnectedMap[address] ? (
+                <div className="permissions-connect-choose-account__account__last-connected">
+                  <span>{this.context.t('lastConnected')}</span>
+                  {addressLastConnectedMap[address]}
+                </div>
+              ) : null}
+            </div>
+          )
+        })}
       </div>
     )
   }
 
   render () {
-    const { originName, selectNewAccountViaModal, permissionsRequestId, cancelPermissionsRequest } = this.props
+    const {
+      originName,
+      selectNewAccountViaModal,
+      permissionsRequestId,
+      cancelPermissionsRequest,
+    } = this.props
     const { t } = this.context
     return (
       <div className="permissions-connect-choose-account">
         <div className="permissions-connect-choose-account__title">
-          { t('chooseAnAcount') }
+          {t('chooseAnAcount')}
         </div>
         <div className="permissions-connect-choose-account__text">
-          { t('toConnectWith', [originName]) }
+          {t('toConnectWith', [originName])}
         </div>
-        { this.renderAccountsList() }
+        {this.renderAccountsList()}
         <div className="permissions-connect-choose-account__bottom-buttons">
           <div
-            onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
+            onClick={() => cancelPermissionsRequest(permissionsRequestId)}
             className="permissions-connect-choose-account__cancel"
           >
-            { t('cancel') }
+            {t('cancel')}
           </div>
           <div
-            onClick={ () => selectNewAccountViaModal() }
+            onClick={() => selectNewAccountViaModal()}
             className="permissions-connect-choose-account__new-account"
           >
-            { t('newAccount') }
+            {t('newAccount')}
           </div>
         </div>
       </div>

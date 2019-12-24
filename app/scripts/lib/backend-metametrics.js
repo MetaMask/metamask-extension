@@ -1,6 +1,4 @@
-const {
-  getMetaMetricState,
-} = require('../../../ui/app/selectors/selectors')
+const { getMetaMetricState } = require('../../../ui/app/selectors/selectors')
 const {
   sendMetaMetricsEvent,
 } = require('../../../ui/app/helpers/utils/metametrics.util')

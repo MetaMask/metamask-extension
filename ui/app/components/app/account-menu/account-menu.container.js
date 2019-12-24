@@ -26,7 +26,9 @@ import AccountMenu from './account-menu.component'
 const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5
 
 function mapStateToProps (state) {
-  const { metamask: { isAccountMenuOpen } } = state
+  const {
+    metamask: { isAccountMenuOpen },
+  } = state
   const accounts = getMetaMaskAccountsOrdered(state)
 
   return {
@@ -72,5 +74,5 @@ function mapDispatchToProps (dispatch) {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps)
 )(AccountMenu)

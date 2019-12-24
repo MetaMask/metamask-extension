@@ -19,7 +19,7 @@ function getFirstTimeFlowTypeRoute (state) {
   return nextRoute
 }
 
-const getOnboardingInitiator = (state) => {
+const getOnboardingInitiator = state => {
   const { onboardingTabs } = state.metamask
 
   if (!onboardingTabs || Object.keys(onboardingTabs).length !== 1) {

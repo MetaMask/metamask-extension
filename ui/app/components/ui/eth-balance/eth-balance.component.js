@@ -53,14 +53,19 @@ export default class EthBalance extends Component {
     } = this.props
     const { fontSize, color, fontFamily, lineHeight } = styleOverride
 
-    const { shortBalance, balance, label } = generateBalanceObject(value, shorten ? 1 : 3)
+    const { shortBalance, balance, label } = generateBalanceObject(
+      value,
+      shorten ? 1 : 3
+    )
     const balanceToRender = shorten ? shortBalance : balance
 
     const [ethNumber, ethSuffix] = value.split(' ')
-    const containerProps = hideTooltip ? {} : {
-      position: 'bottom',
-      title: `${ethNumber} ${ethSuffix}`,
-    }
+    const containerProps = hideTooltip
+      ? {}
+      : {
+        position: 'bottom',
+        title: `${ethNumber} ${ethSuffix}`,
+      }
 
     const TooltipComponent = hideTooltip ? 'div' : Tooltip
 
@@ -84,11 +89,7 @@ export default class EthBalance extends Component {
                 color: color || 'inherit',
               }}
             >
-              {
-                incoming
-                  ? `+${balanceToRender}`
-                  : balanceToRender
-              }
+              {incoming ? `+${balanceToRender}` : balanceToRender}
             </div>
             <div
               style={{
@@ -101,17 +102,13 @@ export default class EthBalance extends Component {
             </div>
           </div>
         </div>
-        {
-          showFiat
-            ? (
-              <FiatValue
-                value={this.props.value}
-                conversionRate={conversionRate}
-                currentCurrency={currentCurrency}
-              />
-            )
-            : null
-        }
+        {showFiat ? (
+          <FiatValue
+            value={this.props.value}
+            conversionRate={conversionRate}
+            currentCurrency={currentCurrency}
+          />
+        ) : null}
       </TooltipComponent>
     )
   }
@@ -124,10 +121,11 @@ export default class EthBalance extends Component {
 
     return (
       <div className="ether-balance ether-balance-amount" style={style}>
-        <div style={{
-          display: 'inline',
-          width,
-        }}
+        <div
+          style={{
+            display: 'inline',
+            width,
+          }}
         >
           {this.renderBalance(formattedValue)}
         </div>

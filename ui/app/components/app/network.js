@@ -63,7 +63,7 @@ Network.prototype.render = function Network () {
         'goerli-test-network': providerName === 'goerli',
       })}
       title={hoverText}
-      onClick={(event) => {
+      onClick={event => {
         if (!this.props.disabled) {
           this.props.onClick(event)
         }
@@ -79,9 +79,7 @@ Network.prototype.render = function Network () {
                   nonSelectBackgroundColor="#15afb2"
                   loading={networkNumber === 'loading'}
                 />
-                <div className="network-name">
-                  {context.t('mainnet')}
-                </div>
+                <div className="network-name">{context.t('mainnet')}</div>
                 <div className="network-indicator__down-arrow" />
               </div>
             )
@@ -93,9 +91,7 @@ Network.prototype.render = function Network () {
                   nonSelectBackgroundColor="#ec2c50"
                   loading={networkNumber === 'loading'}
                 />
-                <div className="network-name">
-                  {context.t('ropsten')}
-                </div>
+                <div className="network-name">{context.t('ropsten')}</div>
                 <div className="network-indicator__down-arrow" />
               </div>
             )
@@ -107,9 +103,7 @@ Network.prototype.render = function Network () {
                   nonSelectBackgroundColor="#b039f3"
                   loading={networkNumber === 'loading'}
                 />
-                <div className="network-name">
-                  {context.t('kovan')}
-                </div>
+                <div className="network-name">{context.t('kovan')}</div>
                 <div className="network-indicator__down-arrow" />
               </div>
             )
@@ -121,9 +115,7 @@ Network.prototype.render = function Network () {
                   nonSelectBackgroundColor="#ecb23e"
                   loading={networkNumber === 'loading'}
                 />
-                <div className="network-name">
-                  {context.t('rinkeby')}
-                </div>
+                <div className="network-name">{context.t('rinkeby')}</div>
                 <div className="network-indicator__down-arrow" />
               </div>
             )
@@ -142,29 +134,29 @@ Network.prototype.render = function Network () {
           default:
             return (
               <div className="network-indicator">
-                {networkNumber === 'loading'
-                  ? (
-                    <span
-                      className="pointer network-loading-spinner"
-                      onClick={(event) => this.props.onClick(event)}
-                    >
-                      <img title={context.t('attemptingConnect')} src="images/loading.svg" alt="" />
-                    </span>
-                  )
-                  : (
-                    <i
-                      className="fa fa-question-circle fa-lg"
-                      style={{
-                        color: 'rgb(125, 128, 130)',
-                      }}
+                {networkNumber === 'loading' ? (
+                  <span
+                    className="pointer network-loading-spinner"
+                    onClick={event => this.props.onClick(event)}
+                  >
+                    <img
+                      title={context.t('attemptingConnect')}
+                      src="images/loading.svg"
+                      alt=""
                     />
-                  )}
+                  </span>
+                ) : (
+                  <i
+                    className="fa fa-question-circle fa-lg"
+                    style={{
+                      color: 'rgb(125, 128, 130)',
+                    }}
+                  />
+                )}
                 <div className="network-name">
-                  {
-                    providerName === 'localhost'
-                      ? context.t('localhost')
-                      : providerNick || context.t('privateNetwork')
-                  }
+                  {providerName === 'localhost'
+                    ? context.t('localhost')
+                    : providerNick || context.t('privateNetwork')}
                 </div>
                 <div className="network-indicator__down-arrow" />
               </div>

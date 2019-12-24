@@ -7,13 +7,11 @@ import Select from 'react-select'
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
-
 AccountImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
 module.exports = AccountImportSubview
-
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
@@ -21,10 +19,7 @@ function AccountImportSubview () {
 }
 
 AccountImportSubview.prototype.getMenuItemTexts = function () {
-  return [
-    this.context.t('privateKey'),
-    this.context.t('jsonFile'),
-  ]
+  return [this.context.t('privateKey'), this.context.t('jsonFile')]
 }
 
 AccountImportSubview.prototype.render = function () {
@@ -43,7 +38,8 @@ AccountImportSubview.prototype.render = function () {
           }}
           onClick={() => {
             global.platform.openWindow({
-              url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+              url:
+                'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
             })
           }}
         >
@@ -59,13 +55,13 @@ AccountImportSubview.prototype.render = function () {
           name="import-type-select"
           clearable={false}
           value={type || menuItems[0]}
-          options={menuItems.map((type) => {
+          options={menuItems.map(type => {
             return {
               value: type,
               label: type,
             }
           })}
-          onChange={(opt) => {
+          onChange={opt => {
             this.setState({ type: opt.value })
           }}
         />

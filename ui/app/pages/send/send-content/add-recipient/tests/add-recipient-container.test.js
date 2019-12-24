@@ -18,21 +18,20 @@ proxyquire('../add-recipient.container.js', {
     },
   },
   '../../send.selectors.js': {
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
+    getSendEnsResolution: s => `mockSendEnsResolution:${s}`,
+    getSendEnsResolutionError: s => `mockSendEnsResolutionError:${s}`,
+    accountsWithSendEtherInfoSelector: s =>
+      `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {
-    getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
-    getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
+    getAddressBook: s => [{ name: `mockAddressBook:${s}` }],
+    getAddressBookEntry: s => `mockAddressBookEntry:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })
 
 describe('add-recipient container', () => {
-
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
@@ -44,7 +43,6 @@ describe('add-recipient container', () => {
         nonContacts: [],
       })
     })
-
   })
 
   describe('mapDispatchToProps()', () => {
@@ -61,12 +59,11 @@ describe('add-recipient container', () => {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendTo.calledOnce)
-        assert.deepEqual(
-          actionSpies.updateSendTo.getCall(0).args,
-          ['mockTo', 'mockNickname']
-        )
+        assert.deepEqual(actionSpies.updateSendTo.getCall(0).args, [
+          'mockTo',
+          'mockNickname',
+        ])
       })
     })
   })
-
 })

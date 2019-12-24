@@ -9,9 +9,7 @@ import Button from '../../ui/button'
 
 const ethUtil = require('ethereumjs-util')
 
-import {
-  updateSendErrors,
-} from '../../../ducks/send/send.duck'
+import { updateSendErrors } from '../../../ducks/send/send.duck'
 
 const {
   MIN_GAS_PRICE_DEC,
@@ -19,9 +17,7 @@ const {
   MIN_GAS_PRICE_GWEI,
 } = require('../../../pages/send/send.constants')
 
-const {
-  isBalanceSufficient,
-} = require('../../../pages/send/send.utils')
+const { isBalanceSufficient } = require('../../../pages/send/send.utils')
 
 const {
   conversionUtil,
@@ -50,7 +46,8 @@ const {
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
-  const currentAccount = getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
+  const currentAccount =
+    getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
   const conversionRate = conversionRateSelector(state)
 
   return {
@@ -64,7 +61,9 @@ function mapStateToProps (state) {
     balance: currentAccount.balance,
     primaryCurrency: selectedToken && selectedToken.symbol,
     selectedToken,
-    amountConversionRate: selectedToken ? getSelectedTokenToFiatRate(state) : conversionRate,
+    amountConversionRate: selectedToken
+      ? getSelectedTokenToFiatRate(state)
+      : conversionRate,
   }
 }
 
@@ -74,7 +73,8 @@ function mapDispatchToProps (dispatch) {
     setGasPrice: newGasPrice => dispatch(actions.setGasPrice(newGasPrice)),
     setGasLimit: newGasLimit => dispatch(actions.setGasLimit(newGasLimit)),
     setGasTotal: newGasTotal => dispatch(actions.setGasTotal(newGasTotal)),
-    updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
+    updateSendAmount: newAmount =>
+      dispatch(actions.updateSendAmount(newAmount)),
     updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
@@ -117,12 +117,11 @@ CustomizeGasModal.contextTypes = {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
 
-CustomizeGasModal.prototype.UNSAFE_componentWillReceiveProps = function (nextProps) {
+CustomizeGasModal.prototype.UNSAFE_componentWillReceiveProps = function (
+  nextProps
+) {
   const currentState = getFreshState(this.props)
-  const {
-    gasPrice: currentGasPrice,
-    gasLimit: currentGasLimit,
-  } = currentState
+  const { gasPrice: currentGasPrice, gasLimit: currentGasLimit } = currentState
   const newState = getFreshState(nextProps)
   const {
     gasPrice: newGasPrice,
@@ -161,9 +160,7 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateSendAmount,
     updateSendErrors,
   } = this.props
-  const {
-    originalState,
-  } = this.state
+  const { originalState } = this.state
 
   if (maxModeOn && !selectedToken) {
     const maxAmount = subtractCurrencies(
@@ -185,8 +182,12 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
       component: 'customizeGasSaveButton',
     },
     customVariables: {
-      gasPriceChange: (new BigNumber(ethUtil.addHexPrefix(gasPrice))).minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasPrice))).toString(10),
-      gasLimitChange: (new BigNumber(ethUtil.addHexPrefix(gasLimit))).minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasLimit))).toString(10),
+      gasPriceChange: new BigNumber(ethUtil.addHexPrefix(gasPrice))
+        .minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasPrice)))
+        .toString(10),
+      gasLimitChange: new BigNumber(ethUtil.addHexPrefix(gasLimit))
+        .minus(new BigNumber(ethUtil.addHexPrefix(originalState.gasLimit)))
+        .toString(10),
     },
   })
 
@@ -226,17 +227,19 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
     error = this.context.t('balanceIsInsufficientGas')
   }
 
-  const gasLimitTooLow = gasLimit && conversionGreaterThan(
-    {
-      value: MIN_GAS_LIMIT_DEC,
-      fromNumericBase: 'dec',
-      conversionRate,
-    },
-    {
-      value: gasLimit,
-      fromNumericBase: 'hex',
-    },
-  )
+  const gasLimitTooLow =
+    gasLimit &&
+    conversionGreaterThan(
+      {
+        value: MIN_GAS_LIMIT_DEC,
+        fromNumericBase: 'dec',
+        conversionRate,
+      },
+      {
+        value: gasLimit,
+        fromNumericBase: 'hex',
+      }
+    )
 
   if (gasLimitTooLow) {
     error = this.context.t('gasLimitTooLow')
@@ -271,8 +274,8 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
   const sigDec = String(newGasPrice).match(/^\d+([.])0*$/)
 
   this.setState({
-    priceSigZeros: sigZeros && sigZeros[1] || '',
-    priceSigDec: sigDec && sigDec[1] || '',
+    priceSigZeros: (sigZeros && sigZeros[1]) || '',
+    priceSigDec: (sigDec && sigDec[1]) || '',
   })
 
   const gasPrice = conversionUtil(newGasPrice, {
@@ -295,7 +298,14 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 
 CustomizeGasModal.prototype.render = function () {
   const { hideModal, forceGasMin, gasIsLoading } = this.props
-  const { gasPrice, gasLimit, gasTotal, error, priceSigZeros, priceSigDec } = this.state
+  const {
+    gasPrice,
+    gasLimit,
+    gasTotal,
+    error,
+    priceSigZeros,
+    priceSigDec,
+  } = this.state
 
   let convertedGasPrice = conversionUtil(gasPrice, {
     fromNumericBase: 'hex',
@@ -304,7 +314,9 @@ CustomizeGasModal.prototype.render = function () {
     toDenomination: 'GWEI',
   })
 
-  convertedGasPrice += convertedGasPrice.match(/[.]/) ? priceSigZeros : `${priceSigDec}${priceSigZeros}`
+  convertedGasPrice += convertedGasPrice.match(/[.]/)
+    ? priceSigZeros
+    : `${priceSigDec}${priceSigZeros}`
 
   let newGasPrice = gasPrice
   if (forceGasMin) {
@@ -340,10 +352,7 @@ CustomizeGasModal.prototype.render = function () {
           <div className="send-v2__customize-gas__title">
             {this.context.t('customGas')}
           </div>
-          <div
-            className="send-v2__customize-gas__close"
-            onClick={hideModal}
-          />
+          <div className="send-v2__customize-gas__close" onClick={hideModal} />
         </div>
         <div className="send-v2__customize-gas__body">
           <GasModalCard
@@ -367,11 +376,12 @@ CustomizeGasModal.prototype.render = function () {
         </div>
         <div className="send-v2__customize-gas__footer">
           {error && (
-            <div className="send-v2__customize-gas__error-message">
-              {error}
-            </div>
+            <div className="send-v2__customize-gas__error-message">{error}</div>
           )}
-          <div className="send-v2__customize-gas__revert" onClick={() => this.revert()}>
+          <div
+            className="send-v2__customize-gas__revert"
+            onClick={() => this.revert()}
+          >
             {t('revert')}
           </div>
           <div className="send-v2__customize-gas__buttons">
@@ -385,7 +395,9 @@ CustomizeGasModal.prototype.render = function () {
             <Button
               type="secondary"
               className="send-v2__customize-gas__save"
-              onClick={() => !error && this.save(newGasPrice, gasLimit, gasTotal)}
+              onClick={() =>
+                !error && this.save(newGasPrice, gasLimit, gasTotal)
+              }
               disabled={error}
             >
               {t('save')}

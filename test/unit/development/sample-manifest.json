@@ -26,10 +26,7 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
-    ],
+    "scripts": ["scripts/chromereload.js", "scripts/background.js"],
     "persistent": true
   },
   "browser_action": {
@@ -42,14 +39,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "file://*/*",
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "scripts/contentscript.js"
-      ],
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     }
@@ -59,13 +50,9 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/"
-    ],
-  "web_accessible_resources": [
-    "scripts/inpage.js"
   ],
+  "web_accessible_resources": ["scripts/inpage.js"],
   "externally_connectable": {
-    "matches": [
-      "https://metamask.io/*"
-    ]
+    "matches": ["https://metamask.io/*"]
   }
 }

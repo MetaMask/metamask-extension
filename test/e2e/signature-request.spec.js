@@ -35,7 +35,9 @@ describe('MetaMask', function () {
   before(async function () {
     await ganacheServer.start()
     await fixtureServer.start()
-    await fixtureServer.loadState(path.join(__dirname, 'fixtures', 'imported-account'))
+    await fixtureServer.loadState(
+      path.join(__dirname, 'fixtures', 'imported-account')
+    )
     publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
     const result = await prepareExtensionForTesting()
     driver = result.driver
@@ -47,7 +49,9 @@ describe('MetaMask', function () {
       const errors = await checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        const errorMessage = `Errors found in browser console:\n${errorReports.join(
+          '\n'
+        )}`
         console.error(new Error(errorMessage))
       }
     }
@@ -70,7 +74,9 @@ describe('MetaMask', function () {
 
     it('accepts the account password after lock', async () => {
       await delay(1000)
-      await driver.findElement(By.id('password')).sendKeys('correct horse battery staple')
+      await driver
+        .findElement(By.id('password'))
+        .sendKeys('correct horse battery staple')
       await driver.findElement(By.id('password')).sendKeys(Key.ENTER)
       await delay(largeDelayMs * 4)
     })
@@ -79,7 +85,10 @@ describe('MetaMask', function () {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
-      const connectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      const connectButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Connect')]`)
+      )
       await connectButton.click()
 
       await delay(regularDelayMs)
@@ -88,17 +97,29 @@ describe('MetaMask', function () {
       const windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
-      popup = windowHandles.find(handle => handle !== extension && handle !== dapp)
+      dapp = await switchToWindowWithTitle(
+        driver,
+        'E2E Test Dapp',
+        windowHandles
+      )
+      popup = windowHandles.find(
+        handle => handle !== extension && handle !== dapp
+      )
 
       await driver.switchTo().window(popup)
 
       await delay(regularDelayMs)
 
-      const accountButton = await findElement(driver, By.css('.permissions-connect-choose-account__account'))
+      const accountButton = await findElement(
+        driver,
+        By.css('.permissions-connect-choose-account__account')
+      )
       await accountButton.click()
 
-      const submitButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Submit')]`))
+      const submitButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Submit')]`)
+      )
       await submitButton.click()
 
       await waitUntilXWindowHandles(driver, 2)
@@ -106,28 +127,54 @@ describe('MetaMask', function () {
     })
 
     it('creates a sign typed data signature request', async () => {
-      const signTypedMessage = await findElement(driver, By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      const signTypedMessage = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Sign')]`),
+        10000
+      )
       await signTypedMessage.click()
       await delay(largeDelayMs)
 
       await delay(regularDelayMs)
       windowHandles = await driver.getAllWindowHandles()
-      await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
+      await switchToWindowWithTitle(
+        driver,
+        'MetaMask Notification',
+        windowHandles
+      )
       await delay(regularDelayMs)
 
-      const title = await findElement(driver, By.css('.signature-request-content__title'))
-      const name = await findElement(driver, By.css('.signature-request-content__info--bolded'))
-      const content = await findElements(driver, By.css('.signature-request-content__info'))
+      const title = await findElement(
+        driver,
+        By.css('.signature-request-content__title')
+      )
+      const name = await findElement(
+        driver,
+        By.css('.signature-request-content__info--bolded')
+      )
+      const content = await findElements(
+        driver,
+        By.css('.signature-request-content__info')
+      )
       const origin = content[0]
       const address = content[1]
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
       assert.equal(await origin.getText(), '127.0.0.1')
-      assert.equal(await address.getText(), publicAddress.slice(0, 8) + '...' + publicAddress.slice(publicAddress.length - 8))
+      assert.equal(
+        await address.getText(),
+        publicAddress.slice(0, 8) +
+          '...' +
+          publicAddress.slice(publicAddress.length - 8)
+      )
     })
 
     it('signs the transaction', async () => {
-      const signButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      const signButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Sign')]`),
+        10000
+      )
       await signButton.click()
       await delay(regularDelayMs)
 
@@ -136,15 +183,23 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async () => {
-      const detailsButton = await findElement(driver, By.css('.account-details__details-button'))
+      const detailsButton = await findElement(
+        driver,
+        By.css('.account-details__details-button')
+      )
       await detailsButton.click()
       await delay(regularDelayMs)
 
-      const addressInput = await findElement(driver, By.css('.qr-ellip-address'))
+      const addressInput = await findElement(
+        driver,
+        By.css('.qr-ellip-address')
+      )
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.executeScript("document.querySelector('.account-modal-close').click()")
+      await driver.executeScript(
+        "document.querySelector('.account-modal-close').click()"
+      )
 
       await driver.wait(until.stalenessOf(accountModal))
       await delay(regularDelayMs)

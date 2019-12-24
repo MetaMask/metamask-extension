@@ -28,7 +28,11 @@ describe('nodeify', function () {
       nodified('baz')
       done()
     } catch (err) {
-      done(new Error('should not have thrown if the last argument is not a function'))
+      done(
+        new Error(
+          'should not have thrown if the last argument is not a function'
+        )
+      )
     }
   })
 
@@ -53,7 +57,9 @@ describe('nodeify', function () {
     try {
       nodified((err, result) => {
         if (err) {
-          return done(new Error(`should not have thrown any error: ${err.message}`))
+          return done(
+            new Error(`should not have thrown any error: ${err.message}`)
+          )
         }
         assert.equal(42, result, 'got expected result')
       })

@@ -16,7 +16,9 @@ function createOnboardingMiddleware ({ location, tabId, registerOnboarding }) {
       if (tabId && tabId !== extension.tabs.TAB_ID_NONE) {
         await registerOnboarding(location, tabId)
       } else {
-        log.debug(`'wallet_registerOnboarding' message from ${location} ignored due to missing tabId`)
+        log.debug(
+          `'wallet_registerOnboarding' message from ${location} ignored due to missing tabId`
+        )
       }
       res.result = true
       end()

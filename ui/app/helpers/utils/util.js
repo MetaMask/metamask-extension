@@ -3,7 +3,7 @@ const ethUtil = require('ethereumjs-util')
 import { DateTime } from 'luxon'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-function formatDate (date, format = 'M/d/y \'at\' T') {
+function formatDate (date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
@@ -52,7 +52,14 @@ module.exports = {
 }
 
 function isEthNetwork (netId) {
-  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
+  if (
+    !netId ||
+    netId === '1' ||
+    netId === '3' ||
+    netId === '4' ||
+    netId === '42' ||
+    netId === '5777'
+  ) {
     return true
   }
 
@@ -63,13 +70,17 @@ function valuesFor (obj) {
   if (!obj) {
     return []
   }
-  return Object.keys(obj)
-    .map(function (key) {
-      return obj[key]
-    })
+  return Object.keys(obj).map(function (key) {
+    return obj[key]
+  })
 }
 
-function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+function addressSummary (
+  address,
+  firstSegLength = 10,
+  lastSegLength = 4,
+  includeHex = true
+) {
   if (!address) {
     return ''
   }
@@ -77,7 +88,11 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
-  return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
+  return checked
+    ? checked.slice(0, firstSegLength) +
+        '...' +
+        checked.slice(checked.length - lastSegLength)
+    : '...'
 }
 
 function isValidAddress (address) {
@@ -85,7 +100,10 @@ function isValidAddress (address) {
   if (address === '0x0000000000000000000000000000000000000000') {
     return false
   }
-  return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+  return (
+    (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) ||
+    ethUtil.isValidChecksumAddress(prefixed)
+  )
 }
 
 function isValidENSAddress (address) {
@@ -117,8 +135,11 @@ function parseBalance (balance) {
   const weiString = wei.toString()
   const trailingZeros = /0+$/
 
-  const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
+  const beforeDecimal =
+    weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
+  afterDecimal = ('000000000000000000' + wei)
+    .slice(-18)
+    .replace(trailingZeros, '')
   if (afterDecimal === '') {
     afterDecimal = '0'
   }
@@ -127,7 +148,12 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
+function formatBalance (
+  balance,
+  decimalsToKeep,
+  needsParse = true,
+  ticker = 'ETH'
+) {
   const parsed = needsParse ? parseBalance(balance) : balance.split('.')
   const beforeDecimal = parsed[0]
   let afterDecimal = parsed[1]
@@ -146,11 +172,11 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ET
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${ticker}`
+    formatted =
+      beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${ticker}`
   }
   return formatted
 }
-
 
 function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]

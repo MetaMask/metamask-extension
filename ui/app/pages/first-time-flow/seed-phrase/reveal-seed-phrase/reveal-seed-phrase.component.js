@@ -4,7 +4,10 @@ import classnames from 'classnames'
 import LockIcon from '../../../../components/ui/lock-icon'
 import Button from '../../../../components/ui/button'
 import Snackbar from '../../../../components/ui/snackbar'
-import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
+import {
+  INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import { returnToOnboardingInitiator } from '../../onboarding-initiator-util'
 
@@ -30,7 +33,11 @@ export default class RevealSeedPhrase extends PureComponent {
   }
 
   handleExport = () => {
-    exportAsFile('MetaMask Secret Backup Phrase', this.props.seedPhrase, 'text/plain')
+    exportAsFile(
+      'MetaMask Secret Backup Phrase',
+      this.props.seedPhrase,
+      'text/plain'
+    )
   }
 
   handleNext = () => {
@@ -53,7 +60,12 @@ export default class RevealSeedPhrase extends PureComponent {
   }
 
   handleSkip = async () => {
-    const { history, setSeedPhraseBackedUp, setCompletedOnboarding, onboardingInitiator } = this.props
+    const {
+      history,
+      setSeedPhraseBackedUp,
+      setCompletedOnboarding,
+      onboardingInitiator,
+    } = this.props
 
     this.context.metricsEvent({
       eventOpts: {
@@ -80,38 +92,34 @@ export default class RevealSeedPhrase extends PureComponent {
       <div className="reveal-seed-phrase__secret">
         <div
           className={classnames(
-            'reveal-seed-phrase__secret-words notranslate', {
+            'reveal-seed-phrase__secret-words notranslate',
+            {
               'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase,
-            })}
+            }
+          )}
         >
-          { seedPhrase }
+          {seedPhrase}
         </div>
-        {
-          !isShowingSeedPhrase && (
-            <div
-              className="reveal-seed-phrase__secret-blocker"
-              onClick={() => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Onboarding',
-                    action: 'Seed Phrase Setup',
-                    name: 'Revealed Words',
-                  },
-                })
-                this.setState({ isShowingSeedPhrase: true })
-              }}
-            >
-              <LockIcon
-                width="28px"
-                height="35px"
-                fill="#FFFFFF"
-              />
-              <div className="reveal-seed-phrase__reveal-button">
-                { t('clickToRevealSeed') }
-              </div>
+        {!isShowingSeedPhrase && (
+          <div
+            className="reveal-seed-phrase__secret-blocker"
+            onClick={() => {
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Onboarding',
+                  action: 'Seed Phrase Setup',
+                  name: 'Revealed Words',
+                },
+              })
+              this.setState({ isShowingSeedPhrase: true })
+            }}
+          >
+            <LockIcon width="28px" height="35px" fill="#FFFFFF" />
+            <div className="reveal-seed-phrase__reveal-button">
+              {t('clickToRevealSeed')}
             </div>
-          )
-        }
+          </div>
+        )}
       </div>
     )
   }
@@ -126,35 +134,33 @@ export default class RevealSeedPhrase extends PureComponent {
         <div className="seed-phrase__sections">
           <div className="seed-phrase__main">
             <div className="first-time-flow__header">
-              { t('secretBackupPhrase') }
+              {t('secretBackupPhrase')}
             </div>
             <div className="first-time-flow__text-block">
-              { t('secretBackupPhraseDescription') }
+              {t('secretBackupPhraseDescription')}
             </div>
             <div className="first-time-flow__text-block">
-              { t('secretBackupPhraseWarning') }
+              {t('secretBackupPhraseWarning')}
             </div>
-            { this.renderSecretWordsContainer() }
+            {this.renderSecretWordsContainer()}
           </div>
           <div className="seed-phrase__side">
+            <div className="first-time-flow__text-block">{`${t('tips')}:`}</div>
             <div className="first-time-flow__text-block">
-              { `${t('tips')}:` }
+              {t('storePhrase')}
             </div>
             <div className="first-time-flow__text-block">
-              { t('storePhrase') }
+              {t('writePhrase')}
             </div>
             <div className="first-time-flow__text-block">
-              { t('writePhrase') }
-            </div>
-            <div className="first-time-flow__text-block">
-              { t('memorizePhrase') }
+              {t('memorizePhrase')}
             </div>
             <div className="first-time-flow__text-block">
               <a
                 className="reveal-seed-phrase__export-text"
                 onClick={this.handleExport}
               >
-                { t('downloadSecretBackup') }
+                {t('downloadSecretBackup')}
               </a>
             </div>
           </div>
@@ -165,7 +171,7 @@ export default class RevealSeedPhrase extends PureComponent {
             className="first-time-flow__button"
             onClick={this.handleSkip}
           >
-            { t('remindMeLater') }
+            {t('remindMeLater')}
           </Button>
           <Button
             type="primary"
@@ -173,18 +179,17 @@ export default class RevealSeedPhrase extends PureComponent {
             onClick={this.handleNext}
             disabled={!isShowingSeedPhrase}
           >
-            { t('next') }
+            {t('next')}
           </Button>
         </div>
-        {
-          onboardingInitiator ?
-            (
-              <Snackbar
-                content={t('onboardingReturnNotice', [t('remindMeLater'), onboardingInitiator.location])}
-              />
-            ) :
-            null
-        }
+        {onboardingInitiator ? (
+          <Snackbar
+            content={t('onboardingReturnNotice', [
+              t('remindMeLater'),
+              onboardingInitiator.location,
+            ])}
+          />
+        ) : null}
       </div>
     )
   }

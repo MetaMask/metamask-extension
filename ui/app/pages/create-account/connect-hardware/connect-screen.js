@@ -28,7 +28,7 @@ class ConnectScreen extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          'selected': this.state.selectedDevice === 'trezor',
+          selected: this.state.selectedDevice === 'trezor',
         })}
         onClick={_ => this.setState({ selectedDevice: 'trezor' })}
       >
@@ -45,7 +45,7 @@ class ConnectScreen extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          'selected': this.state.selectedDevice === 'ledger',
+          selected: this.state.selectedDevice === 'ledger',
         })}
         onClick={_ => this.setState({ selectedDevice: 'ledger' })}
       >
@@ -82,15 +82,21 @@ class ConnectScreen extends Component {
     return (
       <div className="new-account-connect-form unsupported-browser">
         <div className="hw-connect">
-          <h3 className="hw-connect__title">{this.context.t('browserNotSupported')}</h3>
-          <p className="hw-connect__msg">{this.context.t('chromeRequiredForHardwareWallets')}</p>
+          <h3 className="hw-connect__title">
+            {this.context.t('browserNotSupported')}
+          </h3>
+          <p className="hw-connect__msg">
+            {this.context.t('chromeRequiredForHardwareWallets')}
+          </p>
         </div>
         <Button
           type="primary"
           large
-          onClick={() => global.platform.openWindow({
-            url: 'https://google.com/chrome',
-          })}
+          onClick={() =>
+            global.platform.openWindow({
+              url: 'https://google.com/chrome',
+            })
+          }
         >
           {this.context.t('downloadGoogleChrome')}
         </Button>
@@ -101,8 +107,12 @@ class ConnectScreen extends Component {
   renderHeader () {
     return (
       <div className="hw-connect__header">
-        <h3 className="hw-connect__header__title">{this.context.t('hardwareWallets')}</h3>
-        <p className="hw-connect__header__msg">{this.context.t('hardwareWalletsMsg')}</p>
+        <h3 className="hw-connect__header__title">
+          {this.context.t('hardwareWallets')}
+        </h3>
+        <p className="hw-connect__header__msg">
+          {this.context.t('hardwareWalletsMsg')}
+        </p>
       </div>
     )
   }
@@ -114,7 +124,9 @@ class ConnectScreen extends Component {
     }
 
     const text = this.context.t('orderOneHere')
-    const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+    const response = text
+      .replace('Trezor', links.trezor)
+      .replace('Ledger', links.ledger)
 
     return (
       <div
@@ -127,12 +139,13 @@ class ConnectScreen extends Component {
   renderTrezorAffiliateLink () {
     return (
       <div className="hw-connect__get-hw">
-        <p className="hw-connect__get-hw__msg">{this.context.t('dontHaveAHardwareWallet')}</p>
+        <p className="hw-connect__get-hw__msg">
+          {this.context.t('dontHaveAHardwareWallet')}
+        </p>
         {this.getAffiliateLinks()}
       </div>
     )
   }
-
 
   scrollToTutorial = () => {
     if (this.referenceNode) {
@@ -144,7 +157,11 @@ class ConnectScreen extends Component {
     return (
       <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
         {this.context.t('learnMore')}
-        <img className="hw-connect__learn-more__arrow" src="images/caret-right.svg" alt="" />
+        <img
+          className="hw-connect__learn-more__arrow"
+          src="images/caret-right.svg"
+          alt=""
+        />
       </p>
     )
   }
@@ -182,7 +199,12 @@ class ConnectScreen extends Component {
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
-            <img className="hw-connect__step-asset" src={`images/${step.asset}.svg`} {...step.dimensions} alt="" />
+            <img
+              className="hw-connect__step-asset"
+              src={`images/${step.asset}.svg`}
+              {...step.dimensions}
+              alt=""
+            />
           </div>
         ))}
       </div>
@@ -192,11 +214,18 @@ class ConnectScreen extends Component {
   renderFooter () {
     return (
       <div className="hw-connect__footer">
-        <h3 className="hw-connect__footer__title">{this.context.t('readyToConnect')}</h3>
+        <h3 className="hw-connect__footer__title">
+          {this.context.t('readyToConnect')}
+        </h3>
         {this.renderButtons()}
         <p className="hw-connect__footer__msg">
           {this.context.t('havingTroubleConnecting')}
-          <a className="hw-connect__footer__link" href="https://support.metamask.io/" target="_blank" rel="noopener noreferrer">
+          <a
+            className="hw-connect__footer__link"
+            href="https://support.metamask.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {this.context.t('getHelp')}
           </a>
         </p>
@@ -226,4 +255,3 @@ class ConnectScreen extends Component {
 }
 
 module.exports = ConnectScreen
-

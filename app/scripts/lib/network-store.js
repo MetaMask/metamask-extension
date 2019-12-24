@@ -15,8 +15,8 @@ class ReadOnlyNetworkStore {
   }
 
   /**
- * Declares this store as compatible with the current browser
- */
+   * Declares this store as compatible with the current browser
+   */
   isSupported = true
 
   /**

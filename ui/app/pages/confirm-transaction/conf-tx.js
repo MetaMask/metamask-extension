@@ -8,15 +8,14 @@ const txHelper = require('../../../lib/tx-helper')
 const log = require('loglevel')
 const R = require('ramda')
 
-const SignatureRequest = require('../../components/app/signature-request').default
-const SignatureRequestOriginal = require('../../components/app/signature-request-original').default
+const SignatureRequest = require('../../components/app/signature-request')
+  .default
+const SignatureRequestOriginal = require('../../components/app/signature-request-original')
+  .default
 const Loading = require('../../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
-module.exports = compose(
-  withRouter,
-  connect(mapStateToProps)
-)(ConfirmTxScreen)
+module.exports = compose(withRouter, connect(mapStateToProps))(ConfirmTxScreen)
 
 function mapStateToProps (state) {
   const { metamask } = state
@@ -58,18 +57,22 @@ ConfirmTxScreen.prototype.getUnapprovedMessagesTotal = function () {
     unapprovedTypedMessagesCount = 0,
   } = this.props
 
-  return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount
+  return (
+    unapprovedTypedMessagesCount +
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount
+  )
 }
 
 ConfirmTxScreen.prototype.componentDidMount = function () {
-  const {
-    unapprovedTxs = {},
-    network,
-    send,
-  } = this.props
+  const { unapprovedTxs = {}, network, send } = this.props
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
+  if (
+    unconfTxList.length === 0 &&
+    !send.to &&
+    this.getUnapprovedMessagesTotal() === 0
+  ) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -87,7 +90,9 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   let prevTx
 
   if (transactionId) {
-    prevTx = R.find(({ id }) => id + '' === transactionId)(selectedAddressTxList)
+    prevTx = R.find(({ id }) => id + '' === transactionId)(
+      selectedAddressTxList
+    )
   } else {
     const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
     const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
@@ -98,15 +103,21 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
   if (prevTx && prevTx.status === 'dropped') {
-    this.props.dispatch(actions.showModal({
-      name: 'TRANSACTION_CONFIRMED',
-      onSubmit: () => history.push(DEFAULT_ROUTE),
-    }))
+    this.props.dispatch(
+      actions.showModal({
+        name: 'TRANSACTION_CONFIRMED',
+        onSubmit: () => history.push(DEFAULT_ROUTE),
+      })
+    )
 
     return
   }
 
-  if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
+  if (
+    unconfTxList.length === 0 &&
+    !send.to &&
+    this.getUnapprovedMessagesTotal() === 0
+  ) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -147,20 +158,18 @@ ConfirmTxScreen.prototype.signatureSelect = function (type, version) {
 }
 
 ConfirmTxScreen.prototype.render = function () {
-  const {
-    currentCurrency,
-    blockGasLimit,
-    conversionRate,
-  } = this.props
+  const { currentCurrency, blockGasLimit, conversionRate } = this.props
 
   const txData = this.getTxData() || {}
-  const { msgParams, type, msgParams: { version } } = txData
+  const {
+    msgParams,
+    type,
+    msgParams: { version },
+  } = txData
   log.debug('msgParams detected, rendering pending msg')
 
   if (!msgParams) {
-    return (
-      <Loading />
-    )
+    return <Loading />
   }
 
   const SigComponent = this.signatureSelect(type, version)

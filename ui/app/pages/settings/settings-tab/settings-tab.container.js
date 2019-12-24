@@ -11,7 +11,10 @@ import {
 import { preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { appState: { warning }, metamask } = state
+  const {
+    appState: { warning },
+    metamask,
+  } = state
   const {
     currentCurrency,
     conversionDate,
@@ -40,10 +43,11 @@ const mapDispatchToProps = dispatch => {
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
     },
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    setParticipateInMetaMetrics: val =>
+      dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)(SettingsTab)
+export default compose(connect(mapStateToProps, mapDispatchToProps))(
+  SettingsTab
+)

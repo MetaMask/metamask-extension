@@ -14,10 +14,7 @@ describe('TokenInput Component', () => {
 
   describe('rendering', () => {
     it('should render properly without a token', () => {
-      const wrapper = shallow(
-        <TokenInput />,
-        { context: { t } }
-      )
+      const wrapper = shallow(<TokenInput />, { context: { t } })
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(UnitInput).length, 1)
@@ -43,18 +40,25 @@ describe('TokenInput Component', () => {
             suffix="ABC"
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },
-        },
+        }
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
-      assert.equal(wrapper.find('.currency-input__conversion-component').length, 1)
-      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').length,
+        1
+      )
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').text(),
+        'translate noConversionRateAvailable'
+      )
     })
 
     it('should render properly with a token and selectedTokenExchangeRate', () => {
@@ -78,11 +82,12 @@ describe('TokenInput Component', () => {
             selectedTokenExchangeRate={2}
           />
         </Provider>,
-        { context: { t },
+        {
+          context: { t },
           childContextTypes: {
             t: PropTypes.func,
           },
-        },
+        }
       )
 
       assert.ok(wrapper)
@@ -116,7 +121,10 @@ describe('TokenInput Component', () => {
       )
 
       assert.ok(wrapper)
-      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      const tokenInputInstance = wrapper
+        .find(TokenInput)
+        .at(0)
+        .instance()
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
@@ -151,13 +159,19 @@ describe('TokenInput Component', () => {
       )
 
       assert.ok(wrapper)
-      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      const tokenInputInstance = wrapper
+        .find(TokenInput)
+        .at(0)
+        .instance()
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$462.12USD'
+      )
     })
 
     it('should render properly with a token value for fiat, but hideConversion is true', () => {
@@ -189,17 +203,23 @@ describe('TokenInput Component', () => {
           childContextTypes: {
             t: PropTypes.func,
           },
-        },
+        }
       )
 
       assert.ok(wrapper)
-      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      const tokenInputInstance = wrapper
+        .find(TokenInput)
+        .at(0)
+        .instance()
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
-      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
+      assert.equal(
+        wrapper.find('.currency-input__conversion-component').text(),
+        'translate noConversionRateAvailable'
+      )
     })
   })
 
@@ -240,7 +260,10 @@ describe('TokenInput Component', () => {
       assert.equal(handleChangeSpy.callCount, 0)
       assert.equal(handleBlurSpy.callCount, 0)
 
-      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      const tokenInputInstance = wrapper
+        .find(TokenInput)
+        .at(0)
+        .instance()
       assert.equal(tokenInputInstance.state.decimalValue, 0)
       assert.equal(tokenInputInstance.state.hexValue, undefined)
       assert.equal(wrapper.find('.currency-display-component').text(), '0ETH')
@@ -289,17 +312,26 @@ describe('TokenInput Component', () => {
       assert.equal(handleChangeSpy.callCount, 0)
       assert.equal(handleBlurSpy.callCount, 0)
 
-      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      const tokenInputInstance = wrapper
+        .find(TokenInput)
+        .at(0)
+        .instance()
       assert.equal(tokenInputInstance.state.decimalValue, 0)
       assert.equal(tokenInputInstance.state.hexValue, undefined)
-      assert.equal(wrapper.find('.currency-display-component').text(), '$0.00USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$0.00USD'
+      )
       const input = wrapper.find('input')
       assert.equal(input.props().value, 0)
 
       input.simulate('change', { target: { value: 1 } })
       assert.equal(handleChangeSpy.callCount, 1)
       assert.ok(handleChangeSpy.calledWith('2710'))
-      assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
+      assert.equal(
+        wrapper.find('.currency-display-component').text(),
+        '$462.12USD'
+      )
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
 

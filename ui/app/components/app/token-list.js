@@ -32,7 +32,6 @@ TokenList.contextTypes = {
 
 module.exports = connect(mapStateToProps)(TokenList)
 
-
 inherits(TokenList, Component)
 function TokenList () {
   this.state = {
@@ -95,9 +94,7 @@ TokenList.prototype.render = function TokenList () {
     <div>
       {tokens.map((tokenData, index) => {
         tokenData.image = assetImages[tokenData.address]
-        return (
-          <TokenCell key={index} {...tokenData} />
-        )
+        return <TokenCell key={index} {...tokenData} />
       })}
     </div>
   )
@@ -127,31 +124,27 @@ TokenList.prototype.createFreshTokenTracker = function () {
     pollingInterval: 8000,
   })
 
-
   // Set up listener instances for cleaning up
   this.balanceUpdater = this.updateBalances.bind(this)
-  this.showError = (error) => {
+  this.showError = error => {
     this.setState({ error, isLoading: false })
   }
   this.tracker.on('update', this.balanceUpdater)
   this.tracker.on('error', this.showError)
 
-  this.tracker.updateBalances()
+  this.tracker
+    .updateBalances()
     .then(() => {
       this.updateBalances(this.tracker.serialize())
     })
-    .catch((reason) => {
+    .catch(reason => {
       log.error(`Problem updating balances`, reason)
       this.setState({ isLoading: false })
     })
 }
 
 TokenList.prototype.componentDidUpdate = function (prevProps) {
-  const {
-    network: oldNet,
-    userAddress: oldAddress,
-    tokens,
-  } = prevProps
+  const { network: oldNet, userAddress: oldAddress, tokens } = prevProps
   const {
     network: newNet,
     userAddress: newAddress,

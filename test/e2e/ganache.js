@@ -4,7 +4,8 @@ const { promisify } = require('util')
 const defaultOptions = {
   blockTime: 2,
   network_id: 5777,
-  mnemonic: 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+  mnemonic:
+    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
 }

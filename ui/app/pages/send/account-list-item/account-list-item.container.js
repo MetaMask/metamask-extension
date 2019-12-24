@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
-import {
-  getNativeCurrency,
-} from '../send.selectors.js'
+import { getNativeCurrency } from '../send.selectors.js'
 import {
   getIsMainnet,
   isBalanceCached,
@@ -18,6 +16,6 @@ function mapStateToProps (state) {
   return {
     nativeCurrency: getNativeCurrency(state),
     balanceIsCached: isBalanceCached(state),
-    showFiat: (isMainnet || !!showFiatInTestnets),
+    showFiat: isMainnet || !!showFiatInTestnets,
   }
 }

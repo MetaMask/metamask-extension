@@ -8,7 +8,8 @@ module.exports = reportFailedTxToSentry
 //
 
 function reportFailedTxToSentry ({ sentry, txMeta }) {
-  const errorMessage = 'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
+  const errorMessage =
+    'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
   sentry.captureMessage(errorMessage, {
     // "extra" key is required by Sentry
     extra: { txMeta },

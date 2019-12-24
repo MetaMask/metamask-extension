@@ -30,33 +30,33 @@ proxyquire('../send-footer.container.js', {
   },
   '../../../store/actions': actionSpies,
   '../send.selectors': {
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
-    getSendAmount: (s) => `mockAmount:${s}`,
-    getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
-    getSendFromObject: (s) => `mockFromObject:${s}`,
-    getSendTo: (s) => `mockTo:${s}`,
-    getSendToNickname: (s) => `mockToNickname:${s}`,
-    getSendToAccounts: (s) => `mockToAccounts:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
-    getSendHexData: (s) => `mockHexData:${s}`,
-    getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
-    getSendErrors: (s) => `mockSendErrors:${s}`,
+    getGasLimit: s => `mockGasLimit:${s}`,
+    getGasPrice: s => `mockGasPrice:${s}`,
+    getGasTotal: s => `mockGasTotal:${s}`,
+    getSelectedToken: s => `mockSelectedToken:${s}`,
+    getSendAmount: s => `mockAmount:${s}`,
+    getSendEditingTransactionId: s => `mockEditingTransactionId:${s}`,
+    getSendFromObject: s => `mockFromObject:${s}`,
+    getSendTo: s => `mockTo:${s}`,
+    getSendToNickname: s => `mockToNickname:${s}`,
+    getSendToAccounts: s => `mockToAccounts:${s}`,
+    getTokenBalance: s => `mockTokenBalance:${s}`,
+    getSendHexData: s => `mockHexData:${s}`,
+    getUnapprovedTxs: s => `mockUnapprovedTxs:${s}`,
+    getSendErrors: s => `mockSendErrors:${s}`,
   },
-  './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
+  './send-footer.selectors': { isSendFormInError: s => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
   '../../../selectors/custom-gas': {
-    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ gasEstimateType: `mockGasEstimateType:${s}` }]),
+    getRenderableEstimateDataForSmallButtonsFromGWEI: s => [
+      { gasEstimateType: `mockGasEstimateType:${s}` },
+    ],
     getDefaultActiveButtonIndex: () => 0,
   },
 })
 
 describe('send-footer container', () => {
-
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         amount: 'mockAmount:mockState',
@@ -76,7 +76,6 @@ describe('send-footer container', () => {
         gasEstimateType: 'mockGasEstimateType:mockState',
       })
     })
-
   })
 
   describe('mapDispatchToProps()', () => {
@@ -109,24 +108,23 @@ describe('send-footer container', () => {
           gasPrice: 'mockGasPrice',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
-          utilsStubs.constructTxParams.getCall(0).args[0],
-          {
-            data: undefined,
-            selectedToken: {
-              address: '0xabc',
-            },
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
-          }
-        )
-        assert.deepEqual(
-          actionSpies.signTokenTx.getCall(0).args,
-          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ]
-        )
+        assert.deepEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
+          data: undefined,
+          selectedToken: {
+            address: '0xabc',
+          },
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        })
+        assert.deepEqual(actionSpies.signTokenTx.getCall(0).args, [
+          '0xabc',
+          'mockTo',
+          'mockAmount',
+          { value: 'mockAmount' },
+        ])
       })
 
       it('should dispatch a sign action if selectedToken is not defined', () => {
@@ -139,22 +137,18 @@ describe('send-footer container', () => {
           gasPrice: 'mockGasPrice',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
-          utilsStubs.constructTxParams.getCall(0).args[0],
-          {
-            data: undefined,
-            selectedToken: undefined,
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
-          }
-        )
-        assert.deepEqual(
-          actionSpies.signTx.getCall(0).args,
-          [ { value: 'mockAmount' } ]
-        )
+        assert.deepEqual(utilsStubs.constructTxParams.getCall(0).args[0], {
+          data: undefined,
+          selectedToken: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        })
+        assert.deepEqual(actionSpies.signTx.getCall(0).args, [
+          { value: 'mockAmount' },
+        ])
       })
     })
 
@@ -171,36 +165,41 @@ describe('send-footer container', () => {
           unapprovedTxs: 'mockUnapprovedTxs',
         })
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
-          utilsStubs.constructUpdatedTx.getCall(0).args[0],
-          {
-            data: undefined,
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
-            editingTransactionId: 'mockEditingTransactionId',
-            selectedToken: 'mockSelectedToken',
-            unapprovedTxs: 'mockUnapprovedTxs',
-          }
+        assert.deepEqual(utilsStubs.constructUpdatedTx.getCall(0).args[0], {
+          data: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+          editingTransactionId: 'mockEditingTransactionId',
+          selectedToken: 'mockSelectedToken',
+          unapprovedTxs: 'mockUnapprovedTxs',
+        })
+        assert.equal(
+          actionSpies.updateTransaction.getCall(0).args[0],
+          'mockConstructedUpdatedTxParams'
         )
-        assert.equal(actionSpies.updateTransaction.getCall(0).args[0], 'mockConstructedUpdatedTxParams')
       })
     })
 
     describe('addToAddressBookIfNew()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.addToAddressBookIfNew('mockNewAddress', 'mockToAccounts', 'mockNickname')
-        assert(dispatchSpy.calledOnce)
-        assert.equal(utilsStubs.addressIsNew.getCall(0).args[0], 'mockToAccounts')
-        assert.deepEqual(
-          actionSpies.addToAddressBook.getCall(0).args,
-          [ '0xmockNewAddress', 'mockNickname' ]
+        mapDispatchToPropsObject.addToAddressBookIfNew(
+          'mockNewAddress',
+          'mockToAccounts',
+          'mockNickname'
         )
+        assert(dispatchSpy.calledOnce)
+        assert.equal(
+          utilsStubs.addressIsNew.getCall(0).args[0],
+          'mockToAccounts'
+        )
+        assert.deepEqual(actionSpies.addToAddressBook.getCall(0).args, [
+          '0xmockNewAddress',
+          'mockNickname',
+        ])
       })
     })
-
   })
-
 })

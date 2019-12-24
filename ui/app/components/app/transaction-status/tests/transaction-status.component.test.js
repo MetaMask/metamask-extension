@@ -7,10 +7,7 @@ import Tooltip from '../../../ui/tooltip-v2'
 describe('TransactionStatus Component', () => {
   it('should render APPROVED properly', () => {
     const wrapper = mount(
-      <TransactionStatus
-        statusKey="approved"
-        title="test-title"
-      />,
+      <TransactionStatus statusKey="approved" title="test-title" />,
       { context: { t: str => str.toUpperCase() } }
     )
 
@@ -20,12 +17,9 @@ describe('TransactionStatus Component', () => {
   })
 
   it('should render SUBMITTED properly', () => {
-    const wrapper = mount(
-      <TransactionStatus
-        statusKey="submitted"
-      />,
-      { context: { t: str => str.toUpperCase() } }
-    )
+    const wrapper = mount(<TransactionStatus statusKey="submitted" />, {
+      context: { t: str => str.toUpperCase() },
+    })
 
     assert.ok(wrapper)
     assert.equal(wrapper.text(), 'PENDING')

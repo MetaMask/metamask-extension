@@ -9,7 +9,8 @@ const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { getMetaMaskAccounts } = require('../../../selectors/selectors')
 import Button from '../../../components/ui/button'
 
-const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
+const HELP_LINK =
+  'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
 
 class JsonImportSubview extends Component {
   state = {
@@ -22,7 +23,9 @@ class JsonImportSubview extends Component {
     return (
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
-        <a className="warning" href={HELP_LINK} target="_blank">{this.context.t('fileImportFail')}</a>
+        <a className="warning" href={HELP_LINK} target="_blank">
+          {this.context.t('fileImportFail')}
+        </a>
         <FileInput
           readAs="text"
           onLoad={this.onLoad.bind(this)}
@@ -59,11 +62,7 @@ class JsonImportSubview extends Component {
             {this.context.t('import')}
           </Button>
         </div>
-        {
-          error
-            ? <span className="error">{error}</span>
-            : null
-        }
+        {error ? <span className="error">{error}</span> : null}
       </div>
     )
   }
@@ -82,7 +81,13 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
-    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
+    const {
+      firstAddress,
+      displayWarning,
+      importNewJsonAccount,
+      setSelectedAddress,
+      history,
+    } = this.props
     const { fileContents } = this.state
 
     if (!fileContents) {
@@ -93,7 +98,7 @@ class JsonImportSubview extends Component {
     const passwordInput = document.getElementById('json-password-box')
     const password = passwordInput.value
 
-    importNewJsonAccount([ fileContents, password ])
+    importNewJsonAccount([fileContents, password])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(DEFAULT_ROUTE)
@@ -140,8 +145,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
-    setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
+    importNewJsonAccount: options =>
+      dispatch(actions.importNewAccount('JSON File', options)),
+    setSelectedAddress: address =>
+      dispatch(actions.setSelectedAddress(address)),
   }
 }
 

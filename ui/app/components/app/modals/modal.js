@@ -3,10 +3,14 @@ import React, { Component } from 'react'
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
-const { resetCustomData: resetCustomGasData } = require('../../../ducks/gas/gas.duck')
+const {
+  resetCustomData: resetCustomGasData,
+} = require('../../../ducks/gas/gas.duck')
 const isMobileView = require('../../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
+const {
+  ENVIRONMENT_TYPE_POPUP,
+} = require('../../../../../app/scripts/lib/enums')
 
 // Modal Components
 import DepositEtherModal from './deposit-ether-modal'
@@ -83,7 +87,7 @@ const accountModalStyle = {
 const MODALS = {
   DEPOSIT_ETHER: {
     contents: <DepositEtherModal />,
-    onHide: (props) => props.hideWarning(),
+    onHide: props => props.hideWarning(),
     mobileModalStyle: {
       width: '100%',
       height: '100%',
@@ -236,7 +240,10 @@ const MODALS = {
     contents: <HideTokenConfirmationModal />,
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top:
+        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+          ? '52vh'
+          : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -262,10 +269,18 @@ const MODALS = {
   },
 
   GAS_PRICE_INFO_MODAL: {
-    contents: <NotifcationModal header="gasPriceNoDenom" message="gasPriceInfoModalContent" />,
+    contents: (
+      <NotifcationModal
+        header="gasPriceNoDenom"
+        message="gasPriceInfoModalContent"
+      />
+    ),
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top:
+        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+          ? '52vh'
+          : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -274,10 +289,15 @@ const MODALS = {
   },
 
   GAS_LIMIT_INFO_MODAL: {
-    contents: <NotifcationModal header="gasLimit" message="gasLimitInfoModalContent" />,
+    contents: (
+      <NotifcationModal header="gasLimit" message="gasLimitInfoModalContent" />
+    ),
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top:
+        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+          ? '52vh'
+          : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -451,7 +471,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: (customOnHideOpts) => {
+    hideModal: customOnHideOpts => {
       dispatch(actions.hideModal())
       if (customOnHideOpts && customOnHideOpts.action) {
         dispatch(customOnHideOpts.action(...customOnHideOpts.args))
@@ -460,7 +480,6 @@ function mapDispatchToProps (dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning())
     },
-
   }
 }
 
@@ -475,7 +494,8 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
   const { contents: children, disableBackdropClick = false } = modal
-  const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
+  const modalStyle =
+    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}
 
   return (
@@ -487,7 +507,7 @@ Modal.prototype.render = function () {
         }
         this.onHide(modal.customOnHideOpts)
       }}
-      ref={(ref) => {
+      ref={ref => {
         this.modalRef = ref
       }}
       modalStyle={modalStyle}

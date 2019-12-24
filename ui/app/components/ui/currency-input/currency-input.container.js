@@ -5,7 +5,9 @@ import { getMaxModeOn } from '../../../pages/send/send-content/send-amount-row/a
 import { getIsMainnet, preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
+  const {
+    metamask: { nativeCurrency, currentCurrency, conversionRate },
+  } = state
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const maxModeOn = getMaxModeOn(state)
@@ -14,7 +16,7 @@ const mapStateToProps = state => {
     nativeCurrency,
     currentCurrency,
     conversionRate,
-    hideFiat: (!isMainnet && !showFiatInTestnets),
+    hideFiat: !isMainnet && !showFiatInTestnets,
     maxModeOn,
   }
 }

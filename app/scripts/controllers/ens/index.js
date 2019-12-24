@@ -25,7 +25,7 @@ class EnsController {
     }
 
     this.store = new ObservableStore(initState)
-    networkStore.subscribe((network) => {
+    networkStore.subscribe(network => {
       this.store.putState(initState)
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
@@ -68,7 +68,10 @@ class EnsController {
       return undefined
     }
 
-    if (registeredAddress === ZERO_ADDRESS || registeredAddress === ZERO_X_ERROR_ADDRESS) {
+    if (
+      registeredAddress === ZERO_ADDRESS ||
+      registeredAddress === ZERO_X_ERROR_ADDRESS
+    ) {
       return undefined
     }
 

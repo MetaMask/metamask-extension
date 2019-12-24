@@ -3,7 +3,8 @@
 const params = {
   // diffrent params used in the methods
   param: [],
-  blockHashParams: '0xb3b20624f8f0f86eb50dd04688409e5cea4bd02d700bf6e79e9384d47d6a5a35',
+  blockHashParams:
+    '0xb3b20624f8f0f86eb50dd04688409e5cea4bd02d700bf6e79e9384d47d6a5a35',
   filterParams: ['0xfe704947a3cd3ca12541458a4321c869'],
   transactionHashParams: [
     '0xbb3a336e3f823ec18197f1e13ee875700f08f03e2cab75f0d0b118dabb44cba0',
@@ -14,7 +15,8 @@ const params = {
   ],
   uncleByBlockNumberAndIndexParams: ['0x29c', '0x0'],
   blockParameterParams: '0x5bad55',
-  data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
+  data:
+    '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
   addressParams: '0xc94770007dda54cF92009BFF0dE90c06F603a09f',
   getStorageAtParams: [
     '0x295a70b2de5e3953354a6a8344e616ed314d7251',
@@ -28,9 +30,18 @@ const params = {
     gas: '0x76c0',
     gasPrice: '0x9184e72a000',
     value: '0x9184e72a',
-    data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
+    data:
+      '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
   },
-  filterGetLogs: [{ 'blockHash': '0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70', 'topics': ['0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80'] }],
+  filterGetLogs: [
+    {
+      blockHash:
+        '0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70',
+      topics: [
+        '0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80',
+      ],
+    },
+  ],
   block: {
     __required: [],
     number: 'Q',
@@ -123,7 +134,13 @@ const methods = {
       1,
       2,
     ],
-    eth_getBalance: ['eth_getBalance', [params.addressParams, 'latest'], 'Q', 1, 2],
+    eth_getBalance: [
+      'eth_getBalance',
+      [params.addressParams, 'latest'],
+      'Q',
+      1,
+      2,
+    ],
     eth_estimateGas: ['eth_estimateGas', [params.estimateTransaction], 'Q', 1],
     eth_getUncleCountByBlockNumber: [
       'eth_getUncleCountByBlockNumber',
@@ -166,7 +183,6 @@ const methods = {
       params.transaction,
       2,
     ],
-
   },
   blockMethods: {
     // these are the methods which have output in the form of a block
@@ -195,15 +211,18 @@ const methods = {
     // these are the methods which have output in the form of bytes data
 
     eth_call: ['eth_call', [params.estimateTransaction, 'latest'], 'D', 1, 2],
-    eth_getStorageAt: ['eth_getStorageAt', params.getStorageAtParams, 'D', 2, 2],
+    eth_getStorageAt: [
+      'eth_getStorageAt',
+      params.getStorageAtParams,
+      'D',
+      2,
+      2,
+    ],
     eth_getTransactionReceipt: [
       'eth_getTransactionReceipt',
       params.transactionHashParams,
       params.receipt,
       1,
     ],
-
   },
-
 }
-

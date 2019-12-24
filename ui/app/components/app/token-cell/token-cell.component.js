@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
 const prefixForNetwork = require('../../../../lib/etherscan-prefix-for-network')
-const { conversionUtil, multiplyCurrencies } = require('../../../helpers/utils/conversion-util')
+const {
+  conversionUtil,
+  multiplyCurrencies,
+} = require('../../../helpers/utils/conversion-util')
 
 const TokenMenuDropdown = require('../dropdowns/token-menu-dropdown.js')
 
@@ -66,12 +69,14 @@ export default class TokenCell extends Component {
         numberOfDecimals: 2,
         conversionRate: currentTokenToFiatRate,
       })
-      formattedFiat = currentTokenInFiat.toString() === '0'
-        ? ''
-        : `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
+      formattedFiat =
+        currentTokenInFiat.toString() === '0'
+          ? ''
+          : `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
     }
 
-    const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
+    const showFiat =
+      Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
     return (
       <div
@@ -109,7 +114,7 @@ export default class TokenCell extends Component {
           </div>
           <i
             className="fa fa-ellipsis-h fa-lg token-list-item__ellipsis cursor-pointer"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation()
               this.setState({ tokenMenuOpen: true })
             }}
@@ -138,4 +143,3 @@ function etherscanLinkFor (tokenAddress, address, network) {
 function tokenFactoryFor (tokenAddress) {
   return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
 }
-

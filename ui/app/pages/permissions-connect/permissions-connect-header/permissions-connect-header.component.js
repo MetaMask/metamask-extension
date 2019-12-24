@@ -11,11 +11,9 @@ export default class PermissionsConnectHeader extends Component {
     const { page } = this.props
     return (
       <div className="permissions-connect-header">
-        <MetaFoxLogo
-          unsetIconHeight
-        />
+        <MetaFoxLogo unsetIconHeight />
         <div className="permissions-connect-header__page-count">
-          { `${page}/2` }
+          {`${page}/2`}
         </div>
       </div>
     )

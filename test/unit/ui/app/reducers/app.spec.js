@@ -3,7 +3,6 @@ import reduceApp from '../../../../../ui/app/ducks/app/app'
 import * as actions from '../../../../../ui/app/store/actions'
 
 describe('App State', () => {
-
   const metamaskState = {
     metamask: {
       selectedAddress: '0xAddress',
@@ -42,9 +41,9 @@ describe('App State', () => {
 
   it('opens sidebar', () => {
     const value = {
-      'transitionName': 'sidebar-right',
-      'type': 'wallet-view',
-      'isOpen': true,
+      transitionName: 'sidebar-right',
+      type: 'wallet-view',
+      isOpen: true,
     }
     const state = reduceApp(metamaskState, {
       type: actions.SIDEBAR_OPEN,
@@ -121,7 +120,6 @@ describe('App State', () => {
     const newState = reduceApp(state, {
       type: actions.MODAL_CLOSE,
     })
-
 
     assert.equal(newState.modal.open, false)
     assert.equal(newState.modal.modalState.name, null)
@@ -241,7 +239,6 @@ describe('App State', () => {
     assert.equal(state.accountDetail.privateKey, '')
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
-
   })
 
   it('shows account detail', () => {
@@ -256,7 +253,6 @@ describe('App State', () => {
     assert.equal(state.accountDetail.accountExport, 'none') // default
     assert.equal(state.accountDetail.privateKey, '') // default
     assert.equal(state.transForward, false)
-
   })
 
   it('shoes account page', () => {
@@ -297,7 +293,6 @@ describe('App State', () => {
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.isLoading, false)
-
   })
 
   it('completes tx continues to show pending txs current view context', () => {
@@ -337,7 +332,6 @@ describe('App State', () => {
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.accountDetail.subview, 'transactions')
-
   })
 
   it('sets error message in confTx view', () => {
@@ -346,7 +340,10 @@ describe('App State', () => {
     })
 
     assert.equal(state.currentView.name, 'confTx')
-    assert.equal(state.currentView.errorMessage, 'There was a problem submitting this transaction.')
+    assert.equal(
+      state.currentView.errorMessage,
+      'There was a problem submitting this transaction.'
+    )
   })
 
   it('sets default warning when unlock fails', () => {

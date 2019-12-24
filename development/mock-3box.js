@@ -37,13 +37,18 @@ class Mock3Box {
 
         return {
           private: {
-            get: async (key) => {
+            get: async key => {
               await delay(50)
-              const res = await loadFromMock3Box(`${this.address}-${this.spaceName}-${key}`)
+              const res = await loadFromMock3Box(
+                `${this.address}-${this.spaceName}-${key}`
+              )
               return res
             },
             set: async (key, data) => {
-              await saveToMock3Box(`${this.address}-${this.spaceName}-${key}`, data)
+              await saveToMock3Box(
+                `${this.address}-${this.spaceName}-${key}`,
+                data
+              )
               await delay(50)
               return null
             },
@@ -56,9 +61,7 @@ class Mock3Box {
 
   static async getConfig (address) {
     const backup = await loadFromMock3Box(`${address}-metamask-metamaskBackup`)
-    return backup
-      ? { spaces: { metamask: {} } }
-      : {}
+    return backup ? { spaces: { metamask: {} } } : {}
   }
 }
 

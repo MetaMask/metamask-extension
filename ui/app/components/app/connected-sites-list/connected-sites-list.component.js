@@ -10,13 +10,15 @@ export default class ConnectedSitesList extends Component {
   }
 
   static propTypes = {
-    renderableDomains: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      icon: PropTypes.string,
-      key: PropTypes.string,
-      lastConnectedTime: PropTypes.string,
-      permissionDescriptions: PropTypes.array,
-    })).isRequired,
+    renderableDomains: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        icon: PropTypes.string,
+        key: PropTypes.string,
+        lastConnectedTime: PropTypes.string,
+        permissionDescriptions: PropTypes.array,
+      })
+    ).isRequired,
     domains: PropTypes.object,
     showDisconnectAccountModal: PropTypes.func.isRequired,
     showDisconnectAllModal: PropTypes.func.isRequired,
@@ -58,98 +60,105 @@ export default class ConnectedSitesList extends Component {
 
     return (
       <div className="connected-sites-list">
-        {
-          renderableDomains.map((domain, domainIndex) => {
-            const domainIsExpanded = expandedDomain === domain.key
-            return (
+        {renderableDomains.map((domain, domainIndex) => {
+          const domainIsExpanded = expandedDomain === domain.key
+          return (
+            <div
+              className={classnames('connected-sites-list__domain', {
+                'connected-sites-list__domain--expanded': domainIsExpanded,
+              })}
+              key={`connected-domain-${domainIndex}`}
+            >
               <div
-                className={classnames('connected-sites-list__domain', {
-                  'connected-sites-list__domain--expanded': domainIsExpanded,
-                })}
-                key={`connected-domain-${domainIndex}`}
+                className="connected-sites-list__domain-item"
+                onClick={() => this.handleDomainItemClick(domain.key)}
               >
-                <div className="connected-sites-list__domain-item" onClick={ () => this.handleDomainItemClick(domain.key) }>
-                  <div className="connected-sites-list__domain-item-info-container">
-                    <IconWithFallBack icon={domain.icon} name={domain.name} />
+                <div className="connected-sites-list__domain-item-info-container">
+                  <IconWithFallBack icon={domain.icon} name={domain.name} />
 
-                    <div className="connected-sites-list__domain-info">
-                      <div className="connected-sites-list__domain-names">
-                        <div className="connected-sites-list__domain-name">
-                          { domain.extensionId ? t('externalExtension') : domain.name }
-                        </div>
+                  <div className="connected-sites-list__domain-info">
+                    <div className="connected-sites-list__domain-names">
+                      <div className="connected-sites-list__domain-name">
+                        {domain.extensionId
+                          ? t('externalExtension')
+                          : domain.name}
                       </div>
-                      { domain.lastConnectedTime
-                        ? (
-                          <div className="connected-sites-list__domain-last-connected">
-                            { t('domainLastConnect', [domain.lastConnectedTime]) }
-                          </div>
-                        )
-                        : null
-                      }
-                      {domainIsExpanded
-                        ? (
-                          <div className="connected-sites-list__domain-origin">
-                            { domain.extensionId ? t('extensionId', [domain.extensionId]) : domain.secondaryName }
-                          </div>
-                        )
-                        : null
-                      }
                     </div>
-                  </div>
-                  <div className="connected-sites-list__expand-arrow">
-                    { domainIsExpanded ? <i className="fa fa-chevron-up fa-sm" /> : <i className="fa fa-chevron-down fa-sm" /> }
+                    {domain.lastConnectedTime ? (
+                      <div className="connected-sites-list__domain-last-connected">
+                        {t('domainLastConnect', [domain.lastConnectedTime])}
+                      </div>
+                    ) : null}
+                    {domainIsExpanded ? (
+                      <div className="connected-sites-list__domain-origin">
+                        {domain.extensionId
+                          ? t('extensionId', [domain.extensionId])
+                          : domain.secondaryName}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-                { domainIsExpanded
-                  ? (
-                    <div className="connected-sites-list__permissions">
-                      <div className="connected-sites-list__permission-list">
-                        {
-                          domain.permissionDescriptions.map((description, pdIndex) => {
-                            return (
-                              <div className="connected-sites-list__permission" key={`permissionDescription-${pdIndex}`}>
-                                <i className="fa fa-check-square fa-sm" />
-                                <div className="connected-sites-list__permission-description">
-                                  { description }
-                                </div>
-                              </div>
-                            )
-                          })
-                        }
-                      </div>
-                      <div
-                        className="connected-sites-list__disconnect"
-                        onClick={ () => showDisconnectAccountModal(domain.key, domains[domain.key]) }
-                      >
-                        { t('disconnectAccount') }
-                      </div>
-                    </div>
-                  )
-                  : null
-                }
+                <div className="connected-sites-list__expand-arrow">
+                  {domainIsExpanded ? (
+                    <i className="fa fa-chevron-up fa-sm" />
+                  ) : (
+                    <i className="fa fa-chevron-down fa-sm" />
+                  )}
+                </div>
               </div>
-            )
-          })
-        }
+              {domainIsExpanded ? (
+                <div className="connected-sites-list__permissions">
+                  <div className="connected-sites-list__permission-list">
+                    {domain.permissionDescriptions.map(
+                      (description, pdIndex) => {
+                        return (
+                          <div
+                            className="connected-sites-list__permission"
+                            key={`permissionDescription-${pdIndex}`}
+                          >
+                            <i className="fa fa-check-square fa-sm" />
+                            <div className="connected-sites-list__permission-description">
+                              {description}
+                            </div>
+                          </div>
+                        )
+                      }
+                    )}
+                  </div>
+                  <div
+                    className="connected-sites-list__disconnect"
+                    onClick={() =>
+                      showDisconnectAccountModal(
+                        domain.key,
+                        domains[domain.key]
+                      )
+                    }
+                  >
+                    {t('disconnectAccount')}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          )
+        })}
         <div className="connected-sites-list__bottom-buttons">
           <div className="connected-sites-list__disconnect-all">
-            <Button onClick={showDisconnectAllModal} type="danger" >
-              { t('disconnectAll') }
+            <Button onClick={showDisconnectAllModal} type="danger">
+              {t('disconnectAll')}
             </Button>
           </div>
-          { tabToConnect
-            ? (
-              <div className="connected-sites-list__connect-to">
-                <Button
-                  onClick={() => legacyExposeAccounts(tabToConnect.origin, selectedAddress)}
-                  type="primary"
-                >
-                  { t('connectTo', [tabToConnect.title || tabToConnect.origin]) }
-                </Button>
-              </div>
-            )
-            : null
-          }
+          {tabToConnect ? (
+            <div className="connected-sites-list__connect-to">
+              <Button
+                onClick={() =>
+                  legacyExposeAccounts(tabToConnect.origin, selectedAddress)
+                }
+                type="primary"
+              >
+                {t('connectTo', [tabToConnect.title || tabToConnect.origin])}
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
     )

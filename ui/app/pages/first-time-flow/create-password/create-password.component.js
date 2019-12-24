@@ -38,7 +38,7 @@ export default class CreatePassword extends PureComponent {
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
             render={routeProps => (
               <ImportWithSeedPhrase
-                { ...routeProps }
+                {...routeProps}
                 onSubmit={onCreateNewAccountFromSeed}
               />
             )}
@@ -47,10 +47,7 @@ export default class CreatePassword extends PureComponent {
             exact
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
             render={routeProps => (
-              <NewAccount
-                { ...routeProps }
-                onSubmit={onCreateNewAccount}
-              />
+              <NewAccount {...routeProps} onSubmit={onCreateNewAccount} />
             )}
           />
         </Switch>

@@ -1,4 +1,3 @@
-
 const clone = require('clone')
 const { isValidAddress } = require('ethereumjs-util')
 
@@ -9,20 +8,28 @@ const LOG_LIMIT = 100
  * permissions-related methods.
  */
 module.exports = function createLoggerMiddleware ({
-  walletPrefix, restrictedMethods, store, logStoreKey, historyStoreKey, ignoreMethods,
+  walletPrefix,
+  restrictedMethods,
+  store,
+  logStoreKey,
+  historyStoreKey,
+  ignoreMethods,
 }) {
   return (req, res, next, _end) => {
     let activityEntry, requestedMethods
     const { origin, method } = req
     const isInternal = method.startsWith(walletPrefix)
-    if ((isInternal || restrictedMethods.includes(method)) && !ignoreMethods.includes(method)) {
+    if (
+      (isInternal || restrictedMethods.includes(method)) &&
+      !ignoreMethods.includes(method)
+    ) {
       activityEntry = logActivity(req, isInternal)
       if (method === `${walletPrefix}requestPermissions`) {
         requestedMethods = getRequestedMethods(req)
       }
     } else if (method === 'eth_requestAccounts') {
       activityEntry = logActivity(req, isInternal)
-      requestedMethods = [ 'eth_accounts' ]
+      requestedMethods = ['eth_accounts']
     } else {
       return next()
     }
@@ -31,7 +38,13 @@ module.exports = function createLoggerMiddleware ({
       const time = Date.now()
       addResponse(activityEntry, res, time)
       if (!res.error && requestedMethods) {
-        logHistory(requestedMethods, origin, res.result, time, method === 'eth_requestAccounts')
+        logHistory(
+          requestedMethods,
+          origin,
+          res.result,
+          time,
+          method === 'eth_requestAccounts'
+        )
       }
       cb()
     })
@@ -82,12 +95,23 @@ module.exports = function createLoggerMiddleware ({
     return Object.keys(request.params[0])
   }
 
-  function logHistory (requestedMethods, origin, result, time, isEthRequestAccounts) {
+  function logHistory (
+    requestedMethods,
+    origin,
+    result,
+    time,
+    isEthRequestAccounts
+  ) {
     let accounts, entries
     if (isEthRequestAccounts) {
       accounts = result
-      const accountToTimeMap = accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
-      entries = { 'eth_accounts': { accounts: accountToTimeMap, lastApproved: time } }
+      const accountToTimeMap = accounts.reduce(
+        (acc, account) => ({ ...acc, [account]: time }),
+        {}
+      )
+      entries = {
+        eth_accounts: { accounts: accountToTimeMap, lastApproved: time },
+      }
     } else {
       entries = result
         ? result
@@ -100,7 +124,10 @@ module.exports = function createLoggerMiddleware ({
           .reduce((acc, m) => {
             if (requestedMethods.includes(m)) {
               if (m === 'eth_accounts') {
-                const accountToTimeMap = accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {})
+                const accountToTimeMap = accounts.reduce(
+                  (acc, account) => ({ ...acc, [account]: time }),
+                  {}
+                )
                 acc[m] = { lastApproved: time, accounts: accountToTimeMap }
               } else {
                 acc[m] = { lastApproved: time }
@@ -123,7 +150,11 @@ module.exports = function createLoggerMiddleware ({
       ...entries,
     }
 
-    if (history[origin] && history[origin]['eth_accounts'] && entries['eth_accounts']) {
+    if (
+      history[origin] &&
+      history[origin]['eth_accounts'] &&
+      entries['eth_accounts']
+    ) {
       newOriginHistory['eth_accounts'] = {
         lastApproved: entries['eth_accounts'].lastApproved,
         accounts: {

@@ -8,9 +8,9 @@ import classnames from 'classnames'
  */
 function Menu (props) {
   const { className, children, isShowing } = props
-  return isShowing
-    ? <div className={classnames('menu', className)}>{children}</div>
-    : null
+  return isShowing ? (
+    <div className={classnames('menu', className)}>{children}</div>
+  ) : null
 }
 
 Menu.defaultProps = {
@@ -26,30 +26,22 @@ Menu.propTypes = {
 }
 
 function Item (props) {
-  const {
-    icon,
-    children,
-    text,
-    subText,
-    className,
-    onClick,
-  } = props
+  const { icon, children, text, subText, className, onClick } = props
 
   const itemClassName = classnames('menu__item', className, {
     'menu__item--clickable': Boolean(onClick),
   })
-  return children
-    ? <div className={itemClassName} onClick={onClick}>{children}</div>
-    : (
-      <div
-        className={itemClassName}
-        onClick={onClick}
-      >
-        {icon ? <div className="menu__item__icon">{icon}</div> : null}
-        {text ? <div className="menu__item__text">{text}</div> : null}
-        {subText ? <div className="menu__item__subtext">{subText}</div> : null}
-      </div>
-    )
+  return children ? (
+    <div className={itemClassName} onClick={onClick}>
+      {children}
+    </div>
+  ) : (
+    <div className={itemClassName} onClick={onClick}>
+      {icon ? <div className="menu__item__icon">{icon}</div> : null}
+      {text ? <div className="menu__item__text">{text}</div> : null}
+      {subText ? <div className="menu__item__subtext">{subText}</div> : null}
+    </div>
+  )
 }
 
 Item.defaultProps = {

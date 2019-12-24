@@ -16,12 +16,12 @@ import {
 import { preferencesSelector } from '../../../selectors/selectors'
 
 export const mapStateToProps = state => {
-  const { appState: { warning }, metamask } = state
   const {
-    featureFlags: {
-      sendHexData,
-      advancedInlineGas,
-    } = {},
+    appState: { warning },
+    metamask,
+  } = state
+  const {
+    featureFlags: { sendHexData, advancedInlineGas } = {},
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
@@ -44,10 +44,13 @@ export const mapStateToProps = state => {
 
 export const mapDispatchToProps = dispatch => {
   return {
-    setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setHexDataFeatureFlag: shouldShow =>
+      dispatch(setFeatureFlag('sendHexData', shouldShow)),
     displayWarning: warning => dispatch(displayWarning(warning)),
-    showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
+    showResetAccountConfirmationModal: () =>
+      dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
+    setAdvancedInlineGasFeatureFlag: shouldShow =>
+      dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setUseNonceField: value => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))

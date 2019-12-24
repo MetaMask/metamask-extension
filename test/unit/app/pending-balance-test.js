@@ -13,14 +13,17 @@ describe('PendingBalanceCalculator', function () {
   describe('#calculateMaxCost(tx)', function () {
     it('returns a BN for a given tx value', function () {
       const txGen = new MockTxGen()
-      pendingTxs = txGen.generate({
-        status: 'submitted',
-        txParams: {
-          value: ether,
-          gasPrice: '0x0',
-          gas: '0x0',
+      pendingTxs = txGen.generate(
+        {
+          status: 'submitted',
+          txParams: {
+            value: ether,
+            gasPrice: '0x0',
+            gas: '0x0',
+          },
         },
-      }, { count: 1 })
+        { count: 1 }
+      )
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
       const result = balanceCalculator.calculateMaxCost(pendingTxs[0])
@@ -29,14 +32,17 @@ describe('PendingBalanceCalculator', function () {
 
     it('calculates gas costs as well', function () {
       const txGen = new MockTxGen()
-      pendingTxs = txGen.generate({
-        status: 'submitted',
-        txParams: {
-          value: '0x0',
-          gasPrice: '0x2',
-          gas: '0x3',
+      pendingTxs = txGen.generate(
+        {
+          status: 'submitted',
+          txParams: {
+            value: '0x0',
+            gasPrice: '0x2',
+            gas: '0x3',
+          },
         },
-      }, { count: 1 })
+        { count: 1 }
+      )
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
       const result = balanceCalculator.calculateMaxCost(pendingTxs[0])
@@ -45,7 +51,6 @@ describe('PendingBalanceCalculator', function () {
   })
 
   describe('if you have no pending txs and one ether', function () {
-
     beforeEach(function () {
       balanceCalculator = generateBalanceCalcWith([], etherBn)
     })
@@ -59,14 +64,17 @@ describe('PendingBalanceCalculator', function () {
   describe('if you have a one ether pending tx and one ether', function () {
     beforeEach(function () {
       const txGen = new MockTxGen()
-      pendingTxs = txGen.generate({
-        status: 'submitted',
-        txParams: {
-          value: ether,
-          gasPrice: '0x0',
-          gas: '0x0',
+      pendingTxs = txGen.generate(
+        {
+          status: 'submitted',
+          txParams: {
+            value: ether,
+            gasPrice: '0x0',
+            gas: '0x0',
+          },
         },
-      }, { count: 1 })
+        { count: 1 }
+      )
 
       balanceCalculator = generateBalanceCalcWith(pendingTxs, etherBn)
     })
@@ -76,7 +84,6 @@ describe('PendingBalanceCalculator', function () {
       assert.equal(result, '0x0', `gave ${result} needed '0x0'`)
       return true
     })
-
   })
 })
 
@@ -89,4 +96,3 @@ function generateBalanceCalcWith (transactions, providerStub = zeroBn) {
     getPendingTransactions,
   })
 }
-

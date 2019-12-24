@@ -8,9 +8,7 @@ const changelogPath = path.join(__dirname, 'sample-changelog.md')
 const manifest = require('./sample-manifest.json')
 let changelog
 
-
 describe('version bumper', function () {
-
   beforeEach(async () => {
     // load changelog. Mock version is 4.1.3
     const changeBuffer = await readFile(changelogPath)

@@ -47,9 +47,9 @@ export default class Button extends Component {
           large && CLASSNAME_LARGE,
           className
         )}
-        { ...buttonProps }
+        {...buttonProps}
       >
-        { this.props.children }
+        {this.props.children}
       </button>
     )
   }

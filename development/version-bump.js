@@ -5,7 +5,7 @@ async function versionBump (bumpType, changelog, oldManifest) {
   const newVersion = newVersionFrom(manifest, bumpType)
 
   manifest.version = newVersion
-  const date = (new Date()).toDateString()
+  const date = new Date().toDateString()
 
   const logHeader = `\n## ${newVersion} ${date}`
   const logLines = changelog.split('\n')
@@ -25,7 +25,7 @@ async function versionBump (bumpType, changelog, oldManifest) {
 
 function newVersionFrom (manifest, bumpType) {
   const string = manifest.version
-  const segments = string.split('.').map((str) => parseInt(str))
+  const segments = string.split('.').map(str => parseInt(str))
 
   switch (bumpType) {
     case 'major':

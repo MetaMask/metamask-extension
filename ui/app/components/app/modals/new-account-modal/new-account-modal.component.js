@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../../ui/button/button.component'
 
 export default class NewAccountModal extends Component {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -25,8 +24,7 @@ export default class NewAccountModal extends Component {
   }
 
   onSubmit = () => {
-    this.props.onSave(this.state.alias)
-      .then(this.props.hideModal)
+    this.props.onSave(this.state.alias).then(this.props.hideModal)
   }
 
   onKeyPress = e => {
@@ -53,15 +51,12 @@ export default class NewAccountModal extends Component {
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
             value={this.state.alias}
-            placeholder={ t('account', [this.props.newAccountNumber]) }
+            placeholder={t('account', [this.props.newAccountNumber])}
             autoFocus
           />
         </div>
         <div className="new-account-modal__footer">
-          <Button
-            type="secondary"
-            onClick={this.props.hideModal}
-          >
+          <Button type="secondary" onClick={this.props.hideModal}>
             {t('cancel')}
           </Button>
           <Button

@@ -28,8 +28,7 @@ class FirefoxDriver {
   static async build ({ extensionPath, responsive }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX)
     const profile = new firefox.Profile(templateProfile)
-    const options = new firefox.Options()
-      .setProfile(profile)
+    const options = new firefox.Options().setProfile(profile)
     const driver = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options)
@@ -42,7 +41,10 @@ class FirefoxDriver {
     const internalExtensionId = await fxDriver.getInternalId()
 
     if (responsive) {
-      driver.manage().window().setSize(320, 600)
+      driver
+        .manage()
+        .window()
+        .setSize(320, 600)
     }
 
     return {
@@ -65,11 +67,12 @@ class FirefoxDriver {
    * @return {Promise<void>}
    */
   async init () {
-    await this._driver.getExecutor()
+    await this._driver
+      .getExecutor()
       .defineCommand(
         GeckoDriverCommand.INSTALL_ADDON,
         'POST',
-        '/session/:sessionId/moz/addon/install',
+        '/session/:sessionId/moz/addon/install'
       )
   }
 
@@ -92,7 +95,14 @@ class FirefoxDriver {
    */
   async getInternalId () {
     await this._driver.get('about:debugging#addons')
-    return await this._driver.wait(until.elementLocated(By.xpath('//dl/div[contains(., \'Internal UUID\')]/dd')), 1000).getText()
+    return await this._driver
+      .wait(
+        until.elementLocated(
+          By.xpath("//dl/div[contains(., 'Internal UUID')]/dd")
+        ),
+        1000
+      )
+      .getText()
   }
 }
 

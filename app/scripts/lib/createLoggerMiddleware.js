@@ -8,7 +8,11 @@ module.exports = createLoggerMiddleware
  * @returns {Function}
  */
 function createLoggerMiddleware (opts) {
-  return function loggerMiddleware (/** @type {any} */ req, /** @type {any} */ res, /** @type {Function} */ next) {
+  return function loggerMiddleware (
+    /** @type {any} */ req,
+    /** @type {any} */ res,
+    /** @type {Function} */ next
+  ) {
     next((/** @type {Function} */ cb) => {
       if (res.error) {
         log.error('Error in RPC response:\n', res)

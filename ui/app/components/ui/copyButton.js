@@ -31,7 +31,9 @@ class CopyButton extends Component {
   render () {
     const { title, value } = this.props
     const { copied } = this.state
-    const message = copied ? this.context.t('copiedButton') : title || this.context.t('copyButton')
+    const message = copied
+      ? this.context.t('copiedButton')
+      : title || this.context.t('copyButton')
 
     return (
       <div
@@ -47,7 +49,7 @@ class CopyButton extends Component {
             style={{
               margin: '5px',
             }}
-            onClick={(event) => {
+            onClick={event => {
               event.preventDefault()
               event.stopPropagation()
               copyToClipboard(value)

@@ -3,7 +3,7 @@ class WindowPlatform {
    * Reload the platform
    */
   reload () {
-    /** @type {any} */ (global).location.reload()
+    /** @type {any} */ ;(global).location.reload()
   }
 
   /**
@@ -11,7 +11,7 @@ class WindowPlatform {
    * @param {{url: string}} opts - The window options
    */
   openWindow (opts) {
-    /** @type {any} */ (global).open(opts.url, '_blank')
+    /** @type {any} */ ;(global).open(opts.url, '_blank')
   }
 
   /**
@@ -21,7 +21,6 @@ class WindowPlatform {
   getVersion () {
     return '<unable to read version>'
   }
-
 }
 
 module.exports = WindowPlatform

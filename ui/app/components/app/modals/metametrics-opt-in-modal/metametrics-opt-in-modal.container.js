@@ -14,11 +14,12 @@ const mapStateToProps = (_, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    setParticipateInMetaMetrics: val =>
+      dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 
 export default compose(
   withModalProps,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps)
 )(MetaMetricsOptInModal)

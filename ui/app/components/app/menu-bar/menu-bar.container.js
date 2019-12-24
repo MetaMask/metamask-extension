@@ -4,7 +4,11 @@ import MenuBar from './menu-bar.component'
 import { showSidebar, hideSidebar } from '../../../store/actions'
 
 const mapStateToProps = state => {
-  const { appState: { sidebar: { isOpen } } } = state
+  const {
+    appState: {
+      sidebar: { isOpen },
+    },
+  } = state
 
   return {
     sidebarOpen: isOpen,
@@ -14,10 +18,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     showSidebar: () => {
-      dispatch(showSidebar({
-        transitionName: 'sidebar-right',
-        type: WALLET_VIEW_SIDEBAR,
-      }))
+      dispatch(
+        showSidebar({
+          transitionName: 'sidebar-right',
+          type: WALLET_VIEW_SIDEBAR,
+        })
+      )
     },
     hideSidebar: () => dispatch(hideSidebar()),
   }

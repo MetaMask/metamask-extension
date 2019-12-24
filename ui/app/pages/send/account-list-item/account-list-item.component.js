@@ -8,7 +8,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import Tooltip from '../../../components/ui/tooltip-v2'
 
 export default class AccountListItem extends Component {
-
   static propTypes = {
     account: PropTypes.object,
     className: PropTypes.string,
@@ -18,7 +17,7 @@ export default class AccountListItem extends Component {
     icon: PropTypes.node,
     balanceIsCached: PropTypes.bool,
     showFiat: PropTypes.bool,
-  };
+  }
 
   static defaultProps = {
     showFiat: true,
@@ -26,7 +25,7 @@ export default class AccountListItem extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
     const {
@@ -47,7 +46,6 @@ export default class AccountListItem extends Component {
         className={`account-list-item ${className}`}
         onClick={() => handleClick && handleClick({ name, address, balance })}
       >
-
         <div className="account-list-item__top-row">
           <Identicon
             address={address}
@@ -55,15 +53,16 @@ export default class AccountListItem extends Component {
             diameter={18}
           />
 
-          <div className="account-list-item__account-name">{ name || address }</div>
+          <div className="account-list-item__account-name">
+            {name || address}
+          </div>
 
-          {icon && <div className="account-list-item__icon">{ icon }</div>}
-
+          {icon && <div className="account-list-item__icon">{icon}</div>}
         </div>
 
         {displayAddress && name && (
           <div className="account-list-item__account-address">
-            { checksumAddress(address) }
+            {checksumAddress(address)}
           </div>
         )}
 
@@ -87,11 +86,9 @@ export default class AccountListItem extends Component {
                   value={balance}
                   hideTitle
                 />
-                {
-                  balanceIsCached
-                    ? <span className="account-list-item__cached-star">*</span>
-                    : null
-                }
+                {balanceIsCached ? (
+                  <span className="account-list-item__cached-star">*</span>
+                ) : null}
               </div>
               {showFiat && (
                 <UserPreferencedCurrencyDisplay
@@ -103,7 +100,6 @@ export default class AccountListItem extends Component {
             </div>
           </Tooltip>
         )}
-
       </div>
     )
   }

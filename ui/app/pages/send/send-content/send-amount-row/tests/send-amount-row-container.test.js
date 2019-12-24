@@ -19,17 +19,24 @@ proxyquire('../send-amount-row.container.js', {
       return () => ({})
     },
   },
-  './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
+  './send-amount-row.selectors': {
+    sendAmountIsInError: s => `mockInError:${s}`,
+  },
   '../../send.utils': {
-    getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
-    getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
+    getAmountErrorObject: mockDataObject => ({
+      ...mockDataObject,
+      mockChange: true,
+    }),
+    getGasFeeErrorObject: mockDataObject => ({
+      ...mockDataObject,
+      mockGasFeeErrorChange: true,
+    }),
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/send/send.duck': duckActionSpies,
 })
 
 describe('send-amount-row container', () => {
-
   describe('mapDispatchToProps()', () => {
     let dispatchSpy
     let mapDispatchToPropsObject
@@ -45,10 +52,7 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.setMaxModeTo('mockBool')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.setMaxModeTo.calledOnce)
-        assert.equal(
-          actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockBool'
-        )
+        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockBool')
       })
     })
 
@@ -69,10 +73,10 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockGasFeeErrorChange: true }
-        )
+        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+          some: 'data',
+          mockGasFeeErrorChange: true,
+        })
       })
     })
 
@@ -81,13 +85,11 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockChange: true }
-        )
+        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+          some: 'data',
+          mockChange: true,
+        })
       })
     })
-
   })
-
 })

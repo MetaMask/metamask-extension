@@ -6,7 +6,6 @@ const addressSummary = require('../../helpers/utils/util').addressSummary
 
 module.exports = AccountPanel
 
-
 inherits(AccountPanel, Component)
 function AccountPanel () {
   Component.call(this)
@@ -34,12 +33,20 @@ AccountPanel.prototype.render = function () {
   return (
     <div
       className="identity-panel flex-row flex-space-between"
-      style={{ flex: '1 0 auto', cursor: panelState.onClick ? 'pointer' : undefined }}
+      style={{
+        flex: '1 0 auto',
+        cursor: panelState.onClick ? 'pointer' : undefined,
+      }}
       onClick={panelState.onClick}
     >
       <div className="identicon-wrapper flex-column select-none">
-        <Identicon address={panelState.identiconKey} imageify={state.imageifyIdenticons} />
-        <span className="font-small">{panelState.identiconLabel.substring(0, 7) + '...'}</span>
+        <Identicon
+          address={panelState.identiconKey}
+          imageify={state.imageifyIdenticons}
+        />
+        <span className="font-small">
+          {panelState.identiconLabel.substring(0, 7) + '...'}
+        </span>
       </div>
       <div className="identity-data flex-column flex-justify-center flex-grow select-none">
         {panelState.attributes.map((attr, index) => (

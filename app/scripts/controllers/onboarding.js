@@ -32,7 +32,7 @@ class OnboardingController {
         seedPhraseBackedUp: true,
       },
       opts.initState,
-      initialTransientState,
+      initialTransientState
     )
     this.store = new ObservableStore(initState)
     this.preferencesController = opts.preferencesController
@@ -65,9 +65,14 @@ class OnboardingController {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return
     }
-    const onboardingTabs = Object.assign({}, this.store.getState().onboardingTabs)
+    const onboardingTabs = Object.assign(
+      {},
+      this.store.getState().onboardingTabs
+    )
     if (!onboardingTabs[location] || onboardingTabs[location] !== tabId) {
-      log.debug(`Registering onboarding tab at location '${location}' with tabId '${tabId}'`)
+      log.debug(
+        `Registering onboarding tab at location '${location}' with tabId '${tabId}'`
+      )
       onboardingTabs[location] = tabId
       this.store.updateState({ onboardingTabs })
     }

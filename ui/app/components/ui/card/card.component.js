@@ -14,11 +14,9 @@ export default class Card extends PureComponent {
     const { className, overrideClassName, title } = this.props
 
     return (
-      <div className={classnames({ 'card': !overrideClassName }, className)}>
-        <div className="card__title">
-          { title }
-        </div>
-        { this.props.children }
+      <div className={classnames({ card: !overrideClassName }, className)}>
+        <div className="card__title">{title}</div>
+        {this.props.children}
       </div>
     )
   }

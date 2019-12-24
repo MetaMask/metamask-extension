@@ -44,7 +44,12 @@ export default class ShiftListItem extends Component {
               <i
                 className="fa fa-qrcode pointer pop-hover"
                 onClick={() => {
-                  this.props.dispatch(actions.reshowQrCode(this.props.depositAddress, this.props.depositType))
+                  this.props.dispatch(
+                    actions.reshowQrCode(
+                      this.props.depositAddress,
+                      this.props.depositType
+                    )
+                  )
                 }}
                 style={{
                   margin: '5px',
@@ -107,9 +112,7 @@ export default class ShiftListItem extends Component {
             >
               {this.context.t('toETHviaShapeShift', [this.props.depositType])}
             </div>
-            <div>
-              {this.context.t('noDeposits')}
-            </div>
+            <div>{this.context.t('noDeposits')}</div>
             <div
               style={{
                 fontSize: 'x-small',
@@ -140,9 +143,7 @@ export default class ShiftListItem extends Component {
             >
               {this.context.t('toETHviaShapeShift', [this.props.depositType])}
             </div>
-            <div>
-              {this.context.t('conversionProgress')}
-            </div>
+            <div>{this.context.t('conversionProgress')}</div>
             <div
               style={{
                 fontSize: 'x-small',
@@ -175,9 +176,7 @@ export default class ShiftListItem extends Component {
             >
               {this.context.t('fromShapeShift')}
             </div>
-            <div>
-              {formatDate(this.props.time)}
-            </div>
+            <div>{formatDate(this.props.time)}</div>
             <div
               style={{
                 fontSize: 'x-small',
@@ -191,11 +190,7 @@ export default class ShiftListItem extends Component {
         )
 
       case 'failed':
-        return (
-          <span className="error">
-            {`(${this.context.t('failed')})`}
-          </span>
-        )
+        return <span className="error">{`(${this.context.t('failed')})`}</span>
 
       default:
         return ''

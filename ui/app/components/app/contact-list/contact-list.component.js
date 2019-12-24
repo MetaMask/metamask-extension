@@ -35,16 +35,14 @@ export default class ContactList extends PureComponent {
           onSelect={this.props.selectRecipient}
           selectedAddress={this.props.selectedAddress}
         />
-        {
-          showLoadMore && (
-            <div
-              className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
-              onClick={() => this.setState({ isShowingAllRecent: true })}
-            >
-              {t('loadMore')}
-            </div>
-          )
-        }
+        {showLoadMore && (
+          <div
+            className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
+            onClick={() => this.setState({ isShowingAllRecent: true })}
+          >
+            {t('loadMore')}
+          </div>
+        )}
       </div>
     )
   }
@@ -60,8 +58,7 @@ export default class ContactList extends PureComponent {
       return acc
     }, {})
 
-    return Object
-      .entries(contactGroups)
+    return Object.entries(contactGroups)
       .sort(([letter1], [letter2]) => {
         if (letter1 > letter2) {
           return 1
@@ -104,10 +101,10 @@ export default class ContactList extends PureComponent {
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        { children || null }
-        { searchForRecents && this.renderRecents() }
-        { searchForContacts && this.renderAddressBook() }
-        { searchForMyAccounts && this.renderMyAccounts() }
+        {children || null}
+        {searchForRecents && this.renderRecents()}
+        {searchForContacts && this.renderAddressBook()}
+        {searchForMyAccounts && this.renderMyAccounts()}
       </div>
     )
   }

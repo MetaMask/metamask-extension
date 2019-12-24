@@ -3,7 +3,11 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token, getFirstPermissionRequest } from '../../selectors/selectors'
+import {
+  getCurrentEthBalance,
+  getDaiV1Token,
+  getFirstPermissionRequest,
+} from '../../selectors/selectors'
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
@@ -27,18 +31,22 @@ const mapStateToProps = state => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
 
-  const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+  const isPopup =
+    getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
   const firstPermissionsRequest = getFirstPermissionRequest(state)
-  const firstPermissionsRequestId = (firstPermissionsRequest && firstPermissionsRequest.metadata)
-    ? firstPermissionsRequest.metadata.id
-    : null
+  const firstPermissionsRequestId =
+    firstPermissionsRequest && firstPermissionsRequest.metadata
+      ? firstPermissionsRequest.metadata.id
+      : null
 
   return {
     forgottenPassword,
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     activeTab,
-    shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    shouldShowSeedPhraseReminder:
+      !seedPhraseBackedUp &&
+      (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     threeBoxSynced,
     showRestorePrompt,
@@ -49,20 +57,19 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated())
-      .then(lastUpdated => {
-        if (lastUpdated) {
-          dispatch(setThreeBoxLastUpdated(lastUpdated))
-        } else {
-          dispatch(setShowRestorePromptToFalse())
-          dispatch(turnThreeBoxSyncingOn())
-        }
-      })
+    dispatch(getThreeBoxLastUpdated()).then(lastUpdated => {
+      if (lastUpdated) {
+        dispatch(setThreeBoxLastUpdated(lastUpdated))
+      } else {
+        dispatch(setShowRestorePromptToFalse())
+        dispatch(turnThreeBoxSyncingOn())
+      }
+    })
   },
-  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
+  restoreFromThreeBox: address => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })
 

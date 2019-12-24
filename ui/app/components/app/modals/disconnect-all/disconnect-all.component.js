@@ -27,25 +27,25 @@ export default class DisconnectAll extends PureComponent {
       >
         <div className="disconnect-all-modal">
           <div className="disconnect-all-modal__description">
-            { t('disconnectAllModalDescription') }
+            {t('disconnectAllModalDescription')}
           </div>
           <Button
             type="danger"
-            onClick={ () => {
+            onClick={() => {
               disconnectAll()
               hideModal()
               history.push(DEFAULT_ROUTE)
             }}
             className=""
           >
-            { t('disconnectAll') }
+            {t('disconnectAll')}
           </Button>
           <Button
             type="secondary"
-            onClick={ () => hideModal() }
+            onClick={() => hideModal()}
             className="disconnect-all-modal__cancel-button"
           >
-            { t('cancel') }
+            {t('cancel')}
           </Button>
         </div>
       </Modal>
