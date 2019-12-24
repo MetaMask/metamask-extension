@@ -7,17 +7,17 @@ describe('#createPendingNonceMiddleware', function () {
   const pendingNonceMiddleware = createPendingNonceMiddleware({ getPendingNonce })
 
   it('should call next if not a eth_getTransactionCount request', (done) => {
-    const req = {method: 'eth_getBlockByNumber'}
+    const req = {method: 'cfx_getBlockByEpochNumber'}
     const res = {}
     pendingNonceMiddleware(req, res, () => done())
   })
   it('should call next if not a "pending" block request', (done) => {
-    const req = { method: 'eth_getTransactionCount', params: [address] }
+    const req = { method: 'cfx_getTransactionCount', params: [address] }
     const res = {}
     pendingNonceMiddleware(req, res, () => done())
   })
   it('should fill the result with a the "pending" nonce', (done) => {
-    const req = { method: 'eth_getTransactionCount', params: [address, 'pending'] }
+    const req = { method: 'cfx_getTransactionCount', params: [address, 'pending'] }
     const res = {}
     pendingNonceMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
       assert(res.result === '0x2')
@@ -48,20 +48,20 @@ describe('#createPendingTxMiddleware', function () {
     's': '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   }
   it('should call next if not a eth_getTransactionByHash request', (done) => {
-    const req = {method: 'eth_getBlockByNumber'}
+    const req = {method: 'cfx_getBlockByEpochNumber'}
     const res = {}
     pendingTxMiddleware(req, res, () => done())
   })
 
   it('should call next if no pending txMeta is in history', (done) => {
-    const req = { method: 'eth_getTransactionByHash', params: [address] }
+    const req = { method: 'cfx_getTransactionByHash', params: [address] }
     const res = {}
     pendingTxMiddleware(req, res, () => done())
   })
 
   it('should fill the result with a the "pending" tx the result should match the rpc spec', (done) => {
     returnUndefined = false
-    const req = { method: 'eth_getTransactionByHash', params: [address, 'pending'] }
+    const req = { method: 'cfx_getTransactionByHash', params: [address, 'pending'] }
     const res = {}
     pendingTxMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
       /*

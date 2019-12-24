@@ -24,7 +24,7 @@ const {
   // GOERLI,
 } = require('./enums')
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-const INFURA_PROVIDER_TYPES = []
+// const INFURA_PROVIDER_TYPES = []
 // TODO: add main net endpoint
 const CONFLUX_MAINNET = 'http://13.67.73.51:12537'
 const CONFLUX_TEST_NET = 'http://13.67.73.51:12537'
@@ -148,7 +148,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    // assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(type === 'mainnet' || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }

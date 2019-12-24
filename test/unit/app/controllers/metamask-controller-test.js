@@ -154,8 +154,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
-      threeBoxSpies.init.reset()
-      threeBoxSpies.turnThreeBoxSyncingOn.reset()
+      // threeBoxSpies.init.reset()
+      // threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -175,11 +175,11 @@ describe('MetaMaskController', function () {
       })
     })
 
-    it('gets the address from threebox and creates a new 3box instance', async () => {
-      await metamaskController.submitPassword(password)
-      assert(threeBoxSpies.init.calledOnce)
-      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
-    })
+    // it.skip('gets the address from threebox and creates a new 3box instance', async () => {
+    //   await metamaskController.submitPassword(password)
+    //   assert(threeBoxSpies.init.calledOnce)
+    //   assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
+    // })
   })
 
   describe('#getGasPrice', function () {

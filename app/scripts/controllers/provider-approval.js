@@ -1,7 +1,7 @@
 const ObservableStore = require('obs-store')
 const SafeEventEmitter = require('safe-event-emitter')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { ethErrors } = require('eth-json-rpc-errors')
 
 /**
  * A controller that services user-approved requests for a full Ethereum provider API
@@ -56,7 +56,7 @@ class ProviderApprovalController extends SafeEventEmitter {
       if (approved) {
         res.result = [this.preferencesController.getSelectedAddress()]
       } else {
-        throw rpcErrors.eth.userRejectedRequest('User denied account authorization')
+        throw ethErrors.provider.userRejectedRequest('User denied account authorization')
       }
     })
   }
