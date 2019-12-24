@@ -38,7 +38,9 @@ PersistentForm.prototype.getPersistentStore = function () {
 }
 
 PersistentForm.prototype.setPersistentStore = function (newStore) {
-  window.localStorage[this.persistentFormParentId || defaultKey] = JSON.stringify(newStore)
+  window.localStorage[
+    this.persistentFormParentId || defaultKey
+  ] = JSON.stringify(newStore)
 }
 
 PersistentForm.prototype.persistentFieldDidUpdate = function (event) {
@@ -54,8 +56,10 @@ PersistentForm.prototype.componentWillUnmount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
   for (var i = 0; i < fields.length; i++) {
     const field = fields[i]
-    field.removeEventListener(eventName, this.persistentFieldDidUpdate.bind(this))
+    field.removeEventListener(
+      eventName,
+      this.persistentFieldDidUpdate.bind(this)
+    )
   }
   this.setPersistentStore({})
 }
-

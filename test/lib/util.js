@@ -6,7 +6,7 @@ module.exports = {
 }
 
 function timeout (time) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, time || 1500)
   })
 }
@@ -41,8 +41,10 @@ async function pollUntilTruthy (fn, opts = {}) {
   while (!result) {
     // check if timedout
     const now = Date.now()
-    if ((now - start) > timeoutInterval) {
-      throw new Error(`pollUntilTruthy - failed to return truthy within interval`)
+    if (now - start > timeoutInterval) {
+      throw new Error(
+        `pollUntilTruthy - failed to return truthy within interval`
+      )
     }
     // check for result
     result = fn()

@@ -1,7 +1,6 @@
 const assert = require('assert')
 const txUtils = require('../../../../../app/scripts/controllers/transactions/lib/util')
 
-
 describe('txUtils', function () {
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function () {
@@ -39,14 +38,28 @@ describe('txUtils', function () {
 
       assert(!normalizedTxParams.chainId, 'their should be no chainId')
       assert(!normalizedTxParams.to, 'their should be no to address if null')
-      assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hexPrefixd')
-      assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hexPrefixd')
-      assert(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
+      assert.equal(
+        normalizedTxParams.from.slice(0, 2),
+        '0x',
+        'from should be hexPrefixd'
+      )
+      assert.equal(
+        normalizedTxParams.data.slice(0, 2),
+        '0x',
+        'data should be hexPrefixd'
+      )
+      assert(
+        !('random' in normalizedTxParams),
+        'their should be no random key in normalizedTxParams'
+      )
 
       txParams.to = 'a7df1beDBF813f57096dF77FCd515f0B3900e402'
       normalizedTxParams = txUtils.normalizeTxParams(txParams)
-      assert.equal(normalizedTxParams.to.slice(0, 2), '0x', 'to should be hexPrefixd')
-
+      assert.equal(
+        normalizedTxParams.to.slice(0, 2),
+        '0x',
+        'to should be hexPrefixd'
+      )
     })
   })
 
@@ -57,8 +70,17 @@ describe('txUtils', function () {
         to: '0x',
         data: 'bytecode',
       }
-      const sanitizedTxParams = txUtils.validateRecipient(zeroRecipientandDataTxParams)
-      assert.deepEqual(sanitizedTxParams, { from: '0x1678a085c290ebd122dc42cba69373b5953b831d', data: 'bytecode' }, 'no recipient with 0x')
+      const sanitizedTxParams = txUtils.validateRecipient(
+        zeroRecipientandDataTxParams
+      )
+      assert.deepEqual(
+        sanitizedTxParams,
+        {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          data: 'bytecode',
+        },
+        'no recipient with 0x'
+      )
     })
 
     it('should error when recipient is 0x', function () {
@@ -66,29 +88,57 @@ describe('txUtils', function () {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0x',
       }
-      assert.throws(() => { txUtils.validateRecipient(zeroRecipientTxParams) }, Error, 'Invalid recipient address')
+      assert.throws(
+        () => {
+          txUtils.validateRecipient(zeroRecipientTxParams)
+        },
+        Error,
+        'Invalid recipient address'
+      )
     })
   })
 
-
   describe('#validateFrom', () => {
     it('should error when from is not a hex string', function () {
-
       // where from is undefined
       const txParams = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(
+        () => {
+          txUtils.validateFrom(txParams)
+        },
+        Error,
+        `Invalid from address ${txParams.from} not a string`
+      )
 
       // where from is array
       txParams.from = []
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(
+        () => {
+          txUtils.validateFrom(txParams)
+        },
+        Error,
+        `Invalid from address ${txParams.from} not a string`
+      )
 
       // where from is a object
       txParams.from = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(
+        () => {
+          txUtils.validateFrom(txParams)
+        },
+        Error,
+        `Invalid from address ${txParams.from} not a string`
+      )
 
       // where from is a invalid address
       txParams.from = 'im going to fail'
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address`)
+      assert.throws(
+        () => {
+          txUtils.validateFrom(txParams)
+        },
+        Error,
+        `Invalid from address`
+      )
 
       // should run
       txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d'

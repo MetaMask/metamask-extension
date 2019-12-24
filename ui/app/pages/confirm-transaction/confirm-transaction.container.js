@@ -5,17 +5,10 @@ import {
   setTransactionToConfirm,
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import {
-  isTokenMethodAction,
-} from '../../helpers/utils/transactions.util'
-import {
-  fetchBasicGasAndTimeEstimates,
-} from '../../ducks/gas/gas.duck'
+import { isTokenMethodAction } from '../../helpers/utils/transactions.util'
+import { fetchBasicGasAndTimeEstimates } from '../../ducks/gas/gas.duck'
 
-import {
-  getContractMethodData,
-  getTokenParams,
-} from '../../store/actions'
+import { getContractMethodData, getTokenParams } from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
@@ -29,7 +22,9 @@ const mapStateToProps = (state, ownProps) => {
     },
     confirmTransaction,
   } = state
-  const { match: { params = {} } } = ownProps
+  const {
+    match: { params = {} },
+  } = ownProps
   const { id } = params
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state)
@@ -64,13 +59,14 @@ const mapDispatchToProps = dispatch => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
-    getContractMethodData: (data) => dispatch(getContractMethodData(data)),
-    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
+    fetchBasicGasAndTimeEstimates: () =>
+      dispatch(fetchBasicGasAndTimeEstimates()),
+    getContractMethodData: data => dispatch(getContractMethodData(data)),
+    getTokenParams: tokenAddress => dispatch(getTokenParams(tokenAddress)),
   }
 }
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps)
 )(ConfirmTransaction)

@@ -18,10 +18,9 @@ function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: address => {
-      dispatch(actions.removeToken(address))
-        .then(() => {
-          dispatch(actions.hideModal())
-        })
+      dispatch(actions.removeToken(address)).then(() => {
+        dispatch(actions.hideModal())
+      })
     },
   }
 }
@@ -37,8 +36,10 @@ HideTokenConfirmationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmationModal)
-
+module.exports = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HideTokenConfirmationModal)
 
 HideTokenConfirmationModal.prototype.render = function () {
   const { token, network, hideToken, hideModal, assetImages } = this.props
@@ -46,8 +47,7 @@ HideTokenConfirmationModal.prototype.render = function () {
   const image = assetImages[address]
 
   return h('div.hide-token-confirmation', {}, [
-    h('div.hide-token-confirmation__container', {
-    }, [
+    h('div.hide-token-confirmation__container', {}, [
       h('div.hide-token-confirmation__title', {}, [
         this.context.t('hideTokenPrompt'),
       ]),
@@ -67,16 +67,20 @@ HideTokenConfirmationModal.prototype.render = function () {
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
-        h('button.btn-default.hide-token-confirmation__button.btn--large', {
-          onClick: () => hideModal(),
-        }, [
-          this.context.t('cancel'),
-        ]),
-        h('button.btn-secondary.hide-token-confirmation__button.btn--large', {
-          onClick: () => hideToken(address),
-        }, [
-          this.context.t('hide'),
-        ]),
+        h(
+          'button.btn-default.hide-token-confirmation__button.btn--large',
+          {
+            onClick: () => hideModal(),
+          },
+          [this.context.t('cancel')]
+        ),
+        h(
+          'button.btn-secondary.hide-token-confirmation__button.btn--large',
+          {
+            onClick: () => hideToken(address),
+          },
+          [this.context.t('hide')]
+        ),
       ]),
     ]),
   ])

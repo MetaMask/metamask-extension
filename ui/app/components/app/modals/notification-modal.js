@@ -24,38 +24,40 @@ class NotificationModal extends Component {
     const showButtons = showCancelButton || showConfirmButton
 
     return h('div', [
-      h('div.notification-modal__wrapper', {
-      }, [
-
-        h('div.notification-modal__header', {}, [
-          this.context.t(header),
-        ]),
+      h('div.notification-modal__wrapper', {}, [
+        h('div.notification-modal__header', {}, [this.context.t(header)]),
 
         h('div.notification-modal__message-wrapper', {}, [
-          h('div.notification-modal__message', {}, [
-            this.context.t(message),
-          ]),
+          h('div.notification-modal__message', {}, [this.context.t(message)]),
         ]),
 
         h('div.modal-close-x', {
           onClick: hideModal,
         }),
 
-        showButtons && h('div.notification-modal__buttons', [
+        showButtons &&
+          h('div.notification-modal__buttons', [
+            showCancelButton &&
+              h(
+                'div.btn-default.notification-modal__buttons__btn',
+                {
+                  onClick: hideModal,
+                },
+                t('cancel')
+              ),
 
-          showCancelButton && h('div.btn-default.notification-modal__buttons__btn', {
-            onClick: hideModal,
-          }, t('cancel')),
-
-          showConfirmButton && h('div.button.btn-secondary.notification-modal__buttons__btn', {
-            onClick: () => {
-              onConfirm()
-              hideModal()
-            },
-          }, t('confirm')),
-
-        ]),
-
+            showConfirmButton &&
+              h(
+                'div.button.btn-secondary.notification-modal__buttons__btn',
+                {
+                  onClick: () => {
+                    onConfirm()
+                    hideModal()
+                  },
+                },
+                t('confirm')
+              ),
+          ]),
       ]),
     ])
   }
@@ -84,4 +86,3 @@ NotificationModal.contextTypes = {
 }
 
 module.exports = connect(null, mapDispatchToProps)(NotificationModal)
-

@@ -13,7 +13,6 @@ CopyButton.contextTypes = {
 
 module.exports = connect()(CopyButton)
 
-
 inherits(CopyButton, Component)
 function CopyButton () {
   Component.call(this)
@@ -29,32 +28,40 @@ CopyButton.prototype.render = function () {
   const value = props.value
   const copied = state.copied
 
-  const message = copied ? this.context.t('copiedButton') : props.title || this.context.t('copyButton')
+  const message = copied
+    ? this.context.t('copiedButton')
+    : props.title || this.context.t('copyButton')
 
-  return h('.copy-button', {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
+  return h(
+    '.copy-button',
+    {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+      },
     },
-  }, [
-
-    h(Tooltip, {
-      title: message,
-    }, [
-      h('i.fa.fa-clipboard.cursor-pointer.color-orange', {
-        style: {
-          margin: '5px',
+    [
+      h(
+        Tooltip,
+        {
+          title: message,
         },
-        onClick: (event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          copyToClipboard(value)
-          this.debounceRestore()
-        },
-      }),
-    ]),
-
-  ])
+        [
+          h('i.fa.fa-clipboard.cursor-pointer.color-orange', {
+            style: {
+              margin: '5px',
+            },
+            onClick: event => {
+              event.preventDefault()
+              event.stopPropagation()
+              copyToClipboard(value)
+              this.debounceRestore()
+            },
+          }),
+        ]
+      ),
+    ]
+  )
 }
 
 CopyButton.prototype.debounceRestore = function () {

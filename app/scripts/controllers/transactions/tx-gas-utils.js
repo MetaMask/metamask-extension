@@ -1,12 +1,10 @@
 const EthQuery = require('ethjs-query')
-const {
-  hexToBn,
-  BnMultiplyByFraction,
-  bnToHex,
-} = require('../../lib/util')
+const { hexToBn, BnMultiplyByFraction, bnToHex } = require('../../lib/util')
 const log = require('loglevel')
 const { addHexPrefix } = require('ethereumjs-util')
-const { SEND_ETHER_ACTION_KEY } = require('../../../../ui/app/helpers/constants/transactions.js')
+const {
+  SEND_ETHER_ACTION_KEY,
+} = require('../../../../ui/app/helpers/constants/transactions.js')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
@@ -19,7 +17,6 @@ and used to do things like calculate gas of a tx.
 */
 
 class TxGasUtil {
-
   constructor (provider) {
     this.query = new EthQuery(provider)
   }
@@ -32,7 +29,11 @@ class TxGasUtil {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit, getCodeResponse)
+      estimatedGasHex = await this.estimateTxGas(
+        txMeta,
+        block.gasLimit,
+        getCodeResponse
+      )
     } catch (err) {
       log.warn(err)
       txMeta.simulationFails = {
@@ -74,12 +75,15 @@ class TxGasUtil {
     // see if we can set the gas based on the recipient
     if (hasRecipient) {
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-      const categorizedAsSimple = txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
+      const categorizedAsSimple =
+        txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
 
       if (categorizedAsSimple) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
         if (txParams.data) {
-          const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+          const err = new Error(
+            'TxGasUtil - Trying to call a function on a non-contract address'
+          )
           // set error key so ui can display localized error message
           err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
 
@@ -123,7 +127,10 @@ class TxGasUtil {
     }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
-    const recommendedGasHex = this.addGasBuffer(txMeta.estimatedGas, blockGasLimitHex)
+    const recommendedGasHex = this.addGasBuffer(
+      txMeta.estimatedGas,
+      blockGasLimitHex
+    )
     txParams.gas = recommendedGasHex
     return
   }
@@ -144,7 +151,9 @@ class TxGasUtil {
     // if initialGasLimit is above blockGasLimit, dont modify it
     if (initialGasLimitBn.gt(upperGasLimitBn)) return bnToHex(initialGasLimitBn)
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-    if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
+    if (bufferedGasLimitBn.lt(upperGasLimitBn)) {
+      return bnToHex(bufferedGasLimitBn)
+    }
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
   }

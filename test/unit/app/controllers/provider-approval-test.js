@@ -62,17 +62,20 @@ describe('ProviderApprovalController', () => {
         keyringController: mockUnlockedKeyringController,
       })
 
-      const metadata = [{
-        hostname: 'https://example1.com',
-        origin: 'example1.com',
-        siteTitle: 'Example 1',
-        siteImage: 'https://example1.com/logo.svg',
-      }, {
-        hostname: 'https://example2.com',
-        origin: 'example2.com',
-        siteTitle: 'Example 2',
-        siteImage: 'https://example2.com/logo.svg',
-      }]
+      const metadata = [
+        {
+          hostname: 'https://example1.com',
+          origin: 'example1.com',
+          siteTitle: 'Example 1',
+          siteImage: 'https://example1.com/logo.svg',
+        },
+        {
+          hostname: 'https://example2.com',
+          origin: 'example2.com',
+          siteTitle: 'Example 2',
+          siteImage: 'https://example2.com/logo.svg',
+        },
+      ]
 
       controller._handleProviderRequest(metadata[0])
       controller._handleProviderRequest(metadata[1])
@@ -87,17 +90,20 @@ describe('ProviderApprovalController', () => {
         keyringController: mockLockedKeyringController,
       })
 
-      const metadata = [{
-        hostname: 'https://example1.com',
-        origin: 'example1.com',
-        siteTitle: 'Example 1',
-        siteImage: 'https://example1.com/logo.svg',
-      }, {
-        hostname: 'https://example2.com',
-        origin: 'example2.com',
-        siteTitle: 'Example 2',
-        siteImage: 'https://example2.com/logo.svg',
-      }]
+      const metadata = [
+        {
+          hostname: 'https://example1.com',
+          origin: 'example1.com',
+          siteTitle: 'Example 1',
+          siteImage: 'https://example1.com/logo.svg',
+        },
+        {
+          hostname: 'https://example2.com',
+          origin: 'example2.com',
+          siteTitle: 'Example 2',
+          siteImage: 'https://example2.com/logo.svg',
+        },
+      ]
 
       controller._handleProviderRequest(metadata[0])
       controller._handleProviderRequest(metadata[1])

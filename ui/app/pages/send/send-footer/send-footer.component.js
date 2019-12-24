@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes'
 
 export default class SendFooter extends Component {
-
   static propTypes = {
     addToAddressBookIfNew: PropTypes.func,
     amount: PropTypes.string,
@@ -33,7 +35,7 @@ export default class SendFooter extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   onCancel () {
     this.props.clearSend()
@@ -47,7 +49,7 @@ export default class SendFooter extends Component {
       amount,
       data,
       editingTransactionId,
-      from: {address: from},
+      from: { address: from },
       gasLimit: gas,
       gasPrice,
       selectedToken,
@@ -85,27 +87,39 @@ export default class SendFooter extends Component {
       })
       : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
 
-    Promise.resolve(promise)
-      .then(() => {
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Edit Screen',
-            name: 'Complete',
-          },
-          customVariables: {
-            gasChanged: gasEstimateType,
-          },
-        })
-        history.push(CONFIRM_TRANSACTION_ROUTE)
+    Promise.resolve(promise).then(() => {
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Edit Screen',
+          name: 'Complete',
+        },
+        customVariables: {
+          gasChanged: gasEstimateType,
+        },
       })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    })
   }
 
   formShouldBeDisabled () {
-    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit } = this.props
+    const {
+      data,
+      inError,
+      selectedToken,
+      tokenBalance,
+      gasTotal,
+      to,
+      gasLimit,
+    } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
-    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow
+    const shouldBeDisabled =
+      inError ||
+      !gasTotal ||
+      missingTokenBalance ||
+      !(data || to) ||
+      gasLimitTooLow
     return shouldBeDisabled
   }
 
@@ -139,5 +153,4 @@ export default class SendFooter extends Component {
       />
     )
   }
-
 }

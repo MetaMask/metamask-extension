@@ -20,11 +20,14 @@ describe('SendHeader Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendHeader
-      clearSend={propsMethodSpies.clearSend}
-      history={historySpies}
-      titleKey="mockTitleKey"
-    />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+    wrapper = shallow(
+      <SendHeader
+        clearSend={propsMethodSpies.clearSend}
+        history={historySpies}
+        titleKey="mockTitleKey"
+      />,
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+    )
   })
 
   afterEach(() => {
@@ -54,10 +57,7 @@ describe('SendHeader Component', function () {
     })
 
     it('should pass the correct props to PageContainerHeader', () => {
-      const {
-        onClose,
-        title,
-      } = wrapper.find(PageContainerHeader).props()
+      const { onClose, title } = wrapper.find(PageContainerHeader).props()
       assert.equal(title, 'mockTitleKey')
       assert.equal(SendHeader.prototype.onClose.callCount, 0)
       onClose()

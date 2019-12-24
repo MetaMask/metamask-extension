@@ -34,12 +34,12 @@ InputNumber.prototype.setValue = function (newValue) {
   newValue = fixed ? newValue.toFixed(4) : newValue
   const newValueGreaterThanMin = conversionGTE(
     { value: newValue || '0', fromNumericBase: 'dec' },
-    { value: min, fromNumericBase: 'hex' },
+    { value: min, fromNumericBase: 'hex' }
   )
 
   const newValueLessThanMax = conversionLTE(
     { value: newValue || '0', fromNumericBase: 'dec' },
-    { value: max, fromNumericBase: 'hex' },
+    { value: max, fromNumericBase: 'hex' }
   )
   if (newValueGreaterThanMin && newValueLessThanMax) {
     onChange(newValue)
@@ -66,16 +66,24 @@ InputNumber.prototype.render = function () {
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
-      h('div.gas-tooltip-input-arrow-wrapper', {
-        onClick: () => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
-      }, [
-        h('i.fa.fa-angle-up'),
-      ]),
-      h('div.gas-tooltip-input-arrow-wrapper', {
-        onClick: () => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' })),
-      }, [
-        h('i.fa.fa-angle-down'),
-      ]),
+      h(
+        'div.gas-tooltip-input-arrow-wrapper',
+        {
+          onClick: () =>
+            this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
+        },
+        [h('i.fa.fa-angle-up')]
+      ),
+      h(
+        'div.gas-tooltip-input-arrow-wrapper',
+        {
+          onClick: () =>
+            this.setValue(
+              subtractCurrencies(value, step, { toNumericBase: 'dec' })
+            ),
+        },
+        [h('i.fa.fa-angle-down')]
+      ),
     ]),
   ])
 }

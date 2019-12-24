@@ -31,7 +31,6 @@ WalletView.defaultProps = {
 }
 
 function mapStateToProps (state) {
-
   return {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebar.isOpen,
@@ -73,7 +72,8 @@ WalletView.prototype.renderWalletBalance = function () {
   const className = `flex-column wallet-balance-wrapper ${selectedClass}`
 
   return h('div', { className }, [
-    h('div.wallet-balance',
+    h(
+      'div.wallet-balance',
       {
         onClick: () => {
           unsetSelectedToken()
@@ -91,11 +91,7 @@ WalletView.prototype.renderWalletBalance = function () {
 }
 
 WalletView.prototype.renderAddToken = function () {
-  const {
-    sidebarOpen,
-    hideSidebar,
-    history,
-  } = this.props
+  const { sidebarOpen, hideSidebar, history } = this.props
   const { metricsEvent } = this.context
 
   return h(AddTokenButton, {
@@ -131,7 +127,7 @@ WalletView.prototype.render = function () {
     throw new Error('selectedAddress should not be ' + String(selectedAddress))
   }
 
-  const keyring = keyrings.find((kr) => {
+  const keyring = keyrings.find(kr => {
     return kr.accounts.includes(selectedAddress)
   })
 
@@ -148,23 +144,26 @@ WalletView.prototype.render = function () {
     }
   }
 
-  return h('div.wallet-view.flex-column', {
-    style: {},
-    className: responsiveDisplayClassname,
-  }, [
+  return h(
+    'div.wallet-view.flex-column',
+    {
+      style: {},
+      className: responsiveDisplayClassname,
+    },
+    [
+      h(AccountDetails, {
+        label,
+        checksummedAddress,
+        name: identities[selectedAddress].name,
+      }),
 
-    h(AccountDetails, {
-      label,
-      checksummedAddress,
-      name: identities[selectedAddress].name,
-    }),
+      this.renderWalletBalance(),
 
-    this.renderWalletBalance(),
+      h(TokenList),
 
-    h(TokenList),
-
-    this.renderAddToken(),
-  ])
+      this.renderAddToken(),
+    ]
+  )
 }
 
 // TODO: Extra wallets, for dev testing. Remove when PRing to master.

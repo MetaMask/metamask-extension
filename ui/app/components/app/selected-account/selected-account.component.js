@@ -29,7 +29,9 @@ class SelectedAccount extends Component {
       <div className="selected-account">
         <Tooltip
           position="bottom"
-          title={this.state.copied ? t('copiedExclamation') : t('copyToClipboard')}
+          title={
+            this.state.copied ? t('copiedExclamation') : t('copyToClipboard')
+          }
         >
           <div
             className="selected-account__clickable"
@@ -40,10 +42,10 @@ class SelectedAccount extends Component {
             }}
           >
             <div className="selected-account__name">
-              { selectedIdentity.name }
+              {selectedIdentity.name}
             </div>
             <div className="selected-account__address">
-              { addressSlicer(checksummedAddress) }
+              {addressSlicer(checksummedAddress)}
             </div>
           </div>
         </Tooltip>

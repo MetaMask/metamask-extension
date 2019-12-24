@@ -57,8 +57,12 @@ module.exports = class TypedMessageManager extends EventEmitter {
    *
    */
   getUnapprovedMsgs () {
-    return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+    return this.messages
+      .filter(msg => msg.status === 'unapproved')
+      .reduce((result, msg) => {
+        result[msg.id] = msg
+        return result
+      }, {})
   }
 
   /**
@@ -74,16 +78,28 @@ module.exports = class TypedMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req, version) {
     return new Promise((resolve, reject) => {
       const msgId = this.addUnapprovedMessage(msgParams, req, version)
-      this.once(`${msgId}:finished`, (data) => {
+      this.once(`${msgId}:finished`, data => {
         switch (data.status) {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask Message Signature: User denied message signature.'
+              )
+            )
           case 'errored':
-            return reject(new Error(`MetaMask Message Signature: ${data.error}`))
+            return reject(
+              new Error(`MetaMask Message Signature: ${data.error}`)
+            )
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(
+              new Error(
+                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                  msgParams
+                )}`
+              )
+            )
         }
       })
     })
@@ -105,9 +121,11 @@ module.exports = class TypedMessageManager extends EventEmitter {
     // add origin from request
     if (req) msgParams.origin = req.origin
 
-    log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+    log.debug(
+      `TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`
+    )
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
+    var time = new Date().getTime()
     var msgId = createId()
     var msgData = {
       id: msgId,
@@ -136,7 +154,11 @@ module.exports = class TypedMessageManager extends EventEmitter {
         assert.ok('data' in params, 'Params must include a data field.')
         assert.ok('from' in params, 'Params must include a from field.')
         assert.ok(Array.isArray(params.data), 'Data should be an array.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
+        assert.equal(
+          typeof params.from,
+          'string',
+          'From field must be a string.'
+        )
         assert.doesNotThrow(() => {
           sigUtil.typedSignatureHash(params.data)
         }, 'Expected EIP712 typed data')
@@ -147,15 +169,40 @@ module.exports = class TypedMessageManager extends EventEmitter {
         assert.equal(typeof params, 'object', 'Params should be an object.')
         assert.ok('data' in params, 'Params must include a data field.')
         assert.ok('from' in params, 'Params must include a from field.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
-        assert.equal(typeof params.data, 'string', 'Data must be passed as a valid JSON string.')
-        assert.doesNotThrow(() => { data = JSON.parse(params.data) }, 'Data must be passed as a valid JSON string.')
-        const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
-        assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
-        assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
+        assert.equal(
+          typeof params.from,
+          'string',
+          'From field must be a string.'
+        )
+        assert.equal(
+          typeof params.data,
+          'string',
+          'Data must be passed as a valid JSON string.'
+        )
+        assert.doesNotThrow(() => {
+          data = JSON.parse(params.data)
+        }, 'Data must be passed as a valid JSON string.')
+        const validation = jsonschema.validate(
+          data,
+          sigUtil.TYPED_MESSAGE_SCHEMA
+        )
+        assert.ok(
+          data.primaryType in data.types,
+          `Primary type of "${data.primaryType}" has no type definition.`
+        )
+        assert.equal(
+          validation.errors.length,
+          0,
+          'Data must conform to EIP-712 schema. See https://git.io/fNtcx.'
+        )
         const chainId = data.domain.chainId
         const activeChainId = parseInt(this.networkController.getNetworkState())
-        chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
+        chainId &&
+          assert.equal(
+            chainId,
+            activeChainId,
+            `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`
+          )
         break
     }
   }
@@ -278,7 +325,11 @@ module.exports = class TypedMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('TypedMessageManager - Message not found for id: "${msgId}".')
+    if (!msg) {
+      throw new Error(
+        'TypedMessageManager - Message not found for id: "${msgId}".'
+      )
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
@@ -297,7 +348,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
    *
    */
   _updateMsg (msg) {
-    const index = this.messages.findIndex((message) => message.id === msg.id)
+    const index = this.messages.findIndex(message => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }
@@ -313,9 +364,12 @@ module.exports = class TypedMessageManager extends EventEmitter {
    */
   _saveMsgList () {
     const unapprovedTypedMessages = this.getUnapprovedMsgs()
-    const unapprovedTypedMessagesCount = Object.keys(unapprovedTypedMessages).length
-    this.memStore.updateState({ unapprovedTypedMessages, unapprovedTypedMessagesCount })
+    const unapprovedTypedMessagesCount = Object.keys(unapprovedTypedMessages)
+      .length
+    this.memStore.updateState({
+      unapprovedTypedMessages,
+      unapprovedTypedMessagesCount,
+    })
     this.emit('updateBadge')
   }
-
 }

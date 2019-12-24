@@ -16,7 +16,7 @@ module.exports = {
 function migrateFromSnapshotsToDiffs (longHistory) {
   return (
     longHistory
-    // convert non-initial history entries into diffs
+      // convert non-initial history entries into diffs
       .map((entry, index) => {
         if (index === 0) return entry
         return generateHistoryEntry(longHistory[index - 1], entry)
@@ -53,7 +53,9 @@ function generateHistoryEntry (previousState, newState, note) {
 */
 function replayHistory (_shortHistory) {
   const shortHistory = clone(_shortHistory)
-  return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
+  return shortHistory.reduce(
+    (val, entry) => jsonDiffer.applyPatch(val, entry).newDocument
+  )
 }
 
 /**

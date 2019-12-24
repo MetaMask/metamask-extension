@@ -9,12 +9,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   displayForm: form => dispatch(actions.setNewAccountForm(form)),
-  showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
+  showQrView: (selected, identity) =>
+    dispatch(actions.showQrView(selected, identity)),
   showExportPrivateKeyModal: () => {
     dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
   },
   hideModal: () => dispatch(actions.hideModal()),
-  setAccountLabel: (address, label) => dispatch(actions.setAccountLabel(address, label)),
+  setAccountLabel: (address, label) =>
+    dispatch(actions.setAccountLabel(address, label)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAccountPage)

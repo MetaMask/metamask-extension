@@ -14,7 +14,7 @@ const Eth = require('ethjs')
 const KeyringController = require('eth-keyring-controller')
 
 const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 const enLocale = require('../../../../app/_locales/en/messages.json')
 const actions = require('../../../../ui/app/store/actions')
@@ -27,30 +27,30 @@ const middleware = [thunk]
 const mockStore = configureStore(middleware)
 
 describe('Actions', () => {
-
   const noop = () => {}
 
   const currentNetworkId = 42
 
   let background, metamaskController
 
-  const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+  const TEST_SEED =
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
   const password = 'a-fake-password'
-  const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+  const importPrivkey =
+    '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
   beforeEach(async () => {
-
     metamaskController = new MetaMaskController({
       provider,
       keyringController: new KeyringController({}),
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (_, object) {
+        encrypt: function(_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function () {
+        decrypt: function() {
           return Promise.resolve(this.object)
         },
       },
@@ -65,7 +65,9 @@ describe('Actions', () => {
 
     await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-    await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    await metamaskController.importAccountWithStrategy('Private Key', [
+      importPrivkey,
+    ])
 
     background = metamaskController.getApi()
 
@@ -75,7 +77,6 @@ describe('Actions', () => {
   })
 
   describe('#tryUnlockMetamask', () => {
-
     let submitPasswordSpy, verifySeedPhraseSpy
 
     afterEach(() => {
@@ -84,7 +85,6 @@ describe('Actions', () => {
     })
 
     it('calls submitPassword and verifySeedPhrase', async () => {
-
       const store = mockStore({})
 
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
@@ -96,7 +96,6 @@ describe('Actions', () => {
     })
 
     it('errors on submitPassword will fail', async () => {
-
       const store = mockStore({})
 
       const expectedActions = [
@@ -105,7 +104,6 @@ describe('Actions', () => {
         { type: 'UNLOCK_FAILED', value: 'error in submitPassword' },
         { type: 'HIDE_LOADING_INDICATION' },
       ]
-
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
 
@@ -123,8 +121,8 @@ describe('Actions', () => {
 
     it('displays warning error and unlock failed when verifySeed fails', async () => {
       const store = mockStore({})
-      const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
-      const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
+      const displayWarningError = [{ type: 'DISPLAY_WARNING', value: 'error' }]
+      const unlockFailedError = [{ type: 'UNLOCK_FAILED', value: 'error' }]
 
       verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
       verifySeedPhraseSpy.callsFake(callback => {
@@ -136,8 +134,12 @@ describe('Actions', () => {
         assert.fail('Should have thrown error')
       } catch (_) {
         const actions = store.getActions()
-        const warning = actions.filter(action => action.type === 'DISPLAY_WARNING')
-        const unlockFailed = actions.filter(action => action.type === 'UNLOCK_FAILED')
+        const warning = actions.filter(
+          action => action.type === 'DISPLAY_WARNING'
+        )
+        const unlockFailed = actions.filter(
+          action => action.type === 'UNLOCK_FAILED'
+        )
         assert.deepEqual(warning, displayWarningError)
         assert.deepEqual(unlockFailed, unlockFailedError)
       }
@@ -145,7 +147,6 @@ describe('Actions', () => {
   })
 
   describe('#createNewVaultAndRestore', () => {
-
     let createNewVaultAndRestoreSpy
 
     afterEach(() => {
@@ -153,10 +154,12 @@ describe('Actions', () => {
     })
 
     it('restores new vault', async () => {
-
       const store = mockStore({})
 
-      createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
+      createNewVaultAndRestoreSpy = sinon.spy(
+        background,
+        'createNewVaultAndRestore'
+      )
 
       try {
         await store.dispatch(actions.createNewVaultAndRestore())
@@ -175,7 +178,10 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 
-      createNewVaultAndRestoreSpy = sinon.stub(background, 'createNewVaultAndRestore')
+      createNewVaultAndRestoreSpy = sinon.stub(
+        background,
+        'createNewVaultAndRestore'
+      )
 
       createNewVaultAndRestoreSpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
@@ -216,7 +222,7 @@ describe('Actions', () => {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'verifySeedPhrase')
-      submitPasswordSpy.callsFake((callback) => {
+      submitPasswordSpy.callsFake(callback => {
         callback(new Error('error'))
       })
 
@@ -226,7 +232,6 @@ describe('Actions', () => {
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)
       }
-
     })
   })
 
@@ -248,7 +253,9 @@ describe('Actions', () => {
 
       removeAccountSpy = sinon.spy(background, 'removeAccount')
 
-      await store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
+      await store.dispatch(
+        actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+      )
       assert(removeAccountSpy.calledOnce)
       assert.deepEqual(store.getActions(), expectedActions)
     })
@@ -268,12 +275,13 @@ describe('Actions', () => {
       })
 
       try {
-        await store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
+        await store.dispatch(
+          actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+        )
         assert.fail('Should have thrown error')
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)
       }
-
     })
   })
 
@@ -289,10 +297,11 @@ describe('Actions', () => {
     })
 
     it('calls addNewKeyring', () => {
-      const privateKey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
+      const privateKey =
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
 
       const store = mockStore()
-      store.dispatch(actions.addNewKeyring('Simple Key Pair', [ privateKey ]))
+      store.dispatch(actions.addNewKeyring('Simple Key Pair', [privateKey]))
       assert(addNewKeyringSpy.calledOnce)
     })
 
@@ -311,11 +320,9 @@ describe('Actions', () => {
       store.dispatch(actions.addNewKeyring())
       assert.deepEqual(store.getActions(), expectedActions)
     })
-
   })
 
   describe('#resetAccount', () => {
-
     let resetAccountSpy
 
     afterEach(() => {
@@ -323,7 +330,6 @@ describe('Actions', () => {
     })
 
     it('resets account', async () => {
-
       const store = mockStore()
 
       const expectedActions = [
@@ -349,7 +355,7 @@ describe('Actions', () => {
       ]
 
       resetAccountSpy = sinon.stub(background, 'resetAccount')
-      resetAccountSpy.callsFake((callback) => {
+      resetAccountSpy.callsFake(callback => {
         callback(new Error('error'))
       })
 
@@ -363,7 +369,6 @@ describe('Actions', () => {
   })
 
   describe('#importNewAccount', () => {
-
     let importAccountWithStrategySpy
 
     afterEach(() => {
@@ -373,11 +378,15 @@ describe('Actions', () => {
     it('calls importAccountWithStrategies in background', () => {
       const store = mockStore()
 
-      importAccountWithStrategySpy = sinon.spy(background, 'importAccountWithStrategy')
+      importAccountWithStrategySpy = sinon.spy(
+        background,
+        'importAccountWithStrategy'
+      )
 
-      const importPrivkey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
+      const importPrivkey =
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
 
-      store.dispatch(actions.importNewAccount('Private Key', [ importPrivkey ]))
+      store.dispatch(actions.importNewAccount('Private Key', [importPrivkey]))
       assert(importAccountWithStrategySpy.calledOnce)
     })
 
@@ -385,12 +394,18 @@ describe('Actions', () => {
       const store = mockStore()
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: 'This may take a while, please be patient.' },
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          value: 'This may take a while, please be patient.',
+        },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      importAccountWithStrategySpy = sinon.stub(background, 'importAccountWithStrategy')
+      importAccountWithStrategySpy = sinon.stub(
+        background,
+        'importAccountWithStrategy'
+      )
       importAccountWithStrategySpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
@@ -405,7 +420,6 @@ describe('Actions', () => {
   })
 
   describe('#addNewAccount', () => {
-
     it('Adds a new account', () => {
       const store = mockStore({ metamask: devState })
 
@@ -414,11 +428,9 @@ describe('Actions', () => {
       store.dispatch(actions.addNewAccount())
       assert(addNewAccountSpy.calledOnce)
     })
-
   })
 
   describe('#checkHardwareStatus', () => {
-
     let checkHardwareStatusSpy
 
     beforeEach(() => {
@@ -430,10 +442,11 @@ describe('Actions', () => {
     })
 
     it('calls checkHardwareStatus in background', async () => {
-
       const store = mockStore()
 
-      store.dispatch(await actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`))
+      store.dispatch(
+        await actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`)
+      )
       assert.equal(checkHardwareStatusSpy.calledOnce, true)
     })
 
@@ -459,7 +472,6 @@ describe('Actions', () => {
   })
 
   describe('#forgetDevice', () => {
-
     let forgetDeviceSpy
 
     beforeEach(() => {
@@ -471,12 +483,10 @@ describe('Actions', () => {
     })
 
     it('calls forgetDevice in background', () => {
-
       const store = mockStore()
 
       store.dispatch(actions.forgetDevice('ledger'))
       assert.equal(forgetDeviceSpy.calledOnce, true)
-
     })
 
     it('shows loading indicator and displays error', async () => {
@@ -501,7 +511,6 @@ describe('Actions', () => {
   })
 
   describe('#connectHardware', () => {
-
     let connectHardwareSpy
 
     beforeEach(() => {
@@ -513,12 +522,10 @@ describe('Actions', () => {
     })
 
     it('calls connectHardware in background', () => {
-
       const store = mockStore()
 
       store.dispatch(actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`))
       assert.equal(connectHardwareSpy.calledOnce, true)
-
     })
 
     it('shows loading indicator and displays error', async () => {
@@ -543,11 +550,13 @@ describe('Actions', () => {
   })
 
   describe('#unlockHardwareWalletAccount', () => {
-
     let unlockHardwareWalletAccountSpy
 
     beforeEach(() => {
-      unlockHardwareWalletAccountSpy = sinon.stub(background, 'unlockHardwareWalletAccount')
+      unlockHardwareWalletAccountSpy = sinon.stub(
+        background,
+        'unlockHardwareWalletAccount'
+      )
     })
 
     afterEach(() => {
@@ -555,15 +564,15 @@ describe('Actions', () => {
     })
 
     it('calls unlockHardwareWalletAccount in background', () => {
-
       const store = mockStore()
 
-      store.dispatch(actions.unlockHardwareWalletAccount('ledger', 0, `m/44'/60'/0'/0`))
+      store.dispatch(
+        actions.unlockHardwareWalletAccount('ledger', 0, `m/44'/60'/0'/0`)
+      )
       assert.equal(unlockHardwareWalletAccountSpy.calledOnce, true)
-
     })
 
-    it('shows loading indicator and displays error', async() => {
+    it('shows loading indicator and displays error', async () => {
       const store = mockStore()
 
       const expectedActions = [
@@ -571,9 +580,11 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      unlockHardwareWalletAccountSpy.callsFake((deviceName, page, hdPath, callback) => {
-        callback(new Error('error'))
-      })
+      unlockHardwareWalletAccountSpy.callsFake(
+        (deviceName, page, hdPath, callback) => {
+          callback(new Error('error'))
+        }
+      )
 
       try {
         await store.dispatch(actions.unlockHardwareWalletAccount())
@@ -585,7 +596,6 @@ describe('Actions', () => {
   })
 
   describe('#setCurrentCurrency', () => {
-
     let setCurrentCurrencySpy
 
     beforeEach(() => {
@@ -620,12 +630,12 @@ describe('Actions', () => {
   })
 
   describe('#signMsg', () => {
-
     let signMessageSpy, metamaskMsgs, msgId, messages
 
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      data: '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
+      data:
+        '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     }
 
     beforeEach(() => {
@@ -646,7 +656,6 @@ describe('Actions', () => {
       signMessageSpy = sinon.spy(background, 'signMessage')
       store.dispatch(actions.signMsg(msgParams))
       assert(signMessageSpy.calledOnce)
-
     })
 
     it('errors when signMessage in background throws', async () => {
@@ -670,16 +679,15 @@ describe('Actions', () => {
         assert.deepEqual(store.getActions(), expectedActions)
       }
     })
-
   })
 
   describe('#signPersonalMsg', () => {
-
     let signPersonalMessageSpy, metamaskMsgs, msgId, personalMessages
 
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      data: '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
+      data:
+        '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     }
 
     beforeEach(() => {
@@ -701,7 +709,6 @@ describe('Actions', () => {
 
       store.dispatch(actions.signPersonalMsg(msgParams))
       assert(signPersonalMessageSpy.calledOnce)
-
     })
 
     it('throws if signPersonalMessage throws', async () => {
@@ -725,7 +732,6 @@ describe('Actions', () => {
         assert.deepEqual(store.getActions(), expectedActions)
       }
     })
-
   })
 
   describe('#signTypedMsg', () => {
@@ -734,40 +740,40 @@ describe('Actions', () => {
     const msgParamsV3 = {
       from: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       data: JSON.stringify({
-        'types': {
-          'EIP712Domain': [
-            {'name': 'name', 'type': 'string'},
-            {'name': 'version', 'type': 'string'},
-            {'name': 'chainId', 'type': 'uint256'},
-            {'name': 'verifyingContract', 'type': 'address'},
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
           ],
-          'Person': [
-            {'name': 'name', 'type': 'string'},
-            {'name': 'wallet', 'type': 'address'},
+          Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' },
           ],
-          'Mail': [
-            {'name': 'from', 'type': 'Person'},
-            {'name': 'to', 'type': 'Person'},
-            {'name': 'contents', 'type': 'string'},
+          Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' },
           ],
         },
-        'primaryType': 'Mail',
-        'domain': {
-          'name': 'Ether Mainl',
-          'version': '1',
-          'chainId': 1,
-          'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        primaryType: 'Mail',
+        domain: {
+          name: 'Ether Mainl',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
-        'message': {
-          'from': {
-            'name': 'Cow',
-            'wallet': '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+        message: {
+          from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
           },
-          'to': {
-            'name': 'Bob',
-            'wallet': '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+          to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
           },
-          'contents': 'Hello, Bob!',
+          contents: 'Hello, Bob!',
         },
       }),
     }
@@ -814,11 +820,9 @@ describe('Actions', () => {
         assert.deepEqual(store.getActions(), expectedActions)
       }
     })
-
   })
 
   describe('#signTx', () => {
-
     let sendTransactionSpy
 
     beforeEach(() => {
@@ -857,7 +861,10 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
-        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: 'gasLoadingError' } },
+        {
+          type: 'UPDATE_SEND_ERRORS',
+          value: { gasLoadingError: 'gasLoadingError' },
+        },
         { type: 'GAS_LOADING_FINISHED' },
       ]
 
@@ -879,7 +886,6 @@ describe('Actions', () => {
   })
 
   describe('#updatedGasData', () => {
-
     const stub = sinon.stub().returns('0x')
 
     const mockData = {
@@ -917,7 +923,6 @@ describe('Actions', () => {
   })
 
   describe('#signTokenTx', () => {
-
     let tokenSpy
 
     beforeEach(() => {
@@ -937,20 +942,24 @@ describe('Actions', () => {
   })
 
   describe('#updateTransaction', () => {
-
     let updateTransactionSpy, updateTransactionParamsSpy
 
     const txParams = {
-      'from': '0x1',
-      'gas': '0x5208',
-      'gasPrice': '0x3b9aca00',
-      'to': '0x2',
-      'value': '0x0',
+      from: '0x1',
+      gas: '0x5208',
+      gasPrice: '0x3b9aca00',
+      to: '0x2',
+      value: '0x0',
     }
 
-    const txData = { id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: txParams }
+    const txData = {
+      id: '1',
+      status: 'unapproved',
+      metamaskNetworkId: currentNetworkId,
+      txParams: txParams,
+    }
 
-    beforeEach( async () => {
+    beforeEach(async () => {
       await metamaskController.txController.txStateManager.addTx(txData)
     })
 
@@ -965,7 +974,7 @@ describe('Actions', () => {
       updateTransactionSpy = sinon.spy(background, 'updateTransaction')
       updateTransactionParamsSpy = sinon.spy(actions, 'updateTransactionParams')
 
-      const result = [ txData.id, txParams ]
+      const result = [txData.id, txParams]
 
       await store.dispatch(actions.updateTransaction(txData))
       assert(updateTransactionSpy.calledOnce)
@@ -1027,7 +1036,6 @@ describe('Actions', () => {
       } catch (error) {
         assert.deepEqual(store.getActions(), expectedActions)
       }
-
     })
   })
 
@@ -1045,7 +1053,9 @@ describe('Actions', () => {
     it('calls setSelectedAddress in background', () => {
       const store = mockStore({ metamask: devState })
 
-      store.dispatch(actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+      store.dispatch(
+        actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      )
       assert(setSelectedAddressSpy.calledOnce)
     })
 
@@ -1063,7 +1073,6 @@ describe('Actions', () => {
 
       store.dispatch(actions.setSelectedAddress())
       assert.deepEqual(store.getActions(), expectedActions)
-
     })
   })
 
@@ -1141,7 +1150,6 @@ describe('Actions', () => {
   })
 
   describe('#removeToken', () => {
-
     let removeTokenSpy
 
     beforeEach(() => {
@@ -1275,13 +1283,22 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'SHOW_PRIVATE_KEY', value: '7ec73b91bb20f209a7ff2d32f542c3420b4fccf14abcc7840d2eff0ebcb18505' },
+        {
+          type: 'SHOW_PRIVATE_KEY',
+          value:
+            '7ec73b91bb20f209a7ff2d32f542c3420b4fccf14abcc7840d2eff0ebcb18505',
+        },
       ]
 
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
       exportAccountSpy = sinon.spy(background, 'exportAccount')
 
-      await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+      await store.dispatch(
+        actions.exportAccount(
+          password,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+        )
+      )
       assert(submitPasswordSpy.calledOnce)
       assert(exportAccountSpy.calledOnce)
       assert.deepEqual(store.getActions(), expectedActions)
@@ -1301,7 +1318,12 @@ describe('Actions', () => {
       })
 
       try {
-        await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+        await store.dispatch(
+          actions.exportAccount(
+            password,
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+          )
+        )
         assert.fail('Should have thrown error')
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)
@@ -1313,7 +1335,10 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'Had a problem exporting the account.' },
+        {
+          type: 'DISPLAY_WARNING',
+          value: 'Had a problem exporting the account.',
+        },
       ]
 
       exportAccountSpy = sinon.stub(background, 'exportAccount')
@@ -1322,7 +1347,12 @@ describe('Actions', () => {
       })
 
       try {
-        await store.dispatch(actions.exportAccount(password, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+        await store.dispatch(
+          actions.exportAccount(
+            password,
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+          )
+        )
         assert.fail('Should have thrown error')
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)
@@ -1339,7 +1369,12 @@ describe('Actions', () => {
 
     it('calls setAccountLabel', () => {
       const store = mockStore()
-      store.dispatch(actions.setAccountLabel('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', 'test'))
+      store.dispatch(
+        actions.setAccountLabel(
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          'test'
+        )
+      )
       assert(setAccountLabelSpy.calledOnce)
     })
   })
@@ -1349,7 +1384,14 @@ describe('Actions', () => {
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/marketinfo/btc_eth')
-        .reply(200, {pair: 'BTC_ETH', rate: 25.68289016, minerFee: 0.00176, limit: 0.67748474, minimum: 0.00013569, maxLimit: 0.67758573})
+        .reply(200, {
+          pair: 'BTC_ETH',
+          rate: 25.68289016,
+          minerFee: 0.00176,
+          limit: 0.67748474,
+          minimum: 0.00013569,
+          maxLimit: 0.67758573,
+        })
 
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
@@ -1445,11 +1487,12 @@ describe('Actions', () => {
 
     it('errors when getTransactionCount throws', async () => {
       const store = mockStore()
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
+      const expectedActions = [{ type: 'DISPLAY_WARNING', value: 'error' }]
 
-      getTransactionCountSpy = sinon.stub(global.ethQuery, 'getTransactionCount')
+      getTransactionCountSpy = sinon.stub(
+        global.ethQuery,
+        'getTransactionCount'
+      )
       getTransactionCountSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
@@ -1517,7 +1560,10 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'SET_CURRENT_LOCALE', value: { locale: 'en', messages: enLocale }},
+        {
+          type: 'SET_CURRENT_LOCALE',
+          value: { locale: 'en', messages: enLocale },
+        },
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 
@@ -1544,7 +1590,6 @@ describe('Actions', () => {
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions)
       }
-
     })
   })
 
@@ -1573,7 +1618,9 @@ describe('Actions', () => {
     let unMarkPasswordForgottenSpy, forgotPasswordSpy
 
     beforeEach(() => {
-      unMarkPasswordForgottenSpy = sinon.stub(background, 'unMarkPasswordForgotten').returns(forgotPasswordSpy)
+      unMarkPasswordForgottenSpy = sinon
+        .stub(background, 'unMarkPasswordForgotten')
+        .returns(forgotPasswordSpy)
       forgotPasswordSpy = sinon.spy(actions, 'forgotPassword')
     })
 

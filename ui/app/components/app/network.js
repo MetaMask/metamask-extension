@@ -12,7 +12,6 @@ Network.contextTypes = {
 
 module.exports = connect()(Network)
 
-
 inherits(Network, Component)
 
 function Network () {
@@ -55,8 +54,9 @@ Network.prototype.render = function () {
     iconName = 'private-network'
   }
 
-  return (
-    h('div.network-component.pointer', {
+  return h(
+    'div.network-component.pointer',
+    {
       className: classnames({
         'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
@@ -66,12 +66,13 @@ Network.prototype.render = function () {
         'goerli-test-network': providerName === 'goerli',
       }),
       title: hoverText,
-      onClick: (event) => {
+      onClick: event => {
         if (!this.props.disabled) {
           this.props.onClick(event)
         }
       },
-    }, [
+    },
+    [
       (function () {
         switch (iconName) {
           case 'ethereum-network':
@@ -127,25 +128,34 @@ Network.prototype.render = function () {
           default:
             return h('.network-indicator', [
               networkNumber === 'loading'
-                ? h('span.pointer.network-loading-spinner', {
-                  onClick: (event) => this.props.onClick(event),
-                }, [
-                  h('img', {
-                    title: context.t('attemptingConnect'),
-                    src: 'images/loading.svg',
-                  }),
-                ])
+                ? h(
+                  'span.pointer.network-loading-spinner',
+                  {
+                    onClick: event => this.props.onClick(event),
+                  },
+                  [
+                    h('img', {
+                      title: context.t('attemptingConnect'),
+                      src: 'images/loading.svg',
+                    }),
+                  ]
+                )
                 : h('i.fa.fa-question-circle.fa-lg', {
                   style: {
                     color: 'rgb(125, 128, 130)',
                   },
                 }),
 
-              h('.network-name', providerName === 'localhost' ? context.t('localhost') : providerNick || context.t('privateNetwork')),
+              h(
+                '.network-name',
+                providerName === 'localhost'
+                  ? context.t('localhost')
+                  : providerNick || context.t('privateNetwork')
+              ),
               h('.network-indicator__down-arrow'),
             ])
         }
       })(),
-    ])
+    ]
   )
 }

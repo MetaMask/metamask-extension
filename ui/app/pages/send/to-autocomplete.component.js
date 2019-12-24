@@ -1,11 +1,9 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import AccountListItem from './account-list-item/account-list-item.component'
 
-
 export default class ToAutoComplete extends Component {
-
   static propTypes = {
     dropdownOpen: PropTypes.bool,
     openDropdown: PropTypes.func,
@@ -25,22 +23,19 @@ export default class ToAutoComplete extends Component {
   }
 
   getListItemIcon (listItemAddress, toAddress) {
-    return toAddress && listItemAddress === toAddress
-      ? <i className="fa fa-check fa-lg"
+    return toAddress && listItemAddress === toAddress ? (
+      <i
+        className="fa fa-check fa-lg"
         style={{
           color: '#02c9b1',
         }}
       />
-      : null
+    ) : null
   }
 
   renderDropdown () {
-    const {
-      closeDropdown,
-      onChange,
-      to,
-    } = this.props
-    const {accountsToRender} = this.state
+    const { closeDropdown, onChange, to } = this.props
+    const { accountsToRender } = this.state
 
     if (!accountsToRender.length) {
       return null
@@ -48,7 +43,10 @@ export default class ToAutoComplete extends Component {
 
     return (
       <div>
-        <div className="send-v2__from-dropdown__close-area" onClick={closeDropdown} />
+        <div
+          className="send-v2__from-dropdown__close-area"
+          onClick={closeDropdown}
+        />
         <div className="send-v2__from-dropdown__list">
           {accountsToRender.map((account, i) => (
             <AccountListItem
@@ -70,22 +68,19 @@ export default class ToAutoComplete extends Component {
   }
 
   handleInputEvent (event = {}, cb) {
-    const {
-      to,
-      accounts,
-      closeDropdown,
-      openDropdown,
-    } = this.props
+    const { to, accounts, closeDropdown, openDropdown } = this.props
 
-    const matchingAccounts = accounts.filter(({address}) => address.match(to || ''))
+    const matchingAccounts = accounts.filter(({ address }) =>
+      address.match(to || '')
+    )
     const matches = matchingAccounts.length
 
     if (!matches || matchingAccounts[0].address === to) {
-      this.setState({accountsToRender: []})
+      this.setState({ accountsToRender: [] })
       event.target && event.target.select()
       closeDropdown()
     } else {
-      this.setState({accountsToRender: matchingAccounts})
+      this.setState({ accountsToRender: matchingAccounts })
       openDropdown()
     }
     cb && cb(event.target.value)
@@ -98,12 +93,7 @@ export default class ToAutoComplete extends Component {
   }
 
   render () {
-    const {
-      to,
-      dropdownOpen,
-      onChange,
-      inError,
-    } = this.props
+    const { to, dropdownOpen, onChange, inError } = this.props
 
     return (
       <div className="send-v2__to-autocomplete">
@@ -119,23 +109,17 @@ export default class ToAutoComplete extends Component {
             borderColor: inError ? 'red' : null,
           }}
         />
-        {
-          to
-            ? null
-            : <i className="fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret"
-              onClick={() => this.handleInputEvent()}
-              style={{
-                style: {color: '#dedede'},
-              }}
-            />
-        }
-        {
-          dropdownOpen
-            ? this.renderDropdown()
-            : null
-        }
+        {to ? null : (
+          <i
+            className="fa fa-caret-down fa-lg send-v2__to-autocomplete__down-caret"
+            onClick={() => this.handleInputEvent()}
+            style={{
+              style: { color: '#dedede' },
+            }}
+          />
+        )}
+        {dropdownOpen ? this.renderDropdown() : null}
       </div>
     )
   }
-
 }

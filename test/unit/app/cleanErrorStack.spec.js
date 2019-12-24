@@ -2,7 +2,6 @@ const assert = require('assert')
 const cleanErrorStack = require('../../../app/scripts/lib/cleanErrorStack')
 
 describe('Clean Error Stack', () => {
-
   const testMessage = 'Test Message'
   const testError = new Error(testMessage)
   const undefinedErrorName = new Error(testMessage)
@@ -19,7 +18,10 @@ describe('Clean Error Stack', () => {
   })
 
   it('tests error with undefined name', () => {
-    assert.equal(cleanErrorStack(undefinedErrorName).toString(), 'Error: Test Message')
+    assert.equal(
+      cleanErrorStack(undefinedErrorName).toString(),
+      'Error: Test Message'
+    )
   })
 
   it('tests error with blank name', () => {
@@ -29,5 +31,4 @@ describe('Clean Error Stack', () => {
   it('tests error with blank message', () => {
     assert.equal(cleanErrorStack(blankMsgError), 'Error')
   })
-
 })

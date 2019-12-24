@@ -26,7 +26,10 @@ function QrCodeView () {
 QrCodeView.prototype.render = function () {
   const props = this.props
   const { message, data, network } = props.Qr
-  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
+  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(
+    data,
+    network
+  )}`
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
@@ -36,11 +39,16 @@ QrCodeView.prototype.render = function () {
       ? h('.message-container', this.renderMultiMessage())
       : message && h('.qr-header', message),
 
-    this.props.warning ? this.props.warning && h('span.error.flex-center', {
-      style: {
-      },
-    },
-    this.props.warning) : null,
+    this.props.warning
+      ? this.props.warning &&
+        h(
+          'span.error.flex-center',
+          {
+            style: {},
+          },
+          this.props.warning
+        )
+      : null,
 
     h('.div.qr-wrapper', {
       style: {},
@@ -58,6 +66,6 @@ QrCodeView.prototype.render = function () {
 
 QrCodeView.prototype.renderMultiMessage = function () {
   var Qr = this.props.Qr
-  var multiMessage = Qr.message.map((message) => h('.qr-message', message))
+  var multiMessage = Qr.message.map(message => h('.qr-message', message))
   return multiMessage
 }

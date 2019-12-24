@@ -3,7 +3,7 @@
     "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
-    "featureFlags": {"betaUI": true},
+    "featureFlags": { "betaUI": true },
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
@@ -191,7 +191,7 @@
               "path": "/err",
               "value": {
                 "message": "Error: intrinsic gas too low",
-                "stack":"Error: some error"
+                "stack": "Error: some error"
               }
             }
           ]
@@ -1018,8 +1018,8 @@
       "2315363930841932": {
         "id": 2315363930841932,
         "msgParams": {
-          "from":"0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
-          "data":"0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0"
+          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "data": "0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0"
         },
         "time": 1522378539686,
         "status": "unapproved",
@@ -1029,10 +1029,7 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -1044,9 +1041,7 @@
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0xd85a4b6a394794842887b8284293d69163007bbb"
-        ]
+        "accounts": ["0xd85a4b6a394794842887b8284293d69163007bbb"]
       }
     ],
     "selectedAddress": "0xd85a4b6a394794842887b8284293d69163007bbb",
@@ -1054,8 +1049,26 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522347459106},
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq"},"time":1522345459106}
+      {
+        "depositAddress": "34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke",
+        "depositType": "BTC",
+        "key": "shapeshift",
+        "response": {
+          "status": "no_deposits",
+          "address": "34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"
+        },
+        "time": 1522347459106
+      },
+      {
+        "depositAddress": "34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq",
+        "depositType": "BTC",
+        "key": "shapeshift",
+        "response": {
+          "status": "no_deposits",
+          "address": "34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq"
+        },
+        "time": 1522345459106
+      }
     ],
     "send": {},
     "currentLocale": "en",

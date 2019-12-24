@@ -6,7 +6,6 @@ import { WALLET_VIEW_SIDEBAR } from './sidebar.constants'
 import CustomizeGas from '../gas-customization/gas-modal-page-container/'
 
 export default class Sidebar extends Component {
-
   static propTypes = {
     sidebarOpen: PropTypes.bool,
     hideSidebar: PropTypes.func,
@@ -15,18 +14,20 @@ export default class Sidebar extends Component {
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
     onOverlayClose: PropTypes.func,
-  };
+  }
 
   renderOverlay () {
     const { onOverlayClose } = this.props
 
-    return <div
-      className="sidebar-overlay"
-      onClick={() => {
-        onOverlayClose && onOverlayClose()
-        this.props.hideSidebar()
-      }
-      } />
+    return (
+      <div
+        className="sidebar-overlay"
+        onClick={() => {
+          onOverlayClose && onOverlayClose()
+          this.props.hideSidebar()
+        }}
+      />
+    )
   }
 
   renderSidebarContent () {
@@ -36,11 +37,14 @@ export default class Sidebar extends Component {
       case WALLET_VIEW_SIDEBAR:
         return <WalletView responsiveDisplayClassname="sidebar-right" />
       case 'customize-gas':
-        return <div className="sidebar-left"><CustomizeGas transaction={transaction} /></div>
+        return (
+          <div className="sidebar-left">
+            <CustomizeGas transaction={transaction} />
+          </div>
+        )
       default:
         return null
     }
-
   }
 
   componentDidUpdate (prevProps) {
@@ -59,11 +63,12 @@ export default class Sidebar extends Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={200}
         >
-          { sidebarOpen && !sidebarShouldClose ? this.renderSidebarContent() : null }
+          {sidebarOpen && !sidebarShouldClose
+            ? this.renderSidebarContent()
+            : null}
         </ReactCSSTransitionGroup>
-        { sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null }
+        {sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null}
       </div>
     )
   }
-
 }

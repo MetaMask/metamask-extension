@@ -20,7 +20,7 @@ ReadOnlyInput.prototype.render = function () {
 
   const inputType = textarea ? 'textarea' : 'input'
 
-  return h('div', {className: wrapperClass}, [
+  return h('div', { className: wrapperClass }, [
     h(inputType, {
       className: inputClass,
       value,
@@ -30,4 +30,3 @@ ReadOnlyInput.prototype.render = function () {
     }),
   ])
 }
-

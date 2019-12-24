@@ -21,7 +21,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const providerAsMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerAsMiddleware')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const EnsController = require('./controllers/ens')
 const NetworkController = require('./controllers/network')
@@ -45,9 +45,9 @@ const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
 const selectChainId = require('./lib/select-chain-id')
-const {Mutex} = require('await-semaphore')
-const {version} = require('../manifest.json')
-const {BN} = require('ethereumjs-util')
+const { Mutex } = require('await-semaphore')
+const { version } = require('../manifest.json')
+const { BN } = require('ethereumjs-util')
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
@@ -66,7 +66,6 @@ const {
 const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
 
 module.exports = class MetamaskController extends EventEmitter {
-
   /**
    * @constructor
    * @param {Object} opts
@@ -113,7 +112,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // currency controller
-    this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
+    this.currencyRateController = new CurrencyRateController(
+      undefined,
+      initState.CurrencyController
+    )
 
     // infura controller
     this.infuraController = new InfuraController({
@@ -160,7 +162,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+    this.on('controllerConnectionChanged', activeControllerConnections => {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
         this.incomingTransactionsController.start()
@@ -172,7 +174,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
-      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      getNetwork: this.networkController.getNetworkState.bind(
+        this.networkController
+      ),
       initState: initState.CachedBalancesController,
     })
 
@@ -190,11 +194,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
-      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      getNetwork: this.networkController.getNetworkState.bind(
+        this.networkController
+      ),
       encryptor: opts.encryptor || undefined,
     })
 
-    this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
+    this.keyringController.memStore.subscribe(s =>
+      this._onKeyringControllerUpdate(s)
+    )
 
     // detect tokens controller
     this.detectTokensController = new DetectTokensController({
@@ -203,7 +211,10 @@ module.exports = class MetamaskController extends EventEmitter {
       keyringMemStore: this.keyringController.memStore,
     })
 
-    this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
+    this.addressBookController = new AddressBookController(
+      undefined,
+      initState.AddressBookController
+    )
 
     // this.threeBoxController = new ThreeBoxController({
     //   preferencesController: this.preferencesController,
@@ -216,12 +227,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // tx mgmt
     this.txController = new TransactionController({
-      initState: initState.TransactionController || initState.TransactionManager,
+      initState:
+        initState.TransactionController || initState.TransactionManager,
       networkStore: this.networkController.networkStore,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
       getNetwork: this.networkController.getNetworkState.bind(this),
-      signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
+      signTransaction: this.keyringController.signTransaction.bind(
+        this.keyringController
+      ),
       provider: this.provider,
       blockTracker: this.blockTracker,
       getGasPrice: this.getGasPrice.bind(this),
@@ -235,7 +249,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta
         const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
-        if (txReceipt && txReceipt.status === '0x0' && participateInMetaMetrics) {
+        if (
+          txReceipt &&
+          txReceipt.status === '0x0' &&
+          participateInMetaMetrics
+        ) {
           const metamaskState = await this.getState()
           backEndMetaMetricsEvent(metamaskState, {
             customVariables: {
@@ -252,18 +270,26 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
+      this.setCurrentCurrency(
+        this.currencyRateController.state.currentCurrency,
+        function () {}
+      )
     })
 
-    this.shapeshiftController = new ShapeShiftController(undefined, initState.ShapeShiftController)
+    this.shapeshiftController = new ShapeShiftController(
+      undefined,
+      initState.ShapeShiftController
+    )
 
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
-    this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
+    this.typedMessageManager = new TypedMessageManager({
+      networkController: this.networkController,
+    })
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
+    this.on('update', memState => {
       this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
     })
 
@@ -317,7 +343,8 @@ module.exports = class MetamaskController extends EventEmitter {
       OnboardingController: this.onboardingController.store,
       // ProviderApprovalController
       ProviderApprovalController: this.providerApprovalController.store,
-      ProviderApprovalControllerMemStore: this.providerApprovalController.memStore,
+      ProviderApprovalControllerMemStore: this.providerApprovalController
+        .memStore,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       // ThreeBoxController
       // ThreeBoxController: this.threeBoxController.store,
@@ -342,8 +369,12 @@ module.exports = class MetamaskController extends EventEmitter {
       getAccounts: async ({ origin }) => {
         // Expose no accounts if this origin has not been approved, preventing
         // account-requring RPC methods from completing successfully
-        const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'metamask' && !exposeAccounts) { return [] }
+        const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(
+          origin
+        )
+        if (origin !== 'metamask' && !exposeAccounts) {
+          return []
+        }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -362,9 +393,12 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
-      getPendingTransactionByHash: (hash) => this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
+      getPendingTransactionByHash: hash =>
+        this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
     }
-    const providerProxy = this.networkController.initializeProvider(providerOpts)
+    const providerProxy = this.networkController.initializeProvider(
+      providerOpts
+    )
     return providerProxy
   }
 
@@ -381,7 +415,8 @@ module.exports = class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState())
 
     publicConfigStore.destroy = () => {
-      this.removeEventListener && this.removeEventListener('update', updatePublicConfigStore)
+      this.removeEventListener &&
+        this.removeEventListener('update', updatePublicConfigStore)
     }
 
     function updatePublicConfigStore (memState) {
@@ -389,7 +424,13 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore.putState(publicState)
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding, provider }) {
+    function selectPublicState ({
+      isUnlocked,
+      selectedAddress,
+      network,
+      completedOnboarding,
+      provider,
+    }) {
       const isEnabled = checkIsEnabled()
       const isReady = isUnlocked && isEnabled
       const result = {
@@ -444,7 +485,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     return {
       // etc
-      getState: (cb) => cb(null, this.getState()),
+      getState: cb => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
@@ -455,7 +496,7 @@ module.exports = class MetamaskController extends EventEmitter {
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      getGasPrice: (cb) => cb(null, this.getGasPrice()),
+      getGasPrice: cb => cb(null, this.getGasPrice()),
 
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -473,7 +514,10 @@ module.exports = class MetamaskController extends EventEmitter {
       connectHardware: nodeify(this.connectHardware, this),
       forgetDevice: nodeify(this.forgetDevice, this),
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
-      unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
+      unlockHardwareWalletAccount: nodeify(
+        this.unlockHardwareWalletAccount,
+        this
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -482,49 +526,105 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(this.submitPassword, this),
 
       // network management
-      setProviderType: nodeify(networkController.setProviderType, networkController),
+      setProviderType: nodeify(
+        networkController.setProviderType,
+        networkController
+      ),
       setCustomRpc: nodeify(this.setCustomRpc, this),
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
-      setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
+      setSelectedAddress: nodeify(
+        preferencesController.setSelectedAddress,
+        preferencesController
+      ),
       addToken: nodeify(preferencesController.addToken, preferencesController),
-      removeToken: nodeify(preferencesController.removeToken, preferencesController),
-      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
-      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
-      setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
-      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
-      setPreference: nodeify(preferencesController.setPreference, preferencesController),
-      completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
-      addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-      unsetMigratedPrivacyMode: nodeify(preferencesController.unsetMigratedPrivacyMode, preferencesController),
+      removeToken: nodeify(
+        preferencesController.removeToken,
+        preferencesController
+      ),
+      removeSuggestedTokens: nodeify(
+        preferencesController.removeSuggestedTokens,
+        preferencesController
+      ),
+      setCurrentAccountTab: nodeify(
+        preferencesController.setCurrentAccountTab,
+        preferencesController
+      ),
+      setAccountLabel: nodeify(
+        preferencesController.setAccountLabel,
+        preferencesController
+      ),
+      setFeatureFlag: nodeify(
+        preferencesController.setFeatureFlag,
+        preferencesController
+      ),
+      setPreference: nodeify(
+        preferencesController.setPreference,
+        preferencesController
+      ),
+      completeOnboarding: nodeify(
+        preferencesController.completeOnboarding,
+        preferencesController
+      ),
+      addKnownMethodData: nodeify(
+        preferencesController.addKnownMethodData,
+        preferencesController
+      ),
+      unsetMigratedPrivacyMode: nodeify(
+        preferencesController.unsetMigratedPrivacyMode,
+        preferencesController
+      ),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
-      setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
-      removeFromAddressBook: this.addressBookController.delete.bind(this.addressBookController),
+      setAddressBook: nodeify(
+        this.addressBookController.set,
+        this.addressBookController
+      ),
+      removeFromAddressBook: this.addressBookController.delete.bind(
+        this.addressBookController
+      ),
 
       // AppStateController
-      setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
-      setMkrMigrationReminderTimestamp: nodeify(this.appStateController.setMkrMigrationReminderTimestamp, this.appStateController),
+      setLastActiveTime: nodeify(
+        this.appStateController.setLastActiveTime,
+        this.appStateController
+      ),
+      setMkrMigrationReminderTimestamp: nodeify(
+        this.appStateController.setMkrMigrationReminderTimestamp,
+        this.appStateController
+      ),
 
       // EnsController
-      tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),
+      tryReverseResolveAddress: nodeify(
+        this.ensController.reverseResolveAddress,
+        this.ensController
+      ),
 
       // KeyringController
       setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
-      addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
-      exportAccount: nodeify(keyringController.exportAccount, keyringController),
+      addNewKeyring: nodeify(
+        keyringController.addNewKeyring,
+        keyringController
+      ),
+      exportAccount: nodeify(
+        keyringController.exportAccount,
+        keyringController
+      ),
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
-      updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
+      updateAndApproveTransaction: nodeify(
+        txController.updateAndApproveTransaction,
+        txController
+      ),
       retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
@@ -547,12 +647,21 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       // provider approval
-      approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(providerApprovalController),
-      rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(providerApprovalController),
-      clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
+      approveProviderRequestByOrigin: providerApprovalController.approveProviderRequestByOrigin.bind(
+        providerApprovalController
+      ),
+      rejectProviderRequestByOrigin: providerApprovalController.rejectProviderRequestByOrigin.bind(
+        providerApprovalController
+      ),
+      clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(
+        providerApprovalController
+      ),
 
       // onboarding controller
-      setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+      setSeedPhraseBackedUp: nodeify(
+        onboardingController.setSeedPhraseBackedUp,
+        onboardingController
+      ),
 
       // 3Box
       // setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
@@ -563,10 +672,12 @@ module.exports = class MetamaskController extends EventEmitter {
       // initializeThreeBox: nodeify(this.initializeThreeBox, this),
 
       // a/b test controller
-      getAssignedABTestGroupName: nodeify(abTestController.getAssignedABTestGroupName, abTestController),
+      getAssignedABTestGroupName: nodeify(
+        abTestController.getAssignedABTestGroupName,
+        abTestController
+      ),
     }
   }
-
 
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
@@ -622,13 +733,21 @@ module.exports = class MetamaskController extends EventEmitter {
       // clear known identities
       this.preferencesController.setAddresses([])
       // create new vault
-      const vault = await keyringController.createNewVaultAndRestore(password, seed)
+      const vault = await keyringController.createNewVaultAndRestore(
+        password,
+        seed
+      )
 
       const ethQuery = new EthQuery(this.provider)
       accounts = await keyringController.getAccounts()
-      lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
+      lastBalance = await this.getBalance(
+        accounts[accounts.length - 1],
+        ethQuery
+      )
 
-      const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+      const primaryKeyring = keyringController.getKeyringsByType(
+        'HD Key Tree'
+      )[0]
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found')
       }
@@ -637,7 +756,10 @@ module.exports = class MetamaskController extends EventEmitter {
       while (lastBalance !== '0x0') {
         await keyringController.addNewAccount(primaryKeyring)
         accounts = await keyringController.getAccounts()
-        lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
+        lastBalance = await this.getBalance(
+          accounts[accounts.length - 1],
+          ethQuery
+        )
       }
 
       // set new identities
@@ -697,13 +819,16 @@ module.exports = class MetamaskController extends EventEmitter {
       const checksummedAddress = ethUtil.toChecksumAddress(address)
       filteredAccountTokens[checksummedAddress] = {}
       Object.keys(accountTokens[address]).forEach(
-        networkType => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
-          accountTokens[address][networkType] :
-          accountTokens[address][networkType].filter(({ address }) => {
-            const tokenAddress = ethUtil.toChecksumAddress(address)
-            return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
-          })
-        )
+        networkType =>
+          (filteredAccountTokens[checksummedAddress][networkType] =
+            networkType !== 'mainnet'
+              ? accountTokens[address][networkType]
+              : accountTokens[address][networkType].filter(({ address }) => {
+                const tokenAddress = ethUtil.toChecksumAddress(address)
+                return contractMap[tokenAddress]
+                  ? contractMap[tokenAddress].erc20
+                  : true
+              }))
       )
     })
 
@@ -720,7 +845,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
+      hd: hdAccounts
+        .filter((item, pos) => hdAccounts.indexOf(item) === pos)
+        .map(address => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
@@ -732,9 +859,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // delete tx for other accounts that we're not importing
     transactions = transactions.filter(tx => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
-      return (
-        accounts.hd.includes(checksummedTxFrom)
-      )
+      return accounts.hd.includes(checksummedTxFrom)
     })
 
     return {
@@ -758,7 +883,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
-    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter(
+      keyring => keyring.type !== 'Simple Key Pair'
+    )
     if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
@@ -813,7 +940,9 @@ module.exports = class MetamaskController extends EventEmitter {
         keyringName = LedgerBridgeKeyring.type
         break
       default:
-        throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
+        throw new Error(
+          'MetamaskController:getKeyringForDevice - Unknown device'
+        )
     }
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
     if (!keyring) {
@@ -826,7 +955,6 @@ module.exports = class MetamaskController extends EventEmitter {
     keyring.network = this.networkController.getProviderConfig().type
 
     return keyring
-
   }
 
   /**
@@ -851,7 +979,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // Merge with existing accounts
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts()
-    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+    const accountsToTrack = [
+      ...new Set(
+        oldAccounts.concat(accounts.map(a => a.address.toLowerCase()))
+      ),
+    ]
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
   }
@@ -872,7 +1004,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice (deviceName) {
-
     const keyring = await this.getKeyringForDevice(deviceName)
     keyring.forgetDevice()
     return true
@@ -894,7 +1025,13 @@ module.exports = class MetamaskController extends EventEmitter {
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
         // Set the account label to Trezor 1 /  Ledger 1, etc
-        this.preferencesController.setAccountLabel(address, `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${parseInt(index, 10) + 1}`)
+        this.preferencesController.setAccountLabel(
+          address,
+          `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${parseInt(
+            index,
+            10
+          ) + 1}`
+        )
         // Select the account
         this.preferencesController.setSelectedAddress(address)
       }
@@ -903,7 +1040,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
   }
-
 
   //
   // Account Management
@@ -915,7 +1051,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount () {
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const primaryKeyring = this.keyringController.getKeyringsByType(
+      'HD Key Tree'
+    )[0]
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
@@ -927,14 +1065,14 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.verifySeedPhrase()
 
     this.preferencesController.setAddresses(newAccounts)
-    newAccounts.forEach((address) => {
+    newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
         this.preferencesController.setSelectedAddress(address)
       }
     })
 
-    const {identities} = this.preferencesController.store.getState()
-    return {...keyState, identities}
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
   }
 
   /**
@@ -947,8 +1085,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase () {
-
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const primaryKeyring = this.keyringController.getKeyringsByType(
+      'HD Key Tree'
+    )[0]
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
@@ -1002,7 +1141,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return address
   }
 
-
   /**
    * Imports an account with the specified import strategy.
    * These are defined in app/scripts/account-import-strategies
@@ -1014,7 +1152,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy (strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args)
-    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    const keyring = await this.keyringController.addNewKeyring(
+      'Simple Key Pair',
+      [privateKey]
+    )
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()
@@ -1050,7 +1191,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb = The callback function called with the signature.
    */
   newUnsignedMessage (msgParams, req) {
-    const promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req)
+    const promise = this.messageManager.addUnapprovedMessageAsync(
+      msgParams,
+      req
+    )
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
@@ -1068,14 +1212,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
-    return this.messageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-      // signs the message
+    return this.messageManager
+      .approveMessage(msgParams)
+      .then(cleanMsgParams => {
+        // signs the message
         return this.keyringController.signMessage(cleanMsgParams)
       })
-      .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
+      .then(rawSig => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
         this.messageManager.setMsgStatusSigned(msgId, rawSig)
         return this.getState()
       })
@@ -1108,7 +1253,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * Passed back to the requesting Dapp.
    */
   async newUnsignedPersonalMessage (msgParams, req) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(msgParams, req)
+    const promise = this.personalMessageManager.addUnapprovedMessageAsync(
+      msgParams,
+      req
+    )
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
@@ -1126,14 +1274,15 @@ module.exports = class MetamaskController extends EventEmitter {
     const msgId = msgParams.metamaskId
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
-    return this.personalMessageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-      // signs the message
+    return this.personalMessageManager
+      .approveMessage(msgParams)
+      .then(cleanMsgParams => {
+        // signs the message
         return this.keyringController.signPersonalMessage(cleanMsgParams)
       })
-      .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
+      .then(rawSig => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
         this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
         return this.getState()
       })
@@ -1161,7 +1310,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - The callback function, called with the signature.
    */
   newUnsignedTypedMessage (msgParams, req, version) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req, version)
+    const promise = this.typedMessageManager.addUnapprovedMessageAsync(
+      msgParams,
+      req,
+      version
+    )
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
@@ -1179,7 +1332,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const msgId = msgParams.metamaskId
     const version = msgParams.version
     try {
-      const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
+      const cleanMsgParams = await this.typedMessageManager.approveMessage(
+        msgParams
+      )
 
       // For some reason every version after V1 used stringified params.
       if (version !== 'V1') {
@@ -1189,7 +1344,10 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
 
-      const signature = await this.keyringController.signTypedMessage(cleanMsgParams, { version })
+      const signature = await this.keyringController.signTypedMessage(
+        cleanMsgParams,
+        { version }
+      )
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
     } catch (error) {
@@ -1226,7 +1384,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   restoreOldVaultAccounts (migratorOutput) {
     const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
+    return this.keyringController
+      .restoreKeyring(serialized)
       .then(() => migratorOutput)
   }
 
@@ -1274,7 +1433,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
     try {
-      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+      await this.txController.createCancelTransaction(
+        originalTxId,
+        customGasPrice
+      )
       const state = await this.getState()
       return state
     } catch (error) {
@@ -1283,20 +1445,26 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   async createSpeedUpTransaction (originalTxId, customGasPrice) {
-    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
+    await this.txController.createSpeedUpTransaction(
+      originalTxId,
+      customGasPrice
+    )
     const state = await this.getState()
     return state
   }
 
   estimateGas (estimateGasParams) {
     return new Promise((resolve, reject) => {
-      return this.txController.txGasUtil.query.estimateGas(estimateGasParams, (err, res) => {
-        if (err) {
-          return reject(err)
-        }
+      return this.txController.txGasUtil.query.estimateGas(
+        estimateGasParams,
+        (err, res) => {
+          if (err) {
+            return reject(err)
+          }
 
-        return resolve(res)
-      })
+          return resolve(res)
+        }
+      )
     })
   }
 
@@ -1349,7 +1517,12 @@ module.exports = class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
     // connect features
     const publicApi = this.setupPublicApi(mux.createStream('publicApi'))
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl, extensionId, publicApi)
+    this.setupProviderConnection(
+      mux.createStream('provider'),
+      senderUrl,
+      extensionId,
+      publicApi
+    )
     this.setupPublicConfig(mux.createStream('publicConfig'), senderUrl)
   }
 
@@ -1397,21 +1570,16 @@ module.exports = class MetamaskController extends EventEmitter {
     this.activeControllerConnections++
     this.emit('controllerConnectionChanged', this.activeControllerConnections)
     // connect dnode api to remote connection
-    pump(
-      outStream,
-      dnode,
-      outStream,
-      (err) => {
-        // report new active controller connection
-        this.activeControllerConnections--
-        this.emit('controllerConnectionChanged', this.activeControllerConnections)
-        // report any error
-        if (err) log.error(err)
-      }
-    )
-    dnode.on('remote', (remote) => {
+    pump(outStream, dnode, outStream, err => {
+      // report new active controller connection
+      this.activeControllerConnections--
+      this.emit('controllerConnectionChanged', this.activeControllerConnections)
+      // report any error
+      if (err) log.error(err)
+    })
+    dnode.on('remote', remote => {
       // push updates to popup
-      const sendUpdate = (update) => remote.sendUpdate(update)
+      const sendUpdate = update => remote.sendUpdate(update)
       this.on('update', sendUpdate)
       // remove update listener once the connection ends
       dnode.on('end', () => this.removeListener('update', sendUpdate))
@@ -1428,25 +1596,24 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupProviderConnection (outStream, senderUrl, extensionId, publicApi) {
     const getSiteMetadata = publicApi && publicApi.getSiteMetadata
-    const engine = this.setupProviderEngine(senderUrl, extensionId, getSiteMetadata)
+    const engine = this.setupProviderEngine(
+      senderUrl,
+      extensionId,
+      getSiteMetadata
+    )
 
     // setup connection
     const providerStream = createEngineStream({ engine })
 
-    pump(
-      outStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
-            mid.destroy()
-          }
-        })
-        if (err) log.error(err)
-      }
-    )
+    pump(outStream, providerStream, outStream, err => {
+      // handle any middleware cleanup
+      engine._middleware.forEach(mid => {
+        if (mid.destroy && typeof mid.destroy === 'function') {
+          mid.destroy()
+        }
+      })
+      if (err) log.error(err)
+    })
   }
 
   /**
@@ -1463,8 +1630,13 @@ module.exports = class MetamaskController extends EventEmitter {
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
 
     // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
-    subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
+    const subscriptionManager = createSubscriptionManager({
+      provider,
+      blockTracker,
+    })
+    subscriptionManager.events.on('notification', message =>
+      engine.emit('notification', message)
+    )
 
     // metadata
     engine.push(createOriginMiddleware({ origin }))
@@ -1473,13 +1645,19 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
     // watch asset
-    engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    engine.push(
+      this.preferencesController.requestWatchAsset.bind(
+        this.preferencesController
+      )
+    )
     // requestAccounts
-    engine.push(this.providerApprovalController.createMiddleware({
-      senderUrl,
-      extensionId,
-      getSiteMetadata,
-    }))
+    engine.push(
+      this.providerApprovalController.createMiddleware({
+        senderUrl,
+        extensionId,
+        getSiteMetadata,
+      })
+    )
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
@@ -1499,19 +1677,18 @@ module.exports = class MetamaskController extends EventEmitter {
   setupPublicConfig (outStream, senderUrl) {
     const configStore = this.createPublicConfigStore({
       // check the providerApprovalController's approvedOrigins
-      checkIsEnabled: () => this.providerApprovalController.shouldExposeAccounts(senderUrl.hostname),
+      checkIsEnabled: () =>
+        this.providerApprovalController.shouldExposeAccounts(
+          senderUrl.hostname
+        ),
     })
     const configStream = asStream(configStore)
 
-    pump(
-      configStream,
-      outStream,
-      (err) => {
-        configStore.destroy()
-        configStream.destroy()
-        if (err) log.error(err)
-      }
-    )
+    pump(configStream, outStream, err => {
+      configStore.destroy()
+      configStream.destroy()
+      if (err) log.error(err)
+    })
   }
 
   /**
@@ -1523,15 +1700,10 @@ module.exports = class MetamaskController extends EventEmitter {
   setupPublicApi (outStream) {
     const dnode = Dnode()
     // connect dnode api to remote connection
-    pump(
-      outStream,
-      dnode,
-      outStream,
-      (err) => {
-        // report any error
-        if (err) log.error(err)
-      }
-    )
+    pump(outStream, dnode, outStream, err => {
+      // report any error
+      if (err) log.error(err)
+    })
 
     const getRemote = createDnodeRemoteGetter(dnode)
 
@@ -1553,8 +1725,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate (state) {
-    const {isUnlocked, keyrings} = state
-    const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+    const { isUnlocked, keyrings } = state
+    const addresses = keyrings.reduce(
+      (acc, { accounts }) => acc.concat(accounts),
+      []
+    )
 
     if (!addresses.length) {
       return
@@ -1598,17 +1773,18 @@ module.exports = class MetamaskController extends EventEmitter {
       return '0x' + GWEI_BN.toString(16)
     }
 
-    const lowestPrices = recentBlocks.map((block) => {
-      if (!block.gasPrices || block.gasPrices.length < 1) {
-        return GWEI_BN
-      }
-      return block.gasPrices
-        .map(hexPrefix => hexPrefix.substr(2))
-        .map(hex => new BN(hex, 16))
-        .sort((a, b) => {
-          return a.gt(b) ? 1 : -1
-        })[0]
-    })
+    const lowestPrices = recentBlocks
+      .map(block => {
+        if (!block.gasPrices || block.gasPrices.length < 1) {
+          return GWEI_BN
+        }
+        return block.gasPrices
+          .map(hexPrefix => hexPrefix.substr(2))
+          .map(hex => new BN(hex, 16))
+          .sort((a, b) => {
+            return a.gt(b) ? 1 : -1
+          })[0]
+      })
       .map(number => number.div(GWEI_BN).toNumber())
 
     const percentileNum = percentile(65, lowestPrices)
@@ -1622,7 +1798,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns Promise<number>
    */
   async getPendingNonce (address) {
-    const { nonceDetails, releaseLock } = await this.txController.nonceTracker.getNonceLock(address)
+    const {
+      nonceDetails,
+      releaseLock,
+    } = await this.txController.nonceTracker.getNonceLock(address)
     const pendingNonce = nonceDetails.params.highestSuggested
 
     releaseLock()
@@ -1703,12 +1882,29 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
 
-  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname, rpcPrefs })
-    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname, rpcPrefs)
+  async updateAndSetCustomRpc (
+    rpcUrl,
+    chainId,
+    ticker = 'ETH',
+    nickname,
+    rpcPrefs
+  ) {
+    await this.preferencesController.updateRpc({
+      rpcUrl,
+      chainId,
+      ticker,
+      nickname,
+      rpcPrefs,
+    })
+    this.networkController.setRpcTarget(
+      rpcUrl,
+      chainId,
+      ticker,
+      nickname,
+      rpcPrefs
+    )
     return rpcUrl
   }
-
 
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
@@ -1718,15 +1914,41 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+  async setCustomRpc (
+    rpcTarget,
+    chainId,
+    ticker = 'ETH',
+    nickname = '',
+    rpcPrefs = {}
+  ) {
     const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail()
-    const rpcSettings = frequentRpcListDetail.find((rpc) => rpcTarget === rpc.rpcUrl)
+    const rpcSettings = frequentRpcListDetail.find(
+      rpc => rpcTarget === rpc.rpcUrl
+    )
 
     if (rpcSettings) {
-      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname, rpcPrefs)
+      this.networkController.setRpcTarget(
+        rpcSettings.rpcUrl,
+        rpcSettings.chainId,
+        rpcSettings.ticker,
+        rpcSettings.nickname,
+        rpcPrefs
+      )
     } else {
-      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname, rpcPrefs)
-      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname, rpcPrefs)
+      this.networkController.setRpcTarget(
+        rpcTarget,
+        chainId,
+        ticker,
+        nickname,
+        rpcPrefs
+      )
+      await this.preferencesController.addToFrequentRpcList(
+        rpcTarget,
+        chainId,
+        ticker,
+        nickname,
+        rpcPrefs
+      )
     }
     return rpcTarget
   }
@@ -1778,7 +2000,9 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setParticipateInMetaMetrics (bool, cb) {
     try {
-      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
+      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(
+        bool
+      )
       cb(null, metaMetricsId)
     } catch (err) {
       cb(err)
@@ -1807,7 +2031,6 @@ module.exports = class MetamaskController extends EventEmitter {
       cb(err)
     }
   }
-
 
   /**
    * A method for setting a user's current locale, affecting the language rendered.
@@ -1860,13 +2083,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-  * Creates RPC engine middleware for processing eth_signTypedData requests
-  *
-  * @param {Object} req - request object
-  * @param {Object} res - response object
-  * @param {Function} - next
-  * @param {Function} - end
-  */
+   * Creates RPC engine middleware for processing eth_signTypedData requests
+   *
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @param {Function} - next
+   * @param {Function} - end
+   */
 
   /**
    * Adds a domain to the PhishingController whitelist

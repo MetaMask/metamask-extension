@@ -25,23 +25,26 @@ describe('SendAmountRow Component', function () {
   let instance
 
   beforeEach(() => {
-    wrapper = shallow(<SendAmountRow
-      amount="mockAmount"
-      amountConversionRate="mockAmountConversionRate"
-      balance="mockBalance"
-      conversionRate={7}
-      convertedCurrency="mockConvertedCurrency"
-      gasTotal="mockGasTotal"
-      inError={false}
-      primaryCurrency="mockPrimaryCurrency"
-      selectedToken={ { address: 'mockTokenAddress' } }
-      setMaxModeTo={propsMethodSpies.setMaxModeTo}
-      tokenBalance="mockTokenBalance"
-      updateGasFeeError={propsMethodSpies.updateGasFeeError}
-      updateSendAmount={propsMethodSpies.updateSendAmount}
-      updateSendAmountError={propsMethodSpies.updateSendAmountError}
-      updateGas={propsMethodSpies.updateGas}
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow(
+      <SendAmountRow
+        amount="mockAmount"
+        amountConversionRate="mockAmountConversionRate"
+        balance="mockBalance"
+        conversionRate={7}
+        convertedCurrency="mockConvertedCurrency"
+        gasTotal="mockGasTotal"
+        inError={false}
+        primaryCurrency="mockPrimaryCurrency"
+        selectedToken={{ address: 'mockTokenAddress' }}
+        setMaxModeTo={propsMethodSpies.setMaxModeTo}
+        tokenBalance="mockTokenBalance"
+        updateGasFeeError={propsMethodSpies.updateGasFeeError}
+        updateSendAmount={propsMethodSpies.updateSendAmount}
+        updateSendAmountError={propsMethodSpies.updateSendAmountError}
+        updateGas={propsMethodSpies.updateGas}
+      />,
+      { context: { t: str => str + '_t' } }
+    )
     instance = wrapper.instance()
   })
 
@@ -55,14 +58,12 @@ describe('SendAmountRow Component', function () {
   })
 
   describe('validateAmount', () => {
-
     it('should call updateSendAmountError with the correct params', () => {
       assert.equal(propsMethodSpies.updateSendAmountError.callCount, 0)
       instance.validateAmount('someAmount')
       assert.equal(propsMethodSpies.updateSendAmountError.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.updateSendAmountError.getCall(0).args,
-        [{
+      assert.deepEqual(propsMethodSpies.updateSendAmountError.getCall(0).args, [
+        {
           amount: 'someAmount',
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
@@ -71,17 +72,16 @@ describe('SendAmountRow Component', function () {
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
-        }]
-      )
+        },
+      ])
     })
 
     it('should call updateGasFeeError if selectedToken is truthy', () => {
       assert.equal(propsMethodSpies.updateGasFeeError.callCount, 0)
       instance.validateAmount('someAmount')
       assert.equal(propsMethodSpies.updateGasFeeError.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.updateGasFeeError.getCall(0).args,
-        [{
+      assert.deepEqual(propsMethodSpies.updateGasFeeError.getCall(0).args, [
+        {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 7,
@@ -89,8 +89,8 @@ describe('SendAmountRow Component', function () {
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
-        }]
-      )
+        },
+      ])
     })
 
     it('should call not updateGasFeeError if selectedToken is falsey', () => {
@@ -99,31 +99,24 @@ describe('SendAmountRow Component', function () {
       instance.validateAmount('someAmount')
       assert.equal(propsMethodSpies.updateGasFeeError.callCount, 0)
     })
-
   })
 
   describe('updateAmount', () => {
-
     it('should call setMaxModeTo', () => {
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 0)
       instance.updateAmount('someAmount')
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.setMaxModeTo.getCall(0).args,
-        [false]
-      )
+      assert.deepEqual(propsMethodSpies.setMaxModeTo.getCall(0).args, [false])
     })
 
     it('should call updateSendAmount', () => {
       assert.equal(propsMethodSpies.updateSendAmount.callCount, 0)
       instance.updateAmount('someAmount')
       assert.equal(propsMethodSpies.updateSendAmount.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.updateSendAmount.getCall(0).args,
-        ['someAmount']
-      )
+      assert.deepEqual(propsMethodSpies.updateSendAmount.getCall(0).args, [
+        'someAmount',
+      ])
     })
-
   })
 
   describe('render', () => {
@@ -132,11 +125,9 @@ describe('SendAmountRow Component', function () {
     })
 
     it('should pass the correct props to SendRowWrapper', () => {
-      const {
-        errorType,
-        label,
-        showError,
-      } = wrapper.find(SendRowWrapper).props()
+      const { errorType, label, showError } = wrapper
+        .find(SendRowWrapper)
+        .props()
 
       assert.equal(errorType, 'amount')
 
@@ -146,42 +137,47 @@ describe('SendAmountRow Component', function () {
     })
 
     it('should render an AmountMaxButton as the first child of the SendRowWrapper', () => {
-      assert(wrapper.find(SendRowWrapper).childAt(0).is(AmountMaxButton))
+      assert(
+        wrapper
+          .find(SendRowWrapper)
+          .childAt(0)
+          .is(AmountMaxButton)
+      )
     })
 
     it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
-      assert(wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput))
+      assert(
+        wrapper
+          .find(SendRowWrapper)
+          .childAt(1)
+          .is(UserPreferencedTokenInput)
+      )
     })
 
     it('should render the UserPreferencedTokenInput with the correct props', () => {
-      const {
-        onBlur,
-        onChange,
-        error,
-        value,
-      } = wrapper.find(SendRowWrapper).childAt(1).props()
+      const { onBlur, onChange, error, value } = wrapper
+        .find(SendRowWrapper)
+        .childAt(1)
+        .props()
       assert.equal(error, false)
       assert.equal(value, 'mockAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 0)
       assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
       onBlur('mockNewAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 1)
-      assert.deepEqual(
-        SendAmountRow.prototype.updateGas.getCall(0).args,
-        ['mockNewAmount']
-      )
+      assert.deepEqual(SendAmountRow.prototype.updateGas.getCall(0).args, [
+        'mockNewAmount',
+      ])
       assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
-      assert.deepEqual(
-        SendAmountRow.prototype.updateAmount.getCall(0).args,
-        ['mockNewAmount']
-      )
+      assert.deepEqual(SendAmountRow.prototype.updateAmount.getCall(0).args, [
+        'mockNewAmount',
+      ])
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
       onChange('mockNewAmount')
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
-      assert.deepEqual(
-        SendAmountRow.prototype.validateAmount.getCall(0).args,
-        ['mockNewAmount']
-      )
+      assert.deepEqual(SendAmountRow.prototype.validateAmount.getCall(0).args, [
+        'mockNewAmount',
+      ])
     })
   })
 })

@@ -8,13 +8,25 @@ module.exports = createLoggerMiddleware
  * @returns {Function}
  */
 function createLoggerMiddleware (opts) {
-  return function loggerMiddleware (/** @type {any} */ req, /** @type {any} */ res, /** @type {Function} */ next) {
+  return function loggerMiddleware (
+    /** @type {any} */ req,
+    /** @type {any} */ res,
+    /** @type {Function} */ next
+  ) {
     next((/** @type {Function} */ cb) => {
       if (res.error) {
-        log.error('Error in RPC response:\n', { ...res, method: req.method, params: req.params })
+        log.error('Error in RPC response:\n', {
+          ...res,
+          method: req.method,
+          params: req.params,
+        })
       }
       if (req.isMetamaskInternal) return
-      log.info(`RPC (${opts.origin}):`, req, '->', { ...res, method: req.method, params: req.params })
+      log.info(`RPC (${opts.origin}):`, req, '->', {
+        ...res,
+        method: req.method,
+        params: req.params,
+      })
       cb()
     })
   }

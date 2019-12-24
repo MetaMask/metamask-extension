@@ -16,15 +16,14 @@ export default class ConnectedSiteRow extends PureComponent {
   }
 
   render () {
-    const {
-      origin,
-      onDelete,
-    } = this.props
+    const { origin, onDelete } = this.props
 
     return (
       <div className="connected-site-row">
         <div className="connected-site-row__origin">{origin}</div>
-        <div className="connected-site-row__delete" onClick={onDelete}><i className="fa fa-trash" /></div>
+        <div className="connected-site-row__delete" onClick={onDelete}>
+          <i className="fa fa-trash" />
+        </div>
       </div>
     )
   }

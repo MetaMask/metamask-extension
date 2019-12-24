@@ -27,13 +27,16 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   getTokenName (name, symbol) {
-    return typeof name === 'undefined'
-      ? symbol
-      : `${name} (${symbol})`
+    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`
   }
 
   render () {
-    const { addToken, pendingTokens, removeSuggestedTokens, history } = this.props
+    const {
+      addToken,
+      pendingTokens,
+      removeSuggestedTokens,
+      history,
+    } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
 
@@ -41,51 +44,48 @@ export default class ConfirmAddSuggestedToken extends Component {
       <div className="page-container">
         <div className="page-container__header">
           <div className="page-container__title">
-            { this.context.t('addSuggestedTokens') }
+            {this.context.t('addSuggestedTokens')}
           </div>
           <div className="page-container__subtitle">
-            { this.context.t('likeToAddTokens') }
+            {this.context.t('likeToAddTokens')}
           </div>
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
             <div className="confirm-add-token__header">
               <div className="confirm-add-token__token">
-                { this.context.t('token') }
+                {this.context.t('token')}
               </div>
               <div className="confirm-add-token__balance">
-                { this.context.t('balance') }
+                {this.context.t('balance')}
               </div>
             </div>
             <div className="confirm-add-token__token-list">
-              {
-                Object.entries(pendingTokens)
-                  .map(([ address, token ]) => {
-                    const { name, symbol, image } = token
+              {Object.entries(pendingTokens).map(([address, token]) => {
+                const { name, symbol, image } = token
 
-                    return (
-                      <div
-                        className="confirm-add-token__token-list-item"
-                        key={address}
-                      >
-                        <div className="confirm-add-token__token confirm-add-token__data">
-                          <Identicon
-                            className="confirm-add-token__token-icon"
-                            diameter={48}
-                            address={address}
-                            image={image}
-                          />
-                          <div className="confirm-add-token__name">
-                            { this.getTokenName(name, symbol) }
-                          </div>
-                        </div>
-                        <div className="confirm-add-token__balance">
-                          <TokenBalance token={token} />
-                        </div>
+                return (
+                  <div
+                    className="confirm-add-token__token-list-item"
+                    key={address}
+                  >
+                    <div className="confirm-add-token__token confirm-add-token__data">
+                      <Identicon
+                        className="confirm-add-token__token-icon"
+                        diameter={48}
+                        address={address}
+                        image={image}
+                      />
+                      <div className="confirm-add-token__name">
+                        {this.getTokenName(name, symbol)}
                       </div>
-                    )
-                  })
-              }
+                    </div>
+                    <div className="confirm-add-token__balance">
+                      <TokenBalance token={token} />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -96,11 +96,10 @@ export default class ConfirmAddSuggestedToken extends Component {
               large
               className="page-container__footer-button"
               onClick={() => {
-                removeSuggestedTokens()
-                  .then(() => history.push(DEFAULT_ROUTE))
+                removeSuggestedTokens().then(() => history.push(DEFAULT_ROUTE))
               }}
             >
-              { this.context.t('cancel') }
+              {this.context.t('cancel')}
             </Button>
             <Button
               type="secondary"
@@ -112,7 +111,7 @@ export default class ConfirmAddSuggestedToken extends Component {
                   .then(() => history.push(DEFAULT_ROUTE))
               }}
             >
-              { this.context.t('addToken') }
+              {this.context.t('addToken')}
             </Button>
           </header>
         </div>

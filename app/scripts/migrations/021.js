@@ -31,4 +31,3 @@ function transformState (state) {
   delete newState.RecentBlocks
   return newState
 }
-

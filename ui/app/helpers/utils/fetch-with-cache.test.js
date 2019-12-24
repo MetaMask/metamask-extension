@@ -23,7 +23,9 @@ describe('Fetch with cache', () => {
       .get('/price')
       .reply(200, '{"average": 1}')
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price'
+    )
     assert.deepEqual(response, {
       average: 1,
     })
@@ -41,7 +43,9 @@ describe('Fetch with cache', () => {
       },
     })
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price'
+    )
     assert.deepEqual(response, {
       average: 1,
     })
@@ -59,7 +63,11 @@ describe('Fetch with cache', () => {
       },
     })
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { cacheRefreshTime: 123 })
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+      {},
+      { cacheRefreshTime: 123 }
+    )
     assert.deepEqual(response, {
       average: 3,
     })
@@ -72,7 +80,11 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 4}')
 
     try {
-      await fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { timeout: 20 })
+      await fetchWithCache(
+        'https://fetchwithcache.metamask.io/price',
+        {},
+        { timeout: 20 }
+      )
       assert.fail('Request should be aborted')
     } catch (e) {
       assert.deepEqual(e.message, 'Aborted')
@@ -98,7 +110,9 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 7}')
 
     try {
-      await fetchWithCache('https://fetchwithcache.metamask.io/price', { method: 'POST' })
+      await fetchWithCache('https://fetchwithcache.metamask.io/price', {
+        method: 'POST',
+      })
       assert.fail('Request should throw')
     } catch (e) {
       assert.ok(e)
@@ -124,7 +138,9 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 9}')
 
     try {
-      await fetch('https://fetchwithcache.metamask.io/price', { headers: { 'Content-Type': 'text/plain' } })
+      await fetch('https://fetchwithcache.metamask.io/price', {
+        headers: { 'Content-Type': 'text/plain' },
+      })
       assert.fail('Request should throw')
     } catch (e) {
       assert.ok(e)

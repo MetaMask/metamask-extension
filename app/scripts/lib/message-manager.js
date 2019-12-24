@@ -23,7 +23,6 @@ const createId = require('./random-id')
  */
 
 module.exports = class MessageManager extends EventEmitter {
-
   /**
    * Controller in charge of managing - storing, adding, removing, updating - Messages.
    *
@@ -61,8 +60,12 @@ module.exports = class MessageManager extends EventEmitter {
    *
    */
   getUnapprovedMsgs () {
-    return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+    return this.messages
+      .filter(msg => msg.status === 'unapproved')
+      .reduce((result, msg) => {
+        result[msg.id] = msg
+        return result
+      }, {})
   }
 
   /**
@@ -78,14 +81,24 @@ module.exports = class MessageManager extends EventEmitter {
     return new Promise((resolve, reject) => {
       const msgId = this.addUnapprovedMessage(msgParams, req)
       // await finished
-      this.once(`${msgId}:finished`, (data) => {
+      this.once(`${msgId}:finished`, data => {
         switch (data.status) {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask Message Signature: User denied message signature.'
+              )
+            )
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(
+              new Error(
+                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                  msgParams
+                )}`
+              )
+            )
         }
       })
     })
@@ -105,7 +118,7 @@ module.exports = class MessageManager extends EventEmitter {
     if (req) msgParams.origin = req.origin
     msgParams.data = normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
+    var time = new Date().getTime()
     var msgId = createId()
     var msgData = {
       id: msgId,
@@ -219,7 +232,9 @@ module.exports = class MessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    if (!msg) {
+      throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
@@ -237,7 +252,7 @@ module.exports = class MessageManager extends EventEmitter {
    *
    */
   _updateMsg (msg) {
-    const index = this.messages.findIndex((message) => message.id === msg.id)
+    const index = this.messages.findIndex(message => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }
@@ -257,7 +272,6 @@ module.exports = class MessageManager extends EventEmitter {
     this.memStore.updateState({ unapprovedMsgs, unapprovedMsgCount })
     this.emit('updateBadge')
   }
-
 }
 
 /**

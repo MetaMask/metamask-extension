@@ -25,10 +25,7 @@ export default class MenuBar extends PureComponent {
 
     return (
       <div className="menu-bar">
-        <Tooltip
-          title={t('menu')}
-          position="bottom"
-        >
+        <Tooltip title={t('menu')} position="bottom">
           <div
             className="menu-bar__sidebar-button"
             onClick={() => {
@@ -45,10 +42,7 @@ export default class MenuBar extends PureComponent {
         </Tooltip>
         <SelectedAccount />
 
-        <Tooltip
-          title={t('accountOptions')}
-          position="bottom"
-        >
+        <Tooltip title={t('accountOptions')} position="bottom">
           <div
             className="menu-bar__open-in-browser"
             onClick={() => {
@@ -61,18 +55,15 @@ export default class MenuBar extends PureComponent {
               })
               this.setState({ accountDetailsMenuOpen: true })
             }}
-          >
-          </div>
+          ></div>
         </Tooltip>
 
-        {
-          accountDetailsMenuOpen && (
-            <AccountDetailsDropdown
-              className="menu-bar__account-details-dropdown"
-              onClose={() => this.setState({ accountDetailsMenuOpen: false })}
-            />
-          )
-        }
+        {accountDetailsMenuOpen && (
+          <AccountDetailsDropdown
+            className="menu-bar__account-details-dropdown"
+            onClose={() => this.setState({ accountDetailsMenuOpen: false })}
+          />
+        )}
       </div>
     )
   }

@@ -4,7 +4,9 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
-const { getNetworkDisplayName } = require('../../../../../app/scripts/controllers/network/util')
+const {
+  getNetworkDisplayName,
+} = require('../../../../../app/scripts/controllers/network/util')
 
 import Button from '../../ui/button'
 
@@ -25,10 +27,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toWyre: (address) => {
+    toWyre: address => {
       dispatch(actions.buyEth({ service: 'wyre', address, amount: 0 }))
     },
-    toCoinSwitch: (address) => {
+    toCoinSwitch: address => {
       dispatch(actions.buyEth({ service: 'coinswitch', address }))
     },
     hideModal: () => {
@@ -64,7 +66,6 @@ DepositEtherModal.contextTypes = {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(DepositEtherModal)
 
-
 DepositEtherModal.prototype.facuetRowText = function (networkName) {
   return this.context.t('getEtherFromFaucet', [networkName])
 }
@@ -86,38 +87,46 @@ DepositEtherModal.prototype.renderRow = function ({
     return null
   }
 
-  return h('div', {
-    className: className || 'deposit-ether-modal__buy-row',
-  }, [
+  return h(
+    'div',
+    {
+      className: className || 'deposit-ether-modal__buy-row',
+    },
+    [
+      onBackClick &&
+        showBackButton &&
+        h(
+          'div.deposit-ether-modal__buy-row__back',
+          {
+            onClick: onBackClick,
+          },
+          [h('i.fa.fa-arrow-left.cursor-pointer')]
+        ),
 
-    onBackClick && showBackButton && h('div.deposit-ether-modal__buy-row__back', {
-      onClick: onBackClick,
-    }, [
+      h('div.deposit-ether-modal__buy-row__logo-container', [logo]),
 
-      h('i.fa.fa-arrow-left.cursor-pointer'),
+      h('div.deposit-ether-modal__buy-row__description', [
+        !hideTitle &&
+          h('div.deposit-ether-modal__buy-row__description__title', [title]),
 
-    ]),
+        h('div.deposit-ether-modal__buy-row__description__text', [text]),
+      ]),
 
-    h('div.deposit-ether-modal__buy-row__logo-container', [logo]),
-
-    h('div.deposit-ether-modal__buy-row__description', [
-
-      !hideTitle && h('div.deposit-ether-modal__buy-row__description__title', [title]),
-
-      h('div.deposit-ether-modal__buy-row__description__text', [text]),
-
-    ]),
-
-    !hideButton && h('div.deposit-ether-modal__buy-row__button', [
-      h(Button, {
-        type: 'secondary',
-        className: 'deposit-ether-modal__deposit-button',
-        large: true,
-        onClick: onButtonClick,
-      }, [buttonLabel]),
-    ]),
-
-  ])
+      !hideButton &&
+        h('div.deposit-ether-modal__buy-row__button', [
+          h(
+            Button,
+            {
+              type: 'secondary',
+              className: 'deposit-ether-modal__deposit-button',
+              large: true,
+              onClick: onButtonClick,
+            },
+            [buttonLabel]
+          ),
+        ]),
+    ]
+  )
 }
 
 DepositEtherModal.prototype.render = function () {
@@ -126,84 +135,81 @@ DepositEtherModal.prototype.render = function () {
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
 
-  return h('div.page-container.page-container--full-width.page-container--full-height', {}, [
+  return h(
+    'div.page-container.page-container--full-width.page-container--full-height',
+    {},
+    [
+      h('div.page-container__header', [
+        h('div.page-container__title', [this.context.t('depositEther')]),
 
-    h('div.page-container__header', [
+        h('div.page-container__subtitle', [
+          this.context.t('needEtherInWallet'),
+        ]),
 
-      h('div.page-container__title', [this.context.t('depositEther')]),
-
-      h('div.page-container__subtitle', [
-        this.context.t('needEtherInWallet'),
+        h('div.page-container__header-close', {
+          onClick: () => {
+            this.props.hideWarning()
+            this.props.hideModal()
+          },
+        }),
       ]),
 
-      h('div.page-container__header-close', {
-        onClick: () => {
-          this.props.hideWarning()
-          this.props.hideModal()
-        },
-      }),
-
-    ]),
-
-    h('.page-container__content', {}, [
-
-      h('div.deposit-ether-modal__buy-rows', [
-
-        this.renderRow({
-          logo: h('img.deposit-ether-modal__logo', {
-            src: './images/deposit-eth.svg',
-            style: {
-              height: '75px',
-              width: '75px',
-            },
+      h('.page-container__content', {}, [
+        h('div.deposit-ether-modal__buy-rows', [
+          this.renderRow({
+            logo: h('img.deposit-ether-modal__logo', {
+              src: './images/deposit-eth.svg',
+              style: {
+                height: '75px',
+                width: '75px',
+              },
+            }),
+            title: DIRECT_DEPOSIT_ROW_TITLE,
+            text: DIRECT_DEPOSIT_ROW_TEXT,
+            buttonLabel: this.context.t('viewAccount'),
+            onButtonClick: () => this.goToAccountDetailsModal(),
           }),
-          title: DIRECT_DEPOSIT_ROW_TITLE,
-          text: DIRECT_DEPOSIT_ROW_TEXT,
-          buttonLabel: this.context.t('viewAccount'),
-          onButtonClick: () => this.goToAccountDetailsModal(),
-        }),
 
-        this.renderRow({
-          logo: h('i.fa.fa-tint.fa-2x'),
-          title: FAUCET_ROW_TITLE,
-          text: this.facuetRowText(networkName),
-          buttonLabel: this.context.t('getEther'),
-          onButtonClick: () => toFaucet(network),
-          hide: !isTestNetwork,
-        }),
-
-        this.renderRow({
-          logo: h('div.deposit-ether-modal__logo', {
-            style: {
-              backgroundImage: 'url(\'./images/wyre.svg\')',
-              height: '40px',
-            },
+          this.renderRow({
+            logo: h('i.fa.fa-tint.fa-2x'),
+            title: FAUCET_ROW_TITLE,
+            text: this.facuetRowText(networkName),
+            buttonLabel: this.context.t('getEther'),
+            onButtonClick: () => toFaucet(network),
+            hide: !isTestNetwork,
           }),
-          title: WYRE_ROW_TITLE,
-          text: WYRE_ROW_TEXT,
-          buttonLabel: this.context.t('continueToWyre'),
-          onButtonClick: () => toWyre(address),
-          hide: isTestNetwork,
-        }),
 
-        this.renderRow({
-          logo: h('div.deposit-ether-modal__logo', {
-            style: {
-              backgroundImage: 'url(\'./images/coinswitch_logo.png\')',
-              height: '40px',
-            },
+          this.renderRow({
+            logo: h('div.deposit-ether-modal__logo', {
+              style: {
+                backgroundImage: "url('./images/wyre.svg')",
+                height: '40px',
+              },
+            }),
+            title: WYRE_ROW_TITLE,
+            text: WYRE_ROW_TEXT,
+            buttonLabel: this.context.t('continueToWyre'),
+            onButtonClick: () => toWyre(address),
+            hide: isTestNetwork,
           }),
-          title: COINSWITCH_ROW_TITLE,
-          text: COINSWITCH_ROW_TEXT,
-          buttonLabel: this.context.t('continueToCoinSwitch'),
-          onButtonClick: () => toCoinSwitch(address),
-          hide: isTestNetwork,
-        }),
 
+          this.renderRow({
+            logo: h('div.deposit-ether-modal__logo', {
+              style: {
+                backgroundImage: "url('./images/coinswitch_logo.png')",
+                height: '40px',
+              },
+            }),
+            title: COINSWITCH_ROW_TITLE,
+            text: COINSWITCH_ROW_TEXT,
+            buttonLabel: this.context.t('continueToCoinSwitch'),
+            onButtonClick: () => toCoinSwitch(address),
+            hide: isTestNetwork,
+          }),
+        ]),
       ]),
-
-    ]),
-  ])
+    ]
+  )
 }
 
 DepositEtherModal.prototype.goToAccountDetailsModal = function () {

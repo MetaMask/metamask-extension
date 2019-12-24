@@ -5,11 +5,9 @@ import withTokenTracker from '../../../helpers/higher-order-components/with-toke
 import { getSelectedAddress, getDaiV1Token } from '../../../selectors/selectors'
 import { setMkrMigrationReminderTimestamp } from '../../../store/actions'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const {
-    metamask: {
-      mkrMigrationReminderTimestamp,
-    },
+    metamask: { mkrMigrationReminderTimestamp },
   } = state
 
   const userAddress = getSelectedAddress(state)
@@ -22,13 +20,14 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    setMkrMigrationReminderTimestamp: (t) => dispatch(setMkrMigrationReminderTimestamp(t)),
+    setMkrMigrationReminderTimestamp: t =>
+      dispatch(setMkrMigrationReminderTimestamp(t)),
   }
 }
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withTokenTracker,
+  withTokenTracker
 )(DaiMigrationNotification)

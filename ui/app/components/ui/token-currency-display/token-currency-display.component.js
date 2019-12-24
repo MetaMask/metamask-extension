@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import CurrencyDisplay from '../currency-display'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
-import { getTokenValue, calcTokenAmount } from '../../../helpers/utils/token-util'
+import {
+  getTokenValue,
+  calcTokenAmount,
+} from '../../../helpers/utils/token-util'
 
 export default class TokenCurrencyDisplay extends PureComponent {
   static propTypes = {

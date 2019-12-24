@@ -3,7 +3,7 @@ module.exports = createDnodeRemoteGetter
 function createDnodeRemoteGetter (dnode) {
   let remote
 
-  dnode.once('remote', (_remote) => {
+  dnode.once('remote', _remote => {
     remote = _remote
   })
 

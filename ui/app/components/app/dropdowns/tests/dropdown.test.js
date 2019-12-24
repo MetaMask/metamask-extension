@@ -13,10 +13,9 @@ describe('Dropdown', () => {
     wrapper = shallow(
       <DropdownMenuItem
         onClick={onClickSpy}
-        style={{test: 'style'}}
+        style={{ test: 'style' }}
         closeMenu={closeMenuSpy}
-      >
-      </DropdownMenuItem>
+      ></DropdownMenuItem>
     )
   })
 
@@ -33,5 +32,4 @@ describe('Dropdown', () => {
     assert.equal(onClickSpy.callCount, 1)
     assert.equal(closeMenuSpy.callCount, 1)
   })
-
 })

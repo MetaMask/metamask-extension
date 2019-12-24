@@ -1,10 +1,7 @@
 import assert from 'assert'
-import {
-  getFromDropdownOpen,
-} from '../send-from-row.selectors.js'
+import { getFromDropdownOpen } from '../send-from-row.selectors.js'
 
 describe('send-from-row selectors', () => {
-
   describe('getFromDropdownOpen()', () => {
     it('should get send.fromDropdownOpen', () => {
       const state = {
@@ -16,5 +13,4 @@ describe('send-from-row selectors', () => {
       assert.equal(getFromDropdownOpen(state), null)
     })
   })
-
 })

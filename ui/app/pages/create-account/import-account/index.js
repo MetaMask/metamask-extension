@@ -9,13 +9,11 @@ import Select from 'react-select'
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
-
 AccountImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
 module.exports = connect()(AccountImportSubview)
-
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
@@ -23,10 +21,7 @@ function AccountImportSubview () {
 }
 
 AccountImportSubview.prototype.getMenuItemTexts = function () {
-  return [
-    this.context.t('privateKey'),
-    this.context.t('jsonFile'),
-  ]
+  return [this.context.t('privateKey'), this.context.t('jsonFile')]
 }
 
 AccountImportSubview.prototype.render = function () {
@@ -34,49 +29,52 @@ AccountImportSubview.prototype.render = function () {
   const menuItems = this.getMenuItemTexts()
   const { type } = state
 
-  return (
-    h('div.new-account-import-form', [
-
-      h('.new-account-import-disclaimer', [
-        h('span', this.context.t('importAccountMsg')),
-        h('span', {
+  return h('div.new-account-import-form', [
+    h('.new-account-import-disclaimer', [
+      h('span', this.context.t('importAccountMsg')),
+      h(
+        'span',
+        {
           style: {
             cursor: 'pointer',
             textDecoration: 'underline',
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+              url:
+                'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
             })
           },
-        }, this.context.t('here')),
-      ]),
+        },
+        this.context.t('here')
+      ),
+    ]),
 
-      h('div.new-account-import-form__select-section', [
+    h('div.new-account-import-form__select-section', [
+      h(
+        'div.new-account-import-form__select-label',
+        this.context.t('selectType')
+      ),
 
-        h('div.new-account-import-form__select-label', this.context.t('selectType')),
-
-        h(Select, {
-          className: 'new-account-import-form__select',
-          name: 'import-type-select',
-          clearable: false,
-          value: type || menuItems[0],
-          options: menuItems.map((type) => {
-            return {
-              value: type,
-              label: type,
-            }
-          }),
-          onChange: (opt) => {
-            this.setState({ type: opt.value })
-          },
+      h(Select, {
+        className: 'new-account-import-form__select',
+        name: 'import-type-select',
+        clearable: false,
+        value: type || menuItems[0],
+        options: menuItems.map(type => {
+          return {
+            value: type,
+            label: type,
+          }
         }),
+        onChange: opt => {
+          this.setState({ type: opt.value })
+        },
+      }),
+    ]),
 
-      ]),
-
-      this.renderImportView(),
-    ])
-  )
+    this.renderImportView(),
+  ])
 }
 
 AccountImportSubview.prototype.renderImportView = function () {

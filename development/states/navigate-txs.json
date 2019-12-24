@@ -66,10 +66,7 @@
           "length": 1,
           "negative": 0,
           "red": null,
-          "words": [
-            34061,
-            null
-          ]
+          "words": [34061, null]
         },
         "gasLimitSpecified": false,
         "gasPriceSpecified": true,

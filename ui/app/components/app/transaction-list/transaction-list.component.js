@@ -40,8 +40,9 @@ export default class TransactionList extends PureComponent {
     updateNetworkNonce()
 
     if (transactionTimeFeatureActive && pendingTransactions.length) {
-      fetchBasicGasAndTimeEstimates()
-        .then(({ blockTime }) => fetchGasEstimates(blockTime))
+      fetchBasicGasAndTimeEstimates().then(({ blockTime }) =>
+        fetchGasEstimates(blockTime)
+      )
     }
   }
 
@@ -59,12 +60,19 @@ export default class TransactionList extends PureComponent {
       updateNetworkNonce()
     }
 
-    const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
-    const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0
+    const transactionTimeFeatureWasActivated =
+      !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
+    const pendingTransactionAdded =
+      pendingTransactions.length > 0 && prevPendingTransactions.length === 0
 
-    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && (transactionTimeFeatureWasActivated || pendingTransactionAdded)) {
-      fetchBasicGasAndTimeEstimates()
-        .then(({ blockTime }) => fetchGasEstimates(blockTime))
+    if (
+      transactionTimeFeatureActive &&
+      pendingTransactions.length > 0 &&
+      (transactionTimeFeatureWasActivated || pendingTransactionAdded)
+    ) {
+      fetchBasicGasAndTimeEstimates().then(({ blockTime }) =>
+        fetchGasEstimates(blockTime)
+      )
     }
   }
 
@@ -87,31 +95,23 @@ export default class TransactionList extends PureComponent {
 
     return (
       <div className="transaction-list__transactions">
-        {
-          pendingLength > 0 && (
-            <div className="transaction-list__pending-transactions">
-              <div className="transaction-list__header">
-                { `${t('queue')} (${pendingTransactions.length})` }
-              </div>
-              {
-                pendingTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index, true)
-                ))
-              }
+        {pendingLength > 0 && (
+          <div className="transaction-list__pending-transactions">
+            <div className="transaction-list__header">
+              {`${t('queue')} (${pendingTransactions.length})`}
             </div>
-          )
-        }
-        <div className="transaction-list__completed-transactions">
-          <div className="transaction-list__header">
-            { t('history') }
+            {pendingTransactions.map((transactionGroup, index) =>
+              this.renderTransaction(transactionGroup, index, true)
+            )}
           </div>
-          {
-            completedTransactions.length > 0
-              ? completedTransactions.map((transactionGroup, index) => (
-                this.renderTransaction(transactionGroup, index)
-              ))
-              : this.renderEmpty()
-          }
+        )}
+        <div className="transaction-list__completed-transactions">
+          <div className="transaction-list__header">{t('history')}</div>
+          {completedTransactions.length > 0
+            ? completedTransactions.map((transactionGroup, index) =>
+              this.renderTransaction(transactionGroup, index)
+            )
+            : this.renderEmpty()}
         </div>
       </div>
     )
@@ -121,31 +121,32 @@ export default class TransactionList extends PureComponent {
     const { selectedToken, assetImages, firstPendingTransactionId } = this.props
     const { transactions = [] } = transactionGroup
 
-    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
-      ? (
-        <ShapeShiftTransactionListItem
-          { ...transactions[0] }
-          key={`shapeshift${index}`}
-        />
-      ) : (
-        <TransactionListItem
-          transactionGroup={transactionGroup}
-          key={`${transactionGroup.nonce}:${index}`}
-          showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
-          showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
-          isEarliestNonce={isPendingTx && index === 0}
-          token={selectedToken}
-          assetImages={assetImages}
-          firstPendingTransactionId={firstPendingTransactionId}
-        />
-      )
+    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT ? (
+      <ShapeShiftTransactionListItem
+        {...transactions[0]}
+        key={`shapeshift${index}`}
+      />
+    ) : (
+      <TransactionListItem
+        transactionGroup={transactionGroup}
+        key={`${transactionGroup.nonce}:${index}`}
+        showSpeedUp={
+          isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)
+        }
+        showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
+        isEarliestNonce={isPendingTx && index === 0}
+        token={selectedToken}
+        assetImages={assetImages}
+        firstPendingTransactionId={firstPendingTransactionId}
+      />
+    )
   }
 
   renderEmpty () {
     return (
       <div className="transaction-list__empty">
         <div className="transaction-list__empty-text">
-          { this.context.t('noTransactions') }
+          {this.context.t('noTransactions')}
         </div>
       </div>
     )
@@ -154,8 +155,8 @@ export default class TransactionList extends PureComponent {
   render () {
     return (
       <div className="transaction-list">
-        { this.renderTransactions() }
-        { this.props.children }
+        {this.renderTransactions()}
+        {this.props.children}
       </div>
     )
   }

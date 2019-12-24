@@ -10,7 +10,6 @@ SeedImportSubview.contextTypes = {
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 
-
 function mapStateToProps () {
   return {}
 }
@@ -21,15 +20,16 @@ function SeedImportSubview () {
 }
 
 SeedImportSubview.prototype.render = function () {
-  return (
-    h('div', {
-      style: {
-      },
-    }, [
+  return h(
+    'div',
+    {
+      style: {},
+    },
+    [
       this.context.t('pasteSeed'),
       h('textarea'),
       h('br'),
       h('button', this.context.t('submit')),
-    ])
+    ]
   )
 }

@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { DragSource, DropTarget } from 'react-dnd'
 
 class DraggableSeed extends Component {
-
   static propTypes = {
     // React DnD Props
     connectDragSource: PropTypes.func.isRequired,
@@ -48,21 +47,27 @@ class DraggableSeed extends Component {
       canDrop,
     } = this.props
 
-    return connectDropTarget(connectDragSource(
-      <div
-        key={index}
-        className={classnames('btn-secondary notranslate confirm-seed-phrase__seed-word', className, {
-          'confirm-seed-phrase__seed-word--selected btn-primary': selected,
-          'confirm-seed-phrase__seed-word--dragging': isDragging,
-          'confirm-seed-phrase__seed-word--empty': !word,
-          'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
-          'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
-        })}
-        onClick={onClick}
-      >
-        { word }
-      </div>
-    ))
+    return connectDropTarget(
+      connectDragSource(
+        <div
+          key={index}
+          className={classnames(
+            'btn-secondary notranslate confirm-seed-phrase__seed-word',
+            className,
+            {
+              'confirm-seed-phrase__seed-word--selected btn-primary': selected,
+              'confirm-seed-phrase__seed-word--dragging': isDragging,
+              'confirm-seed-phrase__seed-word--empty': !word,
+              'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
+              'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
+            }
+          )}
+          onClick={onClick}
+        >
+          {word}
+        </div>
+      )
+    )
   }
 }
 
@@ -120,6 +125,8 @@ const collectDrop = (connect, monitor) => {
   }
 }
 
-export default DropTarget(SEEDWORD, seedTarget, collectDrop)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))
-
-
+export default DropTarget(
+  SEEDWORD,
+  seedTarget,
+  collectDrop
+)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))

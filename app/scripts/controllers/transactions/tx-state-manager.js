@@ -32,9 +32,13 @@ class TransactionStateManager extends EventEmitter {
     super()
 
     this.store = new ObservableStore(
-      extend({
-        transactions: [],
-      }, initState))
+      extend(
+        {
+          transactions: [],
+        },
+        initState
+      )
+    )
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -45,14 +49,19 @@ class TransactionStateManager extends EventEmitter {
   */
   generateTxMeta (opts) {
     const netId = this.getNetwork()
-    if (netId === 'loading') throw new Error('MetaMask is having trouble connecting to the network')
-    return extend({
-      id: createId(),
-      time: (new Date()).getTime(),
-      status: 'unapproved',
-      metamaskNetworkId: netId,
-      loadingDefaults: true,
-    }, opts)
+    if (netId === 'loading') {
+      throw new Error('MetaMask is having trouble connecting to the network')
+    }
+    return extend(
+      {
+        id: createId(),
+        time: new Date().getTime(),
+        status: 'unapproved',
+        metamaskNetworkId: netId,
+        loadingDefaults: true,
+      },
+      opts
+    )
   }
 
   /**
@@ -61,7 +70,7 @@ class TransactionStateManager extends EventEmitter {
   getTxList () {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
-    return fullTxList.filter((txMeta) => txMeta.metamaskNetworkId === network)
+    return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
   }
 
   /**
@@ -152,15 +161,16 @@ class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => {
+      const index = transactions.findIndex(metaTx => {
         return getFinalStates().includes(metaTx.status)
       })
       if (index !== -1) {
         transactions.splice(index, 1)
       }
     }
-    const newTxIndex = transactions
-      .findIndex((currentTxMeta) => currentTxMeta.time > txMeta.time)
+    const newTxIndex = transactions.findIndex(
+      currentTxMeta => currentTxMeta.time > txMeta.time
+    )
 
     newTxIndex === -1
       ? transactions.push(txMeta)
@@ -194,7 +204,11 @@ class TransactionStateManager extends EventEmitter {
     // recover previous tx state obj
     const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
     // generate history entry and add to history
-    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState, note)
+    const entry = txStateHistoryHelper.generateHistoryEntry(
+      previousState,
+      currentState,
+      note
+    )
     txMeta.history.push(entry)
 
     // commit txMeta to state
@@ -204,7 +218,6 @@ class TransactionStateManager extends EventEmitter {
     txList[index] = txMeta
     this._saveTxList(txList)
   }
-
 
   /**
     merges txParams obj onto txMeta.txParams
@@ -236,15 +249,23 @@ class TransactionStateManager extends EventEmitter {
     @param txParams {object} - txParams to validate
   */
   validateTxParams (txParams) {
-    Object.keys(txParams).forEach((key) => {
+    Object.keys(txParams).forEach(key => {
       const value = txParams[key]
       // validate types
       switch (key) {
         case 'chainId':
-          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
+          if (typeof value !== 'number' && typeof value !== 'string') {
+            throw new Error(
+              `${key} in txParams is not a Number or hex string. got: (${value})`
+            )
+          }
           break
         default:
-          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
+          if (typeof value !== 'string') {
+            throw new Error(
+              `${key} in txParams is not a string. got: (${value})`
+            )
+          }
           break
       }
     })
@@ -280,7 +301,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getFilteredTxList (opts, initialList) {
     let filteredTxList = initialList
-    Object.keys(opts).forEach((key) => {
+    Object.keys(opts).forEach(key => {
       filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
     })
     return filteredTxList
@@ -294,9 +315,9 @@ class TransactionStateManager extends EventEmitter {
     @returns {array} a list of txMetas who matches the search params
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
-    const filter = typeof value === 'function' ? value : (v) => v === value
+    const filter = typeof value === 'function' ? value : v => v === value
 
-    return txList.filter((txMeta) => {
+    return txList.filter(txMeta => {
       if (key in txMeta.txParams) {
         return filter(txMeta.txParams[key])
       } else {
@@ -355,7 +376,7 @@ class TransactionStateManager extends EventEmitter {
   */
   setTxStatusSubmitted (txId) {
     const txMeta = this.getTx(txId)
-    txMeta.submittedTime = (new Date()).getTime()
+    txMeta.submittedTime = new Date().getTime()
     this.updateTx(txMeta, 'txStateManager - add submitted time stamp')
     this._setTxStatus(txId, 'submitted')
   }
@@ -375,7 +396,6 @@ class TransactionStateManager extends EventEmitter {
   setTxStatusDropped (txId) {
     this._setTxStatus(txId, 'dropped')
   }
-
 
   /**
     should update the status of the tx to 'failed'.
@@ -407,7 +427,13 @@ class TransactionStateManager extends EventEmitter {
     const network = this.getNetwork()
 
     // Filter out the ones from the current account and network
-    const otherAccountTxs = txs.filter((txMeta) => !(txMeta.txParams.from === address && txMeta.metamaskNetworkId === network))
+    const otherAccountTxs = txs.filter(
+      txMeta =>
+        !(
+          txMeta.txParams.from === address &&
+          txMeta.metamaskNetworkId === network
+        )
+    )
 
     // Update state
     this._saveTxList(otherAccountTxs)
@@ -468,7 +494,7 @@ class TransactionStateManager extends EventEmitter {
 
   _removeTx (txId) {
     const transactionList = this.getFullTxList()
-    this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
+    this._saveTxList(transactionList.filter(txMeta => txMeta.id !== txId))
   }
 }
 

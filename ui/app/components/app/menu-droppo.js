@@ -6,7 +6,6 @@ const ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGro
 
 module.exports = MenuDroppoComponent
 
-
 inherits(MenuDroppoComponent, Component)
 function MenuDroppoComponent () {
   Component.call(this)
@@ -16,7 +15,7 @@ MenuDroppoComponent.prototype.render = function () {
   const { containerClassName = '' } = this.props
   const speed = this.props.speed || '300ms'
   const useCssTransition = this.props.useCssTransition
-  const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
+  const zIndex = 'zIndex' in this.props ? this.props.zIndex : 0
 
   this.manageListeners()
 
@@ -26,12 +25,16 @@ MenuDroppoComponent.prototype.render = function () {
   }
   style.zIndex = zIndex
 
-  return (
-    h('div', {
+  return h(
+    'div',
+    {
       style,
       className: `.menu-droppo-container ${containerClassName}`,
-    }, [
-      h('style', `
+    },
+    [
+      h(
+        'style',
+        `
         .menu-droppo-enter {
           transition: transform ${speed} ease-in-out;
           transform: translateY(-200%);
@@ -51,17 +54,22 @@ MenuDroppoComponent.prototype.render = function () {
           transition: transform ${speed} ease-in-out;
           transform: translateY(-200%);
         }
-      `),
+      `
+      ),
 
       useCssTransition
-        ? h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'menu-droppo',
-          transitionEnterTimeout: parseInt(speed),
-          transitionLeaveTimeout: parseInt(speed),
-        }, this.renderPrimary())
+        ? h(
+          ReactCSSTransitionGroup,
+          {
+            className: 'css-transition-group',
+            transitionName: 'menu-droppo',
+            transitionEnterTimeout: parseInt(speed),
+            transitionLeaveTimeout: parseInt(speed),
+          },
+          this.renderPrimary()
+        )
         : this.renderPrimary(),
-    ])
+    ]
   )
 }
 
@@ -73,12 +81,13 @@ MenuDroppoComponent.prototype.renderPrimary = function () {
 
   const innerStyle = this.props.innerStyle || {}
 
-  return (
-    h('.menu-droppo', {
+  return h(
+    '.menu-droppo',
+    {
       key: 'menu-droppo-drawer',
       style: innerStyle,
     },
-    [ this.props.children ])
+    [this.props.children]
   )
 }
 
@@ -114,9 +123,11 @@ MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
   // eslint-disable-next-line react/no-find-dom-node
   const container = findDOMNode(this)
 
-  if (target !== container &&
+  if (
+    target !== container &&
     !isDescendant(this.container, event.target) &&
-    this.outsideClickHandler) {
+    this.outsideClickHandler
+  ) {
     this.outsideClickHandler(event)
   }
 }

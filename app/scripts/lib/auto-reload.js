@@ -13,7 +13,9 @@ function setupDappAutoReload (web3, observable) {
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider\nhttps://medium.com/metamask/4a899ad6e59e')
+        console.warn(
+          'MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider\nhttps://medium.com/metamask/4a899ad6e59e'
+        )
         hasBeenWarned = true
       }
       // return value normally

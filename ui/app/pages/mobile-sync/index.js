@@ -5,7 +5,10 @@ const h = require('react-hyperscript')
 const classnames = require('classnames')
 const PubNub = require('pubnub')
 
-const { requestRevealSeedWords, fetchInfoToSync } = require('../../store/actions')
+const {
+  requestRevealSeedWords,
+  fetchInfoToSync,
+} = require('../../store/actions')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 const actions = require('../../store/actions')
 
@@ -54,7 +57,8 @@ class MobileSyncPage extends Component {
   handleSubmit (event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
-    this.props.requestRevealSeedWords(this.state.password)
+    this.props
+      .requestRevealSeedWords(this.state.password)
       .then(seedWords => {
         this.startKeysGeneration()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
@@ -73,9 +77,11 @@ class MobileSyncPage extends Component {
   }
 
   generateCipherKeyAndChannelName () {
-    this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    this.cipherKey = `${this.props.selectedAddress.substr(
+      -4
+    )}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
-    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
+    this.setState({ cipherKey: this.cipherKey, channelName: this.channelName })
   }
 
   initWithCipherKeyAndChannelName (cipherKey, channelName) {
@@ -95,8 +101,8 @@ class MobileSyncPage extends Component {
     })
 
     this.pubnubListener = {
-      message: (data) => {
-        const {channel, message} = data
+      message: data => {
+        const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
           return false
@@ -111,7 +117,7 @@ class MobileSyncPage extends Component {
           this.initWebsockets()
         } else if (message.event === 'end-sync') {
           this.disconnectWebsockets()
-          this.setState({syncing: false, completed: true})
+          this.setState({ syncing: false, completed: true })
         }
       },
     }
@@ -122,7 +128,6 @@ class MobileSyncPage extends Component {
       channels: [this.channelName],
       withPresence: false,
     })
-
   }
 
   disconnectWebsockets () {
@@ -133,9 +138,7 @@ class MobileSyncPage extends Component {
 
   // Calculating a PubNub Message Payload Size.
   calculatePayloadSize (channel, message) {
-    return encodeURIComponent(
-      channel + JSON.stringify(message)
-    ).length + 100
+    return encodeURIComponent(channel + JSON.stringify(message)).length + 100
   }
 
   chunkString (str, size) {
@@ -165,16 +168,22 @@ class MobileSyncPage extends Component {
           } else {
             reject(response)
           }
-        })
+        }
+      )
     })
   }
 
   async startSyncing () {
     if (this.syncing) return false
     this.syncing = true
-    this.setState({syncing: true})
+    this.setState({ syncing: true })
 
-    const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
+    const {
+      accounts,
+      network,
+      preferences,
+      transactions,
+    } = await this.props.fetchInfoToSync()
 
     const allDataStr = JSON.stringify({
       accounts,
@@ -195,7 +204,7 @@ class MobileSyncPage extends Component {
       }
     } catch (e) {
       this.props.displayWarning('Sync failed :(')
-      this.setState({syncing: false})
+      this.setState({ syncing: false })
       this.syncing = false
       this.notifyError(e.toString())
     }
@@ -226,62 +235,67 @@ class MobileSyncPage extends Component {
     })
   }
 
-
   componentWillUnmount () {
     this.disconnectWebsockets()
   }
 
   renderWarning (text) {
-    return (
-      h('.page-container__warning-container', [
-        h('.page-container__warning-message', [
-          h('div', [text]),
-        ]),
-      ])
-    )
+    return h('.page-container__warning-container', [
+      h('.page-container__warning-message', [h('div', [text])]),
+    ])
   }
 
   renderContent () {
     const { t } = this.context
 
     if (this.state.syncing) {
-      return h(LoadingScreen, {loadingMessage: 'Sync in progress'})
+      return h(LoadingScreen, { loadingMessage: 'Sync in progress' })
     }
 
     if (this.state.completed) {
-      return h('div.reveal-seed__content', {},
-        h('label.reveal-seed__label', {
-          style: {
-            width: '100%',
-            textAlign: 'center',
+      return h(
+        'div.reveal-seed__content',
+        {},
+        h(
+          'label.reveal-seed__label',
+          {
+            style: {
+              width: '100%',
+              textAlign: 'center',
+            },
           },
-        }, t('syncWithMobileComplete')),
+          t('syncWithMobileComplete')
+        )
       )
     }
 
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? h('div', {}, [
         this.renderWarning(this.context.t('mobileSyncText')),
-        h('.reveal-seed__content', [
-          this.renderPasswordPromptContent(),
-        ]),
+        h('.reveal-seed__content', [this.renderPasswordPromptContent()]),
       ])
       : h('div', {}, [
         this.renderWarning(this.context.t('syncWithMobileBeCareful')),
-        h('.reveal-seed__content', [ this.renderRevealSeedContent() ]),
+        h('.reveal-seed__content', [this.renderRevealSeedContent()]),
       ])
   }
 
   renderPasswordPromptContent () {
     const { t } = this.context
 
-    return (
-      h('form', {
+    return h(
+      'form',
+      {
         onSubmit: event => this.handleSubmit(event),
-      }, [
-        h('label.input-label', {
-          htmlFor: 'password-box',
-        }, t('enterPasswordContinue')),
+      },
+      [
+        h(
+          'label.input-label',
+          {
+            htmlFor: 'password-box',
+          },
+          t('enterPasswordContinue')
+        ),
         h('.input-group', [
           h('input.form-control', {
             type: 'password',
@@ -293,36 +307,39 @@ class MobileSyncPage extends Component {
           }),
         ]),
         this.state.error && h('.reveal-seed__error', this.state.error),
-      ])
+      ]
     )
   }
 
   renderRevealSeedContent () {
-
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`metamask-sync:${this.state.channelName}|@|${this.state.cipherKey}`)
+    qrImage.addData(
+      `metamask-sync:${this.state.channelName}|@|${this.state.cipherKey}`
+    )
     qrImage.make()
 
     const { t } = this.context
-    return (
-      h('div', [
-        h('label.reveal-seed__label', {
+    return h('div', [
+      h(
+        'label.reveal-seed__label',
+        {
           style: {
             width: '100%',
             textAlign: 'center',
           },
-        }, t('syncWithMobileScanThisCode')),
-        h('.div.qr-wrapper', {
-          style: {
-            display: 'flex',
-            justifyContent: 'center',
-          },
-          dangerouslySetInnerHTML: {
-            __html: qrImage.createTableTag(4),
-          },
-        }),
-      ])
-    )
+        },
+        t('syncWithMobileScanThisCode')
+      ),
+      h('.div.qr-wrapper', {
+        style: {
+          display: 'flex',
+          justifyContent: 'center',
+        },
+        dangerouslySetInnerHTML: {
+          __html: qrImage.createTableTag(4),
+        },
+      }),
+    ])
   }
 
   renderFooter () {
@@ -332,54 +349,68 @@ class MobileSyncPage extends Component {
   }
 
   renderPasswordPromptFooter () {
-    return (
-      h('div.new-account-import-form__buttons', {style: {padding: 30}}, [
+    return h(
+      'div.new-account-import-form__buttons',
+      { style: { padding: 30 } },
+      [
+        h(
+          Button,
+          {
+            type: 'default',
+            large: true,
+            className: 'new-account-create-form__button',
+            onClick: () => this.props.history.push(DEFAULT_ROUTE),
+          },
+          this.context.t('cancel')
+        ),
 
-        h(Button, {
-          type: 'default',
-          large: true,
-          className: 'new-account-create-form__button',
-          onClick: () => this.props.history.push(DEFAULT_ROUTE),
-        }, this.context.t('cancel')),
-
-        h(Button, {
-          type: 'secondary',
-          large: true,
-          className: 'new-account-create-form__button',
-          onClick: event => this.handleSubmit(event),
-          disabled: this.state.password === '',
-        }, this.context.t('next')),
-      ])
+        h(
+          Button,
+          {
+            type: 'secondary',
+            large: true,
+            className: 'new-account-create-form__button',
+            onClick: event => this.handleSubmit(event),
+            disabled: this.state.password === '',
+          },
+          this.context.t('next')
+        ),
+      ]
     )
   }
 
   renderRevealSeedFooter () {
-    return (
-      h('.page-container__footer', {style: {padding: 30}}, [
-        h(Button, {
+    return h('.page-container__footer', { style: { padding: 30 } }, [
+      h(
+        Button,
+        {
           type: 'default',
           large: true,
           className: 'page-container__footer-button',
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
-        }, this.context.t('close')),
-      ])
-    )
+        },
+        this.context.t('close')
+      ),
+    ])
   }
 
   render () {
-    return (
-      h('.page-container', [
-        h('.page-container__header', [
-          h('.page-container__title', this.context.t('syncWithMobileTitle')),
-          this.state.screen === PASSWORD_PROMPT_SCREEN ? h('.page-container__subtitle', this.context.t('syncWithMobileDesc')) : null,
-          this.state.screen === PASSWORD_PROMPT_SCREEN ? h('.page-container__subtitle', this.context.t('syncWithMobileDescNewUsers')) : null,
-        ]),
-        h('.page-container__content', [
-          this.renderContent(),
-        ]),
-        this.renderFooter(),
-      ])
-    )
+    return h('.page-container', [
+      h('.page-container__header', [
+        h('.page-container__title', this.context.t('syncWithMobileTitle')),
+        this.state.screen === PASSWORD_PROMPT_SCREEN
+          ? h('.page-container__subtitle', this.context.t('syncWithMobileDesc'))
+          : null,
+        this.state.screen === PASSWORD_PROMPT_SCREEN
+          ? h(
+            '.page-container__subtitle',
+            this.context.t('syncWithMobileDescNewUsers')
+          )
+          : null,
+      ]),
+      h('.page-container__content', [this.renderContent()]),
+      this.renderFooter(),
+    ])
   }
 }
 
@@ -395,11 +426,12 @@ MobileSyncPage.contextTypes = {
 
 const mapDispatchToProps = dispatch => {
   return {
-    requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
+    requestRevealSeedWords: password =>
+      dispatch(requestRevealSeedWords(password)),
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
-    displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
+    displayWarning: message =>
+      dispatch(actions.displayWarning(message || null)),
   }
-
 }
 
 const mapStateToProps = state => {

@@ -8,16 +8,17 @@ import {
   doesAmountErrorRequireUpdate,
 } from './send.utils'
 import debounce from 'lodash.debounce'
-import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
+import {
+  getToWarningObject,
+  getToErrorObject,
+} from './send-content/add-recipient/add-recipient'
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
 import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
 
-
 export default class SendTransactionScreen extends PersistentForm {
-
   static propTypes = {
     amount: PropTypes.string,
     amountConversionRate: PropTypes.oneOfType([
@@ -148,7 +149,6 @@ export default class SendTransactionScreen extends PersistentForm {
     }
 
     if (!uninitialized) {
-
       if (network !== prevNetwork && network !== 'loading') {
         updateSendTokenBalance({
           selectedToken,
@@ -170,10 +170,9 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   componentDidMount () {
-    this.props.fetchBasicGasEstimates()
-      .then(() => {
-        this.updateGas()
-      })
+    this.props.fetchBasicGasEstimates().then(() => {
+      this.updateGas()
+    })
   }
 
   componentWillMount () {
@@ -207,19 +206,26 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   validate (query) {
-    const {
-      hasHexData,
-      tokens,
-      selectedToken,
-      network,
-    } = this.props
+    const { hasHexData, tokens, selectedToken, network } = this.props
 
     if (!query) {
       return this.setState({ toError: '', toWarning: '' })
     }
 
-    const toErrorObject = getToErrorObject(query, null, hasHexData, tokens, selectedToken, network)
-    const toWarningObject = getToWarningObject(query, null, tokens, selectedToken)
+    const toErrorObject = getToErrorObject(
+      query,
+      null,
+      hasHexData,
+      tokens,
+      selectedToken,
+      network
+    )
+    const toWarningObject = getToWarningObject(
+      query,
+      null,
+      tokens,
+      selectedToken
+    )
 
     this.setState({
       toError: toErrorObject.to,
@@ -283,8 +289,8 @@ export default class SendTransactionScreen extends PersistentForm {
     return (
       <div className="page-container">
         <SendHeader history={history} />
-        { this.renderInput() }
-        { content }
+        {this.renderInput()}
+        {content}
       </div>
     )
   }
@@ -304,8 +310,10 @@ export default class SendTransactionScreen extends PersistentForm {
           this.props.scanQrCode()
         }}
         onChange={this.onRecipientInputChange}
-        onValidAddressTyped={(address) => this.props.updateSendTo(address, '')}
-        onPaste={text => { this.props.updateSendTo(text) && this.updateGas() }}
+        onValidAddressTyped={address => this.props.updateSendTo(address, '')}
+        onPaste={text => {
+          this.props.updateSendTo(text) && this.updateGas()
+        }}
         onReset={() => this.props.updateSendTo('', '')}
         updateEnsResolution={this.props.updateSendEnsResolution}
         updateEnsResolutionError={this.props.updateSendEnsResolutionError}
@@ -319,7 +327,9 @@ export default class SendTransactionScreen extends PersistentForm {
 
     return (
       <AddRecipient
-        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
+        updateGas={({ to, amount, data } = {}) =>
+          this.updateGas({ to, amount, data })
+        }
         scanQrCode={scanQrCode}
         query={this.state.query}
         toError={toError}
@@ -334,12 +344,13 @@ export default class SendTransactionScreen extends PersistentForm {
     return [
       <SendContent
         key="send-content"
-        updateGas={({ to, amount, data } = {}) => this.updateGas({ to, amount, data })}
+        updateGas={({ to, amount, data } = {}) =>
+          this.updateGas({ to, amount, data })
+        }
         scanQrCode={scanQrCode}
         showHexData={showHexData}
       />,
       <SendFooter key="send-footer" history={history} />,
     ]
   }
-
 }

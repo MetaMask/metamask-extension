@@ -10,17 +10,15 @@ class LoadingScreen extends Component {
   }
 
   render () {
-    return (
-      h('.loading-overlay', [
-        h('.loading-overlay__container', [
-          h(Spinner, {
-            color: '#F7C06C',
-          }),
+    return h('.loading-overlay', [
+      h('.loading-overlay__container', [
+        h(Spinner, {
+          color: '#F7C06C',
+        }),
 
-          this.renderMessage(),
-        ]),
-      ])
-    )
+        this.renderMessage(),
+      ]),
+    ])
   }
 }
 

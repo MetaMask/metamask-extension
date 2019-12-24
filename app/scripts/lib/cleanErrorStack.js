@@ -5,10 +5,10 @@
  */
 function cleanErrorStack (err) {
   var name = err.name
-  name = (name === undefined) ? 'Error' : String(name)
+  name = name === undefined ? 'Error' : String(name)
 
   var msg = err.message
-  msg = (msg === undefined) ? '' : String(msg)
+  msg = msg === undefined ? '' : String(msg)
 
   if (name === '') {
     err.stack = err.message

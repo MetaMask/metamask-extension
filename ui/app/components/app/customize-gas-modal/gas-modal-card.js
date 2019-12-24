@@ -25,7 +25,6 @@ GasModalCard.prototype.render = function () {
   } = this.props
 
   return h('div.send-v2__gas-modal-card', [
-
     h('div.send-v2__gas-modal-card__title', {}, title),
 
     h('div.send-v2__gas-modal-card__copy', {}, copy),
@@ -47,8 +46,5 @@ GasModalCard.prototype.render = function () {
     //   min,
     //   onChange,
     // }),
-
   ])
-
 }
-

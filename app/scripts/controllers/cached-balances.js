@@ -24,9 +24,12 @@ class CachedBalancesController {
     this.accountTracker = accountTracker
     this.getNetwork = getNetwork
 
-    const initState = extend({
-      cachedBalances: {},
-    }, opts.initState)
+    const initState = extend(
+      {
+        cachedBalances: {},
+      },
+      opts.initState
+    )
     this.store = new ObservableStore(initState)
 
     this._registerUpdates()
@@ -41,7 +44,10 @@ class CachedBalancesController {
    */
   async updateCachedBalances ({ accounts }) {
     const network = await this.getNetwork()
-    const balancesToCache = await this._generateBalancesToCache(accounts, network)
+    const balancesToCache = await this._generateBalancesToCache(
+      accounts,
+      network
+    )
     this.store.updateState({
       cachedBalances: balancesToCache,
     })

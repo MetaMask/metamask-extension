@@ -9,13 +9,8 @@ import {
 } from '../../../store/actions'
 
 export const mapStateToProps = state => {
-  const {
-    activeTab,
-    metamask,
-  } = state
-  const {
-    approvedOrigins,
-  } = metamask
+  const { activeTab, metamask } = state
+  const { approvedOrigins } = metamask
 
   return {
     activeTab,
@@ -25,11 +20,16 @@ export const mapStateToProps = state => {
 
 export const mapDispatchToProps = dispatch => {
   return {
-    approveProviderRequestByOrigin: (origin) => dispatch(approveProviderRequestByOrigin(origin)),
-    rejectProviderRequestByOrigin: (origin) => dispatch(rejectProviderRequestByOrigin(origin)),
-    showClearApprovalModal: () => dispatch(showModal({
-      name: 'CLEAR_APPROVED_ORIGINS',
-    })),
+    approveProviderRequestByOrigin: origin =>
+      dispatch(approveProviderRequestByOrigin(origin)),
+    rejectProviderRequestByOrigin: origin =>
+      dispatch(rejectProviderRequestByOrigin(origin)),
+    showClearApprovalModal: () =>
+      dispatch(
+        showModal({
+          name: 'CLEAR_APPROVED_ORIGINS',
+        })
+      ),
   }
 }
 

@@ -10,9 +10,7 @@ import {
   getNumberOfAccounts,
   getNumberOfTokens,
 } from '../../../selectors/selectors'
-import {
-  txDataSelector,
-} from '../../../selectors/confirm-transaction'
+import { txDataSelector } from '../../../selectors/confirm-transaction'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import {
   sendMetaMetricsEvent,
@@ -60,7 +58,9 @@ class MetaMetricsProvider extends Component {
         const { eventOpts = {} } = config
         const { name = '' } = eventOpts
         const { pathname: overRidePathName = '' } = overrides
-        const isSendFlow = Boolean(name.match(/^send|^confirm/) || overRidePathName.match(/send|confirm/))
+        const isSendFlow = Boolean(
+          name.match(/^send|^confirm/) || overRidePathName.match(/send|confirm/)
+        )
 
         if (props.participateInMetaMetrics || config.isOptIn) {
           return sendMetaMetricsEvent({
@@ -69,7 +69,9 @@ class MetaMetricsProvider extends Component {
             previousPath,
             currentPath,
             pathname,
-            excludeMetaMetricsId: isSendFlow && !sendCountIsTrackable(props.metaMetricsSendCount + 1),
+            excludeMetaMetricsId:
+              isSendFlow &&
+              !sendCountIsTrackable(props.metaMetricsSendCount + 1),
             ...overrides,
           })
         }
@@ -103,4 +105,3 @@ module.exports = compose(
   withRouter,
   connect(mapStateToProps)
 )(MetaMetricsProvider)
-

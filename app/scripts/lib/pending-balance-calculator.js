@@ -2,7 +2,6 @@ const BN = require('ethereumjs-util').BN
 const normalize = require('eth-sig-util').normalize
 
 class PendingBalanceCalculator {
-
   /**
    * Used for calculating a users "pending balance": their current balance minus the total possible cost of all their
    * pending transactions.
@@ -31,7 +30,7 @@ class PendingBalanceCalculator {
       this.getPendingTransactions(),
     ])
 
-    const [ balance, pending ] = results
+    const [balance, pending] = results
     if (!balance) return undefined
 
     const pendingValue = pending.reduce((total, tx) => {
@@ -73,7 +72,6 @@ class PendingBalanceCalculator {
   hexToBn (hex) {
     return new BN(normalize(hex).substring(2), 16)
   }
-
 }
 
 module.exports = PendingBalanceCalculator

@@ -68,16 +68,27 @@ export default class UnitInput extends PureComponent {
     const valueString = String(value)
     const valueLength = valueString.length || 1
     const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
-    return (valueLength + decimalPointDeficit + 0.5) + 'ch'
+    return valueLength + decimalPointDeficit + 0.5 + 'ch'
   }
 
   render () {
-    const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+    const {
+      error,
+      placeholder,
+      suffix,
+      actionComponent,
+      children,
+      maxModeOn,
+    } = this.props
     const { value } = this.state
 
     return (
       <div
-        className={classnames('unit-input', { 'unit-input--error': error }, { 'unit-input__disabled': maxModeOn })}
+        className={classnames(
+          'unit-input',
+          { 'unit-input--error': error },
+          { 'unit-input__disabled': maxModeOn }
+        )}
         onClick={maxModeOn ? null : this.handleFocus}
       >
         <div className="unit-input__inputs">
@@ -85,24 +96,22 @@ export default class UnitInput extends PureComponent {
             <input
               type="number"
               dir="ltr"
-              className={classnames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
+              className={classnames('unit-input__input', {
+                'unit-input__disabled': maxModeOn,
+              })}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
               onBlur={this.handleBlur}
               style={{ width: this.getInputWidth(value) }}
-              ref={ref => { this.unitInput = ref }}
+              ref={ref => {
+                this.unitInput = ref
+              }}
               disabled={maxModeOn}
             />
-            {
-              suffix && (
-                <div className="unit-input__suffix">
-                  { suffix }
-                </div>
-              )
-            }
+            {suffix && <div className="unit-input__suffix">{suffix}</div>}
           </div>
-          { children }
+          {children}
         </div>
         {actionComponent}
       </div>

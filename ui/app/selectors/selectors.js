@@ -2,13 +2,8 @@ import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 
 const abi = require('human-standard-token-abi')
-const {
-  multiplyCurrencies,
-} = require('../helpers/utils/conversion-util')
-import {
-  addressSlicer,
-  checksumAddress,
-} from '../helpers/utils/util'
+const { multiplyCurrencies } = require('../helpers/utils/conversion-util')
+import { addressSlicer, checksumAddress } from '../helpers/utils/util'
 
 const selectors = {
   getSelectedAddress,
@@ -62,7 +57,11 @@ const selectors = {
 module.exports = selectors
 
 function getNetworkIdentifier (state) {
-  const { metamask: { provider: { type, nickname, rpcTarget } } } = state
+  const {
+    metamask: {
+      provider: { type, nickname, rpcTarget },
+    },
+  } = state
 
   return nickname || rpcTarget || type
 }
@@ -76,9 +75,11 @@ function getCurrentKeyring (state) {
 
   const simpleAddress = stripHexPrefix(identity.address).toLowerCase()
 
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return kr.accounts.includes(simpleAddress) ||
+  const keyring = state.metamask.keyrings.find(kr => {
+    return (
+      kr.accounts.includes(simpleAddress) ||
       kr.accounts.includes(identity.address)
+    )
   })
 
   return keyring
@@ -101,7 +102,7 @@ function getAccountType (state) {
 
 function getSelectedAsset (state) {
   const selectedToken = getSelectedToken(state)
-  return selectedToken && selectedToken.symbol || 'ETH'
+  return (selectedToken && selectedToken.symbol) || 'ETH'
 }
 
 function getCurrentNetworkId (state) {
@@ -109,7 +110,8 @@ function getCurrentNetworkId (state) {
 }
 
 function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
+  const selectedAddress =
+    state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
   return selectedAddress
 }
@@ -137,7 +139,10 @@ function getMetaMaskAccounts (state) {
 
   Object.keys(currentAccounts).forEach(accountID => {
     const account = currentAccounts[accountID]
-    if (account && account.balance === null || account.balance === undefined) {
+    if (
+      (account && account.balance === null) ||
+      account.balance === undefined
+    ) {
       selectedAccounts[accountID] = {
         ...account,
         balance: cachedBalances && cachedBalances[accountID],
@@ -150,7 +155,8 @@ function getMetaMaskAccounts (state) {
 }
 
 function isBalanceCached (state) {
-  const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance
+  const selectedAccountBalance =
+    state.metamask.accounts[getSelectedAddress(state)].balance
   const cachedBalance = getSelectedAccountCachedBalance(state)
 
   return Boolean(!selectedAccountBalance && cachedBalance)
@@ -173,7 +179,9 @@ function getSelectedAccount (state) {
 function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
-  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
+  const selectedToken = tokens.filter(
+    ({ address }) => address === selectedTokenAddress
+  )[0]
   const sendToken = state.metamask.send && state.metamask.send.token
 
   return selectedToken || sendToken || null
@@ -217,28 +225,35 @@ function getAddressBook (state) {
 
 function getAddressBookEntry (state, address) {
   const addressBook = getAddressBook(state)
-  const entry = addressBook.find(contact => contact.address === checksumAddress(address))
+  const entry = addressBook.find(
+    contact => contact.address === checksumAddress(address)
+  )
   return entry
 }
 
 function getAddressBookEntryName (state, address) {
-  const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
+  const entry =
+    getAddressBookEntry(state, address) || state.metamask.identities[address]
   return entry && entry.name !== '' ? entry.name : addressSlicer(address)
 }
 
 function getDaiV1Token (state) {
   const OLD_DAI_CONTRACT_ADDRESS = '0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359'
   const tokens = state.metamask.tokens || []
-  return tokens.find(({address}) => checksumAddress(address) === OLD_DAI_CONTRACT_ADDRESS)
+  return tokens.find(
+    ({ address }) => checksumAddress(address) === OLD_DAI_CONTRACT_ADDRESS
+  )
 }
 
 function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
 
-  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
-    return Object.assign({}, account, identities[key])
-  })
+  const accountsWithSendEtherInfo = Object.entries(accounts).map(
+    ([key, account]) => {
+      return Object.assign({}, account, identities[key])
+    }
+  )
 
   return accountsWithSendEtherInfo
 }
@@ -315,8 +330,12 @@ function getTotalUnapprovedCount ({ metamask }) {
     unapprovedTypedMessagesCount,
   } = metamask
 
-  return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
+  return (
+    Object.keys(unapprovedTxs).length +
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
+  )
 }
 
 function getIsMainnet (state) {
@@ -326,15 +345,9 @@ function getIsMainnet (state) {
 
 function isEthereumNetwork (state) {
   const networkType = getNetworkIdentifier(state)
-  const {
-    KOVAN,
-    MAINNET,
-    RINKEBY,
-    ROPSTEN,
-    GOERLI,
-  } = NETWORK_TYPES
+  const { KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI } = NETWORK_TYPES
 
-  return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
+  return [KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
 function preferencesSelector ({ metamask }) {
@@ -367,7 +380,9 @@ function getMetaMetricState (state) {
 
 function getRpcPrefsForCurrentProvider (state) {
   const { frequentRpcListDetail, provider } = state.metamask
-  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
+  const selectRpcInfo = frequentRpcListDetail.find(
+    rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget
+  )
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
 }

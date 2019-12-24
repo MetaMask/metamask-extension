@@ -39,7 +39,9 @@ window.localStorage = {}
 
 // crypto.getRandomValues
 if (!window.crypto) window.crypto = {}
-if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+if (!window.crypto.getRandomValues) {
+  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+}
 
 function enableFailureOnUnhandledPromiseRejection () {
   // overwrite node's promise with the stricter Bluebird promise
@@ -66,8 +68,10 @@ function enableFailureOnUnhandledPromiseRejection () {
         throw evt.detail.reason
       }
     }
-  } else if (typeof console !== 'undefined' &&
-      typeof (console.error || console.log) === 'function') {
-    (console.error || console.log)('Unhandled rejections will be ignored!')
+  } else if (
+    typeof console !== 'undefined' &&
+    typeof (console.error || console.log) === 'function'
+  ) {
+    ;(console.error || console.log)('Unhandled rejections will be ignored!')
   }
 }

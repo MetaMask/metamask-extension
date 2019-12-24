@@ -44,7 +44,7 @@ export default class EditApprovalPermission extends PureComponent {
       <div className="edit-approval-permission">
         <div className="edit-approval-permission__header">
           <div className="edit-approval-permission__title">
-            { t('editPermission') }
+            {t('editPermission')}
           </div>
           <div
             className="edit-approval-permission__header__close"
@@ -53,12 +53,11 @@ export default class EditApprovalPermission extends PureComponent {
         </div>
         <div className="edit-approval-permission__account-info">
           <div className="edit-approval-permission__account-info__account">
-            <Identicon
-              address={address}
-              diameter={32}
-            />
-            <div className="edit-approval-permission__account-info__name">{ name }</div>
-            <div>{ t('balance') }</div>
+            <Identicon address={address} diameter={32} />
+            <div className="edit-approval-permission__account-info__name">
+              {name}
+            </div>
+            <div>{t('balance')}</div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
             {`${tokenBalance} ${tokenSymbol}`}
@@ -66,38 +65,42 @@ export default class EditApprovalPermission extends PureComponent {
         </div>
         <div className="edit-approval-permission__edit-section">
           <div className="edit-approval-permission__edit-section__title">
-            { t('spendLimitPermission') }
+            {t('spendLimitPermission')}
           </div>
           <div className="edit-approval-permission__edit-section__description">
-            { t('allowWithdrawAndSpend', [origin]) }
+            {t('allowWithdrawAndSpend', [origin])}
           </div>
           <div className="edit-approval-permission__edit-section__option">
             <div
               className="edit-approval-permission__edit-section__radio-button"
               onClick={() => this.setState({ selectedOptionIsUnlimited: true })}
             >
-              <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
-              })} />
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
+                })}
+              />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
-              { selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
+              {selectedOptionIsUnlimited && (
+                <div className="edit-approval-permission__edit-section__radio-button-dot" />
+              )}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
-              <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
-              })}>
-                {
-                  tokenAmount < tokenBalance
-                    ? t('proposedApprovalLimit')
-                    : t('unlimited')
-                }
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
+                })}
+              >
+                {tokenAmount < tokenBalance
+                  ? t('proposedApprovalLimit')
+                  : t('unlimited')}
               </div>
-              <div className="edit-approval-permission__edit-section__option-description" >
-                { t('spendLimitRequestedBy', [origin]) }
+              <div className="edit-approval-permission__edit-section__option-description">
+                {t('spendLimitRequestedBy', [origin])}
               </div>
-              <div className="edit-approval-permission__edit-section__option-value" >
+              <div className="edit-approval-permission__edit-section__option-value">
                 {`${tokenAmount} ${tokenSymbol}`}
               </div>
             </div>
@@ -105,31 +108,40 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__edit-section__option">
             <div
               className="edit-approval-permission__edit-section__radio-button"
-              onClick={() => this.setState({ selectedOptionIsUnlimited: false })}
+              onClick={() =>
+                this.setState({ selectedOptionIsUnlimited: false })
+              }
             >
-              <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
-              })} />
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
+                })}
+              />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
-              { !selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
+              {!selectedOptionIsUnlimited && (
+                <div className="edit-approval-permission__edit-section__radio-button-dot" />
+              )}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
-              <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
-              })}>
-                { t('customSpendLimit') }
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
+                })}
+              >
+                {t('customSpendLimit')}
               </div>
-              <div className="edit-approval-permission__edit-section__option-description" >
-                { t('enterMaxSpendLimit') }
+              <div className="edit-approval-permission__edit-section__option-description">
+                {t('enterMaxSpendLimit')}
               </div>
-              <div className="edit-approval-permission__edit-section__option-input" >
+              <div className="edit-approval-permission__edit-section__option-input">
                 <TextField
                   type="number"
                   min="0"
-                  placeholder={ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }
-                  onChange={(event) => {
+                  placeholder={`${customTokenAmount ||
+                    tokenAmount} ${tokenSymbol}`}
+                  onChange={event => {
                     this.setState({ customSpendLimit: event.target.value })
                     if (selectedOptionIsUnlimited) {
                       this.setState({ selectedOptionIsUnlimited: false })
@@ -137,7 +149,7 @@ export default class EditApprovalPermission extends PureComponent {
                   }}
                   fullWidth
                   margin="dense"
-                  value={ this.state.customSpendLimit }
+                  value={this.state.customSpendLimit}
                 />
               </div>
             </div>
@@ -161,9 +173,11 @@ export default class EditApprovalPermission extends PureComponent {
         submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
-        submitDisabled={ (customSpendLimit === customTokenAmount) && !selectedOptionIsUnlimited }
+        submitDisabled={
+          customSpendLimit === customTokenAmount && !selectedOptionIsUnlimited
+        }
       >
-        { this.renderModalContent() }
+        {this.renderModalContent()}
       </Modal>
     )
   }

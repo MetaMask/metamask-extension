@@ -1,11 +1,16 @@
 import { connect } from 'react-redux'
 import ProviderApproval from './provider-approval.component'
-import { approveProviderRequestByOrigin, rejectProviderRequestByOrigin } from '../../store/actions'
+import {
+  approveProviderRequestByOrigin,
+  rejectProviderRequestByOrigin,
+} from '../../store/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
-    approveProviderRequestByOrigin: origin => dispatch(approveProviderRequestByOrigin(origin)),
-    rejectProviderRequestByOrigin: origin => dispatch(rejectProviderRequestByOrigin(origin)),
+    approveProviderRequestByOrigin: origin =>
+      dispatch(approveProviderRequestByOrigin(origin)),
+    rejectProviderRequestByOrigin: origin =>
+      dispatch(rejectProviderRequestByOrigin(origin)),
   }
 }
 

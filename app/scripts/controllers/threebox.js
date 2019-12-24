@@ -28,23 +28,31 @@ class ThreeBoxController {
     this.provider = this._createProvider({
       version,
       getAccounts: async ({ origin }) => {
-        if (origin !== '3Box') { return [] }
+        if (origin !== '3Box') {
+          return []
+        }
         const isUnlocked = getKeyringControllerState().isUnlocked
 
         const accounts = await this.keyringController.getAccounts()
 
         if (isUnlocked && accounts[0]) {
-          const appKeyAddress = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
+          const appKeyAddress = await this.keyringController.getAppKeyAddress(
+            accounts[0],
+            'wallet://3box.metamask.io'
+          )
           return [appKeyAddress]
         } else {
           return []
         }
       },
-      processPersonalMessage: async (msgParams) => {
+      processPersonalMessage: async msgParams => {
         const accounts = await this.keyringController.getAccounts()
-        return keyringController.signPersonalMessage({ ...msgParams, from: accounts[0] }, {
-          withAppKeyOrigin: 'wallet://3box.metamask.io',
-        })
+        return keyringController.signPersonalMessage(
+          { ...msgParams, from: accounts[0] },
+          {
+            withAppKeyOrigin: 'wallet://3box.metamask.io',
+          }
+        )
       },
     })
 
@@ -59,7 +67,9 @@ class ThreeBoxController {
     }
     this.store = new ObservableStore(initState)
     this.registeringUpdates = false
-    this.lastMigration = migrations.sort((a, b) => a.version - b.version).slice(-1)[0]
+    this.lastMigration = migrations
+      .sort((a, b) => a.version - b.version)
+      .slice(-1)[0]
 
     if (initState.threeBoxSyncingAllowed) {
       this.init()
@@ -103,7 +113,7 @@ class ThreeBoxController {
   }
 
   _waitForOnSyncDone () {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.box.onSyncDone(() => {
         log.debug('3Box box sync done')
         return resolve()
@@ -113,7 +123,10 @@ class ThreeBoxController {
 
   async new3Box () {
     const accounts = await this.keyringController.getAccounts()
-    this.address = await this.keyringController.getAppKeyAddress(accounts[0], 'wallet://3box.metamask.io')
+    this.address = await this.keyringController.getAppKeyAddress(
+      accounts[0],
+      'wallet://3box.metamask.io'
+    )
     let backupExists
     try {
       const threeBoxConfig = await Box.getConfig(this.address)
@@ -177,7 +190,9 @@ class ThreeBoxController {
       PreferencesController: backedUpState.preferences,
       AddressBookController: backedUpState.addressBook,
     }
-    const initialMigrationState = migrator.generateInitialState(formattedStateBackup)
+    const initialMigrationState = migrator.generateInitialState(
+      formattedStateBackup
+    )
     const migratedState = await migrator.migrateData(initialMigrationState)
     return {
       preferences: migratedState.PreferencesController,
@@ -187,13 +202,14 @@ class ThreeBoxController {
 
   async restoreFromThreeBox () {
     const backedUpState = await this.space.private.get('metamaskBackup')
-    const {
-      preferences,
-      addressBook,
-    } = await this.migrateBackedUpState(backedUpState)
+    const { preferences, addressBook } = await this.migrateBackedUpState(
+      backedUpState
+    )
     this.store.updateState({ threeBoxLastUpdated: backedUpState.lastUpdated })
-    preferences && this.preferencesController.store.updateState(JSON.parse(preferences))
-    addressBook && this.addressBookController.update(JSON.parse(addressBook), true)
+    preferences &&
+      this.preferencesController.store.updateState(JSON.parse(preferences))
+    addressBook &&
+      this.addressBookController.update(JSON.parse(addressBook), true)
     this.setShowRestorePromptToFalse()
   }
 

@@ -7,7 +7,7 @@ const debounce = require('debounce')
 module.exports = Mascot
 
 inherits(Mascot, Component)
-function Mascot ({width = '200', height = '200'}) {
+function Mascot ({ width = '200', height = '200' }) {
   Component.call(this)
   this.logo = metamaskLogo({
     followMouse: true,
@@ -16,7 +16,10 @@ function Mascot ({width = '200', height = '200'}) {
     height,
   })
 
-  this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
+  this.refollowMouse = debounce(
+    this.logo.setFollowMouse.bind(this.logo, true),
+    1000
+  )
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
 

@@ -1,9 +1,7 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By } = webdriver
-const {
-  delay,
-} = require('./func')
+const { delay } = require('./func')
 const {
   checkBrowserForConsoleErrors,
   findElement,
@@ -20,11 +18,12 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json')
 describe('Using MetaMask with an existing account', function () {
   let driver
 
-  const testSeedPhrase = 'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
+  const testSeedPhrase =
+    'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
 
-  const button = async (x) => {
+  const button = async x => {
     const buttoncheck = x
     await buttoncheck.click()
     await delay(largeDelayMs)
@@ -32,8 +31,7 @@ describe('Using MetaMask with an existing account', function () {
     const resulttext = await results.getText()
     var parsedData = JSON.parse(resulttext)
 
-    return (parsedData)
-
+    return parsedData
   }
 
   this.timeout(0)
@@ -50,7 +48,9 @@ describe('Using MetaMask with an existing account', function () {
       const errors = await checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
-        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        const errorMessage = `Errors found in browser console:\n${errorReports.join(
+          '\n'
+        )}`
         console.error(new Error(errorMessage))
       }
     }
@@ -66,13 +66,21 @@ describe('Using MetaMask with an existing account', function () {
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
+      const welcomeScreenBtn = await findElement(
+        driver,
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`
+        )
+      )
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
 
     it('clicks the "Import Wallet" option', async () => {
-      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      const customRpcButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Import Wallet')]`)
+      )
       customRpcButton.click()
       await delay(largeDelayMs)
     })
@@ -84,40 +92,61 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('imports a seed phrase', async () => {
-      const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
+      const [seedTextArea] = await findElements(
+        driver,
+        By.css('textarea.first-time-flow__textarea')
+      )
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
 
       const [password] = await findElements(driver, By.id('password'))
       await password.sendKeys('correct horse battery staple')
-      const [confirmPassword] = await findElements(driver, By.id('confirm-password'))
+      const [confirmPassword] = await findElements(
+        driver,
+        By.id('confirm-password')
+      )
       confirmPassword.sendKeys('correct horse battery staple')
 
-      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
+      const tosCheckBox = await findElement(
+        driver,
+        By.css('.first-time-flow__checkbox')
+      )
       await tosCheckBox.click()
 
-      const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
+      const [importButton] = await findElements(
+        driver,
+        By.xpath(`//button[contains(text(), 'Import')]`)
+      )
       await importButton.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the success screen', async () => {
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      const doneButton = await findElement(driver, By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
+      await findElement(
+        driver,
+        By.xpath(`//div[contains(text(), 'Congratulations')]`)
+      )
+      const doneButton = await findElement(
+        driver,
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`
+        )
+      )
       await doneButton.click()
       await delay(regularDelayMs)
     })
   })
 
-
   describe('opens dapp', () => {
-
     it('switches to mainnet', async () => {
       const networkDropdown = await findElement(driver, By.css('.network-name'))
       await networkDropdown.click()
       await delay(regularDelayMs)
 
-      const [mainnet] = await findElements(driver, By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`))
+      const [mainnet] = await findElements(
+        driver,
+        By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`)
+      )
       await mainnet.click()
       await delay(largeDelayMs * 2)
     })
@@ -130,11 +159,20 @@ describe('Using MetaMask with an existing account', function () {
       const windowHandles = await driver.getAllWindowHandles()
 
       const extension = windowHandles[0]
-      const popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-      const dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+      const popup = await switchToWindowWithTitle(
+        driver,
+        'MetaMask Notification',
+        windowHandles
+      )
+      const dapp = windowHandles.find(
+        handle => handle !== extension && handle !== popup
+      )
 
       await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      const approveButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Connect')]`)
+      )
       await approveButton.click()
 
       await driver.switchTo().window(dapp)
@@ -143,37 +181,29 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('testing web3 methods', async () => {
-
-
     it('testing hexa methods', async () => {
-
-
       var List = await driver.findElements(By.className('hexaNumberMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
-
           var parsedData = await button(List[i])
           console.log(parsedData)
           var result = parseInt(parsedData.result, 16)
 
-          assert.equal((typeof result === 'number'), true)
+          assert.equal(typeof result === 'number', true)
           await delay(regularDelayMs)
         } catch (err) {
           console.log(err)
           assert(false)
-
         }
       }
     })
 
     it('testing booleanMethods', async () => {
-
       var List = await driver.findElements(By.className('booleanMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
-
           var parsedData = await button(List[i])
           console.log(parsedData)
           var result = parsedData.result
@@ -183,20 +213,15 @@ describe('Using MetaMask with an existing account', function () {
         } catch (err) {
           console.log(err)
           assert(false)
-
-
         }
       }
-
     })
 
     it('testing  transactionMethods', async () => {
-
       var List = await driver.findElements(By.className('transactionMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
-
           var parsedData = await button(List[i])
 
           console.log(parsedData.result.blockHash)
@@ -215,30 +240,21 @@ describe('Using MetaMask with an existing account', function () {
           result.push(parseInt(parsedData.result.to, 16))
           result.push(parseInt(parsedData.result.value, 16))
 
-
-          result.forEach((value) => {
-            assert.equal((typeof value === 'number'), true)
+          result.forEach(value => {
+            assert.equal(typeof value === 'number', true)
           })
-
-
         } catch (err) {
-
           console.log(err)
           assert(false)
-
-
         }
       }
-
     })
 
     it('testing blockMethods', async () => {
-
       var List = await driver.findElements(By.className('blockMethods'))
 
       for (let i = 0; i < List.length; i++) {
         try {
-
           var parsedData = await button(List[i])
           console.log(JSON.stringify(parsedData) + i)
 
@@ -246,35 +262,29 @@ describe('Using MetaMask with an existing account', function () {
 
           var result = parseInt(parsedData.result.parentHash, 16)
 
-          assert.equal((typeof result === 'number'), true)
+          assert.equal(typeof result === 'number', true)
           await delay(regularDelayMs)
         } catch (err) {
-
           console.log(err)
           assert(false)
-
-
         }
       }
     })
 
     it('testing methods', async () => {
-
       var List = await driver.findElements(By.className('methods'))
       var parsedData
       var result
 
       for (let i = 0; i < List.length; i++) {
         try {
-
           if (i === 2) {
-
             parsedData = await button(List[i])
             console.log(parsedData.result.blockHash)
 
             result = parseInt(parsedData.result.blockHash, 16)
 
-            assert.equal((typeof result === 'number' || (result === 0)), true)
+            assert.equal(typeof result === 'number' || result === 0, true)
             await delay(regularDelayMs)
           } else {
             parsedData = await button(List[i])
@@ -282,23 +292,14 @@ describe('Using MetaMask with an existing account', function () {
 
             result = parseInt(parsedData.result, 16)
 
-            assert.equal((typeof result === 'number' || (result === 0)), true)
+            assert.equal(typeof result === 'number' || result === 0, true)
             await delay(regularDelayMs)
           }
-
-
         } catch (err) {
-
           console.log(err)
           assert(false)
-
-
         }
       }
     })
-
-
   })
-
-
 })

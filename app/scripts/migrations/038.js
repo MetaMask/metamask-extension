@@ -28,7 +28,9 @@ function transformState (state) {
         ...ABTestControllerState,
         abTests: {
           ...abTests,
-          fullScreenVsPopup: getRandomArrayItem(ABTestController.abTestGroupNames.fullScreenVsPopup),
+          fullScreenVsPopup: getRandomArrayItem(
+            ABTestController.abTestGroupNames.fullScreenVsPopup
+          ),
         },
       },
     }

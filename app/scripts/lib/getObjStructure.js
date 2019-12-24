@@ -25,7 +25,7 @@ module.exports = getObjStructure
  */
 function getObjStructure (obj) {
   const structure = clone(obj)
-  return deepMap(structure, (value) => {
+  return deepMap(structure, value => {
     return value === null ? 'null' : typeof value
   })
 }

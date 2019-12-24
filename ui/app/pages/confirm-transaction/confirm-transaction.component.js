@@ -82,7 +82,10 @@ export default class ConfirmTransaction extends Component {
         eventOpts: {
           category: 'abtesting',
           action: 'fullScreenVsPopup',
-          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
+          name:
+            fullScreenVsPopupTestGroup === 'fullScreen'
+              ? 'fullscreen'
+              : 'original',
         },
       })
     }
@@ -100,15 +103,27 @@ export default class ConfirmTransaction extends Component {
       totalUnapprovedCount,
     } = this.props
 
-    if (paramsTransactionId && transactionId && prevProps.paramsTransactionId !== paramsTransactionId) {
+    if (
+      paramsTransactionId &&
+      transactionId &&
+      prevProps.paramsTransactionId !== paramsTransactionId
+    ) {
       clearConfirmTransaction()
       getContractMethodData(data)
       setTransactionToConfirm(paramsTransactionId)
       return
-    } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
+    } else if (
+      prevProps.transactionId &&
+      !transactionId &&
+      !totalUnapprovedCount
+    ) {
       history.replace(DEFAULT_ROUTE)
       return
-    } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
+    } else if (
+      prevProps.transactionId &&
+      transactionId &&
+      prevProps.transactionId !== transactionId
+    ) {
       history.replace(DEFAULT_ROUTE)
       return
     }
@@ -119,8 +134,8 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
-      ? (
+    return transactionId &&
+      (!paramsTransactionId || paramsTransactionId === transactionId) ? (
         <Switch>
           <Route
             exact
@@ -159,7 +174,8 @@ export default class ConfirmTransaction extends Component {
           />
           <Route path="*" component={ConfirmTransactionSwitch} />
         </Switch>
+      ) : (
+        <Loading />
       )
-      : <Loading />
   }
 }

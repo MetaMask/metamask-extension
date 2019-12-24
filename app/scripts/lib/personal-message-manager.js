@@ -64,8 +64,12 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    *
    */
   getUnapprovedMsgs () {
-    return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+    return this.messages
+      .filter(msg => msg.status === 'unapproved')
+      .reduce((result, msg) => {
+        result[msg.id] = msg
+        return result
+      }, {})
   }
 
   /**
@@ -84,14 +88,24 @@ module.exports = class PersonalMessageManager extends EventEmitter {
         reject(new Error('MetaMask Message Signature: from field is required.'))
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
-      this.once(`${msgId}:finished`, (data) => {
+      this.once(`${msgId}:finished`, data => {
         switch (data.status) {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(
+              ethErrors.provider.userRejectedRequest(
+                'MetaMask Message Signature: User denied message signature.'
+              )
+            )
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(
+              new Error(
+                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                  msgParams
+                )}`
+              )
+            )
         }
       })
     })
@@ -108,12 +122,16 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    *
    */
   addUnapprovedMessage (msgParams, req) {
-    log.debug(`PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+    log.debug(
+      `PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(
+        msgParams
+      )}`
+    )
     // add origin from request
     if (req) msgParams.origin = req.origin
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
+    var time = new Date().getTime()
     var msgId = createId()
     var msgData = {
       id: msgId,
@@ -229,7 +247,11 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error(`PersonalMessageManager - Message not found for id: "${msgId}".`)
+    if (!msg) {
+      throw new Error(
+        `PersonalMessageManager - Message not found for id: "${msgId}".`
+      )
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
@@ -248,7 +270,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    *
    */
   _updateMsg (msg) {
-    const index = this.messages.findIndex((message) => message.id === msg.id)
+    const index = this.messages.findIndex(message => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }
@@ -264,8 +286,12 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    */
   _saveMsgList () {
     const unapprovedPersonalMsgs = this.getUnapprovedMsgs()
-    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs).length
-    this.memStore.updateState({ unapprovedPersonalMsgs, unapprovedPersonalMsgCount })
+    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs)
+      .length
+    this.memStore.updateState({
+      unapprovedPersonalMsgs,
+      unapprovedPersonalMsgCount,
+    })
     this.emit('updateBadge')
   }
 
@@ -288,5 +314,4 @@ module.exports = class PersonalMessageManager extends EventEmitter {
 
     return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
-
 }

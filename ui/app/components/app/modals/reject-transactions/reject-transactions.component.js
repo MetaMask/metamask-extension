@@ -36,7 +36,7 @@ export default class RejectTransactionsModal extends PureComponent {
       >
         <div>
           <div className="reject-transactions__description">
-            { t('rejectTxsDescription', [unapprovedTxCount]) }
+            {t('rejectTxsDescription', [unapprovedTxCount])}
           </div>
         </div>
       </Modal>

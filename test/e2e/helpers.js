@@ -38,7 +38,6 @@ module.exports = {
   largeDelayMs,
 }
 
-
 async function prepareExtensionForTesting ({ responsive } = {}) {
   let driver, extensionId, extensionUrl
   const targetBrowser = process.env.SELENIUM_BROWSER
@@ -61,7 +60,9 @@ async function prepareExtensionForTesting ({ responsive } = {}) {
       break
     }
     default: {
-      throw new Error(`prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`)
+      throw new Error(
+        `prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`
+      )
     }
   }
   // Depending on the state of the application built into the above directory (extPath) and the value of
@@ -88,7 +89,9 @@ async function setupFetchMocking (driver) {
       if (url === 'https://ethgasstation.info/json/ethgasAPI.json') {
         return { json: async () => clone(fetchMockResponses.ethGasBasic) }
       } else if (url === 'https://ethgasstation.info/json/predictTable.json') {
-        return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
+        return {
+          json: async () => clone(fetchMockResponses.ethGasPredictTable),
+        }
       } else if (url.match(/chromeextensionmm/)) {
         return { json: async () => clone(fetchMockResponses.metametrics) }
       } else if (url === 'https://dev.blockscale.net/api/gasexpress.json') {
@@ -97,7 +100,11 @@ async function setupFetchMocking (driver) {
       return window.origFetch(...args)
     }
     if (window.chrome && window.chrome.webRequest) {
-      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, {urls: ['https://*.infura.io/*']}, ['blocking'])
+      window.chrome.webRequest.onBeforeRequest.addListener(
+        cancelInfuraRequest,
+        { urls: ['https://*.infura.io/*'] },
+        ['blocking']
+      )
     }
     function cancelInfuraRequest (requestDetails) {
       console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
@@ -134,14 +141,22 @@ async function checkBrowserForConsoleErrors (driver) {
     // Third-party Favicon 404s show up as errors
     'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
     // React Development build - known issue blocked by test build sys
-    'Warning: It looks like you\'re using a minified copy of the development build of React.',
+    "Warning: It looks like you're using a minified copy of the development build of React.",
     // Redux Development build - known issue blocked by test build sys
     'This means that you are running a slower development build of Redux.',
   ]
-  const browserLogs = await driver.manage().logs().get('browser')
-  const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
+  const browserLogs = await driver
+    .manage()
+    .logs()
+    .get('browser')
+  const errorEntries = browserLogs.filter(
+    entry => !ignoredLogTypes.includes(entry.level.toString())
+  )
   const errorObjects = errorEntries.map(entry => entry.toJSON())
-  return errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+  return errorObjects.filter(
+    entry =>
+      !ignoredErrorMessages.some(message => entry.message.includes(message))
+  )
 }
 
 async function verboseReportOnFailure (driver, test) {
@@ -154,7 +169,9 @@ async function verboseReportOnFailure (driver, test) {
   const filepathBase = `${artifactDir}/test-failure`
   await pify(mkdirp)(artifactDir)
   const screenshot = await driver.takeScreenshot()
-  await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, {
+    encoding: 'base64',
+  })
   const htmlSource = await driver.getPageSource()
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
 }
@@ -179,7 +196,12 @@ async function openNewPage (driver, url) {
   await delay(1000)
 }
 
-async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
+async function waitUntilXWindowHandles (
+  driver,
+  x,
+  delayStep = 1000,
+  timeout = 5000
+) {
   let timeElapsed = 0
   async function _pollWindowHandles () {
     const windowHandles = await driver.getAllWindowHandles()
@@ -189,7 +211,9 @@ async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5
     await delay(delayStep)
     timeElapsed += delayStep
     if (timeElapsed > timeout) {
-      throw new Error('waitUntilXWindowHandles timed out polling window handles')
+      throw new Error(
+        'waitUntilXWindowHandles timed out polling window handles'
+      )
     } else {
       await _pollWindowHandles()
     }
@@ -222,8 +246,8 @@ async function switchToWindowWithTitle (driver, title, windowHandles) {
  * @returns {Promise<void>}
  */
 async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
-  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
-  windowHandles = windowHandles || await driver.getAllWindowHandles()
+  exceptions = typeof exceptions === 'string' ? [exceptions] : exceptions
+  windowHandles = windowHandles || (await driver.getAllWindowHandles())
   const lastWindowHandle = windowHandles.pop()
   if (!exceptions.includes(lastWindowHandle)) {
     await driver.switchTo().window(lastWindowHandle)
@@ -231,7 +255,10 @@ async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
     await driver.close()
     await delay(1000)
   }
-  return windowHandles.length && await closeAllWindowHandlesExcept(driver, exceptions, windowHandles)
+  return (
+    windowHandles.length &&
+    (await closeAllWindowHandlesExcept(driver, exceptions, windowHandles))
+  )
 }
 
 async function assertElementNotPresent (webdriver, driver, by) {
@@ -239,7 +266,10 @@ async function assertElementNotPresent (webdriver, driver, by) {
   try {
     dataTab = await findElement(driver, by, 4000)
   } catch (err) {
-    assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
+    assert(
+      err instanceof webdriver.error.NoSuchElementError ||
+        err instanceof webdriver.error.TimeoutError
+    )
   }
   assert.ok(!dataTab, 'Found element that should not be present')
 }
@@ -256,6 +286,10 @@ async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) 
   if (windowUrl.match(regexp)) {
     return firstHandle
   } else {
-    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
+    return await switchToWindowWithUrlThatMatches(
+      driver,
+      regexp,
+      windowHandles.slice(1)
+    )
   }
 }

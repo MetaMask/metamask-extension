@@ -9,8 +9,12 @@ import {
 import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask: { unapprovedTxs } } = state
-  const { match: { params = {}, url } } = ownProps
+  const {
+    metamask: { unapprovedTxs },
+  } = state
+  const {
+    match: { params = {}, url },
+  } = ownProps
   const urlId = url && url.match(/\d+/) && url.match(/\d+/)[0]
   const { id: paramsId } = params
   const transactionId = paramsId || urlId
@@ -18,13 +22,23 @@ const mapStateToProps = (state, ownProps) => {
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state)
   const totalUnconfirmed = unconfirmedTransactions.length
   const transaction = totalUnconfirmed
-    ? unapprovedTxs[transactionId] || unconfirmedTransactions[totalUnconfirmed - 1]
+    ? unapprovedTxs[transactionId] ||
+      unconfirmedTransactions[totalUnconfirmed - 1]
     : {}
 
   return {
     txData: transaction,
-    isEtherTransaction: transaction && transaction.transactionCategory === SEND_ETHER_ACTION_KEY,
-    isTokenMethod: [TOKEN_METHOD_APPROVE, TOKEN_METHOD_TRANSFER, TOKEN_METHOD_TRANSFER_FROM].includes(transaction && transaction.transactionCategory && transaction.transactionCategory.toLowerCase()),
+    isEtherTransaction:
+      transaction && transaction.transactionCategory === SEND_ETHER_ACTION_KEY,
+    isTokenMethod: [
+      TOKEN_METHOD_APPROVE,
+      TOKEN_METHOD_TRANSFER,
+      TOKEN_METHOD_TRANSFER_FROM,
+    ].includes(
+      transaction &&
+        transaction.transactionCategory &&
+        transaction.transactionCategory.toLowerCase()
+    ),
   }
 }
 

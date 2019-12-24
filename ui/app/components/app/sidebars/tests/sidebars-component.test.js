@@ -16,12 +16,14 @@ describe('Sidebar Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<Sidebar
-      sidebarOpen={false}
-      hideSidebar={propsMethodSpies.hideSidebar}
-      transitionName="someTransition"
-      type="wallet-view"
-    />)
+    wrapper = shallow(
+      <Sidebar
+        sidebarOpen={false}
+        hideSidebar={propsMethodSpies.hideSidebar}
+        transitionName="someTransition"
+        type="wallet-view"
+      />
+    )
   })
 
   afterEach(() => {
@@ -57,7 +59,10 @@ describe('Sidebar Component', function () {
     it('should render sidebar content with the correct props', () => {
       wrapper.setProps({ type: 'wallet-view' })
       renderSidebarContent = wrapper.instance().renderSidebarContent()
-      assert.equal(renderSidebarContent.props.responsiveDisplayClassname, 'sidebar-right')
+      assert.equal(
+        renderSidebarContent.props.responsiveDisplayClassname,
+        'sidebar-right'
+      )
     })
 
     it('should render sidebar content with the correct props', () => {
@@ -82,16 +87,45 @@ describe('Sidebar Component', function () {
     })
 
     it('should render the ReactCSSTransitionGroup without any children', () => {
-      assert(wrapper.children().at(0).is(ReactCSSTransitionGroup))
-      assert.equal(wrapper.children().at(0).children().length, 0)
+      assert(
+        wrapper
+          .children()
+          .at(0)
+          .is(ReactCSSTransitionGroup)
+      )
+      assert.equal(
+        wrapper
+          .children()
+          .at(0)
+          .children().length,
+        0
+      )
     })
 
     it('should render sidebar content and the overlay if sidebarOpen is true', () => {
       wrapper.setProps({ sidebarOpen: true })
       assert.equal(wrapper.children().length, 2)
-      assert(wrapper.children().at(1).hasClass('sidebar-overlay'))
-      assert.equal(wrapper.children().at(0).children().length, 1)
-      assert(wrapper.children().at(0).children().at(0).is(WalletView))
+      assert(
+        wrapper
+          .children()
+          .at(1)
+          .hasClass('sidebar-overlay')
+      )
+      assert.equal(
+        wrapper
+          .children()
+          .at(0)
+          .children().length,
+        1
+      )
+      assert(
+        wrapper
+          .children()
+          .at(0)
+          .children()
+          .at(0)
+          .is(WalletView)
+      )
     })
   })
 })

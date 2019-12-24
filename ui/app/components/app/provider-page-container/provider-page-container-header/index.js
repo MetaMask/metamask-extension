@@ -1,1 +1,1 @@
-export {default} from './provider-page-container-header.component'
+export { default } from './provider-page-container-header.component'

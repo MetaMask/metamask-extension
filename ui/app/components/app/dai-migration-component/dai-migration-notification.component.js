@@ -30,7 +30,11 @@ export default class DaiV1MigrationNotification extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { mkrMigrationReminderTimestamp, string: balanceString, symbol } = this.props
+    const {
+      mkrMigrationReminderTimestamp,
+      string: balanceString,
+      symbol,
+    } = this.props
 
     if (mkrMigrationReminderTimestamp) {
       const reminderDateTime = DateTime.fromISO(mkrMigrationReminderTimestamp, {
@@ -51,20 +55,24 @@ export default class DaiV1MigrationNotification extends PureComponent {
 
     return (
       <HomeNotification
-        descriptionText={(
+        descriptionText={
           <div>
             {t('migrateSai')}
             &nbsp;
             <a
               href="#"
               onClick={() => {
-                window.open('https://blog.makerdao.com/multi-collateral-dai-is-live/', '_blank', 'noopener')
+                window.open(
+                  'https://blog.makerdao.com/multi-collateral-dai-is-live/',
+                  '_blank',
+                  'noopener'
+                )
               }}
             >
               {t('learnMore')}.
             </a>
           </div>
-        )}
+        }
         acceptText={t('migrate')}
         onAccept={() => {
           window.open('https://migrate.makerdao.com', '_blank', 'noopener')

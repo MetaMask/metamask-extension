@@ -6,7 +6,6 @@ import UserPreferencedCurrencyInput from '../../../../components/app/user-prefer
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input'
 
 export default class SendAmountRow extends Component {
-
   static propTypes = {
     amount: PropTypes.string,
     amountConversionRate: PropTypes.oneOfType([
@@ -86,7 +85,9 @@ export default class SendAmountRow extends Component {
 
   renderInput () {
     const { amount, inError, selectedToken } = this.props
-    const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
+    const Component = selectedToken
+      ? UserPreferencedTokenInput
+      : UserPreferencedCurrencyInput
 
     return (
       <Component
@@ -111,9 +112,8 @@ export default class SendAmountRow extends Component {
         errorType="amount"
       >
         {gasTotal && <AmountMaxButton inError={inError} />}
-        { this.renderInput() }
+        {this.renderInput()}
       </SendRowWrapper>
     )
   }
-
 }

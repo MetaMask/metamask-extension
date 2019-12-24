@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
-import {isValidAddress} from '../../../../helpers/utils/util'
+import { isValidAddress } from '../../../../helpers/utils/util'
 import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
-import {ellipsify} from '../../send.utils'
+import { ellipsify } from '../../send.utils'
 
 export default class AddRecipient extends Component {
-
   static propTypes = {
     className: PropTypes.string,
     query: PropTypes.string,
@@ -38,9 +37,7 @@ export default class AddRecipient extends Component {
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: [
-        { name: 'address', weight: 0.5 },
-      ],
+      keys: [{ name: 'address', weight: 0.5 }],
     })
 
     this.contactFuse = new Fuse(props.contacts, {
@@ -109,15 +106,18 @@ export default class AddRecipient extends Component {
     if (isValidAddress(query)) {
       content = this.renderExplicitAddress(query)
     } else if (ensResolution) {
-      content = this.renderExplicitAddress(ensResolution, addressBookEntryName || query)
+      content = this.renderExplicitAddress(
+        ensResolution,
+        addressBookEntryName || query
+      )
     } else if (isShowingTransfer) {
       content = this.renderTransfer()
     }
 
     return (
       <div className="send__select-recipient-wrapper">
-        { this.renderDialogs() }
-        { content || this.renderMain() }
+        {this.renderDialogs()}
+        {content || this.renderMain()}
       </div>
     )
   }
@@ -134,13 +134,11 @@ export default class AddRecipient extends Component {
           <div className="send__select-recipient-wrapper__group-item__title">
             {name || ellipsify(address)}
           </div>
-          {
-            name && (
-              <div className="send__select-recipient-wrapper__group-item__subtitle">
-                {ellipsify(address)}
-              </div>
-            )
-          }
+          {name && (
+            <div className="send__select-recipient-wrapper__group-item__subtitle">
+              {ellipsify(address)}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -156,8 +154,8 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={() => this.setState({ isShowingTransfer: false })}
         >
-          <div className="send__select-recipient-wrapper__list__back-caret"/>
-          { t('backToAll') }
+          <div className="send__select-recipient-wrapper__list__back-caret" />
+          {t('backToAll')}
         </div>
         <RecipientGroup
           label={t('myAccounts')}
@@ -180,16 +178,14 @@ export default class AddRecipient extends Component {
           searchForRecents={this.searchForRecents.bind(this)}
           selectRecipient={this.selectRecipient.bind(this)}
         >
-          {
-            (ownedAccounts && ownedAccounts.length > 1) && !query && (
-              <div
-                className="send__select-recipient-wrapper__list__link"
-                onClick={() => this.setState({ isShowingTransfer: true })}
-              >
-                { t('transferBetweenAccounts') }
-              </div>
-            )
-          }
+          {ownedAccounts && ownedAccounts.length > 1 && !query && (
+            <div
+              className="send__select-recipient-wrapper__list__link"
+              onClick={() => this.setState({ isShowingTransfer: true })}
+            >
+              {t('transferBetweenAccounts')}
+            </div>
+          )}
         </ContactList>
       </div>
     )
@@ -207,10 +203,7 @@ export default class AddRecipient extends Component {
 
     if (ensResolutionError) {
       return (
-        <Dialog
-          type="error"
-          className="send__error-dialog"
-        >
+        <Dialog type="error" className="send__error-dialog">
           {ensResolutionError}
         </Dialog>
       )
@@ -218,26 +211,18 @@ export default class AddRecipient extends Component {
 
     if (toError && toError !== 'required' && !ensResolution) {
       return (
-        <Dialog
-          type="error"
-          className="send__error-dialog"
-        >
+        <Dialog type="error" className="send__error-dialog">
           {t(toError)}
         </Dialog>
       )
     }
 
-
     if (toWarning) {
       return (
-        <Dialog
-          type="warning"
-          className="send__error-dialog"
-        >
+        <Dialog type="warning" className="send__error-dialog">
           {t(toWarning)}
         </Dialog>
       )
     }
   }
-
 }

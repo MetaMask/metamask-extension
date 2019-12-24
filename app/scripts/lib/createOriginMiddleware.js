@@ -6,7 +6,11 @@ module.exports = createOriginMiddleware
  * @returns {Function}
  */
 function createOriginMiddleware (opts) {
-  return function originMiddleware (/** @type {any} */ req, /** @type {any} */ _, /** @type {Function} */ next) {
+  return function originMiddleware (
+    /** @type {any} */ req,
+    /** @type {any} */ _,
+    /** @type {Function} */ next
+  ) {
     req.origin = opts.origin
     next()
   }

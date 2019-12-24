@@ -6,7 +6,10 @@ import { compose } from 'recompose'
 import actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {
+  getNetworkIdentifier,
+  preferencesSelector,
+} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
@@ -17,7 +20,9 @@ const ConfirmTransaction = require('../confirm-transaction')
 
 // slideout menu
 const Sidebar = require('../../components/app/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../../components/app/sidebars/sidebar.constants')
+const {
+  WALLET_VIEW_SIDEBAR,
+} = require('../../components/app/sidebars/sidebar.constants')
 
 // other views
 import Home from '../home'
@@ -34,7 +39,8 @@ const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
 import CreateAccountPage from '../create-account'
 
 const Loading = require('../../components/ui/loading-screen')
-const LoadingNetwork = require('../../components/app/loading-network-screen').default
+const LoadingNetwork = require('../../components/app/loading-network-screen')
+  .default
 const NetworkDropdown = require('../../components/app/dropdowns/network-dropdown')
 import AccountMenu from '../../components/app/account-menu'
 
@@ -46,9 +52,7 @@ const Alert = require('../../components/ui/alert')
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
 
-import {
-  submittedPendingTransactionsSelector,
-} from '../../selectors/transactions'
+import { submittedPendingTransactionsSelector } from '../../selectors/transactions'
 
 // Routes
 import {
@@ -85,15 +89,20 @@ class Routes extends Component {
 
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
-        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
-        this.context.metricsEvent({}, {
-          currentPath: '',
-          pathname: locationObj.pathname,
-          url,
-          pageOpts: {
-            hideDimensions: true,
-          },
-        })
+        const url = `&url=${encodeURIComponent(
+          'http://www.metamask.io/metametrics' + locationObj.pathname
+        )}`
+        this.context.metricsEvent(
+          {},
+          {
+            currentPath: '',
+            pathname: locationObj.pathname,
+            url,
+            pageOpts: {
+              hideDimensions: true,
+            },
+          }
+        )
       }
     })
   }
@@ -106,15 +115,42 @@ class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
-        <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
-        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
+        <Initialized
+          path={RESTORE_VAULT_ROUTE}
+          component={RestoreVaultPage}
+          exact
+        />
+        <Authenticated
+          path={REVEAL_SEED_ROUTE}
+          component={RevealSeedConfirmation}
+          exact
+        />
+        <Authenticated
+          path={MOBILE_SYNC_ROUTE}
+          component={MobileSyncPage}
+          exact
+        />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
-        <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
+        <Authenticated
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+          component={ConfirmTransaction}
+        />
+        <Authenticated
+          path={SEND_ROUTE}
+          component={SendTransactionScreen}
+          exact
+        />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
+        <Authenticated
+          path={CONFIRM_ADD_TOKEN_ROUTE}
+          component={ConfirmAddTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+          component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
@@ -133,12 +169,22 @@ class Routes extends Component {
 
   onInitializationUnlockPage () {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: INITIALIZE_UNLOCK_ROUTE, exact: true }))
+    return Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_UNLOCK_ROUTE,
+        exact: true,
+      })
+    )
   }
 
   onConfirmPage () {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
+    return Boolean(
+      matchPath(location.pathname, {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      })
+    )
   }
 
   hasProviderRequests () {
@@ -149,9 +195,12 @@ class Routes extends Component {
   hideAppHeader () {
     const { location } = this.props
 
-    const isInitializing = Boolean(matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    }))
+    const isInitializing = Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_ROUTE,
+        exact: false,
+      })
+    )
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
       return true
@@ -181,9 +230,12 @@ class Routes extends Component {
       submittedPendingTransactions,
       isMouseUser,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const loadMessage = loadingMessage || isLoadingNetwork ?
-      this.getConnectingLabel(loadingMessage) : null
+    const isLoadingNetwork =
+      network === 'loading' && currentView.name !== 'config'
+    const loadMessage =
+      loadingMessage || isLoadingNetwork
+        ? this.getConnectingLabel(loadingMessage)
+        : null
     log.debug('Main ui render function')
 
     const {
@@ -194,25 +246,29 @@ class Routes extends Component {
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
 
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
+    const sidebarOnOverlayClose =
+      sidebarType === WALLET_VIEW_SIDEBAR
+        ? () => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Wallet Sidebar',
+              name: 'Closed Sidebare Via Overlay',
+            },
+          })
+        }
+        : null
 
-    const sidebarShouldClose = sidebarTransaction &&
+    const sidebarShouldClose =
+      sidebarTransaction &&
       !sidebarTransaction.status === 'failed' &&
-      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+      !submittedPendingTransactions.find(
+        ({ id }) => id === sidebarTransaction.id
+      )
 
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
@@ -222,18 +278,13 @@ class Routes extends Component {
         }}
       >
         <Modal />
-        <Alert
-          visible={this.props.alertOpen}
-          msg={alertMessage}
-        />
-        {
-          !this.hideAppHeader() && (
-            <AppHeader
-              hideNetworkIndicator={this.onInitializationUnlockPage()}
-              disabled={this.onConfirmPage()}
-            />
-          )
-        }
+        <Alert visible={this.props.alertOpen} msg={alertMessage} />
+        {!this.hideAppHeader() && (
+          <AppHeader
+            hideNetworkIndicator={this.onInitializationUnlockPage()}
+            disabled={this.onConfirmPage()}
+          />
+        )}
         <Sidebar
           sidebarOpen={sidebarIsOpen}
           sidebarShouldClose={sidebarShouldClose}
@@ -249,9 +300,9 @@ class Routes extends Component {
         />
         <AccountMenu />
         <div className="main-container-wrapper">
-          { isLoading && <Loading loadingMessage={loadMessage} /> }
-          { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
-          { this.renderRoutes() }
+          {isLoading && <Loading loadingMessage={loadMessage} />}
+          {!isLoading && isLoadingNetwork && <LoadingNetwork />}
+          {this.renderRoutes()}
         </div>
       </div>
     )
@@ -389,7 +440,8 @@ function mapDispatchToProps (dispatch) {
     lockMetaMask: () => dispatch(actions.lockMetamask(false)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
+    setMouseUserState: isMouseUser =>
+      dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }
 }

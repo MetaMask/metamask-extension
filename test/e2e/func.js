@@ -32,7 +32,10 @@ async function createModifiedTestBuild ({ browser, srcPath }) {
   await fs.copy(srcPath, extPath)
   // inject METAMASK_TEST_CONFIG setting default test network
   const config = { NetworkController: { provider: { type: 'localhost' } } }
-  await prependFile(`${extPath}/background.js`, `window.METAMASK_TEST_CONFIG=${JSON.stringify(config)};\n`)
+  await prependFile(
+    `${extPath}/background.js`,
+    `window.METAMASK_TEST_CONFIG=${JSON.stringify(config)};\n`
+  )
   return { extPath }
 }
 
@@ -58,10 +61,7 @@ async function setupBrowserAndExtension ({ browser, extPath }) {
 
 function buildChromeWebDriver (extPath, opts = {}) {
   const tmpProfile = fs.mkdtempSync(path.join(os.tmpdir(), 'mm-chrome-profile'))
-  const args = [
-    `load-extension=${extPath}`,
-    `user-data-dir=${tmpProfile}`,
-  ]
+  const args = [`load-extension=${extPath}`, `user-data-dir=${tmpProfile}`]
   if (opts.responsive) {
     args.push('--auto-open-devtools-for-tabs')
   }
@@ -78,20 +78,32 @@ function buildChromeWebDriver (extPath, opts = {}) {
 function buildFirefoxWebdriver (opts = {}) {
   const driver = new webdriver.Builder().build()
   if (opts.responsive) {
-    driver.manage().window().setSize(320, 600)
+    driver
+      .manage()
+      .window()
+      .setSize(320, 600)
   }
   return driver
 }
 
 async function getExtensionIdChrome (driver) {
   await driver.get('chrome://extensions')
-  const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
+  const extensionId = await driver.executeScript(
+    'return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")'
+  )
   return extensionId
 }
 
 async function getExtensionIdFirefox (driver) {
   await driver.get('about:debugging#addons')
-  const extensionId = await driver.wait(webdriver.until.elementLocated(By.xpath('//dl/div[contains(., \'Internal UUID\')]/dd')), 1000).getText()
+  const extensionId = await driver
+    .wait(
+      webdriver.until.elementLocated(
+        By.xpath("//dl/div[contains(., 'Internal UUID')]/dd")
+      ),
+      1000
+    )
+    .getText()
   return extensionId
 }
 
@@ -100,8 +112,13 @@ async function installWebExt (driver, extension) {
     .setParameter('path', path.resolve(extension))
     .setParameter('temporary', true)
 
-  await driver.getExecutor()
-    .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
+  await driver
+    .getExecutor()
+    .defineCommand(
+      cmd.getName(),
+      'POST',
+      '/session/:sessionId/moz/addon/install'
+    )
 
   return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
 }
@@ -111,7 +128,9 @@ async function verboseReportOnFailure ({ browser, driver, title }) {
   const filepathBase = `${artifactDir}/test-failure`
   await fs.ensureDir(artifactDir)
   const screenshot = await driver.takeScreenshot()
-  await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+    encoding: 'base64',
+  })
   const htmlSource = await driver.getPageSource()
   await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
 }

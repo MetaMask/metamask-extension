@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 
-
 inherits(NetworkDropdownIcon, Component)
 module.exports = NetworkDropdownIcon
 
@@ -20,21 +19,27 @@ NetworkDropdownIcon.prototype.render = function () {
   } = this.props
 
   return loading
-    ? h('span.pointer.network-indicator', {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
-    }, [
-      h('img', {
+    ? h(
+      'span.pointer.network-indicator',
+      {
         style: {
-          width: '27px',
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'row',
         },
-        src: 'images/loading.svg',
-      }),
-    ])
-    : h(`.menu-icon-circle${isSelected ? '--active' : ''}`, {},
+      },
+      [
+        h('img', {
+          style: {
+            width: '27px',
+          },
+          src: 'images/loading.svg',
+        }),
+      ]
+    )
+    : h(
+      `.menu-icon-circle${isSelected ? '--active' : ''}`,
+      {},
       h('div', {
         style: {
           background: backgroundColor,

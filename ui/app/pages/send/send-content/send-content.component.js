@@ -8,7 +8,6 @@ import SendAssetRow from './send-asset-row'
 import Dialog from '../../../components/ui/dialog'
 
 export default class SendContent extends Component {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -24,23 +23,19 @@ export default class SendContent extends Component {
     isOwnedAccount: PropTypes.bool,
   }
 
-  updateGas = (updateData) => this.props.updateGas(updateData)
+  updateGas = updateData => this.props.updateGas(updateData)
 
   render () {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
-          { this.maybeRenderAddContact() }
+          {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
-          {
-            this.props.showHexData && (
-              <SendHexDataRow
-                updateGas={this.updateGas}
-              />
-            )
-          }
+          {this.props.showHexData && (
+            <SendHexDataRow updateGas={this.updateGas} />
+          )}
         </div>
       </PageContainerContent>
     )
@@ -48,7 +43,11 @@ export default class SendContent extends Component {
 
   maybeRenderAddContact () {
     const { t } = this.context
-    const { isOwnedAccount, showAddToAddressBookModal, contact = {} } = this.props
+    const {
+      isOwnedAccount,
+      showAddToAddressBookModal,
+      contact = {},
+    } = this.props
 
     if (isOwnedAccount || contact.name) {
       return

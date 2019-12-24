@@ -83,8 +83,16 @@ const getPlatform = _ => {
  */
 function sufficientBalance (txParams, hexBalance) {
   // validate hexBalance is a hex string
-  assert.equal(typeof hexBalance, 'string', 'sufficientBalance - hexBalance is not a hex string')
-  assert.equal(hexBalance.slice(0, 2), '0x', 'sufficientBalance - hexBalance is not a hex string')
+  assert.equal(
+    typeof hexBalance,
+    'string',
+    'sufficientBalance - hexBalance is not a hex string'
+  )
+  assert.equal(
+    hexBalance.slice(0, 2),
+    '0x',
+    'sufficientBalance - hexBalance is not a hex string'
+  )
 
   const balance = hexToBn(hexBalance)
   const value = hexToBn(txParams.value)
@@ -133,19 +141,19 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 function applyListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
+  Object.keys(listeners).forEach(key => {
     emitter.on(key, listeners[key])
   })
 }
 
 function removeListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
+  Object.keys(listeners).forEach(key => {
     emitter.removeListener(key, listeners[key])
   })
 }
 
 function getRandomArrayItem (array) {
-  return array[Math.floor((Math.random() * array.length))]
+  return array[Math.floor(Math.random() * array.length)]
 }
 
 module.exports = {

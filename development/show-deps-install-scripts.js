@@ -12,13 +12,19 @@ readInstalled('./', { dev: true }, function (err, data) {
     const packageScripts = packageData.scripts || {}
     const scriptKeys = Reflect.ownKeys(packageScripts)
 
-    const hasInstallScript = installScripts.some(installKey => scriptKeys.includes(installKey))
+    const hasInstallScript = installScripts.some(installKey =>
+      scriptKeys.includes(installKey)
+    )
     if (!hasInstallScript) return
 
     const matchingScripts = {}
-    if (packageScripts.preinstall) matchingScripts.preinstall = packageScripts.preinstall
+    if (packageScripts.preinstall) {
+      matchingScripts.preinstall = packageScripts.preinstall
+    }
     if (packageScripts.install) matchingScripts.install = packageScripts.install
-    if (packageScripts.postinstall) matchingScripts.postinstall = packageScripts.postinstall
+    if (packageScripts.postinstall) {
+      matchingScripts.postinstall = packageScripts.postinstall
+    }
     const scriptNames = Reflect.ownKeys(matchingScripts)
 
     const relativePath = path.relative(process.cwd(), packageData.path)

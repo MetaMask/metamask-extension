@@ -3,18 +3,10 @@ const extend = require('xtend')
 const EthQuery = require('../eth-query')
 const log = require('loglevel')
 const pify = require('pify')
-const {
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  MAINNET,
-  GOERLI,
-} = require('./network/enums')
+const { ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI } = require('./network/enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
-
 class RecentBlocksController {
-
   /**
    * Controller responsible for storing, updating and managing the recent history of blocks. Blocks are back filled
    * upon the controller's construction and then the list is updated when the given block tracker gets a 'latest' event
@@ -38,11 +30,14 @@ class RecentBlocksController {
     this.ethQuery = new EthQuery(provider)
     this.historyLength = opts.historyLength || 40
 
-    const initState = extend({
-      recentBlocks: [],
-    }, opts.initState)
+    const initState = extend(
+      {
+        recentBlocks: [],
+      },
+      opts.initState
+    )
     this.store = new ObservableStore(initState)
-    const blockListner = async (newBlockNumberHex) => {
+    const blockListner = async newBlockNumberHex => {
       try {
         await this.processBlock(newBlockNumberHex)
       } catch (err) {
@@ -55,7 +50,7 @@ class RecentBlocksController {
       this.blockTracker.on('latest', blockListner)
       isListening = true
     }
-    networkController.on('networkDidChange', (newType) => {
+    networkController.on('networkDidChange', newType => {
       if (INFURA_PROVIDER_TYPES.includes(newType) && isListening) {
         this.blockTracker.removeListener('latest', blockListner)
       } else if (
@@ -64,7 +59,6 @@ class RecentBlocksController {
         !isListening
       ) {
         this.blockTracker.on('latest', blockListner)
-
       }
     })
     this.backfill()
@@ -135,7 +129,7 @@ class RecentBlocksController {
    */
   mapTransactionsToPrices (newBlock) {
     const block = extend(newBlock, {
-      gasPrices: newBlock.transactions.map((tx) => {
+      gasPrices: newBlock.transactions.map(tx => {
         return tx.gasPrice
       }),
     })
@@ -154,21 +148,28 @@ class RecentBlocksController {
    * @returns {Promise<void>} Promises undefined
    */
   async backfill () {
-    this.blockTracker.once('latest', async (blockNumberHex) => {
+    this.blockTracker.once('latest', async blockNumberHex => {
       const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
       const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
       const prevBlockNumber = currentBlockNumber - 1
-      const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
-      await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
-        try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
-          if (!newBlock) return
+      const targetBlockNumbers = Array(blocksToFetch)
+        .fill()
+        .map((_, index) => prevBlockNumber - index)
+      await Promise.all(
+        targetBlockNumbers.map(async targetBlockNumber => {
+          try {
+            const newBlock = await this.getBlockByNumber(
+              targetBlockNumber,
+              true
+            )
+            if (!newBlock) return
 
-          this.backfillBlock(newBlock)
-        } catch (e) {
-          log.error(e)
-        }
-      }))
+            this.backfillBlock(newBlock)
+          } catch (e) {
+            log.error(e)
+          }
+        })
+      )
     })
   }
 
@@ -181,9 +182,12 @@ class RecentBlocksController {
    */
   async getBlockByNumber (number) {
     const blockNumberHex = '0x' + number.toString(16)
-    return await pify(this.ethQuery.getBlockByNumber).call(this.ethQuery, blockNumberHex, true)
+    return await pify(this.ethQuery.getBlockByNumber).call(
+      this.ethQuery,
+      blockNumberHex,
+      true
+    )
   }
-
 }
 
 module.exports = RecentBlocksController

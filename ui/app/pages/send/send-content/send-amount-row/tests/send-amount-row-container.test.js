@@ -22,29 +22,35 @@ proxyquire('../send-amount-row.container.js', {
     },
   },
   '../../send.selectors': {
-    getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
-    getSendAmount: (s) => `mockAmount:${s}`,
-    getSendFromBalance: (s) => `mockBalance:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getAmountConversionRate: s => `mockAmountConversionRate:${s}`,
+    getConversionRate: s => `mockConversionRate:${s}`,
+    getCurrentCurrency: s => `mockConvertedCurrency:${s}`,
+    getGasTotal: s => `mockGasTotal:${s}`,
+    getPrimaryCurrency: s => `mockPrimaryCurrency:${s}`,
+    getSelectedToken: s => `mockSelectedToken:${s}`,
+    getSendAmount: s => `mockAmount:${s}`,
+    getSendFromBalance: s => `mockBalance:${s}`,
+    getTokenBalance: s => `mockTokenBalance:${s}`,
   },
-  './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
+  './send-amount-row.selectors': {
+    sendAmountIsInError: s => `mockInError:${s}`,
+  },
   '../../send.utils': {
-    getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
-    getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
+    getAmountErrorObject: mockDataObject => ({
+      ...mockDataObject,
+      mockChange: true,
+    }),
+    getGasFeeErrorObject: mockDataObject => ({
+      ...mockDataObject,
+      mockGasFeeErrorChange: true,
+    }),
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/send/send.duck': duckActionSpies,
 })
 
 describe('send-amount-row container', () => {
-
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         amount: 'mockAmount:mockState',
@@ -59,7 +65,6 @@ describe('send-amount-row container', () => {
         tokenBalance: 'mockTokenBalance:mockState',
       })
     })
-
   })
 
   describe('mapDispatchToProps()', () => {
@@ -77,10 +82,7 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.setMaxModeTo('mockBool')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.setMaxModeTo.calledOnce)
-        assert.equal(
-          actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockBool'
-        )
+        assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockBool')
       })
     })
 
@@ -101,10 +103,10 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockGasFeeErrorChange: true }
-        )
+        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+          some: 'data',
+          mockGasFeeErrorChange: true,
+        })
       })
     })
 
@@ -113,13 +115,11 @@ describe('send-amount-row container', () => {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' })
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
-        assert.deepEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockChange: true }
-        )
+        assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
+          some: 'data',
+          mockChange: true,
+        })
       })
     })
-
   })
-
 })

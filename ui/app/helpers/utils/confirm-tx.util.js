@@ -13,26 +13,30 @@ import {
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 
 export function increaseLastGasPrice (lastGasPrice) {
-  return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
-    multiplicandBase: 16,
-    multiplierBase: 10,
-    toNumericBase: 'hex',
-  }))
+  return ethUtil.addHexPrefix(
+    multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    })
+  )
 }
 
 export function hexGreaterThan (a, b) {
   return conversionGreaterThan(
     { value: a, fromNumericBase: 'hex' },
-    { value: b, fromNumericBase: 'hex' },
+    { value: b, fromNumericBase: 'hex' }
   )
 }
 
 export function getHexGasTotal ({ gasLimit, gasPrice }) {
-  return ethUtil.addHexPrefix(multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  }))
+  return ethUtil.addHexPrefix(
+    multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 16,
+    })
+  )
 }
 
 export function addEth (...args) {
@@ -95,7 +99,10 @@ export function formatCurrency (value, currencyCode) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase()
 
   return currencies.find(currency => currency.code === upperCaseCurrencyCode)
-    ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode, style: 'currency' })
+    ? currencyFormatter.format(Number(value), {
+      code: upperCaseCurrencyCode,
+      style: 'currency',
+    })
     : value
 }
 
@@ -127,5 +134,7 @@ export function roundExponential (value) {
   const bigNumberValue = new BigNumber(String(value))
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
-  return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
+  return bigNumberValue.e > 20
+    ? Number(bigNumberValue.toPrecision(PRECISION))
+    : value
 }

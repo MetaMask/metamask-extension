@@ -32,9 +32,7 @@ export default class Balance extends PureComponent {
     if (formattedBalance === 'None' || formattedBalance === '...') {
       return (
         <div className="flex-column balance-display">
-          <div className="token-amount">
-            { formattedBalance }
-          </div>
+          <div className="token-amount">{formattedBalance}</div>
         </div>
       )
     }
@@ -47,15 +45,13 @@ export default class Balance extends PureComponent {
           type={PRIMARY}
           ethNumberOfDecimals={4}
         />
-        {
-          showFiat && (
-            <UserPreferencedCurrencyDisplay
-              value={balanceValue}
-              type={SECONDARY}
-              ethNumberOfDecimals={4}
-            />
-          )
-        }
+        {showFiat && (
+          <UserPreferencedCurrencyDisplay
+            value={balanceValue}
+            type={SECONDARY}
+            ethNumberOfDecimals={4}
+          />
+        )}
       </div>
     )
   }
@@ -75,7 +71,8 @@ export default class Balance extends PureComponent {
   render () {
     const { token, network, assetImages } = this.props
     const address = token && token.address
-    const image = assetImages && address ? assetImages[token.address] : undefined
+    const image =
+      assetImages && address ? assetImages[token.address] : undefined
 
     return (
       <div className="balance-container">
@@ -85,7 +82,7 @@ export default class Balance extends PureComponent {
           network={network}
           image={image}
         />
-        { token ? this.renderTokenBalance() : this.renderBalance() }
+        {token ? this.renderTokenBalance() : this.renderBalance()}
       </div>
     )
   }

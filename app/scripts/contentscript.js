@@ -9,8 +9,11 @@ const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
 
-const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
-const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+const inpageContent = fs
+  .readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'))
+  .toString()
+const inpageSuffix =
+  '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -73,17 +76,11 @@ async function setupStreams () {
   const extensionMux = new ObjectMultiplex()
   extensionMux.setMaxListeners(25)
 
-  pump(
-    pageMux,
-    pageStream,
-    pageMux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
+  pump(pageMux, pageStream, pageMux, err =>
+    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
   )
-  pump(
-    extensionMux,
-    extensionStream,
-    extensionMux,
-    (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+  pump(extensionMux, extensionStream, extensionMux, err =>
+    logStreamDisconnectWarning('MetaMask Background Multiplex', err)
   )
 
   // forward communication across inpage-background for these channels only
@@ -104,28 +101,23 @@ async function setupStreams () {
 function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
-  pump(
-    channelA,
-    channelB,
-    channelA,
-    (err) => logStreamDisconnectWarning(`MetaMask muxed traffic for channel "${channelName}" failed.`, err)
+  pump(channelA, channelB, channelA, err =>
+    logStreamDisconnectWarning(
+      `MetaMask muxed traffic for channel "${channelName}" failed.`,
+      err
+    )
   )
 }
 
 async function setupPublicApi (outStream) {
   const api = {
-    getSiteMetadata: (cb) => cb(null, getSiteMetadata()),
+    getSiteMetadata: cb => cb(null, getSiteMetadata()),
   }
   const dnode = Dnode(api)
-  pump(
-    outStream,
-    dnode,
-    outStream,
-    (err) => {
-      // report any error
-      if (err) log.error(err)
-    }
-  )
+  pump(outStream, dnode, outStream, err => {
+    // report any error
+    if (err) log.error(err)
+  })
   const background = await new Promise(resolve => dnode.once('remote', resolve))
   return background
 }
@@ -161,8 +153,12 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck() &&
-    documentElementCheck() && !blacklistedDomainCheck()
+  return (
+    doctypeCheck() &&
+    suffixCheck() &&
+    documentElementCheck() &&
+    !blacklistedDomainCheck()
+  )
 }
 
 /**
@@ -189,10 +185,7 @@ function doctypeCheck () {
  * @returns {boolean} whether or not the extension of the current document is prohibited
  */
 function suffixCheck () {
-  const prohibitedTypes = [
-    /\.xml$/,
-    /\.pdf$/,
-  ]
+  const prohibitedTypes = [/\.xml$/, /\.pdf$/]
   const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
     if (prohibitedTypes[i].test(currentUrl)) {
@@ -237,7 +230,9 @@ function blacklistedDomainCheck () {
   let currentRegex
   for (let i = 0; i < blacklistedDomains.length; i++) {
     const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
-    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
+    currentRegex = new RegExp(
+      `(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`
+    )
     if (!currentRegex.test(currentUrl)) {
       return true
     }
@@ -257,13 +252,14 @@ function redirectToPhishingWarning () {
   })}`
 }
 
-
 /**
  * Extracts a name for the site from the DOM
  */
 function getSiteName (window) {
   const document = window.document
-  const siteName = document.querySelector('head > meta[property="og:site_name"]')
+  const siteName = document.querySelector(
+    'head > meta[property="og:site_name"]'
+  )
   if (siteName) {
     return siteName.content
   }
@@ -283,13 +279,17 @@ function getSiteIcon (window) {
   const document = window.document
 
   // Use the site's favicon if it exists
-  const shortcutIcon = document.querySelector('head > link[rel="shortcut icon"]')
+  const shortcutIcon = document.querySelector(
+    'head > link[rel="shortcut icon"]'
+  )
   if (shortcutIcon) {
     return shortcutIcon.href
   }
 
   // Search through available icons in no particular order
-  const icon = Array.from(document.querySelectorAll('head > link[rel="icon"]')).find((icon) => Boolean(icon.href))
+  const icon = Array.from(
+    document.querySelectorAll('head > link[rel="icon"]')
+  ).find(icon => Boolean(icon.href))
   if (icon) {
     return icon.href
   }
@@ -304,5 +304,7 @@ async function domIsReady () {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) return
   // wait for load
-  await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+  await new Promise(resolve =>
+    window.addEventListener('DOMContentLoaded', resolve, { once: true })
+  )
 }

@@ -3,8 +3,26 @@ var assert = require('assert')
 var freeze = require('deep-freeze-strict')
 var path = require('path')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+var actions = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'store',
+  'actions.js'
+))
+var reducers = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'ducks',
+  'index.js'
+))
 
 describe('config view actions', function () {
   var initialState = {

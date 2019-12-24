@@ -12,7 +12,13 @@ class ProviderApprovalController extends SafeEventEmitter {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, initState, keyringController, openPopup, preferencesController } = {}) {
+  constructor ({
+    closePopup,
+    initState,
+    keyringController,
+    openPopup,
+    preferencesController,
+  } = {}) {
     super()
     this.closePopup = closePopup
     this.keyringController = keyringController
@@ -48,27 +54,36 @@ class ProviderApprovalController extends SafeEventEmitter {
         metadata.extensionId = extensionId
       } else {
         const siteMetadata = await getSiteMetadata(origin)
-        Object.assign(metadata, { siteTitle: siteMetadata.name, siteImage: siteMetadata.icon})
+        Object.assign(metadata, {
+          siteTitle: siteMetadata.name,
+          siteImage: siteMetadata.icon,
+        })
       }
       this._handleProviderRequest(metadata)
       // wait for resolution of request
-      const approved = await new Promise(resolve => this.once(`resolvedRequest:${origin}`, ({ approved }) => resolve(approved)))
+      const approved = await new Promise(resolve =>
+        this.once(`resolvedRequest:${origin}`, ({ approved }) =>
+          resolve(approved)
+        )
+      )
       if (approved) {
         res.result = [this.preferencesController.getSelectedAddress()]
       } else {
-        throw ethErrors.provider.userRejectedRequest('User denied account authorization')
+        throw ethErrors.provider.userRejectedRequest(
+          'User denied account authorization'
+        )
       }
     })
   }
 
   /**
-  * @typedef {Object} SiteMetadata
-  * @param {string} hostname - The hostname of the site
-  * @param {string} origin - The origin of the site
-  * @param {string} [siteTitle] - The title of the site
-  * @param {string} [siteImage] - The icon for the site
-  * @param {string} [extensionId] - The extension ID of the extension
-  */
+   * @typedef {Object} SiteMetadata
+   * @param {string} hostname - The hostname of the site
+   * @param {string} origin - The origin of the site
+   * @param {string} [siteTitle] - The title of the site
+   * @param {string} [siteImage] - The icon for the site
+   * @param {string} [extensionId] - The extension ID of the extension
+   */
   /**
    * Called when a tab requests access to a full Ethereum provider API
    *
@@ -78,10 +93,7 @@ class ProviderApprovalController extends SafeEventEmitter {
     const { providerRequests } = this.memStore.getState()
     const origin = siteMetadata.origin
     this.memStore.updateState({
-      providerRequests: [
-        ...providerRequests,
-        siteMetadata,
-      ],
+      providerRequests: [...providerRequests, siteMetadata],
     })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     const { approvedOrigins } = this.store.getState()
@@ -104,8 +116,12 @@ class ProviderApprovalController extends SafeEventEmitter {
 
     const { approvedOrigins } = this.store.getState()
     const { providerRequests } = this.memStore.getState()
-    const providerRequest = providerRequests.find((request) => request.origin === origin)
-    const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
+    const providerRequest = providerRequests.find(
+      request => request.origin === origin
+    )
+    const remainingProviderRequests = providerRequests.filter(
+      request => request.origin !== origin
+    )
     this.store.updateState({
       approvedOrigins: {
         ...approvedOrigins,
@@ -132,7 +148,9 @@ class ProviderApprovalController extends SafeEventEmitter {
 
     const { approvedOrigins } = this.store.getState()
     const { providerRequests } = this.memStore.getState()
-    const remainingProviderRequests = providerRequests.filter(request => request.origin !== origin)
+    const remainingProviderRequests = providerRequests.filter(
+      request => request.origin !== origin
+    )
 
     // We're cloning and deleting keys here because we don't want to keep unneeded keys
     const _approvedOrigins = Object.assign({}, approvedOrigins)

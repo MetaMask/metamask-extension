@@ -11,13 +11,11 @@ const CopyButton = require('../ui/copyButton')
 const EthBalance = require('../ui/eth-balance')
 const Tooltip = require('../ui/tooltip')
 
-
 ShiftListItem.contextTypes = {
   t: PropTypes.func,
 }
 
 module.exports = connect(mapStateToProps)(ShiftListItem)
-
 
 function mapStateToProps (state) {
   return {
@@ -34,36 +32,44 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-  return h('div.transaction-list-item.tx-list-clickable', {
-    style: {
-      paddingTop: '20px',
-      paddingBottom: '20px',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      flexDirection: 'row',
-    },
-  }, [
-    h('div', {
+  return h(
+    'div.transaction-list-item.tx-list-clickable',
+    {
       style: {
-        width: '0px',
-        position: 'relative',
-        bottom: '19px',
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flexDirection: 'row',
       },
-    }, [
-      h('img', {
-        src: 'https://shapeshift.io/logo.png',
-        style: {
-          height: '35px',
-          width: '132px',
-          position: 'absolute',
-          clip: 'rect(0px,30px,34px,0px)',
+    },
+    [
+      h(
+        'div',
+        {
+          style: {
+            width: '0px',
+            position: 'relative',
+            bottom: '19px',
+          },
         },
-      }),
-    ]),
+        [
+          h('img', {
+            src: 'https://shapeshift.io/logo.png',
+            style: {
+              height: '35px',
+              width: '132px',
+              position: 'absolute',
+              clip: 'rect(0px,30px,34px,0px)',
+            },
+          }),
+        ]
+      ),
 
-    this.renderInfo(),
-    this.renderUtilComponents(),
-  ])
+      this.renderInfo(),
+      this.renderUtilComponents(),
+    ]
+  )
 }
 
 ShiftListItem.prototype.renderUtilComponents = function () {
@@ -76,20 +82,27 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         h(CopyButton, {
           value: this.props.depositAddress,
         }),
-        h(Tooltip, {
-          title: this.context.t('qrCode'),
-        }, [
-          h('i.fa.fa-qrcode.pointer.pop-hover', {
-            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
-            style: {
-              margin: '5px',
-              marginLeft: '23px',
-              marginRight: '12px',
-              fontSize: '20px',
-              color: '#F7861C',
-            },
-          }),
-        ]),
+        h(
+          Tooltip,
+          {
+            title: this.context.t('qrCode'),
+          },
+          [
+            h('i.fa.fa-qrcode.pointer.pop-hover', {
+              onClick: () =>
+                props.dispatch(
+                  actions.reshowQrCode(props.depositAddress, props.depositType)
+                ),
+              style: {
+                margin: '5px',
+                marginLeft: '23px',
+                marginRight: '12px',
+                fontSize: '20px',
+                color: '#F7861C',
+              },
+            }),
+          ]
+        ),
       ])
     case 'received':
       return h('.flex-row')
@@ -125,76 +138,112 @@ ShiftListItem.prototype.renderInfo = function () {
   var props = this.props
   switch (props.response.status) {
     case 'no_deposits':
-      return h('.flex-column', {
-        style: {
-          overflow: 'hidden',
+      return h(
+        '.flex-column',
+        {
+          style: {
+            overflow: 'hidden',
+          },
         },
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('toETHviaShapeShift', [props.depositType])),
-        h('div', this.context.t('noDeposits')),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, formatDate(props.time)),
-      ])
+        [
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            this.context.t('toETHviaShapeShift', [props.depositType])
+          ),
+          h('div', this.context.t('noDeposits')),
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            formatDate(props.time)
+          ),
+        ]
+      )
     case 'received':
-      return h('.flex-column', {
-        style: {
-          width: '200px',
-          overflow: 'hidden',
+      return h(
+        '.flex-column',
+        {
+          style: {
+            width: '200px',
+            overflow: 'hidden',
+          },
         },
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('toETHviaShapeShift', [props.depositType])),
-        h('div', this.context.t('conversionProgress')),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, formatDate(props.time)),
-      ])
+        [
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            this.context.t('toETHviaShapeShift', [props.depositType])
+          ),
+          h('div', this.context.t('conversionProgress')),
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            formatDate(props.time)
+          ),
+        ]
+      )
     case 'complete':
       var url = explorerLink(props.response.transaction, parseInt('1'))
 
-      return h('.flex-column.pointer', {
-        style: {
-          width: '200px',
-          overflow: 'hidden',
+      return h(
+        '.flex-column.pointer',
+        {
+          style: {
+            width: '200px',
+            overflow: 'hidden',
+          },
+          onClick: () => global.platform.openWindow({ url }),
         },
-        onClick: () => global.platform.openWindow({ url }),
-      }, [
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, this.context.t('fromShapeShift')),
-        h('div', formatDate(props.time)),
-        h('div', {
-          style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
-            width: '100%',
-          },
-        }, addressSummary(props.response.transaction)),
-      ])
+        [
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            this.context.t('fromShapeShift')
+          ),
+          h('div', formatDate(props.time)),
+          h(
+            'div',
+            {
+              style: {
+                fontSize: 'x-small',
+                color: '#ABA9AA',
+                width: '100%',
+              },
+            },
+            addressSummary(props.response.transaction)
+          ),
+        ]
+      )
 
     case 'failed':
       return h('span.error', '(' + this.context.t('failed') + ')')

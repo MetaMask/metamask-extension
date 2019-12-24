@@ -2,7 +2,9 @@ const extend = require('xtend')
 const actions = require('../../store/actions')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
-const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/controllers/network/enums')
+const {
+  OLD_UI_NETWORK_TYPE,
+} = require('../../../../app/scripts/controllers/network/enums')
 
 module.exports = reduceMetamask
 
@@ -10,59 +12,62 @@ function reduceMetamask (state, action) {
   let newState
 
   // clone + defaults
-  var metamaskState = extend({
-    isInitialized: false,
-    isUnlocked: false,
-    isAccountMenuOpen: false,
-    isPopup: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP,
-    rpcTarget: 'https://rawtestrpc.metamask.io/',
-    identities: {},
-    unapprovedTxs: {},
-    frequentRpcList: [],
-    addressBook: [],
-    selectedTokenAddress: null,
-    contractExchangeRates: {},
-    tokenExchangeRates: {},
-    tokens: [],
-    pendingTokens: {},
-    customNonceValue: '',
-    send: {
-      gasLimit: null,
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '0x0',
-      from: '',
-      to: '',
-      amount: '0',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      forceGasMin: null,
-      toNickname: '',
-      ensResolution: null,
-      ensResolutionError: '',
+  var metamaskState = extend(
+    {
+      isInitialized: false,
+      isUnlocked: false,
+      isAccountMenuOpen: false,
+      isPopup:
+        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP,
+      rpcTarget: 'https://rawtestrpc.metamask.io/',
+      identities: {},
+      unapprovedTxs: {},
+      frequentRpcList: [],
+      addressBook: [],
+      selectedTokenAddress: null,
+      contractExchangeRates: {},
+      tokenExchangeRates: {},
+      tokens: [],
+      pendingTokens: {},
+      customNonceValue: '',
+      send: {
+        gasLimit: null,
+        gasPrice: null,
+        gasTotal: null,
+        tokenBalance: '0x0',
+        from: '',
+        to: '',
+        amount: '0',
+        memo: '',
+        errors: {},
+        maxModeOn: false,
+        editingTransactionId: null,
+        forceGasMin: null,
+        toNickname: '',
+        ensResolution: null,
+        ensResolutionError: '',
+      },
+      coinOptions: {},
+      useBlockie: false,
+      featureFlags: {},
+      networkEndpointType: OLD_UI_NETWORK_TYPE,
+      welcomeScreenSeen: false,
+      currentLocale: '',
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+        showFiatInTestnets: false,
+      },
+      firstTimeFlowType: null,
+      completedOnboarding: false,
+      knownMethodData: {},
+      participateInMetaMetrics: null,
+      metaMetricsSendCount: 0,
+      nextNonce: null,
     },
-    coinOptions: {},
-    useBlockie: false,
-    featureFlags: {},
-    networkEndpointType: OLD_UI_NETWORK_TYPE,
-    welcomeScreenSeen: false,
-    currentLocale: '',
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-      showFiatInTestnets: false,
-    },
-    firstTimeFlowType: null,
-    completedOnboarding: false,
-    knownMethodData: {},
-    participateInMetaMetrics: null,
-    metaMetricsSendCount: 0,
-    nextNonce: null,
-  }, state.metamask)
+    state.metamask
+  )
 
   switch (action.type) {
-
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
 
@@ -148,7 +153,8 @@ function reduceMetamask (state, action) {
 
       if (metamaskState.send.editingTransactionId && !action.value) {
         delete newSend.token
-        const unapprovedTx = newState.unapprovedTxs[newSend.editingTransactionId] || {}
+        const unapprovedTx =
+          newState.unapprovedTxs[newSend.editingTransactionId] || {}
         const txParams = unapprovedTx.txParams || {}
         newState.unapprovedTxs = extend(newState.unapprovedTxs, {
           [newSend.editingTransactionId]: extend(unapprovedTx, {
@@ -334,7 +340,9 @@ function reduceMetamask (state, action) {
       })
 
     case actions.PAIR_UPDATE:
-      const { value: { marketinfo: pairMarketInfo } } = action
+      const {
+        value: { marketinfo: pairMarketInfo },
+      } = action
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
@@ -343,7 +351,9 @@ function reduceMetamask (state, action) {
       })
 
     case actions.SHAPESHIFT_SUBVIEW:
-      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
+      const {
+        value: { marketinfo: ssMarketInfo, coinOptions },
+      } = action
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
@@ -427,6 +437,5 @@ function reduceMetamask (state, action) {
 
     default:
       return metamaskState
-
   }
 }

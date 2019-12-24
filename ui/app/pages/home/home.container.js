@@ -30,7 +30,8 @@ const mapStateToProps = state => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
 
-  const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+  const isPopup =
+    getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
 
   return {
     forgottenPassword,
@@ -38,7 +39,9 @@ const mapStateToProps = state => {
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     providerRequests,
     showPrivacyModeNotification: migratedPrivacyMode,
-    shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    shouldShowSeedPhraseReminder:
+      !seedPhraseBackedUp &&
+      (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     threeBoxSynced,
     showRestorePrompt,
@@ -48,21 +51,20 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   unsetMigratedPrivacyMode: () => dispatch(unsetMigratedPrivacyMode()),
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated())
-      .then(lastUpdated => {
-        if (lastUpdated) {
-          dispatch(setThreeBoxLastUpdated(lastUpdated))
-        } else {
-          dispatch(setShowRestorePromptToFalse())
-          dispatch(turnThreeBoxSyncingOn())
-        }
-      })
+    dispatch(getThreeBoxLastUpdated()).then(lastUpdated => {
+      if (lastUpdated) {
+        dispatch(setThreeBoxLastUpdated(lastUpdated))
+      } else {
+        dispatch(setShowRestorePromptToFalse())
+        dispatch(turnThreeBoxSyncingOn())
+      }
+    })
   },
-  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
+  restoreFromThreeBox: address => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })
 

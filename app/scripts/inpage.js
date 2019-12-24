@@ -1,6 +1,5 @@
 /*global Web3*/
 
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -75,20 +74,22 @@ Set 'ethereum.autoRefreshOnNetworkChange' to 'false' to silence this warning: ht
     warnedOfAutoRefreshDeprecation = true
   }
   return new Promise((resolve, reject) => {
-    inpageProvider.sendAsync({ method: 'cfx_requestAccounts', params: [force] }, (error, response) => {
-      if (error || response.error) {
-        reject(error || response.error)
-      } else {
-        resolve(response.result)
+    inpageProvider.sendAsync(
+      { method: 'cfx_requestAccounts', params: [force] },
+      (error, response) => {
+        if (error || response.error) {
+          reject(error || response.error)
+        } else {
+          resolve(response.result)
+        }
       }
-    })
+    )
   })
 }
 
 // give the dapps control of a refresh they can toggle this off on the window.ethereum
 // this will be default true so it does not break any old apps.
 inpageProvider.autoRefreshOnNetworkChange = true
-
 
 // publicConfig isn't populated until we get a message from background.
 // Using this getter will ensure the state is available
@@ -104,45 +105,51 @@ const getPublicConfigWhenReady = async () => {
 }
 
 // add metamask-specific convenience methods
-inpageProvider._metamask = new Proxy({
-  /**
-   * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
-   *
-   * @returns {boolean} - returns true if this domain is currently enabled
-   */
-  isEnabled: function () {
-    const { isEnabled } = inpageProvider.publicConfigStore.getState()
-    return Boolean(isEnabled)
-  },
+inpageProvider._metamask = new Proxy(
+  {
+    /**
+     * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
+     *
+     * @returns {boolean} - returns true if this domain is currently enabled
+     */
+    isEnabled: function () {
+      const { isEnabled } = inpageProvider.publicConfigStore.getState()
+      return Boolean(isEnabled)
+    },
 
-  /**
-   * Asynchronously determines if this domain is currently enabled
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
-   */
-  isApproved: async function () {
-    const { isEnabled } = await getPublicConfigWhenReady()
-    return Boolean(isEnabled)
-  },
+    /**
+     * Asynchronously determines if this domain is currently enabled
+     *
+     * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
+     */
+    isApproved: async function () {
+      const { isEnabled } = await getPublicConfigWhenReady()
+      return Boolean(isEnabled)
+    },
 
-  /**
-   * Determines if MetaMask is unlocked by the user
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
-   */
-  isUnlocked: async function () {
-    const { isUnlocked } = await getPublicConfigWhenReady()
-    return Boolean(isUnlocked)
+    /**
+     * Determines if MetaMask is unlocked by the user
+     *
+     * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
+     */
+    isUnlocked: async function () {
+      const { isUnlocked } = await getPublicConfigWhenReady()
+      return Boolean(isUnlocked)
+    },
   },
-}, {
-  get: function (obj, prop) {
-    !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
-    'not been standardized yet. This means that these methods may not be implemented ' +
-    'in other dapp browsers and may be removed from MetaMask in the future.')
-    warned = true
-    return obj[prop]
-  },
-})
+  {
+    get: function (obj, prop) {
+      !warned &&
+        console.warn(
+          'Heads up! ethereum._metamask exposes methods that have ' +
+            'not been standardized yet. This means that these methods may not be implemented ' +
+            'in other dapp browsers and may be removed from MetaMask in the future.'
+        )
+      warned = true
+      return obj[prop]
+    },
+  }
+)
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues

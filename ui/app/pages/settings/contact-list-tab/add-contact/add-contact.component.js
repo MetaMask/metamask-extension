@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
-import { isValidAddress, isValidENSAddress } from '../../../../helpers/utils/util'
+import {
+  isValidAddress,
+  isValidENSAddress,
+} from '../../../../helpers/utils/util'
 import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 import debounce from 'lodash.debounce'
 
 export default class AddContact extends PureComponent {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -63,14 +65,18 @@ export default class AddContact extends PureComponent {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => { this.props.scanQrCode() }}
+        scanQrCode={_ => {
+          this.props.scanQrCode()
+        }}
         onChange={this.dValidate}
         onPaste={text => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
         updateEnsResolution={address => {
           this.setState({ ensAddress: address, error: '', ensError: '' })
         }}
-        updateEnsResolutionError={message => this.setState({ ensError: message })}
+        updateEnsResolutionError={message =>
+          this.setState({ ensError: message })
+        }
       />
     )
   }
@@ -83,16 +89,18 @@ export default class AddContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
-        {this.state.ensAddress && <div className="address-book__view-contact__group">
-          <Identicon address={this.state.ensAddress} diameter={60} />
-          <div className="address-book__view-contact__group__value">
-            { this.state.ensAddress }
+        {this.state.ensAddress && (
+          <div className="address-book__view-contact__group">
+            <Identicon address={this.state.ensAddress} diameter={60} />
+            <div className="address-book__view-contact__group__value">
+              {this.state.ensAddress}
+            </div>
           </div>
-        </div>}
+        )}
         <div className="address-book__add-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('userName') }
+              {t('userName')}
             </div>
             <TextField
               type="text"
@@ -106,17 +114,24 @@ export default class AddContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('ethereumPublicAddress') }
+              {t('ethereumPublicAddress')}
             </div>
-            { this.renderInput() }
-            { errorToRender && <div className="address-book__add-contact__error">{errorToRender}</div>}
+            {this.renderInput()}
+            {errorToRender && (
+              <div className="address-book__add-contact__error">
+                {errorToRender}
+              </div>
+            )}
           </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(this.state.error)}
           onSubmit={() => {
-            addToAddressBook(this.state.ensAddress || this.state.ethAddress, this.state.newName)
+            addToAddressBook(
+              this.state.ensAddress || this.state.ethAddress,
+              this.state.newName
+            )
             history.push(CONTACT_LIST_ROUTE)
           }}
           onCancel={() => {

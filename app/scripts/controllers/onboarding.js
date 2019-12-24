@@ -22,9 +22,12 @@ class OnboardingController {
    * @param {OnboardingOptions} [opts] Controller configuration parameters
    */
   constructor (opts = {}) {
-    const initState = extend({
-      seedPhraseBackedUp: true,
-    }, opts.initState)
+    const initState = extend(
+      {
+        seedPhraseBackedUp: true,
+      },
+      opts.initState
+    )
     this.store = new ObservableStore(initState)
   }
 
@@ -37,7 +40,6 @@ class OnboardingController {
   getSeedPhraseBackedUp () {
     return this.store.getState().seedPhraseBackedUp
   }
-
 }
 
 module.exports = OnboardingController

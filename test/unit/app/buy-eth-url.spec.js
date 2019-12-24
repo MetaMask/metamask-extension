@@ -21,7 +21,6 @@ describe('buy-eth-url', function () {
     const wyreUrl = getBuyEthUrl(mainnet)
 
     assert.equal(wyreUrl, 'https://dash.sendwyre.com/sign-up')
-
   })
 
   it('returns metamask ropsten faucet for network 3', function () {
@@ -38,6 +37,4 @@ describe('buy-eth-url', function () {
     const kovanUrl = getBuyEthUrl(kovan)
     assert.equal(kovanUrl, 'https://github.com/kovan-testnet/faucet')
   })
-
 })
-

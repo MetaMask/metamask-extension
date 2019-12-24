@@ -34,14 +34,15 @@ function transformState (state) {
     return state
   }
 
-  state.PreferencesController.identities = Object.keys(state.KeyringController.walletNicknames)
-    .reduce((identities, address) => {
-      identities[address] = {
-        name: state.KeyringController.walletNicknames[address],
-        address,
-      }
-      return identities
-    }, {})
+  state.PreferencesController.identities = Object.keys(
+    state.KeyringController.walletNicknames
+  ).reduce((identities, address) => {
+    identities[address] = {
+      name: state.KeyringController.walletNicknames[address],
+      address,
+    }
+    return identities
+  }, {})
   delete state.KeyringController.walletNicknames
   return state
 }

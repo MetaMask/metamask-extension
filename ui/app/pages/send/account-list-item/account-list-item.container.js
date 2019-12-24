@@ -22,6 +22,6 @@ function mapStateToProps (state) {
     currentCurrency: getCurrentCurrency(state),
     nativeCurrency: getNativeCurrency(state),
     balanceIsCached: isBalanceCached(state),
-    showFiat: (isMainnet || !!showFiatInTestnets),
+    showFiat: isMainnet || !!showFiatInTestnets,
   }
 }

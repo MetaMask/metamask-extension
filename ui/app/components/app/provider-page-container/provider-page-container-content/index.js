@@ -1,1 +1,1 @@
-export {default} from './provider-page-container-content.container'
+export { default } from './provider-page-container-content.container'

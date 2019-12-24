@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
 import { checkExistingAddresses } from './util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
+import {
+  DEFAULT_ROUTE,
+  CONFIRM_ADD_TOKEN_ROUTE,
+} from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
 import TokenList from './token-list'
 import TokenSearch from './token-search'
@@ -73,8 +76,15 @@ class AddToken extends Component {
         decimals: customDecimals = 0,
       } = customToken
 
-      const displayedTab = Object.keys(selectedTokens).length > 0 ? SEARCH_TAB : CUSTOM_TOKEN_TAB
-      this.setState({ selectedTokens, customAddress, customSymbol, customDecimals, displayedTab })
+      const displayedTab =
+        Object.keys(selectedTokens).length > 0 ? SEARCH_TAB : CUSTOM_TOKEN_TAB
+      this.setState({
+        selectedTokens,
+        customAddress,
+        customSymbol,
+        customDecimals,
+        displayedTab,
+      })
     }
   }
 
@@ -103,7 +113,12 @@ class AddToken extends Component {
       customDecimalsError,
     } = this.state
 
-    return tokenSelectorError || customAddressError || customSymbolError || customDecimalsError
+    return (
+      tokenSelectorError ||
+      customAddressError ||
+      customSymbolError ||
+      customDecimalsError
+    )
   }
 
   hasSelected () {
@@ -204,7 +219,8 @@ class AddToken extends Component {
 
   handleCustomDecimalsChange (value) {
     const customDecimals = value.trim()
-    const validDecimals = customDecimals !== null &&
+    const validDecimals =
+      customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&
       customDecimals <= 36
@@ -243,12 +259,12 @@ class AddToken extends Component {
         />
         <TextField
           id="custom-symbol"
-          label={(
+          label={
             <div className="add-token__custom-symbol__label-wrapper">
               <span className="add-token__custom-symbol__label">
                 {this.context.t('tokenSymbol')}
               </span>
-              {(autoFilled && !forceEditSymbol) && (
+              {autoFilled && !forceEditSymbol && (
                 <div
                   className="add-token__custom-symbol__edit"
                   onClick={() => this.setState({ forceEditSymbol: true })}
@@ -257,7 +273,7 @@ class AddToken extends Component {
                 </div>
               )}
             </div>
-          )}
+          }
           type="text"
           value={customSymbol}
           onChange={e => this.handleCustomSymbolChange(e.target.value)}
@@ -287,7 +303,9 @@ class AddToken extends Component {
     return (
       <div className="add-token__search-token">
         <TokenSearch
-          onSearch={({ results = [] }) => this.setState({ searchResults: results })}
+          onSearch={({ results = [] }) =>
+            this.setState({ searchResults: results })
+          }
           error={tokenSelectorError}
         />
         <div className="add-token__token-list">
@@ -304,11 +322,9 @@ class AddToken extends Component {
   renderTabs () {
     return (
       <Tabs>
-        <Tab name={this.context.t('search')}>
-          { this.renderSearchToken() }
-        </Tab>
+        <Tab name={this.context.t('search')}>{this.renderSearchToken()}</Tab>
         <Tab name={this.context.t('customToken')}>
-          { this.renderCustomTokenForm() }
+          {this.renderCustomTokenForm()}
         </Tab>
       </Tabs>
     )

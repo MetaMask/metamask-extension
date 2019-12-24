@@ -4,7 +4,7 @@ class SwPlatform {
    */
   reload () {
     // TODO: you can't actually do this
-    /** @type {any} */ (global).location.reload()
+    /** @type {any} */ ;(global).location.reload()
   }
 
   /**
@@ -13,7 +13,7 @@ class SwPlatform {
    */
   openWindow (opts) {
     // TODO: this doesn't actually work
-    /** @type {any} */ (global).open(opts.url, '_blank')
+    /** @type {any} */ ;(global).open(opts.url, '_blank')
   }
 
   /**
@@ -23,7 +23,6 @@ class SwPlatform {
   getVersion () {
     return '<unable to read version>'
   }
-
 }
 
 module.exports = SwPlatform

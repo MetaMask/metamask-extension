@@ -7,9 +7,7 @@ import TokenInput from '../../../ui/token-input'
 describe('UserPreferencedCurrencyInput Component', () => {
   describe('rendering', () => {
     it('should render properly', () => {
-      const wrapper = shallow(
-        <UserPreferencedTokenInput />
-      )
+      const wrapper = shallow(<UserPreferencedTokenInput />)
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(TokenInput).length, 1)
@@ -17,9 +15,7 @@ describe('UserPreferencedCurrencyInput Component', () => {
 
     it('should render showFiat for TokenInput based on preferences.useNativeCurrencyAsPrimaryCurrency', () => {
       const wrapper = shallow(
-        <UserPreferencedTokenInput
-          useNativeCurrencyAsPrimaryCurrency
-        />
+        <UserPreferencedTokenInput useNativeCurrencyAsPrimaryCurrency />
       )
 
       assert.ok(wrapper)

@@ -13,14 +13,18 @@ export default class ProviderApproval extends Component {
       origin: PropTypes.string.isRequired,
       extensionId: PropTypes.string,
     }).isRequired,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
-    const { approveProviderRequestByOrigin, providerRequest, rejectProviderRequestByOrigin } = this.props
+    const {
+      approveProviderRequestByOrigin,
+      providerRequest,
+      rejectProviderRequestByOrigin,
+    } = this.props
     return (
       <ProviderPageContainer
         approveProviderRequestByOrigin={approveProviderRequestByOrigin}

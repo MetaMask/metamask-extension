@@ -13,7 +13,6 @@ describe('# Network Controller', function () {
   }
 
   beforeEach(function () {
-
     nock('https://rinkeby.infura.io')
       .persist()
       .post('/metamask')
@@ -32,7 +31,8 @@ describe('# Network Controller', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
-        const providerProxy = networkController.getProviderAndBlockTracker().provider
+        const providerProxy = networkController.getProviderAndBlockTracker()
+          .provider
         assert.equal(providerProxy.test, undefined)
         providerProxy.setTarget({ test: true })
         assert.equal(providerProxy.test, true)
@@ -74,30 +74,39 @@ describe('Network utils', () => {
       {
         input: 3,
         expected: 'Ropsten',
-      }, {
+      },
+      {
         input: 4,
         expected: 'Rinkeby',
-      }, {
+      },
+      {
         input: 42,
         expected: 'Kovan',
-      }, {
+      },
+      {
         input: 'ropsten',
         expected: 'Ropsten',
-      }, {
+      },
+      {
         input: 'rinkeby',
         expected: 'Rinkeby',
-      }, {
+      },
+      {
         input: 'kovan',
         expected: 'Kovan',
-      }, {
+      },
+      {
         input: 'mainnet',
         expected: 'Main Ethereum Network',
-      }, {
+      },
+      {
         input: 'goerli',
         expected: 'Goerli',
       },
     ]
 
-    tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
+    tests.forEach(({ input, expected }) =>
+      assert.equal(getNetworkDisplayName(input), expected)
+    )
   })
 })

@@ -40,10 +40,7 @@
     "messages": [],
     "selectedAddress": "0xa6ef573d60594731178b7f85d80da13cc2af52dd",
     "shapeShiftTxList": [],
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ]
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"]
   },
   "appState": {
     "menuOpen": false,

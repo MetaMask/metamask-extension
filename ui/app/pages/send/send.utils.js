@@ -6,9 +6,7 @@ const {
   conversionGreaterThan,
   conversionLessThan,
 } = require('../../helpers/utils/conversion-util')
-const {
-  calcTokenAmount,
-} = require('../../helpers/utils/token-util')
+const { calcTokenAmount } = require('../../helpers/utils/token-util')
 const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
@@ -73,17 +71,13 @@ function isBalanceSufficient ({
       fromNumericBase: 'hex',
       conversionRate: Number(amountConversionRate) || conversionRate,
       fromCurrency: primaryCurrency,
-    },
+    }
   )
 
   return balanceIsSufficient
 }
 
-function isTokenBalanceSufficient ({
-  amount = '0x0',
-  tokenBalance,
-  decimals,
-}) {
+function isTokenBalanceSufficient ({ amount = '0x0', tokenBalance, decimals }) {
   const amountInDec = conversionUtil(amount, {
     fromNumericBase: 'hex',
   })
@@ -95,7 +89,7 @@ function isTokenBalanceSufficient ({
     },
     {
       value: calcTokenAmount(amountInDec, decimals),
-    },
+    }
   )
 
   return tokenBalanceIsSufficient
@@ -135,7 +129,7 @@ function getAmountErrorObject ({
 
   const amountLessThanZero = conversionGreaterThan(
     { value: 0, fromNumericBase: 'dec' },
-    { value: amount, fromNumericBase: 'hex' },
+    { value: amount, fromNumericBase: 'hex' }
   )
 
   let amountError = null
@@ -194,8 +188,10 @@ function doesAmountErrorRequireUpdate ({
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
-  const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
-  const amountErrorRequiresUpdate = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
+  const tokenBalanceHasChanged =
+    selectedToken && tokenBalance !== prevTokenBalance
+  const amountErrorRequiresUpdate =
+    balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
   return amountErrorRequiresUpdate
 }
@@ -214,7 +210,7 @@ async function estimateGas ({
 
   // if recipient has no code, gas is 21k max:
   if (!selectedToken && !data) {
-    const code = Boolean(to) && await global.eth.getCode(to)
+    const code = Boolean(to) && (await global.eth.getCode(to))
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
     const codeIsEmpty = !code || code === '0x' || code === '0x0'
     if (codeIsEmpty) {
@@ -226,7 +222,11 @@ async function estimateGas ({
 
   if (selectedToken) {
     paramsForGasEstimate.value = '0x0'
-    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
+    paramsForGasEstimate.data = generateTokenTransferData({
+      toAddress: to,
+      amount: value,
+      selectedToken,
+    })
     paramsForGasEstimate.to = selectedToken.address
   } else {
     if (data) {
@@ -247,68 +247,107 @@ async function estimateGas ({
     blockGasLimit = MIN_GAS_LIMIT_HEX
   }
 
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
-    multiplicandBase: 16,
-    multiplierBase: 10,
-    roundDown: '0',
-    toNumericBase: 'hex',
-  }))
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(
+    multiplyCurrencies(blockGasLimit, 0.95, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      roundDown: '0',
+      toNumericBase: 'hex',
+    })
+  )
 
   // run tx
   return new Promise((resolve, reject) => {
     return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
       if (err) {
-        const simulationFailed = (
+        const simulationFailed =
           err.message.includes('Transaction execution error.') ||
-          err.message.includes('gas required exceeds allowance or always failing transaction')
-        )
+          err.message.includes(
+            'gas required exceeds allowance or always failing transaction'
+          )
         if (simulationFailed) {
-          const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
+          const estimateWithBuffer = addGasBuffer(
+            paramsForGasEstimate.gas,
+            blockGasLimit,
+            1.5
+          )
           return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
         } else {
           return reject(err)
         }
       }
-      const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
+      const estimateWithBuffer = addGasBuffer(
+        estimatedGas.toString(16),
+        blockGasLimit,
+        1.5
+      )
       return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
     })
   })
 }
 
-function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 1.5) {
+function addGasBuffer (
+  initialGasLimitHex,
+  blockGasLimitHex,
+  bufferMultiplier = 1.5
+) {
   const upperGasLimit = multiplyCurrencies(blockGasLimitHex, 0.9, {
     toNumericBase: 'hex',
     multiplicandBase: 16,
     multiplierBase: 10,
     numberOfDecimals: '0',
   })
-  const bufferedGasLimit = multiplyCurrencies(initialGasLimitHex, bufferMultiplier, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 10,
-    numberOfDecimals: '0',
-  })
+  const bufferedGasLimit = multiplyCurrencies(
+    initialGasLimitHex,
+    bufferMultiplier,
+    {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      numberOfDecimals: '0',
+    }
+  )
 
   // if initialGasLimit is above blockGasLimit, dont modify it
-  if (conversionGreaterThan(
-    { value: initialGasLimitHex, fromNumericBase: 'hex' },
-    { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) return initialGasLimitHex
+  if (
+    conversionGreaterThan(
+      { value: initialGasLimitHex, fromNumericBase: 'hex' },
+      { value: upperGasLimit, fromNumericBase: 'hex' }
+    )
+  ) {
+    return initialGasLimitHex
+  }
   // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-  if (conversionLessThan(
-    { value: bufferedGasLimit, fromNumericBase: 'hex' },
-    { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) return bufferedGasLimit
+  if (
+    conversionLessThan(
+      { value: bufferedGasLimit, fromNumericBase: 'hex' },
+      { value: upperGasLimit, fromNumericBase: 'hex' }
+    )
+  ) {
+    return bufferedGasLimit
+  }
   // otherwise use blockGasLimit
   return upperGasLimit
 }
 
-function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
+function generateTokenTransferData ({
+  toAddress = '0x0',
+  amount = '0x0',
+  selectedToken,
+}) {
   if (!selectedToken) return
-  return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
-    abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    x => ('00' + x.toString(16)).slice(-2)
-  ).join('')
+  return (
+    TOKEN_TRANSFER_FUNCTION_SIGNATURE +
+    Array.prototype.map
+      .call(
+        abi.rawEncode(
+          ['address', 'uint256'],
+          [toAddress, ethUtil.addHexPrefix(amount)]
+        ),
+        x => ('00' + x.toString(16)).slice(-2)
+      )
+      .join('')
+  )
 }
 
 function estimateGasPriceFromRecentBlocks (recentBlocks) {
@@ -317,21 +356,26 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
     return ONE_GWEI_IN_WEI_HEX
   }
 
-  const lowestPrices = recentBlocks.map((block) => {
-    if (!block.gasPrices || block.gasPrices.length < 1) {
-      return ONE_GWEI_IN_WEI_HEX
-    }
-    return block.gasPrices.reduce((currentLowest, next) => {
-      return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
+  const lowestPrices = recentBlocks
+    .map(block => {
+      if (!block.gasPrices || block.gasPrices.length < 1) {
+        return ONE_GWEI_IN_WEI_HEX
+      }
+      return block.gasPrices.reduce((currentLowest, next) => {
+        return parseInt(next, 16) < parseInt(currentLowest, 16)
+          ? next
+          : currentLowest
+      })
     })
-  })
-    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
 
 function getToAddressForGasUpdate (...addresses) {
-  return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
+  return [...addresses, '']
+    .find(str => str !== undefined && str !== null)
+    .toLowerCase()
 }
 
 function removeLeadingZeroes (str) {

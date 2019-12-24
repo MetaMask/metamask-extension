@@ -29,14 +29,23 @@ export default function withTokenTracker (WrappedComponent) {
     }
 
     componentDidUpdate (prevProps) {
-      const { userAddress: newAddress, token: { address: newTokenAddress } } = this.props
-      const { userAddress: oldAddress, token: { address: oldTokenAddress } } = prevProps
+      const {
+        userAddress: newAddress,
+        token: { address: newTokenAddress },
+      } = this.props
+      const {
+        userAddress: oldAddress,
+        token: { address: oldTokenAddress },
+      } = prevProps
 
-      if ((oldAddress === newAddress) && (oldTokenAddress === newTokenAddress)) {
+      if (oldAddress === newAddress && oldTokenAddress === newTokenAddress) {
         return
       }
 
-      if ((!oldAddress || !newAddress) && (!oldTokenAddress || !newTokenAddress)) {
+      if (
+        (!oldAddress || !newAddress) &&
+        (!oldTokenAddress || !newTokenAddress)
+      ) {
         return
       }
 
@@ -66,7 +75,8 @@ export default function withTokenTracker (WrappedComponent) {
       this.tracker.on('update', this.updateBalance)
       this.tracker.on('error', this.setError)
 
-      this.tracker.updateBalances()
+      this.tracker
+        .updateBalances()
         .then(() => this.updateBalance(this.tracker.serialize()))
         .catch(error => this.setState({ error: error.message }))
     }
@@ -95,7 +105,7 @@ export default function withTokenTracker (WrappedComponent) {
       const { balance, string, symbol, error } = this.state
       return (
         <WrappedComponent
-          { ...this.props }
+          {...this.props}
           string={string}
           symbol={symbol}
           tokenTrackerBalance={balance}

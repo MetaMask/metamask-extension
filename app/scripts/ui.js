@@ -1,4 +1,3 @@
-
 // this must run before anything else
 require('./lib/freezeGlobals')
 
@@ -7,26 +6,29 @@ import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } = require('./lib/enums')
+const {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} = require('./lib/enums')
 const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupSentry = require('./lib/setupSentry')
-const {EventEmitter} = require('events')
+const { EventEmitter } = require('events')
 const Dnode = require('dnode')
 const Eth = require('ethjs')
 const EthQuery = require('./eth-query')
 const urlUtil = require('url')
 const launchMetaMaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const log = require('loglevel')
 
 start().catch(log.error)
 
 async function start () {
-
   // create platform global
   global.platform = new ExtensionPlatform()
 
@@ -64,7 +66,8 @@ async function start () {
   }
 
   function displayCriticalError (container, err) {
-    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+    container.innerHTML =
+      '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
     container.style.height = '80px'
     log.error(err.stack)
     throw err
@@ -88,7 +91,7 @@ async function start () {
 }
 
 async function queryCurrentActiveTab (windowType) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // At the time of writing we only have the `activeTab` permission which means
     // that this query will only succeed in the popup context (i.e. after a "browserAction")
     if (windowType !== ENVIRONMENT_TYPE_POPUP) {
@@ -96,12 +99,15 @@ async function queryCurrentActiveTab (windowType) {
       return
     }
 
-    extension.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    extension.tabs.query({ active: true, currentWindow: true }, tabs => {
       const [activeTab] = tabs
-      const {title, url} = activeTab
+      const { title, url } = activeTab
       const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
       resolve({
-        title, origin, protocol, url,
+        title,
+        origin,
+        protocol,
+        url,
       })
     })
   })
@@ -113,11 +119,14 @@ function initializeUi (activeTab, container, connectionStream, cb) {
       return cb(err)
     }
 
-    launchMetaMaskUi({
-      activeTab,
-      container,
-      backgroundConnection,
-    }, cb)
+    launchMetaMaskUi(
+      {
+        activeTab,
+        container,
+        backgroundConnection,
+      },
+      cb
+    )
   })
 }
 

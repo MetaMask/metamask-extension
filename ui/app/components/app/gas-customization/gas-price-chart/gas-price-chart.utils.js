@@ -8,7 +8,14 @@ import {
   bigNumDiv,
 } from '../../../../helpers/utils/gas-time-estimates.util'
 
-export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes, chart }) {
+export function handleMouseMove ({
+  xMousePos,
+  chartXStart,
+  chartWidth,
+  gasPrices,
+  estimatedTimes,
+  chart,
+}) {
   const { currentPosValue, newTimeEstimate } = getNewXandTimeEstimate({
     xMousePos,
     chartXStart,
@@ -23,10 +30,17 @@ export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices
   }
 
   const indexOfNewCircle = estimatedTimes.length + 1
-  const dataUIObj = generateDataUIObj(currentPosValue, indexOfNewCircle, newTimeEstimate)
+  const dataUIObj = generateDataUIObj(
+    currentPosValue,
+    indexOfNewCircle,
+    newTimeEstimate
+  )
 
   chart.internal.overlayPoint(dataUIObj, indexOfNewCircle)
-  chart.internal.showTooltip([dataUIObj], d3.select('.c3-areas-data1')._groups[0])
+  chart.internal.showTooltip(
+    [dataUIObj],
+    d3.select('.c3-areas-data1')._groups[0]
+  )
   chart.internal.showXGridFocus([dataUIObj])
 }
 
@@ -67,11 +81,20 @@ export function handleChartUpdate ({ chart, gasPrices, newPrice, cssId }) {
   }
 }
 
-export function getNewXandTimeEstimate ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes }) {
+export function getNewXandTimeEstimate ({
+  xMousePos,
+  chartXStart,
+  chartWidth,
+  gasPrices,
+  estimatedTimes,
+}) {
   const chartMouseXPos = bigNumMinus(xMousePos, chartXStart)
   const posPercentile = bigNumDiv(chartMouseXPos, chartWidth)
 
-  const currentPosValue = (bigNumMinus(gasPrices[gasPrices.length - 1], gasPrices[0]))
+  const currentPosValue = bigNumMinus(
+    gasPrices[gasPrices.length - 1],
+    gasPrices[0]
+  )
     .times(newBigSigDig(posPercentile))
     .plus(newBigSigDig(gasPrices[0]))
     .toNumber()
@@ -124,14 +147,23 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
     .style('visibility', 'visible')
 }
 
-export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOnly }) {
+export function appendOrUpdateCircle ({
+  data,
+  itemIndex,
+  cx,
+  cy,
+  cssId,
+  appendOnly,
+}) {
   const circle = this.main
     .select('.c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
     .selectAll(`.c3-selected-circle-${itemIndex}`)
 
   if (appendOnly || circle.empty()) {
-    circle.data([data])
-      .enter().append('circle')
+    circle
+      .data([data])
+      .enter()
+      .append('circle')
       .attr('class', () => this.generateClass('c3-selected-circle', itemIndex))
       .attr('id', cssId)
       .attr('cx', cx)
@@ -139,7 +171,8 @@ export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOn
       .attr('stroke', () => this.color(data))
       .attr('r', 6)
   } else {
-    circle.data([data])
+    circle
+      .data([data])
       .attr('cx', cx)
       .attr('cy', cy)
   }
@@ -155,8 +188,12 @@ export function setSelectedCircle ({
 }) {
   const numberOfValues = chart.internal.data.xs.data1.length
 
-  const { x: lowerX, y: lowerY } = getCoordinateData(`.c3-circle-${closestLowerValueIndex}`)
-  let { x: higherX, y: higherY } = getCoordinateData(`.c3-circle-${closestHigherValueIndex}`)
+  const { x: lowerX, y: lowerY } = getCoordinateData(
+    `.c3-circle-${closestLowerValueIndex}`
+  )
+  let { x: higherX, y: higherY } = getCoordinateData(
+    `.c3-circle-${closestHigherValueIndex}`
+  )
   let count = closestHigherValueIndex + 1
 
   if (lowerX && higherX) {
@@ -172,7 +209,13 @@ export function setSelectedCircle ({
     .div(bigNumMinus(closestHigherValue, closestLowerValue))
     .plus(newBigSigDig(lowerX))
 
-  const newTimeEstimate = extrapolateY({ higherY, lowerY, higherX, lowerX, xForExtrapolation: currentX })
+  const newTimeEstimate = extrapolateY({
+    higherY,
+    lowerY,
+    higherX,
+    lowerX,
+    xForExtrapolation: currentX,
+  })
 
   chart.internal.selectPoint(
     generateDataUIObj(currentX.toNumber(), numberOfValues, newTimeEstimate),
@@ -180,8 +223,12 @@ export function setSelectedCircle ({
   )
 }
 
-
-export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax) {
+export function generateChart (
+  gasPrices,
+  estimatedTimes,
+  gasPricesMax,
+  estimatedTimesMax
+) {
   const gasPricesMaxPadded = gasPricesMax + 1
   const chart = c3.generate({
     size: {
@@ -190,7 +237,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     transition: {
       duration: 0,
     },
-    padding: {left: 20, right: 15, top: 6, bottom: 10},
+    padding: { left: 20, right: 15, top: 6, bottom: 10 },
     data: {
       x: 'x',
       columns: [
@@ -214,18 +261,23 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         tick: {
           values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
           outer: false,
-          format: function (val) { return val + ' GWEI' },
+          format: function (val) {
+            return val + ' GWEI'
+          },
         },
-        padding: {left: gasPricesMax / 50, right: gasPricesMax / 50},
+        padding: { left: gasPricesMax / 50, right: gasPricesMax / 50 },
         label: {
           text: 'Gas Price ($)',
           position: 'outer-center',
         },
       },
       y: {
-        padding: {top: 7, bottom: 7},
+        padding: { top: 7, bottom: 7 },
         tick: {
-          values: [Math.floor(estimatedTimesMax * 0.05), Math.ceil(estimatedTimesMax * 0.97)],
+          values: [
+            Math.floor(estimatedTimesMax * 0.05),
+            Math.ceil(estimatedTimesMax * 0.97),
+          ],
           outer: false,
         },
         label: {
@@ -254,14 +306,20 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     },
     tooltip: {
       format: {
-        title: (v) => v.toPrecision(4),
+        title: v => v.toPrecision(4),
       },
       contents: function (d) {
         const titleFormat = this.config.tooltip_format_title
         let text
         d.forEach(el => {
           if (el && (el.value || el.value === 0) && !text) {
-            text = "<table class='" + 'custom-tooltip' + "'>" + "<tr><th colspan='2'>" + titleFormat(el.x) + '</th></tr>'
+            text =
+              "<table class='" +
+              'custom-tooltip' +
+              "'>" +
+              "<tr><th colspan='2'>" +
+              titleFormat(el.x) +
+              '</th></tr>'
           }
         })
         return text + '</table>' + "<div class='tooltip-arrow'></div>"
@@ -271,35 +329,56 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
           return { top: -100, left: -100 }
         }
 
-        const { x: circleX, y: circleY, width: circleWidth } = getCoordinateData('#overlayed-circle')
-        const { x: chartXStart, y: chartYStart } = getCoordinateData('.c3-chart')
+        const {
+          x: circleX,
+          y: circleY,
+          width: circleWidth,
+        } = getCoordinateData('#overlayed-circle')
+        const { x: chartXStart, y: chartYStart } = getCoordinateData(
+          '.c3-chart'
+        )
 
         // TODO: Confirm the below constants work with all data sets and screen sizes
         const flipTooltip = circleY - circleWidth < chartYStart + 5
 
-        d3
-          .select('.tooltip-arrow')
-          .style('margin-top', flipTooltip ? '-16px' : '4px')
+        d3.select('.tooltip-arrow').style(
+          'margin-top',
+          flipTooltip ? '-16px' : '4px'
+        )
 
         return {
-          top: bigNumMinus(circleY, chartYStart).minus(19).plus(flipTooltip ? circleWidth + 38 : 0).toNumber(),
-          left: bigNumMinus(circleX, chartXStart).plus(newBigSigDig(circleWidth)).minus(bigNumDiv(gasPricesMaxPadded, 50)).toNumber(),
+          top: bigNumMinus(circleY, chartYStart)
+            .minus(19)
+            .plus(flipTooltip ? circleWidth + 38 : 0)
+            .toNumber(),
+          left: bigNumMinus(circleX, chartXStart)
+            .plus(newBigSigDig(circleWidth))
+            .minus(bigNumDiv(gasPricesMaxPadded, 50))
+            .toNumber(),
         }
       },
       show: true,
     },
   })
 
-  chart.internal.selectPoint = function (data, itemIndex = (data.index || 0)) {
-    const { x: chartXStart, y: chartYStart } = getCoordinateData('.c3-areas-data1')
+  chart.internal.selectPoint = function (data, itemIndex = data.index || 0) {
+    const { x: chartXStart, y: chartYStart } = getCoordinateData(
+      '.c3-areas-data1'
+    )
 
     d3.select('#set-circle').remove()
 
     appendOrUpdateCircle.bind(this)({
       data,
       itemIndex,
-      cx: () => bigNumMinus(data.x, chartXStart).plus(11).toNumber(),
-      cy: () => bigNumMinus(data.value, chartYStart).plus(10).toNumber(),
+      cx: () =>
+        bigNumMinus(data.x, chartXStart)
+          .plus(11)
+          .toNumber(),
+      cy: () =>
+        bigNumMinus(data.value, chartYStart)
+          .plus(10)
+          .toNumber(),
       cssId: 'set-circle',
       appendOnly: true,
     })
@@ -316,19 +395,35 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
   }
 
   chart.internal.showTooltip = function (selectedData, element) {
-    const dataToShow = selectedData.filter((d) => d && (d.value || d.value === 0))
+    const dataToShow = selectedData.filter(d => d && (d.value || d.value === 0))
 
     if (dataToShow.length) {
-      this.tooltip.html(
-        this.config.tooltip_contents.call(this, selectedData, this.axis.getXAxisTickFormat(), this.getYFormat(), this.color)
-      ).style('display', 'flex')
+      this.tooltip
+        .html(
+          this.config.tooltip_contents.call(
+            this,
+            selectedData,
+            this.axis.getXAxisTickFormat(),
+            this.getYFormat(),
+            this.color
+          )
+        )
+        .style('display', 'flex')
 
       // Get tooltip dimensions
       const tWidth = this.tooltip.property('offsetWidth')
       const tHeight = this.tooltip.property('offsetHeight')
-      const position = this.config.tooltip_position.call(this, dataToShow, tWidth, tHeight, element)
+      const position = this.config.tooltip_position.call(
+        this,
+        dataToShow,
+        tWidth,
+        tHeight,
+        element
+      )
       // Set tooltip
-      this.tooltip.style('top', position.top + 'px').style('left', position.left + 'px')
+      this.tooltip
+        .style('top', position.top + 'px')
+        .style('left', position.left + 'px')
     }
   }
 

@@ -3,7 +3,7 @@ import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.
 import { preferencesSelector, getIsMainnet } from '../../../selectors/selectors'
 import { ETH, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const {
     useNativeCurrencyAsPrimaryCurrency,
     showFiatInTestnets,
@@ -20,7 +20,13 @@ const mapStateToProps = (state) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { useNativeCurrencyAsPrimaryCurrency, showFiatInTestnets, isMainnet, nativeCurrency, ...restStateProps } = stateProps
+  const {
+    useNativeCurrencyAsPrimaryCurrency,
+    showFiatInTestnets,
+    isMainnet,
+    nativeCurrency,
+    ...restStateProps
+  } = stateProps
   const {
     type,
     numberOfDecimals: propsNumberOfDecimals,
@@ -34,14 +40,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   let currency, numberOfDecimals, prefix
 
-  if (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency ||
-    type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency) {
+  if (
+    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
+  ) {
     // Display ETH
     currency = nativeCurrency || ETH
     numberOfDecimals = propsNumberOfDecimals || ethNumberOfDecimals || 6
     prefix = propsPrefix || ethPrefix
-  } else if (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency ||
-    type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency) {
+  } else if (
+    (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)
+  ) {
     // Display Fiat
     numberOfDecimals = propsNumberOfDecimals || fiatNumberOfDecimals || 2
     prefix = propsPrefix || fiatPrefix
@@ -64,4 +74,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps, null, mergeProps)(UserPreferencedCurrencyDisplay)
+export default connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(UserPreferencedCurrencyDisplay)

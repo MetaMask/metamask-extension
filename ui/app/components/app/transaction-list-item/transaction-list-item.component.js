@@ -9,7 +9,10 @@ import TokenCurrencyDisplay from '../../ui/token-currency-display'
 import TransactionListItemDetails from '../transaction-list-item-details'
 import TransactionTimeRemaining from '../transaction-time-remaining'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
-import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../../helpers/constants/transactions'
+import {
+  UNAPPROVED_STATUS,
+  TOKEN_METHOD_TRANSFER,
+} from '../../../helpers/constants/transactions'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { getStatusKey } from '../../../helpers/utils/transactions.util'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
@@ -61,14 +64,10 @@ export default class TransactionListItem extends PureComponent {
     if (this.props.data) {
       this.props.getContractMethodData(this.props.data)
     }
-
   }
 
   handleClick = () => {
-    const {
-      transaction,
-      history,
-    } = this.props
+    const { transaction, history } = this.props
     const { id, status } = transaction
     const { showTransactionDetails } = this.state
 
@@ -139,39 +138,41 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderPrimaryCurrency () {
-    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value, isDeposit } = this.props
+    const {
+      token,
+      primaryTransaction: { txParams: { data } = {} } = {},
+      value,
+      isDeposit,
+    } = this.props
 
-    return token
-      ? (
-        <TokenCurrencyDisplay
-          className="transaction-list-item__amount transaction-list-item__amount--primary"
-          token={token}
-          transactionData={data}
-          prefix="-"
-        />
-      ) : (
-        <UserPreferencedCurrencyDisplay
-          className="transaction-list-item__amount transaction-list-item__amount--primary"
-          value={value}
-          type={PRIMARY}
-          prefix={isDeposit ? '' : '-'}
-        />
-      )
+    return token ? (
+      <TokenCurrencyDisplay
+        className="transaction-list-item__amount transaction-list-item__amount--primary"
+        token={token}
+        transactionData={data}
+        prefix="-"
+      />
+    ) : (
+      <UserPreferencedCurrencyDisplay
+        className="transaction-list-item__amount transaction-list-item__amount--primary"
+        value={value}
+        type={PRIMARY}
+        prefix={isDeposit ? '' : '-'}
+      />
+    )
   }
 
   renderSecondaryCurrency () {
     const { token, value, showFiat } = this.props
 
-    return token || !showFiat
-      ? null
-      : (
-        <UserPreferencedCurrencyDisplay
-          className="transaction-list-item__amount transaction-list-item__amount--secondary"
-          value={value}
-          prefix="-"
-          type={SECONDARY}
-        />
-      )
+    return token || !showFiat ? null : (
+      <UserPreferencedCurrencyDisplay
+        className="transaction-list-item__amount transaction-list-item__amount--secondary"
+        value={value}
+        prefix="-"
+        type={SECONDARY}
+      />
+    )
   }
 
   render () {
@@ -195,20 +196,22 @@ export default class TransactionListItem extends PureComponent {
     const { showTransactionDetails } = this.state
     const fromAddress = txParams.from
     const toAddress = tokenData
-      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+      ? (tokenData.params &&
+          tokenData.params[0] &&
+          tokenData.params[0].value) ||
+        txParams.to
       : txParams.to
 
-    const isFullScreen = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN
-    const showEstimatedTime = transactionTimeFeatureActive &&
-      (transaction.id === firstPendingTransactionId) &&
+    const isFullScreen =
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN
+    const showEstimatedTime =
+      transactionTimeFeatureActive &&
+      transaction.id === firstPendingTransactionId &&
       isFullScreen
 
     return (
       <div className="transaction-list-item">
-        <div
-          className="transaction-list-item__grid"
-          onClick={this.handleClick}
-        >
+        <div className="transaction-list-item__grid" onClick={this.handleClick}>
           <Identicon
             className="transaction-list-item__identicon"
             address={toAddress}
@@ -220,53 +223,49 @@ export default class TransactionListItem extends PureComponent {
             methodData={methodData}
             className="transaction-list-item__action"
           />
-          <div
-            className="transaction-list-item__nonce"
-            title={nonceAndDate}
-          >
-            { nonceAndDate }
+          <div className="transaction-list-item__nonce" title={nonceAndDate}>
+            {nonceAndDate}
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
             statusKey={getStatusKey(primaryTransaction)}
-            title={(
-              (primaryTransaction.err && primaryTransaction.err.rpc)
+            title={
+              primaryTransaction.err && primaryTransaction.err.rpc
                 ? primaryTransaction.err.rpc.message
                 : primaryTransaction.err && primaryTransaction.err.message
-            )}
+            }
           />
-          { showEstimatedTime
-            ? <TransactionTimeRemaining
+          {showEstimatedTime ? (
+            <TransactionTimeRemaining
               className="transaction-list-item__estimated-time"
-              transaction={ primaryTransaction }
+              transaction={primaryTransaction}
             />
-            : null
-          }
-          { this.renderPrimaryCurrency() }
-          { this.renderSecondaryCurrency() }
+          ) : null}
+          {this.renderPrimaryCurrency()}
+          {this.renderSecondaryCurrency()}
         </div>
-        <div className={classnames('transaction-list-item__expander', {
-          'transaction-list-item__expander--show': showTransactionDetails,
-        })}>
-          {
-            showTransactionDetails && (
-              <div className="transaction-list-item__details-container">
-                <TransactionListItemDetails
-                  transactionGroup={transactionGroup}
-                  onRetry={this.handleRetry}
-                  showSpeedUp={showSpeedUp}
-                  showRetry={getStatusKey(primaryTransaction) === 'failed'}
-                  isEarliestNonce={isEarliestNonce}
-                  onCancel={this.handleCancel}
-                  showCancel={showCancel}
-                  cancelDisabled={!hasEnoughCancelGas}
-                  rpcPrefs={rpcPrefs}
-                  senderAddress={fromAddress}
-                  recipientAddress={toAddress}
-                />
-              </div>
-            )
-          }
+        <div
+          className={classnames('transaction-list-item__expander', {
+            'transaction-list-item__expander--show': showTransactionDetails,
+          })}
+        >
+          {showTransactionDetails && (
+            <div className="transaction-list-item__details-container">
+              <TransactionListItemDetails
+                transactionGroup={transactionGroup}
+                onRetry={this.handleRetry}
+                showSpeedUp={showSpeedUp}
+                showRetry={getStatusKey(primaryTransaction) === 'failed'}
+                isEarliestNonce={isEarliestNonce}
+                onCancel={this.handleCancel}
+                showCancel={showCancel}
+                cancelDisabled={!hasEnoughCancelGas}
+                rpcPrefs={rpcPrefs}
+                senderAddress={fromAddress}
+                recipientAddress={toAddress}
+              />
+            </div>
+          )}
         </div>
       </div>
     )

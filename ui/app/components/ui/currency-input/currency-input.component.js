@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import UnitInput from '../unit-input'
 import CurrencyDisplay from '../currency-display'
-import { getValueFromWeiHex, getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util'
+import {
+  getValueFromWeiHex,
+  getWeiHexFromDecimalValue,
+} from '../../../helpers/utils/conversions.util'
 import { ETH } from '../../../helpers/constants/common'
 
 /**
@@ -47,7 +50,10 @@ export default class CurrencyInput extends PureComponent {
     const { value: propsHexValue } = this.props
     const { hexValue: stateHexValue } = this.state
 
-    if (prevPropsHexValue !== propsHexValue && propsHexValue !== stateHexValue) {
+    if (
+      prevPropsHexValue !== propsHexValue &&
+      propsHexValue !== stateHexValue
+    ) {
       const decimalValue = this.getDecimalValue(this.props)
       this.setState({ hexValue: propsHexValue, decimalValue })
     }
@@ -57,10 +63,15 @@ export default class CurrencyInput extends PureComponent {
     const { value: hexValue, currentCurrency, conversionRate } = props
     const decimalValueString = this.shouldUseFiat()
       ? getValueFromWeiHex({
-        value: hexValue, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
+        value: hexValue,
+        toCurrency: currentCurrency,
+        conversionRate,
+        numberOfDecimals: 2,
       })
       : getValueFromWeiHex({
-        value: hexValue, toCurrency: ETH, numberOfDecimals: 6,
+        value: hexValue,
+        toCurrency: ETH,
+        numberOfDecimals: 6,
       })
 
     return Number(decimalValueString) || 0
@@ -79,20 +90,30 @@ export default class CurrencyInput extends PureComponent {
 
   swap = () => {
     const { isSwapped, decimalValue } = this.state
-    this.setState({isSwapped: !isSwapped}, () => {
+    this.setState({ isSwapped: !isSwapped }, () => {
       this.handleChange(decimalValue)
     })
   }
 
   handleChange = decimalValue => {
-    const { currentCurrency: fromCurrency, conversionRate, onChange } = this.props
+    const {
+      currentCurrency: fromCurrency,
+      conversionRate,
+      onChange,
+    } = this.props
 
     const hexValue = this.shouldUseFiat()
       ? getWeiHexFromDecimalValue({
-        value: decimalValue, fromCurrency, conversionRate, invertConversionRate: true,
+        value: decimalValue,
+        fromCurrency,
+        conversionRate,
+        invertConversionRate: true,
       })
       : getWeiHexFromDecimalValue({
-        value: decimalValue, fromCurrency: ETH, fromDenomination: ETH, conversionRate,
+        value: decimalValue,
+        fromCurrency: ETH,
+        fromDenomination: ETH,
+        conversionRate,
       })
 
     this.setState({ hexValue, decimalValue })
@@ -111,7 +132,7 @@ export default class CurrencyInput extends PureComponent {
     if (hideFiat) {
       return (
         <div className="currency-input__conversion-component">
-          { this.context.t('noConversionRateAvailable') }
+          {this.context.t('noConversionRateAvailable')}
         </div>
       )
     }
@@ -148,14 +169,11 @@ export default class CurrencyInput extends PureComponent {
         onBlur={this.handleBlur}
         value={decimalValue}
         maxModeOn={maxModeOn}
-        actionComponent={(
-          <div
-            className="currency-input__swap-component"
-            onClick={this.swap}
-          />
-        )}
+        actionComponent={
+          <div className="currency-input__swap-component" onClick={this.swap} />
+        }
       >
-        { this.renderConversionComponent() }
+        {this.renderConversionComponent()}
       </UnitInput>
     )
   }

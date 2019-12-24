@@ -3,14 +3,25 @@ const assert = require('assert')
 const h = require('react-hyperscript')
 const sinon = require('sinon')
 const path = require('path')
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'app', 'dropdowns', 'index.js')).Dropdown
+const Dropdown = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'components',
+  'app',
+  'dropdowns',
+  'index.js'
+)).Dropdown
 
 const { createMockStore } = require('redux-test-utils')
 const { mountWithStore } = require('../../../lib/render-helpers')
 
 const mockState = {
-  metamask: {
-  },
+  metamask: {},
 }
 
 describe('Dropdown components', function () {
@@ -39,24 +50,34 @@ describe('Dropdown components', function () {
     onClick = sinon.spy()
 
     store = createMockStore(mockState)
-    component = mountWithStore(h(
-      Dropdown,
-      dropdownComponentProps,
-      [
-        h('style', `
+    component = mountWithStore(
+      h(Dropdown, dropdownComponentProps, [
+        h(
+          'style',
+          `
           .drop-menu-item:hover { background:rgb(235, 235, 235); }
           .drop-menu-item i { margin: 11px; }
-        `),
-        h('li', {
-          closeMenu,
-          onClick,
-        }, 'Item 1'),
-        h('li', {
-          closeMenu,
-          onClick,
-        }, 'Item 2'),
-      ]
-    ), store)
+        `
+        ),
+        h(
+          'li',
+          {
+            closeMenu,
+            onClick,
+          },
+          'Item 1'
+        ),
+        h(
+          'li',
+          {
+            closeMenu,
+            onClick,
+          },
+          'Item 2'
+        ),
+      ]),
+      store
+    )
     dropdownComponent = component
   })
 

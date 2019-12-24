@@ -46,7 +46,9 @@ describe('AdvancedTab Container', () => {
     assert.ok(typeof props.displayWarning === 'function')
     assert.ok(typeof props.showResetAccountConfirmationModal === 'function')
     assert.ok(typeof props.setAdvancedInlineGasFeatureFlag === 'function')
-    assert.ok(typeof props.setShowFiatConversionOnTestnetsPreference === 'function')
+    assert.ok(
+      typeof props.setShowFiatConversionOnTestnetsPreference === 'function'
+    )
     assert.ok(typeof props.setAutoLogoutTimeLimit === 'function')
     assert.ok(typeof props.setUseNonceField === 'function')
   })

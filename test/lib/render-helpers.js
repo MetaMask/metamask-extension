@@ -12,18 +12,17 @@ function shallowWithStore (component, store) {
   const context = {
     store,
   }
-  return shallow(component, {context})
+  return shallow(component, { context })
 }
 
 function mountWithStore (component, store) {
   const context = {
     store,
   }
-  return mount(component, {context})
+  return mount(component, { context })
 }
 
 function mountWithRouter (node) {
-
   // Instantiate router context
   const router = {
     history: new BrowserRouter().history,

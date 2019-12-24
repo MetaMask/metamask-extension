@@ -1,8 +1,10 @@
 const Sentry = require('@sentry/browser')
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
-const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
-const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
+const SENTRY_DSN_PROD =
+  'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
+const SENTRY_DSN_DEV =
+  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
 module.exports = setupSentry
 
@@ -25,7 +27,7 @@ function setupSentry (opts) {
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: report => rewriteReport(report),
   })
 
   Sentry.configureScope(scope => {
@@ -53,7 +55,7 @@ function setupSentry (opts) {
 }
 
 function simplifyErrorMessages (report) {
-  rewriteErrorMessages(report, (errorMessage) => {
+  rewriteErrorMessages(report, errorMessage => {
     // simplify ethjs error messages
     errorMessage = extractEthjsErrorMessage(errorMessage)
     // simplify 'Transaction Failed: known transaction'
@@ -67,7 +69,9 @@ function simplifyErrorMessages (report) {
 
 function rewriteErrorMessages (report, rewriteFn) {
   // rewrite top level message
-  if (typeof report.message === 'string') report.message = rewriteFn(report.message)
+  if (typeof report.message === 'string') {
+    report.message = rewriteFn(report.message)
+  }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {

@@ -8,7 +8,9 @@ import {
 import { getSelectedAddress } from '../../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { appState: { showingSeedPhraseBackupAfterOnboarding } } = state
+  const {
+    appState: { showingSeedPhraseBackupAfterOnboarding },
+  } = state
 
   return {
     showingSeedPhraseBackupAfterOnboarding,
@@ -18,8 +20,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
-    hideSeedPhraseBackupAfterOnboarding: () => dispatch(hideSeedPhraseBackupAfterOnboarding()),
+    setSeedPhraseBackedUp: seedPhraseBackupState =>
+      dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
+    hideSeedPhraseBackupAfterOnboarding: () =>
+      dispatch(hideSeedPhraseBackupAfterOnboarding()),
     initializeThreeBox: () => dispatch(initializeThreeBox()),
   }
 }

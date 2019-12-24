@@ -35,23 +35,26 @@ class RevealSeedPage extends Component {
   handleSubmit (event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
-    this.props.requestRevealSeedWords(this.state.password)
-      .then(seedWords => this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }))
+    this.props
+      .requestRevealSeedWords(this.state.password)
+      .then(seedWords =>
+        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
+      )
       .catch(error => this.setState({ error: error.message }))
   }
 
   renderWarning () {
-    return (
-      h('.page-container__warning-container', [
-        h('img.page-container__warning-icon', {
-          src: 'images/warning.svg',
-        }),
-        h('.page-container__warning-message', [
-          h('.page-container__warning-title', [this.context.t('revealSeedWordsWarningTitle')]),
-          h('div', [this.context.t('revealSeedWordsWarning')]),
+    return h('.page-container__warning-container', [
+      h('img.page-container__warning-icon', {
+        src: 'images/warning.svg',
+      }),
+      h('.page-container__warning-message', [
+        h('.page-container__warning-title', [
+          this.context.t('revealSeedWordsWarningTitle'),
         ]),
-      ])
-    )
+        h('div', [this.context.t('revealSeedWordsWarning')]),
+      ]),
+    ])
   }
 
   renderContent () {
@@ -63,13 +66,19 @@ class RevealSeedPage extends Component {
   renderPasswordPromptContent () {
     const { t } = this.context
 
-    return (
-      h('form', {
+    return h(
+      'form',
+      {
         onSubmit: event => this.handleSubmit(event),
-      }, [
-        h('label.input-label', {
-          htmlFor: 'password-box',
-        }, t('enterPasswordContinue')),
+      },
+      [
+        h(
+          'label.input-label',
+          {
+            htmlFor: 'password-box',
+          },
+          t('enterPasswordContinue')
+        ),
         h('.input-group', [
           h('input.form-control', {
             type: 'password',
@@ -81,22 +90,20 @@ class RevealSeedPage extends Component {
           }),
         ]),
         this.state.error && h('.reveal-seed__error', this.state.error),
-      ])
+      ]
     )
   }
 
   renderRevealSeedContent () {
     const { t } = this.context
 
-    return (
-      h('div', [
-        h('label.reveal-seed__label', t('yourPrivateSeedPhrase')),
-        h(ExportTextContainer, {
-          text: this.state.seedWords,
-          filename: t('metamaskSeedWords'),
-        }),
-      ])
-    )
+    return h('div', [
+      h('label.reveal-seed__label', t('yourPrivateSeedPhrase')),
+      h(ExportTextContainer, {
+        text: this.state.seedWords,
+        filename: t('metamaskSeedWords'),
+      }),
+    ])
   }
 
   renderFooter () {
@@ -106,56 +113,63 @@ class RevealSeedPage extends Component {
   }
 
   renderPasswordPromptFooter () {
-    return (
-      h('.page-container__footer', [
-        h('header', [
-          h(Button, {
+    return h('.page-container__footer', [
+      h('header', [
+        h(
+          Button,
+          {
             type: 'default',
             large: true,
             className: 'page-container__footer-button',
             onClick: () => this.props.history.push(DEFAULT_ROUTE),
-          }, this.context.t('cancel')),
-          h(Button, {
+          },
+          this.context.t('cancel')
+        ),
+        h(
+          Button,
+          {
             type: 'secondary',
             large: true,
             className: 'page-container__footer-button',
             onClick: event => this.handleSubmit(event),
             disabled: this.state.password === '',
-          }, this.context.t('next')),
-        ]),
-      ])
-    )
+          },
+          this.context.t('next')
+        ),
+      ]),
+    ])
   }
 
   renderRevealSeedFooter () {
-    return (
-      h('.page-container__footer', [
-        h(Button, {
+    return h('.page-container__footer', [
+      h(
+        Button,
+        {
           type: 'default',
           large: true,
           className: 'page-container__footer-button',
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
-        }, this.context.t('close')),
-      ])
-    )
+        },
+        this.context.t('close')
+      ),
+    ])
   }
 
   render () {
-    return (
-      h('.page-container', [
-        h('.page-container__header', [
-          h('.page-container__title', this.context.t('revealSeedWordsTitle')),
-          h('.page-container__subtitle', this.context.t('revealSeedWordsDescription')),
-        ]),
-        h('.page-container__content', [
-          this.renderWarning(),
-          h('.reveal-seed__content', [
-            this.renderContent(),
-          ]),
-        ]),
-        this.renderFooter(),
-      ])
-    )
+    return h('.page-container', [
+      h('.page-container__header', [
+        h('.page-container__title', this.context.t('revealSeedWordsTitle')),
+        h(
+          '.page-container__subtitle',
+          this.context.t('revealSeedWordsDescription')
+        ),
+      ]),
+      h('.page-container__content', [
+        this.renderWarning(),
+        h('.reveal-seed__content', [this.renderContent()]),
+      ]),
+      this.renderFooter(),
+    ])
   }
 }
 
@@ -170,7 +184,8 @@ RevealSeedPage.contextTypes = {
 
 const mapDispatchToProps = dispatch => {
   return {
-    requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
+    requestRevealSeedWords: password =>
+      dispatch(requestRevealSeedWords(password)),
   }
 }
 

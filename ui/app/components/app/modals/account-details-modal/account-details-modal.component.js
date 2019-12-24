@@ -1,4 +1,4 @@
-import React, { Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
 import genAccountLink from '../../../../../lib/account-link.js'
@@ -31,7 +31,7 @@ export default class AccountDetailsModal extends Component {
     } = this.props
     const { name, address } = selectedIdentity
 
-    const keyring = keyrings.find((kr) => {
+    const keyring = keyrings.find(kr => {
       return kr.accounts.includes(address)
     })
 
@@ -56,31 +56,33 @@ export default class AccountDetailsModal extends Component {
           }}
         />
 
-        <div className="account-modal-divider"/>
+        <div className="account-modal-divider" />
 
         <Button
           type="secondary"
           className="account-modal__button"
           onClick={() => {
-            global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
+            global.platform.openWindow({
+              url: genAccountLink(address, network, rpcPrefs),
+            })
           }}
         >
           {rpcPrefs.blockExplorerUrl
-            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
-            : this.context.t('viewOnEtherscan')
-          }
+            ? this.context.t('blockExplorerView', [
+              rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1],
+            ])
+            : this.context.t('viewOnEtherscan')}
         </Button>
 
-        {exportPrivateKeyFeatureEnabled
-          ? <Button
+        {exportPrivateKeyFeatureEnabled ? (
+          <Button
             type="secondary"
             className="account-modal__button"
             onClick={() => showExportPrivateKeyModal()}
           >
             {this.context.t('exportPrivateKey')}
           </Button>
-          : null
-        }
+        ) : null}
       </AccountModalContainer>
     )
   }

@@ -11,7 +11,9 @@ describe('Confirm Transaction Base Container', () => {
     assert.ok(typeof props.showTransactionConfirmedModal === 'function')
     assert.ok(typeof props.showCustomizeGasModal === 'function')
     assert.ok(typeof props.updateGasAndCalculate === 'function')
-    assert.ok(typeof props.showRejectTransactionsConfirmationModal === 'function')
+    assert.ok(
+      typeof props.showRejectTransactionsConfirmationModal === 'function'
+    )
     assert.ok(typeof props.cancelTransaction === 'function')
     assert.ok(typeof props.cancelAllTransactions === 'function')
     assert.ok(typeof props.sendTransaction === 'function')

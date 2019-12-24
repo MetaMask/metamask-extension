@@ -1,5 +1,8 @@
 const assert = require('assert')
-const { getEnvironmentType, sufficientBalance } = require('../../../app/scripts/lib/util')
+const {
+  getEnvironmentType,
+  sufficientBalance,
+} = require('../../../app/scripts/lib/util')
 const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -14,7 +17,9 @@ describe('getEnvironmentType', function () {
   })
 
   it('should return notification type', function () {
-    const environmentType = getEnvironmentType('http://extension-id/notification.html')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/notification.html'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_NOTIFICATION)
   })
 
@@ -24,27 +29,37 @@ describe('getEnvironmentType', function () {
   })
 
   it('should return fullscreen type for phishing.html', function () {
-    const environmentType = getEnvironmentType('http://extension-id/phishing.html')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/phishing.html'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_FULLSCREEN)
   })
 
   it('should return background type', function () {
-    const environmentType = getEnvironmentType('http://extension-id/_generated_background_page.html')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/_generated_background_page.html'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_BACKGROUND)
   })
 
   it('should return the correct type for a URL with a hash fragment', function () {
-    const environmentType = getEnvironmentType('http://extension-id/popup.html#hash')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/popup.html#hash'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_POPUP)
   })
 
   it('should return the correct type for a URL with query parameters', function () {
-    const environmentType = getEnvironmentType('http://extension-id/popup.html?param=foo')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/popup.html?param=foo'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_POPUP)
   })
 
   it('should return the correct type for a URL with query parameters and a hash fragment', function () {
-    const environmentType = getEnvironmentType('http://extension-id/popup.html?param=foo#hash')
+    const environmentType = getEnvironmentType(
+      'http://extension-id/popup.html?param=foo#hash'
+    )
     assert.equal(environmentType, ENVIRONMENT_TYPE_POPUP)
   })
 })
@@ -52,9 +67,9 @@ describe('getEnvironmentType', function () {
 describe('SufficientBalance', function () {
   it('returns true if max tx cost is equal to balance.', function () {
     const tx = {
-      'value': '0x1',
-      'gas': '0x2',
-      'gasPrice': '0x3',
+      value: '0x1',
+      gas: '0x2',
+      gasPrice: '0x3',
     }
     const balance = '0x8'
 
@@ -64,9 +79,9 @@ describe('SufficientBalance', function () {
 
   it('returns true if max tx cost is less than balance.', function () {
     const tx = {
-      'value': '0x1',
-      'gas': '0x2',
-      'gasPrice': '0x3',
+      value: '0x1',
+      gas: '0x2',
+      gasPrice: '0x3',
     }
     const balance = '0x9'
 
@@ -76,9 +91,9 @@ describe('SufficientBalance', function () {
 
   it('returns false if max tx cost is more than balance.', function () {
     const tx = {
-      'value': '0x1',
-      'gas': '0x2',
-      'gasPrice': '0x3',
+      value: '0x1',
+      gas: '0x2',
+      gasPrice: '0x3',
     }
     const balance = '0x6'
 

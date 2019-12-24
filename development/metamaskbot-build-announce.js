@@ -5,7 +5,6 @@ const VERSION = require('../dist/chrome/manifest.json').version // eslint-disabl
 start().catch(console.error)
 
 async function start () {
-
   const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
   const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
@@ -27,17 +26,29 @@ async function start () {
 
   // links to extension builds
   const platforms = ['chrome', 'firefox', 'opera', 'edge']
-  const buildLinks = platforms.map(platform => {
-    const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
-    return `<a href="${url}">${platform}</a>`
-  }).join(', ')
+  const buildLinks = platforms
+    .map(platform => {
+      const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
+      return `<a href="${url}">${platform}</a>`
+    })
+    .join(', ')
 
   // links to bundle browser builds
-  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'ui-libs', 'bg-libs', 'phishing-detect']
-  const bundleLinks = bundles.map(bundle => {
-    const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
-    return `<a href="${url}">${bundle}</a>`
-  }).join(', ')
+  const bundles = [
+    'background',
+    'ui',
+    'inpage',
+    'contentscript',
+    'ui-libs',
+    'bg-libs',
+    'phishing-detect',
+  ]
+  const bundleLinks = bundles
+    .map(bundle => {
+      const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
+      return `<a href="${url}">${bundle}</a>`
+    })
+    .join(', ')
 
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/deps-viz/background/index.html`
@@ -52,7 +63,8 @@ async function start () {
     `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
-  const hiddenContent = `<ul>` + contentRows.map(row => `<li>${row}</li>`).join('\n') + `</ul>`
+  const hiddenContent =
+    `<ul>` + contentRows.map(row => `<li>${row}</li>`).join('\n') + `</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const commentBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
@@ -67,8 +79,7 @@ async function start () {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
+      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
     },
   })
-
 }

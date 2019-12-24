@@ -46,7 +46,7 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('syncWithMobile') }</span>
+          <span>{t('syncWithMobile')}</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -58,7 +58,7 @@ export default class AdvancedTab extends PureComponent {
                 history.push(MOBILE_SYNC_ROUTE)
               }}
             >
-              { t('syncWithMobile') }
+              {t('syncWithMobile')}
             </Button>
           </div>
         </div>
@@ -73,9 +73,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('stateLogs') }</span>
+          <span>{t('stateLogs')}</span>
           <span className="settings-page__content-description">
-            { t('stateLogsDescription') }
+            {t('stateLogsDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -93,7 +93,7 @@ export default class AdvancedTab extends PureComponent {
                 })
               }}
             >
-              { t('downloadStateLogs') }
+              {t('downloadStateLogs')}
             </Button>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('resetAccount') }</span>
+          <span>{t('resetAccount')}</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -128,7 +128,7 @@ export default class AdvancedTab extends PureComponent {
                 showResetAccountConfirmationModal()
               }}
             >
-              { t('resetAccount') }
+              {t('resetAccount')}
             </Button>
           </div>
         </div>
@@ -143,9 +143,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showHexData') }</span>
+          <span>{t('showHexData')}</span>
           <div className="settings-page__content-description">
-            { t('showHexDataDescription') }
+            {t('showHexDataDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -169,9 +169,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showAdvancedGasInline') }</span>
+          <span>{t('showAdvancedGasInline')}</span>
           <div className="settings-page__content-description">
-            { t('showAdvancedGasInlineDescription') }
+            {t('showAdvancedGasInlineDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -198,16 +198,18 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showFiatConversionInTestnets') }</span>
+          <span>{t('showFiatConversionInTestnets')}</span>
           <div className="settings-page__content-description">
-            { t('showFiatConversionInTestnetsDescription') }
+            {t('showFiatConversionInTestnetsDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showFiatInTestnets}
-              onToggle={value => setShowFiatConversionOnTestnetsPreference(!value)}
+              onToggle={value =>
+                setShowFiatConversionOnTestnetsPreference(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -224,9 +226,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ this.context.t('nonceField') }</span>
+          <span>{this.context.t('nonceField')}</span>
           <div className="settings-page__content-description">
-            { t('nonceFieldDescription') }
+            {t('nonceFieldDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -264,17 +266,14 @@ export default class AdvancedTab extends PureComponent {
   renderAutoLogoutTimeLimit () {
     const { t } = this.context
     const { logoutTimeError } = this.state
-    const {
-      autoLogoutTimeLimit,
-      setAutoLogoutTimeLimit,
-    } = this.props
+    const { autoLogoutTimeLimit, setAutoLogoutTimeLimit } = this.props
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('autoLogoutTimeLimit') }</span>
+          <span>{t('autoLogoutTimeLimit')}</span>
           <div className="settings-page__content-description">
-            { t('autoLogoutTimeLimitDescription') }
+            {t('autoLogoutTimeLimitDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -299,7 +298,7 @@ export default class AdvancedTab extends PureComponent {
                 setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
               }}
             >
-              { t('save') }
+              {t('save')}
             </Button>
           </div>
         </div>
@@ -325,9 +324,9 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('syncWithThreeBox') }</span>
+          <span>{t('syncWithThreeBox')}</span>
           <div className="settings-page__content-description">
-            { description }
+            {description}
           </div>
         </div>
         <div
@@ -357,16 +356,16 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderStateLogs() }
-        { this.renderMobileSync() }
-        { this.renderResetAccount() }
-        { this.renderAdvancedGasInputInline() }
-        { this.renderHexDataOptIn() }
-        { this.renderShowConversionInTestnets() }
-        { this.renderUseNonceOptIn() }
-        { this.renderAutoLogoutTimeLimit() }
-        { this.renderThreeBoxControl() }
+        {warning && <div className="settings-tab__error">{warning}</div>}
+        {this.renderStateLogs()}
+        {this.renderMobileSync()}
+        {this.renderResetAccount()}
+        {this.renderAdvancedGasInputInline()}
+        {this.renderHexDataOptIn()}
+        {this.renderShowConversionInTestnets()}
+        {this.renderUseNonceOptIn()}
+        {this.renderAutoLogoutTimeLimit()}
+        {this.renderThreeBoxControl()}
       </div>
     )
   }

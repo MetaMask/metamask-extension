@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
-import {
-  addressSummary,
-} from '../../../helpers/utils/util'
+import { addressSummary } from '../../../helpers/utils/util'
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 export default class ConfirmApproveContent extends Component {
@@ -46,22 +44,30 @@ export default class ConfirmApproveContent extends Component {
     noBorder,
   }) {
     return (
-      <div className={classnames({
-        'confirm-approve-content__card': !noBorder,
-        'confirm-approve-content__card--no-border': noBorder,
-      })}>
+      <div
+        className={classnames({
+          'confirm-approve-content__card': !noBorder,
+          'confirm-approve-content__card--no-border': noBorder,
+        })}
+      >
         <div className="confirm-approve-content__card-header">
-          <div className="confirm-approve-content__card-header__symbol">{ symbol }</div>
-          <div className="confirm-approve-content__card-header__title">{ title }</div>
-          { showEdit && <div
-            className="confirm-approve-content__small-blue-text cursor-pointer"
-            onClick={() => onEditClick()}
-          >Edit</div> }
+          <div className="confirm-approve-content__card-header__symbol">
+            {symbol}
+          </div>
+          <div className="confirm-approve-content__card-header__title">
+            {title}
+          </div>
+          {showEdit && (
+            <div
+              className="confirm-approve-content__small-blue-text cursor-pointer"
+              onClick={() => onEditClick()}
+            >
+              Edit
+            </div>
+          )}
         </div>
-        <div className="confirm-approve-content__card-content">
-          { content }
-        </div>
-        { footer }
+        <div className="confirm-approve-content__card-content">{content}</div>
+        {footer}
       </div>
     )
   }
@@ -77,14 +83,14 @@ export default class ConfirmApproveContent extends Component {
     return (
       <div className="confirm-approve-content__transaction-details-content">
         <div className="confirm-approve-content__small-text">
-          { t('feeAssociatedRequest') }
+          {t('feeAssociatedRequest')}
         </div>
         <div className="confirm-approve-content__transaction-details-content__fee">
           <div className="confirm-approve-content__transaction-details-content__primary-fee">
-            { formatCurrency(fiatTransactionTotal, currentCurrency) }
+            {formatCurrency(fiatTransactionTotal, currentCurrency)}
           </div>
           <div className="confirm-approve-content__transaction-details-content__secondary-fee">
-            { `${ethTransactionTotal} ETH` }
+            {`${ethTransactionTotal} ETH`}
           </div>
         </div>
       </div>
@@ -93,18 +99,33 @@ export default class ConfirmApproveContent extends Component {
 
   renderPermissionContent () {
     const { t } = this.context
-    const { customTokenAmount, tokenAmount, tokenSymbol, origin, toAddress } = this.props
+    const {
+      customTokenAmount,
+      tokenAmount,
+      tokenSymbol,
+      origin,
+      toAddress,
+    } = this.props
 
     return (
       <div className="flex-column">
-        <div className="confirm-approve-content__small-text">{ t('accessAndSpendNotice', [origin]) }</div>
-        <div className="flex-row">
-          <div className="confirm-approve-content__label">{ t('amountWithColon') }</div>
-          <div className="confirm-approve-content__medium-text">{ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }</div>
+        <div className="confirm-approve-content__small-text">
+          {t('accessAndSpendNotice', [origin])}
         </div>
         <div className="flex-row">
-          <div className="confirm-approve-content__label">{ t('toWithColon') }</div>
-          <div className="confirm-approve-content__medium-text">{ addressSummary(toAddress) }</div>
+          <div className="confirm-approve-content__label">
+            {t('amountWithColon')}
+          </div>
+          <div className="confirm-approve-content__medium-text">{`${customTokenAmount ||
+            tokenAmount} ${tokenSymbol}`}</div>
+        </div>
+        <div className="flex-row">
+          <div className="confirm-approve-content__label">
+            {t('toWithColon')}
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            {addressSummary(toAddress)}
+          </div>
         </div>
       </div>
     )
@@ -115,8 +136,12 @@ export default class ConfirmApproveContent extends Component {
     const { data } = this.props
     return (
       <div className="flex-column">
-        <div className="confirm-approve-content__small-text">{ t('functionApprove') }</div>
-        <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">{ data }</div>
+        <div className="confirm-approve-content__small-text">
+          {t('functionApprove')}
+        </div>
+        <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
+          {data}
+        </div>
       </div>
     )
   }
@@ -137,9 +162,11 @@ export default class ConfirmApproveContent extends Component {
     const { showFullTxDetails } = this.state
 
     return (
-      <div className={classnames('confirm-approve-content', {
-        'confirm-approve-content--full': showFullTxDetails,
-      })}>
+      <div
+        className={classnames('confirm-approve-content', {
+          'confirm-approve-content--full': showFullTxDetails,
+        })}
+      >
         <div className="confirm-approve-content__identicon-wrapper">
           <Identicon
             className="confirm-approve-content__identicon"
@@ -149,19 +176,26 @@ export default class ConfirmApproveContent extends Component {
           />
         </div>
         <div className="confirm-approve-content__title">
-          { t('allowOriginSpendToken', [origin, tokenSymbol]) }
+          {t('allowOriginSpendToken', [origin, tokenSymbol])}
         </div>
         <div className="confirm-approve-content__description">
-          { t('trustSiteApprovePermission', [origin, tokenSymbol]) }
+          {t('trustSiteApprovePermission', [origin, tokenSymbol])}
         </div>
-        <div
-          className="confirm-approve-content__edit-submission-button-container"
-        >
+        <div className="confirm-approve-content__edit-submission-button-container">
           <div
             className="confirm-approve-content__medium-link-text cursor-pointer"
-            onClick={() => showEditApprovalPermissionModal({ customTokenAmount, tokenAmount, tokenSymbol, setCustomAmount, tokenBalance, origin })}
+            onClick={() =>
+              showEditApprovalPermissionModal({
+                customTokenAmount,
+                tokenAmount,
+                tokenSymbol,
+                setCustomAmount,
+                tokenBalance,
+                origin,
+              })
+            }
           >
-            { t('editPermission') }
+            {t('editPermission')}
           </div>
         </div>
         <div className="confirm-approve-content__card-wrapper">
@@ -172,54 +206,59 @@ export default class ConfirmApproveContent extends Component {
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: !showFullTxDetails,
-            footer: <div
-              className="confirm-approve-content__view-full-tx-button-wrapper"
-              onClick={() => this.setState({ showFullTxDetails: !this.state.showFullTxDetails })}
-            >
-              <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
-                <div className="confirm-approve-content__small-blue-text">
-                  View full transaction details
+            footer: (
+              <div
+                className="confirm-approve-content__view-full-tx-button-wrapper"
+                onClick={() =>
+                  this.setState({
+                    showFullTxDetails: !this.state.showFullTxDetails,
+                  })
+                }
+              >
+                <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
+                  <div className="confirm-approve-content__small-blue-text">
+                    View full transaction details
+                  </div>
+                  <i
+                    className={classnames({
+                      'fa fa-caret-up': showFullTxDetails,
+                      'fa fa-caret-down': !showFullTxDetails,
+                    })}
+                  />
                 </div>
-                <i className={classnames({
-                  'fa fa-caret-up': showFullTxDetails,
-                  'fa fa-caret-down': !showFullTxDetails,
-                })} />
               </div>
-            </div>,
+            ),
           })}
         </div>
 
-        {
-          showFullTxDetails
-            ? (
-              <div className="confirm-approve-content__full-tx-content">
-                <div className="confirm-approve-content__permission">
-                  {this.renderApproveContentCard({
-                    symbol: <img src="/images/user-check.svg" />,
-                    title: 'Permission',
-                    content: this.renderPermissionContent(),
-                    showEdit: true,
-                    onEditClick: () => showEditApprovalPermissionModal({
-                      customTokenAmount,
-                      tokenAmount,
-                      tokenSymbol,
-                      tokenBalance,
-                      setCustomAmount,
-                    }),
-                  })}
-                </div>
-                <div className="confirm-approve-content__data">
-                  {this.renderApproveContentCard({
-                    symbol: <i className="fa fa-file" />,
-                    title: 'Data',
-                    content: this.renderDataContent(),
-                    noBorder: true,
-                  })}
-                </div>
-              </div>
-            )
-            : null
-        }
+        {showFullTxDetails ? (
+          <div className="confirm-approve-content__full-tx-content">
+            <div className="confirm-approve-content__permission">
+              {this.renderApproveContentCard({
+                symbol: <img src="/images/user-check.svg" />,
+                title: 'Permission',
+                content: this.renderPermissionContent(),
+                showEdit: true,
+                onEditClick: () =>
+                  showEditApprovalPermissionModal({
+                    customTokenAmount,
+                    tokenAmount,
+                    tokenSymbol,
+                    tokenBalance,
+                    setCustomAmount,
+                  }),
+              })}
+            </div>
+            <div className="confirm-approve-content__data">
+              {this.renderApproveContentCard({
+                symbol: <i className="fa fa-file" />,
+                title: 'Data',
+                content: this.renderDataContent(),
+                noBorder: true,
+              })}
+            </div>
+          </div>
+        ) : null}
       </div>
     )
   }

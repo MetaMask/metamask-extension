@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
+import {
+  getEthConversionFromWeiHex,
+  getValueFromWeiHex,
+} from '../../../helpers/utils/conversions.util'
 import { formatDate } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
@@ -38,34 +41,46 @@ export default class TransactionActivityLog extends PureComponent {
 
   renderInlineRetry (index, activity) {
     const { t } = this.context
-    const { inlineRetryIndex, primaryTransaction = {}, onRetry, isEarliestNonce } = this.props
+    const {
+      inlineRetryIndex,
+      primaryTransaction = {},
+      onRetry,
+      isEarliestNonce,
+    } = this.props
     const { status } = primaryTransaction
     const { id } = activity
 
-    return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineRetryIndex
-      ? (
+    return isEarliestNonce &&
+      status !== CONFIRMED_STATUS &&
+      index === inlineRetryIndex ? (
         <div
           className="transaction-activity-log__action-link"
           onClick={() => onRetry(id)}
         >
-          { t('speedUpTransaction') }
+          {t('speedUpTransaction')}
         </div>
       ) : null
   }
 
   renderInlineCancel (index, activity) {
     const { t } = this.context
-    const { inlineCancelIndex, primaryTransaction = {}, onCancel, isEarliestNonce } = this.props
+    const {
+      inlineCancelIndex,
+      primaryTransaction = {},
+      onCancel,
+      isEarliestNonce,
+    } = this.props
     const { status } = primaryTransaction
     const { id } = activity
 
-    return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineCancelIndex
-      ? (
+    return isEarliestNonce &&
+      status !== CONFIRMED_STATUS &&
+      index === inlineCancelIndex ? (
         <div
           className="transaction-activity-log__action-link"
           onClick={() => onCancel(id)}
         >
-          { t('speedUpCancellation') }
+          {t('speedUpCancellation')}
         </div>
       ) : null
   }
@@ -73,28 +88,29 @@ export default class TransactionActivityLog extends PureComponent {
   renderActivity (activity, index) {
     const { conversionRate, nativeCurrency } = this.props
     const { eventKey, value, timestamp, hash } = activity
-    const ethValue = index === 0
-      ? `${getValueFromWeiHex({
-        value,
-        fromCurrency: nativeCurrency,
-        toCurrency: nativeCurrency,
-        conversionRate,
-        numberOfDecimals: 6,
-      })} ${nativeCurrency}`
-      : getEthConversionFromWeiHex({
-        value,
-        fromCurrency: nativeCurrency,
-        conversionRate,
-        numberOfDecimals: 3,
-      })
-    const formattedTimestamp = formatDate(timestamp, 'T \'on\' M/d/y')
-    const activityText = this.context.t(eventKey, [ethValue, formattedTimestamp])
+    const ethValue =
+      index === 0
+        ? `${getValueFromWeiHex({
+          value,
+          fromCurrency: nativeCurrency,
+          toCurrency: nativeCurrency,
+          conversionRate,
+          numberOfDecimals: 6,
+        })} ${nativeCurrency}`
+        : getEthConversionFromWeiHex({
+          value,
+          fromCurrency: nativeCurrency,
+          conversionRate,
+          numberOfDecimals: 3,
+        })
+    const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y")
+    const activityText = this.context.t(eventKey, [
+      ethValue,
+      formattedTimestamp,
+    ])
 
     return (
-      <div
-        key={index}
-        className="transaction-activity-log__activity"
-      >
+      <div key={index} className="transaction-activity-log__activity">
         <TransactionActivityLogIcon
           className="transaction-activity-log__activity-icon"
           eventKey={eventKey}
@@ -105,10 +121,10 @@ export default class TransactionActivityLog extends PureComponent {
             title={activityText}
             onClick={() => this.handleActivityClick(hash)}
           >
-            { activityText }
+            {activityText}
           </div>
-          { this.renderInlineRetry(index, activity) }
-          { this.renderInlineCancel(index, activity) }
+          {this.renderInlineRetry(index, activity)}
+          {this.renderInlineCancel(index, activity)}
         </div>
       </div>
     )
@@ -121,10 +137,12 @@ export default class TransactionActivityLog extends PureComponent {
     return (
       <div className={classnames('transaction-activity-log', className)}>
         <div className="transaction-activity-log__title">
-          { t('activityLog') }
+          {t('activityLog')}
         </div>
         <div className="transaction-activity-log__activities-container">
-          { activities.map((activity, index) => this.renderActivity(activity, index)) }
+          {activities.map((activity, index) =>
+            this.renderActivity(activity, index)
+          )}
         </div>
       </div>
     )

@@ -7,30 +7,30 @@ describe('ErrorMessage Component', () => {
   const t = key => `translate ${key}`
 
   it('should render a message from props.errorMessage', () => {
-    const wrapper = shallow(
-      <ErrorMessage
-        errorMessage="This is an error."
-      />,
-      { context: { t }}
-    )
+    const wrapper = shallow(<ErrorMessage errorMessage="This is an error." />, {
+      context: { t },
+    })
 
     assert.ok(wrapper)
     assert.equal(wrapper.find('.error-message').length, 1)
     assert.equal(wrapper.find('.error-message__icon').length, 1)
-    assert.equal(wrapper.find('.error-message__text').text(), 'ALERT: This is an error.')
+    assert.equal(
+      wrapper.find('.error-message__text').text(),
+      'ALERT: This is an error.'
+    )
   })
 
   it('should render a message translated from props.errorKey', () => {
-    const wrapper = shallow(
-      <ErrorMessage
-        errorKey="testKey"
-      />,
-      { context: { t }}
-    )
+    const wrapper = shallow(<ErrorMessage errorKey="testKey" />, {
+      context: { t },
+    })
 
     assert.ok(wrapper)
     assert.equal(wrapper.find('.error-message').length, 1)
     assert.equal(wrapper.find('.error-message__icon').length, 1)
-    assert.equal(wrapper.find('.error-message__text').text(), 'ALERT: translate testKey')
+    assert.equal(
+      wrapper.find('.error-message__text').text(),
+      'ALERT: translate testKey'
+    )
   })
 })

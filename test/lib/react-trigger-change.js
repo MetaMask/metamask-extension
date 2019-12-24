@@ -57,7 +57,9 @@ module.exports = function reactTriggerChange (node) {
     var radios
     var i
     if (name) {
-      radios = document.querySelectorAll('input[type="radio"][name="' + name + '"]')
+      radios = document.querySelectorAll(
+        'input[type="radio"][name="' + name + '"]'
+      )
       for (i = 0; i < radios.length; i += 1) {
         if (radios[i].checked) {
           return radios[i] !== radio ? radios[i] : null
@@ -77,15 +79,16 @@ module.exports = function reactTriggerChange (node) {
     }
   }
 
-  if (nodeName === 'select' ||
-    (nodeName === 'input' && type === 'file')) {
+  if (nodeName === 'select' || (nodeName === 'input' && type === 'file')) {
     // IE9-IE11, non-IE
     // Dispatch change.
     event = document.createEvent('HTMLEvents')
     event.initEvent('change', true, false)
     node.dispatchEvent(event)
-  } else if ((nodeName === 'input' && supportedInputTypes[type]) ||
-    nodeName === 'textarea') {
+  } else if (
+    (nodeName === 'input' && supportedInputTypes[type]) ||
+    nodeName === 'textarea'
+  ) {
     // React 16
     // Cache artificial value property descriptor.
     // Property doesn't exist in React <16, descriptor is undefined.

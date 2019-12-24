@@ -46,7 +46,8 @@ class SimpleDropdown extends Component {
             'div.simple-dropdown__option',
             {
               className: classnames({
-                'simple-dropdown__option--selected': option.value === selectedOption,
+                'simple-dropdown__option--selected':
+                  option.value === selectedOption,
               }),
               key: option.value,
               onClick: () => {
@@ -57,7 +58,7 @@ class SimpleDropdown extends Component {
                 this.handleClose()
               },
             },
-            option.displayValue || option.value,
+            option.displayValue || option.value
           )
         }),
       ]),
@@ -74,7 +75,10 @@ class SimpleDropdown extends Component {
         onClick: () => this.toggleOpen(),
       },
       [
-        h('div.simple-dropdown__selected', this.getDisplayValue() || placeholder || 'Select'),
+        h(
+          'div.simple-dropdown__selected',
+          this.getDisplayValue() || placeholder || 'Select'
+        ),
         h('i.fa.fa-caret-down.fa-lg.simple-dropdown__caret'),
         isOpen && this.renderOptions(),
       ]

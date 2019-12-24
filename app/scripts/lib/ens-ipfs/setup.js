@@ -7,10 +7,12 @@ const supportedTopLevelDomains = ['eth']
 module.exports = setupEnsIpfsResolver
 
 function setupEnsIpfsResolver ({ provider }) {
-
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
+    urls: urlPatterns,
+    types: ['main_frame'],
+  })
 
   // return api object
   return {
@@ -39,9 +41,10 @@ function setupEnsIpfsResolver ({ provider }) {
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
     try {
-      const {type, hash} = await resolveEnsToIpfsContentId({ provider, name })
+      const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
       if (type === 'ipfs-ns') {
-        const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}${fragment || ''}`
+        const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search ||
+          ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })
@@ -50,11 +53,13 @@ function setupEnsIpfsResolver ({ provider }) {
           console.warn(err)
         }
       } else if (type === 'swarm-ns') {
-        url = `https://swarm-gateways.net/bzz:/${hash}${path}${search || ''}${fragment || ''}`
+        url = `https://swarm-gateways.net/bzz:/${hash}${path}${search ||
+          ''}${fragment || ''}`
       } else if (type === 'onion' || type === 'onion3') {
         url = `http://${hash}.onion${path}${search || ''}${fragment || ''}`
       } else if (type === 'zeronet') {
-        url = `http://127.0.0.1:43110/${hash}${path}${search || ''}${fragment || ''}`
+        url = `http://127.0.0.1:43110/${hash}${path}${search || ''}${fragment ||
+          ''}`
       }
     } catch (err) {
       console.warn(err)

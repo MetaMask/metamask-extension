@@ -6,7 +6,7 @@ const BalanceController = require('../../../../app/scripts/controllers/balance')
 const AccountTracker = require('../../../../app/scripts/lib/account-tracker')
 const TransactionController = require('../../../../app/scripts/controllers/transactions')
 const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 
@@ -18,14 +18,16 @@ const accounts = {
 }
 
 describe('Balance Controller', () => {
-
   let balanceController
 
   it('errors when address, accountTracker, txController, or blockTracker', function () {
     try {
       balanceController = new BalanceController()
     } catch (error) {
-      assert.equal(error.message, 'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.')
+      assert.equal(
+        error.message,
+        'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.'
+      )
     }
   })
 

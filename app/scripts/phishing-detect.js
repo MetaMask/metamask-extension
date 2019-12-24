@@ -3,7 +3,7 @@ const dnode = require('dnode')
 const { EventEmitter } = require('events')
 const PortStream = require('extension-port-stream')
 const extension = require('extensionizer')
-const {setupMultiplex} = require('./lib/stream-utils.js')
+const { setupMultiplex } = require('./lib/stream-utils.js')
 const { getEnvironmentType } = require('./lib/util')
 const ExtensionPlatform = require('./platforms/extension')
 
@@ -14,7 +14,9 @@ function start () {
   const hash = window.location.hash.substring(1)
   const suspect = querystring.parse(hash)
 
-  document.getElementById('esdbLink').href = `https://etherscamdb.info/domain/${suspect.hostname}`
+  document.getElementById(
+    'esdbLink'
+  ).href = `https://etherscamdb.info/domain/${suspect.hostname}`
 
   global.platform = new ExtensionPlatform()
   global.METAMASK_UI_TYPE = windowType
@@ -22,17 +24,20 @@ function start () {
   const extensionPort = extension.runtime.connect({ name: windowType })
   const connectionStream = new PortStream(extensionPort)
   const mx = setupMultiplex(connectionStream)
-  setupControllerConnection(mx.createStream('controller'), (err, metaMaskController) => {
-    if (err) {
-      return
-    }
+  setupControllerConnection(
+    mx.createStream('controller'),
+    (err, metaMaskController) => {
+      if (err) {
+        return
+      }
 
-    const continueLink = document.getElementById('unsafe-continue')
-    continueLink.addEventListener('click', () => {
-      metaMaskController.whitelistPhishingDomain(suspect.hostname)
-      window.location.href = suspect.href
-    })
-  })
+      const continueLink = document.getElementById('unsafe-continue')
+      continueLink.addEventListener('click', () => {
+        metaMaskController.whitelistPhishingDomain(suspect.hostname)
+        window.location.href = suspect.href
+      })
+    }
+  )
 }
 
 function setupControllerConnection (connectionStream, cb) {
@@ -43,5 +48,7 @@ function setupControllerConnection (connectionStream, cb) {
     },
   })
   connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
-  metaMaskControllerDnode.once('remote', (backgroundConnection) => cb(null, backgroundConnection))
+  metaMaskControllerDnode.once('remote', backgroundConnection =>
+    cb(null, backgroundConnection)
+  )
 }

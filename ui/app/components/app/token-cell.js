@@ -7,7 +7,10 @@ import Identicon from '../ui/identicon'
 const prefixForNetwork = require('../../../lib/etherscan-prefix-for-network')
 const selectors = require('../../selectors/selectors')
 const actions = require('../../store/actions')
-const { conversionUtil, multiplyCurrencies } = require('../../helpers/utils/conversion-util')
+const {
+  conversionUtil,
+  multiplyCurrencies,
+} = require('../../helpers/utils/conversion-util')
 
 const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
 
@@ -79,16 +82,21 @@ TokenCell.prototype.render = function () {
       numberOfDecimals: 2,
       conversionRate: currentTokenToFiatRate,
     })
-    formattedFiat = currentTokenInFiat.toString() === '0'
-      ? ''
-      : `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
+    formattedFiat =
+      currentTokenInFiat.toString() === '0'
+        ? ''
+        : `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
   }
 
-  const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
+  const showFiat =
+    Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
-  return (
-    h('div.token-list-item', {
-      className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,
+  return h(
+    'div.token-list-item',
+    {
+      className: `token-list-item ${
+        selectedTokenAddress === address ? 'token-list-item--active' : ''
+      }`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
@@ -102,8 +110,8 @@ TokenCell.prototype.render = function () {
         })
         selectedTokenAddress !== address && sidebarOpen && hideSidebar()
       },
-    }, [
-
+    },
+    [
       h(Identicon, {
         className: 'token-list-item__identicon',
         diameter: 50,
@@ -116,33 +124,36 @@ TokenCell.prototype.render = function () {
         h('div.token-list-item__balance-wrapper', null, [
           h('div.token-list-item__token-balance', `${string || 0}`),
           h('div.token-list-item__token-symbol', symbol),
-          showFiat && h('div.token-list-item__fiat-amount', {
-            style: {},
-          }, formattedFiat),
+          showFiat &&
+            h(
+              'div.token-list-item__fiat-amount',
+              {
+                style: {},
+              },
+              formattedFiat
+            ),
         ]),
 
         h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {
-          onClick: (e) => {
+          onClick: e => {
             e.stopPropagation()
             this.setState({ tokenMenuOpen: true })
           },
         }),
-
       ]),
 
-
-      tokenMenuOpen && h(TokenMenuDropdown, {
-        onClose: () => this.setState({ tokenMenuOpen: false }),
-        token: { symbol, address },
-      }),
+      tokenMenuOpen &&
+        h(TokenMenuDropdown, {
+          onClose: () => this.setState({ tokenMenuOpen: false }),
+          token: { symbol, address },
+        }),
 
       /*
       h('button', {
         onClick: this.send.bind(this, address),
       }, 'SEND'),
       */
-
-    ])
+    ]
   )
 }
 
@@ -174,4 +185,3 @@ function etherscanLinkFor (tokenAddress, address, network) {
 function tokenFactoryFor (tokenAddress) {
   return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
 }
-

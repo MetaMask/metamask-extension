@@ -13,7 +13,6 @@ BnAsDecimalInput.contextTypes = {
 
 module.exports = connect()(BnAsDecimalInput)
 
-
 inherits(BnAsDecimalInput, Component)
 function BnAsDecimalInput () {
   this.state = { invalid: null }
@@ -42,43 +41,46 @@ BnAsDecimalInput.prototype.render = function () {
   const newMax = max && this.downsize(max.toString(10), scale)
   const newValue = this.downsize(valueString, scale)
 
-  return (
-    h('.flex-column', [
-      h('.flex-row', {
+  return h('.flex-column', [
+    h(
+      '.flex-row',
+      {
         style: {
           alignItems: 'flex-end',
           lineHeight: '13px',
           fontFamily: 'Montserrat Light',
           textRendering: 'geometricPrecision',
         },
-      }, [
+      },
+      [
         h('input.hex-input', {
           type: 'number',
           step: 'any',
           required: true,
           min: newMin,
           max: newMax,
-          style: extend({
-            display: 'block',
-            textAlign: 'right',
-            backgroundColor: 'transparent',
-            border: '1px solid #bdbdbd',
-
-          }, style),
+          style: extend(
+            {
+              display: 'block',
+              textAlign: 'right',
+              backgroundColor: 'transparent',
+              border: '1px solid #bdbdbd',
+            },
+            style
+          ),
           value: newValue,
-          onBlur: (event) => {
+          onBlur: event => {
             this.updateValidity(event)
           },
-          onChange: (event) => {
+          onChange: event => {
             this.updateValidity(event)
-            const value = (event.target.value === '') ? '' : event.target.value
-
+            const value = event.target.value === '' ? '' : event.target.value
 
             const scaledNumber = this.upsize(value, scale, precision)
             const precisionBN = new BN(scaledNumber, 10)
             onChange(precisionBN, event.target.checkValidity())
           },
-          onInvalid: (event) => {
+          onInvalid: event => {
             const msg = this.constructWarning()
             if (msg === state.invalid) {
               return
@@ -88,32 +90,42 @@ BnAsDecimalInput.prototype.render = function () {
             return false
           },
         }),
-        h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-            marginLeft: '5px',
-            marginRight: '6px',
-            width: '20px',
+        h(
+          'div',
+          {
+            style: {
+              color: ' #AEAEAE',
+              fontSize: '12px',
+              marginLeft: '5px',
+              marginRight: '6px',
+              width: '20px',
+            },
           },
-        }, suffix),
-      ]),
+          suffix
+        ),
+      ]
+    ),
 
-      state.invalid ? h('span.error', {
-        style: {
-          position: 'absolute',
-          right: '0px',
-          textAlign: 'right',
-          transform: 'translateY(26px)',
-          padding: '3px',
-          background: 'rgba(255,255,255,0.85)',
-          zIndex: '1',
-          textTransform: 'capitalize',
-          border: '2px solid #E20202',
+    state.invalid
+      ? h(
+        'span.error',
+        {
+          style: {
+            position: 'absolute',
+            right: '0px',
+            textAlign: 'right',
+            transform: 'translateY(26px)',
+            padding: '3px',
+            background: 'rgba(255,255,255,0.85)',
+            zIndex: '1',
+            textTransform: 'capitalize',
+            border: '2px solid #E20202',
+          },
         },
-      }, state.invalid) : null,
-    ])
-  )
+        state.invalid
+      )
+      : null,
+  ])
 }
 
 BnAsDecimalInput.prototype.setValid = function () {
@@ -143,7 +155,10 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += this.context.t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
+    message += this.context.t('betweenMinAndMax', [
+      `${newMin} ${suffix}`,
+      `${newMax} ${suffix}`,
+    ])
   } else if (min) {
     message += this.context.t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
@@ -155,7 +170,6 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   return message
 }
 
-
 BnAsDecimalInput.prototype.downsize = function (number, scale) {
   // if there is no scaling, simply return the number
   if (scale === 0) {
@@ -166,7 +180,9 @@ BnAsDecimalInput.prototype.downsize = function (number, scale) {
     while (adjustedNumber.length < scale) {
       adjustedNumber = '0' + adjustedNumber
     }
-    return Number(adjustedNumber.slice(0, -scale) + '.' + adjustedNumber.slice(-scale))
+    return Number(
+      adjustedNumber.slice(0, -scale) + '.' + adjustedNumber.slice(-scale)
+    )
   }
 }
 
@@ -176,7 +192,7 @@ BnAsDecimalInput.prototype.upsize = function (number, scale, precision) {
   var newString = stringArray[0]
 
   // If there is scaling and decimal parts exist, integrate them in.
-  if ((scale !== 0) && (decimalLength !== 0)) {
+  if (scale !== 0 && decimalLength !== 0) {
     newString += stringArray[1].slice(0, precision)
   }
 

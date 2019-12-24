@@ -1,4 +1,3 @@
-
 const version = 23
 
 /*
@@ -38,11 +37,13 @@ function transformState (state) {
     const reverseTxList = transactions.reverse()
     let stripping = true
     while (reverseTxList.length > 40 && stripping) {
-      const txIndex = reverseTxList.findIndex((txMeta) => {
-        return (txMeta.status === 'failed' ||
-        txMeta.status === 'rejected' ||
-        txMeta.status === 'confirmed' ||
-        txMeta.status === 'dropped')
+      const txIndex = reverseTxList.findIndex(txMeta => {
+        return (
+          txMeta.status === 'failed' ||
+          txMeta.status === 'rejected' ||
+          txMeta.status === 'confirmed' ||
+          txMeta.status === 'dropped'
+        )
       })
       if (txIndex < 0) stripping = false
       else reverseTxList.splice(txIndex, 1)

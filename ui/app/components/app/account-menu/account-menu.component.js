@@ -58,56 +58,59 @@ export default class AccountMenu extends PureComponent {
       showAccountDetail,
     } = this.props
 
-    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+    const accountOrder = keyrings.reduce(
+      (list, keyring) => list.concat(keyring.accounts),
+      []
+    )
 
-    return accountOrder.filter(address => !!identities[address]).map(address => {
-      const identity = identities[address]
-      const isSelected = identity.address === selectedAddress
+    return accountOrder
+      .filter(address => !!identities[address])
+      .map(address => {
+        const identity = identities[address]
+        const isSelected = identity.address === selectedAddress
 
-      const balanceValue = accounts[address] ? accounts[address].balance : ''
-      const simpleAddress = identity.address.substring(2).toLowerCase()
+        const balanceValue = accounts[address] ? accounts[address].balance : ''
+        const simpleAddress = identity.address.substring(2).toLowerCase()
 
-      const keyring = keyrings.find(kr => {
-        return kr.accounts.includes(simpleAddress) || kr.accounts.includes(identity.address)
-      })
+        const keyring = keyrings.find(kr => {
+          return (
+            kr.accounts.includes(simpleAddress) ||
+            kr.accounts.includes(identity.address)
+          )
+        })
 
-      return (
-        <div
-          className="account-menu__account menu__item--clickable"
-          onClick={() => {
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Main Menu',
-                name: 'Switched Account',
-              },
-            })
-            showAccountDetail(identity.address)
-          }}
-          key={identity.address}
-        >
-          <div className="account-menu__check-mark">
-            { isSelected && <div className="account-menu__check-mark-icon" /> }
-          </div>
-          <Identicon
-            address={identity.address}
-            diameter={24}
-          />
-          <div className="account-menu__account-info">
-            <div className="account-menu__name">
-              { identity.name || '' }
+        return (
+          <div
+            className="account-menu__account menu__item--clickable"
+            onClick={() => {
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Navigation',
+                  action: 'Main Menu',
+                  name: 'Switched Account',
+                },
+              })
+              showAccountDetail(identity.address)
+            }}
+            key={identity.address}
+          >
+            <div className="account-menu__check-mark">
+              {isSelected && <div className="account-menu__check-mark-icon" />}
             </div>
-            <UserPreferencedCurrencyDisplay
-              className="account-menu__balance"
-              value={balanceValue}
-              type={PRIMARY}
-            />
+            <Identicon address={identity.address} diameter={24} />
+            <div className="account-menu__account-info">
+              <div className="account-menu__name">{identity.name || ''}</div>
+              <UserPreferencedCurrencyDisplay
+                className="account-menu__balance"
+                value={balanceValue}
+                type={PRIMARY}
+              />
+            </div>
+            {this.renderKeyringType(keyring)}
+            {this.renderRemoveAccount(keyring, identity)}
           </div>
-          { this.renderKeyringType(keyring) }
-          { this.renderRemoveAccount(keyring, identity) }
-        </div>
-      )
-    })
+        )
+      })
   }
 
   renderRemoveAccount (keyring, identity) {
@@ -116,16 +119,15 @@ export default class AccountMenu extends PureComponent {
     const { type } = keyring
     const isRemovable = type !== 'HD Key Tree'
 
-    return isRemovable && (
-      <Tooltip
-        title={t('removeAccount')}
-        position="bottom"
-      >
-        <a
-          className="remove-account-icon"
-          onClick={e => this.removeAccount(e, identity)}
-        />
-      </Tooltip>
+    return (
+      isRemovable && (
+        <Tooltip title={t('removeAccount')} position="bottom">
+          <a
+            className="remove-account-icon"
+            onClick={e => this.removeAccount(e, identity)}
+          />
+        </Tooltip>
+      )
     )
   }
 
@@ -157,11 +159,7 @@ export default class AccountMenu extends PureComponent {
         break
     }
 
-    return label && (
-      <div className="keyring-label allcaps">
-        { label }
-      </div>
-    )
+    return label && <div className="keyring-label allcaps">{label}</div>
   }
 
   setAtAccountListBottom = () => {
@@ -185,17 +183,16 @@ export default class AccountMenu extends PureComponent {
     const { accounts } = this.props
     const { atAccountListBottom } = this.state
 
-    return !atAccountListBottom && Object.keys(accounts).length > 3 && (
-      <div
-        className="account-menu__scroll-button"
-        onClick={this.handleScrollDown}
-      >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width={28}
-          height={28}
-        />
-      </div>
+    return (
+      !atAccountListBottom &&
+      Object.keys(accounts).length > 3 && (
+        <div
+          className="account-menu__scroll-button"
+          onClick={this.handleScrollDown}
+        >
+          <img src="./images/icons/down-arrow.svg" width={28} height={28} />
+        </div>
+      )
     )
   }
 
@@ -210,13 +207,10 @@ export default class AccountMenu extends PureComponent {
     const { metricsEvent } = this.context
 
     return (
-      <Menu
-        className="account-menu"
-        isShowing={isAccountMenuOpen}
-      >
+      <Menu className="account-menu" isShowing={isAccountMenuOpen}>
         <CloseArea onClick={toggleAccountMenu} />
         <Item className="account-menu__header">
-          { t('myAccounts') }
+          {t('myAccounts')}
           <button
             className="account-menu__logout-button"
             onClick={() => {
@@ -224,18 +218,15 @@ export default class AccountMenu extends PureComponent {
               history.push(DEFAULT_ROUTE)
             }}
           >
-            { t('logout') }
+            {t('logout')}
           </button>
         </Item>
         <Divider />
         <div className="account-menu__accounts-container">
-          <div
-            className="account-menu__accounts"
-            onScroll={this.onScroll}
-          >
-            { this.renderAccounts() }
+          <div className="account-menu__accounts" onScroll={this.onScroll}>
+            {this.renderAccounts()}
           </div>
-          { this.renderScrollButton() }
+          {this.renderScrollButton()}
         </div>
         <Divider />
         <Item
@@ -288,7 +279,10 @@ export default class AccountMenu extends PureComponent {
                 name: 'Clicked Connect Hardware',
               },
             })
-            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+            if (
+              getEnvironmentType(window.location.href) ===
+              ENVIRONMENT_TYPE_POPUP
+            ) {
               global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
             } else {
               history.push(CONNECT_HARDWARE_ROUTE)
@@ -308,9 +302,7 @@ export default class AccountMenu extends PureComponent {
             toggleAccountMenu()
             history.push(ABOUT_US_ROUTE)
           }}
-          icon={
-            <img src="images/mm-info-icon.svg" />
-          }
+          icon={<img src="images/mm-info-icon.svg" />}
           text={t('infoHelp')}
         />
         <Item

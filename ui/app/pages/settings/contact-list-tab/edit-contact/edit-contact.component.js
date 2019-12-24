@@ -7,7 +7,6 @@ import { isValidAddress } from '../../../../helpers/utils/util'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 export default class EditContact extends PureComponent {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -40,12 +39,23 @@ export default class EditContact extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { history, name, addToAddressBook, removeFromAddressBook, address, chainId, memo, viewRoute, listRoute, setAccountLabel } = this.props
+    const {
+      history,
+      name,
+      addToAddressBook,
+      removeFromAddressBook,
+      address,
+      chainId,
+      memo,
+      viewRoute,
+      listRoute,
+      setAccountLabel,
+    } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
-          <Identicon address={address} diameter={60}/>
+          <Identicon address={address} diameter={60} />
           <Button
             type="link"
             className="settings-page__address-book-button"
@@ -60,7 +70,7 @@ export default class EditContact extends PureComponent {
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('userName') }
+              {t('userName')}
             </div>
             <TextField
               type="text"
@@ -75,7 +85,7 @@ export default class EditContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
-              { t('ethereumPublicAddress') }
+              {t('ethereumPublicAddress')}
             </div>
             <TextField
               type="text"
@@ -90,7 +100,7 @@ export default class EditContact extends PureComponent {
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label--capitalized">
-              { t('memo') }
+              {t('memo')}
             </div>
             <TextField
               type="text"
@@ -112,19 +122,33 @@ export default class EditContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           onSubmit={() => {
-            if (this.state.newAddress !== '' && this.state.newAddress !== address) {
+            if (
+              this.state.newAddress !== '' &&
+              this.state.newAddress !== address
+            ) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
                 removeFromAddressBook(chainId, address)
-                addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
-                setAccountLabel(this.state.newAddress, this.state.newName || name)
+                addToAddressBook(
+                  this.state.newAddress,
+                  this.state.newName || name,
+                  this.state.newMemo || memo
+                )
+                setAccountLabel(
+                  this.state.newAddress,
+                  this.state.newName || name
+                )
                 history.push(listRoute)
               } else {
                 this.setState({ error: this.context.t('invalidAddress') })
               }
             } else {
               // update name
-              addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
+              addToAddressBook(
+                address,
+                this.state.newName || name,
+                this.state.newMemo || memo
+              )
               setAccountLabel(address, this.state.newName || name)
               history.push(listRoute)
             }

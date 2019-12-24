@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 import { ProviderPageContainerContent, ProviderPageContainerHeader } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../../app/scripts/lib/enums'
@@ -14,15 +14,17 @@ export default class ProviderPageContainer extends PureComponent {
     siteTitle: PropTypes.string,
     hostname: PropTypes.string,
     extensionId: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   componentDidMount () {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
     this.context.metricsEvent({
@@ -82,7 +84,7 @@ export default class ProviderPageContainer extends PureComponent {
   }
 
   render () {
-    const {origin, siteImage, siteTitle, hostname, extensionId} = this.props
+    const { origin, siteImage, siteTitle, hostname, extensionId } = this.props
 
     return (
       <div className="page-container provider-approval-container">

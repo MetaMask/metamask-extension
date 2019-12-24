@@ -51,7 +51,8 @@ function updateQueryParams (newView) {
   const params = qs.stringify(queryString)
   const locationPaths = window.location.href.split('#')
   const routerPath = locationPaths[1] || ''
-  const newPath = locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
+  const newPath =
+    locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
 
   if (window.location.href !== newPath) {
     window.location.href = newPath
@@ -89,7 +90,11 @@ actions.update = function (stateName) {
 }
 
 function modifyBackgroundConnection (backgroundConnectionModifier) {
-  const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
+  const modifiedBackgroundConnection = Object.assign(
+    {},
+    controller.getApi(),
+    backgroundConnectionModifier
+  )
   actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
 
@@ -107,16 +112,19 @@ function startApp () {
 
   render(
     h('.super-dev-container', [
-
-      h('button', {
-        onClick: (ev) => {
-          ev.preventDefault()
-          store.dispatch(actions.update('terms'))
+      h(
+        'button',
+        {
+          onClick: ev => {
+            ev.preventDefault()
+            store.dispatch(actions.update('terms'))
+          },
+          style: {
+            margin: '19px 19px 0px 19px',
+          },
         },
-        style: {
-          margin: '19px 19px 0px 19px',
-        },
-      }, 'Reset State'),
+        'Reset State'
+      ),
 
       h(Selector, {
         actions,
@@ -127,19 +135,23 @@ function startApp () {
         backGroundConnectionModifiers,
       }),
 
-      h('#app-content', {
-        style: {
-          height: '500px',
-          width: '360px',
-          boxShadow: 'grey 0px 2px 9px',
-          margin: '20px',
+      h(
+        '#app-content',
+        {
+          style: {
+            height: '500px',
+            width: '360px',
+            boxShadow: 'grey 0px 2px 9px',
+            margin: '20px',
+          },
         },
-      }, [
-        h(Root, {
-          store: store,
-        }),
-      ]),
-
-    ]
-    ), container)
+        [
+          h(Root, {
+            store: store,
+          }),
+        ]
+      ),
+    ]),
+    container
+  )
 }

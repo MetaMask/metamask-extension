@@ -18,7 +18,9 @@ class TabBar extends Component {
           >
             <div className="tab-bar__tab__content">
               <div className="tab-bar__tab__content__title">{content}</div>
-              <div className="tab-bar__tab__content__description">{description}</div>
+              <div className="tab-bar__tab__content__description">
+                {description}
+              </div>
             </div>
             <div className="tab-bar__tab__caret" />
           </div>

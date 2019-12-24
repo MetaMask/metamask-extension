@@ -6,7 +6,7 @@ import { delRpcTarget } from '../../../../store/actions'
 
 const mapDispatchToProps = dispatch => {
   return {
-    delRpcTarget: (target) => dispatch(delRpcTarget(target)),
+    delRpcTarget: target => dispatch(delRpcTarget(target)),
   }
 }
 

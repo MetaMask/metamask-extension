@@ -6,11 +6,13 @@ const log = require('loglevel')
 const POLLING_INTERVAL = 10 * 60 * 1000
 
 class InfuraController {
-
   constructor (opts = {}) {
-    const initState = extend({
-      infuraNetworkStatus: {},
-    }, opts.initState)
+    const initState = extend(
+      {
+        infuraNetworkStatus: {},
+      },
+      opts.initState
+    )
     this.store = new ObservableStore(initState)
   }
 

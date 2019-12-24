@@ -5,9 +5,7 @@ import { tryReverseResolveAddress } from '../../../store/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
-  const {
-    ensResolutionsByAddress,
-  } = metamask
+  const { ensResolutionsByAddress } = metamask
   const { recipientAddress } = ownProps
   const address = checksumAddress(recipientAddress)
   const recipientEns = ensResolutionsByAddress[address] || ''
@@ -17,12 +15,15 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    tryReverseResolveAddress: (address) => {
+    tryReverseResolveAddress: address => {
       return dispatch(tryReverseResolveAddress(address))
     },
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionListItemDetails)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TransactionListItemDetails)

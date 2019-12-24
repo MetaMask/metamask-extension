@@ -47,5 +47,7 @@ function getDefaultServiceForNetwork (network) {
     case '5':
       return 'goerli-faucet'
   }
-  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
+  throw new Error(
+    `No default cryptocurrency exchange or faucet for networkId: "${network}"`
+  )
 }

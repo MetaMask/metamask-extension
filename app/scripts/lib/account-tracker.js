@@ -15,12 +15,20 @@ const Web3 = require('../controllers/ConfluxWeb')
 const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
 
 const { bnToHex } = require('./util')
-const { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
-const { SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN, SINGLE_CALL_BALANCES_ADDRESS_KOVAN } = require('../controllers/network/contract-addresses')
-
+const {
+  MAINNET_CODE,
+  RINKEBY_CODE,
+  ROPSTEN_CODE,
+  KOVAN_CODE,
+} = require('../controllers/network/enums')
+const {
+  SINGLE_CALL_BALANCES_ADDRESS,
+  SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
+  SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
+  SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+} = require('../controllers/network/contract-addresses')
 
 class AccountTracker {
-
   /**
    * This module is responsible for tracking any number of accounts and caching their current balances & transaction
    * counts.
@@ -91,14 +99,14 @@ class AccountTracker {
     const locals = Object.keys(accounts)
 
     const accountsToAdd = []
-    addresses.forEach((upstream) => {
+    addresses.forEach(upstream => {
       if (!locals.includes(upstream)) {
         accountsToAdd.push(upstream)
       }
     })
 
     const accountsToRemove = []
-    locals.forEach((local) => {
+    locals.forEach(local => {
       if (!addresses.includes(local)) {
         accountsToRemove.push(local)
       }
@@ -183,19 +191,31 @@ class AccountTracker {
 
     switch (currentNetwork) {
       case MAINNET_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS
+        )
         break
 
       case RINKEBY_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_RINKEBY
+        )
         break
 
       case ROPSTEN_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN
+        )
         break
 
       case KOVAN_CODE:
-        await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_KOVAN
+        )
         break
 
       default:
@@ -231,12 +251,17 @@ class AccountTracker {
   async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
     const accounts = this.store.getState().accounts
     this.web3.setProvider(this._provider)
-    const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(deployedContractAddress)
+    const ethContract = this.web3.eth
+      .contract(SINGLE_CALL_BALANCES_ABI)
+      .at(deployedContractAddress)
     const ethBalance = ['0x0']
 
     ethContract.balances(addresses, ethBalance, (error, result) => {
       if (error) {
-        log.warn(`MetaMask - Account Tracker single call balance fetch failed`, error)
+        log.warn(
+          `MetaMask - Account Tracker single call balance fetch failed`,
+          error
+        )
         return Promise.all(addresses.map(this._updateAccount.bind(this)))
       }
       addresses.forEach((address, index) => {
@@ -246,7 +271,6 @@ class AccountTracker {
       this.store.updateState({ accounts })
     })
   }
-
 }
 
 module.exports = AccountTracker

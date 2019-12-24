@@ -7,14 +7,11 @@ import TextField from '../../../../components/ui/text-field'
 
 describe('AdvancedTab Component', () => {
   it('should render correctly when threeBoxFeatureFlag', () => {
-    const root = shallow(
-      <AdvancedTab />,
-      {
-        context: {
-          t: s => `_${s}`,
-        },
-      }
-    )
+    const root = shallow(<AdvancedTab />, {
+      context: {
+        t: s => `_${s}`,
+      },
+    })
 
     assert.equal(root.find('.settings-page__content-row').length, 9)
   })
@@ -22,9 +19,7 @@ describe('AdvancedTab Component', () => {
   it('should update autoLogoutTimeLimit', () => {
     const setAutoLogoutTimeLimitSpy = sinon.spy()
     const root = shallow(
-      <AdvancedTab
-        setAutoLogoutTimeLimit={setAutoLogoutTimeLimitSpy}
-      />,
+      <AdvancedTab setAutoLogoutTimeLimit={setAutoLogoutTimeLimitSpy} />,
       {
         context: {
           t: s => `_${s}`,

@@ -52,13 +52,18 @@ export default class TransactionStatus extends PureComponent {
     const statusText = this.context.t(statusToTextHash[statusKey] || statusKey)
 
     return (
-      <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
-        { statusToTextHash[statusKey] === 'pending' ? <Spinner className="transaction-status__pending-spinner" /> : null }
-        <Tooltip
-          position="top"
-          title={title}
-        >
-          { statusText }
+      <div
+        className={classnames(
+          'transaction-status',
+          className,
+          statusToClassNameHash[statusKey]
+        )}
+      >
+        {statusToTextHash[statusKey] === 'pending' ? (
+          <Spinner className="transaction-status__pending-spinner" />
+        ) : null}
+        <Tooltip position="top" title={title}>
+          {statusText}
         </Tooltip>
       </div>
     )

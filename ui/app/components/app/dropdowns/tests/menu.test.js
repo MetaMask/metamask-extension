@@ -5,20 +5,16 @@ import { shallow } from 'enzyme'
 import { Menu, Item, Divider, CloseArea } from '../components/menu'
 
 describe('Dropdown Menu Components', () => {
-
   describe('Menu', () => {
     let wrapper
 
     beforeEach(() => {
-      wrapper = shallow(
-        <Menu className="Test Class" isShowing/>
-      )
+      wrapper = shallow(<Menu className="Test Class" isShowing />)
     })
 
     it('adds prop className to menu', () => {
       assert.equal(wrapper.find('.menu').prop('className'), 'menu Test Class')
     })
-
   })
 
   describe('Item', () => {
@@ -38,7 +34,10 @@ describe('Dropdown Menu Components', () => {
     })
 
     it('add className based on props', () => {
-      assert.equal(wrapper.find('.menu__item').prop('className'), 'menu__item menu__item test className menu__item--clickable')
+      assert.equal(
+        wrapper.find('.menu__item').prop('className'),
+        'menu__item menu__item test className menu__item--clickable'
+      )
     })
 
     it('simulates onClick called', () => {
@@ -73,9 +72,7 @@ describe('Dropdown Menu Components', () => {
     const onClickSpy = sinon.spy()
 
     beforeEach(() => {
-      wrapper = shallow(<CloseArea
-        onClick={onClickSpy}
-      />)
+      wrapper = shallow(<CloseArea onClick={onClickSpy} />)
     })
 
     it('simulates click', () => {
@@ -83,5 +80,4 @@ describe('Dropdown Menu Components', () => {
       assert.equal(onClickSpy.callCount, 1)
     })
   })
-
 })

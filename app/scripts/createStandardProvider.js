@@ -44,10 +44,13 @@ class StandardProvider {
   send (method, params = []) {
     return new Promise((resolve, reject) => {
       try {
-        this._provider.sendAsync({ id: 1, jsonrpc: '2.0', method, params }, (error, response) => {
-          error = error || response.error
-          error ? reject(error) : resolve(response)
-        })
+        this._provider.sendAsync(
+          { id: 1, jsonrpc: '2.0', method, params },
+          (error, response) => {
+            error = error || response.error
+            error ? reject(error) : resolve(response)
+          }
+        )
       } catch (error) {
         reject(error)
       }
@@ -64,7 +67,10 @@ export default function createStandardProvider (provider) {
   const standardProvider = new StandardProvider(provider)
   const sendLegacy = provider.send
   provider.send = (methodOrPayload, callbackOrArgs) => {
-    if (typeof methodOrPayload === 'string' && !callbackOrArgs || Array.isArray(callbackOrArgs)) {
+    if (
+      (typeof methodOrPayload === 'string' && !callbackOrArgs) ||
+      Array.isArray(callbackOrArgs)
+    ) {
       return standardProvider.send(methodOrPayload, callbackOrArgs)
     }
     return sendLegacy.call(provider, methodOrPayload, callbackOrArgs)

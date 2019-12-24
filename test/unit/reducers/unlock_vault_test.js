@@ -4,8 +4,26 @@ var assert = require('assert')
 var path = require('path')
 var sinon = require('sinon')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+var actions = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'store',
+  'actions.js'
+))
+var reducers = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'ui',
+  'app',
+  'ducks',
+  'index.js'
+))
 
 describe('#unlockMetamask(selectedAccount)', function () {
   beforeEach(function () {
@@ -28,7 +46,10 @@ describe('#unlockMetamask(selectedAccount)', function () {
         },
       }
 
-      const resultState = reducers(initialState, actions.unlockMetamask(account))
+      const resultState = reducers(
+        initialState,
+        actions.unlockMetamask(account)
+      )
       assert.equal(resultState.appState.warning, null, 'warning nullified')
     })
   })

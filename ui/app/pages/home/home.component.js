@@ -49,10 +49,7 @@ export default class Home extends PureComponent {
   }
 
   componentWillMount () {
-    const {
-      history,
-      unconfirmedTransactionsCount = 0,
-    } = this.props
+    const { history, unconfirmedTransactionsCount = 0 } = this.props
 
     if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
@@ -60,10 +57,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount () {
-    const {
-      history,
-      suggestedTokens = {},
-    } = this.props
+    const { history, suggestedTokens = {} } = this.props
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
@@ -107,84 +101,74 @@ export default class Home extends PureComponent {
     }
 
     if (providerRequests && providerRequests.length > 0) {
-      return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
-      )
+      return <ProviderApproval providerRequest={providerRequests[0]} />
     }
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
-          <Media
-            query="(min-width: 576px)"
-            render={() => <WalletView />}
-          />
-          { !history.location.pathname.match(/^\/confirm-transaction/)
-            ? (
-              <TransactionView>
-                <MultipleNotifications>
-                  {
-                    showPrivacyModeNotification
-                      ? <HomeNotification
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          unsetMigratedPrivacyMode()
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                        }}
-                        ignoreText={t('dismiss')}
-                        onIgnore={() => {
-                          unsetMigratedPrivacyMode()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
-                  {
-                    shouldShowSeedPhraseReminder
-                      ? <HomeNotification
-                        descriptionText={t('backupApprovalNotice')}
-                        acceptText={t('backupNow')}
-                        onAccept={() => {
-                          if (isPopup) {
-                            global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                          } else {
-                            history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                          }
-                        }}
-                        infoText={t('backupApprovalInfo')}
-                        key="home-backupApprovalNotice"
-                      />
-                      : null
-                  }
-                  {
-                    threeBoxLastUpdated && showRestorePrompt
-                      ? <HomeNotification
-                        descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
-                        acceptText={t('restore')}
-                        ignoreText={t('noThanks')}
-                        infoText={t('dataBackupFoundInfo')}
-                        onAccept={() => {
-                          restoreFromThreeBox(selectedAddress)
-                            .then(() => {
-                              turnThreeBoxSyncingOn()
-                            })
-                        }}
-                        onIgnore={() => {
-                          setShowRestorePromptToFalse()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
-                  {
-                    hasDaiV1Token
-                      ? <DaiMigrationNotification />
-                      : null
-                  }
-                </MultipleNotifications>
-              </TransactionView>
-            )
-            : null }
+          <Media query="(min-width: 576px)" render={() => <WalletView />} />
+          {!history.location.pathname.match(/^\/confirm-transaction/) ? (
+            <TransactionView>
+              <MultipleNotifications>
+                {showPrivacyModeNotification ? (
+                  <HomeNotification
+                    descriptionText={t('privacyModeDefault')}
+                    acceptText={t('learnMore')}
+                    onAccept={() => {
+                      unsetMigratedPrivacyMode()
+                      window.open(
+                        'https://medium.com/metamask/42549d4870fa',
+                        '_blank',
+                        'noopener'
+                      )
+                    }}
+                    ignoreText={t('dismiss')}
+                    onIgnore={() => {
+                      unsetMigratedPrivacyMode()
+                    }}
+                    key="home-privacyModeDefault"
+                  />
+                ) : null}
+                {shouldShowSeedPhraseReminder ? (
+                  <HomeNotification
+                    descriptionText={t('backupApprovalNotice')}
+                    acceptText={t('backupNow')}
+                    onAccept={() => {
+                      if (isPopup) {
+                        global.platform.openExtensionInBrowser(
+                          INITIALIZE_BACKUP_SEED_PHRASE_ROUTE
+                        )
+                      } else {
+                        history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                      }
+                    }}
+                    infoText={t('backupApprovalInfo')}
+                    key="home-backupApprovalNotice"
+                  />
+                ) : null}
+                {threeBoxLastUpdated && showRestorePrompt ? (
+                  <HomeNotification
+                    descriptionText={t('restoreWalletPreferences', [
+                      formatDate(threeBoxLastUpdated, 'M/d/y'),
+                    ])}
+                    acceptText={t('restore')}
+                    ignoreText={t('noThanks')}
+                    infoText={t('dataBackupFoundInfo')}
+                    onAccept={() => {
+                      restoreFromThreeBox(selectedAddress).then(() => {
+                        turnThreeBoxSyncingOn()
+                      })
+                    }}
+                    onIgnore={() => {
+                      setShowRestorePromptToFalse()
+                    }}
+                    key="home-privacyModeDefault"
+                  />
+                ) : null}
+                {hasDaiV1Token ? <DaiMigrationNotification /> : null}
+              </MultipleNotifications>
+            </TransactionView>
+          ) : null}
         </div>
       </div>
     )

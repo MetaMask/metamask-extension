@@ -33,51 +33,48 @@ proxyquire('../send-gas-row.container.js', {
     },
   },
   '../../../../selectors/selectors': {
-    getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
-    getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
+    getCurrentEthBalance: s => `mockCurrentEthBalance:${s}`,
+    getAdvancedInlineGasShown: s => `mockAdvancedInlineGasShown:${s}`,
     getSelectedToken: () => false,
   },
   '../../send.selectors.js': {
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getSendAmount: (s) => `mockSendAmount:${s}`,
-    getSendFromBalance: (s) => `mockBalance:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getConversionRate: s => `mockConversionRate:${s}`,
+    getCurrentCurrency: s => `mockConvertedCurrency:${s}`,
+    getGasTotal: s => `mockGasTotal:${s}`,
+    getGasPrice: s => `mockGasPrice:${s}`,
+    getGasLimit: s => `mockGasLimit:${s}`,
+    getSendAmount: s => `mockSendAmount:${s}`,
+    getSendFromBalance: s => `mockBalance:${s}`,
+    getTokenBalance: s => `mockTokenBalance:${s}`,
   },
   '../send-amount-row/amount-max-button/amount-max-button.selectors': {
-    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
+    getMaxModeOn: s => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
-    isBalanceSufficient: ({
-      amount,
-      gasTotal,
-      balance,
-      conversionRate,
-    }) => `${amount}:${gasTotal}:${balance}:${conversionRate}`,
+    isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
+      `${amount}:${gasTotal}:${balance}:${conversionRate}`,
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
   './send-gas-row.selectors.js': {
-    getGasLoadingError: (s) => `mockGasLoadingError:${s}`,
-    gasFeeIsInError: (s) => `mockGasFeeError:${s}`,
-    getGasButtonGroupShown: (s) => `mockGetGasButtonGroupShown:${s}`,
+    getGasLoadingError: s => `mockGasLoadingError:${s}`,
+    gasFeeIsInError: s => `mockGasFeeError:${s}`,
+    getGasButtonGroupShown: s => `mockGetGasButtonGroupShown:${s}`,
   },
   '../../../../store/actions': actionSpies,
   '../../../../selectors/custom-gas': {
-    getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
-    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => `mockGasButtonInfo:${s}`,
-    getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
+    getBasicGasEstimateLoadingStatus: s =>
+      `mockBasicGasEstimateLoadingStatus:${s}`,
+    getRenderableEstimateDataForSmallButtonsFromGWEI: s =>
+      `mockGasButtonInfo:${s}`,
+    getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) =>
+      gasButtonInfo.length + gasPrice.length,
   },
   '../../../../ducks/send/send.duck': sendDuckSpies,
   '../../../../ducks/gas/gas.duck': gasDuckSpies,
 })
 
 describe('send-gas-row container', () => {
-
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',
@@ -102,7 +99,6 @@ describe('send-gas-row container', () => {
         tokenBalance: 'mockTokenBalance:mockState',
       })
     })
-
   })
 
   describe('mapDispatchToProps()', () => {
@@ -119,10 +115,10 @@ describe('send-gas-row container', () => {
       it('should dispatch an action', () => {
         mapDispatchToPropsObject.showCustomizeGasModal()
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(
-          actionSpies.showModal.getCall(0).args[0],
-          { name: 'CUSTOMIZE_GAS', hideBasic: true }
-        )
+        assert.deepEqual(actionSpies.showModal.getCall(0).args[0], {
+          name: 'CUSTOMIZE_GAS',
+          hideBasic: true,
+        })
       })
     })
 
@@ -132,9 +128,15 @@ describe('send-gas-row container', () => {
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasPrice.calledOnce)
         assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'mockNewPrice')
-        assert.equal(gasDuckSpies.setCustomGasPrice.getCall(0).args[0], 'mockNewPrice')
+        assert.equal(
+          gasDuckSpies.setCustomGasPrice.getCall(0).args[0],
+          'mockNewPrice'
+        )
         assert(actionSpies.setGasTotal.calledOnce)
-        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockLimitmockNewPrice')
+        assert.equal(
+          actionSpies.setGasTotal.getCall(0).args[0],
+          'mockLimitmockNewPrice'
+        )
       })
     })
 
@@ -144,9 +146,15 @@ describe('send-gas-row container', () => {
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasLimit.calledOnce)
         assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'mockNewLimit')
-        assert.equal(gasDuckSpies.setCustomGasLimit.getCall(0).args[0], 'mockNewLimit')
+        assert.equal(
+          gasDuckSpies.setCustomGasLimit.getCall(0).args[0],
+          'mockNewLimit'
+        )
         assert(actionSpies.setGasTotal.calledOnce)
-        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockNewLimitmockPrice')
+        assert.equal(
+          actionSpies.setGasTotal.getCall(0).args[0],
+          'mockNewLimitmockPrice'
+        )
       })
     })
 
@@ -165,7 +173,6 @@ describe('send-gas-row container', () => {
         assert(gasDuckSpies.resetCustomData.calledOnce)
       })
     })
-
   })
 
   describe('mergeProps', () => {
@@ -192,8 +199,14 @@ describe('send-gas-row container', () => {
       const result = mergeProps(stateProps, dispatchProps, ownProps)
 
       assert.equal(result.someOtherStateProp, 'baz')
-      assert.equal(result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp, 'foo')
-      assert.equal(result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp, 'bar')
+      assert.equal(
+        result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
+        'foo'
+      )
+      assert.equal(
+        result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
+        'bar'
+      )
       assert.equal(result.someOwnProp, 123)
 
       assert.equal(dispatchProps.setGasPrice.callCount, 0)
@@ -205,5 +218,4 @@ describe('send-gas-row container', () => {
       assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
     })
   })
-
 })

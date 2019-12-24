@@ -13,7 +13,6 @@ Copyable.contextTypes = {
 
 module.exports = connect()(Copyable)
 
-
 inherits(Copyable, Component)
 function Copyable () {
   Component.call(this)
@@ -28,20 +27,30 @@ Copyable.prototype.render = function () {
   const { value, children } = props
   const { copied } = state
 
-  return h(Tooltip, {
-    title: copied ? this.context.t('copiedExclamation') : this.context.t('copy'),
-    position: 'bottom',
-  }, h('span', {
-    style: {
-      cursor: 'pointer',
+  return h(
+    Tooltip,
+    {
+      title: copied
+        ? this.context.t('copiedExclamation')
+        : this.context.t('copy'),
+      position: 'bottom',
     },
-    onClick: (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      copyToClipboard(value)
-      this.debounceRestore()
-    },
-  }, children))
+    h(
+      'span',
+      {
+        style: {
+          cursor: 'pointer',
+        },
+        onClick: event => {
+          event.preventDefault()
+          event.stopPropagation()
+          copyToClipboard(value)
+          this.debounceRestore()
+        },
+      },
+      children
+    )
+  )
 }
 
 Copyable.prototype.debounceRestore = function () {

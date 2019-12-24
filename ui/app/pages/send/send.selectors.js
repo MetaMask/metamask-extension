@@ -1,8 +1,6 @@
 const { valuesFor } = require('../../helpers/utils/util')
 const abi = require('human-standard-token-abi')
-const {
-  multiplyCurrencies,
-} = require('../../helpers/utils/conversion-util')
+const { multiplyCurrencies } = require('../../helpers/utils/conversion-util')
 const {
   getMetaMaskAccounts,
   getSelectedAddress,
@@ -12,9 +10,7 @@ const {
   estimateGasPriceFromRecentBlocks,
   calcGasTotal,
 } = require('./send.utils')
-import {
-  getAveragePriceEstimateInHexWEI,
-} from '../../selectors/custom-gas'
+import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas'
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
@@ -65,9 +61,11 @@ module.exports = selectors
 function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
-  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
-    return Object.assign({}, account, identities[key])
-  })
+  const accountsWithSendEtherInfo = Object.entries(accounts).map(
+    ([key, account]) => {
+      return Object.assign({}, account, identities[key])
+    }
+  )
 
   return accountsWithSendEtherInfo
 }
@@ -156,7 +154,9 @@ function getSelectedIdentity (state) {
 function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
-  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
+  const selectedToken = tokens.filter(
+    ({ address }) => address === selectedTokenAddress
+  )[0]
   const sendToken = state.metamask.send.token
 
   return selectedToken || sendToken || null
@@ -175,7 +175,8 @@ function getSelectedTokenExchangeRate (state) {
   const selectedToken = getSelectedToken(state) || {}
   const { symbol = '' } = selectedToken
   const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates && tokenExchangeRates[pair] || {}
+  const { rate: tokenExchangeRate = 0 } =
+    (tokenExchangeRates && tokenExchangeRates[pair]) || {}
 
   return tokenExchangeRate
 }
@@ -270,16 +271,20 @@ function getUnapprovedTxs (state) {
 function transactionsSelector (state) {
   const { network, selectedTokenAddress } = state.metamask
   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
+  const shapeShiftTxList =
+    network === '1' ? state.metamask.shapeShiftTxList : undefined
   const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
+  const txsToRender = !shapeShiftTxList
+    ? transactions.concat(unapprovedMsgs)
+    : transactions.concat(unapprovedMsgs, shapeShiftTxList)
 
   return selectedTokenAddress
     ? txsToRender
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
+      .filter(
+        ({ txParams }) => txParams && txParams.to === selectedTokenAddress
+      )
       .sort((a, b) => b.time - a.time)
-    : txsToRender
-      .sort((a, b) => b.time - a.time)
+    : txsToRender.sort((a, b) => b.time - a.time)
 }
 
 function getQrCodeData (state) {

@@ -10,11 +10,12 @@ import {
 } from '../../../store/actions'
 
 const mapStateToProps = state => {
-  const { appState: { warning }, metamask } = state
   const {
-    featureFlags: {
-      showIncomingTransactions,
-    } = {},
+    appState: { warning },
+    metamask,
+  } = state
+  const {
+    featureFlags: { showIncomingTransactions } = {},
     participateInMetaMetrics,
   } = metamask
 
@@ -29,8 +30,10 @@ const mapDispatchToProps = dispatch => {
   return {
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
-    setShowIncomingTransactionsFeatureFlag: shouldShow => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+    setParticipateInMetaMetrics: val =>
+      dispatch(setParticipateInMetaMetrics(val)),
+    setShowIncomingTransactionsFeatureFlag: shouldShow =>
+      dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
   }
 }
 

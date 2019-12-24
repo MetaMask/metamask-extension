@@ -31,13 +31,20 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { gas, gasPrice, value, className, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
+    const {
+      gas,
+      gasPrice,
+      value,
+      className,
+      nativeCurrency,
+      showFiat,
+      totalInHex,
+      gasUsed,
+    } = this.props
 
     return (
       <div className={classnames('transaction-breakdown', className)}>
-        <div className="transaction-breakdown__title">
-          { t('transaction') }
-        </div>
+        <div className="transaction-breakdown__title">{t('transaction')}</div>
         <TransactionBreakdownRow title={t('amount')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value"
@@ -49,38 +56,38 @@ export default class TransactionBreakdown extends PureComponent {
           title={`${t('gasLimit')} (${t('units')})`}
           className="transaction-breakdown__row-title"
         >
-          {typeof gas !== 'undefined'
-            ? <HexToDecimal
+          {typeof gas !== 'undefined' ? (
+            <HexToDecimal
               className="transaction-breakdown__value"
               value={gas}
             />
-            : '?'
-          }
+          ) : (
+            '?'
+          )}
         </TransactionBreakdownRow>
-        {
-          typeof gasUsed === 'string' && (
-            <TransactionBreakdownRow
-              title={`${t('gasUsed')} (${t('units')})`}
-              className="transaction-breakdown__row-title"
-            >
-              <HexToDecimal
-                className="transaction-breakdown__value"
-                value={gasUsed}
-              />
-            </TransactionBreakdownRow>
-          )
-        }
+        {typeof gasUsed === 'string' && (
+          <TransactionBreakdownRow
+            title={`${t('gasUsed')} (${t('units')})`}
+            className="transaction-breakdown__row-title"
+          >
+            <HexToDecimal
+              className="transaction-breakdown__value"
+              value={gasUsed}
+            />
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow title={t('gasPrice')}>
-          {typeof gasPrice !== 'undefined'
-            ? <CurrencyDisplay
+          {typeof gasPrice !== 'undefined' ? (
+            <CurrencyDisplay
               className="transaction-breakdown__value"
               currency={nativeCurrency}
               denomination={GWEI}
               value={gasPrice}
               hideLabel
             />
-            : '?'
-          }
+          ) : (
+            '?'
+          )}
         </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('total')}>
           <div>
@@ -89,15 +96,13 @@ export default class TransactionBreakdown extends PureComponent {
               type={PRIMARY}
               value={totalInHex}
             />
-            {
-              showFiat && (
-                <UserPreferencedCurrencyDisplay
-                  className="transaction-breakdown__value"
-                  type={SECONDARY}
-                  value={totalInHex}
-                />
-              )
-            }
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={totalInHex}
+              />
+            )}
           </div>
         </TransactionBreakdownRow>
       </div>

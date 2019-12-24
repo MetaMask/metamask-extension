@@ -17,8 +17,6 @@ describe('DetectTokensController', () => {
   }
 
   beforeEach(async () => {
-
-
     // nock('https://api.infura.io')
     //   .get(/.*/)
     //   .reply(200)
@@ -26,12 +24,16 @@ describe('DetectTokensController', () => {
       .get(/.*/)
       .reply(200)
 
-    keyringMemStore = new ObservableStore({ isUnlocked: false})
+    keyringMemStore = new ObservableStore({ isUnlocked: false })
     network = new NetworkController()
     network.initializeProvider(networkControllerProviderConfig)
 
     preferences = new PreferencesController({ network })
-    controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    controller = new DetectTokensController({
+      preferences: preferences,
+      network: network,
+      keyringMemStore: keyringMemStore,
+    })
   })
 
   after(() => {
@@ -52,7 +54,11 @@ describe('DetectTokensController', () => {
     network.initializeProvider(networkControllerProviderConfig)
     network.setProviderType('mainnet')
     const preferences = new PreferencesController({ network })
-    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    const controller = new DetectTokensController({
+      preferences: preferences,
+      network: network,
+      keyringMemStore: keyringMemStore,
+    })
     controller.isOpen = true
     controller.isUnlocked = true
 
@@ -72,52 +78,111 @@ describe('DetectTokensController', () => {
     controller.isOpen = true
     controller.isUnlocked = true
 
-    var stub = sandbox.stub(controller, 'detectTokenBalance')
-      .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4').returns(true)
-      .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388').returns(true)
+    var stub = sandbox
+      .stub(controller, 'detectTokenBalance')
+      .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
+      .returns(true)
+      .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388')
+      .returns(true)
 
     await controller.detectNewTokens()
     sandbox.assert.notCalled(stub)
   })
 
   it('should only check and add tokens while in main network', async () => {
-    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    const controller = new DetectTokensController({
+      preferences: preferences,
+      network: network,
+      keyringMemStore: keyringMemStore,
+    })
     controller.isOpen = true
     controller.isUnlocked = true
 
-    sandbox.stub(controller, 'detectTokenBalance')
+    sandbox
+      .stub(controller, 'detectTokenBalance')
       .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
-      .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8))
+      .returns(
+        preferences.addToken(
+          '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
+          'J8T',
+          8
+        )
+      )
       .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388')
-      .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
+      .returns(
+        preferences.addToken(
+          '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+          'XNK',
+          18
+        )
+      )
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-      {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [
+      {
+        address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
+        decimals: 8,
+        symbol: 'J8T',
+      },
+      {
+        address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+        decimals: 18,
+        symbol: 'XNK',
+      },
+    ])
   })
 
   it('should not detect same token while in main network', async () => {
     preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
-    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    const controller = new DetectTokensController({
+      preferences: preferences,
+      network: network,
+      keyringMemStore: keyringMemStore,
+    })
     controller.isOpen = true
     controller.isUnlocked = true
 
-    sandbox.stub(controller, 'detectTokenBalance')
+    sandbox
+      .stub(controller, 'detectTokenBalance')
       .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
-      .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8))
+      .returns(
+        preferences.addToken(
+          '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
+          'J8T',
+          8
+        )
+      )
       .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388')
-      .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
+      .returns(
+        preferences.addToken(
+          '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+          'XNK',
+          18
+        )
+      )
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-      {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [
+      {
+        address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
+        decimals: 8,
+        symbol: 'J8T',
+      },
+      {
+        address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+        decimals: 18,
+        symbol: 'XNK',
+      },
+    ])
   })
 
   it('should trigger detect new tokens when change address', async () => {
     controller.isOpen = true
     controller.isUnlocked = true
     var stub = sandbox.stub(controller, 'detectNewTokens')
-    await preferences.setSelectedAddress('0xbc86727e770de68b1060c91f6bb6945c73e10388')
+    await preferences.setSelectedAddress(
+      '0xbc86727e770de68b1060c91f6bb6945c73e10388'
+    )
     sandbox.assert.called(stub)
   })
 

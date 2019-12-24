@@ -11,7 +11,6 @@ module.exports = {
   @param account {string}
 */
 function checkAccount (networkId, account) {
-
   const mainnetId = 1
   if (networkId !== mainnetId) {
     return

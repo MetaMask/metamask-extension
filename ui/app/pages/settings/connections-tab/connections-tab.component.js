@@ -28,13 +28,16 @@ export default class ConnectionsTab extends PureComponent {
 
   handleAddOrigin = () => {
     const newOrigin = this.state.input
-    this.setState({
-      input: '',
-    }, () => {
-      if (newOrigin && newOrigin.trim()) {
-        this.props.approveProviderRequestByOrigin(newOrigin)
+    this.setState(
+      {
+        input: '',
+      },
+      () => {
+        if (newOrigin && newOrigin.trim()) {
+          this.props.approveProviderRequestByOrigin(newOrigin)
+        }
       }
-    })
+    )
   }
 
   renderNewOriginInput () {
@@ -43,9 +46,9 @@ export default class ConnectionsTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('addSite') }</span>
+          <span>{t('addSite')}</span>
           <div className="settings-page__content-description">
-            { t('addSiteDescription') }
+            {t('addSiteDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -62,7 +65,7 @@ export default class ConnectionsTab extends PureComponent {
               className="button btn-primary settings-tab__rpc-save-button"
               onClick={this.handleAddOrigin}
             >
-              { t('connect') }
+              {t('connect')}
             </button>
           </div>
         </div>
@@ -72,37 +75,39 @@ export default class ConnectionsTab extends PureComponent {
 
   renderApprovedOriginsList () {
     const { t } = this.context
-    const { approvedOrigins, rejectProviderRequestByOrigin, showClearApprovalModal } = this.props
+    const {
+      approvedOrigins,
+      rejectProviderRequestByOrigin,
+      showClearApprovalModal,
+    } = this.props
     const approvedEntries = Object.entries(approvedOrigins)
     const approvalListEmpty = approvedEntries.length === 0
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('connected') }</span>
+          <span>{t('connected')}</span>
           <span className="settings-page__content-description">
-            { t('connectedDescription') }
+            {t('connectedDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
-          {
-            approvalListEmpty
-              ? <div><i className="fa fa-ban" /></div>
-              : null
-          }
-          {
-            approvedEntries.map(([origin, { siteTitle, siteImage }]) => (
-              <ConnectedSiteEntry
-                key={origin}
-                origin={origin}
-                siteTitle={siteTitle}
-                siteImage={siteImage}
-                onDelete={() => {
-                  rejectProviderRequestByOrigin(origin)
-                }}
-              />
-            ))
-          }
+          {approvalListEmpty ? (
+            <div>
+              <i className="fa fa-ban" />
+            </div>
+          ) : null}
+          {approvedEntries.map(([origin, { siteTitle, siteImage }]) => (
+            <ConnectedSiteEntry
+              key={origin}
+              origin={origin}
+              siteTitle={siteTitle}
+              siteImage={siteImage}
+              onDelete={() => {
+                rejectProviderRequestByOrigin(origin)
+              }}
+            />
+          ))}
         </div>
         <div className="settings-page__content-item-col">
           <Button
@@ -115,7 +120,7 @@ export default class ConnectionsTab extends PureComponent {
               showClearApprovalModal()
             }}
           >
-            { t('clearApprovalData') }
+            {t('clearApprovalData')}
           </Button>
         </div>
       </div>
@@ -125,8 +130,8 @@ export default class ConnectionsTab extends PureComponent {
   render () {
     return (
       <div className="settings-page__body">
-        { this.renderNewOriginInput() }
-        { this.renderApprovedOriginsList() }
+        {this.renderNewOriginInput()}
+        {this.renderApprovedOriginsList()}
       </div>
     )
   }

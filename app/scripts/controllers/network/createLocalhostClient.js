@@ -12,9 +12,14 @@ const inTest = process.env.IN_TEST === 'true'
 module.exports = createLocalhostClient
 
 function createLocalhostClient () {
-  const fetchMiddleware = createFetchMiddleware({ rpcUrl: 'http://localhost:12537' })
+  const fetchMiddleware = createFetchMiddleware({
+    rpcUrl: 'http://localhost:12537',
+  })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
-  const blockTracker = new BlockTracker({ provider: blockProvider, pollingInterval: 1000 })
+  const blockTracker = new BlockTracker({
+    provider: blockProvider,
+    pollingInterval: 1000,
+  })
 
   const networkMiddleware = mergeMiddleware([
     createEstimateGasMiddleware(),
@@ -23,13 +28,12 @@ function createLocalhostClient () {
     createCfxRewriteRequestMiddle(),
     fetchMiddleware,
   ])
-  return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12537'}
+  return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12537' }
 }
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
 }
-
 
 function createEstimateGasMiddleware () {
   return createAsyncMiddleware(async (req, _, next) => {

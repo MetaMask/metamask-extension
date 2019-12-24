@@ -1,5 +1,4 @@
 class DiagnosticsReporter {
-
   constructor ({ firstTimeInfo, version }) {
     this.firstTimeInfo = firstTimeInfo
     this.version = version
@@ -14,20 +13,24 @@ class DiagnosticsReporter {
         },
       })
     } catch (err) {
-      console.error('DiagnosticsReporter - "reportOrphans" encountered an error:')
+      console.error(
+        'DiagnosticsReporter - "reportOrphans" encountered an error:'
+      )
       console.error(err)
     }
   }
 
   async reportMultipleKeyrings (rawKeyrings) {
     try {
-      const keyrings = await Promise.all(rawKeyrings.map(async (keyring, index) => {
-        return {
-          index,
-          type: keyring.type,
-          accounts: await keyring.getAccounts(),
-        }
-      }))
+      const keyrings = await Promise.all(
+        rawKeyrings.map(async (keyring, index) => {
+          return {
+            index,
+            type: keyring.type,
+            accounts: await keyring.getAccounts(),
+          }
+        })
+      )
       return await this.submit({
         accounts: [],
         metadata: {
@@ -36,7 +39,9 @@ class DiagnosticsReporter {
         },
       })
     } catch (err) {
-      console.error('DiagnosticsReporter - "reportMultipleKeyrings" encountered an error:')
+      console.error(
+        'DiagnosticsReporter - "reportMultipleKeyrings" encountered an error:'
+      )
       console.error(err)
     }
   }
@@ -52,7 +57,6 @@ class DiagnosticsReporter {
       throw err
     }
   }
-
 }
 
 function postData (data) {

@@ -18,8 +18,13 @@ function setupFetchDebugging () {
       return await originalFetch.call(window, ...args)
     } catch (err) {
       if (!err.stack) {
-        console.warn('FetchDebugger - fetch encountered an Error without a stack', err)
-        console.warn('FetchDebugger - overriding stack to point of original call')
+        console.warn(
+          'FetchDebugger - fetch encountered an Error without a stack',
+          err
+        )
+        console.warn(
+          'FetchDebugger - overriding stack to point of original call'
+        )
         err.stack = initialStack
       }
       throw err

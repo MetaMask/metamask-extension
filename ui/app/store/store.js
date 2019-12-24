@@ -10,9 +10,9 @@ module.exports = function configureStore (initialState) {
     port: 8000,
     realtime: Boolean(process.env.METAMASK_DEBUG),
   })
-  return createStore(rootReducer, initialState, composeEnhancers(
-    applyMiddleware(
-      thunkMiddleware,
-    ),
-  ))
+  return createStore(
+    rootReducer,
+    initialState,
+    composeEnhancers(applyMiddleware(thunkMiddleware))
+  )
 }

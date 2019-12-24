@@ -28,9 +28,7 @@ export default class ConfirmTransactionSwitch extends Component {
   }
 
   redirectToTransaction () {
-    const {
-      txData,
-    } = this.props
+    const { txData } = this.props
     const { id, txParams: { data } = {}, transactionCategory } = txData
 
     if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY) {

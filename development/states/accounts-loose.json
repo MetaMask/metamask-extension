@@ -81,10 +81,7 @@
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",

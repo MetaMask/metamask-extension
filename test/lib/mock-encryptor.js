@@ -3,7 +3,6 @@ var mockKey = Buffer.alloc(32)
 let cacheVal
 
 module.exports = {
-
   encrypt (_, dataObj) {
     cacheVal = dataObj
     return Promise.resolve(mockHex)
@@ -32,5 +31,4 @@ module.exports = {
   getRandomValues () {
     return 'SOO RANDO!!!1'
   },
-
 }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 
 export default class ProviderPageContainerContent extends PureComponent {
@@ -14,7 +14,7 @@ export default class ProviderPageContainerContent extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   renderConnectVisual = (title, identifier) => {
     const { selectedIdentity, siteImage } = this.props
@@ -52,13 +52,9 @@ export default class ProviderPageContainerContent extends PureComponent {
     const { siteTitle, hostname, extensionId } = this.props
     const { t } = this.context
 
-    const title = extensionId ?
-      'External Extension' :
-      siteTitle || hostname
+    const title = extensionId ? 'External Extension' : siteTitle || hostname
 
-    const identifier = extensionId ?
-      `Extension ID: '${extensionId}'` :
-      hostname
+    const identifier = extensionId ? `Extension ID: '${extensionId}'` : hostname
 
     return (
       <div className="provider-approval-container__content">
@@ -68,7 +64,7 @@ export default class ProviderPageContainerContent extends PureComponent {
           <h1>{t('providerRequest', [title])}</h1>
           <p>
             {t('providerRequestInfo')}
-            <br/>
+            <br />
             <a
               href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
               target="_blank"

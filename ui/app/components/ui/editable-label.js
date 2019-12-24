@@ -20,8 +20,9 @@ class EditableLabel extends Component {
       return
     }
 
-    Promise.resolve(this.props.onSubmit(value))
-      .then(() => this.setState({ isEditing: false }))
+    Promise.resolve(this.props.onSubmit(value)).then(() =>
+      this.setState({ isEditing: false })
+    )
   }
 
   saveIfEnter (event) {
@@ -33,13 +34,13 @@ class EditableLabel extends Component {
   renderEditing () {
     const { value } = this.state
 
-    return ([
+    return [
       h('input.large-input.editable-label__input', {
         type: 'text',
         required: true,
         dir: 'auto',
         value: this.state.value,
-        onKeyPress: (event) => {
+        onKeyPress: event => {
           if (event.key === 'Enter') {
             this.handleSubmit()
           }
@@ -52,30 +53,28 @@ class EditableLabel extends Component {
           onClick: () => this.handleSubmit(),
         }),
       ]),
-    ])
+    ]
   }
 
   renderReadonly () {
-    return ([
+    return [
       h('div.editable-label__value', this.state.value),
       h('div.editable-label__icon-wrapper', [
         h('i.fa.fa-pencil.editable-label__icon', {
           onClick: () => this.setState({ isEditing: true }),
         }),
       ]),
-    ])
+    ]
   }
 
   render () {
     const { isEditing } = this.state
     const { className } = this.props
 
-    return (
-      h('div.editable-label', { className: classnames(className) },
-        isEditing
-          ? this.renderEditing()
-          : this.renderReadonly()
-      )
+    return h(
+      'div.editable-label',
+      { className: classnames(className) },
+      isEditing ? this.renderEditing() : this.renderReadonly()
     )
   }
 }

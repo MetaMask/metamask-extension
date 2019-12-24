@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../button'
 
 export default class PageContainerFooter extends Component {
-
   static propTypes = {
     children: PropTypes.node,
     onCancel: PropTypes.func,
@@ -35,16 +34,17 @@ export default class PageContainerFooter extends Component {
 
     return (
       <div className="page-container__footer">
-
         <header>
-          {!hideCancel && <Button
-            type={cancelButtonType || 'default'}
-            large
-            className="page-container__footer-button"
-            onClick={e => onCancel(e)}
-          >
-            { cancelText || this.context.t('cancel') }
-          </Button>}
+          {!hideCancel && (
+            <Button
+              type={cancelButtonType || 'default'}
+              large
+              className="page-container__footer-button"
+              onClick={e => onCancel(e)}
+            >
+              {cancelText || this.context.t('cancel')}
+            </Button>
+          )}
 
           <Button
             type={submitButtonType || 'secondary'}
@@ -53,18 +53,12 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={e => onSubmit(e)}
           >
-            { submitText || this.context.t('next') }
+            {submitText || this.context.t('next')}
           </Button>
         </header>
 
-        {children && (
-          <footer>
-            {children}
-          </footer>
-        )}
-
+        {children && <footer>{children}</footer>}
       </div>
     )
   }
-
 }

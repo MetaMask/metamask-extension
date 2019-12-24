@@ -2,7 +2,7 @@ const assert = require('assert')
 const migration35 = require('../../../app/scripts/migrations/035')
 
 describe('migration #35', () => {
-  it('should update the version metadata', (done) => {
+  it('should update the version metadata', done => {
     const oldStorage = {
       meta: {
         version: 34,
@@ -10,17 +10,18 @@ describe('migration #35', () => {
       data: {},
     }
 
-    migration35.migrate(oldStorage)
-      .then((newStorage) => {
+    migration35
+      .migrate(oldStorage)
+      .then(newStorage => {
         assert.deepEqual(newStorage.meta, {
-          'version': 35,
+          version: 35,
         })
         done()
       })
       .catch(done)
   })
 
-  it('should delete seedWords', (done) => {
+  it('should delete seedWords', done => {
     const oldStorage = {
       meta: {},
       data: {
@@ -30,15 +31,16 @@ describe('migration #35', () => {
       },
     }
 
-    migration35.migrate(oldStorage)
-      .then((newStorage) => {
+    migration35
+      .migrate(oldStorage)
+      .then(newStorage => {
         assert.deepEqual(newStorage.data.PreferencesController, {})
         done()
       })
       .catch(done)
   })
 
-  it('should delete falsy seedWords', (done) => {
+  it('should delete falsy seedWords', done => {
     const oldStorage = {
       meta: {},
       data: {
@@ -48,15 +50,16 @@ describe('migration #35', () => {
       },
     }
 
-    migration35.migrate(oldStorage)
-      .then((newStorage) => {
+    migration35
+      .migrate(oldStorage)
+      .then(newStorage => {
         assert.deepEqual(newStorage.data.PreferencesController, {})
         done()
       })
       .catch(done)
   })
 
-  it('should leave state without seedWords unchanged', (done) => {
+  it('should leave state without seedWords unchanged', done => {
     const oldStorage = {
       meta: {},
       data: {
@@ -86,8 +89,9 @@ describe('migration #35', () => {
       },
     }
 
-    migration35.migrate(oldStorage)
-      .then((newStorage) => {
+    migration35
+      .migrate(oldStorage)
+      .then(newStorage => {
         assert.deepEqual(newStorage.data, oldStorage.data)
         done()
       })

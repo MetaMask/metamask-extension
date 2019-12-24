@@ -30,8 +30,10 @@ AccountModalContainer.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
-
+module.exports = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AccountModalContainer)
 
 AccountModalContainer.prototype.render = function () {
   const {
@@ -45,36 +47,35 @@ AccountModalContainer.prototype.render = function () {
     children = [children]
   }
 
-  return h('div', { style: { borderRadius: '4px' }}, [
+  return h('div', { style: { borderRadius: '4px' } }, [
     h('div.account-modal-container', [
-
       h('div', [
-
         // Needs a border; requires changes to svg
         h(Identicon, {
           address: selectedIdentity.address,
           diameter: 64,
           style: {},
         }),
-
       ]),
 
-      showBackButton && h('div.account-modal-back', {
-        onClick: backButtonAction,
-      }, [
+      showBackButton &&
+        h(
+          'div.account-modal-back',
+          {
+            onClick: backButtonAction,
+          },
+          [
+            h('i.fa.fa-angle-left.fa-lg'),
 
-        h('i.fa.fa-angle-left.fa-lg'),
-
-        h('span.account-modal-back__text', ' ' + this.context.t('back')),
-
-      ]),
+            h('span.account-modal-back__text', ' ' + this.context.t('back')),
+          ]
+        ),
 
       h('div.account-modal-close', {
         onClick: this.props.hideModal,
       }),
 
       ...children,
-
     ]),
   ])
 }

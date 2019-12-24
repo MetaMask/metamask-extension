@@ -42,8 +42,14 @@ describe('EnsController', function () {
       }
       const ens = new EnsController({
         ens: {
-          reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns(address),
+          reverse: sinon
+            .stub()
+            .withArgs(address)
+            .returns('peaksignal.eth'),
+          lookup: sinon
+            .stub()
+            .withArgs('peaksignal.eth')
+            .returns(address),
         },
         networkStore,
       })
@@ -54,8 +60,14 @@ describe('EnsController', function () {
 
     it('should only resolve an ENS name once', async () => {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
-      const reverse = sinon.stub().withArgs(address).returns('peaksignal.eth')
-      const lookup = sinon.stub().withArgs('peaksignal.eth').returns(address)
+      const reverse = sinon
+        .stub()
+        .withArgs(address)
+        .returns('peaksignal.eth')
+      const lookup = sinon
+        .stub()
+        .withArgs('peaksignal.eth')
+        .returns(address)
       const networkStore = {
         subscribe: sinon.spy(),
       }
@@ -80,8 +92,14 @@ describe('EnsController', function () {
       }
       const ens = new EnsController({
         ens: {
-          reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns('0xfoo'),
+          reverse: sinon
+            .stub()
+            .withArgs(address)
+            .returns('peaksignal.eth'),
+          lookup: sinon
+            .stub()
+            .withArgs('peaksignal.eth')
+            .returns('0xfoo'),
         },
         networkStore,
       })
@@ -97,8 +115,14 @@ describe('EnsController', function () {
       }
       const ens = new EnsController({
         ens: {
-          reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_ADDRESS),
+          reverse: sinon
+            .stub()
+            .withArgs(address)
+            .returns('peaksignal.eth'),
+          lookup: sinon
+            .stub()
+            .withArgs('peaksignal.eth')
+            .returns(ZERO_ADDRESS),
         },
         networkStore,
       })
@@ -118,8 +142,14 @@ describe('EnsController', function () {
       }
       const ens = new EnsController({
         ens: {
-          reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_X_ERROR_ADDRESS),
+          reverse: sinon
+            .stub()
+            .withArgs(address)
+            .returns('peaksignal.eth'),
+          lookup: sinon
+            .stub()
+            .withArgs('peaksignal.eth')
+            .returns(ZERO_X_ERROR_ADDRESS),
         },
         networkStore,
       })

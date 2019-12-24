@@ -3,7 +3,6 @@ const PendingBalanceCalculator = require('../lib/pending-balance-calculator')
 const BN = require('ethereumjs-util').BN
 
 class BalanceController {
-
   /**
    * Controller responsible for storing and updating an account's balance.
    *
@@ -126,11 +125,11 @@ class BalanceController {
   _validateParams (opts) {
     const { address, accountTracker, txController, blockTracker } = opts
     if (!address || !accountTracker || !txController || !blockTracker) {
-      const error = 'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.'
+      const error =
+        'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.'
       throw new Error(error)
     }
   }
-
 }
 
 module.exports = BalanceController

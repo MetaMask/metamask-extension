@@ -2,7 +2,6 @@
 const OriginalEthQuery = require('ethjs-query')
 const OriginalEthRPC = require('ethjs-rpc')
 
-
 class EthRPC extends OriginalEthRPC {}
 
 class EthQuery extends OriginalEthQuery {

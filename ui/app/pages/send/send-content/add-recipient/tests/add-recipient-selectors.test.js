@@ -6,7 +6,6 @@ import {
 } from '../add-recipient.selectors.js'
 
 describe('add-recipient selectors', () => {
-
   describe('getToDropdownOpen()', () => {
     it('should return send.getToDropdownOpen', () => {
       const state = {

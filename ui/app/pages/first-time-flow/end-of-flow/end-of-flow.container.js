@@ -4,7 +4,7 @@ import { setCompletedOnboarding } from '../../../store/actions'
 
 const firstTimeFlowTypeNameMap = {
   create: 'New Wallet Created',
-  'import': 'New Wallet Imported',
+  import: 'New Wallet Imported',
 }
 
 const mapStateToProps = ({ metamask }) => {
@@ -14,7 +14,6 @@ const mapStateToProps = ({ metamask }) => {
     completionMetaMetricsName: firstTimeFlowTypeNameMap[firstTimeFlowType],
   }
 }
-
 
 const mapDispatchToProps = dispatch => {
   return {

@@ -17,16 +17,19 @@ describe('SendDropdownList Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendDropdownList
-      accounts={[
-        { address: 'mockAccount0' },
-        { address: 'mockAccount1' },
-        { address: 'mockAccount2' },
-      ]}
-      closeDropdown={propsMethodSpies.closeDropdown}
-      onSelect={propsMethodSpies.onSelect}
-      activeAddress="mockAddress2"
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow(
+      <SendDropdownList
+        accounts={[
+          { address: 'mockAccount0' },
+          { address: 'mockAccount1' },
+          { address: 'mockAccount2' },
+        ]}
+        closeDropdown={propsMethodSpies.closeDropdown}
+        onSelect={propsMethodSpies.onSelect}
+        activeAddress="mockAddress2"
+      />,
+      { context: { t: str => str + '_t' } }
+    )
   })
 
   afterEach(() => {
@@ -39,7 +42,7 @@ describe('SendDropdownList Component', function () {
     it('should return check icon if the passed addresses are the same', () => {
       assert.deepEqual(
         wrapper.instance().getListItemIcon('mockAccount0', 'mockAccount0'),
-        <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } }/>
+        <i className="fa fa-check fa-lg" style={{ color: '#02c9b1' }} />
       )
     })
 
@@ -64,42 +67,55 @@ describe('SendDropdownList Component', function () {
 
     it('should call closeDropdown onClick of the send-v2__from-dropdown__close-area', () => {
       assert.equal(propsMethodSpies.closeDropdown.callCount, 0)
-      wrapper.childAt(0).props().onClick()
+      wrapper
+        .childAt(0)
+        .props()
+        .onClick()
       assert.equal(propsMethodSpies.closeDropdown.callCount, 1)
     })
 
     it('should render an AccountListItem for each item in accounts', () => {
       assert.equal(wrapper.childAt(1).children().length, 3)
-      assert(wrapper.childAt(1).children().every(AccountListItem))
+      assert(
+        wrapper
+          .childAt(1)
+          .children()
+          .every(AccountListItem)
+      )
     })
 
     it('should pass the correct props to the AccountListItem', () => {
-      wrapper.childAt(1).children().forEach((accountListItem, index) => {
-        const {
-          account,
-          className,
-          handleClick,
-        } = accountListItem.props()
-        assert.deepEqual(account, { address: 'mockAccount' + index })
-        assert.equal(className, 'account-list-item__dropdown')
-        assert.equal(propsMethodSpies.onSelect.callCount, 0)
-        handleClick()
-        assert.equal(propsMethodSpies.onSelect.callCount, 1)
-        assert.deepEqual(propsMethodSpies.onSelect.getCall(0).args[0], { address: 'mockAccount' + index })
-        propsMethodSpies.onSelect.resetHistory()
-        propsMethodSpies.closeDropdown.resetHistory()
-        assert.equal(propsMethodSpies.closeDropdown.callCount, 0)
-        handleClick()
-        assert.equal(propsMethodSpies.closeDropdown.callCount, 1)
-        propsMethodSpies.onSelect.resetHistory()
-        propsMethodSpies.closeDropdown.resetHistory()
-      })
+      wrapper
+        .childAt(1)
+        .children()
+        .forEach((accountListItem, index) => {
+          const { account, className, handleClick } = accountListItem.props()
+          assert.deepEqual(account, { address: 'mockAccount' + index })
+          assert.equal(className, 'account-list-item__dropdown')
+          assert.equal(propsMethodSpies.onSelect.callCount, 0)
+          handleClick()
+          assert.equal(propsMethodSpies.onSelect.callCount, 1)
+          assert.deepEqual(propsMethodSpies.onSelect.getCall(0).args[0], {
+            address: 'mockAccount' + index,
+          })
+          propsMethodSpies.onSelect.resetHistory()
+          propsMethodSpies.closeDropdown.resetHistory()
+          assert.equal(propsMethodSpies.closeDropdown.callCount, 0)
+          handleClick()
+          assert.equal(propsMethodSpies.closeDropdown.callCount, 1)
+          propsMethodSpies.onSelect.resetHistory()
+          propsMethodSpies.closeDropdown.resetHistory()
+        })
     })
 
     it('should call this.getListItemIcon for each AccountListItem', () => {
       assert.equal(SendDropdownList.prototype.getListItemIcon.callCount, 3)
       const getListItemIconCalls = SendDropdownList.prototype.getListItemIcon.getCalls()
-      assert(getListItemIconCalls.every(({ args }, index) => args[0] === 'mockAccount' + index))
+      assert(
+        getListItemIconCalls.every(
+          ({ args }, index) => args[0] === 'mockAccount' + index
+        )
+      )
     })
   })
 })

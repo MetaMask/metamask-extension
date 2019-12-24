@@ -28,54 +28,57 @@ export default function reduceApp (state, action) {
   }
 
   // default state
-  var appState = extend({
-    shouldClose: false,
-    menuOpen: false,
-    modal: {
-      open: false,
-      modalState: {
-        name: null,
+  var appState = extend(
+    {
+      shouldClose: false,
+      menuOpen: false,
+      modal: {
+        open: false,
+        modalState: {
+          name: null,
+          props: {},
+        },
+        previousModalState: {
+          name: null,
+        },
+      },
+      sidebar: {
+        isOpen: false,
+        transitionName: '',
+        type: '',
         props: {},
       },
-      previousModalState: {
-        name: null,
+      alertOpen: false,
+      alertMessage: null,
+      qrCodeData: null,
+      networkDropdownOpen: false,
+      currentView: defaultView,
+      accountDetail: {
+        subview: 'transactions',
       },
+      // Used to render transition direction
+      transForward: true,
+      // Used to display loading indicator
+      isLoading: false,
+      // Used to display error text
+      warning: null,
+      buyView: {},
+      isMouseUser: false,
+      gasIsLoading: false,
+      networkNonce: null,
+      defaultHdPaths: {
+        trezor: `m/44'/60'/0'/0`,
+        ledger: `m/44'/60'/0'/0/0`,
+      },
+      lastSelectedProvider: null,
+      networksTabSelectedRpcUrl: '',
+      networksTabIsInAddMode: false,
+      loadingMethodData: false,
+      show3BoxModalAfterImport: false,
+      threeBoxLastUpdated: null,
     },
-    sidebar: {
-      isOpen: false,
-      transitionName: '',
-      type: '',
-      props: {},
-    },
-    alertOpen: false,
-    alertMessage: null,
-    qrCodeData: null,
-    networkDropdownOpen: false,
-    currentView: defaultView,
-    accountDetail: {
-      subview: 'transactions',
-    },
-    // Used to render transition direction
-    transForward: true,
-    // Used to display loading indicator
-    isLoading: false,
-    // Used to display error text
-    warning: null,
-    buyView: {},
-    isMouseUser: false,
-    gasIsLoading: false,
-    networkNonce: null,
-    defaultHdPaths: {
-      trezor: `m/44'/60'/0'/0`,
-      ledger: `m/44'/60'/0'/0/0`,
-    },
-    lastSelectedProvider: null,
-    networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
-    loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
-  }, state.appState)
+    state.appState
+  )
 
   switch (action.type) {
     // dropdown methods
@@ -125,7 +128,6 @@ export default function reduceApp (state, action) {
         qrCodeData: action.value,
       })
 
-
     // modal methods:
     case actions.MODAL_OPEN:
       const { name, ...modalProps } = action.payload
@@ -147,7 +149,7 @@ export default function reduceApp (state, action) {
           state.appState.modal,
           { open: false },
           { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState},
+          { previousModalState: appState.modal.modalState }
         ),
       })
 
@@ -316,7 +318,9 @@ export default function reduceApp (state, action) {
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        forgottenPassword: appState.forgottenPassword
+          ? !appState.forgottenPassword
+          : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -383,7 +387,9 @@ export default function reduceApp (state, action) {
 
     case actions.SHOW_ACCOUNT_DETAIL:
       return extend(appState, {
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        forgottenPassword: appState.forgottenPassword
+          ? !appState.forgottenPassword
+          : null,
         currentView: {
           name: 'accountDetail',
           context: action.value,
@@ -451,8 +457,9 @@ export default function reduceApp (state, action) {
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      const otherUnconfActions = getUnconfActionList(state)
-        .filter(tx => tx.id !== action.value)
+      const otherUnconfActions = getUnconfActionList(state).filter(
+        tx => tx.id !== action.value
+      )
       const hasOtherUnconfActions = otherUnconfActions.length > 0
 
       if (hasOtherUnconfActions) {
@@ -533,7 +540,7 @@ export default function reduceApp (state, action) {
 
     case actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
       const { device, path } = action.value
-      const newDefaults = {...appState.defaultHdPaths}
+      const newDefaults = { ...appState.defaultHdPaths }
       newDefaults[device] = path
 
       return extend(appState, {
@@ -784,16 +791,27 @@ function checkUnconfActions (state) {
 }
 
 function getUnconfActionList (state) {
-  const { unapprovedTxs, unapprovedMsgs,
-    unapprovedPersonalMsgs, unapprovedTypedMessages, network } = state.metamask
+  const {
+    unapprovedTxs,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTypedMessages,
+    network,
+  } = state.metamask
 
-  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
+  const unconfActionList = txHelper(
+    unapprovedTxs,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTypedMessages,
+    network
+  )
   return unconfActionList
 }
 
 function indexForPending (state, txId) {
   const unconfTxList = getUnconfActionList(state)
-  const match = unconfTxList.find((tx) => tx.id === txId)
+  const match = unconfTxList.find(tx => tx.id === txId)
   const index = unconfTxList.indexOf(match)
   return index
 }

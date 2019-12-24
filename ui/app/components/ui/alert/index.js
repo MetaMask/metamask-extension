@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 
 class Alert extends Component {
-
   constructor (props) {
     super(props)
 
@@ -37,17 +36,16 @@ class Alert extends Component {
     })
 
     setTimeout(_ => {
-      this.setState({visible: false})
+      this.setState({ visible: false })
     }, 500)
-
   }
 
   render () {
     if (this.state.visible) {
-      return (
-        h(`div.global-alert${this.state.className}`, {},
-          h('a.msg', {}, this.state.msg)
-        )
+      return h(
+        `div.global-alert${this.state.className}`,
+        {},
+        h('a.msg', {}, this.state.msg)
       )
     }
     return null
@@ -59,4 +57,3 @@ Alert.propTypes = {
   msg: PropTypes.string,
 }
 module.exports = Alert
-
