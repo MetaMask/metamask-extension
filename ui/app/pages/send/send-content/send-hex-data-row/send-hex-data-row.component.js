@@ -4,7 +4,6 @@ import SendRowWrapper from '../send-row-wrapper'
 
 export default class SendHexDataRow extends Component {
   static propTypes = {
-    data: PropTypes.string,
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
     updateGas: PropTypes.func.isRequired,

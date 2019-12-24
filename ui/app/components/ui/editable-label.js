@@ -1,16 +1,17 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const classnames = require('classnames')
+import classnames from 'classnames'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
 class EditableLabel extends Component {
-  constructor (props) {
-    super(props)
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    defaultValue: PropTypes.string,
+    className: PropTypes.string,
+  }
 
-    this.state = {
-      isEditing: false,
-      value: props.defaultValue || '',
-    }
+  state = {
+    isEditing: false,
+    value: this.props.defaultValue || '',
   }
 
   handleSubmit () {
@@ -25,45 +26,46 @@ class EditableLabel extends Component {
     )
   }
 
-  saveIfEnter (event) {
-    if (event.key === 'Enter') {
-      this.handleSubmit()
-    }
-  }
-
   renderEditing () {
     const { value } = this.state
 
     return [
-      h('input.large-input.editable-label__input', {
-        type: 'text',
-        required: true,
-        dir: 'auto',
-        value: this.state.value,
-        onKeyPress: event => {
+      <input
+        key={1}
+        type="text"
+        required
+        dir="auto"
+        value={this.state.value}
+        onKeyPress={event => {
           if (event.key === 'Enter') {
             this.handleSubmit()
           }
-        },
-        onChange: event => this.setState({ value: event.target.value }),
-        className: classnames({ 'editable-label__input--error': value === '' }),
-      }),
-      h('div.editable-label__icon-wrapper', [
-        h('i.fa.fa-check.editable-label__icon', {
-          onClick: () => this.handleSubmit(),
-        }),
-      ]),
+        }}
+        onChange={event => this.setState({ value: event.target.value })}
+        className={classnames('large-input', 'editable-label__input', {
+          'editable-label__input--error': value === '',
+        })}
+      />,
+      <div className="editable-label__icon-wrapper" key={2}>
+        <i
+          className="fa fa-check editable-label__icon"
+          onClick={() => this.handleSubmit()}
+        />
+      </div>,
     ]
   }
 
   renderReadonly () {
     return [
-      h('div.editable-label__value', this.state.value),
-      h('div.editable-label__icon-wrapper', [
-        h('i.fa.fa-pencil.editable-label__icon', {
-          onClick: () => this.setState({ isEditing: true }),
-        }),
-      ]),
+      <div key={1} className="editable-label__value">
+        {this.state.value}
+      </div>,
+      <div key={2} className="editable-label__icon-wrapper">
+        <i
+          className="fa fa-pencil editable-label__icon"
+          onClick={() => this.setState({ isEditing: true })}
+        />
+      </div>,
     ]
   }
 
@@ -71,18 +73,12 @@ class EditableLabel extends Component {
     const { isEditing } = this.state
     const { className } = this.props
 
-    return h(
-      'div.editable-label',
-      { className: classnames(className) },
-      isEditing ? this.renderEditing() : this.renderReadonly()
+    return (
+      <div className={classnames('editable-label', className)}>
+        {isEditing ? this.renderEditing() : this.renderReadonly()}
+      </div>
     )
   }
-}
-
-EditableLabel.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  defaultValue: PropTypes.string,
-  className: PropTypes.string,
 }
 
 module.exports = EditableLabel

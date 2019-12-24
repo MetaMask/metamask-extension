@@ -29,7 +29,6 @@ export default class EnsInput extends Component {
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
-    updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
@@ -40,10 +39,9 @@ export default class EnsInput extends Component {
   }
 
   state = {
-    recipient: null,
     input: '',
     toError: null,
-    toWarning: null,
+    ensResolution: undefined,
   }
 
   componentDidMount () {
@@ -261,11 +259,11 @@ export default class EnsInput extends Component {
   }
 
   ensIconContents () {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state || {
-      ensResolution: ZERO_ADDRESS,
-    }
+    const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
-    if (toError) return
+    if (toError) {
+      return
+    }
 
     if (loadingEns) {
       return (

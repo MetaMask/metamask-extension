@@ -10,7 +10,9 @@ class PollingBlockTracker extends OriginalPollingBlockTracker {
       params: ['latest_state'],
     }
 
-    if (this._setSkipCacheFlag) req.skipCache = true
+    if (this._setSkipCacheFlag) {
+      req.skipCache = true
+    }
     const res = await pify(cb => this._provider.sendAsync(req, cb))()
     if (res.error) {
       throw new Error(

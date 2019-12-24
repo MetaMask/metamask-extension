@@ -9,20 +9,14 @@ export default function withTokenTracker (WrappedComponent) {
       token: PropTypes.object.isRequired,
     }
 
-    constructor (props) {
-      super(props)
-
-      this.state = {
-        string: '',
-        symbol: '',
-        balance: '',
-        error: null,
-      }
-
-      this.tracker = null
-      this.updateBalance = this.updateBalance.bind(this)
-      this.setError = this.setError.bind(this)
+    state = {
+      string: '',
+      symbol: '',
+      balance: '',
+      error: null,
     }
+
+    tracker = null
 
     componentDidMount () {
       this.createFreshTokenTracker()
@@ -81,11 +75,11 @@ export default function withTokenTracker (WrappedComponent) {
         .catch(error => this.setState({ error: error.message }))
     }
 
-    setError (error) {
+    setError = error => {
       this.setState({ error })
     }
 
-    updateBalance (tokens = []) {
+    updateBalance = (tokens = []) => {
       if (!this.tracker.running) {
         return
       }

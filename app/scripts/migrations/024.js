@@ -24,7 +24,9 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  if (!newState.TransactionController) return newState
+  if (!newState.TransactionController) {
+    return newState
+  }
   const transactions = newState.TransactionController.transactions
   newState.TransactionController.transactions = transactions.map(
     (txMeta, _) => {

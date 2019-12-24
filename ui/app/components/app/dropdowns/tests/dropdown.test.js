@@ -15,7 +15,8 @@ describe('Dropdown', () => {
         onClick={onClickSpy}
         style={{ test: 'style' }}
         closeMenu={closeMenuSpy}
-      ></DropdownMenuItem>
+      >
+      </DropdownMenuItem>
     )
   })
 

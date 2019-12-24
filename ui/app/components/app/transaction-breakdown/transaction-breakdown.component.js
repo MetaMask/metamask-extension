@@ -13,7 +13,6 @@ export default class TransactionBreakdown extends PureComponent {
   }
 
   static propTypes = {
-    transaction: PropTypes.object,
     className: PropTypes.string,
     nativeCurrency: PropTypes.string.isRequired,
     showFiat: PropTypes.bool,
@@ -25,7 +24,6 @@ export default class TransactionBreakdown extends PureComponent {
   }
 
   static defaultProps = {
-    transaction: {},
     showFiat: true,
   }
 

@@ -1,10 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Sigurado ka bang gusto mong i-clear ang mga naaprubahang website?"
-  },
-  "clearApprovalData": {
-    "message": "Tanggalin ang data ng pag-apruba"
-  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -14,9 +8,6 @@
   },
   "reject": {
     "message": "Tanggihan"
-  },
-  "providerRequestInfo": {
-    "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ethereum API upang maaari itong makipag-ugnayan sa Ethereum blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ethereum access."
   },
   "accountDetails": {
     "message": "Detalye ng Account"
@@ -45,10 +36,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Kulang ang balanse para sa kasalukuyang gas total"
-  },
-  "betweenMinAndMax": {
-    "message": "dapat mas malaki o katumbas ng $1 at mas mababa o katumbas ng $2.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
   },
   "buyCoinSwitch": {
     "message": "Bumili sa CoinSwitch"
@@ -79,9 +66,6 @@
   },
   "copiedExclamation": {
     "message": "Kinopya!"
-  },
-  "copy": {
-    "message": "Kinopya"
   },
   "copyToClipboard": {
     "message": "Kinopya sa clipboard"
@@ -167,10 +151,6 @@
     "message": "Kumuha ng Ether mula sa faucet para sa $1",
     "description": "Ipinapakita ang pangalan ng network para sa Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "dapat mas malaki o katumbas ng $1.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
-  },
   "here": {
     "message": "i-click ito",
     "description": "tulad ng -i-click dito- para sa mas maraming impormasyon (kasama ng troubleTokenBalances)"
@@ -203,10 +183,6 @@
   },
   "invalidInput": {
     "message": "Invalid ang input."
-  },
-  "lessThanMax": {
-    "message": "dapat mas mababa o katumbas ng $1.",
-    "description": "helper para sa pag-input ng hex bilang decimal input"
   },
   "loading": {
     "message": "Naglo-load..."
@@ -251,9 +227,6 @@
   "pastePrivateKey": {
     "message": "I-paste dito ang iyong private key string:",
     "description": "Para sa pag-import ng account mula sa private key"
-  },
-  "pasteSeed": {
-    "message": "I-paste dito ang iyong seed phrase!"
   },
   "privateKeyWarning": {
     "message": "Babala: Huwag sabihin sa kahit na sino ang key na ito. Maaring makuha at manakaw ng sinumang nakakaalam ng iyong private key ang mga assets sa iyong account."
@@ -302,9 +275,6 @@
   },
   "sigRequest": {
     "message": "Hiling na Signature"
-  },
-  "submit": {
-    "message": "I-submit"
   },
   "toETHviaShapeShift": {
     "message": "$1 sa ETH sa pamamagitan ng ShapeShift",

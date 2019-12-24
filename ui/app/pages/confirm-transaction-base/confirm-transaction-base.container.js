@@ -8,7 +8,6 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 
 import {
   updateCustomNonce,
-  clearSend,
   cancelTx,
   cancelTxs,
   updateAndApproveTx,
@@ -51,12 +50,12 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 
 let customNonceValue = ''
 const customNonceMerge = txData =>
-  customNonceValue
+  (customNonceValue
     ? {
       ...txData,
       customNonceValue,
     }
-    : txData
+    : txData)
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -73,9 +72,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    currentCurrency,
-    selectedAddress,
-    selectedAddressTxList,
     assetImages,
     network,
     unapprovedTxs,
@@ -90,8 +86,8 @@ const mapStateToProps = (state, ownProps) => {
     transactionCategory,
   } = txData
   const transaction =
-    R.find(({ id }) => id === (transactionId || Number(paramsTransactionId)))(
-      selectedAddressTxList
+    Object.values(unapprovedTxs).find(
+      ({ id }) => id === (transactionId || Number(paramsTransactionId))
     ) || {}
   const {
     from: fromAddress,
@@ -104,8 +100,8 @@ const mapStateToProps = (state, ownProps) => {
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
-  const { balance } = accounts[selectedAddress]
-  const { name: fromName } = identities[selectedAddress]
+  const { balance } = accounts[fromAddress]
+  const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name
@@ -121,12 +117,6 @@ const mapStateToProps = (state, ownProps) => {
   const transactionStatus = transaction ? transaction.status : ''
 
   const {
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -170,12 +160,6 @@ const mapStateToProps = (state, ownProps) => {
     toEns,
     toName,
     toNickname,
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -184,7 +168,6 @@ const mapStateToProps = (state, ownProps) => {
     methodData,
     tokenProps,
     isTxReprice,
-    currentCurrency,
     conversionRate,
     transactionStatus,
     nonce,
@@ -218,7 +201,6 @@ export const mapDispatchToProps = dispatch => {
       dispatch(updateCustomNonce(value))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },

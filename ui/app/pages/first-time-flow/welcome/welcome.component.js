@@ -11,7 +11,6 @@ import {
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    isInitialized: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     welcomeScreenSeen: PropTypes.bool,
   }

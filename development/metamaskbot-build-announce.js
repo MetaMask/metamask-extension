@@ -25,7 +25,7 @@ async function start () {
   // build the github comment content
 
   // links to extension builds
-  const platforms = ['chrome', 'firefox', 'opera', 'edge']
+  const platforms = ['chrome', 'firefox', 'opera']
   const buildLinks = platforms
     .map(platform => {
       const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`

@@ -152,7 +152,7 @@ export default class MetaMetricsOptIn extends Component {
               This data is aggregated and is therefore anonymous for the
               purposes of General Data Protection Regulation (EU) 2016/679. For
               more information in relation to our privacy practices, please see
-              our{' '}
+              our&nbsp;
               <a
                 href="https://metamask.io/privacy.html"
                 target="_blank"

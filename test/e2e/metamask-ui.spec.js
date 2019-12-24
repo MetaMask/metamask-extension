@@ -1,11 +1,11 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
-const { delay } = require('./func')
 const {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
+  delay,
   findElement,
   findElements,
   openNewPage,
@@ -15,7 +15,10 @@ const {
   setupFetchMocking,
   prepareExtensionForTesting,
 } = require('./helpers')
+const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
+
+const ganacheServer = new Ganache()
 
 describe('MetaMask', function () {
   let driver
@@ -31,6 +34,7 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
+    await ganacheServer.start()
     const result = await prepareExtensionForTesting()
     driver = result.driver
     await setupFetchMocking(driver)
@@ -53,6 +57,7 @@ describe('MetaMask', function () {
   })
 
   after(async function () {
+    await ganacheServer.quit()
     await driver.quit()
   })
 
@@ -636,32 +641,50 @@ describe('MetaMask', function () {
       await delay(largeDelayMs)
     })
 
-    it('starts a send transaction inside the dapp', async () => {
+    it('connects the dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
+      await delay(regularDelayMs)
+
+      const connectButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Connect')]`)
+      )
+      await connectButton.click()
+
       await delay(regularDelayMs)
 
       await waitUntilXWindowHandles(driver, 3)
       windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      popup = await switchToWindowWithTitle(
+      dapp = await switchToWindowWithTitle(
         driver,
-        'MetaMask Notification',
+        'E2E Test Dapp',
         windowHandles
       )
-      dapp = windowHandles.find(
-        handle => handle !== extension && handle !== popup
+      popup = windowHandles.find(
+        handle => handle !== extension && handle !== dapp
       )
+
+      await driver.switchTo().window(popup)
 
       await delay(regularDelayMs)
-      const approveButton = await findElement(
-        driver,
-        By.xpath(`//button[contains(text(), 'Connect')]`)
-      )
-      await approveButton.click()
 
+      const accountButton = await findElement(
+        driver,
+        By.css('.permissions-connect-choose-account__account')
+      )
+      await accountButton.click()
+
+      const submitButton = await findElement(
+        driver,
+        By.xpath(`//button[contains(text(), 'Submit')]`)
+      )
+      await submitButton.click()
+
+      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(dapp)
-      await delay(2000)
+      await delay(regularDelayMs)
     })
 
     it('initiates a send from the dapp', async () => {

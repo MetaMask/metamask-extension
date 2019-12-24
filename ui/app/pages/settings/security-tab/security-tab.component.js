@@ -11,11 +11,8 @@ export default class SecurityTab extends PureComponent {
   }
 
   static propTypes = {
-    displayWarning: PropTypes.func,
-    revealSeedConfirmation: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
-    mobileSync: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     setParticipateInMetaMetrics: PropTypes.func,
     showIncomingTransactions: PropTypes.bool,

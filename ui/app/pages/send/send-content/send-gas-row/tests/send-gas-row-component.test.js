@@ -64,19 +64,11 @@ describe('SendGasRow Component', function () {
       )
     })
 
-    it('should render the GasFeeDisplay with the correct props', () => {
-      const {
-        conversionRate,
-        convertedCurrency,
-        gasLoadingError,
-        gasTotal,
-        onReset,
-      } = wrapper
+    it('should render the GasFeeDisplay', () => {
+      const { gasLoadingError, gasTotal, onReset } = wrapper
         .find(SendRowWrapper)
         .childAt(0)
         .props()
-      assert.equal(conversionRate, 20)
-      assert.equal(convertedCurrency, 'mockConvertedCurrency')
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)

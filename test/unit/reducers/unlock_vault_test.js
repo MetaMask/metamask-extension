@@ -1,10 +1,10 @@
 // var jsdom = require('mocha-jsdom')
-var assert = require('assert')
+const assert = require('assert')
 // var freeze = require('deep-freeze-strict')
-var path = require('path')
-var sinon = require('sinon')
+const path = require('path')
+const sinon = require('sinon')
 
-var actions = require(path.join(
+const actions = require(path.join(
   __dirname,
   '..',
   '..',
@@ -14,7 +14,7 @@ var actions = require(path.join(
   'store',
   'actions.js'
 ))
-var reducers = require(path.join(
+const reducers = require(path.join(
   __dirname,
   '..',
   '..',

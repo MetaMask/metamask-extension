@@ -9,10 +9,17 @@ storiesOf('TextField', module)
     <TextField type="text" label="Name" error="Invalid value" />
   ))
   .add('Mascara text', () => <TextField label="Text" type="text" largeLabel />)
-  .add('Material text', () => <TextField label="Text" type="text" material />)
+  .add('Material text', () => (
+    <TextField label="Text" type="text" theme="material" />
+  ))
   .add('Material password', () => (
-    <TextField label="Password" type="password" material />
+    <TextField label="Password" type="password" theme="material" />
   ))
   .add('Material error', () => (
-    <TextField type="text" label="Name" error="Invalid value" material />
+    <TextField
+      type="text"
+      label="Name"
+      error="Invalid value"
+      theme="material"
+    />
   ))

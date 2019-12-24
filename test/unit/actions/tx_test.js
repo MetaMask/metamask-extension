@@ -1,5 +1,5 @@
-var assert = require('assert')
-var path = require('path')
+const assert = require('assert')
+const path = require('path')
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'

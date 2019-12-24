@@ -1,6 +1,9 @@
 const assert = require('assert')
 const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
+const {
+  addInternalMethodPrefix,
+} = require('../../../../app/scripts/controllers/permissions')
 const sinon = require('sinon')
 
 describe('preferences controller', function () {
@@ -385,7 +388,7 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset', function () {
-    var stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
+    let stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
     const sandbox = sinon.createSandbox()
 
     beforeEach(() => {
@@ -405,8 +408,8 @@ describe('preferences controller', function () {
 
     it('shouldn not do anything if method not corresponds', async function () {
       const asy = { next: () => {}, end: () => {} }
-      var stubNext = sandbox.stub(asy, 'next')
-      var stubEnd = sandbox.stub(asy, 'end').returns(0)
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.notCalled(stubEnd)
@@ -414,14 +417,14 @@ describe('preferences controller', function () {
     })
     it('should do something if method is supported', async function () {
       const asy = { next: () => {}, end: () => {} }
-      var stubNext = sandbox.stub(asy, 'next')
-      var stubEnd = sandbox.stub(asy, 'end').returns(0)
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask_watchAsset'
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.called(stubEnd)
       sandbox.assert.notCalled(stubNext)
-      req.method = 'wallet_watchAsset'
+      req.method = addInternalMethodPrefix('watchAsset')
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.calledTwice(stubEnd)
@@ -446,7 +449,7 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset of type ERC20', function () {
-    var req
+    let req
 
     const sandbox = sinon.createSandbox()
     beforeEach(() => {

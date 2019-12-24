@@ -55,7 +55,8 @@ export default class MenuBar extends PureComponent {
               })
               this.setState({ accountDetailsMenuOpen: true })
             }}
-          ></div>
+          >
+          </div>
         </Tooltip>
 
         {accountDetailsMenuOpen && (

@@ -1,73 +1,65 @@
-const Component = require('react').Component
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const copyToClipboard = require('copy-to-clipboard')
-const connect = require('react-redux').connect
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
+const copyToClipboard = require('copy-to-clipboard')
 const Tooltip = require('./tooltip')
 
-CopyButton.contextTypes = {
-  t: PropTypes.func,
-}
+class CopyButton extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
 
-module.exports = connect()(CopyButton)
+  static defaultProps = {
+    title: null,
+  }
 
-inherits(CopyButton, Component)
-function CopyButton () {
-  Component.call(this)
-}
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+    title: PropTypes.string,
+  }
 
-// As parameters, accepts:
-// "value", which is the value to copy (mandatory)
-// "title", which is the text to show on hover (optional, defaults to 'Copy')
-CopyButton.prototype.render = function () {
-  const props = this.props
-  const state = this.state || {}
+  state = {}
 
-  const value = props.value
-  const copied = state.copied
+  debounceRestore = () => {
+    this.setState({ copied: true })
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      this.setState({ copied: false })
+    }, 850)
+  }
 
-  const message = copied
-    ? this.context.t('copiedButton')
-    : props.title || this.context.t('copyButton')
+  render () {
+    const { title, value } = this.props
+    const { copied } = this.state
+    const message = copied
+      ? this.context.t('copiedButton')
+      : title || this.context.t('copyButton')
 
-  return h(
-    '.copy-button',
-    {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-      },
-    },
-    [
-      h(
-        Tooltip,
-        {
-          title: message,
-        },
-        [
-          h('i.fa.fa-clipboard.cursor-pointer.color-orange', {
-            style: {
+    return (
+      <div
+        className="copy-button"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Tooltip title={message}>
+          <i
+            className="fa fa-clipboard cursor-pointer color-orange"
+            style={{
               margin: '5px',
-            },
-            onClick: event => {
+            }}
+            onClick={event => {
               event.preventDefault()
               event.stopPropagation()
               copyToClipboard(value)
               this.debounceRestore()
-            },
-          }),
-        ]
-      ),
-    ]
-  )
+            }}
+          />
+        </Tooltip>
+      </div>
+    )
+  }
 }
 
-CopyButton.prototype.debounceRestore = function () {
-  this.setState({ copied: true })
-  clearTimeout(this.timeout)
-  this.timeout = setTimeout(() => {
-    this.setState({ copied: false })
-  }, 850)
-}
+module.exports = CopyButton

@@ -1,24 +1,23 @@
-const Component = require('react').Component
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import TokenCell from './token-cell'
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
-const TokenCell = require('./token-cell.js')
 const connect = require('react-redux').connect
-const selectors = require('../../selectors/selectors')
+const { getSelectedAddress } = require('../../selectors/selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
-    userAddress: selectors.getSelectedAddress(state),
+    userAddress: getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
   }
 }
 
 const defaultTokens = []
-const contracts = require('@yqrashawn/cfx-contract-metadata')
+const contracts = require('eth-contract-metadata')
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
@@ -43,66 +42,61 @@ function TokenList () {
   Component.call(this)
 }
 
-TokenList.prototype.render = function () {
+TokenList.prototype.render = function TokenList () {
   const { userAddress, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
   if (isLoading) {
-    return this.message(this.context.t('loadingTokens'))
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: '250px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '30px',
+        }}
+      >
+        {this.context.t('loadingTokens')}
+      </div>
+    )
   }
 
   if (error) {
     log.error(error)
-    return h(
-      '.hotFix',
-      {
-        style: {
+    return (
+      <div
+        className="hotFix"
+        style={{
           padding: '80px',
-        },
-      },
-      [
-        this.context.t('troubleTokenBalances'),
-        h(
-          'span.hotFix',
-          {
-            style: {
-              color: 'rgba(247, 134, 28, 1)',
-              cursor: 'pointer',
-            },
-            onClick: () => {
-              global.platform.openWindow({
-                url: `https://ethplorer.io/address/${userAddress}`,
-              })
-            },
-          },
-          this.context.t('here')
-        ),
-      ]
+        }}
+      >
+        {this.context.t('troubleTokenBalances')}
+        <span
+          className="hotFix"
+          style={{
+            color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            global.platform.openWindow({
+              url: `https://ethplorer.io/address/${userAddress}`,
+            })
+          }}
+        >
+          {this.context.t('here')}
+        </span>
+      </div>
     )
   }
 
-  return h(
-    'div',
-    tokens.map(tokenData => {
-      tokenData.image = assetImages[tokenData.address]
-      return h(TokenCell, tokenData)
-    })
-  )
-}
-
-TokenList.prototype.message = function (body) {
-  return h(
-    'div',
-    {
-      style: {
-        display: 'flex',
-        height: '250px',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '30px',
-      },
-    },
-    body
+  return (
+    <div>
+      {tokens.map((tokenData, index) => {
+        tokenData.image = assetImages[tokenData.address]
+        return <TokenCell key={index} {...tokenData} />
+      })}
+    </div>
   )
 }
 
@@ -118,7 +112,9 @@ TokenList.prototype.createFreshTokenTracker = function () {
     this.tracker.removeListener('error', this.showError)
   }
 
-  if (!global.ethereumProvider) return
+  if (!global.ethereumProvider) {
+    return
+  }
   const { userAddress } = this.props
 
   this.tracker = new TokenTracker({
@@ -163,7 +159,9 @@ TokenList.prototype.componentDidUpdate = function (prevProps) {
   const oldTokensLength = tokens ? tokens.length : 0
   const tokensLengthUnchanged = oldTokensLength === newTokens.length
 
-  if (tokensLengthUnchanged && shouldUpdateTokens) return
+  if (tokensLengthUnchanged && shouldUpdateTokens) {
+    return
+  }
 
   this.setState({ isLoading: true })
   this.createFreshTokenTracker()
@@ -177,21 +175,10 @@ TokenList.prototype.updateBalances = function (tokens) {
 }
 
 TokenList.prototype.componentWillUnmount = function () {
-  if (!this.tracker) return
+  if (!this.tracker) {
+    return
+  }
   this.tracker.stop()
   this.tracker.removeListener('update', this.balanceUpdater)
   this.tracker.removeListener('error', this.showError)
 }
-
-// function uniqueMergeTokens (tokensA, tokensB = []) {
-//   const uniqueAddresses = []
-//   const result = []
-//   tokensA.concat(tokensB).forEach((token) => {
-//     const normal = normalizeAddress(token.address)
-//     if (!uniqueAddresses.includes(normal)) {
-//       uniqueAddresses.push(normal)
-//       result.push(token)
-//     }
-//   })
-//   return result
-// }

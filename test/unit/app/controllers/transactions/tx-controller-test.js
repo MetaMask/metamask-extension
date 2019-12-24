@@ -53,6 +53,7 @@ describe('Transaction Controller', function () {
           ethTx.sign(fromAccount.key)
           resolve()
         }),
+      getPermittedAccounts: () => {},
     })
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop })
@@ -281,7 +282,9 @@ describe('Transaction Controller', function () {
           'MetaMask Tx Signature: User denied transaction signature.'
         ) {
           done()
-        } else done(err)
+        } else {
+          done(err)
+        }
       })
     })
   })
@@ -289,15 +292,19 @@ describe('Transaction Controller', function () {
   describe('#addUnapprovedTransaction', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
 
-    let getSelectedAddress
+    let getSelectedAddress, getPermittedAccounts
     beforeEach(function () {
       getSelectedAddress = sinon
         .stub(txController, 'getSelectedAddress')
         .returns(selectedAddress)
+      getPermittedAccounts = sinon
+        .stub(txController, 'getPermittedAccounts')
+        .returns([selectedAddress])
     })
 
     afterEach(function () {
       getSelectedAddress.restore()
+      getPermittedAccounts.restore()
     })
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
@@ -343,8 +350,11 @@ describe('Transaction Controller', function () {
           to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
         })
         .catch(err => {
-          if (err.message === 'Recipient is a public account') done()
-          else done(err)
+          if (err.message === 'Recipient is a public account') {
+            done()
+          } else {
+            done(err)
+          }
         })
     })
 
@@ -389,7 +399,9 @@ describe('Transaction Controller', function () {
             'MetaMask is having trouble connecting to the network'
           ) {
             done()
-          } else done(err)
+          } else {
+            done(err)
+          }
         })
     })
   })

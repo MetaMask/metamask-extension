@@ -28,26 +28,34 @@ export default class SendTransactionScreen extends PersistentForm {
     blockGasLimit: PropTypes.string,
     conversionRate: PropTypes.number,
     editingTransactionId: PropTypes.string,
+    fetchBasicGasEstimates: PropTypes.func.isRequired,
     from: PropTypes.object,
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
-    to: PropTypes.string,
     history: PropTypes.object,
     network: PropTypes.string,
     primaryCurrency: PropTypes.string,
     recentBlocks: PropTypes.array,
+    resetSendState: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string,
     selectedToken: PropTypes.object,
+    showHexData: PropTypes.bool,
+    to: PropTypes.string,
+    toNickname: PropTypes.string,
     tokens: PropTypes.array,
     tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
-    fetchBasicGasEstimates: PropTypes.func,
     updateAndSetGasTotal: PropTypes.func,
-    updateSendErrors: PropTypes.func,
-    updateSendTokenBalance: PropTypes.func,
-    scanQrCode: PropTypes.func,
-    qrCodeDetected: PropTypes.func,
+    updateAndSetGasLimit: PropTypes.func.isRequired,
+    updateSendEnsResolution: PropTypes.func.isRequired,
+    updateSendEnsResolutionError: PropTypes.func.isRequired,
+    updateSendErrors: PropTypes.func.isRequired,
+    updateSendTo: PropTypes.func.isRequired,
+    updateSendTokenBalance: PropTypes.func.isRequired,
+    updateToNicknameIfNecessary: PropTypes.func.isRequired,
+    scanQrCode: PropTypes.func.isRequired,
+    qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
     ensResolution: PropTypes.string,
     ensResolutionError: PropTypes.string,
@@ -69,7 +77,7 @@ export default class SendTransactionScreen extends PersistentForm {
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
@@ -175,7 +183,7 @@ export default class SendTransactionScreen extends PersistentForm {
     })
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.updateSendToken()
 
     // Show QR Scanner modal  if ?scan=true
@@ -322,7 +330,6 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   renderAddRecipient () {
-    const { scanQrCode } = this.props
     const { toError, toWarning } = this.state
 
     return (
@@ -330,7 +337,6 @@ export default class SendTransactionScreen extends PersistentForm {
         updateGas={({ to, amount, data } = {}) =>
           this.updateGas({ to, amount, data })
         }
-        scanQrCode={scanQrCode}
         query={this.state.query}
         toError={toError}
         toWarning={toWarning}
@@ -339,7 +345,7 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   renderSendContent () {
-    const { history, showHexData, scanQrCode } = this.props
+    const { history, showHexData } = this.props
 
     return [
       <SendContent
@@ -347,7 +353,6 @@ export default class SendTransactionScreen extends PersistentForm {
         updateGas={({ to, amount, data } = {}) =>
           this.updateGas({ to, amount, data })
         }
-        scanQrCode={scanQrCode}
         showHexData={showHexData}
       />,
       <SendFooter key="send-footer" history={history} />,
