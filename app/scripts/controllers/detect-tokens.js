@@ -1,5 +1,5 @@
 const Web3 = require('./ConfluxWeb/index')
-const contracts = require('eth-contract-metadata')
+const contracts = require('@yqrashawn/cfx-contract-metadata')
 const { warn } = require('loglevel')
 const { MAINNET } = require('./network/enums')
 // By default, poll every 3 minutes
@@ -49,6 +49,7 @@ class DetectTokensController {
         }
       })
     } catch (error) {
+      // TODO let error make sense
       warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
       return
     }

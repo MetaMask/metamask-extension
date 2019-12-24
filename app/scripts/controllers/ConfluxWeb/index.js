@@ -7,7 +7,7 @@ class FakeContract {
   }
 
   at (address) {
-    return this.cfx.Contract(this.cfx, { abi: this.abi, address })
+    return this.cfx.Contract({ abi: this.abi, address })
   }
 }
 

@@ -3048,6 +3048,11 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@yqrashawn/cfx-contract-metadata@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.2.tgz#c30b06ef9d94690d926c1cee89f6dfdcde3b05b5"
+  integrity sha512-gfYD5FIF9wcCYVevyBIYN3EIaR0BuMRyy/7O9xyOZwYKbXTh5fS+f3FI4UD85nqNl1jnWNr+SQi/X+gWbeTn6Q==
+
 "@yqrashawn/eth-json-rpc-middleware@^4.6.0":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@yqrashawn/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.6.0.tgz#7261fb372baef093a039fcae95d8443d40b3185c"
