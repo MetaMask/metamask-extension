@@ -15,6 +15,7 @@
     "watch:test:unit": "nodemon --exec \"yarn test:unit\" ./test ./app ./ui",
     "sendwithprivatedapp": "static-server test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "cross-env METAMASK_ENV=test mocha --timeout 5000 --exit --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
+    "format:js": "prettier-eslint {app,ui,test,development}/**/*.{js,json} --write",
     "test:unit:global": "mocha test/unit-global/*",
     "test:debug:single": "cross-env METAMASK_ENV=test mocha --exit --no-timeouts --require test/setup.js",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
