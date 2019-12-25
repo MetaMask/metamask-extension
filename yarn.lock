@@ -3259,10 +3259,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@yqrashawn/cfx-contract-metadata@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.2.tgz#c30b06ef9d94690d926c1cee89f6dfdcde3b05b5"
-  integrity sha512-gfYD5FIF9wcCYVevyBIYN3EIaR0BuMRyy/7O9xyOZwYKbXTh5fS+f3FI4UD85nqNl1jnWNr+SQi/X+gWbeTn6Q==
+"@yqrashawn/cfx-contract-metadata@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.3.tgz#84d85462481c74d686b068dae32a2eb246f86c8a"
+  integrity sha512-aSvIpJVc+/d6TWSHBsji/lK8zpKIV3XNtdnC6RGRt7K3P3C20E3+vXHVB75UcuVTNpBJnd6rXkSsk6bxRP5luQ==
 
 "@yqrashawn/eth-json-rpc-middleware@^4.6.0":
   version "4.6.0"

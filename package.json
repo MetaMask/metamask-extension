@@ -69,7 +69,7 @@
     "@babel/runtime": "^7.5.5",
     "@material-ui/core": "1.0.0",
     "@sentry/browser": "^4.1.1",
-    "@yqrashawn/cfx-contract-metadata": "^0.0.2",
+    "@yqrashawn/cfx-contract-metadata": "^0.0.3",
     "@yqrashawn/eth-json-rpc-middleware": "^4.6.0",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",
