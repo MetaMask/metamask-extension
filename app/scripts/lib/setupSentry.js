@@ -75,7 +75,9 @@ function rewriteErrorMessages (report, rewriteFn) {
   // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {
-      if (typeof item.value === 'string') item.value = rewriteFn(item.value)
+      if (typeof item.value === 'string') {
+        item.value = rewriteFn(item.value)
+      }
     })
   }
 }
@@ -95,7 +97,9 @@ function rewriteReportUrls (report) {
 
 function toMetamaskUrl (origUrl) {
   const filePath = origUrl.split(location.origin)[1]
-  if (!filePath) return origUrl
+  if (!filePath) {
+    return origUrl
+  }
   const metamaskUrl = `metamask${filePath}`
   return metamaskUrl
 }

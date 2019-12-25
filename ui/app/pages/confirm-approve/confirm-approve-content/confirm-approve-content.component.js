@@ -11,13 +11,10 @@ export default class ConfirmApproveContent extends Component {
   }
 
   static propTypes = {
-    amount: PropTypes.string,
-    txFeeTotal: PropTypes.string,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
-    tokenAddress: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
     showEditApprovalPermissionModal: PropTypes.func,
     origin: PropTypes.string,
@@ -116,8 +113,9 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__label">
             {t('amountWithColon')}
           </div>
-          <div className="confirm-approve-content__medium-text">{`${customTokenAmount ||
-            tokenAmount} ${tokenSymbol}`}</div>
+          <div className="confirm-approve-content__medium-text">
+            {`${customTokenAmount || tokenAmount} ${tokenSymbol}`}
+          </div>
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">

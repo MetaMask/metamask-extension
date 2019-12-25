@@ -41,8 +41,12 @@ describe('storage is migrated successfully and the txParams.from are lowercase',
         const migratedTransactions =
           migratedData.data.TransactionController.transactions
         migratedTransactions.forEach(tx => {
-          if (tx.status === 'unapproved') assert(!tx.txParams.random)
-          if (tx.status === 'unapproved') assert(!tx.txParams.chainId)
+          if (tx.status === 'unapproved') {
+            assert(!tx.txParams.random)
+          }
+          if (tx.status === 'unapproved') {
+            assert(!tx.txParams.chainId)
+          }
         })
         done()
       })

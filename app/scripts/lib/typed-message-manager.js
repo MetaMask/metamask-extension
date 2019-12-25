@@ -8,7 +8,7 @@ const log = require('loglevel')
 const jsonschema = require('jsonschema')
 
 /**
- * Represents, and contains data about, an 'cfx_signTypedData' type signature request. These are created when a
+ * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
  *
  * @typedef {Object} TypedMessage
@@ -21,7 +21,7 @@ const jsonschema = require('jsonschema')
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed', 'rejected', or 'errored'
  * @property {string} type The json-prc signing method for which a signature request has been made. A 'Message' will
- * always have a 'cfx_signTypedData' type.
+ * always have a 'eth_signTypedData' type.
  *
  */
 
@@ -119,20 +119,22 @@ module.exports = class TypedMessageManager extends EventEmitter {
     msgParams.version = version
     this.validateParams(msgParams)
     // add origin from request
-    if (req) msgParams.origin = req.origin
+    if (req) {
+      msgParams.origin = req.origin
+    }
 
     log.debug(
       `TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`
     )
     // create txData obj with parameters and meta data
-    var time = new Date().getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = new Date().getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'cfx_signTypedData',
+      type: 'eth_signTypedData',
     }
     this.addMsg(msgData)
 
@@ -204,6 +206,8 @@ module.exports = class TypedMessageManager extends EventEmitter {
             `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`
           )
         break
+      default:
+        assert.fail(`Unknown params.version ${params.version}`)
     }
   }
 

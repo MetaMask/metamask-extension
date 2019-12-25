@@ -20,7 +20,9 @@ module.exports = class ExtensionStore {
    * @return {Promise<*>}
    */
   async get () {
-    if (!this.isSupported) return undefined
+    if (!this.isSupported) {
+      return undefined
+    }
     const result = await this._get()
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -96,9 +98,13 @@ function isEmpty (obj) {
  */
 function checkForError () {
   const lastError = extension.runtime.lastError
-  if (!lastError) return
+  if (!lastError) {
+    return
+  }
   // if it quacks like an Error, its an Error
-  if (lastError.stack && lastError.message) return lastError
+  if (lastError.stack && lastError.message) {
+    return lastError
+  }
   // repair incomplete error object (eg chromium v77)
   return new Error(lastError.message)
 }

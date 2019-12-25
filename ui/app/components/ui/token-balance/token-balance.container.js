@@ -2,11 +2,11 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import withTokenTracker from '../../../helpers/higher-order-components/with-token-tracker'
 import TokenBalance from './token-balance.component'
-import selectors from '../../../selectors/selectors'
+import { getSelectedAddress } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
   return {
-    userAddress: selectors.getSelectedAddress(state),
+    userAddress: getSelectedAddress(state),
   }
 }
 

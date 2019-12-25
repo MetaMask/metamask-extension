@@ -1,5 +1,5 @@
-var mockHex = '0xabcdef0123456789'
-var mockKey = Buffer.alloc(32)
+const mockHex = '0xabcdef0123456789'
+const mockKey = Buffer.alloc(32)
 let cacheVal
 
 module.exports = {

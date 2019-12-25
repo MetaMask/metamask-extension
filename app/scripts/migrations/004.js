@@ -23,6 +23,7 @@ module.exports = {
             type: 'mainnet',
           }
           break
+        // No default
       }
     } catch (_) {}
     return Promise.resolve(safeVersionedData)

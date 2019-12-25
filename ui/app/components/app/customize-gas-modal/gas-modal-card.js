@@ -1,8 +1,6 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React, { Component } from 'react'
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
-// const GasSlider = require('./gas-slider.js')
 
 module.exports = GasModalCard
 
@@ -11,40 +9,21 @@ function GasModalCard () {
   Component.call(this)
 }
 
-GasModalCard.prototype.render = function () {
-  const {
-    // memo,
-    onChange,
-    unitLabel,
-    value,
-    min,
-    // max,
-    step,
-    title,
-    copy,
-  } = this.props
+GasModalCard.prototype.render = function GasModalCard () {
+  const { onChange, unitLabel, value, min, step, title, copy } = this.props
 
-  return h('div.send-v2__gas-modal-card', [
-    h('div.send-v2__gas-modal-card__title', {}, title),
-
-    h('div.send-v2__gas-modal-card__copy', {}, copy),
-
-    h(InputNumber, {
-      unitLabel,
-      step,
-      // max,
-      min,
-      placeholder: '0',
-      value,
-      onChange,
-    }),
-
-    // h(GasSlider, {
-    //   value,
-    //   step,
-    //   max,
-    //   min,
-    //   onChange,
-    // }),
-  ])
+  return (
+    <div className="send-v2__gas-modal-card">
+      <div className="send-v2__gas-modal-card__title">{title}</div>
+      <div className="send-v2__gas-modal-card__copy">{copy}</div>
+      <InputNumber
+        unitLabel={unitLabel}
+        step={step}
+        min={min}
+        placeholder="0"
+        value={value}
+        onChange={onChange}
+      />
+    </div>
+  )
 }

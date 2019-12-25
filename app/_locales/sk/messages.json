@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim súkromia je povolený. Je prednastavený automaticky"
-  },
   "chartOnlyAvailableEth": {
     "message": "Graf je k dispozícii iba v sieťach Ethereum."
-  },
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
   },
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "about": {
     "message": "Informácie"
   },
   "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie."
+    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -63,7 +51,7 @@
     "message": "Rozšírené"
   },
   "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC."
+    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
@@ -154,10 +142,6 @@
   "basic": {
     "message": "Základné"
   },
-  "betweenMinAndMax": {
-    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -243,9 +227,6 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectRequest": {
-    "message": "Požiadavka na pripojenie"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
@@ -284,9 +265,6 @@
   },
   "copiedExclamation": {
     "message": "Zkopírováno!"
-  },
-  "copy": {
-    "message": "Kopírovat"
   },
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
@@ -365,9 +343,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
-  },
-  "dismiss": {
-    "message": "Zatvoriť"
   },
   "done": {
     "message": "Hotovo"
@@ -534,10 +509,6 @@
   "getStarted": {
     "message": "Začať"
   },
-  "greaterThanMin": {
-    "message": "musí být větší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Sme radi, že vás vidíme."
   },
@@ -642,10 +613,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
-  },
-  "lessThanMax": {
-    "message": "musí být menší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
@@ -835,9 +802,6 @@
   "pastePrivateKey": {
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
   },
   "pending": {
     "message": "prebieha"
@@ -1146,9 +1110,6 @@
   "storePhrase": {
     "message": "Túto frázu uložte do správcu hesiel ako 1Password."
   },
-  "submit": {
-    "message": "Odeslat"
-  },
   "submitted": {
     "message": "Odesláno"
   },
@@ -1309,9 +1270,6 @@
   },
   "userName": {
     "message": "Meno používateľa"
-  },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
   },
   "viewAccount": {
     "message": "Zobrazit účet"

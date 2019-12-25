@@ -1,7 +1,7 @@
 // const Ganache = require('ganache-core')
 const nock = require('nock')
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
+import Adapter from 'enzyme-adapter-react-16'
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
@@ -19,7 +19,7 @@ enableFailureOnUnhandledPromiseRejection()
 // })
 
 // logging util
-var log = require('loglevel')
+const log = require('loglevel')
 log.setDefaultLevel(5)
 global.log = log
 
@@ -38,7 +38,9 @@ require('jsdom-global')()
 window.localStorage = {}
 
 // crypto.getRandomValues
-if (!window.crypto) window.crypto = {}
+if (!window.crypto) {
+  window.crypto = {}
+}
 if (!window.crypto.getRandomValues) {
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 }
@@ -62,9 +64,11 @@ function enableFailureOnUnhandledPromiseRejection () {
         throw evt.detail.reason
       })
     } else {
-      var oldOHR = window.onunhandledrejection
+      const oldOHR = window.onunhandledrejection
       window.onunhandledrejection = function (evt) {
-        if (typeof oldOHR === 'function') oldOHR.apply(this, arguments)
+        if (typeof oldOHR === 'function') {
+          oldOHR.apply(this, arguments)
+        }
         throw evt.detail.reason
       }
     }

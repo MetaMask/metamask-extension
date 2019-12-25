@@ -49,7 +49,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return words.join(' ')
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this._onBeforeUnload = () =>
       this.context.metricsEvent({
         eventOpts: {
@@ -293,7 +293,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-            I have read and agree to the{' '}
+            I have read and agree to the&nbsp;
             <a
               href="https://metamask.io/terms.html"
               target="_blank"

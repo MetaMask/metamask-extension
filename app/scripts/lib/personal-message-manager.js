@@ -128,12 +128,14 @@ module.exports = class PersonalMessageManager extends EventEmitter {
       )}`
     )
     // add origin from request
-    if (req) msgParams.origin = req.origin
+    if (req) {
+      msgParams.origin = req.origin
+    }
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = new Date().getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = new Date().getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,

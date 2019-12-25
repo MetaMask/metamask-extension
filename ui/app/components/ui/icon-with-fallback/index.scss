@@ -1,0 +1,30 @@
+.icon-with-fallback {
+  &__identicon-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    width: 32px;
+  }
+
+  &__identicon-border {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border: 1px solid #F2F3F4;
+    position: absolute;
+    background: #FFFFFF;
+  }
+
+  &__identicon {
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+
+    &--default {
+      z-index: 1;
+      color: black;
+    }
+  }
+}

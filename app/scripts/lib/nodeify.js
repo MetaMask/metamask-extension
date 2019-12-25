@@ -1,6 +1,8 @@
 const promiseToCallback = require('promise-to-callback')
 const callbackNoop = function (err) {
-  if (err) throw err
+  if (err) {
+    throw err
+  }
 }
 
 /**

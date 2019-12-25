@@ -30,8 +30,6 @@
   }
 
   &__metafox-logo {
-    cursor: pointer;
-
     &--icon {
       height: 32px;
       @media screen and (min-width: $break-large) {
@@ -72,8 +70,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
     flex: 0 0 auto;
+
+    &--clickable {
+      cursor: pointer;
+    }
   }
 
   &__account-menu-container {

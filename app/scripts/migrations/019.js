@@ -34,7 +34,9 @@ function transformState (state) {
 
     newState.TransactionController.transactions = transactions.map(
       (txMeta, _, txList) => {
-        if (txMeta.status !== 'submitted') return txMeta
+        if (txMeta.status !== 'submitted') {
+          return txMeta
+        }
 
         const confirmedTxs = txList
           .filter(tx => tx.status === 'confirmed')

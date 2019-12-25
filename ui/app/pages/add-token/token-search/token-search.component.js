@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@yqrashawn/cfx-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../components/ui/text-field'
 
+console.log(contractMap)
 const contractList = Object.entries(contractMap)
   .map(([_, tokenData]) => tokenData)
   .filter(tokenData => Boolean(tokenData.erc20))
@@ -36,12 +37,8 @@ export default class TokenSearch extends Component {
     error: PropTypes.string,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      searchQuery: '',
-    }
+  state = {
+    searchQuery: '',
   }
 
   handleSearch (searchQuery) {

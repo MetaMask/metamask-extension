@@ -1,4 +1,5 @@
 const { shallow, mount } = require('enzyme')
+import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { shape } from 'prop-types'
 
@@ -37,5 +38,7 @@ function mountWithRouter (node) {
     childContextTypes: { router: shape({}), t: () => {} },
   })
 
-  return mount(node, createContext())
+  const Wrapper = () => <BrowserRouter>{node}</BrowserRouter>
+
+  return mount(<Wrapper />, createContext())
 }

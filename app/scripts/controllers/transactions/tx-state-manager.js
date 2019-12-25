@@ -98,7 +98,9 @@ class TransactionStateManager extends EventEmitter {
   */
   getApprovedTransactions (address) {
     const opts = { status: 'approved' }
-    if (address) opts.from = address
+    if (address) {
+      opts.from = address
+    }
     return this.getFilteredTxList(opts)
   }
 
@@ -109,7 +111,9 @@ class TransactionStateManager extends EventEmitter {
   */
   getPendingTransactions (address) {
     const opts = { status: 'submitted' }
-    if (address) opts.from = address
+    if (address) {
+      opts.from = address
+    }
     return this.getFilteredTxList(opts)
   }
 
@@ -120,7 +124,9 @@ class TransactionStateManager extends EventEmitter {
   */
   getConfirmedTransactions (address) {
     const opts = { status: 'confirmed' }
-    if (address) opts.from = address
+    if (address) {
+      opts.from = address
+    }
     return this.getFilteredTxList(opts)
   }
 

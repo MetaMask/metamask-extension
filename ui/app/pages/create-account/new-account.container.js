@@ -12,7 +12,6 @@ const mapStateToProps = state => {
   return {
     network,
     address: selectedAddress,
-    numberOfExistingAccounts,
     newAccountNumber,
   }
 }
@@ -21,7 +20,6 @@ const mapDispatchToProps = dispatch => {
   return {
     toCoinbase: address =>
       dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
-    hideModal: () => dispatch(actions.hideModal()),
     createAccount: newAccountName => {
       return dispatch(actions.addNewAccount()).then(newAccountAddress => {
         if (newAccountName) {
@@ -29,8 +27,6 @@ const mapDispatchToProps = dispatch => {
         }
       })
     },
-    showImportPage: () => dispatch(actions.showImportPage()),
-    showConnectPage: () => dispatch(actions.showConnectPage()),
   }
 }
 

@@ -237,8 +237,8 @@ function composeUrl (config) {
   ].join('')
 }
 
-export function sendMetaMetricsEvent (config, permissionPreferences) {
-  return fetch(composeUrl(config, permissionPreferences), {
+export function sendMetaMetricsEvent (config) {
+  return fetch(composeUrl(config), {
     headers: {},
     method: 'GET',
   })

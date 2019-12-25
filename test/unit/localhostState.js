@@ -14,7 +14,7 @@ const initialState = {
       // type: 'rpc',
       // rpcTarget: 'http://localhost:8545',
       // TODO: use our own version of ganache
-      type: 'cfx_test',
+      type: 'testnet',
     },
   },
 }

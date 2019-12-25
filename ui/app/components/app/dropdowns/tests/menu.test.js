@@ -27,7 +27,7 @@ describe('Dropdown Menu Components', () => {
         <Item
           icon="test icon"
           text="test text"
-          className="test className"
+          className="test foo1"
           onClick={onClickSpy}
         />
       )
@@ -36,7 +36,7 @@ describe('Dropdown Menu Components', () => {
     it('add className based on props', () => {
       assert.equal(
         wrapper.find('.menu__item').prop('className'),
-        'menu__item menu__item test className menu__item--clickable'
+        'menu__item test foo1 menu__item--clickable'
       )
     })
 
