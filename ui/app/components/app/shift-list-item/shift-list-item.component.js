@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-const explorerLink = require('etherscan-link').createExplorerLink
+const explorerLink = require('../../../../../app/scripts/etherscan-link')
+  .createExplorerLink
 const actions = require('../../../store/actions')
 const { formatDate, addressSummary } = require('../../../helpers/utils/util')
 

@@ -1,5 +1,5 @@
 const extension = require('extensionizer')
-const { createExplorerLink: explorerLink } = require('etherscan-link')
+const { createExplorerLink: explorerLink } = require('../etherscan-link')
 
 const { getEnvironmentType, checkForError } = require('../lib/util')
 const { ENVIRONMENT_TYPE_BACKGROUND } = require('../lib/enums')
