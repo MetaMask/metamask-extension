@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import R from 'ramda'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@yqrashawn/cfx-contract-metadata'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 

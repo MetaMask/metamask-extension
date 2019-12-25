@@ -74,7 +74,7 @@ createCopyTasks('images', {
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
 })
 createCopyTasks('contractImages', {
-  source: './node_modules/eth-contract-metadata/images/',
+  source: './node_modules/@yqrashawn/cfx-contract-metadata/images/',
   destinations: commonPlatforms.map(
     platform => `./dist/${platform}/images/contract`
   ),

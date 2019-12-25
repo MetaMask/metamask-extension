@@ -11,7 +11,7 @@ const {
 import { checkExistingAddresses } from '../../../add-token/util'
 
 const ethUtil = require('ethereumjs-util')
-const contractMap = require('eth-contract-metadata')
+const contractMap = require('@yqrashawn/cfx-contract-metadata')
 
 function getToErrorObject (
   to,
