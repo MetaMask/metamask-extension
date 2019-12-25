@@ -1,7 +1,8 @@
 const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const Transaction = require('ethereumjs-tx')
+// const Transaction = require('ethereumjs-tx')
+const Transaction = require('confluxjs-transaction')
 const EthQuery = require('ethjs-query')
 const { ethErrors } = require('eth-json-rpc-errors')
 const abi = require('human-standard-token-abi')
@@ -480,8 +481,9 @@ class TransactionController extends EventEmitter {
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
     // add network/chain id
+    // eslint-disable-next-line no-unused-vars
     const chainId = this.getChainId()
-    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    const txParams = Object.assign({}, txMeta.txParams)
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
