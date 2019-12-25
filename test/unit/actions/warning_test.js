@@ -1,9 +1,9 @@
 // var jsdom = require('mocha-jsdom')
-var assert = require('assert')
-var freeze = require('deep-freeze-strict')
-var path = require('path')
+const assert = require('assert')
+const freeze = require('deep-freeze-strict')
+const path = require('path')
 
-var actions = require(path.join(
+const actions = require(path.join(
   __dirname,
   '..',
   '..',
@@ -13,7 +13,7 @@ var actions = require(path.join(
   'store',
   'actions.js'
 ))
-var reducers = require(path.join(
+const reducers = require(path.join(
   __dirname,
   '..',
   '..',
@@ -26,7 +26,7 @@ var reducers = require(path.join(
 
 describe('action DISPLAY_WARNING', function () {
   it('sets appState.warning to provided value', function () {
-    var initialState = {
+    const initialState = {
       appState: {},
     }
     freeze(initialState)

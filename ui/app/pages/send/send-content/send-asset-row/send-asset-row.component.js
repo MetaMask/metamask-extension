@@ -123,9 +123,9 @@ export default class SendAssetRow extends Component {
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">ETH</div>
           <div className="send-v2__asset-dropdown__name">
-            <span className="send-v2__asset-dropdown__name__label">{`${t(
-              'balance'
-            )}:`}</span>
+            <span className="send-v2__asset-dropdown__name__label">
+              {`${t('balance')}:`}
+            </span>
             <UserPreferencedCurrencyDisplay
               value={balanceValue}
               type={PRIMARY}
@@ -152,9 +152,9 @@ export default class SendAssetRow extends Component {
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">{symbol}</div>
           <div className="send-v2__asset-dropdown__name">
-            <span className="send-v2__asset-dropdown__name__label">{`${t(
-              'balance'
-            )}:`}</span>
+            <span className="send-v2__asset-dropdown__name__label">
+              {`${t('balance')}:`}
+            </span>
             <TokenBalance token={token} withSymbol />
           </div>
         </div>

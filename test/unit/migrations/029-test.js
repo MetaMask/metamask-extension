@@ -32,7 +32,9 @@ describe('storage is migrated successfully where transactions that are submitted
         )
 
         txs.forEach(tx => {
-          if (tx.id === 1) return
+          if (tx.id === 1) {
+            return
+          }
           assert.notEqual(tx.status, 'failed', 'other tx is not auto failed')
         })
 

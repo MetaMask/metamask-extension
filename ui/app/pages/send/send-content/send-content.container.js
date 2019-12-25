@@ -29,12 +29,12 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { to, ...restStateProps } = stateProps
   return {
     ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
+    ...restStateProps,
     showAddToAddressBookModal: () =>
-      dispatchProps.showAddToAddressBookModal(stateProps.to),
+      dispatchProps.showAddToAddressBookModal(to),
   }
 }
 

@@ -42,9 +42,6 @@
   "connect": {
     "message": "కనెక్ట్ చేయండి"
   },
-  "copy": {
-    "message": "కాపీ చెయ్యి"
-  },
   "copyToClipboard": {
     "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయి"
   },
@@ -56,9 +53,6 @@
   },
   "details": {
     "message": "వివరాలు"
-  },
-  "dismiss": {
-    "message": "తొలగించు"
   },
   "done": {
     "message": "పూర్తయింది"
@@ -130,9 +124,6 @@
   },
   "settings": {
     "message": "సెట్టింగ్‌లు"
-  },
-  "submit": {
-    "message": "సమర్పించు"
   },
   "tryAgain": {
     "message": "మళ్లీ ప్రయత్నించు"

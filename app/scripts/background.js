@@ -14,6 +14,7 @@ const pump = require('pump')
 const debounce = require('debounce-stream')
 const log = require('loglevel')
 const extension = require('extensionizer')
+const ReadOnlyNetworkStore = require('./lib/network-store')
 const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
@@ -28,7 +29,6 @@ const rawFirstTimeState = require('./first-time-state')
 // const setupSentry = require('./lib/setupSentry')
 // const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 // const getObjStructure = require('./lib/getObjStructure')
 // const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
@@ -58,18 +58,14 @@ global.METAMASK_NOTIFIER = notificationManager
 // const release = platform.getVersion()
 // const sentry = setupSentry({ release })
 
-// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// Internet Explorer 6-11
-const isIE = !!document.documentMode
-// Edge 20+
-const isEdge = !isIE && !!window.StyleMedia
-
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const requestAccountTabIds = {}
 
 // state persistence
-const localStore = new LocalStore()
+const inTest = process.env.IN_TEST === 'true'
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
 let versionedData
 
 // initialization flow
@@ -193,7 +189,7 @@ async function loadStateFromPersistence () {
   // }
 
   // report migration errors to sentry
-  // migrator.on('error', (err) => {
+  // migrator.on('error', err => {
   //   // get vault structure without secrets
   //   const vaultStructure = getObjStructure(versionedData)
   //   sentry.captureException(err, {
@@ -249,11 +245,20 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
-    encryptor: isEdge ? new EdgeEncryptor() : undefined,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
+    },
+    getOpenMetamaskTabsIds: () => {
+      return openMetamaskTabsIDs
+    },
   })
 
-  // const provider = controller.provider
-  // setupEnsIpfsResolver({ provider })
+  // setupEnsIpfsResolver({
+  //   getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
+  //     controller.preferencesController
+  //   ),
+  //   provider: controller.provider,
+  // })
 
   // submit rpc requests to mesh-metrics
   controller.networkController.on('rpc-req', data => {
@@ -262,9 +267,13 @@ function setupController (initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') return
+    if (status !== 'failed') {
+      return
+    }
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    if (txMeta.err && txMeta.err.message) console.error(txMeta.err)
+    if (txMeta.err && txMeta.err.message) {
+      console.error(txMeta.err)
+    }
 
     // try {
     //   reportFailedTxToSentry({ sentry, txMeta })
@@ -296,10 +305,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing', state)
+      throw new Error('MetaMask - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data', state)
+      throw new Error('MetaMask - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {
@@ -357,10 +366,7 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      // construct fake URL for identifying internal messages
-      const metamaskUrl = new URL(window.location)
-      metamaskUrl.hostname = 'metamask'
-      controller.setupTrustedCommunication(portStream, metamaskUrl)
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -390,19 +396,25 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
+
+        remotePort.onMessage.addListener(msg => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            requestAccountTabIds[origin] = tabId
+          }
+        })
+      }
       connectExternal(remotePort)
     }
   }
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const senderUrl = new URL(remotePort.sender.url)
-    let extensionId
-    if (remotePort.sender.id !== extension.runtime.id) {
-      extensionId = remotePort.sender.id
-    }
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //
@@ -414,7 +426,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.providerApprovalController.memStore.on('update', updateBadge)
+  controller.permissionsController.permissions.subscribe(updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -428,14 +440,15 @@ function setupController (initState, initLangCode) {
       controller.personalMessageManager.unapprovedPersonalMsgCount
     const unapprovedTypedMsgs =
       controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingProviderRequests = controller.providerApprovalController.memStore.getState()
-      .providerRequests.length
+    const pendingPermissionRequests = Object.keys(
+      controller.permissionsController.permissions.state.permissionsRequests
+    ).length
     const count =
       unapprovedTxCount +
       unapprovedMsgCount +
       unapprovedPersonalMsgs +
       unapprovedTypedMsgs +
-      pendingProviderRequests
+      pendingPermissionRequests
     if (count) {
       label = String(count)
     }

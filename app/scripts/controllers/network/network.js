@@ -37,7 +37,8 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = LOCALHOST
+  defaultProviderConfigType = CFX_TEST
+  // defaultProviderConfigType = LOCALHOST
 } else if (METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigType = CFX_TEST
 } else {
@@ -98,7 +99,9 @@ module.exports = class NetworkController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) this.lookupNetwork()
+    if (this.isNetworkLoading()) {
+      this.lookupNetwork()
+    }
   }
 
   getNetworkState () {
@@ -270,7 +273,7 @@ module.exports = class NetworkController extends EventEmitter {
       nickname,
     }
     // setup networkConfig
-    var settings = {
+    let settings = {
       network: chainId,
     }
     settings = extend(settings, networks.networkList['rpc'])

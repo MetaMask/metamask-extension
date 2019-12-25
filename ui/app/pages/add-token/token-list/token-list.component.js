@@ -55,7 +55,8 @@ export default class InfoBox extends Component {
                       style={{
                         backgroundImage: logo && `url(images/contract/${logo})`,
                       }}
-                    ></div>
+                    >
+                    </div>
                     <div className="token-list__token-data">
                       <span className="token-list__token-name">{`${name} (${symbol})`}</span>
                     </div>

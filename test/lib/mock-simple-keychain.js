@@ -1,4 +1,4 @@
-var fakeWallet = {
+const fakeWallet = {
   privKey: '0x123456788890abcdef',
   address: '0xfedcba0987654321',
 }
@@ -27,7 +27,7 @@ module.exports = class MockSimpleKeychain {
   }
 
   addAccounts (n = 1) {
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       this.wallets.push(fakeWallet)
     }
   }

@@ -335,7 +335,9 @@ function generateTokenTransferData ({
   amount = '0x0',
   selectedToken,
 }) {
-  if (!selectedToken) return
+  if (!selectedToken) {
+    return
+  }
   return (
     TOKEN_TRANSFER_FUNCTION_SIGNATURE +
     Array.prototype.map

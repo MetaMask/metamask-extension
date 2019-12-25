@@ -136,7 +136,7 @@ describe('add-recipient utils', () => {
     it('should return a known address recipient if to is truthy but part of contract metadata', () => {
       assert.deepEqual(
         getToWarningObject(
-          '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+          '0xD29C3302edfF23bF425Ba6e0Ba6E17dA16FB287C',
           undefined,
           [{ address: '0xabc123' }],
           { address: '0xabc123' }
@@ -149,7 +149,7 @@ describe('add-recipient utils', () => {
     it('should null if to is truthy part of contract metadata but selectedToken falsy', () => {
       assert.deepEqual(
         getToWarningObject(
-          '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+          '0xD29C3302edfF23bF425Ba6e0Ba6E17dA16FB287C',
           undefined,
           [{ address: '0xabc123' }],
           { address: '0xabc123' }

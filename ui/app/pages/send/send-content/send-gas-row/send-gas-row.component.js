@@ -8,8 +8,6 @@ import AdvancedGasInputs from '../../../../components/app/gas-customization/adva
 export default class SendGasRow extends Component {
   static propTypes = {
     balance: PropTypes.string,
-    conversionRate: PropTypes.number,
-    convertedCurrency: PropTypes.string,
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
@@ -75,8 +73,6 @@ export default class SendGasRow extends Component {
 
   renderContent () {
     const {
-      conversionRate,
-      convertedCurrency,
       gasLoadingError,
       gasTotal,
       showCustomizeGasModal,
@@ -118,8 +114,6 @@ export default class SendGasRow extends Component {
     )
     const gasFeeDisplay = (
       <GasFeeDisplay
-        conversionRate={conversionRate}
-        convertedCurrency={convertedCurrency}
         gasLoadingError={gasLoadingError}
         gasTotal={gasTotal}
         onReset={() => {

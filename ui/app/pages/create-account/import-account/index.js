@@ -1,8 +1,6 @@
+import React, { Component } from 'react'
 const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
 import Select from 'react-select'
 
 // Subviews
@@ -13,7 +11,7 @@ AccountImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect()(AccountImportSubview)
+module.exports = AccountImportSubview
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
@@ -29,52 +27,48 @@ AccountImportSubview.prototype.render = function () {
   const menuItems = this.getMenuItemTexts()
   const { type } = state
 
-  return h('div.new-account-import-form', [
-    h('.new-account-import-disclaimer', [
-      h('span', this.context.t('importAccountMsg')),
-      h(
-        'span',
-        {
-          style: {
+  return (
+    <div className="new-account-import-form">
+      <div className="new-account-import-disclaimer">
+        <span>{this.context.t('importAccountMsg')}</span>
+        <span
+          style={{
             cursor: 'pointer',
             textDecoration: 'underline',
-          },
-          onClick: () => {
+          }}
+          onClick={() => {
             global.platform.openWindow({
               url:
                 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
             })
-          },
-        },
-        this.context.t('here')
-      ),
-    ]),
-
-    h('div.new-account-import-form__select-section', [
-      h(
-        'div.new-account-import-form__select-label',
-        this.context.t('selectType')
-      ),
-
-      h(Select, {
-        className: 'new-account-import-form__select',
-        name: 'import-type-select',
-        clearable: false,
-        value: type || menuItems[0],
-        options: menuItems.map(type => {
-          return {
-            value: type,
-            label: type,
-          }
-        }),
-        onChange: opt => {
-          this.setState({ type: opt.value })
-        },
-      }),
-    ]),
-
-    this.renderImportView(),
-  ])
+          }}
+        >
+          {this.context.t('here')}
+        </span>
+      </div>
+      <div className="new-account-import-form__select-section">
+        <div className="new-account-import-form__select-label">
+          {this.context.t('selectType')}
+        </div>
+        <Select
+          className="new-account-import-form__select"
+          name="import-type-select"
+          clearable={false}
+          value={type || menuItems[0]}
+          options={menuItems.map(type => {
+            return {
+              value: type,
+              label: type,
+            }
+          })}
+          onChange={opt => {
+            this.setState({ type: opt.value })
+          }}
+        />
+      </div>
+      {this.renderImportView()}
+    </div>
+  )
 }
 
 AccountImportSubview.prototype.renderImportView = function () {
@@ -85,10 +79,10 @@ AccountImportSubview.prototype.renderImportView = function () {
 
   switch (current) {
     case this.context.t('privateKey'):
-      return h(PrivateKeyImportView)
+      return <PrivateKeyImportView />
     case this.context.t('jsonFile'):
-      return h(JsonImportView)
+      return <JsonImportView />
     default:
-      return h(JsonImportView)
+      return <JsonImportView />
   }
 }

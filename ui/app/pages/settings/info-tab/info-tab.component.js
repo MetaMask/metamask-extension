@@ -6,18 +6,6 @@ export default class InfoTab extends PureComponent {
     version: global.platform.getVersion(),
   }
 
-  static propTypes = {
-    tab: PropTypes.string,
-    metamask: PropTypes.object,
-    setCurrentCurrency: PropTypes.func,
-    setRpcTarget: PropTypes.func,
-    displayWarning: PropTypes.func,
-    revealSeedConfirmation: PropTypes.func,
-    warning: PropTypes.string,
-    location: PropTypes.object,
-    history: PropTypes.object,
-  }
-
   static contextTypes = {
     t: PropTypes.func,
   }

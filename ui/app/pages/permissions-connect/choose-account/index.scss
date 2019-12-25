@@ -1,0 +1,97 @@
+.permissions-connect-choose-account {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  width: 100%;
+  align-items: center;
+
+  &__title {
+    @extend %header--18;
+  }
+
+  &__text {
+    @extend %content-text;
+    line-height: 25px;
+  }
+
+  &__accounts-list {
+    width: 393px;
+    border: 1px solid #D0D5DA;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-top: 36px;
+
+    @media screen and (max-width: 575px) {
+      width: 100%;
+    }
+  }
+
+  &__account-info-wrapper {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #D2D8DD;
+    justify-content: space-between;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: aliceblue;
+      cursor: pointer;
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      margin-left: 16px;
+    }
+
+    &__label {
+      @extend %header--18;
+      line-height: 25px;
+      color: #000000;
+    }
+
+    &__balance {
+      @extend %content-text;
+      line-height: 17px;
+      color: #6A737D;
+    }
+
+    &__last-connected {
+      @extend %content-text;
+      font-size: 10px;
+      line-height: 140.62%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      color: #037DD6;
+    }
+  }
+
+  &__new-account, &__cancel {
+    @extend %content-text;
+    line-height: 20px;
+    color: #037DD6;
+    margin-top: 24px;
+    cursor: pointer;
+  }
+
+  &__cancel {
+    color: $Red-400;
+  }
+
+  &__bottom-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 393px;
+  }
+
+}

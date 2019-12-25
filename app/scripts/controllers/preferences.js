@@ -1,4 +1,5 @@
 const ObservableStore = require('obs-store')
+const { addInternalMethodPrefix } = require('./permissions')
 const normalizeAddress = require('eth-sig-util').normalize
 const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
 const extend = require('xtend')
@@ -56,9 +57,11 @@ class PreferencesController {
           useNativeCurrencyAsPrimaryCurrency: true,
         },
         completedOnboarding: false,
-        migratedPrivacyMode: false,
         metaMetricsId: null,
         metaMetricsSendCount: 0,
+
+        // ENS decentralized website resolution
+        ipfsGateway: 'ipfs.dweb.link',
       },
       opts.initState
     )
@@ -127,20 +130,12 @@ class PreferencesController {
     return metaMetricsId
   }
 
-  getMetaMetricsId () {
-    return this.store.getState().metaMetricsId
-  }
-
   getParticipateInMetaMetrics () {
     return this.store.getState().participateInMetaMetrics
   }
 
   setMetaMetricsSendCount (val) {
     this.store.updateState({ metaMetricsSendCount: val })
-  }
-
-  getMetaMetricsSendCount () {
-    return this.store.getState().metaMetricsSendCount
   }
 
   /**
@@ -194,7 +189,7 @@ class PreferencesController {
   async requestWatchAsset (req, res, next, end) {
     if (
       req.method === 'metamask_watchAsset' ||
-      req.method === 'wallet_watchAsset'
+      req.method === addInternalMethodPrefix('watchAsset')
     ) {
       const { type, options } = req.params
       switch (type) {
@@ -213,26 +208,6 @@ class PreferencesController {
     } else {
       next()
     }
-  }
-
-  /**
-   * Getter for the `useBlockie` property
-   *
-   * @returns {boolean} this.store.useBlockie
-   *
-   */
-  getUseBlockie () {
-    return this.store.getState().useBlockie
-  }
-
-  /**
-   * Getter for the `getUseNonceField` property
-   *
-   * @returns {boolean} this.store.getUseNonceField
-   *
-   */
-  getUseNonceField () {
-    return this.store.getState().useNonceField
   }
 
   /**
@@ -312,7 +287,9 @@ class PreferencesController {
     const accountTokens = this.store.getState().accountTokens
     addresses.forEach(address => {
       // skip if already exists
-      if (identities[address]) return
+      if (identities[address]) {
+        return
+      }
       // add missing identity
       const identityCount = Object.keys(identities).length
 
@@ -343,7 +320,9 @@ class PreferencesController {
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
       // Notify our servers:
-      if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
+      if (this.diagnostics) {
+        this.diagnostics.reportOrphans(newlyLost)
+      }
 
       // store lost accounts
       for (const key in newlyLost) {
@@ -622,17 +601,6 @@ class PreferencesController {
   }
 
   /**
-   * A getter for the `featureFlags` property
-   *
-   * @returns {object} A key-boolean map, where keys refer to features and booleans to whether the
-   * user wishes to see that feature
-   *
-   */
-  getFeatureFlags () {
-    return this.store.getState().featureFlags
-  }
-
-  /**
    * Updates the `preferences` property, which is an object. These are user-controlled features
    * found in the settings page.
    * @param {string} preference The preference to enable or disable.
@@ -667,11 +635,22 @@ class PreferencesController {
     return Promise.resolve(true)
   }
 
-  unsetMigratedPrivacyMode () {
-    this.store.updateState({
-      migratedPrivacyMode: false,
-    })
-    return Promise.resolve()
+  /**
+   * A getter for the `ipfsGateway` property
+   * @returns {string} The current IPFS gateway domain
+   */
+  getIpfsGateway () {
+    return this.store.getState().ipfsGateway
+  }
+
+  /**
+   * A setter for the `ipfsGateway` property
+   * @param {string} domain The new IPFS gateway domain
+   * @returns {Promise<string>} A promise of the update IPFS gateway domain
+   */
+  setIpfsGateway (domain) {
+    this.store.updateState({ ipfsGateway: domain })
+    return Promise.resolve(domain)
   }
 
   //
@@ -720,7 +699,7 @@ class PreferencesController {
   /**
    * A getter for `tokens` and `accountTokens` related states.
    *
-   * @param {string} selectedAddress A new hex address for an account
+   * @param {string} [selectedAddress] A new hex address for an account
    * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
    *
    */
@@ -730,7 +709,9 @@ class PreferencesController {
       selectedAddress = this.store.getState().selectedAddress
     }
     const providerType = this.network.providerStore.getState().type
-    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
+    if (!(selectedAddress in accountTokens)) {
+      accountTokens[selectedAddress] = {}
+    }
     if (!(providerType in accountTokens[selectedAddress])) {
       accountTokens[selectedAddress][providerType] = []
     }

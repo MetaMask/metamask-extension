@@ -56,22 +56,24 @@ export default class DaiV1MigrationNotification extends PureComponent {
     return (
       <HomeNotification
         descriptionText={
-          <div>
-            {t('migrateSai')}
+          (
+            <div>
+              {t('migrateSai')}
             &nbsp;
-            <a
-              href="#"
-              onClick={() => {
-                window.open(
-                  'https://blog.makerdao.com/multi-collateral-dai-is-live/',
-                  '_blank',
-                  'noopener'
-                )
-              }}
-            >
-              {t('learnMore')}.
-            </a>
-          </div>
+              <a
+                href="#"
+                onClick={() => {
+                  window.open(
+                    'https://blog.makerdao.com/multi-collateral-dai-is-live/',
+                    '_blank',
+                    'noopener'
+                  )
+                }}
+              >
+                {t('learnMore')}.
+              </a>
+            </div>
+          )
         }
         acceptText={t('migrate')}
         onAccept={() => {

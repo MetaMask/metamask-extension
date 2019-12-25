@@ -19,13 +19,18 @@ import {
 
 class MetaMetricsProvider extends Component {
   static propTypes = {
-    network: PropTypes.string.isRequired,
-    environmentType: PropTypes.string.isRequired,
-    activeCurrency: PropTypes.string.isRequired,
     accountType: PropTypes.string.isRequired,
-    metaMetricsSendCount: PropTypes.number.isRequired,
+    activeCurrency: PropTypes.string.isRequired,
     children: PropTypes.object.isRequired,
+    confirmTransactionOrigin: PropTypes.string,
+    environmentType: PropTypes.string.isRequired,
     history: PropTypes.object.isRequired,
+    metaMetricsId: PropTypes.string,
+    metaMetricsSendCount: PropTypes.number.isRequired,
+    network: PropTypes.string.isRequired,
+    numberOfTokens: PropTypes.number,
+    numberOfAccounts: PropTypes.number,
+    participateInMetaMetrics: PropTypes.bool,
   }
 
   static childContextTypes = {
@@ -35,22 +40,32 @@ class MetaMetricsProvider extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-      previousPath: '',
-      currentPath: window.location.href,
-    }
-
     props.history.listen(() => {
-      this.setState({
-        previousPath: this.state.currentPath,
+      this.setState(prevState => ({
+        previousPath: prevState.currentPath,
         currentPath: window.location.href,
-      })
+      }))
     })
   }
 
+  state = {
+    previousPath: '',
+    currentPath: window.location.href,
+  }
+
   getChildContext () {
-    const props = this.props
-    const { pathname } = location
+    const {
+      network,
+      environmentType,
+      activeCurrency,
+      accountType,
+      confirmTransactionOrigin,
+      metaMetricsId,
+      participateInMetaMetrics,
+      metaMetricsSendCount,
+      numberOfTokens,
+      numberOfAccounts,
+    } = this.props
     const { previousPath, currentPath } = this.state
 
     return {
@@ -62,16 +77,21 @@ class MetaMetricsProvider extends Component {
           name.match(/^send|^confirm/) || overRidePathName.match(/send|confirm/)
         )
 
-        if (props.participateInMetaMetrics || config.isOptIn) {
+        if (participateInMetaMetrics || config.isOptIn) {
           return sendMetaMetricsEvent({
-            ...props,
+            network,
+            environmentType,
+            activeCurrency,
+            accountType,
+            confirmTransactionOrigin,
+            metaMetricsId,
+            numberOfTokens,
+            numberOfAccounts,
             ...config,
             previousPath,
             currentPath,
-            pathname,
             excludeMetaMetricsId:
-              isSendFlow &&
-              !sendCountIsTrackable(props.metaMetricsSendCount + 1),
+              isSendFlow && !sendCountIsTrackable(metaMetricsSendCount + 1),
             ...overrides,
           })
         }

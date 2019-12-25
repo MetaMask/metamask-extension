@@ -1,18 +1,10 @@
 const fs = require('fs')
-const path = require('path')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-
-const {
-  delay,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-} = require('./func')
 const { until } = require('selenium-webdriver')
+
+const { buildWebDriver } = require('./webdriver')
 const fetchMockResponses = require('./fetch-mocks.json')
 
 const tinyDelayMs = 200
@@ -23,12 +15,11 @@ module.exports = {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
+  delay,
   findElement,
   findElements,
-  loadExtension,
   openNewPage,
   switchToWindowWithTitle,
-  switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
   setupFetchMocking,
@@ -39,32 +30,14 @@ module.exports = {
 }
 
 async function prepareExtensionForTesting ({ responsive } = {}) {
-  let driver, extensionId, extensionUrl
-  const targetBrowser = process.env.SELENIUM_BROWSER
-  switch (targetBrowser) {
-    case 'chrome': {
-      const extPath = path.resolve('dist/chrome')
-      driver = buildChromeWebDriver(extPath, { responsive })
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdChrome(driver)
-      extensionUrl = `chrome-extension://${extensionId}/home.html`
-      break
-    }
-    case 'firefox': {
-      const extPath = path.resolve('dist/firefox')
-      driver = buildFirefoxWebdriver({ responsive })
-      await installWebExt(driver, extPath)
-      await delay(largeDelayMs)
-      extensionId = await getExtensionIdFirefox(driver)
-      extensionUrl = `moz-extension://${extensionId}/home.html`
-      break
-    }
-    default: {
-      throw new Error(
-        `prepareExtensionForTesting - unable to prepare extension for unknown browser "${targetBrowser}"`
-      )
-    }
-  }
+  const browser = process.env.SELENIUM_BROWSER
+  const extensionPath = `dist/${browser}`
+  const { driver, extensionId, extensionUrl } = await buildWebDriver({
+    browser,
+    extensionPath,
+    responsive,
+  })
+
   // Depending on the state of the application built into the above directory (extPath) and the value of
   // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
   // are closing any extraneous windows to reset us to a single window before continuing.
@@ -94,8 +67,6 @@ async function setupFetchMocking (driver) {
         }
       } else if (url.match(/chromeextensionmm/)) {
         return { json: async () => clone(fetchMockResponses.metametrics) }
-      } else if (url === 'https://dev.blockscale.net/api/gasexpress.json') {
-        return { json: async () => clone(fetchMockResponses.gasExpress) }
       }
       return window.origFetch(...args)
     }
@@ -118,19 +89,6 @@ async function setupFetchMocking (driver) {
   const fetchMockResponsesJson = JSON.stringify(fetchMockResponses)
   // eval the fetchMocking script in the browser
   await driver.executeScript(`(${fetchMocking})(${fetchMockResponsesJson})`)
-}
-
-async function loadExtension (driver, extensionId) {
-  switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
-    }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
-    }
-  }
 }
 
 async function checkBrowserForConsoleErrors (driver) {
@@ -174,6 +132,10 @@ async function verboseReportOnFailure (driver, test) {
   })
   const htmlSource = await driver.getPageSource()
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+}
+
+function delay (time) {
+  return new Promise(resolve => setTimeout(resolve, time))
 }
 
 async function findElement (driver, by, timeout = 10000) {
@@ -272,24 +234,4 @@ async function assertElementNotPresent (webdriver, driver, by) {
     )
   }
   assert.ok(!dataTab, 'Found element that should not be present')
-}
-
-async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
-  if (!windowHandles) {
-    windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window that matches: ' + regexp)
-  }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const windowUrl = await driver.getCurrentUrl()
-  if (windowUrl.match(regexp)) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithUrlThatMatches(
-      driver,
-      regexp,
-      windowHandles.slice(1)
-    )
-  }
 }

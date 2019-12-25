@@ -7,8 +7,8 @@ class EthRPC extends OriginalEthRPC {}
 class EthQuery extends OriginalEthQuery {
   // eslint-disable-next-line constructor-super
   constructor (provider, options) {
-    var self = this
-    var optionsObject = options || {}
+    const self = this
+    const optionsObject = options || {}
 
     if (!(this instanceof EthQuery)) {
       throw new Error(

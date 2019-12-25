@@ -7,11 +7,10 @@ const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
-const EthQuery = require('../../../../app/scripts/eth-query')
+const EthQuery = require('eth-query')
 
 const threeBoxSpies = {
   init: sinon.spy(),
-  getThreeBoxAddress: sinon.spy(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
   turnThreeBoxSyncingOn: sinon.spy(),
   _registerUpdates: sinon.spy(),
@@ -25,17 +24,23 @@ class ThreeBoxControllerMock {
       getState: () => ({}),
     }
     this.init = threeBoxSpies.init
-    this.getThreeBoxAddress = threeBoxSpies.getThreeBoxAddress
     this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState
     this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn
     this._registerUpdates = threeBoxSpies._registerUpdates
   }
 }
 
+const ExtensionizerMock = {
+  runtime: {
+    id: 'fake-extension-id',
+  },
+}
+
 const MetaMaskController = proxyquire(
   '../../../../app/scripts/metamask-controller',
   {
     './controllers/threebox': ThreeBoxControllerMock,
+    extensionizer: ExtensionizerMock,
   }
 )
 
@@ -178,8 +183,8 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       await metamaskController.createNewVaultAndKeychain(password)
-      // threeBoxSpies.init.reset()
-      // threeBoxSpies.turnThreeBoxSyncingOn.reset()
+      threeBoxSpies.init.reset()
+      threeBoxSpies.turnThreeBoxSyncingOn.reset()
     })
 
     it('removes any identities that do not correspond to known accounts.', async function () {
@@ -207,11 +212,11 @@ describe('MetaMaskController', function () {
       })
     })
 
-    // it.skip('gets the address from threebox and creates a new 3box instance', async () => {
-    //   await metamaskController.submitPassword(password)
-    //   assert(threeBoxSpies.init.calledOnce)
-    //   assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
-    // })
+    it('gets the address from threebox and creates a new 3box instance', async () => {
+      await metamaskController.submitPassword(password)
+      assert(threeBoxSpies.init.calledOnce)
+      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce)
+    })
   })
 
   describe('#getGasPrice', function () {
@@ -633,29 +638,6 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#createShapeshifttx', function () {
-    let depositAddress, depositType, shapeShiftTxList
-
-    beforeEach(function () {
-      nock('https://shapeshift.io')
-        .get('/txStat/3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc')
-        .reply(
-          200,
-          '{"status": "no_deposits", "address": "3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc"}'
-        )
-
-      depositAddress = '3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc'
-      depositType = 'ETH'
-      shapeShiftTxList =
-        metamaskController.shapeshiftController.state.shapeShiftTxList
-    })
-
-    it('creates a shapeshift tx', async function () {
-      metamaskController.createShapeShiftTx(depositAddress, depositType)
-      assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
-    })
-  })
-
   describe('#addNewAccount', function () {
     let addNewAccount
 
@@ -843,7 +825,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets the type to eth_sign', function () {
-      assert.equal(metamaskMsgs[msgId].type, 'cfx_sign')
+      assert.equal(metamaskMsgs[msgId].type, 'eth_sign')
     })
 
     it('rejects the message', function () {
@@ -945,7 +927,10 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = new URL('http://myethereumwalletntw.com')
+    const phishingMessageSender = {
+      url: 'http://myethereumwalletntw.com',
+      tab: {},
+    }
 
     afterEach(function () {
       streamTest.end()
@@ -957,12 +942,20 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
 
       streamTest = createThoughStream((chunk, _, cb) => {
-        if (chunk.name !== 'phishing') return cb()
-        assert.equal(chunk.data.hostname, phishingUrl.hostname)
+        if (chunk.name !== 'phishing') {
+          return cb()
+        }
+        assert.equal(
+          chunk.data.hostname,
+          new URL(phishingMessageSender.url).hostname
+        )
         resolve()
         cb()
       })
-      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+      metamaskController.setupUntrustedCommunication(
+        streamTest,
+        phishingMessageSender
+      )
 
       await promise
     })
@@ -976,13 +969,17 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: {},
+      }
       streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()
       })
 
-      metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
+      metamaskController.setupTrustedCommunication(streamTest, messageSender)
     })
   })
 

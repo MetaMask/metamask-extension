@@ -5916,14 +5916,6 @@
       "hpa_coef": -0.0243
     }
   ],
-  "gasExpress": {
-    "safeLow": 2,
-    "standard": 3,
-    "fast": 10,
-    "fastest": 52,
-    "block_time": 15,
-    "blockNum": 6693030
-  },
   "metametrics": {
     "mockMetaMetricsResponse": true
   }

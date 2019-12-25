@@ -16,8 +16,8 @@ EthQuery.prototype.getUncleByBlockNumberAndIndex = generateFnFor(
 function generateFnFor (methodName) {
   return function () {
     const self = this
-    var args = [].slice.call(arguments)
-    var cb = args.pop()
+    const args = [].slice.call(arguments)
+    const cb = args.pop()
     self.sendAsync(
       {
         method: methodName,

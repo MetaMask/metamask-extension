@@ -17,7 +17,6 @@ class RestoreVaultPage extends Component {
   }
 
   static propTypes = {
-    warning: PropTypes.string,
     createNewVaultAndRestore: PropTypes.func.isRequired,
     leaveImportSeedScreenState: PropTypes.func,
     history: PropTypes.object,
@@ -199,7 +198,7 @@ class RestoreVaultPage extends Component {
 }
 
 export default connect(
-  ({ appState: { warning, isLoading } }) => ({ warning, isLoading }),
+  ({ appState: { isLoading } }) => ({ isLoading }),
   dispatch => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())

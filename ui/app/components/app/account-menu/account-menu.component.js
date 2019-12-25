@@ -1,11 +1,15 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
+import Fuse from 'fuse.js'
+import InputAdornment from '@material-ui/core/InputAdornment'
+
 import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Tooltip from '../../ui/tooltip'
 import Identicon from '../../ui/identicon'
+import IconWithFallBack from '../../ui/icon-with-fallback'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../../helpers/constants/common'
 import {
@@ -16,17 +20,19 @@ import {
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes'
+import TextField from '../../ui/text-field'
+import SearchIcon from '../../ui/search-icon'
 
-export default class AccountMenu extends PureComponent {
+export default class AccountMenu extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
-    accounts: PropTypes.object,
+    shouldShowAccountsSearch: PropTypes.bool,
+    accounts: PropTypes.array,
     history: PropTypes.object,
-    identities: PropTypes.object,
     isAccountMenuOpen: PropTypes.bool,
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
@@ -34,83 +40,157 @@ export default class AccountMenu extends PureComponent {
     showAccountDetail: PropTypes.func,
     showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
+    addressConnectedDomainMap: PropTypes.object,
+    originOfCurrentTab: PropTypes.string,
   }
+
+  accountsRef
 
   state = {
-    atAccountListBottom: false,
+    shouldShowScrollButton: false,
+    searchQuery: '',
   }
 
-  componentDidUpdate (prevProps) {
+  addressFuse = new Fuse([], {
+    shouldSort: false,
+    threshold: 0.45,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: [
+      { name: 'name', weight: 0.5 },
+      { name: 'address', weight: 0.5 },
+    ],
+  })
+
+  componentDidUpdate (prevProps, prevState) {
     const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps
+    const { searchQuery: prevSearchQuery } = prevState
     const { isAccountMenuOpen } = this.props
+    const { searchQuery } = this.state
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {
-      this.setAtAccountListBottom()
+      this.setShouldShowScrollButton()
+      this.resetSearchQuery()
     }
+
+    // recalculate on each search query change
+    // whether we can show scroll down button
+    if (isAccountMenuOpen && prevSearchQuery !== searchQuery) {
+      this.setShouldShowScrollButton()
+    }
+  }
+
+  renderAccountsSearch () {
+    const inputAdornment = (
+      <InputAdornment
+        position="start"
+        style={{
+          maxHeight: 'none',
+          marginRight: 0,
+          marginLeft: '8px',
+        }}
+      >
+        <SearchIcon />
+      </InputAdornment>
+    )
+
+    return [
+      <TextField
+        key="search-text-field"
+        id="search-accounts"
+        placeholder={this.context.t('searchAccounts')}
+        type="text"
+        value={this.state.searchQuery}
+        onChange={e => this.setSearchQuery(e.target.value)}
+        startAdornment={inputAdornment}
+        fullWidth
+        theme="material-white-padded"
+      />,
+      <Divider key="search-divider" />,
+    ]
   }
 
   renderAccounts () {
     const {
-      identities,
       accounts,
       selectedAddress,
       keyrings,
       showAccountDetail,
+      addressConnectedDomainMap,
+      originOfCurrentTab,
     } = this.props
+    const { searchQuery } = this.state
 
-    const accountOrder = keyrings.reduce(
-      (list, keyring) => list.concat(keyring.accounts),
-      []
-    )
+    let filteredIdentities = accounts
+    if (searchQuery) {
+      this.addressFuse.setCollection(accounts)
+      filteredIdentities = this.addressFuse.search(searchQuery)
+    }
 
-    return accountOrder
-      .filter(address => !!identities[address])
-      .map(address => {
-        const identity = identities[address]
-        const isSelected = identity.address === selectedAddress
+    if (filteredIdentities.length === 0) {
+      return (
+        <p className="account-menu__no-accounts">
+          {this.context.t('noAccountsFound')}
+        </p>
+      )
+    }
 
-        const balanceValue = accounts[address] ? accounts[address].balance : ''
-        const simpleAddress = identity.address.substring(2).toLowerCase()
+    return filteredIdentities.map(identity => {
+      const isSelected = identity.address === selectedAddress
 
-        const keyring = keyrings.find(kr => {
-          return (
-            kr.accounts.includes(simpleAddress) ||
-            kr.accounts.includes(identity.address)
-          )
-        })
+      const simpleAddress = identity.address.substring(2).toLowerCase()
 
+      const keyring = keyrings.find(kr => {
         return (
-          <div
-            className="account-menu__account menu__item--clickable"
-            onClick={() => {
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Navigation',
-                  action: 'Main Menu',
-                  name: 'Switched Account',
-                },
-              })
-              showAccountDetail(identity.address)
-            }}
-            key={identity.address}
-          >
-            <div className="account-menu__check-mark">
-              {isSelected && <div className="account-menu__check-mark-icon" />}
-            </div>
-            <Identicon address={identity.address} diameter={24} />
-            <div className="account-menu__account-info">
-              <div className="account-menu__name">{identity.name || ''}</div>
-              <UserPreferencedCurrencyDisplay
-                className="account-menu__balance"
-                value={balanceValue}
-                type={PRIMARY}
-              />
-            </div>
-            {this.renderKeyringType(keyring)}
-            {this.renderRemoveAccount(keyring, identity)}
-          </div>
+          kr.accounts.includes(simpleAddress) ||
+          kr.accounts.includes(identity.address)
         )
       })
+      const addressDomains = addressConnectedDomainMap[identity.address] || {}
+      const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab]
+
+      return (
+        <div
+          className="account-menu__account menu__item--clickable"
+          onClick={() => {
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Main Menu',
+                name: 'Switched Account',
+              },
+            })
+            showAccountDetail(identity.address)
+          }}
+          key={identity.address}
+        >
+          <div className="account-menu__check-mark">
+            {isSelected && <div className="account-menu__check-mark-icon" />}
+          </div>
+          <Identicon address={identity.address} diameter={24} />
+          <div className="account-menu__account-info">
+            <div className="account-menu__name">{identity.name || ''}</div>
+            <UserPreferencedCurrencyDisplay
+              className="account-menu__balance"
+              value={identity.balance}
+              type={PRIMARY}
+            />
+          </div>
+          {iconAndNameForOpenDomain ? (
+            <div className="account-menu__icon-list">
+              <IconWithFallBack
+                icon={iconAndNameForOpenDomain.icon}
+                name={iconAndNameForOpenDomain.name}
+              />
+            </div>
+          ) : null}
+          {this.renderKeyringType(keyring)}
+          {this.renderRemoveAccount(keyring, identity)}
+        </div>
+      )
+    })
   }
 
   renderRemoveAccount (keyring, identity) {
@@ -157,54 +237,73 @@ export default class AccountMenu extends PureComponent {
       case 'Simple Key Pair':
         label = t('imported')
         break
+      default:
+        return null
     }
 
-    return label && <div className="keyring-label allcaps">{label}</div>
+    return <div className="keyring-label allcaps">{label}</div>
   }
 
-  setAtAccountListBottom = () => {
-    const target = document.querySelector('.account-menu__accounts')
-    const { scrollTop, offsetHeight, scrollHeight } = target
+  resetSearchQuery () {
+    this.setSearchQuery('')
+  }
+
+  setSearchQuery (searchQuery) {
+    this.setState({ searchQuery })
+  }
+
+  setShouldShowScrollButton = () => {
+    const { scrollTop, offsetHeight, scrollHeight } = this.accountsRef
+
+    const canScroll = scrollHeight > offsetHeight
+
     const atAccountListBottom = scrollTop + offsetHeight >= scrollHeight
-    this.setState({ atAccountListBottom })
+
+    const shouldShowScrollButton = canScroll && !atAccountListBottom
+
+    this.setState({ shouldShowScrollButton })
   }
 
-  onScroll = debounce(this.setAtAccountListBottom, 25)
+  onScroll = debounce(this.setShouldShowScrollButton, 25)
 
   handleScrollDown = e => {
     e.stopPropagation()
-    const target = document.querySelector('.account-menu__accounts')
-    const { scrollHeight } = target
-    target.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' })
-    this.setAtAccountListBottom()
+
+    const { scrollHeight } = this.accountsRef
+    this.accountsRef.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' })
+
+    this.setShouldShowScrollButton()
   }
 
   renderScrollButton () {
-    const { accounts } = this.props
-    const { atAccountListBottom } = this.state
+    const { shouldShowScrollButton } = this.state
 
     return (
-      !atAccountListBottom &&
-      Object.keys(accounts).length > 3 && (
+      shouldShowScrollButton && (
         <div
           className="account-menu__scroll-button"
           onClick={this.handleScrollDown}
         >
-          <img src="./images/icons/down-arrow.svg" width={28} height={28} />
+          <img
+            src="./images/icons/down-arrow.svg"
+            width={28}
+            height={28}
+            alt="scroll down"
+          />
         </div>
       )
     )
   }
 
   render () {
-    const { t } = this.context
+    const { t, metricsEvent } = this.context
     const {
+      shouldShowAccountsSearch,
       isAccountMenuOpen,
       toggleAccountMenu,
       lockMetamask,
       history,
     } = this.props
-    const { metricsEvent } = this.context
 
     return (
       <Menu className="account-menu" isShowing={isAccountMenuOpen}>
@@ -223,7 +322,14 @@ export default class AccountMenu extends PureComponent {
         </Item>
         <Divider />
         <div className="account-menu__accounts-container">
-          <div className="account-menu__accounts" onScroll={this.onScroll}>
+          {shouldShowAccountsSearch ? this.renderAccountsSearch() : null}
+          <div
+            className="account-menu__accounts"
+            onScroll={this.onScroll}
+            ref={ref => {
+              this.accountsRef = ref
+            }}
+          >
             {this.renderAccounts()}
           </div>
           {this.renderScrollButton()}
@@ -242,10 +348,12 @@ export default class AccountMenu extends PureComponent {
             history.push(NEW_ACCOUNT_ROUTE)
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/plus-btn-white.svg"
-            />
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/plus-btn-white.svg"
+              />
+            )
           }
           text={t('createAccount')}
         />
@@ -262,10 +370,12 @@ export default class AccountMenu extends PureComponent {
             history.push(IMPORT_ACCOUNT_ROUTE)
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/import-account.svg"
-            />
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/import-account.svg"
+              />
+            )
           }
           text={t('importAccount')}
         />
@@ -289,10 +399,12 @@ export default class AccountMenu extends PureComponent {
             }
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/connect-icon.svg"
-            />
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/connect-icon.svg"
+              />
+            )
           }
           text={t('connectHardwareWallet')}
         />
@@ -318,10 +430,12 @@ export default class AccountMenu extends PureComponent {
             })
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/settings.svg"
-            />
+            (
+              <img
+                className="account-menu__item-icon"
+                src="images/settings.svg"
+              />
+            )
           }
           text={t('settings')}
         />

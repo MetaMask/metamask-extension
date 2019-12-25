@@ -27,7 +27,7 @@ const mapStateToProps = (state, ownProps) => {
       currentCurrency,
       conversionRate,
       selectedAddressTxList,
-      approvedOrigins,
+      domainMetadata = {},
       selectedAddress,
     },
   } = state
@@ -65,7 +65,7 @@ const mapStateToProps = (state, ownProps) => {
     ? origin[0].toUpperCase() + origin.slice(1)
     : ''
 
-  const { siteImage } = approvedOrigins[origin] || {}
+  const { icon: siteImage = '' } = domainMetadata[origin] || {}
   return {
     toAddress,
     tokenAddress,

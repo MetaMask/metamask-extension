@@ -14,8 +14,6 @@ import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
-const SEARCH_TAB = 'SEARCH'
-const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
 class AddToken extends Component {
   static contextTypes = {
@@ -31,23 +29,18 @@ class AddToken extends Component {
     identities: PropTypes.object,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
-      searchResults: [],
-      selectedTokens: {},
-      tokenSelectorError: null,
-      customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
-      autoFilled: false,
-      displayedTab: SEARCH_TAB,
-      forceEditSymbol: false,
-    }
+  state = {
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
+    searchResults: [],
+    selectedTokens: {},
+    tokenSelectorError: null,
+    customAddressError: null,
+    customSymbolError: null,
+    customDecimalsError: null,
+    autoFilled: false,
+    forceEditSymbol: false,
   }
 
   componentDidMount () {
@@ -76,14 +69,11 @@ class AddToken extends Component {
         decimals: customDecimals = 0,
       } = customToken
 
-      const displayedTab =
-        Object.keys(selectedTokens).length > 0 ? SEARCH_TAB : CUSTOM_TOKEN_TAB
       this.setState({
         selectedTokens,
         customAddress,
         customSymbol,
         customDecimals,
-        displayedTab,
       })
     }
   }
@@ -260,19 +250,21 @@ class AddToken extends Component {
         <TextField
           id="custom-symbol"
           label={
-            <div className="add-token__custom-symbol__label-wrapper">
-              <span className="add-token__custom-symbol__label">
-                {this.context.t('tokenSymbol')}
-              </span>
-              {autoFilled && !forceEditSymbol && (
-                <div
-                  className="add-token__custom-symbol__edit"
-                  onClick={() => this.setState({ forceEditSymbol: true })}
-                >
-                  {this.context.t('edit')}
-                </div>
-              )}
-            </div>
+            (
+              <div className="add-token__custom-symbol__label-wrapper">
+                <span className="add-token__custom-symbol__label">
+                  {this.context.t('tokenSymbol')}
+                </span>
+                {autoFilled && !forceEditSymbol && (
+                  <div
+                    className="add-token__custom-symbol__edit"
+                    onClick={() => this.setState({ forceEditSymbol: true })}
+                  >
+                    {this.context.t('edit')}
+                  </div>
+                )}
+              </div>
+            )
           }
           type="text"
           value={customSymbol}

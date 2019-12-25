@@ -21,7 +21,9 @@ function createLoggerMiddleware (opts) {
           params: req.params,
         })
       }
-      if (req.isMetamaskInternal) return
+      if (req.isMetamaskInternal) {
+        return
+      }
       log.info(`RPC (${opts.origin}):`, req, '->', {
         ...res,
         method: req.method,

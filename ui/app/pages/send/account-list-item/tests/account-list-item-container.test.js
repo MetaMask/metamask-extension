@@ -30,8 +30,6 @@ describe('account-list-item container', () => {
       assert.deepEqual(
         mapStateToProps({ isMainnet: true, showFiatInTestnets: false }),
         {
-          conversionRate: 'mockConversionRate',
-          currentCurrency: 'mockCurrentCurrency',
           nativeCurrency: 'mockNativeCurrency',
           balanceIsCached: 'mockBalanceIsCached',
           showFiat: true,
@@ -43,8 +41,6 @@ describe('account-list-item container', () => {
       assert.deepEqual(
         mapStateToProps({ isMainnet: true, showFiatInTestnets: true }),
         {
-          conversionRate: 'mockConversionRate',
-          currentCurrency: 'mockCurrentCurrency',
           nativeCurrency: 'mockNativeCurrency',
           balanceIsCached: 'mockBalanceIsCached',
           showFiat: true,
@@ -56,8 +52,6 @@ describe('account-list-item container', () => {
       assert.deepEqual(
         mapStateToProps({ isMainnet: false, showFiatInTestnets: true }),
         {
-          conversionRate: 'mockConversionRate',
-          currentCurrency: 'mockCurrentCurrency',
           nativeCurrency: 'mockNativeCurrency',
           balanceIsCached: 'mockBalanceIsCached',
           showFiat: true,
@@ -69,8 +63,6 @@ describe('account-list-item container', () => {
       assert.deepEqual(
         mapStateToProps({ isMainnet: false, showFiatInTestnets: false }),
         {
-          conversionRate: 'mockConversionRate',
-          currentCurrency: 'mockCurrentCurrency',
           nativeCurrency: 'mockNativeCurrency',
           balanceIsCached: 'mockBalanceIsCached',
           showFiat: false,
