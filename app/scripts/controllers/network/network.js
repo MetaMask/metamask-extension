@@ -37,7 +37,8 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
-  defaultProviderConfigType = LOCALHOST
+  defaultProviderConfigType = CFX_TEST
+  // defaultProviderConfigType = LOCALHOST
 } else if (METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigType = CFX_TEST
 } else {
