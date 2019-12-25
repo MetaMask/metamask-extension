@@ -55,14 +55,14 @@ class PendingTransactionTracker extends EventEmitter {
     @param block {object} - a block object
     @emits tx:warning
   */
-  resubmitPendingTxs (blockNumber) {
+  resubmitPendingTxs (epochNumber) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) {
       return
     }
     pending.forEach(txMeta =>
-      this._resubmitTx(txMeta, blockNumber).catch(err => {
+      this._resubmitTx(txMeta, epochNumber).catch(err => {
         /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -167,12 +167,21 @@ class PendingTransactionTracker extends EventEmitter {
     // *note to self* hard failure point
     const transactionReceipt = await this.query.getTransactionReceipt(txHash)
 
+    // TODO: show user different status depends on data form getTransactionReceipt
+    // getTransactionByHash has blockHash - mined
+    // getTransactionReceipt has outcomeStatus === 0 - executed
+    // risk getRiskCoefficient(receipt.epochNumber) has < threshold - confirmed
+    // when outcomeStatus === 1 failed but lost gas
+
     // If another tx with the same nonce is mined, set as dropped.
     const taken = await this._checkIfNonceIsTaken(txMeta)
     let dropped
     try {
       // check the network if the nonce is ahead the tx
       // and the tx has not been mined into a block
+      if (transactionReceipt === null) {
+        return
+      }
 
       dropped = await this._checkIftxWasDropped(txMeta, transactionReceipt)
       // the dropped buffer is in case we ask a node for the tx
@@ -203,8 +212,8 @@ class PendingTransactionTracker extends EventEmitter {
 
     // get latest transaction status
     try {
-      const { blockNumber } = transactionReceipt
-      if (blockNumber) {
+      const { epochNumber } = transactionReceipt
+      if (epochNumber) {
         this.emit('tx:confirmed', txId, transactionReceipt)
       }
     } catch (err) {
@@ -223,12 +232,12 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {boolean}
   */
 
-  async _checkIftxWasDropped (txMeta, { blockNumber }) {
+  async _checkIftxWasDropped (txMeta, { epochNumber }) {
     const {
       txParams: { nonce, from },
     } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
-    if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
+    if (!epochNumber && parseInt(nextNonce) > parseInt(nonce)) {
       return true
     }
     return false
