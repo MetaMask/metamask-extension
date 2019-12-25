@@ -85,6 +85,7 @@
     "classnames": "^2.2.5",
     "clone": "^2.1.2",
     "conflux-web": "^0.3.0-alpha.2",
+    "confluxjs-transaction": "^0.0.1-alpha.2",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",
