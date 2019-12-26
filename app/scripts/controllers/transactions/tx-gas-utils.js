@@ -1,4 +1,4 @@
-const EthQuery = require('ethjs-query')
+const EthQuery = require('../../ethjs-query')
 const { hexToBn, BnMultiplyByFraction, bnToHex } = require('../../lib/util')
 const log = require('loglevel')
 const { addHexPrefix } = require('ethereumjs-util')

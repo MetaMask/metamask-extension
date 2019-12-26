@@ -11194,14 +11194,6 @@ ethjs-query@^0.2.4:
     ethjs-format "0.2.2"
     ethjs-rpc "0.1.5"
 
-ethjs-query@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/ethjs-query/-/ethjs-query-0.3.4.tgz#068a8b268fe045acd2dfdf167bb740b12e596bc3"
-  integrity sha512-RkeLtBwuXJkBIf/U+Az0GOT203UiBLmN7WA6WZIwSTbmhH2yNicggwaWKvN3TOtpErOsXnzYTZp82mElHdORUQ==
-  dependencies:
-    ethjs-format "0.2.5"
-    ethjs-rpc "0.1.9"
-
 ethjs-rpc@0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/ethjs-rpc/-/ethjs-rpc-0.1.5.tgz#099e22f27dc4c18b6978a485fc36b1b0f7969080"

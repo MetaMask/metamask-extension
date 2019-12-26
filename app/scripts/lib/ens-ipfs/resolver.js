@@ -1,5 +1,5 @@
 const namehash = require('eth-ens-namehash')
-const Eth = require('ethjs-query')
+const Eth = require('../../ethjs-query')
 const EthContract = require('ethjs-contract')
 const registryAbi = require('./contracts/registry')
 const resolverAbi = require('./contracts/resolver')
