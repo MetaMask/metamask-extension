@@ -6,7 +6,7 @@ const createInflightMiddleware = require('@yqrashawn/eth-json-rpc-middleware/inf
 const createBlockTrackerInspectorMiddleware = require('@yqrashawn/eth-json-rpc-middleware/block-tracker-inspector')
 const providerFromMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerFromMiddleware')
 const BlockTracker = require('./eth-block-tracker')
-const { createCfxRewriteRequestMiddle } = require('./createCfxMiddle')
+const { createCfxRewriteRequestMiddleware } = require('./createCfxMiddleware')
 
 module.exports = createJsonRpcClient
 
@@ -20,7 +20,7 @@ function createJsonRpcClient ({ rpcUrl }) {
     createBlockCacheMiddleware({ blockTracker }),
     createInflightMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
-    createCfxRewriteRequestMiddle(),
+    createCfxRewriteRequestMiddleware(),
     fetchMiddleware,
   ])
   return { networkMiddleware, blockTracker, rpcUrl }
