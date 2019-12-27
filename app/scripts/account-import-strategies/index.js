@@ -1,6 +1,6 @@
-const Wallet = require('ethereumjs-wallet')
-const importers = require('ethereumjs-wallet/thirdparty')
-const ethUtil = require('ethereumjs-util')
+import Wallet from 'ethereumjs-wallet'
+import importers from 'ethereumjs-wallet/thirdparty'
+import ethUtil from 'ethereumjs-util'
 
 const accountImporter = {
 
@@ -53,4 +53,4 @@ function walletToPrivateKey (wallet) {
   return ethUtil.bufferToHex(privateKeyBuffer)
 }
 
-module.exports = accountImporter
+export default accountImporter

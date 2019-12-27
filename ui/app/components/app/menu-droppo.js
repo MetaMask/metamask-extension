@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const findDOMNode = require('react-dom').findDOMNode
-const ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGroup')
+import { inherits } from 'util'
+import { findDOMNode } from 'react-dom'
+import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-module.exports = MenuDroppoComponent
+export default MenuDroppoComponent
 
 
 inherits(MenuDroppoComponent, Component)

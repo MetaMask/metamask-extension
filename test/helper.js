@@ -1,7 +1,8 @@
-const Ganache = require('ganache-core')
-const nock = require('nock')
+import Ganache from 'ganache-core'
+import nock from 'nock'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import log from 'loglevel'
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
@@ -16,8 +17,6 @@ server.listen(8545, () => {
   console.log('Ganache Testrpc is running on "http://localhost:8545"')
 })
 
-// logging util
-const log = require('loglevel')
 log.setDefaultLevel(5)
 global.log = log
 

@@ -1,9 +1,8 @@
 'use strict'
 
 import DetectRTC from 'detectrtc'
-const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
-const { getEnvironmentType, getPlatform } = require('../../app/scripts/lib/util')
-const { PLATFORM_BRAVE, PLATFORM_FIREFOX } = require('../../app/scripts/lib/enums')
+import { ENVIRONMENT_TYPE_POPUP, PLATFORM_BRAVE, PLATFORM_FIREFOX } from '../../app/scripts/lib/enums'
+import { getEnvironmentType, getPlatform } from '../../app/scripts/lib/util'
 
 class WebcamUtils {
 
@@ -33,4 +32,4 @@ class WebcamUtils {
   }
 }
 
-module.exports = WebcamUtils
+export default WebcamUtils

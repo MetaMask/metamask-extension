@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 
-const PropTypes = require('prop-types')
-const classnames = require('classnames')
-const PubNub = require('pubnub')
-const qrCode = require('qrcode-generator')
-
-const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
+import PubNub from 'pubnub'
+import qrCode from 'qrcode-generator'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 import Button from '../../components/ui/button'
 import LoadingScreen from '../../components/ui/loading-screen'

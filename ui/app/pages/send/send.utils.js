@@ -1,15 +1,15 @@
-const {
+import {
   addCurrencies,
   conversionUtil,
   conversionGTE,
   multiplyCurrencies,
   conversionGreaterThan,
   conversionLessThan,
-} = require('../../helpers/utils/conversion-util')
-const {
-  calcTokenAmount,
-} = require('../../helpers/utils/token-util')
-const {
+} from '../../helpers/utils/conversion-util'
+
+import { calcTokenAmount } from '../../helpers/utils/token-util'
+
+import {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -18,11 +18,12 @@ const {
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-} = require('./send.constants')
-const abi = require('ethereumjs-abi')
-const ethUtil = require('ethereumjs-util')
+} from './send.constants'
 
-module.exports = {
+import abi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
+
+export {
   addGasBuffer,
   calcGasTotal,
   calcTokenBalance,

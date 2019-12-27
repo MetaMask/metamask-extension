@@ -1,11 +1,11 @@
-const extension = require('extensionizer')
-const log = require('loglevel')
-const { checkForError } = require('./util')
+import extension from 'extensionizer'
+import log from 'loglevel'
+import { checkForError } from './util'
 
 /**
  * A wrapper around the extension's storage local API
  */
-module.exports = class ExtensionStore {
+export default class ExtensionStore {
   /**
    * @constructor
    */

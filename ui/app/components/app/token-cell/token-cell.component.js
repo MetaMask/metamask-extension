@@ -2,10 +2,9 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
-const prefixForNetwork = require('../../../../lib/etherscan-prefix-for-network')
-const { conversionUtil, multiplyCurrencies } = require('../../../helpers/utils/conversion-util')
-
-const TokenMenuDropdown = require('../dropdowns/token-menu-dropdown.js')
+import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
+import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
+import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
 
 export default class TokenCell extends Component {
   static contextTypes = {

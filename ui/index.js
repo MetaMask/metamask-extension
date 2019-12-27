@@ -1,14 +1,14 @@
 import React from 'react'
-const render = require('react-dom').render
-const Root = require('./app/pages')
-const actions = require('./app/store/actions')
-const configureStore = require('./app/store/store')
-const txHelper = require('./lib/tx-helper')
-const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
+import { render } from 'react-dom'
+import Root from './app/pages'
+import * as actions from './app/store/actions'
+import configureStore from './app/store/store'
+import txHelper from './lib/tx-helper'
+import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
-const log = require('loglevel')
+import log from 'loglevel'
 
-module.exports = launchMetamaskUi
+export default launchMetamaskUi
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 

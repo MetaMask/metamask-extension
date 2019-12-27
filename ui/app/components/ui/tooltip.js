@@ -186,4 +186,4 @@ Tooltip.propTypes = {
   children: PropTypes.node,
 }
 
-module.exports = Tooltip
+export default Tooltip

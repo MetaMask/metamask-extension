@@ -1,5 +1,5 @@
-const assert = require('assert')
-const migration33 = require('../../../app/scripts/migrations/033')
+import assert from 'assert'
+import migration33 from '../../../app/scripts/migrations/033'
 
 describe('Migration to delete notice controller', () => {
   const oldStorage = {

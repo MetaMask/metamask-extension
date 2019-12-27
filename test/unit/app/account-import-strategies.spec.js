@@ -1,7 +1,7 @@
-const assert = require('assert')
-const ethUtil = require('ethereumjs-util')
-const accountImporter = require('../../../app/scripts/account-import-strategies/index')
-const { assertRejects } = require('../test-utils')
+import assert from 'assert'
+import ethUtil from 'ethereumjs-util'
+import accountImporter from '../../../app/scripts/account-import-strategies/index'
+import { assertRejects } from '../test-utils'
 
 describe('Account Import Strategies', function () {
   const privkey = '0x4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'

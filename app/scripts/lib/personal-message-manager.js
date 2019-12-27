@@ -1,10 +1,11 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const { ethErrors } = require('eth-json-rpc-errors')
-const createId = require('./random-id')
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import { ethErrors } from 'eth-json-rpc-errors'
+import createId from './random-id'
+
 const hexRe = /^[0-9A-Fa-f]+$/g
-const log = require('loglevel')
+import log from 'loglevel'
 
 /**
  * Represents, and contains data about, an 'personal_sign' type signature request. These are created when a
@@ -25,7 +26,7 @@ const log = require('loglevel')
  *
  */
 
-module.exports = class PersonalMessageManager extends EventEmitter {
+export default class PersonalMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - PersonalMessage.
    *

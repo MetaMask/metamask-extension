@@ -1,4 +1,4 @@
-const log = require('loglevel')
+import log from 'loglevel'
 
 const FIXTURE_SERVER_HOST = 'localhost'
 const FIXTURE_SERVER_PORT = 12345
@@ -59,4 +59,4 @@ class ReadOnlyNetworkStore {
   }
 }
 
-module.exports = ReadOnlyNetworkStore
+export default ReadOnlyNetworkStore

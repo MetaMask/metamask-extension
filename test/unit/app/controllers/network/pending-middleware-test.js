@@ -1,6 +1,7 @@
-const assert = require('assert')
-const { createPendingNonceMiddleware, createPendingTxMiddleware } = require('../../../../../app/scripts/controllers/network/middleware/pending')
-const txMetaStub = require('./stubs').txMetaStub
+import assert from 'assert'
+import { createPendingNonceMiddleware, createPendingTxMiddleware } from '../../../../../app/scripts/controllers/network/middleware/pending'
+import { txMetaStub } from './stubs'
+
 describe('#createPendingNonceMiddleware', function () {
   const getPendingNonce = async () => '0x2'
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'

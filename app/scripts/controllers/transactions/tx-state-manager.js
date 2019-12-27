@@ -1,10 +1,10 @@
-const extend = require('xtend')
-const EventEmitter = require('safe-event-emitter')
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const txStateHistoryHelper = require('./lib/tx-state-history-helper')
-const createId = require('../../lib/random-id')
-const { getFinalStates, normalizeTxParams } = require('./lib/util')
+import extend from 'xtend'
+import EventEmitter from 'safe-event-emitter'
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import txStateHistoryHelper from './lib/tx-state-history-helper'
+import createId from '../../lib/random-id'
+import { getFinalStates, normalizeTxParams } from './lib/util'
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction
@@ -484,4 +484,4 @@ class TransactionStateManager extends EventEmitter {
   }
 }
 
-module.exports = TransactionStateManager
+export default TransactionStateManager

@@ -1,13 +1,13 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const clone = require('clone')
-const nock = require('nock')
-const ethUtil = require('ethereumjs-util')
-const createThoughStream = require('through2').obj
-const blacklistJSON = require('eth-phishing-detect/src/config')
-const firstTimeState = require('../../../unit/localhostState')
-const createTxMeta = require('../../../lib/createTxMeta')
-const EthQuery = require('eth-query')
+import assert from 'assert'
+import sinon from 'sinon'
+import clone from 'clone'
+import nock from 'nock'
+import ethUtil from 'ethereumjs-util'
+import { obj as createThoughStream } from 'through2'
+import blacklistJSON from 'eth-phishing-detect/src/config'
+import firstTimeState from '../../localhostState'
+import createTxMeta from '../../../lib/createTxMeta'
+import EthQuery from 'eth-query'
 
 const threeBoxSpies = {
   init: sinon.spy(),
@@ -15,7 +15,7 @@ const threeBoxSpies = {
   turnThreeBoxSyncingOn: sinon.spy(),
   _registerUpdates: sinon.spy(),
 }
-const proxyquire = require('proxyquire')
+import proxyquire from 'proxyquire'
 
 class ThreeBoxControllerMock {
   constructor () {
@@ -37,9 +37,9 @@ const ExtensionizerMock = {
 }
 
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
-  './controllers/threebox': ThreeBoxControllerMock,
+  './controllers/threebox': { default: ThreeBoxControllerMock },
   'extensionizer': ExtensionizerMock,
-})
+}).default
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'

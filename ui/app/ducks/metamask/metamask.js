@@ -1,10 +1,11 @@
-const extend = require('xtend')
-const actions = require('../../store/actions')
-const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
-const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/controllers/network/enums')
+import extend from 'xtend'
+import { actionConstants } from '../../store/actions'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
-module.exports = reduceMetamask
+const actions = actionConstants
+
+export default reduceMetamask
 
 function reduceMetamask (state, action) {
   let newState
@@ -46,7 +47,7 @@ function reduceMetamask (state, action) {
     coinOptions: {},
     useBlockie: false,
     featureFlags: {},
-    networkEndpointType: OLD_UI_NETWORK_TYPE,
+    networkEndpointType: undefined,
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {

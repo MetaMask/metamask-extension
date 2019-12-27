@@ -8,7 +8,7 @@ import {
 } from '../../../../helpers/constants/routes'
 import {
   getQrCodeData,
-} from '../../../../pages/send/send.selectors'
+} from '../../../send/send.selectors'
 
 const mapStateToProps = state => {
   return {

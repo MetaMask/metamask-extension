@@ -1,11 +1,11 @@
-const namehash = require('eth-ens-namehash')
-const Eth = require('ethjs-query')
-const EthContract = require('ethjs-contract')
-const registryAbi = require('./contracts/registry')
-const resolverAbi = require('./contracts/resolver')
-const contentHash = require('content-hash')
+import namehash from 'eth-ens-namehash'
+import Eth from 'ethjs-query'
+import EthContract from 'ethjs-contract'
+import registryAbi from './contracts/registry'
+import resolverAbi from './contracts/resolver'
+import contentHash from 'content-hash'
 
-module.exports = resolveEnsToIpfsContentId
+export default resolveEnsToIpfsContentId
 
 
 async function resolveEnsToIpfsContentId ({ provider, name }) {

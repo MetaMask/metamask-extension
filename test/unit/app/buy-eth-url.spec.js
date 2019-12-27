@@ -1,5 +1,5 @@
-const assert = require('assert')
-const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
+import assert from 'assert'
+import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 
 describe('buy-eth-url', function () {
   const mainnet = {

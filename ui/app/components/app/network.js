@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
-const classnames = require('classnames')
-const inherits = require('util').inherits
-const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
+import classnames from 'classnames'
+import { inherits } from 'util'
+import NetworkDropdownIcon from './dropdowns/components/network-dropdown-icon'
 
 Network.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = Network
+export default Network
 
 inherits(Network, Component)
 

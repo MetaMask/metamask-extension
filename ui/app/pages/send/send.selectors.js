@@ -1,68 +1,13 @@
-const { valuesFor } = require('../../helpers/utils/util')
-const abi = require('human-standard-token-abi')
-const {
-  multiplyCurrencies,
-} = require('../../helpers/utils/conversion-util')
-const {
-  getMetaMaskAccounts,
-  getSelectedAddress,
-  getAddressBook,
-} = require('../../selectors/selectors')
-const {
-  estimateGasPriceFromRecentBlocks,
-  calcGasTotal,
-} = require('./send.utils')
+import { valuesFor } from '../../helpers/utils/util'
+import abi from 'human-standard-token-abi'
+import { multiplyCurrencies } from '../../helpers/utils/conversion-util'
+import { getMetaMaskAccounts, getSelectedAddress, getAddressBook } from '../../selectors/selectors'
+import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
 import {
   getAveragePriceEstimateInHexWEI,
 } from '../../selectors/custom-gas'
 
-const selectors = {
-  accountsWithSendEtherInfoSelector,
-  getAmountConversionRate,
-  getBlockGasLimit,
-  getConversionRate,
-  getCurrentAccountWithSendEtherInfo,
-  getCurrentCurrency,
-  getCurrentNetwork,
-  getCurrentViewContext,
-  getForceGasMin,
-  getNativeCurrency,
-  getGasLimit,
-  getGasPrice,
-  getGasPriceFromRecentBlocks,
-  getGasTotal,
-  getPrimaryCurrency,
-  getRecentBlocks,
-  getSelectedAccount,
-  getSelectedIdentity,
-  getSelectedToken,
-  getSelectedTokenContract,
-  getSelectedTokenExchangeRate,
-  getSelectedTokenToFiatRate,
-  getSendAmount,
-  getSendHexData,
-  getSendHexDataFeatureFlagState,
-  getSendEditingTransactionId,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
-  getSendErrors,
-  getSendFrom,
-  getSendFromBalance,
-  getSendFromObject,
-  getSendMaxModeState,
-  getSendTo,
-  getSendToAccounts,
-  getSendToNickname,
-  getTokenBalance,
-  getTokenExchangeRate,
-  getUnapprovedTxs,
-  transactionsSelector,
-  getQrCodeData,
-}
-
-module.exports = selectors
-
-function accountsWithSendEtherInfoSelector (state) {
+export function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
@@ -72,88 +17,88 @@ function accountsWithSendEtherInfoSelector (state) {
   return accountsWithSendEtherInfo
 }
 
-function getAmountConversionRate (state) {
+export function getAmountConversionRate (state) {
   return getSelectedToken(state)
     ? getSelectedTokenToFiatRate(state)
     : getConversionRate(state)
 }
 
-function getBlockGasLimit (state) {
+export function getBlockGasLimit (state) {
   return state.metamask.currentBlockGasLimit
 }
 
-function getConversionRate (state) {
+export function getConversionRate (state) {
   return state.metamask.conversionRate
 }
 
-function getCurrentAccountWithSendEtherInfo (state) {
+export function getCurrentAccountWithSendEtherInfo (state) {
   const currentAddress = getSelectedAddress(state)
   const accounts = accountsWithSendEtherInfoSelector(state)
 
   return accounts.find(({ address }) => address === currentAddress)
 }
 
-function getCurrentCurrency (state) {
+export function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
 }
 
-function getNativeCurrency (state) {
+export function getNativeCurrency (state) {
   return state.metamask.nativeCurrency
 }
 
-function getCurrentNetwork (state) {
+export function getCurrentNetwork (state) {
   return state.metamask.network
 }
 
-function getCurrentViewContext (state) {
+export function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
 }
 
-function getForceGasMin (state) {
+export function getForceGasMin (state) {
   return state.metamask.send.forceGasMin
 }
 
-function getGasLimit (state) {
+export function getGasLimit (state) {
   return state.metamask.send.gasLimit || '0'
 }
 
-function getGasPrice (state) {
+export function getGasPrice (state) {
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
 
-function getGasPriceFromRecentBlocks (state) {
+export function getGasPriceFromRecentBlocks (state) {
   return estimateGasPriceFromRecentBlocks(state.metamask.recentBlocks)
 }
 
-function getGasTotal (state) {
+export function getGasTotal (state) {
   return calcGasTotal(getGasLimit(state), getGasPrice(state))
 }
 
-function getPrimaryCurrency (state) {
+export function getPrimaryCurrency (state) {
   const selectedToken = getSelectedToken(state)
   return selectedToken && selectedToken.symbol
 }
 
-function getRecentBlocks (state) {
+export function getRecentBlocks (state) {
   return state.metamask.recentBlocks
 }
 
-function getSelectedAccount (state) {
+export function getSelectedAccount (state) {
   const accounts = getMetaMaskAccounts(state)
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
 }
 
-function getSelectedIdentity (state) {
+export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
   const identities = state.metamask.identities
 
   return identities[selectedAddress]
 }
 
-function getSelectedToken (state) {
+export function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
@@ -162,7 +107,7 @@ function getSelectedToken (state) {
   return selectedToken || sendToken || null
 }
 
-function getSelectedTokenContract (state) {
+export function getSelectedTokenContract (state) {
   const selectedToken = getSelectedToken(state)
 
   return selectedToken
@@ -170,7 +115,7 @@ function getSelectedTokenContract (state) {
     : null
 }
 
-function getSelectedTokenExchangeRate (state) {
+export function getSelectedTokenExchangeRate (state) {
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const selectedToken = getSelectedToken(state) || {}
   const { symbol = '' } = selectedToken
@@ -180,7 +125,7 @@ function getSelectedTokenExchangeRate (state) {
   return tokenExchangeRate
 }
 
-function getSelectedTokenToFiatRate (state) {
+export function getSelectedTokenToFiatRate (state) {
   const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
   const conversionRate = getConversionRate(state)
 
@@ -193,69 +138,69 @@ function getSelectedTokenToFiatRate (state) {
   return tokenToFiatRate
 }
 
-function getSendAmount (state) {
+export function getSendAmount (state) {
   return state.metamask.send.amount
 }
 
-function getSendHexData (state) {
+export function getSendHexData (state) {
   return state.metamask.send.data
 }
 
-function getSendHexDataFeatureFlagState (state) {
+export function getSendHexDataFeatureFlagState (state) {
   return state.metamask.featureFlags.sendHexData
 }
 
-function getSendEditingTransactionId (state) {
+export function getSendEditingTransactionId (state) {
   return state.metamask.send.editingTransactionId
 }
 
-function getSendErrors (state) {
+export function getSendErrors (state) {
   return state.send.errors
 }
 
-function getSendFrom (state) {
+export function getSendFrom (state) {
   return state.metamask.send.from
 }
 
-function getSendFromBalance (state) {
+export function getSendFromBalance (state) {
   const from = getSendFrom(state) || getSelectedAccount(state)
   return from.balance
 }
 
-function getSendFromObject (state) {
+export function getSendFromObject (state) {
   return getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
 }
 
-function getSendMaxModeState (state) {
+export function getSendMaxModeState (state) {
   return state.metamask.send.maxModeOn
 }
 
-function getSendTo (state) {
+export function getSendTo (state) {
   return state.metamask.send.to
 }
 
-function getSendToNickname (state) {
+export function getSendToNickname (state) {
   return state.metamask.send.toNickname
 }
 
-function getSendToAccounts (state) {
+export function getSendToAccounts (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const addressBookAccounts = getAddressBook(state)
   return [...fromAccounts, ...addressBookAccounts]
 }
-function getTokenBalance (state) {
+export function getTokenBalance (state) {
   return state.metamask.send.tokenBalance
 }
 
-function getSendEnsResolution (state) {
+export function getSendEnsResolution (state) {
   return state.metamask.send.ensResolution
 }
 
-function getSendEnsResolutionError (state) {
+export function getSendEnsResolutionError (state) {
   return state.metamask.send.ensResolutionError
 }
 
-function getTokenExchangeRate (state, tokenSymbol) {
+export function getTokenExchangeRate (state, tokenSymbol) {
   const pair = `${tokenSymbol.toLowerCase()}_eth`
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
@@ -263,11 +208,11 @@ function getTokenExchangeRate (state, tokenSymbol) {
   return tokenExchangeRate
 }
 
-function getUnapprovedTxs (state) {
+export function getUnapprovedTxs (state) {
   return state.metamask.unapprovedTxs
 }
 
-function transactionsSelector (state) {
+export function transactionsSelector (state) {
   const { network, selectedTokenAddress } = state.metamask
   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
@@ -282,6 +227,6 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
 }
 
-function getQrCodeData (state) {
+export function getQrCodeData (state) {
   return state.appState.qrCodeData
 }

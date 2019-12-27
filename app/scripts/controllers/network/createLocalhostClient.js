@@ -1,14 +1,14 @@
-const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createFetchMiddleware = require('eth-json-rpc-middleware/fetch')
-const createBlockRefRewriteMiddleware = require('eth-json-rpc-middleware/block-ref-rewrite')
-const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
-const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
-const BlockTracker = require('eth-block-tracker')
+import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
+import createFetchMiddleware from 'eth-json-rpc-middleware/fetch'
+import createBlockRefRewriteMiddleware from 'eth-json-rpc-middleware/block-ref-rewrite'
+import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector'
+import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
+import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware'
+import BlockTracker from 'eth-block-tracker'
 
 const inTest = process.env.IN_TEST === 'true'
 
-module.exports = createLocalhostClient
+export default createLocalhostClient
 
 function createLocalhostClient () {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl: 'http://localhost:8545/' })

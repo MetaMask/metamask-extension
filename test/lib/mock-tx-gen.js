@@ -1,5 +1,6 @@
-const extend = require('xtend')
-const BN = require('ethereumjs-util').BN
+import extend from 'xtend'
+import { BN } from 'ethereumjs-util'
+
 const template = {
   'status': 'submitted',
   'history': [{}],
@@ -38,4 +39,4 @@ function hexify (number) {
   return '0x' + (new BN(number)).toString(16)
 }
 
-module.exports = TxGenerator
+export default TxGenerator

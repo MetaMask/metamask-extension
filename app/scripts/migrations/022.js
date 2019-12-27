@@ -7,9 +7,9 @@ This migration adds submittedTime to the txMeta if it is not their
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

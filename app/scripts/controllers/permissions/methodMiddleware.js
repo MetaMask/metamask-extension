@@ -1,11 +1,10 @@
-
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
-const { ethErrors } = require('eth-json-rpc-errors')
+import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
+import { ethErrors } from 'eth-json-rpc-errors'
 
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
-module.exports = function createMethodMiddleware ({
+export default function createMethodMiddleware ({
   store, storeKey, getAccounts, requestAccountsPermission,
 }) {
   return createAsyncMiddleware(async (req, res, next) => {

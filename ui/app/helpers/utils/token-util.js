@@ -1,6 +1,6 @@
-const log = require('loglevel')
-const util = require('./util')
-const BigNumber = require('bignumber.js')
+import log from 'loglevel'
+import * as util from './util'
+import BigNumber from 'bignumber.js'
 import contractMap from 'eth-contract-metadata'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {

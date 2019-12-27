@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const FileInput = require('react-simple-file-input').default
-const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../../../selectors/selectors')
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import FileInput from 'react-simple-file-input'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { getMetaMaskAccounts } from '../../../selectors/selectors'
 import Button from '../../../components/ui/button'
 
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
@@ -150,7 +150,7 @@ JsonImportSubview.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(JsonImportSubview)

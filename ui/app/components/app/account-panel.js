@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
+import { inherits } from 'util'
 import Identicon from '../ui/identicon'
-const formatBalance = require('../../helpers/utils/util').formatBalance
-const addressSummary = require('../../helpers/utils/util').addressSummary
+import { addressSummary, formatBalance } from '../../helpers/utils/util'
 
-module.exports = AccountPanel
+export default AccountPanel
 
 
 inherits(AccountPanel, Component)

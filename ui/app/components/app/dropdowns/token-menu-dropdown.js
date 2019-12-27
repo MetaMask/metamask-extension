@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const genAccountLink = require('etherscan-link').createAccountLink
-const { Menu, Item, CloseArea } = require('./components/menu')
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import { createAccountLink as genAccountLink } from 'etherscan-link'
+import { Menu, Item, CloseArea } from './components/menu'
 
 TokenMenuDropdown.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenMenuDropdown)
+export default connect(mapStateToProps, mapDispatchToProps)(TokenMenuDropdown)
 
 function mapStateToProps (state) {
   return {

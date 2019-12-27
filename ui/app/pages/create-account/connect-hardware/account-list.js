@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Select from 'react-select'
-const genAccountLink = require('../../../../lib/account-link.js')
+import genAccountLink from '../../../../lib/account-link.js'
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
@@ -200,4 +200,4 @@ AccountList.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = AccountList
+export default AccountList

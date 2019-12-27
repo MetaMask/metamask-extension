@@ -4,69 +4,72 @@
  * @license   MIT
  */
 
-const EventEmitter = require('events')
-const pump = require('pump')
-const Dnode = require('dnode')
-const extension = require('extensionizer')
-const ObservableStore = require('obs-store')
-const ComposableObservableStore = require('./lib/ComposableObservableStore')
-const asStream = require('obs-store/lib/asStream')
-const AccountTracker = require('./lib/account-tracker')
-const RpcEngine = require('json-rpc-engine')
-const debounce = require('debounce')
-const createEngineStream = require('json-rpc-middleware-stream/engineStream')
-const createFilterMiddleware = require('eth-json-rpc-filters')
-const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
-const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
-const createOriginMiddleware = require('./lib/createOriginMiddleware')
+import EventEmitter from 'events'
+
+import pump from 'pump'
+import Dnode from 'dnode'
+import extension from 'extensionizer'
+import ObservableStore from 'obs-store'
+import ComposableObservableStore from './lib/ComposableObservableStore'
+import asStream from 'obs-store/lib/asStream'
+import AccountTracker from './lib/account-tracker'
+import RpcEngine from 'json-rpc-engine'
+import debounce from 'debounce'
+import createEngineStream from 'json-rpc-middleware-stream/engineStream'
+import createFilterMiddleware from 'eth-json-rpc-filters'
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
+import createLoggerMiddleware from './lib/createLoggerMiddleware'
+import createOriginMiddleware from './lib/createOriginMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
-const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
-const { setupMultiplex } = require('./lib/stream-utils.js')
-const KeyringController = require('eth-keyring-controller')
-const EnsController = require('./controllers/ens')
-const NetworkController = require('./controllers/network')
-const PreferencesController = require('./controllers/preferences')
-const AppStateController = require('./controllers/app-state')
-const InfuraController = require('./controllers/infura')
-const CachedBalancesController = require('./controllers/cached-balances')
-const OnboardingController = require('./controllers/onboarding')
-const ThreeBoxController = require('./controllers/threebox')
-const RecentBlocksController = require('./controllers/recent-blocks')
-const IncomingTransactionsController = require('./controllers/incoming-transactions')
-const MessageManager = require('./lib/message-manager')
-const PersonalMessageManager = require('./lib/personal-message-manager')
-const TypedMessageManager = require('./lib/typed-message-manager')
-const TransactionController = require('./controllers/transactions')
-const TokenRatesController = require('./controllers/token-rates')
-const DetectTokensController = require('./controllers/detect-tokens')
-const ABTestController = require('./controllers/ab-test')
-const { PermissionsController } = require('./controllers/permissions/')
-const nodeify = require('./lib/nodeify')
-const accountImporter = require('./account-import-strategies')
-const getBuyEthUrl = require('./lib/buy-eth-url')
-const selectChainId = require('./lib/select-chain-id')
-const { Mutex } = require('await-semaphore')
-const { version } = require('../manifest.json')
-const { BN } = require('ethereumjs-util')
+import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
+import { setupMultiplex } from './lib/stream-utils.js'
+import KeyringController from 'eth-keyring-controller'
+import EnsController from './controllers/ens'
+import NetworkController from './controllers/network'
+import PreferencesController from './controllers/preferences'
+import AppStateController from './controllers/app-state'
+import InfuraController from './controllers/infura'
+import CachedBalancesController from './controllers/cached-balances'
+import OnboardingController from './controllers/onboarding'
+import ThreeBoxController from './controllers/threebox'
+import RecentBlocksController from './controllers/recent-blocks'
+import IncomingTransactionsController from './controllers/incoming-transactions'
+import MessageManager from './lib/message-manager'
+import PersonalMessageManager from './lib/personal-message-manager'
+import TypedMessageManager from './lib/typed-message-manager'
+import TransactionController from './controllers/transactions'
+import TokenRatesController from './controllers/token-rates'
+import DetectTokensController from './controllers/detect-tokens'
+import ABTestController from './controllers/ab-test'
+import { PermissionsController } from './controllers/permissions'
+import nodeify from './lib/nodeify'
+import accountImporter from './account-import-strategies'
+import getBuyEthUrl from './lib/buy-eth-url'
+import selectChainId from './lib/select-chain-id'
+import { Mutex } from 'await-semaphore'
+import { version } from '../manifest.json'
+import ethUtil, { BN } from 'ethereumjs-util'
+
 const GWEI_BN = new BN('1000000000')
-const percentile = require('percentile')
-const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
-const log = require('loglevel')
-const TrezorKeyring = require('eth-trezor-keyring')
-const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
-const EthQuery = require('eth-query')
-const ethUtil = require('ethereumjs-util')
-const nanoid = require('nanoid')
-const contractMap = require('eth-contract-metadata')
-const {
+import percentile from 'percentile'
+import seedPhraseVerifier from './lib/seed-phrase-verifier'
+import log from 'loglevel'
+import TrezorKeyring from 'eth-trezor-keyring'
+import LedgerBridgeKeyring from 'eth-ledger-bridge-keyring'
+import EthQuery from 'eth-query'
+import nanoid from 'nanoid'
+import contractMap from 'eth-contract-metadata'
+
+import {
   AddressBookController,
   CurrencyRateController,
   ShapeShiftController,
   PhishingController,
-} = require('gaba')
-const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
+} from 'gaba'
 
-module.exports = class MetamaskController extends EventEmitter {
+import backEndMetaMetricsEvent from './lib/backend-metametrics'
+
+export default class MetamaskController extends EventEmitter {
 
   /**
    * @constructor
