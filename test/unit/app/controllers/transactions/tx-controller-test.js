@@ -4,6 +4,7 @@ const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
+const CGanache = require('@yqrashawn/conflux-local-network-lite')
 const TransactionController = require('../../../../../app/scripts/controllers/transactions')
 const {
   TRANSACTION_TYPE_RETRY,
@@ -23,6 +24,7 @@ const {
 const noop = () => true
 const currentNetworkId = 42
 const netStore = new ObservableStore(currentNetworkId)
+const cganache = new CGanache({ verbose: true })
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -530,7 +532,8 @@ describe('Transaction Controller', function () {
   })
 
   describe('#sign replay-protected tx', function () {
-    it('prepares a tx with the chainId set', function (done) {
+    // we don't use chainId
+    it.skip('prepares a tx with the chainId set', function (done) {
       txController.addTx(
         {
           id: '1',
@@ -659,7 +662,8 @@ describe('Transaction Controller', function () {
     let txParams
     let expectedTxParams
 
-    beforeEach(() => {
+    beforeEach(async () => {
+      await cganache.restart()
       addTxSpy = sinon.spy(txController, 'addTx')
       approveTransactionSpy = sinon.spy(txController, 'approveTransaction')
 

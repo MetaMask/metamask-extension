@@ -179,6 +179,7 @@ gulp.task('manifest:opera', function () {
           'clipboardWrite',
           'clipboardRead',
           'http://localhost:8545/',
+          'http://localhost:12539/',
         ]
         return json
       })

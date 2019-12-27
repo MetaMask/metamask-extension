@@ -1,16 +1,27 @@
 // const Ganache = require('ganache-core')
+const CGanache = require('@yqrashawn/conflux-local-network-lite')
 const nock = require('nock')
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
-nock.disableNetConnect()
-nock.enableNetConnect('localhost')
-// TODO: use our own version of ganache
-nock.enableNetConnect('13.67.73.51')
-
 Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
 enableFailureOnUnhandledPromiseRejection()
+
+const server = new CGanache()
+before(done => {
+  server
+    .start()
+    .then(() => {
+      console.log('Ganache Testrpc is running on "http://localhost:12539"')
+      nock.disableNetConnect()
+      nock.enableNetConnect('localhost')
+      done()
+    })
+    .catch(err => {
+      console.error(err)
+    })
+})
 
 // ganache server
 // const server = Ganache.server()

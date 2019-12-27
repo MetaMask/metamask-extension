@@ -59,8 +59,9 @@ function betterErrorMessage (err) {
       '[object Object]',
       '\n' + realRpcErrorMessage
     )
-    return err
   }
+
+  return err
 }
 
 function generateFnFor (method, methodObject) {

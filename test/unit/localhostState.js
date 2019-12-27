@@ -11,10 +11,8 @@ const initialState = {
   config: {},
   NetworkController: {
     provider: {
-      // type: 'rpc',
-      // rpcTarget: 'http://localhost:8545',
-      // TODO: use our own version of ganache
-      type: 'testnet',
+      type: 'rpc',
+      rpcTarget: 'http://localhost:12539',
     },
   },
 }

@@ -1,7 +1,8 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const scaffoldMiddleware = require('@yqrashawn/eth-json-rpc-middleware/scaffold')
-const providerAsMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerAsMiddleware')
-const GanacheCore = require('ganache-core')
+// const providerAsMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerAsMiddleware')
+// const GanacheCore = require('ganache-core')
+const createJsonRpcClient = require('../../app/scripts/controllers/network/createJsonRpcClient')
 
 module.exports = {
   createEngineForTestData,
@@ -52,17 +53,22 @@ function providerFromEngine (engine) {
 }
 
 function createTestProviderTools (opts = {}) {
+  const networkClient = createJsonRpcClient({
+    rpcUrl: 'http://localhost:12539',
+  })
   const engine = createEngineForTestData()
   // handle provided hooks
   engine.push(scaffoldMiddleware(opts.scaffold || {}))
   // handle block tracker methods
-  engine.push(
-    providerAsMiddleware(
-      GanacheCore.provider({
-        mnemonic: getTestSeed(),
-      })
-    )
-  )
+  engine.push(networkClient.networkMiddleware)
+  // engine.push(
+  //   providerAsMiddleware(
+  //     GanacheCore.provider({
+  //       mnemonic: getTestSeed(),
+  //     })
+  //   )
+  // )
+
   // wrap in standard provider interface
   const provider = providerFromEngine(engine)
   return { provider, engine }

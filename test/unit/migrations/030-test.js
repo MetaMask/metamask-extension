@@ -18,7 +18,7 @@ const storage = {
         {
           chainId: 'fail',
           nickname: '',
-          rpcUrl: 'http://127.0.0.1:8545',
+          rpcUrl: 'http://127.0.0.1:12539',
           ticker: '',
         },
         {

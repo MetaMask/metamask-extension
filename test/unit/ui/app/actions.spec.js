@@ -9,7 +9,7 @@ const nock = require('nock')
 const fetchMock = require('fetch-mock')
 const configureStore = require('redux-mock-store').default
 const thunk = require('redux-thunk').default
-const EthQuery = require('eth-query')
+const EthQuery = require('../../../../app/scripts/eth-query')
 const Eth = require('ethjs')
 const KeyringController = require('eth-keyring-controller')
 
@@ -1477,7 +1477,10 @@ describe('Actions', () => {
       const store = mockStore()
       getTransactionCountSpy = sinon.spy(global.ethQuery, 'getTransactionCount')
 
-      store.dispatch(actions.updateNetworkNonce())
+      // just a random address
+      store.dispatch(
+        actions.updateNetworkNonce('0x91e36D5f4ce79054e2e7811132860469d6E802d6')
+      )
       assert(getTransactionCountSpy.calledOnce)
     })
 
