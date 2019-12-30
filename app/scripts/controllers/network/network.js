@@ -39,7 +39,9 @@ let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
   // defaultProviderConfigType = CFX_TEST
   defaultProviderConfigType = LOCALHOST
-} else if (METAMASK_DEBUG || env === 'test') {
+} else if (METAMASK_DEBUG) {
+  defaultProviderConfigType = CFX_TEST
+} else if (env === 'test') {
   defaultProviderConfigType = LOCALHOST
 } else {
   defaultProviderConfigType = MAINNET
