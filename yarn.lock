@@ -3305,6 +3305,19 @@
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.3.tgz#84d85462481c74d686b068dae32a2eb246f86c8a"
   integrity sha512-aSvIpJVc+/d6TWSHBsji/lK8zpKIV3XNtdnC6RGRt7K3P3C20E3+vXHVB75UcuVTNpBJnd6rXkSsk6bxRP5luQ==
 
+"@yqrashawn/cfx-token-tracker@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-token-tracker/-/cfx-token-tracker-1.1.3.tgz#30f77ec014d74312e2da9dc012a1d9c691114f77"
+  integrity sha512-S3HJUbN7xefYlK16MPbQn52SH9DXLI3hOZKCV8EzVJGvOAD9OD0BuIq249hWOSMVE93wHKf2wwcsqLPNVDh3hQ==
+  dependencies:
+    deep-equal "^1.1.0"
+    eth-block-tracker "^4.4.2"
+    ethjs "^0.3.6"
+    ethjs-contract "^0.2.1"
+    ethjs-query "^0.3.7"
+    human-standard-token-abi "^1.0.2"
+    safe-event-emitter "^1.0.1"
+
 "@yqrashawn/conflux-local-network-lite@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.1.tgz#2c82cbd2af6536f15c6a5bc5fcf59ff0d963f15b"
@@ -6791,6 +6804,11 @@ ccount@^1.0.0, ccount@^1.0.3:
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.0.4.tgz#9cf2de494ca84060a2a8d2854edd6dfb0445f386"
   integrity sha512-fpZ81yYfzentuieinmGnphk0pLkOTMm6MZdVqwd77ROvhko6iujLNGrHH5E7utq3ygWklwfmwuG+A7P+NpqT6w==
 
+cfx-fc-abi@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cfx-fc-abi/-/cfx-fc-abi-1.0.0.tgz#4818cefb768692eedba2f32526c2b9d44efea6c1"
+  integrity sha512-R7Irt+Y0wRzDqoLHddTHgwfhDqV/o7aEFQoDsueL0mX+3FipomMZEBgkvUqlGbeZP6fA1iHfENAwb1BturPW4g==
+
 chai-checkmark@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chai-checkmark/-/chai-checkmark-1.0.1.tgz#9fbb3c9ad9101f097ef288328d30f4227d74fffb"
@@ -8772,6 +8790,18 @@ deep-equal@^1.0.0, deep-equal@^1.0.1, deep-equal@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
   integrity sha1-9dJgKStmDghO/0zbyfCK0yR0SLU=
+
+deep-equal@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.1.tgz#b5c98c942ceffaf7cb051e24e1434a25a2e6076a"
+  integrity sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==
+  dependencies:
+    is-arguments "^1.0.4"
+    is-date-object "^1.0.1"
+    is-regex "^1.0.4"
+    object-is "^1.0.1"
+    object-keys "^1.1.1"
+    regexp.prototype.flags "^1.2.0"
 
 deep-extend@^0.5.0, deep-extend@^0.5.1:
   version "0.5.1"
@@ -15564,6 +15594,11 @@ is-alphanumerical@^1.0.0:
   dependencies:
     is-alphabetical "^1.0.0"
     is-decimal "^1.0.0"
+
+is-arguments@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/is-arguments/-/is-arguments-1.0.4.tgz#3faf966c7cba0ff437fb31f6250082fcf0448cf3"
+  integrity sha512-xPh0Rmt8NE65sNzvyUmWgI1tz3mKq74lGA0mL8LYZcoIzKOzDh6HmrYm3d18k60nHerC8A9Km8kYu87zfSFnLA==
 
 is-arrayish@^0.2.1:
   version "0.2.1"

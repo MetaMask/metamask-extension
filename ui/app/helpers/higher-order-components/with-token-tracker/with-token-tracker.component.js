@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TokenTracker from 'eth-token-tracker'
+import TokenTracker from '@yqrashawn/cfx-token-tracker'
+import fcAbi from 'cfx-fc-abi'
 
 export default function withTokenTracker (WrappedComponent) {
   return class TokenTrackerWrappedComponent extends Component {
@@ -58,6 +59,10 @@ export default function withTokenTracker (WrappedComponent) {
       }
 
       const { userAddress, token } = this.props
+
+      if (token.symbol === 'FC') {
+        token.abi = fcAbi
+      }
 
       this.tracker = new TokenTracker({
         userAddress,

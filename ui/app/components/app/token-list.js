@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import TokenCell from './token-cell'
+import fcAbi from 'cfx-fc-abi'
 const inherits = require('util').inherits
-const TokenTracker = require('eth-token-tracker')
+const TokenTracker = require('@yqrashawn/cfx-token-tracker')
 const connect = require('react-redux').connect
 const { getSelectedAddress } = require('../../selectors/selectors')
 const log = require('loglevel')
@@ -120,7 +121,12 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: this.props.tokens,
+    tokens: this.props.tokens.map(token => {
+      if (token.symbol === 'FC') {
+        token.abi = fcAbi
+      }
+      return token
+    }),
     pollingInterval: 8000,
   })
 
@@ -134,9 +140,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
 
   this.tracker
     .updateBalances()
-    .then(() => {
-      this.updateBalances(this.tracker.serialize())
-    })
+    .then(() => this.updateBalances(this.tracker.serialize()))
     .catch(reason => {
       log.error(`Problem updating balances`, reason)
       this.setState({ isLoading: false })
