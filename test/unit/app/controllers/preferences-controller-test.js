@@ -673,7 +673,7 @@ describe('preferences controller', function () {
           {
             rpcUrl: 'rpc_url',
             chainId: 1,
-            ticker: 'ETH',
+            ticker: 'CFX',
             nickname: '',
             rpcPrefs: {},
           },
@@ -686,7 +686,7 @@ describe('preferences controller', function () {
           {
             rpcUrl: 'rpc_url',
             chainId: 1,
-            ticker: 'ETH',
+            ticker: 'CFX',
             nickname: '',
             rpcPrefs: {},
           },
@@ -702,7 +702,7 @@ describe('preferences controller', function () {
           {
             rpcUrl: 'rpc_url',
             chainId: 1,
-            ticker: 'ETH',
+            ticker: 'CFX',
             nickname: '',
             rpcPrefs: {},
           },
