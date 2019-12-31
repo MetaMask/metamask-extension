@@ -12756,37 +12756,10 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
-gaba@^1.6.0:
+gaba@^1.6.0, gaba@^1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.1.tgz#2e096889aca74eb5946b55a3922427314b5dca22"
   integrity sha512-YsKG4+Ql3D6v4cnMgH7P8c9JqQb74y6gkIhySLd1BYwFZQTXn27u16cYfoxPtqeGfTFhus9h4CpxAr8s8bsvCA==
-  dependencies:
-    await-semaphore "^0.1.3"
-    eth-contract-metadata "^1.11.0"
-    eth-ens-namehash "^2.0.8"
-    eth-json-rpc-infura "^4.0.1"
-    eth-keyring-controller "^5.3.0"
-    eth-method-registry "1.1.0"
-    eth-phishing-detect "^1.1.13"
-    eth-query "^2.1.2"
-    eth-sig-util "^2.3.0"
-    ethereumjs-util "^6.1.0"
-    ethereumjs-wallet "0.6.0"
-    ethjs-query "^0.3.8"
-    human-standard-collectible-abi "^1.0.2"
-    human-standard-token-abi "^2.0.0"
-    isomorphic-fetch "^2.2.1"
-    jsonschema "^1.2.4"
-    percentile "^1.2.1"
-    single-call-balance-checker-abi "^1.0.0"
-    uuid "^3.3.2"
-    web3 "^0.20.7"
-    web3-provider-engine "^15.0.4"
-
-gaba@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.0.tgz#ccd9f99c56687b5acd39f9e3ceb435b2a59b6aa1"
-  integrity sha512-HoVreAdZssL0jNHuzZ7WP+YKZ0riu44jVDWxhQ9hsgPuzxbVEsz9fO/HDxqAdNZS1Cswayq6+ciZ3HSCFWMKbQ==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.11.0"
