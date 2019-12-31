@@ -137,40 +137,40 @@ describe('util', function () {
       assert.equal(result, 'None', 'should return "None"')
     })
 
-    it('should return eth as string followed by ETH', function () {
+    it('should return eth as string followed by CFX', function () {
       const input = new ethUtil.BN(ethInWei, 10).toJSON()
       const result = util.formatBalance(input, 4)
-      assert.equal(result, '1.0000 ETH')
+      assert.equal(result, '1.0000 CFX')
     })
 
-    it('should return eth as string followed by ETH', function () {
+    it('should return eth as string followed by CFX', function () {
       const input = new ethUtil.BN(ethInWei, 10)
         .div(new ethUtil.BN('2', 10))
         .toJSON()
       const result = util.formatBalance(input, 3)
-      assert.equal(result, '0.500 ETH')
+      assert.equal(result, '0.500 CFX')
     })
 
     it('should display specified decimal points', function () {
       const input = '0x128dfa6a90b28000'
       const result = util.formatBalance(input, 2)
-      assert.equal(result, '1.33 ETH')
+      assert.equal(result, '1.33 CFX')
     })
     it('should default to 3 decimal points', function () {
       const input = '0x128dfa6a90b28000'
       const result = util.formatBalance(input)
-      assert.equal(result, '1.337 ETH')
+      assert.equal(result, '1.337 CFX')
     })
     it('should show 2 significant digits for tiny balances', function () {
       const input = '0x1230fa6a90b28'
       const result = util.formatBalance(input)
-      assert.equal(result, '0.00032 ETH')
+      assert.equal(result, '0.00032 CFX')
     })
-    it('should not parse the balance and return value with 2 decimal points with ETH at the end', function () {
+    it('should not parse the balance and return value with 2 decimal points with CFX at the end', function () {
       const value = '1.2456789'
       const needsParse = false
       const result = util.formatBalance(value, 2, needsParse)
-      assert.equal(result, '1.24 ETH')
+      assert.equal(result, '1.24 CFX')
     })
   })
 

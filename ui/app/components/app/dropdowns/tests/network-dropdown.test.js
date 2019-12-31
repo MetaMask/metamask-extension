@@ -55,7 +55,7 @@ describe('Network Dropdown', () => {
     })
 
     it('renders 7 DropDownMenuItems ', () => {
-      assert.equal(wrapper.find(DropdownMenuItem).length, 8)
+      assert.equal(wrapper.find(DropdownMenuItem).length, 4)
     })
 
     it('checks background color for first NetworkDropdownIcon', () => {
@@ -68,7 +68,7 @@ describe('Network Dropdown', () => {
       ) // Main Ethereum Network Teal
     })
 
-    it('checks background color for second NetworkDropdownIcon', () => {
+    it.skip('checks background color for second NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -78,7 +78,7 @@ describe('Network Dropdown', () => {
       ) // Ropsten Red
     })
 
-    it('checks background color for third NetworkDropdownIcon', () => {
+    it.skip('checks background color for third NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -88,7 +88,7 @@ describe('Network Dropdown', () => {
       ) // Kovan Purple
     })
 
-    it('checks background color for fourth NetworkDropdownIcon', () => {
+    it.skip('checks background color for fourth NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -98,7 +98,7 @@ describe('Network Dropdown', () => {
       ) // Rinkeby Yellow
     })
 
-    it('checks background color for fifth NetworkDropdownIcon', () => {
+    it.skip('checks background color for fifth NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -108,7 +108,7 @@ describe('Network Dropdown', () => {
       ) // Goerli Blue
     })
 
-    it('checks background color for sixth NetworkDropdownIcon', () => {
+    it.skip('checks background color for sixth NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -118,21 +118,21 @@ describe('Network Dropdown', () => {
       )
     })
 
-    it('checks dropdown for frequestRPCList from  state ', () => {
+    it.skip('checks dropdown for frequestRPCList from  state ', () => {
       assert.equal(
         wrapper
           .find(DropdownMenuItem)
-          .at(6)
+          .at(1)
           .text(),
         '✓http://localhost:7545'
       )
     })
 
-    it('checks background color for seventh NetworkDropdownIcon', () => {
+    it('checks background color for second NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
-          .at(6)
+          .at(1)
           .prop('innerBorder'),
         '1px solid #9b9b9b'
       )
