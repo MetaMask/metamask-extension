@@ -91,10 +91,10 @@ describe('Confirm Transaction utils', () => {
   })
 
   describe('getValueFromWeiHex', () => {
-    it('should get the transaction amount in ETH', () => {
+    it('should get the transaction amount in CFX', () => {
       const ethTransactionAmount = utils.getValueFromWeiHex({
         value: '0xde0b6b3a7640000',
-        toCurrency: 'ETH',
+        toCurrency: 'CFX',
         conversionRate: 468.58,
         numberOfDecimals: 6,
       })
@@ -115,10 +115,10 @@ describe('Confirm Transaction utils', () => {
   })
 
   describe('getTransactionFee', () => {
-    it('should get the transaction fee in ETH', () => {
+    it('should get the transaction fee in CFX', () => {
       const ethTransactionFee = utils.getTransactionFee({
         value: '0x1319718a5000',
-        toCurrency: 'ETH',
+        toCurrency: 'CFX',
         conversionRate: 468.58,
         numberOfDecimals: 6,
       })

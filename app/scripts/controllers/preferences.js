@@ -523,7 +523,7 @@ class PreferencesController {
   addToFrequentRpcList (
     url,
     chainId,
-    ticker = 'ETH',
+    ticker = 'CFX',
     nickname = '',
     rpcPrefs = {}
   ) {

@@ -12,13 +12,13 @@
     "message": "Show Incoming Transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+    "message": "Select this to use Confluxscan to show incoming transactions in the transactions list"
   },
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With MetaMask"
   },
   "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
+    "message": "Chart only available on Conflux networks."
   },
   "connectedSites": {
     "message": "Connected Sites"
@@ -127,7 +127,7 @@
     "message": "Amount:"
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "An Conflux Wallet in your Browser",
     "description": "The description of the application"
   },
   "appName": {
@@ -298,7 +298,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Main Conflux Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -397,7 +397,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Cfxer transactions is Main Net."
   },
   "delete": {
     "message": "Delete"
@@ -409,7 +409,7 @@
     "message": "Deposit"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit Cfxer"
   },
   "details": {
     "message": "Details"
@@ -436,10 +436,10 @@
     "message": "Disconnect all accounts?"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit Cfxer"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some Cfxer, the quickest way to get Cfxer in your new wallet by direct deposit."
   },
   "domainLastConnect": {
     "message": "Last Connected: $1",
@@ -520,7 +520,7 @@
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+    "message": "ENS name not found on the current network. Try switching to Main Conflux Network."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -535,10 +535,10 @@
     "message": "Enter password to continue"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum Public Address"
+    "message": "Conflux Public Address"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
@@ -606,7 +606,7 @@
     "message": "Gas Price Extremely Low"
   },
   "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+    "message": "Gas price specifies the amount of Cfxer you are willing to pay for each unit of gas."
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
@@ -621,11 +621,11 @@
     "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get Cfxer"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get Cfxer from a faucet for the $1",
+    "description": "Displays network name for Cfxer faucet"
   },
   "getHelp": {
     "message": "Get Help."
@@ -807,7 +807,7 @@
     "message": "Logout time is too great"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Conflux Network"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -822,7 +822,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "Connecting you to Ethereum and the Decentralized Web."
+    "message": "Connecting you to Conflux and the Decentralized Web."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
@@ -849,7 +849,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Cfxer in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -1158,7 +1158,7 @@
     "message": "Your secret backup phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Cfxer forever."
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -1200,7 +1200,7 @@
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent ether"
+    "message": "sent cfxer"
   },
   "sentTokens": {
     "message": "sent tokens"
@@ -1324,7 +1324,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Conflux account. Log in to dApps, send Cfx, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1546,7 +1546,7 @@
     "message": "View at $1"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View on ConfluxScan"
   },
   "retryTransaction": {
     "message": "Retry Transaction"

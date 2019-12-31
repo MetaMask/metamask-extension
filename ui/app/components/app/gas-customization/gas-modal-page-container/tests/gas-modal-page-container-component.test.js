@@ -28,19 +28,19 @@ const mockGasPriceButtonGroupProps = {
   gasButtonInfo: [
     {
       feeInPrimaryCurrency: '$0.52',
-      feeInSecondaryCurrency: '0.0048 ETH',
+      feeInSecondaryCurrency: '0.0048 CFX',
       timeEstimate: '~ 1 min 0 sec',
       priceInHexWei: '0xa1b2c3f',
     },
     {
       feeInPrimaryCurrency: '$0.39',
-      feeInSecondaryCurrency: '0.004 ETH',
+      feeInSecondaryCurrency: '0.004 CFX',
       timeEstimate: '~ 1 min 30 sec',
       priceInHexWei: '0xa1b2c39',
     },
     {
       feeInPrimaryCurrency: '$0.30',
-      feeInSecondaryCurrency: '0.00354 ETH',
+      feeInSecondaryCurrency: '0.00354 CFX',
       timeEstimate: '~ 2 min 1 sec',
       priceInHexWei: '0xa1b2c30',
     },

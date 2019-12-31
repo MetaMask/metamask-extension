@@ -27,7 +27,7 @@ module.exports = {
     currentCurrency: 'USD',
     conversionRate: 1200.88200327,
     conversionDate: 1489013762,
-    nativeCurrency: 'ETH',
+    nativeCurrency: 'CFX',
     frequentRpcList: [],
     network: '3',
     accounts: {

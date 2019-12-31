@@ -23,7 +23,7 @@ describe('CurrencyInput container', () => {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -38,7 +38,7 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
@@ -51,7 +51,7 @@ describe('CurrencyInput container', () => {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -66,7 +66,7 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: true,
           maxModeOn: false,
         },
@@ -79,7 +79,7 @@ describe('CurrencyInput container', () => {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -94,7 +94,7 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
@@ -107,7 +107,7 @@ describe('CurrencyInput container', () => {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -122,7 +122,7 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
@@ -143,7 +143,7 @@ describe('CurrencyInput container', () => {
           stateProps: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
           },
           dispatchProps: {},
           ownProps: {},
@@ -151,9 +151,9 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           // useFiat: true,
-          nativeSuffix: 'ETH',
+          nativeSuffix: 'CFX',
           fiatSuffix: 'USD',
         },
       },
@@ -164,7 +164,7 @@ describe('CurrencyInput container', () => {
           stateProps: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
           },
           dispatchProps: {},
           ownProps: { useFiat: true },
@@ -172,9 +172,9 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           useFiat: true,
-          nativeSuffix: 'ETH',
+          nativeSuffix: 'CFX',
           fiatSuffix: 'USD',
         },
       },

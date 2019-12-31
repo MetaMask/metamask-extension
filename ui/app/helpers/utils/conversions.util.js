@@ -118,7 +118,7 @@ export function decEthToConvertedCurrency (
   return conversionUtil(ethTotal, {
     fromNumericBase: 'dec',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
+    fromCurrency: 'CFX',
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
