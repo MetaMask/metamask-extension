@@ -52,7 +52,7 @@ const defaultProviderConfig = {
 }
 
 const defaultNetworkConfig = {
-  ticker: 'ETH',
+  ticker: 'CFX',
 }
 
 module.exports = class NetworkController extends EventEmitter {
@@ -156,7 +156,7 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
+  setRpcTarget (rpcTarget, chainId, ticker = 'CFX', nickname = '', rpcPrefs) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
@@ -168,7 +168,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.providerConfig = providerConfig
   }
 
-  async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
+  async setProviderType (type, rpcTarget = '', ticker = 'CFX', nickname = '') {
     assert.notEqual(
       type,
       'rpc',
@@ -271,7 +271,7 @@ module.exports = class NetworkController extends EventEmitter {
     networks.networkList['rpc'] = {
       chainId: chainId,
       rpcUrl,
-      ticker: ticker || 'ETH',
+      ticker: ticker || 'CFX',
       nickname,
     }
     // setup networkConfig

@@ -1733,7 +1733,7 @@ function setPreviousProvider (type) {
 function updateAndSetCustomRpc (
   newRpc,
   chainId,
-  ticker = 'ETH',
+  ticker = 'CFX',
   nickname,
   rpcPrefs
 ) {
@@ -1763,7 +1763,7 @@ function updateAndSetCustomRpc (
   }
 }
 
-function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+function editRpc (oldRpc, newRpc, chainId, ticker = 'CFX', nickname, rpcPrefs) {
   return dispatch => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
     background.delCustomRpc(oldRpc, err => {
@@ -1797,7 +1797,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
   }
 }
 
-function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
+function setRpcTarget (newRpc, chainId, ticker = 'CFX', nickname) {
   return dispatch => {
     log.debug(
       `background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`

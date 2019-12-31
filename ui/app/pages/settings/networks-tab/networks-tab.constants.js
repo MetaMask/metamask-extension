@@ -5,7 +5,7 @@ const defaultNetworksData = [
     providerType: 'mainnet',
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/mainnet',
     chainId: '1',
-    ticker: 'ETH',
+    ticker: 'CFX',
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
@@ -14,7 +14,7 @@ const defaultNetworksData = [
     providerType: 'ropsten',
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/ropsten',
     chainId: '3',
-    ticker: 'ETH',
+    ticker: 'CFX',
     blockExplorerUrl: 'https://ropsten.etherscan.io',
   },
   {
@@ -23,7 +23,7 @@ const defaultNetworksData = [
     providerType: 'kovan',
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/kovan',
     chainId: '4',
-    ticker: 'ETH',
+    ticker: 'CFX',
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
@@ -32,7 +32,7 @@ const defaultNetworksData = [
     providerType: 'rinkeby',
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/rinkeby',
     chainId: '42',
-    ticker: 'ETH',
+    ticker: 'CFX',
     blockExplorerUrl: 'https://rinkeby.etherscan.io',
   },
   {
@@ -41,7 +41,7 @@ const defaultNetworksData = [
     providerType: 'goerli',
     rpcUrl: 'https://api.infura.io/v1/jsonrpc/goerli',
     chainId: '5',
-    ticker: 'ETH',
+    ticker: 'CFX',
     blockExplorerUrl: 'https://goerli.etherscan.io',
   },
   {

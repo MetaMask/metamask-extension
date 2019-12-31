@@ -137,7 +137,7 @@ NetworkDropdown.prototype.render = function NetworkDropdown () {
           {this.context.t('mainnet')}
         </span>
       </DropdownMenuItem>
-      <DropdownMenuItem
+      {/* <DropdownMenuItem
         key="ropsten"
         closeMenu={() => this.props.hideNetworkDropdown()}
         onClick={() => this.handleClick('ropsten')}
@@ -232,7 +232,7 @@ NetworkDropdown.prototype.render = function NetworkDropdown () {
         >
           {this.context.t('goerli')}
         </span>
-      </DropdownMenuItem>
+      </DropdownMenuItem> */}
       <DropdownMenuItem
         key="default"
         closeMenu={() => this.props.hideNetworkDropdown()}
@@ -341,7 +341,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
 
   return reversedRpcListDetail.map(entry => {
     const rpc = entry.rpcUrl
-    const ticker = entry.ticker || 'ETH'
+    const ticker = entry.ticker || 'CFX'
     const nickname = entry.nickname || ''
     const currentRpcTarget =
       provider.type === 'rpc' && rpc === provider.rpcTarget

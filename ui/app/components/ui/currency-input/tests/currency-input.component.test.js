@@ -21,7 +21,7 @@ describe('CurrencyInput Component', () => {
     it('should render properly with a suffix', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -31,23 +31,23 @@ describe('CurrencyInput Component', () => {
       const wrapper = mount(
         <Provider store={store}>
           <CurrencyInput
-            nativeSuffix="ETH"
+            nativeSuffix="CFX"
             fiatSuffix="USD"
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
           />
         </Provider>
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
-      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
+      assert.equal(wrapper.find('.unit-input__suffix').text(), 'CFX')
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should render properly with an ETH value', () => {
+    it('should render properly with an CFX value', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -59,8 +59,8 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             value="de0b6b3a7640000"
             fiatSuffix="USD"
-            nativeSuffix="ETH"
-            nativeCurrency="ETH"
+            nativeSuffix="CFX"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -75,7 +75,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
-      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
+      assert.equal(wrapper.find('.unit-input__suffix').text(), 'CFX')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
       assert.equal(
         wrapper.find('.currency-display-component').text(),
@@ -86,7 +86,7 @@ describe('CurrencyInput Component', () => {
     it('should render properly with a fiat value', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -98,9 +98,9 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             value="f602f2234d0ea"
             fiatSuffix="USD"
-            nativeSuffix="ETH"
+            nativeSuffix="CFX"
             useFiat
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -119,14 +119,14 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
       assert.equal(
         wrapper.find('.currency-display-component').text(),
-        '0.004328ETH'
+        '0.004328CFX'
       )
     })
 
     it('should render properly with a native value when hideFiat is true', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -138,10 +138,10 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             value="f602f2234d0ea"
             fiatSuffix="USD"
-            nativeSuffix="ETH"
+            nativeSuffix="CFX"
             useFiat
             hideFiat
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -160,7 +160,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.state.decimalValue, 0.004328)
       assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
       assert.equal(wrapper.find('.unit-input__suffix').length, 1)
-      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
+      assert.equal(wrapper.find('.unit-input__suffix').text(), 'CFX')
       assert.equal(wrapper.find('.unit-input__input').props().value, '0.004328')
       assert.equal(
         wrapper.find('.currency-input__conversion-component').text(),
@@ -178,10 +178,10 @@ describe('CurrencyInput Component', () => {
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for ETH', () => {
+    it('should call onChange and onBlur on input changes with the hex value for CFX', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -192,8 +192,8 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
-            suffix="ETH"
-            nativeCurrency="ETH"
+            suffix="CFX"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -236,7 +236,7 @@ describe('CurrencyInput Component', () => {
     it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -248,7 +248,7 @@ describe('CurrencyInput Component', () => {
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
             suffix="USD"
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat
@@ -266,7 +266,7 @@ describe('CurrencyInput Component', () => {
         .instance()
       assert.equal(currencyInputInstance.state.decimalValue, 0)
       assert.equal(currencyInputInstance.state.hexValue, undefined)
-      assert.equal(wrapper.find('.currency-display-component').text(), '0ETH')
+      assert.equal(wrapper.find('.currency-display-component').text(), '0CFX')
       const input = wrapper.find('input')
       assert.equal(input.props().value, 0)
 
@@ -275,7 +275,7 @@ describe('CurrencyInput Component', () => {
       assert.ok(handleChangeSpy.calledWith('f602f2234d0ea'))
       assert.equal(
         wrapper.find('.currency-display-component').text(),
-        '0.004328ETH'
+        '0.004328CFX'
       )
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
@@ -289,7 +289,7 @@ describe('CurrencyInput Component', () => {
     it('should change the state and pass in a new decimalValue when props.value changes', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -301,7 +301,7 @@ describe('CurrencyInput Component', () => {
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
             suffix="USD"
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat
@@ -325,7 +325,7 @@ describe('CurrencyInput Component', () => {
     it('should swap selected currency when swap icon is clicked', () => {
       const mockStore = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -336,9 +336,9 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
-            nativeSuffix="ETH"
+            nativeSuffix="CFX"
             fiatSuffix="USD"
-            nativeCurrency="ETH"
+            nativeCurrency="CFX"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -381,7 +381,7 @@ describe('CurrencyInput Component', () => {
       swap.simulate('click')
       assert.equal(
         wrapper.find('.currency-display-component').text(),
-        '0.004328ETH'
+        '0.004328CFX'
       )
     })
   })

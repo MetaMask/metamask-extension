@@ -146,7 +146,7 @@ describe('send selectors', () => {
 
   describe('getNativeCurrency()', () => {
     it('should return the ticker symbol of the selected network', () => {
-      assert.equal(getNativeCurrency(mockState), 'ETH')
+      assert.equal(getNativeCurrency(mockState), 'CFX')
     })
   })
 

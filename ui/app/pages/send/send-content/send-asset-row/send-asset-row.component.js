@@ -47,7 +47,7 @@ export default class SendAssetRow extends Component {
             name: 'User clicks "Assets" dropdown',
           },
           customVariables: {
-            assetSelected: address ? 'ERC20' : 'ETH',
+            assetSelected: address ? 'ERC20' : 'CFX',
           },
         })
         this.props.setSelectedToken(address)
@@ -121,7 +121,7 @@ export default class SendAssetRow extends Component {
           <Identicon diameter={36} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">ETH</div>
+          <div className="send-v2__asset-dropdown__symbol">CFX</div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">
               {`${t('balance')}:`}

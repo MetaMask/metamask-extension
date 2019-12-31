@@ -1939,7 +1939,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async updateAndSetCustomRpc (
     rpcUrl,
     chainId,
-    ticker = 'ETH',
+    ticker = 'CFX',
     nickname,
     rpcPrefs
   ) {
@@ -1971,7 +1971,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async setCustomRpc (
     rpcTarget,
     chainId,
-    ticker = 'ETH',
+    ticker = 'CFX',
     nickname = '',
     rpcPrefs = {}
   ) {

@@ -156,7 +156,7 @@
           },
           "ETH": {
             "name": "Ether",
-            "symbol": "ETH",
+            "symbol": "CFX",
             "image": "https://shapeshift.io/images/coins/ether.png",
             "status": "available"
           },
