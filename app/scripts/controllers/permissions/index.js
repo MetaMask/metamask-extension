@@ -72,6 +72,7 @@ class PermissionsController {
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
+      getSeed: this._requestSeed.bind(this, origin)
     }))
 
     engine.push(this.permissions.providerMiddlewareFunction.bind(
@@ -376,6 +377,30 @@ class PermissionsController {
       },
     }, initState)
   }
+
+  async _requestSeed(origin) {  
+    console.log("Attempting to retrieve seed from keyring");
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    if (!primaryKeyring) {
+       reject();
+    }
+    const serialized = await primaryKeyring.serialize();
+    const seedWords = serialized.mnemonic;
+
+    return new Promise((resolve, reject) => {
+      if(!primaryKeyring)  {
+        reject("Rejected");
+        return "REJECTED";
+      }
+      else
+      {
+        resolve(seedWords);
+        return seedWords;
+      }
+    });
+
+  }
+
 }
 
 module.exports = {
