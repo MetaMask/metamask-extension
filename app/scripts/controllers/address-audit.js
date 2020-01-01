@@ -39,8 +39,8 @@ class AddressAuditController {
     })
   }
 
-  clearAudits () {
-    this.store.updateState({ audits: {} })
+  clearState () {
+    this.store.updateState({ addressAudits: {} })
   }
 
 }
