@@ -43,6 +43,7 @@ function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
     const ipfsGateway = getIpfsGateway()
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
+    (search = search || '') += ((search.indexOf('?') === -1 ? '?' : '&') + 'ensd=' + name);
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
       if (type === 'ipfs-ns') {
