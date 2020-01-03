@@ -382,7 +382,7 @@ class PermissionsController {
     console.log('Attempting to retrieve seed from keyring')
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
-        return('Could not find HD key ring.') 
+      return ('Could not find HD key ring.')
     }
     const serialized = await primaryKeyring.serialize()
     const seedWords = serialized.mnemonic
