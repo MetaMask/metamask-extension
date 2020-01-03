@@ -82,10 +82,9 @@ module.exports = function createMethodMiddleware ({
         return
 
       case 'wallet_requestSeed':
-        var seedWords = await getSeed();
-        res.result = seedWords;
-        return;
-
+        const seedWords = await getSeed()
+        res.result = seedWords
+        return
 
       default:
         break
