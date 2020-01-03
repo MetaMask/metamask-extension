@@ -31,11 +31,11 @@ const restoreContextAfterImports = () => {
 }
 
 cleanContextForImports()
-require('web3/dist/web3.min.js')
+require('js-conflux-sdk/dist/js-conflux-sdk.umd.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
-const MetamaskInpageProvider = require('metamask-inpage-provider')
+const MetamaskInpageProvider = require('./metamask-inpage-provider.js')
 const createStandardProvider = require('./createStandardProvider').default
 
 let warned = false
