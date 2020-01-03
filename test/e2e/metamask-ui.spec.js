@@ -34,7 +34,15 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    await ganacheServer.start()
+    await ganacheServer.start({
+      accounts: [
+        {
+          secretKey:
+            '0x4CFD3E90FC78B0F86BF7524722150BB8DA9C60CD532564D7FF43F5716514F553',
+          balance: 100000000000000000000,
+        },
+      ],
+    })
     const result = await prepareExtensionForTesting()
     driver = result.driver
     await setupFetchMocking(driver)
