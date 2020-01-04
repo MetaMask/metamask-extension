@@ -15,9 +15,9 @@ class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
       id: this.requestId(),
     }
     return new Promise((resolve, reject) => {
-      this.sendAsync(payload, (error, result) => {
-        if (error) {
-          reject(error)
+      this.sendAsync(payload, (err, { result, error }) => {
+        if (err || error) {
+          reject(err || error)
         }
         resolve(result)
       })
