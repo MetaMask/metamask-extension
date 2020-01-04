@@ -170,57 +170,54 @@ const initialize = () => {
     deployButton.onclick = async () => {
       contractStatus.innerHTML = 'Deploying'
 
-      const piggybank = await piggybankContract
-        .constructor()
-        .sendTransaction(
-          {
-            from: accounts[0],
-            // gas: '4700000',
-          },
-          (error, contract) => {
-            if (error) {
-              contractStatus.innerHTML = 'Deployment Failed'
-              throw error
-            } else if (contract.address === undefined) {
-              return
-            }
-
-            console.log(
-              'Contract mined! address: ' +
-                contract.address +
-                ' transactionHash: ' +
-                contract.transactionHash
-            )
-            contractStatus.innerHTML = 'Deployed'
-            depositButton.disabled = false
-            withdrawButton.disabled = false
-
-            depositButton.onclick = () => {
-              contractStatus.innerHTML = 'Deposit initiated'
-              contract.deposit(
-                {
-                  from: accounts[0],
-                  value: '0x3782dace9d900000',
-                },
-                result => {
-                  console.log(result)
-                  contractStatus.innerHTML = 'Deposit completed'
-                }
-              )
-            }
-            withdrawButton.onclick = () => {
-              contract.withdraw(
-                '0xde0b6b3a7640000',
-                { from: accounts[0] },
-                result => {
-                  console.log(result)
-                  contractStatus.innerHTML = 'Withdrawn'
-                }
-              )
-            }
+      const piggybank = await piggybankContract.constructor().sendTransaction(
+        {
+          from: accounts[0],
+          gas: '4700000',
+        },
+        (error, contract) => {
+          if (error) {
+            contractStatus.innerHTML = 'Deployment Failed'
+            throw error
+          } else if (contract.address === undefined) {
+            return
           }
-        )
-        .deployed()
+
+          console.log(
+            'Contract mined! address: ' +
+              contract.address +
+              ' transactionHash: ' +
+              contract.transactionHash
+          )
+          contractStatus.innerHTML = 'Deployed'
+          depositButton.disabled = false
+          withdrawButton.disabled = false
+
+          depositButton.onclick = () => {
+            contractStatus.innerHTML = 'Deposit initiated'
+            contract.deposit(
+              {
+                from: accounts[0],
+                value: '0x3782dace9d900000',
+              },
+              result => {
+                console.log(result)
+                contractStatus.innerHTML = 'Deposit completed'
+              }
+            )
+          }
+          withdrawButton.onclick = () => {
+            contract.withdraw(
+              '0xde0b6b3a7640000',
+              { from: accounts[0] },
+              result => {
+                console.log(result)
+                contractStatus.innerHTML = 'Withdrawn'
+              }
+            )
+          }
+        }
+      )
       console.log(piggybank)
     }
 
