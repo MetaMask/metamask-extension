@@ -35,10 +35,7 @@ function createCfxRewriteRequestMiddleware () {
   // eslint-disable-next-line no-unused-vars
   return createAsyncMiddleware(async (req, res, next) => {
     if (req) {
-      const { method, params } = alterRpcMethodAndParams(
-        req.method,
-        req.paramas
-      )
+      const { method, params } = alterRpcMethodAndParams(req)
       req.method = method
       req.params = params
     }

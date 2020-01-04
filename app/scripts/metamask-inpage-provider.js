@@ -1,7 +1,4 @@
 const OriginalMetamaskInpageProvider = require('metamask-inpage-provider')
-const {
-  alterRpcMethodAndParams,
-} = require('./controllers/network/createCfxMiddleware.js')
 
 class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
   requestId () {
@@ -12,7 +9,8 @@ class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
 
   async call (method, ...params) {
     const payload = {
-      ...alterRpcMethodAndParams(method, params),
+      method,
+      params,
       jsonrpc: '2.0',
       id: this.requestId(),
     }
