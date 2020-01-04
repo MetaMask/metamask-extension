@@ -1,6 +1,6 @@
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 
-module.exports = { createCfxRewriteRequestMiddleware }
+module.exports = { createCfxRewriteRequestMiddleware, alterRpcMethodAndParams }
 
 const MethodsWithDefaultEpochParameter = {
   cfx_getTransactionCount: 1,
@@ -10,32 +10,37 @@ const MethodsWithDefaultEpochParameter = {
   cfx_getBlocksByEpoch: 0,
 }
 
+function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
+  if (method) {
+    method = method.replace('eth_', 'cfx_')
+    method = method.replace('getBlockByNumber', 'getBlockByEpochNumber')
+    method = method.replace('cfx_blockNumber', 'cfx_epochNumber')
+  }
+  if (
+    MethodsWithDefaultEpochParameter[method] !== undefined &&
+    (!Array.isArray(params) ||
+      params[MethodsWithDefaultEpochParameter[method]] === undefined ||
+      params[MethodsWithDefaultEpochParameter[method]] === 'latest_mined')
+  ) {
+    if (!Array.isArray(params)) {
+      params = []
+    }
+    params[MethodsWithDefaultEpochParameter[method]] = 'latest_state'
+  }
+
+  return { method, params }
+}
+
 function createCfxRewriteRequestMiddleware () {
   // eslint-disable-next-line no-unused-vars
   return createAsyncMiddleware(async (req, res, next) => {
-    // if (req) {
-    //   console.log('conflux_debug', req.method)
-    // }
-    if (req && req.method) {
-      req.method = req.method.replace('eth_', 'cfx_')
-      req.method = req.method.replace(
-        'getBlockByNumber',
-        'getBlockByEpochNumber'
+    if (req) {
+      const { method, params } = alterRpcMethodAndParams(
+        req.method,
+        req.paramas
       )
-      req.method = req.method.replace('cfx_blockNumber', 'cfx_epochNumber')
-    }
-    if (
-      MethodsWithDefaultEpochParameter[req.method] !== undefined &&
-      (!Array.isArray(req.params) ||
-        req.params[MethodsWithDefaultEpochParameter[req.method]] ===
-          undefined ||
-        req.params[MethodsWithDefaultEpochParameter[req.method]] ===
-          'latest_mined')
-    ) {
-      if (!Array.isArray(req.params)) {
-        req.params = []
-      }
-      req.params[MethodsWithDefaultEpochParameter[req.method]] = 'latest_state'
+      req.method = method
+      req.params = params
     }
 
     await next()

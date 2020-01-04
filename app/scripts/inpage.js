@@ -1,5 +1,3 @@
-/*global Web3*/
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -31,7 +29,7 @@ const restoreContextAfterImports = () => {
 }
 
 cleanContextForImports()
-require('js-conflux-sdk/dist/js-conflux-sdk.umd.min.js')
+const Conflux = require('js-conflux-sdk/dist/js-conflux-sdk.umd.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
@@ -173,7 +171,9 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-const web3 = new Web3(proxiedInpageProvider)
+window.Conflux = Conflux
+const web3 = new Conflux()
+web3.provider = proxiedInpageProvider
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }
@@ -183,7 +183,7 @@ setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
+  web3.defaultAccount = state.selectedAddress
 })
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
