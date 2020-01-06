@@ -75,7 +75,8 @@ class DetectTokensController {
     try {
       const balances = await ethContract.balances(
         [this.selectedAddress],
-        tokensToDetect
+        // TODO: no need to map to lowercase if js-conflux-sdk supports checksumed address
+        tokensToDetect.map(tokenAddress => tokenAddress.toLowerCase())
       )
       tokensToDetect.forEach((tokenAddress, index) => {
         const balance = balances[index]
