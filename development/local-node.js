@@ -1,5 +1,5 @@
 const Ganache = require('@yqrashawn/conflux-local-network-lite')
-const ganacheserver = new Ganache({ verbose: true })
+const ganacheserver = new Ganache({ verbose: true, genBlockInterval: 1000 })
 
   // const SEED = "ankle hedgehog attack fatal label blame shoe bulb subject negative cruise sick";
   // const PASSWORD = "11111111"

@@ -3355,10 +3355,10 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^0.9.7":
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.7.tgz#5bca06d9206af8e78d2e65aa2cbf72187a3e65da"
-  integrity sha512-lO7uVEoTW5BUmK/zv+yin8Vr3QIzhEmP/QhH44IBbuwXUlPc2XBnMFuvlAhwnOLLPe/onou7tZY81PXPRgYLWA==
+"@yqrashawn/conflux-local-network-lite@^0.9.8":
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.8.tgz#96a2cb1b9d0f9b5bf52c49a04d61f597e499535b"
+  integrity sha512-MuxNeoLlbDVhUkZfRj7ggk51f8a6JGP2R4Eq4QgJpWvAZvfMYbxIbMUL5cZPvIIV4antjMIbXcH3CwwQPSggPA==
   dependencies:
     ethereumjs-util "^6.2.0"
     got "^10.2.0"
@@ -3367,6 +3367,7 @@
     make-dir "^3.0.0"
     platform-is "^1.0.4"
     rimraf "^3.0.0"
+    sleep-promise "^8.0.1"
     tmp "^0.1.0"
     unzip-stream "^0.3.0"
 
@@ -25862,6 +25863,11 @@ slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
+
+sleep-promise@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/sleep-promise/-/sleep-promise-8.0.1.tgz#8d795a27ea23953df6b52b91081e5e22665993c5"
+  integrity sha1-jXlaJ+ojlT32tSuRCB5eImZZk8U=
 
 slice-ansi@0.0.4:
   version "0.0.4"
