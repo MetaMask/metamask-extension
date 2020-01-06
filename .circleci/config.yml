@@ -23,6 +23,9 @@ workflows:
           requires:
             - prep-deps
       - test-lint-shellcheck
+      - test-lint-lockfile:
+          requires:
+            - prep-deps
       - test-e2e-chrome:
           requires:
             - prep-deps
@@ -51,6 +54,7 @@ workflows:
           requires:
             - test-lint
             - test-lint-shellcheck
+            - test-lint-lockfile
             - test-unit
             - test-unit-global
             - test-mozilla-lint
@@ -184,6 +188,17 @@ jobs:
       - run:
           name: Shellcheck Lint
           command: yarn lint:shellcheck
+
+  test-lint-lockfile:
+    docker:
+      - image: circleci/node:10.17-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: lockfile-lint
+          command: yarn lint:lockfile
 
   test-deps:
     docker:
