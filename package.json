@@ -134,7 +134,7 @@
     "gaba": "^1.9.0",
     "human-standard-token-abi": "^2.0.0",
     "jazzicon": "^1.2.0",
-    "js-conflux-sdk": "^0.4.0-beta",
+    "js-conflux-sdk": "^0.4.0",
     "json-rpc-engine": "^5.1.5",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",

@@ -75,8 +75,7 @@ class DetectTokensController {
     try {
       const balances = await ethContract.balances(
         [this.selectedAddress],
-        // TODO: no need to map to lowercase if js-conflux-sdk supports checksumed address
-        tokensToDetect.map(tokenAddress => tokenAddress.toLowerCase())
+        tokensToDetect
       )
       tokensToDetect.forEach((tokenAddress, index) => {
         const balance = balances[index]
@@ -89,7 +88,7 @@ class DetectTokensController {
         }
       })
     } catch (error) {
-      // TODO let error make sense
+      // TODO let the error make sense
       warn(
         `MetaMask - DetectTokensController single call balance fetch failed`,
         error
