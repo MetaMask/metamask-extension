@@ -9,11 +9,11 @@ export default class GasFeeDisplay extends Component {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     onReset: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
     const { gasTotal, gasLoadingError, onReset } = this.props

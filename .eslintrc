@@ -27,6 +27,7 @@
   },
 
   "plugins": [
+    "babel",
     "mocha",
     "chai",
     "react",
@@ -180,6 +181,7 @@
       "prop": "parens-new-line"
     }],
     "semi": [2, "never"],
+    "babel/semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [2, "always"],

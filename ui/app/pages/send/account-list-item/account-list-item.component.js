@@ -18,7 +18,7 @@ export default class AccountListItem extends Component {
     icon: PropTypes.node,
     balanceIsCached: PropTypes.bool,
     showFiat: PropTypes.bool,
-  };
+  }
 
   static defaultProps = {
     showFiat: true,
@@ -26,7 +26,7 @@ export default class AccountListItem extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
     const {

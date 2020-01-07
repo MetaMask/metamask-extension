@@ -9,11 +9,11 @@ export default class SendHeader extends Component {
     clearSend: PropTypes.func,
     history: PropTypes.object,
     titleKey: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   onClose () {
     this.props.clearSend()
