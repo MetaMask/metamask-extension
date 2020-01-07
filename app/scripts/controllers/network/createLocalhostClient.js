@@ -1,9 +1,9 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createFetchMiddleware = require('@yqrashawn/eth-json-rpc-middleware/fetch')
-const createBlockRefRewriteMiddleware = require('@yqrashawn/eth-json-rpc-middleware/block-ref-rewrite')
-const createBlockTrackerInspectorMiddleware = require('@yqrashawn/eth-json-rpc-middleware/block-tracker-inspector')
+const createFetchMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/fetch')
+const createBlockRefRewriteMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/block-ref-rewrite')
+const createBlockTrackerInspectorMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/block-tracker-inspector')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
-const providerFromMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerFromMiddleware')
+const providerFromMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/providerFromMiddleware')
 const BlockTracker = require('./eth-block-tracker')
 const { createCfxRewriteRequestMiddleware } = require('./createCfxMiddleware')
 
