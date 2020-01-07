@@ -25,14 +25,17 @@ class FirefoxDriver {
    * @param {{extensionPath: string}} options the options for the build
    * @return {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build ({ extensionPath, responsive }) {
+  static async build ({ extensionPath, responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX)
-    const profile = new firefox.Profile(templateProfile)
-    const options = new firefox.Options().setProfile(profile)
-    const driver = new Builder()
+    const options = new firefox.Options().setProfile(templateProfile)
+    const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options)
-      .build()
+    if (port) {
+      const service = new firefox.ServiceBuilder().setPort(port)
+      builder.setFirefoxService(service)
+    }
+    const driver = builder.build()
     const fxDriver = new FirefoxDriver(driver)
 
     await fxDriver.init()
@@ -41,10 +44,10 @@ class FirefoxDriver {
     const internalExtensionId = await fxDriver.getInternalId()
 
     if (responsive) {
-      driver
+      await driver
         .manage()
         .window()
-        .setSize(320, 600)
+        .setRect({ width: 320, height: 600 })
     }
 
     return {
@@ -86,7 +89,7 @@ class FirefoxDriver {
       .setParameter('path', path.resolve(addonPath))
       .setParameter('temporary', true)
 
-    return await this._driver.schedule(cmd)
+    return await this._driver.execute(cmd)
   }
 
   /**

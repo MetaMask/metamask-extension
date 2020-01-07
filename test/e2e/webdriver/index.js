@@ -6,12 +6,14 @@ const buildWebDriver = async function buildWebDriver ({
   browser,
   extensionPath,
   responsive,
+  port,
 }) {
   switch (browser) {
     case Browser.CHROME: {
       const { driver, extensionId, extensionUrl } = await ChromeDriver.build({
         extensionPath,
         responsive,
+        port,
       })
 
       return {
@@ -24,6 +26,7 @@ const buildWebDriver = async function buildWebDriver ({
       const { driver, extensionId, extensionUrl } = await FirefoxDriver.build({
         extensionPath,
         responsive,
+        port,
       })
 
       return {

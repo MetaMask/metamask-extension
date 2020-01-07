@@ -29,13 +29,14 @@ module.exports = {
   largeDelayMs,
 }
 
-async function prepareExtensionForTesting ({ responsive } = {}) {
+async function prepareExtensionForTesting ({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER
   const extensionPath = `dist/${browser}`
   const { driver, extensionId, extensionUrl } = await buildWebDriver({
     browser,
     extensionPath,
     responsive,
+    port,
   })
 
   // Depending on the state of the application built into the above directory (extPath) and the value of
