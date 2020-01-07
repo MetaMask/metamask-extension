@@ -15,7 +15,7 @@ export default class Sidebar extends Component {
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
     onOverlayClose: PropTypes.func,
-  };
+  }
 
   renderOverlay () {
     const { onOverlayClose } = this.props

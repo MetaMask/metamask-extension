@@ -9,11 +9,11 @@ export default class SendRowWrapper extends Component {
     errorType: PropTypes.string,
     label: PropTypes.string,
     showError: PropTypes.bool,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   renderAmountFormRow () {
     const {

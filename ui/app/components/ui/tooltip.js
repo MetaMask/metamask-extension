@@ -10,14 +10,14 @@ class ReactTooltip extends Component {
     position: PropTypes.oneOf(['left', 'top', 'right', 'bottom']),
     fixed: PropTypes.bool,
     space: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  };
+  }
 
   static defaultProps = {
     container: document.body,
     position: 'top',
     fixed: true,
     space: 5,
-  };
+  }
 
   componentDidMount = () => {
     this.container = this.props.container || document.body
@@ -40,26 +40,26 @@ class ReactTooltip extends Component {
 
     this.componentEl.addEventListener(this.props.fixed ? 'mouseenter' : 'mousemove', this.handleMouseMove)
     this.componentEl.addEventListener('mouseleave', this.handleMouseOut)
-  };
+  }
 
   componentDidUpdate = () => {
     this.tooltipEl.className = 'tooltip ' + this.props.position
     this.tooltipEl.childNodes[1].textContent = this.props.title
-  };
+  }
 
 
   componentWillUnmount = () => {
     this.componentEl.removeEventListener(this.props.fixed ? 'mouseenter' : 'mousemove', this.handleMouseMove)
     this.componentEl.removeEventListener('mouseleave', this.handleMouseOut)
     this.container.removeChild(this.tooltipEl)
-  };
+  }
 
   resetTooltip = () => {
     this.tooltipEl.style.transition = 'opacity 0.4s'
     this.tooltipEl.style.left = '-500px'
     this.tooltipEl.style.top = '-500px'
     this.tooltipEl.style.opacity = 0
-  };
+  }
 
   handleMouseMove = (e) => {
     if (this.props.title === '') {
@@ -72,11 +72,11 @@ class ReactTooltip extends Component {
     this.tooltipEl.style.left = tooltipPosition.x + tooltipOffset.x + 'px'
     this.tooltipEl.style.top = tooltipPosition.y + tooltipOffset.y + 'px'
     this.tooltipEl.style.opacity = 1
-  };
+  }
 
   handleMouseOut = () => {
     this.resetTooltip()
-  };
+  }
 
   getTooltipPosition = (e) => {
     let pointX
@@ -127,7 +127,7 @@ class ReactTooltip extends Component {
       x: pointX,
       y: pointY,
     }
-  };
+  }
 
   getTooltipOffset = () => {
     const tooltipW = this.tooltipEl.offsetWidth
@@ -160,7 +160,7 @@ class ReactTooltip extends Component {
       x: offsetX,
       y: offsetY,
     }
-  };
+  }
 
   render () {
     return this.props.children
