@@ -1,6 +1,6 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
 const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
-const createWalletSubprovider = require('@yqrashawn/eth-json-rpc-middleware/wallet')
+const createWalletSubprovider = require('@yqrashawn/cfx-json-rpc-middleware/wallet')
 const {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,

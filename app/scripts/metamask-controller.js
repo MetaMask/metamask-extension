@@ -20,7 +20,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
-const providerAsMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerAsMiddleware')
+const providerAsMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/providerAsMiddleware')
 const { setupMultiplex } = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const EnsController = require('./controllers/ens')

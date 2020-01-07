@@ -3352,6 +3352,26 @@
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.3.tgz#84d85462481c74d686b068dae32a2eb246f86c8a"
   integrity sha512-aSvIpJVc+/d6TWSHBsji/lK8zpKIV3XNtdnC6RGRt7K3P3C20E3+vXHVB75UcuVTNpBJnd6rXkSsk6bxRP5luQ==
 
+"@yqrashawn/cfx-json-rpc-middleware@^4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.2.tgz#421fbaaeb80a7fb0fef9485d1ed5f7e662cebf52"
+  integrity sha512-CmjEO0yzo4/XWNeKe2aBunkw6y5L2IJiV+zC8KFp2g3oMpcANDsGFRv72XLPmgceE+ayEOXReItCrtHkXmT4PQ==
+  dependencies:
+    btoa "^1.2.1"
+    clone "^2.1.1"
+    eth-json-rpc-errors "^2.0.0"
+    eth-query "^2.1.2"
+    eth-sig-util "^1.4.2"
+    ethereumjs-block "^1.6.0"
+    ethereumjs-tx "^1.3.7"
+    ethereumjs-util "^5.1.2"
+    ethereumjs-vm "^2.6.0"
+    fetch-ponyfill "^4.0.0"
+    json-rpc-engine "^5.1.3"
+    json-stable-stringify "^1.0.1"
+    pify "^3.0.0"
+    safe-event-emitter "^1.0.1"
+
 "@yqrashawn/cfx-token-tracker@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-token-tracker/-/cfx-token-tracker-1.1.4.tgz#61d9a95d69c86d4e30bb377559132f044770c73b"
@@ -3380,26 +3400,6 @@
     sleep-promise "^8.0.1"
     tmp "^0.1.0"
     unzip-stream "^0.3.0"
-
-"@yqrashawn/eth-json-rpc-middleware@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.6.0.tgz#7261fb372baef093a039fcae95d8443d40b3185c"
-  integrity sha512-4HySwpaq+tQ3kmAoINcp+Nt3cGCbaMeZjqGfinlbAI0OKjO8k+KHeJ+FccVVqKqZVvHp0QzkH+Fw2l769CJxhg==
-  dependencies:
-    btoa "^1.2.1"
-    clone "^2.1.1"
-    eth-json-rpc-errors "^2.0.0"
-    eth-query "^2.1.2"
-    eth-sig-util "^1.4.2"
-    ethereumjs-block "^1.6.0"
-    ethereumjs-tx "^1.3.7"
-    ethereumjs-util "^5.1.2"
-    ethereumjs-vm "^2.6.0"
-    fetch-ponyfill "^4.0.0"
-    json-rpc-engine "^5.1.3"
-    json-stable-stringify "^1.0.1"
-    pify "^3.0.0"
-    safe-event-emitter "^1.0.1"
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"

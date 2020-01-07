@@ -1,6 +1,6 @@
 const JsonRpcEngine = require('json-rpc-engine')
-const scaffoldMiddleware = require('@yqrashawn/eth-json-rpc-middleware/scaffold')
-// const providerAsMiddleware = require('@yqrashawn/eth-json-rpc-middleware/providerAsMiddleware')
+const scaffoldMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/scaffold')
+// const providerAsMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/providerAsMiddleware')
 // const GanacheCore = require('ganache-core')
 const createJsonRpcClient = require('../../app/scripts/controllers/network/createJsonRpcClient')
 
