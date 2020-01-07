@@ -82,7 +82,7 @@ describe('Typed Message Manager', () => {
     numberMsgId = parseInt(msgId)
   })
 
-  it('supports version 1 of signedTypedData', () => {
+  it.skip('supports version 1 of signedTypedData', () => {
     typedMessageManager.addUnapprovedMessage(msgParamsV1, null, 'V1')
     assert.equal(messages[messages.length - 1].msgParams.data, msgParamsV1.data)
   })

@@ -19,6 +19,12 @@ class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
         if (err || error) {
           reject(err || error)
         }
+
+        if (result === '0x') {
+          result =
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
+        }
+
         resolve(result)
       })
     })
