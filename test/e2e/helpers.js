@@ -127,15 +127,9 @@ async function findElements (driver, by, timeout = 10000) {
 }
 
 async function openNewPage (driver, url) {
-  await driver.executeScript('window.open()')
-  await delay(1000)
-
-  const handles = await driver.getAllWindowHandles()
-  const lastHandle = handles[handles.length - 1]
-  await driver.switchTo().window(lastHandle)
-
+  const newHandle = await driver.switchTo().newWindow()
   await driver.get(url)
-  await delay(1000)
+  return newHandle
 }
 
 async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
