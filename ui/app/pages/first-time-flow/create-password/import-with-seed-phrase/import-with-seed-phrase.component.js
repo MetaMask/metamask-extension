@@ -297,9 +297,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <Button
           type="primary"
+          submit
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
-          onClick={this.handleImport}
         >
           { t('import') }
         </Button>
