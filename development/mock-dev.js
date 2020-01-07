@@ -76,7 +76,7 @@ global.platform = new ExtensionPlatform()
 //
 
 actions._setBackgroundConnection(controller.getApi())
-actions.update = function (stateName) {
+function updateState (stateName) {
   selectedView = stateName
   updateQueryParams(stateName)
   const newState = states[selectedView]
@@ -108,7 +108,7 @@ function startApp () {
       <button
         onClick={(ev) => {
           ev.preventDefault()
-          store.dispatch(actions.update('terms'))
+          store.dispatch(updateState('terms'))
         }}
         style={{
           margin: '19px 19px 0px 19px',
@@ -119,7 +119,7 @@ function startApp () {
       <Selector
         states={states}
         selectedKey={selectedView}
-        actions={actions}
+        updateState={updateState}
         store={store}
         modifyBackgroundConnection={modifyBackgroundConnection}
         backGroundConnectionModifiers={backGroundConnectionModifiers}
