@@ -397,7 +397,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Cfxer transactions is Main Net."
+    "message": "The default network for Cfx transactions is Main Net."
   },
   "delete": {
     "message": "Delete"
@@ -409,7 +409,7 @@
     "message": "Deposit"
   },
   "depositEther": {
-    "message": "Deposit Cfxer"
+    "message": "Deposit Cfx"
   },
   "details": {
     "message": "Details"
@@ -436,10 +436,10 @@
     "message": "Disconnect all accounts?"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Cfxer"
+    "message": "Directly Deposit Cfx"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Cfxer, the quickest way to get Cfxer in your new wallet by direct deposit."
+    "message": "If you already have some Cfx, the quickest way to get Cfx in your new wallet by direct deposit."
   },
   "domainLastConnect": {
     "message": "Last Connected: $1",
@@ -606,7 +606,7 @@
     "message": "Gas Price Extremely Low"
   },
   "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Cfxer you are willing to pay for each unit of gas."
+    "message": "Gas price specifies the amount of Cfx you are willing to pay for each unit of gas."
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
@@ -621,11 +621,11 @@
     "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
-    "message": "Get Cfxer"
+    "message": "Get Cfx"
   },
   "getEtherFromFaucet": {
-    "message": "Get Cfxer from a faucet for the $1",
-    "description": "Displays network name for Cfxer faucet"
+    "message": "Get Cfx from a faucet for the $1",
+    "description": "Displays network name for Cfx faucet"
   },
   "getHelp": {
     "message": "Get Help."
@@ -849,7 +849,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Cfxer in your wallet."
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Cfx in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -1158,7 +1158,7 @@
     "message": "Your secret backup phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Cfxer forever."
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Cfx forever."
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -1200,7 +1200,7 @@
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent cfxer"
+    "message": "sent cfx"
   },
   "sentTokens": {
     "message": "sent tokens"
