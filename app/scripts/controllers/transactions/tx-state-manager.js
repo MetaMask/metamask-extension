@@ -20,8 +20,8 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
   <br>   - `'confirmed'` the tx has been included in a block.
   <br>   - `'failed'` the tx failed for some reason, included on tx data.
   <br>   - `'dropped'` the tx nonce was already used
-  @param {object} opts
-  @param {object} [opts.initState={ transactions: [] }] initial transactions list with the key transaction {array}
+  @param {Object} opts
+  @param {Object} [opts.initState={ transactions: [] }] initial transactions list with the key transaction {array}
   @param {number} [opts.txHistoryLimit] limit for how many finished
   transactions can hang around in state
   @param {function} opts.getNetwork return network number
@@ -40,7 +40,7 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @param {object} opts - the object to use when overwriting defaults
+    @param {Object} opts - the object to use when overwriting defaults
     @returns {txMeta} the default txMeta object
   */
   generateTxMeta (opts) {
@@ -130,7 +130,7 @@ class TransactionStateManager extends EventEmitter {
     it will allso add the key `history` to the txMeta with the snap shot of the original
     object
     @param {Object} txMeta
-    @returns {object} the txMeta
+    @returns {Object} the txMeta
   */
   addTx (txMeta) {
     // normalize and validate txParams if present
@@ -178,7 +178,7 @@ class TransactionStateManager extends EventEmitter {
   }
   /**
     @param {number} txId
-    @returns {object} the txMeta who matches the given id if none found
+    @returns {Object} the txMeta who matches the given id if none found
     for the network returns undefined
   */
   getTx (txId) {
@@ -218,7 +218,7 @@ class TransactionStateManager extends EventEmitter {
     merges txParams obj onto txMeta.txParams
     use extend to ensure that all fields are filled
     @param {number} txId - the id of the txMeta
-    @param {object} txParams - the updated txParams
+    @param {Object} txParams - the updated txParams
   */
   updateTxParams (txId, txParams) {
     const txMeta = this.getTx(txId)
@@ -228,7 +228,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
    * normalize and validate txParams members
-   * @param {object} txParams - txParams
+   * @param {Object} txParams - txParams
    */
   normalizeAndValidateTxParams (txParams) {
     if (typeof txParams.data === 'undefined') {
@@ -241,7 +241,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     validates txParams members by type
-    @param {object} txParams - txParams to validate
+    @param {Object} txParams - txParams to validate
   */
   validateTxParams (txParams) {
     Object.keys(txParams).forEach((key) => {
@@ -263,7 +263,7 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-  @param {object} opts -  an object of fields to search for eg:<br>
+  @param {Object} opts -  an object of fields to search for eg:<br>
   let <code>thingsToLookFor = {<br>
     to: '0x0..',<br>
     from: '0x0..',<br>

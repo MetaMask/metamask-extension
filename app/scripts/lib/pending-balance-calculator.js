@@ -46,7 +46,7 @@ class PendingBalanceCalculator {
   /**
    * Calculates the maximum possible cost of a single transaction, based on the value, gas price and gas limit.
    *
-   * @param {object} tx Contains all that data about a transaction.
+   * @param {Object} tx Contains all that data about a transaction.
    * @property {object} tx.txParams Contains data needed to calculate the maximum cost of the transaction: gas,
    * gasLimit and value.
    *

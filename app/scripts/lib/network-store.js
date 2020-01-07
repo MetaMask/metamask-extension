@@ -48,7 +48,7 @@ class ReadOnlyNetworkStore {
 
   /**
    * Set state
-   * @param {object} state - The state to set
+   * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
   async set (state) {

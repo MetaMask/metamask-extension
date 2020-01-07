@@ -224,7 +224,7 @@ async function loadStateFromPersistence () {
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
- * @param {String} initLangCode - The region code for the language preferred by the current user.
+ * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @returns {Promise} After setup is complete.
  */
 function setupController (initState, initLangCode) {

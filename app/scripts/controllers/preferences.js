@@ -10,7 +10,7 @@ class PreferencesController {
   /**
    *
    * @typedef {Object} PreferencesController
-   * @param {object} opts Overrides the defaults for the initial state of this.store
+   * @param {Object} opts Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
@@ -135,7 +135,7 @@ class PreferencesController {
   /**
    * Setter for the `firstTimeFlowType` property
    *
-   * @param {String} type Indicates the type of first time flow - create or import - the user wishes to follow
+   * @param {string} type Indicates the type of first time flow - create or import - the user wishes to follow
    *
    */
   setFirstTimeFlowType (type) {
@@ -596,7 +596,7 @@ class PreferencesController {
 
   /**
    * A getter for the `preferences` property
-   * @returns {object} A key-boolean map of user-selected preferences.
+   * @returns {Object} A key-boolean map of user-selected preferences.
    */
   getPreferences () {
     return this.store.getState().preferences

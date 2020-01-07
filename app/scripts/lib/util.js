@@ -64,7 +64,7 @@ const getPlatform = _ => {
 /**
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
- * @param {object} txParams Contains data about a transaction
+ * @param {Object} txParams Contains data about a transaction
  * @param {string} txParams.gas The gas for a transaction
  * @param {string} txParams.gasPrice The price per gas for the transaction
  * @param {string} txParams.value The value of ETH to send

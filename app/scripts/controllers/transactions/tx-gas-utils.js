@@ -23,7 +23,7 @@ class TxGasUtil {
 
   /**
     @param {Object} txMeta - the txMeta object
-    @returns {object} the txMeta object with the gas written to the txParams
+    @returns {Object} the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)

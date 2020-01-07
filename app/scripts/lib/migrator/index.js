@@ -77,7 +77,7 @@ class Migrator extends EventEmitter {
 
   /**
    * Returns the initial state for the migrator
-   * @param {object} [data] - The data for the initial state
+   * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
   generateInitialState (data) {

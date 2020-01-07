@@ -9,7 +9,7 @@ import EthQuery from 'ethjs-query'
 <br>
   As well as continues broadcast while in the pending state
 <br>
-@param {object} config - non optional configuration object consists of:
+@param {Object} config - non optional configuration object consists of:
     @param {Object} config.provider - A network provider.
     @param {Object} config.nonceTracker see nonce tracker
     @param {function} config.getPendingTransactions a function for getting an array of transactions,
@@ -50,7 +50,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     Will resubmit any transactions who have not been confirmed in a block
-    @param {object} block - a block object
+    @param {Object} block - a block object
     @emits tx:warning
   */
   resubmitPendingTxs (blockNumber) {
