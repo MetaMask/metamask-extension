@@ -675,7 +675,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Collects all the information that we want to share
    * with the mobile client for syncing purposes
-   * @returns Promise<Object> Parts of the state that we want to syncx
+   * @returns {Promise<Object>} - Parts of the state that we want to syncx
    */
   async fetchInfoToSync () {
     // Preferences
@@ -972,7 +972,7 @@ export default class MetamaskController extends EventEmitter {
    * Mostly used in development environments, when networks are restarted with
    * the same network ID.
    *
-   * @returns Promise<string> The current selected address.
+   * @returns {Promise<string>} - The current selected address.
    */
   async resetAccount () {
     const selectedAddress = this.preferencesController.getSelectedAddress()
@@ -1228,7 +1228,7 @@ export default class MetamaskController extends EventEmitter {
    * Allows a user to attempt to cancel a previously submitted transaction by creating a new
    * transaction.
    * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
-   * @param {string=} customGasPrice - the hex value to use for the cancel transaction
+   * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {object} MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
@@ -1667,8 +1667,8 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Returns the nonce that will be associated with a transaction once approved
-   * @param address {string} - The hex string address for the transaction
-   * @returns Promise<number>
+   * @param {string} address - The hex string address for the transaction
+   * @returns {Promise<number>}
    */
   async getPendingNonce (address) {
     const { nonceDetails, releaseLock } = await this.txController.nonceTracker.getNonceLock(address)
@@ -1680,8 +1680,8 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Returns the next nonce according to the nonce-tracker
-   * @param address {string} - The hex string address for the transaction
-   * @returns Promise<number>
+   * @param {string} address - The hex string address for the transaction
+   * @returns {Promise<number>}
    */
   async getNextNonce (address) {
     let nonceLock

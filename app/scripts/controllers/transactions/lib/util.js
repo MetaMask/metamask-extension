@@ -14,7 +14,7 @@ const normalizers = {
 
 /**
   normalizes txParams
-  @param txParams {object}
+  @param {object} txParams
   @returns {object} normalized txParams
  */
 export function normalizeTxParams (txParams, LowerCase) {
@@ -30,7 +30,7 @@ export function normalizeTxParams (txParams, LowerCase) {
 
 /**
   validates txParams
-  @param txParams {object}
+  @param {object} txParams
  */
 export function validateTxParams (txParams) {
   validateFrom(txParams)
@@ -49,7 +49,7 @@ export function validateTxParams (txParams) {
 
 /**
   validates the from field in  txParams
-  @param txParams {object}
+  @param {object} txParams
  */
 export function validateFrom (txParams) {
   if (!(typeof txParams.from === 'string')) {
@@ -62,7 +62,7 @@ export function validateFrom (txParams) {
 
 /**
   validates the to field in  txParams
-  @param txParams {object}
+  @param {object} txParams
  */
 export function validateRecipient (txParams) {
   if (txParams.to === '0x' || txParams.to === null) {
@@ -78,7 +78,7 @@ export function validateRecipient (txParams) {
 }
 
 /**
-    @returns an {array} of states that can be considered final
+    @returns {array} - states that can be considered final
   */
 export function getFinalStates () {
   return [
