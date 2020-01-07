@@ -8,7 +8,7 @@ Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
 enableFailureOnUnhandledPromiseRejection()
 
-const server = new CGanache()
+const server = new CGanache({ genBlockInterval: 300 })
 before(done => {
   server
     .start()
