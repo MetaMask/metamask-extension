@@ -278,7 +278,7 @@ class TransactionController extends EventEmitter {
     to allow the user to resign the transaction with a higher gas values
     @param {number} originalTxId - the id of the txMeta that
     you want to attempt to retry
-    @param {string=} gasPrice - Optional gas price to be increased to use as the retry
+    @param {string} [gasPrice] - Optional gas price to be increased to use as the retry
     transaction's gas price
     @return {txMeta}
   */
@@ -311,7 +311,7 @@ class TransactionController extends EventEmitter {
    * new transaction contains the same nonce as the previous, is a basic ETH transfer of 0x value to
    * the sender's address, and has a higher gasPrice than that of the previous transaction.
    * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
-   * @param {string=} customGasPrice - the hex value to use for the cancel transaction
+   * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {txMeta}
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
