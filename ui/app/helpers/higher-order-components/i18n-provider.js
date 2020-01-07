@@ -22,7 +22,7 @@ class I18nProvider extends Component {
        * Returns a localized message for the given key
        * @param {string} key The message key
        * @param {string[]} args A list of message substitution replacements
-       * @return {string|undefined|null} The localized message if available
+       * @returns {string|undefined|null} The localized message if available
        */
       t (key, ...args) {
         return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`

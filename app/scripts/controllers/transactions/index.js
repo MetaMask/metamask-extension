@@ -280,7 +280,7 @@ class TransactionController extends EventEmitter {
     you want to attempt to retry
     @param {string} [gasPrice] - Optional gas price to be increased to use as the retry
     transaction's gas price
-    @return {txMeta}
+    @returns {txMeta}
   */
 
   async retryTransaction (originalTxId, gasPrice) {

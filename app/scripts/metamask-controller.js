@@ -1592,7 +1592,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Handle a KeyringController update
    * @param {object} state the KC state
-   * @return {Promise<void>}
+   * @returns {Promise<void>}
    * @private
    */
   async _onKeyringControllerUpdate (state) {

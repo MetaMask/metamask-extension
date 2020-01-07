@@ -31,7 +31,7 @@ class ABTestController {
   /**
    * Returns the name of the test group to which the current user has been assigned
    * @param {string} abTestKey the key of the a/b test
-   * @return {string} the name of the assigned test group
+   * @returns {string} the name of the assigned test group
    */
   getAssignedABTestGroupName (abTestKey) {
     return this.store.getState().abTests[abTestKey]
@@ -40,7 +40,7 @@ class ABTestController {
   /**
    * Returns a randomly chosen name of a test group from a given a/b test
    * @param {string} abTestKey the key of the a/b test
-   * @return {string} the name of the randomly selected test group
+   * @returns {string} the name of the randomly selected test group
    * @private
    */
   _getRandomizedTestGroupName (abTestKey) {

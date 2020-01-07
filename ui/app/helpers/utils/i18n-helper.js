@@ -12,7 +12,7 @@ const missingMessageErrors = {}
  * @param {object} localeMessages The map of messages for the current locale
  * @param {string} key The message key
  * @param {string[]} substitutions A list of message substitution replacements
- * @return {null|string} The localized message
+ * @returns {null|string} The localized message
  */
 export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {

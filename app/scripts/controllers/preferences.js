@@ -442,7 +442,7 @@ class PreferencesController {
    * Sets a custom label for an account
    * @param {string} account the account to set a label for
    * @param {string} label the custom label for the account
-   * @return {Promise<string>}
+   * @returns {Promise<string>}
    */
   setAccountLabel (account, label) {
     if (!account) {

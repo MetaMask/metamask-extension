@@ -37,7 +37,7 @@ class ReadOnlyNetworkStore {
 
   /**
    * Returns state
-   * @return {Promise<object>}
+   * @returns {Promise<object>}
    */
   async get () {
     if (!this._initialized) {
@@ -49,7 +49,7 @@ class ReadOnlyNetworkStore {
   /**
    * Set state
    * @param {object} state - The state to set
-   * @return {Promise<void>}
+   * @returns {Promise<void>}
    */
   async set (state) {
     if (!this._initialized) {

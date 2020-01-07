@@ -321,7 +321,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param {number} txId - the txMeta Id
-    @return {string} the status of the tx.
+    @returns {string} the status of the tx.
   */
   getTxStatus (txId) {
     const txMeta = this.getTx(txId)
