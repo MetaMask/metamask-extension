@@ -164,12 +164,11 @@ async function switchToWindowWithTitle (driver, title, windowHandles) {
 /**
  * Closes all windows except those in the given list of exceptions
  * @param {object} driver the WebDriver instance
- * @param {string|Array<string>} exceptions the list of window handle exceptions
+ * @param {Array<string>} exceptions the list of window handle exceptions
  * @param {Array?} windowHandles the full list of window handles
  * @returns {Promise<void>}
  */
 async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
-  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
   windowHandles = windowHandles || await driver.getAllWindowHandles()
 
   for (const handle of windowHandles) {
