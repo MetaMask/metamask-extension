@@ -1,7 +1,7 @@
 const Web3 = require('./ConfluxWeb/index')
 const contracts = require('@yqrashawn/cfx-contract-metadata')
 const { warn } = require('loglevel')
-const { MAINNET } = require('./network/enums')
+const { MAINNET, CFX_TEST } = require('./network/enums')
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [
@@ -14,9 +14,11 @@ const ERC20_ABI = [
     type: 'function',
   },
 ]
-const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+// const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+const SINGLE_CALL_BALANCES_ABI = require('./cfx-single-call-balance-checker-abi')
+// const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
 const SINGLE_CALL_BALANCES_ADDRESS =
-  '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
+  '0xe41d1e45b65fbdd9130e700ec7bb2de2667ea797'
 /**
  * A controller that polls for token exchange
  * rates based on a user's current token list
@@ -47,7 +49,10 @@ class DetectTokensController {
     if (!this.isActive) {
       return
     }
-    if (this._network.store.getState().provider.type !== MAINNET) {
+    if (
+      this._network.store.getState().provider.type !== MAINNET &&
+      this._network.store.getState().provider.type !== CFX_TEST
+    ) {
       return
     }
     const tokensToDetect = []
@@ -59,6 +64,9 @@ class DetectTokensController {
       ) {
         tokensToDetect.push(contractAddress)
       }
+    }
+    if (!tokensToDetect.length) {
+      return
     }
 
     const ethContract = this.web3.eth

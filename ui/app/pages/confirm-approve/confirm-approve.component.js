@@ -69,9 +69,21 @@ export default class ConfirmApprove extends Component {
 
     const tokensText = `${tokenAmount} ${tokenSymbol}`
 
-    const tokenBalance = tokenTrackerBalance
-      ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(9)
-      : ''
+    let tokenBalance
+
+    if (Array.isArray(tokenTrackerBalance)) {
+      tokenBalance = tokenTrackerBalance.map(balance =>
+        (balance
+          ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(
+            9
+          )
+          : '')
+      )
+    } else {
+      tokenBalance = tokenTrackerBalance
+        ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(9)
+        : ''
+    }
 
     return (
       <ConfirmTransactionBase

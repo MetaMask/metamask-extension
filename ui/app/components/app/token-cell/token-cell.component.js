@@ -41,7 +41,7 @@ export default class TokenCell extends Component {
     const {
       address,
       symbol,
-      string,
+      string, // balance string
       network,
       setSelectedToken,
       selectedTokenAddress,
