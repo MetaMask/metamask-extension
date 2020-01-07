@@ -167,7 +167,7 @@ export class PermissionsController {
   /**
    * User rejection callback.
    *
-   * @param {string} id the id of the rejected request
+   * @param {string} id - the id of the rejected request
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals[id]

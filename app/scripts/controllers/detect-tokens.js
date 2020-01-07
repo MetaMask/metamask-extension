@@ -62,8 +62,8 @@ class DetectTokensController {
   /**
    * Find if selectedAddress has tokens with contract in contractAddress.
    *
-   * @param {string} contractAddress Hex address of the token contract to explore.
-   * @returns {boolean} If balance is detected, token is added.
+   * @param {string} contractAddress - Hex address of the token contract to explore.
+   * @returns {boolean} - If balance is detected, token is added.
    *
    */
   async detectTokenBalance (contractAddress) {

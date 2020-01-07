@@ -40,7 +40,7 @@ class AppStateController {
 
   /**
    * Sets the inactive timeout for the app
-   * @param {number} timeoutMinutes the inactive timeout in minutes
+   * @param {number} timeoutMinutes - the inactive timeout in minutes
    * @returns {void}
    * @private
    */

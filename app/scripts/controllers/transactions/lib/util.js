@@ -15,7 +15,7 @@ const normalizers = {
 /**
   normalizes txParams
   @param {Object} txParams
-  @returns {Object} normalized txParams
+  @returns {Object} - normalized txParams
  */
 export function normalizeTxParams (txParams, LowerCase) {
   // apply only keys in the normalizers

@@ -41,7 +41,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param {Object} opts - the object to use when overwriting defaults
-    @returns {txMeta} the default txMeta object
+    @returns {txMeta} - the default txMeta object
   */
   generateTxMeta (opts) {
     const netId = this.getNetwork()
@@ -58,7 +58,7 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} of txMetas that have been filtered for only the current network
+    @returns {array} - of txMetas that have been filtered for only the current network
   */
   getTxList () {
     const network = this.getNetwork()
@@ -67,14 +67,14 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} of all the txMetas in store
+    @returns {array} - of all the txMetas in store
   */
   getFullTxList () {
     return this.store.getState().transactions
   }
 
   /**
-    @returns {array} the tx list whos status is unapproved
+    @returns {array} - the tx list whos status is unapproved
   */
   getUnapprovedTxList () {
     const txList = this.getTxsByMetaData('status', 'unapproved')
@@ -86,7 +86,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} the tx list whos status is approved if no address is provide
+    @returns {array} - the tx list whos status is approved if no address is provide
     returns all txMetas who's status is approved for the current network
   */
   getApprovedTransactions (address) {
@@ -99,7 +99,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} the tx list whos status is submitted if no address is provide
+    @returns {array} - the tx list whos status is submitted if no address is provide
     returns all txMetas who's status is submitted for the current network
   */
   getPendingTransactions (address) {
@@ -112,7 +112,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} the tx list whos status is confirmed if no address is provide
+    @returns {array} - the tx list whos status is confirmed if no address is provide
     returns all txMetas who's status is confirmed for the current network
   */
   getConfirmedTransactions (address) {
@@ -130,7 +130,7 @@ class TransactionStateManager extends EventEmitter {
     it will allso add the key `history` to the txMeta with the snap shot of the original
     object
     @param {Object} txMeta
-    @returns {Object} the txMeta
+    @returns {Object} - the txMeta
   */
   addTx (txMeta) {
     // normalize and validate txParams if present
@@ -178,7 +178,7 @@ class TransactionStateManager extends EventEmitter {
   }
   /**
     @param {number} txId
-    @returns {Object} the txMeta who matches the given id if none found
+    @returns {Object} - the txMeta who matches the given id if none found
     for the network returns undefined
   */
   getTx (txId) {
@@ -303,7 +303,7 @@ class TransactionStateManager extends EventEmitter {
     @param value - the value your looking for can also be a function that returns a bool
     @param [txList=this.getTxList()] {array} - the list to search. default is the txList
     from txStateManager#getTxList
-    @returns {array} a list of txMetas who matches the search params
+    @returns {array} - a list of txMetas who matches the search params
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
     const filter = typeof value === 'function' ? value : (v) => v === value
@@ -321,7 +321,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param {number} txId - the txMeta Id
-    @returns {string} the status of the tx.
+    @returns {string} - the status of the tx.
   */
   getTxStatus (txId) {
     const txMeta = this.getTx(txId)

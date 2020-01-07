@@ -98,7 +98,7 @@ class PendingTransactionTracker extends EventEmitter {
     @param {Object} txMeta - txMeta object
     @param {string} latestBlockNumber - hex string for the latest block number
     @emits tx:retry
-    @returns {string} txHash
+    @returns {string} - txHash
   */
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {

@@ -109,8 +109,8 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 /**
  * Error handler for page to extension stream disconnections
  *
- * @param {string} remoteLabel Remote stream name
- * @param {Error} err Stream connection error
+ * @param {string} remoteLabel - Remote stream name
+ * @param {Error} err - Stream connection error
  */
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
@@ -123,7 +123,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 /**
  * Determines if the provider should be injected
  *
- * @returns {boolean} {@code true} if the provider should be injected
+ * @returns {boolean} {@code true} - if the provider should be injected
  */
 function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
@@ -133,7 +133,7 @@ function shouldInjectProvider () {
 /**
  * Checks the doctype of the current document if it exists
  *
- * @returns {boolean} {@code true} if the doctype is html or if none exists
+ * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
 function doctypeCheck () {
   const doctype = window.document.doctype
@@ -151,7 +151,7 @@ function doctypeCheck () {
  * that we should not inject the provider into. This check is indifferent of
  * query parameters in the location.
  *
- * @returns {boolean} whether or not the extension of the current document is prohibited
+ * @returns {boolean} - whether or not the extension of the current document is prohibited
  */
 function suffixCheck () {
   const prohibitedTypes = [
@@ -170,7 +170,7 @@ function suffixCheck () {
 /**
  * Checks the documentElement of the current document
  *
- * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
+ * @returns {boolean} {@code true} - if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
   const documentElement = document.documentElement.nodeName
@@ -183,7 +183,7 @@ function documentElementCheck () {
 /**
  * Checks if the current domain is blacklisted
  *
- * @returns {boolean} {@code true} if the current domain is blacklisted
+ * @returns {boolean} {@code true} - if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
   const blacklistedDomains = [

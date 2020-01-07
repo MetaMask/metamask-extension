@@ -23,7 +23,7 @@ class TxGasUtil {
 
   /**
     @param {Object} txMeta - the txMeta object
-    @returns {Object} the txMeta object with the gas written to the txParams
+    @returns {Object} - the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)
@@ -52,7 +52,7 @@ class TxGasUtil {
     Estimates the tx's gas usage
     @param {Object} txMeta - the txMeta object
     @param {string} blockGasLimitHex - hex string of the block's gas limit
-    @returns {string} the estimated gas limit as a hex string
+    @returns {string} - the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
     const txParams = txMeta.txParams
@@ -130,7 +130,7 @@ class TxGasUtil {
 
     @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
     @param {string} blockGasLimitHex - the block gas limit
-    @returns {string} the buffered gas limit as a hex string
+    @returns {string} - the buffered gas limit as a hex string
   */
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)

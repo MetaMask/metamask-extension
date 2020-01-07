@@ -70,7 +70,7 @@ class NotificationManager {
    * type 'popup')
    *
    * @private
-   * @param {Function} cb A node style callback that to whcih the found notification window will be passed.
+   * @param {Function} cb - A node style callback that to whcih the found notification window will be passed.
    *
    */
   _getPopup (cb) {
@@ -86,7 +86,7 @@ class NotificationManager {
    * Returns all open MetaMask windows.
    *
    * @private
-   * @param {Function} cb A node style callback that to which the windows will be passed.
+   * @param {Function} cb - A node style callback that to which the windows will be passed.
    *
    */
   _getWindows (cb) {
@@ -104,7 +104,7 @@ class NotificationManager {
    * Given an array of windows, returns the 'popup' that has been opened by MetaMask, or null if no such window exists.
    *
    * @private
-   * @param {array} windows An array of objects containing data about the open MetaMask extension windows.
+   * @param {array} windows - An array of objects containing data about the open MetaMask extension windows.
    *
    */
   _getPopupIn (windows) {

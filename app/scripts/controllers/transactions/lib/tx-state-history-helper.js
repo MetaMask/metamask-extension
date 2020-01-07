@@ -63,7 +63,7 @@ function replayHistory (_shortHistory) {
 
 /**
   @param {Object} txMeta
-  @returns {Object} a clone object of the txMeta with out history
+  @returns {Object} - a clone object of the txMeta with out history
 */
 function snapshotFromTxMeta (txMeta) {
   // create txMeta snapshot for history

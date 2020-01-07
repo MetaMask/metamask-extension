@@ -4,7 +4,7 @@
 * numeric base, denomination and currency, and the desired numeric base, denomination and
 * currency. It should return a single value.
 *
-* @param {(number | string | BN)} value The value to convert.
+* @param {(number | string | BN)} value - The value to convert.
 * @param {Object} [options] Options to specify details of the conversion
 * @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
 * @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
