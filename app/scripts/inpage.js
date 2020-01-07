@@ -81,7 +81,8 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-const web3 = new Conflux()
+// TODO: shouldn't specify default things here, let user do it?
+const web3 = new Conflux({ defaultGasPrice: 100, defaultGas: 1000000 })
 web3.provider = proxiedInpageProvider
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
