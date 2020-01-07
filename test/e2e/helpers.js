@@ -127,70 +127,58 @@ async function findElements (driver, by, timeout = 10000) {
 }
 
 async function openNewPage (driver, url) {
-  await driver.executeScript('window.open()')
-  await delay(1000)
-
-  const handles = await driver.getAllWindowHandles()
-  const lastHandle = handles[handles.length - 1]
-  await driver.switchTo().window(lastHandle)
-
+  const newHandle = await driver.switchTo().newWindow()
   await driver.get(url)
-  await delay(1000)
+  return newHandle
 }
 
 async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
   let timeElapsed = 0
-  async function _pollWindowHandles () {
+  while (timeElapsed <= timeout) {
     const windowHandles = await driver.getAllWindowHandles()
     if (windowHandles.length === x) {
       return
     }
     await delay(delayStep)
     timeElapsed += delayStep
-    if (timeElapsed > timeout) {
-      throw new Error('waitUntilXWindowHandles timed out polling window handles')
-    } else {
-      await _pollWindowHandles()
-    }
   }
-  return await _pollWindowHandles()
+  throw new Error('waitUntilXWindowHandles timed out polling window handles')
 }
 
 async function switchToWindowWithTitle (driver, title, windowHandles) {
   if (!windowHandles) {
     windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window with title: ' + title)
   }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const handleTitle = await driver.getTitle()
 
-  if (handleTitle === title) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithTitle(driver, title, windowHandles.slice(1))
+  for (const handle of windowHandles) {
+    await driver.switchTo().window(handle)
+    const handleTitle = await driver.getTitle()
+    if (handleTitle === title) {
+      return handle
+    }
   }
+
+  throw new Error('No window with title: ' + title)
 }
 
 /**
  * Closes all windows except those in the given list of exceptions
  * @param {object} driver the WebDriver instance
- * @param {string|Array<string>} exceptions the list of window handle exceptions
+ * @param {Array<string>} exceptions the list of window handle exceptions
  * @param {Array?} windowHandles the full list of window handles
  * @returns {Promise<void>}
  */
 async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
-  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
   windowHandles = windowHandles || await driver.getAllWindowHandles()
-  const lastWindowHandle = windowHandles.pop()
-  if (!exceptions.includes(lastWindowHandle)) {
-    await driver.switchTo().window(lastWindowHandle)
-    await delay(1000)
-    await driver.close()
-    await delay(1000)
+
+  for (const handle of windowHandles) {
+    if (!exceptions.includes(handle)) {
+      await driver.switchTo().window(handle)
+      await delay(1000)
+      await driver.close()
+      await delay(1000)
+    }
   }
-  return windowHandles.length && await closeAllWindowHandlesExcept(driver, exceptions, windowHandles)
 }
 
 async function assertElementNotPresent (webdriver, driver, by) {
