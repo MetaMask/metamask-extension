@@ -1,0 +1,1 @@
+../../../node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js

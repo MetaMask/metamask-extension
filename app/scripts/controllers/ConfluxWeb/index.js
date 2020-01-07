@@ -1,4 +1,4 @@
-const ConfluxWeb = require('conflux-web')
+const ConfluxWeb = require('js-conflux-sdk')
 
 class FakeContract {
   constructor (cfx, abi) {

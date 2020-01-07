@@ -24,7 +24,7 @@ const {
 const noop = () => true
 const currentNetworkId = 42
 const netStore = new ObservableStore(currentNetworkId)
-const cganache = new CGanache({ verbose: true })
+const cganache = new CGanache()
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount

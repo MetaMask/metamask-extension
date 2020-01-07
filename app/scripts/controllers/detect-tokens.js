@@ -88,7 +88,7 @@ class DetectTokensController {
         }
       })
     } catch (error) {
-      // TODO let error make sense
+      // TODO let the error make sense
       warn(
         `MetaMask - DetectTokensController single call balance fetch failed`,
         error
