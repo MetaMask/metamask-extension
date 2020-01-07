@@ -722,17 +722,15 @@ describe('MetaMask', function () {
         driver,
         By.css('.advanced-gas-inputs__gas-edit-row__input')
       )
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await delay(50)
-
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await delay(50)
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
       await gasPriceInput.sendKeys('10')
       await delay(50)
-      await delay(tinyDelayMs)
-      await delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await delay(50)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
       await gasLimitInput.sendKeys('25000')
 
       await delay(1000)
