@@ -1194,7 +1194,7 @@
     "message": "Send Amount"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send CFX"
   },
   "sendTokens": {
     "message": "Send Tokens"

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
@@ -14,7 +15,7 @@ export default class CurrencyDisplay extends PureComponent {
   }
 
   render () {
-    const {
+    let {
       className,
       displayValue,
       prefix,
@@ -23,6 +24,9 @@ export default class CurrencyDisplay extends PureComponent {
       suffix,
       hideTitle,
     } = this.props
+    if (suffix && suffix.toLocaleLowerCase() === 'eth') {
+      suffix = 'CFX'
+    }
     const text = `${prefix || ''}${displayValue}`
     const title = suffix ? `${text} ${suffix}` : text
 
