@@ -734,7 +734,7 @@
   "newNetwork": {
     "message": "新增网络"
   },
-  "newToConflux MetaMask Test": {
+  "newToMetaMask": {
     "message": "新增至 Conflux MetaMask Test？"
   },
   "noAlreadyHaveSeed": {
