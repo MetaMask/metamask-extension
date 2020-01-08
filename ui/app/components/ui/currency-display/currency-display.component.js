@@ -1,7 +1,9 @@
-/* eslint-disable prefer-const */
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import availableCurrencies from '../../../helpers/constants/available-conversions'
+
+const currencies = availableCurrencies.map(({ code }) => code)
 
 export default class CurrencyDisplay extends PureComponent {
   static propTypes = {
@@ -23,16 +25,20 @@ export default class CurrencyDisplay extends PureComponent {
       style,
       hideTitle,
     } = this.props
-    const suffix = this.props.suffix.toLowerCase() === 'ETH' ? 'CFX' : this.props.suffix
+    let suffix
+    if (this.props.suffix) {
+      suffix =
+        this.props.suffix.toLowerCase() === 'eth' ? 'CFX' : this.props.suffix
+    }
     const text = `${prefix || ''}${displayValue}`
     const title = suffix ? `${text} ${suffix}` : text
 
     return (
       <div
         className={classnames(
-          suffix === 'CFX'
+          !suffix || !currencies.includes(suffix.toLowerCase())
             ? 'currency-display-component'
-            : 'currency-display-component-hide',
+            : 'currency-display-component currency-display-component-hide',
           className
         )}
         style={style}
