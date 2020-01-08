@@ -49,7 +49,9 @@ class PermissionsController {
     this.keyringController = keyringController
     this.assetsController = assetsController
     this.setupProvider = setupProvider
-    this.externalRestrictedMethods = getExternalRestrictedMethods(this)
+    this.externalRestrictedMethods = getExternalRestrictedMethods(
+      this, this.assetsController
+    )
     this.getApi = getApi
     this.pluginRestrictedMethods = {}
   }

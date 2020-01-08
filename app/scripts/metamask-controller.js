@@ -225,6 +225,11 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
     })
 
+    this.assetsController = new AssetsController({
+      // TODO: Persist asset state?
+      // For now handled by plugin persistence.
+    })
+
     this.permissionsController = new PermissionsController({
       setupProvider: this.setupProvider.bind(this),
       keyringController: this.keyringController,
@@ -292,11 +297,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.addressAuditController = new AddressAuditController({
       initState: initState.AddressAuditController,
-    })
-
-    this.assetsController = new AssetsController({
-      // TODO: Persist asset state?
-      // For now handled by plugin persistence.
     })
 
     this.pluginsController = new PluginsController({

@@ -65,8 +65,9 @@ const pluginRestrictedMethodDescriptions = {
   newUnapprovedTx: 'Be notified with details of your new transactions',
 }
 
-function getExternalRestrictedMethods (permissionsController) {
-  const { assetsController } = permissionsController
+function getExternalRestrictedMethods (
+  permissionsController, assetsController
+) {
 
   return {
     'eth_accounts': {
