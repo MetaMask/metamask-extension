@@ -178,6 +178,7 @@ $wallet-view-bg: $alabaster;
 }
 
 .fiat-amount {
+  display: none !important;
   text-transform: uppercase;
 }
 

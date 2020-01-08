@@ -15,24 +15,26 @@ export default class CurrencyDisplay extends PureComponent {
   }
 
   render () {
-    let {
+    const {
       className,
       displayValue,
       prefix,
       prefixComponent,
       style,
-      suffix,
       hideTitle,
     } = this.props
-    if (suffix && suffix.toLocaleLowerCase() === 'eth') {
-      suffix = 'CFX'
-    }
+    const suffix = this.props.suffix.toLowerCase() === 'ETH' ? 'CFX' : this.props.suffix
     const text = `${prefix || ''}${displayValue}`
     const title = suffix ? `${text} ${suffix}` : text
 
     return (
       <div
-        className={classnames('currency-display-component', className)}
+        className={classnames(
+          suffix === 'CFX'
+            ? 'currency-display-component'
+            : 'currency-display-component-hide',
+          className
+        )}
         style={style}
         title={(!hideTitle && title) || null}
       >
