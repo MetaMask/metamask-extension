@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
@@ -69,7 +70,7 @@ export default class UnitInput extends PureComponent {
   }
 
   render () {
-    const {
+    let {
       error,
       placeholder,
       suffix,
@@ -77,6 +78,9 @@ export default class UnitInput extends PureComponent {
       children,
       maxModeOn,
     } = this.props
+    if (suffix && suffix.toLocaleLowerCase() === 'eth') {
+      suffix = 'CFX'
+    }
     const { value } = this.state
 
     return (
