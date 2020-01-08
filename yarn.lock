@@ -3385,10 +3385,10 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^0.9.8":
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.8.tgz#96a2cb1b9d0f9b5bf52c49a04d61f597e499535b"
-  integrity sha512-MuxNeoLlbDVhUkZfRj7ggk51f8a6JGP2R4Eq4QgJpWvAZvfMYbxIbMUL5cZPvIIV4antjMIbXcH3CwwQPSggPA==
+"@yqrashawn/conflux-local-network-lite@^0.9.9":
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.9.tgz#6c31a7c6921a6eef2bb58bac60cd8340b63ecc66"
+  integrity sha512-l+eIvsmMlNvhDo0Itvw5mQNJxR0xcYztb7HOLPqERk9S03soNoOmMm9Y1KgMPRRjNxQ4/UTmiRsK1CvR4/Fzdw==
   dependencies:
     ethereumjs-util "^6.2.0"
     got "^10.2.0"

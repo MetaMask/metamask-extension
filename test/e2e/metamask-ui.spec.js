@@ -18,7 +18,7 @@ const {
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
-const ganacheServer = new Ganache()
+const ganacheServer = new Ganache({ genBlockInterval: 300 })
 
 describe('MetaMask', function () {
   let driver
@@ -859,7 +859,7 @@ describe('MetaMask', function () {
         driver,
         By.css('.transaction-list-item')
       )
-      await transactions[3].click()
+      await transactions[0].click()
       await delay(regularDelayMs)
       try {
         transactions = await findElements(
@@ -867,7 +867,7 @@ describe('MetaMask', function () {
           By.css('.transaction-list-item'),
           1000
         )
-        await transactions[3].click()
+        await transactions[0].click()
       } catch (e) {
         console.log(e)
       }
@@ -882,12 +882,28 @@ describe('MetaMask', function () {
       )
       assert.equal(navigateTxButtons.length, 4, 'navigation button present')
 
-      await navigateTxButtons[2].click()
+      await navigateTxButtons[0].click()
       let navigationElement = await findElement(
         driver,
         By.css('.confirm-page-container-navigation')
       )
       let navigationText = await navigationElement.getText()
+      assert.equal(
+        navigationText.includes('1'),
+        true,
+        'changed transaction right'
+      )
+
+      navigateTxButtons = await findElements(
+        driver,
+        By.css('.confirm-page-container-navigation__arrow')
+      )
+      await navigateTxButtons[2].click()
+      navigationElement = await findElement(
+        driver,
+        By.css('.confirm-page-container-navigation')
+      )
+      navigationText = await navigationElement.getText()
       assert.equal(
         navigationText.includes('2'),
         true,
@@ -906,22 +922,6 @@ describe('MetaMask', function () {
       navigationText = await navigationElement.getText()
       assert.equal(
         navigationText.includes('3'),
-        true,
-        'changed transaction right'
-      )
-
-      navigateTxButtons = await findElements(
-        driver,
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[2].click()
-      navigationElement = await findElement(
-        driver,
-        By.css('.confirm-page-container-navigation')
-      )
-      navigationText = await navigationElement.getText()
-      assert.equal(
-        navigationText.includes('4'),
         true,
         'changed transaction right'
       )
