@@ -27,7 +27,7 @@
     "message": "Apie"
   },
   "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija"
+    "message": "Versija, palaikymo centras ir kontaktinė informacija."
   },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
@@ -63,7 +63,7 @@
     "message": "Išplėstiniai"
   },
   "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
+    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC."
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Bendrieji"
+  },
+  "betweenMinAndMax": {
+    "message": "turi būti ne mažiau kaip $1 ir ne daugiau kaip $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokuoti naršyklę"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Nukopijuota!"
+  },
+  "copy": {
+    "message": "Kopijuoti"
   },
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
@@ -536,6 +543,10 @@
   "getStarted": {
     "message": "Darbo pradžia"
   },
+  "greaterThanMin": {
+    "message": "turi būti daugiau arba lygu $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Džiaugiamės jus matydami."
   },
@@ -653,6 +664,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Prieš įtraukdami naują, turite pasinaudoti paskutine paskyra."
+  },
+  "lessThanMax": {
+    "message": "turi būti mažiau arba lygu $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"
@@ -854,6 +869,9 @@
   "pastePrivateKey": {
     "message": "Čia įklijuokite asmeninio rakto eilutę:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Čia įklijuokite savo atkūrimo frazę!"
   },
   "pending": {
     "message": "laukiama patvirtinimo"
@@ -1167,6 +1185,9 @@
   },
   "storePhrase": {
     "message": "Laikykite šią frazę slaptažodžių tvarkyklėje kaip 1 slaptažodį."
+  },
+  "submit": {
+    "message": "Pateikti"
   },
   "submitted": {
     "message": "Pateikta"

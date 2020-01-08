@@ -260,9 +260,7 @@ function setupController (initState, initLangCode) {
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') {
-      return
-    }
+    if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
     try {
       reportFailedTxToSentry({ sentry, txMeta })
@@ -314,7 +312,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,

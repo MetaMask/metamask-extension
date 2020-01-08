@@ -15,9 +15,7 @@ async function findAsync (container, selector, opts) {
   try {
     return await pollUntilTruthy(() => {
       const result = container.find(selector)
-      if (result.length > 0) {
-        return result
-      }
+      if (result.length > 0) return result
     }, opts)
   } catch (err) {
     throw new Error(`Failed to find element within interval: "${selector}"`)
@@ -28,9 +26,7 @@ async function queryAsync (jQuery, selector, opts) {
   try {
     return await pollUntilTruthy(() => {
       const result = jQuery(selector)
-      if (result.length > 0) {
-        return result
-      }
+      if (result.length > 0) return result
     }, opts)
   } catch (err) {
     throw new Error(`Failed to find element within interval: "${selector}"`)

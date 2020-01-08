@@ -27,7 +27,7 @@
     "message": "Про Google Chrome"
   },
   "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація"
+    "message": "Версія, центр підтримки та контактна інформація."
   },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
@@ -63,7 +63,7 @@
     "message": "Розширені"
   },
   "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
+    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC."
   },
   "advancedOptions": {
     "message": "Додаткові параметри"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Основні параметри"
+  },
+  "betweenMinAndMax": {
+    "message": "має бути більшим або дорівнювати $1 і меншим або дорівнювати $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Блокувати Explorer"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Скопійовано!"
+  },
+  "copy": {
+    "message": "Копіювати"
   },
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
@@ -536,6 +543,10 @@
   "getStarted": {
     "message": "Почати"
   },
+  "greaterThanMin": {
+    "message": "має бути більшим або рівним $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Раді вас бачити."
   },
@@ -653,6 +664,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
+  },
+  "lessThanMax": {
+    "message": "має бути більшим або дорівнювати $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
@@ -854,6 +869,9 @@
   "pastePrivateKey": {
     "message": "Вставте ваш рядок з особистим ключем сюди:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Вставте сюди свою мнемонічну фразу!"
   },
   "pending": {
     "message": "очікує"
@@ -1167,6 +1185,9 @@
   },
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."
+  },
+  "submit": {
+    "message": "Надіслати"
   },
   "submitted": {
     "message": "Надіслано"

@@ -27,7 +27,7 @@ import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
 const RestoreVaultPage = require('../keychains/restore-vault').default
 const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync').default
+const MobileSyncPage = require('../mobile-sync')
 const AddTokenPage = require('../add-token')
 const ConfirmAddTokenPage = require('../confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
@@ -261,9 +261,7 @@ class Routes extends Component {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
       var passwordBox = document.querySelector('input[type=password]')
-      if (!passwordBox) {
-        return
-      }
+      if (!passwordBox) return
       passwordBox.focus()
     } else {
       // currently active: deactivate

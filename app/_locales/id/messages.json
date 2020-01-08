@@ -31,7 +31,7 @@
     "message": "Tentang"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat dukungan, dan informasi kontak"
+    "message": "Versi, pusat dukungan, dan informasi kontak."
   },
   "acceleratingATransaction": {
     "message": "* Mempercepat transaksi dengan menggunakan harga gas yang lebih tinggi meningkatkan peluangnya untuk lebih cepat diproses oleh jaringan, tetapi tak selalu terjamin pasti cepat."
@@ -67,7 +67,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom"
+    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom."
   },
   "advancedOptions": {
     "message": "Opsi Lanjutan"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Dasar"
+  },
+  "betweenMinAndMax": {
+    "message": "harus lebih dari atau sama dengan $1 dan kurang dari atau sama dengan $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokir Penjelajah"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Disalin!"
+  },
+  "copy": {
+    "message": "Salin"
   },
   "copyAddress": {
     "message": "Salin alamat ke clipboard"
@@ -523,6 +530,10 @@
   "getStarted": {
     "message": "Mulai"
   },
+  "greaterThanMin": {
+    "message": "harus lebih besar atau sama dengan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Kami senang bertemu dengan Anda."
   },
@@ -640,6 +651,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akun terakhir sebelum dapat menambahkan akun baru."
+  },
+  "lessThanMax": {
+    "message": "harus kurang dari atau setara $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ya, ayo tata!"
@@ -832,6 +847,9 @@
   "pastePrivateKey": {
     "message": "Tempelkan string kunci privat di sini:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Tempel frasa benih Anda di sini!"
   },
   "pending": {
     "message": "tertunda"
@@ -1145,6 +1163,9 @@
   },
   "storePhrase": {
     "message": "Simpan frasa ini dalam manajer sandi seperti 1Password."
+  },
+  "submit": {
+    "message": "Kirim"
   },
   "submitted": {
     "message": "Terkirim"

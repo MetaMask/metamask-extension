@@ -40,19 +40,13 @@ describe('PendingTransactionTracker', function () {
           return { releaseLock: () => {} }
         },
       },
-      getPendingTransactions: () => {
-        return []
-      },
-      getCompletedTransactions: () => {
-        return []
-      },
+      getPendingTransactions: () => { return [] },
+      getCompletedTransactions: () => { return [] },
       publishTransaction: () => {},
       confirmTransaction: () => {},
     })
 
-    pendingTxTracker._getBlock = (blockNumber) => {
-      return {number: blockNumber, transactions: []}
-    }
+    pendingTxTracker._getBlock = (blockNumber) => { return {number: blockNumber, transactions: []} }
   })
 
   describe('_checkPendingTx state management', function () {
@@ -156,18 +150,14 @@ describe('PendingTransactionTracker', function () {
       txMeta2.id = 2
       txMeta3.id = 3
       txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise((resolve) => {
-          tx.resolve = resolve
-        })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
 
     it('should warp all txMeta\'s in #updatePendingTxs', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._checkPendingTx = (tx) => {
-        tx.resolve(tx)
-      }
+      pendingTxTracker._checkPendingTx = (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
@@ -181,9 +171,7 @@ describe('PendingTransactionTracker', function () {
     beforeEach(function () {
       const txMeta2 = txMeta3 = txMeta
       txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise((resolve) => {
-          tx.resolve = resolve
-        })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -193,9 +181,7 @@ describe('PendingTransactionTracker', function () {
     })
     it('should call #_resubmitTx for all pending tx\'s', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async (tx) => {
-        tx.resolve(tx)
-      }
+      pendingTxTracker._resubmitTx = async (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
@@ -239,9 +225,7 @@ describe('PendingTransactionTracker', function () {
       })
 
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async () => {
-        throw new TypeError('im some real error')
-      }
+      pendingTxTracker._resubmitTx = async () => { throw new TypeError('im some real error') }
       Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
@@ -385,9 +369,7 @@ describe('PendingTransactionTracker', function () {
         rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
       }]
       pendingTxTracker.getCompletedTransactions = (address) => {
-        if (!address) {
-          throw new Error('unless behavior has changed #_checkIfNonceIsTaken needs a filtered list of transactions to see if the nonce is taken')
-        }
+        if (!address) throw new Error('unless behavior has changed #_checkIfNonceIsTaken needs a filtered list of transactions to see if the nonce is taken')
         return confirmedTxList
       }
     })

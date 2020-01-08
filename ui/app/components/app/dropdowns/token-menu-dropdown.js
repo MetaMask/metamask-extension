@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+const Component = require('react').Component
+const PropTypes = require('prop-types')
+const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
@@ -39,29 +40,29 @@ TokenMenuDropdown.prototype.onClose = function (e) {
   this.props.onClose()
 }
 
-TokenMenuDropdown.prototype.render = function TokenMenuDropdown () {
+TokenMenuDropdown.prototype.render = function () {
   const { showHideTokenConfirmationModal } = this.props
 
-  return (
-    <Menu className="token-menu-dropdown" isShowing>
-      <CloseArea onClick={this.onClose} />
-      <Item
-        onClick={(e) => {
-          e.stopPropagation()
-          showHideTokenConfirmationModal(this.props.token)
-          this.props.onClose()
-        }}
-        text={this.context.t('hideToken')}
-      />
-      <Item
-        onClick={(e) => {
-          e.stopPropagation()
-          const url = genAccountLink(this.props.token.address, this.props.network)
-          global.platform.openWindow({ url })
-          this.props.onClose()
-        }}
-        text={this.context.t('viewOnEtherscan')}
-      />
-    </Menu>
-  )
+  return h(Menu, { className: 'token-menu-dropdown', isShowing: true }, [
+    h(CloseArea, {
+      onClick: this.onClose,
+    }),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        showHideTokenConfirmationModal(this.props.token)
+        this.props.onClose()
+      },
+      text: this.context.t('hideToken'),
+    }),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        const url = genAccountLink(this.props.token.address, this.props.network)
+        global.platform.openWindow({ url })
+        this.props.onClose()
+      },
+      text: this.context.t('viewOnEtherscan'),
+    }),
+  ])
 }

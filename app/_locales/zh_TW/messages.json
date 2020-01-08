@@ -157,6 +157,10 @@
   "basic": {
     "message": "基本"
   },
+  "betweenMinAndMax": {
+    "message": "必須大於等於 $1 並且小於等於 $2 。",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
   },
@@ -286,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "已複製！"
+  },
+  "copy": {
+    "message": "複製"
   },
   "copyAddress": {
     "message": "複製到剪貼簿"
@@ -533,6 +540,10 @@
   "getStarted": {
     "message": "開始使用"
   },
+  "greaterThanMin": {
+    "message": "必須要大於等於 $1。",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "我們很高興看到你。"
   },
@@ -650,6 +661,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "您必須使用最後的帳戶才能產生新帳戶"
+  },
+  "lessThanMax": {
+    "message": "必須小於等於 $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
@@ -842,6 +857,9 @@
   "pastePrivateKey": {
     "message": "請貼上您的私鑰字串:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "請貼上您的助憶詞！"
   },
   "pending": {
     "message": "等待處理"
@@ -1143,6 +1161,9 @@
   },
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
+  },
+  "submit": {
+    "message": "送出"
   },
   "submitted": {
     "message": "已送出"

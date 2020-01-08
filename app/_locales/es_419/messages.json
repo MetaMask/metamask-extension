@@ -27,7 +27,7 @@
     "message": "Acerca de"
   },
   "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto"
+    "message": "Versión, centro de soporte técnico e información de contacto."
   },
   "acceleratingATransaction": {
     "message": "* Aumentar una transacción utilizando un precio de gas más alto aumenta sus posibilidades de ser procesada más rápido por la red, pero esto no siempre está garantizado."
@@ -63,7 +63,7 @@
     "message": "Avanzada"
   },
   "advancedSettingsDescription": {
-    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado"
+    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado."
   },
   "advancedOptions": {
     "message": "Opciones avanzadas"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Básicas"
+  },
+  "betweenMinAndMax": {
+    "message": "debe ser superior o igual a $1 e inferior o igual a $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Bloquear Explorer"
@@ -286,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Copiado"
+  },
+  "copy": {
+    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar la dirección al portapapeles"
@@ -530,6 +537,10 @@
   "getStarted": {
     "message": "Comenzar"
   },
+  "greaterThanMin": {
+    "message": "debe ser superior o igual a $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Estamos encantados de verte."
   },
@@ -644,6 +655,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Necesitas utilizar tu cuenta anterior para agregar una nueva."
+  },
+  "lessThanMax": {
+    "message": "debe ser menor o igual a $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "¡Eso, pongámonos en marcha!"
@@ -839,6 +854,9 @@
   "pastePrivateKey": {
     "message": "Copia y pega tu cadena de claves privada aquí:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "¡Copia y pega tu frase de inicialización aquí!"
   },
   "pending": {
     "message": "pendiente"
@@ -1152,6 +1170,9 @@
   },
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
+  },
+  "submit": {
+    "message": "Enviar"
   },
   "submitted": {
     "message": "Enviado"

@@ -6,9 +6,7 @@ const type = 'Simple Key Pair'
 
 module.exports = class MockSimpleKeychain {
 
-  static type () {
-    return type
-  }
+  static type () { return type }
 
   constructor (opts) {
     this.type = type

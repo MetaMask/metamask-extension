@@ -31,7 +31,7 @@
     "message": "O opcijama"
   },
   "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt"
+    "message": "Inačica, centar za podršku i informacije za kontakt."
   },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
@@ -67,7 +67,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
+    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC."
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Osnovne"
+  },
+  "betweenMinAndMax": {
+    "message": "mora biti veće od $1 ili jednako te manje od $2 ili jednako.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokiraj Explorer"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Kopirano!"
+  },
+  "copy": {
+    "message": "Kopiraj"
   },
   "copyAddress": {
     "message": "Kopiraj adresu u međuspremnik"
@@ -532,6 +539,10 @@
   "getStarted": {
     "message": "Početak upotrebe"
   },
+  "greaterThanMin": {
+    "message": "mora biti veće od $1 ili jednako.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Sretni smo što ste tu."
   },
@@ -649,6 +660,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Treba se koristiti zadnjim računom kako biste dodali novi račun."
+  },
+  "lessThanMax": {
+    "message": "mora biti manje od $1 ili jednako.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
@@ -847,6 +862,9 @@
   "pastePrivateKey": {
     "message": "Ovdje zalijepite svoj privatni niz ključa:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Ovdje zalijepite svoju početnu rečenicu!"
   },
   "pending": {
     "message": "na čekanju"
@@ -1160,6 +1178,9 @@
   },
   "storePhrase": {
     "message": "Spremite ovu rečenicu u upravitelj lozinkama poput aplikacije 1Password."
+  },
+  "submit": {
+    "message": "Pošalji"
   },
   "submitted": {
     "message": "Poslano"

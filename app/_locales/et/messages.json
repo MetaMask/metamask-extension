@@ -27,7 +27,7 @@
     "message": "Teave"
   },
   "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave"
+    "message": "Versioon, tugikeskus ja kontaktteave."
   },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
@@ -63,7 +63,7 @@
     "message": "Täpsemad"
   },
   "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
+    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine."
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Põhiseaded"
+  },
+  "betweenMinAndMax": {
+    "message": "peab olema suurem või võrdne $1 ja väiksem või võrdne $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokeeri Explorer"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Kopeeritud!"
+  },
+  "copy": {
+    "message": "Kopeeri"
   },
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
@@ -532,6 +539,10 @@
   "getStarted": {
     "message": "Alustamine"
   },
+  "greaterThanMin": {
+    "message": "peab olema $1või suurem.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Meil on hea meel teid näha."
   },
@@ -646,6 +657,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
+  },
+  "lessThanMax": {
+    "message": "peab olema $1või väiksem.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
@@ -844,6 +859,9 @@
   "pastePrivateKey": {
     "message": "Kleepige oma privaatne võtmestring siia:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Kleepige oma seemnefraas siia!"
   },
   "pending": {
     "message": "ootel"
@@ -1157,6 +1175,9 @@
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."
+  },
+  "submit": {
+    "message": "Esita"
   },
   "submitted": {
     "message": "Edastatud"

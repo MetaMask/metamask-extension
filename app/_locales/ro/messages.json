@@ -27,7 +27,7 @@
     "message": "Despre"
   },
   "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
+    "message": "Versiune, centru de asistență și date de contact."
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -63,7 +63,7 @@
     "message": "Avansate"
   },
   "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
+    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat."
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "De bază"
+  },
+  "betweenMinAndMax": {
+    "message": "trebuie să fie mai mare sau egal cu $1 și mai mic sau egal cu $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Explorator blocuri"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Copiat!"
+  },
+  "copy": {
+    "message": "Copiază"
   },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
@@ -529,6 +536,10 @@
   "getStarted": {
     "message": "Începe"
   },
+  "greaterThanMin": {
+    "message": "trebuie să fie mai mare sau egal cu $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Ne pare bine să vă vedem."
   },
@@ -643,6 +654,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
+  },
+  "lessThanMax": {
+    "message": "trebuie să fie mai mic sau egal cu $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Da, hai să configurăm!"
@@ -841,6 +856,9 @@
   "pastePrivateKey": {
     "message": "Lipiți aici șirul de chei private:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Copiați-vă expresia seed aici!"
   },
   "pending": {
     "message": "în așteptare"
@@ -1154,6 +1172,9 @@
   },
   "storePhrase": {
     "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
+  },
+  "submit": {
+    "message": "Trimite"
   },
   "submitted": {
     "message": "Trimis"

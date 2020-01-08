@@ -37,9 +37,6 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
-const ObjectMultiplex = require('obj-multiplex')
-const pump = require('pump')
-const promisify = require('pify')
 const createStandardProvider = require('./createStandardProvider').default
 
 let warned = false
@@ -63,14 +60,6 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
-
-const pageMux = new ObjectMultiplex()
-const onboardingStream = pageMux.createStream('onboarding')
-pump(
-  pageMux,
-  metamaskStream,
-  error => log.error('MetaMask muxed in-page traffic failed', error)
-)
 
 let warnedOfAutoRefreshDeprecation = false
 // augment the provider with its enable method
@@ -145,15 +134,6 @@ inpageProvider._metamask = new Proxy({
     const { isUnlocked } = await getPublicConfigWhenReady()
     return Boolean(isUnlocked)
   },
-
-  /**
-   * Registers a page as having initated onboarding. This facilitates MetaMask focusing the initiating tab after onboarding.
-   *
-   * @returns {Promise} - Promise resolving to undefined
-   */
-  registerOnboarding: async () => {
-    await promisify(onboardingStream.write({ type: 'registerOnboarding' }))
-  },
 }, {
   get: function (obj, prop) {
     !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
@@ -197,4 +177,10 @@ setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
+})
+
+inpageProvider.publicConfigStore.subscribe(function (state) {
+  if (state.onboardingcomplete) {
+    window.postMessage('onboardingcomplete', '*')
+  }
 })

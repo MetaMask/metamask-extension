@@ -31,7 +31,7 @@
     "message": "Névjegy"
   },
   "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
+    "message": "Verzió, ügyfélszolgálat és elérhetőségek."
   },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
@@ -67,7 +67,7 @@
     "message": "Speciális"
   },
   "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
+    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása."
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Alapvető"
+  },
+  "betweenMinAndMax": {
+    "message": "legyen nagyobb vagy egyenlő mint $1 és kisebb vagy egyenlő mint $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Explorer blokkolása"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Kimásolva!"
+  },
+  "copy": {
+    "message": "Másolás"
   },
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
@@ -532,6 +539,10 @@
   "getStarted": {
     "message": "Első lépések"
   },
+  "greaterThanMin": {
+    "message": "legyen nagyobb vagy egyenlő mint $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Örülünk, hogy itt van. "
   },
@@ -649,6 +660,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
+  },
+  "lessThanMax": {
+    "message": "egyenlő vagy kevesebb kell legyen mint $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Igen, hozzuk létre!"
@@ -847,6 +862,9 @@
   "pastePrivateKey": {
     "message": "Illessze be ide a privát kulcs karakterláncát:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Másolja be ide a seed mondatot!"
   },
   "pending": {
     "message": "folyamatban"
@@ -1160,6 +1178,9 @@
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."
+  },
+  "submit": {
+    "message": "Elküldés"
   },
   "submitted": {
     "message": "Elküldve"

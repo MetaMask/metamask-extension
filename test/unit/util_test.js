@@ -7,9 +7,7 @@ var util = require(path.join(__dirname, '..', '..', 'ui', 'app', 'helpers', 'uti
 
 describe('util', function () {
   var ethInWei = '1'
-  for (var i = 0; i < 18; i++) {
-    ethInWei += '0'
-  }
+  for (var i = 0; i < 18; i++) { ethInWei += '0' }
 
   beforeEach(function () {
     this.sinon = sinon.createSandbox()

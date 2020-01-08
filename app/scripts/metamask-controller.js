@@ -4,12 +4,10 @@
  * @license   MIT
  */
 
-const assert = require('assert').strict
 const EventEmitter = require('events')
 const pump = require('pump')
 const Dnode = require('dnode')
 const pify = require('pify')
-const extension = require('extensionizer')
 const ObservableStore = require('obs-store')
 const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const createDnodeRemoteGetter = require('./lib/createDnodeRemoteGetter')
@@ -180,7 +178,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
-      preferencesController: this.preferencesController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -346,9 +343,7 @@ module.exports = class MetamaskController extends EventEmitter {
         // Expose no accounts if this origin has not been approved, preventing
         // account-requring RPC methods from completing successfully
         const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'metamask' && !exposeAccounts) {
-          return []
-        }
+        if (origin !== 'metamask' && !exposeAccounts) { return [] }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -394,7 +389,7 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore.putState(publicState)
     }
 
-    function selectPublicState ({ isUnlocked, selectedAddress, network, provider }) {
+    function selectPublicState ({ isUnlocked, selectedAddress, network, completedOnboarding, provider }) {
       const isEnabled = checkIsEnabled()
       const isReady = isUnlocked && isEnabled
       const result = {
@@ -402,6 +397,7 @@ module.exports = class MetamaskController extends EventEmitter {
         isEnabled,
         selectedAddress: isReady ? selectedAddress : null,
         networkVersion: network,
+        onboardingcomplete: completedOnboarding,
         chainId: selectChainId({ network, provider }),
       }
       return result
@@ -1410,9 +1406,7 @@ module.exports = class MetamaskController extends EventEmitter {
         this.activeControllerConnections--
         this.emit('controllerConnectionChanged', this.activeControllerConnections)
         // report any error
-        if (err) {
-          log.error(err)
-        }
+        if (err) log.error(err)
       }
     )
     dnode.on('remote', (remote) => {
@@ -1450,9 +1444,7 @@ module.exports = class MetamaskController extends EventEmitter {
             mid.destroy()
           }
         })
-        if (err) {
-          log.error(err)
-        }
+        if (err) log.error(err)
       }
     )
   }
@@ -1517,48 +1509,9 @@ module.exports = class MetamaskController extends EventEmitter {
       (err) => {
         configStore.destroy()
         configStream.destroy()
-        if (err) {
-          log.error(err)
-        }
+        if (err) log.error(err)
       }
     )
-  }
-
-  onMessage (message, sender, sendResponse) {
-    if (!message || !message.type) {
-      log.debug(`Ignoring invalid message: '${JSON.stringify(message)}'`)
-      return
-    }
-
-    let handleMessage
-
-    try {
-      if (message.type === 'metamask:registerOnboarding') {
-        assert(sender.tab, 'Missing tab from sender')
-        assert(sender.tab.id && sender.tab.id !== extension.tabs.TAB_ID_NONE, 'Missing tab ID from sender')
-        assert(message.location, 'Missing location from message')
-
-        handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
-      } else {
-        throw new Error(`Unrecognized message type: '${message.type}'`)
-      }
-    } catch (error) {
-      console.error(error)
-      sendResponse(error)
-      return true
-    }
-
-    if (handleMessage) {
-      handleMessage
-        .then(() => {
-          sendResponse(null, true)
-        })
-        .catch((error) => {
-          console.error(error)
-          sendResponse(error)
-        })
-      return true
-    }
   }
 
   /**
@@ -1576,9 +1529,7 @@ module.exports = class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // report any error
-        if (err) {
-          log.error(err)
-        }
+        if (err) log.error(err)
       }
     )
 
@@ -1727,14 +1678,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} amount - The amount of ether desired, as a base 10 string.
    */
   buyEth (address, amount) {
-    if (!amount) {
-      amount = '5'
-    }
+    if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
     const url = getBuyEthUrl({ network, address, amount })
-    if (url) {
-      this.platform.openWindow({ url })
-    }
+    if (url) this.platform.openWindow({ url })
   }
 
   /**

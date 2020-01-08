@@ -27,7 +27,7 @@
     "message": "Информация"
   },
   "aboutSettingsDescription": {
-    "message": "Версия, център за поддръжка и информация за контакт"
+    "message": "Версия, център за поддръжка и информация за контакт."
   },
   "acceleratingATransaction": {
     "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
@@ -63,7 +63,7 @@
     "message": "Разширени"
   },
   "advancedSettingsDescription": {
-    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC"
+    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC."
   },
   "advancedOptions": {
     "message": "Разширени опции"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Основни"
+  },
+  "betweenMinAndMax": {
+    "message": "трябва да бъде по-голям или равен на $1 и по-малък или равен на $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Блокиране на Explorer"
@@ -289,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Копирано!"
+  },
+  "copy": {
+    "message": "Копиране"
   },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
@@ -532,6 +539,10 @@
   "getStarted": {
     "message": "Първи стъпки"
   },
+  "greaterThanMin": {
+    "message": "трябва да бъде по-голяма или равна на $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Радваме се да Ви видим."
   },
@@ -649,6 +660,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
+  },
+  "lessThanMax": {
+    "message": "трябва да бъде по-малко или равно на $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
@@ -850,6 +865,9 @@
   "pastePrivateKey": {
     "message": "Поставете низ от личния си ключ тук:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Поставете тук ключовата си фраза!"
   },
   "pending": {
     "message": "в изчакване"
@@ -1163,6 +1181,9 @@
   },
   "storePhrase": {
     "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."
+  },
+  "submit": {
+    "message": "Изпращане"
   },
   "submitted": {
     "message": "Изпратен"

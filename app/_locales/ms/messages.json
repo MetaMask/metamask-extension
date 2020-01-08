@@ -27,7 +27,7 @@
     "message": "Mengenai"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
+    "message": "Versi, pusat sokongan, dan maklumat perhubungan."
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -63,7 +63,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
+    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai."
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
@@ -156,6 +156,10 @@
   },
   "basic": {
     "message": "Asas"
+  },
+  "betweenMinAndMax": {
+    "message": "mestilah lebih besar atau sama dengan $1 dan kurang atau sama dengan $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Sekat Explorer"
@@ -286,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Disalin!"
+  },
+  "copy": {
+    "message": "Salin"
   },
   "copyAddress": {
     "message": "Salin alamat kepada papan klip"
@@ -520,6 +527,10 @@
   "getStarted": {
     "message": "Bermula"
   },
+  "greaterThanMin": {
+    "message": "mestilah melebihi atau bersamaan dengan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Kami gembira bertemu anda."
   },
@@ -633,6 +644,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
+  },
+  "lessThanMax": {
+    "message": "mestilah kurang atau bersamaan dengan $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"
@@ -825,6 +840,9 @@
   "pastePrivateKey": {
     "message": "Tampal rentetan kekunci persendirian anda di sini:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Tampal ungkapan benih anda di sini!"
   },
   "pending": {
     "message": "menunggu"
@@ -1138,6 +1156,9 @@
   },
   "storePhrase": {
     "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."
+  },
+  "submit": {
+    "message": "Serah"
   },
   "submitted": {
     "message": "Dihantar"

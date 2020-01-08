@@ -1,85 +1,53 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import classnames from 'classnames'
+const inherits = require('util').inherits
+const Component = require('react').Component
+const h = require('react-hyperscript')
 
-/**
- * Menu component
- * @return {Component|null}
- */
-function Menu (props) {
-  const { className, children, isShowing } = props
+inherits(Menu, Component)
+function Menu () { Component.call(this) }
+
+Menu.prototype.render = function () {
+  const { className = '', children, isShowing } = this.props
   return isShowing
-    ? <div className={classnames('menu', className)}>{children}</div>
-    : null
+    ? h('div', { className: `menu ${className}` }, children)
+    : h('noscript')
 }
 
-Menu.defaultProps = {
-  className: '',
-  isShowing: false,
-  children: null,
-}
+inherits(Item, Component)
+function Item () { Component.call(this) }
 
-Menu.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node,
-  isShowing: PropTypes.bool,
-}
-
-function Item (props) {
+Item.prototype.render = function () {
   const {
     icon,
     children,
     text,
     subText,
-    className,
+    className = '',
     onClick,
-  } = props
+  } = this.props
+  const itemClassName = `menu__item ${className} ${onClick ? 'menu__item--clickable' : ''}`
+  const iconComponent = icon ? h('div.menu__item__icon', [icon]) : null
+  const textComponent = text ? h('div.menu__item__text', text) : null
+  const subTextComponent = subText ? h('div.menu__item__subtext', subText) : null
 
-  const itemClassName = classnames('menu__item', className, {
-    'menu__item--clickable': Boolean(onClick),
-  })
   return children
-    ? <div className={itemClassName} onClick={onClick}>{children}</div>
-    : (
-      <div
-        className={itemClassName}
-        onClick={onClick}
-      >
-        {icon ? <div className="menu__item__icon">{icon}</div> : null}
-        {text ? <div className="menu__item__text">{text}</div> : null}
-        {subText ? <div className="menu__item__subtext">{subText}</div> : null}
-      </div>
+    ? h('div', { className: itemClassName, onClick }, children)
+    : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent, subTextComponent ]
+      .filter(d => Boolean(d))
     )
 }
 
-Item.defaultProps = {
-  children: null,
-  icon: null,
-  text: null,
-  subText: null,
-  className: '',
-  onClick: null,
+inherits(Divider, Component)
+function Divider () { Component.call(this) }
+
+Divider.prototype.render = function () {
+  return h('div.menu__divider')
 }
 
-Item.propTypes = {
-  icon: PropTypes.node,
-  children: PropTypes.node,
-  text: PropTypes.node,
-  subText: PropTypes.node,
-  className: PropTypes.string,
-  onClick: PropTypes.func,
-}
+inherits(CloseArea, Component)
+function CloseArea () { Component.call(this) }
 
-function Divider () {
-  return <div className="menu__divider" />
-}
-
-function CloseArea ({ onClick }) {
-  return <div className="menu__close-area" onClick={onClick} />
-}
-
-CloseArea.propTypes = {
-  onClick: PropTypes.func.isRequired,
+CloseArea.prototype.render = function () {
+  return h('div.menu__close-area', { onClick: this.props.onClick })
 }
 
 module.exports = { Menu, Item, Divider, CloseArea }

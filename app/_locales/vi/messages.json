@@ -49,6 +49,10 @@
   "balanceIsInsufficientGas": {
     "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
   },
+  "betweenMinAndMax": {
+    "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -78,6 +82,9 @@
   },
   "copiedExclamation": {
     "message": "Đã sao chép!"
+  },
+  "copy": {
+    "message": "Sao chép"
   },
   "copyToClipboard": {
     "message": "Đã sao chép vào clipboard"
@@ -172,6 +179,10 @@
     "message": "Lấy Ether từ vòi với giá $1",
     "description": "Displays network name for Ether faucet"
   },
+  "greaterThanMin": {
+    "message": "phải nhiều hơn hoặc bằng $1",
+    "description": "helper for inputting hex as decimal input"
+  },
   "here": {
     "message": "tại đây",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -211,6 +222,10 @@
   },
   "kovan": {
     "message": "Mạng thử nghiệm Kovan"
+  },
+  "lessThanMax": {
+    "message": "phải ít hơn hoặc bằng $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "loading": {
     "message": "Đang tải..."
@@ -268,6 +283,9 @@
   "pastePrivateKey": {
     "message": "Dán dãy khóa cá nhân của bạn tại đây:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Dán Mật Khẩu Sinh Khoá (seed phrase) của bạn tại đây!"
   },
   "privateKey": {
     "message": "Khóa Bí Mật",
@@ -329,6 +347,9 @@
   },
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
+  },
+  "submit": {
+    "message": "Gửi đi"
   },
   "testFaucet": {
     "message": "Vòi nhận tiền ETH ảo để thử nghiệm"

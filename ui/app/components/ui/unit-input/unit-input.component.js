@@ -91,9 +91,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleBlur}
               style={{ width: this.getInputWidth(value) }}
-              ref={ref => {
-                this.unitInput = ref
-              }}
+              ref={ref => { this.unitInput = ref }}
               disabled={maxModeOn}
             />
             {

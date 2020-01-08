@@ -66,7 +66,5 @@ function getRegistryForChainId (chainId) {
     // goerli
     case 5:
       return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
-    default:
-      return null
   }
 }

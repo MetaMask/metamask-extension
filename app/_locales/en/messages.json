@@ -60,7 +60,7 @@
     "message": "About"
   },
   "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info"
+    "message": "Version, support center, and contact info."
   },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
@@ -100,7 +100,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -204,6 +204,10 @@
   },
   "basic": {
     "message": "Basic"
+  },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Block Explorer"
@@ -353,6 +357,9 @@
   "copiedExclamation": {
     "message": "Copied!"
   },
+  "copy": {
+    "message": "Copy"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -500,10 +507,6 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
-  "onboardingReturnNotice": {
-    "message": "\"$1\" will close this tab and direct back to $2",
-    "description": "Return the user to the site that initiated onboarding"
-  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
   },
@@ -620,6 +623,10 @@
   },
   "getStarted": {
     "message": "Get Started"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -738,6 +745,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -949,6 +960,9 @@
   "pastePrivateKey": {
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Paste your seed phrase here!"
   },
   "pending": {
     "message": "pending"
@@ -1282,6 +1296,9 @@
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
+  },
+  "submit": {
+    "message": "Submit"
   },
   "submitted": {
     "message": "Submitted"

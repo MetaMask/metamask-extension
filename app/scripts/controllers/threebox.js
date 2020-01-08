@@ -28,9 +28,7 @@ class ThreeBoxController {
     this.provider = this._createProvider({
       version,
       getAccounts: async ({ origin }) => {
-        if (origin !== '3Box') {
-          return []
-        }
+        if (origin !== '3Box') { return [] }
         const isUnlocked = getKeyringControllerState().isUnlocked
 
         const accounts = await this.keyringController.getAccounts()

@@ -27,7 +27,7 @@
     "message": "Informazioni"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centro di supporto e contatti"
+    "message": "Version, centro di supporto e contatti."
   },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
@@ -60,7 +60,7 @@
     "message": "Avanzate"
   },
   "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
+    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata."
   },
   "advancedOptions": {
     "message": "Opzioni Avanzate"
@@ -150,6 +150,10 @@
   },
   "basic": {
     "message": "Base"
+  },
+  "betweenMinAndMax": {
+    "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
@@ -268,6 +272,9 @@
   },
   "copiedExclamation": {
     "message": "Copiato!"
+  },
+  "copy": {
+    "message": "Copia"
   },
   "copyAddress": {
     "message": "Copia l'indirizzo"
@@ -515,6 +522,10 @@
   "getStarted": {
     "message": "Inizia"
   },
+  "greaterThanMin": {
+    "message": "deve essere maggiore o uguale a $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "happyToSeeYou": {
     "message": "Siamo contenti di vederti."
   },
@@ -629,6 +640,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
+  },
+  "lessThanMax": {
+    "message": "deve essere minore o uguale a $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Si, iniziamo!"
@@ -817,6 +832,9 @@
   "pastePrivateKey": {
     "message": "Incolla la tua chiave privata qui:",
     "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Incolla la tua frase seed qui!"
   },
   "pending": {
     "message": "in corso"
@@ -1130,6 +1148,9 @@
   },
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
+  },
+  "submit": {
+    "message": "Invia"
   },
   "submitted": {
     "message": "Inviata"

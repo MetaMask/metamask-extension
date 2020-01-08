@@ -428,9 +428,7 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   // compose into larger task
   const subtasks = []
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
-  if (buildPhase2.length) {
-    subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
-  }
+  if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
 
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
