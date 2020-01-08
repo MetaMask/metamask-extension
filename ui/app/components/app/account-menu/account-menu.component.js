@@ -193,6 +193,12 @@ export default class AccountMenu extends Component {
 
   renderRemoveAccount (keyring, identity) {
     const { t } = this.context
+
+    // Sometimes keyrings aren't loaded yet
+    if (!keyring) {
+      return null
+    }
+
     // Any account that's not from the HD wallet Keyring can be removed
     const { type } = keyring
     const isRemovable = type !== 'HD Key Tree'
