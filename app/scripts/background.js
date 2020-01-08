@@ -43,8 +43,6 @@ const {
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 const platform = new ExtensionPlatform()
@@ -478,7 +476,7 @@ function openPopup () {
 
 // On first install, open a new tab with MetaMask
 extension.runtime.onInstalled.addListener(({ reason }) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+  if (reason === 'install' && !(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
     platform.openExtensionInBrowser()
   }
 })
