@@ -15,7 +15,6 @@ describe('FirstTimeFlowSwitch', () => {
     const wrapper = mountWithRouter(
       <FirstTimeFlowSwitch.WrappedComponent />
     )
-    // console.log(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).debug())
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length, 1)
   })
 
@@ -54,7 +53,7 @@ describe('FirstTimeFlowSwitch', () => {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />
     )
 
-    assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE }}).length, 1)
+    assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length, 1)
   })
 
   it('redirects to /unlock route when isInitialized is true', () => {

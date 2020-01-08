@@ -18,7 +18,7 @@ describe('Create Account Page', () => {
 
   before(() => {
     wrapper = mountWithRouter(
-      <CreateAccountPage.WrappedComponent {...props}/>
+      <CreateAccountPage.WrappedComponent {...props} />
     )
   })
 

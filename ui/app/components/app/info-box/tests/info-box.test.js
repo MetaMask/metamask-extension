@@ -16,7 +16,7 @@ describe('InfoBox', () => {
   }
 
   beforeEach(() => {
-    wrapper = shallow(<InfoBox {...props}/>)
+    wrapper = shallow(<InfoBox {...props} />)
   })
 
   it('renders title from props', () => {

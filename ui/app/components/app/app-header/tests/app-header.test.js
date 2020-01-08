@@ -51,7 +51,7 @@ describe('App Header', () => {
 
   describe('Network', () => {
     it('shows network dropdown when networkDropdownOpen is false', () => {
-      const network = wrapper.find({ network: 'test'})
+      const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
         preventDefault: () => {},
@@ -62,8 +62,8 @@ describe('App Header', () => {
     })
 
     it('hides network dropdown when networkDropdownOpen is true', () => {
-      wrapper.setProps({ networkDropdownOpen: true})
-      const network = wrapper.find({ network: 'test'})
+      wrapper.setProps({ networkDropdownOpen: true })
+      const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
         preventDefault: () => {},
@@ -75,7 +75,7 @@ describe('App Header', () => {
 
     it('hides network indicator', () => {
       wrapper.setProps({ hideNetworkIndicator: true })
-      const network = wrapper.find({ network: 'test'})
+      const network = wrapper.find({ network: 'test' })
       assert.equal(network.length, 0)
     })
   })

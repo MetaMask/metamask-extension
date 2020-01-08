@@ -7,21 +7,23 @@ import TokenBalance from '../../../../components/ui/token-balance/token-balance.
 import TokenTracker from 'eth-token-tracker'
 
 const { createTestProviderTools } = require('../../../../../../test/stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('WithTokenTracker HOC', () => {
   let wrapper
 
   beforeEach(() => {
     const TokenTracker = withTokenTracker(TokenBalance)
-    wrapper = shallow(<TokenTracker
-      userAddress = {'0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'}
-      token = {
-        {
-          address: 'test',
+    wrapper = shallow(
+      <TokenTracker
+        userAddress="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        token={
+          {
+            address: 'test',
+          }
         }
-      }
-    />)
+      />
+    )
   })
 
   it('#setError', () => {
@@ -33,7 +35,7 @@ describe('WithTokenTracker HOC', () => {
     wrapper.instance().tracker = new TokenTracker({
       provider,
     })
-    wrapper.instance().updateBalance([{string: 'test string', symbol: 'test symbol'}])
+    wrapper.instance().updateBalance([{ string: 'test string', symbol: 'test symbol' }])
     assert.equal(wrapper.props().string, 'test string')
     assert.equal(wrapper.props().symbol, 'test symbol')
   })

@@ -53,14 +53,14 @@ describe('Confirm Remove Account', () => {
   })
 
   it('nevermind', () => {
-    const nevermind = wrapper.find({ type: 'default'})
+    const nevermind = wrapper.find({ type: 'default' })
     nevermind.simulate('click')
 
     assert(props.hideModal.calledOnce)
   })
 
   it('remove', (done) => {
-    const remove = wrapper.find({ type: 'secondary'})
+    const remove = wrapper.find({ type: 'secondary' })
     remove.simulate('click')
 
     assert(props.removeAccount.calledOnce)

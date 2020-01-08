@@ -28,7 +28,7 @@ describe('Advanced Gas Inputs', () => {
       />, {
         context: {
           t: str => str,
-        }
+        },
       })
   })
 
@@ -56,7 +56,7 @@ describe('Advanced Gas Inputs', () => {
   })
 
   it('wont update gasLimit in props before debounce', () => {
-    const event = { target: { value: 21000 }}
+    const event = { target: { value: 21000 } }
 
     wrapper.find('input').at(1).simulate('change', event)
     clock.tick(499)
@@ -65,7 +65,7 @@ describe('Advanced Gas Inputs', () => {
   })
 
   it('simulates onChange on gas limit after debounce', () => {
-    const event = { target: { value: 21000 }}
+    const event = { target: { value: 21000 } }
 
     wrapper.find('input').at(1).simulate('change', event)
     clock.tick(500)
