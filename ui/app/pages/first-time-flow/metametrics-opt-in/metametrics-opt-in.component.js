@@ -34,17 +34,17 @@ export default class MetaMetricsOptIn extends Component {
             <img src="images/metrics-chart.svg" />
           </div>
           <div className="metametrics-opt-in__title">
-            Help Us Improve MetaMask
+            Help Us Improve Conflux MetaMask Test
           </div>
           <div className="metametrics-opt-in__body">
             <div className="metametrics-opt-in__description">
-              MetaMask would like to gather usage data to better understand how
-              our users interact with the extension. This data will be used to
-              continually improve the usability and user experience of our
-              product and the Ethereum ecosystem.
+              Conflux MetaMask Test would like to gather usage data to better
+              understand how our users interact with the extension. This data
+              will be used to continually improve the usability and user
+              experience of our product and the Ethereum ecosystem.
             </div>
             <div className="metametrics-opt-in__description">
-              MetaMask will..
+              Conflux MetaMask Test will..
             </div>
 
             <div className="metametrics-opt-in__committments">
@@ -57,13 +57,15 @@ export default class MetaMetricsOptIn extends Component {
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-check" />
                 <div className="metametrics-opt-in__row-description">
-                  Send anonymized click & pageview events
+                  Send anonymized click & pageview events (not doing this in
+                  test version yet)
                 </div>
               </div>
               <div className="metametrics-opt-in__row">
                 <i className="fa fa-check" />
                 <div className="metametrics-opt-in__row-description">
                   Maintain a public aggregate dashboard to educate the community
+                  (not doing this in test version yet)
                 </div>
               </div>
               <div className="metametrics-opt-in__row metametrics-opt-in__break-row">

@@ -114,6 +114,8 @@ class PreferencesController {
    *
    */
   setParticipateInMetaMetrics (bool) {
+    // TODO: remove this?
+    bool = false
     this.store.updateState({ participateInMetaMetrics: bool })
     let metaMetricsId = null
     if (bool && !this.store.getState().metaMetricsId) {
@@ -131,7 +133,9 @@ class PreferencesController {
   }
 
   getParticipateInMetaMetrics () {
-    return this.store.getState().participateInMetaMetrics
+    // TODO: remove this at frontend
+    return false
+    // return this.store.getState().participateInMetaMetrics
   }
 
   setMetaMetricsSendCount (val) {
