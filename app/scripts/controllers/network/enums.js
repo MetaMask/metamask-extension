@@ -4,7 +4,7 @@ const KOVAN = 'kovan'
 const MAINNET = 'mainnet'
 const LOCALHOST = 'localhost'
 const GOERLI = 'goerli'
-const CFX_TEST = 'testnet'
+const CFX_TEST = 'mainnet'
 
 const MAINNET_CODE = 1
 const ROPSTEN_CODE = 3
