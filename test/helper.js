@@ -51,6 +51,9 @@ require('jsdom-global')()
 // localStorage
 window.localStorage = {}
 
+// override metamask-logo
+window.requestAnimationFrame = () => {}
+
 // crypto.getRandomValues
 if (!window.crypto) {
   window.crypto = {}
