@@ -1,38 +1,42 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { inherits } from 'util'
 import InputNumber from '../input-number.js'
 
-export default GasModalCard
+export default class GasModalCard extends Component {
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    copy: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    unitLabel: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    step: PropTypes.number,
+    min: PropTypes.number,
+  }
 
-inherits(GasModalCard, Component)
-function GasModalCard () {
-  Component.call(this)
+  render () {
+    const {
+      onChange,
+      unitLabel,
+      value,
+      min,
+      step,
+      title,
+      copy,
+    } = this.props
+
+    return (
+      <div className="send-v2__gas-modal-card">
+        <div className="send-v2__gas-modal-card__title">{title}</div>
+        <div className="send-v2__gas-modal-card__copy">{copy}</div>
+        <InputNumber
+          unitLabel={unitLabel}
+          step={step}
+          min={min}
+          placeholder="0"
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+    )
+  }
 }
-
-GasModalCard.prototype.render = function GasModalCard () {
-  const {
-    onChange,
-    unitLabel,
-    value,
-    min,
-    step,
-    title,
-    copy,
-  } = this.props
-
-  return (
-    <div className="send-v2__gas-modal-card">
-      <div className="send-v2__gas-modal-card__title">{title}</div>
-      <div className="send-v2__gas-modal-card__copy">{copy}</div>
-      <InputNumber
-        unitLabel={unitLabel}
-        step={step}
-        min={min}
-        placeholder="0"
-        value={value}
-        onChange={onChange}
-      />
-    </div>
-  )
-}
-
