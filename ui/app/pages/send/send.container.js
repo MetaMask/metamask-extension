@@ -26,8 +26,6 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
 } from './send.selectors'
 import {
   getAddressBook,
@@ -69,8 +67,6 @@ function mapStateToProps (state) {
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
     editingTransactionId: getSendEditingTransactionId(state),
-    ensResolution: getSendEnsResolution(state),
-    ensResolutionError: getSendEnsResolutionError(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
