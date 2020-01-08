@@ -109,9 +109,9 @@ const mapStateToProps = (state, ownProps) => {
     txData.simulationFails = transaction.simulationFails
   }
 
-  const currentNetworkUnapprovedTxs = Object.values(unapprovedTxs).filter(
-    ({ metamaskNetworkId }) => metamaskNetworkId === network
-  )
+  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+    .filter(key => unapprovedTxs[key].metamaskNetworkId === network)
+    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
   const insufficientBalance = !isBalanceSufficient({
