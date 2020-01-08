@@ -981,6 +981,7 @@ describe('MetaMask', function () {
 
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await driver.wait(until.elementIsEnabled(nextScreen))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
