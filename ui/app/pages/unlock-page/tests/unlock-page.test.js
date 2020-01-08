@@ -36,10 +36,6 @@ describe('Unlock Page', () => {
 
   })
 
-  xit('', () => {
-    console.log(wrapper.debug())
-  })
-
   it('renders', () => {
     assert.equal(wrapper.length, 1)
   })
