@@ -1,0 +1,32 @@
+#+TITLE: Conflux MetaMask Test
+#+Author: Conflux Team
+
+* Conflux MetaMask Test
+Test version (extremely unstable) of Conflux MetaMask (wallet as a browser extension) that can
+connect to Conflux test net.
+
+Conflux 版本的 MetaMask (浏览器插件钱包), 目前为内部测试版本(非常不稳定), 能够连接 Conflux
+测试网
+
+** Report bug/提交Bug
+Please report any bug at our [[https://github.com/Conflux-Chain/metamask-extension/issues][github issue page]]
+** Download/下载
+- chrome http://13.57.190.119:9000/metamask-chrome-0.0.1.zip
+- firefox http://13.57.190.119:9000/metamask-firefox-0.0.1.zip
+- opera http://13.57.190.119:9000/metamask-opera-0.0.1.zip
+
+** Install/安装
+*** chrome
+Open ~chrome://extensions/~ through chrome location bar, drag the zip file into chrome.
+
+在chrome地址栏中输入 ~chrome://extensions/~, 将下载的 zip 文件拖拽到打开的页面中
+
+*** firefox
+Open ~about:debugging#/runtime/this-firefox~ through firefox location bar, load
+the zip file through *Load Temporary Add-on* button.
+
+在firefox地址栏中输入 ~about:debugging#/runtime/this-firefox~, 点击加载临时插件
+按钮, 选择 zip 文件.
+
+*** opera
+😂
