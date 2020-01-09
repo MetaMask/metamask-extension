@@ -320,7 +320,7 @@
       }
       ul {
         // this needs to be adjusted, the "disc" in the comps is quite a bit larger
-        list-style-type: disc;
+        list-style-type: none;
         padding: 0 0 0 18px;
         color: #037DD6;
         // position: relative;
@@ -332,17 +332,20 @@
           line-height: 125%;
           margin-bottom: 16px;
           z-index: 2;
-          &:last-child div {
+          &:last-child .line {
             display: none;
           }
-          div {
+          .bullet {
+            position: absolute;
+            left: -16px;
+          }
+          .line {
             width: 1px;
             height: 42px;
             background: #D2D8DD;
             position: absolute;
             left: -13px;
             top: 10px;
-            z-index: 1;
           }
           span {
             color: #6A737D;
