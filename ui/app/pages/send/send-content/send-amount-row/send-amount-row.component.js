@@ -32,7 +32,7 @@ export default class SendAmountRow extends Component {
     t: PropTypes.func,
   }
 
-  updateGas = debounce(this.updateGas, 500)
+  updateGas = debounce(this.updateGas.bind(this), 500)
 
   validateAmount (amount) {
     const {
