@@ -262,7 +262,7 @@ export function generateChart (
           values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
           outer: false,
           format: function (val) {
-            return val + ' GWEI'
+            return val + ' GDrip'
           },
         },
         padding: { left: gasPricesMax / 50, right: gasPricesMax / 50 },

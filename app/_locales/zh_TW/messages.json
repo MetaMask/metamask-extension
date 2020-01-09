@@ -482,7 +482,7 @@
     "message": "Gas 用量"
   },
   "gasPrice": {
-    "message": "Gas 價格 (GWEI)"
+    "message": "Gas 價格 (GDrip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"

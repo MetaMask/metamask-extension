@@ -232,7 +232,6 @@ function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,

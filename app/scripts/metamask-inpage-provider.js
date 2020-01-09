@@ -1,6 +1,18 @@
 const OriginalMetamaskInpageProvider = require('metamask-inpage-provider')
 
 class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
+  constructor () {
+    super(...arguments)
+    this._state.sentWarnings = {
+      enable: true,
+      isConnected: true,
+      experimentalMethods: false,
+      sendAsync: true,
+      autoReload: true,
+      sendSync: true,
+    }
+  }
+
   requestId () {
     return `${Date.now()}${Math.random()
       .toFixed(7)
