@@ -57,7 +57,6 @@ global.METAMASK_NOTIFIER = notificationManager
 // setup sentry error reporting
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
-sentry.captureException(new Error('have a test'))
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
