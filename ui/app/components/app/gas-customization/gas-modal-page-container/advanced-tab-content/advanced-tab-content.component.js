@@ -26,20 +26,21 @@ export default class AdvancedTabContent extends Component {
     isEthereumNetwork: PropTypes.bool,
   }
 
-  renderDataSummary (transactionFee, timeRemaining) {
+  // TODO: add timeRemaining back when we have gas station
+  renderDataSummary (transactionFee /* timeRemaining */) {
     return (
       <div className="advanced-tab__transaction-data-summary">
         <div className="advanced-tab__transaction-data-summary__titles">
           <span>{this.context.t('newTransactionFee')}</span>
-          <span>~{this.context.t('transactionTime')}</span>
+          {/* <span>~{this.context.t('transactionTime')}</span> */}
         </div>
         <div className="advanced-tab__transaction-data-summary__container">
           <div className="advanced-tab__transaction-data-summary__fee">
             {transactionFee}
           </div>
-          <div className="advanced-tab__transaction-data-summary__time-remaining">
-            {timeRemaining}
-          </div>
+          {/* <div className="advanced-tab__transaction-data-summary__time-remaining"> */}
+          {/*   {timeRemaining} */}
+          {/* </div> */}
         </div>
       </div>
     )

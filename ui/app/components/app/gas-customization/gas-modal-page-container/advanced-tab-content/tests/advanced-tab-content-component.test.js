@@ -145,13 +145,14 @@ describe('AdvancedTabContent Component', function () {
           .text(),
         'newTransactionFee'
       )
-      assert.equal(
-        titlesNode
-          .children()
-          .at(1)
-          .text(),
-        '~transactionTime'
-      )
+      // TODO: gas station
+      // assert.equal(
+      //   titlesNode
+      //     .children()
+      //     .at(1)
+      //     .text(),
+      //   '~transactionTime'
+      // )
     })
 
     it('should render the data', () => {
@@ -166,19 +167,20 @@ describe('AdvancedTabContent Component', function () {
           .text(),
         'mockTotalFee'
       )
-      assert(
-        dataNode
-          .children()
-          .at(1)
-          .hasClass('advanced-tab__transaction-data-summary__time-remaining')
-      )
-      assert.equal(
-        dataNode
-          .children()
-          .at(1)
-          .text(),
-        'mockMsRemaining'
-      )
+      // TODO: gas station
+      // assert(
+      //   dataNode
+      //     .children()
+      //     .at(1)
+      //     .hasClass('advanced-tab__transaction-data-summary__time-remaining')
+      // )
+      // assert.equal(
+      //   dataNode
+      //     .children()
+      //     .at(1)
+      //     .text(),
+      //   'mockMsRemaining'
+      // )
     })
   })
 })
